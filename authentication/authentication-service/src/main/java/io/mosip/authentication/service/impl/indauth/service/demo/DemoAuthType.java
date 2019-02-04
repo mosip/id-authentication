@@ -16,7 +16,6 @@ import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.MatchInfo;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
@@ -31,31 +30,18 @@ public enum DemoAuthType implements AuthType {
 
 	// @formatter:off
 
-	AD_PRI("address",
-			setOf(DemoMatchType.ADDR_LINE1_PRI, DemoMatchType.ADDR_LINE2_PRI, DemoMatchType.ADDR_LINE3_PRI,
-					DemoMatchType.LOCATION1_PRI, DemoMatchType.LOCATION2_PRI, DemoMatchType.LOCATION3_PRI,
-					DemoMatchType.PINCODE_PRI),
-			LanguageType.PRIMARY_LANG, AuthTypeDTO::isAddress, "Address"),
-	AD_SEC("address",
-			setOf(DemoMatchType.ADDR_LINE1_SEC, DemoMatchType.ADDR_LINE2_SEC, DemoMatchType.ADDR_LINE3_SEC,
-					DemoMatchType.LOCATION1_SEC, DemoMatchType.LOCATION2_SEC, DemoMatchType.LOCATION3_SEC,
-					DemoMatchType.PINCODE_SEC),
-			LanguageType.SECONDARY_LANG, AuthTypeDTO::isAddress, "Address"),
+	ADDRESS("address",
+			setOf(DemoMatchType.ADDR_LINE1, DemoMatchType.ADDR_LINE2, DemoMatchType.ADDR_LINE3,
+					DemoMatchType.LOCATION1, DemoMatchType.LOCATION2, DemoMatchType.LOCATION3,
+					DemoMatchType.PINCODE), AuthTypeDTO::isAddress, "Address"),
 
 	/** The pi pri. */
-	PI_PRI("personalIdentity",
-			setOf(DemoMatchType.NAME_PRI, DemoMatchType.DOB, DemoMatchType.DOBTYPE, DemoMatchType.AGE,
-					DemoMatchType.EMAIL, DemoMatchType.PHONE, DemoMatchType.GENDER),
-			LanguageType.PRIMARY_LANG, AuthTypeDTO::isPersonalIdentity, "Personal Identity"),
-
-	PI_SEC("personalIdentity", setOf(DemoMatchType.NAME_SEC), LanguageType.SECONDARY_LANG,
-			AuthTypeDTO::isPersonalIdentity, "Personal Identity"),
-
-	FAD_PRI("fullAddress", setOf(DemoMatchType.ADDR_PRI), LanguageType.PRIMARY_LANG, AuthTypeDTO::isFullAddress,
-			"Full Address"),
-
-	FAD_SEC("fullAddress", setOf(DemoMatchType.ADDR_SEC), LanguageType.SECONDARY_LANG, AuthTypeDTO::isFullAddress,
-			"Full Address"),
+	PERSONAL_IDENTITY("personalIdentity",
+			setOf(DemoMatchType.NAME, DemoMatchType.DOB, DemoMatchType.DOBTYPE, DemoMatchType.AGE,
+					DemoMatchType.EMAIL, DemoMatchType.PHONE, DemoMatchType.GENDER), AuthTypeDTO::isPersonalIdentity, "Personal Identity"),
+	
+	FULL_ADDRESS("fullAddress", setOf(DemoMatchType.ADDR), AuthTypeDTO::isFullAddress,
+			"Full Address")
 	
 	
 
@@ -72,9 +58,6 @@ public enum DemoAuthType implements AuthType {
 	/** The auth type predicate. */
 	private Predicate<? super AuthTypeDTO> authTypePredicate;
 
-	/** The lang type. */
-	private LanguageType langType;
-
 	/** The display name. */
 	private String displayName;
 
@@ -87,10 +70,9 @@ public enum DemoAuthType implements AuthType {
 	 * @param authTypePredicate the auth type predicate
 	 * @param displayName the display name
 	 */
-	private DemoAuthType(String type, Set<MatchType> associatedMatchTypes, LanguageType langType,
+	private DemoAuthType(String type, Set<MatchType> associatedMatchTypes,
 			Predicate<? super AuthTypeDTO> authTypePredicate, String displayName) {
 		this.type = type;
-		this.langType = langType;
 		this.authTypePredicate = authTypePredicate;
 		this.displayName = displayName;
 		this.associatedMatchTypes = Collections.unmodifiableSet(associatedMatchTypes);
@@ -116,17 +98,6 @@ public enum DemoAuthType implements AuthType {
 	@Override
 	public String getType() {
 		return type;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.service.impl.indauth.builder.AuthType#getLangType()
-	 */
-	@Override
-	public LanguageType getLangType() {
-		return langType;
 	}
 
 	/**
@@ -170,9 +141,8 @@ public enum DemoAuthType implements AuthType {
 	 * java.util.function.Function)
 	 */
 	@Override
-	public Optional<String> getMatchingStrategy(AuthRequestDTO authReq,
-			Function<LanguageType, String> languageInfoFetcher) {
-		return getMatchInfo(authReq, languageInfoFetcher, MatchInfo::getMatchingStrategy);
+	public Optional<String> getMatchingStrategy(AuthRequestDTO authReq, String language) {
+		return getMatchInfo(authReq, language, MatchInfo::getMatchingStrategy);
 
 	}
 
@@ -185,8 +155,8 @@ public enum DemoAuthType implements AuthType {
 	 */
 	@Override
 	public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq,
-			Function<LanguageType, String> languageInfoFetcher, Environment environment) {
-		return getMatchInfo(authReq, languageInfoFetcher, MatchInfo::getMatchingThreshold);
+			String language, Environment environment) {
+		return getMatchInfo(authReq, language, MatchInfo::getMatchingThreshold);
 	}
 
 	/**
@@ -198,10 +168,10 @@ public enum DemoAuthType implements AuthType {
 	 * @param infoFunction the info function
 	 * @return the match info
 	 */
-	private <T> Optional<T> getMatchInfo(AuthRequestDTO authReq, Function<LanguageType, String> languageInfoFetcher,
+	private <T> Optional<T> getMatchInfo(AuthRequestDTO authReq, String language,
 			Function<? super MatchInfo, ? extends T> infoFunction) {
 		return Optional.of(authReq)
-				.flatMap(authReqDTO -> getMatchInfo(authReqDTO.getMatchInfo(), languageInfoFetcher, infoFunction));
+				.flatMap(authReqDTO -> getMatchInfo(authReqDTO.getMatchInfo(), language, infoFunction));
 	}
 
 	/**
@@ -213,9 +183,8 @@ public enum DemoAuthType implements AuthType {
 	 * @param infoFunction the info function
 	 * @return the match info
 	 */
-	private <T> Optional<T> getMatchInfo(List<MatchInfo> matchInfos, Function<LanguageType, String> languageInfoFetcher,
+	private <T> Optional<T> getMatchInfo(List<MatchInfo> matchInfos, String language,
 			Function<? super MatchInfo, ? extends T> infoFunction) {
-		String language = languageInfoFetcher.apply(langType);
 		if (matchInfos != null) {
 			return matchInfos.parallelStream()
 					.filter(id -> id.getLanguage() != null && language.equalsIgnoreCase(id.getLanguage())
@@ -241,12 +210,10 @@ public enum DemoAuthType implements AuthType {
 	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#getMatchProperties(io.mosip.authentication.core.dto.indauth.AuthRequestDTO, io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher)
 	 */
 	@Override
-	public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher) {
+	public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
 		HashMap<String, Object> valuemap = new HashMap<>();
-		String languageCode = idInfoFetcher.getLanguageCode(getLangType());
-		Optional<String> languageNameOpt = idInfoFetcher.getLanguageName(languageCode);
+		Optional<String> languageNameOpt = idInfoFetcher.getLanguageName(language);
 		valuemap.put("language", languageNameOpt.orElse("english"));
-		valuemap.put("languageType", getLangType());
 		return valuemap;
 	}
 

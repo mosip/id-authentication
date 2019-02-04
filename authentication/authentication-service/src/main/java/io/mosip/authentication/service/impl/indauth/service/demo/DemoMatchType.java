@@ -38,28 +38,22 @@ public enum DemoMatchType implements MatchType {
 	// @formatter:off
 
 	/** Primary Name Match Type. */
-	NAME_PRI(IdaIdMapping.FULLNAME,
+	NAME(IdaIdMapping.FULLNAME,
 			setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL, NameMatchingStrategy.PHONETICS),
-			IdentityDTO::getFullName, LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_PI_NAME_PRI,
+			IdentityDTO::getFullName, AuthUsageDataBit.USED_PI_NAME_PRI,
 			AuthUsageDataBit.MATCHED_PI_NAME_PRI),
 
-	/** Secondary Name Match Type. */
-	NAME_SEC(IdaIdMapping.FULLNAME,
-			setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL, NameMatchingStrategy.PHONETICS),
-			IdentityDTO::getFullName, LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_PI_NAME_SEC,
-			AuthUsageDataBit.MATCHED_PI_NAME_SEC),
-
 	/** Secondary Date of Birth Match Type. */
-	DOB(IdaIdMapping.DOB, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getDob, LanguageType.PRIMARY_LANG,
+	DOB(IdaIdMapping.DOB, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getDob,
 			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB),
 
 	/** Secondary Date of Birth Type Match. */
 	DOBTYPE(IdaIdMapping.DOBTYPE, setOf(DOBTypeMatchingStrategy.EXACT), IdentityDTO::getDobType,
-			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_PI_DOBTYPE, AuthUsageDataBit.MATCHED_PI_DOB_TYPE),
+			AuthUsageDataBit.USED_PI_DOBTYPE, AuthUsageDataBit.MATCHED_PI_DOB_TYPE),
 
 	/** Secondary Date of Birth Type Match. */
-	AGE(IdaIdMapping.AGE, setOf(AgeMatchingStrategy.EXACT), IdentityDTO::getAge, LanguageType.PRIMARY_LANG,
-			AuthUsageDataBit.USED_PI_AGE, AuthUsageDataBit.MATCHED_PI_AGE, entityInfoMap -> {
+	AGE(IdaIdMapping.AGE, setOf(AgeMatchingStrategy.EXACT), IdentityDTO::getAge,
+			AuthUsageDataBit.USED_PI_AGE, AuthUsageDataBit.MATCHED_PI_AGE, false, entityInfoMap -> {
 				int age = -1;
 				try {
 					String value = entityInfoMap.values().stream().findFirst().orElse("");
@@ -74,100 +68,56 @@ public enum DemoMatchType implements MatchType {
 			}),
 
 	/** Gender Match Type. */
-	GENDER(IdaIdMapping.GENDER, setOf(GenderMatchingStrategy.EXACT), IdentityDTO::getGender, LanguageType.PRIMARY_LANG,
-			AuthUsageDataBit.USED_PI_GENDER, AuthUsageDataBit.MATCHED_PI_GENDER),
+	GENDER(IdaIdMapping.GENDER, setOf(GenderMatchingStrategy.EXACT), IdentityDTO::getGender,
+			AuthUsageDataBit.USED_PI_GENDER, AuthUsageDataBit.MATCHED_PI_GENDER, false),
 
 	/** Phone Match Type. */
 	PHONE(IdaIdMapping.PHONE, setOf(PhoneNoMatchingStrategy.EXACT), IdentityDTO::getPhoneNumber,
-			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_PI_PHONE, AuthUsageDataBit.MATCHED_PI_PHONE),
+			AuthUsageDataBit.USED_PI_PHONE, AuthUsageDataBit.MATCHED_PI_PHONE, false),
 
 	/** E-mail Match Type. */
-	EMAIL(IdaIdMapping.EMAIL, setOf(EmailMatchingStrategy.EXACT), IdentityDTO::getEmailId, LanguageType.PRIMARY_LANG,
-			AuthUsageDataBit.USED_PI_EMAIL, AuthUsageDataBit.MATCHED_PI_EMAIL),
+	EMAIL(IdaIdMapping.EMAIL, setOf(EmailMatchingStrategy.EXACT), IdentityDTO::getEmailId,
+			AuthUsageDataBit.USED_PI_EMAIL, AuthUsageDataBit.MATCHED_PI_EMAIL, false),
 
 	/**  */
-	ADDR_LINE1_PRI(IdaIdMapping.ADDRESSLINE1, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine1,
-			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_AD_ADDR_LINE1_PRI,
-			AuthUsageDataBit.MATCHED_AD_ADDR_LINE1_PRI),
-
-	/** The addr line1 pri. */
-	ADDR_LINE1_SEC(IdaIdMapping.ADDRESSLINE1, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine1,
-			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_AD_ADDR_LINE1_SEC,
-			AuthUsageDataBit.MATCHED_AD_ADDR_LINE1_SEC),
+	ADDR_LINE1(IdaIdMapping.ADDRESSLINE1, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine1,
+			AuthUsageDataBit.USED_AD_ADDR_LINE1_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_LINE1_PRI),
 
 	/** The addr line2 pri. */
-	ADDR_LINE2_PRI(IdaIdMapping.ADDRESSLINE2, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine2,
-			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_AD_ADDR_LINE2_PRI,
-			AuthUsageDataBit.MATCHED_AD_ADDR_LINE2_PRI),
-
-	/** The addr line2 pri. */
-	ADDR_LINE2_SEC(IdaIdMapping.ADDRESSLINE2, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine2,
-			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_AD_ADDR_LINE2_SEC,
-			AuthUsageDataBit.MATCHED_AD_ADDR_LINE2_SEC),
+	ADDR_LINE2(IdaIdMapping.ADDRESSLINE2, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine2,
+			AuthUsageDataBit.USED_AD_ADDR_LINE2_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_LINE2_PRI),
 
 	/** The addr line3 pri. */
-	ADDR_LINE3_PRI(IdaIdMapping.ADDRESSLINE3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine3,
-			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_AD_ADDR_LINE3_PRI,
+	ADDR_LINE3(IdaIdMapping.ADDRESSLINE3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine3,
+			AuthUsageDataBit.USED_AD_ADDR_LINE3_PRI,
 			AuthUsageDataBit.MATCHED_AD_ADDR_LINE3_PRI),
 
-	/** The addr line3 pri. */
-	ADDR_LINE3_SEC(IdaIdMapping.ADDRESSLINE3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine3,
-			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_AD_ADDR_LINE3_SEC,
-			AuthUsageDataBit.MATCHED_AD_ADDR_LINE3_SEC),
-
 	/** Location1 Match Type primary. */
-	LOCATION1_PRI(IdaIdMapping.LOCATION1, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation1,
-			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_AD_LOCATION1_PRI,
+	LOCATION1(IdaIdMapping.LOCATION1, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation1,
+			AuthUsageDataBit.USED_AD_LOCATION1_PRI,
 			AuthUsageDataBit.MATCHED_AD_LOCATION1_PRI),
 
-	/** Location1 Match Type secondary. */
-	LOCATION1_SEC(IdaIdMapping.LOCATION1, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation1,
-			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_AD_LOCATION1_SEC,
-			AuthUsageDataBit.MATCHED_AD_LOCATION1_SEC),
-
 	/** Location2 Match Type primary. */
-	LOCATION2_PRI(IdaIdMapping.LOCATION2, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation2,
-			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_AD_LOCATION2_PRI,
+	LOCATION2(IdaIdMapping.LOCATION2, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation2,
+			AuthUsageDataBit.USED_AD_LOCATION2_PRI,
 			AuthUsageDataBit.MATCHED_AD_LOCATION2_PRI),
 
-	/** Location2 Match Type secondary. */
-	LOCATION2_SEC(IdaIdMapping.LOCATION2, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation2,
-			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_AD_LOCATION2_SEC,
-			AuthUsageDataBit.MATCHED_AD_LOCATION2_SEC),
-
 	/** Location3 Match Type primary. */
-	LOCATION3_PRI(IdaIdMapping.LOCATION3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation3,
-			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_AD_LOCATION3_PRI,
+	LOCATION3(IdaIdMapping.LOCATION3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation3,
+			AuthUsageDataBit.USED_AD_LOCATION3_PRI,
 			AuthUsageDataBit.MATCHED_AD_LOCATION3_PRI),
 
-	/** Location3 Match Type secondary. */
-	LOCATION3_SEC(IdaIdMapping.LOCATION3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation3,
-			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_AD_LOCATION3_SEC,
-			AuthUsageDataBit.MATCHED_AD_LOCATION3_SEC),
-
 	/** The pincode pri. */
-	PINCODE_PRI(IdaIdMapping.PINCODE, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getPinCode,
-			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_AD_ADDR_PINCODE_PRI,
+	PINCODE(IdaIdMapping.PINCODE, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getPinCode,
+			AuthUsageDataBit.USED_AD_ADDR_PINCODE_PRI,
 			AuthUsageDataBit.MATCHED_AD_ADDR_PINCODE_PRI),
 
-	/** The pincode pri. */
-	PINCODE_SEC(IdaIdMapping.PINCODE, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getPinCode,
-			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_AD_ADDR_PINCODE_SEC,
-			AuthUsageDataBit.MATCHED_AD_ADDR_PINCODE_SEC),
-
 	/** Primary Address MatchType. */
-	ADDR_PRI(IdaIdMapping.FULLADDRESS,
+	ADDR(IdaIdMapping.FULLADDRESS,
 			setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL,
 					FullAddressMatchingStrategy.PHONETICS),
-			IdentityDTO::getFullAddress, LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_FAD_ADDR_PRI,
+			IdentityDTO::getFullAddress, AuthUsageDataBit.USED_FAD_ADDR_PRI,
 			AuthUsageDataBit.MATCHED_FAD_ADDR_PRI),
-
-	/** Secondary Address MatchType. */
-	ADDR_SEC(IdaIdMapping.FULLADDRESS,
-			setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL,
-					FullAddressMatchingStrategy.PHONETICS),
-			IdentityDTO::getFullAddress, LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_FAD_ADDR_SEC,
-			AuthUsageDataBit.MATCHED_FAD_ADDR_SEC)
 
 	/**  */
 	// @formatter:on
@@ -196,6 +146,8 @@ public enum DemoMatchType implements MatchType {
 
 	/**  */
 	private IdMapping idMapping;
+	
+	private boolean multiLanguage;
 
 	/**
 	 * Instantiates a new demo match type.
@@ -209,8 +161,8 @@ public enum DemoMatchType implements MatchType {
 	 * @param entityInfoFetcher
 	 */
 	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
-			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction, LanguageType langType,
-			AuthUsageDataBit usedBit, AuthUsageDataBit matchedBit,
+			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction,
+			AuthUsageDataBit usedBit, AuthUsageDataBit matchedBit, boolean multiLanguage,
 			Function<Map<String, String>, Map<String, String>> entityInfoFetcher) {
 		this.idMapping = idMapping;
 		this.identityInfoFunction = (IdentityDTO identityDTO) -> {
@@ -218,11 +170,11 @@ public enum DemoMatchType implements MatchType {
 			map.put(idMapping.getIdname(), identityInfoFunction.apply(identityDTO));
 			return map;
 		};
-		this.langType = langType;
 		this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
 		this.entityInfoFetcher = entityInfoFetcher;
 		this.usedBit = usedBit;
 		this.matchedBit = matchedBit;
+		this.multiLanguage = multiLanguage;
 	}
 
 	/**
@@ -236,9 +188,15 @@ public enum DemoMatchType implements MatchType {
 	 * @param matchedBit
 	 */
 	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
-			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction, LanguageType langType,
+			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction,
 			AuthUsageDataBit usedBit, AuthUsageDataBit matchedBit) {
-		this(idMapping, allowedMatchingStrategy, identityInfoFunction, langType, usedBit, matchedBit,
+		this(idMapping, allowedMatchingStrategy, identityInfoFunction, usedBit, matchedBit, true);
+	}
+	
+	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
+			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction,
+			AuthUsageDataBit usedBit, AuthUsageDataBit matchedBit, boolean multiLanguage) {
+		this(idMapping, allowedMatchingStrategy, identityInfoFunction, usedBit, matchedBit,multiLanguage,
 				Function.identity());
 	}
 
@@ -338,6 +296,11 @@ public enum DemoMatchType implements MatchType {
 	@Override
 	public Category getCategory() {
 		return Category.DEMO;
+	}
+	
+	@Override
+	public boolean isMultiLanguage() {
+		return multiLanguage;
 	}
 
 }

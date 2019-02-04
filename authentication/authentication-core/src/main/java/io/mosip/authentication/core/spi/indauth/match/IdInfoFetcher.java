@@ -1,11 +1,15 @@
 package io.mosip.authentication.core.spi.indauth.match;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
+import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;;
 
 /**
@@ -58,5 +62,8 @@ public interface IdInfoFetcher {
 	public MosipBiometricProvider getFingerPrintProvider(BioInfo bioinfovalue);
 
 	public ValidateOtpFunction getValidateOTPFunction();
+
+	public Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValues(Map<String, List<IdentityInfoDTO>> idEntity,
+			String string) throws IdAuthenticationBusinessException;
 
 }

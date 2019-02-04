@@ -29,13 +29,11 @@ import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.BioType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.PinType;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
-import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.helper.IdInfoHelper;
@@ -65,8 +63,6 @@ import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
 public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	private static final String MAKE_FOR_0_BIO_TYPE  = "make for {0} bioType";
-
-	private static final String PIN = "pin";
 
 	/** The Final Constant For PIN_VALUE */
 	private static final String PIN_VALUE = "pinValue";
@@ -106,9 +102,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/** The Constant PRIMARY_LANG_CODE. */
 	private static final String PRIMARY_LANG_CODE = "mosip.primary.lang-code";
-
-	/** The Constant SECONDARY_LANG_CODE. */
-	private static final String SECONDARY_LANG_CODE = "mosip.secondary.lang-code";
 
 	/** The Constant INVALID_INPUT_PARAMETER. */
 	private static final String INVALID_INPUT_PARAMETER = "INVALID_INPUT_PARAMETER - ";
@@ -833,13 +826,15 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void checkAvaliableAuthInfo(AuthRequestDTO authRequest, Errors errors, AuthType[] authTypes,
 			Set<String> availableAuthTypeInfos) {
+		Set<String> allowedLang = extractAllowedLang();
 		for (AuthType authType : authTypes) {
 			if (authType.isAuthTypeEnabled(authRequest, idInfoHelper)) {
 				addMissingAuthTypeError(errors, availableAuthTypeInfos, authType);
 
-				checkAvailableMatchingStrategy(authRequest, errors, authType);
-
-				checkAvailableMatchingThreshold(authRequest, errors, authType);
+				for (String lang : allowedLang) {
+					checkAvailableMatchingStrategy(authRequest, errors, authType, lang);
+					checkAvailableMatchingThreshold(authRequest, errors, authType, lang);
+				}
 			}
 		}
 	}
@@ -853,41 +848,28 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 *            the errors
 	 * @param authType
 	 *            the auth type
+	 * @param lang 
 	 */
-	private void checkAvailableMatchingThreshold(AuthRequestDTO authRequest, Errors errors, AuthType authType) {
-		Optional<Integer> matchingThreshold = authType.getMatchingThreshold(authRequest, idInfoHelper::getLanguageCode,
+	private void checkAvailableMatchingThreshold(AuthRequestDTO authRequest, Errors errors, AuthType authType, String lang) {
+		Optional<Integer> matchingThreshold = authType.getMatchingThreshold(authRequest, lang,
 				env);
 		if (matchingThreshold.isPresent()) {
 			Integer integer = matchingThreshold.get();
 			if (integer <= 0 || integer >= 100) {
-				if (authType.equals(DemoAuthType.FAD_PRI)) {
+				if (authType.equals(DemoAuthType.FULL_ADDRESS)) {
 					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
 							"Full Address Matching Strategy is Missing");
 					errors.rejectValue(REQUEST,
 							IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_FAD_PRI.getErrorCode(),
 							new Object[] { PERSONALIDENTITY },
 							IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_FAD_PRI.getErrorMessage());
-				} else if (authType.equals(DemoAuthType.FAD_SEC)) {
-					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
-							"Full Address Matching Threshold is Invalid");
-					errors.rejectValue(REQUEST,
-							IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_FAD_SEC.getErrorCode(),
-							new Object[] { PERSONALIDENTITY },
-							IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_FAD_SEC.getErrorMessage());
-				} else if (authType.equals(DemoAuthType.PI_PRI)) {
+				}  else if (authType.equals(DemoAuthType.PERSONAL_IDENTITY)) {
 					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
 							"Personal Identity Matching Threshold is Invalid");
 					errors.rejectValue(REQUEST,
 							IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_PI_PRI.getErrorCode(),
 							new Object[] { PERSONALIDENTITY },
 							IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_PI_PRI.getErrorMessage());
-				} else if (authType.equals(DemoAuthType.PI_SEC)) {
-					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
-							"Personal Identity Matching Threshold is Invalid");
-					errors.rejectValue(REQUEST,
-							IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_PI_SEC.getErrorCode(),
-							new Object[] { PERSONALIDENTITY },
-							IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_PI_SEC.getErrorMessage());
 				}
 			}
 		}
@@ -902,39 +884,26 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 *            the errors
 	 * @param authType
 	 *            the auth type
+	 * @param lang 
 	 */
-	private void checkAvailableMatchingStrategy(AuthRequestDTO authRequest, Errors errors, AuthType authType) {
-		Optional<String> matchingStrategy = authType.getMatchingStrategy(authRequest, idInfoHelper::getLanguageCode);
+	private void checkAvailableMatchingStrategy(AuthRequestDTO authRequest, Errors errors, AuthType authType, String lang) {
+		Optional<String> matchingStrategy = authType.getMatchingStrategy(authRequest, lang);
 		if (matchingStrategy.isPresent()) {
 			if (!MatchingStrategyType.getMatchStrategyType(matchingStrategy.get()).isPresent()) {
-				if (authType.equals(DemoAuthType.FAD_PRI)) {
+				if (authType.equals(DemoAuthType.FULL_ADDRESS)) {
 					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
 							"fullAddress Matching Strategy is Missing");
 					errors.rejectValue(REQUEST,
 							IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_FAD_PRI.getErrorCode(),
 							new Object[] { FULLADDRESS },
 							IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_FAD_PRI.getErrorMessage());
-				} else if (authType.equals(DemoAuthType.FAD_SEC)) {
-					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
-							"fullAddress Matching Strategy is Missing");
-					errors.rejectValue(REQUEST,
-							IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_FAD_SEC.getErrorCode(),
-							new Object[] { FULLADDRESS },
-							IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_FAD_SEC.getErrorMessage());
-				} else if (authType.equals(DemoAuthType.PI_PRI)) {
+				} else if (authType.equals(DemoAuthType.PERSONAL_IDENTITY)) {
 					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
 							"personalIdentity Matching Strategy is Missing");
 					errors.rejectValue(REQUEST,
 							IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_PI_PRI.getErrorCode(),
 							new Object[] { PERSONALIDENTITY },
 							IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_PI_PRI.getErrorMessage());
-				} else if (authType.equals(DemoAuthType.PI_SEC)) {
-					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
-							"personalIdentity Matching Strategy is Missing");
-					errors.rejectValue(REQUEST,
-							IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_PI_SEC.getErrorCode(),
-							new Object[] { PERSONALIDENTITY },
-							IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_PI_SEC.getErrorMessage());
 				}
 			}
 		}
@@ -952,16 +921,16 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void addMissingAuthTypeError(Errors errors, Set<String> availableAuthTypeInfos, AuthType authType) {
 		if (!availableAuthTypeInfos.contains(authType.getType())) {
-			if ((authType.equals(DemoAuthType.FAD_PRI)) || (authType.equals(DemoAuthType.FAD_SEC))) {
+			if ((authType.equals(DemoAuthType.FULL_ADDRESS))) {
 				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
 						"Full Address is Missing");
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_FAD.getErrorCode(),
 						new Object[] { FULLADDRESS }, IdAuthenticationErrorConstants.MISSING_FAD.getErrorMessage());
-			} else if ((authType.equals(DemoAuthType.AD_PRI)) || (authType.equals(DemoAuthType.AD_SEC))) {
+			} else if ((authType.equals(DemoAuthType.ADDRESS))) {
 				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER, "Address is Missing");
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AD.getErrorCode(),
 						new Object[] { ADDRESS }, IdAuthenticationErrorConstants.MISSING_AD.getErrorMessage());
-			} else if ((authType.equals(DemoAuthType.PI_PRI)) || (authType.equals(DemoAuthType.PI_SEC))) {
+			} else if ((authType.equals(DemoAuthType.PERSONAL_IDENTITY))) {
 				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
 						"personalIdentity is Missing");
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_PI.getErrorCode(),
@@ -1021,8 +990,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 *            the errors
 	 */
 	private void validateAdAndFullAd(Set<String> availableAuthTypeInfos, Errors errors) {
-		if (availableAuthTypeInfos.contains(DemoAuthType.AD_PRI.getType())
-				&& availableAuthTypeInfos.contains(DemoAuthType.FAD_PRI.getType())) {
+		if (availableAuthTypeInfos.contains(DemoAuthType.ADDRESS.getType())
+				&& availableAuthTypeInfos.contains(DemoAuthType.FULL_ADDRESS.getType())) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "Ad and FAD are enabled");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { IDENTITY_INFO_DTO },
@@ -1145,7 +1114,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void checkLangaugeDetails(MatchType demoMatchType, List<IdentityInfoDTO> identityInfos, Errors errors) {
 		String priLangCode = environment.getProperty(PRIMARY_LANG_CODE);
-		String secLangCode = environment.getProperty(SECONDARY_LANG_CODE);
 
 		Map<String, Long> langCount = identityInfos.stream().map((IdentityInfoDTO idInfo) -> {
 			String language = idInfo.getLanguage();
@@ -1155,57 +1123,23 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			return new SimpleEntry<>(language, idInfo);
 		}).collect(Collectors.groupingBy(Entry::getKey, Collectors.counting()));
 
-		Long primaryLangCount = langCount.get(priLangCode);
-		Long secondaryLangCount = langCount.get(secLangCode);
-
-		if (secondaryLangCount != null) {
-			checkSecondayLanguage(demoMatchType, secondaryLangCount, errors);
+		for (long value : langCount.values()) {
+			if (value > 1) {
+				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
+						"Invalid or Multiple language code");
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						new Object[] { "LanguageCode" },
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+			}
 		}
-
-		boolean anyOtherLang = langCount.keySet().stream()
-				.anyMatch(lang -> lang != null && !lang.equals(priLangCode) && !lang.equals(secLangCode));
-
-		if (primaryLangCount != null && primaryLangCount > 1 || anyOtherLang) {
+		
+		if(langCount.keySet().size() > 1 && !demoMatchType.isMultiLanguage()) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
-					"Invalid or Multiple Primary language code");
+					"Invalid or Multiple language code");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { "PrimaryLanguageCode" },
+					new Object[] { "LanguageCode" },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
-	}
-
-	/**
-	 * Check seconday language.
-	 *
-	 * @param demoMatchType
-	 *            the demo match type
-	 * @param secCount
-	 *            the sec count
-	 * @param errors
-	 *            the errors
-	 */
-	private void checkSecondayLanguage(MatchType demoMatchType, long secCount, Errors errors) {
-		IdMapping idMapping = demoMatchType.getIdMapping();
-		boolean checkForSecondaryLanguage = Stream.of(DemoMatchType.values())
-				.filter(matchType -> matchType.getIdMapping().equals(idMapping))
-				.anyMatch(matchType -> matchType.getLanguageType().equals(LanguageType.SECONDARY_LANG));
-		if (checkForSecondaryLanguage) {
-			if (secCount > 1) {
-				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
-						"Invalid or Multiple Seconday language code");
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						new Object[] { "SecondayLanguageCode" },
-						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-			}
-		} else {
-			if (secCount > 0) {
-				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER, "Invalid language code");
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						new Object[] { "SecondayLanguageCode" },
-						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-			}
-		}
-
 	}
 
 	/**
@@ -1296,5 +1230,22 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 					new Object[] { "phoneNumber" },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
+	}
+	
+	/**
+	 * Extract allowed lang.
+	 *
+	 * @return the sets the
+	 */
+	private Set<String> extractAllowedLang() {
+		Set<String> allowedLang;
+		String languages = environment.getProperty("mosip.supported-languages");
+		if (null!=languages && languages.contains(",")) {
+			allowedLang = Arrays.stream(languages.split(",")).collect(Collectors.toSet());
+		}else {
+			allowedLang = new HashSet<>();
+			allowedLang.add(languages);
+		}
+		return allowedLang;
 	}
 }

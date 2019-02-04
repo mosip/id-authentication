@@ -123,7 +123,7 @@ public class NotificationServiceImpl implements NotificationService {
 		boolean ismaskRequired = Boolean.parseBoolean(env.getProperty("uin.masking.required"));
 
 		Map<String, Object> values = new HashMap<>();
-		values.put(NAME, infoHelper.getEntityInfoAsString(DemoMatchType.NAME_PRI, idInfo));
+		values.put(NAME, infoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo));
 		String resTime = authResponseDTO.getResTime();
 
 		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(authRequestDTO.getReqTime());
@@ -197,7 +197,7 @@ public class NotificationServiceImpl implements NotificationService {
 			values.put(DATE, date);
 			values.put(TIME, time);
 
-			values.put("name", infoHelper.getEntityInfoAsString(DemoMatchType.NAME_PRI, idInfo));
+			values.put("name", infoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo));
 
 			sendNotification(values, email, mobileNumber, SenderType.OTP, env.getProperty("otp.notification.type"));
 		} catch (BaseCheckedException e) {

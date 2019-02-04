@@ -1,8 +1,10 @@
 package io.mosip.authentication.core.spi.indauth.match;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -13,6 +15,7 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 /**
  * Base interface for the match type.
@@ -26,15 +29,15 @@ public interface MatchType {
 	 */
 	public enum Category {
 
-		/** Demo category */
-		DEMO("demo"), 
-		/**  OTP category */
-		OTP("otp"), 
- 		/** Bio category */
-		BIO("bio"),
-		
-		/** s-pin category. */
-		SPIN("pin");
+	/** Demo category */
+	DEMO("demo"),
+	/** OTP category */
+	OTP("otp"),
+	/** Bio category */
+	BIO("bio"),
+
+	/** s-pin category. */
+	SPIN("pin");
 
 		/** The type. */
 		String type;
@@ -79,7 +82,7 @@ public interface MatchType {
 	/**
 	 * Gets the allowed matching strategy for the MatchingStrategyType value
 	 *
-	 * @param matchStrategyType 
+	 * @param matchStrategyType
 	 * @return the allowed matching strategy
 	 */
 	Optional<MatchingStrategy> getAllowedMatchingStrategy(MatchingStrategyType matchStrategyType);
@@ -87,19 +90,19 @@ public interface MatchType {
 	/**
 	 * Get the Identity Info Function
 	 *
-	 * @return 
+	 * @return
 	 */
-	public Function<IdentityDTO, Map<String,List<IdentityInfoDTO>>> getIdentityInfoFunction();
-	
+	public Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction();
+
 	/**
 	 * Get the Identity Info Function.
 	 *
 	 * @return the reqest info function
 	 */
-	public default Function<AuthRequestDTO, Map<String,String>> getReqestInfoFunction() {
+	public default Function<AuthRequestDTO, Map<String, String>> getReqestInfoFunction() {
 		return req -> Collections.emptyMap();
 	}
-	
+
 	/**
 	 * Get the IdentityInfoDTO list out of the identity block for this MatchType
 	 *
@@ -142,17 +145,24 @@ public interface MatchType {
 	 * @return the category
 	 */
 	public Category getCategory();
-	
+
 	public default boolean hasIdEntityInfo() {
 		return true;
 	}
-	
+
 	public default boolean hasRequestEntityInfo() {
 		return false;
 	}
 	
 	public default boolean isMultiLanguage() {
 		return false;
+	}
+
+	public default Map<String, Entry<String,List<IdentityInfoDTO>>> mapEntityInfo(Map<String, List<IdentityInfoDTO>> idEntity,
+			IdInfoFetcher idInfoHelper) throws IdAuthenticationBusinessException {
+		return idEntity.entrySet()
+				.stream()
+				.collect(Collectors.toMap(Entry::getKey, entry -> new SimpleEntry<>(entry.getKey(), entry.getValue())));
 	}
 
 }

@@ -4,13 +4,11 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
 
 /**
  * 
@@ -39,13 +37,6 @@ public interface AuthType {
 	String getType();
 
 	/**
-	 * Gets the lang type.
-	 *
-	 * @return the lang type
-	 */
-	LanguageType getLangType();
-
-	/**
 	 * Checks if is associated match type.
 	 *
 	 * @param matchType the match type
@@ -69,7 +60,7 @@ public interface AuthType {
 	 * @param languageInfoFetcher the language info fetcher
 	 * @return the matching strategy
 	 */
-	Optional<String> getMatchingStrategy(AuthRequestDTO authReq, Function<LanguageType, String> languageInfoFetcher);
+	Optional<String> getMatchingStrategy(AuthRequestDTO authReq, String language);
 
 	/**
 	 * Gets the matching threshold.
@@ -79,7 +70,7 @@ public interface AuthType {
 	 * @param environment the environment
 	 * @return the matching threshold
 	 */
-	public default Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, Function<LanguageType, String> languageInfoFetcher, Environment environment){
+	public default Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, String language, Environment environment){
 		return Optional.of(DEFAULT_MATCHING_THRESHOLD);
 	}
 
@@ -105,8 +96,8 @@ public interface AuthType {
 	 * @param languageInfoFetcher the language info fetcher
 	 * @return the match properties
 	 */
-	public default Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO,
-			IdInfoFetcher languageInfoFetcher) {
+	public default Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher languageInfoFetcher,
+			String language) {
 		return Collections.emptyMap();
 	}
 

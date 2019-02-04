@@ -14,7 +14,6 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
@@ -35,13 +34,12 @@ public enum PinMatchType implements MatchType {
 	SPIN(IdaIdMapping.PIN, setOf(PinMatchingStrategy.EXACT), authReqDTO -> {
 		return authReqDTO.getPinInfo().stream().filter(type -> type.getType().equals("pin")).findFirst()
 				.map(PinInfo::getValue).orElse("");
-	}, LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_STATIC_PIN, AuthUsageDataBit.MATCHED_STATIC_PIN),
+	}, AuthUsageDataBit.USED_STATIC_PIN, AuthUsageDataBit.MATCHED_STATIC_PIN),
 	OTP(IdaIdMapping.OTP, setOf(OtpMatchingStrategy.EXACT), 
 		authReqDTO -> {
 			return authReqDTO.getPinInfo().stream().filter(type -> type.getType().equalsIgnoreCase("otp")).findFirst()
 					.map(PinInfo::getValue).orElse("");
-		}, 
-		LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_OTP, AuthUsageDataBit.MATCHED_OTP);
+		}, AuthUsageDataBit.USED_OTP, AuthUsageDataBit.MATCHED_OTP);
 
 	/** The allowed matching strategy. */
 	private Set<MatchingStrategy> allowedMatchingStrategy;
@@ -54,9 +52,6 @@ public enum PinMatchType implements MatchType {
 
 	/** The matched bit. */
 	private AuthUsageDataBit matchedBit;
-
-	/** The lang type. */
-	private LanguageType langType;
 
 	/** The id mapping. */
 	private IdMapping idMapping;
@@ -72,7 +67,7 @@ public enum PinMatchType implements MatchType {
 	 * @param matchedBit              the matched bit
 	 */
 	private PinMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
-			Function<AuthRequestDTO, String> requestInfoFunction, LanguageType langType, AuthUsageDataBit usedBit,
+			Function<AuthRequestDTO, String> requestInfoFunction, AuthUsageDataBit usedBit,
 			AuthUsageDataBit matchedBit) {
 		this.idMapping = idMapping;
 		this.requestInfoFunction = (AuthRequestDTO authReq) -> {
@@ -80,21 +75,9 @@ public enum PinMatchType implements MatchType {
 			map.put(idMapping.getIdname(), requestInfoFunction.apply(authReq));
 			return map;
 		};
-		this.langType = langType;
 		this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
 		this.usedBit = usedBit;
 		this.matchedBit = matchedBit;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.core.spi.indauth.match.MatchType#getLanguageType()
-	 */
-	@Override
-	public LanguageType getLanguageType() {
-		return langType;
 	}
 
 	/**

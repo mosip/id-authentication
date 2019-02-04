@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -14,7 +13,6 @@ import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProvider;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
@@ -38,7 +36,7 @@ public enum BioAuthType implements AuthType {
 			getFingerprint(), 1) {
 
 		@Override
-		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher) {
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
@@ -63,7 +61,7 @@ public enum BioAuthType implements AuthType {
 			getFingerprint(), 1) {
 
 		@Override
-		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher) {
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
@@ -83,7 +81,7 @@ public enum BioAuthType implements AuthType {
 	FGR_MIN_MULTI("fgrMin", setOf(BioMatchType.FGRMIN_MULTI), getFingerprint(), 2) {
 
 		@Override
-		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher) {
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
@@ -96,7 +94,7 @@ public enum BioAuthType implements AuthType {
 
 		@Override
 		public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq,
-				Function<LanguageType, String> languageInfoFetcher, Environment environment) {
+				String languageInfoFetcher, Environment environment) {
 
 			String bioType = getType();
 			Integer threshold = null;
@@ -116,7 +114,7 @@ public enum BioAuthType implements AuthType {
 	IRIS_COMP_IMG("irisImg", setOf(BioMatchType.IRIS_COMP), "Iris", 2) {
 
 		@Override
-		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher) {
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
@@ -130,7 +128,7 @@ public enum BioAuthType implements AuthType {
 
 		@Override
 		public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq,
-				Function<LanguageType, String> languageInfoFetcher, Environment environment) {
+				String languageInfoFetcher, Environment environment) {
 
 			String bioType = getType();
 			Integer threshold = null;
@@ -151,7 +149,7 @@ public enum BioAuthType implements AuthType {
 	IRIS_IMG("irisImg", setOf(BioMatchType.RIGHT_IRIS, BioMatchType.LEFT_IRIS), "Iris", 1) {
 
 		@Override
-		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher) {
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
@@ -220,13 +218,11 @@ public enum BioAuthType implements AuthType {
 	 * @return the FP values count in identity
 	 */
 	private static Long getFPValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
-		Long count = (long) helper.getIdentityRequestInfo(BioMatchType.FGRMIN_MULTI, reqDTO.getRequest().getIdentity()).size();
-		return count;
+		return (long) helper.getIdentityRequestInfo(BioMatchType.FGRMIN_MULTI, reqDTO.getRequest().getIdentity(), null).size();
 	}
 
 	private static Long getIrisValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
-		Long count = (long) helper.getIdentityRequestInfo(BioMatchType.IRIS_COMP, reqDTO.getRequest().getIdentity()).size();
-		return count;
+		return (long) helper.getIdentityRequestInfo(BioMatchType.IRIS_COMP, reqDTO.getRequest().getIdentity(), null).size();
 	}
 
 	/*
@@ -284,7 +280,7 @@ public enum BioAuthType implements AuthType {
 	 */
 	@Override
 	public Optional<String> getMatchingStrategy(AuthRequestDTO authReq,
-			Function<LanguageType, String> languageInfoFetcher) {
+			String languageInfoFetcher) {
 		return Optional.of(MatchingStrategyType.PARTIAL.getType());
 	}
 
@@ -293,7 +289,7 @@ public enum BioAuthType implements AuthType {
 	 */
 	@Override
 	public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq,
-			Function<LanguageType, String> languageInfoFetcher, Environment environment) {
+			String languageInfoFetcher, Environment environment) {
 
 		String bioType = getType();
 		Integer threshold = null;
@@ -321,14 +317,6 @@ public enum BioAuthType implements AuthType {
 	 */
 	public static Set<MatchType> setOf(MatchType... supportedMatchTypes) {
 		return Stream.of(supportedMatchTypes).collect(Collectors.toSet());
-	}
-
-	/*
-	 * Get type
-	 */
-	@Override
-	public LanguageType getLangType() {
-		return LanguageType.PRIMARY_LANG;
 	}
 
 	/*

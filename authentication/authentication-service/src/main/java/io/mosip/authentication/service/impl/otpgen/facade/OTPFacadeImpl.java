@@ -212,8 +212,9 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * 
 	 * @param idInfo List of IdentityInfoDTO
 	 * @return mail
+	 * @throws IdAuthenticationBusinessException
 	 */
-	private String getEmail(Map<String, List<IdentityInfoDTO>> idInfo) {
+	private String getEmail(Map<String, List<IdentityInfoDTO>> idInfo) throws IdAuthenticationBusinessException {
 		return demoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
 	}
 
@@ -222,8 +223,9 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * 
 	 * @param idInfo List of IdentityInfoDTO
 	 * @return Mobile number
+	 * @throws IdAuthenticationBusinessException
 	 */
-	private String getMobileNumber(Map<String, List<IdentityInfoDTO>> idInfo) {
+	private String getMobileNumber(Map<String, List<IdentityInfoDTO>> idInfo) throws IdAuthenticationBusinessException {
 		return demoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
 	}
 
