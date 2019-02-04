@@ -312,11 +312,16 @@ public class RegistrationController extends BaseController {
 			param.setCompressionQuality(0); // Change the quality value you
 											// prefer
 			writer.write(null, new IIOImage(detectedFace, null, null), param);
-
 			byte[] compressedPhoto = byteArrayOutputStream.toByteArray();
-			ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDtoContent().getDemographicDTO()
-					.getApplicantDocumentDTO();
-			applicantDocumentDTO.setCompressedFacePhoto(compressedPhoto);
+			if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+				((BiometricDTO) SessionContext.getInstance().getMapObject()
+						.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO().getFaceDetailsDTO()
+								.setFace(compressedPhoto);
+			} else {
+				ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDtoContent().getDemographicDTO()
+						.getApplicantDocumentDTO();
+				applicantDocumentDTO.setCompressedFacePhoto(compressedPhoto);
+			}
 			byteArrayOutputStream.close();
 			imageOutputStream.close();
 			writer.dispose();
@@ -325,7 +330,6 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 		}
 	}
-
 	private void saveBiometricDetails() {
 		try {
 			DataProvider.setApplicantDocumentDTO(
@@ -360,32 +364,45 @@ public class RegistrationController extends BaseController {
 					ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
 							byteArrayOutputStream);
 					byte[] photoInBytes = byteArrayOutputStream.toByteArray();
-					ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDtoContent().getDemographicDTO()
-							.getApplicantDocumentDTO();
-					applicantDocumentDTO.setPhoto(photoInBytes);
-					applicantDocumentDTO.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
-					byteArrayOutputStream.close();
-					if (exceptionBufferedImage != null) {
-						ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-						ImageIO.write(exceptionBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
-								outputStream);
-						byte[] exceptionPhotoInBytes = outputStream.toByteArray();
-						applicantDocumentDTO.setExceptionPhoto(exceptionPhotoInBytes);
-						applicantDocumentDTO.setExceptionPhotoName(RegistrationConstants.EXCEPTION_PHOTOGRAPH_NAME);
-						applicantDocumentDTO.setHasExceptionPhoto(true);
-						outputStream.close();
-					} else {
-						applicantDocumentDTO.setHasExceptionPhoto(false);
-					}
+					if (!(boolean) SessionContext.getInstance().getMapObject()
+							.get(RegistrationConstants.ONBOARD_USER)) {
+						ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDtoContent().getDemographicDTO()
+								.getApplicantDocumentDTO();
+						applicantDocumentDTO.setPhoto(photoInBytes);
+						applicantDocumentDTO.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
+						byteArrayOutputStream.close();
+						if (exceptionBufferedImage != null) {
+							ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+							ImageIO.write(exceptionBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
+									outputStream);
+							byte[] exceptionPhotoInBytes = outputStream.toByteArray();
+							applicantDocumentDTO.setExceptionPhoto(exceptionPhotoInBytes);
+							applicantDocumentDTO.setExceptionPhotoName(RegistrationConstants.EXCEPTION_PHOTOGRAPH_NAME);
+							applicantDocumentDTO.setHasExceptionPhoto(true);
+							outputStream.close();
+						} else {
+							applicantDocumentDTO.setHasExceptionPhoto(false);
+						}
 
-					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-							RegistrationConstants.APPLICATION_ID, "showing demographic preview");
-					saveDetail();
-					setPreviewContent();
-				//	loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
-					goToAuthenticationPage();
-					
+						LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER,
+								RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+								"showing demographic preview");
+
+						setPreviewContent();
+						saveDetail();
+						goToAuthenticationPage();
+					} else {
+						((BiometricDTO) SessionContext.getInstance().getMapObject()
+								.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO()
+										.getFaceDetailsDTO().setFace(photoInBytes);
+						byteArrayOutputStream.close();
+					}
 				} else {
+					if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+						((BiometricDTO) SessionContext.getInstance().getMapObject()
+								.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO()
+										.getFaceDetailsDTO().setFace(null);
+					}
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FACE_CAPTURE_ERROR);
 				}
 			} catch (IOException ioException) {
