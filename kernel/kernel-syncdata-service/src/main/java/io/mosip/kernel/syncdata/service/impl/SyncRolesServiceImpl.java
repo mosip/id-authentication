@@ -24,7 +24,6 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 
 	@Value("${mosip.kernel.syncdata.auth-manager-base-uri}")
 	private String authBaseUrl;
-	
 	@Value("${mosip.kernel.syncdata.auth-manager-roles}")
 	private String authServiceName;
 	
