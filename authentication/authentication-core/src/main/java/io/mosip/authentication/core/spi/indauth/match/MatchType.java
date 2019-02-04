@@ -13,7 +13,6 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
 
 /**
  * Base interface for the match type.
@@ -117,15 +116,6 @@ public interface MatchType {
 	}
 
 	/**
-	 * Get the Language Type
-	 *
-	 * @return the LanguageType
-	 */
-	public default LanguageType getLanguageType() {
-		return LanguageType.PRIMARY_LANG;
-	}
-
-	/**
 	 * Gets the used bit
 	 *
 	 * @return the used bit
@@ -158,6 +148,10 @@ public interface MatchType {
 	}
 	
 	public default boolean hasRequestEntityInfo() {
+		return false;
+	}
+	
+	public default boolean isMultiLanguage() {
 		return false;
 	}
 

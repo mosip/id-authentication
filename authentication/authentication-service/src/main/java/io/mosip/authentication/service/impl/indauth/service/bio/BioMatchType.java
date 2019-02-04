@@ -13,7 +13,6 @@ import java.util.stream.Stream;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
@@ -237,11 +236,6 @@ public enum BioMatchType implements MatchType {
 	@Override
 	public Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
 		return identityInfoFunction;
-	}
-
-	@Override
-	public LanguageType getLanguageType() {
-		return LanguageType.PRIMARY_LANG;
 	}
 
 	@Override
