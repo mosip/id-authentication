@@ -7,13 +7,13 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -52,7 +52,9 @@ import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.PinAuthType;
 import io.mosip.authentication.service.integration.OTPManager;
+import io.mosip.kernel.cbeffutil.service.CbeffI;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
  * The Class IdInfoHelper.
@@ -65,6 +67,8 @@ public class IdInfoHelper implements IdInfoFetcher {
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(IdInfoHelper.class);
+
+	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String SESSION_ID = "sessionId";
@@ -96,6 +100,9 @@ public class IdInfoHelper implements IdInfoFetcher {
 	/** The OTPManager */
 	@Autowired
 	private OTPManager otpManager;
+
+	@Autowired
+	private CbeffI cbeffUtil;
 
 	/*
 	 * Fetch language Name based on language code
@@ -172,6 +179,25 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * @param demoInfo             the demo info
 	 * @return the identity value
 	 */
+	private Stream<String> getIdentityValueFromMap(String name, String languageForMatchType,
+			Map<String, Entry<String, List<IdentityInfoDTO>>> demoInfo) {
+		List<IdentityInfoDTO> identityInfoList = demoInfo.get(name).getValue();
+		if (identityInfoList != null && !identityInfoList.isEmpty()) {
+			return identityInfoList.stream()
+					.filter(idinfo -> checkLanguageType(languageForMatchType, idinfo.getLanguage()))
+					.map(idInfo -> idInfo.getValue());
+		}
+		return Stream.empty();
+	}
+
+	/**
+	 * Fetch the identity value.
+	 *
+	 * @param name                 the name
+	 * @param languageForMatchType the language for match type
+	 * @param demoInfo             the demo info
+	 * @return the identity value
+	 */
 	private Stream<String> getIdentityValue(String name, String languageForMatchType,
 			Map<String, List<IdentityInfoDTO>> demoInfo) {
 		List<IdentityInfoDTO> identityInfoList = demoInfo.get(name);
@@ -193,7 +219,8 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 */
 	private boolean checkLanguageType(String languageForMatchType, String languageFromReq) {
 		if (languageFromReq == null || languageFromReq.isEmpty() || languageFromReq.equalsIgnoreCase("null")) {
-			return getLanguageCode(LanguageType.PRIMARY_LANG).equalsIgnoreCase(languageForMatchType);
+			return languageForMatchType == null
+					|| getLanguageCode(LanguageType.PRIMARY_LANG).equalsIgnoreCase(languageForMatchType);
 		} else {
 			return languageForMatchType.equalsIgnoreCase(languageFromReq);
 		}
@@ -226,8 +253,11 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * @param matchType  the match type
 	 * @param demoEntity the demo entity
 	 * @return the entity info as string
+	 * @throws IdAuthenticationBusinessException
+	 * @throws Exception
 	 */
-	public String getEntityInfoAsString(MatchType matchType, Map<String, List<IdentityInfoDTO>> demoEntity) {
+	public String getEntityInfoAsString(MatchType matchType, Map<String, List<IdentityInfoDTO>> demoEntity)
+			throws IdAuthenticationBusinessException {
 		Map<String, String> entityInfoMap = getIdEntityInfoMap(matchType, demoEntity);
 		return concatValues(entityInfoMap.values().toArray(new String[entityInfoMap.size()]));
 	}
@@ -239,13 +269,16 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * @param languageCode  the language code
 	 * @param demoEntity    the demo entity
 	 * @return the identity values map
+	 * @throws IdAuthenticationBusinessException
+	 * @throws Exception
 	 */
-	private Map<String, String> getIdentityValuesMap(List<String> propertyNames, String languageCode,
-			Map<String, List<IdentityInfoDTO>> demoEntity) {
-		return propertyNames.stream()
-				.collect(Collectors.toMap(Function.identity(),
-						propName -> getIdentityValue(propName, languageCode, demoEntity).findAny().orElse(""),
-						(p1, p2) -> p1, () -> new LinkedHashMap<String, String>()));
+	private Map<String, String> getIdentityValuesMap(MatchType matchType, List<String> propertyNames,
+			String languageCode, Map<String, List<IdentityInfoDTO>> idEntity) throws IdAuthenticationBusinessException {
+		Map<String, Entry<String, List<IdentityInfoDTO>>> mappedIdEntity = matchType.mapEntityInfo(idEntity, this);
+		return propertyNames.stream().filter(propName -> mappedIdEntity.containsKey(propName)).collect(Collectors.toMap(
+				propName -> mappedIdEntity.get(propName).getKey(),
+				propName -> getIdentityValueFromMap(propName, languageCode, mappedIdEntity).findAny().orElse(""),
+				(p1, p2) -> p1, () -> new LinkedHashMap<String, String>()));
 	}
 
 	/**
@@ -254,11 +287,15 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * @param matchType  the match type
 	 * @param demoEntity the demo entity
 	 * @return the entity info map
+	 * @throws IdAuthenticationBusinessException
+	 * @throws Exception
 	 */
-	public Map<String, String> getIdEntityInfoMap(MatchType matchType, Map<String, List<IdentityInfoDTO>> demoEntity) {
+	public Map<String, String> getIdEntityInfoMap(MatchType matchType, Map<String, List<IdentityInfoDTO>> demoEntity)
+			throws IdAuthenticationBusinessException {
 		String languageCode = getLanguageCode(matchType.getLanguageType()).toLowerCase();
 		List<String> propertyNames = getIdMappingValue(matchType.getIdMapping());
-		Map<String, String> identityValuesMap = getIdentityValuesMap(propertyNames, languageCode, demoEntity);
+		Map<String, String> identityValuesMap = getIdentityValuesMap(matchType, propertyNames, languageCode,
+				demoEntity);
 		Map<String, String> entityInfo = matchType.getEntityInfoMapper().apply(identityValuesMap);
 		return entityInfo;
 	}
@@ -373,8 +410,13 @@ public class IdInfoHelper implements IdInfoFetcher {
 					reqInfo = getIdentityRequestInfo(matchType, authRequestDTO.getRequest().getIdentity());
 				}
 				if (null != reqInfo && reqInfo.size() > 0) {
-					return constructMatchType(demoEntity, uin, authRequestDTO, input, entityValueFetcher, matchType,
-							strategy, reqInfo);
+					Map<String, String> entityInfo = getEntityInfo(demoEntity, uin, authRequestDTO, input,
+							entityValueFetcher, matchType, strategy, reqInfo);
+
+					Map<String, Object> matchProperties = input.getMatchProperties();
+					int mtOut = strategy.match(reqInfo, entityInfo, matchProperties);
+					boolean matchOutput = mtOut >= input.getMatchValue();
+					return new MatchOutput(mtOut, matchOutput, input.getMatchStrategyType(), matchType);
 				}
 			} else {
 				// FIXME Log that matching strategy is not allowed for the match type.
@@ -400,7 +442,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	private MatchOutput constructMatchType(Map<String, List<IdentityInfoDTO>> demoEntity, String uin,
+	private Map<String, String> getEntityInfo(Map<String, List<IdentityInfoDTO>> demoEntity, String uin,
 			AuthRequestDTO req, MatchInput input, EntityValueFetcher entityValueFetcher, MatchType matchType,
 			MatchingStrategy strategy, Map<String, String> reqInfo) throws IdAuthenticationBusinessException {
 		Map<String, String> entityInfo = null;
@@ -411,10 +453,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 		} else {
 			entityInfo = Collections.emptyMap();
 		}
-		Map<String, Object> matchProperties = input.getMatchProperties();
-		int mtOut = strategy.match(reqInfo, entityInfo, matchProperties);
-		boolean matchOutput = mtOut >= input.getMatchValue();
-		return new MatchOutput(mtOut, matchOutput, input.getMatchStrategyType(), matchType);
+		return entityInfo;
 	}
 
 	/**
@@ -713,6 +752,39 @@ public class IdInfoHelper implements IdInfoFetcher {
 	@Override
 	public ValidateOtpFunction getValidateOTPFunction() {
 		return otpManager::validateOtp;
+	}
+
+	@Override
+	public Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValues(Map<String, List<IdentityInfoDTO>> idEntity,String type) throws IdAuthenticationBusinessException {
+		Optional<String> identityValue = getIdentityValue("documents." + INDIVIDUAL_BIOMETRICS, null, idEntity)
+				.findAny();
+		if (identityValue.isPresent()) {
+			Map<String, String> bdbBasedOnType = new HashMap<>();
+			try {
+				bdbBasedOnType = cbeffUtil.getBDBBasedOnType(CryptoUtil.decodeBase64(identityValue.get()), type, null);
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				throw new IdAuthenticationBusinessException("Inside getCbeffValues", "", e);
+			}
+			return bdbBasedOnType.entrySet().stream()
+					.collect(Collectors.toMap(Entry<String, String>::getKey, (Entry<String, String> entry) -> {
+						IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+						identityInfoDTO.setValue(entry.getValue());
+						List<IdentityInfoDTO> idenityList = new ArrayList<>(1);
+						idenityList.add(identityInfoDTO);
+						return new SimpleEntry<>(getNameForCbeffName(entry.getKey()), idenityList);
+					}));
+		} else {
+			return Collections.emptyMap();
+		}
+	}
+
+	private String getNameForCbeffName(String cbeffName) {
+		return Stream.of(IdaIdMapping.values())
+				.map(cfg -> new SimpleEntry<>(cfg.getIdname(), cfg.getMappingFunction().apply(idMappingConfig)))
+				.filter(entry -> entry.getValue().stream().anyMatch(v -> v.equalsIgnoreCase(cbeffName)))
+				.map(Entry::getKey).findAny().orElse("");
 	}
 
 }
