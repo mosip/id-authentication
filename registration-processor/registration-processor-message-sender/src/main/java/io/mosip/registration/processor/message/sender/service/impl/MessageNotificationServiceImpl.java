@@ -37,9 +37,8 @@ import io.mosip.registration.processor.core.notification.template.generator.dto.
 import io.mosip.registration.processor.core.notification.template.generator.dto.SmsRequestDto;
 import io.mosip.registration.processor.core.notification.template.generator.dto.SmsResponseDto;
 import io.mosip.registration.processor.core.notification.template.mapping.NotificationTemplate;
-import io.mosip.registration.processor.core.notification.template.mapping.RegistrationProcessorNotificationTemplate;
-import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.Identity;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
@@ -111,7 +110,7 @@ public class MessageNotificationServiceImpl
 
 	/** The reg processor template json. */
 	@Autowired
-	private RegistrationProcessorNotificationTemplate regProcessorTemplateJson;
+	private Identity regProcessorTemplateJson;
 
 	/** The rest client service. */
 	@Autowired
@@ -280,7 +279,7 @@ public class MessageNotificationServiceImpl
 
 		demographicInfoStream = adapter.getFile(id,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-		
+
 		String demographicInfo = new String(IOUtils.toByteArray(demographicInfoStream));
 
 		NotificationTemplate templatejson = getKeysandValues(demographicInfo);
@@ -346,12 +345,11 @@ public class MessageNotificationServiceImpl
 		try {
 			// Get Identity Json from config server and map keys to Java Object
 			String templateJsonString = MessageSenderUtil.getJson(utility.getConfigServerFileStorageURL(),
-					utility.getGetRegProcessorTemplateJson());
+					utility.getGetRegProcessorIdentityJson());
 
 			ObjectMapper mapTemplateJsonStringToObject = new ObjectMapper();
 
-			regProcessorTemplateJson = mapTemplateJsonStringToObject.readValue(templateJsonString,
-					RegistrationProcessorNotificationTemplate.class);
+			regProcessorTemplateJson = mapTemplateJsonStringToObject.readValue(templateJsonString, Identity.class);
 
 			JSONParser parser = new JSONParser();
 			JSONObject demographicJson = (JSONObject) parser.parse(demographicJsonString);
@@ -360,10 +358,12 @@ public class MessageNotificationServiceImpl
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 
-			template.setFirstName(getJsonValues(regProcessorTemplateJson.getFirstName()));
+			template.setFirstName(getJsonValues(regProcessorTemplateJson.getName().getValue()));
+			template.setGender(getJsonValues(regProcessorTemplateJson.getGender().getValue()));
+
 			template.setEmailID((String) demographicIdentity.get(regProcessorTemplateJson.getEmailID()));
 			template.setPhoneNumber((String) demographicIdentity.get(regProcessorTemplateJson.getPhoneNumber()));
-			template.setDateOfBirth((String) demographicIdentity.get(regProcessorTemplateJson.getDateOfBirth()));
+			template.setDateOfBirth((String) demographicIdentity.get(regProcessorTemplateJson.getDob()));
 			template.setAge((Integer) demographicIdentity.get(regProcessorTemplateJson.getAge()));
 			template.setAddressLine1(getJsonValues(regProcessorTemplateJson.getAddressLine1()));
 			template.setAddressLine2(getJsonValues(regProcessorTemplateJson.getAddressLine2()));
@@ -372,13 +372,10 @@ public class MessageNotificationServiceImpl
 			template.setProvince(getJsonValues(regProcessorTemplateJson.getProvince()));
 			template.setCity(getJsonValues(regProcessorTemplateJson.getCity()));
 			template.setPostalCode((String) demographicIdentity.get(regProcessorTemplateJson.getPostalCode()));
-			template.setParentOrGuardianName(getJsonValues(regProcessorTemplateJson.getParentOrGuardianName()));
-			template.setParentOrGuardianRIDOrUIN(
-					(String) demographicIdentity.get(regProcessorTemplateJson.getParentOrGuardianRIDOrUIN()));
-			template.setProofOfRelationship(getJsonValues(regProcessorTemplateJson.getProofOfRelationship()));
-			template.setProofOfAddress(getJsonValues(regProcessorTemplateJson.getProofOfAddress()));
-			template.setProofOfIdentity(getJsonValues(regProcessorTemplateJson.getProofOfIdentity()));
-			template.setProofOfDateOfBirth(getJsonValues(regProcessorTemplateJson.getProofOfDateOfBirth()));
+			template.setProofOfRelationship(getJsonValues(regProcessorTemplateJson.getPor()));
+			template.setProofOfAddress(getJsonValues(regProcessorTemplateJson.getPoa()));
+			template.setProofOfIdentity(getJsonValues(regProcessorTemplateJson.getPoi()));
+			template.setProofOfDateOfBirth(getJsonValues(regProcessorTemplateJson.getPob()));
 			template.setIndividualBiometrics(getJsonValues(regProcessorTemplateJson.getIndividualBiometrics()));
 			template.setLocalAdministrativeAuthority(
 					getJsonValues(regProcessorTemplateJson.getLocalAdministrativeAuthority()));
