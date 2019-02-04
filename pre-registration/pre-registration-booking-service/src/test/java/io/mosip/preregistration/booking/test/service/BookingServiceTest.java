@@ -22,6 +22,7 @@ import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,6 +108,7 @@ public class BookingServiceTest {
 
 	@MockBean
 	private BookingDAO bookingDAO;
+	
 
 	private AvailabilityDto availability = new AvailabilityDto();
 	private List<DateTimeDto> dateList = new ArrayList<>();
@@ -461,8 +463,11 @@ public void getPreIdsByRegCenterIdFailureTest2() {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
-	public void cancelAppointmentSuccessTest() {
+	public void cancelAppointmentSuccessTest() throws java.text.ParseException {
 
+		String date5 = "2016-11-09 14:20:00";
+		Date localDateTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date5);
+		preRegistartionStatusDTO.setCreatedDateTime(localDateTime1);
 		preRegistartionStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
 		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
 		statusList.add(preRegistartionStatusDTO);
@@ -536,7 +541,8 @@ public void getPreIdsByRegCenterIdFailureTest2() {
 	}
 
 	@Test
-	public void cancelSuccess() {
+	public void cancelSuccess() throws java.text.ParseException {
+		
 		preRegistartionStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
 		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
 		statusList.add(preRegistartionStatusDTO);
@@ -573,8 +579,11 @@ public void getPreIdsByRegCenterIdFailureTest2() {
 	}
 	
 	@Test(expected=TableNotAccessibleException.class)
-	public void cancelBookingFailureTest() {
+	public void cancelBookingFailureTest() throws java.text.ParseException {
 		
+		String date5 = "2016-11-09 14:20:00";
+		Date localDateTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date5);
+		preRegistartionStatusDTO.setCreatedDateTime(localDateTime1);
 		preRegistartionStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
 		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
 		statusList.add(preRegistartionStatusDTO);

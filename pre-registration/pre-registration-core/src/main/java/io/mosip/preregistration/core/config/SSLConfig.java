@@ -1,6 +1,5 @@
 package io.mosip.preregistration.core.config;
 
-
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -8,23 +7,19 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.SSLContext;
 
-import org.springframework.context.annotation.Configuration;
-
-
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.web.client.RestTemplate; 
- 
-
+import org.springframework.web.client.RestTemplate;
 
 /**
- * Configuration class for Crypto-Manager-Service
+ * Configuration class for Pre-registration
  * 
- * @author Urvil Joshi
+ * @author Tapaswini Behera
  *
  * @since 1.0.0
  */
@@ -50,7 +45,5 @@ public class SSLConfig {
 		return new RestTemplate(requestFactory);
 
 	}
-	
-	
 
 }

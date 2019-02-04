@@ -14,6 +14,7 @@ import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
+import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
@@ -86,8 +87,8 @@ public class DocumentExceptionCatcher {
 			throw new CephConnectionUnavailableException(((ConnectionUnavailableException) ex).getErrorCode(),((ConnectionUnavailableException) ex).getErrorText());
 		} else if (ex instanceof DocumentSizeExceedException) {
 			throw new DocumentSizeExceedException(((DocumentSizeExceedException) ex).getErrorCode(),((DocumentSizeExceedException) ex).getErrorText());
-		} else if (ex instanceof DocumentVirusScanException) {
-			throw new DocumentVirusScanException(((DocumentVirusScanException) ex).getErrorCode(),((DocumentVirusScanException) ex).getErrorText());
+		} else if (ex instanceof VirusScannerException) {
+			throw new DocumentVirusScanException(((VirusScannerException) ex).getErrorCode(),((VirusScannerException) ex).getErrorText());
 		} else if (ex instanceof DocumentNotFoundException) {
 			throw new DocumentNotFoundException(((DocumentNotFoundException) ex).getErrorCode(),((DocumentNotFoundException) ex).getErrorText());
 		} else if (ex instanceof DocumentFailedToCopyException) {
