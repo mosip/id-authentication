@@ -26,9 +26,48 @@
 		},
 		"pob": {
 			"value" : "proofOfDateOfBirth"
+		},
+		"individualBiometrics": {
+			"value" : "individualBiometrics"
+		},
+		"age": {
+			"value" : "age"
+		},
+		"addressLine1": {
+			"value" : "addressLine1"
+		},
+		"addressLine2": {
+			"value" : "addressLine2"
+		},
+		"addressLine3": {
+			"value" : "addressLine3"
+		},
+		"region": {
+			"value" : "region"
+		},
+		"province": {
+			"value" : "province"
+		},
+		"postalCode": {
+			"value" : "postalCode"
+		},
+		"phone": {
+			"value" : "phone"
+		},
+		"email": {
+			"value" : "email"
+		},
+		"localAdministrativeAuthority": {
+			"value" : "localAdministrativeAuthority"
+		},
+		"idschemaversion": {
+			"value" : "IDSchemaVersion"
+		},
+		"cnienumber": {
+			"value" : "CNIENumber"
+		},
+		"city": {
+			"value" : "city"
 		}
-		
-		
-
 	}
 } 

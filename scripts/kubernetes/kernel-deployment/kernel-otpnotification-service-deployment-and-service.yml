@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: kernel-otpnotification-service
-        image: docker-registry.mosip.io:5000/kernel-otpnotification-service:349
+        image: docker-registry.mosip.io:5000/kernel-otpnotification-service
         env:
         - name: active_profile_env
           value: dev-k8
