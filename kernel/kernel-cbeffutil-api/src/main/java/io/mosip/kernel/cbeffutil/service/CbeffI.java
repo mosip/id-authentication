@@ -17,9 +17,9 @@ import io.mosip.kernel.cbeffutil.jaxbclasses.BIRType;
  */
 public interface CbeffI {
 
-	public byte[] createXML(List<BIR> cbeffPack,byte[] xsd) throws Exception;
+	public byte[] createXML(List<BIR> cbeffPack) throws Exception;
 	
-	public byte[] updateXML(List<BIR> cbeffPackList, byte[] fileBytes,byte[] xsd) throws Exception;
+	public byte[] updateXML(List<BIR> cbeffPackList, byte[] fileBytes) throws Exception;
 
 	public boolean validateXML(byte[] xmlBytes, byte[] xsdBytes) throws Exception;
 	
