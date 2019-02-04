@@ -87,7 +87,7 @@ stage('---------- SonarQube Analysis --------------') {
 	/*
 	finding parent pom version to create Docker tags
 	*/
-   pomFile = readMavenPom file: 'pom.xml'
+   pomFile = readMavenPom file: '$projectToBuild/pom.xml'
    dockerImagesTagVersion = pomFile.parent.version
    echo dockerImagesTagVersion
  
