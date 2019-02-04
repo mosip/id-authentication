@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -38,11 +39,11 @@ import io.mosip.preregistration.core.common.dto.TemplateResponseListDTO;
 @Component
 public class TemplateUtil {
 	/**
-	 * Reference for ${resource.url} from property file
+	 * Reference for ${resource.template.url} from property file
 	 */
 
-	
-	private String resourceUrl="https://integ.mosip.io/masterdata/v1.0/templates";
+	@Value("${resource.template.url}")
+	private String resourceUrl;
 	/**
 	 * Autowired reference for {@link #restTemplateBuilder}
 	 */

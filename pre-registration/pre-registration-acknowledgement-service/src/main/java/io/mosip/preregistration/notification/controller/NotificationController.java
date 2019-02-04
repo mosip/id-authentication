@@ -53,7 +53,6 @@ public class NotificationController {
 			@RequestPart(value = "NotificationDTO", required = true) String jsonbObject,
 			@RequestPart(value = "langCode", required = true) String langCode,
 			@RequestPart(value = "file", required = false) MultipartFile file) {
-		System.out.println("======="+jsonbObject+"================");
 		return new ResponseEntity<>(notificationService.sendNotification(jsonbObject, langCode, file), HttpStatus.OK);
 	}
 	
