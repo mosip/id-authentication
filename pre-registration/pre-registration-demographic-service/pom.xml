@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip.preregistration</groupId>
 		<artifactId>pre-registration-parent</artifactId>
-		<version>0.8.0</version>
+		<version>0.8.1</version>
 	</parent>
 
 
@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-jsonvalidator</artifactId>
-			<version>0.8.0</version>
+			<version>0.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -71,12 +71,12 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idgenerator-prid</artifactId>
-			<version>0.8.0</version>
+			<version>0.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.preregistration</groupId>
 			<artifactId>pre-registration-core</artifactId>
-			<version>0.8.0</version>
+			<version>0.8.1</version>
 		</dependency>
 
 		<!-- <dependency> <groupId>io.mosip.preregistration</groupId> <artifactId>pre-registration-document-service</artifactId> 
