@@ -22,6 +22,8 @@ import io.mosip.authentication.core.dto.indauth.LanguageType;
  */
 public interface AuthType {
 
+	public static final int DEFAULT_MATCHING_THRESHOLD = 60;
+
 	/**
 	 * Gets the display name.
 	 *
@@ -77,7 +79,9 @@ public interface AuthType {
 	 * @param environment the environment
 	 * @return the matching threshold
 	 */
-	Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, Function<LanguageType, String> languageInfoFetcher, Environment environment);
+	public default Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, Function<LanguageType, String> languageInfoFetcher, Environment environment){
+		return Optional.of(DEFAULT_MATCHING_THRESHOLD);
+	}
 
 	/**
 	 * Gets the associated match types.
@@ -116,5 +120,5 @@ public interface AuthType {
 	public static Optional<AuthType> getAuthTypeForMatchType(MatchType matchType, AuthType[] authTypes) {
 		return Stream.of(authTypes).filter(at -> at.isAssociatedMatchType(matchType)).findAny();
 	}
-
+	
 }

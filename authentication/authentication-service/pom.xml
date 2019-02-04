@@ -52,10 +52,17 @@
 			<version>${kernel.hibernate.version}</version>
 		</dependency>
 
-		<!-- Kernel Id Validator -->
+		<!-- Kernel Id Validator UIN -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-idvalidator</artifactId>
+			<artifactId>kernel-idvalidator-uin</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
+		
+		<!-- Kernel Id Validator VID -->
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idvalidator-vid</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
 

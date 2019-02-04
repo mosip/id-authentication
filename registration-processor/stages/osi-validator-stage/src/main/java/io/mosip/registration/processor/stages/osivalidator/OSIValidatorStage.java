@@ -58,7 +58,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
-
+	
 	/**
 	 * Deploy verticle.
 	 */

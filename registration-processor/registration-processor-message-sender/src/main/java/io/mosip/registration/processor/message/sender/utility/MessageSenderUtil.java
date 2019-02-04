@@ -6,10 +6,13 @@ import org.springframework.web.client.RestTemplate;
 
 import lombok.Data;
 
+/**
+ * Instantiates a new message sender util.
+ */
 @Data
 @Component
 public class MessageSenderUtil {
-	
+
 	/** The config server file storage URL. */
 	@Value("${config.server.file.storage.uri}")
 	private String configServerFileStorageURL;
@@ -17,17 +20,25 @@ public class MessageSenderUtil {
 	/** The notification types. */
 	@Value("${registration.processor.globalconfigjson}")
 	private String getGlobalConfigJson;
-
+	
 	@Value("${registration.processor.templatejson}")
 	private String getRegProcessorTemplateJson;
 
+	/** The get reg processor demographic identity. */
 	@Value("${registration.processor.demographic.identity}")
 	private String getRegProcessorDemographicIdentity;
-	
 
-	public static String getJson(String configServerFileStorageURL,String uri) {
+	/**
+	 * Gets the json.
+	 *
+	 * @param configServerFileStorageURL
+	 *            the config server file storage URL
+	 * @param uri
+	 *            the uri
+	 * @return the json
+	 */
+	public static String getJson(String configServerFileStorageURL, String uri) {
 		RestTemplate restTemplate = new RestTemplate();
-		return restTemplate.getForObject(configServerFileStorageURL+uri, String.class);
+		return restTemplate.getForObject(configServerFileStorageURL + uri, String.class);
 	}
 }
-

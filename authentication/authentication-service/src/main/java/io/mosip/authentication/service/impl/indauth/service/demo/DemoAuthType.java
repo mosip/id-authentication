@@ -56,8 +56,8 @@ public enum DemoAuthType implements AuthType {
 
 	FAD_SEC("fullAddress", setOf(DemoMatchType.ADDR_SEC), LanguageType.SECONDARY_LANG, AuthTypeDTO::isFullAddress,
 			"Full Address"),
-	// FIXME move this to PIN auth type
-	OTP("otp", Collections.emptySet(), LanguageType.PRIMARY_LANG, AuthTypeDTO::isOtp, "OTP")
+	
+	
 
 	/**  */
 	// @formatter:on

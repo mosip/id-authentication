@@ -1,5 +1,6 @@
 package io.mosip.authentication.core.spi.indauth.match;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -8,6 +9,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
@@ -30,7 +32,10 @@ public interface MatchType {
 		/**  OTP category */
 		OTP("otp"), 
  		/** Bio category */
-		BIO("bio");
+		BIO("bio"),
+		
+		/** s-pin category. */
+		SPIN("pin");
 
 		/** The type. */
 		String type;
@@ -88,6 +93,15 @@ public interface MatchType {
 	public Function<IdentityDTO, Map<String,List<IdentityInfoDTO>>> getIdentityInfoFunction();
 	
 	/**
+	 * Get the Identity Info Function.
+	 *
+	 * @return the reqest info function
+	 */
+	public default Function<AuthRequestDTO, Map<String,String>> getReqestInfoFunction() {
+		return req -> Collections.emptyMap();
+	}
+	
+	/**
 	 * Get the IdentityInfoDTO list out of the identity block for this MatchType
 	 *
 	 * @param identity the IdentityDTO
@@ -138,5 +152,13 @@ public interface MatchType {
 	 * @return the category
 	 */
 	public Category getCategory();
+	
+	public default boolean hasIdEntityInfo() {
+		return true;
+	}
+	
+	public default boolean hasRequestEntityInfo() {
+		return false;
+	}
 
 }

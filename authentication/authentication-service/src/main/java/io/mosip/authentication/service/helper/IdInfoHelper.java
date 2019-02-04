@@ -35,6 +35,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
+import io.mosip.authentication.core.spi.indauth.match.EntityValueFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
@@ -43,11 +44,14 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.factory.BiometricProviderFactory;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
+import io.mosip.authentication.service.impl.indauth.service.demo.PinAuthType;
+import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -89,6 +93,10 @@ public class IdInfoHelper implements IdInfoFetcher {
 	@Autowired
 	private BiometricProviderFactory biometricProviderFactory;
 
+	/** The OTPManager */
+	@Autowired
+	private OTPManager otpManager;
+
 	/*
 	 * Fetch language Name based on language code
 	 */
@@ -120,13 +128,17 @@ public class IdInfoHelper implements IdInfoFetcher {
 		}
 	}
 
+	public Map<String, String> getAuthReqestInfo(MatchType matchType, AuthRequestDTO authRequestDTO) {
+		return matchType.getReqestInfoFunction().apply(authRequestDTO);
+	}
+
 	/**
 	 * Fetch Identity info based on Match type and Identity
 	 *
 	 * 
 	 * @return Map
 	 */
-	public Map<String, String> getIdentityInfo(MatchType matchType, IdentityDTO identity) {
+	public Map<String, String> getIdentityRequestInfo(MatchType matchType, IdentityDTO identity) {
 		String language = getLanguageCode(matchType.getLanguageType());
 		return getInfo(matchType.getIdentityInfoFunction().apply(identity), language);
 	}
@@ -216,7 +228,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * @return the entity info as string
 	 */
 	public String getEntityInfoAsString(MatchType matchType, Map<String, List<IdentityInfoDTO>> demoEntity) {
-		Map<String, String> entityInfoMap = getEntityInfoMap(matchType, demoEntity);
+		Map<String, String> entityInfoMap = getIdEntityInfoMap(matchType, demoEntity);
 		return concatValues(entityInfoMap.values().toArray(new String[entityInfoMap.size()]));
 	}
 
@@ -243,7 +255,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * @param demoEntity the demo entity
 	 * @return the entity info map
 	 */
-	public Map<String, String> getEntityInfoMap(MatchType matchType, Map<String, List<IdentityInfoDTO>> demoEntity) {
+	public Map<String, String> getIdEntityInfoMap(MatchType matchType, Map<String, List<IdentityInfoDTO>> demoEntity) {
 		String languageCode = getLanguageCode(matchType.getLanguageType()).toLowerCase();
 		List<String> propertyNames = getIdMappingValue(matchType.getIdMapping());
 		Map<String, String> identityValuesMap = getIdentityValuesMap(propertyNames, languageCode, demoEntity);
@@ -254,19 +266,43 @@ public class IdInfoHelper implements IdInfoFetcher {
 	/**
 	 * Match demo data.
 	 *
-	 * @param identityDTO     the identity DTO
+	 * @param authRequestDTO  the identity DTO
 	 * @param identityEntity  the demo entity
 	 * @param listMatchInputs the list match inputs
 	 * @return the list
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public List<MatchOutput> matchIdentityData(IdentityDTO identityDTO,
+	public List<MatchOutput> matchIdentityData(AuthRequestDTO authRequestDTO,
 			Map<String, List<IdentityInfoDTO>> identityEntity, Collection<MatchInput> listMatchInputs)
 			throws IdAuthenticationBusinessException {
 		List<MatchOutput> matchOutputList = new ArrayList<>();
 		for (MatchInput matchInput : listMatchInputs) {
-			MatchOutput matchOutput = matchType(identityDTO, identityEntity, matchInput);
+			MatchOutput matchOutput = matchType(authRequestDTO, identityEntity, matchInput);
+			if (matchOutput != null) {
+				matchOutputList.add(matchOutput);
+			}
+		}
+		return matchOutputList;
+	}
+
+	/**
+	 * Match identity data.
+	 *
+	 * @param authRequestDTO     the auth request DTO
+	 * @param uin                the uin
+	 * @param listMatchInputs    the list match inputs
+	 * @param entityValueFetcher the entity value fetcher
+	 * @return the list
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
+	public List<MatchOutput> matchIdentityData(AuthRequestDTO authRequestDTO, String uin,
+			Collection<MatchInput> listMatchInputs, EntityValueFetcher entityValueFetcher)
+			throws IdAuthenticationBusinessException {
+		List<MatchOutput> matchOutputList = new ArrayList<>();
+		for (MatchInput matchInput : listMatchInputs) {
+			MatchOutput matchOutput = matchType(authRequestDTO, uin, matchInput, entityValueFetcher);
 			if (matchOutput != null) {
 				matchOutputList.add(matchOutput);
 			}
@@ -277,15 +313,47 @@ public class IdInfoHelper implements IdInfoFetcher {
 	/**
 	 * Match type.
 	 *
-	 * @param identityDTO the demo DTO
-	 * @param demoEntity  the demo entity
-	 * @param input       the input
+	 * @param authRequestDTO     the auth request DTO
+	 * @param uin                the uin
+	 * @param input              the input
+	 * @param entityValueFetcher the entity value fetcher
 	 * @return the match output
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	private MatchOutput matchType(IdentityDTO identityDTO, Map<String, List<IdentityInfoDTO>> demoEntity,
+	private MatchOutput matchType(AuthRequestDTO authRequestDTO, String uin, MatchInput input,
+			EntityValueFetcher entityValueFetcher) throws IdAuthenticationBusinessException {
+		return matchType(authRequestDTO, Collections.emptyMap(), uin, input, entityValueFetcher);
+	}
+
+	/**
+	 * Match type.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param demoEntity     the demo entity
+	 * @param input          the input
+	 * @return the match output
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
+	private MatchOutput matchType(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> demoEntity,
 			MatchInput input) throws IdAuthenticationBusinessException {
+		return matchType(authRequestDTO, demoEntity, "", input, (t, m) -> null);
+	}
+
+	/**
+	 * Match type.
+	 *
+	 * @param authRequestDTO the demo DTO
+	 * @param demoEntity     the demo entity
+	 * @param input          the input
+	 * @return the match output
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
+	private MatchOutput matchType(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> demoEntity,
+			String uin, MatchInput input, EntityValueFetcher entityValueFetcher)
+			throws IdAuthenticationBusinessException {
 		String matchStrategyTypeStr = input.getMatchStrategyType();
 		if (matchStrategyTypeStr == null) {
 			matchStrategyTypeStr = MatchingStrategyType.EXACT.getType();
@@ -299,13 +367,14 @@ public class IdInfoHelper implements IdInfoFetcher {
 			Optional<MatchingStrategy> matchingStrategy = matchType.getAllowedMatchingStrategy(strategyType);
 			if (matchingStrategy.isPresent()) {
 				MatchingStrategy strategy = matchingStrategy.get();
-				Map<String, String> reqInfo = getIdentityInfo(matchType, identityDTO);
-				if (reqInfo.size() > 0) {
-					Map<String, String> entityInfo = getEntityInfoMap(matchType, demoEntity);
-					Map<String, Object> matchProperties = input.getMatchProperties();
-					int mtOut = strategy.match(reqInfo, entityInfo, matchProperties);
-					boolean matchOutput = mtOut >= input.getMatchValue();
-					return new MatchOutput(mtOut, matchOutput, input.getMatchStrategyType(), matchType);
+				Map<String, String> reqInfo = null;
+				reqInfo = getAuthReqestInfo(matchType, authRequestDTO);
+				if (null == reqInfo || reqInfo.isEmpty()) {
+					reqInfo = getIdentityRequestInfo(matchType, authRequestDTO.getRequest().getIdentity());
+				}
+				if (null != reqInfo && reqInfo.size() > 0) {
+					return constructMatchType(demoEntity, uin, authRequestDTO, input, entityValueFetcher, matchType,
+							strategy, reqInfo);
 				}
 			} else {
 				// FIXME Log that matching strategy is not allowed for the match type.
@@ -318,6 +387,37 @@ public class IdInfoHelper implements IdInfoFetcher {
 	}
 
 	/**
+	 * Construct match type.
+	 *
+	 * @param demoEntity         the demo entity
+	 * @param uin                the uin
+	 * @param input              the input
+	 * @param entityValueFetcher the entity value fetcher
+	 * @param matchType          the match type
+	 * @param strategy           the strategy
+	 * @param reqInfo            the req info
+	 * @return the match output
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
+	private MatchOutput constructMatchType(Map<String, List<IdentityInfoDTO>> demoEntity, String uin,
+			AuthRequestDTO req, MatchInput input, EntityValueFetcher entityValueFetcher, MatchType matchType,
+			MatchingStrategy strategy, Map<String, String> reqInfo) throws IdAuthenticationBusinessException {
+		Map<String, String> entityInfo = null;
+		if (matchType.hasRequestEntityInfo()) {
+			entityInfo = entityValueFetcher.fetch(uin, req);
+		} else if (matchType.hasIdEntityInfo()) {
+			entityInfo = getIdEntityInfoMap(matchType, demoEntity);
+		} else {
+			entityInfo = Collections.emptyMap();
+		}
+		Map<String, Object> matchProperties = input.getMatchProperties();
+		int mtOut = strategy.match(reqInfo, entityInfo, matchProperties);
+		boolean matchOutput = mtOut >= input.getMatchValue();
+		return new MatchOutput(mtOut, matchOutput, input.getMatchStrategyType(), matchType);
+	}
+
+	/**
 	 * Construct match input.
 	 *
 	 * @param authRequestDTO the auth request DTO
@@ -327,21 +427,38 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 */
 	public List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO, AuthType[] authTypes,
 			MatchType[] matchTypes) {
-		return Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-				.map((IdentityDTO identity) -> {
-					return Stream.of(matchTypes).map((MatchType matchType) -> {
-						Optional<AuthType> authTypeOpt = AuthType.getAuthTypeForMatchType(matchType, authTypes);
-						if (authTypeOpt.isPresent()) {
-							AuthType demoAuthType = authTypeOpt.get();
-							if (demoAuthType.isAuthTypeEnabled(authRequestDTO, this)
-									&& getIdentityInfo(matchType, identity).size() > 0) {
-								return contstructMatchInput(authRequestDTO, matchType, demoAuthType);
-							}
-						}
-						return null;
-					}).filter(Objects::nonNull);
-				}).orElseGet(Stream::empty).collect(Collectors.toList());
+		return Stream.of(matchTypes).map(matchType -> {
+			Map<String, String> infoFromAuthRequest = matchType.getReqestInfoFunction().apply(authRequestDTO);
+			Optional<AuthType> authTypeOpt = AuthType.getAuthTypeForMatchType(matchType, authTypes);
+			if (authTypeOpt.isPresent()) {
+				return buildMatchInput(authRequestDTO, matchType, infoFromAuthRequest, authTypeOpt);
+			}
+			return null;
+		}).filter(Objects::nonNull).collect(Collectors.toList());
 
+	}
+
+	private MatchInput buildMatchInput(AuthRequestDTO authRequestDTO, MatchType matchType,
+			Map<String, String> infoFromAuthRequest, Optional<AuthType> authTypeOpt) {
+		AuthType authType = authTypeOpt.get();
+		if (infoFromAuthRequest.isEmpty()) {
+			// For Identity
+			Optional<IdentityDTO> identityOpt = Optional.ofNullable(authRequestDTO.getRequest())
+					.map(RequestDTO::getIdentity);
+			if (identityOpt.isPresent()) {
+				IdentityDTO identity = identityOpt.get();
+				if (authType.isAuthTypeEnabled(authRequestDTO, this)
+						&& getIdentityRequestInfo(matchType, identity).size() > 0) {
+					return contstructMatchInput(authRequestDTO, matchType, authType);
+				}
+			}
+		} else {
+			// For non-identity
+			if (authType.isAuthTypeEnabled(authRequestDTO, this) && authType.isAuthTypeInfoAvailable(authRequestDTO)) {
+				return contstructMatchInput(authRequestDTO, matchType, authType);
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -453,35 +570,73 @@ public class IdInfoHelper implements IdInfoFetcher {
 	private void prepareErrorList(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder) {
 
 		if (matchOutput != null && !matchOutput.isMatched()) {
-			Optional<AuthType> authTypeForMatchType = null;
-			AuthType authType = null;
 			String category = matchOutput.getMatchType().getCategory().getType();
-			AuthType[] authTypes;
 			if (category.equalsIgnoreCase(Category.BIO.getType())) {
-				authTypes = BioAuthType.values();
-				authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
-				
-				if (authTypeForMatchType.isPresent()) {
-					authType = authTypeForMatchType.get();
-					AuthError errors = null;
-
-					if (authType.getDisplayName().equals(BioAuthType.FGR_MIN.getDisplayName())) {
-						errors = new AuthError(IdAuthenticationErrorConstants.FGRMIN_MISMATCH.getErrorCode(),
-								IdAuthenticationErrorConstants.FGRMIN_MISMATCH.getErrorMessage());
-					}
-
-					else if (authType.getDisplayName().equals(BioAuthType.IRIS_IMG.getDisplayName())) {
-						errors = new AuthError(IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorCode(),
-								IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorMessage());
-
-					}
-					statusInfoBuilder.addErrors(errors);
-				}
-			} 
-			//TODO to be applied for DEMO and OTP authentications
+				constructBioError(matchOutput, statusInfoBuilder);
+			} else if (category.equalsIgnoreCase(Category.SPIN.getType())) {
+				constructPinError(matchOutput, statusInfoBuilder);
+			}
+			// TODO to be applied for DEMO and OTP authentications
 
 		}
 	}
+
+	/**
+	 * Construct pin error.
+	 *
+	 * @param matchOutput       the match output
+	 * @param statusInfoBuilder the status info builder
+	 */
+	private void constructPinError(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder) {
+		Optional<AuthType> authTypeForMatchType;
+		AuthType authType;
+		AuthType[] authTypes;
+		authTypes = PinAuthType.values();
+		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
+
+		if (authTypeForMatchType.isPresent()) {
+			authType = authTypeForMatchType.get();
+			AuthError errors = null;
+
+			if (authType.getDisplayName().equals(PinAuthType.SPIN.getDisplayName())) {
+				errors = new AuthError(IdAuthenticationErrorConstants.PIN_MISMATCH.getErrorCode(),
+						IdAuthenticationErrorConstants.PIN_MISMATCH.getErrorMessage());
+			}
+			statusInfoBuilder.addErrors(errors);
+		}
+	}
+
+	/**
+	 * Construct bio error.
+	 *
+	 * @param matchOutput       the match output
+	 * @param statusInfoBuilder the status info builder
+	 */
+	private void constructBioError(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder) {
+		Optional<AuthType> authTypeForMatchType;
+		AuthType authType;
+		AuthType[] authTypes;
+		authTypes = BioAuthType.values();
+		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
+
+		if (authTypeForMatchType.isPresent()) {
+			authType = authTypeForMatchType.get();
+			AuthError errors = null;
+
+			if (authType.getDisplayName().equals(BioAuthType.FGR_MIN.getDisplayName())) {
+				errors = new AuthError(IdAuthenticationErrorConstants.FGRMIN_MISMATCH.getErrorCode(),
+						IdAuthenticationErrorConstants.FGRMIN_MISMATCH.getErrorMessage());
+			}
+
+			else if (authType.getDisplayName().equals(BioAuthType.IRIS_IMG.getDisplayName())) {
+				errors = new AuthError(IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorCode(),
+						IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorMessage());
+
+			}
+			statusInfoBuilder.addErrors(errors);
+		}
+	}
+
 	/**
 	 * Builds the match infos.
 	 *
@@ -553,6 +708,11 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 */
 	public MosipBiometricProvider getIrisProvider(BioInfo bioinfovalue) {
 		return biometricProviderFactory.getBiometricProvider(bioinfovalue);
+	}
+
+	@Override
+	public ValidateOtpFunction getValidateOTPFunction() {
+		return otpManager::validateOtp;
 	}
 
 }

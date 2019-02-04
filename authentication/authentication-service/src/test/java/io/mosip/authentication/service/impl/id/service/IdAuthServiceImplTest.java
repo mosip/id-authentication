@@ -102,6 +102,7 @@ public class IdAuthServiceImplTest {
 		 */
 	}
 
+	@Ignore
 	@Test
 	public void testGetIdRepoByUinNumber() throws IdAuthenticationBusinessException {
 
@@ -126,13 +127,13 @@ public class IdAuthServiceImplTest {
 	public void testGetIdRepoByVidAsRequest_IsNotNull() throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");
-
 		Mockito.when(idRepoService.getIdRepo(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Object invokeMethod = ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
 				Mockito.anyString());
 		assertNotNull(invokeMethod);
 	}
 
+	
 	@Test
 	public void testProcessIdType_IdTypeIsD() throws IdAuthenticationBusinessException {
 		String idvIdType = "D";

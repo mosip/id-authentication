@@ -19,10 +19,4 @@ public class PreRegistrationExceptionJSONInfoDTO implements Serializable {
 	private String errorCode;
 	private String message;
 
-	public PreRegistrationExceptionJSONInfoDTO(String errorcode, String message) {
-		super();
-		errorCode = errorcode;
-		this.message = message;
-	}
-
 }

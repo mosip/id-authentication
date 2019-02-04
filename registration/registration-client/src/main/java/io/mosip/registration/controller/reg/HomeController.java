@@ -54,15 +54,15 @@ public class HomeController extends BaseController implements Initializable {
 			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
 			mainBox.getChildren().add(headerRoot);
 
-			if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)
-					&& !(boolean) SessionContext.getInstance().getMapObject()
+			if ((boolean) sessionContextMap.get(RegistrationConstants.ONBOARD_USER)
+					&& !(boolean) sessionContextMap
 							.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
 				optionRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_ONBOARD));
-				SessionContext.getInstance().getMapObject().remove(RegistrationConstants.USER_ONBOARD_DATA);
-				SessionContext.getInstance().getMapObject().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
-				SessionContext.getInstance().getMapObject().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
+				sessionContextMap.remove(RegistrationConstants.USER_ONBOARD_DATA);
+				sessionContextMap.remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
+				sessionContextMap.remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
 			} else {
-				if ((boolean) SessionContext.getInstance().getMapObject()
+				if ((boolean) sessionContextMap
 						.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
 					clearOnboardData();
 				}
