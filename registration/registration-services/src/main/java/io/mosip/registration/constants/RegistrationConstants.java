@@ -788,22 +788,7 @@ public class RegistrationConstants {
 	// Scan
 	public static final String USER_REG_SCAN_EXP = USER_REG_SCAN_EXP_CODE + "DOC-001";
 
-	// To be moved to Logger Constants
-	public static final String BASE_JOB_TITLE = "REGISTRATION - Base Job";
-	public static final String BATCH_JOBS_PROCESS_LOGGER_TITLE = "REGISTRATION - Job Process Listener";
-	public static final String BATCH_JOBS_TRIGGER_LOGGER_TITLE = "REGISTRATION - Job Trigger Listener";
-	public static final String PACKET_SYNC_STATUS_JOB_TITLE = "REGISTRATION - Packet Sync Status Job";
-	public static final String MASTER_SYNC_STATUS_JOB_TITLE = "REGISTRATION - Master Sync Status Job";
-	public static final String BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE = "REGISTRATION - Sync Transaction Manager";
-	public static final String BATCH_JOBS_CONFIG_LOGGER_TITLE = "REGISTRATION - Job Configuration Service";
-	public static final String PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync Job";
-	public static final String PRE_REG_DATA_SYNC_SERVICE_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync Service";
-	public static final String PRE_REG_DATA_SYNC_DAO_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync DAO";
-	public static final String REGISTRATION_DELETION_JOB_LOGGER_TITLE = "REGISTRATION - Registration Deletion Job";
-	public static final String SYNC_CONFIG_DATA_JOB_LOGGER_TITLE = "REGISTRATION - Sync Config Data Job";
-	public static final String GLOBAL_PARAM_SERVICE_LOGGER_TITLE = "REGISTRATION - SYNCHCONFIGDATA - GLOBALPARAMSSERVICE";
-	public static final String AUDIT_SERVICE_LOGGER_TITLE = "REGISTRATION - AUDIT - AUDIT SERVICE";
-
+	
 	// Regex Constants
 	public static final String FULL_NAME_REGEX = "([A-z]+\\s?\\.?)+";
 	public static final int FULL_NAME_LENGTH = 50;
@@ -843,9 +828,7 @@ public class RegistrationConstants {
 	public static final String SYNCH_CONFIG_DATA_JOB_TITLE="synch config data job";
 	public static final String REG_USER_MAPPING_SYNC_JOB_TITLE="registration user mapping sync job";
 	
-	public static final String KEY_POLICY_SYNC_JOB_TITLE = "REGISTRATION - key policy synch Job";
-	public static final String DELETE_AUDIT_LOGS_JOB = "REGISTRATION - Delete Audit Logs Job";
-
+	
 
 	// PRE-REG DELETE JOB
 	public static final String PRE_REG_DELETE_SUCCESS = "Pre-Registration Records deleted";
@@ -944,6 +927,8 @@ public class RegistrationConstants {
 	public static final String AUDIT_LOG_DELETION_CONFIGURED_DAYS="AUDIT_LOG_DELETION_CONFIGURED_DAYS";
 	public static final String SYNC_TRANSACTION_NO_OF_DAYS_LIMIT="SYNC_TRANSACTION_NO_OF_DAYS_LIMIT";
 	public static final String REG_DELETION_CONFIGURED_DAYS="REG_DELETION_CONFIGURED_DAYS";
+	public static final String PRE_REG_DELETION_CONFIGURED_DAYS="PRE_REG_DELETION_CONFIGURED_DAYS";
+	
 	
 	
 	//Audit Constants

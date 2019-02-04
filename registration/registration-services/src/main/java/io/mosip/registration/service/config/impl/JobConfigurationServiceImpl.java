@@ -21,13 +21,13 @@ import org.quartz.SchedulerException;
 import org.quartz.TriggerBuilder;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.SyncJobConfigDAO;
@@ -95,7 +95,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	 */
 	@PostConstruct
 	public void initiateJobs() {
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was started");
 
 		/* Get All Jobs */
@@ -111,7 +111,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			}
 		});
 
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was completed");
 
 	}
@@ -123,7 +123,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	 * springframework.context.ApplicationContext)
 	 */
 	public ResponseDTO startScheduler(ApplicationContext applicationContext) {
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "start jobs invocation started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -146,7 +146,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 		}
 
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "start jobs invocation ended");
 
 		return responseDTO;
@@ -173,7 +173,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 				}
 			} catch (SchedulerException | NoSuchBeanDefinitionException exception) {
-				LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE,
+				LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE,
 						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 						exception.getMessage());
 
@@ -183,7 +183,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 					clearScheduler();
 
 				} catch (SchedulerException schedulerException) {
-					LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE,
+					LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE,
 							RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 							schedulerException.getMessage());
 				}
@@ -214,7 +214,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	 * io.mosip.registration.service.config.JobConfigurationService#stopScheduler()
 	 */
 	public ResponseDTO stopScheduler() {
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "stop jobs invocation started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -232,13 +232,13 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 			}
 		} catch (SchedulerException | RuntimeException schedulerException) {
-			LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
 			setErrorResponse(responseDTO, RegistrationConstants.STOP_SCHEDULER_ERROR_MESSAGE, null);
 
 		}
 
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "stop jobs invocation ended");
 
 		return responseDTO;
@@ -257,7 +257,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	 * getCurrentRunningJobDetails()
 	 */
 	public ResponseDTO getCurrentRunningJobDetails() {
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "get current running job details started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -285,14 +285,14 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			}
 
 		} catch (SchedulerException schedulerException) {
-			LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
 
 			setErrorResponse(responseDTO, RegistrationConstants.CURRENT_JOB_DETAILS_ERROR_MESSAGE, null);
 
 		}
 
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "get current running job details ended");
 
 		return responseDTO;
@@ -308,7 +308,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	@Override
 	public ResponseDTO executeJob(ApplicationContext applicationContext, String jobId) {
 
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Execute job started");
 		ResponseDTO responseDTO = null;
 		try {
@@ -324,13 +324,13 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			responseDTO = job.executeJob(triggerPoint, jobId);
 
 		} catch (NoSuchBeanDefinitionException | NullPointerException | IllegalArgumentException exception) {
-			LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 
 			responseDTO = new ResponseDTO();
 			setErrorResponse(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE, null);
 		}
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Execute job ended");
 		return responseDTO;
 	}
@@ -344,7 +344,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	@Override
 	public ResponseDTO getLastCompletedSyncJobs() {
 
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "get Last Completed Jobs Started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -373,7 +373,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			setErrorResponse(responseDTO, RegistrationConstants.NO_JOB_COMPLETED, null);
 		}
 
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "get Last Completed Jobs Ended");
 
 		return responseDTO;
@@ -388,7 +388,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	@Override
 	public ResponseDTO getSyncJobsTransaction() {
 
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "get Sync Transaction Started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -433,7 +433,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			}
 		}
 
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "get Sync Transaction Ended");
 
 		return responseDTO;
