@@ -4,6 +4,8 @@
  */
 package io.mosip.preregistration.notification.exception.util;
 
+import org.springframework.web.client.HttpServerErrorException;
+
 import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
@@ -14,6 +16,7 @@ import io.mosip.preregistration.notification.exception.IllegalParamException;
 import io.mosip.preregistration.notification.exception.JsonValidationException;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
 import io.mosip.preregistration.notification.exception.MissingRequestParameterException;
+import io.mosip.preregistration.notification.exception.RestCallException;
 
 
 /**
@@ -47,7 +50,10 @@ public class NotificationExceptionCatcher {
 		} else if (ex instanceof NullPointerException) {
 			throw new IllegalParamException(ErrorCodes.PRG_ACK_002.getCode(),
 					ErrorMessages.INCORRECT_MANDATORY_FIELDS.getCode(), ex.getCause());
-		} else if (ex instanceof JsonParseException) {
+		}else if (ex instanceof HttpServerErrorException) {
+			throw new RestCallException();
+		}
+		else if (ex instanceof JsonParseException) {
 			throw new JsonValidationException(ErrorCodes.PRG_ACK_004.getCode(), ErrorMessages.JSON_PARSING_FAILED.getCode(),
 					ex.getCause());
 		} else if (ex instanceof InvalidRequestParameterException) {
