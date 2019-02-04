@@ -185,7 +185,6 @@ public class RegistrationController extends BaseController {
 	 * Saving the detail into concerned DTO'S
 	 * 
 	 */
-	@FXML
 	private void saveDetail() {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Saving the fields to DTO");
@@ -381,7 +380,7 @@ public class RegistrationController extends BaseController {
 
 					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 							RegistrationConstants.APPLICATION_ID, "showing demographic preview");
-
+					saveDetail();
 					setPreviewContent();
 				//	loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
 					goToAuthenticationPage();
