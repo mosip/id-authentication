@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,15 +38,12 @@ import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
-import io.mosip.authentication.service.validator.IdAuthValidator;
-import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
 import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
-import java.time.temporal.ChronoUnit;
 
 /**
  * This class validates the AuthRequestValidator
@@ -576,7 +574,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setAuthType(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 	}
 
 	@Test

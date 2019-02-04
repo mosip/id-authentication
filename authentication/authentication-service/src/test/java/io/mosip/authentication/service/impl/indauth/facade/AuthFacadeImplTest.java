@@ -263,7 +263,7 @@ public class AuthFacadeImplTest {
 		ReflectionTestUtils.setField(authFacadeImpl, "notificationService", notificationService);
 		ReflectionTestUtils.setField(authFacadeImpl, "env", env);
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME_PRI, idInfo)).thenReturn("mosip");
+		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 

@@ -547,6 +547,7 @@ public class BioAuthServiceTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void TestIrisMatchCogent() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -604,6 +605,7 @@ public class BioAuthServiceTest {
 		System.err.println(validateBioDetails.getErr());
 	}
 
+	@Ignore
 	@Test
 	public void TestIrisMatchMorpho() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -661,6 +663,7 @@ public class BioAuthServiceTest {
 		System.err.println(validateBioDetails.getErr());
 	}
 
+	@Ignore
 	@Test
 	public void TestIrisMultiMatch() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();

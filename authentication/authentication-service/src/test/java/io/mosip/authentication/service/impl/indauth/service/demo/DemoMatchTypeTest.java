@@ -7,14 +7,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,14 +43,14 @@ public class DemoMatchTypeTest {
 
 	@Test
 	public void TestPriAddressisNotNull() {
-		assertNotNull(DemoMatchType.ADDR_PRI.getAllowedMatchingStrategy(FullAddressMatchingStrategy.EXACT.getType()));
-		assertNotNull(DemoMatchType.ADDR_PRI.getMatchedBit());
-		assertNotNull(DemoMatchType.ADDR_PRI.getMatchedBit());
+		assertNotNull(DemoMatchType.ADDR.getAllowedMatchingStrategy(FullAddressMatchingStrategy.EXACT.getType()));
+		assertNotNull(DemoMatchType.ADDR.getMatchedBit());
+		assertNotNull(DemoMatchType.ADDR.getMatchedBit());
 	}
 
 	@Test
 	public void TestValidPriAddressExact() {
-		Optional<MatchingStrategy> matchStrategy = DemoMatchType.ADDR_PRI
+		Optional<MatchingStrategy> matchStrategy = DemoMatchType.ADDR
 				.getAllowedMatchingStrategy(FullAddressMatchingStrategy.EXACT.getType());
 		assertEquals(matchStrategy.get(), FullAddressMatchingStrategy.EXACT);
 	}
@@ -79,14 +75,14 @@ public class DemoMatchTypeTest {
 
 	@Test
 	public void TestInvalidPriAddressExact() {
-		Optional<MatchingStrategy> matchStrategy = DemoMatchType.ADDR_PRI
+		Optional<MatchingStrategy> matchStrategy = DemoMatchType.ADDR
 				.getAllowedMatchingStrategy(FullAddressMatchingStrategy.EXACT.getType());
 		assertNotEquals(matchStrategy.get(), FullAddressMatchingStrategy.PARTIAL);
 	}
 
 	@Test
 	public void TestPriAddressDemoInfoFetcherisNotNull() {
-		assertNotNull(DemoMatchType.ADDR_PRI);
+		assertNotNull(DemoMatchType.ADDR);
 	}
 
 	@Test
@@ -180,12 +176,12 @@ public class DemoMatchTypeTest {
 
 	@Test
 	public void TestPriAddressPartialisNotNull() {
-		assertNotNull(DemoMatchType.ADDR_PRI.getAllowedMatchingStrategy(FullAddressMatchingStrategy.PARTIAL.getType()));
+		assertNotNull(DemoMatchType.ADDR.getAllowedMatchingStrategy(FullAddressMatchingStrategy.PARTIAL.getType()));
 	}
 
 	@Test
 	public void TestValidPriAddressPartial() {
-		Optional<MatchingStrategy> matchStrategy = DemoMatchType.ADDR_PRI
+		Optional<MatchingStrategy> matchStrategy = DemoMatchType.ADDR
 				.getAllowedMatchingStrategy(FullAddressMatchingStrategy.PARTIAL.getType());
 		assertEquals(matchStrategy.get(), FullAddressMatchingStrategy.PARTIAL);
 
@@ -193,14 +189,14 @@ public class DemoMatchTypeTest {
 
 	@Test
 	public void TestInvalidPriAddressPartial() {
-		Optional<MatchingStrategy> matchStrategy = DemoMatchType.ADDR_PRI
+		Optional<MatchingStrategy> matchStrategy = DemoMatchType.ADDR
 				.getAllowedMatchingStrategy(FullAddressMatchingStrategy.PARTIAL.getType());
 		assertNotEquals(matchStrategy.get(), FullAddressMatchingStrategy.EXACT);
 	}
 
 	@Test
 	public void TestSecondaryAddressisNotNull() {
-		assertNotNull(DemoMatchType.ADDR_SEC);
+		assertNotNull(DemoMatchType.ADDR);
 	}
 	//
 	// @Test
@@ -232,28 +228,16 @@ public class DemoMatchTypeTest {
 
 	@Test
 	public void TestValidpriNameType() {
-		Optional<MatchingStrategy> matchStrategy = DemoMatchType.NAME_PRI
+		Optional<MatchingStrategy> matchStrategy = DemoMatchType.NAME
 				.getAllowedMatchingStrategy(NameMatchingStrategy.EXACT.getType());
 		assertEquals(matchStrategy.get(), NameMatchingStrategy.EXACT);
 	}
 
 	@Test
 	public void TestInValidpriNameType() {
-		Optional<MatchingStrategy> matchStrategy = DemoMatchType.NAME_PRI
+		Optional<MatchingStrategy> matchStrategy = DemoMatchType.NAME
 				.getAllowedMatchingStrategy(NameMatchingStrategy.EXACT.getType());
 		assertNotEquals(matchStrategy.get(), NameMatchingStrategy.PARTIAL);
-	}
-
-	@Test
-	public void testPrimaryNameWithSecondaryLanguage() {
-		LanguageType languageType = DemoMatchType.NAME_PRI.getLanguageType();
-		assertEquals(languageType.name(), LanguageType.PRIMARY_LANG.name());
-	}
-
-	@Test
-	public void testPrimaryNameWithUnmatchedLanguage() {
-		LanguageType languageType = DemoMatchType.NAME_PRI.getLanguageType();
-		assertNotEquals(languageType.name(), LanguageType.SECONDARY_LANG.name());
 	}
 
 	@Test
@@ -288,28 +272,16 @@ public class DemoMatchTypeTest {
 
 	@Test
 	public void testSecondaryNameisExact() {
-		Optional<MatchingStrategy> allowedMatchingStrategy = DemoMatchType.NAME_SEC
+		Optional<MatchingStrategy> allowedMatchingStrategy = DemoMatchType.NAME
 				.getAllowedMatchingStrategy(NameMatchingStrategy.EXACT.getType());
 		assertEquals(allowedMatchingStrategy.get(), NameMatchingStrategy.EXACT);
 	}
 
 	@Test
 	public void testSecondaryNameForUnmatchedMatchingStrategy() {
-		Optional<MatchingStrategy> allowedMatchingStrategy = DemoMatchType.NAME_SEC
+		Optional<MatchingStrategy> allowedMatchingStrategy = DemoMatchType.NAME
 				.getAllowedMatchingStrategy(NameMatchingStrategy.EXACT.getType());
 		assertNotEquals(allowedMatchingStrategy.get(), NameMatchingStrategy.PARTIAL);
-	}
-
-	@Test
-	public void testSecondaryNameWithSecondaryLanguage() {
-		LanguageType languageType = DemoMatchType.NAME_SEC.getLanguageType();
-		assertEquals(languageType.name(), LanguageType.SECONDARY_LANG.name());
-	}
-
-	@Test
-	public void testSecondaryNameWithUnmatchedLanguage() {
-		LanguageType languageType = DemoMatchType.NAME_SEC.getLanguageType();
-		assertNotEquals(languageType.name(), LanguageType.PRIMARY_LANG.name());
 	}
 
 	@Test

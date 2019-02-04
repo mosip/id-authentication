@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -48,11 +47,9 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
-import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.helper.IdInfoHelper;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 
 @RunWith(SpringRunner.class)
@@ -160,8 +157,8 @@ public class DemoAuthServiceTest {
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
 		DeviceInfo deviceInfo1=null;
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_SEC,
-				MatchingStrategyType.PARTIAL.getType(), 60, matchProperties,deviceInfo));
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR,
+				MatchingStrategyType.PARTIAL.getType(), 60, matchProperties,deviceInfo, "fre"));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
@@ -274,18 +271,18 @@ public class DemoAuthServiceTest {
 		AuthType demoAuthType = null;
 		DeviceInfo deviceInfo1=null;
 		Map<String, Object> matchProperties = new HashMap<>();
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE1_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE2_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE3_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION1_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION2_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION3_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE1,
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo,"fre"));
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE2,
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo,"fre"));
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE3,
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo,"fre"));
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION1,
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo,"fre"));
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION2,
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo,"fre"));
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION3,
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo,"fre"));
 //		listMatchInputsExp.add(new MatchInput(DemoMatchType.PINCODE_SEC, MatchingStrategyType.EXACT.getType(), 100));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
@@ -365,18 +362,18 @@ public class DemoAuthServiceTest {
 		AuthType demoAuthType = null;
 		DeviceInfo deviceInfo1=null;
 		Map<String, Object> matchProperties = new HashMap<>();
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.NAME_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.NAME,
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo,"fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.AGE, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties,deviceInfo));
+				100, matchProperties,deviceInfo,"fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.DOB, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties,deviceInfo));
+				100, matchProperties,deviceInfo,"fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.EMAIL, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties,deviceInfo));
+				100, matchProperties,deviceInfo,"fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.PHONE, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties,deviceInfo));
+				100, matchProperties,deviceInfo,"fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.GENDER, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties,deviceInfo));
+				100, matchProperties,deviceInfo,"fre"));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
@@ -599,6 +596,7 @@ public class DemoAuthServiceTest {
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("mosip.primary.lang-code", "fre");
 		mockenv.setProperty("mosip.secondary.lang-code", "ara");
+		mockenv.setProperty("mosip.supported-languages", "eng,ara,fre");
 		ReflectionTestUtils.setField(actualidInfoHelper, "environment", mockenv);
 		AuthStatusInfo validateBioDetails = demoAuthServiceImpl.getDemoStatus(authRequestDTO, uin, demoIdentity);
 		assertTrue(validateBioDetails.isStatus());
