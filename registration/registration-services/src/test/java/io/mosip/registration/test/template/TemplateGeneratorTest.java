@@ -73,6 +73,7 @@ public class TemplateGeneratorTest {
 
 	@Test
 	public void generateTemplateTest() throws IOException, URISyntaxException, RegBaseCheckedException, QrcodeGenerationException {
+		ApplicationContext.getInstance().loadResourceBundle();
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
 		List<FingerprintDetailsDTO> segmentedFingerprints = new ArrayList<>();
 		segmentedFingerprints.add(new FingerprintDetailsDTO());
