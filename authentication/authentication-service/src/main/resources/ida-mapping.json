@@ -88,10 +88,10 @@
 			"FINGER_Right ThumbFinger_2"
 		],
 		"leftEye": [
-			"IRIS_Left_2"
+			"IRIS_Left_9"
 		],
 		"rightEye": [
-			"IRIS_Right_2"
+			"IRIS_Right_9"
 		],
 		"iris": [
 			"leftEye",
