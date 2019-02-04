@@ -210,7 +210,7 @@ public class DocumentControllerTest {
 	 */
 	@Test
 	public void copyDocumentTest() throws Exception {
-		Mockito.when(service.copyDoucment("POA", "48690172097498", "1234567891")).thenReturn(responseCopy);
+		Mockito.when(service.copyDocument("POA", "48690172097498", "1234567891")).thenReturn(responseCopy);
 		mockMvc.perform(post("/v0.1/pre-registration/copyDocuments").contentType(MediaType.APPLICATION_JSON_VALUE)
 				.param("catCode", "POA").param("sourcePrId", "48690172097498").param("destinationPreId", "1234567891"))
 				.andExpect(status().isOk());
@@ -232,7 +232,7 @@ public class DocumentControllerTest {
 	 */
 	@Test(expected = Exception.class)
 	public void FailurecopyDocumentTest() throws Exception {
-		Mockito.when(service.copyDoucment(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(service.copyDocument(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(Exception.class);
 
 		mockMvc.perform(post("/v0.1/pre-registration/copyDocuments").contentType(MediaType.APPLICATION_JSON_VALUE)
