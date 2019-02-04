@@ -220,7 +220,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * @return true, if successful
 	 */
 	private boolean checkLanguageType(String languageForMatchType, String languageFromReq) {
-		if (languageFromReq == null || languageFromReq.isEmpty() || languageFromReq.equalsIgnoreCase("null")) {
+		if (languageForMatchType == null || languageFromReq == null || languageFromReq.isEmpty() || languageFromReq.equalsIgnoreCase("null")) {
 			return languageForMatchType == null
 					|| getLanguageCode(LanguageType.PRIMARY_LANG).equalsIgnoreCase(languageForMatchType);
 		} else {
