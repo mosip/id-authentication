@@ -10,7 +10,6 @@ public class UserDto {
 	}
 
 	public UserDto() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public String getUserName() {

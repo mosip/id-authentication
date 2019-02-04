@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="uinUpdateRoot" prefHeight="500.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UpdateUINController">
+	<children>
+      <ImageView fitHeight="17.0" fitWidth="22.0" layoutX="24.0" layoutY="21.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/Home.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+      <Text layoutX="46.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/uinupdate">
+         <font>
+            <Font size="12.0" />
+         </font></Text>
+		<Label layoutX="461.0" layoutY="19.0" text="%uinupdate" />
+      <Label layoutX="32.0" layoutY="64.0" text="%uin">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <TextField fx:id="uinId" layoutX="32.0" layoutY="79.0" prefHeight="25.0" prefWidth="237.0" promptText="%uin" styleClass="uinUpdateTextFiledStyle">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </TextField>
+      <Label layoutX="32.0" layoutY="120.0" text="%selecttoupdate">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <CheckBox fx:id="age" layoutX="335.0" layoutY="166.0" mnemonicParsing="false" text="%age/dob">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="name" layoutX="216.0" layoutY="166.0" mnemonicParsing="false" text="%name">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="gender" layoutX="483.0" layoutY="166.0" mnemonicParsing="false" text="%gender">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="parentOrGuardianDetails" layoutX="32.0" layoutY="295.0" mnemonicParsing="false" text="%parent/guardiandetails">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="address" layoutX="618.0" layoutY="166.0" mnemonicParsing="false" text="%address">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="contactDetails" layoutX="764.0" layoutY="166.0" mnemonicParsing="false" text="%contactdetails">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </CheckBox>
+      <Label layoutX="32.0" layoutY="166.0" text="%adult">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="137.0" layoutY="166.0" text="%child">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <Button layoutX="858.0" layoutY="447.0" mnemonicParsing="false" onAction="#submitUINUpdate" styleClass="RegbuttonStyle" text="%submit">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="76.0" layoutY="161.0" prefHeight="15.0" prefWidth="9.0" />
+      <Label id="toggleLabel1" fx:id="toggleLabel1" layoutX="85.0" layoutY="161.0" prefHeight="15.0" prefWidth="9.1" />
+      <HBox fx:id="biometricBox" layoutX="32.0" layoutY="232.0" prefHeight="100.0" prefWidth="900.0">
+         <children>
+            <CheckBox fx:id="biometricException" mnemonicParsing="false" prefHeight="17.0" prefWidth="196.0" text="%biometrics-exception">
+            	<font>
+		            <Font size="12.0" />
+		        </font>
+            </CheckBox>
+            <CheckBox fx:id="biometricFingerprint" mnemonicParsing="false" prefHeight="17.0" prefWidth="214.0" text="%biometrics-fingerprint">
+      	            <font>
+      		            <Font size="12.0" />
+      		        </font>
+            </CheckBox>
+            <CheckBox fx:id="biometricIris" mnemonicParsing="false" prefHeight="17.0" prefWidth="176.0" text="%biometrics-iris">
+            	<font>
+      		            <Font size="12.0" />
+      		        </font>
+            </CheckBox>            
+            <CheckBox fx:id="cnieNumber" mnemonicParsing="false" prefHeight="17.0" prefWidth="278.0" text="%cnie/pin/residencecardnumber">
+            	 <font>
+      		            <Font size="12.0" />
+      		         </font>
+            </CheckBox>
+         </children>
+      </HBox>
+	</children>
+</AnchorPane>

@@ -2,6 +2,7 @@ package io.mosip.kernel.virusscanner.clamav.test;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import static org.mockito.ArgumentMatchers.any;
@@ -58,14 +59,14 @@ public class VirusScannerExceptionTest {
 	}
 
 	@Test(expected = VirusScannerException.class)
-	public void serviceUnavailableForScanFileTest() throws ClamavException {
-		Mockito.doThrow(ClamavException.class).when(clamavClient).scan(file.toPath());
+	public void serviceUnavailableForScanFileTest() throws ClamavException, FileNotFoundException {
+		Mockito.doThrow(ClamavException.class).when(clamavClient).scan(any(FileInputStream.class));
 		virusScannerService.scanFile(file.getAbsolutePath());
 	}
 
 	@Test(expected = VirusScannerException.class)
 	public void serviceUnavailableForScanFolderTest() throws ClamavException {
-		Mockito.doThrow(ClamavException.class).when(clamavClient).scan(folder.toPath(), false);
+		Mockito.doThrow(ClamavException.class).when(clamavClient).scan(any(FileInputStream.class));
 		virusScannerService.scanFolder(folder.getAbsolutePath());
 	}
 	

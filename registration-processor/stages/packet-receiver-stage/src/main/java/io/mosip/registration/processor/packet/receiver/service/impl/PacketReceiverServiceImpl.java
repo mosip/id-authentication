@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -28,6 +30,7 @@ import io.mosip.registration.processor.packet.receiver.service.PacketReceiverSer
 import io.mosip.registration.processor.packet.receiver.stage.PacketReceiverStage;
 import io.mosip.registration.processor.packet.receiver.util.StatusMessage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -37,6 +40,7 @@ import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 import io.vertx.ext.web.RoutingContext;
+import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
 
 /**
  * The Class PacketReceiverServiceImpl.
@@ -55,6 +59,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	/** The Constant LOG_FORMATTER. */
 	public static final String LOG_FORMATTER = "{} - {}";
 
+	private static final String RESEND = "RESEND";
+
 	/** The file manager. */
 	@Autowired
 	private FileManager<DirectoryPathDto, InputStream> fileManager;
@@ -69,17 +75,21 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 	/** The core audit request builder. */
 	@Autowired
-	AuditLogRequestBuilder auditLogRequestBuilder;
+	private AuditLogRequestBuilder auditLogRequestBuilder;
 
 	/** The packet receiver stage. */
 	@Autowired
-	PacketReceiverStage packetReceiverStage;
+	private PacketReceiverStage packetReceiverStage;
 
 	@Value("${registration.processor.packet.ext}")
 	private String extention;
 
 	@Value("${registration.processor.max.file.size}")
 	private String fileSize;
+
+	@Autowired
+	private RegistrationStatusMapUtil registrationStatusMapUtil;
+
 
 	/*
 	 * (non-Javadoc)
@@ -95,6 +105,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 		messageDTO.setIsValid(false);
 		boolean storageFlag = false;
+
 		if (file.getName() != null && file.exists()) {
 			String fileOriginalName = file.getName();
 
@@ -182,7 +193,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		int maxFileSize = Integer.parseInt(fileSize);
 		return maxFileSize * 1024L * 1024;
 	}
-	
+
 	public String getExtention() {
 		return extention;
 	}
@@ -196,6 +207,11 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 */
 	private Boolean isDuplicatePacket(String enrolmentId) {
 		return registrationStatusService.getRegistrationStatus(enrolmentId) != null;
+	}
+	public Boolean isExternalStatusResend(String enrolmentId) {
+		List<RegistrationStatusDto> registrations = registrationStatusService.getByIds(enrolmentId);
+		 RegistrationExternalStatusCode mappedValue = registrationStatusMapUtil.getExternalStatus(registrations.get(0).getStatusCode(),registrations.get(0).getRetryCount());
+		return (mappedValue.toString().equals(RESEND));
 	}
 
 }

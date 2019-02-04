@@ -37,6 +37,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	private String extention;
 	/** The path. */
 
+
 	/** The env. */
 	@Autowired
 	private Environment env;
@@ -170,10 +171,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	 * @see
 	 * io.mosip.idissuance.packet.manager.service.FileManager#getCurrentDirectory()
 	 */
-	/*@Override
-	public String getCurrentDirectory() {
-		return path;
-	}*/
+
 
 	/*
 	 * (non-Javadoc)

@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.stages.uigenerator;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 
+import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
@@ -36,6 +38,8 @@ import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAda
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
+import io.mosip.registration.processor.message.sender.utility.NotificationTemplateType;
+import io.mosip.registration.processor.message.sender.utility.TriggerNotification;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
@@ -45,7 +49,6 @@ import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.Documents;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdRequestDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.RequestDto;
-import io.mosip.registration.processor.stages.uingenerator.util.TriggerNotificationForUIN;
 import io.mosip.registration.processor.stages.uingenerator.util.UinStatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -134,7 +137,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 	/** The trigger notification for UIN. */
 	@Autowired
-	TriggerNotificationForUIN triggerNotificationForUIN;
+	private TriggerNotification triggerNotification;
 
 	private String idRepoApiVersion = "1.0";
 
@@ -181,9 +184,10 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			if ((idResponseDTO.getResponse() != null)) {
 				if (isUinCreate) {
 					demographicDedupeRepository.updateUinWrtRegistraionId(registrationId, uinResponseDto.getUin());
-					triggerNotificationForUIN.triggerNotification(uinResponseDto.getUin(), isUinCreate);
+					triggerNotification.triggerNotification(uinResponseDto.getUin(),
+							NotificationTemplateType.UIN_CREATED);
 				} else {
-					triggerNotificationForUIN.triggerNotification(uinFieldCheck, isUinCreate);
+					triggerNotification.triggerNotification(uinFieldCheck, NotificationTemplateType.UIN_UPDATE);
 
 				}
 
@@ -207,6 +211,12 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+		}
+
+		catch (IOException | ParseException | ApisResourceAccessException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, e.getMessage());
+
 		} catch (Exception ex) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage() + ex.getMessage()

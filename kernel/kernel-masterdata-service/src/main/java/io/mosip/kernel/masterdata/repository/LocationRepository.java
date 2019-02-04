@@ -46,7 +46,7 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 	 *
 	 * @param langCode
 	 *            language code
-	 * @param levle
+	 * @param level
 	 *            hierarchy level
 	 * @return List of Locations
 	 * 

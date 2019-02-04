@@ -2,7 +2,7 @@
 
 #### Background
 
-This application can be used to validate several IDs such as UIN,VID,PRID,TokenId etc based on configured business rules.
+This library can be used to validate several IDs such as UIN,VID,PRID,TSPId etc based on configured business rules.
 
 
 #### Solution

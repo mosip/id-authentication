@@ -1,5 +1,8 @@
 export class AuthService {
   isAuthenticated() {
-    return true;
+    if (localStorage.getItem('loggedIn') && localStorage.getItem('loggedIn') === 'true')
+      return true;
+    else
+      return false;
   }
 }

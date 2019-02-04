@@ -26,9 +26,9 @@
 		},
 		"pob": {
 			"value" : "proofOfDateOfBirth"
+		},
+		"individualBiometrics": {
+			"value" : "individualBiometrics"
 		}
-		
-		
-
 	}
 } 

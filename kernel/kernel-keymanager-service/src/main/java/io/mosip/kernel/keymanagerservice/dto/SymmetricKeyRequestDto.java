@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "Class representing a Decrypt Symmetric Key Request")
+@ApiModel(description = "Class representing a Decrypt Request")
 public class SymmetricKeyRequestDto {
 
 	/**
@@ -43,7 +43,7 @@ public class SymmetricKeyRequestDto {
 	/**
 	 * The string encryptedSymmetricKey
 	 */
-	@ApiModelProperty(notes = "Encrypted Symmetric key in BASE64 encoding to decrypt", required = true)
+	@ApiModelProperty(notes = "Encrypted Data in BASE64 encoding to decrypt", required = true)
 	private String encryptedSymmetricKey;
 
 }

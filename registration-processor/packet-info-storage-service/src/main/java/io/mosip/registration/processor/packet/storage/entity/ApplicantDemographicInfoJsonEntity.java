@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.bouncycastle.util.Arrays;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -261,7 +262,7 @@ public class ApplicantDemographicInfoJsonEntity extends BasePacketEntity<Applica
 	 * @return the demographic details
 	 */
 	public byte[] getDemographicDetails() {
-		return demographicDetails;
+		return Arrays.copyOf(demographicDetails, demographicDetails.length);
 	}
 
 	/**
@@ -270,7 +271,7 @@ public class ApplicantDemographicInfoJsonEntity extends BasePacketEntity<Applica
 	 * @param demographicDetails the new demographic details
 	 */
 	public void setDemographicDetails(byte[] demographicDetails) {
-		this.demographicDetails = demographicDetails;
+		this.demographicDetails = demographicDetails!=null?demographicDetails:null;
 	}
 
 }

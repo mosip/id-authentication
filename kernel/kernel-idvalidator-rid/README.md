@@ -1,10 +1,10 @@
 ## kernel-idvalidator-rid
 
- 1- ** [Background & Design](../../design/kernel/kernel-idvalidator-rid.md) **
+[Background & Design](../../docs/design/kernel/kernel-idvalidator.md)
  
 
  
- 2- ** API Documentation **
+[API Documentation]
  
  ```
  mvn javadoc:javadoc
@@ -15,6 +15,19 @@
 
 [application-dev.properties](../../config/application-dev.properties)
 
+```
+#-----------------------------RID Properties---------------------------------------
+# length of the rid
+mosip.kernel.rid.length=29
+# length of the center id
+mosip.kernel.rid.centerid-length=5
+#length of the machine id
+mosip.kernel.rid.machineid-length=5
+# length of the timestamp
+mosip.kernel.rid.timestamp-length=14
+# rid sequence length
+mosip.kernel.rid.sequence-length=5
+```
 
  
  **Maven Dependency**

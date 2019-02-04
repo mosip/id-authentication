@@ -1,9 +1,10 @@
 ## kernel-qrcodegenerator-zxing
-[Background & Design](TBA)
 
-**Api Documentation**
+[Background & Design](../../docs/design/kernel/kernel-qrcodegenerator.md)
 
-[API Documentation <TBA>](TBA)
+
+
+[API Documentation]
 
 ```
 mvn javadoc:javadoc
@@ -70,6 +71,6 @@ QrCodeGenerator<QrVersion> generator;
 
 *QR Code Sample*
 
-![kernel_qrcodesample.png](../../design/_images/kernel_qrcodesample.png)
+![kernel_qrcodesample.png](../../docs/design/kernel/_images/kernel_qrcodesample.png)
 
 

@@ -31,7 +31,7 @@ import io.mosip.registration.processor.core.packet.dto.Applicant;
 import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.Biometric;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
-import io.mosip.registration.processor.core.packet.dto.BiometricExceptionDto;
+import io.mosip.registration.processor.core.packet.dto.BiometricException;
 import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
@@ -216,7 +216,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		Biometric biometric = identity.getBiometric();
 
 		List<FieldValue> osiData = identity.getOsiData();
-		List<BiometricExceptionDto> exceptionBiometrics = identity.getExceptionBiometrics();
+		List<BiometricException> exceptionBiometrics = identity.getExceptionBiometrics();
 		Photograph applicantPhotographData = identity.getApplicantPhotograph();
 		Photograph exceptionPhotographData = identity.getExceptionPhotograph();
 		metaData = identity.getMetaData();
@@ -255,8 +255,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * @param exceptionBiometrics
 	 *            the exception biometrics
 	 */
-	private void saveExceptionBiometricDatas(List<BiometricExceptionDto> exceptionBiometrics) {
-		for (BiometricExceptionDto exp : exceptionBiometrics) {
+	private void saveExceptionBiometricDatas(List<BiometricException> exceptionBiometrics) {
+		for (BiometricException exp : exceptionBiometrics) {
 			BiometricExceptionEntity biometricExceptionEntity = PacketInfoMapper
 					.convertBiometricExceptioDtoToEntity(exp, metaData);
 			biometricExceptionRepository.save(biometricExceptionEntity);
@@ -307,11 +307,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 *            the applicant
 	 */
 	private void saveApplicantBioMetricDatas(Applicant applicant) {
-		saveIris(applicant.getLeftEye());
-		saveIris(applicant.getRightEye());
-		saveFingerPrint(applicant.getLeftSlap());
-		saveFingerPrint(applicant.getRightSlap());
-		saveFingerPrint(applicant.getThumbs());
+		/*
+		 * saveIris(applicant.getLeftEye()); saveIris(applicant.getRightEye());
+		 * saveFingerPrint(applicant.getLeftSlap());
+		 * saveFingerPrint(applicant.getRightSlap());
+		 * saveFingerPrint(applicant.getThumbs());
+		 */
 
 	}
 

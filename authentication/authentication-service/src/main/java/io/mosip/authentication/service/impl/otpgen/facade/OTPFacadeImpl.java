@@ -132,7 +132,7 @@ public class OTPFacadeImpl implements OTPFacade {
 			mosipLogger.info("NA", "NA", "NA", "generated OTP is: " + otp);
 			otpResponseDTO.setStatus("Y");
 			otpResponseDTO.setErr(Collections.emptyList());
-			otpResponseDTO.setTxnId(txnID);
+			otpResponseDTO.setTxnID(txnID);
 			status = "Y";
 			comment = "OTP_GENERATED";
 

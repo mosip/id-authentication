@@ -107,5 +107,45 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_019
 	 */
-	DEMOGRAPHIC_GET_RECORD_FAILED;
+	DEMOGRAPHIC_GET_RECORD_FAILED,
+	
+	/**
+	 * ErrorMessage for PRG_PAM_DOC_018
+	 */
+	INVALID_PRE_ID,
+	
+	/**
+	 * ErrorMessage for PRG_PAM_DOC_018
+	 */
+	INVALID_DOC_CAT_CODE,
+	
+	/**
+	 * ErrorMessage for PRG_PAM_DOC_018
+	 */
+	INVALID_DOC_TYPE_CODE,
+	
+	/**
+	 * ErrorMessage for PRG_PAM_DOC_018
+	 */
+	INVALID_DOC_FILE_FORMAT,
+	
+	/**
+	 * ErrorMessage for PRG_PAM_DOC_018
+	 */
+	INVALID_STATUS_CODE,
+	
+	/**
+	 * ErrorMessage for PRG_PAM_DOC_018
+	 */
+	INVALID_UPLOAD_BY,
+	
+	/**
+	 * ErrorMessage for PRG_PAM_DOC_018
+	 */
+	INVALID_LANG_CODE,
+	
+	/**
+	 * ErrorMessage for PRG_PAM_DOC_018
+	 */
+	INVALID_UPLOAD_DATE_TIME;
 }

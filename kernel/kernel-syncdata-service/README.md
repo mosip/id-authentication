@@ -1,15 +1,38 @@
 ## Sync Data Service 
 
-[Background & Design](https://github.com/mosip/mosip/wiki/Kernel-APIs) 
+[Background & Design](../../docs/design/kernel/kernel-syncservices.md)
+
+[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#3-sync-data)
 
 
-
-** API Documentation **
-
-```
-mvn javadoc:javadoc
+Default Port and Context Path
 
 ```
+server.port=8089
+server.servlet.path=/syncdata
+
+```
+
+localhost:8089/syncdata/swagger-ui.html
+
+
+**Application Properties**
+
+[kernel-syncdata-service-dev.properties](../../config/kernel-syncdata-service-dev.properties)
+
+```
+mosip.kernel.syncdata.global-config-file=global-config.json
+mosip.kernel.syncdata.registration-center-config-file=registration-center-config.json
+
+javax.persistence.jdbc.driver=org.postgresql.Driver
+javax.persistence.jdbc.url=jdbc:postgresql://localhost:8888/mosip_master
+javax.persistence.jdbc.user=dbuser
+javax.persistence.jdbc.password=dbpwd
+
+
+```
+
+
 ** 1. Global config **
 
 * This API takes care of the overall configuration of the application.   
@@ -38,23 +61,20 @@ Status: 200 OK
 
 ```
 {
-  "uinLength": 24,
-  "numberOfWrongAttemptsForOtp": 5,
-  "accountFreezeTimeoutInHours": 10,
-  "mobilenumberlength": 10,
-  "archivalPolicy": "arc_policy_2",
-  "tokenIdLength": 23,
-  "restrictedNumbers": [
-    "8732",
-    "321",
-    "65"
-  ],
-  "registrationCenterId": "KDUE83CJ3",
-  "machineId": "MCBD3UI3",
-  "tspIdLength": 24,
-  "otpTimeOutInMinutes": 2,
-  "pridLength": 32,
-  "vidLength": 32
+		"archivalPolicy":"arc_policy_2",
+		"otpTimeOutInMinutes":2,
+		"numberOfWrongAttemptsForOtp":5,
+		"accountFreezeTimeoutInHours":10, 
+		"uinLength":24,
+		"vidLength":32,
+		"pridLength":32,
+		"tokenIdLength":23,
+		"tspIdLength":24,
+		"registrationCenterId":"KDUE83CJ3",
+		"machineId":"MCBD3UI3",
+		"mobilenumberlength":10,
+		"restrictedNumbers":"8732,321,65",
+		"languagesSupported":"eng,ara,fra"
 }
 
 ```
@@ -88,29 +108,33 @@ Status: 200 OK
 
 ```
 {
-  "smsNotificationTemplateRegCorrection": "OTP for your request is $otp",
-  "keyValidityPeriodPreRegPack": 3,
-  "automatedSyncFrequency": {
-    "policySyncServerToClient": 3,
-    "clientStateServerToClient": 3,
-    "userRoleRightsServerToClient": 3
-  },
-  "defaultDOB": "1-Jan",
-  "faceRetry": 12,
-  "loginsequence": {
-    "1": "OTP",
-    "2": "Password",
-    "3": "Fingerprint"
-  },
-  "noOfFingerprintAuthToOnboardUser": 10,
-  "languages": {
-    "primary": "arabic",
-    "secondary": "french"
-  },
-  "smsNotificationTemplateLostUIN": "OTP for your request is $otp",
-  "supervisorAuthMode": "IRIS",
-  "smsNotificationTemplateNewReg": "OTP for your request is $otp",
-  "noOfIrisAuthToOnboardUser": 10
+		"loginMode":"bootable_dongle",
+		"fingerprintQualityThreshold":120,
+		"fingerprintRetryAttempts":234,
+		"irisQualityThreshold":25,
+		"irisRetryAttempts":10,
+		"faceQualityThreshold":25,
+		"faceRetry":12,
+		"supervisorVerificationRequiredForExceptions":true,
+		"operatorRegSubmissionMode":"fingerprint",
+		"supervisorAuthMode":"IRIS",
+		"passwordExpiryDurationInDays":3,
+		"keyValidityPeriodRegPack":3,
+		"keyValidityPeriodPreRegPack":3,
+		"retentionPeriodAudit":3,
+		"automaticSyncFreqServerToClient":25,
+		"blockRegistrationIfNotSynced":10,
+		"maxDurationRegPermittedWithoutMasterdataSyncInDays":10,
+		"maxDurationWithoutMasterdataSyncInDays":7,
+		"modeOfNotifyingIndividual":"mobile",
+		"noOfFingerprintAuthToOnboardUser":10,
+		"noOfIrisAuthToOnboardUser":10,
+		"multifactorauthentication":true,
+		"gpsDistanceRadiusInMeters":3,
+		"officerAuthType":"password",
+		"supervisorAuthType":"password",
+		"defaultDOB":"1-Jan",
+		"maxDocSizeInMB":150
 }
 
 ```

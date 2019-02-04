@@ -21,9 +21,17 @@ spec:
         image: docker-registry.mosip.io:5000/kernel-config-server
         ports:
         - containerPort: 51000
+        volumeMounts:
+        - name: config-server-secret-volume
+          mountPath: "/root/.ssh"
         imagePullPolicy: Always
       imagePullSecrets:
       - name: pvt-reg-cred
+      volumes:
+        - name: config-server-secret-volume
+          secret:
+            secretName: config-server-secret
+            defaultMode: 256
 ---
 apiVersion: v1
 kind: Service

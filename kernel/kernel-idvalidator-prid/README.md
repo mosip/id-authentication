@@ -1,10 +1,10 @@
 ## kernel-idvalidator-prid
 
- 1- ** [Background & Design](../../design/kernel/kernel-idvalidator-prid.md) **
+[Background & Design](../../docs/design/kernel/kernel-idvalidator.md)
  
 
  
- 2- ** API Documentation **
+[API Documentation]
  
  ```
  mvn javadoc:javadoc
@@ -15,7 +15,27 @@
 
 [application-dev.properties](../../config/application-dev.properties)
 
+ ```
+ #-----------------------------PRID Properties------------------------------------
+# length of the prid
+mosip.kernel.prid.length=14
+
+# Upper bound of number of digits in sequence allowed in id. For example if
+# limit is 3, then 12 is allowed but 123 is not allowed in id (in both
+# ascending and descending order)
+mosip.kernel.prid.sequence-limit=3
+
+# Number of digits in repeating block allowed in id. For example if limit is 2,
+# then 4xxx4 is allowed but 48xxx48 is not allowed in id (x is any digit)
+mosip.kernel.prid.repeating-block-limit=3
+
+
+# Lower bound of number of digits allowed in between two repeating digits in
+# id. For example if limit is 2, then 11 and 1x1 is not allowed in id (x is any
+# digit)
+mosip.kernel.prid.repeating-limit=2
  
+ ```
  
  **Maven Dependency**
  

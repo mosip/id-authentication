@@ -3,6 +3,7 @@ package io.mosip.registration.processor.packet.storage.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import java.util.Arrays;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -201,7 +202,7 @@ public class ApplicantDocumentEntity extends BasePacketEntity<ApplicantDocumentP
 	 * @return the doc store
 	 */
 	public byte[] getDocStore() {
-		return this.docStore;
+		return Arrays.copyOf(this.docStore,this.docStore.length);
 	}
 
 	/**
@@ -211,7 +212,7 @@ public class ApplicantDocumentEntity extends BasePacketEntity<ApplicantDocumentP
 	 *            the new doc store
 	 */
 	public void setDocStore(byte[] docStore) {
-		this.docStore = docStore;
+		this.docStore = docStore!=null?docStore:null;
 	}
 
 	/**

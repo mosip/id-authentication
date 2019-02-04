@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
  *
  */
 @Configuration
-@EntityScan("io.mosip.kernel.auditmanager.model")
+@EntityScan("io.mosip.kernel.auditmanager.entity")
 @ComponentScan("io.mosip.kernel.auditmanager")
 public class AuditConfig {
 

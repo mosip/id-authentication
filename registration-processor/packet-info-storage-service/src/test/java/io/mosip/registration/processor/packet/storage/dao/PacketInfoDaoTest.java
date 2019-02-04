@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -118,6 +119,11 @@ public class PacketInfoDaoTest {
 		applicantPhotoEntity.setExcpPhotoName("ExpPhoto");
 		applicantPhotoEntity.setHasExcpPhotograph(false);
 		applicantPhotoEntity.setImageName("PhotoImageName");
+		String docValue = "dGVzdA";
+		byte[] docStore = docValue.getBytes();
+		applicantPhotoEntity.setExcpPhotoStore(docStore);
+		applicantPhotoEntity.setImageStore(docStore);
+		
 		applicantphotoArray[0] = applicantPhotoEntity;
 
 		List<Object[]> applicantInfo = new ArrayList<>();

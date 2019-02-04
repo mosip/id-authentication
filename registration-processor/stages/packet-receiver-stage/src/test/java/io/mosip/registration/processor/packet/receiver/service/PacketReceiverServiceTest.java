@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -28,6 +30,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.mock.web.MockMultipartFile;
@@ -51,6 +54,8 @@ import io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiv
 import io.mosip.registration.processor.packet.receiver.stage.PacketReceiverStage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
+import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
+import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
@@ -58,6 +63,7 @@ import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
+import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
 
 @RefreshScope
 @RunWith(SpringRunner.class)
@@ -86,6 +92,8 @@ public class PacketReceiverServiceTest {
 	@Mock
 	private Environment env;
 
+	@Mock
+	private RegistrationStatusMapUtil registrationStatusMapUtil;
 
 	@InjectMocks
 	private PacketReceiverService<File, MessageDTO> packetReceiverService = new PacketReceiverServiceImpl(){
@@ -109,6 +117,9 @@ public class PacketReceiverServiceTest {
 	
 	private File mockMultipartFile, invalidPacket, largerFile;
 
+	List<RegistrationStatusDto> registrations = new ArrayList<>();
+	RegistrationStatusDto registrationStatusDto = new RegistrationStatusDto();
+
 	@Before
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
@@ -127,6 +138,14 @@ public class PacketReceiverServiceTest {
 		regEntity.setRegistrationType("new");
 		regEntity.setStatusCode("NEW_REGISTRATION");
 		regEntity.setStatusComment("registration begins");
+
+		registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
+		registrationStatusDto.setRetryCount(2);
+		registrationStatusDto.setRegistrationId("12345");
+		registrations.add(registrationStatusDto);
+		Mockito.when(registrationStatusService.getByIds(ArgumentMatchers.anyString())).thenReturn(registrations);
+		Mockito.when(registrationStatusMapUtil.getExternalStatus(ArgumentMatchers.any(), ArgumentMatchers.any()))
+				.thenReturn(RegistrationExternalStatusCode.RESEND);
 
 		try {
 			ClassLoader classLoader = getClass().getClassLoader();
