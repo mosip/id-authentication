@@ -7,7 +7,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.syncdata.constant.SyncConfigDetailsErrorCode;
-import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
@@ -23,7 +22,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	@Value("${https://integ.mosip.io/ldapmanager}")
+	@Value("${mosip.kernel.syncdata.auth-manager-base-uri}")
 	private String authBaseUrl;
 	
 	@Value("${mosip.kernel.syncdata.auth-manager-roles}")
@@ -36,6 +35,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 			// URI should be called from properties file
 			StringBuilder uriBuilder=new StringBuilder();
 			uriBuilder.append(authBaseUrl).append(authServiceName);
+			System.out.println(uriBuilder.toString());
 			rolesDtos = restTemplate.getForObject(uriBuilder.toString(),
 					RolesResponseDto.class);
 		} catch (RestClientException ex) {
