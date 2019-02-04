@@ -1,9 +1,11 @@
 package io.mosip.registration.service.config.impl;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,11 +32,13 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.dao.SyncTransactionDAO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SyncDataProcessDTO;
+import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
@@ -88,6 +92,9 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 	private JobDataMap jobDataMap = null;
 
+	@Autowired
+	private GlobalParamDAO globalParamDAO;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -98,18 +105,34 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was started");
 
-		/* Get All Jobs */
-		List<SyncJobDef> jobDefs = jobConfigDAO.getAll();
-		jobDefs.forEach(syncJob -> {
+		try {
+			/* Get All Jobs */
+			List<SyncJobDef> jobDefs = getJobs();
 
-			/* All Jobs */
-			syncJobMap.put(syncJob.getId(), syncJob);
+			if (!isNull(jobDefs) && !isEmpty(jobDefs)) {
 
-			/* Active Jobs Map */
-			if (syncJob.getIsActive()) {
-				syncActiveJobMap.put(syncJob.getId(), syncJob);
+				/* Set Job-map and active sync-job-map */
+				setSyncJobMap(jobDefs);
+
+				List<String> names = jobDefs.stream().map(syncJobDef -> {
+					return syncJobDef.getId();
+				}).collect(Collectors.toList());
+
+				/* Get Job Values from Global_Param for all jobs */
+				List<GlobalParam> globalParams = globalParamDAO.getAll(names);
+
+				if (!isNull(globalParams) && !isEmpty(globalParams)) {
+
+					/* Update Jobs Using global_Params and refresh the job maps */
+					updateJobsFromGlobalParam(globalParams);
+
+				}
 			}
-		});
+		} catch(RuntimeException runtimeException) {
+			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+
+		}
 
 		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was completed");
@@ -173,9 +196,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 				}
 			} catch (SchedulerException | NoSuchBeanDefinitionException exception) {
-				LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE,
-						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-						exception.getMessage());
+				LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, exception.getMessage());
 
 				try {
 
@@ -183,9 +205,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 					clearScheduler();
 
 				} catch (SchedulerException schedulerException) {
-					LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE,
-							RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-							schedulerException.getMessage());
+					LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+							RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
 				}
 
 				/* Stop Scheduler Factory */
@@ -459,6 +480,65 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 			setSuccessResponse(responseDTO, successMsg, attributes);
 		}
+	}
+
+	private List<SyncJobDef> getJobs() {
+		return jobConfigDAO.getAll();
+	}
+
+	private void setSyncJobMap(List<SyncJobDef> syncJobDefs) {
+		syncJobDefs.forEach(syncJob -> {
+
+			/* All Jobs */
+			syncJobMap.put(syncJob.getId(), syncJob);
+
+			/* Active Jobs Map */
+			if (syncJob.getIsActive()) {
+				syncActiveJobMap.put(syncJob.getId(), syncJob);
+			}
+		});
+	}
+
+	private void updateJobsFromGlobalParam(final List<GlobalParam> globalParams) {
+
+		/* Jobs to be updated */
+		List<SyncJobDef> jobsToBeUpdated = new LinkedList<>();
+
+		globalParams.forEach(globalParam -> {
+
+			/* Check the global param's value is valid or not */
+			if (globalParam.getVal() != null && syncJobMap.containsKey(globalParam.getName())) {
+				SyncJobDef syncJobDef = syncJobMap.get(globalParam.getName());
+
+				/* check whether the job has any new value to be updated */
+				if (syncJobDef.getSyncFrequency() == null
+						|| !(syncJobDef.getSyncFrequency().equals(globalParam.getVal()))
+						|| !(syncJobDef.getIsActive().equals(globalParam.getIsActive()))) {
+
+					syncJobDef.setSyncFrequency(globalParam.getVal());
+					syncJobDef.setIsActive(globalParam.getIsActive());
+					syncJobDef.setUpdBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+					syncJobDef.setUpdDtimes(Timestamp.valueOf(LocalDateTime.now()));
+
+					jobsToBeUpdated.add(syncJobDef);
+
+				}
+
+			}
+		});
+
+		if (!isEmpty(jobsToBeUpdated)) {
+			/* Update The Sync Jobs */
+			List<SyncJobDef> updatedJobs = updateJobs(jobsToBeUpdated);
+
+			/* Refresh The sync job map and sync active job map as we have updated jobs */
+			setSyncJobMap(updatedJobs);
+		}
+
+	}
+
+	private List<SyncJobDef> updateJobs(final List<SyncJobDef> syncJobDefs) {
+		return jobConfigDAO.updateAll(syncJobDefs);
 	}
 
 }
