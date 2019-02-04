@@ -84,21 +84,6 @@
 	-fx-border-color: black;
 	-fx-background-insets: 0.0,0.0 0.0 1.0 0.0;
   	-fx-border-width: 0.0 0.0 1.0 0.0;	
-}	
-#anchor-pane-acknowledgement {
-	-fx-border-style: solid inside;
-	-fx-border-width: 1.0;
-	-fx-border-insets: 5.0;
-	-fx-border-radius: 5.0;
-	-fx-border-color: #A9A9A9;
-}
-
-#ackScreen-anchor-pane{
-	-fx-border-style: solid inside;
-	-fx-border-width: 1.0;
-	-fx-border-insets: 5.0;
-	-fx-border-radius: 5.0;
-	-fx-border-color: #A9A9A9;
 }
 
 #anchor-pane-registration{
@@ -114,6 +99,7 @@
 }
 
 .ackHeading {
+	-fx-font-size: 16.0px;
 	-fx-text-fill: #FF4081;
 	-fx-font-family: Roboto;
 }
@@ -132,6 +118,9 @@
 }
 
 .ackPageButton {
+	-fx-border-width: 1 1 1 1;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;
 	-fx-background-color: #FF4081;
 	-fx-text-fill: white;
 	-fx-font-family: Roboto;

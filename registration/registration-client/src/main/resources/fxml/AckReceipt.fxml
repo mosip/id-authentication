@@ -14,12 +14,8 @@
 		<AnchorPane id="ackScreen-anchor-pane" layoutY="41.0" minHeight="0.0" minWidth="0.0" prefHeight="44.0" prefWidth="1282.0">
 			<children>
 				<Text fx:id="registrationNavLabel" layoutX="55.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/newregistration" wrappingWidth="154.2451171875" />
-				<Label layoutX="552.0" layoutY="11.0" styleClass="ackHeading" text="%registration">
-					<font>
-						<Font name="System Bold" size="18.0" />
-					</font>
-				</Label>
-						<Button fx:id="print" layoutX="1149.0" layoutY="3.0" mnemonicParsing="false" onAction="#printReceipt" styleClass="ackPageButton" text="%print">
+				<Label layoutX="526.0" layoutY="11.0" styleClass="ackHeading" text="%registration" />
+						<Button fx:id="print" layoutX="1159.0" layoutY="3.0" mnemonicParsing="false" onAction="#printReceipt" styleClass="ackPageButton" text="%print">
                <graphic>
                   <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -28,8 +24,8 @@
                   </ImageView>
                </graphic></Button>
             <Text layoutX="14.0" layoutY="31.0" onMouseClicked="#goToHomePageFromRegistration" strokeType="OUTSIDE" strokeWidth="0.0" text="%home" />
-            <Text layoutX="181.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/acknowledgement" />
-            <Button fx:id="sendEmail" layoutX="801.0" layoutY="3.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="176.0" styleClass="ackBackButton" text="%sendEmail">
+            <Text layoutX="172.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/acknowledgement" />
+            <Button fx:id="sendEmail" layoutX="815.0" layoutY="3.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="176.0" styleClass="ackBackButton" text="%sendEmail">
                <graphic>
                   <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -38,7 +34,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="downloadPDF" layoutX="983.0" layoutY="3.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="154.0" styleClass="ackBackButton" text="%downloadPDF">
+            <Button fx:id="downloadPDF" layoutX="998.0" layoutY="3.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="154.0" styleClass="ackBackButton" text="%downloadPDF">
                <graphic>
                   <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                      <image>
