@@ -53,7 +53,7 @@ node {
   */
    dir(branch) {
    pom = readMavenPom file: 'kernel/pom.xml'
-   version = pom.version
+   version = pom.parent.version
    echo version
    }
   rtMaven.tool = 'M2_HOME' // Tool name from Jenkins configuration
