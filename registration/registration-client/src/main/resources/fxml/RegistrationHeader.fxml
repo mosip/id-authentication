@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="RegistrationHeader" prefHeight="32.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.RegistrationHeaderController">
+   <children>
+      <AnchorPane layoutY="7.0" prefHeight="39.0" prefWidth="1290.0">
+         <children>
+            <AnchorPane prefHeight="39.0" prefWidth="196.0">
+               <children>
+                  <Button layoutY="2.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" text="Home" />
+                  <Label layoutX="65.0" layoutY="7.0" text="/  Registration" />
+               </children></AnchorPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="258.0" layoutY="10.0" prefHeight="39.0" prefWidth="196.0">
+         <children>
+            <Label layoutX="59.0" layoutY="2.0" text="Demographic Details" />
+            <ImageView fitHeight="24.0" fitWidth="18.0" layoutX="16.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
+            	<image>
+            		<Image url="@../images/activeDemographicDetails.png" />
+            	</image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="509.0" layoutY="10.0" prefHeight="39.0" prefWidth="196.0">
+         <children>
+            <Label layoutX="42.0" layoutY="2.0" text="Upload Documents" />
+            <ImageView fitHeight="24.0" fitWidth="18.0" layoutX="1.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+            		<Image url="@../images/deactiveUploadDocument.png" />
+            	</image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="734.0" layoutY="10.0" prefHeight="39.0" prefWidth="196.0">
+         <children>
+            <Label layoutX="62.0" layoutY="2.0" text="Biometric Details" />
+            <ImageView fitHeight="24.0" fitWidth="18.0" layoutX="20.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+              		 <Image url="@../images/deactiveBiometriDetails.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="967.0" layoutY="10.0" prefHeight="39.0" prefWidth="196.0">
+         <children>
+            <Label layoutX="79.0" layoutY="2.0" text="Authentication" />
+            <ImageView fitHeight="24.0" fitWidth="18.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+               	<Image url="@../images/deactiveAuthentication.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

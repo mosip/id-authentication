@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
@@ -9,19 +10,60 @@
 <?import javafx.collections.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="documentScan" layoutX="36.0" layoutY="40.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" prefHeight="123.0" prefWidth="389.0" fx:controller="io.mosip.registration.controller.reg.DocumentScanController">
-	<children>
-    	<ComboBox id="poaDocuments" fx:id="poaDocuments" layoutX="10.0" layoutY="10.0" prefWidth="150.0" promptText="%poaDocuments"  styleClass="comboboxStyle" />
-        <VBox id="poaBox" fx:id="poaBox" layoutX="195.0" layoutY="12.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
-		<Button fx:id="poaScanBtn" layoutX="350.0" layoutY="10.0" mnemonicParsing="false" onAction="#scanPoaDocument" text="%scan" styleClass="RegbuttonStyle" />
-		<ComboBox id="poiDocuments" fx:id="poiDocuments" layoutX="10.0" layoutY="70.0" prefWidth="150.0" promptText="%poiDocuments" styleClass="comboboxStyle" />
-		<VBox id="poiBox" fx:id="poiBox" layoutX="195.0" layoutY="72.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
-		<Button fx:id="poiScanBtn" layoutX="350.0" layoutY="72.0" mnemonicParsing="false" onAction="#scanPoiDocument" text="%scan" styleClass="RegbuttonStyle" />
-		<ComboBox id="porDocuments" fx:id="porDocuments" layoutX="10.0" layoutY="130.0" prefWidth="150.0" promptText="%porDocuments" styleClass="comboboxStyle" />
-		<VBox id="porBox" fx:id="porBox" layoutX="195.0" layoutY="130.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
-		<Button fx:id="porScanBtn" layoutX="350.0" layoutY="130.0" mnemonicParsing="false" onAction="#scanPorDocument" text="%scan" styleClass="RegbuttonStyle" />
-		<ComboBox id="dobDocuments" fx:id="dobDocuments" layoutX="10.0" layoutY="190.0" prefWidth="150.0" promptText="%dobDocuments" styleClass="comboboxStyle" />
-		<VBox id="dobBox" fx:id="dobBox" layoutX="195.0" layoutY="190.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
-		<Button fx:id="dobScanBtn" layoutX="350.0" layoutY="190.0" mnemonicParsing="false" onAction="#scanDobDocument" text="%scan" styleClass="RegbuttonStyle" />
-		</children>
+<AnchorPane fx:id="documentScan" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"  styleClass="parentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.DocumentScanController">
+   <children>
+      <AnchorPane layoutY="579.0"  styleClass="registrationFooter">
+         <children>
+            <Button layoutX="176.0" layoutY="5.0" mnemonicParsing="false" onAction="#back" styleClass="backButton" text="Back">
+              <graphic>
+                  	<ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/arrowLeft.png" />
+                                       </image>
+                                    </ImageView>
+                  </graphic>
+                
+            </Button>
+            <Button layoutX="887.0" layoutY="8.0" mnemonicParsing="false" onAction="#skip" styleClass="backButton" text="Skip" />
+            <Button layoutX="1026.0" layoutY="5.0" mnemonicParsing="false" onAction="#next" styleClass="contiuneButton" text="Continue">
+              <graphic>
+                  	<ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/arrowRight.png" />
+                                       </image>
+                                    </ImageView>
+                  </graphic>
+                
+            </Button>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="85.0" layoutY="-3.0" styleClass="paneAtDisplayDocument">
+         <children>
+            <AnchorPane fx:id="documentScan1" layoutX="117.0" layoutY="67.0" >
+               <children>
+                  <ComboBox id="poaDocuments" fx:id="poaDocuments" layoutX="10.0" layoutY="10.0" promptText="%poaDocuments" styleClass="documentCombobox" />
+                  <VBox id="poaBox" fx:id="poaBox" layoutX="195.0" layoutY="12.0" styleClass="scanVBox" />
+                  <Button fx:id="poaScanBtn" layoutX="300.0" layoutY="10.0" mnemonicParsing="false" onAction="#scanPoaDocument" styleClass="documentContentButton" text="%scan" />
+                  <ComboBox id="poiDocuments" fx:id="poiDocuments" layoutX="10.0" layoutY="70.0"  promptText="%poiDocuments" styleClass="documentCombobox" />
+                  <Button fx:id="poiScanBtn" layoutX="300.0" layoutY="72.0" mnemonicParsing="false" onAction="#scanPoiDocument" styleClass="documentContentButton" text="%scan" />
+                  <VBox id="poiBox" fx:id="poiBox" layoutX="195.0" layoutY="70.0"  styleClass="scanVBox" />
+                  <ComboBox id="porDocuments" fx:id="porDocuments" layoutX="10.0" layoutY="130.0"  promptText="%porDocuments" styleClass="documentCombobox" />
+                  <VBox id="porBox" fx:id="porBox" layoutX="195.0" layoutY="130.0"  styleClass="scanVBox" />
+                  <Button fx:id="porScanBtn" layoutX="300.0" layoutY="130.0" mnemonicParsing="false" onAction="#scanPorDocument" styleClass="documentContentButton" text="%scan" />
+                  <ComboBox id="dobDocuments" fx:id="dobDocuments" layoutX="10.0" layoutY="190.0"  promptText="%dobDocuments" styleClass="documentCombobox" />
+                  <VBox id="dobBox" fx:id="dobBox" layoutX="195.0" layoutY="190.0"  styleClass="scanVBox" />
+                  <Button fx:id="dobScanBtn" layoutX="300.0" layoutY="190.0" mnemonicParsing="false" onAction="#scanDobDocument" styleClass="documentContentButton" text="%scan" />
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="199.0" layoutY="540.0" >
+         <children>
+            <Label id="toggleLabel2" fx:id="bioExceptionToggleLabel1" layoutX="342.0" layoutY="10.0" styleClass="toggleButton" text="" />
+            <Label id="toggleLabel1" fx:id="bioExceptionToggleLabel2" layoutX="350.0" layoutY="10.0" styleClass="toggleButton" text="" />
+            <Label layoutX="12.0" layoutY="8.0" text="BiometricEception" />
+         </children>
+      </AnchorPane>
+      <Line endX="950.0" layoutX="199.0" layoutY="520.0" startX="-60.0" />
+   </children>
 </AnchorPane>

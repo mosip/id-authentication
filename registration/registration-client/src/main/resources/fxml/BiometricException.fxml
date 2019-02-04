@@ -12,16 +12,10 @@
 <?import javafx.collections.*?>
 <?import javafx.stage.Screen?>
 
-<AnchorPane fx:id="biometricException" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="578.0" prefWidth="903.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.BiometricExceptionController">
+<AnchorPane fx:id="biometricException" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="647.0" prefWidth="1169.0" styleClass="parentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.BiometricExceptionController">
    <children>
-   <AnchorPane fx:id="biometricExceptionLayout" prefHeight="653.0" prefWidth="835.0" styleClass="anchorPanebgColor,borderStyle">
+   <AnchorPane fx:id="biometricExceptionLayout" layoutX="140.0" prefHeight="503.0" prefWidth="868.0" styleClass="paneAtDisplayDocument">
          <children>
-         <ImageView fx:id="homePageImg" fitHeight="20.0" fitWidth="20.0" layoutX="14.0" layoutY="10.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
-  	 			<image>
-					<Image url="@../images/Home.png" />
-		 		</image>	
-    		</ImageView>    		
-    		<Text id="homeReg" fx:id="homePageLbl" layoutX="44.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="10.0" text="/ Onboard User" />
       <Pane fx:id="leftEyePane" layoutX="462.0" layoutY="63.0" prefHeight="200.0" prefWidth="200.0" styleClass="biometricExceptionPane">
          <children>
             <ImageView fx:id="leftEye" fitHeight="150.0" fitWidth="200.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
@@ -116,10 +110,14 @@
             </ImageView>
          </children>
       </Pane>
-      <Button fx:id="nextBtn" layoutX="773.0" layoutY="510.0" mnemonicParsing="false" onAction="#goToNextPage" styleClass="RegbuttonStyle" text="Next" />
-      <Button fx:id="previousBtn" layoutX="695.0" layoutY="510.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="RegbuttonStyle" text="Previous" />
-            <Label layoutX="58.0" layoutY="34.0" text="%exception" />
+            <Label layoutX="58.0" layoutY="34.0" text="%exception" styleClass="paneHeader" />
  	</children>
 	</AnchorPane>
+      <AnchorPane layoutX="-1.0" layoutY="580.0" prefHeight="54.0" prefWidth="1169.0" styleClass="registrationFooter">
+         <children>
+      <Button  layoutX="165.0" layoutY="10.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="Previous" />
+      <Button  layoutX="1030.0" layoutY="10.0" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="Next" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

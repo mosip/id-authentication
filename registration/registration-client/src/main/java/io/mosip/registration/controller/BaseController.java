@@ -319,6 +319,15 @@ public class BaseController {
 		SessionContext.getInstance().getMapObject().remove("toggleAgeOrDob");
 		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
 		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
+		
+		SessionContext.getInstance().getMapObject().remove("demographicDetail");
+		SessionContext.getInstance().getMapObject().remove("documentScan");
+		SessionContext.getInstance().getMapObject().remove("fingerPrintCapture");
+		SessionContext.getInstance().getMapObject().remove("biometricException");
+		SessionContext.getInstance().getMapObject().remove("faceCapture");
+		SessionContext.getInstance().getMapObject().remove("irisCapture");
+		SessionContext.getInstance().getMapObject().remove("operatorAuthentication");
+
 
 		SessionContext.getInstance().getUserContext().getUserMap()
 				.remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);

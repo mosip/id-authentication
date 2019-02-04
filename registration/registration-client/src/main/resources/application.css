@@ -726,3 +726,226 @@
 .addBorderStyle{
 	-fx-border-color: black;
 }
+/*
+Working on new Css
+*/
+
+
+#loginScreen{
+	-fx-background-image : url('/images/LoginBackGround.png');
+	-fx-background-size: cover, auto;
+	-fx-background-position: left top, center;
+}
+
+#header-section{
+		-fx-background-color : rgb(11, 106, 130,0.3);
+		-fx-pref-height: 30px;
+		-fx-pref-width: 1920px;
+	
+}
+#footer-section{
+		-fx-background-color : rgb(0, 0, 0, 0);
+		-fx-alignment: center;
+		
+}
+
+.loginTopPaneStyle{
+	-fx-pref-height: 10px;
+	-fx-pref-width: 10px;
+}
+
+.loginAnchorPaneStyle{
+	-fx-pref-height: 250px;
+	-fx-pref-width: 400px;
+	-fx-background-color: #FFFFFF;
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: #808080;
+
+}
+
+.loginAnchorPaneExtendedStyle{
+	-fx-pref-height: 300px;
+	-fx-pref-width: 400px;
+	-fx-background-color: #FFFFFF;
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: #808080;
+
+}
+
+
+.loginTextStyle{
+	-fx-pref-height: 35px;
+	-fx-pref-width: 312px;
+	-fx-border-width: 0 0 2 0;
+    -fx-border-color: #FF4081;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.3) , 5, 0.0 , 0 , 1 );
+
+}
+
+.higlightedLoginLable{
+	-fx-font-size: 30.0px;
+}
+.loginSubmitStyle{
+	-fx-pref-height: 35px;
+	-fx-pref-width: 312px;
+	-fx-background-color:#FF4081
+}
+
+.loginOtpValidStyle{
+	-fx-pref-height: 35px;
+	-fx-pref-width: 312px;
+	-fx-alignment: center;
+	-fx-border-width: 2 2 2 2;
+	-fx-border-color: #FF4081
+}
+
+#RegistrationHeader{
+	-fx-background-color:#FFFFFF;
+}
+
+.parentPane{
+	-fx-background-color:#F4F4F4;
+	-fx-pref-height: 794px;
+	-fx-pref-width: 700px;
+}
+
+.paneAtDisplayDemoGraphic{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 800px;	
+	-fx-pref-width: 1100px;
+	
+}
+
+.paneAtDisplayDocument{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 580px;	
+	-fx-pref-width: 1050px;
+	
+}
+
+.registrationFooter{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 60px;	
+	-fx-pref-width: 1290px;
+}
+
+.demoGraphicPaneContentButton{
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: #FF4081;
+	-fx-background-color : #FFFFFF;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;	
+	-fx-pref-width: 150px;
+	 
+}
+
+.documentContentButton{
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: #FF4081;
+	-fx-background-color : #FFFFFF;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;	
+	-fx-pref-width: 120px;
+	 
+}
+
+#demographicDetail .label{
+	-fx-font-size: 12px;
+}
+
+.contiuneButton{
+	-fx-background-color:#FF4081;
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: #FF4081;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;	
+	-fx-pref-width: 120px;
+	
+}
+
+.backButton{
+	-fx-background-color:#FFFFFF;
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: #FF4081;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;	
+	-fx-pref-width: 120px;
+	
+}
+
+.demoGraphicTextField{
+	-fx-pref-height: 10px;	
+	-fx-pref-width: 315px;
+	-fx-border-color: black;
+	-fx-background-insets: 0,0 0 0 0;
+  	-fx-border-width: 0 0 1 0;	
+  	-fx-background-color: white;
+  		
+	
+}
+
+.demoGraphicTextFieldTypeSecond{
+	-fx-pref-height: 10px;	
+	-fx-pref-width: 150px;
+	-fx-border-color: black;
+	-fx-background-insets: 0,0 0 0 0;
+  	-fx-border-width: 0 0 1 0;	
+  	-fx-background-color: white;
+  		
+}
+
+.demographicCombobox{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 0 0 1 0;
+	-fx-border-color: black;
+	-fx-font-size: 14px;
+	-fx-pref-height: 10px;	
+	-fx-pref-width: 150px;
+}
+
+.documentCombobox{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 0 0 1 0;
+	-fx-border-color: black;
+	-fx-font-size: 14px;
+	-fx-pref-height: 10px;	
+	-fx-pref-width: 170px;
+}
+
+.toggleButton{
+	-fx-pref-height: 15px;	
+	-fx-pref-width: 9px;
+}
+
+.fingerPrintPanes{
+	-fx-pref-height: 100px;	
+	-fx-pref-width: 250px;
+	-fx-background-color : #C9C9C9;
+}
+
+.IrisPanes{
+	-fx-pref-height: 200px;	
+	-fx-pref-width: 300px;
+	-fx-background-color : #C9C9C9;
+}
+
+.PhotoCaptureWindow{
+	-fx-pref-height: 100px;	
+	-fx-pref-width: 200px;
+	-fx-background-color : #C9C9C9;	
+}
+
+.qualityBox{
+	-fx-pref-height: 100px;	
+	-fx-pref-width: 210px;	
+}
+
+.qualityBox .label{
+	-fx-text-fill: #000000;
+}
+
+.paneHeader{
+	-fx-pref-height: 28px;	
+	-fx-pref-width: 126px;
+	-fx-text-fill: #E43391;
+}

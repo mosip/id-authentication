@@ -7,40 +7,67 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="461.0" prefWidth="835.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.IrisCaptureController">
+<AnchorPane fx:id="irisCapture" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="parentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.IrisCaptureController">
    <children>
-      <Label layoutX="29.0" layoutY="20.0" text="%irisscan">
-         <font>
-            <Font size="23.0" />
-         </font></Label>
-      <Pane id="leftIrisPane" fx:id="leftIrisPane" layoutX="29.0" layoutY="68.0" onMouseClicked="#enableScan" prefHeight="221.0" prefWidth="253.0" styleClass="irisImagePane">
+      <AnchorPane layoutX="90.0" prefHeight="550.0" prefWidth="966.0" styleClass="paneAtDisplayDocument">
          <children>
-            <ImageView fx:id="leftIrisImage" fitHeight="221.0" fitWidth="253.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/leftIris.png" />
-               </image>
-            </ImageView>
+            <Label layoutX="19.0" layoutY="20.0" styleClass="paneHeader" text="%irisscan">
+               <font>
+                  <Font size="23.0" />
+               </font>
+            </Label>
+            <AnchorPane layoutX="129.0" layoutY="68.0" prefHeight="210.0" prefWidth="255.0" styleClass="IrisPanes">
+               <children>
+                  <Pane id="leftIrisPane" fx:id="leftIrisPane" layoutX="30.0" layoutY="20.0" onMouseClicked="#enableScan">
+                     <children>
+                        <ImageView fx:id="leftIrisImage" fitHeight="200.0" fitWidth="200.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/Eye.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </Pane>
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="600.0" layoutY="68.0" prefHeight="210.0" prefWidth="241.0" styleClass="IrisPanes">
+               <children>
+                  <Pane id="rightIrisPane" fx:id="rightIrisPane" layoutX="22.0" layoutY="20.0" onMouseClicked="#enableScan">
+                     <children>
+                        <ImageView fx:id="rightIrisImage" fitHeight="200.0" fitWidth="200.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/Eye.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </Pane>
+               </children>
+            </AnchorPane>
+            <Button fx:id="scanIris" layoutX="829.0" layoutY="489.0" mnemonicParsing="false" onAction="#scan" styleClass="documentContentButton" text="%scan" />
+            <AnchorPane layoutX="620.0" layoutY="374.0" prefHeight="93.0" prefWidth="231.0">
+               <children>
+                  <Label layoutY="30.0" text="%threshold" />
+                  <Label fx:id="rightIrisThreshold" layoutX="32.0" layoutY="60.0" />
+                  <Label layoutX="162.0" layoutY="30.0" text="%quality" />
+                  <Label fx:id="rightIrisQualityScore" layoutX="179.0" layoutY="60.0" text="-" />
+                  <Label layoutX="90.0" text="Right Iris" />
+               </children>
+            </AnchorPane>
          </children>
-      </Pane>
-      <Label layoutX="29.0" layoutY="300.0" prefHeight="27.0" prefWidth="99.0" text="%quality" />
-      <Label fx:id="leftIrisQualityScore" layoutX="155.0" layoutY="300.0" />
-      <Label layoutX="29.0" layoutY="340.0" text="%threshold" />
-      <Label fx:id="leftIrisThreshold" layoutX="155.0" layoutY="340.0" />
-      <Pane id="rightIrisPane" fx:id="rightIrisPane" layoutX="378.0" layoutY="68.0" onMouseClicked="#enableScan" prefHeight="221.0" prefWidth="253.0" styleClass="irisImagePane">
+      </AnchorPane>
+      <AnchorPane layoutX="2.0" layoutY="574.0" styleClass="registrationFooter">
          <children>
-            <ImageView fx:id="rightIrisImage" fitHeight="221.0" fitWidth="253.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/rightIris.png" />
-               </image>
-            </ImageView>
+            <Button layoutX="117.0" layoutY="4.0" mnemonicParsing="false" onAction="#previousSection" styleClass="backButton" text="Back" />
+            <Button layoutX="1015.0" layoutY="5.0" mnemonicParsing="false" onAction="#nextSection" styleClass="contiuneButton" text="Continue" />
          </children>
-      </Pane>
-      <Label layoutX="378.0" layoutY="300.0" prefHeight="27.0" prefWidth="99.0" text="%quality" />
-      <Label fx:id="rightIrisQualityScore" layoutX="504.0" layoutY="300.0" />
-      <Label layoutX="378.0" layoutY="340.0" text="%threshold" />
-      <Label fx:id="rightIrisThreshold" layoutX="504.0" layoutY="340.0" />
-      <Button fx:id="scanIris" layoutX="29.0" layoutY="379.0" mnemonicParsing="false" onAction="#scan" styleClass="RegbuttonStyle" text="%scan" />
-      <Button fx:id="irisNext" layoutX="770.0" layoutY="510.0" mnemonicParsing="false" onAction="#nextSection" styleClass="RegbuttonStyle" text="%next" />
-      <Button fx:id="irisPrevious" layoutX="690.0" layoutY="510.0" mnemonicParsing="false" onAction="#previousSection" styleClass="RegbuttonStyle" text="%previous" />
+      </AnchorPane>
+      <AnchorPane layoutX="241.0" layoutY="362.0">
+         <children>
+            <Label layoutY="30.0" text="%threshold" />
+            <Label fx:id="leftIrisThreshold" layoutX="30.0" layoutY="60.0" />
+            <Label layoutX="161.0" layoutY="30.0" text="%quality" />
+            <Label fx:id="leftIrisQualityScore" layoutX="177.0" layoutY="60.0" text="-" />
+            <Label layoutX="90.0" text="Left Iris" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

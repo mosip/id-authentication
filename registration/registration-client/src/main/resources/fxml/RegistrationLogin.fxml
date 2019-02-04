@@ -12,128 +12,99 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane id="loginScreen" styleClass="loginBorderPaneStyle" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.auth.LoginController">
+<BorderPane id="loginScreen" prefHeight="553.0" prefWidth="523.0" styleClass="loginBorderPaneStyle" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.auth.LoginController">
 	<top>
-		<HBox id="header-section">
+		<HBox id="header-section" prefHeight="27.0" prefWidth="523.0">
 			<children>
-				<Label id="header-text" text="%aboutus">
-					<HBox.margin>
-						<Insets left="35.0" top="10.0" />
-					</HBox.margin>
-				</Label>
-				<Label id="header-text" text="%faq">
-					<HBox.margin>
-						<Insets left="40.0" top="10.0" />
-					</HBox.margin>
-				</Label>
-				<Label id="header-text" text="%contact">
-					<HBox.margin>
-						<Insets left="40.0" top="10.0" />
-					</HBox.margin>
-				</Label>
-			</children>
-		</HBox>
-	</top>
-	<left>
-		<AnchorPane styleClass="loginLeftPaneStyle">
+				<AnchorPane prefHeight="27.0" prefWidth="71.0">
 			<children>
-				<Label id="content" layoutY="33.0" styleClass="content-section" wrapText="true" AnchorPane.topAnchor="20.0">
-					<font>
-						<Font size="14.0" />
-					</font>
-					<padding>
-						<Insets left="20.0" />
-					</padding>
-				</Label>
-				<ImageView fitHeight="353.0" fitWidth="349.0" layoutX="20.0" layoutY="56.0" AnchorPane.bottomAnchor="48.0" AnchorPane.topAnchor="65.0">
+				<ImageView fitHeight="34.0" fitWidth="30.0" layoutX="20.0" layoutY="2.0">
 					<image>
 						<Image url="@../images/logo-final.png" />
 					</image>
-					<BorderPane.margin>
-						<Insets left="10.0" />
-					</BorderPane.margin>
-					<VBox.margin>
-						<Insets left="20.0" top="40.0" />
-					</VBox.margin>
 				</ImageView>
 			</children>
 			<BorderPane.margin>
 				<Insets left="20.0" />
 			</BorderPane.margin>
 		</AnchorPane>
-	</left>
-	<center>
-		<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="loginCenterPaneStyle">
+			</children>
+		</HBox>
+	</top>
+	<right>
+		<AnchorPane layoutX="10" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="489.0">
 			<children>
-				<Label layoutX="106.0" layoutY="81.0" text="%registrationlogin" AnchorPane.leftAnchor="106.0" AnchorPane.topAnchor="81.0">
-					<font>
-						<Font size="23.0" />
-					</font>
-				</Label>
-            <AnchorPane fx:id="userIdPane" layoutX="108.0" layoutY="153.0" styleClass="loginAnchorPaneStyle">
+            <AnchorPane fx:id="userIdPane" layoutX="37.0" layoutY="188.0" styleClass="loginAnchorPaneStyle" visible="true">
                <children>
-                 <Label layoutY="-35.0" text="%withusername" />
-      			 <TextField fx:id="userId" layoutY="1.0" promptText="%withusername" styleClass="loginTextStyle" AnchorPane.leftAnchor="0.0" />
-                  <Button layoutX="130.0" layoutY="75.0" mnemonicParsing="false" onAction="#validateUserId" styleClass="loginSubmitStyle" text="%submit" />
+               <Label layoutX="57.0" layoutY="41.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="41.0" />
+                 <Label layoutX="57.0" layoutY="80.0" text="%withusername" />
+      			 <TextField fx:id="userId" layoutX="57.0" layoutY="116.0" promptText="%username" styleClass="loginTextStyle" AnchorPane.leftAnchor="53.0" />
+                  <Button layoutX="52.0" layoutY="171.0" mnemonicParsing="false" onAction="#validateUserId" styleClass="loginSubmitStyle" text="%submit" />
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="credentialsPane" layoutX="108.0" layoutY="153.0" styleClass="loginAnchorPaneStyle" visible="false">
+            <AnchorPane fx:id="credentialsPane" layoutX="37.0" layoutY="188.0" styleClass="loginAnchorPaneExtendedStyle" visible="false">
                <children>
-               		<Label layoutY="-35.0" text="%withpword" />
-      				<PasswordField fx:id="password" layoutX="2.0" promptText="%withpword" styleClass="loginTextStyle" AnchorPane.leftAnchor="2.0" />
-      				<Button layoutX="130.0" layoutY="75.0" mnemonicParsing="false" onAction="#validateCredentials" styleClass="loginSubmitStyle" text="%submit" />
+                <Label layoutX="57.0" layoutY="41.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="41.0" />
+               		<Label layoutX="57.0" layoutY="80.0" text="%withpword" />
+      				<PasswordField fx:id="password" layoutX="57.0" layoutY="116.0" promptText="%password" styleClass="loginTextStyle" AnchorPane.leftAnchor="53.0" />
+      				<Button layoutX="52.0" layoutY="171.0" mnemonicParsing="false" onAction="#validateCredentials" styleClass="loginSubmitStyle" text="%submit" />
+                  <Button layoutX="52.0" layoutY="222.0" mnemonicParsing="false" styleClass="loginSubmitStyle" text="Reset  Password" />
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="otpPane" layoutX="108.0" layoutY="153.0" styleClass="loginAnchorPaneStyle" visible="false">
+            <AnchorPane fx:id="otpPane" layoutX="-6.0" layoutY="151.0" prefHeight="297.0" prefWidth="366.0" styleClass="loginAnchorPaneExtendedStyle" visible="false">
                <children>
-               	  <Label layoutY="-35.0" text="%withotp" />
-               	  <PasswordField fx:id="otp" layoutX="2.0" promptText="%enterotp" styleClass="loginTextStyle" AnchorPane.leftAnchor="2.0" />
-                  <Button fx:id="getOTP" layoutY="75.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginSubmitStyle" text="%getotp" />
+             	  <Label layoutX="57.0" layoutY="21.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="21.0" />
+               	  <Label layoutX="57.0" layoutY="64.0" text="%withotp" />
+               	  <PasswordField fx:id="otp" layoutX="57.0" layoutY="96.0" promptText="%enterotp" styleClass="loginTextStyle" AnchorPane.leftAnchor="53.0" />
+                  <Button fx:id="getOTP" layoutX="53.0" layoutY="144.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginSubmitStyle" text="%getotp" />
                   <Button fx:id="resend" layoutY="75.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginSubmitStyle" text="%resendotp" visible="false" />
-                  <Button layoutX="130.0" layoutY="75.0" mnemonicParsing="false" onAction="#validateOTP" styleClass="loginSubmitStyle" text="%submit" />
-                  <Label fx:id="otpValidity" layoutY="145.0" styleClass="loginOtpValidStyle" text="%otp_validity_in_mins" />
+                  <Button layoutX="53.0" layoutY="195.0" mnemonicParsing="false" onAction="#validateOTP" styleClass="loginSubmitStyle" text="%submit" />
+                  <Label fx:id="otpValidity" layoutX="54.0" layoutY="245.0" styleClass="loginOtpValidStyle" text="%otp_validity_in_mins" />
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="fingerprintPane" layoutX="108.0" layoutY="153.0" styleClass="loginAnchorPaneStyle" visible="false">
+            <AnchorPane fx:id="fingerprintPane" layoutX="72.0" layoutY="220.0" prefHeight="192.0" prefWidth="207.0" styleClass="loginAnchorPaneStyle" visible="false">
                <children>
-               	  <Label layoutY="-35.0" text="%withfingerprint" />
-                  <Button fx:id="submit" layoutX="130.0" layoutY="75.0" mnemonicParsing="false" onAction="#validateFingerPrint" styleClass="loginSubmitStyle" text="%submit" />
-                  <ImageView fitHeight="99.0" fitWidth="92.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true">
+              	 <Label layoutX="57.0" layoutY="41.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="41.0" />
+               	  <Label layoutX="57.0" layoutY="75.0" text="%withfingerprint" />
+                  <Button fx:id="submit" layoutX="57.0" layoutY="170.0" mnemonicParsing="false" onAction="#validateFingerPrint" styleClass="loginSubmitStyle" text="%submit" />
+                  <ImageView fitHeight="59.0" fitWidth="53.0" layoutX="180.0" layoutY="102.0" pickOnBounds="true" preserveRatio="true">
       					<image>
-      						<Image url="@../images/fingerprint.jpg" />
+      						<Image url="@../images/FingerprintScan.png" />
       					</image>
       				</ImageView>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="irisPane" layoutX="108.0" layoutY="153.0" styleClass="loginAnchorPaneStyle" visible="false">
+            <AnchorPane fx:id="irisPane" layoutX="55.0" layoutY="231.0" prefHeight="242.0" prefWidth="379.0" styleClass="loginAnchorPaneStyle" visible="false">
                <children>
-                 <Label layoutY="-35.0" text="%withiris" />
-                 <Button layoutX="130.0" layoutY="75.0" mnemonicParsing="false" onAction="#validateIris" styleClass="loginSubmitStyle" text="%submit" />
-                  <ImageView fitHeight="99.0" fitWidth="92.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true">
+               <Label layoutX="57.0" layoutY="41.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="41.0" />
+                 <Label layoutX="57.0" layoutY="75.0" text="%withiris" />
+                 <Button layoutX="57.0" layoutY="174.0" mnemonicParsing="false" onAction="#validateIris" styleClass="loginSubmitStyle" text="%submit" />
+                  <ImageView fitHeight="59.0" fitWidth="53.0" layoutX="180.00" layoutY="102.0" pickOnBounds="true" preserveRatio="true">
       					<image>
-      						<Image url="@../images/iris.jpg" />
+      						<Image url="@../images/Eyescan.png" />
       					</image>
       				</ImageView>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="facePane" layoutX="108.0" layoutY="153.0" styleClass="loginAnchorPaneStyle" visible="false"> 
+            <AnchorPane fx:id="facePane" layoutX="55.0" layoutY="232.0" styleClass="loginAnchorPaneStyle" visible="false"> 
                <children>
-                  <Label layoutY="-35.0" text="%withface" />
-                  <Button layoutX="130.0" layoutY="75.0" mnemonicParsing="false" onAction="#validateFace" styleClass="loginSubmitStyle" text="%submit" />
-                  <ImageView fitHeight="99.0" fitWidth="92.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true">
+               <Label layoutX="57.0" layoutY="41.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="41.0" />
+                  <Label layoutX="57.0" layoutY="75.0" text="%withface" />
+                  <Button layoutX="57.0" layoutY="174.0" mnemonicParsing="false" onAction="#validateFace" styleClass="loginSubmitStyle" text="%submit" />
+                  <ImageView fitHeight="59.0" fitWidth="53.0" layoutX="180.0" layoutY="102.0" pickOnBounds="true" preserveRatio="true">
       					<image>
-      						<Image url="@../images/face.jpg" />
+      						<Image url="@../images/FaceScan.png" />
       					</image>
       				</ImageView>
                </children>
             </AnchorPane>
 			</children>
 		</AnchorPane>
-	</center>
-	<bottom>
+	</right>
+   <bottom>
 		<HBox id="footer-section">
 			<children>
-				<Label text="%mosip.io" textAlignment="CENTER" />
+				<Label text="%mosip.io" />
 			</children>
 		</HBox>
 	</bottom>

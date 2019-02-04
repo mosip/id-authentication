@@ -8,51 +8,94 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="fingerPrintCapturePane" prefHeight="461.0" prefWidth="835.0" styleClass="anchorPanebgColor" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.FingerPrintCaptureController">
+<AnchorPane fx:id="fingerPrintCapture" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="parentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.FingerPrintCaptureController">
    <children>
-      <AnchorPane fx:id="leftHandPalmPane" layoutX="14.0" layoutY="75.0" prefHeight="227.0" prefWidth="259.0">
+      <AnchorPane fx:id="fingerPrintCapturePane" layoutX="74.0" styleClass="paneAtDisplayDocument">
          <children>
-            <ImageView fx:id="leftHandPalmImageview" fitHeight="221.0" fitWidth="253.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/leftHandPalm.PNG" />
-               </image></ImageView>
+            <AnchorPane layoutX="76.0" layoutY="28.0">
+               <children>
+                  <Label fx:id="duplicateCheckLbl" layoutY="501.0" />
+                  <AnchorPane fx:id="thumbPane" layoutX="594.0" layoutY="37.0" styleClass="fingerPrintPanes">
+                     <children>
+                        <ImageView fx:id="thumbImageview" fitHeight="221.0" fitWidth="253.0" layoutX="3.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/thumbs.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+                  <Button fx:id="scanBtn" layoutX="768.0" layoutY="490.0" mnemonicParsing="false" onAction="#scan" styleClass="documentContentButton" text="%scan" />
+                  <AnchorPane fx:id="leftHandPalmPane" layoutX="11.0" layoutY="37.0" styleClass="fingerPrintPanes">
+                     <children>
+                        <ImageView fx:id="leftHandPalmImageview" fitHeight="221.0" fitWidth="253.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/leftHand.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="rightHandPalmPane" layoutX="296.0" layoutY="37.0" styleClass="fingerPrintPanes">
+                     <children>
+                        <ImageView fx:id="rightHandPalmImageview" fitHeight="221.0" fitWidth="253.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/rightHand.PNG" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+                  <Label layoutX="16.0" styleClass="paneHeader" text="%fingerprint" />
+                  <AnchorPane layoutX="40.0" layoutY="370.0" styleClass="qualityBox">
+                     <children>
+                        <Label layoutX="140.0" layoutY="40.0" text="%quality" />
+                        <Label fx:id="leftSlapQualityScore" layoutX="157.0" layoutY="66.0" text="-" />
+                        <Label layoutY="40.0" text="%threshold" />
+                        <Label fx:id="leftSlapThresholdScoreLbl" layoutX="20.0" layoutY="65.0" />
+                        <Label layoutX="60.0" text="%leftHand" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="330.0" layoutY="370.0" styleClass="qualityBox">
+                     <children>
+                        <Label layoutX="160.0" layoutY="40.0" text="%quality" />
+                        <Label fx:id="rightSlapQualityScore" layoutX="180.0" layoutY="66.0" text="-" />
+                        <Label layoutY="40.0" text="%threshold" />
+                        <Label fx:id="rightSlapThresholdScoreLbl" layoutX="32.0" layoutY="66.0" />
+                        <Label layoutX="70.0" text="%rightHand" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="630.0" layoutY="370.0" styleClass="qualityBox">
+                     <children>
+                        <Label layoutY="40.0" text="%threshold" />
+                        <Label fx:id="thumbsThresholdScoreLbl" layoutX="31.0" layoutY="66.0" />
+                        <Label layoutX="141.0" layoutY="40.0" text="%quality" />
+                        <Label fx:id="thumbsQualityScore" layoutX="160.0" layoutY="66.0" text="-" />
+                        <Label layoutX="70.0" text="%thumbs" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
          </children>
       </AnchorPane>
-      <Label layoutX="20.0" layoutY="38.0" text="%fingerprint" />
-      <AnchorPane fx:id="rightHandPalmPane" layoutX="288.0" layoutY="75.0" prefHeight="227.0" prefWidth="259.0">
+      <AnchorPane layoutX="-3.0" layoutY="581.0" styleClass="registrationFooter">
          <children>
-            <ImageView fx:id="rightHandPalmImageview" fitHeight="221.0" fitWidth="253.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/rightHandPalm.PNG" />
-               </image></ImageView>
+            <Button layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="Back">
+             <graphic>
+                  	<ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/arrowLeft.png" />
+                                       </image>
+                                    </ImageView>
+                  </graphic>
+            </Button>
+            <Button layoutX="991.0" layoutY="4.0" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="Continue">
+            <graphic>
+                  	<ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/arrowRight.png" />
+                                       </image>
+                                    </ImageView>
+                  </graphic>
+            </Button>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="thumbPane" layoutX="559.0" layoutY="75.0" prefHeight="227.0" prefWidth="259.0">
-         <children>
-            <ImageView fx:id="thumbImageview" fitHeight="221.0" fitWidth="253.0" layoutX="3.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/bothThumb.PNG" />
-               </image></ImageView>
-         </children>
-      </AnchorPane>
-      <Button fx:id="scanBtn" layoutX="17.0" layoutY="381.0" mnemonicParsing="false" onAction="#scan" styleClass="RegbuttonStyle" text="%scan">
-      </Button>
-      <Button fx:id="nextBtn" layoutX="763.0" layoutY="500.0" mnemonicParsing="false" onAction="#goToNextPage" styleClass="RegbuttonStyle" text="%next">
-      </Button>
-      <Label layoutX="20.0" layoutY="308.0" text="%quality" />
-      <Label layoutX="20.0" layoutY="335.0" text="%threshold" />
-      <Label layoutX="288.0" layoutY="336.0" text="%threshold" />
-      <Label layoutX="288.0" layoutY="309.0" text="%quality" />
-      <Label layoutX="559.0" layoutY="336.0" text="%threshold" />
-      <Label layoutX="559.0" layoutY="309.0" text="%quality" />
-      <Button fx:id="previousBtn" layoutX="684.0" layoutY="500" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="RegbuttonStyle" text="%previous">
-      </Button>
-      <Label fx:id="leftSlapQualityScore" layoutX="137.0" layoutY="309.0" />
-      <Label fx:id="leftSlapThresholdScoreLbl" layoutX="137.0" layoutY="336.0" />
-      <Label fx:id="rightSlapQualityScore" layoutX="405.0" layoutY="308.0" />
-      <Label fx:id="rightSlapThresholdScoreLbl" layoutX="405.0" layoutY="335.0" />
-      <Label fx:id="thumbsQualityScore" layoutX="674.0" layoutY="309.0" />
-      <Label fx:id="thumbsThresholdScoreLbl" layoutX="674.0" layoutY="335.0" />
-      <Label fx:id="duplicateCheckLbl" layoutX="14.0" layoutY="434.0" prefHeight="27.0" prefWidth="533.0" />
    </children>
 </AnchorPane>
