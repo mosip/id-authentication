@@ -86,5 +86,5 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 				RegistrationConstants.APPLICATION_ID, "Get All Global Params");
 
 		return globalParamRepository.findByNameIn(names);
-	}
+		}
 }
