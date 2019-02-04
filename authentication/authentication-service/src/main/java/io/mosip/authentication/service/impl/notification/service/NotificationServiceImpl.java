@@ -37,7 +37,7 @@ import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
-import io.mosip.authentication.service.impl.indauth.service.demo.PinAuthType;
+import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
 import io.mosip.authentication.service.impl.otpgen.facade.OTPFacadeImpl;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.authentication.service.integration.NotificationManager;

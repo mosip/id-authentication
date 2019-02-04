@@ -17,8 +17,8 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.service.PinAuthService;
 import io.mosip.authentication.service.entity.StaticPinEntity;
 import io.mosip.authentication.service.helper.IdInfoHelper;
-import io.mosip.authentication.service.impl.indauth.service.demo.PinAuthType;
-import io.mosip.authentication.service.impl.indauth.service.demo.PinMatchType;
+import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
+import io.mosip.authentication.service.impl.indauth.service.pin.PinMatchType;
 import io.mosip.authentication.service.repository.StaticPinRepository;
 
 /**

@@ -1,13 +1,13 @@
 package io.mosip.authentication.service.impl.indauth.service.bio;
 
+import static io.mosip.authentication.core.spi.indauth.match.AuthType.setOf;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.core.env.Environment;
 
@@ -245,18 +245,6 @@ public enum BioAuthType implements AuthType {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * io.mosip.authentication.core.spi.indauth.match.AuthType#isAssociatedMatchType
-	 * (io.mosip.authentication.core.spi.indauth.match.MatchType)
-	 */
-	@Override
-	public boolean isAssociatedMatchType(MatchType matchType) {
-		return associatedMatchTypes.contains(matchType);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
 	 * io.mosip.authentication.core.spi.indauth.match.AuthType#isAuthTypeEnabled(io.
 	 * mosip.authentication.core.dto.indauth.AuthRequestDTO,
 	 * io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher)
@@ -307,16 +295,6 @@ public enum BioAuthType implements AuthType {
 	@Override
 	public Set<MatchType> getAssociatedMatchTypes() {
 		return Collections.unmodifiableSet(associatedMatchTypes);
-	}
-
-	/**
-	 * Sets the of.
-	 *
-	 * @param supportedMatchTypes the supported match types
-	 * @return the sets the
-	 */
-	public static Set<MatchType> setOf(MatchType... supportedMatchTypes) {
-		return Stream.of(supportedMatchTypes).collect(Collectors.toSet());
 	}
 
 	/*

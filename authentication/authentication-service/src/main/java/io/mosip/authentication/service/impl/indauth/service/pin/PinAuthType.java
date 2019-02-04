@@ -1,24 +1,21 @@
-package io.mosip.authentication.service.impl.indauth.service.demo;
+package io.mosip.authentication.service.impl.indauth.service.pin;
+
+import static io.mosip.authentication.core.spi.indauth.match.AuthType.setOf;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.MatchInfo;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
 
 /**
@@ -96,28 +93,6 @@ public enum PinAuthType implements AuthType {
 		return type;
 	}
 
-	/**
-	 * Sets the of.
-	 *
-	 * @param supportedMatchTypes the supported match types
-	 * @return the sets the
-	 */
-	public static Set<MatchType> setOf(MatchType... supportedMatchTypes) {
-		return Stream.of(supportedMatchTypes).collect(Collectors.toSet());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.authentication.service.impl.indauth.builder.AuthType#
-	 * isAssociatedMatchType(io.mosip.authentication.service.impl.indauth.service.
-	 * demo.MatchType)
-	 */
-	@Override
-	public boolean isAssociatedMatchType(MatchType matchType) {
-		return associatedMatchTypes.contains(matchType);
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -139,44 +114,7 @@ public enum PinAuthType implements AuthType {
 	@Override
 	public Optional<String> getMatchingStrategy(AuthRequestDTO authReq,
 			String languageInfoFetcher) {
-		return getMatchInfo(authReq, languageInfoFetcher, MatchInfo::getMatchingStrategy);
-
-	}
-
-	/**
-	 * Gets the match info.
-	 *
-	 * @param                     <T> the generic type
-	 * @param authReq             the auth req
-	 * @param languageInfoFetcher the language info fetcher
-	 * @param infoFunction        the info function
-	 * @return the match info
-	 */
-	private <T> Optional<T> getMatchInfo(AuthRequestDTO authReq, String languageInfoFetcher,
-			Function<? super MatchInfo, ? extends T> infoFunction) {
-		return Optional.of(authReq)
-				.flatMap(authReqDTO -> getMatchInfo(authReqDTO.getMatchInfo(), languageInfoFetcher, infoFunction));
-	}
-
-	/**
-	 * Gets the match info.
-	 *
-	 * @param                     <T> the generic type
-	 * @param matchInfos          the match infos
-	 * @param languageInfoFetcher the language info fetcher
-	 * @param infoFunction        the info function
-	 * @return the match info
-	 */
-	private <T> Optional<T> getMatchInfo(List<MatchInfo> matchInfos, String language,
-			Function<? super MatchInfo, ? extends T> infoFunction) {
-		if (matchInfos != null) {
-			return matchInfos.parallelStream()
-					.filter(id -> id.getLanguage() != null && language.equalsIgnoreCase(id.getLanguage())
-							&& getType().equals(id.getAuthType()))
-					.<T>map(infoFunction).filter(Objects::nonNull).findAny();
-		} else {
-			return Optional.empty();
-		}
+		return Optional.of(MatchingStrategyType.EXACT.getType());
 	}
 
 	/*

@@ -53,7 +53,7 @@ import io.mosip.authentication.service.factory.BiometricProviderFactory;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
-import io.mosip.authentication.service.impl.indauth.service.demo.PinAuthType;
+import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.kernel.cbeffutil.service.CbeffI;
 import io.mosip.kernel.core.logger.spi.Logger;

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -156,6 +157,17 @@ public interface MatchType {
 	
 	public default boolean isMultiLanguage() {
 		return false;
+	}
+	
+	/**
+	 * Returns the set of given matching strategies
+	 *
+	 * @param matchingStrategies the matching strategies
+	 * @return the sets the
+	 */
+	public static Set<MatchingStrategy> setOf(MatchingStrategy... matchingStrategies) {
+		return Stream.of(matchingStrategies).collect(Collectors.toSet());
+
 	}
 
 	public default Map<String, Entry<String,List<IdentityInfoDTO>>> mapEntityInfo(Map<String, List<IdentityInfoDTO>> idEntity,

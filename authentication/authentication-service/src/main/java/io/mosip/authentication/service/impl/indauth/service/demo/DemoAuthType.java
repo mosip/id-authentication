@@ -1,5 +1,7 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
+import static io.mosip.authentication.core.spi.indauth.match.AuthType.setOf;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -9,8 +11,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.core.env.Environment;
 
@@ -98,28 +98,6 @@ public enum DemoAuthType implements AuthType {
 	@Override
 	public String getType() {
 		return type;
-	}
-
-	/**
-	 * Sets the of.
-	 *
-	 * @param supportedMatchTypes the supported match types
-	 * @return the sets the
-	 */
-	public static Set<MatchType> setOf(MatchType... supportedMatchTypes) {
-		return Stream.of(supportedMatchTypes).collect(Collectors.toSet());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.authentication.service.impl.indauth.builder.AuthType#
-	 * isAssociatedMatchType(io.mosip.authentication.service.impl.indauth.service.
-	 * demo.MatchType)
-	 */
-	@Override
-	public boolean isAssociatedMatchType(MatchType matchType) {
-		return associatedMatchTypes.contains(matchType);
 	}
 
 	/*

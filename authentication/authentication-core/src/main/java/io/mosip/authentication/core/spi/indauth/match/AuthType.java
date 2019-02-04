@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.core.env.Environment;
@@ -20,7 +21,7 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
  */
 public interface AuthType {
 
-	public static final int DEFAULT_MATCHING_THRESHOLD = 60;
+	public static final int DEFAULT_MATCHING_THRESHOLD = 100;
 
 	/**
 	 * Gets the display name.
@@ -42,7 +43,9 @@ public interface AuthType {
 	 * @param matchType the match type
 	 * @return true, if is associated match type
 	 */
-	boolean isAssociatedMatchType(MatchType matchType);
+	public default boolean isAssociatedMatchType(MatchType matchType) {
+		return getAssociatedMatchTypes().contains(matchType);
+	}
 
 	/**
 	 * Checks if is auth type enabled.
@@ -110,6 +113,16 @@ public interface AuthType {
 	 */
 	public static Optional<AuthType> getAuthTypeForMatchType(MatchType matchType, AuthType[] authTypes) {
 		return Stream.of(authTypes).filter(at -> at.isAssociatedMatchType(matchType)).findAny();
+	}
+	
+	/**
+	 * Returns the set of given match types
+	 *
+	 * @param supportedMatchTypes the supported match types
+	 * @return the sets the
+	 */
+	public static Set<MatchType> setOf(MatchType... supportedMatchTypes) {
+		return Stream.of(supportedMatchTypes).collect(Collectors.toSet());
 	}
 	
 }

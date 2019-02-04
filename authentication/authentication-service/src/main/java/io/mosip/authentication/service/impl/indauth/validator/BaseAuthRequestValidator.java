@@ -43,7 +43,7 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.GenderType;
-import io.mosip.authentication.service.impl.indauth.service.demo.PinAuthType;
+import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
 import io.mosip.authentication.service.validator.IdAuthValidator;
 import io.mosip.kernel.core.datavalidator.exception.InvalidPhoneNumberException;
 import io.mosip.kernel.core.datavalidator.exception.InvalideEmailException;

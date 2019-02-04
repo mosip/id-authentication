@@ -1,4 +1,5 @@
 package io.mosip.authentication.service.impl.indauth.service.bio;
+import static io.mosip.authentication.core.spi.indauth.match.MatchType.setOf;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,8 +9,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
@@ -245,17 +244,6 @@ public enum BioMatchType implements MatchType {
 	 */
 	public AuthUsageDataBit getMatchedBit() {
 		return matchedBit;
-	}
-
-	/**
-	 * Sets the of.
-	 *
-	 * @param matchingStrategies the matching strategies
-	 * @return the sets the
-	 */
-	public static Set<MatchingStrategy> setOf(MatchingStrategy... matchingStrategies) {
-		return Stream.of(matchingStrategies).collect(Collectors.toSet());
-
 	}
 
 	public IdMapping getIdMapping() {
