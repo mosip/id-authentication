@@ -5,22 +5,14 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.SocketTimeoutException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
@@ -34,8 +26,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.sync.PacketSynchService;
-import io.mosip.registration.util.restclient.RequestHTTPDTO;
-import io.mosip.registration.util.restclient.RestClientUtil;
+import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @Service
 public class PacketSynchServiceImpl implements PacketSynchService {
@@ -44,7 +35,7 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 	private RegistrationDAO syncRegistrationDAO;
 
 	@Autowired
-	private RestClientUtil syncRestClientUtil;
+	private ServiceDelegateUtil serviceDelegateUtil;
 
 	@Value("${PACKET_SYNC_URL}")
 	private String syncUrlPath;
@@ -85,20 +76,11 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 			throws RegBaseCheckedException, URISyntaxException, JsonProcessingException {
 		LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Sync the packets to the server");
-		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<String> requestEntity = new HttpEntity<String>(javaObjectToJsonString(syncDtoList), headers);
-		requestHTTPDTO.setHttpEntity(requestEntity);
-		requestHTTPDTO.setClazz(String.class);
-		requestHTTPDTO.setUri(new URI(syncUrlPath));
-		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
+
 		Object response = null;
 		try {
 
-			response = syncRestClientUtil.invoke(setTimeout(requestHTTPDTO));
+			response = serviceDelegateUtil.post(RegistrationConstants.PACKET_SYNC, javaObjectToJsonString(syncDtoList));
 		} catch (HttpClientErrorException e) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER_CLIENT_ERROR - PACKET_SYNC_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID, e.getRawStatusCode() + "Error in sync packets to the server");
@@ -134,15 +116,6 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 		}
 		return true;
 
-	}
-
-	private RequestHTTPDTO setTimeout(RequestHTTPDTO requestHTTPDTO) {
-		// Timeout in milli second
-		SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-		requestFactory.setReadTimeout(syncReadTimeout);
-		requestFactory.setConnectTimeout(syncConnectTimeout);
-		requestHTTPDTO.setSimpleClientHttpRequestFactory(requestFactory);
-		return requestHTTPDTO;
 	}
 
 	/*

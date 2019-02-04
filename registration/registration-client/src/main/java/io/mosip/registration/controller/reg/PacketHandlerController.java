@@ -110,7 +110,7 @@ public class PacketHandlerController extends BaseController {
 	public void showReciept(String capturePhotoUsingDevice) {
 
 		try {
-			RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+			RegistrationDTO registrationDTO = (RegistrationDTO) sessionContextMap
 					.get(RegistrationConstants.REGISTRATION_DATA);
 			ackReceiptController.setRegistrationData(registrationDTO);
 			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);

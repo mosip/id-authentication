@@ -25,6 +25,10 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
@@ -43,6 +47,7 @@ import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.external.PreRegZipHandlingService;
 
 /**
@@ -60,9 +65,9 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 	@Value("${packet.location.dateFormat}")
 	private String preRegLocationDateFormat;
-	
-//	@Autowired
-//	private JsonValidator jsonValidator;
+
+	@Autowired
+	private JsonValidator jsonValidator;
 
 	@Autowired
 	private KeyGenerator keyGenerator;
@@ -83,10 +88,12 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(preRegZipFile))) {
 
 			ZipEntry zipEntry;
+			BufferedReader bufferedReader = null;
 			while ((zipEntry = zipInputStream.getNextEntry()) != null) {
 				String fileName = zipEntry.getName();
 				if (fileName.endsWith(".json")) {
-					parseDemographicJson(zipInputStream, zipEntry);
+					bufferedReader = new BufferedReader(new InputStreamReader(zipInputStream));
+					parseDemographicJson(bufferedReader, zipEntry);
 				} else if (fileName.contains("_")) {
 					documentDetailsDTO = new DocumentDetailsDTO();
 
@@ -115,7 +122,9 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 				}
 			}
-
+			if (bufferedReader != null) {
+				bufferedReader.close();
+			}
 		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
@@ -134,8 +143,8 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		documentDetailsDTO.setDocument(IOUtils.toByteArray(zipInputStream));
 		documentDetailsDTO.setType(docCatgory);
 		documentDetailsDTO.setFormat(fileName.substring(fileName.lastIndexOf(RegistrationConstants.DOT) + 1));
-		documentDetailsDTO.setValue(docCatgory.concat("_").concat(fileName
-				.substring(fileName.lastIndexOf("_") + 1,fileName.lastIndexOf("."))));
+		documentDetailsDTO.setValue(docCatgory.concat("_")
+				.concat(fileName.substring(fileName.lastIndexOf("_") + 1, fileName.lastIndexOf("."))));
 	}
 
 	/**
@@ -147,8 +156,8 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	 * @throws IOException
 	 * @throws RegBaseCheckedException
 	 */
-	private void parseDemographicJson(ZipInputStream zipInputStream, ZipEntry zipEntry) throws RegBaseCheckedException {
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(zipInputStream));
+	private void parseDemographicJson(BufferedReader bufferedReader, ZipEntry zipEntry) throws RegBaseCheckedException {
+
 		try {
 			String value;
 			StringBuilder jsonString = new StringBuilder();
@@ -157,8 +166,8 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			}
 
 			if (!StringUtils.isEmpty(jsonString)) {
-				/*validate id json schema*/
-//				jsonValidator.validateJson(jsonString, "mosip-identity-json-schema.json");
+				/* validate id json schema */
+				jsonValidator.validateJson(jsonString.toString(), "mosip-identity-json-schema.json");
 				getRegistrationDtoContent().getDemographicDTO().setDemographicInfoDTO(
 						new ObjectMapper().readValue(jsonString.toString(), DemographicInfoDTO.class));
 			}
@@ -166,6 +175,16 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
+		} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException
+				| FileIOException jsonValidationException) {
+			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorMessage()
+							+ jsonValidationException.getMessage());
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorMessage(),
+					jsonValidationException);
 		}
 
 	}

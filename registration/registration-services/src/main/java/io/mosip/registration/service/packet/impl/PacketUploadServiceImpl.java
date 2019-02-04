@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.File;
 import java.net.SocketTimeoutException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +14,10 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
@@ -34,8 +29,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.packet.PacketUploadService;
-import io.mosip.registration.util.restclient.RequestHTTPDTO;
-import io.mosip.registration.util.restclient.RestClientUtil;
+import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 /**
  * 
@@ -53,7 +47,7 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	private RegistrationDAO registrationDAO;
 
 	@Autowired
-	private RestClientUtil restClientUtil;
+	private ServiceDelegateUtil serviceDelegateUtil;
 
 	@Value("${PACKET_UPLOAD_URL}")
 	private String urlPath;
@@ -87,32 +81,30 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	public Object pushPacket(File packet) throws URISyntaxException, RegBaseCheckedException {
 		LOGGER.info("REGISTRATION - PUSH_PACKET - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Push packets to the server");
-		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
+
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		map.add(RegistrationConstants.PACKET_TYPE, new FileSystemResource(packet));
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-		HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<>(map, headers);
-		requestHTTPDTO.setHttpEntity(requestEntity);
-		requestHTTPDTO.setClazz(Object.class);
-		requestHTTPDTO.setUri(new URI(urlPath));
-		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
 		Object response = null;
 		try {
-			response = restClientUtil.invoke(setTimeout(requestHTTPDTO));
-		} catch (HttpClientErrorException e) {
+			response = serviceDelegateUtil.post(RegistrationConstants.PACKET_UPLOAD, map);
+		} catch (HttpClientErrorException clientException) {
 			LOGGER.error("REGISTRATION - PUSH_PACKET_CLIENT_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, e.getRawStatusCode() + "Http error while pushing packets to the server");
-			throw new RegBaseCheckedException(Integer.toString(e.getRawStatusCode()), e.getStatusText());
-		} catch (RuntimeException e) {
+					APPLICATION_ID, clientException.getRawStatusCode() + "Http error while pushing packets to the server");
+			throw new RegBaseCheckedException(Integer.toString(clientException.getRawStatusCode()), clientException.getStatusText());
+		} catch (HttpServerErrorException serverException) {
+			LOGGER.error("REGISTRATION - PUSH_PACKET_SERVER_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
+					APPLICATION_ID, serverException.getRawStatusCode() + "Http server error while pushing packets to the server");
+			throw new RegBaseCheckedException(Integer.toString(serverException.getRawStatusCode()), serverException.getResponseBodyAsString());
+			
+		}catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - PUSH_PACKET_CONNECTION_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, e.getMessage() + "Runtime error while pushing packets to the server");
+					APPLICATION_ID, runtimeException.getMessage() + "Runtime error while pushing packets to the server");
 			throw new RegBaseUncheckedException(RegistrationExceptionConstants.REG_PACKET_UPLOAD_ERROR.getErrorCode(),
 					RegistrationExceptionConstants.REG_PACKET_UPLOAD_ERROR.getErrorMessage());
-		} catch (SocketTimeoutException e) {
+		} catch (SocketTimeoutException socketTimeoutException) {
 			LOGGER.error("REGISTRATION - PUSH_PACKETS_TO_SERVER_SOCKET_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, e.getMessage() + "Error in sync packets to the server");
-			throw new RegBaseCheckedException((e.getMessage()), e.getLocalizedMessage());
+					APPLICATION_ID, socketTimeoutException.getMessage() + "Error in sync packets to the server");
+			throw new RegBaseCheckedException((socketTimeoutException.getMessage()), socketTimeoutException.getLocalizedMessage());
 		}
 		return response;
 
@@ -133,15 +125,6 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 		}
 		return true;
 
-	}
-
-	private RequestHTTPDTO setTimeout(RequestHTTPDTO requestHTTPDTO) {
-		// Timeout in milli second
-		SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-		requestFactory.setReadTimeout(readTimeout);
-		requestFactory.setConnectTimeout(connectTimeout);
-		requestHTTPDTO.setSimpleClientHttpRequestFactory(requestFactory);
-		return requestHTTPDTO;
 	}
 
 	@Override

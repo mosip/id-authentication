@@ -25,8 +25,8 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	 *            the list of entity id's
 	 * @return the list of {@link Registration}
 	 */
-	@Query("select reg from Registration reg where reg.clientStatusCode= :syncStatus and (reg.serverStatusCode=:resendStatus or reg.serverStatusCode IS NULL) or reg.fileUploadStatus=:fileUploadStatus")
-	List<Registration> findByStatusCodes(@Param("syncStatus") String clientstatusCode,
+	@Query("select reg from Registration reg where reg.clientStatusCode= :syncStatus or reg.clientStatusCode= :exportStatus and (reg.serverStatusCode=:resendStatus or reg.serverStatusCode IS NULL) or reg.fileUploadStatus=:fileUploadStatus")
+	List<Registration> findByStatusCodes(@Param("syncStatus") String clientstatusCode, @Param("exportStatus") String exportstatusCode,
 			@Param("resendStatus") String serverStatusCode, @Param("fileUploadStatus") String fileUploadStatus);
 
 	/**

@@ -173,7 +173,7 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 				Image image = Image.getInstance(pdfPage, bufferedImage, 1);
 				document.add(image);
 			}
-			
+
 			document.close();
 			writer.close();
 			scannedPdfFile = byteArrayOutputStream.toByteArray();
@@ -243,7 +243,7 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 	}
 
 	@Override
-	public List<BufferedImage> pdfToImages(byte[] pdfBytes, String fileName) throws IOException {
+	public List<BufferedImage> pdfToImages(byte[] pdfBytes) throws IOException {
 
 		List<BufferedImage> bufferedImages = new ArrayList<>();
 		PDDocument document = PDDocument.load(new ByteArrayInputStream(pdfBytes));

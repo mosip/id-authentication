@@ -1,7 +1,9 @@
 package io.mosip.registration.constants;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -453,8 +455,15 @@ public class RegistrationConstants {
 	// Upload Packet
 
 	public static List getStatus() {
-		String[] packetStatus = { "SYNCED", "resend", "E" };
+		String[] packetStatus = { "SYNCED", "EXPORTED", "resend", "E" };
 		return Arrays.asList(packetStatus);
+	}
+	
+	public static final String PACKET_UPLOAD = "packet_upload";
+	public static final String PACKET_DUPLICATE = "duplicate";
+	
+	public static final Set<String> getRoles() {
+		return new HashSet<>(Arrays.asList("*"));
 	}
 
 	// opt to register constants
@@ -950,5 +959,8 @@ public class RegistrationConstants {
 	public static final String REST_OAUTH_USER_PSWD="password";
 	public static final String REST_OAUTH_ERROR_CODE="REST-OAUTH-001";
 	public static final String REST_OAUTH_ERROR_MSG="Internal Server Error";
+	
+	//Packet Sync
+	public static final String PACKET_SYNC="packet_sync";
 
 }

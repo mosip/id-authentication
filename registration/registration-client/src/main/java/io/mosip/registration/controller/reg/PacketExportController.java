@@ -85,9 +85,9 @@ public class PacketExportController extends BaseController {
 				} else {
 					generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.PACKET_EXPORT_MESSAGE);
 				}
-			} else {
-				generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.PACKET_EXPORT_MESSAGE);
 			}
+		} else {
+			generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.PACKET_EXPORT_MESSAGE);
 		}
 		return exportedPackets;
 

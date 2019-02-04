@@ -118,7 +118,7 @@ public class BiometricExceptionController extends BaseController implements Init
 		fingerExceptionListener(rightThumb);
 		irisExceptionListener(leftEye);
 		irisExceptionListener(rightEye);
-		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+		if ((boolean) sessionContextMap.get(RegistrationConstants.ONBOARD_USER)) {
 			previousBtn.setVisible(false);
 		} else {
 			previousBtn.setVisible(true);
@@ -243,7 +243,7 @@ public class BiometricExceptionController extends BaseController implements Init
 		LOGGER.info("REGISTRATION - NEXT_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME, APPLICATION_ID,
 				"Going to next page");
 
-		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+		if ((boolean) sessionContextMap.get(RegistrationConstants.ONBOARD_USER)) {
 			exceptionDTOCreation();
 			userOnboardController.loadFingerPrint();			
 		} else {
@@ -252,12 +252,12 @@ public class BiometricExceptionController extends BaseController implements Init
 				generateAlert(RegistrationConstants.ALERT_INFORMATION,
 						RegistrationUIConstants.BIOMETRIC_EXCEPTION_ALERT);
 			} else {
-				if (((RegistrationDTO) SessionContext.getInstance().getMapObject()
+				if (((RegistrationDTO) sessionContextMap
 						.get(RegistrationConstants.REGISTRATION_DATA)).getSelectionListDTO() != null) {
 
-					List<BiometricExceptionDTO> biometricExceptionDTOs = ((RegistrationDTO) SessionContext.getInstance()
-							.getMapObject().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
-									.getApplicantBiometricDTO().getBiometricExceptionDTO();
+					List<BiometricExceptionDTO> biometricExceptionDTOs = ((RegistrationDTO) sessionContextMap
+							.get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO().getApplicantBiometricDTO()
+									.getBiometricExceptionDTO();
 
 					long fingerPrintCount = biometricExceptionDTOs.stream()
 							.filter(bio -> bio.getBiometricType().equals("fingerprint")).count();
@@ -310,14 +310,14 @@ public class BiometricExceptionController extends BaseController implements Init
 				biometricExceptionDTO.setMissingBiometric(bioType);
 				biometricExceptionList.add(biometricExceptionDTO);
 			});
-			SessionContext.getInstance().getMapObject().put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION,
+			sessionContextMap.put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION,
 					biometricExceptionList);
-			if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
-				((BiometricDTO) SessionContext.getInstance().getMapObject()
+			if ((boolean) sessionContextMap.get(RegistrationConstants.ONBOARD_USER)) {
+				((BiometricDTO) sessionContextMap
 						.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO()
 								.setBiometricExceptionDTO(biometricExceptionList);
 			} else {
-				((RegistrationDTO) SessionContext.getInstance().getMapObject()
+				((RegistrationDTO) sessionContextMap
 						.get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO().getApplicantBiometricDTO()
 								.setBiometricExceptionDTO(biometricExceptionList);
 			}
@@ -352,8 +352,8 @@ public class BiometricExceptionController extends BaseController implements Init
 		fingerList.clear();
 		irisList.clear();
 
-		List<BiometricExceptionDTO> biometricExceptionList = (List<BiometricExceptionDTO>) SessionContext.getInstance()
-				.getMapObject().get(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
+		List<BiometricExceptionDTO> biometricExceptionList = (List<BiometricExceptionDTO>) sessionContextMap
+				.get(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
 
 		if (biometricExceptionList != null && !biometricExceptionList.isEmpty()) {
 
@@ -402,9 +402,9 @@ public class BiometricExceptionController extends BaseController implements Init
 	}
 
 	public void clearSession() {
-		SessionContext.getInstance().getMapObject().put(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION,
+		sessionContextMap.put(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION,
 				new ArrayList<>());
-		SessionContext.getInstance().getMapObject().put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION,
+		sessionContextMap.put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION,
 				new ArrayList<>());
 		setExceptionImage();
 	}
