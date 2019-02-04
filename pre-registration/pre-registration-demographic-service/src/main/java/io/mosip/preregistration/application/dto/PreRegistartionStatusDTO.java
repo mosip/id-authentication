@@ -5,6 +5,7 @@
 package io.mosip.preregistration.application.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,5 +36,10 @@ public class PreRegistartionStatusDTO implements Serializable {
 	 * Status Code
 	 */
 	private String StatusCode;
+	
+	/**
+	 * Created Date Time
+	 */
+	private Date createdDatTime; 
 
 }

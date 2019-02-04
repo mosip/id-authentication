@@ -6,12 +6,12 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { ContactComponent } from './contact/contact.component';
 import { AppRoutingModule } from '../app-routing.module';
-import { MaterialModule } from '../material.module';
-import { I18nModule } from '../i18n.module';
+
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
-  imports: [CommonModule, AppRoutingModule, MaterialModule, I18nModule],
+  imports: [CommonModule, AppRoutingModule, SharedModule],
   declarations: [HeaderComponent, FooterComponent, AboutUsComponent, FaqComponent, ContactComponent],
-  exports: [HeaderComponent, FooterComponent]
+  exports: [HeaderComponent, FooterComponent, SharedModule]
 })
 export class CoreModule {}

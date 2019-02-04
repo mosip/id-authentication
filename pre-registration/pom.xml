@@ -57,6 +57,7 @@
 		<commons-lang3>3.7</commons-lang3>
 		<commons.beanutils.version>1.9.2</commons.beanutils.version>
 		<commons.configuration2.version>2.2</commons.configuration2.version>
+		<kernel.core.version>0.7.0-SNAPSHOT</kernel.core.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
@@ -75,7 +76,7 @@
 	</properties>
 	<modules>
 		<module>pre-registration-core</module>
-		<module>pre-registration-auth-service</module>
+		<!-- <module>pre-registration-auth-service</module> -->
 		<module>pre-registration-demographic-service</module>
 		<module>pre-registration-document-service</module>
 		<module>pre-registration-booking-service</module>
@@ -83,6 +84,7 @@
 		<module>pre-registration-batchjob</module>
 		<module>pre-registration-batchjob-service</module>
 		<module>pre-registration-translitration-service</module>
+		<module>pre-registration-acknowledgement-service</module>
 	</modules>
 
 	<profiles>
