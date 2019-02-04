@@ -55,7 +55,6 @@ import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
-import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.VirtualKeyboard;
@@ -465,8 +464,7 @@ public class RegistrationController extends BaseController {
 			demoScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight());
 
 			auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, Components.REGISTRATION_CONTROLLER,
-					"initializing the registration controller",
-					sessionContext.getUserContext().getUserId(),
+					"initializing the registration controller", sessionContext.getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			// Create RegistrationDTO Object
@@ -493,8 +491,7 @@ public class RegistrationController extends BaseController {
 						}
 					});
 			fxUtils = FXUtils.getInstance();
-			sessionContextMap.put(RegistrationConstants.IS_CONSOLIDATED,
-					RegistrationConstants.DISABLE);
+			sessionContextMap.put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 			switchedOn = new SimpleBooleanProperty(false);
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			isChild = false;
@@ -599,8 +596,8 @@ public class RegistrationController extends BaseController {
 				bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 				bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 				toggleBiometricException = true;
-				sessionContext.getUserContext().getUserMap()
-						.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
+				sessionContext.getUserContext().getUserMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION,
+						toggleBiometricException);
 				faceCaptureController.disableExceptionPhotoCapture(false);
 			} else {
 				bioExceptionToggleLabel1.setDisable(true);
@@ -608,8 +605,8 @@ public class RegistrationController extends BaseController {
 				bioExceptionToggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 				bioExceptionToggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 				toggleBiometricException = false;
-				sessionContext.getUserContext().getUserMap()
-						.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
+				sessionContext.getUserContext().getUserMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION,
+						toggleBiometricException);
 				faceCaptureController.disableExceptionPhotoCapture(true);
 				faceCaptureController.clearExceptionImage();
 			}
@@ -665,13 +662,12 @@ public class RegistrationController extends BaseController {
 			populateFieldValue(province, provinceLocalLanguage, demo.getIdentity().getProvince());
 			populateFieldValue(city, cityLocalLanguage, demo.getIdentity().getCity());
 			populateFieldValue(gender, genderLocalLanguage, demo.getIdentity().getGender());
-			Boolean isSwitchedOn = (Boolean) sessionContextMap
-					.get(RegistrationConstants.DOB_TOGGLE);
+			Boolean isSwitchedOn = (Boolean) sessionContextMap.get(RegistrationConstants.DOB_TOGGLE);
 			switchedOn.set(isSwitchedOn == null ? false : isSwitchedOn);
 			postalCode.setText(demo.getIdentity().getPostalCode());
 			mobileNo.setText(demo.getIdentity().getPhone());
 			emailId.setText(demo.getIdentity().getEmail());
-			if(demo.getIdentity().getAge()!=null)
+			if (demo.getIdentity().getAge() != null)
 				ageField.setText(demo.getIdentity().getAge() + "");
 			cniOrPinNumber.setText(demo.getIdentity().getCnieNumber() + "");
 			postalCodeLocalLanguage.setAccessibleHelp(demo.getIdentity().getPostalCode());
@@ -694,8 +690,7 @@ public class RegistrationController extends BaseController {
 
 			if (sessionContextMap.get(RegistrationConstants.IS_Child) != null) {
 
-				boolean isChild = (boolean) sessionContextMap
-						.get(RegistrationConstants.IS_Child);
+				boolean isChild = (boolean) sessionContextMap.get(RegistrationConstants.IS_Child);
 				childSpecificFields.setDisable(!isChild);
 				childSpecificFields.setVisible(isChild);
 				childSpecificFieldsLocal.setDisable(!isChild);
@@ -801,8 +796,8 @@ public class RegistrationController extends BaseController {
 						"Address could not be loaded as there is no previous entry");
 
 			} else {
-				LocationDTO locationDto = ((AddressDTO) sessionContextMap
-						.get(RegistrationConstants.ADDRESS_KEY)).getLocationDTO();
+				LocationDTO locationDto = ((AddressDTO) sessionContextMap.get(RegistrationConstants.ADDRESS_KEY))
+						.getLocationDTO();
 				region.setValue(locationDto.getRegion());
 				city.setValue(locationDto.getCity());
 				province.setValue(locationDto.getProvince());
@@ -837,8 +832,7 @@ public class RegistrationController extends BaseController {
 					LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()),
 							Integer.parseInt(mm.getText()), Integer.parseInt(dd.getText()));
 					dateOfBirth = Date.from(currentYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
-					sessionContextMap.put(RegistrationConstants.REGISTRATION_AGE_DATA,
-							dateOfBirth);
+					sessionContextMap.put(RegistrationConstants.REGISTRATION_AGE_DATA, dateOfBirth);
 					sessionContextMap.put("dd", dd.getText());
 					sessionContextMap.put("mm", mm.getText());
 					sessionContextMap.put("yyyy", yyyy.getText());
@@ -903,7 +897,7 @@ public class RegistrationController extends BaseController {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Saving the fields to DTO");
 		try {
-			/*clear the doc preview section*/
+			/* clear the doc preview section */
 			documentScanController.initializePreviewSection();
 			auditFactory.audit(AuditEvent.SAVE_DETAIL_TO_DTO, Components.REGISTRATION_CONTROLLER,
 					"Saving the details to respected DTO", sessionContext.getUserContext().getUserId(),
@@ -951,8 +945,7 @@ public class RegistrationController extends BaseController {
 					toggleFingerprintCaptureVisibility(false);
 				} else {
 					biometricException.setVisible(false);
-					if (applicationContext.getApplicationMap()
-							.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+					if (applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
 							.equals(RegistrationConstants.ENABLE)) {
 						toggleFingerprintCaptureVisibility(false);
 						toggleIrisCaptureVisibility(true);
@@ -1218,9 +1211,8 @@ public class RegistrationController extends BaseController {
 			writer.write(null, new IIOImage(detectedFace, null, null), param);
 			byte[] compressedPhoto = byteArrayOutputStream.toByteArray();
 			if ((boolean) sessionContextMap.get(RegistrationConstants.ONBOARD_USER)) {
-				((BiometricDTO) sessionContextMap
-						.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO().getFaceDetailsDTO()
-								.setFace(compressedPhoto);
+				((BiometricDTO) sessionContextMap.get(RegistrationConstants.USER_ONBOARD_DATA))
+						.getOperatorBiometricDTO().getFaceDetailsDTO().setFace(compressedPhoto);
 			} else {
 				ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDtoContent().getDemographicDTO()
 						.getApplicantDocumentDTO();
@@ -1274,8 +1266,7 @@ public class RegistrationController extends BaseController {
 					ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
 							byteArrayOutputStream);
 					byte[] photoInBytes = byteArrayOutputStream.toByteArray();
-					if (!(boolean) sessionContextMap
-							.get(RegistrationConstants.ONBOARD_USER)) {
+					if (!(boolean) sessionContextMap.get(RegistrationConstants.ONBOARD_USER)) {
 						ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDtoContent().getDemographicDTO()
 								.getApplicantDocumentDTO();
 						applicantDocumentDTO.setPhoto(photoInBytes);
@@ -1301,16 +1292,14 @@ public class RegistrationController extends BaseController {
 						setPreviewContent();
 						loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
 					} else {
-						((BiometricDTO) sessionContextMap
-								.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO()
-										.getFaceDetailsDTO().setFace(photoInBytes);
+						((BiometricDTO) sessionContextMap.get(RegistrationConstants.USER_ONBOARD_DATA))
+								.getOperatorBiometricDTO().getFaceDetailsDTO().setFace(photoInBytes);
 						byteArrayOutputStream.close();
 					}
 				} else {
 					if ((boolean) sessionContextMap.get(RegistrationConstants.ONBOARD_USER)) {
-						((BiometricDTO) sessionContextMap
-								.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO()
-										.getFaceDetailsDTO().setFace(null);
+						((BiometricDTO) sessionContextMap.get(RegistrationConstants.USER_ONBOARD_DATA))
+								.getOperatorBiometricDTO().getFaceDetailsDTO().setFace(null);
 					}
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FACE_CAPTURE_ERROR);
 				}
@@ -1521,9 +1510,9 @@ public class RegistrationController extends BaseController {
 		validation.setChild(isChild);
 		validation.setValidationMessage();
 		gotoNext = validation.validate(paneToValidate, excludedIds, gotoNext, masterSync);
-		 if(gotoNext)
-			 gotoNext = validation.validateUinOrRid(uinId, isChild,uinValidator, ridValidator);
-		 displayValidationMessage(validation.getValidationMessage().toString());
+		if (gotoNext)
+			gotoNext = validation.validateUinOrRid(uinId, isChild, uinValidator, ridValidator);
+		displayValidationMessage(validation.getValidationMessage().toString());
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validated the fields");
@@ -1581,8 +1570,7 @@ public class RegistrationController extends BaseController {
 	}
 
 	public RegistrationDTO getRegistrationDtoContent() {
-		return (RegistrationDTO) sessionContextMap
-				.get(RegistrationConstants.REGISTRATION_DATA);
+		return (RegistrationDTO) sessionContextMap.get(RegistrationConstants.REGISTRATION_DATA);
 	}
 
 	private Boolean isEditPage() {
@@ -1592,8 +1580,7 @@ public class RegistrationController extends BaseController {
 	}
 
 	public void clickMe() {
-		sessionContextMap.put(RegistrationConstants.IS_CONSOLIDATED,
-				RegistrationConstants.ENABLE);
+		sessionContextMap.put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.ENABLE);
 		validation.setValidationMessage();
 		fullName.setText("Taleev Aalam");
 		int age = 45;
@@ -1614,8 +1601,7 @@ public class RegistrationController extends BaseController {
 		parentName.setText("Mokhtar");
 		uinId.setText("93939939");
 		displayValidationMessage(validation.getValidationMessage().toString());
-		sessionContextMap.put(RegistrationConstants.IS_CONSOLIDATED,
-				RegistrationConstants.DISABLE);
+		sessionContextMap.put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 	}
 
 	/**
@@ -1662,8 +1648,8 @@ public class RegistrationController extends BaseController {
 			if (sessionContext.getUserContext().getUserMap()
 					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION) == null) {
 				toggleBiometricException = false;
-				sessionContext.getUserContext().getUserMap()
-						.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
+				sessionContext.getUserContext().getUserMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION,
+						toggleBiometricException);
 
 			} else {
 				toggleBiometricException = (boolean) sessionContext.getUserContext().getUserMap()
@@ -1694,8 +1680,8 @@ public class RegistrationController extends BaseController {
 						faceCaptureController.disableExceptionPhotoCapture(true);
 						faceCaptureController.clearExceptionImage();
 					}
-					sessionContext.getUserContext().getUserMap()
-							.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
+					sessionContext.getUserContext().getUserMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION,
+							toggleBiometricException);
 				}
 			});
 			bioExceptionToggleLabel1.setOnMouseClicked((event) -> {
@@ -1766,6 +1752,11 @@ public class RegistrationController extends BaseController {
 	public void togglePhotoCaptureVisibility(boolean visibility) {
 		if (visibility) {
 			if (capturePhotoUsingDevice.equals(RegistrationConstants.ENABLE)) {
+				if (toggleBiometricException) {
+					faceCaptureController.disableExceptionPhotoCapture(false);
+				} else {
+					faceCaptureController.disableExceptionPhotoCapture(true);
+				}
 				getBiometricsPane().setVisible(true);
 			} else if (capturePhotoUsingDevice.equals(RegistrationConstants.DISABLE)) {
 				saveBiometricDetails();
@@ -1825,10 +1816,10 @@ public class RegistrationController extends BaseController {
 		// Set RID
 		String registrtaionID = ridGeneratorImpl.generateId(registrationMetaDataDTO.getCenterId(),
 				registrationMetaDataDTO.getMachineId());
-		
+
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Registrtaion Started for RID  : [ " + registrtaionID + " ] ");
-		
+
 		registrationDTO.setRegistrationId(registrtaionID);
 		// Put the RegistrationDTO object to SessionContext Map
 		sessionContextMap.put(RegistrationConstants.REGISTRATION_DATA, registrationDTO);
