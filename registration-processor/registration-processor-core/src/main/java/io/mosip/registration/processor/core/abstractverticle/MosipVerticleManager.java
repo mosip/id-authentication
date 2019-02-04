@@ -51,8 +51,7 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 		try {
 			url = new URL(clusterManagerUrl);
 		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			throw new DeploymentFailureException(PlatformErrorMessages.RPR_CMB_MALFORMED_URL_EXCEPTION.getMessage());
 		}
 		ClusterManager clusterManager = new IgniteClusterManager(url);
 		VertxOptions options = new VertxOptions().setClustered(true).setClusterManager(clusterManager)
@@ -86,7 +85,7 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 		try {
 			url = new URL(clusterManagerUrl);
 		} catch (MalformedURLException e1) {
-			e1.printStackTrace();
+			throw new DeploymentFailureException(PlatformErrorMessages.RPR_CMB_MALFORMED_URL_EXCEPTION.getMessage());
 		}
 		ClusterManager clusterManager = new IgniteClusterManager(url);
 		VertxOptions options = new VertxOptions().setClustered(true).setClusterManager(clusterManager)

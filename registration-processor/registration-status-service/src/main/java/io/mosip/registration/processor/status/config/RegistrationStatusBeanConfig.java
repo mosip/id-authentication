@@ -45,6 +45,7 @@ import io.mosip.registration.processor.status.service.SyncRegistrationService;
 import io.mosip.registration.processor.status.service.impl.RegistrationStatusServiceImpl;
 import io.mosip.registration.processor.status.service.impl.SyncRegistrationServiceImpl;
 import io.mosip.registration.processor.status.service.impl.TransactionServiceImpl;
+import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
 
 @Configuration
 @PropertySource("classpath:bootstrap.properties")
@@ -145,5 +146,8 @@ public class RegistrationStatusBeanConfig {
 		return new SyncRegistrationEntity();
 	}
 	
-	
+	@Bean
+	public RegistrationStatusMapUtil getRegistrationStatusMapUtil() {
+		return new RegistrationStatusMapUtil();
+	}
 }

@@ -1,13 +1,9 @@
-package io.mosip.registration.processor.stages.app;
+package io.mosip.registration.processor.stages.uingenerator;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import io.mosip.registration.processor.stages.uigenerator.UinGeneratorStage;
+import io.mosip.registration.processor.stages.uingenerator.stage.UinGeneratorStage;
 
-/*@SpringBootApplication(scanBasePackages = { 
-		"io.mosip.registration.processor.status", "io.mosip.registration.processor.filesystem.ceph.adapter.impl",
-		"io.mosip.registration.processor.rest.client","io.mosip.registration.processor.packet.storage",
-		"io.mosip.registration.processor.core","io.mosip.registration.processor.stages","io.mosip.registration.processor.message.sender"})*/
 public class UinGeneratorApplication {
 
 
@@ -18,10 +14,9 @@ public class UinGeneratorApplication {
 	 *            the arguments
 	 */
 	public static void main(String[] args) {
-		//SpringApplication.run(UinGeneratorApplication.class, args);
 		
 		AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext();
-		configApplicationContext.scan("io.mosip.registration.processor.stages.uigenerator.config",
+		configApplicationContext.scan("io.mosip.registration.processor.stages.uingenerator.config",
 				"io.mosip.registration.processor.status.config", 
 				"io.mosip.registration.processor.filesystem.ceph.adapter.impl.config",
 				"io.mosip.registration.processor.rest.client.config",

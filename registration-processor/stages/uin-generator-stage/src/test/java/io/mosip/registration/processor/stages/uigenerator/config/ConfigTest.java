@@ -14,6 +14,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
+import io.mosip.registration.processor.stages.uingenerator.config.UINBeanConfig;
+
 
 
 @RunWith(MockitoJUnitRunner.class)

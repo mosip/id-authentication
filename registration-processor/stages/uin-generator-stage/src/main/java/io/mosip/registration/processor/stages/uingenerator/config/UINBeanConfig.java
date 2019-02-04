@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.stages.uigenerator.config;
+package io.mosip.registration.processor.stages.uingenerator.config;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,7 +15,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
 import io.mosip.registration.processor.message.sender.utility.TriggerNotification;
-import io.mosip.registration.processor.stages.uigenerator.UinGeneratorStage;
+import io.mosip.registration.processor.stages.uingenerator.stage.UinGeneratorStage;
 
 @Configuration
 public class UINBeanConfig {

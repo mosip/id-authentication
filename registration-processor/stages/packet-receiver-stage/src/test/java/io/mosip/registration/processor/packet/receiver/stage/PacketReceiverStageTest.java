@@ -104,6 +104,13 @@ public class PacketReceiverStageTest {
 	}
 
 	@Test
+	public void testAllProcess() throws ClientProtocolException, IOException {
+		testProcessURLSuccess();
+		healthCheckTest();
+		testDeployVerticle();
+		testSendMessage();
+	}
+	
 	public void testProcessURLSuccess() {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setIsValid(Boolean.TRUE);
@@ -125,7 +132,6 @@ public class PacketReceiverStageTest {
 		assertEquals(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.name(), registrationStatusCode);
 	}
 
-	@Test
 	public void healthCheckTest() throws ClientProtocolException, IOException {
 		HttpGet httpGet = new HttpGet("http://localhost:8081/health");
 		HttpClient client = HttpClientBuilder.create().build();
@@ -151,13 +157,10 @@ public class PacketReceiverStageTest {
 
 	}
 
-
-	@Test
 	public void testDeployVerticle() {
 		packetReceiverStage.deployVerticle();
 	}
 	
-	@Test
 	public void testSendMessage() {
 		packetReceiverStage.sendMessage(null);
 	}
@@ -167,7 +170,6 @@ public class PacketReceiverStageTest {
 		if(file.exists())
 			FileUtils.forceDelete(file);
 	}
-	
 	
 
 	private FileUpload setFileUpload() {

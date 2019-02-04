@@ -128,7 +128,10 @@ public enum PlatformErrorMessages {
 	/** The rpr cmb configuration server failure exception. */
 	RPR_CMB_CONFIGURATION_SERVER_FAILURE_EXCEPTION(PlatformErrorConstants.RPR_CAMEL_BRIDGE_MODULE + "003",
 			"Configuration Server Failure Exception"),
-
+	
+	/** The rpr cmb malformed cluster manager url exception. */
+	RPR_CMB_MALFORMED_URL_EXCEPTION(PlatformErrorConstants.RPR_CAMEL_BRIDGE_MODULE + "004", "Malformed Cluster Manager Url Exception"),
+	
 	/** The rpr qcr registration table not accessible. */
 	// Quality Checker Exception error code and message
 	RPR_QCR_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_QUALITY_CHECKER_MODULE + "001",

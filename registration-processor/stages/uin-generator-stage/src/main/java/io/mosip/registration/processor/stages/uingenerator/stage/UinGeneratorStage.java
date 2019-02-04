@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.stages.uigenerator;
+package io.mosip.registration.processor.stages.uingenerator.stage;
 
 import java.io.IOException;
 import java.io.InputStream;

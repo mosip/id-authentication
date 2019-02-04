@@ -54,7 +54,6 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
 public class ManualVerificationServiceTest {
 
 	private List<ManualVerificationEntity> entities;
