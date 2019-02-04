@@ -59,15 +59,15 @@ node {
  }
 
  stage('---------- mvn-clean-install and push to artifactory  ---------------') {
-  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -DskipTests -Dspring.cloud.config.label='+branch, buildInfo: buildInfo
+  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -Dspring.cloud.config.label='+branch, buildInfo: buildInfo
  }
 
-//stage('---------- SonarQube Analysis --------------') {
-//  def mvnHome = tool name: 'M2_HOME', type: 'maven'
-//  withSonarQubeEnv('sonar') {
-//   sh "${mvnHome}/bin/mvn -f '$branch/$projectToBuild/' sonar:sonar"
-//  }
-// }
+stage('---------- SonarQube Analysis --------------') {
+  def mvnHome = tool name: 'M2_HOME', type: 'maven'
+  withSonarQubeEnv('sonar') {
+   sh "${mvnHome}/bin/mvn -f '$branch/$projectToBuild/' sonar:sonar"
+  }
+ }
 
  stage('----------- Publish build info -------------') {
   /*
