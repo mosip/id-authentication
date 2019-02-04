@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -13,6 +15,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.service.AuthenticationService;
@@ -33,6 +36,16 @@ public class FingerPrintCaptureServiceTest {
 
 	@InjectMocks
 	private FingerPrintCaptureServiceImpl fingerPrintCaptureServiceImpl;
+
+	@BeforeClass
+	public static void initialize() {
+		SessionContext.getInstance();
+	}
+
+	@AfterClass
+	public static void destroy() {
+		SessionContext.destroySession();
+	}
 
 	@Test
 	public void validateFingerprintTest() {

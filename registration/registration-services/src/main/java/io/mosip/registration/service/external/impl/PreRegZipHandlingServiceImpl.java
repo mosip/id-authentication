@@ -263,7 +263,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	}
 
 	private RegistrationDTO getRegistrationDtoContent() {
-		return (RegistrationDTO) SessionContext.getInstance().getMapObject()
+		return (RegistrationDTO) SessionContext.getSessionContext().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
 

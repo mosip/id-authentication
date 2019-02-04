@@ -3,8 +3,10 @@ package io.mosip.registration.controller.auth;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,11 +32,13 @@ import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.UserDetail;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.AuthenticationService;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.util.common.OTPManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -49,7 +53,7 @@ import javafx.stage.Stage;
  * 
  */
 @Controller
-public class AuthenticationController extends BaseController {
+public class AuthenticationController extends BaseController implements Initializable {
 
 	/**
 	 * Instance of {@link Logger}
@@ -364,8 +368,10 @@ public class AuthenticationController extends BaseController {
 
 	/**
 	 * to get the configured modes of authentication
+	 * 
+	 * @throws RegBaseCheckedException
 	 */
-	private void getAuthenticationModes(String authType) {
+	private void getAuthenticationModes(String authType) throws RegBaseCheckedException {
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading configured modes of authentication");
 
@@ -373,13 +379,16 @@ public class AuthenticationController extends BaseController {
 
 		if (userAuthenticationTypeList.isEmpty()) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_ERROR_MSG);
+			if (isEODAuthentication) {
+				throw new RegBaseCheckedException();
+			}
 		} else {
-			
-			if(userAuthenticationTypeList.size() > 1 && applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-					.equals(RegistrationConstants.ENABLE)) {
+
+			if (userAuthenticationTypeList.size() > 1 && applicationContext.getApplicationMap()
+					.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG).equals(RegistrationConstants.ENABLE)) {
 				userAuthenticationTypeList.removeIf(auth -> auth.equalsIgnoreCase(RegistrationConstants.BIO));
 			}
-			
+
 			loadNextScreen();
 		}
 	}
@@ -391,41 +400,45 @@ public class AuthenticationController extends BaseController {
 	private void loadNextScreen() {
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading next authentication screen");
-		Boolean toogleBioException = (Boolean) sessionContext.getUserContext().getUserMap()
-				.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
+		try {
+			Boolean toogleBioException = (Boolean) SessionContext.getSessionContext().getUserContext().getUserMap()
+					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 
-		if (!userAuthenticationTypeList.isEmpty()) {
-			authCount++;
-			String authenticationType = String
-					.valueOf(userAuthenticationTypeList.get(RegistrationConstants.PARAM_ZERO));
-			
-			if (applicationContext.getApplicationMap()
-					.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-					.equals(RegistrationConstants.ENABLE)
-					&& authenticationType.equalsIgnoreCase(RegistrationConstants.BIO)) {
+			if (!userAuthenticationTypeList.isEmpty()) {
+				authCount++;
+				String authenticationType = String
+						.valueOf(userAuthenticationTypeList.get(RegistrationConstants.PARAM_ZERO));
 
-				enableErrorPage();
-				
-			} else {
-				loadAuthenticationScreen(authenticationType);
-			}
-		} else {
-			if (!isSupervisor) {
-				if (toogleBioException != null && toogleBioException.booleanValue()) {
-					authCount = 0;
-					isSupervisor = true;
-					getAuthenticationModes(ProcessNames.EXCEPTION.getType());
+				if (applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+						.equals(RegistrationConstants.ENABLE)
+						&& authenticationType.equalsIgnoreCase(RegistrationConstants.BIO)) {
+
+					enableErrorPage();
+
 				} else {
-					submitRegistration();
+					loadAuthenticationScreen(authenticationType);
 				}
 			} else {
-				if (isEODAuthentication) {
-
-					baseController.updateAuthenticationStatus();
+				if (!isSupervisor) {
+					if (toogleBioException != null && toogleBioException.booleanValue()) {
+						authCount = 0;
+						isSupervisor = true;
+						getAuthenticationModes(ProcessNames.EXCEPTION.getType());
+					} else {
+						submitRegistration();
+					}
 				} else {
-					submitRegistration();
+					if (isEODAuthentication) {
+
+						baseController.updateAuthenticationStatus();
+					} else {
+						submitRegistration();
+					}
 				}
 			}
+		} catch (RegBaseCheckedException e) {
+			LOGGER.error("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+					"No of Authentication modes is empty");
 		}
 	}
 
@@ -439,28 +452,28 @@ public class AuthenticationController extends BaseController {
 				"Loading the respective authentication screen in UI");
 
 		switch (loginMode) {
-			case RegistrationConstants.OTP:
-				enableOTP();
-				break;
-			case RegistrationConstants.PWORD:
-				enablePWD();
-				break;
-			case RegistrationConstants.BIO:
-				enableFingerPrint();
-				break;
-			case RegistrationConstants.IRIS:
-				enableIris();
-				break;
-			case RegistrationConstants.FACE:
-				enableFace();
-				break;
-			default:
-				enablePWD();
-			}
-			
-			userAuthenticationTypeList.remove(RegistrationConstants.PARAM_ZERO);
+		case RegistrationConstants.OTP:
+			enableOTP();
+			break;
+		case RegistrationConstants.PWORD:
+			enablePWD();
+			break;
+		case RegistrationConstants.BIO:
+			enableFingerPrint();
+			break;
+		case RegistrationConstants.IRIS:
+			enableIris();
+			break;
+		case RegistrationConstants.FACE:
+			enableFace();
+			break;
+		default:
+			enablePWD();
+		}
+
+		userAuthenticationTypeList.remove(RegistrationConstants.PARAM_ZERO);
 	}
-	
+
 	/**
 	 * to enable the OTP based authentication mode and disable rest of modes
 	 */
@@ -478,7 +491,7 @@ public class AuthenticationController extends BaseController {
 		errorText.setWrapText(true);
 		if (isSupervisor) {
 			errorLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
-		} 
+		}
 	}
 
 	/**
@@ -507,7 +520,7 @@ public class AuthenticationController extends BaseController {
 		} else
 
 		{
-			otpUserId.setText(sessionContext.getUserContext().getUserId());
+			otpUserId.setText(SessionContext.getSessionContext().getUserContext().getUserId());
 		}
 	}
 
@@ -535,7 +548,7 @@ public class AuthenticationController extends BaseController {
 				username.setEditable(true);
 			}
 		} else {
-			username.setText(sessionContext.getUserContext().getUserId());
+			username.setText(SessionContext.getSessionContext().getUserContext().getUserId());
 		}
 	}
 
@@ -562,7 +575,7 @@ public class AuthenticationController extends BaseController {
 				fpUserId.setEditable(true);
 			}
 		} else {
-			fpUserId.setText(sessionContext.getUserContext().getUserId());
+			fpUserId.setText(SessionContext.getSessionContext().getUserContext().getUserId());
 		}
 	}
 
@@ -588,7 +601,7 @@ public class AuthenticationController extends BaseController {
 				irisUserId.setEditable(true);
 			}
 		} else {
-			irisUserId.setText(sessionContext.getUserContext().getUserId());
+			irisUserId.setText(SessionContext.getSessionContext().getUserContext().getUserId());
 		}
 	}
 
@@ -615,7 +628,7 @@ public class AuthenticationController extends BaseController {
 				faceUserId.setEditable(true);
 			}
 		} else {
-			faceUserId.setText(sessionContext.getUserContext().getUserId());
+			faceUserId.setText(SessionContext.getSessionContext().getUserContext().getUserId());
 		}
 	}
 
@@ -671,13 +684,13 @@ public class AuthenticationController extends BaseController {
 				fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
 				if (!isEODAuthentication) {
 					if (isSupervisor) {
-						RegistrationDTO registrationDTO = (RegistrationDTO) sessionContextMap
-								.get(RegistrationConstants.REGISTRATION_DATA);
+						RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getSessionContext()
+								.getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
 						registrationDTO.getBiometricDTO().getSupervisorBiometricDTO()
 								.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
 					} else {
-						RegistrationDTO registrationDTO = (RegistrationDTO) sessionContextMap
-								.get(RegistrationConstants.REGISTRATION_DATA);
+						RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getSessionContext()
+								.getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
 						registrationDTO.getBiometricDTO().getOperatorBiometricDTO()
 								.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
 					}
@@ -719,12 +732,12 @@ public class AuthenticationController extends BaseController {
 		irisDetailsDTOs.add(irisDetailsDTO);
 		if (!isEODAuthentication) {
 			if (isSupervisor) {
-				RegistrationDTO registrationDTO = (RegistrationDTO) sessionContextMap
+				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getSessionContext().getMapObject()
 						.get(RegistrationConstants.REGISTRATION_DATA);
 				registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setIrisDetailsDTO(irisDetailsDTOs);
-				sessionContextMap.get(RegistrationConstants.REGISTRATION_DATA);
+				SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
 			} else {
-				RegistrationDTO registrationDTO = (RegistrationDTO) sessionContextMap
+				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getSessionContext().getMapObject()
 						.get(RegistrationConstants.REGISTRATION_DATA);
 				registrationDTO.getBiometricDTO().getOperatorBiometricDTO().setIrisDetailsDTO(irisDetailsDTOs);
 			}
@@ -760,12 +773,12 @@ public class AuthenticationController extends BaseController {
 
 		if (!isEODAuthentication) {
 			if (isSupervisor) {
-				RegistrationDTO registrationDTO = (RegistrationDTO) sessionContextMap
+				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getSessionContext().getMapObject()
 						.get(RegistrationConstants.REGISTRATION_DATA);
 				registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setFaceDetailsDTO(faceDetailsDTO);
-				sessionContextMap.get(RegistrationConstants.REGISTRATION_DATA);
+				SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
 			} else {
-				RegistrationDTO registrationDTO = (RegistrationDTO) sessionContextMap
+				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getSessionContext().getMapObject()
 						.get(RegistrationConstants.REGISTRATION_DATA);
 				registrationDTO.getBiometricDTO().getOperatorBiometricDTO().setFaceDetailsDTO(faceDetailsDTO);
 			}
@@ -801,10 +814,10 @@ public class AuthenticationController extends BaseController {
 	 * Setting the init method to the Basecontroller
 	 * 
 	 * @param parentControllerObj
+	 * @throws RegBaseCheckedException
 	 */
-	public void init(BaseController parentControllerObj, String authType) {
+	public void init(BaseController parentControllerObj, String authType) throws RegBaseCheckedException {
 		authCount = 0;
-		otpValidity.setText("Valid for " + otpValidityInMins + " minutes");
 		isSupervisor = true;
 		isEODAuthentication = true;
 		baseController = parentControllerObj;
@@ -812,7 +825,7 @@ public class AuthenticationController extends BaseController {
 
 	}
 
-	public void initData(String authType) {
+	public void initData(String authType) throws RegBaseCheckedException {
 		authCount = 0;
 		otpValidity.setText("Valid for " + otpValidityInMins + " minutes");
 		isSupervisor = false;
@@ -821,8 +834,13 @@ public class AuthenticationController extends BaseController {
 	}
 
 	private OSIDataDTO getOSIData() {
-		return ((RegistrationDTO) sessionContextMap
+		return ((RegistrationDTO) SessionContext.getSessionContext().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA)).getOsiDataDTO();
+	}
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		otpValidity.setText("Valid for " + otpValidityInMins + " minutes");
 	}
 
 }

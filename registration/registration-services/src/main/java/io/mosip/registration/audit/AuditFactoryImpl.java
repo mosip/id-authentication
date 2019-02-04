@@ -44,7 +44,7 @@ public class AuditFactoryImpl implements AuditFactory {
 			String refIdType) {
 
 		// Get UserContext Object from SessionContext
-		UserContext userContext = SessionContext.getInstance().getUserContext();
+		UserContext userContext = SessionContext.getSessionContext().getUserContext();
 		String userId = userContext.getUserId() == null ? "NA" : userContext.getUserId();
 		String userName = userContext.getName() == null ? "NA" : userContext.getName(); 
 

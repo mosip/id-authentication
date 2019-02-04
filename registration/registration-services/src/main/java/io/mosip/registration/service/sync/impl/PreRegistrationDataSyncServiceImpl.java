@@ -129,6 +129,11 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 						break;
 					}
 				}
+			} else {
+				LOGGER.error("PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, RegistrationConstants.PRE_REG_TO_GET_ID_ERROR);
+
+				setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_ID_ERROR, null);
 			}
 
 		} catch (HttpClientErrorException | ResourceAccessException | HttpServerErrorException | RegBaseCheckedException

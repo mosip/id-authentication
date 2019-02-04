@@ -109,7 +109,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			// Map object to store the UUID's generated for BIR in CBEFF
 			Map<String, String> birUUIDs = new HashMap<>();
-			SessionContext.getInstance().getMapObject().put(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME, birUUIDs);
+			SessionContext.getSessionContext().getMapObject().put(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME, birUUIDs);
 
 			// Map object to store the byte array of JSON objects namely Demographic, HMAC,
 			// Packet Meta-Data and Audit

@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,6 +24,7 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegPacketStatusDAO;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -57,8 +59,13 @@ public class RegPacketStatusServiceTest {
 		applicationMap.put(RegistrationConstants.REG_DELETION_CONFIGURED_DAYS, "5");
 		
 		when(context.getApplicationMap()).thenReturn(applicationMap);
-		
+		SessionContext.getInstance();
 
+	}
+
+	@AfterClass
+	public static void destroy() {
+		SessionContext.destroySession();
 	}
 
 	@Test

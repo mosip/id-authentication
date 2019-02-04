@@ -295,7 +295,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			registrationTxn.setRegId(registration.getId());
 			registrationTxn.setTrnTypeCode(RegistrationTransactionType.CREATED.getCode());
 			registrationTxn.setLangCode("ENG");
-			registrationTxn.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
+			registrationTxn.setCrBy(SessionContext.getSessionContext().getUserContext().getUserId());
 			registrationTxn.setCrDtime(new Timestamp(System.currentTimeMillis()));
 
 			registrationTxn.setStatusCode(registration.getClientStatusCode());

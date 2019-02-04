@@ -130,7 +130,7 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 					.with(auditLogControl -> auditLogControl.setAuditLogSyncDateTime(currentTimestamp))
 					.with(auditLogControl -> auditLogControl.setCrDtime(currentTimestamp))
 					.with(auditLogControl -> auditLogControl
-							.setCrBy(SessionContext.getInstance().getUserContext().getUserId()))
+							.setCrBy(SessionContext.getSessionContext().getUserContext().getUserId()))
 					.get());
 			
 			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,

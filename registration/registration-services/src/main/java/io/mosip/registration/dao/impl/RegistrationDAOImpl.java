@@ -71,13 +71,13 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registration.setAckFilename(zipFileName + "_Ack." + RegistrationConstants.IMAGE_FORMAT);
 			registration.setClientStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 			registration.setUploadCount((short) 1);
-			registration.setRegCntrId(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
+			registration.setRegCntrId(SessionContext.getSessionContext().getUserContext().getRegistrationCenterDetailDTO()
 					.getRegistrationCenterId());
 			registration.setIsActive(true);
-			registration.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
+			registration.setCrBy(SessionContext.getSessionContext().getUserContext().getUserId());
 			registration.setCrDtime(time);
-			registration.setRegUsrId(SessionContext.getInstance().getUserContext().getUserId());
-			registration.setApproverUsrId(SessionContext.getInstance().getUserContext().getUserId());
+			registration.setRegUsrId(SessionContext.getSessionContext().getUserContext().getUserId());
+			registration.setApproverUsrId(SessionContext.getSessionContext().getUserContext().getUserId());
 
 			List<RegistrationTransaction> registrationTransactions = new ArrayList<>();
 			RegistrationTransaction registrationTxn = new RegistrationTransaction();
@@ -85,7 +85,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registrationTxn.setTrnTypeCode(RegistrationTransactionType.CREATED.getCode());
 			registrationTxn.setLangCode("ENG");
 			registrationTxn.setStatusCode(RegistrationClientStatusCode.CREATED.getCode());
-			registrationTxn.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
+			registrationTxn.setCrBy(SessionContext.getSessionContext().getUserContext().getUserId());
 			registrationTxn.setCrDtime(time);
 			registrationTransactions.add(registrationTxn);
 			registration.setRegistrationTransaction(registrationTransactions);
@@ -119,9 +119,9 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registration.setClientStatusCode(clientStatusCode);
 			registration.setClientStatusTimestamp(timestamp);
 			registration.setClientStatusComments(statusComments);
-			registration.setApproverUsrId(SessionContext.getInstance().getUserContext().getUserId());
-			registration.setApproverRoleCode(SessionContext.getInstance().getUserContext().getRoles().get(0));
-			registration.setUpdBy(SessionContext.getInstance().getUserContext().getUserId());
+			registration.setApproverUsrId(SessionContext.getSessionContext().getUserContext().getUserId());
+			registration.setApproverRoleCode(SessionContext.getSessionContext().getUserContext().getRoles().get(0));
+			registration.setUpdBy(SessionContext.getSessionContext().getUserContext().getUserId());
 			registration.setUpdDtimes(timestamp);
 
 			List<RegistrationTransaction> registrationTransaction = registration.getRegistrationTransaction();
@@ -132,7 +132,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registrationTxn.setLangCode("ENG");
 			registrationTxn.setStatusCode(clientStatusCode);
 			registrationTxn.setStatusComment(statusComments);
-			registrationTxn.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
+			registrationTxn.setCrBy(SessionContext.getSessionContext().getUserContext().getUserId());
 			registrationTxn.setCrDtime(timestamp);
 			registrationTransaction.add(registrationTxn);
 
