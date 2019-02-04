@@ -51,6 +51,11 @@ node {
   /*
   JFrog artifactory configuration
   */
+   dir(branch) {
+   pom = readMavenPom file: 'pom.xml'
+   version = pom.version
+   echo version
+   }
   rtMaven.tool = 'M2_HOME' // Tool name from Jenkins configuration
   rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
   rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
