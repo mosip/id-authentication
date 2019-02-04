@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="userOnboardIris" prefHeight="461.0" prefWidth="835.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.IrisCaptureController">
+   <children>
+   <AnchorPane prefHeight="653.0" prefWidth="835.0" styleClass="anchorPanebgColor,borderStyle">
+         <children>
+         <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="14.0" layoutY="10.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
+  	 			<image>
+					<Image url="@../images/Home.png" />
+		 		</image>
+    		</ImageView>
+    		<Text id="homeReg" fx:id="paneLabel" layoutX="44.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="10.0" text="/ Onboard User" />            
+      <Label layoutX="14.0" layoutY="48.0" text="Iris Scan"/>
+         
+      <Pane id="leftIrisPane" fx:id="leftIrisPane" layoutX="14.0" layoutY="85.0" onMouseClicked="#enableScan" prefHeight="221.0" prefWidth="253.0" styleClass="irisImagePane">
+         <children>
+            <ImageView fx:id="leftIrisImage" fitHeight="221.0" fitWidth="253.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/leftIris.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+      <Label layoutX="20.0" layoutY="318.0" prefHeight="27.0" prefWidth="99.0" text="Quality %" />
+      <Label layoutX="146.0" layoutY="322.0" text=":" />
+      <Label fx:id="leftIrisQualityScore" layoutX="155.0" layoutY="322.0" />
+      <Label layoutX="20.0" layoutY="350.0" text="Threshold %" />
+      <Label layoutX="146.0" layoutY="350.0" text=":" />
+      <Label fx:id="leftIrisThreshold" layoutX="155.0" layoutY="350.0" />
+      <Pane id="rightIrisPane" fx:id="rightIrisPane" layoutX="288.0" layoutY="85.0" onMouseClicked="#enableScan" prefHeight="221.0" prefWidth="253.0" styleClass="irisImagePane">
+         <children>
+            <ImageView fx:id="rightIrisImage" fitHeight="221.0" fitWidth="253.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/rightIris.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+      <Label layoutX="294" layoutY="318.0" prefHeight="27.0" prefWidth="99.0" text="Quality %" />
+      <Label layoutX="420.0" layoutY="322.0" text=":" />
+      <Label fx:id="rightIrisQualityScore" layoutX="504.0" layoutY="322.0" />
+      <Label layoutX="294.0" layoutY="350.0" text="Threshold %" />
+      <Label layoutX="420.0" layoutY="350.0" text=":" />
+      <Label fx:id="rightIrisThreshold" layoutX="504.0" layoutY="350.0" />
+      <Button fx:id="scanIris" layoutX="17.0" layoutY="395.0" mnemonicParsing="false" onAction="#scan" text="Scan" styleClass="RegbuttonStyle" />
+      <Button fx:id="irisNext" layoutX="738.0" layoutY="592.0" mnemonicParsing="false" onAction="#nextSection" text="Next" styleClass="RegbuttonStyle" />
+      <Button fx:id="irisPrevious" layoutX="660.0" layoutY="592.0" mnemonicParsing="false" onAction="#previousSection" text="Previous" styleClass="RegbuttonStyle" />
+   </children>
+   </AnchorPane>
+   </children>
+</AnchorPane>

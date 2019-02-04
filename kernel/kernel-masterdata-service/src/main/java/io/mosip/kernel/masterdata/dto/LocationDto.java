@@ -38,8 +38,7 @@ public class LocationDto {
 	@NotBlank
 	private String hierarchyName;
 
-	@Size(min = 1, max = 32)
-	@NotBlank
+	
 	private String parentLocCode;
 
 	@ValidLangCode

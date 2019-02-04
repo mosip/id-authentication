@@ -214,6 +214,8 @@ public class AuthRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestDTO.setIdvIdType(IdType.VID.getType());
 		authRequestDTO.setIdvId("5371843613598206");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authRequestDTO.setAuthType(authTypeDTO);
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
@@ -1169,9 +1171,7 @@ public class AuthRequestValidatorTest {
 		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setTxnID("1234567890");
-//		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
 		idInfoDTO.setValue("John");
@@ -1185,7 +1185,7 @@ public class AuthRequestValidatorTest {
 		idDTO.setFullName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(null);
+		authRequestDTO.setAuthType(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);

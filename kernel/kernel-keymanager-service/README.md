@@ -1,13 +1,67 @@
 ## kernel-keymanager-service
-[Background & Design](../../design/kernel/kernel-keymanager.md)
- 
 
-**Api Documentation**
+[Background & Design](../../docs/design/kernel/kernel-keymanager.md)
 
-[API Documentation <TBA>](TBA)
+[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#1-key-manager)
+
+Default Port and Context Path
 
 ```
-mvn javadoc:javadoc
+server.port=8088
+server.servlet.path=/keymanager
+
+```
+
+localhost:8088/keymanager/swagger-ui.html
+
+
+**Application Properties**
+
+[application-dev.properties](../../config/application-dev.properties)
+
+[kernel-keymanager-service-dev.properties](../../config/kernel-keymanager-service-dev.properties)
+
+
+```
+#mosip.kernel.keymanager.softhsm.config-path=/pathto/softhsm.conf
+mosip.kernel.keymanager.softhsm.config-path=D\:\\SoftHSM2\\etc\\softhsm2-demo.conf
+mosip.kernel.keymanager.softhsm.keystore-type=PKCS11
+mosip.kernel.keymanager.softhsm.keystore-pass=pwd
+
+mosip.kernel.keymanager.softhsm.certificate.common-name=www.mosip.io
+mosip.kernel.keymanager.softhsm.certificate.organizational-unit=MOSIP
+mosip.kernel.keymanager.softhsm.certificate.organization=IITB
+mosip.kernel.keymanager.softhsm.certificate.country=IN
+
+mosip.kernel.keygenerator.asymmetric-algorithm-name=RSA
+mosip.kernel.keygenerator.asymmetric-algorithm-length=2048
+mosip.kernel.keygenerator.symmetric-algorithm-name=AES
+mosip.kernel.keygenerator.symmetric-algorithm-length=256
+
+mosip.kernel.crypto.asymmetric-algorithm-name=RSA
+mosip.kernel.crypto.symmetric-algorithm-name=AES
+
+mosip.kernel.data-key-splitter=#KEY_SPLITTER#
+
+# DB Properties For Development
+--------------------------------------
+javax.persistence.jdbc.driver=org.postgresql.Driver
+javax.persistence.jdbc.url = jdbc:postgresql://localhost:8888/mosip_kernel
+javax.persistence.jdbc.password = dbpwd
+javax.persistence.jdbc.user = dbuser
+
+hibernate.hbm2ddl.auto=update
+hibernate.dialect=org.hibernate.dialect.PostgreSQL95Dialect
+hibernate.jdbc.lob.non_contextual_creation=true
+hibernate.show_sql=true
+hibernate.format_sql=true
+hibernate.connection.charSet=utf8
+hibernate.cache.use_second_level_cache=false
+hibernate.cache.use_query_cache=false
+hibernate.cache.use_structured_entries=false
+hibernate.generate_statistics=false
+hibernate.current_session_context_class=org.springframework.orm.hibernate5.SpringSessionContext
+
 ```
 
 **The inputs which have to be provided are:**

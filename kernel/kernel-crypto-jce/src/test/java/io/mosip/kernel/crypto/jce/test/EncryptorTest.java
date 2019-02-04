@@ -40,11 +40,11 @@ public class EncryptorTest {
 		SecureRandom random = new SecureRandom();
 		generator.initialize(2048, random);
 		rsaPair = generator.generateKeyPair();
-		data = "a".getBytes();
+		data = "test".getBytes();
 
 	}
 
-	public SecretKeySpec setSymmetricUp(int length, String algo)
+	private SecretKeySpec setSymmetricUp(int length, String algo)
 			throws java.security.NoSuchAlgorithmException {
 		SecureRandom random = new SecureRandom();
 		byte[] keyBytes = new byte[length];
@@ -91,8 +91,7 @@ public class EncryptorTest {
 	@Test(expected = InvalidKeyException.class)
 	public void testAESSymmetricEncryptInvalidKey()
 			throws java.security.NoSuchAlgorithmException {
-		assertThat(encryptorImpl.symmetricEncrypt(null, data),
-				isA(byte[].class));
+		encryptorImpl.symmetricEncrypt(null, data);
 	}
 
 }

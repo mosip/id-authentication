@@ -2,6 +2,8 @@ package io.mosip.registration.processor.packet.storage.dto;
 	
 import java.math.BigDecimal;
 
+import org.bouncycastle.util.Arrays;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -32,6 +34,13 @@ public class PhotographDto {
 	/** The image store. */
 	private byte[] imageStore;
 	
+	public byte[] getImageStore() {
+		return Arrays.copyOf(imageStore, imageStore.length);
+	}
+	public void setImageStore(byte[] imageStore) {
+		this.imageStore=imageStore!=null?imageStore:null;
+	}
+	
 	/** The has excp photograph. */
 	private Boolean hasExcpPhotograph;
 	
@@ -40,6 +49,13 @@ public class PhotographDto {
 	
 	/** The excp photo store. */
 	private byte[] excpPhotoStore;
+	
+	public byte[] getExcpPhotoStore() {
+		return Arrays.copyOf(excpPhotoStore, excpPhotoStore.length);
+	}
+	public void setExcpPhotoStore(byte[] excpPhotoStore) {
+		this.excpPhotoStore=excpPhotoStore!=null?excpPhotoStore:null;
+	}
 	
 	/** The is active. */
 	private boolean isActive;

@@ -17,6 +17,7 @@ public class AuditManagerBootApplication {
 	 * Main method to run spring boot application
 	 * 
 	 * @param args
+	 *            args
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(AuditManagerBootApplication.class, args);

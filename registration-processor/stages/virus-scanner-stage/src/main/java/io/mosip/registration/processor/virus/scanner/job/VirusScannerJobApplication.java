@@ -12,9 +12,9 @@ public class VirusScannerJobApplication {
 									  "io.mosip.registration.processor.packet.manager.config",
 									  "io.mosip.registration.processor.status.config",
 									  "io.mosip.registration.processor.core.kernel.beans");
-		
+
 		configApplicationContext.refresh();
-		
+
 		VirusScannerStage virusScannerStage = configApplicationContext.getBean(VirusScannerStage.class);
 		virusScannerStage.deployVerticle();
 	}

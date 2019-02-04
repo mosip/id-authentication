@@ -26,7 +26,7 @@ import io.mosip.kernel.idgenerator.vid.util.VidFilterUtils;
  */
 @Service
 public class VidGeneratorImpl implements VidGenerator<String> {
-	
+
 	/**
 	 * Field to hold vidFilterUtils object
 	 */
@@ -41,6 +41,7 @@ public class VidGeneratorImpl implements VidGenerator<String> {
 	private static final RandomDataGenerator RANDOM_DATA_GENERATOR = new RandomDataGenerator();
 
 	private int generatedIdLength;
+
 	private long lowerBound;
 	private long upperBound;
 
@@ -48,21 +49,20 @@ public class VidGeneratorImpl implements VidGenerator<String> {
 	public void vidGeneratorPostConstruct() {
 		generatedIdLength = vidLength - 1;
 		lowerBound = Long.parseLong(
-				VidGeneratorConstant.TWO + StringUtils.repeat(VidGeneratorConstant.ZERO, generatedIdLength - 1));
+				VidGeneratorConstant.ZERO + StringUtils.repeat(VidGeneratorConstant.ZERO, generatedIdLength - 1));
 		upperBound = Long.parseLong(StringUtils.repeat(VidGeneratorConstant.NINE, generatedIdLength));
 	}
 
 	/**
-	 * Generates a Vid 
+	 * Generates a Vid
 	 * 
 	 * @return a vid
 	 */
 	@Override
 	public String generateId() {
-	
+
 		return generateVid();
 	}
-
 
 	/**
 	 * Generates Id
@@ -70,7 +70,7 @@ public class VidGeneratorImpl implements VidGenerator<String> {
 
 	private String generateVid() {
 		String generatedVid = generateRandomId(generatedIdLength, lowerBound, upperBound);
-		while (!vidFilterUtils.isValidId(generatedVid)) {
+		while (!vidFilterUtils.isValidId(generatedVid) || generatedVid.contains(" ")) {
 			generatedVid = generateRandomId(generatedIdLength, lowerBound, upperBound);
 		}
 		return generatedVid;
@@ -89,8 +89,9 @@ public class VidGeneratorImpl implements VidGenerator<String> {
 	 */
 	private String generateRandomId(int generatedIdLength, long lowerBound, long upperBound) {
 		Long generatedID = RANDOM_DATA_GENERATOR.nextSecureLong(lowerBound, upperBound);
-		String verhoeffDigit = ChecksumUtils.generateChecksumDigit(String.valueOf(generatedID));
-		return appendChecksum(generatedIdLength, generatedID, verhoeffDigit);
+		String id = String.valueOf(generatedID);
+		String verhoeffDigit = ChecksumUtils.generateChecksumDigit(id);
+		return appendChecksum(id, verhoeffDigit);
 	}
 
 	/**
@@ -104,10 +105,10 @@ public class VidGeneratorImpl implements VidGenerator<String> {
 	 *            The checksum to append
 	 * @return VId with checksum
 	 */
-	private String appendChecksum(int generatedIdLength, Long generatedVId, String verhoeffDigit) {
+	private String appendChecksum(String generatedVId, String verhoeffDigit) {
 		StringBuilder vidSb = new StringBuilder();
 		vidSb.setLength(vidLength);
-		return vidSb.insert(0, generatedVId).insert(generatedIdLength, verhoeffDigit).toString().trim();
+		return vidSb.insert(0, generatedVId).insert(generatedVId.length(), verhoeffDigit).toString().trim();
 	}
 
 }

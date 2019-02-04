@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,12 +29,15 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
+import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
+import io.mosip.authentication.service.impl.indauth.service.demo.PinAuthType;
 import io.mosip.authentication.service.impl.otpgen.facade.OTPFacadeImpl;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.authentication.service.integration.NotificationManager;
@@ -141,10 +145,18 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 		values.put(UIN2, maskedUin);
 
-		values.put(AUTH_TYPE,
-
-				Stream.of(DemoAuthType.values()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO, infoHelper))
-						.map(DemoAuthType::getDisplayName).distinct().collect(Collectors.joining(",")));
+		//TODO add for all auth types
+		String authTypeStr = Stream.of(
+								Stream.<AuthType>of(DemoAuthType.values()), 
+								Stream.<AuthType>of(BioAuthType.values()),
+								Stream.<AuthType>of(PinAuthType.values())
+								)
+							.flatMap(Function.identity())
+								.filter(authType -> authType.isAuthTypeEnabled(authRequestDTO, infoHelper))
+							.map(AuthType::getDisplayName)
+							.distinct()
+							.collect(Collectors.joining(","));
+		values.put(AUTH_TYPE, authTypeStr);
 		if (authResponseDTO.getStatus().equalsIgnoreCase(STATUS_SUCCESS)) {
 			values.put(STATUS, "Passed");
 		} else {

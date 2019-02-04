@@ -1,5 +1,6 @@
 package io.mosip.authentication.service.impl.indauth.validator;
 
+import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -43,6 +45,7 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.GenderType;
+import io.mosip.authentication.service.impl.indauth.service.demo.PinAuthType;
 import io.mosip.authentication.service.validator.IdAuthValidator;
 import io.mosip.kernel.core.datavalidator.exception.InvalidPhoneNumberException;
 import io.mosip.kernel.core.datavalidator.exception.InvalideEmailException;
@@ -60,13 +63,23 @@ import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
  * 
  */
 public class BaseAuthRequestValidator extends IdAuthValidator {
-	
+
+	private static final String MAKE_FOR_0_BIO_TYPE  = "make for {0} bioType";
+
+	private static final String PIN = "pin";
+
+	/** The Final Constant For PIN_VALUE */
+	private static final String PIN_VALUE = "pinValue";
+
+	/** The Final Constant For PIN_TYPE */
+	private static final String PIN_TYPE = "pinType";
+
 	/** The Final Constant For MODEL */
 	private static final String MODEL = "model";
-	
+
 	/** The Final Constant For FINGERPRINT_PROVIDER_ALL */
 	private static final String FINGERPRINT_PROVIDER_ALL = "fingerprint.provider.all";
-	
+
 	/** The Final Constant For IRIS_PROVIDER_ALL */
 	private static final String IRIS_PROVIDER_ALL = "iris.provider.all";
 
@@ -111,10 +124,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/** The Constant OTP_LENGTH. */
 	private static final Integer OTP_LENGTH = 6;
-	
+
 	/** The Constant finger. */
 	private static final String FINGER = "finger";
-	
+
 	/** The Constant iris. */
 	private static final String IRIS = "iris";
 
@@ -132,6 +145,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/** The Constant IdentityInfoDTO. */
 	private static final String IDENTITY_INFO_DTO = "IdentityInfoDTO";
+	
+
+	/** The Constant PATTERN. */
+	private static final Pattern STATIC_PIN_PATTERN = Pattern.compile("^[0-9]{6}");
 
 	/** email Validator */
 	@Autowired
@@ -144,6 +161,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The id info helper. */
 	@Autowired
 	protected IdInfoHelper idInfoHelper;
+
+	/** The Environment. */
 	@Autowired
 	private Environment environment;
 
@@ -170,6 +189,112 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		if (baseAuthRequestDTO != null) {
 			validateId(baseAuthRequestDTO.getId(), errors);
 		}
+	}
+
+	/**
+	 * validates the Static Pin Details
+	 * 
+	 * @param authRequestDTO
+	 * @param errors
+	 */
+	protected void validatePinDetails(AuthRequestDTO authRequestDTO, Errors errors) {
+		AuthTypeDTO authTypeDTO = authRequestDTO.getAuthType();
+
+		if ((authTypeDTO != null && authTypeDTO.isPin())) {
+
+			List<PinInfo> pinInfo = authRequestDTO.getPinInfo();
+
+			if (pinInfo != null && !pinInfo.isEmpty()) {
+
+				validatePinInfo(pinInfo, errors);
+
+			} else {
+				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "Missing pinval in the request");
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_PINDATA.getErrorCode(),
+						new Object[] { PIN_INFO },
+						IdAuthenticationErrorConstants.MISSING_PINDATA.getErrorMessage());
+			}
+		}
+	}
+
+	/**
+	 * validate The Pin Info list from the request.
+	 * 
+	 * @param pinInfo
+	 * @param errors
+	 */
+	private void validatePinInfo(List<PinInfo> pinInfo, Errors errors) {
+		if (!isPinTypeEmptyOrNull(pinInfo)) {
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "missing Pin Type Info request");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { PIN_TYPE },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		}
+		if(!errors.hasErrors()) {
+			checkPinType(pinInfo,errors);
+		}
+		if (!isPinValueEmptyOrNull(pinInfo)) {
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "missing Pin Value Info request");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { PIN_VALUE },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		}
+		if(!errors.hasErrors()) {
+			checkPinValue(pinInfo,errors);
+		}
+		
+	}
+	/**
+	 * checks the static Pin value.
+	 * 
+	 * @param pinInfo
+	 * @param errors
+	 */
+	private void checkPinValue(List<PinInfo> pinInfo, Errors errors) {
+		for (PinInfo pinInfos : pinInfo) {
+			 if (!STATIC_PIN_PATTERN.matcher(pinInfos.getValue()).matches()) {
+				 mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
+							"Invalid Input Static pin Value");
+					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { PIN_VALUE }, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+				}
+		}
+	}
+	/**
+	 * checks the static Pin Type.
+	 * 
+	 * @param pinInfo
+	 * @param errors
+	 */
+	private void checkPinType(List<PinInfo> pinInfo,Errors errors) {
+		for (PinInfo pinInfos : pinInfo) {
+			if (!Stream.of(PinAuthType.values()).anyMatch(pinType -> pinInfos.getType().equals(pinType.getType()))) {
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						new Object[] { PIN_TYPE },
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+			}
+		}
+	}
+
+	/**
+	 * checks pin value is null or empty
+	 * 
+	 * @param pinInfo
+	 * @param errors
+	 * @return
+	 */
+	private boolean isPinTypeEmptyOrNull(List<PinInfo> pinInfo) {
+		return pinInfo.parallelStream().allMatch(info -> info.getType() != null && !info.getType().isEmpty());
+	}
+
+	/**
+	 * checks pin Type is null or empty.
+	 * 
+	 * @param pinInfo
+	 * @return
+	 */
+	private boolean isPinValueEmptyOrNull(List<PinInfo> pinInfo) {
+		return pinInfo.parallelStream().allMatch(info -> info.getValue() != null && !info.getValue().isEmpty());
 	}
 
 	/**
@@ -248,8 +373,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		if (!isModelNullOrEmpty(bioInfos)) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "missing biometric model Info request");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { MODEL },
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+					new Object[] { MODEL }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 		if (!isDeviceMakeNullOrEmpty(bioInfos)) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
@@ -257,11 +381,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { MAKE }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
-		validateMake(bioInfos,errors);
-			
+		validateMake(bioInfos, errors);
 
 	}
-	
+
 	/**
 	 * check model attribute is empty or null
 	 * 
@@ -279,7 +402,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param bioInfo
 	 * @return
 	 */
-	
+
 	private void validateMake(List<BioInfo> bioInfo, Errors errors) {
 		String deviceNameList = null;
 		if (isAvailableBioType(bioInfo, BioType.IRISIMG)) {
@@ -289,14 +412,13 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		}
 		if (deviceNameList != null) {
 			String[] deviceName = deviceNameList.split(",");
-			List<String> wordList = Arrays.asList(deviceName);
-			bioInfo.stream().map(info -> info.getDeviceInfo().getMake()).filter(make -> !wordList.contains(make))
-					.forEach(make -> {
-						mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
-								"Invalid Input Make in DeviceInfo");
+			List<String> wordList = Arrays.asList(deviceName);			
+			bioInfo.stream().map(info->info).filter(make-> !wordList.contains(make.getDeviceInfo().getMake()))
+					.forEach(make->{
 						errors.rejectValue(REQUEST,
 								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-								new Object[] { make },
+								// TODO
+								new Object[] { MessageFormat.format(MAKE_FOR_0_BIO_TYPE, make.getBioType()) },
 								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 					});
 		}
@@ -348,7 +470,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	/**
-	 * Validates the  Iris parameters present in thr request.
+	 * Validates the Iris parameters present in thr request.
 	 *
 	 * @param authRequestDTO
 	 *            the auth request DTO

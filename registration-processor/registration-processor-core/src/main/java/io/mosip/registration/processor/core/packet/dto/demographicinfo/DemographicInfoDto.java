@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.core.packet.dto.demographicinfo;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
 
 import lombok.Data;
@@ -29,10 +30,16 @@ public class DemographicInfoDto implements Serializable {
 	/** The dob. */
 	private Date dob;
 	
+	public Date getDob() {
+		return this.dob!=null?new Date(this.dob.getTime()):null;
+	}
+
+	public void setDob(Date dob) {
+		this.dob = dob!=null?new Date(dob.getTime()):null;
+	}
+
 	/** The gender code. */
 	private String genderCode;
 	
-	/** The phonetic name. */
-	private String phoneticName;
 
 }

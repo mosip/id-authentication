@@ -203,25 +203,6 @@ public class BookingDAO {
 	}
 	
 	/**
-	 * @param bookingEntity
-	 * @return RegistrationBookingEntity
-	 */
-	/*public RegistrationBookingEntity getRegistrationEntityByPreId(String preId) {
-		RegistrationBookingEntity entity = null;
-		try {
-//			entity = registrationBookingRepository.findBy
-			if (entity == null) {
-				throw new AppointmentBookingFailedException(ErrorCodes.PRG_BOOK_RCI_005.toString(),
-						ErrorMessages.APPOINTMENT_BOOKING_FAILED.toString());
-			}
-		} catch (DataAccessLayerException e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
-		}
-		return entity;
-	}*/
-
-	/**
 	 * @param registrationCenterId
 	 * @param statusCode
 	 * @return List of RegistrationBookingEntity
@@ -264,13 +245,7 @@ public class BookingDAO {
 	 * @return boolean
 	 */
 	public boolean saveAvailability(AvailibityEntity entity) {
-		if (bookingAvailabilityRepository.save(entity) != null) {
-			return true;
-		} else {
-			return false;
-		}
+		return bookingAvailabilityRepository.save(entity) != null;
 	}
-	
-	
 
 }

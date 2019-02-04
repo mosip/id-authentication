@@ -108,7 +108,7 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	 * @return the crDtimes
 	 */
 	public Timestamp getCrDtimes() {
-		return crDtimes;
+		return new Timestamp(crDtimes.getTime());
 	}
 
 	/**
@@ -126,7 +126,7 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	 * @return the delDtimes
 	 */
 	public Timestamp getDelDtimes() {
-		return delDtimes;
+		return new Timestamp(delDtimes.getTime());
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	 * @param delDtimes            the delDtimes to set
 	 */
 	public void setDelDtimes(Timestamp delDtimes) {
-		this.delDtimes = delDtimes;
+		this.delDtimes = new Timestamp(delDtimes.getTime());
 	}
 
 	/**
@@ -306,7 +306,7 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	 * @return the updDtimes
 	 */
 	public Timestamp getUpdDtimes() {
-		return updDtimes;
+		return new Timestamp(updDtimes.getTime());
 	}
 
 	/**
@@ -315,7 +315,7 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	 * @param updDtimes            the updDtimes to set
 	 */
 	public void setUpdDtimes(Timestamp updDtimes) {
-		this.updDtimes = updDtimes;
+		this.updDtimes = new Timestamp(updDtimes.getTime());
 	}
 
 	/**

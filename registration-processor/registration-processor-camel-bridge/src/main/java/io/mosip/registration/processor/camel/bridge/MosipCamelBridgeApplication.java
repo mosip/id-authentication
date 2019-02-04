@@ -2,7 +2,7 @@ package io.mosip.registration.processor.camel.bridge;
 
 /**
  * This is main class for Vertx Camel Bridge
- * 
+ *
  * @author Pranav Kumar
  * @since 0.0.1
  *

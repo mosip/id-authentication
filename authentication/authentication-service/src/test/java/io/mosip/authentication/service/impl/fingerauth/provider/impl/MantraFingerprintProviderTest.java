@@ -96,4 +96,9 @@ public class MantraFingerprintProviderTest {
 	public void testOnCaptureCompleted() {
 		fp.OnCaptureCompleted(false, 0, null, null);
 	}
+	
+	@Test
+	public void testCreateMinutiae() {
+		fp.createMinutiae(null);
+	}
 }

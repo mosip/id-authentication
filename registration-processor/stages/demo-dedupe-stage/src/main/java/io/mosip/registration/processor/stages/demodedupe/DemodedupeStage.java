@@ -84,7 +84,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 
 	/** The Constant MATCHED_REFERENCE_TYPE. */
 	private static final String MATCHED_REFERENCE_TYPE = "uin";
-
+	
 	/**
 	 * Deploy verticle.
 	 */

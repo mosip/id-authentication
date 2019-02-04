@@ -1,0 +1,211 @@
+{
+  "header": {
+    "link_about": "معلومات عنا",
+    "link_faq": "FAQ",
+    "link_contact": "اتصل",
+    "link_applications": "تطبيقاتك",
+    "link_logout": "الخروج"
+  },
+  "login": {
+    "text": "خطوات سريعة وسهلة",
+    "sub_text": "التسجيل المسبق ل",
+    "sub_text_UID": "رقم تعريف فريد",
+
+    "label_email_num": "معرف البريد الإلكتروني أو رقم الهاتف",
+    "label_otp": "أدخل OTP",
+    "action_send": "إرسال OTP",
+    "action_resend": "إعادة إرسال",
+    "action_verify": "التحقق"
+  },
+  "stepper": {
+    "link_demographic": "التفاصيل الديموغرافية",
+    "link_upload_doc": "تحميل المستند",
+    "link_book": "موعد الكتاب",
+    "link_confirm": "التأكيد"
+  },
+  "demographic": {
+    "title": "التفاصيل الديموغرافية",
+    "language": "عربى",
+    "label_name": "الاسم الكامل",
+    "name_required": "الإسم الكامل ضروري",
+    "label_age": "عمر",
+    "date_dd": "اليوم ",
+    "date_mm": "الشهر ",
+    "date_yyyy": "السنة",
+    "text_or": "أو",
+    "text_years": "سنوات",
+    "text_foreigner":"أجنبي",
+    "text_gender": "جنس",
+    "button_male": "الذكر",
+    "button_female": "إناثا",
+    "label_address1": "العنوان السطر 1",
+    "label_address2": "سطر العنوان 2",
+    "label_address3": "سطر العنوان 3",
+    "label_region": "منطقة",
+    "label_province": "المحافظة",
+    "label_city": "مدينة",
+    "label_local_administrative_authority": "الهيئة الإدارية المحلية",
+    "label_mob_num": "رقم الهاتف المحمول",
+    "label_postalCode": "الرمز البريدي",
+    "label_email_id": "عنوان الايميل",
+    "label_pin": "CNIE/EC",
+    "action_back": "الى الخلف",
+    "action_continue": "استمر",
+    "action_preview": "معاينة",
+    "validation": {
+      "name_required": "الإسم الكامل ضروري",
+      "age_validation": "يجب أن يكون العمر أقل من 150",
+      "gender_validation":"يرجى تحديد الجنس",
+      "DOB_validation": "أدخل DOB صالحًا أو العمر  ",
+      "date_required": "مطلوب رقمين التاريخ",
+      "month_required": "أدخل رقمين رقميين للشهر",
+      "year_required": "أدخل رقمين رقميين للسنة",
+      "address_required": "العنوان مطلوب",
+      "region_required": "يرجى اختيار المنطقة",
+      "province_required": "يرجى اختيار مقاطعة",
+      "city_required": "يرجى اختيار المدينة",
+      "admin_required": "يرجى اختيار السلطة الإدارية المحلية",
+      "postal_code_required": "الرجاء إدخال رمز بريدي صالح",
+      "mobile_required": "يرجى إدخال رقم هاتف محمول صحيح",
+      "email_required": "الرجاء إدخال معرف البريد الإلكتروني الصحيح",
+      "pin_required": "الرجاء إدخال دبوس صالح"
+    }
+  },
+
+  "documents": {
+    "title_document": "تحميل المستندات",
+    "text_filetype": "نوع الملف المسموح به Pdf و Word و Max 1 ميغابايت",
+    "action_browse": "تصفح",
+    "action_back": "الى الخلف",
+    "action_skip": "تخطى",
+    "action_continue": "استمر",
+    "label_sameas": "مثل",
+    "text_or": "أو",
+    "action_view": "رأي"
+  },
+  "preview": {
+    "title_preview": "معاينة",
+    "language": "عربى",
+    "subheading_information": "معلومات شخصية",
+    "label_name": "الاسم الكامل",
+    "label_age": "عمر",
+    "text_years": "سنوات",
+    "text_gender": "جنس",
+    "subheading_contact": "بيانات المتصل",
+    "label_address": "عنوان",
+    "label_region": "منطقة",
+    "label_province": "المحافظة",
+    "label_city": "مدينة",
+    "label_local_administrative_authority": "الجهاز الإداري المحلي",
+    "label_mob_num": "رقم الهاتف المحمول",
+    "label_alt_mob_num": "بديل رقم Moblie",
+    "label_email_id": "عنوان الايميل",
+    "label_pin": "CNIE/EC",
+    "title_document": "المستندات التي تم تحميلها",
+    "action_modify": "تعديل",
+    "action_back": "الى الخلف",
+    "action_add_applicant": "إضافة تطبيق",
+    "action_continue": "استمر"
+  },
+  "bookAppointment": {
+    "title_book": " موعد الكتاب",
+    "text_prev": "سابق",
+    "text_next": "التالى",
+    "text_morning": "صباح",
+    "text_afternoon": "بعد الظهر",
+    "text_available": "مقدمو الطلبات المتاحة",
+    "action_done": "فعله",
+    "action_back": "الى الخلف",
+    "action_bookLater": " كتاب لاحقا",
+    "action_continue": "استمر"
+  },
+  "message": {
+    "login": {
+      "msg_email_valid": "معرف البريد الإلكتروني غير صالح",
+      "msg_mun_valid": "رقم الهاتف غير صالح",
+      "msg_otp_valid": "إدخال OTP غير صالح",
+      "msg_login": "دخول ناجح"
+    },
+    "demographicDetails": {
+      "msg_black_word": "دخلت الكلمة السوداء المدرجة"
+    },
+    "uploadDocuments": {
+      "msg_document_size": "وثيقة تتجاوز الحجم المسموح به",
+      "msg_virus": "فشل فحص الفيروسات",
+      "msg_file": "صيغة الملف غير مدعومة"
+    },
+    "appointmentCentreSearch": {
+      "msg_result_notfound": "لم يتم العثور على نتائج",
+      "msg_location": "الموقع غير ممكن"
+    },
+    "bookAppointment": {
+      "msg_timeslot": "لم يتم اختيار المستخدم التالي في أي وقت",
+      "msg_continue_book": "(should provide User name) هل تريد متابعة الحجز"
+    },
+    "cancelAppointment": {
+      "msg_cancel": "سيتم إلغاء الموعد المحدد للتطبيق المحدد",
+      "msg_succes_cancel": "تم إلغاء الموعد المحدد للتطبيق المحدد بنجاح"
+    }
+  },
+  "uidStatus": {
+    "title": "تطبيقاتي",
+    "action_modify_information": "تعديل المعلومات",
+    "action_modify_appointment": "كتاب / تعديل موعد",
+    "action_cre_application": "إنشاء تطبيق جديد ",
+    "card": {
+      "text_app_id": "رقم الاستمارة",
+      "text_name": "اسم",
+      "text_appoinment_date": "موعد موعد",
+      "text_status": "الحالة",
+      "action_modify_information": "تعديل المعلومات",
+      "action_modify_appointment": "تعديل موعد"
+    }
+  },
+  "appointmentCentreSearch": {
+    "title": " موعد الكتاب ",
+    "text_recommended_centres": "المراكز الموصى بها",
+    "text_finding_result": "العثور على نتيجة ل",
+    "text_nearBy": "مجاوز",
+    "acttion_back": "الى الخلف",
+    "action_bookLater": "كتاب لاحقا",
+    "action_continue": "استمر"
+  },
+  "appointmentConfirmed": {
+    "title": "تم تأكيد الموعد",
+    "text_confirmation": "تم إرسال تفاصيل معرف التسجيل ال  و الموعد  إلى معرف البريد الإلكتروني المسجل ورقم الهاتف",
+    "action_download": "تحميل",
+    "action_print": "طباعة"
+  },
+  "dialog": {
+    "title_applicant": "عدد المتقدمون",
+    "content_applicant": "سيتم التعامل مع تفاصيل مقدم الطلب الأول على أنها أساسية",
+    "invalidApplicantNumber_msg": "يجب أن يكون الرقم بين 1 و 10",
+    "action_ok": "حسنا",
+    "title_discard": "تجاهل",
+    "action_discard_app": "تجاهل التطبيق بأكمله",
+    "action_cancel": "إلغاء الموعد وحفظ التفاصيل",
+    "action_submit": "خضع",
+    "action_dismiss": "حسنا",
+    "action_add": "إضافة",
+    "action_close": "قريب",
+    "action_add_to_slot": "أضف إلى الفتحة"
+  },
+  "ackowledgement": {
+    "title":"تم تأكيد الموعد",
+    "container_guideline": "المبادئ التوجيهية الهامة",
+    "action_download": "تحميل",
+    "action_print": "طباعة"
+  },
+  "centerSelection": {
+    "title": " موعد الكتاب ",
+    "action_nearBy": "مجاوز",
+    "display_recommended": "المراكز الموصى بها",
+    "text_found": "وجدت",
+    "text_centers": "مراكز",
+    "text_timing": "توقيت",
+    "text_open": "افتح",
+    "action_back": "الى الخلف",
+    "action_book_later": "كتاب لاحقا",
+    "action_continue": "استمر"
+  }
+}

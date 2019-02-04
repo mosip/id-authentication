@@ -3,6 +3,7 @@ package io.mosip.registration.processor.packet.storage.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -164,7 +165,7 @@ public class ApplicantPhotographEntity extends BasePacketEntity<ApplicantPhotogr
 	 * @return the image store
 	 */
 	public byte[] getImageStore() {
-		return imageStore;
+		return Arrays.copyOf(imageStore, imageStore.length);
 	}
 
 	/**
@@ -173,7 +174,7 @@ public class ApplicantPhotographEntity extends BasePacketEntity<ApplicantPhotogr
 	 * @param imageStore the new image store
 	 */
 	public void setImageStore(byte[] imageStore) {
-		this.imageStore = imageStore;
+		this.imageStore = imageStore!=null?imageStore:null;
 	}
 
 	/**
@@ -218,7 +219,8 @@ public class ApplicantPhotographEntity extends BasePacketEntity<ApplicantPhotogr
 	 * @return the excp photo store
 	 */
 	public byte[] getExcpPhotoStore() {
-		return excpPhotoStore;
+		byte[] ep=Arrays.copyOf(excpPhotoStore, excpPhotoStore.length);
+		return ep;
 	}
 
 	/**
@@ -227,7 +229,7 @@ public class ApplicantPhotographEntity extends BasePacketEntity<ApplicantPhotogr
 	 * @param excpPhotoStore the new excp photo store
 	 */
 	public void setExcpPhotoStore(byte[] excpPhotoStore) {
-		this.excpPhotoStore = excpPhotoStore;
+		this.excpPhotoStore = excpPhotoStore!=null?excpPhotoStore:null;
 	}
 
 	/**

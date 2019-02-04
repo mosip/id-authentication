@@ -28,7 +28,6 @@ import io.mosip.kernel.core.keymanager.exception.NoSuchSecurityProviderException
 import io.mosip.kernel.keymanager.softhsm.impl.KeyStoreImpl;
 
 @RunWith(SpringRunner.class)
-
 public class KeyStoreImplExceptionTest {
 
 	private java.security.KeyStore keyStore;
@@ -40,7 +39,6 @@ public class KeyStoreImplExceptionTest {
 
 	@Before
 	public void setUp() throws Exception {
-
 		KeyStoreSpi keyStoreSpiMock = mock(KeyStoreSpi.class);
 		keyStore = new java.security.KeyStore(keyStoreSpiMock, null, "test") {
 		};
@@ -58,17 +56,6 @@ public class KeyStoreImplExceptionTest {
 		Security.addProvider(provider);
 		random = new SecureRandom();
 	}
-	/*
-	 * @Test public void testKeyStoreImpl() throws Exception {
-	 * 
-	 * }
-	 */
-
-//	@Test(expected = KeystoreProcessingException.class)
-//	public void testGetAllAliasKeystoreProcessingException() throws Exception {
-//		when(keyStore.aliases()).thenThrow(KeyStoreException.class);
-//		keyStoreImpl.getAllAlias();
-//	}
 
 	@Test(expected = KeystoreProcessingException.class)
 	public void testGetKeyKeystoreProcessingException() throws Exception {

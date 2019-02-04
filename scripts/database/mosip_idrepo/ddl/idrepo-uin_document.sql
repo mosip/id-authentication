@@ -39,7 +39,7 @@ COMMENT ON COLUMN idrepo.uin_document.is_deleted IS 'Field to indicate whether t
 -- ddl-end --
 COMMENT ON COLUMN idrepo.uin_document.del_dtimes IS 'Record deleted datetime';
 -- ddl-end --
-ALTER TABLE idrepo.uin_document OWNER TO appadmin;
+ALTER TABLE idrepo.uin_document OWNER TO sysadmin;
 -- ddl-end --
 
 -- object: uk_uind | type: CONSTRAINT --

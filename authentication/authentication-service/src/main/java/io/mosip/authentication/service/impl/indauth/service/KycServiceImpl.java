@@ -14,10 +14,13 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
@@ -108,7 +111,15 @@ public class KycServiceImpl implements KycService {
 	public KycInfo retrieveKycInfo(String uin, KycType eKycType, boolean ePrintReq, boolean isSecLangInfoRequired,
 			Map<String, List<IdentityInfoDTO>> identityInfo) throws IdAuthenticationBusinessException {
 		KycInfo kycInfo = new KycInfo();
-		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = constructIdentityInfo(eKycType, identityInfo,
+		String kycTypeKey;
+		if (eKycType == KycType.LIMITED) {
+			kycTypeKey = "ekyc.type.limitedkyc";
+		} else {
+			kycTypeKey = "ekyc.type.fullkyc";
+		}
+
+		String kycType = env.getProperty(kycTypeKey);
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = constructIdentityInfo(kycType, identityInfo,
 				isSecLangInfoRequired);
 		if (null != filteredIdentityInfo) {
 			kycInfo.setIdentity(filteredIdentityInfo);
@@ -118,37 +129,61 @@ public class KycServiceImpl implements KycService {
 			if (null != maskRequired && maskRequired.booleanValue() && null != maskCount) {
 				maskedUin = MaskUtil.generateMaskValue(uin, maskCount);
 			}
-			Map<String, Object> pdfDetails = generatePDFDetails(filteredIdentityInfo, maskedUin);
-			String ePrintInfo = generatePrintableKyc(eKycType, pdfDetails, isSecLangInfoRequired);
-			kycInfo.setEPrint(ePrintInfo);
+			if(ePrintReq) {
+				Map<String, Object> pdfDetails = generatePDFDetails(filteredIdentityInfo, maskedUin);
+				setDataForKeyLeft(kycType, pdfDetails);
+				kycInfo.setEPrint(generatePrintableKyc(eKycType, pdfDetails, isSecLangInfoRequired));
+			}
 			kycInfo.setIdvId(maskedUin.toString());
 		}
 		return kycInfo;
 	}
 
 	/**
+	 * Sets the data for key left.
+	 *
+	 * @param kycType the kyc type
+	 * @param pdfDetails the pdf details
+	 */
+	private void setDataForKeyLeft(String kycType, Map<String, Object> pdfDetails) {
+		Set<String> keysWithAvaliableData = new HashSet<>();
+		for(String s : pdfDetails.keySet()) {
+			// Trim out the _pri or _sec suffix
+			if(s.contains(LABEL_PRI) || s.contains(LABEL_SEC)) {
+				keysWithAvaliableData.add(s.substring(0, s.length() - 10));
+			} else {
+				keysWithAvaliableData.add(s.substring(0, s.length() - 4));
+			}
+		}
+		String secondaryLanguage = env.getProperty("mosip.secondary.lang-code");
+		// Get all keys for the ekyc type
+		List<String> limitedKycDetail = Arrays.asList(kycType.split(","));
+		Iterator<String> keysWithAvaliableDataIterator = keysWithAvaliableData.iterator();
+		while(keysWithAvaliableDataIterator.hasNext()) {
+			if(!limitedKycDetail.contains(keysWithAvaliableDataIterator.next())) {
+				//If data is missed out, set label, and value as NA
+				String keyLeft = keysWithAvaliableDataIterator.next();
+				pdfDetails.put(keyLeft.concat("_pri"), "NA");
+				pdfDetails.put(keyLeft.concat(LABEL_PRI),
+						messageSource.getMessage(keyLeft.concat(LABEL), null, LocaleContextHolder.getLocale()));
+				pdfDetails.put(keyLeft.concat("_sec"), "NA");
+				pdfDetails.put(keyLeft.concat(LABEL_SEC),
+						messageSource.getMessage(keyLeft.concat(LABEL), null, new Locale(secondaryLanguage)));
+			}
+		}
+	}
+
+	/**
 	 * Construct identity info - Method to filter the details to be printed.
 	 *
-	 * @param eKycType
-	 *            the e kyc type
-	 * @param identity
-	 *            the identity
-	 * @param isSecLangInfoRequired
-	 *            the is sec lang info required
+	 * @param kycType the kyc type
+	 * @param identity            the identity
+	 * @param isSecLangInfoRequired            the is sec lang info required
 	 * @return the map
 	 */
-	private Map<String, List<IdentityInfoDTO>> constructIdentityInfo(KycType eKycType,
+	private Map<String, List<IdentityInfoDTO>> constructIdentityInfo(String kycType,
 			Map<String, List<IdentityInfoDTO>> identity, boolean isSecLangInfoRequired) {
 		Map<String, List<IdentityInfoDTO>> identityInfo = null;
-		String kycTypeKey;
-
-		if (eKycType == KycType.LIMITED) {
-			kycTypeKey = "ekyc.type.limitedkyc";
-		} else {
-			kycTypeKey = "ekyc.type.fullkyc";
-		}
-
-		String kycType = env.getProperty(kycTypeKey);
 		if (null != kycType) {
 			List<String> limitedKycDetail = Arrays.asList(kycType.split(","));
 			identityInfo = identity.entrySet().stream().filter(id -> limitedKycDetail.contains(id.getKey()))

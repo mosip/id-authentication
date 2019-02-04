@@ -24,16 +24,16 @@ public enum MultiFingerprintMatchingStrategy implements MatchingStrategy {
 			if (object instanceof BiFunction) {
 				BiFunction<Map<String, String>, Map<String, String>, Double> func = (BiFunction<Map<String, String>, Map<String, String>, Double>) object;
 				return (int) func.apply((Map<String, String>) reqInfo, (Map<String, String>) entityInfo).doubleValue();
-			}else {
+			} else {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
 			}
 		}
 		return 0;
 	});
-	
+
 	/** The Final for MatchingStatergyType */
 	private final MatchingStrategyType matchStrategyType;
-	
+
 	/** The Final for MatchFunction */
 	private final MatchFunction matchFunction;
 
@@ -42,7 +42,7 @@ public enum MultiFingerprintMatchingStrategy implements MatchingStrategy {
 		this.matchStrategyType = matchStrategyType;
 		this.matchFunction = matchFunction;
 	}
-	
+
 	/**
 	 * get Method for MatchingStrategyType
 	 */
@@ -57,19 +57,6 @@ public enum MultiFingerprintMatchingStrategy implements MatchingStrategy {
 	@Override
 	public MatchFunction getMatchFunction() {
 		return matchFunction;
-	}
-
-	/**
-	 * Method to return the match value 
-	 * @param reqValues the reqValues
-	 * @param entityValues the entityValues
-	 * @param matchProperties the matchProperties
-	 * @return match value the match value
-	 */
-	@Override
-	public int match(Map<String, String> reqValues, Map<String, String> entityValues,
-			Map<String, Object> matchProperties) throws IdAuthenticationBusinessException {
-		return matchFunction.match(reqValues, entityValues, matchProperties);
 	}
 
 }
