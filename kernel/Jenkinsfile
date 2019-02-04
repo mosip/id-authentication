@@ -6,7 +6,7 @@ node {
  def buildInfo
  //def branch = env.NEXT_BRANCH_NAME
  def branch = '0.8.0'
- def dockerImagesTagVersion = branch  //This will ensure that docker images tag should have 1-1 relation ship with project version
+ def dockerImagesTagVersion = 'NaV' //This will ensure that docker images tag should have 1-1 relation ship with project version
  projectToBuild = 'kernel'
  def registryUrl = 'http://docker-registry.mosip.io:5000'
  def registryName = 'docker-registry.mosip.io:5000'
@@ -51,11 +51,6 @@ node {
   /*
   JFrog artifactory configuration
   */
-   dir(branch) {
-   pom = readMavenPom file: 'kernel/pom.xml'
-   version = pom.parent.version
-   echo version
-   }
   rtMaven.tool = 'M2_HOME' // Tool name from Jenkins configuration
   rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
   rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
@@ -89,7 +84,13 @@ stage('---------- SonarQube Analysis --------------') {
    since last build according to the build parameter provided.
   */
   dir(branch) {
-	  
+	/*
+	finding parent pom version to create Docker tags
+	*/
+   pomFile = readMavenPom file: 'pom.xml'
+   dockerImagesTagVersion = pomFile.parent.version
+   echo dockerImagesTagVersion
+ 
    /*
      Checking if there is any Dockerfile present to build, if not, returning from this stage
    */
