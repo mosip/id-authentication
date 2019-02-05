@@ -17,6 +17,16 @@ public class HibernatePersistenceConstant {
 	}
 
 	/**
+	 * The string constant boot password
+	 */
+	public static final String BOOT_PASS = "jdbc.bootpassword";
+
+	/**
+	 * The string constant boot password key
+	 */
+	public static final String BOOT_PASS_KEY = "bootPassword=";
+
+	/**
 	 * The string constant jdbc driver
 	 */
 	public static final String JDBC_DRIVER = "javax.persistence.jdbc.driver";

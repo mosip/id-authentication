@@ -64,7 +64,13 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName(environment.getProperty(HibernatePersistenceConstant.JDBC_DRIVER));
-		dataSource.setUrl(environment.getProperty(HibernatePersistenceConstant.JDBC_URL));
+		if (environment.getProperty(HibernatePersistenceConstant.BOOT_PASS) == null) {
+			dataSource.setUrl(environment.getProperty(HibernatePersistenceConstant.JDBC_URL));
+		} else {
+			dataSource.setUrl(environment.getProperty(HibernatePersistenceConstant.JDBC_URL)
+					.concat(HibernatePersistenceConstant.BOOT_PASS_KEY
+							+ environment.getProperty(HibernatePersistenceConstant.BOOT_PASS)));
+		}
 		dataSource.setUsername(environment.getProperty(HibernatePersistenceConstant.JDBC_USER));
 		dataSource.setPassword(environment.getProperty(HibernatePersistenceConstant.JDBC_PASS));
 		return dataSource;
@@ -188,7 +194,7 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 							BeanUtils.instantiateClass(Class.forName(environment.getProperty(property))));
 				}
 				/**
-				 * We can add a default interceptor whenever we require here. 
+				 * We can add a default interceptor whenever we require here.
 				 */
 			} catch (BeanInstantiationException | ClassNotFoundException e) {
 				LOGGER.error("Error while configuring Interceptor.");

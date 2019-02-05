@@ -29,7 +29,8 @@ This module is used by modules that have to use the DAO layer. There can be mult
 javax.persistence.jdbc.driver=org.h2.Driver
 javax.persistence.jdbc.url=jdbc:h2\:mem\:testdb
 javax.persistence.jdbc.user=sa
-javax.persistence.jdbc.password=
+javax.persistence.jdbc.password=sp
+#jdbc.bootpassword=bootpwd
 
 hibernate.hbm2ddl.auto=create-drop
 hibernate.dialect=org.hibernate.dialect.H2Dialect
@@ -42,7 +43,7 @@ hibernate.cache.use_structured_entries=false
 hibernate.generate_statistics=false
 
 #property name is case sensitive and required for interceptors configuration
-#hibernate.ejb.interceptor=io.mosip.kernel.masterdata.config.MasterDataInterceptor
+#hibernate.ejb.interceptor=io.mosip.kernel.dataaccess.hibernate.test.CustomInterceptor
 
 ```
 
