@@ -43,7 +43,7 @@ public class Initialization extends Application {
 		LoginController loginController = applicationContext.getBean(LoginController.class);
 		loginController.loadInitialScreen(primaryStage);
 
-		io.mosip.registration.context.ApplicationContext.getInstance().getApplicationMap().put("hostServices",
+		io.mosip.registration.context.ApplicationContext.getApplicationContext().getApplicationMap().put("hostServices",
 				getHostServices());
 		
 		LOGGER.info("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
