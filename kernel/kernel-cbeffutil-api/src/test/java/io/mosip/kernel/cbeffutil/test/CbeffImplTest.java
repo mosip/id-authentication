@@ -4,9 +4,13 @@ package io.mosip.kernel.cbeffutil.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -21,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -40,6 +45,21 @@ public class CbeffImplTest {
 	
 	@Autowired
 	private CbeffI cbeffImpl;
+	
+	/*
+	 * XSD storage path from config server
+	 * */
+	
+	@Value("${mosip.kernel.xsdstorage-uri}")
+	private String configServerFileStorageURL;
+	
+	/*
+	 * XSD file name
+	 * */
+	
+	@Value("${mosip.kernel.xsdfile}")
+	private String schemaName;
+
 	
 	private List<BIR> createList;
 	private List<BIR> updateList;
@@ -163,7 +183,28 @@ public class CbeffImplTest {
 
 	@Test
 	public void testValidateXML() throws IOException, Exception {
-		assertTrue(cbeffImpl.validateXML(readCreatedXML("createCbeff"), readXSD("cbeff")));
+		assertTrue(cbeffImpl.validateXML(readCreatedXML("createCbeff"), getXSDfromConfigServer()));
+	}
+	
+	private byte[] getXSDfromConfigServer() throws URISyntaxException, IOException {
+		InputStream input = new URL(configServerFileStorageURL+schemaName).openStream();
+		byte[] fileContent = readbytesFromStream(input);
+		return fileContent;
+	}
+	
+	private byte[] readbytesFromStream(InputStream inputStream) throws IOException {
+		 ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+		  // this is storage overwritten on each iteration with bytes
+		  int bufferSize = 1024;
+		  byte[] buffer = new byte[bufferSize];
+		  // we need to know how may bytes were read to write them to the byteBuffer
+		  int len = 0;
+		  while ((len = inputStream.read(buffer)) != -1) {
+		    byteBuffer.write(buffer, 0, len);
+		  }
+		  // and then we can return your byte array.
+		  return byteBuffer.toByteArray();
+
 	}
 
 	@Test
