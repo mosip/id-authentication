@@ -47,6 +47,9 @@ public class SyncDataController {
 	@Autowired
 	SyncConfigDetailsService syncConfigDetailsService;
 
+	/**
+	 * Service instnace {@link SyncRolesService}
+	 */
 	@Autowired
 	SyncRolesService syncRolesService;
 
@@ -115,7 +118,7 @@ public class SyncDataController {
 	}
 
 	/**
-	 * API will fetch all roles from LDAP server
+	 * API will fetch all roles from Auth server
 	 * @return RolesResponseDto
 	 */
 	@GetMapping("/roles")

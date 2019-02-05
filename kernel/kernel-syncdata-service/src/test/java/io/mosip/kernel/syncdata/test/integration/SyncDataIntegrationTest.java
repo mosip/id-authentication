@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -198,6 +199,15 @@ public class SyncDataIntegrationTest {
 	
 	
 
+	
+	StringBuilder builder;
+
+	@Value("${mosip.kernel.syncdata.auth-manager-base-uri}")
+	private String authBaseUri;
+
+	@Value("${mosip.kernel.syncdata.auth-manager-roles}")
+	private String authAllRolesUri;
+
 	@Before
 	public void setup() {
 		LocalDateTime localdateTime = LocalDateTime.parse("2018-11-01T01:01:01");
@@ -278,6 +288,8 @@ public class SyncDataIntegrationTest {
 		locations = new ArrayList<>();
 		locations.add(new Location("LOC01", "ENG", "Location", 1, "1", "1"));
 		registrationCenterUserSetup();
+		builder= new StringBuilder();
+		builder.append(authBaseUri).append(authAllRolesUri);
 
 	}
 
@@ -650,17 +662,18 @@ public class SyncDataIntegrationTest {
 	
 	@Test
 	public void getAllRoles() {
-		
-		MockRestServiceServer mockRestServer=MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServer.expect(requestTo("https://integ.mosip.io/ldapmanager/allroles".toString())).andRespond(withSuccess());
+
+		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
+
+		mockRestServer.expect(requestTo(builder.toString())).andRespond(withSuccess());
 		syncRolesService.getAllRoles();
 	}
-	
-	@Test(expected=SyncDataServiceException.class)
+
+	@Test(expected = SyncDataServiceException.class)
 	public void getAllRolesException() {
-		
-		MockRestServiceServer mockRestServer=MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServer.expect(requestTo("https://integ.mosip.io/ldapmanager/allroles".toString())).andRespond(withServerError());
+
+		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
+		mockRestServer.expect(requestTo(builder.toString())).andRespond(withServerError());
 		syncRolesService.getAllRoles();
 	}
 	
