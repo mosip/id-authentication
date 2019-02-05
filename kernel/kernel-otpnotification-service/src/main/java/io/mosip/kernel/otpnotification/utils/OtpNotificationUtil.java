@@ -23,15 +23,18 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.otpnotification.constant.OtpNotificationErrorConstant;
 import io.mosip.kernel.otpnotification.constant.OtpNotificationPropertyConstant;
-import io.mosip.kernel.otpnotification.dto.NotifierResponseDto;
 import io.mosip.kernel.otpnotification.dto.OtpNotificationRequestDto;
 import io.mosip.kernel.otpnotification.dto.OtpRequestDto;
-import io.mosip.kernel.otpnotification.dto.OtpResponseDto;
 import io.mosip.kernel.otpnotification.dto.SmsRequestDto;
+import io.mosip.kernel.otpnotification.exception.OtpNotificationInvalidArgumentException;
 import io.mosip.kernel.otpnotification.exception.OtpNotifierServiceException;
 
 /**
@@ -72,6 +75,9 @@ public class OtpNotificationUtil {
 	 */
 	@Autowired
 	private RestTemplate restTemplate;
+
+	@Autowired
+	private ObjectMapper mapper;
 
 	/**
 	 * This method merge template with otp provided.
@@ -131,7 +137,22 @@ public class OtpNotificationUtil {
 
 		HttpEntity<SmsRequestDto> smsEntity = new HttpEntity<>(smsRequest, smsHeaders);
 
-		restTemplate.exchange(smsServiceApi, HttpMethod.POST, smsEntity, NotifierResponseDto.class);
+		ResponseEntity<String> response = restTemplate.exchange(smsServiceApi, HttpMethod.POST, smsEntity,
+				String.class);
+
+		String responseBody = response.getBody();
+
+		List<ServiceError> validationErrorsList = null;
+		try {
+			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+		} catch (IOException e) {
+			throw new OtpNotifierServiceException("KER-NOT-011", "Io exception occur");
+		}
+
+		if (!validationErrorsList.isEmpty()) {
+			throw new OtpNotificationInvalidArgumentException(validationErrorsList);
+		}
+
 	}
 
 	/**
@@ -155,7 +176,21 @@ public class OtpNotificationUtil {
 		map.add(OtpNotificationPropertyConstant.NOTIFICATION_EMAIL_CONTENT.getProperty(), emailBodyTemplate);
 		HttpEntity<MultiValueMap<String, Object>> emailEntity = new HttpEntity<>(map, emailHeaders);
 
-		restTemplate.exchange(emailServiceApi, HttpMethod.POST, emailEntity, NotifierResponseDto.class);
+		ResponseEntity<String> response = restTemplate.exchange(emailServiceApi, HttpMethod.POST, emailEntity,
+				String.class);
+
+		String responseBody = response.getBody();
+
+		List<ServiceError> validationErrorsList = null;
+		try {
+			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+		} catch (IOException e) {
+			throw new OtpNotifierServiceException("KER-NOT-012", "Io exception occur in email notification");
+		}
+
+		if (!validationErrorsList.isEmpty()) {
+			throw new OtpNotificationInvalidArgumentException(validationErrorsList);
+		}
 	}
 
 	/**
@@ -167,16 +202,40 @@ public class OtpNotificationUtil {
 	 */
 	public String generateOtp(OtpRequestDto request) {
 
-		ResponseEntity<OtpResponseDto> response = null;
-
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		HttpEntity<OtpRequestDto> entity = new HttpEntity<>(request, headers);
 
-		response = restTemplate.exchange(otpServiceApi, HttpMethod.POST, entity, OtpResponseDto.class);
+		ResponseEntity<String> response = restTemplate.exchange(otpServiceApi, HttpMethod.POST, entity, String.class);
 
-		return response.getBody().getOtp();
+		String responseBody = response.getBody();
+		
+		System.out.println(responseBody);
+
+		List<ServiceError> validationErrorsList = null;
+		try {
+			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+		} catch (IOException e1) {
+			throw new OtpNotifierServiceException("KER-NOT-013", "Io exception occur in otp generation");
+		}
+
+		if (!validationErrorsList.isEmpty()) {
+			throw new OtpNotificationInvalidArgumentException(validationErrorsList);
+		}
+
+		JsonNode otpResponse = null;
+		String otp = null;
+		try {
+			otpResponse = mapper.readTree(responseBody);
+
+			otp = otpResponse.get("otp").asText();
+
+		} catch (IOException e) {
+			throw new OtpNotifierServiceException("KER-NOT-014", "Io exception occur in otp retrival");
+		}
+
+		return otp;
 	}
 
 	/**

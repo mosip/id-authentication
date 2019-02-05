@@ -19,6 +19,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.otpnotification.OtpNotificationBootApplication;
 import io.mosip.kernel.otpnotification.dto.NotifierResponseDto;
 import io.mosip.kernel.otpnotification.dto.OtpNotificationRequestDto;
@@ -44,10 +47,13 @@ public class OtpNotificationServiceTest {
 	@Autowired
 	private OtpNotificationServiceImpl service;
 
+	@Autowired
+	private ObjectMapper mapper;
+
 	@Test
 	public void sendOtpNotificationTest() {
 		OtpNotificationRequestDto request = new OtpNotificationRequestDto();
-		OtpResponseDto response = new OtpResponseDto();
+
 		List<String> notificationFlag = new ArrayList<>();
 		notificationFlag.add("sms");
 		notificationFlag.add("email");
@@ -57,11 +63,9 @@ public class OtpNotificationServiceTest {
 		request.setEmailSubjectTemplate("OTP ALERT");
 		request.setMobileNumber("8989898998");
 		request.setSmsTemplate("OTP $otp");
-		response.setOtp("344234");
-		response.setStatus("Generated_succefully");
+		String response = "{\"otp\":\"344234\",\"status\":\"Generated_succefully\"}";
 		when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.POST), Mockito.any(),
-				Mockito.eq(OtpResponseDto.class)))
-						.thenReturn(new ResponseEntity<OtpResponseDto>(response, HttpStatus.OK));
+				Mockito.eq(String.class))).thenReturn(new ResponseEntity<String>(response, HttpStatus.OK));
 
 		NotifierResponseDto smsResponse = new NotifierResponseDto();
 		smsResponse.setStatus("success");
@@ -76,12 +80,9 @@ public class OtpNotificationServiceTest {
 	@Test(expected = OtpNotifierServiceException.class)
 	public void sendOtpNotificationInvalidNotificationTypeExceptionTest() {
 		OtpNotificationRequestDto request = new OtpNotificationRequestDto();
-		OtpResponseDto response = new OtpResponseDto();
 		List<String> notificationFlag = new ArrayList<>();
 		notificationFlag.add("sme");
 		notificationFlag.add("email");
-		response.setOtp("344234");
-		response.setStatus("Generated_succefully");
 		request.setNotificationTypes(notificationFlag);
 		request.setEmailBodyTemplate("Otp $otp");
 		request.setEmailId("abc@gmail.com");
@@ -94,7 +95,7 @@ public class OtpNotificationServiceTest {
 	}
 
 	@Test
-	public void sendOtpNotificationSmsTypeTest() {
+	public void sendOtpNotificationSmsTypeTest() throws JsonProcessingException {
 
 		OtpResponseDto response = new OtpResponseDto();
 		List<String> notificationFlag = new ArrayList<>();
@@ -108,9 +109,10 @@ public class OtpNotificationServiceTest {
 		request.setEmailSubjectTemplate("OTP ALERT");
 		request.setMobileNumber("8989898998");
 		request.setSmsTemplate("OTP $otp");
+
+		String jsonResponse = mapper.writeValueAsString(response);
 		when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.POST), Mockito.any(),
-				Mockito.eq(OtpResponseDto.class)))
-						.thenReturn(new ResponseEntity<OtpResponseDto>(response, HttpStatus.OK));
+				Mockito.eq(String.class))).thenReturn(new ResponseEntity<String>(jsonResponse, HttpStatus.OK));
 
 		NotifierResponseDto smsResponse = new NotifierResponseDto();
 		smsResponse.setStatus("success");
@@ -122,7 +124,7 @@ public class OtpNotificationServiceTest {
 	}
 
 	@Test
-	public void sendOtpNotificationEmailTypeTest() {
+	public void sendOtpNotificationEmailTypeTest() throws JsonProcessingException {
 		OtpResponseDto response = new OtpResponseDto();
 		List<String> notificationFlag = new ArrayList<>();
 		notificationFlag.add("email");
@@ -135,16 +137,10 @@ public class OtpNotificationServiceTest {
 		request.setEmailSubjectTemplate("OTP ALERT");
 		request.setMobileNumber("8989898998");
 		request.setSmsTemplate("OTP $otp");
-		when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.POST), Mockito.any(),
-				Mockito.eq(OtpResponseDto.class)))
-						.thenReturn(new ResponseEntity<OtpResponseDto>(response, HttpStatus.OK));
+		String jsonOtpResponse = mapper.writeValueAsString(response);
 
-		NotifierResponseDto smsResponse = new NotifierResponseDto();
-		smsResponse.setStatus("success");
 		when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.POST), Mockito.any(),
-				Mockito.eq(NotifierResponseDto.class)))
-						.thenReturn(new ResponseEntity<NotifierResponseDto>(smsResponse, HttpStatus.OK));
-
+				Mockito.eq(String.class))).thenReturn(new ResponseEntity<String>(jsonOtpResponse, HttpStatus.OK));
 		assertThat(service.sendOtpNotification(request), isA(OtpNotificationResponseDto.class));
 	}
 
