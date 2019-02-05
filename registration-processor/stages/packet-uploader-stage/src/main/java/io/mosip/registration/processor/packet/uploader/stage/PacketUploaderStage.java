@@ -111,14 +111,15 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			this.isTransactionSuccessful = false;
 			this.description = "Registration status table is not accessible for packet " + this.registrationId;
 
-		} 
-		catch (Exception e) {
+		} catch (Exception e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.PACKET_UPLOAD_FAILED.name() + e.getMessage());
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
-		}
-		finally {
+		} finally {
+
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, description);
 
 			String eventId = "";
 			String eventName = "";

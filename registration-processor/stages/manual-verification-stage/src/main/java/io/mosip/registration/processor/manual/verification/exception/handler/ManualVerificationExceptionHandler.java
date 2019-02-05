@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.manual.verification.controller;
+package io.mosip.registration.processor.manual.verification.exception.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
