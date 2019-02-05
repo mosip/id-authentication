@@ -36,13 +36,15 @@ import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.common.dto.NotificationResponseDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseListDTO;
-import io.mosip.preregistration.core.util.NotificationUtil;
-import io.mosip.preregistration.core.util.TemplateUtil;
 import io.mosip.preregistration.notification.controller.NotificationController;
 import io.mosip.preregistration.notification.dto.QRCodeResponseDTO;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
 import io.mosip.preregistration.notification.service.util.NotificationServiceUtil;
 
+/**
+ * @author Sanober Noor
+ *@since 1.0.0
+ */
 @RunWith(SpringRunner.class)
 @WebMvcTest(NotificationController.class)
 public class NotificationServiceTest {
@@ -50,14 +52,12 @@ public class NotificationServiceTest {
 	@Autowired
 	private NotificationService service;
 
-	@Autowired
-	private NotificationUtil notificationUtil;
+
 
 	@Autowired
 	private NotificationServiceUtil serviceUtil;
 
-	@Autowired
-	private TemplateUtil templateUtil;
+	
 
 	@Autowired
 	private ObjectMapper mapper;
@@ -97,6 +97,7 @@ public class NotificationServiceTest {
 	}
 
 	/**
+	 * This test method is for succes case of sendNotificationSuccess
 	 * @throws JsonParseException
 	 * @throws JsonMappingException
 	 * @throws IOException
@@ -125,6 +126,7 @@ public class NotificationServiceTest {
 	}
 
 	/**
+	 * This method is for failure case of sendNotification
 	 * @throws JsonProcessingException
 	 */
 	@Test(expected=MandatoryFieldException.class)
@@ -166,10 +168,7 @@ public class NotificationServiceTest {
 		
 		assertEquals(qrCodeResponseDTO.getResponse(), response.getResponse());		
 	}
-	/**
-	 * @throws java.io.IOException
-	 * @throws QrcodeGenerationException
-	 */
+	
 //	@Test
 //	public void generateQRCodeFailureTest() throws  java.io.IOException, QrcodeGenerationException {
 //		String stringjson = mapper.writeValueAsString(notificationDTO);

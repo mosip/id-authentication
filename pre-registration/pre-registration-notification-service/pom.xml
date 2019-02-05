@@ -10,9 +10,9 @@
 		<version>0.8.1</version>
 	</parent>
 
-	<artifactId>pre-registration-acknowledgement-service</artifactId>
+	<artifactId>pre-registration-notification-service</artifactId>
 
-	<name>pre-registration-acknowledgement-service</name>
+	<name>pre-registration-notification-service</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>

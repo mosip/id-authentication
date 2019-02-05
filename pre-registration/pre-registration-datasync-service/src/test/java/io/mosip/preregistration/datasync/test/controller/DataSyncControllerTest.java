@@ -110,13 +110,14 @@ public class DataSyncControllerTest {
 	public void successRetrievePreidsTest() throws Exception {
 		preRegArchiveDTO.setAppointmentDate("2019-01-12");
 		preRegArchiveDTO.setFileName("97285429827016.zip");
-		preRegArchiveDTO.setPreRegistrationId("97285429827016");;
+		preRegArchiveDTO.setPreRegistrationId("97285429827016");
+		;
 		preRegArchiveDTO.setRegistrationCenterId("12");
 		preRegArchiveDTO.setTimeSlotFrom("09:23");
 		preRegArchiveDTO.setTimeSlotTo("09:46");
 		preRegArchiveDTO.setZipBytes(bytes);
 		mainPreRegArchiveDTO.setResponse(preRegArchiveDTO);
-		
+
 		Mockito.when(dataSyncService.getPreRegistrationData("97285429827016")).thenReturn(mainPreRegArchiveDTO);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/data-sync/datasync")
 				.contentType(MediaType.APPLICATION_JSON).param("pre_registration_id", "97285429827016");

@@ -32,6 +32,7 @@
     "date_dd": "jj",
     "date_mm": "mm",
     "date_yyyy": "aa",
+    "text_or": "OU",
     "text_years": "Années",
     "text_foreigner":"Étranger",
     "text_gender": "Le sexe",
@@ -45,6 +46,7 @@
     "label_city": "Ville",
     "label_local_administrative_authority": "Autorité administrative locale",
     "label_mob_num": "Numéro de portable",
+    "label_postalCode": "code postal",
     "label_alt_mob_num": "Numéro de téléphone alternatif (facultatif)",
     "label_email_id": "Identifiant Email",
     "label_pin": "CNIE/EC",
@@ -80,6 +82,19 @@
     "label_sameas": "Pareil que",
     "text_or": "OU",
     "action_view": "VUE"
+  },
+  "acknowledgement": {
+    "title":"Rendez-vous confirmé",
+    "message":"L'identifiant de pré-enregistrement et les détails du rendez-vous ont été envoyés à l'identifiant et au numéro de téléphone de l'e-mail enregistré.",
+    "label_name":"prénom",
+    "label_pre_id":"ID de pré-inscription",
+    "label_reg_cntr":"Centre d'inscription",
+    "label_cntr_contact_number":"Numéro de contact du centre",
+    "label_appointment_date_time":"Date et heure du rendez-vous",
+    "container_guideline": "Directives importantes",
+    "action_send":"ENVOYER EMAIL / SMS",
+    "action_download": "TÉLÉCHARGER LE FICHIER PDF",
+    "action_print": "IMPRESSION"
   },
   "preview": {
     "title_preview": "Aperçu",
@@ -187,12 +202,6 @@
     "action_add": "Ajouter",
     "action_close": "Fermer",
     "action_add_to_slot": "Ajouter à la fente"
-  },
-  "acknowledgement": {
-    "title":"Rendez-vous confirmé",
-    "container_guideline": "Directives importantes",
-    "action_download": "TÉLÉCHARGER",
-    "action_print": "IMPRESSION"
   },
   "centerSelection": {
     "title": " Rendez-vous du livre ",

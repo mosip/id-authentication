@@ -25,6 +25,10 @@ import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.notification.service.NotificationService;
 import io.mosip.preregistration.notification.service.util.NotificationServiceUtil;
 
+/**
+ * @author Sanober Noor
+ *@since 1.0.0
+ */
 @RunWith(SpringRunner.class)
 @WebMvcTest(NotificationController.class)
 public class NotificationControllerTest {
@@ -67,6 +71,10 @@ public class NotificationControllerTest {
 		responseDTO.setStatus(Boolean.TRUE);
 	}
 
+	/**
+	 * This test method is for success sendNotification method
+	 * @throws Exception
+	 */
 	@Test
 	public void sendNotificationTest() throws Exception {
 		String stringjson = mapper.writeValueAsString(notificationDTO);
@@ -82,6 +90,10 @@ String langCode="eng";
 
 	}
 
+	/**
+	 * This test method is for success qrCodeGeneration 
+	 * @throws Exception
+	 */
 	@Test
 	public void qrCodeGenerationTest() throws Exception {
 		String stringjson = mapper.writeValueAsString(notificationDTO);
