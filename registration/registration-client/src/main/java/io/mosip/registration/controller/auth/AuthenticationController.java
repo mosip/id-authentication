@@ -135,6 +135,11 @@ public class AuthenticationController extends BaseController {
 	private boolean isEODAuthentication = false;
 
 	private List<String> userAuthenticationTypeList;
+	
+	private List<String> userAuthenticationTypeListValidation;
+
+	private List<String> userAuthenticationTypeListSupervisorValidation;
+
 
 	private int authCount = 0;
 
@@ -369,6 +374,8 @@ public class AuthenticationController extends BaseController {
 		roleSet.add("*");
 
 		userAuthenticationTypeList = loginService.getModesOfLogin(authType, roleSet);
+		userAuthenticationTypeListValidation =  loginService.getModesOfLogin(authType, roleSet);
+		userAuthenticationTypeListSupervisorValidation=loginService.getModesOfLogin(authType, roleSet);
 
 		if (userAuthenticationTypeList.isEmpty()) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_ERROR_MSG);
@@ -781,6 +788,41 @@ public class AuthenticationController extends BaseController {
 	private OSIDataDTO getOSIData() {
 		return ((RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA)).getOsiDataDTO();
+	}
+	
+	public void goToPreviousPage() {
+		
+	}
+	
+	public void goToNextPage() {
+		if(userAuthenticationTypeListValidation.isEmpty()) {
+			userAuthenticationTypeListValidation=userAuthenticationTypeListSupervisorValidation;
+		}
+	
+		switch (userAuthenticationTypeListValidation.get(0)) {
+		case RegistrationConstants.OTP:
+			validateOTP();
+			userAuthenticationTypeListValidation.remove(0);
+			break;
+		case RegistrationConstants.PWORD:
+			validatePwd();
+			userAuthenticationTypeListValidation.remove(0);
+			break;
+		case RegistrationConstants.BIO:
+			validateFingerprint();
+			break;
+		case RegistrationConstants.IRIS:
+			validateIris();
+			userAuthenticationTypeListValidation.remove(0);
+			break;
+		case RegistrationConstants.FACE:
+			validateFace();
+			userAuthenticationTypeListValidation.remove(0);
+			break;
+		default:
+			
+		}
+
 	}
 
 }

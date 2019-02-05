@@ -262,7 +262,9 @@ public class FaceCaptureController extends BaseController implements Initializab
 		} else
 
 		{
-			//registrationController.goToPreviousPane();
+			SessionContext.getInstance().getMapObject().put("faceCapture",false);
+			SessionContext.getInstance().getMapObject().put("irisCapture",true);
+			registrationController.showCurrentPage();
 		}
 	}
 

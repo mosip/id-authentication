@@ -288,6 +288,10 @@ LOGGER.debug("REGISTRATION - NEXT_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICAT
 		exceptionDTOCreation();
 		if (fingerList.isEmpty() && irisList.isEmpty()) {
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.BIOMETRIC_EXCEPTION_ALERT);
+		}else {
+			SessionContext.getInstance().getMapObject().put("biometricException",false);
+			SessionContext.getInstance().getMapObject().put("documentScan",true);
+			registrationController.showCurrentPage();
 		}
 	}
 	

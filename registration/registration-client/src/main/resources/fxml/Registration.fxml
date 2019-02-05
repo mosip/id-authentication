@@ -29,8 +29,8 @@
          	<fx:include fx:id="documentScan" source="DocumentScan.fxml" visible="false" />
          	<fx:include fx:id="biometricException" source="BiometricException.fxml" visible="false" />
             <fx:include fx:id="fingerPrintCapture" source="FingerPrintCapture.fxml" visible="false" />
-            <fx:include fx:id="faceCapture" source="FaceCapture.fxml" visible="false" />
             <fx:include fx:id="irisCapture" source="IrisCapture.fxml" visible="false" />
+            <fx:include fx:id="faceCapture" source="FaceCapture.fxml" visible="false" />
             <fx:include fx:id="operatorAuthentication" source="OperatorAuthentication.fxml" visible="false" />
          </children>
       </AnchorPane>

@@ -690,7 +690,11 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					if ((boolean) SessionContext.getInstance().getUserContext().getUserMap()
 							.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
 						SessionContext.getInstance().getMapObject().put("fingerPrintCapture",false);
-						SessionContext.getInstance().getMapObject().put("faceCapture",true);
+						SessionContext.getInstance().getMapObject().put("biometricException",true);
+						registrationController.showCurrentPage();
+					}else {
+						SessionContext.getInstance().getMapObject().put("fingerPrintCapture",false);
+						SessionContext.getInstance().getMapObject().put("documentScan",true);
 						registrationController.showCurrentPage();
 					}
 				}
@@ -805,7 +809,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			}
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Validating Fingerprints captured ended");
-			return isValid;
+			return true;
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_FINGERPRINT_VALIDATION_EXP,
 					String.format("Exception while validating the captured fingerprints of individual: %s caused by %s",
