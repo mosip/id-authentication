@@ -37,8 +37,9 @@ import io.mosip.registration.processor.core.notification.template.generator.dto.
 import io.mosip.registration.processor.core.notification.template.generator.dto.SmsRequestDto;
 import io.mosip.registration.processor.core.notification.template.generator.dto.SmsResponseDto;
 import io.mosip.registration.processor.core.notification.template.mapping.NotificationTemplate;
+import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.Identity;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
@@ -110,7 +111,7 @@ public class MessageNotificationServiceImpl
 
 	/** The reg processor template json. */
 	@Autowired
-	private Identity regProcessorTemplateJson;
+	private RegistrationProcessorIdentity regProcessorTemplateJson;
 
 	/** The rest client service. */
 	@Autowired
@@ -349,7 +350,8 @@ public class MessageNotificationServiceImpl
 
 			ObjectMapper mapTemplateJsonStringToObject = new ObjectMapper();
 
-			regProcessorTemplateJson = mapTemplateJsonStringToObject.readValue(templateJsonString, Identity.class);
+			regProcessorTemplateJson = mapTemplateJsonStringToObject.readValue(templateJsonString,
+					RegistrationProcessorIdentity.class);
 
 			JSONParser parser = new JSONParser();
 			JSONObject demographicJson = (JSONObject) parser.parse(demographicJsonString);
@@ -358,31 +360,40 @@ public class MessageNotificationServiceImpl
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 
-			template.setFirstName(getJsonValues(regProcessorTemplateJson.getName().getValue()));
-			template.setGender(getJsonValues(regProcessorTemplateJson.getGender().getValue()));
+			template.setFirstName(getJsonValues(regProcessorTemplateJson.getIdentity().getName().getValue()));
+			template.setGender(getJsonValues(regProcessorTemplateJson.getIdentity().getGender().getValue()));
 
-			template.setEmailID((String) demographicIdentity.get(regProcessorTemplateJson.getEmailID()));
-			template.setPhoneNumber((String) demographicIdentity.get(regProcessorTemplateJson.getPhoneNumber()));
-			template.setDateOfBirth((String) demographicIdentity.get(regProcessorTemplateJson.getDob()));
-			template.setAge((Integer) demographicIdentity.get(regProcessorTemplateJson.getAge()));
-			template.setAddressLine1(getJsonValues(regProcessorTemplateJson.getAddressLine1()));
-			template.setAddressLine2(getJsonValues(regProcessorTemplateJson.getAddressLine2()));
-			template.setAddressLine3(getJsonValues(regProcessorTemplateJson.getAddressLine3()));
-			template.setRegion(getJsonValues(regProcessorTemplateJson.getRegion()));
-			template.setProvince(getJsonValues(regProcessorTemplateJson.getProvince()));
-			template.setCity(getJsonValues(regProcessorTemplateJson.getCity()));
-			template.setPostalCode((String) demographicIdentity.get(regProcessorTemplateJson.getPostalCode()));
-			template.setProofOfRelationship(getJsonValues(regProcessorTemplateJson.getPor()));
-			template.setProofOfAddress(getJsonValues(regProcessorTemplateJson.getPoa()));
-			template.setProofOfIdentity(getJsonValues(regProcessorTemplateJson.getPoi()));
-			template.setProofOfDateOfBirth(getJsonValues(regProcessorTemplateJson.getPob()));
-			template.setIndividualBiometrics(getJsonValues(regProcessorTemplateJson.getIndividualBiometrics()));
+			template.setEmailID(
+					(String) demographicIdentity.get(regProcessorTemplateJson.getIdentity().getEmail().getValue()));
+			template.setPhoneNumber(
+					(String) demographicIdentity.get(regProcessorTemplateJson.getIdentity().getPhone().getValue()));
+			template.setDateOfBirth(
+					(String) demographicIdentity.get(regProcessorTemplateJson.getIdentity().getDob().getValue()));
+			template.setAge(
+					(Integer) demographicIdentity.get(regProcessorTemplateJson.getIdentity().getAge().getValue()));
+			template.setAddressLine1(
+					getJsonValues(regProcessorTemplateJson.getIdentity().getAddressLine1().getValue()));
+			template.setAddressLine2(
+					getJsonValues(regProcessorTemplateJson.getIdentity().getAddressLine2().getValue()));
+			template.setAddressLine3(
+					getJsonValues(regProcessorTemplateJson.getIdentity().getAddressLine3().getValue()));
+			template.setRegion(getJsonValues(regProcessorTemplateJson.getIdentity().getRegion().getValue()));
+			template.setProvince(getJsonValues(regProcessorTemplateJson.getIdentity().getProvince().getValue()));
+			template.setCity(getJsonValues(regProcessorTemplateJson.getIdentity().getCity().getValue()));
+			template.setPostalCode((String) demographicIdentity
+					.get(regProcessorTemplateJson.getIdentity().getPostalCode().getValue()));
+			template.setProofOfRelationship(getJsonValues(regProcessorTemplateJson.getIdentity().getPor().getValue()));
+			template.setProofOfAddress(getJsonValues(regProcessorTemplateJson.getIdentity().getPoa().getValue()));
+			template.setProofOfIdentity(getJsonValues(regProcessorTemplateJson.getIdentity().getPoi().getValue()));
+			template.setProofOfDateOfBirth(getJsonValues(regProcessorTemplateJson.getIdentity().getPob().getValue()));
+			template.setIndividualBiometrics(
+					getJsonValues(regProcessorTemplateJson.getIdentity().getIndividualBiometrics().getValue()));
 			template.setLocalAdministrativeAuthority(
-					getJsonValues(regProcessorTemplateJson.getLocalAdministrativeAuthority()));
-			template.setIdSchemaVersion(
-					(Double) demographicIdentity.get(regProcessorTemplateJson.getIdSchemaVersion()));
-			template.setCnieNumber((Integer) demographicIdentity.get(regProcessorTemplateJson.getCnieNumber()));
-
+					getJsonValues(regProcessorTemplateJson.getIdentity().getLocalAdministrativeAuthority().getValue()));
+			template.setIdSchemaVersion((Double) demographicIdentity
+					.get(regProcessorTemplateJson.getIdentity().getIdschemaversion().getValue()));
+			template.setCnieNumber((Integer) demographicIdentity
+					.get(regProcessorTemplateJson.getIdentity().getCnienumber().getValue()));
 		} catch (ParseException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					null, "Error while parsing Json file" + ExceptionUtils.getStackTrace(e));
