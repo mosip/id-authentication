@@ -40,15 +40,15 @@ For any authentication request (single or multi-factor), a generic AuthResponse 
 5.	err - Array of Errors with error code and message, in case of authentication failure, data validation failure or any other error
 6.	info - This block contains below information
 
-   a.	idType - Type of ID (D for UIN, V for VID)
+	a.	idType - Type of ID (D for UIN, V for VID)
    
-   b.	reqTime - Timestamp of request
+	b.	reqTime - Timestamp of request
    
-   c.	version - Version of Auth API
+	c.	version - Version of Auth API
       
-   d.	usageData - The 16 digit hex encoded format of used and matched bits.
+	d.	usageData - The 16 digit hex encoded format of used and matched bits.
    
-   e.	matchInfos - Array of Matching information with Matching Strategy and Match Threshold values as in request. This contain below information: 
+	e.	matchInfos - Array of Matching information with Matching Strategy and Match Threshold values as in request. This contain below information: 
    
    	- authType - Which can be one of address, personalIdentity, fullAddress
    
@@ -58,7 +58,7 @@ For any authentication request (single or multi-factor), a generic AuthResponse 
    
    	- matchingThreshold - Integer value for match threshold (0 to 100)
    
-   f.	bioInfos - Array of Biometric information with bioType and Device Informations values as in request. This contain below information: 
+	f.	bioInfos - Array of Biometric information with bioType and Device Informations values as in request. This contain below information: 
    
    	- bioType - Which can be one of address, personalIdentity, fullAddress
    
