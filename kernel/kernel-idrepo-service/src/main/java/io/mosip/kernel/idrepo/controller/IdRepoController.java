@@ -161,7 +161,7 @@ public class IdRepoController {
 
 		try {
 			if (Objects.nonNull(type)) {
-				List<String> typeList = Arrays.asList(StringUtils.split(type, ','));
+				List<String> typeList = Arrays.asList(StringUtils.split(type.toLowerCase(), ','));
 				if (typeList.size() == 1 && !allowedTypes.containsAll(typeList)) {
 					throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
