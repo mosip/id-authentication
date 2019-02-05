@@ -155,23 +155,22 @@ public class KycAuthFilter extends BaseAuthFilter {
 			throws IdAuthenticationAppException {
 		try {
 			if (Objects.nonNull(requestBody)) {
-				Map<String, Object> authReq = (Map<String, Object>) requestBody.get(AUTH_REQUEST);
-				if (Objects.nonNull(authReq) && Objects.nonNull(authReq.get(TXN_ID))) {
-					responseBody.replace(TXN_ID, authReq.get(TXN_ID));
+				Object object = requestBody.get(AUTH_REQUEST);
+				if(object instanceof Map) {
+					Map<String, Object> authReq = (Map<String, Object>) object;
+					setTxnID(responseBody, authReq);
+					if (Objects.nonNull(authReq) && Objects.nonNull(authReq.get(REQ_TIME))
+							&& isDate((String) authReq.get(REQ_TIME))) {
+						convertZoneDate(responseBody, authReq);
+						Map<String, Object> authResponse = (Map<String, Object>) responseBody.get(RESPONSE);
+						authResponse.replace(AUTH, setAuthResponseParam((Map<String, Object>) requestBody.get(AUTH_REQUEST),
+								(Map<String, Object>) ((Map<String, Object>) responseBody.get(RESPONSE)).get(AUTH)));
+						responseBody.replace(RESPONSE, authResponse);
+						return responseBody;
+					}
 				}
-				if (Objects.nonNull(authReq) && Objects.nonNull(authReq.get(REQ_TIME))
-						&& isDate((String) authReq.get(REQ_TIME))) {
-					ZoneId zone = ZonedDateTime.parse((CharSequence) authReq.get(REQ_TIME)).getZone();
-					responseBody.replace(RES_TIME,
-							DateUtils.formatDate(
-									DateUtils.parseToDate((String) responseBody.get(RES_TIME),
-											env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)),
-									env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)));
-					Map<String, Object> authResponse = (Map<String, Object>) responseBody.get(RESPONSE);
-					authResponse.replace(AUTH, setAuthResponseParam((Map<String, Object>) requestBody.get(AUTH_REQUEST),
-							(Map<String, Object>) ((Map<String, Object>) responseBody.get(RESPONSE)).get(AUTH)));
-					responseBody.replace(RESPONSE, authResponse);
-					return responseBody;
+				else if(object instanceof String) {
+					setResponseForEncodeRequest(responseBody, (String) object);
 				}
 			}
 			return responseBody;
@@ -179,6 +178,60 @@ public class KycAuthFilter extends BaseAuthFilter {
 			mosipLogger.error("sessionId", "IdAuthFilter", "setResponseParam", "\n" + ExceptionUtils.getStackTrace(e));
 			return responseBody;
 		}
+	}
+
+	/**
+	 * Sets the response for encode request.
+	 *
+	 * @param responseBody the response body
+	 * @param object the object
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	@SuppressWarnings("unchecked")
+	private void setResponseForEncodeRequest(Map<String, Object> responseBody, String req)
+			throws IdAuthenticationAppException {
+		String request = new String(Base64.getDecoder().decode(req));
+		Map<String, Object> authReq;
+		try {
+			authReq = mapper.readValue(request, Map.class);
+			if (authReq instanceof Map) {
+				setTxnID(responseBody, authReq);
+				if (Objects.nonNull(authReq) && Objects.nonNull(authReq.get(REQ_TIME))
+						&& isDate((String) authReq.get(REQ_TIME))) {
+					convertZoneDate(responseBody, authReq);
+				}
+			}
+		} catch (IOException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+		}
+	}
+
+	/**
+	 * Sets the txn ID.
+	 *
+	 * @param responseBody the response body
+	 * @param authReq the auth req
+	 */
+	private void setTxnID(Map<String, Object> responseBody, Map<String, Object> authReq) {
+		if (Objects.nonNull(authReq) && Objects.nonNull(authReq.get(TXN_ID))) {
+			responseBody.replace(TXN_ID, authReq.get(TXN_ID));
+		}
+	}
+
+	/**
+	 * Convert zone date.
+	 *
+	 * @param responseBody the response body
+	 * @param authReq the auth req
+	 */
+	private void convertZoneDate(Map<String, Object> responseBody, Map<String, Object> authReq) {
+		ZoneId zone = ZonedDateTime.parse((CharSequence) authReq.get(REQ_TIME)).getZone();
+		responseBody.replace(RES_TIME,
+				DateUtils.formatDate(
+						DateUtils.parseToDate((String) responseBody.get(RES_TIME),
+								env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)),
+						env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)));
 	}
 	
 	
