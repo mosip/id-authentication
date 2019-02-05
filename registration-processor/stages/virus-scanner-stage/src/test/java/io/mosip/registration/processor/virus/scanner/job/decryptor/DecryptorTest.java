@@ -105,5 +105,15 @@ public class DecryptorTest {
 		InputStream decryptedStream = decryptor.decrypt(inputStream, "84071493960000320190110145452");
 
 	}
+	
+	@Test(expected = PacketDecryptionFailureException.class)
+	public void invalidPacketFormatTest() throws PacketDecryptionFailureException {
+		InputStream decryptedStream = decryptor.decrypt(inputStream, "019011014");
 
+	}
+	@Test(expected = PacketDecryptionFailureException.class)
+	public void invalidPacketFormatParsingDateTimeTest() throws PacketDecryptionFailureException {
+		InputStream decryptedStream = decryptor.decrypt(inputStream, "8407149396000032019T110145452");
+
+	}
 }

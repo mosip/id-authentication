@@ -145,22 +145,6 @@ public class SyncDataServiceTest {
 
 	}
 
-	@Test
-	public void globalConfigsyncSuccess() {
-
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restemplate).build();
-		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withSuccess());
-		syncConfigDetailsService.getGlobalConfigDetails();
-
-	}
-
-	@Test
-	public void registrationConfigsyncSuccess() {
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restemplate).build();
-		server.expect(requestTo(uriBuilder.append(regCenterfileName).toString())).andRespond(withSuccess());
-		syncConfigDetailsService.getRegistrationCenterConfigDetails("1");
-		// Assert.assertEquals(120, jsonObject.get("fingerprintQualityThreshold"));
-	}
 
 	@Test(expected = SyncDataServiceException.class)
 	public void registrationConfigsyncFailure() {

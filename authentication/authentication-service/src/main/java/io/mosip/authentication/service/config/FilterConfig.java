@@ -8,6 +8,7 @@ import io.mosip.authentication.service.filter.IdAuthFilter;
 import io.mosip.authentication.service.filter.InternalAuthFilter;
 import io.mosip.authentication.service.filter.KycAuthFilter;
 import io.mosip.authentication.service.filter.OTPFilter;
+import io.mosip.authentication.service.filter.StaticPinStoreFilter;
 
 /**
  * The configuration for adding filters.
@@ -70,6 +71,19 @@ public class FilterConfig {
 	FilterRegistrationBean<InternalAuthFilter> registrationBean = new FilterRegistrationBean<>();
 	registrationBean.setFilter(new InternalAuthFilter());
 	registrationBean.addUrlPatterns("/v1.0/auth/internal");
+
+	return registrationBean;
+    }
+    /**
+     * Gets the Static Pin Store Filter.
+     *
+     * @return Static Pin Store Filter
+     */
+    @Bean
+    public FilterRegistrationBean<StaticPinStoreFilter> getStaticPinStoreFilter() {
+	FilterRegistrationBean<StaticPinStoreFilter> registrationBean = new FilterRegistrationBean<>();
+	registrationBean.setFilter(new StaticPinStoreFilter());
+	registrationBean.addUrlPatterns("/v1.0/static-pin");
 
 	return registrationBean;
     }

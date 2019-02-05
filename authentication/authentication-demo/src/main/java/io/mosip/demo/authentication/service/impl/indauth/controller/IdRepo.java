@@ -58,9 +58,7 @@ public class IdRepo {
 		} catch (BaseUncheckedException | JsonValidationProcessingException | JsonIOException | JsonSchemaIOException
 				| FileIOException e) {
 			return e.getMessage();
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		} 
 	}
 
 	@PostMapping(value = "/encodeFile", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -82,20 +80,5 @@ public class IdRepo {
 				.contentType(MediaType.parseMediaType("application/octet-stream")).body(resource);
 	}
 
-	@PostMapping(path = "/jsonCompress", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-	public String jsonCompress(@RequestBody ObjectNode json) {
-		ImmutableMap<CharSequence, CharSequence> map = ImmutableMap.<CharSequence, CharSequence>of("\"", "\\\"", "\\",
-				"\\\\");
-		AggregateTranslator escaper = new AggregateTranslator(new LookupTranslator(map),
-				new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE));
-		return escaper.translate(json.toString());
-	}
-
-	@PostMapping(path = "/jsonDecompress", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-	public String jsonDecompress(@RequestBody String json) throws IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mapper
-				.readValue(StringEscapeUtils.unescapeJava(json).getBytes(Charset.forName("UTF-16")), ObjectNode.class));
-	}
-
+	
 }

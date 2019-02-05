@@ -69,7 +69,7 @@ public class PacketInfoDao {
 
 	/** The Constant IS_NOT_NULL. */
 	private static final String IS_NOT_NULL = " IS NOT NULL ";
-	
+
 	private static final boolean IS_ACTIVE_TRUE = true;
 
 	/**
@@ -127,7 +127,8 @@ public class PacketInfoDao {
 	/**
 	 * Gets the registration center machine.
 	 *
-	 * @param regid the regid
+	 * @param regid
+	 *            the regid
 	 * @return the registration center machine
 	 */
 	public RegistrationCenterMachineDto getRegistrationCenterMachine(String regid) {
@@ -142,14 +143,15 @@ public class PacketInfoDao {
 		dto.setRegcntrId(regCenterMachineEntity.getCntrId());
 		dto.setRegId(regCenterMachineEntity.getId().getRegId());
 		dto.setMachineId(regCenterMachineEntity.getMachineId());
-		dto.setPacketCreationDate(regCenterMachineEntity.getPacketCreationDate());
+		// dto.setPacketCreationDate(regCenterMachineEntity.getPacketCreationDate());
 		return dto;
 	}
 
 	/**
 	 * Convert reg osi entity to dto.
 	 *
-	 * @param regOsiEntity the reg osi entity
+	 * @param regOsiEntity
+	 *            the reg osi entity
 	 * @return the reg osi dto
 	 */
 	private RegOsiDto convertRegOsiEntityToDto(RegOsiEntity regOsiEntity) {
@@ -191,7 +193,8 @@ public class PacketInfoDao {
 	/**
 	 * Convert entity to photograph dto.
 	 *
-	 * @param object the object
+	 * @param object
+	 *            the object
 	 * @return the photograph dto
 	 */
 	private PhotographDto convertEntityToPhotographDto(ApplicantPhotographEntity object) {
@@ -215,7 +218,8 @@ public class PacketInfoDao {
 	/**
 	 * Convert entity to demographic dto.
 	 *
-	 * @param object the object
+	 * @param object
+	 *            the object
 	 * @return the demographic info dto
 	 */
 	private DemographicInfoDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
@@ -233,7 +237,8 @@ public class PacketInfoDao {
 	/**
 	 * Find demo by id.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 * @return the list
 	 */
 	public List<DemographicInfoDto> findDemoById(String regId) {
@@ -252,7 +257,8 @@ public class PacketInfoDao {
 	/**
 	 * Gets the applicant iris image name by id.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 * @return the applicant iris image name by id
 	 */
 	public List<String> getApplicantIrisImageNameById(String regId) {
@@ -262,7 +268,8 @@ public class PacketInfoDao {
 	/**
 	 * Gets the applicant finger print image name by id.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 * @return the applicant finger print image name by id
 	 */
 	public List<String> getApplicantFingerPrintImageNameById(String regId) {
@@ -311,7 +318,7 @@ public class PacketInfoDao {
 		}
 		query.append(alias + ".id.langCode=:langCode").append(AND);
 		params.put("langCode", langCode);
-		
+
 		query.append(alias + ".isActive=:isActive");
 		params.put("isActive", IS_ACTIVE_TRUE);
 

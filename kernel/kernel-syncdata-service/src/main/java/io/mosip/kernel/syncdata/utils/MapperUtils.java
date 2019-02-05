@@ -64,10 +64,6 @@ public class MapperUtils {
 		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
 	}
 
-	/*
-	 * #############Public method used for mapping################################
-	 */
-
 	/**
 	 * This method map the values from <code>source</code> to
 	 * <code>destination</code> if name and type of the fields inside the given
@@ -203,18 +199,12 @@ public class MapperUtils {
 
 	}
 
-	/*
-	 * #############Private method used for mapping################################
-	 */
-
 	private static <S, D> void mapValues(S source, D destination)
 			throws IllegalAccessException, InstantiationException {
 		mapFieldValues(source, destination);// this method simply map values if field name and type are same
 
 		if (source.getClass().isAnnotationPresent(Entity.class)) {
 			mapEntityToDto(source, destination);
-		} else {
-			// mapDtoToEntity(source, destination);
 		}
 	}
 

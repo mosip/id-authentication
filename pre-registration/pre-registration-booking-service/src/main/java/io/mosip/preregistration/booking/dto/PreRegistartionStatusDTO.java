@@ -1,6 +1,7 @@
 package io.mosip.preregistration.booking.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,5 +22,7 @@ public class PreRegistartionStatusDTO implements Serializable {
 	private String PreRegistartionId;
 
 	private String StatusCode;
+	
+	private Date createdDateTime;
 
 }
