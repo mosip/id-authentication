@@ -31,7 +31,7 @@ public class CbeffXSDValidator {
 			Validator validator = schema.newValidator();
 			validator.validate(new StreamSource(tempFile));
 		} catch (Exception e) {
-			System.out.println("Exception: " + e);
+			//System.out.println("Exception: " + e);
 			return false;
 		}
 		finally
@@ -51,7 +51,7 @@ public class CbeffXSDValidator {
 			return true;
 		}catch(Exception ex)
 		{
-			System.out.println(ex);
+			//System.out.println(ex);
 			return false;
 		}
 	}

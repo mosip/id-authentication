@@ -40,7 +40,7 @@ public class PropertiesConfig {
 		    }
 		});
 		
-		System.out.println(globalParams.size());
+		//System.out.println(globalParams.size());
 		return globalParams;
 	}
 

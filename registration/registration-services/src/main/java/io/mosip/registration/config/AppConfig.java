@@ -7,6 +7,7 @@ import javax.sql.DataSource;
 import org.quartz.JobListener;
 import org.quartz.TriggerListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -52,6 +53,7 @@ public class AppConfig {
 	private static final ResourceBundle applicationProperties = ResourceBundle.getBundle("application");
 
 	@Autowired
+	@Qualifier("dataSource")
 	private DataSource datasource;
 
 	/**

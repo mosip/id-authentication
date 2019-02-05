@@ -26,31 +26,35 @@ public class DaoConfig extends HibernateDaoConfig{
 	@Autowired
 	private Environment environment;
 	
-	@Autowired
-    private ConfigurableEnvironment env;
-	
 	@Override
-	@Bean
-	@Lazy(false)
+	@Bean(name="dataSource")
 	public DataSource dataSource() {
+		
+		return dataSourceFor();
+	}
+	
+	@Bean(name="dataSourceFor")
+	public static DataSource dataSourceFor() {
+		/**
+		 * The Database path should come from the outside
+		 */
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(environment.getProperty(HibernatePersistenceConstant.JDBC_DRIVER));
-		dataSource.setUrl(environment.getProperty(HibernatePersistenceConstant.JDBC_URL).concat(environment.getProperty("bootPwd").concat("=").concat(environment.getProperty("bootKey"))));
-		dataSource.setUsername(environment.getProperty(HibernatePersistenceConstant.JDBC_USER));
-		dataSource.setPassword(environment.getProperty(HibernatePersistenceConstant.JDBC_PASS));
+		dataSource.setDriverClassName("org.apache.derby.jdbc.EmbeddedDriver");
+		dataSource.setUrl("jdbc:derby:reg;bootPassword=mosip12345");
+		
 		return dataSource;
 	}
 	
 	@Bean
-    public JdbcTemplate jdbcTemplate()
+    public static JdbcTemplate jdbcTemplate()
     {
-        return new JdbcTemplate(dataSource());
+        return new JdbcTemplate(dataSourceFor());
     }
 	
 
 	@Bean
     @Lazy(false)
-    public PropertiesConfig dbProperties() {
+    public static PropertiesConfig dbProperties() {
         PropertiesConfig propertiesConfig = new PropertiesConfig(jdbcTemplate());
         
         MutablePropertySources sources = new StandardEnvironment().getPropertySources();
@@ -69,9 +73,9 @@ public class DaoConfig extends HibernateDaoConfig{
 	    	    		  new ClassPathResource("application.properties") };
 	    ppc.setLocations( resources );
 	    Properties properties = new Properties();
-	    //properties.putAll(dbProperties());
+	    properties.putAll(dbProperties().getDBProps());
 	    
-	    //ppc.setProperties();
+	    ppc.setProperties(properties);
 	    ppc.setIgnoreUnresolvablePlaceholders( true );
 	    return ppc;
 	}
