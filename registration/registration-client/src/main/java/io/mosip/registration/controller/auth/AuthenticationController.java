@@ -402,7 +402,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading next authentication screen");
 		try {
-			Boolean toogleBioException = (Boolean) SessionContext.getSessionContext().getUserContext().getUserMap()
+			Boolean toogleBioException = (Boolean) SessionContext.userContext().getUserMap()
 					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 
 			if (!userAuthenticationTypeList.isEmpty()) {
@@ -521,7 +521,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		} else
 
 		{
-			otpUserId.setText(SessionContext.getSessionContext().getUserContext().getUserId());
+			otpUserId.setText(SessionContext.userContext().getUserId());
 		}
 	}
 
@@ -549,7 +549,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				username.setEditable(true);
 			}
 		} else {
-			username.setText(SessionContext.getSessionContext().getUserContext().getUserId());
+			username.setText(SessionContext.userContext().getUserId());
 		}
 	}
 
@@ -576,7 +576,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				fpUserId.setEditable(true);
 			}
 		} else {
-			fpUserId.setText(SessionContext.getSessionContext().getUserContext().getUserId());
+			fpUserId.setText(SessionContext.userContext().getUserId());
 		}
 	}
 
@@ -602,7 +602,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				irisUserId.setEditable(true);
 			}
 		} else {
-			irisUserId.setText(SessionContext.getSessionContext().getUserContext().getUserId());
+			irisUserId.setText(SessionContext.userContext().getUserId());
 		}
 	}
 
@@ -629,7 +629,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				faceUserId.setEditable(true);
 			}
 		} else {
-			faceUserId.setText(SessionContext.getSessionContext().getUserContext().getUserId());
+			faceUserId.setText(SessionContext.userContext().getUserId());
 		}
 	}
 
@@ -685,13 +685,11 @@ public class AuthenticationController extends BaseController implements Initiali
 				fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
 				if (!isEODAuthentication) {
 					if (isSupervisor) {
-						RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getSessionContext()
-								.getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
+						RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
 						registrationDTO.getBiometricDTO().getSupervisorBiometricDTO()
 								.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
 					} else {
-						RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getSessionContext()
-								.getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
+						RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
 						registrationDTO.getBiometricDTO().getOperatorBiometricDTO()
 								.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
 					}
@@ -733,12 +731,12 @@ public class AuthenticationController extends BaseController implements Initiali
 		irisDetailsDTOs.add(irisDetailsDTO);
 		if (!isEODAuthentication) {
 			if (isSupervisor) {
-				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getSessionContext().getMapObject()
+				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
 						.get(RegistrationConstants.REGISTRATION_DATA);
 				registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setIrisDetailsDTO(irisDetailsDTOs);
-				SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
+				SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
 			} else {
-				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getSessionContext().getMapObject()
+				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
 						.get(RegistrationConstants.REGISTRATION_DATA);
 				registrationDTO.getBiometricDTO().getOperatorBiometricDTO().setIrisDetailsDTO(irisDetailsDTOs);
 			}
@@ -774,12 +772,12 @@ public class AuthenticationController extends BaseController implements Initiali
 
 		if (!isEODAuthentication) {
 			if (isSupervisor) {
-				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getSessionContext().getMapObject()
+				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
 						.get(RegistrationConstants.REGISTRATION_DATA);
 				registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setFaceDetailsDTO(faceDetailsDTO);
-				SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
+				SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
 			} else {
-				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getSessionContext().getMapObject()
+				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
 						.get(RegistrationConstants.REGISTRATION_DATA);
 				registrationDTO.getBiometricDTO().getOperatorBiometricDTO().setFaceDetailsDTO(faceDetailsDTO);
 			}
@@ -835,7 +833,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	}
 
 	private OSIDataDTO getOSIData() {
-		return ((RegistrationDTO) SessionContext.getSessionContext().getMapObject()
+		return ((RegistrationDTO) SessionContext.map()
 				.get(RegistrationConstants.REGISTRATION_DATA)).getOsiDataDTO();
 	}
 

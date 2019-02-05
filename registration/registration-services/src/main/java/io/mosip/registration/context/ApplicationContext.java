@@ -87,11 +87,44 @@ public class ApplicationContext {
 		}
 	}
 
-	/**
-	 * @return the applicationContext
-	 */
-	public static ApplicationContext getApplicationContext() {
-		return applicationContext;
+	public static Map<String, Object> map() {
+		return applicationContext.getApplicationMap();
+	}
+
+	public static String applicationLanguage() {
+		return applicationContext.getApplicationLanguage();
+	}
+
+	public static String localLanguage() {
+		return applicationContext.getLocalLanguage();
+	}
+
+	public static ResourceBundle localLanguageProperty() {
+		return applicationContext.getLocalLanguageProperty();
+	}
+
+	public static ResourceBundle applicationLanguageBundle() {
+		return applicationContext.getApplicationLanguageBundle();
+	}
+
+	public static ResourceBundle localLanguageBundle() {
+		return applicationContext.getLocalLanguageProperty();
+	}
+
+	public static ResourceBundle applicationLanguageValidationBundle() {
+		return applicationContext.getApplicationLanguagevalidationBundle();
+	}
+
+	public static ResourceBundle localLanguageValidationBundle() {
+		return applicationContext.getLocalMessagesBundle();
+	}
+
+	public static ResourceBundle applicationMessagesBundle() {
+		return applicationContext.getApplicationMessagesBundle();
+	}
+
+	public static void loadResources() {
+		applicationContext.loadResourceBundle();
 	}
 
 	/**

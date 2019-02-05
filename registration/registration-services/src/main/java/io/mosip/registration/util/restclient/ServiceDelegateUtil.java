@@ -91,7 +91,7 @@ public class ServiceDelegateUtil {
 
 		if (authRequired) {
 			// TODO - if batch get secrete key , normal login get user from session context
-			LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.getApplicationContext().getApplicationMap()
+			LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.map()
 					.get(RegistrationConstants.USER_DTO);
 			authHeader = getAuthTokenId(userDTO);
 
@@ -165,7 +165,7 @@ public class ServiceDelegateUtil {
 
 		if (authRequired) {
 			// TODO - if batch get secrete key , normal login get user from session context
-			LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.getApplicationContext().getApplicationMap()
+			LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.map()
 					.get(RegistrationConstants.USER_DTO);
 			authHeader = getAuthTokenId(userDTO);
 

@@ -118,7 +118,7 @@ public class BiometricExceptionController extends BaseController implements Init
 		fingerExceptionListener(rightThumb);
 		irisExceptionListener(leftEye);
 		irisExceptionListener(rightEye);
-		if ((boolean) SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			previousBtn.setVisible(false);
 		} else {
 			previousBtn.setVisible(true);
@@ -243,7 +243,7 @@ public class BiometricExceptionController extends BaseController implements Init
 		LOGGER.info("REGISTRATION - NEXT_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME, APPLICATION_ID,
 				"Going to next page");
 
-		if ((boolean) SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			exceptionDTOCreation();
 			userOnboardController.loadFingerPrint();			
 		} else {
@@ -252,10 +252,10 @@ public class BiometricExceptionController extends BaseController implements Init
 				generateAlert(RegistrationConstants.ALERT_INFORMATION,
 						RegistrationUIConstants.BIOMETRIC_EXCEPTION_ALERT);
 			} else {
-				if (((RegistrationDTO) SessionContext.getSessionContext().getMapObject()
+				if (((RegistrationDTO) SessionContext.map()
 						.get(RegistrationConstants.REGISTRATION_DATA)).getSelectionListDTO() != null) {
 
-					List<BiometricExceptionDTO> biometricExceptionDTOs = ((RegistrationDTO) SessionContext.getSessionContext().getMapObject()
+					List<BiometricExceptionDTO> biometricExceptionDTOs = ((RegistrationDTO) SessionContext.map()
 							.get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO().getApplicantBiometricDTO()
 									.getBiometricExceptionDTO();
 
@@ -310,14 +310,14 @@ public class BiometricExceptionController extends BaseController implements Init
 				biometricExceptionDTO.setMissingBiometric(bioType);
 				biometricExceptionList.add(biometricExceptionDTO);
 			});
-			SessionContext.getSessionContext().getMapObject().put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION,
+			SessionContext.map().put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION,
 					biometricExceptionList);
-			if ((boolean) SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
-				((BiometricDTO) SessionContext.getSessionContext().getMapObject()
+			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+				((BiometricDTO) SessionContext.map()
 						.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO()
 								.setBiometricExceptionDTO(biometricExceptionList);
 			} else {
-				((RegistrationDTO) SessionContext.getSessionContext().getMapObject()
+				((RegistrationDTO) SessionContext.map()
 						.get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO().getApplicantBiometricDTO()
 								.setBiometricExceptionDTO(biometricExceptionList);
 			}
@@ -352,7 +352,7 @@ public class BiometricExceptionController extends BaseController implements Init
 		fingerList.clear();
 		irisList.clear();
 
-		List<BiometricExceptionDTO> biometricExceptionList = (List<BiometricExceptionDTO>) SessionContext.getSessionContext().getMapObject()
+		List<BiometricExceptionDTO> biometricExceptionList = (List<BiometricExceptionDTO>) SessionContext.map()
 				.get(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
 
 		if (biometricExceptionList != null && !biometricExceptionList.isEmpty()) {
@@ -402,9 +402,9 @@ public class BiometricExceptionController extends BaseController implements Init
 	}
 
 	public void clearSession() {
-		SessionContext.getSessionContext().getMapObject().put(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION,
+		SessionContext.map().put(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION,
 				new ArrayList<>());
-		SessionContext.getSessionContext().getMapObject().put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION,
+		SessionContext.map().put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION,
 				new ArrayList<>());
 		setExceptionImage();
 	}
