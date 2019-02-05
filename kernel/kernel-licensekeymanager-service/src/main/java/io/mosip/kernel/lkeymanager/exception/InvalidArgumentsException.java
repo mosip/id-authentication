@@ -5,17 +5,29 @@ import java.util.List;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ServiceError;
 
+/**
+ * Class to handle invalid arguments exception.
+ * 
+ * @author Sagar Mahapatra
+ * @since 1.0.0
+ *
+ */
 public class InvalidArgumentsException extends BaseUncheckedException {
 	/**
-	 * 
+	 * Serializable version ID..
 	 */
 	private static final long serialVersionUID = -7670097659608957076L;
 
+	/**
+	 * The error list.
+	 */
 	private final List<ServiceError> list;
 
 	/**
+	 * Constructor with list as the argument.
+	 * 
 	 * @param list
-	 *            The error list.
+	 *            the error list.
 	 */
 	public InvalidArgumentsException(List<ServiceError> list) {
 		this.list = list;
@@ -29,5 +41,4 @@ public class InvalidArgumentsException extends BaseUncheckedException {
 	public List<ServiceError> getList() {
 		return list;
 	}
-
 }

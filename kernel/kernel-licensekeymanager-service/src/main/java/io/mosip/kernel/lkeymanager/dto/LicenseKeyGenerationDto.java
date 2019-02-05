@@ -1,5 +1,7 @@
 package io.mosip.kernel.lkeymanager.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.Data;
 
 /**
@@ -15,4 +17,8 @@ public class LicenseKeyGenerationDto {
 	 * The TSP ID against which the license key is to be generated.
 	 */
 	private String tspId;
+	/**
+	 * The time at which the license key will expire.
+	 */
+	private LocalDateTime licenseExpiryTime;
 }

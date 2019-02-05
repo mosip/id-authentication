@@ -1,19 +1,27 @@
 package io.mosip.kernel.lkeymanager.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.licensekeymanager.spi.LicenseKeyManagerService;
+import io.mosip.kernel.lkeymanager.constant.LicenseKeyManagerExceptionConstants;
 import io.mosip.kernel.lkeymanager.constant.LicenseKeyManagerPropertyConstants;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyGenerationDto;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyMappingDto;
-import io.mosip.kernel.lkeymanager.entity.LicenseKey;
-import io.mosip.kernel.lkeymanager.entity.LicenseKeyPermissions;
-import io.mosip.kernel.lkeymanager.repository.LicenseKeyPermissionsRepository;
-import io.mosip.kernel.lkeymanager.repository.LicenseKeyRepository;
+import io.mosip.kernel.lkeymanager.entity.LicenseKeyList;
+import io.mosip.kernel.lkeymanager.entity.LicenseKeyPermission;
+import io.mosip.kernel.lkeymanager.entity.LicenseKeyTspMap;
+import io.mosip.kernel.lkeymanager.exception.LicenseKeyServiceException;
+import io.mosip.kernel.lkeymanager.repository.LicenseKeyListRepository;
+import io.mosip.kernel.lkeymanager.repository.LicenseKeyPermissionRepository;
+import io.mosip.kernel.lkeymanager.repository.LicenseKeyTspMapRepository;
 import io.mosip.kernel.lkeymanager.util.LicenseKeyManagerUtil;
 
 /**
@@ -31,18 +39,23 @@ public class LicenseKeyManagerServiceImpl
 	 */
 	@Autowired
 	LicenseKeyManagerUtil licenseKeyManagerUtil;
-
 	/**
-	 * Autowired reference for {@link LicenseKeyRepository}
+	 * Autowired reference for {@link LicenseKeyListRepository}
 	 */
 	@Autowired
-	LicenseKeyRepository licenseKeyRepository;
+	LicenseKeyListRepository licenseKeyListRepository;
 
 	/**
-	 * Autowired reference for {@link LicenseKeyPermissionsRepository}.
+	 * Autowired reference for {@link LicenseKeyPermissionRepository}.
 	 */
 	@Autowired
-	LicenseKeyPermissionsRepository licenseKeyPermissionsRepository;
+	LicenseKeyPermissionRepository licenseKeyPermissionsRepository;
+
+	/**
+	 * Autowired reference for {@link LicenseKeyTspMapRepository}.
+	 */
+	@Autowired
+	LicenseKeyTspMapRepository licenseKeyTspMapRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -52,14 +65,31 @@ public class LicenseKeyManagerServiceImpl
 	 */
 	@Override
 	public String generateLicenseKey(LicenseKeyGenerationDto licenseKeyGenerationDto) {
+
 		licenseKeyManagerUtil.hasNullOrEmptyParameters(licenseKeyGenerationDto.getTspId());
-		LicenseKey licenseKeyEntity = new LicenseKey();
-		licenseKeyEntity.setTspId(licenseKeyGenerationDto.getTspId());
-		licenseKeyEntity.setLKey(licenseKeyManagerUtil.generateLicense());
-		licenseKeyEntity.setCreatedAt(licenseKeyManagerUtil.getCurrentTimeInUTCTimeZone());
-		licenseKeyEntity.setCreatedBy(LicenseKeyManagerPropertyConstants.DEFAULT_CREATED_BY.getValue());
-		licenseKeyRepository.save(licenseKeyEntity);
-		return licenseKeyEntity.getLKey();
+
+		String generatedLicense = licenseKeyManagerUtil.generateLicense();
+
+		LicenseKeyList licenseKeyListEntity = new LicenseKeyList();
+		LicenseKeyTspMap licenseKeyTspMapEntity = new LicenseKeyTspMap();
+
+		licenseKeyListEntity.setLicenseKey(generatedLicense);
+		licenseKeyListEntity.setActive(true);
+		licenseKeyListEntity.setCreatedAt(licenseKeyManagerUtil.getCurrentTimeInUTCTimeZone());
+		licenseKeyListEntity.setExpiryDateTimes(licenseKeyGenerationDto.getLicenseExpiryTime());
+		licenseKeyListEntity.setCreatedBy(LicenseKeyManagerPropertyConstants.DEFAULT_CREATED_BY.getValue());
+		licenseKeyListEntity.setCreatedDateTimes(licenseKeyManagerUtil.getCurrentTimeInUTCTimeZone());
+
+		licenseKeyTspMapEntity.setTspId(licenseKeyGenerationDto.getTspId());
+		licenseKeyTspMapEntity.setLKey(generatedLicense);
+		licenseKeyTspMapEntity.setActive(true);
+		licenseKeyTspMapEntity.setCreatedDateTimes(licenseKeyManagerUtil.getCurrentTimeInUTCTimeZone());
+		licenseKeyTspMapEntity.setCreatedBy(LicenseKeyManagerPropertyConstants.DEFAULT_CREATED_BY.getValue());
+
+		licenseKeyListRepository.save(licenseKeyListEntity);
+		licenseKeyTspMapRepository.save(licenseKeyTspMapEntity);
+
+		return generatedLicense;
 	}
 
 	/*
@@ -68,19 +98,45 @@ public class LicenseKeyManagerServiceImpl
 	 * @see io.mosip.kernel.core.licensekeymanager.spi.LicenseKeyManagerService#
 	 * mapLicenseKey(java.lang.Object)
 	 */
+	@Transactional
 	@Override
 	public String mapLicenseKey(LicenseKeyMappingDto licenseKeyMappingDto) {
 		licenseKeyManagerUtil.hasNullOrEmptyParameters(licenseKeyMappingDto.getPermissions(),
 				licenseKeyMappingDto.getLKey(), licenseKeyMappingDto.getTspId());
+
+		if (licenseKeyTspMapRepository.findByLKeyAndTspId(licenseKeyMappingDto.getLKey(),
+				licenseKeyMappingDto.getTspId()) == null) {
+			List<ServiceError> errorList = new ArrayList<>();
+			errorList.add(new ServiceError(LicenseKeyManagerExceptionConstants.LICENSEKEY_NOT_FOUND.getErrorCode(),
+					LicenseKeyManagerExceptionConstants.LICENSEKEY_NOT_FOUND.getErrorMessage()));
+			throw new LicenseKeyServiceException(errorList);
+		}
+
 		licenseKeyManagerUtil.areValidPermissions(licenseKeyMappingDto.getPermissions());
-		LicenseKeyPermissions licenseKeyPermissionsEntity = new LicenseKeyPermissions();
-		licenseKeyMappingDto.getPermissions().forEach(permission -> {
-			licenseKeyPermissionsEntity.setLKey(licenseKeyMappingDto.getLKey());
-			licenseKeyPermissionsEntity.setTspId(licenseKeyMappingDto.getTspId());
-			licenseKeyPermissionsEntity.setPermission(permission);
-			licenseKeyPermissionsEntity.setCreatedAt(licenseKeyManagerUtil.getCurrentTimeInUTCTimeZone());
-			licenseKeyPermissionsRepository.save(licenseKeyPermissionsEntity);
-		});
+
+		LicenseKeyPermission licenseKeyPermissionEntity = new LicenseKeyPermission();
+		licenseKeyPermissionEntity.setLKey(licenseKeyMappingDto.getLKey());
+		licenseKeyPermissionEntity.setActive(true);
+		licenseKeyPermissionEntity.setCreatedDateTimes(licenseKeyManagerUtil.getCurrentTimeInUTCTimeZone());
+		licenseKeyPermissionEntity.setCreatedBy(LicenseKeyManagerPropertyConstants.DEFAULT_CREATED_BY.getValue());
+
+		LicenseKeyPermission licenseKeyPermission = licenseKeyPermissionsRepository
+				.findByLKey(licenseKeyMappingDto.getLKey());
+
+		if (licenseKeyPermission == null) {
+			licenseKeyPermissionEntity.setPermission(
+					licenseKeyManagerUtil.concatPermissionsIntoASingleRow(licenseKeyMappingDto.getPermissions()));
+			licenseKeyPermissionsRepository.save(licenseKeyPermissionEntity);
+		} else {
+			licenseKeyMappingDto.getPermissions().add(licenseKeyPermission.getPermission());
+			licenseKeyPermissionEntity.setPermission(
+					licenseKeyManagerUtil.concatPermissionsIntoASingleRow(licenseKeyMappingDto.getPermissions()));
+			licenseKeyPermissionsRepository.updatePermissionList(
+					licenseKeyManagerUtil.concatPermissionsIntoASingleRow(licenseKeyMappingDto.getPermissions()),
+					licenseKeyMappingDto.getLKey(), licenseKeyManagerUtil.getCurrentTimeInUTCTimeZone(),
+					LicenseKeyManagerPropertyConstants.DEFAULT_CREATED_BY.getValue());
+		}
+
 		return LicenseKeyManagerPropertyConstants.MAPPED_STATUS.getValue();
 	}
 
@@ -92,13 +148,24 @@ public class LicenseKeyManagerServiceImpl
 	 */
 	@Override
 	public List<String> fetchLicenseKeyPermissions(String tspID, String licenseKey) {
+
 		licenseKeyManagerUtil.hasNullOrEmptyParameters(tspID, licenseKey);
-		List<String> permissionsList = new ArrayList<>();
-		LicenseKey licenseKeyDetails = licenseKeyRepository.findByTspIdAndLKey(tspID, licenseKey);
-		if (licenseKeyDetails != null && licenseKeyManagerUtil.isValidLicense(licenseKeyDetails.getCreatedAt())) {
-			List<LicenseKeyPermissions> licenseKeyPermissions = licenseKeyPermissionsRepository.findByTspId(tspID);
-			licenseKeyPermissions.forEach(permission -> permissionsList.add(permission.getPermission()));
+		if (licenseKeyTspMapRepository.findByLKeyAndTspId(licenseKey, tspID) == null) {
+			List<ServiceError> errorList = new ArrayList<>();
+			errorList.add(new ServiceError(LicenseKeyManagerExceptionConstants.LICENSEKEY_NOT_FOUND.getErrorCode(),
+					LicenseKeyManagerExceptionConstants.LICENSEKEY_NOT_FOUND.getErrorMessage()));
+			throw new LicenseKeyServiceException(errorList);
 		}
-		return permissionsList;
+		if (licenseKeyManagerUtil.getCurrentTimeInUTCTimeZone()
+				.isAfter(licenseKeyListRepository.findByLicenseKey(licenseKey).getExpiryDateTimes())) {
+			List<ServiceError> errorList = new ArrayList<>();
+			errorList.add(new ServiceError(LicenseKeyManagerExceptionConstants.LICENSEKEY_EXPIRED.getErrorCode(),
+					LicenseKeyManagerExceptionConstants.LICENSEKEY_EXPIRED.getErrorMessage()));
+			throw new LicenseKeyServiceException(errorList);
+
+		}
+
+		LicenseKeyPermission licenseKeyPermissions = licenseKeyPermissionsRepository.findByLKey(licenseKey);
+		return Arrays.asList(licenseKeyPermissions.getPermission().split(","));
 	}
 }

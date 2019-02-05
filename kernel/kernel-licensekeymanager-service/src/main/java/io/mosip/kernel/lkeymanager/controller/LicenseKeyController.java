@@ -1,7 +1,5 @@
 package io.mosip.kernel.lkeymanager.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.licensekeymanager.spi.LicenseKeyManagerService;
+import io.mosip.kernel.lkeymanager.dto.LicenseKeyFetchResponseDto;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyGenerationDto;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyGenerationResponseDto;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyMappingDto;
+import io.mosip.kernel.lkeymanager.dto.LicenseKeyMappingResponseDto;
 
 /**
  * Controller class that provides various methods for license key management
@@ -50,15 +50,19 @@ public class LicenseKeyController {
 	}
 
 	/**
-	 * This method will map license key to several permissions.
+	 * This method will map license key to several permissions. The permissions
+	 * provided must be present in the master list.
 	 * 
 	 * @param licenseKeyMappingDto
 	 *            the {@link LicenseKeyMappingDto}.
 	 * @return the response entity.
 	 */
 	@PostMapping(value = "/v1.0/license/map")
-	public ResponseEntity<String> mapLicenseKey(@RequestBody LicenseKeyMappingDto licenseKeyMappingDto) {
-		return new ResponseEntity<>(licenseKeyManagerService.mapLicenseKey(licenseKeyMappingDto), HttpStatus.OK);
+	public ResponseEntity<LicenseKeyMappingResponseDto> mapLicenseKey(
+			@RequestBody LicenseKeyMappingDto licenseKeyMappingDto) {
+		LicenseKeyMappingResponseDto licenseKeyMappingResponseDto = new LicenseKeyMappingResponseDto();
+		licenseKeyMappingResponseDto.setStatus(licenseKeyManagerService.mapLicenseKey(licenseKeyMappingDto));
+		return new ResponseEntity<>(licenseKeyMappingResponseDto, HttpStatus.OK);
 	}
 
 	/**
@@ -69,9 +73,11 @@ public class LicenseKeyController {
 	 * @return the permissions fetched.
 	 */
 	@GetMapping(value = "/v1.0/license/fetch")
-	public ResponseEntity<List<String>> fetchLicenseKeyPermissions(@RequestParam("tspId") String tspId,
+	public ResponseEntity<LicenseKeyFetchResponseDto> fetchLicenseKeyPermissions(@RequestParam("tspId") String tspId,
 			@RequestParam("licenseKey") String licenseKey) {
-		return new ResponseEntity<>(licenseKeyManagerService.fetchLicenseKeyPermissions(tspId, licenseKey),
-				HttpStatus.OK);
+		LicenseKeyFetchResponseDto licenseKeyFetchResponseDto = new LicenseKeyFetchResponseDto();
+		licenseKeyFetchResponseDto
+				.setMappedPermissions(licenseKeyManagerService.fetchLicenseKeyPermissions(tspId, licenseKey));
+		return new ResponseEntity<>(licenseKeyFetchResponseDto, HttpStatus.OK);
 	}
 }

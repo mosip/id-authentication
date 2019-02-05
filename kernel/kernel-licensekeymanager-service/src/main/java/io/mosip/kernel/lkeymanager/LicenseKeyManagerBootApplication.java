@@ -3,10 +3,8 @@ package io.mosip.kernel.lkeymanager;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import io.mosip.kernel.core.licensekeymanager.spi.LicenseKeyManagerService;
-
 /**
- * Spring Boot Runner class for {@link LicenseKeyManagerService}.
+ * Spring Boot Runner class for LicenseKeyManager.
  * 
  * @author Sagar Mahapatra
  * @since 1.0.0
