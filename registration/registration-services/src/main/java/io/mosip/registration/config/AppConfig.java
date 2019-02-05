@@ -2,6 +2,8 @@ package io.mosip.registration.config;
 
 import java.util.ResourceBundle;
 
+import javax.sql.DataSource;
+
 import org.quartz.JobListener;
 import org.quartz.TriggerListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,17 +39,20 @@ import io.mosip.registration.jobs.JobTriggerListener;
  *
  */
 @Configuration
-@Import({ DaoConfig.class, AuditConfig.class })
+@Import({ DaoConfig.class, AuditConfig.class, PropertiesConfig.class })
 @EnableJpaRepositories(basePackages = "io.mosip.registration", repositoryBaseClass = HibernateRepositoryImpl.class)
 @ComponentScan({ "io.mosip.registration", "io.mosip.kernel.core", "io.mosip.kernel.keygenerator",
 		"io.mosip.kernel.idvalidator", "io.mosip.kernel.ridgenerator", "io.mosip.kernel.qrcode",
 		"io.mosip.kernel.crypto", "io.mosip.kernel.jsonvalidator", "io.mosip.kernel.idgenerator" })
-@PropertySource("spring.properties")
+//@PropertySource("spring.properties")
 public class AppConfig {
 
 	private static final RollingFileAppender MOSIP_ROLLING_APPENDER = new RollingFileAppender();
 
 	private static final ResourceBundle applicationProperties = ResourceBundle.getBundle("application");
+
+	@Autowired
+	private DataSource datasource;
 
 	/**
 	 * Job processor
@@ -69,7 +74,8 @@ public class AppConfig {
 		MOSIP_ROLLING_APPENDER.setFileNamePattern(resourceBundle.getString("log4j.appender.Appender.filePattern"));
 		MOSIP_ROLLING_APPENDER.setMaxFileSize(resourceBundle.getString("log4j.appender.Appender.maxFileSize"));
 		MOSIP_ROLLING_APPENDER.setTotalCap(resourceBundle.getString("log4j.appender.Appender.totalCap"));
-		MOSIP_ROLLING_APPENDER.setMaxHistory(Integer.valueOf(resourceBundle.getString("log4j.appender.Appender.maxBackupIndex")));
+		MOSIP_ROLLING_APPENDER
+				.setMaxHistory(Integer.valueOf(resourceBundle.getString("log4j.appender.Appender.maxBackupIndex")));
 		MOSIP_ROLLING_APPENDER.setImmediateFlush(true);
 		MOSIP_ROLLING_APPENDER.setPrudent(true);
 	}
@@ -92,24 +98,21 @@ public class AppConfig {
 		return new TemplateManagerBuilderImpl();
 	}
 
-	@Bean(name="preRegIdValidator")
+	@Bean(name = "preRegIdValidator")
 	public IdValidator<String> getPreRegIdValidator() {
 		return new PridValidatorImpl();
 	}
-	
 
-	@Bean(name="uinValidator")
+	@Bean(name = "uinValidator")
 	public IdValidator<String> getUINValidator() {
 		return new UinValidatorImpl();
 	}
-	
-	@Bean(name="ridValidator")
+
+	@Bean(name = "ridValidator")
 	public RidValidator<String> getRIDValidator() {
 		return new RidValidatorImpl();
 	}
 
-	
-	
 	/**
 	 * scheduler factory bean used to shedule the batch jobs
 	 * 
@@ -122,4 +125,6 @@ public class AppConfig {
 		schFactoryBean.setGlobalJobListeners(new JobListener[] { jobProcessListener });
 		return schFactoryBean;
 	}
+	
+	
 }

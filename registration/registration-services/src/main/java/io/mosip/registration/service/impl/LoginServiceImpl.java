@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -37,6 +38,10 @@ public class LoginServiceImpl implements LoginService {
 	 * Instance of LOGGER
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(LoginServiceImpl.class);
+	
+	
+	@Value("${IRIS_THRESHOLD}")
+	private String irisThreshold;
 
 	/**
 	 * Instance of {@code AuditFactory}
