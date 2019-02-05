@@ -1,6 +1,6 @@
-package io.mosip.kernel.ldap.entities;
+package io.mosip.kernel.ldap.dto;
 
-public class LoginUser {
+public class LoginUserDto {
     private String userName;
     private String password;
     private String mode;

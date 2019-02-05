@@ -14,27 +14,24 @@ import java.util.stream.Collectors;
 
 public class AuthUserDetails implements UserDetails {
 
-    @Value("${auth.role.prefix}")
-    private String rolePrefix;
-
     private String userName;
     private String token;
     private String mail;
     private String mobile;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public AuthUserDetails(MosipUser mosipUser, String token) {
-        this.userName = mosipUser.getUserName();
+    public AuthUserDetails(MosipUserDto mosipUserDto, String token) {
+        this.userName = mosipUserDto.getUserName();
         this.token = token;
-        this.mail = mosipUser.getMail();
-        this.mobile = mosipUser.getMobile();
+        this.mail = mosipUserDto.getMail();
+        this.mobile = mosipUserDto.getMobile();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities
                 .stream()
-                .map(role -> new SimpleGrantedAuthority(rolePrefix + role.getAuthority()))
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getAuthority()))
                 .collect(Collectors.toList());
     }
 

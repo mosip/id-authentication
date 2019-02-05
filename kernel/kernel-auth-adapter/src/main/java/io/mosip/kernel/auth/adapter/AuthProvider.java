@@ -31,9 +31,9 @@ import java.util.List;
  *
  * Tasks:
  * 1. Contacts auth server to verify token validity.
- * 2. Stores the response body in an instance of MosipUser.
+ * 2. Stores the response body in an instance of MosipUserDto.
  * 3. Updates token into AuthHeadersFilter.
- * 4. Bind MosipUser instance details with the AuthUserDetails that extends Spring Security's UserDetails.
+ * 4. Bind MosipUserDto instance details with the AuthUserDetails that extends Spring Security's UserDetails.
  **********************************************************************************************************************/
 
 @Component
@@ -67,20 +67,20 @@ public class AuthProvider extends AbstractUserDetailsAuthenticationProvider {
         HttpHeaders headers = new HttpHeaders();
         headers.set(authHeaderName, token);
         HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-        ResponseEntity<MosipUser> response = null;
+        ResponseEntity<MosipUserDto> response = null;
         try {
-            response = getRestTemplate().exchange(validateUrl, HttpMethod.GET, entity, MosipUser.class);
+            response = getRestTemplate().exchange(validateUrl, HttpMethod.GET, entity, MosipUserDto.class);
         } catch (Exception err) {
             throw new RuntimeException("Invalid Token");
         }
 
-        MosipUser mosipUser = response.getBody();
-        if (mosipUser == null) {
+        MosipUserDto mosipUserDto = response.getBody();
+        if (mosipUserDto == null) {
             throw new RuntimeException("Invalid Token");
         }
 
-        List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(mosipUser.getRole());
-        AuthUserDetails authUserDetails = new AuthUserDetails(mosipUser,
+        List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(mosipUserDto.getRole());
+        AuthUserDetails authUserDetails = new AuthUserDetails(mosipUserDto,
                 response.getHeaders().get(authHeaderName).get(0));
         authUserDetails.setAuthorities(grantedAuthorities);
 

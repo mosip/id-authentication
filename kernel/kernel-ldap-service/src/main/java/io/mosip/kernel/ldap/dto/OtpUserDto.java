@@ -1,6 +1,6 @@
-package io.mosip.kernel.ldap.entities;
+package io.mosip.kernel.ldap.dto;
 
-public class OtpUser {
+public class OtpUserDto {
     private String email;
     private String phone;
     private String langCode;
