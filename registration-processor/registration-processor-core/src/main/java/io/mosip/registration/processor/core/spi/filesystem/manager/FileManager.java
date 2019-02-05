@@ -77,13 +77,6 @@ public interface FileManager<D, F> {
 	public void cleanUpFile(D srcFolderLoc, D destFolderLoc, String fileName, String childPath);
 
 	/**
-	 * Get current directory location.
-	 *
-	 * @return FTP_ZONE path
-	 */
-	public String getCurrentDirectory();
-
-	/**
 	 * Delete packet.
 	 *
 	 * @param workingDirectory

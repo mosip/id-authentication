@@ -52,21 +52,22 @@ public class RestApiClient {
 	 * @param responseType
 	 *            the response type
 	 * @return the api
+	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T getApi(String getURI, Class<?> responseType) {
+	public <T> T getApi(String getURI, Class<?> responseType) throws Exception {
 		RestTemplate restTemplate;
+		T result = null;
 		try {
 			restTemplate = getRestTemplate();
-			T result = (T) restTemplate.getForObject(getURI, responseType);
+			result = (T) restTemplate.getForObject(getURI, responseType);
 
-			return result;
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(), e.getMessage() + ExceptionUtils.getStackTrace(e));
-
+			throw e;
 		}
-		return null;
+		return result;
 	}
 
 	/**

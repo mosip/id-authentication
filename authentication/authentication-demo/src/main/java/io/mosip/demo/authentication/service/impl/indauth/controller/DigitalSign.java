@@ -29,11 +29,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.util.HMACUtils;
 
+// 
+/**
+ * @author Sanjay Murali
+ * The Class DigitalSign.
+ */
 @RestController
 public class DigitalSign {
 
+	/** The mapper. */
 	ObjectMapper mapper = new ObjectMapper();
 
+	/**
+	 * Sign.
+	 *
+	 * @param data the data
+	 * @return the string
+	 * @throws KeyStoreException the key store exception
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws CertificateException the certificate exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws UnrecoverableEntryException the unrecoverable entry exception
+	 * @throws JoseException the jose exception
+	 * @throws InvalidKeySpecException the invalid key spec exception
+	 */
 	@PostMapping(path = "/sign")
 	public String sign(@RequestBody String data) throws KeyStoreException, NoSuchAlgorithmException,
 	CertificateException, IOException, UnrecoverableEntryException, JoseException, InvalidKeySpecException {
@@ -80,6 +99,14 @@ public class DigitalSign {
 		return jws.getCompactSerialization();
 	}
 
+	/**
+	 * Gets the file content.
+	 *
+	 * @param fis the fis
+	 * @param encoding the encoding
+	 * @return the file content
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static String getFileContent(FileInputStream fis,String encoding ) throws IOException
 	{
 		try( BufferedReader br =

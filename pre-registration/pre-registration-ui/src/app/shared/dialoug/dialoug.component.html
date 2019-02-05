@@ -1,9 +1,8 @@
 <div *ngIf="input.case === 'APPLICANTS'">
   <h1 mat-dialog-title>{{ 'dialog.title_applicant' | translate }}</h1>
   <div mat-dialog-content>
-    <p>{{ 'dialog.content_applicant' | translate }}</p>
     <mat-form-field>
-      <input matInput (keyup)="validNumberOfUsers()" type="number" max="10" [(ngModel)]="applicantNumber" />
+      <input matInput placeholder="{{ 'dialog.content_applicant' | translate }}" (keyup)="validNumberOfUsers()" type="text" [(ngModel)]="applicantNumber" />
     </mat-form-field>
 
     <div *ngIf="invalidApplicantNumber"><div>{{ 'dialog.invalidApplicantNumber_msg' | translate }}</div></div>

@@ -156,7 +156,7 @@
       "text_appoinment_date": "Date de rendez-vous",
       "text_status": "Statut",
       "action_modify_information": "Modifier les informations",
-      "action_modify_appointment": "Modifier un rendez-vous"
+      "action_modify_appointment": "Voir accusé de réception"
     }
   },
   "appointmentCentreSearch": {
@@ -175,9 +175,9 @@
     "action_print": "IMPRESSION"
   },
   "dialog": {
-    "title_applicant": "Nombre de candidats",
-    "content_applicant": "Les détails du premier demandeur seront traités comme primaires",
-    "invalidApplicantNumber_msg": "Le nombre doit être compris entre 1 et 10",
+    "title_applicant": "Envoyer une confirmation de rendez-vous",
+    "content_applicant": "Email / Numéro de téléphone",
+    "invalidApplicantNumber_msg": "Email / numéro de téléphone invalide",
     "action_ok": "D'accord",
     "title_discard": "Jeter",
     "action_discard_app": "Jeter toute l'application",
@@ -188,7 +188,7 @@
     "action_close": "Fermer",
     "action_add_to_slot": "Ajouter à la fente"
   },
-  "ackowledgement": {
+  "acknowledgement": {
     "title":"Rendez-vous confirmé",
     "container_guideline": "Directives importantes",
     "action_download": "TÉLÉCHARGER",

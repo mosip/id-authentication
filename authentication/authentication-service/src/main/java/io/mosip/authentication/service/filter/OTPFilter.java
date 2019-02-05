@@ -47,18 +47,18 @@ public class OTPFilter extends BaseAuthFilter {
 	protected Map<String, Object> setResponseParam(Map<String, Object> requestBody, Map<String, Object> responseBody)
 			throws IdAuthenticationAppException {
 		try {
-			if (Objects.nonNull(requestBody.get(TXN_ID))) {
+			if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(TXN_ID))) {
 				responseBody.replace(TXN_ID, requestBody.get(TXN_ID));
 			}
 
-			if (Objects.nonNull(requestBody.get(REQ_TIME))) {
+			if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(REQ_TIME))
+					&& isDate((String) requestBody.get(REQ_TIME))) {
 				ZoneId zone = ZonedDateTime.parse((CharSequence) requestBody.get(REQ_TIME)).getZone();
 				responseBody.replace(RES_TIME,
 						DateUtils.formatDate(
 								DateUtils.parseToDate((String) responseBody.get(RES_TIME),
 										env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)),
 								env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)));
-				responseBody.put(TXN_ID, requestBody.get(TXN_ID));
 				return responseBody;
 			} else {
 				return responseBody;

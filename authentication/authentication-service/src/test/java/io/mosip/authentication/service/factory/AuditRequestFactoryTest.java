@@ -44,7 +44,7 @@ public class AuditRequestFactoryTest {
 	
 	@Test
 	public void testBuildRequest() {
-		AuditRequestDto actualRequest = auditFactory.buildRequest(AuditModules.BIO_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
+		AuditRequestDto actualRequest = auditFactory.buildRequest(AuditModules.FINGERPRINT_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 		actualRequest.setActionTimeStamp(null);
 
 		AuditRequestDto expectedRequest = new AuditRequestDto();
@@ -64,8 +64,8 @@ public class AuditRequestFactoryTest {
 			expectedRequest.setId("id");
 			expectedRequest.setIdType(IdType.UIN.name());
 			expectedRequest.setCreatedBy(env.getProperty("user.name")); 
-			expectedRequest.setModuleName(AuditModules.BIO_AUTH.getModuleName());
-			expectedRequest.setModuleId(AuditModules.BIO_AUTH.getModuleId());
+			expectedRequest.setModuleName(AuditModules.FINGERPRINT_AUTH.getModuleName());
+			expectedRequest.setModuleId(AuditModules.FINGERPRINT_AUTH.getModuleId());
 			expectedRequest.setDescription("desc");
 
 		} catch (UnknownHostException e) {

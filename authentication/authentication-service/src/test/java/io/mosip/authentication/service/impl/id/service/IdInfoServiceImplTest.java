@@ -1,8 +1,5 @@
 package io.mosip.authentication.service.impl.id.service;
 
-import java.io.IOException;
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -11,9 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.service.impl.id.service.impl.IdRepoServiceImpl;

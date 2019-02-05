@@ -143,11 +143,7 @@ public class CleanUpServiceTest {
 		assertEquals("Deleted file",false, exists);
 	}
 	
-	@Test(expected = FileNotFoundInSourceException.class)
-	public void deleteFail() throws FileNotFoundException, IOException {
-		fileManager.deletePacket(DirectoryPathDto.FTP_ZONE, "test");
-
-	}
+	
 	
 	@Test
 	public void copyTest() throws FileNotFoundException, IOException {

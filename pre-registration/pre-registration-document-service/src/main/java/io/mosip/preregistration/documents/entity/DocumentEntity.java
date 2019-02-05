@@ -122,5 +122,10 @@ public class DocumentEntity implements Serializable {
 	 */
 	@Column(name = "upd_dtimes")
 	private LocalDateTime updDtime;
-
+	
+	/**
+	 * Encrypted Date Time
+	 */
+	@Column(name = "encrypted_dtimes")
+	private LocalDateTime encryptedDateTime;
 }
