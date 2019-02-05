@@ -36,6 +36,7 @@ import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.exception.RestCallException;
+import io.mosip.preregistration.booking.exception.TimeSpanException;
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
@@ -462,6 +463,20 @@ public class BookingExceptionHandler {
 		responseDto.setErr(errorDetails);
 		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+	@ExceptionHandler(TimeSpanException.class)
+	public ResponseEntity<MainResponseDTO<?>> timeSpanException(final TimeSpanException e,
+			WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText());
+
+		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
+
+		responseDto.setStatus(false);
+		responseDto.setErr(errorDetails);
+		responseDto.setResTime(getCurrentResponseTime());
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+
 	}
 	
 	/**

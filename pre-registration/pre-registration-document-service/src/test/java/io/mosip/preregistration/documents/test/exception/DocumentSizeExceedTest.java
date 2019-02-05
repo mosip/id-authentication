@@ -65,10 +65,10 @@ public class DocumentSizeExceedTest {
 
 		this.multiPartFile = new MockMultipartFile("file", "Doc.pdf", "mixed/multipart", new FileInputStream(file));
 
-		Mockito.when(documentUploadService.uploadDoucment(multiPartFile, json)).thenThrow(exceedException);
+		Mockito.when(documentUploadService.uploadDocument(multiPartFile, json)).thenThrow(exceedException);
 		try {
 
-			documentUploadService.uploadDoucment(multiPartFile, json);
+			documentUploadService.uploadDocument(multiPartFile, json);
 			fail();
 
 		} catch (DocumentSizeExceedException e) {

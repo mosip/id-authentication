@@ -16,15 +16,15 @@ spec:
           servicePort: 3000  
       - path: /uingenerator
         backend:
-          serviceName: kernel-idgenerator-uin
+          serviceName: kernel-uingenerator-service
           servicePort: 8080
       - path: /auditmanager
         backend:
           serviceName: kernel-auditmanager-service
           servicePort: 8081
-      - path: /packetserver
+      - path: /otpnotifier
         backend:
-          serviceName: kernel-packetserver-http
+          serviceName: kernel-otpnotification-service
           servicePort: 8082
       - path: /emailnotifier
         backend:
@@ -90,6 +90,10 @@ spec:
         backend:
           serviceName: pre-registration-batchjob-service
           servicePort: 9096
+      - path: /transliterate
+        backend:
+          serviceName: pre-registration-translitration-service
+          servicePort: 9098
       - path: /identity
         backend:
           serviceName: authentication-service
