@@ -10,6 +10,8 @@ package io.mosip.kernel.core.cbeffutil.common;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
@@ -21,7 +23,11 @@ public class DateAdapter extends XmlAdapter<String, LocalDateTime> {
    	 */    
 	@Override
     public LocalDateTime unmarshal(String v) throws Exception {
-        return LocalDateTime.now(ZoneId.of("UTC"));
+		ZonedDateTime parse = 
+			    ZonedDateTime.parse(v, DateTimeFormatter.ISO_DATE_TIME)
+			        .withZoneSameInstant(ZoneId.of("UTC"));
+		LocalDateTime locale = parse.toLocalDateTime();
+        return locale;
     }
  
 	/**

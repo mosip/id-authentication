@@ -209,7 +209,7 @@ public class CbeffImplTest {
 
 	@Test
 	public void testGetBDBBasedOnType() throws IOException, Exception {
-		Map<String,String> testMap = cbeffUtilImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), "FMR", "Right");
+		Map<String,String> testMap = cbeffUtilImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), "FMR", "Right");		
 		Set<String> testSet1 = new HashSet<>();
 		testSet1.add("FINGER_Right_2");
 		assertEquals(testMap.keySet(),testSet1);
