@@ -304,6 +304,9 @@ public class MessageNotificationServiceImpl
 		attributes.put(TemplateConstant.LOCALADMINISTRATIVEAUTHORITY, templatejson.getLocalAdministrativeAuthority());
 		attributes.put(TemplateConstant.IDSCHEMAVERSION, templatejson.getIdSchemaVersion());
 		attributes.put(TemplateConstant.CNIENUMBER, templatejson.getCnieNumber());
+		attributes.put(TemplateConstant.GENDER, templatejson.getGender());
+		attributes.put(TemplateConstant.PHONENUMBER, templatejson.getPhoneNumber());
+		attributes.put(TemplateConstant.EMAILID, templatejson.getEmailID());
 
 		return templatejson;
 	}
