@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 import io.mosip.authentication.service.config.IDAMappingConfig;
+import io.mosip.kernel.cbeffutil.service.impl.CbeffImpl;
 import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
@@ -20,7 +21,8 @@ import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
  */
 @SpringBootApplication
 @Import(value = { HibernateDaoConfig.class, UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class,
-		PDFGeneratorImpl.class, EmailValidatorImpl.class, PhoneValidatorImpl.class, DecryptorImpl.class })
+		PDFGeneratorImpl.class, EmailValidatorImpl.class, PhoneValidatorImpl.class, DecryptorImpl.class,
+		CbeffImpl.class })
 
 public class IdAuthenticationApplication {
 
