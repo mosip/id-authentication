@@ -744,7 +744,8 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setBioInfo(info);
 		boolean isAuth = true;
 		IdType idType = IdType.VID;
-		ReflectionTestUtils.invokeMethod(authFacadeImpl, "saveAndAuditBioAuthTxn", authRequestDTO, isAuth, idType,
+		String uin="1234567890";
+		ReflectionTestUtils.invokeMethod(authFacadeImpl, "saveAndAuditBioAuthTxn", authRequestDTO, isAuth,uin, idType,
 				true);
 	}
 
@@ -788,7 +789,8 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setBioInfo(info);
 		boolean isAuth = true;
 		IdType idType = IdType.VID;
-		ReflectionTestUtils.invokeMethod(authFacadeImpl, "saveAndAuditBioAuthTxn", authRequestDTO, isAuth, idType,
+		String uin="1234567890";
+		ReflectionTestUtils.invokeMethod(authFacadeImpl, "saveAndAuditBioAuthTxn", authRequestDTO, isAuth,uin, idType,
 				true);
 	}
 	

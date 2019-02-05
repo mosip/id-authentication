@@ -192,7 +192,7 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		processDemoAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType);
 
-		processBioAuth(authRequestDTO, idInfo, isAuth, authStatusList, idType);
+		processBioAuth(authRequestDTO, idInfo,uin, isAuth, authStatusList, idType);
 		
 		processPinAuth(authRequestDTO,uin,isAuth,authStatusList,idType);
 		
@@ -232,7 +232,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				comment = isStatus ? "Pin  Authenticated Success" : "Pin  Authenticated Failed";
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "Pin Authentication  status :" + statusInfo);
 				auditHelper.audit(AuditModules.PIN_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO.getIdvId(), idType, desc);
-				idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.STATIC_PIN_AUTH);
+				idAuthService.saveAutnTxn(idvId, idvIdType,uin, reqTime, txnId, status, comment, RequestType.STATIC_PIN_AUTH);
 			}
 		}		
 	}
@@ -247,7 +247,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @param idType
 	 * @throws IdAuthenticationBusinessException
 	 */
-	private void processBioAuth(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo,
+	private void processBioAuth(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo,String uin,
 			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType)
 			throws IdAuthenticationBusinessException {
 
@@ -264,7 +264,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
 
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "BioMetric Authentication status :" + statusInfo);
-				saveAndAuditBioAuthTxn(authRequestDTO, isAuth, idType, isStatus);
+				saveAndAuditBioAuthTxn(authRequestDTO, isAuth,uin, idType, isStatus);
 
 			}
 		}
@@ -310,7 +310,7 @@ public class AuthFacadeImpl implements AuthFacade {
 						DEMO_AUTHENTICATION_REQUESTED);
 
 				comment = isStatus ? "Demo  Authenticated Success" : "Demo  Authenticated Failed";
-				idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.DEMO_AUTH);
+				idAuthService.saveAutnTxn(idvId, idvIdType, uin,reqTime, txnId, status, comment, RequestType.DEMO_AUTH);
 			}
 
 		}
@@ -353,7 +353,7 @@ public class AuthFacadeImpl implements AuthFacade {
 						OTP_AUTHENTICATION_REQUESTED);
 
 				comment = isStatus ? "OTP Authenticated Success" : "OTP Authenticated Failed";
-				idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.OTP_AUTH);
+				idAuthService.saveAutnTxn(idvId, idvIdType,uin, reqTime, txnId, status, comment, RequestType.OTP_AUTH);
 			}
 
 		}
@@ -368,7 +368,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @param isStatus
 	 * @throws IdAuthenticationBusinessException
 	 */
-	private void saveAndAuditBioAuthTxn(AuthRequestDTO authRequestDTO, boolean isAuth, IdType idType, boolean isStatus)
+	private void saveAndAuditBioAuthTxn(AuthRequestDTO authRequestDTO, boolean isAuth,String uin, IdType idType, boolean isStatus)
 			throws IdAuthenticationBusinessException {
 
 		String idvId = authRequestDTO.getIdvId();
@@ -386,7 +386,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			status = isStatus ? "Y" : "N";
 			comment = isStatus ? "Finger  Authentication Success" : "Finger  Authentication Failed";
 
-			idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.FINGER_AUTH);
+			idAuthService.saveAutnTxn(idvId, idvIdType,uin, reqTime, txnId, status, comment, RequestType.FINGER_AUTH);
 		}
 		if (authRequestDTO.getBioInfo().stream()
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.IRISIMG.getType()))) {
@@ -394,7 +394,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			auditHelper.audit(AuditModules.IRIS_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType, desc);
 			status = isStatus ? "Y" : "N";
 			comment = isStatus ? "Iris  Authentication Success" : "Iris  Authentication Failed";
-			idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.IRIS_AUTH);
+			idAuthService.saveAutnTxn(idvId, idvIdType,uin, reqTime, txnId, status, comment, RequestType.IRIS_AUTH);
 		}
 		if (authRequestDTO.getBioInfo().stream()
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.FACEIMG.getType()))) {
@@ -402,7 +402,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			auditHelper.audit(AuditModules.FACE_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType, desc);
 			status = isStatus ? "Y" : "N";
 			comment = isStatus ? "Face  Authentication Success" : "Face  Authentication Failed";
-			idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.FACE_AUTH);
+			idAuthService.saveAutnTxn(idvId, idvIdType,uin, reqTime, txnId, status, comment, RequestType.FACE_AUTH);
 		}
 	}
 
