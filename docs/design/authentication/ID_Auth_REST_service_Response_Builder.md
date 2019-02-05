@@ -36,8 +36,9 @@ For any authentication request (single or multi-factor), a generic AuthResponse 
 1.	status(Y/N) - The authentication success or failure status, 
 2.	txnId (same as request) - the transaction ID, 
 3.	resTime  - the timestamp of response, 
-4.	err - Array of Errors with error code and message, in case of authentication failure, data validation failure or any other error
-5.	info - This block contains below information
+4.	staticTocken - The token generated using **Kernel-Static Token generator** which will be a combination of individual's UIN and TSP ID, and it will always be the same value for one combination.
+5.	err - Array of Errors with error code and message, in case of authentication failure, data validation failure or any other error
+6.	info - This block contains below information
 
    a.	idType - Type of ID (D for UIN, V for VID)
    
@@ -47,9 +48,7 @@ For any authentication request (single or multi-factor), a generic AuthResponse 
       
    d.	usageData - The 16 digit hex encoded format of used and matched bits.
    
-   e.   staticTocken - The token generated using **Kernel-Static Token generator** which will be a combination of individual's UIN and TSP ID, and it will always be the same value for one combination.
-   
-   f.	matchInfo - Array of Matching information with Matching Strategy and Match Threshold values as in request. This contain below information: 
+   e.	matchInfos - Array of Matching information with Matching Strategy and Match Threshold values as in request. This contain below information: 
    
    	- authType - Which can be one of address, personalIdentity, fullAddress
    
@@ -59,7 +58,7 @@ For any authentication request (single or multi-factor), a generic AuthResponse 
    
    	- matchingThreshold - Integer value for match threshold (0 to 100)
    
-   g.	bioInfo - Array of Biometric information with bioType and Device Informations values as in request. This contain below information: 
+   f.	bioInfos - Array of Biometric information with bioType and Device Informations values as in request. This contain below information: 
    
    	- bioType - Which can be one of address, personalIdentity, fullAddress
    
@@ -73,11 +72,11 @@ A Sample response body will be as blow:
   "status": true,
   "err": [],
   "txnID": "txn1234567890",
+  "staticToken": "526900409300563849276960763148952762",
   "resTime": "2018-10-26T12:19:24.352Z",
   "info": {
     "idvIdType": "D",
     "reqTime": "2018-10-26T12:20:04.121Z",
-    "staticToken": "526900409300563849276960763148952762",
     "ver": "1.0",
     "matchInfos": [
       {
