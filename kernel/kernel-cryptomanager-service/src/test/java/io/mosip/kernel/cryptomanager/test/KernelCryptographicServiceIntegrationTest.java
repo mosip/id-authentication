@@ -84,7 +84,7 @@ public class KernelCryptographicServiceIntegrationTest {
 		server = MockRestServiceServer.bindTo(restTemplate).build();
 		uriParams = new HashMap<>();
 		uriParams.put("applicationId", "REGISTRATION");
-		builder = UriComponentsBuilder.fromUriString(publicKeyUrl).queryParam("timeStamp", "2018-12-06T12:07:44.403")
+		builder = UriComponentsBuilder.fromUriString(publicKeyUrl).queryParam("timeStamp", "2018-12-06T12:07:44.403Z")
 				.queryParam("referenceId", "ref123");
 	}
 

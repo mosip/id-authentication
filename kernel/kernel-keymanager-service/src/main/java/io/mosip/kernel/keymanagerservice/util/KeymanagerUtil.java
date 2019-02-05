@@ -6,6 +6,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -31,6 +32,9 @@ import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
 @Component
 public class KeymanagerUtil {
 
+	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	
+	
 	/**
 	 * KeySplitter for splitting key and data
 	 */
@@ -157,6 +161,20 @@ public class KeymanagerUtil {
 		SecretKey symmetricKey = new SecretKeySpec(decryptedSymmetricKey, 0, decryptedSymmetricKey.length,
 				symmetricAlgorithmName);
 		return decryptor.symmetricDecrypt(symmetricKey, encryptedData);
+	}
+	
+	
+
+	/**
+	 * Parse a date string of pattern UTC_DATETIME_PATTERN into
+	 * {@link LocalDateTime}
+	 * 
+	 * @param dateTime
+	 *            of type {@link String} of pattern UTC_DATETIME_PATTERN
+	 * @return a {@link LocalDateTime} of given pattern
+	 */
+	public  LocalDateTime parseToLocalDateTime(String dateTime) {
+		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
 	}
 
 }
