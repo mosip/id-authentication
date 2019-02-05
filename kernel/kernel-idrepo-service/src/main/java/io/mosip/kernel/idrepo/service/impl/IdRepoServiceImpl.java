@@ -58,6 +58,8 @@ import io.mosip.kernel.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.cbeffutil.service.CbeffI;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ParseException;
+import io.mosip.kernel.core.idrepo.constant.AuditEvents;
+import io.mosip.kernel.core.idrepo.constant.AuditModules;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
@@ -84,12 +86,12 @@ import io.mosip.kernel.idrepo.entity.UinBiometricHistory;
 import io.mosip.kernel.idrepo.entity.UinDocument;
 import io.mosip.kernel.idrepo.entity.UinDocumentHistory;
 import io.mosip.kernel.idrepo.entity.UinHistory;
+import io.mosip.kernel.idrepo.helper.AuditHelper;
 import io.mosip.kernel.idrepo.repository.UinBiometricHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinDocumentHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinRepo;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class IdRepoServiceImpl.
  *
@@ -256,6 +258,9 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Autowired
 	private RestTemplate restTemplate;
 	
+	@Autowired
+	private AuditHelper auditHelper;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -269,7 +274,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			return constructIdResponse(
 					this.id.get(CREATE), addIdentity(uin, request.getRegistrationId(),
 							convertToBytes(request.getRequest().getIdentity()), request.getRequest().getDocuments()),
-					null);
+					null);	
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 					"\n" + ExceptionUtils.getStackTrace(e));
@@ -282,6 +287,9 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
+		} finally {
+			auditHelper.audit(AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, uin,
+					"Create Identity requested");
 		}
 	}
 
@@ -480,6 +488,9 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY,
 					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
+		} finally {
+			auditHelper.audit(AuditModules.RETRIEVE_IDENTITY, AuditEvents.RETRIEVE_IDENTITY_REQUEST_RESPONSE, uin,
+					"Retrieve Identity requested");
 		}
 	}
 
@@ -769,6 +780,9 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, UPDATE_IDENTITY,
 					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
+		} finally {
+			auditHelper.audit(AuditModules.UPDATE_IDENTITY, AuditEvents.UPDATE_IDENTITY_REQUEST_RESPONSE, uin,
+					"Update Identity requested");
 		}
 	}
 

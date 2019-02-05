@@ -51,7 +51,13 @@ public enum IdRepoErrorConstants {
 	
 	JSON_SCHEMA_PROCESSING_FAILED("KER-IDR-016", "Unable to process id object json schema"),
 	
-	JSON_SCHEMA_RETRIEVAL_FAILED("KER-IDR-017", "Unable to retrieve id object schema from server");
+	JSON_SCHEMA_RETRIEVAL_FAILED("KER-IDR-017", "Unable to retrieve id object schema from server"),
+	
+	CLIENT_ERROR("KER-IDR-018", "4XX - Client Error occured"),
+	
+	SERVER_ERROR("KER-IDR-019", "5XX - Server Error occured"),
+	
+	CONNECTION_TIMED_OUT("KER-IDR-020", "Connection timed out");
 
 	/** The error code. */
 	private final String errorCode;
