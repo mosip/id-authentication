@@ -76,6 +76,9 @@ public class OtpNotificationUtil {
 	@Autowired
 	private RestTemplate restTemplate;
 
+	/**
+	 * Reference to ObjectMapper.
+	 */
 	@Autowired
 	private ObjectMapper mapper;
 
@@ -99,7 +102,7 @@ public class OtpNotificationUtil {
 		}
 
 		Map<String, Object> templateValues = new HashMap<>();
-		templateValues.put(OtpNotificationPropertyConstant.NOTIFICATION_TEMPLATE_OTP_VALUE.getProperty(), otp);
+		templateValues.put(OtpNotificationPropertyConstant.NOTIFICATION_OTP_VALUE.getProperty(), otp);
 
 		InputStream templateInputStream = new ByteArrayInputStream(template.getBytes(Charset.forName("UTF-8")));
 
@@ -146,7 +149,8 @@ public class OtpNotificationUtil {
 		try {
 			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
 		} catch (IOException e) {
-			throw new OtpNotifierServiceException("KER-NOT-011", "Io exception occur");
+			throw new OtpNotifierServiceException(OtpNotificationErrorConstant.NOTIFIER_SMS_IO_ERROR.getErrorCode(),
+					OtpNotificationErrorConstant.NOTIFIER_SMS_IO_ERROR.getErrorMessage());
 		}
 
 		if (!validationErrorsList.isEmpty()) {
@@ -185,7 +189,8 @@ public class OtpNotificationUtil {
 		try {
 			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
 		} catch (IOException e) {
-			throw new OtpNotifierServiceException("KER-NOT-012", "Io exception occur in email notification");
+			throw new OtpNotifierServiceException(OtpNotificationErrorConstant.NOTIFIER_EMAIL_IO_ERROR.getErrorCode(),
+					OtpNotificationErrorConstant.NOTIFIER_EMAIL_IO_ERROR.getErrorMessage());
 		}
 
 		if (!validationErrorsList.isEmpty()) {
@@ -210,14 +215,13 @@ public class OtpNotificationUtil {
 		ResponseEntity<String> response = restTemplate.exchange(otpServiceApi, HttpMethod.POST, entity, String.class);
 
 		String responseBody = response.getBody();
-		
-		System.out.println(responseBody);
 
 		List<ServiceError> validationErrorsList = null;
 		try {
 			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
 		} catch (IOException e1) {
-			throw new OtpNotifierServiceException("KER-NOT-013", "Io exception occur in otp generation");
+			throw new OtpNotifierServiceException(OtpNotificationErrorConstant.NOTIFIER_OTP_IO_ERROR.getErrorCode(),
+					OtpNotificationErrorConstant.NOTIFIER_OTP_IO_ERROR.getErrorMessage());
 		}
 
 		if (!validationErrorsList.isEmpty()) {
@@ -229,10 +233,12 @@ public class OtpNotificationUtil {
 		try {
 			otpResponse = mapper.readTree(responseBody);
 
-			otp = otpResponse.get("otp").asText();
+			otp = otpResponse.get(OtpNotificationPropertyConstant.NOTIFICATION_OTP_VALUE.getProperty()).asText();
 
 		} catch (IOException e) {
-			throw new OtpNotifierServiceException("KER-NOT-014", "Io exception occur in otp retrival");
+			throw new OtpNotifierServiceException(
+					OtpNotificationErrorConstant.NOTIFIER_OTP_IO_RETRIVAL_ERROR.getErrorCode(),
+					OtpNotificationErrorConstant.NOTIFIER_OTP_IO_RETRIVAL_ERROR.getErrorMessage());
 		}
 
 		return otp;
