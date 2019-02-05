@@ -10,6 +10,7 @@ import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProv
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -19,11 +20,13 @@ import io.mosip.kernel.core.logger.spi.Logger;
 public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 
 	PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
-		if (reqInfo instanceof String && entityInfo instanceof String) {
+		if (reqInfo instanceof Map && entityInfo instanceof Map) {
+			String reqInfoValue = ((Map<String, String>) reqInfo).values().stream().findFirst().orElse("");
+			String entityInfoValue = ((Map<String, String>) entityInfo).values().stream().findFirst().orElse("");
 			Object object = props.get(FingerprintProvider.class.getSimpleName());
 			if (object instanceof BiFunction) {
 				BiFunction<String, String, Double> func = (BiFunction<String, String, Double>) object;
-				return (int) func.apply((String) reqInfo, (String) entityInfo).doubleValue();
+				return (int) func.apply((String) reqInfoValue, (String) entityInfoValue).doubleValue();
 			} else {
 				logError(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);

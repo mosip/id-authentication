@@ -258,7 +258,7 @@ public class KeymanagerIntegrationTest {
 				LocalDateTime.parse("2010-05-01 12:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), "", "");
 		String content = mapper.writeValueAsString(symmetricKeyRequestDto);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/symmetrickey").contentType(MediaType.APPLICATION_JSON).content(content))
+				.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().is(500)).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 	}
@@ -272,7 +272,7 @@ public class KeymanagerIntegrationTest {
 				LocalDateTime.parse("2010-05-01 12:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null, "");
 		String content = mapper.writeValueAsString(symmetricKeyRequestDto);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/symmetrickey").contentType(MediaType.APPLICATION_JSON).content(content))
+				.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().is(201)).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 	}
@@ -286,7 +286,7 @@ public class KeymanagerIntegrationTest {
 				"");
 		String content = mapper.writeValueAsString(symmetricKeyRequestDto);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/symmetrickey").contentType(MediaType.APPLICATION_JSON).content(content))
+				.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().is(500)).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 	}
@@ -301,7 +301,7 @@ public class KeymanagerIntegrationTest {
 				"");
 		String content = mapper.writeValueAsString(symmetricKeyRequestDto);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/symmetrickey").contentType(MediaType.APPLICATION_JSON).content(content))
+				.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().is(500)).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 	}
@@ -316,7 +316,7 @@ public class KeymanagerIntegrationTest {
 				"");
 		String content = mapper.writeValueAsString(symmetricKeyRequestDto);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/symmetrickey").contentType(MediaType.APPLICATION_JSON).content(content))
+				.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().is(500)).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 	}
@@ -334,7 +334,7 @@ public class KeymanagerIntegrationTest {
 				"");
 		String content = mapper.writeValueAsString(symmetricKeyRequestDto);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/symmetrickey").contentType(MediaType.APPLICATION_JSON).content(content))
+				.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().is(500)).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 	}
@@ -353,7 +353,7 @@ public class KeymanagerIntegrationTest {
 				"");
 		String content = mapper.writeValueAsString(symmetricKeyRequestDto);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/symmetrickey").contentType(MediaType.APPLICATION_JSON).content(content))
+				.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().is(201)).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 	}

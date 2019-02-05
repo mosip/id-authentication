@@ -12,9 +12,8 @@ public enum PlatformErrorMessages {
 	RPR_PKR_PACKET_NOT_YET_SYNC(PlatformErrorConstants.RPR_PACKET_RECEIVER_MODULE + "001",
 			"Registration packet is not in Sync with Sync table"),
 
-	/** The rpr pkr packet size greater than limit. */
-	RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT(PlatformErrorConstants.RPR_PACKET_RECEIVER_MODULE + "002",
-			"The Registration Packet Size has exceeded the Max Size Limit"),
+	RPR_PKR_INVALID_PACKET_SIZE(PlatformErrorConstants.RPR_PACKET_RECEIVER_MODULE + "002",
+			"The Registration Packet Size is invalid"),
 
 	/** The rpr pkr invalid packet format. */
 	RPR_PKR_INVALID_PACKET_FORMAT(PlatformErrorConstants.RPR_PACKET_RECEIVER_MODULE + "003", "Invalid packet format"),
@@ -151,8 +150,8 @@ public enum PlatformErrorMessages {
 	// Stages - Packet validator Exception error code and message
 	STRUCTURAL_VALIDATION_FAILED("", "Structural Validation Failed"),
 
-	//UIN check - JSON file encoding failed.
-	UNSUPPORTED_ENCODING("","json object parsing failed"),
+	// UIN check - JSON file encoding failed.
+	UNSUPPORTED_ENCODING("", "json object parsing failed"),
 
 	/** The osi validation failed. */
 	// Stages - OSI Exception error code and message
@@ -165,6 +164,9 @@ public enum PlatformErrorMessages {
 	/** The packet bio dedupe failed. */
 	// Stages - Bio-Dedupe error code and message
 	PACKET_BIO_DEDUPE_FAILED("", "Bio dedupe Failed"),
+
+	// Stages - Packet-Validator error message
+	REVERSE_DATA_SYNC_FAILED("", "Reverse data sync failed"),
 
 	/** The rpr psj dfs not accessible. */
 	// Packet scanner job Exception error code and message

@@ -167,7 +167,7 @@ public class DemographicControllerTest {
 		MainListResponseDTO<PreRegistrationViewDTO> response = new MainListResponseDTO<>();
 		List<PreRegistrationViewDTO> viewList = new ArrayList<>();
 		PreRegistrationViewDTO viewDto = new PreRegistrationViewDTO();
-		viewDto.setPreId("1234");
+		viewDto.setPreRegistrationId("1234");
 		viewDto.setStatusCode("Pending_Appointment");
 		viewList.add(viewDto);
 		response.setResponse(viewList);
@@ -216,7 +216,7 @@ public class DemographicControllerTest {
 		List<DeletePreRegistartionDTO> DeleteList = new ArrayList<DeletePreRegistartionDTO>();
 		DeletePreRegistartionDTO deleteDto = new DeletePreRegistartionDTO();
 
-		deleteDto.setPrId("3");
+		deleteDto.setPreRegistrationId("3");
 		deleteDto.setDeletedBy("9527832358");
 		DeleteList.add(deleteDto);
 		response.setResponse(DeleteList);

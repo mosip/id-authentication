@@ -6,6 +6,7 @@ package io.mosip.preregistration.application.service;
 
 import java.net.URLDecoder;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,7 +35,6 @@ import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.preregistration.application.code.RequestCodes;
-import io.mosip.preregistration.application.config.LoggerConfiguration;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
@@ -50,13 +50,20 @@ import io.mosip.preregistration.application.exception.RecordNotFoundException;
 import io.mosip.preregistration.application.exception.util.DemographicExceptionCatcher;
 import io.mosip.preregistration.application.repository.DemographicRepository;
 import io.mosip.preregistration.application.service.util.DemographicServiceUtil;
+import io.mosip.preregistration.core.code.AuditLogVariables;
+import io.mosip.preregistration.core.code.EventId;
+import io.mosip.preregistration.core.code.EventName;
+import io.mosip.preregistration.core.code.EventType;
 import io.mosip.preregistration.core.code.StatusCodes;
+import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
 
 /**
@@ -105,6 +112,12 @@ public class DemographicService {
 	 */
 	@Autowired
 	private RestTemplateBuilder restTemplateBuilder;
+
+	/**
+	 * Autowired reference for {@link #AuditLogUtil}
+	 */
+	@Autowired
+	AuditLogUtil auditLogUtil;
 
 	/**
 	 * Reference for ${resource.url} from property file
@@ -172,19 +185,28 @@ public class DemographicService {
 	public MainListResponseDTO<DemographicResponseDTO> addPreRegistration(
 			MainRequestDTO<DemographicRequestDTO> demographicRequest) {
 		log.info("sessionId", "idType", "id", "In addPreRegistration method of pre-registration service ");
+		MainListResponseDTO<DemographicResponseDTO> mainListResponseDTO = new MainListResponseDTO<>();
+		boolean isSuccess = false;
 		try {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(demographicRequest),
 					requiredRequestMap)) {
 				jsonValidator.validateJson(demographicRequest.getRequest().getDemographicDetails().toJSONString(),
 						schemaName);
-				return createOrUpdate(demographicRequest.getRequest(), demographicRequest.getId());
+				mainListResponseDTO = createOrUpdate(demographicRequest.getRequest(), demographicRequest.getId());
 			}
+			isSuccess = true;
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In pre-registration service of addPreRegistration- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex);
+
+		} finally {
+			if (!isSuccess) {
+				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
+						"Failed to save the Pre-Registration data", AuditLogVariables.NO_ID.toString());
+			}
 		}
-		return null;
+		return mainListResponseDTO;
 	}
 
 	/**
@@ -202,6 +224,7 @@ public class DemographicService {
 		List<PreRegistrationViewDTO> viewList = new ArrayList<>();
 		PreRegistrationViewDTO viewDto = null;
 		Map<String, String> requestParamMap = new HashMap<>();
+		boolean isRetrieveSuccess = false;
 		try {
 			requestParamMap.put(RequestCodes.USER_ID.getCode(), userId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
@@ -212,10 +235,9 @@ public class DemographicService {
 						String identityValue = serviceUtil.getValueFromIdentity(
 								demographicEntity.getApplicantDetailJson(), RequestCodes.FULLNAME.getCode());
 						viewDto = new PreRegistrationViewDTO();
-						viewDto.setPreId(demographicEntity.getPreRegistrationId());
+						viewDto.setPreRegistrationId(demographicEntity.getPreRegistrationId());
 						viewDto.setFullname(identityValue);
 						viewDto.setStatusCode(demographicEntity.getStatusCode());
-
 						BookingRegistrationDTO bookingRegistrationDTO = callGetAppointmentDetailsRestService(
 								demographicEntity.getPreRegistrationId());
 						if (bookingRegistrationDTO != null) {
@@ -231,11 +253,21 @@ public class DemographicService {
 							ErrorMessages.NO_RECORD_FOUND_FOR_USER_ID.name());
 				}
 			}
-
+			isRetrieveSuccess = true;
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			log.error("sessionId", "idType", "id",
 					"In getAllApplicationDetails method of pre-registration service - " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex);
+		} finally {
+			if (isRetrieveSuccess) {
+				setAuditValues(EventId.PRE_401.toString(), EventName.RETRIEVE.toString(), EventType.BUSINESS.toString(),
+						"Retrieve All Pre-Registration id, Full name, Status and Appointment details by user id",
+						AuditLogVariables.MULTIPLE_ID.toString());
+			} else {
+				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
+						"Retrieve All Pre-Registration data failed", AuditLogVariables.NO_ID.toString());
+			}
 		}
 		return response;
 	}
@@ -262,6 +294,7 @@ public class DemographicService {
 				if (demographicEntity != null) {
 					statusdto.setPreRegistartionId(demographicEntity.getPreRegistrationId());
 					statusdto.setStatusCode(demographicEntity.getStatusCode());
+					statusdto.setCreatedDatTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse(demographicEntity.getCreateDateTime().toString()));
 					statusList.add(statusdto);
 					response.setResponse(statusList);
 					response.setResTime(serviceUtil.getCurrentResponseTime());
@@ -269,6 +302,7 @@ public class DemographicService {
 				} else {
 					throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
 							ErrorMessages.INVALID_PRE_REGISTRATION_ID.name());
+
 				}
 			}
 		} catch (Exception ex) {
@@ -294,6 +328,7 @@ public class DemographicService {
 		List<DeletePreRegistartionDTO> deleteList = new ArrayList<>();
 		DeletePreRegistartionDTO deleteDto = new DeletePreRegistartionDTO();
 		Map<String, String> requestParamMap = new HashMap<>();
+		boolean isDeleteSuccess = false;
 		try {
 			requestParamMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preregId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
@@ -303,7 +338,7 @@ public class DemographicService {
 						callDocumentServiceToDeleteAllByPreId(preregId);
 						int isDeletedDemo = demographicRepository.deleteByPreRegistrationId(preregId);
 						if (isDeletedDemo > 0) {
-							deleteDto.setPrId(demographicEntity.getPreRegistrationId());
+							deleteDto.setPreRegistrationId(demographicEntity.getPreRegistrationId());
 							deleteDto.setDeletedBy(demographicEntity.getCreatedBy());
 							deleteDto.setDeletedDateTime(new Date(System.currentTimeMillis()));
 							deleteList.add(deleteDto);
@@ -317,9 +352,19 @@ public class DemographicService {
 							ErrorMessages.INVALID_PRE_REGISTRATION_ID.name());
 				}
 			}
+			isDeleteSuccess = true;
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In pre-registration deleteIndividual service- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex);
+		} finally {
+			if (isDeleteSuccess) {
+				setAuditValues(EventId.PRE_403.toString(), EventName.DELETE.toString(), EventType.BUSINESS.toString(),
+						"Pre-Registration data is successfully deleted from demographic table",
+						AuditLogVariables.NO_ID.toString());
+			} else {
+				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
+						"Deletion of Pre-Registration data failed", AuditLogVariables.NO_ID.toString());
+			}
 		}
 		response.setResTime(serviceUtil.getCurrentResponseTime());
 		response.setStatus(Boolean.TRUE);
@@ -409,7 +454,6 @@ public class DemographicService {
 			if (serviceUtil.isStatusValid(status)) {
 				demographicEntity.setStatusCode(StatusCodes.valueOf(status.toUpperCase()).getCode());
 				demographicRepository.update(demographicEntity);
-
 			} else {
 				throw new RecordFailedToUpdateException(ErrorCodes.PRG_PAM_APP_005.name(),
 						ErrorMessages.INVALID_STATUS_CODE.name());
@@ -464,10 +508,11 @@ public class DemographicService {
 	}
 
 	/**
-	 * This method will iterate the list of demographicEntity and add pre-ids to list of string
+	 * This method will iterate the list of demographicEntity and add pre-ids to
+	 * list of string
 	 * 
 	 * @param demographicEntityList
-	 *                   pass demographicEntityList
+	 *            pass demographicEntityList
 	 * @return List of pre-ids
 	 */
 	public List<String> getPreRegistrationByDateEntityCheck(List<DemographicEntity> demographicEntityList) {
@@ -531,10 +576,14 @@ public class DemographicService {
 		MainListResponseDTO<DemographicResponseDTO> response = new MainListResponseDTO<>();
 		List<DemographicResponseDTO> saveList = new ArrayList<>();
 		DemographicEntity demographicEntity;
+		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		if (serviceUtil.isNull(demographicRequest.getPreRegistrationId())) {
 			demographicRequest.setPreRegistrationId(pridGenerator.generateId());
 			demographicEntity = demographicRepository.save(serviceUtil.prepareDemographicEntity(demographicRequest,
 					requestId, RequestCodes.SAVE.getCode(), StatusCodes.PENDING_APPOINTMENT.getCode()));
+			setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(), EventType.BUSINESS.toString(),
+					"Pre-Registration data is sucessfully saved in the demographic table",
+					AuditLogVariables.NO_ID.toString());
 		} else {
 			demographicEntity = demographicRepository
 					.findBypreRegistrationId(demographicRequest.getPreRegistrationId());
@@ -542,6 +591,9 @@ public class DemographicService {
 				demographicRepository.deleteByPreRegistrationId(demographicRequest.getPreRegistrationId());
 				demographicEntity = demographicRepository.save(serviceUtil.prepareDemographicEntity(demographicRequest,
 						requestId, RequestCodes.UPDATE.getCode(), demographicEntity.getStatusCode()));
+				setAuditValues(EventId.PRE_402.toString(), EventName.UPDATE.toString(), EventType.BUSINESS.toString(),
+						"Pre-Registration data is sucessfully updated in the demographic table",
+						AuditLogVariables.NO_ID.toString());
 			} else {
 				throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
 						ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
@@ -594,4 +646,26 @@ public class DemographicService {
 					ErrorMessages.DOCUMENT_FAILED_TO_DELETE.name());
 		}
 	}
+
+	/**
+	 * This method is used to audit all the demographic events
+	 * 
+	 * @param eventId
+	 * @param eventName
+	 * @param eventType
+	 * @param description
+	 * @param idType
+	 */
+	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType) {
+		AuditRequestDto auditRequestDto = new AuditRequestDto();
+		auditRequestDto.setEventId(eventId);
+		auditRequestDto.setEventName(eventName);
+		auditRequestDto.setEventType(eventType);
+		auditRequestDto.setDescription(description);
+		auditRequestDto.setId(idType);
+		auditRequestDto.setModuleId(AuditLogVariables.DEM.toString());
+		auditRequestDto.setModuleName(AuditLogVariables.DEMOGRAPHY_SERVICE.toString());
+		auditLogUtil.saveAuditDetails(auditRequestDto);
+	}
+
 }

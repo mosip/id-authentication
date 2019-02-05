@@ -48,7 +48,7 @@ public class StatusMessage {
 	/** The Constant PACKET_IS_ON_HOLD. */
 	public static final String PACKET_IS_ON_HOLD = "Packet is on hold as Parent UIN is not yet generated";
 
-    /** The Constant MACHINE_ID_NOT_FOUND. */
+	/** The Constant MACHINE_ID_NOT_FOUND. */
 	public static final String MACHINE_ID_NOT_FOUND = "The Machine ID was not found in Master DB for Registration ID";
 
 	/** The Constant MACHINE_NOT_ACTIVE. */
@@ -80,5 +80,30 @@ public class StatusMessage {
 
 	/** The Constant PARENT_UIN_NOT_FOUND_IN_TABLE. */
 	public static final String PARENT_UIN_NOT_FOUND_IN_TABLE = "The UIN of Parent is not present in individual_demographic_dedup for Packet";
+
+	/** The Constant DEVICE_NOT_FOUND. */
+	public static final String DEVICE_NOT_FOUND = "was not available for Registration ID";
+
+	/** The Constant DEVICE_WAS_IN_ACTIVE. */
+	public static final String DEVICE_WAS_IN_ACTIVE = "was inactive for a Packet with Registration ID";
+
+	/** The Constant DEVICE_ID. */
+	public static final String DEVICE_ID = "The Device ID";
+
+	/** The Constant CENTER_ID. */
+	public static final String CENTER_ID = "and Center ID ";
+
+	/** The Constant THE_CENTER_ID. */
+	public static final String THE_CENTER_ID = "The Center ID";
+	
+	/** The Constant CENTER_NOT_FOUND. */
+	public static final String CENTER_NOT_FOUND = " was not available for Registration ID";
+	
+	/** The Constant TIMESTAMP_VALIDATION1. */
+	public static final String TIMESTAMP_VALIDATION1 = "The Packet with Registration ID";
+	
+	/** The Constant TIMESTAMP_VALIDATION2. */
+	public static final String TIMESTAMP_VALIDATION2 = " was not created in Working Hours of the Center with Center ID";
+
 
 }

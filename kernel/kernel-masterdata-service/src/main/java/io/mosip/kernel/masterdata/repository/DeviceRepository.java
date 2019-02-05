@@ -55,7 +55,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * @return List Device Details fetched from database
 	 * 
 	 */
-	@Query(value = "select d.id, d.name, d.mac_address, d.serial_num, d.ip_address, d.dspec_id, d.lang_code, d.is_active, d.validity_end_dtimes, s.dtyp_code from master.device_master  d, master.device_spec s where  d.dspec_id = s.id  and d.is_deleted = false  and  d.lang_code = ?1 and s.dtyp_code = ?2", nativeQuery = true)
+	@Query(value = "select d.id, d.name, d.mac_address, d.serial_num, d.ip_address, d.dspec_id, d.lang_code, d.is_active, d.validity_end_dtimes, s.dtyp_code from master.device_master  d, master.device_spec s where  d.dspec_id = s.id  and  d.lang_code = ?1 and s.dtyp_code = ?2 and (d.is_deleted is null or d.is_deleted = false)", nativeQuery = true)
 	List<Object[]> findByLangCodeAndDtypeCode(String langCode, String deviceTypeCode);
 
 	/**

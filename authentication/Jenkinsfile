@@ -1,11 +1,12 @@
 node {
+ try {
 
  def server = Artifactory.server 'ART'
  def rtMaven = Artifactory.newMavenBuild()
  def buildInfo
  //def branch = env.NEXT_BRANCH_NAME
  def branch = '0.8.0'
- def dockerImagesTagVersion = branch  //This will ensure that docker images tag should have 1-1 relation ship with project version
+ def dockerImagesTagVersion = 'NaV' //This will ensure that docker images tag should have 1-1 relation ship with project version
  def projectToBuild = 'authentication'
  def registryUrl = 'http://docker-registry.mosip.io:5000'
  def registryName = 'docker-registry.mosip.io:5000'
@@ -60,6 +61,9 @@ stage('----------- Publish build info -------------') {
  
 stage('-----------Docker image push and cleanup-----------') {
 	dir(branch) {
+		   pomFile = readMavenPom file: projectToBuild+'/pom.xml'
+		   dockerImagesTagVersion = pomFile.parent.version
+   		   echo dockerImagesTagVersion
 			sh "find . -name 'Dockerfile'> directoryDockerFiles"
 			locationOfDockerFiles = readFile( "directoryDockerFiles" ).split( "\\r?\\n" );
 			sh "rm -f directoryDockerFiles"
@@ -103,6 +107,36 @@ stage('Kubernetes Deploy : DEV-INT'){
       echo "Getting list of all services" 
       sh "kubectl get pods"
     }
+	
+	}
+ // Catching the exception for triggering email
+  catch (exception) {
+        print exception
+		// If the job was aborted by any user
+        if (exception instanceof InterruptedException) {
+           currentBuild.result = "ABORTED"
+        }
+		// If the job failed due to some error
+        else{
+            currentBuild.result = "FAILURE"
+        }
+        
+        throw exception //rethrow exception to prevent the build from proceeding
+    
+        
+        }
+	finally{
+		if(currentBuild.result == "FAILURE"){
+		// sending email to kernel recipients
+		recipients = "$env.IDA_RECIPIENT_LIST"
+		emailext (
+					subject: "MOSIP Jenkins Job $JOB_NAME with build no $BUILD_NUMBER failed'",
+					body: """<p>Check console output at <a href="$BUILD_URL">'${JOB_NAME}'</a></p>""",
+					to: "$recipients",
+					from: '"Jenkins" <info@mosip.io>'
+				)
+	}
+	}
  
 
 }

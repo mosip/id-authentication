@@ -26,8 +26,12 @@ There can be applications in the MOSIP platform which can go in offline mode. Du
 ![Module Diagram](_images/kernel-syncservices.jpg)
 
 
+**ERD**
+
+![Module Diagram](_images/kernel-masterdata-erd.png)
+
 
 ## Implementation
 
 
-**kernel-syncservices** [README](../../kernel/kernel-syncdata-service/README.md)
+**kernel-syncdata-service** [README](../../../kernel/kernel-syncdata-service/README.md)
