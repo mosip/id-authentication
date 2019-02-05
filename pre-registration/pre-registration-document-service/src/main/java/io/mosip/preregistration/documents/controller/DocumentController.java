@@ -80,7 +80,7 @@ public class DocumentController {
 
 		log.info("sessionId", "idType", "id",
 				"In fileUpload method of document controller to upload the document for request " + reqDto);
-		return ResponseEntity.status(HttpStatus.OK).body(documentUploadService.uploadDoucment(file, reqDto));
+		return ResponseEntity.status(HttpStatus.OK).body(documentUploadService.uploadDocument(file, reqDto));
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class DocumentController {
 				"In copyDocument method of document controller to copy the document for request " + catCode + ","
 						+ sourcePrId + "," + destinationPreId);
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(documentUploadService.copyDoucment(catCode, sourcePrId, destinationPreId));
+				.body(documentUploadService.copyDocument(catCode, sourcePrId, destinationPreId));
 	}
 
 	/**

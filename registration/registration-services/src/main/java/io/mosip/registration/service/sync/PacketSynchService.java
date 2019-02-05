@@ -33,5 +33,15 @@ public interface PacketSynchService {
 	 * @return
 	 */
 	Boolean updateSyncStatus(List<Registration> synchedPackets);
+	
+	/**
+	 * Gets the packet to sync.
+	 *
+	 * @param rId 
+	 * 				the registration id
+	 * @return the packet to sync 
+	 * @throws RegBaseCheckedException 
+	 */
+	String packetSync(String rId) throws RegBaseCheckedException;
 
 }

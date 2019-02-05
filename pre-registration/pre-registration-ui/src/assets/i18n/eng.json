@@ -157,7 +157,7 @@
       "text_appoinment_date": "Appointment Date",
       "text_status": "Status",
       "action_modify_information": "Modify Information",
-      "action_modify_appointment": "Modify Appointment"
+      "action_modify_appointment": "View Acknowledgement"
     }
   },
   "appointmentCentreSearch": {
@@ -176,9 +176,9 @@
     "action_print": "PRINT"
   },
   "dialog":{
-    "title_applicant":"Number of Applicants",
-    "content_applicant":"The details of the first applicant will be treated as primary",
-    "invalidApplicantNumber_msg":"Number should be between 1 and 10",
+    "title_applicant":"Send Appointment Confirmation",
+    "content_applicant":"Email/Phone Number",
+    "invalidApplicantNumber_msg":"Invalid Email/Phone Number",
     "action_ok":"OK",
     "title_discard":"Discard",
     "action_discard_app":"Discard entire application",
@@ -189,7 +189,7 @@
     "action_close":"Close",
     "action_add_to_slot":"Add to Slot"
   },
-  "ackowledgement": {
+  "acknowledgement": {
     "title":"Appointment Confirmed",
     "container_guideline": "Important Guidelines",
     "action_download": "DOWNLOAD",

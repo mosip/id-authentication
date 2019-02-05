@@ -1,7 +1,9 @@
 package io.mosip.registration.constants;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -123,6 +125,7 @@ public class RegistrationConstants {
 	// UI Registration Validations
 	public static final String ADDRESS_KEY = "PrevAddress";
 	public static final String REGISTRATION_CONTROLLER = "REGISTRATION_CONTROLLER";
+	public static final String DOCUMNET_SCAN_CONTROLLER = "DOCUMNET_SCAN_CONTROLLER";
 	public static final String REGISTRATION_DATA = "registrationDTOContent";
 	public static final String REGISTRATION_AGE_DATA = "ageDatePickerContent";
 	public static final String REGISTRATION_PANE1_DATA = "demoGraphicPane1Content";
@@ -144,6 +147,7 @@ public class RegistrationConstants {
 	public static final String REG_DDC_003_2 = "REG_DDC_003_2";
 	public static final String REG_DDC_004_1 = "REG_DDC_004_1";
 	public static final String REG_DDC_004_2 = "REG_DDC_004_2";
+
 	public static final String UIN_UPDATE_ISUINUPDATE = "isUINUpdate";
 	public static final String LOCAL_LANGUAGE = "LocalLanguage";
 	public static final String APPLICATION_LANGUAGE = "application_language";
@@ -186,6 +190,7 @@ public class RegistrationConstants {
 	public static final String CONSTANTS_FILE_NAME = "/constants.properties";
 	public static final String APPROVED = "Approved";
 	public static final String REJECTED = "Rejected";
+	public static final String EOD_PROCESS_CONFIG_FLAG = "EOD_PROCESS_CONFIG_FLAG";
 
 	// AES Encryption Constants
 	public static final String AES_KEY_MANAGER_ALG = "aes.algorithm";
@@ -300,102 +305,102 @@ public class RegistrationConstants {
 	public static final String OTP_VALIDATOR_RESPONSE_DTO = "otpValidatorResponseDTO";
 
 	// Velocity Template Generator Constants
-		public static final String TEMPLATE_REGISTRATION_ID = "RID";
-		public static final String TEMPLATE_DATE = "Date";
-		public static final String TEMPLATE_FULL_NAME = "FullName";
-		public static final String TEMPLATE_DOB = "DOB";
-		public static final String TEMPLATE_GENDER = "Gender";
-		public static final String TEMPLATE_ADDRESS_LINE1 = "AddressLine1";
-		public static final String TEMPLATE_ADDRESS_LINE2 = "AddressLine2";
-		public static final String TEMPLATE_ADDRESS_LINE3 = "AddressLine3";
-		public static final String TEMPLATE_CITY = "City";
-		public static final String TEMPLATE_POSTAL_CODE = "PostalCode";
-		public static final String TEMPLATE_STATE = "State";
-		public static final String TEMPLATE_COUNTRY = "Region";
-		public static final String TEMPLATE_LOCAL_AUTHORITY = "LocalAuthority";
-		public static final String TEMPLATE_MOBILE = "Mobile";
-		public static final String TEMPLATE_EMAIL = "Email";
-		public static final String TEMPLATE_CNIE_NUMBER = "CNIE";
-		public static final String TEMPLATE_PARENT_NAME = "ParentName";
-		public static final String TEMPLATE_PARENT_UIN = "ParentUIN";
-		public static final String TEMPLATE_DOCUMENTS = "Documents";
-		public static final String TEMPLATE_BIOMETRICS_CAPTURED = "Biometrics";
-		public static final String TEMPLATE_RO_NAME = "ROName";
-		public static final String TEMPLATE_REGISTRATION_ID_USER_LANG_LABEL = "RIDUserLangLabel";
-		public static final String TEMPLATE_DATE_FORMAT = "dd/MM/yyyy";
-		public static final String TEMPLATE_DATE_USER_LANG_LABEL = "DateUserLangLabel";
-		public static final String TEMPLATE_FULL_NAME_USER_LANG_LABEL = "FullNameUserLangLabel";
-		public static final String TEMPLATE_DOB_USER_LANG_LABEL = "DOBUserLangLabel";
-		public static final String TEMPLATE_GENDER_USER_LANG_LABEL = "GenderUserLangLabel";
-		public static final String TEMPLATE_ADDRESS_LINE1_USER_LANG_LABEL = "AddressLine1UserLangLabel";
-		public static final String TEMPLATE_ADDRESS_LINE2_USER_LANG_LABEL = "AddressLine2UserLangLabel";
-		public static final String TEMPLATE_ADDRESS_LINE3_USER_LANG_LABEL = "AddressLine3UserLangLabel";
-		public static final String TEMPLATE_CITY_USER_LANG_LABEL = "CityUserLangLabel";
-		public static final String TEMPLATE_POSTAL_CODE_USER_LANG_LABEL = "PostalCodeUserLangLabel";
-		public static final String TEMPLATE_PROVINCE_USER_LANG_LABEL = "ProvinceUserLangLabel";
-		public static final String TEMPLATE_REGION_USER_LANG_LABEL = "RegionUserLangLabel";
-		public static final String TEMPLATE_LOCAL_AUTHORITY_USER_LANG_LABEL = "LocalAuthorityUserLangLabel";
-		public static final String TEMPLATE_MOBILE_USER_LANG_LABEL = "MobileUserLangLabel";
-		public static final String TEMPLATE_EMAIL_USER_LANG_LABEL = "EmailUserLangLabel";
-		public static final String TEMPLATE_CNIE_NUMBER_USER_LANG_LABEL = "CNIEUserLangLabel";
-		public static final String TEMPLATE_PARENT_NAME_USER_LANG_LABEL = "ParentNameUserLangLabel";
-		public static final String TEMPLATE_PARENT_UIN_USER_LANG_LABEL = "ParentUINLocalLangLabel";
-		public static final String TEMPLATE_DOCUMENTS_USER_LANG_LABEL = "DocumentsUserLangLabel";
-		public static final String TEMPLATE_BIOMETRICS_CAPTURED_USER_LANG_LABEL = "BiometricsUserLangLabel";
-		public static final String TEMPLATE_RO_NAME_USER_LANG_LABEL = "RONameUserLangLabel";
-		public static final String TEMPLATE_INDIVIDUAL_PHOTO_USER_LANG_LABEL = "IndividualPhotoUserLang";
-		public static final String TEMPLATE_EXCEPTION_PHOTO_USER_LANG_LABEL = "ExceptionPhotoUserLang";
-		public static final String TEMPLATE_FINGERPRINT_USER_LANG_LABEL = "FingerprintUserLang";
-		public static final String TEMPLATE_IMAGE_ENCODING = "data:image/jpg;base64,";
-		public static final String TEMPLATE_PNG_IMAGE_ENCODING = "data:image/png;base64,";
-		public static final String TEMPLATE_MISSING_FINGER = "&#10008;";
-		public static final String TEMPLATE_HANDS_IMAGE_PATH = "/images/hands.jpg";
-		public static final String TEMPLATE_QRCODE_IMAGE_PATH = "/images/QRCode.jpg";
-		public static final String TEMPLATE_HANDS_IMAGE_SOURCE = "handsImageSource";
-		public static final String TEMPLATE_QRCODE_SOURCE = "QRCodeSource";
-		public static final String TEMPLATE_RESIDENT_NAME = "ResidentName";
-		public static final String TEMPLATE_IMAGE_SOURCE = "ApplicantImageSource";
-		public static final String TEMPLATE_EXCEPTION_IMAGE_SOURCE = "ExceptionImageSource";
-		public static final String TEMPLATE_WITHOUT_EXCEPTION_IMAGE = "WithoutExceptionImage";
-		public static final String TEMPLATE_WITH_EXCEPTION_IMAGE = "WithExceptionImage";
-		public static final String TEMPLATE_STYLE_PROPERTY = "style='visibility:hidden;'";
-		public static final String TEMPLATE_NAME = "Acknowledgement Template";
-		public static final String TEMPLATE_DATE_LOCAL_LANG_LABEL = "DateLocalLangLabel";
-		public static final String TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL = "FullNameLocalLangLabel";
-		public static final String TEMPLATE_DOB_LOCAL_LANG_LABEL = "DOBLocalLangLabel";
-		public static final String TEMPLATE_GENDER_LOCAL_LANG_LABEL = "GenderLocalLangLabel";
-		public static final String TEMPLATE_ADDRESS_LINE1_LOCAL_LANG_LABEL = "AddressLine1LocalLangLabel";
-		public static final String TEMPLATE_ADDRESS_LINE2_LOCAL_LANG_LABEL = "AddressLine2LocalLangLabel";
-		public static final String TEMPLATE_ADDRESS_LINE3_LOCAL_LANG_LABEL = "AddressLine3LocalLangLabel";
-		public static final String TEMPLATE_CITY_LOCAL_LANG_LABEL = "CityLocalLangLabel";
-		public static final String TEMPLATE_POSTAL_CODE_LOCAL_LANG_LABEL = "PostalCodeLocalLangLabel";
-		public static final String TEMPLATE_PROVINCE_LOCAL_LANG_LABEL = "ProvinceLocalLangLabel";
-		public static final String TEMPLATE_COUNTRY_LOCAL_LANG_LABEL = "RegionLocalLangLabel";
-		public static final String TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG_LABEL = "LocalAuthorityLocalLangLabel";
-		public static final String TEMPLATE_MOBILE_LOCAL_LANG_LABEL = "MobileLocalLangLabel";
-		public static final String TEMPLATE_EMAIL_LOCAL_LANG_LABEL = "EmailLocalLangLabel";
-		public static final String TEMPLATE_CNIE_LOCAL_LANG_LABEL = "CNIELocalLangLabel";
-		public static final String TEMPLATE_PARENT_NAME_LOCAL_LANG_LABEL = "ParentNameLocalLangLabel";
-		public static final String TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL = "ParentUINLocalLangLabel";
-		public static final String TEMPLATE_DOCUMENTS_LOCAL_LANG_LABEL = "DocumentsLocalLangLabel";
-		public static final String TEMPLATE_BIOMETRICS_LOCAL_LANG_LABEL = "BiometricsLocalLangLabel";
-		public static final String TEMPLATE_RO_NAME_LOCAL_LANG_LABEL = "RONameLocalLangLabel";
-		public static final String TEMPLATE_FULL_NAME_LOCAL_LANG = "FullNameLocalLang";
-		public static final String TEMPLATE_GENDER_LOCAL_LANG = "GenderLocalLang";
-		public static final String TEMPLATE_ADDRESS_LINE1_LOCAL_LANG = "AddressLine1LocalLang";
-		public static final String TEMPLATE_ADDRESS_LINE2_LOCAL_LANG = "AddressLine2LocalLang";
-		public static final String TEMPLATE_ADDRESS_LINE3_LOCAL_LANG = "AddressLine3LocalLang";
-		public static final String TEMPLATE_CITY_LOCAL_LANG = "CityLocalLang";
-		public static final String TEMPLATE_PROVINCE_LOCAL_LANG = "ProvinceLocalLang";
-		public static final String TEMPLATE_COUNTRY_LOCAL_LANG = "RegionLocalLang";
-		public static final String TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG = "LocalAuthorityLocalLang";
-		public static final String TEMPLATE_PARENT_NAME_LOCAL_LANG = "ParentNameLocalLang";
-		public static final String TEMPLATE_DOCUMENTS_LOCAL_LANG = "DocumentsLocalLang";
-		public static final String TEMPLATE_BIOMETRICS_LOCAL_LANG = "BiometricsLocalLang";
-		public static final String TEMPLATE_RO_NAME_LOCAL_LANG = "RONameLocalLang";
-		public static final String TEMPLATE_WITH_PARENT_DETAILS = "WithParent";
-		public static final String TEMPLATE_STYLE_HIDDEN_PROPERTY = "style='display:none;'";
-		public static final String TEMPLATE_CAPTURED_FINGERPRINTS = "capturedFingerprints";
+	public static final String TEMPLATE_REGISTRATION_ID = "RID";
+	public static final String TEMPLATE_DATE = "Date";
+	public static final String TEMPLATE_FULL_NAME = "FullName";
+	public static final String TEMPLATE_DOB = "DOB";
+	public static final String TEMPLATE_GENDER = "Gender";
+	public static final String TEMPLATE_ADDRESS_LINE1 = "AddressLine1";
+	public static final String TEMPLATE_ADDRESS_LINE2 = "AddressLine2";
+	public static final String TEMPLATE_ADDRESS_LINE3 = "AddressLine3";
+	public static final String TEMPLATE_CITY = "City";
+	public static final String TEMPLATE_POSTAL_CODE = "PostalCode";
+	public static final String TEMPLATE_STATE = "State";
+	public static final String TEMPLATE_COUNTRY = "Region";
+	public static final String TEMPLATE_LOCAL_AUTHORITY = "LocalAuthority";
+	public static final String TEMPLATE_MOBILE = "Mobile";
+	public static final String TEMPLATE_EMAIL = "Email";
+	public static final String TEMPLATE_CNIE_NUMBER = "CNIE";
+	public static final String TEMPLATE_PARENT_NAME = "ParentName";
+	public static final String TEMPLATE_PARENT_UIN = "ParentUIN";
+	public static final String TEMPLATE_DOCUMENTS = "Documents";
+	public static final String TEMPLATE_BIOMETRICS_CAPTURED = "Biometrics";
+	public static final String TEMPLATE_RO_NAME = "ROName";
+	public static final String TEMPLATE_REGISTRATION_ID_USER_LANG_LABEL = "RIDUserLangLabel";
+	public static final String TEMPLATE_DATE_FORMAT = "dd/MM/yyyy";
+	public static final String TEMPLATE_DATE_USER_LANG_LABEL = "DateUserLangLabel";
+	public static final String TEMPLATE_FULL_NAME_USER_LANG_LABEL = "FullNameUserLangLabel";
+	public static final String TEMPLATE_DOB_USER_LANG_LABEL = "DOBUserLangLabel";
+	public static final String TEMPLATE_GENDER_USER_LANG_LABEL = "GenderUserLangLabel";
+	public static final String TEMPLATE_ADDRESS_LINE1_USER_LANG_LABEL = "AddressLine1UserLangLabel";
+	public static final String TEMPLATE_ADDRESS_LINE2_USER_LANG_LABEL = "AddressLine2UserLangLabel";
+	public static final String TEMPLATE_ADDRESS_LINE3_USER_LANG_LABEL = "AddressLine3UserLangLabel";
+	public static final String TEMPLATE_CITY_USER_LANG_LABEL = "CityUserLangLabel";
+	public static final String TEMPLATE_POSTAL_CODE_USER_LANG_LABEL = "PostalCodeUserLangLabel";
+	public static final String TEMPLATE_PROVINCE_USER_LANG_LABEL = "ProvinceUserLangLabel";
+	public static final String TEMPLATE_REGION_USER_LANG_LABEL = "RegionUserLangLabel";
+	public static final String TEMPLATE_LOCAL_AUTHORITY_USER_LANG_LABEL = "LocalAuthorityUserLangLabel";
+	public static final String TEMPLATE_MOBILE_USER_LANG_LABEL = "MobileUserLangLabel";
+	public static final String TEMPLATE_EMAIL_USER_LANG_LABEL = "EmailUserLangLabel";
+	public static final String TEMPLATE_CNIE_NUMBER_USER_LANG_LABEL = "CNIEUserLangLabel";
+	public static final String TEMPLATE_PARENT_NAME_USER_LANG_LABEL = "ParentNameUserLangLabel";
+	public static final String TEMPLATE_PARENT_UIN_USER_LANG_LABEL = "ParentUINLocalLangLabel";
+	public static final String TEMPLATE_DOCUMENTS_USER_LANG_LABEL = "DocumentsUserLangLabel";
+	public static final String TEMPLATE_BIOMETRICS_CAPTURED_USER_LANG_LABEL = "BiometricsUserLangLabel";
+	public static final String TEMPLATE_RO_NAME_USER_LANG_LABEL = "RONameUserLangLabel";
+	public static final String TEMPLATE_INDIVIDUAL_PHOTO_USER_LANG_LABEL = "IndividualPhotoUserLang";
+	public static final String TEMPLATE_EXCEPTION_PHOTO_USER_LANG_LABEL = "ExceptionPhotoUserLang";
+	public static final String TEMPLATE_FINGERPRINT_USER_LANG_LABEL = "FingerprintUserLang";
+	public static final String TEMPLATE_IMAGE_ENCODING = "data:image/jpg;base64,";
+	public static final String TEMPLATE_PNG_IMAGE_ENCODING = "data:image/png;base64,";
+	public static final String TEMPLATE_MISSING_FINGER = "&#10008;";
+	public static final String TEMPLATE_HANDS_IMAGE_PATH = "/images/hands.jpg";
+	public static final String TEMPLATE_QRCODE_IMAGE_PATH = "/images/QRCode.jpg";
+	public static final String TEMPLATE_HANDS_IMAGE_SOURCE = "handsImageSource";
+	public static final String TEMPLATE_QRCODE_SOURCE = "QRCodeSource";
+	public static final String TEMPLATE_RESIDENT_NAME = "ResidentName";
+	public static final String TEMPLATE_IMAGE_SOURCE = "ApplicantImageSource";
+	public static final String TEMPLATE_EXCEPTION_IMAGE_SOURCE = "ExceptionImageSource";
+	public static final String TEMPLATE_WITHOUT_EXCEPTION_IMAGE = "WithoutExceptionImage";
+	public static final String TEMPLATE_WITH_EXCEPTION_IMAGE = "WithExceptionImage";
+	public static final String TEMPLATE_STYLE_PROPERTY = "style='visibility:hidden;'";
+	public static final String TEMPLATE_NAME = "Acknowledgement Template";
+	public static final String TEMPLATE_DATE_LOCAL_LANG_LABEL = "DateLocalLangLabel";
+	public static final String TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL = "FullNameLocalLangLabel";
+	public static final String TEMPLATE_DOB_LOCAL_LANG_LABEL = "DOBLocalLangLabel";
+	public static final String TEMPLATE_GENDER_LOCAL_LANG_LABEL = "GenderLocalLangLabel";
+	public static final String TEMPLATE_ADDRESS_LINE1_LOCAL_LANG_LABEL = "AddressLine1LocalLangLabel";
+	public static final String TEMPLATE_ADDRESS_LINE2_LOCAL_LANG_LABEL = "AddressLine2LocalLangLabel";
+	public static final String TEMPLATE_ADDRESS_LINE3_LOCAL_LANG_LABEL = "AddressLine3LocalLangLabel";
+	public static final String TEMPLATE_CITY_LOCAL_LANG_LABEL = "CityLocalLangLabel";
+	public static final String TEMPLATE_POSTAL_CODE_LOCAL_LANG_LABEL = "PostalCodeLocalLangLabel";
+	public static final String TEMPLATE_PROVINCE_LOCAL_LANG_LABEL = "ProvinceLocalLangLabel";
+	public static final String TEMPLATE_COUNTRY_LOCAL_LANG_LABEL = "RegionLocalLangLabel";
+	public static final String TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG_LABEL = "LocalAuthorityLocalLangLabel";
+	public static final String TEMPLATE_MOBILE_LOCAL_LANG_LABEL = "MobileLocalLangLabel";
+	public static final String TEMPLATE_EMAIL_LOCAL_LANG_LABEL = "EmailLocalLangLabel";
+	public static final String TEMPLATE_CNIE_LOCAL_LANG_LABEL = "CNIELocalLangLabel";
+	public static final String TEMPLATE_PARENT_NAME_LOCAL_LANG_LABEL = "ParentNameLocalLangLabel";
+	public static final String TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL = "ParentUINLocalLangLabel";
+	public static final String TEMPLATE_DOCUMENTS_LOCAL_LANG_LABEL = "DocumentsLocalLangLabel";
+	public static final String TEMPLATE_BIOMETRICS_LOCAL_LANG_LABEL = "BiometricsLocalLangLabel";
+	public static final String TEMPLATE_RO_NAME_LOCAL_LANG_LABEL = "RONameLocalLangLabel";
+	public static final String TEMPLATE_FULL_NAME_LOCAL_LANG = "FullNameLocalLang";
+	public static final String TEMPLATE_GENDER_LOCAL_LANG = "GenderLocalLang";
+	public static final String TEMPLATE_ADDRESS_LINE1_LOCAL_LANG = "AddressLine1LocalLang";
+	public static final String TEMPLATE_ADDRESS_LINE2_LOCAL_LANG = "AddressLine2LocalLang";
+	public static final String TEMPLATE_ADDRESS_LINE3_LOCAL_LANG = "AddressLine3LocalLang";
+	public static final String TEMPLATE_CITY_LOCAL_LANG = "CityLocalLang";
+	public static final String TEMPLATE_PROVINCE_LOCAL_LANG = "ProvinceLocalLang";
+	public static final String TEMPLATE_COUNTRY_LOCAL_LANG = "RegionLocalLang";
+	public static final String TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG = "LocalAuthorityLocalLang";
+	public static final String TEMPLATE_PARENT_NAME_LOCAL_LANG = "ParentNameLocalLang";
+	public static final String TEMPLATE_DOCUMENTS_LOCAL_LANG = "DocumentsLocalLang";
+	public static final String TEMPLATE_BIOMETRICS_LOCAL_LANG = "BiometricsLocalLang";
+	public static final String TEMPLATE_RO_NAME_LOCAL_LANG = "RONameLocalLang";
+	public static final String TEMPLATE_WITH_PARENT_DETAILS = "WithParent";
+	public static final String TEMPLATE_STYLE_HIDDEN_PROPERTY = "style='display:none;'";
+	public static final String TEMPLATE_CAPTURED_FINGERPRINTS = "capturedFingerprints";
 
 	// Web Camera Constants
 	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";
@@ -450,8 +455,15 @@ public class RegistrationConstants {
 	// Upload Packet
 
 	public static List getStatus() {
-		String[] packetStatus = { "SYNCED", "resend", "E" };
+		String[] packetStatus = { "SYNCED", "EXPORTED", "resend", "E" };
 		return Arrays.asList(packetStatus);
+	}
+	
+	public static final String PACKET_UPLOAD = "packet_upload";
+	public static final String PACKET_DUPLICATE = "duplicate";
+	
+	public static final Set<String> getRoles() {
+		return new HashSet<>(Arrays.asList("*"));
 	}
 
 	// opt to register constants
@@ -463,11 +475,12 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_PAK_MAX_CNT_OFFLINE_FREQ = "REG_PAK_MAX_CNT_OFFLINE_FREQ";
 	public static final double OPT_TO_REG_EARTH_RADIUS = 6371000;
 	public static final double OPT_TO_REG_METER_CONVERSN = 1609.00;
-	public static final String OPT_TO_REG_LOGGER_SESSION_ID = "REGISTRATION - SYNC - VALIDATION";
 	public static final String OPT_TO_REG_DIST_FRM_MACHN_TO_CENTER = "DIST_FRM_MACHN_TO_CENTER";
 	public static final String OPT_TO_REG_ICS‌_005 = "REG-ICS‌-005";
 	public static final String OPT_TO_REG_ICS‌_006 = "REG-ICS‌-006";
 	public static final String OPT_TO_REG_ICS‌_007 = "REG-ICS‌-007";
+	public static final String PAK_APPRVL_MAX_CNT = "REG-ICS‌-008";
+	public static final String PAK_APPRVL_MAX_TIME = "REG-ICS‌-009";
 	public static final String OPT_TO_REG_LAST_CAPTURED_TIME = "lastCapturedTime";
 	public static final String LATITUDE = "latitude";
 	public static final String OPT_TO_REG_MDS_J00001 = "MDS_J00001";
@@ -481,6 +494,9 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_LER_J00009 = "LER_J00009";
 	public static final String OPT_TO_REG_RDJ_J00010 = "RDJ_J00010";
 	public static final String OPT_TO_REG_RDJ_J00011 = "RDJ_J00011";
+	public static final String OPT_TO_REG_ADJ_J00012 = "ADJ_J00012";
+	public static final String OPT_TO_REG_DEL_001 = "DEL_001";
+	public static final String OPT_TO_REG_UDM_J00012 = "UDM_J00012";
 
 	/** Packet Status Sync Constants */
 	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
@@ -498,7 +514,7 @@ public class RegistrationConstants {
 	public static final String PACKET_STATUS_SYNC_TYPE = "NEW";
 	public static final String ACKNOWLEDGEMENT_FILE = "_Ack";
 	public static final String PACKET_SYNC_ERROR = "Error";
-	public static final String RE_REGISTRATION_STATUS = "REREGISTER";
+	public static final String RE_REGISTRATION_STATUS = "Re-Register";
 	public static final String PACKET_SYNC_REF_ID = "packetsync";
 	public static final String PACKET_UPLOAD_REF_ID = "packetUpload";
 	public static final String PACKET_UPLOAD_SUCCESS = "Uploaded";
@@ -533,6 +549,9 @@ public class RegistrationConstants {
 	public static final String REGISTARTION_CENTER="REGISTARTION_CENTER";
 	public static final String CBEFF_ONLY_UNIQUE_TAGS = "CBEFF_ONLY_UNIQUE_TAGS";
 	public static final String GLOBAL_CONFIG_TRUE_VALUE = "Y";
+	public static final String REG_PAK_MAX_CNT_APPRV_LIMIT = "REG_PAK_MAX_CNT_APPRV_LIMIT";
+	public static final String REG_PAK_MAX_TIME_APPRV_LIMIT = "REG_PAK_MAX_TIME_APPRV_LIMIT";
+	public static final String FINGERPRINT_DISABLE_FLAG = "FINGERPRINT_DISABLE_FLAG";
 
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
@@ -549,6 +568,7 @@ public class RegistrationConstants {
 	public static final String JOB_TRIGGER_POINT_SYSTEM = "System";
 	public static final String JOB_TRIGGER_POINT_USER = "User";
 	public static final String JOB_SYNC_TO_SERVER = "Server";
+	public static final String JOB_DETAIL = "jobDetail";
 
 	// GPS Device
 	public static final String GPS_LOGGER = "GPS-Device-Information";
@@ -576,11 +596,11 @@ public class RegistrationConstants {
 	public static final String POA_DOCUMENT = "POA";
 	public static final String POI_DOCUMENT = "POI";
 	public static final String POR_DOCUMENT = "POR";
-	public static final String DOB_DOCUMENT = "POB";
-
-	public static List<String> DOCUMENT_LIST = Arrays.asList("Passport", "VoterId", "Licence", "PAN");
+	public static final String DOB_DOCUMENT = "DOB";
 
 	public static final List<String> PACKET_STATUS = Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");
+	
+	public static final List<String> PACKET_EXPORT_STATUS = Arrays.asList("EXPORTED", "SYNCED");
 
 	// Pre Registration
 	public static final String PRE_REGISTRATION_ID = "pre_registration_id";
@@ -590,7 +610,8 @@ public class RegistrationConstants {
 	public static final String PRE_REGISTRATION_DUMMY_ID = "mosip.pre-registration.datasync";
 	public static final String VER = "1.0";
 	public static final String PRE_REG_TO_GET_ID_ERROR = "Unable to get Pre registartion id's";
-	public static final String PRE_REG_TO_GET_PACKET_ERROR = "Unable to get Pre registartion for given id";
+	public static final String PRE_REG_TO_GET_PACKET_ERROR = "The Pre-registration ID entered does not exist in the database. Please enter the correct Pre-registration ID.";
+	public static final String PRE_REG_PACKET_NETWORK_ERROR = "You must be connected to the internet to sync data.";
 	public static final String PRE_REG_SUCCESS_MESSAGE = "Pre-Registartion Data Synced successfully ";
 	public static final String IS_PRE_REG_SYNC = "PreRegSync";
 	public static final String PRE_REG_FILE_NAME = "fileName";
@@ -692,7 +713,7 @@ public class RegistrationConstants {
 	public static final String PACKET_META_CONVERTOR = REG_SERVICE_CODE + "PMC-225";
 
 	// #Exceptions SyncJobs
-	public static final String SYNC_TRANSACTION_NULL_POINTER_EXCEPTION = REG_SERVICE_CODE + "RPS-BTM-226";
+	public static final String SYNC_TRANSACTION_RUNTIME_EXCEPTION = REG_SERVICE_CODE + "RPS-BTM-226";
 	public static final String SYNC_JOB_RUN_TIME_EXCEPTION = REG_SERVICE_CODE + "RPS-JTD-227";
 	public static final String PACKET_SYNC__STATUS_READER_NULL_POINTER_EXCEPTION = REG_SERVICE_CODE + "RPS-PSJ-228";
 	public static final String BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION = REG_SERVICE_CODE + "RPS-BJ-229";
@@ -781,6 +802,7 @@ public class RegistrationConstants {
 	public static final String REGISTRATION_DELETION_JOB_LOGGER_TITLE = "REGISTRATION - Registration Deletion Job";
 	public static final String SYNC_CONFIG_DATA_JOB_LOGGER_TITLE = "REGISTRATION - Sync Config Data Job";
 	public static final String GLOBAL_PARAM_SERVICE_LOGGER_TITLE = "REGISTRATION - SYNCHCONFIGDATA - GLOBALPARAMSSERVICE";
+	public static final String AUDIT_SERVICE_LOGGER_TITLE = "REGISTRATION - AUDIT - AUDIT SERVICE";
 
 	// Regex Constants
 	public static final String FULL_NAME_REGEX = "([A-z]+\\s?\\.?)+";
@@ -819,8 +841,11 @@ public class RegistrationConstants {
 	public static final String POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE = "You must be connected to the internet to sync data";
 	public static final String POLICY_SYNC_THRESHOLD_VALUE = "name";
 	public static final String SYNCH_CONFIG_DATA_JOB_TITLE="synch config data job";
+	public static final String REG_USER_MAPPING_SYNC_JOB_TITLE="registration user mapping sync job";
 	
 	public static final String KEY_POLICY_SYNC_JOB_TITLE = "REGISTRATION - key policy synch Job";
+	public static final String DELETE_AUDIT_LOGS_JOB = "REGISTRATION - Delete Audit Logs Job";
+
 
 	// PRE-REG DELETE JOB
 	public static final String PRE_REG_DELETE_SUCCESS = "Pre-Registration Records deleted";
@@ -867,8 +892,15 @@ public class RegistrationConstants {
 	public static final String OTP_GENERATION_SUCCESS_MESSAGE = "Generated OTP is :";
 	public static final String OTP_GENERATION_ERROR_MESSAGE = "Unable Generate OTP for entered username";
 	public static final String OTP_VALIDATION_ERROR_MESSAGE = "Incorrect or expired OTP";
+	
+	//Packet Export
+	public static final String FILE_EXPLORER_NAME = "File Explorer";
+	public static final String INFO = "INFO";
+	
 
 	// Sync Status
+	public static final String REG_PKT_APPRVL_CNT_EXCEED = "Maximum number of registration packets pending approval on client reached. Please approve or reject packets before proceeding with this registration";
+	public static final String REG_PKT_APPRVL_TIME_EXCEED = "Maximum duration for registration packets pending approval on client reached.Please approve or reject packets before proceeding with this registration";
 	public static final String OPT_TO_REG_TIME_EXPORT_EXCEED = "Time since last export of registration packets exceeded maximum limit. Please export or upload packets to server before proceeding with this registration";
 	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = "Time since last sync exceeded maximum limit. Please sync from server before proceeding with this registration";
 	public static final String OPT_TO_REG_REACH_MAX_LIMIT = "Maximum limit for registration packets on client reached. Please export or upload packets to server before proceeding with this registration";
@@ -907,4 +939,28 @@ public class RegistrationConstants {
 	public static final String USER_MACHINE_VALIDATION_CODE="REG-URE‌-009";
 	public static final String USER_MACHINE_VALIDATION_MSG="This computer is not mapped to the same Registration Centre as the dongle plugged in.";
 	public static final String USER_ONBOARD_DATA="UserOnboardBiometricData";
+	
+	//Configuration Constants
+	public static final String AUDIT_LOG_DELETION_CONFIGURED_DAYS="AUDIT_LOG_DELETION_CONFIGURED_DAYS";
+	public static final String SYNC_TRANSACTION_NO_OF_DAYS_LIMIT="SYNC_TRANSACTION_NO_OF_DAYS_LIMIT";
+	public static final String REG_DELETION_CONFIGURED_DAYS="REG_DELETION_CONFIGURED_DAYS";
+	
+	
+	//Audit Constants
+	public static final String AUDIT_LOGS_DELETION_SUCESS_MSG="Audit Logs Deleted Successfully";
+	public static final String AUDIT_LOGS_DELETION_FLR_MSG="Audit Logs Deleted Failed";
+	public static final String AUDIT_LOGS_DELETION_EMPTY_MSG="No Audit Logs Found to be deleted";
+	
+	//Rest Authentication Constants
+	
+	public static final String USER_DTO="userDTO";
+	public static final String REST_OAUTH="oauth";
+	public static final String REST_OAUTH_USER_NAME="userName";
+	public static final String REST_OAUTH_USER_PSWD="password";
+	public static final String REST_OAUTH_ERROR_CODE="REST-OAUTH-001";
+	public static final String REST_OAUTH_ERROR_MSG="Internal Server Error";
+	
+	//Packet Sync
+	public static final String PACKET_SYNC="packet_sync";
+
 }
