@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.impl.id.service.impl;
 
-import java.io.IOException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,8 +11,6 @@ import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
@@ -30,7 +27,6 @@ import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.kernel.cbeffutil.service.CbeffI;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
  * 
@@ -147,29 +143,6 @@ public class IdRepoServiceImpl implements IdRepoService {
 						entry -> new SimpleEntry<>("documents." + INDIVIDUAL_BIOMETRICS, (String) entry.getValue()))
 				.collect(Collectors.toMap(Entry<String, String>::getKey, Entry<String, String>::getValue));
 		return docValues;
-
-	}
-
-	/**
-	 * Decodes Identity value
-	 * 
-	 * @param value
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	private Map<String, Object> decodeToMap(Object value) {
-		if (value instanceof String) {
-			try {
-				byte[] decodeBase64 = CryptoUtil.decodeBase64((String) value);
-				ObjectMapper mapper = new ObjectMapper();
-				return mapper.readValue(decodeBase64, Map.class);
-			} catch (IOException e) {
-				logger.error(SESSION_ID, ID_REPO_SERVICE, e.getMessage(), e.getLocalizedMessage());
-				return Collections.emptyMap();
-			}
-		} else {
-			return Collections.emptyMap();
-		}
 
 	}
 
