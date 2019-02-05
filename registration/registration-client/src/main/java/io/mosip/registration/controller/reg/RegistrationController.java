@@ -23,8 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
-import io.mosip.kernel.core.idvalidator.spi.IdValidator;
-import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
@@ -110,14 +108,24 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	public ImageView biometricTracker;
+	
+	@FXML
+	private AnchorPane RegistrationHeader;
+	
+	@FXML
+	private AnchorPane registrationPreviewHeader;
+	
+	@FXML
+	private AnchorPane registrationPreview;
+	
+	@Autowired
+	private RegistrationPreviewController registrationPreviewController;
 
 	@Autowired
 	private AuthenticationController authenticationController;
 
 	@Value("${capture_photo_using_device}")
 	public String capturePhotoUsingDevice;
-
-	private boolean toggleBiometricException;
 
 	@FXML
 	private void initialize() {
@@ -341,7 +349,12 @@ public class RegistrationController extends BaseController {
 
 						setPreviewContent();
 						saveDetail();
-						goToAuthenticationPage();
+						SessionContext.getInstance().getMapObject().put("faceCapture",false);
+						SessionContext.getInstance().getMapObject().put("registrationPreview",true);
+						RegistrationHeader.setVisible(false);
+						registrationPreviewHeader.setVisible(true);
+						registrationPreviewController.setUpPreviewContent();
+						showCurrentPage();
 					} else {
 						((BiometricDTO) SessionContext.getInstance().getMapObject()
 								.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO()
@@ -366,6 +379,8 @@ public class RegistrationController extends BaseController {
 	// Operator Authentication
 	public void goToAuthenticationPage() {
 		try {
+			RegistrationHeader.setVisible(true);
+			registrationPreviewHeader.setVisible(false);
 			SessionContext.getInstance().getMapObject().put("operatorAuthentication", true);
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 			loadScreen(RegistrationConstants.CREATE_PACKET_PAGE);
@@ -452,8 +467,8 @@ public class RegistrationController extends BaseController {
 		biometricException.setVisible(getVisiblity("biometricException"));
 		faceCapture.setVisible(getVisiblity("faceCapture"));
 		irisCapture.setVisible(getVisiblity("irisCapture"));
+		registrationPreview.setVisible(getVisiblity("registrationPreview"));
 		operatorAuthentication.setVisible(getVisiblity("operatorAuthentication"));
-
 	}
 
 	private boolean getVisiblity(String page) {

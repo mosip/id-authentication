@@ -1,10 +1,10 @@
 package io.mosip.registration.controller.reg;
 
+import static io.mosip.kernel.core.util.DateUtils.formatDate;
 import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import static io.mosip.kernel.core.util.DateUtils.formatDate;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -36,14 +36,11 @@ import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.packet.PacketHandlerService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
-import io.mosip.registration.service.template.NotificationService;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import io.mosip.registration.util.dataprovider.DataProvider;
-import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -95,9 +92,6 @@ public class PacketHandlerController extends BaseController {
 	
 	@Autowired
 	private PacketHandlerService packetHandlerService;
-
-	@Autowired
-	private NotificationService notificationService;
 
 	@Value("${SAVE_ACKNOWLEDGEMENT_INSIDE_PACKET}")
 	private String saveAck;
@@ -167,7 +161,7 @@ public class PacketHandlerController extends BaseController {
 					createPacket();
 				}
 			} else if (templateResponse != null && templateResponse.getErrorResponseDTOs() != null) {
-				generateAlert(RegistrationConstants.ERROR, "Unable to display Acknowledgement Screen");
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_ACKNOWLEDGEMENT_PAGE);
 				clearRegistrationData();
 				createPacket();
 			}
@@ -343,7 +337,6 @@ public class PacketHandlerController extends BaseController {
 
 		if (response.getSuccessResponseDTO() != null
 				&& response.getSuccessResponseDTO().getMessage().equals("Success")) {
-			generateEmailNotification(registrationDTO);
 			try {
 				// Generate the file path for storing the Encrypted Packet and Acknowledgement
 				// Receipt
@@ -385,92 +378,5 @@ public class PacketHandlerController extends BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PACKET_CREATION_FAILURE);
 		}
 		return response;
-	}
-
-	/**
-	 * To generate email and SMS notification to the user after successful
-	 * registration
-	 * 
-	 * @param registrationDTO
-	 */
-	private void generateEmailNotification(RegistrationDTO registrationDTO) {
-		LOGGER.debug("REGISTRATION - GENERATE_NOTIFICATION - REGISTRATION_OFFICER_PACKET_CONTROLLER",
-				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-				"generating Email/SMS notification after packet creation");
-
-		try {
-			// network availability check
-			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-				// get the mode of communication
-				String notificationServiceName = String.valueOf(
-						applicationContext.getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION));
-
-				if (notificationServiceName != null && !notificationServiceName.equals("NONE")) {
-					ResponseDTO responseDTO = null;
-
-					// get the data for notification template
-					String notificationTemplate = templateService
-							.getHtmlTemplate(RegistrationConstants.NOTIFICATION_TEMPLATE);
-					String alert = RegistrationConstants.EMPTY;
-					if (!notificationTemplate.isEmpty()) {
-						// generate the notification template
-						Writer writeNotificationTemplate = templateGenerator.generateNotificationTemplate(
-								notificationTemplate, registrationDTO, templateManagerBuilder);
-
-						String number = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
-								.getPhone();
-						String rid = registrationDTO.getRegistrationId();
-
-						if (number != null
-								&& notificationServiceName.contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {
-							// send sms
-							responseDTO = notificationService.sendSMS(writeNotificationTemplate.toString(), number,
-									rid);
-							if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
-									&& responseDTO.getErrorResponseDTOs().get(0) != null) {
-								alert = RegistrationConstants.SMS_SERVICE.toUpperCase();
-							}
-						}
-
-						String emailId = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
-								.getEmail();
-
-						if (emailId != null && notificationServiceName
-								.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
-							// send email
-							responseDTO = notificationService.sendEmail(writeNotificationTemplate.toString(), emailId,
-									rid);
-							if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
-									&& responseDTO.getErrorResponseDTOs().get(0) != null) {
-								alert = alert + RegistrationConstants.EMAIL_SERVICE.toUpperCase();
-							}
-						}
-						// generate alert
-						if (!alert.equals("")) {
-							generateNotificationAlert(RegistrationUIConstants.NOTIFICATION_FAIL);
-							if (alert.equals("SMS")) {
-								generateNotificationAlert(RegistrationUIConstants.NOTIFICATION_SMS_FAIL);
-							} else if (alert.equals("EMAIL")) {
-								generateNotificationAlert(RegistrationUIConstants.NOTIFICATION_EMAIL_FAIL);
-							}
-						}
-					}
-				}
-			}
-		} catch (RegBaseCheckedException regBaseCheckedException) {
-			LOGGER.error("REGISTRATION - GENERATE_NOTIFICATION - REGISTRATION_OFFICER_PACKET_CONTROLLER",
-					APPLICATION_NAME, APPLICATION_ID, regBaseCheckedException.getMessage());
-		} catch (RegBaseUncheckedException regBaseUncheckedException) {
-			LOGGER.error("REGISTRATION - GENERATE_NOTIFICATION - REGISTRATION_OFFICER_PACKET_CONTROLLER",
-					APPLICATION_NAME, APPLICATION_ID, regBaseUncheckedException.getMessage());
-		}
-	}
-
-	/**
-	 * To generate alert if the email/sms notification is not sent
-	 */
-	private void generateNotificationAlert(String alertMessage) {
-		/* Generate Alert */
-		generateAlert(RegistrationConstants.ERROR, alertMessage);
 	}
 }

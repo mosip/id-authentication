@@ -20,7 +20,8 @@
    </AnchorPane>
    <AnchorPane layoutX="-190.0" layoutY="27.0">
     <children>
-    	<fx:include fx:id="RegistrationHeader" source="RegistrationHeader.fxml" />
+    	<fx:include fx:id="RegistrationHeader" source="RegistrationHeader.fxml" visible="true" />
+    	<fx:include fx:id="registrationPreviewHeader" source="RegistrationPreviewHeader.fxml" visible="false" />
     </children>
    </AnchorPane>
       <AnchorPane layoutX="-190.0" layoutY="75.0" prefHeight="749.0" prefWidth="1139.0">
@@ -31,6 +32,7 @@
             <fx:include fx:id="fingerPrintCapture" source="FingerPrintCapture.fxml" visible="false" />
             <fx:include fx:id="irisCapture" source="IrisCapture.fxml" visible="false" />
             <fx:include fx:id="faceCapture" source="FaceCapture.fxml" visible="false" />
+            <fx:include fx:id="registrationPreview" source="RegistrationPreview.fxml" visible="false" />
             <fx:include fx:id="operatorAuthentication" source="OperatorAuthentication.fxml" visible="false" />
          </children>
       </AnchorPane>

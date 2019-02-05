@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane styleClass="sendNotificationPane" prefHeight="287.0" prefWidth="532.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.SendNotificationController">
+   <children>
+      <Label layoutX="24.0" layoutY="28.0" prefHeight="27.0" prefWidth="263.0" text="Email / SMS  Acknowledgement" />
+      <TextField fx:id="email" layoutX="147.0" layoutY="91.0" promptText="Enter email ID" styleClass="ackTextField" />
+      <TextField fx:id="mobile" layoutX="147.0" layoutY="143.0" promptText="Enter mobile number" styleClass="ackTextField" />
+      <Button layoutX="234.0" layoutY="215.0" mnemonicParsing="false" onAction="#sendNotification" styleClass="ackPageButton" text="Send" />
+      <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="108.0" layoutY="98.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/SendEmail.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="108.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/SendEmail.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="495.0" layoutY="7.0" onMouseClicked="#closeWindow" text="%x" />
+   </children>
+</AnchorPane>

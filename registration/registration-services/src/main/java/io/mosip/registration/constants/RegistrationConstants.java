@@ -56,6 +56,7 @@ public class RegistrationConstants {
 	public static final String USER_ONBOARD_IRIS = "/fxml/UserOnboardIrisCapture.fxml";
 	public static final String USER_ONBOARD_WEBCAM = "/fxml/UserOnboardWebCamera.fxml";
 	public static final String BIO_EXCEPTION_PAGE = "/fxml/BiometricException.fxml";
+	public static final String SEND_NOTIFICATION_PAGE = "/fxml/SendNotification.fxml";
 
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";

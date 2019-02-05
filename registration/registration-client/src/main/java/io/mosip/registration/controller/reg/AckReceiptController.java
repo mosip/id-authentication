@@ -21,6 +21,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.print.PrinterJob;
 import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -42,6 +43,9 @@ public class AckReceiptController extends BaseController implements Initializabl
 	private RegistrationDTO registrationData;
 	
 	private Writer stringWriter;
+	
+	@FXML
+	protected AnchorPane rootPane;
 
 	@FXML
 	private WebView webView;
@@ -53,17 +57,14 @@ public class AckReceiptController extends BaseController implements Initializabl
 	private Button print;
 	
 	@FXML
-	private Button sendEmail;
-	
-	@FXML
-	private Button downloadPDF;
-	
-	@FXML
 	private Button back;
 
 	@FXML
 	private Text registrationNavLabel;
 
+	@Autowired
+	private SendNotificationController sendNotificationController;
+	
 	public RegistrationDTO getRegistrationData() {
 		return registrationData;
 	}
@@ -104,11 +105,20 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 		PrinterJob job = PrinterJob.createPrinterJob();
 		if (job != null) {
+			job.getJobSettings().setJobName(getRegistrationData().getRegistrationId()+"_Ack");
 			webView.getEngine().print(job);
 			job.endJob();
 		}
 		generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.PRINT_INITIATION_SUCCESS);
 		goToHomePageFromRegistration();
+	}
+	
+	@FXML
+	public void sendNotification(ActionEvent event) {
+		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Going to Send Notification Popup Window");
+		
+		sendNotificationController.init();
 	}
 
 	@FXML
