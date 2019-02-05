@@ -1,23 +1,23 @@
 # Identity Auth REST Service Response Buider
 
 
-**1. Background **
+**1. Background**
 
 TSP can send ID Auth Request for one or more kinds of authentications in a single request. ID Authentication service needs to perform authentication for the requested authentication types then needs to create a Success/Failure response as per authentication Success/Failure status of each types. This response needs to convey the overall success of the multi-factor authentication as well as the status of individual authentications. 
 This document will provide the details on creating an Authentication Response Builder what will be used for creation of Response for Authentications as mentioned above.
 
 
-**1.1.Target users **  
+**1.1.Target users**  
 TSP will request for an authentication based on OTP / Demographic Data / Biographic data on behalf of an individual.
 
-**1.2. Key requirements **  
+**1.2. Key requirements**  
 - TSP can authenticate an Individual using OTP / Demographic Data / Biographic data on behalf of an Individual by ID Authentication API
 - TSP will capture Individual's UIN/VID and construct Authentication Request
 - Once Authentication Request is received, authenticate and authorize TSP
 - Check Individual's UIN/VID for authenticity and validity
 - Create an authentication response with the status/errors based on the authentication status and send back to TSP.
 
-**1.3. Key non-functional requirements ** 
+**1.3. Key non-functional requirements** 
 -	Logging :
 	-	Log each stage of authentication process
 	-	Log all the exceptions along with error code and short error message
@@ -31,7 +31,7 @@ TSP will request for an authentication based on OTP / Demographic Data / Biograp
 	-	Any error in Individual authentication also should be handled with appropriate error code and message in Auth Response 
 -	Security :
 
-**2. Solution **   
+**2. Solution**   
 For any authentication request (single or multi-factor), a generic AuthResponse is sent back to the TSP, details are as below:
 1.	status(Y/N) - The authentication success or failure status, 
 2.	txnId (same as request) - the transaction ID, 
@@ -64,7 +64,6 @@ For any authentication request (single or multi-factor), a generic AuthResponse 
    
    	- deviceInfo - which contains *deviceId*, *make* and *model*.
 
-
 A Sample response body will be as blow:
 
 ```JSON
@@ -78,30 +77,27 @@ A Sample response body will be as blow:
     "idvIdType": "D",
     "reqTime": "2018-10-26T12:20:04.121Z",
     "ver": "1.0",
-    "matchInfos": [
-      {
-        "authType": "fullAddress",
-        "language": "EN",
-        "matchingStrategy": "P",
-        "matchingThreshold": 70
-      }
-    ],
-    "bioInfo": [
-      {
-        "bioType": "fgrMin",
-        "deviceInfo": {
+    "matchInfos": [{
+      "authType": "fullAddress",
+      "language": "EN",
+      "matchingStrategy": "P",
+      "matchingThreshold": 70
+    }],
+    "bioInfo": [{
+      "bioType": "fgrMin",
+      "deviceInfo": {
         "deviceId": "123143",
         "make": "mantra",
         "model": "steel"
       }
-    ],
+    }],
     "usageData": "0x0010000000100000"
   }
 }
 
 ```
 
-**2.1. Usage Data Bits **  
+**2.1. Usage Data Bits**  
 The *usageData* in the response is a 16 digit hexa-decimal encoded format of used and matched bits. The hex digits 1-8 are used to map which authentication data were used as per the request. And the hex digits 9-16 are used to map which authentication data were matched.
 
 Below are the mappings used for the ‘Used authentication data bits' that span 1-8 hex digits:
@@ -112,13 +108,13 @@ Below are the mappings used for the ‘Matched authentication data bits' that sp
 
 ![Auth Bit Mapping for Matched Auth Type](_images/Identity_Auth_matched_data_bits.jpg)
 
-**2.2. Class Diagram **  
+**2.2. Class Diagram**  
 
 ![Auth Response Builder Class Diagram](_images/Identity_auth_response_builder_classes.jpg)
 
 
 
-**2.3.	Sequence Diagram **  
+**2.3.	Sequence Diagram**  
 
 ![Auth Response Builder Seq Diagram](_images/Identity_auth_response_builder_sequence.jpg)
 
