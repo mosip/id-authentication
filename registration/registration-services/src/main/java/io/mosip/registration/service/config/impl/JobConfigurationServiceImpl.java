@@ -1,9 +1,11 @@
 package io.mosip.registration.service.config.impl;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import org.quartz.CronExpression;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.JobBuilder;
@@ -128,7 +131,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 				}
 			}
-		} catch(RuntimeException runtimeException) {
+		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 
@@ -432,9 +435,6 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 					RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
 			if (!isNull(syncTransactionList) && !isEmpty(syncTransactionList)) {
-
-				/* Reverse the list order, so that we can go through recent transactions */
-				Collections.reverse(syncTransactionList);
 
 				List<SyncDataProcessDTO> syncDataProcessDTOs = syncTransactionList.stream().map(syncTransaction -> {
 
