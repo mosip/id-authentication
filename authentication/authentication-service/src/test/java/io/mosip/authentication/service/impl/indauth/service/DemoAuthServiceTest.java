@@ -1,5 +1,6 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -599,7 +600,7 @@ public class DemoAuthServiceTest {
 		mockenv.setProperty("mosip.supported-languages", "eng,ara,fre");
 		ReflectionTestUtils.setField(actualidInfoHelper, "environment", mockenv);
 		AuthStatusInfo validateBioDetails = demoAuthServiceImpl.getDemoStatus(authRequestDTO, uin, demoIdentity);
-		assertTrue(validateBioDetails.isStatus());
+		assertFalse(validateBioDetails.isStatus());
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
