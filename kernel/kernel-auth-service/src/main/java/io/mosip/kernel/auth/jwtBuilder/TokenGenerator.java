@@ -1,7 +1,7 @@
 package io.mosip.kernel.auth.jwtBuilder;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
-import io.mosip.kernel.auth.entities.MosipUser;
+import io.mosip.kernel.auth.dto.MosipUserDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -17,11 +17,11 @@ public class TokenGenerator {
     @Autowired
     MosipEnvironment mosipEnvironment;
 
-    private Claims getBasicClaims(MosipUser mosipUser) {
-        Claims claims = Jwts.claims().setSubject(mosipUser.getUserName());
-        claims.put("mobile", mosipUser.getMobile());
-        claims.put("mail", mosipUser.getMail());
-        claims.put("role", mosipUser.getRole());
+    private Claims getBasicClaims(MosipUserDto mosipUserDto) {
+        Claims claims = Jwts.claims().setSubject(mosipUserDto.getUserName());
+        claims.put("mobile", mosipUserDto.getMobile());
+        claims.put("mail", mosipUserDto.getMail());
+        claims.put("role", mosipUserDto.getRole());
 
         return claims;
     }
@@ -48,13 +48,13 @@ public class TokenGenerator {
         return token_base.concat(builder.compact());
     }
 
-    public String basicGenerate(MosipUser mosipUser) {
-        Claims claims = getBasicClaims(mosipUser);
+    public String basicGenerate(MosipUserDto mosipUserDto) {
+        Claims claims = getBasicClaims(mosipUserDto);
         return buildToken(claims);
     }
 
-    public String generateForOtp(MosipUser mosipUser, Boolean isOtpVerifiedYet) {
-        Claims claims = getBasicClaims(mosipUser);
+    public String generateForOtp(MosipUserDto mosipUserDto, Boolean isOtpVerifiedYet) {
+        Claims claims = getBasicClaims(mosipUserDto);
         claims.put("isOtpRequired", true);
         claims.put("isOtpVerified", isOtpVerifiedYet);
         return buildToken(claims);

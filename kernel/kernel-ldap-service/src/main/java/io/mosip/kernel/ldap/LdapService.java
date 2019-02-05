@@ -1,20 +1,19 @@
 package io.mosip.kernel.ldap;
 
-import java.util.Collection;
+import io.mosip.kernel.ldap.dto.MosipUserListDto;
+import io.mosip.kernel.ldap.dto.LoginUserDto;
+import io.mosip.kernel.ldap.dto.MosipUserDto;
+import io.mosip.kernel.ldap.dto.OtpUserDto;
+import io.mosip.kernel.ldap.dto.RolesListDto;
 
-import io.mosip.kernel.ldap.entities.LoginUser;
-import io.mosip.kernel.ldap.entities.MosipUser;
-import io.mosip.kernel.ldap.entities.OtpUser;
-import io.mosip.kernel.ldap.entities.RolesResponseDto;
+import java.util.List;
 
 public interface LdapService {
-	MosipUser authenticateUser(LoginUser user) throws Exception;
+	MosipUserDto authenticateUser(LoginUserDto user) throws Exception;
 
-	MosipUser verifyOtpUser(OtpUser otpUser) throws Exception;
+	MosipUserDto verifyOtpUser(OtpUserDto otpUserDto) throws Exception;
 
-	Collection<String> getRoles(LoginUser user) throws Exception;
+	RolesListDto getAllRoles();
 
-	RolesResponseDto getAllRoles();
-
-	MosipUser getUserDetails(String user);
+	MosipUserListDto getListOfUsersDetails(List<String> users) throws Exception;
 }

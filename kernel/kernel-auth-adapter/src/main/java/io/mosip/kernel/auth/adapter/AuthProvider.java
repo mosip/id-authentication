@@ -1,11 +1,15 @@
 package io.mosip.kernel.auth.adapter;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.AuthenticationException;
@@ -15,6 +19,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import javax.net.ssl.SSLContext;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.List;
 
 /***********************************************************************************************************************
@@ -22,51 +31,57 @@ import java.util.List;
  *
  * Tasks:
  * 1. Contacts auth server to verify token validity.
- * 2. Stores the response body in an instance of MosipUser.
+ * 2. Stores the response body in an instance of MosipUserDto.
  * 3. Updates token into AuthHeadersFilter.
- * 4. Bind MosipUser instance details with the AuthUserDetails that extends Spring Security's UserDetails.
+ * 4. Bind MosipUserDto instance details with the AuthUserDetails that extends Spring Security's UserDetails.
  **********************************************************************************************************************/
 
 @Component
 public class AuthProvider extends AbstractUserDetailsAuthenticationProvider {
 
-    @Autowired
-    AuthHeadersFilter authHeadersFilter;
-
     @Value("${auth.server.validate.url}")
     private String validateUrl;
 
+    @Value("${auth.header.name}")
+    private String authHeaderName;
+
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
+    }
+
+    private RestTemplate getRestTemplate() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+        TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
+        SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
+        SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
+        CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        requestFactory.setHttpClient(httpClient);
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
+        return restTemplate;
     }
 
     @Override
     protected UserDetails retrieveUser(String userName, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
         AuthToken authToken = (AuthToken) usernamePasswordAuthenticationToken;
         String token = authToken.getToken();
-
-        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", token);
+        headers.set(authHeaderName, token);
         HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-        ResponseEntity<MosipUser> response = null;
+        ResponseEntity<MosipUserDto> response = null;
         try {
-            response = restTemplate.exchange(validateUrl, HttpMethod.GET, entity, MosipUser.class);
+            response = getRestTemplate().exchange(validateUrl, HttpMethod.GET, entity, MosipUserDto.class);
         } catch (Exception err) {
             throw new RuntimeException("Invalid Token");
         }
 
-        MosipUser mosipUser = response.getBody();
-        authHeadersFilter.setToken(response.getHeaders().get("Authorization").get(0));
-        if (mosipUser == null) {
+        MosipUserDto mosipUserDto = response.getBody();
+        if (mosipUserDto == null) {
             throw new RuntimeException("Invalid Token");
         }
 
-        List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(mosipUser.getRole());
-
-        AuthUserDetails authUserDetails = new AuthUserDetails();
-        authUserDetails.setUserName(mosipUser.getUserName());
-        authUserDetails.setToken(token);
+        List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(mosipUserDto.getRole());
+        AuthUserDetails authUserDetails = new AuthUserDetails(mosipUserDto,
+                response.getHeaders().get(authHeaderName).get(0));
         authUserDetails.setAuthorities(grantedAuthorities);
 
         return authUserDetails;

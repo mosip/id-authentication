@@ -1,11 +1,12 @@
 package io.mosip.kernel.auth.adapter;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -25,17 +26,23 @@ import java.io.IOException;
 @Component
 public class ClientInterceptor implements ClientHttpRequestInterceptor {
 
-    @Autowired
-    AuthHeadersFilter authHeadersFilter;
+    @Value("${auth.header.name}")
+    private String authHeaderName;
+
+    private AuthUserDetails getAuthUserDetails() {
+        AuthUserDetails authUserDetails = (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return authUserDetails;
+    }
 
     private void addHeadersToRequest(HttpRequest httpRequest, byte[] bytes) {
         HttpHeaders headers = httpRequest.getHeaders();
-        headers.set("Authorization", authHeadersFilter.getToken());
+        headers.set(authHeaderName, getAuthUserDetails().getToken());
     }
 
     private void getHeadersFromResponse(ClientHttpResponse clientHttpResponse) {
         HttpHeaders headers = clientHttpResponse.getHeaders();
-        authHeadersFilter.setToken(headers.get("Authorization").get(0));
+        getAuthUserDetails().setToken(headers.get(authHeaderName).get(0));
+//        getAuthUserDetails().setToken("sabbu");
     }
 
     @Override
