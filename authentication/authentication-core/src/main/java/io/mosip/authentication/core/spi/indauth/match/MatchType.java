@@ -22,6 +22,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
  * Base interface for the match type.
  *
  * @author Loganathan Sekar
+ * @author Dinesh Karuppiah.T
  */
 public interface MatchType {
 
@@ -111,12 +112,8 @@ public interface MatchType {
 	 * @return the list of IdentityInfoDTO
 	 */
 	public default List<IdentityInfoDTO> getIdentityInfoList(IdentityDTO identity) {
-		return getIdentityInfoFunction().apply(identity)
-				.values()
-				.stream()
-				.filter(Objects::nonNull)
-				.flatMap(List::stream)
-				.collect(Collectors.toList());
+		return getIdentityInfoFunction().apply(identity).values().stream().filter(Objects::nonNull)
+				.flatMap(List::stream).collect(Collectors.toList());
 	}
 
 	/**
@@ -147,18 +144,33 @@ public interface MatchType {
 	 */
 	public Category getCategory();
 
+	/**
+	 * Flag to fetch Identity Info
+	 * 
+	 * @return boolean value true or false
+	 */
 	public default boolean hasIdEntityInfo() {
 		return true;
 	}
 
+	/**
+	 * Flag to fetch Request Entity Info
+	 * 
+	 * @return
+	 */
 	public default boolean hasRequestEntityInfo() {
 		return false;
 	}
-	
+
+	/**
+	 * Flag to check MultiLanguage
+	 * 
+	 * @return
+	 */
 	public default boolean isMultiLanguage() {
 		return false;
 	}
-	
+
 	/**
 	 * Returns the set of given matching strategies
 	 *
@@ -170,10 +182,18 @@ public interface MatchType {
 
 	}
 
-	public default Map<String, Entry<String,List<IdentityInfoDTO>>> mapEntityInfo(Map<String, List<IdentityInfoDTO>> idEntity,
-			IdInfoFetcher idInfoHelper) throws IdAuthenticationBusinessException {
-		return idEntity.entrySet()
-				.stream()
+	/**
+	 * To fetch Map Entity Info
+	 * 
+	 * @param idEntity
+	 * @param idInfoHelper
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
+	public default Map<String, Entry<String, List<IdentityInfoDTO>>> mapEntityInfo(
+			Map<String, List<IdentityInfoDTO>> idEntity, IdInfoFetcher idInfoHelper)
+			throws IdAuthenticationBusinessException {
+		return idEntity.entrySet().stream()
 				.collect(Collectors.toMap(Entry::getKey, entry -> new SimpleEntry<>(entry.getKey(), entry.getValue())));
 	}
 
