@@ -10,7 +10,7 @@ package io.mosip.kernel.auditmanager.constant;
 public enum AuditErrorCode {
 	HANDLEREXCEPTION("KER-AUD-001", "Invalid Audit Request. Required parameters must be present"),
 
-	INVALIDFORMAT("KER-AUD-002", "Invalid Audit Request. Format is incorrect. (For timestamp, use UTC format)");
+	INVALIDFORMAT("KER-AUD-002", "Invalid Audit Request. Format is incorrect.");
 
 	private final String errorCode;
 	private final String errorMessage;
