@@ -28,7 +28,7 @@ export const APPEND_URL = {
   applicants: 'demographic/v0.1/pre-registration/applications',
   location: 'masterdata/',
   gender: 'masterdata/v1.0/gendertypes',
-  transliteration: 'translitrate/v0.1/pre-registration/translitrate'
+  transliteration: 'transliterate/v0.1/pre-registration/translitrate'
 };
 
 export const PARAMS_KEYS = {

@@ -21,8 +21,13 @@ import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.syncdata.dto.MachineTypeDto;
 import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.syncdata.dto.ReasonListDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDeviceDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterTypeDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.syncdata.dto.TemplateDto;
 import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
@@ -34,6 +39,7 @@ import lombok.Data;
  * Masterdata sync handler response dto
  * 
  * @author Abhishek Kumar
+ * @author Neha
  * @since 1.0.0
  *
  */
@@ -65,5 +71,11 @@ public class MasterDataResponseDto {
 	private List<TitleDto> titles;
 	private List<GenderDto> genders;
 	private List<LanguageDto> languages;
+	
+	private List<RegistrationCenterMachineDto> registrationCenterMachines;
+	private List<RegistrationCenterDeviceDto> registrationCenterDevices;
+	private List<RegistrationCenterMachineDeviceDto> registrationCenterMachineDevices;
+	private List<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachines;
+	private List<RegistrationCenterUserDto> registrationCenterUsers;
 
 }

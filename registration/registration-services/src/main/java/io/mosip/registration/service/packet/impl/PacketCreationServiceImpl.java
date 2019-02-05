@@ -1,5 +1,6 @@
 package io.mosip.registration.service.packet.impl;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.auditmanager.entity.Audit;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
@@ -29,6 +31,8 @@ import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dao.AuditDAO;
+import io.mosip.registration.dao.AuditLogControlDAO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -43,7 +47,6 @@ import io.mosip.registration.dto.cbeff.jaxbclasses.SingleType;
 import io.mosip.registration.dto.cbeff.jaxbclasses.TestBiometric;
 import io.mosip.registration.dto.cbeff.jaxbclasses.TestBiometricType;
 import io.mosip.registration.dto.demographic.CBEFFFilePropertiesDTO;
-import io.mosip.registration.dto.json.metadata.Audit;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
 import io.mosip.registration.dto.json.metadata.DemographicSequence;
 import io.mosip.registration.dto.json.metadata.FieldValueArray;
@@ -86,6 +89,10 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private static Random random = new Random(5000);
 	@Autowired
 	private AuditFactory auditFactory;
+	@Autowired
+	private AuditLogControlDAO auditLogControlDAO;
+	@Autowired
+	private AuditDAO auditDAO;
 
 	/*
 	 * (non-Javadoc)
@@ -99,11 +106,6 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		try {
 			String rid = registrationDTO.getRegistrationId();
 			String loggerMessageForCBEFF = "Byte array of %s file generated successfully";
-
-			// Fetch unsync'ed audit logs from DB
-			// TODO: Commented below line intentionally. Will be updated
-			// registrationDTO.setAuditDTOs(MAPPER_FACADE.mapAsList(auditDAO.getAllUnsyncAudits(),
-			// AuditDTO.class));
 
 			// Map object to store the UUID's generated for BIR in CBEFF
 			Map<String, String> birUUIDs = new HashMap<>();
@@ -200,9 +202,13 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 					rid);
 
 			// Generating Audit JSON as byte array
+			// Fetch unsync'ed audit logs from DB
+			List<Audit> audits = auditDAO.getAudits(auditLogControlDAO.getLatestRegistrationAuditDates());
+
+			registrationDTO.setAuditLogStartTime(Timestamp.valueOf(audits.get(0).getCreatedAt()));
+			registrationDTO.setAuditLogEndTime(Timestamp.valueOf(audits.get(audits.size() - 1).getCreatedAt()));
 			filesGeneratedForPacket.put(RegistrationConstants.AUDIT_JSON_FILE,
-					javaObjectToJsonString(MAPPER_FACADE.mapAsList(registrationDTO.getAuditDTOs(), Audit.class))
-							.getBytes());
+					javaObjectToJsonString(audits).getBytes());
 
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.AUDIT_JSON_FILE));
@@ -210,9 +216,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 					String.format(loggerMessageForCBEFF, RegistrationConstants.AUDIT_JSON_FILE), REGISTRATION_ID, rid);
 
 			// Generating HMAC File as byte array
-			HashSequence hashSequence = new HashSequence(
-					new BiometricSequence(new LinkedList<String>(), new LinkedList<String>()),
-					new DemographicSequence(new LinkedList<String>()));
+			HashSequence hashSequence = new HashSequence(new BiometricSequence(new LinkedList<>(), new LinkedList<>()),
+					new DemographicSequence(new LinkedList<>()), new LinkedList<>());
 			filesGeneratedForPacket.put(RegistrationConstants.PACKET_DATA_HASH_FILE_NAME,
 					HMACGeneration.generatePacketDTOHash(registrationDTO, filesGeneratedForPacket, hashSequence));
 
@@ -224,7 +229,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			// Generating packet_osi_hash text file as byte array
 			filesGeneratedForPacket.put(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME,
-					HMACGeneration.generatePacketOSIHash(filesGeneratedForPacket));
+					HMACGeneration.generatePacketOSIHash(filesGeneratedForPacket, hashSequence.getOsiDataHashSequence()));
 
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_OSI_HASH_FILE_NAME));
@@ -237,6 +242,9 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			// Add HashSequence
 			packetInfo.getIdentity().setHashSequence(buildHashSequence(hashSequence));
+
+			// Add HashSequence for packet_osi_data
+			packetInfo.getIdentity().setHashSequence2(hashSequence.getOsiDataHashSequence());
 
 			filesGeneratedForPacket.put(RegistrationConstants.PACKET_META_JSON_NAME,
 					javaObjectToJsonString(packetInfo).getBytes());

@@ -13,14 +13,23 @@ public enum AuditModules {
 	/** The demo auth. */
 	DEMO_AUTH("IDA-MOD-102"),
 	
-	/** The bio auth. */
-	BIO_AUTH("IDA-MOD-103"),
+	/** The FINGERPRINT_AUTH. */
+	FINGERPRINT_AUTH("IDA-MOD-103"),
+	
+	/** The IRIS_AUTH. */
+	IRIS_AUTH("IDA-MOD-104"),
+	
+	/** The FACE_AUTH. */
+	FACE_AUTH("IDA-MOD-105"),
 	
 	/** The pin auth. */
-	PIN_AUTH("IDA-MOD-104"),
+	PIN_AUTH("IDA-MOD-106"),
 	
 	/** The e KY C AUTH. */
-	EKYC_AUTH("IDA-MOD-105"),
+	EKYC_AUTH("IDA-MOD-107"),
+	
+	/** The Static Pin Storage */
+	STATIC_PIN_STORAGE("IDA-MOD-108"),
 	
 	/** The otp request. */
 	OTP_REQUEST("IDA-MOD-110"),

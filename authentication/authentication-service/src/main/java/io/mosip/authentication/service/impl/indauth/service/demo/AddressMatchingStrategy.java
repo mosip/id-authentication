@@ -6,8 +6,8 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
-import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
 
 /**
@@ -15,7 +15,7 @@ import io.mosip.authentication.core.util.DemoMatcherUtil;
  *
  * @author Dinesh Karuppiah.T
  */
-public enum AddressMatchingStrategy implements MatchingStrategy {
+public enum AddressMatchingStrategy implements TextMatchingStrategy {
 
 	/** The exact. */
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {

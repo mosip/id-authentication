@@ -37,6 +37,48 @@ public class Identity {
 
 	/** The pob. */
 	private IdentityJsonValues pob;
+	
+	/** The individual biometrics. */
+	private IdentityJsonValues individualBiometrics;
+	
+	/** The age */
+	private IdentityJsonValues age;
+
+	/** The city. */
+	private IdentityJsonValues city;
+	
+	/** The address line 1. */
+	private IdentityJsonValues addressLine1;
+
+	/** The address line 2. */
+	private IdentityJsonValues addressLine2;
+
+	/** The address line 3. */
+	private IdentityJsonValues addressLine3;
+
+	/** The region. */
+	private IdentityJsonValues region;
+
+	/** The province. */
+	private IdentityJsonValues province;
+
+	/** The postal code. */
+	private IdentityJsonValues postalCode;
+
+	/** The phone number. */
+	private IdentityJsonValues phone;
+
+	/** The email ID. */
+	private IdentityJsonValues email;
+
+	/** The local administrative authority. */
+	private IdentityJsonValues localAdministrativeAuthority;
+
+	/** The id schema version. */
+	private IdentityJsonValues idschemaversion;
+
+	/** The cnie number. */
+	private IdentityJsonValues cnienumber;
 
 	/** The individual biometrics. */
 	private IdentityJsonValues individualBiometrics;

@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.core.util;
-	
+
 import java.util.Collections;
 import java.util.List;
 
@@ -12,6 +12,7 @@ import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
  * M1039285
  */
 public class IdentityIteratorUtil {
+	private static final String EMPTY_STRING = "";
 
 	/**
 	 * Instantiates a new identity iterator util.
@@ -38,12 +39,14 @@ public class IdentityIteratorUtil {
 		return Collections.emptyList();
 
 	}
-	
+
 	/**
 	 * Gets the metadata label value.
 	 *
-	 * @param metaDataList the meta data list
-	 * @param field the field
+	 * @param metaDataList
+	 *            the meta data list
+	 * @param field
+	 *            the field
 	 * @return the metadata label value
 	 */
 	public String getMetadataLabelValue(List<FieldValue> metaDataList, String field) {
@@ -55,21 +58,26 @@ public class IdentityIteratorUtil {
 		return null;
 
 	}
-	
 
 	/**
 	 * Gets the field value.
 	 *
-	 * @param data the data
-	 * @param label            the label
+	 * @param data
+	 *            the data
+	 * @param label
+	 *            the label
 	 * @return the field value
 	 */
 	public String getFieldValue(List<FieldValue> data, String label) {
+		String fieldValue = null;
 		for (FieldValue field : data) {
-			if (field.getLabel().equalsIgnoreCase(label))
-				return field.getValue();
+			if (field.getLabel().equalsIgnoreCase(label)) {
+				fieldValue = field.getValue();
+				return fieldValue != null && fieldValue.trim().equals(EMPTY_STRING) ? null : fieldValue;
+
+			}
 
 		}
-		return null;
+		return fieldValue;
 	}
 }

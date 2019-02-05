@@ -364,5 +364,17 @@ public class UserClientMachineMappingDAOTest {
 		boolean a = machineMappingDAOImpl.isValidDevice(DeviceTypes.FINGERPRINT, "SF001");
 		Assert.assertSame(true, a);
 	}
+	@Test
+	public void getUserMappingDetailsTest()
+	{
+		List<UserMachineMapping> list=new ArrayList<>();
+		UserMachineMapping userMachineMapping=new UserMachineMapping();
+		UserDetail userDetail=new UserDetail();
+		userDetail.setId("mosip");
+		userMachineMapping.setUserDetail(userDetail);
+		list.add(userMachineMapping);
+		Mockito.when(machineMappingRepository.findByUserMachineMappingIdMachineID(Mockito.anyString())).thenReturn(list);
+		Assert.assertEquals(userMachineMapping.getUserDetail().getId(),machineMappingDAOImpl.getUserMappingDetails("machineId").get(0).getUserDetail().getId());
+	}
 
 }

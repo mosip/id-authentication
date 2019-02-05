@@ -147,7 +147,7 @@ public class CbeffValidator {
 	 * @exception Exception exception
 	 * 
 	 */
-	public static byte[] createXMLBytes(BIRType bir) throws Exception {
+	public static byte[] createXMLBytes(BIRType bir,byte[] xsd) throws Exception {
 		CbeffValidator.validateXML(bir);
 		JAXBContext jaxbContext = JAXBContext.newInstance(BIRType.class);
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
@@ -159,7 +159,7 @@ public class CbeffValidator {
 		writer.close();
 		try
 		{
-		CbeffXSDValidator.validateXML(readXSD("cbeff"), savedData);
+		CbeffXSDValidator.validateXML(xsd, savedData);
 		}
 		catch(SAXException sax)
 		{

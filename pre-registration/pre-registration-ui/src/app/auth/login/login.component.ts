@@ -51,6 +51,7 @@ export class LoginComponent implements OnInit {
       this.langCode = localStorage.getItem('langCode');
       this.translate.use(this.langCode);
     }
+    localStorage.setItem('loggedIn', 'false');
   }
 
   changeLanguage(): void {

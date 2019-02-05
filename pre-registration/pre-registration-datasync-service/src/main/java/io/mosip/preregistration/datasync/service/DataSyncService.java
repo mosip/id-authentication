@@ -12,6 +12,11 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.preregistration.core.code.AuditLogVariables;
+import io.mosip.preregistration.core.code.EventId;
+import io.mosip.preregistration.core.code.EventName;
+import io.mosip.preregistration.core.code.EventType;
+import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
@@ -20,6 +25,7 @@ import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
+import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.datasync.dto.DataSyncRequestDTO;
 import io.mosip.preregistration.datasync.dto.PreRegArchiveDTO;
@@ -45,6 +51,12 @@ public class DataSyncService {
 	 */
 	@Autowired
 	private DataSyncServiceUtil serviceUtil;
+
+	/**
+	 * Autowired reference for {@link #AuditLogUtil}
+	 */
+	@Autowired
+	AuditLogUtil auditLogUtil;
 
 	/**
 	 * Reference for ${id} from property file
@@ -82,6 +94,7 @@ public class DataSyncService {
 		MainResponseDTO<PreRegistrationIdsDTO> responseDto = new MainResponseDTO<>();
 		List<String> preregIds;
 		log.info("sessionId", "idType", "id", "In retrieveAllPreRegIds method of datasync service ");
+		boolean isRetrieveAllSuccess = false;
 		try {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(dataSyncRequest), requiredRequestMap)
 					&& serviceUtil.validateDataSyncRequest(dataSyncRequest.getRequest())) {
@@ -96,6 +109,7 @@ public class DataSyncService {
 				responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 				responseDto.setResponse(preRegistrationIdsDTO);
 			}
+			isRetrieveAllSuccess = true;
 		} catch (DataAccessLayerException ex) {
 			log.error("sessionId", "idType", "id",
 					"In retrieveAllPreRegIds method of datasync service - " + ex.getMessage());
@@ -106,6 +120,15 @@ public class DataSyncService {
 					"In retrieveAllPreRegIds method of datasync service - " + ex.getMessage());
 
 			new DataSyncExceptionCatcher().handle(ex);
+		} finally {
+			if (isRetrieveAllSuccess) {
+				setAuditValues(EventId.PRE_406.toString(), EventName.SYNC.toString(), EventType.BUSINESS.toString(),
+						"Retrieval of all the Preregistration Id is successful",
+						AuditLogVariables.MULTIPLE_ID.toString());
+			} else {
+				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
+						"Retrieval of all the Preregistration Id is unsuccessful", AuditLogVariables.NO_ID.toString());
+			}
 		}
 		return responseDto;
 	}
@@ -119,6 +142,7 @@ public class DataSyncService {
 		MainResponseDTO<PreRegArchiveDTO> responseDto = new MainResponseDTO<>();
 		PreRegArchiveDTO preRegArchiveDTO = new PreRegArchiveDTO();
 		log.info("sessionId", "idType", "id", "In getPreRegistrationData method of datasync service ");
+		boolean isRetrieveSuccess = false;
 		try {
 			DemographicResponseDTO preRegistrationDTO = serviceUtil.callGetPreRegInfoRestService(preId.trim());
 			List<DocumentMultipartResponseDTO> documentlist = serviceUtil.callGetDocRestService(preId.trim());
@@ -128,11 +152,21 @@ public class DataSyncService {
 			responseDto.setStatus(Boolean.TRUE);
 			responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 			responseDto.setResponse(preRegArchiveDTO);
+			isRetrieveSuccess = true;
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In getPreRegistrationData method of datasync service - " + ex.getMessage());
 
 			new DataSyncExceptionCatcher().handle(ex);
+		} finally {
+			if (isRetrieveSuccess) {
+				setAuditValues(EventId.PRE_406.toString(), EventName.SYNC.toString(), EventType.BUSINESS.toString(),
+						"Retrieval of the Preregistration data is successful",
+						AuditLogVariables.MULTIPLE_ID.toString());
+			} else {
+				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
+						"Retrieval of the Preregistration data is unsuccessful", AuditLogVariables.NO_ID.toString());
+			}
 		}
 		return responseDto;
 	}
@@ -146,6 +180,7 @@ public class DataSyncService {
 		MainResponseDTO<ReverseDatasyncReponseDTO> responseDto = new MainResponseDTO<>();
 		ReverseDatasyncReponseDTO reverseDatasyncReponse = new ReverseDatasyncReponseDTO();
 		log.info("sessionId", "idType", "id", "In storeConsumedPreRegistrations method of datasync service ");
+		boolean isSaveSuccess = false;
 		try {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(reverseDataSyncRequest),
 					requiredRequestMap)
@@ -157,12 +192,50 @@ public class DataSyncService {
 				responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 				responseDto.setErr(null);
 			}
+			isSaveSuccess = true;
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In storeConsumedPreRegistrations method of datasync service - " + ex.getMessage());
 
 			new DataSyncExceptionCatcher().handle(ex);
+		} finally {
+			if (isSaveSuccess) {
+				setAuditValues(EventId.PRE_408.toString(), EventName.REVERSESYNC.toString(),
+						EventType.BUSINESS.toString(),
+						"Reverse Data sync & the consumed PreRegistration ids successfully saved in the database",
+						AuditLogVariables.MULTIPLE_ID.toString());
+			} else {
+				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
+						"Reverse Data sync failed", AuditLogVariables.NO_ID.toString());
+			}
 		}
 		return responseDto;
 	}
+
+	/**
+	 * This method is used to audit all the datasync & reverse datasync events
+	 * 
+	 * @param eventId
+	 * @param eventName
+	 * @param eventType
+	 * @param description
+	 * @param idType
+	 */
+	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType) {
+		AuditRequestDto auditRequestDto = new AuditRequestDto();
+		auditRequestDto.setEventId(eventId);
+		auditRequestDto.setEventName(eventName);
+		auditRequestDto.setEventType(eventType);
+		auditRequestDto.setDescription(description);
+		auditRequestDto.setId(idType);
+		if (!eventName.equalsIgnoreCase("REVERSESYNC")) {
+			auditRequestDto.setModuleId(AuditLogVariables.DAT.toString());
+			auditRequestDto.setModuleName(AuditLogVariables.DATASYNC_SERVICE.toString());
+		} else {
+			auditRequestDto.setModuleId(AuditLogVariables.REV.toString());
+			auditRequestDto.setModuleName(AuditLogVariables.REVERSE_DATASYNC_SERVICE.toString());
+		}
+		auditLogUtil.saveAuditDetails(auditRequestDto);
+	}
+
 }
