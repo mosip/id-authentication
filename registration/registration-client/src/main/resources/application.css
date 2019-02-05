@@ -950,13 +950,11 @@ Working on new Css
 .fingerPrintPanes{
 	-fx-pref-height: 100px;	
 	-fx-pref-width: 250px;
-	-fx-background-color : #C9C9C9;
 }
 
 .IrisPanes{
 	-fx-pref-height: 200px;	
 	-fx-pref-width: 300px;
-	-fx-background-color : #C9C9C9;
 }
 
 .PhotoCaptureWindow{

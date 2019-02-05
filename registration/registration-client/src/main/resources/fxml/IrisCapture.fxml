@@ -16,11 +16,11 @@
                   <Font size="23.0" />
                </font>
             </Label>
-            <AnchorPane layoutX="129.0" layoutY="68.0" prefHeight="210.0" prefWidth="255.0" styleClass="IrisPanes">
+            <AnchorPane layoutX="159.0" layoutY="98.0" prefHeight="220.0" prefWidth="230.0" styleClass="IrisPanes">
                <children>
-                  <Pane id="leftIrisPane" fx:id="leftIrisPane" layoutX="30.0" layoutY="20.0" onMouseClicked="#enableScan">
+                  <Pane id="leftIrisPane" fx:id="leftIrisPane" onMouseClicked="#enableScan" prefHeight="220.0" prefWidth="230.0">
                      <children>
-                        <ImageView fx:id="leftIrisImage" fitHeight="200.0" fitWidth="200.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="leftIrisImage" fitHeight="220.0" fitWidth="230.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/Eye.PNG" />
                            </image>
@@ -29,11 +29,11 @@
                   </Pane>
                </children>
             </AnchorPane>
-            <AnchorPane layoutX="600.0" layoutY="68.0" prefHeight="210.0" prefWidth="241.0" styleClass="IrisPanes">
+            <AnchorPane layoutX="621.0" layoutY="98.0" prefHeight="220.0" prefWidth="230.0" styleClass="IrisPanes">
                <children>
-                  <Pane id="rightIrisPane" fx:id="rightIrisPane" layoutX="22.0" layoutY="20.0" onMouseClicked="#enableScan">
+                  <Pane id="rightIrisPane" fx:id="rightIrisPane" onMouseClicked="#enableScan" prefHeight="220.0" prefWidth="230.0">
                      <children>
-                        <ImageView fx:id="rightIrisImage" fitHeight="200.0" fitWidth="200.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="rightIrisImage" fitHeight="220.0" fitWidth="230.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/Eye.PNG" />
                            </image>
