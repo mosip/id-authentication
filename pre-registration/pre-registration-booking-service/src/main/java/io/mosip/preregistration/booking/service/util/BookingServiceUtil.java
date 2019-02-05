@@ -50,7 +50,6 @@ import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
 import io.mosip.preregistration.booking.dto.HolidayDto;
-import io.mosip.preregistration.booking.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.booking.dto.RegistrationCenterDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterHolidayDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterResponseDto;
@@ -79,6 +78,7 @@ import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 
 /**

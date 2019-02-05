@@ -1,11 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
 import { Router } from '@angular/router';
-
-export interface Language {
-  value: string;
-  viewValue: string;
-}
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-header',
@@ -13,7 +9,9 @@ export interface Language {
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  constructor(public authService: AuthService, private router: Router) {}
+  constructor(public authService: AuthService, private router: Router, private translate: TranslateService) {
+    // this.translate.use(localStorage.getItem('langCode'));
+  }
 
   ngOnInit() {}
 

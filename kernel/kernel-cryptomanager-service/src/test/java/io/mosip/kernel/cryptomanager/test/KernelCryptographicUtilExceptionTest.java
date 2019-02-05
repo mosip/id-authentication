@@ -6,6 +6,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,7 +72,7 @@ public class KernelCryptographicUtilExceptionTest {
 		ReflectionTestUtils.setField(cryptomanagerUtil, "asymmetricAlgorithmName", "test");
 		uriParams = new HashMap<>();
 		uriParams.put("applicationId", "REGISTRATION");
-		builder = UriComponentsBuilder.fromUriString(publicKeyUrl).queryParam("timeStamp", "2018-12-06T12:07:44.403")
+		builder = UriComponentsBuilder.fromUriString(publicKeyUrl).queryParam("timeStamp", "2018-12-06T12:07:44.403Z")
 				.queryParam("referenceId", "ref123");
 	}
 
@@ -83,7 +84,7 @@ public class KernelCryptographicUtilExceptionTest {
 		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString()))
 				.andRespond(withSuccess(objectMapper.writeValueAsString(keymanagerPublicKeyResponseDto),
 						MediaType.APPLICATION_JSON));
-		CryptomanagerRequestDto cryptomanagerRequestDto= new CryptomanagerRequestDto("REGISTRATION","ref123",LocalDateTime.parse("2018-12-06T12:07:44.403"),"test");
+		CryptomanagerRequestDto cryptomanagerRequestDto= new CryptomanagerRequestDto("REGISTRATION","ref123",LocalDateTime.parse("2018-12-06T12:07:44.403Z",DateTimeFormatter.ISO_DATE_TIME),"test");
 	cryptomanagerUtil.getPublicKey(cryptomanagerRequestDto);
 	}
 }
