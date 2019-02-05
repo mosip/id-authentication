@@ -15,7 +15,6 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.context.SessionContext.UserContext;
 
 /**
  * Class to Audit the events of Registration.
@@ -44,9 +43,11 @@ public class AuditFactoryImpl implements AuditFactory {
 			String refIdType) {
 
 		// Get UserContext Object from SessionContext
-		UserContext userContext = SessionContext.getInstance().getUserContext();
-		String userId = userContext.getUserId() == null ? "NA" : userContext.getUserId();
-		String userName = userContext.getName() == null ? "NA" : userContext.getName(); 
+		SessionContext sessionContext = SessionContext.getSessionContext();
+		String userId = sessionContext == null || sessionContext.getUserContext().getUserId() == null ? "NA"
+				: sessionContext.getUserContext().getUserId();
+		String userName = sessionContext == null || sessionContext.getUserContext().getName() == null ? "NA"
+				: sessionContext.getUserContext().getName(); 
 
 		// Getting Host IP Address and Name
 		String hostIP = null;

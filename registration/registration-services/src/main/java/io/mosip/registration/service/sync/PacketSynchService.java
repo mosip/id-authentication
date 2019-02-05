@@ -10,14 +10,17 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 
 public interface PacketSynchService {
 
-	
-	/**This method is used to fetch the packets from the table which needs to be synched.
+	/**
+	 * This method is used to fetch the packets from the table which needs to be
+	 * synched.
+	 * 
 	 * @return
 	 */
 	List<Registration> fetchPacketsToBeSynched();
 
-	
-	/**This method is used to synch the packets to the server
+	/**
+	 * This method is used to synch the packets to the server
+	 * 
 	 * @param syncDtoList
 	 * @return
 	 * @throws RegBaseCheckedException
@@ -27,21 +30,28 @@ public interface PacketSynchService {
 	Object syncPacketsToServer(List<SyncRegistrationDTO> syncDtoList)
 			throws RegBaseCheckedException, URISyntaxException, JsonProcessingException;
 
-	
-	/**This method is used to update the synched packets in the table
+	/**
+	 * This method is used to update the synched packets in the table
+	 * 
 	 * @param synchedPackets
 	 * @return
 	 */
 	Boolean updateSyncStatus(List<Registration> synchedPackets);
-	
+
 	/**
 	 * Gets the packet to sync.
 	 *
-	 * @param rId 
-	 * 				the registration id
-	 * @return the packet to sync 
-	 * @throws RegBaseCheckedException 
+	 * @param rId the registration id
+	 * @return the packet to sync
+	 * @throws RegBaseCheckedException
 	 */
 	String packetSync(String rId) throws RegBaseCheckedException;
 
+	/**
+	 * Sync EOD packets.
+	 *
+	 * @return the string
+	 * @throws RegBaseCheckedException
+	 */
+	String syncEODPackets(List<String> regIds) throws RegBaseCheckedException;
 }

@@ -85,7 +85,7 @@ public class PolicySyncServiceImpl implements PolicySyncService {
 
 				Date validDate = new Date(keyStore.getValidTillDtimes().getTime());
 				long difference = ChronoUnit.DAYS.between(new Date().toInstant(), validDate.toInstant());
-				if (Integer.parseInt((String) ApplicationContext.getInstance().getApplicationMap()
+				if (Integer.parseInt((String) ApplicationContext.getApplicationContext().getApplicationMap()
 						.get(RegistrationConstants.KEY_NAME)) < difference) {
 					successResponseDTO.setCode(RegistrationConstants.POLICY_SYNC_SUCCESS_CODE);
 					successResponseDTO.setMessage(RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE);

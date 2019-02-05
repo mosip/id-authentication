@@ -35,6 +35,10 @@ public class SessionContext {
 		}
 	}
 
+	public static SessionContext getSessionContext() {
+		return sessionContext;
+	}
+
 	public UUID getId() {
 		return id;
 	}

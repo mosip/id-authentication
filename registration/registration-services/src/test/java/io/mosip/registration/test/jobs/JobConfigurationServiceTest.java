@@ -83,6 +83,9 @@ public class JobConfigurationServiceTest {
 	@Mock
 	io.mosip.registration.context.ApplicationContext context;
 	
+	@Mock
+	GlobalParamDAO globalParamDAO;
+	
 	List<SyncJobDef> syncJobList;
 
 	HashMap<String, SyncJobDef> jobMap = new HashMap<>();
@@ -116,6 +119,23 @@ public class JobConfigurationServiceTest {
 
 	@Test
 	public void initiateJobTest() {
+		GlobalParam globalParam=new GlobalParam();
+		globalParam.setName("1234");
+		globalParam.setVal("0/10 * * * * ?");
+		globalParam.setIsActive(true);
+		List<GlobalParam> globalParams=new LinkedList<>();
+		globalParams.add(globalParam);
+		
+		List<SyncJobDef> updatedJobs = new LinkedList<>();
+		SyncJobDef syncJobDef=new SyncJobDef();
+		syncJobDef.setId(globalParam.getName());
+		syncJobDef.setSyncFrequency(globalParam.getVal());
+		syncJobDef.setIsActive(globalParam.getIsActive());
+		updatedJobs.add(syncJobDef);
+		
+		Mockito.when(globalParamDAO.getAll(Mockito.anyList())).thenReturn(globalParams);
+		Mockito.when(jobConfigDAO.updateAll(Mockito.anyList())).thenReturn(updatedJobs);
+		
 		jobConfigurationService.initiateJobs();
 
 	}

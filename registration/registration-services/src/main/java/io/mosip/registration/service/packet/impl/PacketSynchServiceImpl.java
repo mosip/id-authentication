@@ -129,21 +129,39 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 	public String packetSync(String rId) throws RegBaseCheckedException {
 		LOGGER.debug("REGISTRATION -UPDATE_SYNC_STATUS - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the status of the synched packets to the database");
+
+		Registration registration = syncRegistrationDAO
+				.getRegistrationById(RegistrationClientStatusCode.APPROVED.getCode(), rId);
+		List<Registration> registrations = new ArrayList<>();
+		registrations.add(registration);
+		return syncPackets(registrations);
+	}
+
+
+	/**
+	 * Sync packets.
+	 *
+	 * @param registrations the registrations
+	 * @return the string
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 */
+	private String syncPackets(List<Registration> registrations) throws RegBaseCheckedException {
 		String syncErrorStatus = "";
 		try {
-			Registration registration = syncRegistrationDAO
-					.getRegistrationById(RegistrationClientStatusCode.APPROVED.getCode(), rId);
-			List<SyncRegistrationDTO> syncRegistrationDTOs = new ArrayList<>();
-			List<Registration> registrations = new ArrayList<>();
-			SyncRegistrationDTO syncRegistrationDTO = new SyncRegistrationDTO();
-			syncRegistrationDTO.setLangCode("ENG");
-			syncRegistrationDTO.setRegistrationId(registration.getId());
-			syncRegistrationDTO.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
-			syncRegistrationDTO.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
-			syncRegistrationDTOs.add(syncRegistrationDTO);
 
-			registration.setClientStatusCode(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
-			registrations.add(registration);
+			List<SyncRegistrationDTO> syncRegistrationDTOs = new ArrayList<>();
+
+			for (Registration registration : registrations) {
+				SyncRegistrationDTO syncRegistrationDTO = new SyncRegistrationDTO();
+				syncRegistrationDTO.setLangCode("ENG");
+				syncRegistrationDTO.setRegistrationId(registration.getId());
+				syncRegistrationDTO.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
+				syncRegistrationDTO.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
+				syncRegistrationDTOs.add(syncRegistrationDTO);
+
+				registration.setClientStatusCode(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
+
+			}
 
 			Object response = syncPacketsToServer(syncRegistrationDTOs);
 
@@ -160,9 +178,25 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 			syncErrorStatus = exception.getMessage();
 
 		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION -UPDATE_SYNC_STATUS - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage());
+
 			throw new RegBaseUncheckedException(RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
 					RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorMessage(), runtimeException);
 		}
 		return syncErrorStatus;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.sync.PacketSynchService#syncEODPackets(java.
+	 * util.List)
+	 */
+	@Override
+	public String syncEODPackets(List<String> regIds) throws RegBaseCheckedException {
+		List<Registration> registrations = syncRegistrationDAO.get(regIds);
+		return syncPackets(registrations);
 	}
 }

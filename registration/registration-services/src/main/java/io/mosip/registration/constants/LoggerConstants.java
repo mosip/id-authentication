@@ -50,7 +50,8 @@ public class LoggerConstants {
 	public static final String LOG_REG_REJECT_CONTROLLER = PKT_APPROVAL + "REJECTION_CONTROLLER";
 	public static final String LOG_REG_IRIS_CAPTURE_CONTROLLER = USER_REGISTRATION + "IRIS_CAPTURE_CONTROLLER";
 	public static final String LOG_REG_BIOMETRIC_SCAN_CONTROLLER = USER_REGISTRATION + "FINGERPRINT_SCAN_CONTROLLER";
-	public static final String LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER = USER_REGISTRATION + "FINGERPRINT_CAPTURE_CONTROLLER";
+	public static final String LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER = USER_REGISTRATION
+			+ "FINGERPRINT_CAPTURE_CONTROLLER";
 	public static final String LOG_REG_REGISTRATION_CONTROLLER = USER_REGISTRATION + "REGISTRATION_CONTROLLER";
 	public static final String LOG_REG_SCAN_CONTROLLER = USER_REGISTRATION + "SCAN_CONTROLLER";
 	public static final String LOG_REG_FINGERPRINT_FACADE = USER_REGISTRATION + "FINGERPRINT_FACADE";
@@ -64,10 +65,28 @@ public class LoggerConstants {
 	public static final String LOG_REG_FACE_FACADE = USER_REGISTRATION + "FACE_FACADE";
 	public static final String LOG_REG_USER_ONBOARD = USER_ONBOARD + "USER_ONBOARD_IMLP";
 	public static final String OPT_TO_REG_LOGGER_SESSION_ID = SYNC + "SYNC_STATUS_VALIDATOR_SERVICE_IMPL";
-	
-	//USER ONBOARD
-	public static final String LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD = USER_ONBOARD + "FINGERPRINT_CAPTURE_CONTROLLER";
+
+	// USER ONBOARD
+	public static final String LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD = USER_ONBOARD
+			+ "FINGERPRINT_CAPTURE_CONTROLLER";
 	public static final String LOG_REG_IRIS_CAPTURE_USER_ONBOARD = USER_ONBOARD + "IRIS_CAPTURE_CONTROLLER";
-	
+
+	public static final String BASE_JOB_TITLE = SYNC + "Base_Job";
+	public static final String BATCH_JOBS_PROCESS_LOGGER_TITLE = SYNC + "Job_Process_Listener";
+	public static final String BATCH_JOBS_TRIGGER_LOGGER_TITLE = SYNC + "Job_Trigger_Listener";
+	public static final String PACKET_SYNC_STATUS_JOB_TITLE = SYNC + "Packet_Sync Status_Job";
+	public static final String MASTER_SYNC_STATUS_JOB_TITLE = SYNC + "Master_Sync_Status_Job";
+	public static final String BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE = SYNC + "Sync_Transaction_Manager";
+	public static final String BATCH_JOBS_CONFIG_LOGGER_TITLE = SYNC + "Job_Configuration_Service";
+	public static final String PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE = SYNC + "Pre_Registration_Data_Sync_Job";
+	public static final String PRE_REG_DATA_SYNC_SERVICE_LOGGER_TITLE = SYNC + "Pre_Registration_Data_Sync_Service";
+	public static final String PRE_REG_DATA_SYNC_DAO_LOGGER_TITLE = SYNC + "Pre Registration_Data_Sync_DAO";
+	public static final String REGISTRATION_DELETION_JOB_LOGGER_TITLE = SYNC + "Registration_Deletion_Job";
+	public static final String SYNC_CONFIG_DATA_JOB_LOGGER_TITLE = SYNC + "Sync_Config_Data Job";
+	public static final String GLOBAL_PARAM_SERVICE_LOGGER_TITLE = SYNC + "GLOBAL_PARAMS_SERVICE";
+	public static final String AUDIT_SERVICE_LOGGER_TITLE = SYNC + "AUDIT_SERVICE";
+	public static final String DELETE_AUDIT_LOGS_JOB = SYNC + "Delete_Audit_Logs_Job";
+	public static final String KEY_POLICY_SYNC_JOB_TITLE =SYNC+"key_policy_synch_Job";
+
 
 }

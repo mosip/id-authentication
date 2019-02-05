@@ -49,7 +49,7 @@ public class MetaDataUtils {
 	public static <S, D extends MasterSyncBaseEntity> D setUpdateMetaData(final S source, D destination,
 			Boolean mapNullvalues) {
 
-		String contextUser = SessionContext.getInstance().getUserContext().getUserId();
+		String contextUser = SessionContext.getSessionContext().getUserContext().getUserId();
 
 		D entity = MapperUtils.map(source, destination, mapNullvalues);
 
@@ -73,7 +73,7 @@ public class MetaDataUtils {
 	public static <T, D extends MasterSyncBaseEntity> D setCreateMetaData(final T source,
 			Class<? extends MasterSyncBaseEntity> destinationClass) {
 
-		String contextUser = SessionContext.getInstance().getUserContext().getUserId();
+		String contextUser = SessionContext.getSessionContext().getUserContext().getUserId();
 
 		D entity = (D) MapperUtils.map(source, destinationClass);
 
@@ -84,7 +84,7 @@ public class MetaDataUtils {
 	public static <T, D extends MasterSyncBaseEntity> List<D> setCreateMetaData(final Collection<T> dtoList,
 			Class<? extends MasterSyncBaseEntity> entityClass) {
 
-		String contextUser = SessionContext.getInstance().getUserContext().getUserId();
+		String contextUser = SessionContext.getSessionContext().getUserContext().getUserId();
 
 		List<D> entities = new ArrayList<>();
 

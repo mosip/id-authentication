@@ -198,7 +198,7 @@ public class IrisCaptureController extends BaseController {
 
 			if ((irisDetailsDTO == null || (irisDetailsDTO.getNumOfIrisRetry() < Integer
 					.parseInt(getValueFromApplicationMap(RegistrationConstants.IRIS_RETRY_COUNT))))
-					|| (irisDetailsDTO == null && ((boolean) sessionContextMap
+					|| (irisDetailsDTO == null && ((boolean) SessionContext.getSessionContext().getMapObject()
 							.get(RegistrationConstants.ONBOARD_USER)))) {
 				scanPopUpViewController.init(this, RegistrationUIConstants.IRIS_SCAN);
 			} else {
@@ -234,7 +234,7 @@ public class IrisCaptureController extends BaseController {
 				getIrises().add(irisDetailsDTO);
 			} else {
 				irisDetailsDTO = captiredIrisDetailsDTO.get();
-				if (!(boolean) sessionContextMap.get(RegistrationConstants.ONBOARD_USER)) {
+				if (!(boolean) SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
 				irisDetailsDTO.setNumOfIrisRetry(irisDetailsDTO.getNumOfIrisRetry() + 1);
 				}
 			}
@@ -290,7 +290,7 @@ public class IrisCaptureController extends BaseController {
 		try {
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Photo capture page for user registration");
-			if ((boolean) sessionContextMap.get(RegistrationConstants.ONBOARD_USER)) {
+			if ((boolean) SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
 				if (validateIris()) {
 					loadPage(RegistrationConstants.USER_ONBOARD_WEBCAM);
 				}
@@ -323,7 +323,7 @@ public class IrisCaptureController extends BaseController {
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Fingerprint capture page for user registration");
 
-			if ((boolean) sessionContextMap.get(RegistrationConstants.ONBOARD_USER)) {
+			if ((boolean) SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
 				if (validateIris()) {
 					
 					if (applicationContext.getApplicationMap()
@@ -364,7 +364,7 @@ public class IrisCaptureController extends BaseController {
 								.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
 								.equals(RegistrationConstants.ENABLE)) {
 							
-							if ((boolean) sessionContext.getUserContext().getUserMap()
+							if ((boolean) SessionContext.getSessionContext().getUserContext().getUserMap()
 									.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
 								registrationController.toggleFingerprintCaptureVisibility(false);
 								biometricExceptionController.setExceptionImage();
@@ -471,7 +471,7 @@ public class IrisCaptureController extends BaseController {
 	}
 
 	private List<IrisDetailsDTO> getIrises() {
-		if ((boolean) sessionContextMap.get(RegistrationConstants.ONBOARD_USER)) {
+		if ((boolean) SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
 			return getBiometricDTOFromSession().getOperatorBiometricDTO().getIrisDetailsDTO();
 		} else {
 			return getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO();
@@ -479,7 +479,7 @@ public class IrisCaptureController extends BaseController {
 	}
 
 	private List<BiometricExceptionDTO> getIrisExceptions() {
-		if ((boolean) sessionContextMap.get(RegistrationConstants.ONBOARD_USER)) {
+		if ((boolean) SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
 			return getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO();
 		} else {
 			return getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
@@ -496,12 +496,12 @@ public class IrisCaptureController extends BaseController {
 	}
 
 	private RegistrationDTO getRegistrationDTOFromSession() {
-		return (RegistrationDTO) sessionContextMap
+		return (RegistrationDTO) SessionContext.getSessionContext().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
 	
 	private BiometricDTO getBiometricDTOFromSession() {
-		return (BiometricDTO) sessionContextMap.get(RegistrationConstants.USER_ONBOARD_DATA);
+		return (BiometricDTO) SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.USER_ONBOARD_DATA);
 	}
 
 	private String getQualityScoreAsString(double qualityScore) {

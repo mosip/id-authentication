@@ -73,6 +73,7 @@ public class TemplateGeneratorTest {
 
 	@Test
 	public void generateTemplateTest() throws IOException, URISyntaxException, RegBaseCheckedException, QrcodeGenerationException {
+		ApplicationContext.getInstance().loadResourceBundle();
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
 		List<FingerprintDetailsDTO> segmentedFingerprints = new ArrayList<>();
 		segmentedFingerprints.add(new FingerprintDetailsDTO());
@@ -100,6 +101,7 @@ public class TemplateGeneratorTest {
 
 	@Test
 	public void generateNotificationTemplateTest() throws IOException, URISyntaxException, RegBaseCheckedException {
+		ApplicationContext.getInstance().loadResourceBundle();
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
 		Writer writer = templateGenerator.generateNotificationTemplate("sample text", registrationDTO, template);
 		assertNotNull(writer);

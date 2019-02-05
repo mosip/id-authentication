@@ -66,7 +66,7 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 			isMatchFound=fingerprintFacade.validateFP(fingerprintDetailsDTO,
 					userDetailDAO.getAllActiveUsers(fingerprintDetailsDTO.getFingerType()));
 			if (isMatchFound) {
-				SessionContext.getInstance().getMapObject().put(RegistrationConstants.DUPLICATE_FINGER, fingerprintDetailsDTO);
+				SessionContext.getSessionContext().getMapObject().put(RegistrationConstants.DUPLICATE_FINGER, fingerprintDetailsDTO);
 				break;
 			}
 		}
