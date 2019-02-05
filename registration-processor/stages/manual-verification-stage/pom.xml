@@ -73,11 +73,6 @@
 			<artifactId>h2</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-core</artifactId>
-			<version>${kernel.core.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-status-service</artifactId>
 			<version>${registration.status.service.version}</version>
