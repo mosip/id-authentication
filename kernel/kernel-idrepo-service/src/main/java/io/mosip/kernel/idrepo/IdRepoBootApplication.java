@@ -2,11 +2,7 @@ package io.mosip.kernel.idrepo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Import;
-
-import io.mosip.kernel.idvalidator.rid.impl.RidValidatorImpl;
-import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
-import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * The Class IdRepoApplication.
@@ -14,7 +10,7 @@ import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
  * @author Manoj SP
  */
 @SpringBootApplication
-@Import(value = { UinValidatorImpl.class, RidValidatorImpl.class, JsonValidatorImpl.class })
+@ComponentScan("io.mosip.*")
 public class IdRepoBootApplication {
 
 	/**

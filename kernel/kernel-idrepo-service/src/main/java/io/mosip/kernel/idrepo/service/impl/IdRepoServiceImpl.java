@@ -4,9 +4,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,12 +14,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.exception.JDBCConnectionException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +34,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -46,7 +49,11 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.spi.json.JacksonJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 
+import io.mosip.kernel.cbeffutil.entity.BDBInfo;
 import io.mosip.kernel.cbeffutil.entity.BIR;
+import io.mosip.kernel.cbeffutil.entity.BIRInfo;
+import io.mosip.kernel.cbeffutil.entity.BIRVersion;
+import io.mosip.kernel.cbeffutil.entity.SBInfo;
 import io.mosip.kernel.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.cbeffutil.service.CbeffI;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -63,6 +70,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.UUIDUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.controller.IdRepoController;
 import io.mosip.kernel.idrepo.dto.Documents;
@@ -81,6 +89,7 @@ import io.mosip.kernel.idrepo.repository.UinDocumentHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinRepo;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class IdRepoServiceImpl.
  *
@@ -88,6 +97,8 @@ import io.mosip.kernel.idrepo.repository.UinRepo;
  */
 @Service
 public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponseDTO, Uin> {
+
+	private static final String DATETIME_TIMEZONE = "datetime.timezone";
 
 	/** The Constant ROOT. */
 	private static final String ROOT = "$";
@@ -194,8 +205,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	/** The Constant DEMOGRAPHICS. */
 	private static final String DEMOGRAPHICS = "Demographics";
 
-	private static final String TEMPPATH = "./src/main/resources/schema/cbeff.xsd";
-
 	/** The env. */
 	@Autowired
 	private Environment env;
@@ -236,12 +245,17 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Autowired
 	private MosipFingerprintProvider<BIRType, BIR> fpProvider;
 
+	/** The cbeff util. */
 	@Autowired
 	private CbeffI cbeffUtil;
 
+	/** The dfs provider. */
 	@Autowired
 	private MosipDFSProvider dfsProvider;
 
+	@Autowired
+	private RestTemplate restTemplate;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -289,7 +303,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Transactional
 	public Uin addIdentity(String uin, String regId, byte[] identityInfo, List<Documents> documents)
 			throws IdRepoAppException {
-		String uinRefId = UUID.randomUUID().toString();
+		String uinRefId = UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uin + "_" + DateUtils.getUTCCurrentDateTime()
+				.atZone(ZoneId.of(env.getProperty(DATETIME_TIMEZONE))).toInstant().toEpochMilli()).toString();
 
 		if (!uinRepo.existsByRegId(regId) && !uinRepo.existsByUin(uin)) {
 			List<UinDocument> docList = new ArrayList<>();
@@ -342,11 +357,14 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			JsonNode docType = identityObject.get(doc.getCategory());
 			try {
 				if (StringUtils.equalsIgnoreCase(docType.get(FORMAT).asText(), CBEFF)) {
-					String fileRefId = UUID.randomUUID().toString();
+					String fileRefId = UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID,
+							docType.get(VALUE).asText() + "_" + DateUtils.getUTCCurrentDateTime()
+									.atZone(ZoneId.of(env.getProperty(DATETIME_TIMEZONE))).toInstant().toEpochMilli())
+							.toString();
 					byte[] cbeffDoc = convertToFMR(doc.getCategory(), doc.getValue());
 
 					dfsProvider.storeFile(uin, BIOMETRICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
-							cbeffDoc);
+							encryptDecryptDocuments(CryptoUtil.encodeBase64(cbeffDoc), "encrypt"));
 
 					bioList.add(new UinBiometric(uinRefId, fileRefId, doc.getCategory(), docType.get(VALUE).asText(),
 							hash(cbeffDoc), LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now()));
@@ -356,10 +374,11 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 							CREATED_BY, now(), UPDATED_BY, now(), false, now()));
 
 				} else {
-					String fileRefId = UUID.randomUUID().toString();
+					String fileRefId = docType.get(VALUE).asText() + "_" + DateUtils.getUTCCurrentDateTime()
+							.atZone(ZoneId.of(env.getProperty(DATETIME_TIMEZONE))).toInstant().toEpochMilli();
 
 					dfsProvider.storeFile(uin, DEMOGRAPHICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
-							CryptoUtil.decodeBase64(doc.getValue()));
+							encryptDecryptDocuments(doc.getValue(), "encrypt"));
 
 					docList.add(new UinDocument(uinRefId, doc.getCategory(), docType.get(TYPE).asText(), fileRefId,
 							docType.get(VALUE).asText(), docType.get(FORMAT).asText(),
@@ -379,6 +398,10 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 						"\n" + ExceptionUtils.getStackTrace(e));
 				throw new IdRepoAppUncheckedException(e.getErrorCode(), e.getErrorText(), e);
+			} catch (JDBCConnectionException e) {
+				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
+						"\n" + ExceptionUtils.getStackTrace(e));
+				throw new IdRepoAppUncheckedException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 			}
 		});
 	}
@@ -386,28 +409,24 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	/**
 	 * Convert to FMR.
 	 *
+	 * @param category
+	 *            the category
 	 * @param encodedCbeffFile
 	 *            the encoded cbeff file
 	 * @return the byte[]
 	 * @throws IdRepoAppException
+	 *             the id repo app exception
 	 */
 	private byte[] convertToFMR(String category, String encodedCbeffFile) throws IdRepoAppException {
 		try {
 			byte[] cbeffFileData = CryptoUtil.decodeBase64(encodedCbeffFile);
-			if (cbeffUtil.validateXML(cbeffFileData, Files.readAllBytes(Paths.get(TEMPPATH)))) {
 				return cbeffUtil.updateXML(fpProvider.convertFIRtoFMR(cbeffUtil.getBIRDataFromXML(cbeffFileData)),
 						cbeffFileData);
-			} else {
-				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
-						"INVALID_INPUT_PARAMETER - " + category);
-				throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String.format(
-						IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "Documents - " + category));
-			}
 		} catch (Exception e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String.format(
-					IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "Documents - " + category));
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String
+					.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), DOCUMENTS + " - " + category));
 
 		}
 	}
@@ -500,7 +519,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 				ObjectNode identityMap = (ObjectNode) convertToObject(uinObject.getUinData(), ObjectNode.class);
 				String fileName = DEMOGRAPHICS + SLASH + demo.getDocId() + DOT
 						+ identityMap.get(demo.getDoccatCode()).get(FORMAT).asText();
-				String data = CryptoUtil.encodeBase64(dfsProvider.getFile(uinObject.getUin(), fileName));
+				String data = new String(encryptDecryptDocuments(
+						new String(dfsProvider.getFile(uinObject.getUin(), fileName)), "decrypt"));
 				if (demo.getDocHash().equals(hash(CryptoUtil.decodeBase64(data)))) {
 					documents.add(new Documents(demo.getDoccatCode(), data));
 				} else {
@@ -530,7 +550,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 					ObjectNode identityMap = (ObjectNode) convertToObject(uinObject.getUinData(), ObjectNode.class);
 					String fileName = BIOMETRICS + SLASH + bio.getBioFileId() + DOT
 							+ identityMap.get(bio.getBiometricFileType()).get(FORMAT).asText();
-					String data = CryptoUtil.encodeBase64(dfsProvider.getFile(uinObject.getUin(), fileName));
+					String data = new String(encryptDecryptDocuments(
+							new String(dfsProvider.getFile(uinObject.getUin(), fileName)), "decrypt"));
 					if (Objects.nonNull(data)) {
 						if (StringUtils.equals(bio.getBiometricFileHash(), hash(CryptoUtil.decodeBase64(data)))) {
 							documents.add(new Documents(bio.getBiometricFileType(), data));
@@ -925,9 +946,12 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	private void updateDocuments(String uin, Uin uinObject, RequestDTO requestDTO) throws IdRepoAppException {
 		List<UinDocument> docList = new ArrayList<>();
 		List<UinBiometric> bioList = new ArrayList<>();
+
+		updateCbeff(uinObject, requestDTO);
+
 		addDocuments(uin, convertToBytes(requestDTO.getIdentity()), requestDTO.getDocuments(), uinObject.getUinRefId(),
 				docList, bioList);
-		// TODO remove type code as primary key
+
 		docList.stream().forEach(doc -> uinObject.getDocuments().stream()
 				.filter(docObj -> StringUtils.equals(doc.getDoccatCode(), docObj.getDoccatCode())).forEach(docObj -> {
 					docObj.setDocId(doc.getDocId());
@@ -939,9 +963,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		docList.stream()
 				.filter(doc -> uinObject.getDocuments().stream()
 						.allMatch(docObj -> !StringUtils.equals(doc.getDoccatCode(), docObj.getDoccatCode())))
-				.forEach(doc -> {
-					uinObject.getDocuments().add(doc);
-				});
+				.forEach(doc -> uinObject.getDocuments().add(doc));
 		bioList.stream()
 				.forEach(bio -> uinObject.getBiometrics().stream()
 						.filter(bioObj -> StringUtils.equals(bio.getBiometricFileType(), bioObj.getBiometricFileType()))
@@ -954,8 +976,144 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		bioList.stream()
 				.filter(bio -> uinObject.getBiometrics().stream()
 						.allMatch(bioObj -> !StringUtils.equals(bio.getBioFileId(), bioObj.getBioFileId())))
-				.forEach(bio -> {
-					uinObject.getBiometrics().add(bio);
-				});
+				.forEach(bio -> uinObject.getBiometrics().add(bio));
+	}
+
+	/**
+	 * Update cbeff.
+	 *
+	 * @param uinObject
+	 *            the uin object
+	 * @param requestDTO
+	 *            the request DTO
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
+	 */
+	private void updateCbeff(Uin uinObject, RequestDTO requestDTO) throws IdRepoAppException {
+		ObjectNode identityMap = (ObjectNode) convertToObject(uinObject.getUinData(), ObjectNode.class);
+
+		uinObject.getBiometrics().stream().forEach(bio -> requestDTO.getDocuments().stream()
+				.filter(doc -> StringUtils.equals(bio.getBiometricFileType(), doc.getCategory())).forEach(doc -> {
+					try {
+						String fileName = BIOMETRICS + SLASH + bio.getBioFileId() + DOT
+								+ identityMap.get(bio.getBiometricFileType()).get(FORMAT).asText();
+						doc.setValue(CryptoUtil.encodeBase64(cbeffUtil.updateXML(
+								convertToBIR(cbeffUtil.getBIRDataFromXML(CryptoUtil.decodeBase64(doc.getValue()))),
+								dfsProvider.getFile(uinObject.getUin(), fileName))));
+					} catch (IdRepoAppException e) {
+						mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "getFiles",
+								"\n" + ExceptionUtils.getStackTrace(e));
+						throw new IdRepoAppUncheckedException(e.getErrorCode(), e.getErrorText(), e);
+					} catch (Exception e) {
+						mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
+								"\n" + ExceptionUtils.getStackTrace(e));
+						throw new IdRepoAppUncheckedException(
+								IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+								String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+										DOCUMENTS + " - " + doc.getCategory()));
+					}
+				}));
+	}
+
+	/**
+	 * Converts all BIRType to BIR.
+	 *
+	 * @param birTypeList
+	 *            the bir type list
+	 * @return the list of BIR
+	 */
+	private List<BIR> convertToBIR(List<BIRType> birTypeList) {
+		return birTypeList.stream()
+				.filter(birType -> Objects.nonNull(birType.getBDBInfo()) && 
+						!birType.getBDBInfo().getFormatType().equals(2l))
+				.map(birType -> new BIR.BIRBuilder()
+						.withVersion(Optional.ofNullable(birType.getVersion())
+								.map(birVersion -> new BIRVersion.BIRVersionBuilder()
+										.withMajor(birVersion.getMajor())
+										.withMinor(birVersion.getMinor())
+										.build())
+								.orElseGet(() -> null))
+						.withCbeffversion(Optional.ofNullable(birType.getCBEFFVersion())
+								.map(cbeffVersion -> new BIRVersion.BIRVersionBuilder()
+										.withMajor(cbeffVersion.getMajor())
+										.withMinor(cbeffVersion.getMinor())
+										.build())
+								.orElseGet(() -> null))
+						.withBirInfo(Optional.ofNullable(birType.getBIRInfo())
+								.map(birInfo -> new BIRInfo.BIRInfoBuilder()
+										.withCreator(birInfo.getCreator())
+										.withIndex(birInfo.getIndex())
+										.withPayload(birInfo.getPayload())
+										.withIntegrity(birInfo.isIntegrity())
+										.withCreationDate(birInfo.getCreationDate())
+										.withNotValidBefore(birInfo.getNotValidBefore())
+										.withNotValidAfter(birInfo.getNotValidAfter())
+										.build())
+								.orElseGet(() -> null))
+						.withBdbInfo(Optional.ofNullable(birType.getBDBInfo())
+								.map(bdbInfo -> new BDBInfo.BDBInfoBuilder()
+										.withChallengeResponse(bdbInfo.getChallengeResponse())
+										.withIndex(bdbInfo.getIndex())
+										.withFormatOwner(bdbInfo.getFormatOwner())
+										.withFormatType(bdbInfo.getFormatType())
+										.withEncryption(bdbInfo.getEncryption())
+										.withCreationDate(bdbInfo.getCreationDate())
+										.withNotValidBefore(bdbInfo.getNotValidBefore())
+										.withNotValidAfter(bdbInfo.getNotValidAfter())
+										.withType(bdbInfo.getType())
+										.withSubtype(bdbInfo.getSubtype())
+										.withLevel(bdbInfo.getLevel())
+										.withProductOwner(bdbInfo.getProductOwner())
+										.withProductType(bdbInfo.getProductType())
+										.withPurpose(bdbInfo.getPurpose())
+										.withQuality(bdbInfo.getQuality())
+										.build())
+								.orElseGet(() -> null))
+						.withBdb(birType.getBDB())
+						.withSb(birType.getSB())
+						.withSbInfo(Optional.ofNullable(birType.getSBInfo())
+								.map(sbInfo -> new SBInfo.SBInfoBuilder()
+										.setFormatOwner(sbInfo.getFormatOwner())
+										.setFormatType(sbInfo.getFormatType())
+										.build())
+								.orElseGet(() -> null))
+						.build())
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Encrypt identity.
+	 *
+	 * @param identity
+	 *            the identity
+	 * @param method
+	 *            the method
+	 * @return the byte[]
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
+	 */
+	private byte[] encryptDecryptDocuments(String document, String method) throws IdRepoAppException {
+		try {
+			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
+			request.put("applicationId", env.getProperty("application.id"));
+			request.put("referenceId", env.getProperty("mosip.kernel.keymanager.refId"));
+			request.put("timeStamp", DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN)));
+			request.put("data", document);
+
+			ObjectNode response = restTemplate.postForObject(
+					env.getProperty("mosip.kernel.cryptomanager." + method + ".url"), request, ObjectNode.class);
+
+			if (response.has("data")) {
+				return response.get("data").asText().getBytes();
+			} else {
+				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "encryptDecryptIdentity",
+						"No data block found in response");
+				throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED);
+			}
+		} catch (RestClientException e) {
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "encryptDecryptIdentity",
+					"\n" + ExceptionUtils.getStackTrace(e));
+			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED);
+		}
 	}
 }
