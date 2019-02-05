@@ -1,11 +1,8 @@
 package io.mosip.kernel.keymanagerservice.controller;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -58,7 +55,7 @@ public class KeymanagerController {
 	@ApiOperation(value = "Get the public key of a particular application",response = PublicKeyResponse.class)
 	@GetMapping(value = "/publickey/{applicationId}")
 	public ResponseEntity<PublicKeyResponse<String>> getPublicKey(@ApiParam("Id of application")@PathVariable("applicationId") String applicationId,
-			@ApiParam("Timestamp as metadata")	@RequestParam("timeStamp") @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime timeStamp,
+			@ApiParam("Timestamp as metadata")	@RequestParam("timeStamp") String timeStamp,
 			@ApiParam("Refrence Id as metadata")@RequestParam("referenceId") Optional<String> referenceId) {
 
 		return new ResponseEntity<>(keymanagerService.getPublicKey(applicationId, timeStamp, referenceId),
