@@ -36,42 +36,45 @@ public class Identity {
 	private IdentityJsonValues pob;
 	
 	/** The individual biometrics. */
-	private String individualBiometrics;
+	private IdentityJsonValues individualBiometrics;
+	
+	/** The age */
+	private IdentityJsonValues age;
 
 	/** The city. */
-	private String city;
+	private IdentityJsonValues city;
 	
 	/** The address line 1. */
-	private String addressLine1;
+	private IdentityJsonValues addressLine1;
 
 	/** The address line 2. */
-	private String addressLine2;
+	private IdentityJsonValues addressLine2;
 
 	/** The address line 3. */
-	private String addressLine3;
+	private IdentityJsonValues addressLine3;
 
 	/** The region. */
-	private String region;
+	private IdentityJsonValues region;
 
 	/** The province. */
-	private String province;
+	private IdentityJsonValues province;
 
 	/** The postal code. */
-	private String postalCode;
+	private IdentityJsonValues postalCode;
 
 	/** The phone number. */
-	private String phoneNumber;
+	private IdentityJsonValues phone;
 
 	/** The email ID. */
-	private String emailID;
+	private IdentityJsonValues email;
 
 	/** The local administrative authority. */
-	private String localAdministrativeAuthority;
+	private IdentityJsonValues localAdministrativeAuthority;
 
 	/** The id schema version. */
-	private double idSchemaVersion;
+	private IdentityJsonValues idschemaversion;
 
 	/** The cnie number. */
-	private int cnieNumber;
+	private IdentityJsonValues cnienumber;
 
 }
