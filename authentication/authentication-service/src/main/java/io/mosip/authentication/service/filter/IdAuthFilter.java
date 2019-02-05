@@ -121,14 +121,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected Map<String, Object> encodedResponse(Map<String, Object> responseBody)
 			throws IdAuthenticationAppException {
-		try {
-			responseBody.replace(REQUEST, encode((String) responseBody.get(REQUEST)));
 			return responseBody;
-		} catch (ClassCastException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 		}
-	}
 
 	/*
 	 * (non-Javadoc)
