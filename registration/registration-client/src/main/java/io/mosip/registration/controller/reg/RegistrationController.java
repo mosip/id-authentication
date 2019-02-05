@@ -791,10 +791,10 @@ public class RegistrationController extends BaseController {
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading address from previous entry");
 			if (SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.ADDRESS_KEY) == null) {
-				generateAlert(RegistrationConstants.ERROR, "Address could not be loaded as there is no previous entry");
+				generateAlert(RegistrationConstants.ERROR, "Previous registration details not available.");
 				LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID,
-						"Address could not be loaded as there is no previous entry");
+						"Previous registration details not available.");
 
 			} else {
 				LocationDTO locationDto = ((AddressDTO) SessionContext.getSessionContext().getMapObject()

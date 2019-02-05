@@ -1,5 +1,8 @@
 package io.mosip.registration.test.util.mastersync;
 
+import static io.mosip.registration.util.mastersync.MapperUtils.map;
+import static io.mosip.registration.util.mastersync.MetaDataUtils.setCreateMetaData;
+import static io.mosip.registration.util.mastersync.MetaDataUtils.setUpdateMetaData;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
@@ -10,18 +13,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.mastersync.LanguageDto;
 import io.mosip.registration.dto.mastersync.TitleDto;
 import io.mosip.registration.entity.mastersync.MasterLanguage;
 import io.mosip.registration.entity.mastersync.MasterRegistrationCenter;
 import io.mosip.registration.entity.mastersync.MasterTitle;
 import io.mosip.registration.util.mastersync.EmptyCheckUtils;
-import io.mosip.registration.util.mastersync.MapperUtils;
-
-import static io.mosip.registration.util.mastersync.MapperUtils.map;
-import static io.mosip.registration.util.mastersync.MetaDataUtils.setCreateMetaData;
-import static io.mosip.registration.util.mastersync.MetaDataUtils.setUpdateMetaData;
 
 /**
  * 
@@ -43,6 +44,8 @@ public class MapperTest {
 		rcdDto.setCode("T1001");
 		rcdDto.setIsActive(true);
 		rcdDtos.add(rcdDto);
+		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
+		SessionContext.getInstance().getUserContext().setUserId("mosip");
 
 	}
 
@@ -99,7 +102,7 @@ public class MapperTest {
 
 	@Test
 	public void testSetCreateMetaDataList() {
-		List<MasterRegistrationCenter> rcds = setCreateMetaData(rcdDtos, MasterRegistrationCenter.class);
+		List<MasterRegistrationCenter> rcds = setCreateMetaData(rcdDtos, MasterTitle.class);
 		assertTrue(!EmptyCheckUtils.isNullEmpty(rcds));
 	}
 	

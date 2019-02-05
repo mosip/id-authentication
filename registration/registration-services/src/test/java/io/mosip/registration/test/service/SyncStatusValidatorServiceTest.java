@@ -124,6 +124,7 @@ public class SyncStatusValidatorServiceTest {
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "lerJobId", 1);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "machnToCenterDistance", 100);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "packetMaxCount", 10);
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "gpsEnableFlag", "Y");
 
 		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
 		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobnfo);
@@ -184,6 +185,7 @@ public class SyncStatusValidatorServiceTest {
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "lerJobId", 20);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "machnToCenterDistance", 215);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "packetMaxCount", 100);
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "gpsEnableFlag", "Y");
 
 		Mockito.when(gpsFacade.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
 				.thenReturn(map);
@@ -228,6 +230,7 @@ public class SyncStatusValidatorServiceTest {
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "lerJobId", 1);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "machnToCenterDistance", 100);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "packetMaxCount", 10);
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "gpsEnableFlag", "Y");
 
 		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
 		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobnfo);
@@ -287,6 +290,7 @@ public class SyncStatusValidatorServiceTest {
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "lerJobId", 1);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "machnToCenterDistance", 100);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "packetMaxCount", 10);
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "gpsEnableFlag", "Y");
 
 		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
 		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobnfo);
@@ -346,6 +350,7 @@ public class SyncStatusValidatorServiceTest {
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "lerJobId", 1);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "machnToCenterDistance", 100);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "packetMaxCount", 10);
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "gpsEnableFlag", "Y");
 
 		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
 		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobnfo);
@@ -405,6 +410,7 @@ public class SyncStatusValidatorServiceTest {
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "lerJobId", 1);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "machnToCenterDistance", 100);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "packetMaxCount", 10);
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "gpsEnableFlag", "Y");
 
 		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
 		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobnfo);
@@ -467,6 +473,7 @@ public class SyncStatusValidatorServiceTest {
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "lerJobId", 20);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "machnToCenterDistance", 215);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "packetMaxCount", 100);
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "gpsEnableFlag", "Y");
 
 		Mockito.when(gpsFacade.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
 				.thenReturn(map);
@@ -513,6 +520,7 @@ public class SyncStatusValidatorServiceTest {
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "lerJobId", 20);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "machnToCenterDistance", 215);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "packetMaxCount", 100);
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "gpsEnableFlag", "Y");
 
 		Mockito.when(gpsFacade.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
 				.thenReturn(map);
