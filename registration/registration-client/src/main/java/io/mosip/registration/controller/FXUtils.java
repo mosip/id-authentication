@@ -46,7 +46,7 @@ public class FXUtils {
 	public void validateOnType(TextField field, Validations validation) {
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (!validation.validateTextField(field, field.getId() + "_ontype",
-					(String) SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.IS_CONSOLIDATED))) {
+					(String) SessionContext.map().get(RegistrationConstants.IS_CONSOLIDATED))) {
 				field.setText(oldValue);
 			}
 		});
@@ -64,7 +64,7 @@ public class FXUtils {
 	public void validateOnType(TextField field, Validations validation, TextField localField) {
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (!validation.validateTextField(field, field.getId() + "_ontype",
-					(String) SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.IS_CONSOLIDATED))) {
+					(String) SessionContext.map().get(RegistrationConstants.IS_CONSOLIDATED))) {
 				field.setText(oldValue);
 			} else {
 				if(localField!=null)

@@ -64,14 +64,12 @@ public class ServiceDelegateUtilTest {
 		LoginUserDTO loginDto = new LoginUserDTO();
 		loginDto.setUserId("super_admin");
 		loginDto.setPassword("super_admin");
-		
-		ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
+
 		PowerMockito.mockStatic(ApplicationContext.class);
-		PowerMockito.when(ApplicationContext.getApplicationContext()).thenReturn(applicationContext);
-		
-		Map<String, Object> globalParams = new HashMap<>();	
-		globalParams.put(RegistrationConstants.USER_DTO, loginDto);
-		PowerMockito.when(applicationContext.getApplicationMap()).thenReturn(globalParams);
+		Map<String, Object> globalParams = new HashMap<>();
+		globalParams.put("userDTO", loginDto);
+		PowerMockito.when(ApplicationContext.map().get("userDTO")).thenReturn(globalParams);
+		PowerMockito.when(ApplicationContext.map()).thenReturn(globalParams);
 	}
 
 	/*
