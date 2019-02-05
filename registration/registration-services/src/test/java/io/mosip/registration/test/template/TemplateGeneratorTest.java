@@ -101,6 +101,7 @@ public class TemplateGeneratorTest {
 
 	@Test
 	public void generateNotificationTemplateTest() throws IOException, URISyntaxException, RegBaseCheckedException {
+		ApplicationContext.getInstance().loadResourceBundle();
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
 		Writer writer = templateGenerator.generateNotificationTemplate("sample text", registrationDTO, template);
 		assertNotNull(writer);

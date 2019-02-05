@@ -92,7 +92,7 @@ public class RejectionController extends BaseController implements Initializable
 		rejectionSubmit.disableProperty().set(true);
 		rejectionComboBox.getItems().clear();
 
-		List<MasterReasonListDto> reasonList = masterSyncService.getAllReasonsList(ApplicationContext.getInstance().getApplicationLanguage());
+		List<MasterReasonListDto> reasonList = masterSyncService.getAllReasonsList(applicationContext.getApplicationLanguage());
 		
 		rejectionComboBox.setItems(FXCollections
 				.observableArrayList(reasonList.stream().map(list -> list.getName()).collect(Collectors.toList())));

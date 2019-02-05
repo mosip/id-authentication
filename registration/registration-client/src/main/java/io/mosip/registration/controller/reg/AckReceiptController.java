@@ -238,20 +238,23 @@ public class AckReceiptController extends BaseController implements Initializabl
 	}
 
 	private void updatePacketStatus() {
-		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME,APPLICATION_ID, "Auto Approval of Packet when EOD process disabled started");
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Auto Approval of Packet when EOD process disabled started");
 
 		registrationApprovalService.updateRegistration((getRegistrationDTOFromSession().getRegistrationId()),
 				RegistrationConstants.EMPTY, RegistrationClientStatusCode.APPROVED.getCode());
-		
-		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME,APPLICATION_ID, "Auto Approval of Packet when EOD process disabled ended");
+
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Auto Approval of Packet when EOD process disabled ended");
 
 	}
 
 	private void syncAndUploadPacket() throws RegBaseCheckedException {
-		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME,APPLICATION_ID, "Sync and Upload of created Packet started");
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Sync and Upload of created Packet started");
 		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 
-			 String response = packetSynchService.packetSync(getRegistrationDTOFromSession().getRegistrationId());
+			String response = packetSynchService.packetSync(getRegistrationDTOFromSession().getRegistrationId());
 
 			if (response.equals(RegistrationConstants.EMPTY)) {
 
@@ -259,7 +262,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 			}
 
 		}
-		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME,APPLICATION_ID, "Sync and Upload of created Packet ended");
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Sync and Upload of created Packet ended");
 	}
 
 	/**
@@ -292,7 +296,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 		packetCreationResponse = packetHandlerService.handle(registrationData);
 
 		if (packetCreationResponse.getSuccessResponseDTO() != null
-				&& packetCreationResponse.getSuccessResponseDTO().getMessage().equals("Success")) {
+				&& packetCreationResponse.getSuccessResponseDTO().getMessage().equals(RegistrationConstants.SUCCESS)) {
 			generateEmailNotification();
 
 			try {

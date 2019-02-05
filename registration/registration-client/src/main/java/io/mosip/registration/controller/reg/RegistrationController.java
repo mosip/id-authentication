@@ -718,8 +718,8 @@ public class RegistrationController extends BaseController {
 
 	private void populateFieldValue(Node nodeForPlatformLang, Node nodeForLocalLang, List<ValuesDTO> fieldValues) {
 		if (fieldValues != null) {
-			String platformLanguageCode = ApplicationContext.getInstance().getApplicationLanguage();
-			String localLanguageCode = ApplicationContext.getInstance().getLocalLanguage();
+			String platformLanguageCode = applicationContext.getApplicationLanguage();
+			String localLanguageCode = applicationContext.getLocalLanguage();
 			String valueInPlatformLang = "";
 			String valueinLocalLang = "";
 
@@ -995,8 +995,8 @@ public class RegistrationController extends BaseController {
 	@SuppressWarnings("unchecked")
 	private DemographicInfoDTO buildDemographicInfo() {
 
-		String platformLanguageCode = ApplicationContext.getInstance().getApplicationLanguage().toLowerCase();
-		String localLanguageCode = ApplicationContext.getInstance().getLocalLanguage().toLowerCase();
+		String platformLanguageCode = applicationContext.getApplicationLanguage().toLowerCase();
+		String localLanguageCode = applicationContext.getLocalLanguage().toLowerCase();
 		Identity demographicIdentity = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
 				.getIdentity();
 
@@ -1866,7 +1866,7 @@ public class RegistrationController extends BaseController {
 		try {
 			locationDtoRegion = masterSync.findLocationByHierarchyCode(
 					applicationContext.getApplicationLanguageBundle().getString(region.getId()),
-					ApplicationContext.getInstance().getApplicationLanguage());
+					applicationContext.getApplicationLanguage());
 			region.getItems().addAll(
 					locationDtoRegion.stream().map(location -> location.getName()).collect(Collectors.toList()));
 		} catch (RuntimeException runtimeException) {

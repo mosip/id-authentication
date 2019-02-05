@@ -105,8 +105,8 @@ public class TemplateGenerator extends BaseService {
 			Map<String, Object> templateValues = new HashMap<>();
 			ByteArrayOutputStream byteArrayOutputStream = null;
 
-			String platformLanguageCode = ApplicationContext.getInstance().getApplicationLanguage().toLowerCase();
-			String localLanguageCode = ApplicationContext.getInstance().getLocalLanguage().toLowerCase();
+			String platformLanguageCode = ApplicationContext.getApplicationContext().getApplicationLanguage().toLowerCase();
+			String localLanguageCode = ApplicationContext.getApplicationContext().getLocalLanguage().toLowerCase();
 
 			// Populating Template Labels in Primary Language
 			templateValues.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID_USER_LANG_LABEL,
@@ -517,7 +517,7 @@ public class TemplateGenerator extends BaseService {
 			TemplateManagerBuilder templateManagerBuilder) throws RegBaseCheckedException {
 
 		try {
-			String applicationLanguageCode = ApplicationContext.getInstance().getApplicationLanguage().toLowerCase();
+			String applicationLanguageCode = ApplicationContext.getApplicationContext().getApplicationLanguage().toLowerCase();
 			InputStream is = new ByteArrayInputStream(templateText.getBytes());
 			Map<String, Object> values = new LinkedHashMap<>();
 

@@ -82,10 +82,10 @@ public class Validations extends BaseController {
 	@PostConstruct
 	public void setResourceBundle() {
 		getGlobalParams();
-		ApplicationContext.getInstance().loadResourceBundle();
-		validationBundle = ApplicationContext.getInstance().getApplicationLanguagevalidationBundle();
-		messageBundle = ApplicationContext.getInstance().getApplicationMessagesBundle();
-		labelBundle = ApplicationContext.getInstance().getApplicationLanguageBundle();
+		ApplicationContext.getApplicationContext().loadResourceBundle();
+		validationBundle = ApplicationContext.getApplicationContext().getApplicationLanguagevalidationBundle();
+		messageBundle = ApplicationContext.getApplicationContext().getApplicationMessagesBundle();
+		labelBundle = ApplicationContext.getApplicationContext().getApplicationLanguageBundle();
 	}
 	
 	/**
@@ -120,7 +120,7 @@ public class Validations extends BaseController {
 
 	public boolean validate(AnchorPane pane, List<String> notTovalidate, boolean isValid, MasterSyncService masterSync) {
 		this.blackListedWords=masterSync
-				.getAllBlackListedWords(ApplicationContext.getInstance().getApplicationLanguage()).stream().map(b->b.getWord()).collect(Collectors.toList());
+				.getAllBlackListedWords(ApplicationContext.getApplicationContext().getApplicationLanguage()).stream().map(b->b.getWord()).collect(Collectors.toList());
 		isConsolidated = AppConfig.getApplicationProperty(RegistrationConstants.IS_CONSOLIDATED);
 		return validateTheFields(pane, notTovalidate, isValid, isConsolidated);
 	}
