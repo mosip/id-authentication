@@ -1,14 +1,10 @@
 package io.mosip.kernel.cbeffutil.service.impl;
 
-import java.io.BufferedInputStream;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -30,8 +26,16 @@ import io.mosip.kernel.cbeffutil.service.CbeffI;
 @Component
 public class CbeffImpl implements CbeffI {
 	
+	/*
+	 * XSD storage path from config server
+	 * */
+	
 	@Value("${mosip.kernel.xsdstorage-uri}")
 	private String configServerFileStorageURL;
+	
+	/*
+	 * XSD file name
+	 * */
 	
 	@Value("${mosip.kernel.xsdfile}")
 	private String schemaName;
@@ -56,9 +60,24 @@ public class CbeffImpl implements CbeffI {
 	}
 
 	private byte[] getXSDfromConfigServer() throws URISyntaxException, IOException {
-		URI url = new URI(configServerFileStorageURL+schemaName);
-		byte[] fileContent = Files.readAllBytes(Paths.get(url));
+		InputStream input = new URL(configServerFileStorageURL+schemaName).openStream();
+		byte[] fileContent = readbytesFromStream(input);
 		return fileContent;
+	}
+
+	private byte[] readbytesFromStream(InputStream inputStream) throws IOException {
+		 ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+		  // this is storage overwritten on each iteration with bytes
+		  int bufferSize = 1024;
+		  byte[] buffer = new byte[bufferSize];
+		  // we need to know how may bytes were read to write them to the byteBuffer
+		  int len = 0;
+		  while ((len = inputStream.read(buffer)) != -1) {
+		    byteBuffer.write(buffer, 0, len);
+		  }
+		  // and then we can return your byte array.
+		  return byteBuffer.toByteArray();
+
 	}
 
 	/**
@@ -127,8 +146,17 @@ public class CbeffImpl implements CbeffI {
 		return bir.getBIR();
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.cbeffutil.service.CbeffI#getLatestBDBData(io.mosip.kernel.cbeffutil.service.search.query.CbeffSearch)
+	/**
+	 * Method used for getting Map of BIR from XML bytes with type and subType
+	 * 
+	 * @param xmlBytes byte array of XML data
+	 * 
+	 * @param String type
+	 * 
+	 * @param String subType
+	 *        
+	 * @return bdbMap Map of BIR data extracted from XML
+	 * 
 	 */
 	@Override
 	public Map<String, String> getAllBDBData(byte[] xmlBytes, String type, String subType) throws Exception {
