@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
@@ -18,6 +19,7 @@ import io.mosip.registration.processor.bio.dedupe.service.impl.BioDedupeServiceI
 import io.mosip.registration.processor.biodedupe.stage.BioDedupeStage;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 
+@PropertySource("classpath:bootstrap.properties")
 @Configuration
 public class BioDedupeBeanConfig {
 	@Bean

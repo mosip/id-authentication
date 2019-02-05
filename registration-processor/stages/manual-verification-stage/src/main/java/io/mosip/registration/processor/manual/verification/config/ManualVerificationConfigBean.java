@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
@@ -18,7 +19,7 @@ import io.mosip.registration.processor.manual.verification.service.ManualVerific
 import io.mosip.registration.processor.manual.verification.service.impl.ManualVerificationServiceImpl;
 import io.mosip.registration.processor.manual.verification.stage.ManualVerificationStage;
 
-
+@PropertySource("classpath:bootstrap.properties")
 @Configuration
 public class ManualVerificationConfigBean {
 

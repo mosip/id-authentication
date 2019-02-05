@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
@@ -21,6 +22,7 @@ import io.mosip.kernel.virusscanner.clamav.impl.VirusScannerImpl;
 import io.mosip.registration.processor.virus.scanner.job.decrypter.Decryptor;
 import io.mosip.registration.processor.virus.scanner.job.stage.VirusScannerStage;
 
+@PropertySource("classpath:bootstrap.properties")
 @Configuration
 public class VirusScannerConfig {
 

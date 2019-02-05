@@ -4,17 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import io.mosip.registration.processor.biodedupe.stage.BioDedupeStage;
-
-/*@SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.biodedupe",
-		"io.mosip.registration.processor.status", "io.mosip.registration.processor.rest.client",
-		"io.mosip.registration.processor.packet.storage", "io.mosip.registration.processor.core",
-		"io.mosip.registration.processor.filesystem.ceph.adapter.impl",
-		"io.mosip.registration.processor.bio.dedupe"})*/
 public class BioDedupeApplication {
-	/** The validatebean. */
-	/*@Autowired
-	private BioDedupeStage validatebean;
-*/
+
 	/**
 	 * The main method.
 	 *
@@ -22,7 +13,6 @@ public class BioDedupeApplication {
 	 *            the arguments
 	 */
 	public static void main(String[] args) {
-		//SpringApplication.run(BioDedupeApplication.class, args);
 		AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext();
 		configApplicationContext.scan("io.mosip.registration.processor.biodedupe.config",
 				"io.mosip.registration.processor.status.config",
@@ -30,8 +20,7 @@ public class BioDedupeApplication {
 				"io.mosip.registration.processor.packet.storage.config",
 				"io.mosip.registration.processor.core.config",
 				"io.mosip.registration.processor.filesystem.ceph.adapter.impl.config",
-				"io.mosip.registration.processor.core.kernel.beans"/*,
-				"io.mosip.registration.processor.bio.dedupe"*/);
+				"io.mosip.registration.processor.core.kernel.beans");
 		
 		configApplicationContext.refresh();
 
@@ -40,13 +29,5 @@ public class BioDedupeApplication {
 		bioDedupeStage.deployVerticle();
 	}
 
-	/**
-	 * Deploy verticle.
-	 *//*
-	@PostConstruct
-	public void deployVerticle() {
-		validatebean.deployVerticle();
-
-	}*/
-
+	
 }
