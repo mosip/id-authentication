@@ -40,12 +40,20 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 
 	@Value("${mosip.auth.user-detail-url:http://localhost:8092/ldapmanager/userdetails}")
 	private String authUrl;
+	
+	@Value("${mosip.kernel.syncdata.auth-user-details-base-uri:http://localhost:8092/ldapmanager}")
+	private String authUserDetailsBaseUri;
+	
+	@Value("${mosip.kernel.syncdata.auth-user-details}")
+	private String authUserDetailsUri;
 
 	/**
 	 * 
 	 */
 	@Override
 	public SyncUserDetailDto getAllUserDetail(String regId) {
+		StringBuilder userDetailsUri = new StringBuilder();
+		userDetailsUri.append(authUserDetailsBaseUri).append(authUserDetailsUri);
 		UserDetailResponseDto data = null;
 		SyncUserDetailDto syncUserDetailDto = null;
 		ResponseEntity<UserDetailResponseDto> response = null;
@@ -57,7 +65,7 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 				.collect(Collectors.toList());
 
 		try {
-			response = restTemplate.postForEntity(authUrl, userIds, UserDetailResponseDto.class);
+			response = restTemplate.postForEntity(userDetailsUri.toString(), userIds, UserDetailResponseDto.class);
 			if (response.getStatusCode().is2xxSuccessful())
 				data = response.getBody();
 			List<UserDetailMapDto> userDetails = MapperUtils.mapUserDetailsToUserDetailMap(data.getUserDetails());

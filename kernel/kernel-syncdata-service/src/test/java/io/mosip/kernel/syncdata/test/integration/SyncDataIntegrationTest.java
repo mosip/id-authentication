@@ -23,14 +23,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
-import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
-import io.mosip.kernel.syncdata.dto.response.RegistrationCenterUserResponseDto;
 import io.mosip.kernel.syncdata.entity.Application;
 import io.mosip.kernel.syncdata.entity.BiometricAttribute;
 import io.mosip.kernel.syncdata.entity.BiometricType;
@@ -89,9 +86,7 @@ import io.mosip.kernel.syncdata.repository.TemplateRepository;
 import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
 import io.mosip.kernel.syncdata.repository.TitleRepository;
 import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
-import io.mosip.kernel.syncdata.service.RegistrationCenterUserService;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
-import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -184,30 +179,21 @@ public class SyncDataIntegrationTest {
 	private ValidDocumentRepository validDocumentRepository;
 	@MockBean
 	private ReasonListRepository reasonListRepository;
-	
-	@MockBean
-    private RegistrationCenterUserService registrationCenterUserService;
-	
+		
 	@MockBean
 	private RegistrationCenterUserRepository registrationCenterUserRepository;
 	
 	@Autowired
 	private SyncRolesService syncRolesService;
 	
-	@Autowired
-    private SyncUserDetailsService syncUserDetailsService;
-	
-	
-
-	
 	StringBuilder builder;
-
+	
 	@Value("${mosip.kernel.syncdata.auth-manager-base-uri}")
 	private String authBaseUri;
 
 	@Value("${mosip.kernel.syncdata.auth-manager-roles}")
 	private String authAllRolesUri;
-
+	
 	@Before
 	public void setup() {
 		LocalDateTime localdateTime = LocalDateTime.parse("2018-11-01T01:01:01");
@@ -290,6 +276,7 @@ public class SyncDataIntegrationTest {
 		registrationCenterUserSetup();
 		builder= new StringBuilder();
 		builder.append(authBaseUri).append(authAllRolesUri);
+	
 
 	}
 
@@ -677,48 +664,6 @@ public class SyncDataIntegrationTest {
 		syncRolesService.getAllRoles();
 	}
 	
-	//------------------------------------------UserDetails--------------------------//
-	
-	@Test
-	public void getAllUserDetail()
-	{
-		String response="{ \"userDetails\": [ { \"userName\": \"individual\", \"mobile\": \"8976394859\", \"mail\": \"individual@mosip.io\", \"langCode\": null, \"userPassword\": \"e1NTSEE1MTJ9TkhVb1c2WHpkZVJCa0drbU9tTk9ZcElvdUlNRGl5ODlJK3RhNm04d0FlTWhMSEoyTG4wSVJkNEJ2dkNqVFg4bTBuV2ZySStneXBTVittbVJKWnAxTkFwT3BWY3MxTVU5\", \"userId\": \"individual\", \"role\": \"REGISTRATION_ADMIN,INDIVIDUAL\" } ] }";
-		String regId = "10044";
-		RegistrationCenterUserResponseDto registrationCenterUserResponseDto = new RegistrationCenterUserResponseDto();
-		List<RegistrationCenterUserDto> registrationCenterUserDtos = new ArrayList<>();
-		RegistrationCenterUserDto registrationCenterUserDto = new RegistrationCenterUserDto();
-		registrationCenterUserDto.setIsActive(true);
-		registrationCenterUserDto.setRegCenterId(regId);
-		registrationCenterUserDto.setUserId("M10411022");
-		registrationCenterUserDtos.add(registrationCenterUserDto);
-		registrationCenterUserResponseDto.setRegistrationCenterUsers(registrationCenterUserDtos);
-		
-		when(registrationCenterUserService.getUsersBasedOnRegistrationCenterId(regId)).thenReturn(registrationCenterUserResponseDto);
-		
-		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo("http://localhost:8092/ldapmanager/userdetails".toString())).andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
-		syncUserDetailsService.getAllUserDetail(regId);
-	}
-	
-	@Test(expected=SyncDataServiceException.class)
-	public void getAllUserDetailExcp()
-	{
-		String response="{ \"userDetails\": [ { \"userName\": \"individual\", \"mobile\": \"8976394859\", \"mail\": \"individual@mosip.io\", \"langCode\": null, \"userPassword\": \"e1NTSEE1MTJ9TkhVb1c2WHpkZVJCa0drbU9tTk9ZcElvdUlNRGl5ODlJK3RhNm04d0FlTWhMSEoyTG4wSVJkNEJ2dkNqVFg4bTBuV2ZySStneXBTVittbVJKWnAxTkFwT3BWY3MxTVU5\", \"userId\": \"individual\", \"role\": \"REGISTRATION_ADMIN,INDIVIDUAL\" } ] }";
-		String regId = "10044";
-		RegistrationCenterUserResponseDto registrationCenterUserResponseDto = new RegistrationCenterUserResponseDto();
-		List<RegistrationCenterUserDto> registrationCenterUserDtos = new ArrayList<>();
-		RegistrationCenterUserDto registrationCenterUserDto = new RegistrationCenterUserDto();
-		registrationCenterUserDto.setIsActive(true);
-		registrationCenterUserDto.setRegCenterId(regId);
-		registrationCenterUserDto.setUserId("M10411022");
-		registrationCenterUserDtos.add(registrationCenterUserDto);
-		registrationCenterUserResponseDto.setRegistrationCenterUsers(registrationCenterUserDtos);
-		
-		when(registrationCenterUserService.getUsersBasedOnRegistrationCenterId(regId)).thenReturn(registrationCenterUserResponseDto);
-		
-		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo("http://localhost:8092/ldapmanager/userdetails".toString())).andRespond(withServerError().body(response).contentType(MediaType.APPLICATION_JSON));
-		syncUserDetailsService.getAllUserDetail(regId);
-	}
+
 
 }

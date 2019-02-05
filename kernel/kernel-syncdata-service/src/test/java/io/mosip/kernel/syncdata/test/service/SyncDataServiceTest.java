@@ -3,6 +3,7 @@ package io.mosip.kernel.syncdata.test.service;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.env.Environment;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
@@ -28,16 +30,22 @@ import io.mosip.kernel.syncdata.dto.HolidayDto;
 import io.mosip.kernel.syncdata.dto.MachineDto;
 import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.syncdata.dto.MachineTypeDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
+import io.mosip.kernel.syncdata.dto.response.RegistrationCenterUserResponseDto;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
+import io.mosip.kernel.syncdata.service.RegistrationCenterUserService;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
+import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import net.minidev.json.JSONObject;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class SyncDataServiceTest {
+	
+
 	@MockBean
 	private SyncMasterDataServiceHelper masterDataServiceHelper;
 
@@ -45,7 +53,13 @@ public class SyncDataServiceTest {
 	private SyncMasterDataService masterDataService;
 
 	@Autowired
-	RestTemplate restemplate;
+	RestTemplate restTemplate;
+	
+	@MockBean
+	private RegistrationCenterUserService registrationCenterUserService;
+	
+	@Autowired
+	private SyncUserDetailsService syncUserDetailsService;
 
 	/**
 	 * Environment instance
@@ -64,6 +78,12 @@ public class SyncDataServiceTest {
 	 */
 	@Value("${mosip.kernel.syncdata.global-config-file}")
 	private String globalConfigFileName;
+	
+	@Value("${mosip.kernel.syncdata.auth-user-details-base-uri}")
+	private String authUserDetailsBaseUri;
+	
+	@Value("${mosip.kernel.syncdata.auth-user-details}")
+	private String authUserDetailsUri;
 
 	private String configServerUri = null;
 	private String configLabel = null;
@@ -71,6 +91,8 @@ public class SyncDataServiceTest {
 	private String configAppName = null;
 
 	private StringBuilder uriBuilder;
+	
+	StringBuilder userDetailsUri;
 
 	@Autowired
 	private SyncConfigDetailsService syncConfigDetailsService;
@@ -88,6 +110,8 @@ public class SyncDataServiceTest {
 	public void setup() {
 		masterDataSyncSetup();
 		configDetialsSyncSetup();
+		userDetailsUri = new StringBuilder();
+		userDetailsUri.append(authUserDetailsBaseUri).append(authUserDetailsUri);
 	}
 
 	public void masterDataSyncSetup() {
@@ -148,7 +172,7 @@ public class SyncDataServiceTest {
 	@Test
 	public void globalConfigsyncSuccess() {
 
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restemplate).build();
+		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
 		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withSuccess());
 		syncConfigDetailsService.getGlobalConfigDetails();
 
@@ -156,7 +180,7 @@ public class SyncDataServiceTest {
 
 	@Test
 	public void registrationConfigsyncSuccess() {
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restemplate).build();
+		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
 		server.expect(requestTo(uriBuilder.append(regCenterfileName).toString())).andRespond(withSuccess());
 		syncConfigDetailsService.getRegistrationCenterConfigDetails("1");
 		// Assert.assertEquals(120, jsonObject.get("fingerprintQualityThreshold"));
@@ -165,7 +189,7 @@ public class SyncDataServiceTest {
 	@Test(expected = SyncDataServiceException.class)
 	public void registrationConfigsyncFailure() {
 
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restemplate).build();
+		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
 		server.expect(requestTo(uriBuilder.append(regCenterfileName).toString())).andRespond(withBadRequest());
 		syncConfigDetailsService.getRegistrationCenterConfigDetails("1");
 	}
@@ -173,7 +197,7 @@ public class SyncDataServiceTest {
 	@Test(expected = SyncDataServiceException.class)
 	public void globalConfigsyncFailure() {
 
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restemplate).build();
+		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
 		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withBadRequest());
 		syncConfigDetailsService.getGlobalConfigDetails();
 	}
@@ -181,19 +205,63 @@ public class SyncDataServiceTest {
 	@Test(expected = SyncDataServiceException.class)
 	public void globalConfigsyncFileNameNullFailure() {
 
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restemplate).build();
+		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
 		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withBadRequest());
 		syncConfigDetailsService.getGlobalConfigDetails();
 	}
 
 	//@Test
 	public void getConfigurationSuccess() {
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restemplate).build();
+		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
 		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withSuccess());
 		uriBuilder = new StringBuilder();
 		uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
 				.append(configLabel + "/");
 		server.expect(requestTo(uriBuilder.append(regCenterfileName).toString())).andRespond(withSuccess());
 		syncConfigDetailsService.getConfiguration("1");
+	}
+	
+	//------------------------------------------UserDetails--------------------------//
+	@Test
+	public void getAllUserDetail()
+	{
+		String response="{ \"userDetails\": [ { \"userName\": \"individual\", \"mobile\": \"8976394859\", \"mail\": \"individual@mosip.io\", \"langCode\": null, \"userPassword\": \"e1NTSEE1MTJ9TkhVb1c2WHpkZVJCa0drbU9tTk9ZcElvdUlNRGl5ODlJK3RhNm04d0FlTWhMSEoyTG4wSVJkNEJ2dkNqVFg4bTBuV2ZySStneXBTVittbVJKWnAxTkFwT3BWY3MxTVU5\", \"userId\": \"individual\", \"role\": \"REGISTRATION_ADMIN,INDIVIDUAL\" } ] }";
+		String regId = "10044";
+		RegistrationCenterUserResponseDto registrationCenterUserResponseDto = new RegistrationCenterUserResponseDto();
+		List<RegistrationCenterUserDto> registrationCenterUserDtos = new ArrayList<>();
+		RegistrationCenterUserDto registrationCenterUserDto = new RegistrationCenterUserDto();
+		registrationCenterUserDto.setIsActive(true);
+		registrationCenterUserDto.setRegCenterId(regId);
+		registrationCenterUserDto.setUserId("M10411022");
+		registrationCenterUserDtos.add(registrationCenterUserDto);
+		registrationCenterUserResponseDto.setRegistrationCenterUsers(registrationCenterUserDtos);
+		
+		when(registrationCenterUserService.getUsersBasedOnRegistrationCenterId(regId)).thenReturn(registrationCenterUserResponseDto);
+		
+		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
+		mockRestServiceServer.expect(requestTo(userDetailsUri.toString())).andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
+		syncUserDetailsService.getAllUserDetail(regId);
+	}
+	
+	
+	@Test(expected=SyncDataServiceException.class)
+	public void getAllUserDetailExcp()
+	{
+		String response="{ \"userDetails\": [ { \"userName\": \"individual\", \"mobile\": \"8976394859\", \"mail\": \"individual@mosip.io\", \"langCode\": null, \"userPassword\": \"e1NTSEE1MTJ9TkhVb1c2WHpkZVJCa0drbU9tTk9ZcElvdUlNRGl5ODlJK3RhNm04d0FlTWhMSEoyTG4wSVJkNEJ2dkNqVFg4bTBuV2ZySStneXBTVittbVJKWnAxTkFwT3BWY3MxTVU5\", \"userId\": \"individual\", \"role\": \"REGISTRATION_ADMIN,INDIVIDUAL\" } ] }";
+		String regId = "10044";
+		RegistrationCenterUserResponseDto registrationCenterUserResponseDto = new RegistrationCenterUserResponseDto();
+		List<RegistrationCenterUserDto> registrationCenterUserDtos = new ArrayList<>();
+		RegistrationCenterUserDto registrationCenterUserDto = new RegistrationCenterUserDto();
+		registrationCenterUserDto.setIsActive(true);
+		registrationCenterUserDto.setRegCenterId(regId);
+		registrationCenterUserDto.setUserId("M10411022");
+		registrationCenterUserDtos.add(registrationCenterUserDto);
+		registrationCenterUserResponseDto.setRegistrationCenterUsers(registrationCenterUserDtos);
+		
+		when(registrationCenterUserService.getUsersBasedOnRegistrationCenterId(regId)).thenReturn(registrationCenterUserResponseDto);
+		
+		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
+		mockRestServiceServer.expect(requestTo(userDetailsUri.toString())).andRespond(withServerError().body(response).contentType(MediaType.APPLICATION_JSON));
+		syncUserDetailsService.getAllUserDetail(regId);
 	}
 }
