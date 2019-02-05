@@ -43,7 +43,7 @@ import io.mosip.registration.test.util.datastub.DataProvider;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ImageIO.class })
+@PrepareForTest({ ImageIO.class, ApplicationContext.class })
 public class TemplateGeneratorTest {
 	TemplateManagerBuilderImpl template = new TemplateManagerBuilderImpl();
 
@@ -83,6 +83,7 @@ public class TemplateGeneratorTest {
 					fingerPrintDTO.setSegmentedFingerprints(segmentedFingerprints);
 				});
 		PowerMockito.mockStatic(ImageIO.class);
+		PowerMockito.mockStatic(ApplicationContext.class);
 		BufferedImage image = null;
 		when(ImageIO.read(
 				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_HANDS_IMAGE_PATH)))
@@ -91,9 +92,11 @@ public class TemplateGeneratorTest {
 		Map<String,Object> applicationMap =new HashMap<>();
 		applicationMap.put(RegistrationConstants.FINGERPRINT_DISABLE_FLAG, RegistrationConstants.ENABLE);
 		
-		when(applicationContext.getLocalLanguageProperty()).thenReturn(dummyResourceBundle);
-		when(applicationContext.getApplicationLanguageBundle()).thenReturn(dummyResourceBundle);
-		when(applicationContext.getApplicationMap()).thenReturn(applicationMap);
+		when(ApplicationContext.applicationLanguage()).thenReturn("eng");
+		when(ApplicationContext.localLanguage()).thenReturn("ar");
+		when(ApplicationContext.localLanguageProperty()).thenReturn(dummyResourceBundle);
+		when(ApplicationContext.applicationLanguageBundle()).thenReturn(dummyResourceBundle);
+		when(ApplicationContext.map()).thenReturn(applicationMap);
 		when(qrCodeGenerator.generateQrCode(Mockito.anyString(), Mockito.any())).thenReturn(new byte[1024]);
 		ResponseDTO response = templateGenerator.generateTemplate("sample text", registrationDTO, template);	
 		assertNotNull(response.getSuccessResponseDTO());
