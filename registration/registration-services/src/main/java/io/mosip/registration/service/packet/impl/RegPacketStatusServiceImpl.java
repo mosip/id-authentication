@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 import org.assertj.core.util.Files;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -27,6 +26,7 @@ import org.springframework.web.client.ResourceAccessException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationTransactionType;
 import io.mosip.registration.context.SessionContext;
@@ -65,7 +65,6 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 	private static final Logger LOGGER = AppConfig.getLogger(RegPacketStatusServiceImpl.class);
 
-	
 	private HashMap<String, Registration> registrationMap = new HashMap<>();
 
 	/*
@@ -113,7 +112,8 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		/* Get Calendar instance */
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(reqTime);
-		cal.add(Calendar.DATE, -(Integer.parseInt(getGlobalConfigValueOf(RegistrationConstants.REG_DELETION_CONFIGURED_DAYS))));
+		cal.add(Calendar.DATE,
+				-(Integer.parseInt(getGlobalConfigValueOf(RegistrationConstants.REG_DELETION_CONFIGURED_DAYS))));
 
 		/* To-Date */
 		return new Timestamp(cal.getTimeInMillis());
@@ -322,9 +322,9 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 	}
 
-public ResponseDTO syncPacket() {
+	public ResponseDTO syncPacket() {
 
-		LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+		LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
 				APPLICATION_ID, "Sync the packets to the server");
 		ResponseDTO responseDTO = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
@@ -347,12 +347,19 @@ public ResponseDTO syncPacket() {
 					syncDtoList.add(syncDto);
 				}
 				response = packetSynchService.syncPacketsToServer(syncDtoList);
+			} else {
+				successResponseDTO.setMessage(RegistrationConstants.SUCCESS);
+				responseDTO.setSuccessResponseDTO(successResponseDTO);
 			}
 			if (response != null) {
+				packetsToBeSynched.forEach(regPacket -> {
+					regPacket.setClientStatusCode(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
+				});
 				packetSynchService.updateSyncStatus(packetsToBeSynched);
 				successResponseDTO.setMessage(RegistrationConstants.SUCCESS);
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
 			}
+
 		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException | URISyntaxException e) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - REG_PACKET_STATUS_SYNC", APPLICATION_NAME,
 					APPLICATION_ID, "Error in Synching packets to the server");

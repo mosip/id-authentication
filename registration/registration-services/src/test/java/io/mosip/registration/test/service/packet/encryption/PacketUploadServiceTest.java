@@ -246,4 +246,13 @@ public class PacketUploadServiceTest {
 		assertEquals("S", registration.getFileUploadStatus());
 
 	}
+	
+	@Test(expected=RegBaseCheckedException.class)
+	public void testHttpServerException() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
+		File f=new File("");
+		Object respObj = new Object();
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(),Mockito.anyMap()))
+		.thenThrow(new HttpServerErrorException(HttpStatus.ACCEPTED));
+		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
+	}
 }

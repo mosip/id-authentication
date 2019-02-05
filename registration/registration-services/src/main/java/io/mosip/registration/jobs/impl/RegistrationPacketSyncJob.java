@@ -13,7 +13,6 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.packet.RegPacketStatusService;
-import io.mosip.registration.service.sync.PacketSynchService;
 
 /**
  * This is a job to sync the packet status
@@ -28,11 +27,6 @@ public class RegistrationPacketSyncJob extends BaseJob {
 	/**
 	 * The RegPacketStatusServiceImpl
 	 */
-	@Autowired
-	private RegPacketStatusService packetStatusService;
-	
-	@Autowired
-	private PacketSynchService packetSynchService;
 	
 	@Autowired
 	private RegPacketStatusService regPacketStatusService;
@@ -51,15 +45,15 @@ public class RegistrationPacketSyncJob extends BaseJob {
 	@Async
 	@Override
 	public void executeInternal(JobExecutionContext context) {
-		LOGGER.debug(LoggerConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(LoggerConstants.REG_PACKET_SYNC_STATUS_JOB, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal started");
 		this.responseDTO = new ResponseDTO();
 
 		try {
 			
 			this.jobId = loadContext(context);
-			packetSynchService = applicationContext.getBean(PacketSynchService.class);
-
+			regPacketStatusService = applicationContext.getBean(RegPacketStatusService.class);
+			
 			// Run the Parent JOB always first
 			this.responseDTO = regPacketStatusService.syncPacket();
 
@@ -71,13 +65,13 @@ public class RegistrationPacketSyncJob extends BaseJob {
 			syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		} catch (RegBaseUncheckedException baseUncheckedException) {
-			LOGGER.error(LoggerConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE,
+			LOGGER.error(LoggerConstants.REG_PACKET_SYNC_STATUS_JOB,
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					baseUncheckedException.getMessage());
 			throw baseUncheckedException;
 		}
 
-		LOGGER.debug(LoggerConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(LoggerConstants.REG_PACKET_SYNC_STATUS_JOB, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal Ended");
 
 	}
@@ -91,13 +85,13 @@ public class RegistrationPacketSyncJob extends BaseJob {
 	@Override
 	public ResponseDTO executeJob(String triggerPoint, String jobId) {
 
-		LOGGER.debug(LoggerConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(LoggerConstants.REG_PACKET_SYNC_STATUS_JOB, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
 
-		this.responseDTO = packetStatusService.packetSyncStatus();
+		this.responseDTO = regPacketStatusService.syncPacket();
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
-		LOGGER.debug(LoggerConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug(LoggerConstants.REG_PACKET_SYNC_STATUS_JOB, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute job ended");
 
 		return responseDTO;
