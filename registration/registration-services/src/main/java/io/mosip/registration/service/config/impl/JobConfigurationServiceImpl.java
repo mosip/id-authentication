@@ -200,15 +200,12 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 				/* Stop, Clear Scheduler and set Error response */
 				setStartExceptionError(responseDTO);
-				
 
 			} catch(RuntimeException runtimeException) {
 				LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-
-				/* Stop, Clear Scheduler and set Error response */
 				setStartExceptionError(responseDTO);
-				
+
 			}
 
 			if (isSchedulerRunning) {
@@ -219,22 +216,23 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 		);
 	}
-	
-	
+
 	private void setStartExceptionError(ResponseDTO responseDTO) {
-		/* Clear Scheduler */
-		clearScheduler();
 
-		/* Stop Scheduler Factory */
-		schedulerFactoryBean.stop();
-
-		isSchedulerRunning = false;
+		try {
+			/* Clear Scheduler */
+			clearScheduler();
+			
+		}  catch (SchedulerException schedulerException) {
+			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
+		}
 
 		/* Error Response */
 		setErrorResponse(responseDTO, RegistrationConstants.START_SCHEDULER_ERROR_MESSAGE, null);
 
+
 	}
-	
 
 	/*
 	 * (non-Javadoc)
@@ -251,10 +249,18 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		try {
 			if (schedulerFactoryBean.isRunning()) {
 
-				clearScheduler();
-				schedulerFactoryBean.stop();
-				isSchedulerRunning = false;
-				setSuccessResponse(responseDTO, RegistrationConstants.BATCH_JOB_STOP_SUCCESS_MESSAGE, null);
+				try {
+					/* Clear and Stop Scheduler */
+					clearScheduler();
+					
+					setSuccessResponse(responseDTO, RegistrationConstants.BATCH_JOB_STOP_SUCCESS_MESSAGE, null);
+
+				} catch (SchedulerException schedulerException) {
+					LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+							RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
+					setErrorResponse(responseDTO, RegistrationConstants.STOP_SCHEDULER_ERROR_MESSAGE, null);
+
+				}
 
 			} else {
 				setErrorResponse(responseDTO, RegistrationConstants.SYNC_DATA_PROCESS_ALREADY_STOPPED, null);
@@ -273,15 +279,13 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		return responseDTO;
 	}
 
-	private void clearScheduler(){
-		try {
-			/* Clear Scheduler */
-			schedulerFactoryBean.getScheduler().clear();
+	private void clearScheduler() throws SchedulerException {
 
-		} catch (SchedulerException schedulerException) {
-			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
-		}
+		/* Clear Scheduler */
+		schedulerFactoryBean.getScheduler().clear();
+		schedulerFactoryBean.stop();
+		isSchedulerRunning = false;
+
 	}
 
 	/*
