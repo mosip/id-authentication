@@ -29,8 +29,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.util.exception.JsonMappingException;
-import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -49,7 +47,6 @@ import io.mosip.registration.processor.message.sender.service.impl.MessageNotifi
 import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
 import io.mosip.registration.processor.message.sender.utility.MessageSenderUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 
 /**
@@ -145,8 +142,31 @@ public class MessageNotificationServiceImplTest {
 		InputStream inputStream = new FileInputStream(demographicJsonFile);
 		Mockito.when(adapter.getFile(any(), any())).thenReturn(inputStream);
 
-		String value = "{\r\n" + "\"firstName\": \"fullName\",\r\n" + "\"phoneNumber\" : \"phone\",\r\n"
-				+ "\"emailID\" : \"email\"\r\n" + "}";
+		String value = "{\r\n" + "	\"identity\": {\r\n" + "		\"name\": {\r\n"
+				+ "			\"value\": \"fullName\",\r\n" + "			\"weight\": 20\r\n" + "		},\r\n"
+				+ "		\"gender\": {\r\n" + "			\"value\": \"gender\",\r\n" + "			\"weight\": 20\r\n"
+				+ "		},\r\n" + "		\"dob\": {\r\n" + "			\"value\": \"dateOfBirth\",\r\n"
+				+ "			\"weight\": 20\r\n" + "		},\r\n" + "		\"pheoniticName\": {\r\n"
+				+ "			\"weight\": 20\r\n" + "		},\r\n" + "		\"poa\": {\r\n"
+				+ "			\"value\" : \"proofOfAddress\"\r\n" + "		},\r\n" + "		\"poi\": {\r\n"
+				+ "			\"value\" : \"proofOfIdentity\"\r\n" + "		},\r\n" + "		\"por\": {\r\n"
+				+ "			\"value\" : \"proofOfRelationship\"\r\n" + "		},\r\n" + "		\"pob\": {\r\n"
+				+ "			\"value\" : \"proofOfDateOfBirth\"\r\n" + "		},\r\n"
+				+ "		\"individualBiometrics\": {\r\n" + "			\"value\" : \"individualBiometrics\"\r\n"
+				+ "		},\r\n" + "		\"age\": {\r\n" + "			\"value\" : \"age\"\r\n" + "		},\r\n"
+				+ "		\"addressLine1\": {\r\n" + "			\"value\" : \"addressLine1\"\r\n" + "		},\r\n"
+				+ "		\"addressLine2\": {\r\n" + "			\"value\" : \"addressLine2\"\r\n" + "		},\r\n"
+				+ "		\"addressLine3\": {\r\n" + "			\"value\" : \"addressLine3\"\r\n" + "		},\r\n"
+				+ "		\"region\": {\r\n" + "			\"value\" : \"region\"\r\n" + "		},\r\n"
+				+ "		\"province\": {\r\n" + "			\"value\" : \"province\"\r\n" + "		},\r\n"
+				+ "		\"postalCode\": {\r\n" + "			\"value\" : \"postalCode\"\r\n" + "		},\r\n"
+				+ "		\"phone\": {\r\n" + "			\"value\" : \"phone\"\r\n" + "		},\r\n"
+				+ "		\"email\": {\r\n" + "			\"value\" : \"email\"\r\n" + "		},\r\n"
+				+ "		\"localAdministrativeAuthority\": {\r\n"
+				+ "			\"value\" : \"localAdministrativeAuthority\"\r\n" + "		},\r\n"
+				+ "		\"idschemaversion\": {\r\n" + "			\"value\" : \"IDSchemaVersion\"\r\n" + "		},\r\n"
+				+ "		\"cnienumber\": {\r\n" + "			\"value\" : \"CNIENumber\"\r\n" + "		},\r\n"
+				+ "		\"city\": {\r\n" + "			\"value\" : \"city\"\r\n" + "		}\r\n" + "	}\r\n" + "} ";
 
 		PowerMockito.mockStatic(MessageSenderUtil.class);
 		PowerMockito.when(MessageSenderUtil.class, "getJson", anyString(), anyString()).thenReturn(value);

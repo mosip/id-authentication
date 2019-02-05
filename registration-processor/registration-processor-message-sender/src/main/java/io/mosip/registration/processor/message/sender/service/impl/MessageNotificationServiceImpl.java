@@ -234,9 +234,10 @@ public class MessageNotificationServiceImpl
 		for (String item : mailTo) {
 			builder.queryParam("mailTo", item);
 		}
-		for (String item : mailCc) {
-			builder.queryParam("mailCc", item);
-		}
+		if (mailCc != null)
+			for (String item : mailCc) {
+				builder.queryParam("mailCc", item);
+			}
 
 		builder.queryParam("mailSubject", subject);
 		builder.queryParam("mailContent", artifact);
@@ -295,15 +296,12 @@ public class MessageNotificationServiceImpl
 		attributes.put(TemplateConstant.PROVINCE, getParameter(templatejson.getProvince()));
 		attributes.put(TemplateConstant.CITY, getParameter(templatejson.getCity()));
 		attributes.put(TemplateConstant.POSTALCODE, templatejson.getPostalCode());
-		attributes.put(TemplateConstant.PARENTORGUARDIANNAME, getParameter(templatejson.getParentOrGuardianName()));
-		attributes.put(TemplateConstant.PARENTORGUARDIANRIDORUIN, templatejson.getParentOrGuardianRIDOrUIN());
-		attributes.put(TemplateConstant.PROOFOFADDRESS, getParameter(templatejson.getProofOfAddress()));
-		attributes.put(TemplateConstant.PROOFOFIDENTITY, getParameter(templatejson.getProofOfIdentity()));
-		attributes.put(TemplateConstant.PROOFOFRELATIONSHIP, getParameter(templatejson.getProofOfRelationship()));
-		attributes.put(TemplateConstant.PROOFOFDATEOFBIRTH, getParameter(templatejson.getProofOfDateOfBirth()));
-		attributes.put(TemplateConstant.INDIVIDUALBIOMETRICS, getParameter(templatejson.getIndividualBiometrics()));
-		attributes.put(TemplateConstant.LOCALADMINISTRATIVEAUTHORITY,
-				getParameter(templatejson.getLocalAdministrativeAuthority()));
+		attributes.put(TemplateConstant.PROOFOFADDRESS, templatejson.getProofOfAddress());
+		attributes.put(TemplateConstant.PROOFOFIDENTITY, templatejson.getProofOfIdentity());
+		attributes.put(TemplateConstant.PROOFOFRELATIONSHIP, templatejson.getProofOfRelationship());
+		attributes.put(TemplateConstant.PROOFOFDATEOFBIRTH, templatejson.getProofOfDateOfBirth());
+		attributes.put(TemplateConstant.INDIVIDUALBIOMETRICS, templatejson.getIndividualBiometrics());
+		attributes.put(TemplateConstant.LOCALADMINISTRATIVEAUTHORITY, templatejson.getLocalAdministrativeAuthority());
 		attributes.put(TemplateConstant.IDSCHEMAVERSION, templatejson.getIdSchemaVersion());
 		attributes.put(TemplateConstant.CNIENUMBER, templatejson.getCnieNumber());
 
@@ -369,8 +367,7 @@ public class MessageNotificationServiceImpl
 					(String) demographicIdentity.get(regProcessorTemplateJson.getIdentity().getPhone().getValue()));
 			template.setDateOfBirth(
 					(String) demographicIdentity.get(regProcessorTemplateJson.getIdentity().getDob().getValue()));
-			template.setAge(
-					(Integer) demographicIdentity.get(regProcessorTemplateJson.getIdentity().getAge().getValue()));
+			template.setAge((Long) demographicIdentity.get(regProcessorTemplateJson.getIdentity().getAge().getValue()));
 			template.setAddressLine1(
 					getJsonValues(regProcessorTemplateJson.getIdentity().getAddressLine1().getValue()));
 			template.setAddressLine2(
@@ -382,18 +379,20 @@ public class MessageNotificationServiceImpl
 			template.setCity(getJsonValues(regProcessorTemplateJson.getIdentity().getCity().getValue()));
 			template.setPostalCode((String) demographicIdentity
 					.get(regProcessorTemplateJson.getIdentity().getPostalCode().getValue()));
-			template.setProofOfRelationship(getJsonValues(regProcessorTemplateJson.getIdentity().getPor().getValue()));
-			template.setProofOfAddress(getJsonValues(regProcessorTemplateJson.getIdentity().getPoa().getValue()));
-			template.setProofOfIdentity(getJsonValues(regProcessorTemplateJson.getIdentity().getPoi().getValue()));
-			template.setProofOfDateOfBirth(getJsonValues(regProcessorTemplateJson.getIdentity().getPob().getValue()));
+
+			template.setProofOfRelationship((String) (regProcessorTemplateJson.getIdentity().getPor().getValue()));
+
+			template.setProofOfAddress((String) regProcessorTemplateJson.getIdentity().getPoa().getValue());
+			template.setProofOfIdentity((String) regProcessorTemplateJson.getIdentity().getPoi().getValue());
+			template.setProofOfDateOfBirth((String) regProcessorTemplateJson.getIdentity().getPob().getValue());
 			template.setIndividualBiometrics(
-					getJsonValues(regProcessorTemplateJson.getIdentity().getIndividualBiometrics().getValue()));
+					(String) (regProcessorTemplateJson.getIdentity().getIndividualBiometrics().getValue()));
 			template.setLocalAdministrativeAuthority(
-					getJsonValues(regProcessorTemplateJson.getIdentity().getLocalAdministrativeAuthority().getValue()));
+					(String) regProcessorTemplateJson.getIdentity().getLocalAdministrativeAuthority().getValue());
 			template.setIdSchemaVersion((Double) demographicIdentity
 					.get(regProcessorTemplateJson.getIdentity().getIdschemaversion().getValue()));
-			template.setCnieNumber((Integer) demographicIdentity
-					.get(regProcessorTemplateJson.getIdentity().getCnienumber().getValue()));
+			template.setCnieNumber(
+					(Long) demographicIdentity.get(regProcessorTemplateJson.getIdentity().getCnienumber().getValue()));
 		} catch (ParseException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					null, "Error while parsing Json file" + ExceptionUtils.getStackTrace(e));
