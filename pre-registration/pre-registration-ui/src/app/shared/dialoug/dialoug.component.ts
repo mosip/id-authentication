@@ -36,10 +36,11 @@ export class DialougComponent implements OnInit {
   }
 
   validNumberOfUsers() {
-    if (this.applicantNumber > 10 || this.applicantNumber < 1) {
-      this.invalidApplicantNumber = true;
-    } else {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if ((!isNaN(this.applicantNumber) && this.applicantNumber.length === 9) || (re.test(String(this.applicantNumber).toLowerCase()))) {
       this.invalidApplicantNumber = false;
+    } else {
+      this.invalidApplicantNumber = true;
     }
   }
 

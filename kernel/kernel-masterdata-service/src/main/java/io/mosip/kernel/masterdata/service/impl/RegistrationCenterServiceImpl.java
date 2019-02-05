@@ -390,14 +390,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				LocalTime startTime = registrationCenter.getCenterStartTime();
 				LocalTime endTime = registrationCenter.getCenterEndTime();
 				if (startTime != null && endTime != null) {
-					LocalTime locatime = localDateTime.toLocalTime();
-					boolean isAfterStartTime = locatime.isAfter(startTime);
-					boolean isBeforeEndTime = locatime.isBefore(endTime.plusHours(1));
+					LocalTime localTime = localDateTime.toLocalTime();
+					boolean isAfterStartTime = localTime.isAfter(startTime);
+					boolean isBeforeEndTime = localTime.isBefore(endTime.plusHours(1));
 					/*
 					 * below is the validation to check if the time that is sent is between start
 					 * and end time
 					 */
-					if ((locatime.equals(startTime) || isAfterStartTime) && isBeforeEndTime) {
+					if ((localTime.equals(startTime) || isAfterStartTime) && ((localTime.equals(endTime.plusHours(1))) || isBeforeEndTime)) {
 						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_ACCEPTED);
 					} else {
 						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_REJECTED);

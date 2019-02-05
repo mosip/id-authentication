@@ -5,7 +5,6 @@
 package io.mosip.preregistration.application.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -93,5 +92,17 @@ public class DemographicEntity implements Serializable {
 	/** The deleted date time. */
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedDateTime;
+	
+	/**
+	 * Encrypted Date Time
+	 */
+	@Column(name = "encrypted_dtimes")
+	private LocalDateTime encryptedDateTime;
+	
+	/**
+	 * Consumed Flag
+	 */
+	@Column(name = "consumed")
+	private Boolean consumed;
 
 }

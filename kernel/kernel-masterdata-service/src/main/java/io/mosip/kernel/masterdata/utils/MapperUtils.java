@@ -506,7 +506,8 @@ public class MapperUtils {
 			deviceLangCodeDtypeDto.setDspecId((String) arr[5]);
 			deviceLangCodeDtypeDto.setLangCode((String) arr[6]);
 			deviceLangCodeDtypeDto.setActive((boolean) arr[7]);
-			deviceLangCodeDtypeDto.setValidityEndDateTime(((Timestamp) arr[8]).toLocalDateTime());
+			if(arr[8] != null)
+			{			deviceLangCodeDtypeDto.setValidityEndDateTime(((Timestamp) arr[8]).toLocalDateTime());}
 			deviceLangCodeDtypeDto.setDeviceTypeCode((String) arr[9]);
 			deviceLangCodeDtypeDtoList.add(deviceLangCodeDtypeDto);
 
