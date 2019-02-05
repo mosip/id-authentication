@@ -121,7 +121,7 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 			staticPinResponseDTO.setErr(Collections.emptyList());
 			String statusValue = status ? SUCCESS : FAILED;
 			String comment = status ? "Static pin stored successfully" : "Faild to store Static pin";
-			idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, tspIdValue, statusValue, comment,
+			idAuthService.saveAutnTxn(idvId, idvIdType,uin, reqTime, tspIdValue, statusValue, comment,
 					RequestType.STATICPIN_STORE_REQUEST);
 			 String desc="Static Pin Storage requested";
 			auditHelper.audit(AuditModules.STATIC_PIN_STORAGE, AuditEvents.STATIC_PIN_STORAGE_REQUEST_RESPONSE, idvId, idType, desc);
