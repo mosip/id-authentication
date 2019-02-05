@@ -16,7 +16,7 @@ public interface MappingConfig {
 	 *
 	 * @return the name
 	 */
-	public List<String> getFullName();
+	public List<String> getName();
 
 	/**
 	 * List of value to hold DOB.

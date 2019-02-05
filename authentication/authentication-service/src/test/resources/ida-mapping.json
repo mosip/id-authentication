@@ -1,7 +1,7 @@
 {
 	"ida-mapping" : 
 		{
-			"fullName" : 
+			"name" : 
 				[
 					"firstName",
 					"middleName",
