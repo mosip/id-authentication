@@ -22,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
@@ -668,6 +669,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void getAllUserDetail()
 	{
+		String response="{ \"userDetails\": [ { \"userName\": \"individual\", \"mobile\": \"8976394859\", \"mail\": \"individual@mosip.io\", \"langCode\": null, \"userPassword\": \"e1NTSEE1MTJ9TkhVb1c2WHpkZVJCa0drbU9tTk9ZcElvdUlNRGl5ODlJK3RhNm04d0FlTWhMSEoyTG4wSVJkNEJ2dkNqVFg4bTBuV2ZySStneXBTVittbVJKWnAxTkFwT3BWY3MxTVU5\", \"userId\": \"individual\", \"role\": \"REGISTRATION_ADMIN,INDIVIDUAL\" } ] }";
 		String regId = "10044";
 		RegistrationCenterUserResponseDto registrationCenterUserResponseDto = new RegistrationCenterUserResponseDto();
 		List<RegistrationCenterUserDto> registrationCenterUserDtos = new ArrayList<>();
@@ -681,7 +683,28 @@ public class SyncDataIntegrationTest {
 		when(registrationCenterUserService.getUsersBasedOnRegistrationCenterId(regId)).thenReturn(registrationCenterUserResponseDto);
 		
 		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServiceServer.expect(requestTo("http://localhost:8092/ldapmanager/userdetails".toString())).andRespond(withSuccess());
+		mockRestServiceServer.expect(requestTo("http://localhost:8092/ldapmanager/userdetails".toString())).andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
+		syncUserDetailsService.getAllUserDetail(regId);
+	}
+	
+	@Test(expected=SyncDataServiceException.class)
+	public void getAllUserDetailExcp()
+	{
+		String response="{ \"userDetails\": [ { \"userName\": \"individual\", \"mobile\": \"8976394859\", \"mail\": \"individual@mosip.io\", \"langCode\": null, \"userPassword\": \"e1NTSEE1MTJ9TkhVb1c2WHpkZVJCa0drbU9tTk9ZcElvdUlNRGl5ODlJK3RhNm04d0FlTWhMSEoyTG4wSVJkNEJ2dkNqVFg4bTBuV2ZySStneXBTVittbVJKWnAxTkFwT3BWY3MxTVU5\", \"userId\": \"individual\", \"role\": \"REGISTRATION_ADMIN,INDIVIDUAL\" } ] }";
+		String regId = "10044";
+		RegistrationCenterUserResponseDto registrationCenterUserResponseDto = new RegistrationCenterUserResponseDto();
+		List<RegistrationCenterUserDto> registrationCenterUserDtos = new ArrayList<>();
+		RegistrationCenterUserDto registrationCenterUserDto = new RegistrationCenterUserDto();
+		registrationCenterUserDto.setIsActive(true);
+		registrationCenterUserDto.setRegCenterId(regId);
+		registrationCenterUserDto.setUserId("M10411022");
+		registrationCenterUserDtos.add(registrationCenterUserDto);
+		registrationCenterUserResponseDto.setRegistrationCenterUsers(registrationCenterUserDtos);
+		
+		when(registrationCenterUserService.getUsersBasedOnRegistrationCenterId(regId)).thenReturn(registrationCenterUserResponseDto);
+		
+		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
+		mockRestServiceServer.expect(requestTo("http://localhost:8092/ldapmanager/userdetails".toString())).andRespond(withServerError().body(response).contentType(MediaType.APPLICATION_JSON));
 		syncUserDetailsService.getAllUserDetail(regId);
 	}
 

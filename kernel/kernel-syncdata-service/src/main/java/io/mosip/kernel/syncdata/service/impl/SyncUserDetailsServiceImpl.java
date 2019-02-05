@@ -16,7 +16,7 @@ import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
 import io.mosip.kernel.syncdata.dto.UserDetailMapDto;
 import io.mosip.kernel.syncdata.dto.response.RegistrationCenterUserResponseDto;
 import io.mosip.kernel.syncdata.dto.response.UserDetailResponseDto;
-import io.mosip.kernel.syncdata.exception.DataNotFoundException;
+import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.RegistrationCenterUserService;
 import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
@@ -60,15 +60,13 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 			response = restTemplate.postForEntity(authUrl, userIds, UserDetailResponseDto.class);
 			if (response.getStatusCode().is2xxSuccessful())
 				data = response.getBody();
-
 			List<UserDetailMapDto> userDetails = MapperUtils.mapUserDetailsToUserDetailMap(data.getUserDetails());
-			System.out.println("----data---" + data);
+
 			syncUserDetailDto = new SyncUserDetailDto(userDetails);
 			return syncUserDetailDto;
 
 		} catch (RestClientException e) {
-			e.printStackTrace();
-			throw new DataNotFoundException(UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorCode(),
+			throw new SyncDataServiceException(UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorCode(),
 					UserDetailsErrorCode.USER_DETAILS_FETCH_EXCEPTION.getErrorMessage(), e);
 		}
 
