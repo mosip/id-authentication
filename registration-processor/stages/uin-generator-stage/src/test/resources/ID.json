@@ -107,7 +107,7 @@
       "value" : "introducer_bio_CBEFF"
     },
     "IDSchemaVersion" : 1.0,
-    "UIN" : "",
+    "UIN" : null,
     "CNIENumber" : 1234567890
   }
 }
