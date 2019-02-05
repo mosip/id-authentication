@@ -131,6 +131,6 @@ public class SyncDataControllerTest {
 	public void syncGlobalConfigDetailsFailure() throws Exception {
 		when(syncConfigDetailsService.getGlobalConfigDetails())
 				.thenThrow(new SyncDataServiceException("KER-SYNC-127", "Error occured in service"));
-		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isOk());
+		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isInternalServerError());
 	}
 }

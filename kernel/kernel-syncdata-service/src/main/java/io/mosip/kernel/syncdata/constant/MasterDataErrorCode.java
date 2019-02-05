@@ -29,7 +29,8 @@ public enum MasterDataErrorCode {
 	DEVICE_TYPE_FETCH_EXCEPTION("KER-SYNC-125", "Error occurred while fetching Device Type"),
 	VALID_DOCUMENT_FETCH_EXCEPTION("KER-SYNC-126", "Error occurred while fetching Valid Document Type"),
 	REASON_LIST_FETCH_EXCEPTION("KER-SYNC-127", "Error occurred while fetching Valid Document Type"),
-	THREAD_INTERRUPTED_WHILE_FETCH_EXCEPTION("KER-SYNC-128", "Error occurred while fetching data");
+	THREAD_INTERRUPTED_WHILE_FETCH_EXCEPTION("KER-SYNC-128", "Error occurred while fetching data"),
+	REQUEST_DATA_NOT_VALID("KER-SYNC-999","Request Data not valid");
 
 	private final String errorCode;
 	private final String errorMessage;

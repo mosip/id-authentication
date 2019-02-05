@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,7 +31,7 @@ public class ApiExceptionHandler {
 
 	@ExceptionHandler(MasterDataServiceException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> controlDataServiceException(final MasterDataServiceException e) {
-		return getErrorResponseEntity(e, HttpStatus.OK);
+		return getErrorResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(DataNotFoundException.class)
@@ -66,6 +67,17 @@ public class ApiExceptionHandler {
 		});
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
+	
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse<ServiceError>> onHttpMessageNotReadable(
+                  final HttpMessageNotReadableException e) {
+           ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+           ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(), e.getMessage());
+           errorResponse.getErrors().add(error);
+           errorResponse.setStatus(HttpStatus.OK.value());
+           return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+    }
+
 
 	private ResponseEntity<ErrorResponse<ServiceError>> getErrorResponseEntity(BaseUncheckedException e,
 			HttpStatus httpStatus) {
