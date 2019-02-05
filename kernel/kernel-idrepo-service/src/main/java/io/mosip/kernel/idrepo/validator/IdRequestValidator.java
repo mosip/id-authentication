@@ -268,17 +268,20 @@ public class IdRequestValidator implements Validator {
 					}
 					requestMap.remove(DOCUMENTS);
 				}
-				if (!(requestMap.containsKey(IDENTITY) && Objects.nonNull(requestMap.get(IDENTITY)))) {
-					if (method.equals(CREATE)) {
-						errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), String
-								.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), IDENTITY));
+				if (!errors.hasErrors()) {
+					if (!(requestMap.containsKey(IDENTITY) && Objects.nonNull(requestMap.get(IDENTITY)))) {
+						if (method.equals(CREATE)) {
+							errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+									String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
+											IDENTITY));
+						}
+					} else if (((Map) requestMap.get(IDENTITY)).isEmpty()) {
+						errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String
+								.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), IDENTITY));
+					} else {
+						jsonValidator.validateJson(mapper.writeValueAsString(requestMap),
+								env.getProperty(JSON_SCHEMA_FILE_NAME));
 					}
-				} else if (((Map) requestMap.get(IDENTITY)).isEmpty()) {
-					errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), IDENTITY));
-				} else {
-					jsonValidator.validateJson(mapper.writeValueAsString(requestMap),
-							env.getProperty(JSON_SCHEMA_FILE_NAME));
 				}
 			} else if (method.equals(CREATE)) {
 				errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
@@ -349,6 +352,8 @@ public class IdRequestValidator implements Validator {
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 					(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), IDENTITY));
 		}
 	}
 
