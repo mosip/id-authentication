@@ -82,6 +82,9 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	private double machnToCenterDistance;
 	@Value("${GPS_DEVICE_MODEL}")
 	private String gpsDeviceModel;
+	/** Object forserialPortConnected. */
+	@Value("${GPS_DEVICE_ENABLE_FLAG}")
+	private String gpsEnableFlag;
 
 	/** Object for SyncJobDAO class. */
 	@Autowired
@@ -296,36 +299,40 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Getting the center latitude and longitudes from session conext");
 
-		Map<String, Object> gpsMapDetails = gpsFacade.getLatLongDtls(centerLatitude, centerLongitude, gpsDeviceModel);
+		if (gpsEnableFlag.equals(RegistrationConstants.ENABLE)) {
 
-		if (RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG
-				.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
+			Map<String, Object> gpsMapDetails = gpsFacade.getLatLongDtls(centerLatitude, centerLongitude,
+					gpsDeviceModel);
 
-			if (machnToCenterDistance <= Double
-					.parseDouble(gpsMapDetails.get(RegistrationConstants.GPS_DISTANCE).toString())) {
+			if (RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG
+					.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
 
-				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_004,
-						RegistrationConstants.OPT_TO_REG_OUTSIDE_LOCATION, RegistrationConstants.ERROR,
-						errorResponseDTOList);
+				if (machnToCenterDistance <= Double
+						.parseDouble(gpsMapDetails.get(RegistrationConstants.GPS_DISTANCE).toString())) {
+
+					getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_004,
+							RegistrationConstants.OPT_TO_REG_OUTSIDE_LOCATION, RegistrationConstants.ERROR,
+							errorResponseDTOList);
+				} else {
+
+					SessionContext.getSessionContext().getMapObject()
+							.put(RegistrationConstants.OPT_TO_REG_LAST_CAPTURED_TIME, Instant.now());
+				}
+			} else if (RegistrationConstants.GPS_CAPTURE_FAILURE_MSG
+					.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
+				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_006, RegistrationConstants.OPT_TO_REG_WEAK_GPS,
+						RegistrationConstants.ERROR, errorResponseDTOList);
+			} else if (RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE_ERRO_MSG
+					.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))
+					|| RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE
+							.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
+				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_005, RegistrationConstants.OPT_TO_REG_INSERT_GPS,
+						RegistrationConstants.ERROR, errorResponseDTOList);
 			} else {
-
-				SessionContext.getSessionContext().getMapObject().put(RegistrationConstants.OPT_TO_REG_LAST_CAPTURED_TIME,
-						Instant.now());
+				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_007,
+						RegistrationConstants.OPT_TO_REG_GPS_PORT_MISMATCH, RegistrationConstants.ERROR,
+						errorResponseDTOList);
 			}
-		} else if (RegistrationConstants.GPS_CAPTURE_FAILURE_MSG
-				.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
-			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_006, RegistrationConstants.OPT_TO_REG_WEAK_GPS,
-					RegistrationConstants.ERROR, errorResponseDTOList);
-		} else if (RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE_ERRO_MSG
-				.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))
-				|| RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE
-						.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
-			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_005, RegistrationConstants.OPT_TO_REG_INSERT_GPS,
-					RegistrationConstants.ERROR, errorResponseDTOList);
-		} else {
-			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_007,
-					RegistrationConstants.OPT_TO_REG_GPS_PORT_MISMATCH, RegistrationConstants.ERROR,
-					errorResponseDTOList);
 		}
 
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
