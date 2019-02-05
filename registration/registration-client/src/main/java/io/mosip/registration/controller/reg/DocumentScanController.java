@@ -690,7 +690,7 @@ public class DocumentScanController extends BaseController {
 		try {
 			LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading list of documents");
-			documents = masterSync.getDocumentCategories(docCode,ApplicationContext.getInstance().getApplicationLanguage());
+			documents = masterSync.getDocumentCategories(docCode, applicationContext.getApplicationLanguage());
 			List<String> documentNames = documents.stream().map(doc -> doc.getName()).collect(Collectors.toList());
 
 			selectionList.getItems().addAll(documentNames);
