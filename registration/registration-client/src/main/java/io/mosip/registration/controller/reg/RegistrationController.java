@@ -23,6 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.idvalidator.spi.IdValidator;
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
@@ -35,7 +37,6 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.auth.AuthenticationController;
 import io.mosip.registration.controller.device.FaceCaptureController;
-import io.mosip.registration.controller.device.FingerPrintCaptureController;
 import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -47,12 +48,16 @@ import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.Identity;
-import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.util.dataprovider.DataProvider;
+import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.util.kernal.RIDGenerator;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 /**
  * Class for Registration Page Controller
@@ -74,38 +79,38 @@ public class RegistrationController extends BaseController {
 	private DocumentScanController documentScanController;
 	@FXML
 	private AnchorPane documentScan;
-	
+
+	@Autowired
+	Validations validation;
+
+	@Autowired
+	MasterSyncService masterSync;
+
 	@Autowired
 	private DemographicDetailController demographicDetailController;
 	@FXML
 	private AnchorPane demographicDetail;
-	
-	@Autowired
-	private FingerPrintCaptureController fingerPrintCaptureController;
 	@FXML
 	private AnchorPane fingerPrintCapture;
-	
-	@Autowired
-	private BiometricExceptionController biometricExceptionController;
-	
+
 	@FXML
 	private AnchorPane biometricException;
-	
-	@Autowired 
+
+	@Autowired
 	private FaceCaptureController faceCaptureController;
 	@FXML
 	private AnchorPane faceCapture;
-	
+
 	@Autowired
 	IrisCaptureController irisCaptureController;
 	@FXML
 	private AnchorPane irisCapture;
 	@FXML
 	private AnchorPane operatorAuthentication;
-	
+
 	@FXML
 	public ImageView biometricTracker;
-	
+
 	@Autowired
 	private AuthenticationController authenticationController;
 
@@ -126,18 +131,19 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			// Create RegistrationDTO Object
-			if(SessionContext.getInstance().getMapObject().get("operatorAuthentication")!=null) {
-			boolean isAuthentication =(boolean) SessionContext.getInstance().getMapObject().get("operatorAuthentication");
-			if(isAuthentication) {
-				SessionContext.getInstance().getMapObject().put("demographicDetail",false);
-				showCurrentPage();
+			if (SessionContext.getInstance().getMapObject().get("operatorAuthentication") != null) {
+				boolean isAuthentication = (boolean) SessionContext.getInstance().getMapObject()
+						.get("operatorAuthentication");
+				if (isAuthentication) {
+					SessionContext.getInstance().getMapObject().put("demographicDetail", false);
+					showCurrentPage();
+				}
 			}
-			}
-			
+
 			if (getRegistrationDtoContent() == null) {
 				createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
 			}
-		
+
 			if (isEditPage() && getRegistrationDtoContent() != null) {
 				prepareEditPageContent();
 			}
@@ -161,7 +167,6 @@ public class RegistrationController extends BaseController {
 		createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_UPDATE);
 		getRegistrationDtoContent().setSelectionListDTO(selectionListDTO);
 	}
-
 
 	/**
 	 * This method is to prepopulate all the values for edit operation
@@ -198,79 +203,41 @@ public class RegistrationController extends BaseController {
 
 			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
 			RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
-			if (demographicDetailController.validateDemographicPane(demographicDetailController.demoGraphicPane)) {
-				SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_Child, demographicDetailController.isChild);
-				demographicInfoDTO = demographicDetailController.buildDemographicInfo();
+			SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_Child,
+					demographicDetailController.isChild);
+			demographicInfoDTO = demographicDetailController.buildDemographicInfo();
 
-				if (demographicDetailController.isChild) {
+			if (demographicDetailController.isChild) {
 
-					osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
+				osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
 
-					registrationMetaDataDTO.setApplicationType(RegistrationConstants.CHILD);
-				} else {
-					registrationMetaDataDTO.setApplicationType(RegistrationConstants.ADULT);
-				}
-
-				osiDataDTO.setOperatorID(SessionContext.getInstance().getUserContext().getUserId());
-
-				registrationDTO.setPreRegistrationId(demographicDetailController.preRegistrationId.getText());
-				registrationDTO.getDemographicDTO().setDemographicInfoDTO(demographicInfoDTO);
-
-				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, "Saved the demographic fields to DTO");
-
-				/*toggleIrisCaptureVisibility(false);
-				togglePhotoCaptureVisibility(false);
-*/
-				if (toggleBiometricException) {
-					//biometricException.setVisible(true);
-				//	toggleFingerprintCaptureVisibility(false);
-				} else {
-				//	biometricException.setVisible(false);
-					//toggleFingerprintCaptureVisibility(true);
-				}
-				//biometricTitlePane.setExpanded(true);
-
-/*				if (registrationDTO.getSelectionListDTO() != null) {
-
-					if (registrationDTO.getSelectionListDTO().isBiometricException()) {
-						toggleBiometricExceptionVisibility(true);
-						toggleFingerprintCaptureVisibility(false);
-						toggleIrisCaptureVisibility(false);
-						togglePhotoCaptureVisibility(false);
-					} else if (registrationDTO.getSelectionListDTO().isBiometricFingerprint()
-							&& !registrationDTO.getSelectionListDTO().isBiometricException()) {
-						toggleFingerprintCaptureVisibility(true);
-						toggleIrisCaptureVisibility(false);
-						togglePhotoCaptureVisibility(false);
-					} else if (registrationDTO.getSelectionListDTO().isBiometricIris()
-							&& !registrationDTO.getSelectionListDTO().isBiometricException()) {
-						toggleFingerprintCaptureVisibility(false);
-						toggleIrisCaptureVisibility(true);
-						togglePhotoCaptureVisibility(false);
-					} else {
-						toggleFingerprintCaptureVisibility(false);
-						toggleIrisCaptureVisibility(false);
-						togglePhotoCaptureVisibility(true);
-					}
-
-				}*/
+				registrationMetaDataDTO.setApplicationType(RegistrationConstants.CHILD);
+			} else {
+				registrationMetaDataDTO.setApplicationType(RegistrationConstants.ADULT);
 			}
+
+			osiDataDTO.setOperatorID(SessionContext.getInstance().getUserContext().getUserId());
+
+			registrationDTO.setPreRegistrationId(demographicDetailController.preRegistrationId.getText());
+			registrationDTO.getDemographicDTO().setDemographicInfoDTO(demographicInfoDTO);
+
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Saved the demographic fields to DTO");
+
 		} catch (RuntimeException runtimeException) {
-			runtimeException.printStackTrace();
 			LOGGER.error("REGISTRATION - SAVING THE DETAILS FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
 	}
 
-
-		/**
-	 * To detect the face part from the applicant photograph to use it for QR Code
-	 * generation
+	/**
+	 * To detect the face part from the applicant photograph to use it for QR
+	 * Code generation
 	 * 
 	 * @param applicantImage
 	 *            the image that is captured as applicant photograph
-	 * @return BufferedImage the face that is detected from the applicant photograph
+	 * @return BufferedImage the face that is detected from the applicant
+	 *         photograph
 	 */
 	private BufferedImage detectApplicantFace(BufferedImage applicantImage) {
 		BufferedImage detectedFace = null;
@@ -289,8 +256,8 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * To compress the detected face from the image of applicant and store it in DTO
-	 * to use it for QR Code generation
+	 * To compress the detected face from the image of applicant and store it in
+	 * DTO to use it for QR Code generation
 	 * 
 	 * @param applicantImage
 	 *            the image that is captured as applicant photograph
@@ -330,31 +297,15 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 		}
 	}
-	private void saveBiometricDetails() {
-		try {
-			DataProvider.setApplicantDocumentDTO(
-					getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO(),
-					toggleBiometricException);
-			setPreviewContent();
-			loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
-		} catch (IOException ioException) {
-			LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
-		} catch (RegBaseCheckedException regBaseCheckedException) {
-			LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, regBaseCheckedException.getMessage());
-		}
-	}
 
 	public void saveBiometricDetails(BufferedImage applicantBufferedImage, BufferedImage exceptionBufferedImage) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "saving the details of applicant biometrics");
 		boolean isValid = true;
-		//isValid = demographicDetailController.validateDemographicPane(demographicDetailController.demoGraphicPane);
-		/*if (isValid) {
-			isValid = demographicDetailController.validateDemographicPane(demoGraphicPane2);
-		}*/
-		
+		isValid = demographicDetailController.validateThisPane();
+		if (isValid) {
+			isValid = validateDemographicPane(documentScanController.documentScanPane);
+		}
 		if (isValid) {
 			try {
 				BufferedImage detectedFace = detectApplicantFace(applicantBufferedImage);
@@ -413,27 +364,23 @@ public class RegistrationController extends BaseController {
 	}
 
 	// Operator Authentication
-		public void goToAuthenticationPage() {
-			try {
-				SessionContext.getInstance().getMapObject().put("operatorAuthentication",true);
-				SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
-				loadScreen(RegistrationConstants.CREATE_PACKET_PAGE);
-				authenticationController.initData(ProcessNames.PACKET.getType());
-			} catch (IOException ioException) {
-				LOGGER.error("REGISTRATION - REGSITRATION_OPERATOR_AUTHENTICATION_PAGE_LOADING_FAILED", APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
-			}
+	public void goToAuthenticationPage() {
+		try {
+			SessionContext.getInstance().getMapObject().put("operatorAuthentication", true);
+			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
+			loadScreen(RegistrationConstants.CREATE_PACKET_PAGE);
+			authenticationController.initData(ProcessNames.PACKET.getType());
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - REGSITRATION_OPERATOR_AUTHENTICATION_PAGE_LOADING_FAILED", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 		}
+	}
 
-	
 	private void setPreviewContent() {
 		faceCaptureController.setPreviewContent();
 		documentScanController.setPreviewContent();
 		demographicDetailController.setPreviewContent();
 	}
-
-	
-	
 
 	public RegistrationDTO getRegistrationDtoContent() {
 		return (RegistrationDTO) SessionContext.getInstance().getMapObject()
@@ -497,7 +444,7 @@ public class RegistrationController extends BaseController {
 		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
 		return biometricInfoDTO;
 	}
-	
+
 	public void showCurrentPage() {
 		demographicDetail.setVisible(getVisiblity("demographicDetail"));
 		documentScan.setVisible(getVisiblity("documentScan"));
@@ -506,14 +453,59 @@ public class RegistrationController extends BaseController {
 		faceCapture.setVisible(getVisiblity("faceCapture"));
 		irisCapture.setVisible(getVisiblity("irisCapture"));
 		operatorAuthentication.setVisible(getVisiblity("operatorAuthentication"));
-		
+
 	}
-	
+
 	private boolean getVisiblity(String page) {
-		if(SessionContext.getInstance().getMapObject().get(page)!=null) {
+		if (SessionContext.getInstance().getMapObject().get(page) != null) {
 			return (boolean) SessionContext.getInstance().getMapObject().get(page);
 		}
 		return false;
+	}
+
+	/**
+	 * 
+	 * Validates the fields of demographic pane1
+	 * 
+	 */
+	public boolean validateDemographicPane(AnchorPane paneToValidate) {
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Validating the fields in demographic pane");
+
+		boolean gotoNext = true;
+		List<String> excludedIds = new ArrayList<String>();
+		excludedIds.add("preRegistrationId");
+		excludedIds.add("virtualKeyboard");
+
+		validation.setValidationMessage();
+		gotoNext = validation.validate(paneToValidate, excludedIds, gotoNext, masterSync);
+		displayValidationMessage(validation.getValidationMessage().toString());
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Validated the fields");
+		return gotoNext;
+	}
+
+	/**
+	 * Display the validation failure messages
+	 */
+	public void displayValidationMessage(String validationMessage) {
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Showing the validatoin message");
+		if (validationMessage.length() > 0) {
+			TextArea view = new TextArea(validationMessage);
+			view.setEditable(false);
+			Scene scene = new Scene(new StackPane(view), 300, 200);
+			Stage primaryStage = new Stage();
+			primaryStage.setTitle("Invalid input");
+			primaryStage.setScene(scene);
+			primaryStage.sizeToScene();
+			primaryStage.initModality(Modality.WINDOW_MODAL);
+			primaryStage.initOwner(fXComponents.getStage());
+			primaryStage.show();
+
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Validatoin message shown successfully");
+		}
 	}
 
 }

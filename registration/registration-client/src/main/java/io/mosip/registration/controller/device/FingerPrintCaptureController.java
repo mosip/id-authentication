@@ -809,7 +809,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			}
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Validating Fingerprints captured ended");
-			return true;
+			return isValid;
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_FINGERPRINT_VALIDATION_EXP,
 					String.format("Exception while validating the captured fingerprints of individual: %s caused by %s",

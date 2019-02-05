@@ -39,7 +39,7 @@
       </AnchorPane>
       <AnchorPane layoutX="85.0" layoutY="-3.0" styleClass="paneAtDisplayDocument">
          <children>
-            <AnchorPane fx:id="documentScan1" layoutX="117.0" layoutY="67.0" >
+            <AnchorPane fx:id="documentScanPane" layoutX="117.0" layoutY="67.0" >
                <children>
                   <ComboBox id="poaDocuments" fx:id="poaDocuments" layoutX="10.0" layoutY="10.0" promptText="%poaDocuments" styleClass="documentCombobox" />
                   <VBox id="poaBox" fx:id="poaBox" layoutX="195.0" layoutY="12.0" styleClass="scanVBox" />

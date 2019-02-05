@@ -64,11 +64,10 @@ import javafx.stage.Stage;
 public class DocumentScanController extends BaseController {
 
 	private static final Logger LOGGER = AppConfig.getLogger(DocumentScanController.class);
-	private boolean isChild;
 
-	@Autowired 
+	@Autowired
 	MasterSyncService masterSync;
-	
+
 	@FXML
 	private ComboBox<String> poaDocuments;
 
@@ -80,17 +79,17 @@ public class DocumentScanController extends BaseController {
 
 	@FXML
 	private VBox poiBox;
-	
+
 	@FXML
 	private Label bioExceptionToggleLabel1;
 
 	@FXML
 	private Label bioExceptionToggleLabel2;
-	
+
 	private boolean toggleBiometricException;
-	
+
 	private SimpleBooleanProperty switchedOnForBiometricException;
-	
+
 	@Autowired
 	RegistrationController registrationController;
 
@@ -123,19 +122,22 @@ public class DocumentScanController extends BaseController {
 	@FXML
 	protected Button dobScanBtn;
 
+	@FXML
+	public AnchorPane documentScanPane;
+
 	List<BufferedImage> scannedPages;
-	
+
 	private List<MasterDocumentType> documents;
-	
+
 	@Autowired
 	private FaceCaptureController faceCaptureController;
 
 	@Value("${DOCUMENT_SIZE}")
 	public int documentSize;
-	
+
 	@Value("${DOCUMENT_SCANNER_ENABLED}")
 	private String isScannerEnabled;
-	
+
 	@Value("${DOCUMENT_SCANNER_DOCTYPE}")
 	private String scannerDocType;
 
@@ -149,13 +151,12 @@ public class DocumentScanController extends BaseController {
 					SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
-			isChild = true;
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			toggleFunctionForBiometricException();
-			loadListOfDocuments(poaDocuments,"POA");
-			loadListOfDocuments(poiDocuments,"POI");
-			loadListOfDocuments(porDocuments,"POR");
-			loadListOfDocuments(dobDocuments,"POB");
+			loadListOfDocuments(poaDocuments, "POA");
+			loadListOfDocuments(poiDocuments, "POI");
+			loadListOfDocuments(porDocuments, "POR");
+			loadListOfDocuments(dobDocuments, "POB");
 		} catch (RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
@@ -263,7 +264,8 @@ public class DocumentScanController extends BaseController {
 
 		try {
 
-			// TODO this check has to removed after when the stubbed data is no more needed
+			// TODO this check has to removed after when the stubbed data is no
+			// more needed
 			if ("yes".equalsIgnoreCase(isScannerEnabled)) {
 				scanFromScanner();
 			} else {
@@ -297,9 +299,9 @@ public class DocumentScanController extends BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
 			if (selectedDocument != null) {
-				
+
 				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(byteArray));
-				
+
 				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Adding documents to Screen");
 
@@ -637,11 +639,12 @@ public class DocumentScanController extends BaseController {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading list of documents");
-			documents  = masterSync.getDocumentCategories(docCode,MappedCodeForLanguage
-					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
-					.getMappedCode());
-			List<String> documentNames  = documents.stream().map(doc->doc.getName()).collect(Collectors.toList());
-			
+			documents = masterSync.getDocumentCategories(docCode,
+					MappedCodeForLanguage
+							.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
+							.getMappedCode());
+			List<String> documentNames = documents.stream().map(doc -> doc.getName()).collect(Collectors.toList());
+
 			selectionList.getItems().addAll(documentNames);
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loaded list of documents");
@@ -681,7 +684,7 @@ public class DocumentScanController extends BaseController {
 		dobDocuments.setValue((String) SessionContext.getInstance().getMapObject().get("dob"));
 
 	}
-	
+
 	/**
 	 * Toggle functionality for biometric exception
 	 */
@@ -742,7 +745,6 @@ public class DocumentScanController extends BaseController {
 		}
 	}
 
-
 	public void uinUpdate() {
 		if (getRegistrationDtoContent().getSelectionListDTO().isBiometricException()) {
 			bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
@@ -763,34 +765,36 @@ public class DocumentScanController extends BaseController {
 			faceCaptureController.clearExceptionImage();
 		}
 	}
-	
+
 	@FXML
 	private void back() {
-			SessionContext.getInstance().getMapObject().put("documentScan",false);
-			SessionContext.getInstance().getMapObject().put("demographicDetail",true);
-			registrationController.showCurrentPage();
+		SessionContext.getInstance().getMapObject().put("documentScan", false);
+		SessionContext.getInstance().getMapObject().put("demographicDetail", true);
+		registrationController.showCurrentPage();
 	}
 
 	@FXML
 	private void skip() {
-		SessionContext.getInstance().getMapObject().put("documentScan",false);
-		if(toggleBiometricException)
-			SessionContext.getInstance().getMapObject().put("biometricException",true);
+		SessionContext.getInstance().getMapObject().put("documentScan", false);
+		if (toggleBiometricException)
+			SessionContext.getInstance().getMapObject().put("biometricException", true);
 		else
-			SessionContext.getInstance().getMapObject().put("fingerPrintCapture",true);
-		registrationController.showCurrentPage();
-	}
-	
-	@FXML
-	private void next() {
-		SessionContext.getInstance().getMapObject().put("documentScan",false);
-		if(toggleBiometricException) {
-			SessionContext.getInstance().getMapObject().put("biometricException",true);
-		}
-		else {
-			SessionContext.getInstance().getMapObject().put("fingerPrintCapture",true);
-		}
+			SessionContext.getInstance().getMapObject().put("fingerPrintCapture", true);
 		registrationController.showCurrentPage();
 	}
 
+	@FXML
+	private void next() {
+
+		if (registrationController.validateDemographicPane(documentScanPane)) {
+
+			SessionContext.getInstance().getMapObject().put("documentScan", false);
+			if (toggleBiometricException) {
+				SessionContext.getInstance().getMapObject().put("biometricException", true);
+			} else {
+				SessionContext.getInstance().getMapObject().put("fingerPrintCapture", true);
+			}
+			registrationController.showCurrentPage();
+		}
+	}
 }

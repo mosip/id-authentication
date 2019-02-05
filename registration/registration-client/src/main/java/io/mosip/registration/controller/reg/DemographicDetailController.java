@@ -332,12 +332,12 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private AnchorPane localLanguagePane;
 	@FXML
-	public AnchorPane demoGraphicPane;
+	private AnchorPane demoGraphicPane;
 	@Autowired
 	DateValidation dateValidation;
 	@Autowired
 	private PreRegistrationDataSyncService preRegistrationDataSyncService;
-	
+
 	FXUtils fxUtils;
 	List<LocationDto> locationDtoRegion;
 	List<LocationDto> locationDtoProvince;
@@ -370,7 +370,7 @@ public class DemographicDetailController extends BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
 	}
-	
+
 	/**
 	 * Toggle functionality between age field and date picker.
 	 */
@@ -446,7 +446,7 @@ public class DemographicDetailController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
 	}
-	
+
 	/**
 	 * To restrict the user not to enter any values other than integer values.
 	 */
@@ -480,8 +480,10 @@ public class DemographicDetailController extends BaseController {
 							parentName.clear();
 							uinId.clear();
 							isChild = true;
+							validation.setChild(isChild);
 						} else {
 							isChild = false;
+							validation.setChild(isChild);
 							childSpecificFields.setVisible(false);
 							childSpecificFieldsLocal.setVisible(false);
 							childSpecificFields.setDisable(true);
@@ -500,7 +502,6 @@ public class DemographicDetailController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
 	}
-
 
 	/**
 	 * Listening on the fields for any operation
@@ -651,7 +652,6 @@ public class DemographicDetailController extends BaseController {
 
 	}
 
-
 	/**
 	 * To load the cities in the selection list based on the language code
 	 */
@@ -678,7 +678,8 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	/**
-	 * To load the localAdminAuthorities selection list based on the language code
+	 * To load the localAdminAuthorities selection list based on the language
+	 * code
 	 */
 	@FXML
 	private void addlocalAdminAuthority() {
@@ -847,12 +848,12 @@ public class DemographicDetailController extends BaseController {
 
 	@Autowired
 	RegistrationController registrationController;
-	
+
 	private RegistrationDTO getRegistrationDtoContent() {
-		
+
 		return registrationController.getRegistrationDtoContent();
 	}
-	
+
 	public void uinUpdate() {
 		if (getRegistrationDtoContent().getSelectionListDTO() != null) {
 
@@ -924,7 +925,7 @@ public class DemographicDetailController extends BaseController {
 
 		}
 	}
-	
+
 	/**
 	 * This method is to prepopulate all the values for edit operation
 	 */
@@ -980,7 +981,7 @@ public class DemographicDetailController extends BaseController {
 		}
 
 	}
-	
+
 	private void populateFieldValue(Node nodeForPlatformLang, Node nodeForLocalLang, List<ValuesDTO> fieldValues) {
 		if (fieldValues != null) {
 			String platformLanguageCode = MappedCodeForLanguage
@@ -1122,83 +1123,6 @@ public class DemographicDetailController extends BaseController {
 		}
 	}
 
-	/**
-	 * 
-	 * Loading the second demographic pane
-	 * 
-	 */
-	@FXML
-	private void gotoDocumentScanPage() {
-		try {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Loading the second demographic pane");
-
-			if (validateDemographicPane(demoGraphicPane)) {
-				LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()),
-						Integer.parseInt(dd.getText()));
-				dateOfBirth = Date.from(currentYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
-				SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_AGE_DATA,
-						dateOfBirth);
-				SessionContext.getInstance().getMapObject().put("dd", dd.getText());
-				SessionContext.getInstance().getMapObject().put("mm", mm.getText());
-				SessionContext.getInstance().getMapObject().put("yyyy", yyyy.getText());
-			}
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - COULD NOT GO TO SECOND DEMOGRAPHIC PANE", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-		}
-	}
-
-	/**
-	 * 
-	 * Validates the fields of demographic pane1
-	 * 
-	 */
-	public boolean validateDemographicPane(AnchorPane paneToValidate) {
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Validating the fields in demographic pane");
-
-		boolean gotoNext = true;
-		List<String> excludedIds = new ArrayList<String>();
-		excludedIds.add("preRegistrationId");
-		excludedIds.add("virtualKeyboard");
-
-		validation.setChild(isChild);
-		validation.setValidationMessage();
-		gotoNext = validation.validate(paneToValidate, excludedIds, gotoNext, masterSync);
-		/*
-		 * if(gotoNext) gotoNext = validation.validateUinOrRid(uinId, isChild,
-		 * uinValidator, ridValidator);
-		 */ displayValidationMessage(validation.getValidationMessage().toString());
-
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Validated the fields");
-		return gotoNext;
-	}
-	
-	/**
-	 * Display the validation failure messages
-	 */
-	private void displayValidationMessage(String validationMessage) {
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Showing the validatoin message");
-		if (validationMessage.length() > 0) {
-			TextArea view = new TextArea(validationMessage);
-			view.setEditable(false);
-			Scene scene = new Scene(new StackPane(view), 300, 200);
-			Stage primaryStage = new Stage();
-			primaryStage.setTitle("Invalid input");
-			primaryStage.setScene(scene);
-			primaryStage.sizeToScene();
-			primaryStage.initModality(Modality.WINDOW_MODAL);
-			primaryStage.initOwner(fXComponents.getStage());
-			primaryStage.show();
-
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Validatoin message shown successfully");
-		}
-	}
-
 	public void clickMe() {
 		SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED,
 				RegistrationConstants.ENABLE);
@@ -1221,7 +1145,7 @@ public class DemographicDetailController extends BaseController {
 		cniOrPinNumber.setText("012345678901234567890123456789");
 		parentName.setText("Mokhtar");
 		uinId.setText("93939939");
-		displayValidationMessage(validation.getValidationMessage().toString());
+		registrationController.displayValidationMessage(validation.getValidationMessage().toString());
 		SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED,
 				RegistrationConstants.DISABLE);
 	}
@@ -1231,18 +1155,44 @@ public class DemographicDetailController extends BaseController {
 		fetchBtn.setVisible(false);
 		SessionContext.getInstance().getMapObject().put("demoGraphicPaneContent", demoGraphicPane);
 	}
-	
+
 	@FXML
 	private void back() {
 		goToHomePageFromRegistration();
 	}
-	
+
 	@FXML
 	private void next() {
-		SessionContext.getInstance().getMapObject().put("demographicDetail",false);
-		SessionContext.getInstance().getMapObject().put("documentScan",true);
-		registrationController.showCurrentPage();
+		if (validateThisPane()) {
+
+				if (!switchedOn.get()) {
+					LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()),
+							Integer.parseInt(mm.getText()), Integer.parseInt(dd.getText()));
+					dateOfBirth = Date.from(currentYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
+					SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_AGE_DATA,
+							dateOfBirth);
+					SessionContext.getInstance().getMapObject().put("dd", dd.getText());
+					SessionContext.getInstance().getMapObject().put("mm", mm.getText());
+					SessionContext.getInstance().getMapObject().put("yyyy", yyyy.getText());
+				}
+				SessionContext.getInstance().getMapObject().put("demographicDetail", false);
+				SessionContext.getInstance().getMapObject().put("documentScan", true);
+				registrationController.showCurrentPage();
+			
+		}
 
 	}
 	
+	public boolean validateThisPane() {
+		boolean isValid=true;
+		isValid=registrationController.validateDemographicPane(demoGraphicPane);
+		if (isValid)
+			isValid = validation.validateUinOrRid(uinId, isChild, uinValidator, ridValidator);
+		registrationController.displayValidationMessage(validation.getValidationMessage().toString());
+
+		return isValid;
+
+		
+	}
+
 }
