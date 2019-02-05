@@ -27,6 +27,8 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
+import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
+import io.mosip.kernel.syncdata.dto.response.RegistrationCenterUserResponseDto;
 import io.mosip.kernel.syncdata.entity.Application;
 import io.mosip.kernel.syncdata.entity.BiometricAttribute;
 import io.mosip.kernel.syncdata.entity.BiometricType;
@@ -85,7 +87,9 @@ import io.mosip.kernel.syncdata.repository.TemplateRepository;
 import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
 import io.mosip.kernel.syncdata.repository.TitleRepository;
 import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
+import io.mosip.kernel.syncdata.service.RegistrationCenterUserService;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
+import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -178,12 +182,20 @@ public class SyncDataIntegrationTest {
 	private ValidDocumentRepository validDocumentRepository;
 	@MockBean
 	private ReasonListRepository reasonListRepository;
-
+	
+	@MockBean
+    private RegistrationCenterUserService registrationCenterUserService;
+	
 	@MockBean
 	private RegistrationCenterUserRepository registrationCenterUserRepository;
 	
 	@Autowired
 	private SyncRolesService syncRolesService;
+	
+	@Autowired
+    private SyncUserDetailsService syncUserDetailsService;
+	
+	
 
 	@Before
 	public void setup() {
@@ -651,6 +663,26 @@ public class SyncDataIntegrationTest {
 		syncRolesService.getAllRoles();
 	}
 	
+	//------------------------------------------UserDetails--------------------------//
 	
+	@Test
+	public void getAllUserDetail()
+	{
+		String regId = "10044";
+		RegistrationCenterUserResponseDto registrationCenterUserResponseDto = new RegistrationCenterUserResponseDto();
+		List<RegistrationCenterUserDto> registrationCenterUserDtos = new ArrayList<>();
+		RegistrationCenterUserDto registrationCenterUserDto = new RegistrationCenterUserDto();
+		registrationCenterUserDto.setIsActive(true);
+		registrationCenterUserDto.setRegCenterId(regId);
+		registrationCenterUserDto.setUserId("M10411022");
+		registrationCenterUserDtos.add(registrationCenterUserDto);
+		registrationCenterUserResponseDto.setRegistrationCenterUsers(registrationCenterUserDtos);
+		
+		when(registrationCenterUserService.getUsersBasedOnRegistrationCenterId(regId)).thenReturn(registrationCenterUserResponseDto);
+		
+		MockRestServiceServer mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build();
+		mockRestServiceServer.expect(requestTo("http://localhost:8092/ldapmanager/userdetails".toString())).andRespond(withSuccess());
+		syncUserDetailsService.getAllUserDetail(regId);
+	}
 
 }
