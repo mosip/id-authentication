@@ -70,7 +70,7 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 		uriParams = new HashMap<>();
 		uriParams.put("applicationId", "REGISTRATION");
 		builder = UriComponentsBuilder.fromUriString(publicKeyUrl)
-				.queryParam("timeStamp", "2018-12-06T12:07:44.403")
+				.queryParam("timeStamp", "2018-12-06T12:07:44.403Z")
 				.queryParam("referenceId","ref123");
 		
 	}

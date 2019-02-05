@@ -1,25 +1,33 @@
+package io.mosip.kernel.cbeffutil.test;
 
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bouncycastle.util.encoders.Base64;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.cbeffutil.common.CbeffISOReader;
 import io.mosip.kernel.cbeffutil.entity.BDBInfo;
@@ -28,18 +36,39 @@ import io.mosip.kernel.cbeffutil.entity.BIRInfo;
 import io.mosip.kernel.cbeffutil.jaxbclasses.ProcessedLevelType;
 import io.mosip.kernel.cbeffutil.jaxbclasses.PurposeType;
 import io.mosip.kernel.cbeffutil.jaxbclasses.SingleType;
+import io.mosip.kernel.cbeffutil.service.CbeffI;
 import io.mosip.kernel.cbeffutil.service.impl.CbeffImpl;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class CbeffImplTest {
+	
+	@Autowired
+	private CbeffI cbeffImpl;
+	
+	/*
+	 * XSD storage path from config server
+	 * */
+	
+	@Value("${mosip.kernel.xsdstorage-uri}")
+	private String configServerFileStorageURL;
+	
+	/*
+	 * XSD file name
+	 * */
+	
+	@Value("${mosip.kernel.xsdfile}")
+	private String schemaName;
 
+	
 	private List<BIR> createList;
 	private List<BIR> updateList;
-	private static final String tempPath = "./src/main/resources";
+	private static final String localpath = "./src/main/resources";
 
 	@Before
 	public void setUp() throws Exception {
-		byte[] fingerImg = CbeffISOReader.readISOImage(tempPath + "/images/" + "ISOImage.iso", "Finger");
-		byte[] irisImg = CbeffISOReader.readISOImage(tempPath + "/images/" + "Sample_IRIS.iso", "Iris");
+		byte[] fingerImg = CbeffISOReader.readISOImage(localpath + "/images/" + "ISOImage.iso", "Finger");
+		byte[] irisImg = CbeffISOReader.readISOImage(localpath + "/images/" + "Sample_IRIS.iso", "Iris");
 		BIR rFinger = new BIR.BIRBuilder().withBdb(fingerImg)
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(7))
@@ -122,8 +151,6 @@ public class CbeffImplTest {
 
 	@Test
 	public void testCreateXML() throws Exception {
-
-		CbeffImpl cbeffImpl = new CbeffImpl();
 		byte[] createXml = cbeffImpl.createXML(createList);
 		createXMLFile(createXml, "createCbeff");
 		assertEquals(new String(createXml), new String(readCreatedXML("createCbeff")));
@@ -131,17 +158,17 @@ public class CbeffImplTest {
 	}
 
 	private byte[] readCreatedXML(String name) throws IOException {
-		byte[] fileContent = Files.readAllBytes(Paths.get(tempPath + "/schema/" + name + ".xml"));
+		byte[] fileContent = Files.readAllBytes(Paths.get(localpath + "/schema/" + name + ".xml"));
 		return fileContent;
 	}
 
 	private byte[] readXSD(String name) throws IOException {
-		byte[] fileContent = Files.readAllBytes(Paths.get(tempPath + "/schema/" + name + ".xsd"));
+		byte[] fileContent = Files.readAllBytes(Paths.get(localpath + "/schema/" + name + ".xsd"));
 		return fileContent;
 	}
 
 	private static void createXMLFile(byte[] updatedXmlBytes, String name) throws Exception {
-		File tempFile = new File(tempPath + "/schema/" + name + ".xml");
+		File tempFile = new File(localpath + "/schema/" + name + ".xml");
 		FileOutputStream fos = new FileOutputStream(tempFile);
 		fos.write(updatedXmlBytes);
 		fos.close();
@@ -149,7 +176,6 @@ public class CbeffImplTest {
 
 	@Test
 	public void testUpdateXML() throws Exception {
-		CbeffImpl cbeffImpl = new CbeffImpl();
 		byte[] updateXml = cbeffImpl.updateXML(updateList, readCreatedXML("createCbeff"));
 		createXMLFile(updateXml, "updateCbeff");
 		assertEquals(new String(updateXml), new String(readCreatedXML("updateCbeff")));
@@ -157,13 +183,32 @@ public class CbeffImplTest {
 
 	@Test
 	public void testValidateXML() throws IOException, Exception {
-		CbeffImpl cbeffImpl = new CbeffImpl();
-		assertTrue(cbeffImpl.validateXML(readCreatedXML("createCbeff"), readXSD("cbeff")));
+		assertTrue(cbeffImpl.validateXML(readCreatedXML("createCbeff"), getXSDfromConfigServer()));
+	}
+	
+	private byte[] getXSDfromConfigServer() throws URISyntaxException, IOException {
+		InputStream input = new URL(configServerFileStorageURL+schemaName).openStream();
+		byte[] fileContent = readbytesFromStream(input);
+		return fileContent;
+	}
+	
+	private byte[] readbytesFromStream(InputStream inputStream) throws IOException {
+		 ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+		  // this is storage overwritten on each iteration with bytes
+		  int bufferSize = 1024;
+		  byte[] buffer = new byte[bufferSize];
+		  // we need to know how may bytes were read to write them to the byteBuffer
+		  int len = 0;
+		  while ((len = inputStream.read(buffer)) != -1) {
+		    byteBuffer.write(buffer, 0, len);
+		  }
+		  // and then we can return your byte array.
+		  return byteBuffer.toByteArray();
+
 	}
 
 	@Test
 	public void testGetBDBBasedOnType() throws IOException, Exception {
-		CbeffImpl cbeffImpl = new CbeffImpl();
 		Map<String,String> testMap = cbeffImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), "FMR", "Right");
 		Set<String> testSet1 = new HashSet<>();
 		testSet1.add("FINGER_Right_2");
