@@ -68,8 +68,6 @@ public class TemplateGenerator extends BaseService {
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(TemplateGenerator.class);
 
-	protected ApplicationContext applicationContext = ApplicationContext.getApplicationContext();
-
 	@Autowired
 	QrCodeGenerator<QrVersion> qrCodeGenerator;
 
@@ -93,8 +91,8 @@ public class TemplateGenerator extends BaseService {
 					RegistrationConstants.APPLICATION_ID,
 					"generateTemplate had been called for preparing Acknowledgement Template.");
 
-			ResourceBundle localProperties = applicationContext.getLocalLanguageProperty();
-			ResourceBundle applicationLanguageProperties = applicationContext.getApplicationLanguageBundle();
+			ResourceBundle localProperties = ApplicationContext.localLanguageProperty();
+			ResourceBundle applicationLanguageProperties = ApplicationContext.applicationLanguageBundle();
 
 			// Reader templateReader = new BufferedReader(
 			// new InputStreamReader(new ByteArrayInputStream(templateText.getBytes())));
@@ -105,8 +103,8 @@ public class TemplateGenerator extends BaseService {
 			Map<String, Object> templateValues = new HashMap<>();
 			ByteArrayOutputStream byteArrayOutputStream = null;
 
-			String platformLanguageCode = ApplicationContext.getApplicationContext().getApplicationLanguage().toLowerCase();
-			String localLanguageCode = ApplicationContext.getApplicationContext().getLocalLanguage().toLowerCase();
+			String platformLanguageCode = ApplicationContext.applicationLanguage().toLowerCase();
+			String localLanguageCode = ApplicationContext.localLanguage().toLowerCase();
 
 			// Populating Template Labels in Primary Language
 			templateValues.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID_USER_LANG_LABEL,
@@ -457,7 +455,7 @@ public class TemplateGenerator extends BaseService {
 							.mapToInt(capturedFinger -> capturedFinger.getSegmentedFingerprints().size()).sum(),
 					capturedIris.size() };
 
-			if (applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+			if (ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
 					.equals(RegistrationConstants.ENABLE)) {
 				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED,
 						"Iris (" + fingersAndIrises[1] + "), Face");
@@ -517,7 +515,7 @@ public class TemplateGenerator extends BaseService {
 			TemplateManagerBuilder templateManagerBuilder) throws RegBaseCheckedException {
 
 		try {
-			String applicationLanguageCode = ApplicationContext.getApplicationContext().getApplicationLanguage().toLowerCase();
+			String applicationLanguageCode = ApplicationContext.applicationLanguage().toLowerCase();
 			InputStream is = new ByteArrayInputStream(templateText.getBytes());
 			Map<String, Object> values = new LinkedHashMap<>();
 

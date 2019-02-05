@@ -1,10 +1,12 @@
 package io.mosip.registration.context;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 
@@ -16,18 +18,19 @@ public class SessionContext {
 
 	}
 
-	private  UUID id;
+	private UUID id;
 	private static UserContext userContext;
 	private Date loginTime;
-	private  long refreshedLoginTime;
-	private  long timeoutInterval;
-	private  long idealTime;
-	private  Map<String, Object> mapObject;
+	private long refreshedLoginTime;
+	private long timeoutInterval;
+	private long idealTime;
+	private Map<String, Object> mapObject;
 
 	public static SessionContext getInstance() {
-		if(sessionContext == null) {
+		if (sessionContext == null) {
 			sessionContext = new SessionContext();
 			sessionContext.setId(UUID.randomUUID());
+			sessionContext.setMapObject(new HashMap<>());
 			userContext = sessionContext.new UserContext();
 			return sessionContext;
 		} else {
@@ -35,55 +38,99 @@ public class SessionContext {
 		}
 	}
 
-	public static SessionContext getSessionContext() {
-		return sessionContext;
+	public static Map<String, Object> map() {
+		return sessionContext.getMapObject();
+	}
+
+	public static UserContext userContext() {
+		return sessionContext.getUserContext();
+	}
+
+	public static Map<String, Object> userMap() {
+		return sessionContext.getUserContext().getUserMap();
+	}
+
+	public static long refreshedLoginTime() {
+		return sessionContext.getRefreshedLoginTime();
+	}
+
+	public static Date loginTime() {
+		return sessionContext.getLoginTime();
+	}
+
+	public static long timeoutInterval() {
+		return sessionContext.getTimeoutInterval();
+	}
+
+	public static long idealTime() {
+		return sessionContext.getIdealTime();
+	}
+
+	public static String userId() {
+		if (sessionContext == null || sessionContext.getUserContext().getUserId() == null) {
+			return RegistrationConstants.AUDIT_DEFAULT_USER;
+		} else {
+			return sessionContext.getUserContext().getUserId();
+		}
+	}
+
+	public static String userName() {
+		if (sessionContext == null || sessionContext.getUserContext().getName() == null) {
+			return RegistrationConstants.AUDIT_DEFAULT_USER;
+		} else {
+			return sessionContext.getUserContext().getName();
+		}
+	}
+
+	public static boolean isSessionContextAvailable() {
+		return sessionContext != null;
 	}
 
 	public UUID getId() {
 		return id;
 	}
 
-	public  void setId(UUID id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 
-	public  UserContext getUserContext() {
+	public UserContext getUserContext() {
 		return userContext;
 	}
 
-	public  Date getLoginTime() {
+	public Date getLoginTime() {
 		return loginTime;
 	}
 
-	public  void setLoginTime(Date loginTime) {
+	public void setLoginTime(Date loginTime) {
 		this.loginTime = loginTime;
 	}
 
-	public  long getRefreshedLoginTime() {
+	public long getRefreshedLoginTime() {
 		return refreshedLoginTime;
 	}
 
-	public  void setRefreshedLoginTime(long refreshedLoginTime) {
+	public void setRefreshedLoginTime(long refreshedLoginTime) {
 		this.refreshedLoginTime = refreshedLoginTime;
 	}
 
-	public  long getTimeoutInterval() {
+	public long getTimeoutInterval() {
 		return timeoutInterval;
 	}
 
-	public  void setTimeoutInterval(long timeoutInterval) {
+	public void setTimeoutInterval(long timeoutInterval) {
 		this.timeoutInterval = timeoutInterval;
 	}
 
-	public  long getIdealTime() {
+	public long getIdealTime() {
 		return idealTime;
 	}
 
-	public  void setIdealTime(long idealTime) {
+	public void setIdealTime(long idealTime) {
 		this.idealTime = idealTime;
 	}
 
-	public  Map<String, Object> getMapObject() {
+	public Map<String, Object> getMapObject() {
 		return mapObject;
 	}
 

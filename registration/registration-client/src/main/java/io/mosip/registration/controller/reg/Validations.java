@@ -70,9 +70,9 @@ public class Validations extends BaseController {
 			noAlert.add("postalCode");
 			noAlert.add("cniOrPinNumber");
 			validationMessage = new StringBuilder();
-			validationBundle = ApplicationContext.getApplicationContext().getApplicationLanguagevalidationBundle();
-			messageBundle = ApplicationContext.getApplicationContext().getApplicationMessagesBundle();
-			labelBundle = ApplicationContext.getApplicationContext().getApplicationLanguageBundle();
+			validationBundle = ApplicationContext.applicationLanguageValidationBundle();
+			messageBundle = ApplicationContext.applicationMessagesBundle();
+			labelBundle = ApplicationContext.applicationLanguageBundle();
 		} catch (RuntimeException exception) {
 			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 		}
@@ -82,10 +82,10 @@ public class Validations extends BaseController {
 	@PostConstruct
 	public void setResourceBundle() {
 		getGlobalParams();
-		ApplicationContext.getApplicationContext().loadResourceBundle();
-		validationBundle = ApplicationContext.getApplicationContext().getApplicationLanguagevalidationBundle();
-		messageBundle = ApplicationContext.getApplicationContext().getApplicationMessagesBundle();
-		labelBundle = ApplicationContext.getApplicationContext().getApplicationLanguageBundle();
+		ApplicationContext.loadResources();
+		validationBundle = ApplicationContext.applicationLanguageValidationBundle();
+		messageBundle = ApplicationContext.applicationMessagesBundle();
+		labelBundle = ApplicationContext.applicationLanguageBundle();
 	}
 	
 	/**
@@ -118,9 +118,10 @@ public class Validations extends BaseController {
 				&& !(node instanceof Button) && !(node instanceof Label);
 	}
 
-	public boolean validate(AnchorPane pane, List<String> notTovalidate, boolean isValid, MasterSyncService masterSync) {
-		this.blackListedWords=masterSync
-				.getAllBlackListedWords(ApplicationContext.getApplicationContext().getApplicationLanguage()).stream().map(b->b.getWord()).collect(Collectors.toList());
+	public boolean validate(AnchorPane pane, List<String> notTovalidate, boolean isValid,
+			MasterSyncService masterSync) {
+		this.blackListedWords = masterSync.getAllBlackListedWords(ApplicationContext.applicationLanguage()).stream()
+				.map(b -> b.getWord()).collect(Collectors.toList());
 		isConsolidated = AppConfig.getApplicationProperty(RegistrationConstants.IS_CONSOLIDATED);
 		return validateTheFields(pane, notTovalidate, isValid, isConsolidated);
 	}

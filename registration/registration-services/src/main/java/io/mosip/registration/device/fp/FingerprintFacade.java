@@ -214,12 +214,12 @@ public class FingerprintFacade {
 
 			List<BiometricExceptionDTO> biometricExceptionDTOs;
 
-			if ((boolean) SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
-				biometricExceptionDTOs = ((BiometricDTO) SessionContext.getSessionContext().getMapObject()
+			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+				biometricExceptionDTOs = ((BiometricDTO) SessionContext.map()
 						.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO()
 								.getBiometricExceptionDTO();
 			} else {
-				biometricExceptionDTOs = ((RegistrationDTO) SessionContext.getSessionContext().getMapObject()
+				biometricExceptionDTOs = ((RegistrationDTO) SessionContext.map()
 						.get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO().getApplicantBiometricDTO()
 								.getBiometricExceptionDTO();
 			}

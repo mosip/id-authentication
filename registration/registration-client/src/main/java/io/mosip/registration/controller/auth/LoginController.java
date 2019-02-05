@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -290,35 +291,26 @@ public class LoginController extends BaseController implements Initializable {
 							generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.ROLES_EMPTY_ERROR);
 						} else {
 
-							if (SessionContext.getInstance().getMapObject() == null) {
+							Map<String, Object> sessionContextMap = SessionContext.getInstance().getMapObject();
 
-								HashMap<String, Object> sessionContextMap = new HashMap<>();
-								
-								SessionContext.getSessionContext().setMapObject(sessionContextMap);
+							sessionContextMap.put(RegistrationConstants.USER_STATION_ID, stationID);
 
-								sessionContextMap.put(RegistrationConstants.USER_STATION_ID,
-										stationID);
+							if (getCenterMachineStatus(userDetail)) {
+								sessionContextMap.put(RegistrationConstants.ONBOARD_USER, isNewUser);
+								sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
+								loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList);
+							} else {
+								sessionContextMap.put(RegistrationConstants.ONBOARD_USER, true);
+								sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
 
-								if (getCenterMachineStatus(userDetail)) {
-									sessionContextMap.put(RegistrationConstants.ONBOARD_USER,
-											isNewUser);
-									sessionContextMap
-											.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
-									loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList);
-								} else {
-									sessionContextMap.put(RegistrationConstants.ONBOARD_USER,
-											true);
-									sessionContextMap
-											.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
-									
-									loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), RegistrationConstants.getRoles());
-								}
+								loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(),
+										RegistrationConstants.getRoles());
+							}
 
-								if (loginList.size() > 1 && applicationContext.getApplicationMap()
-										.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-										.equals(RegistrationConstants.ENABLE)) {
-									loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.BIO));
-								}
+							if (loginList.size() > 1 && applicationContext.getApplicationMap()
+									.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+									.equals(RegistrationConstants.ENABLE)) {
+								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.BIO));
 							}
 
 							String loginMode = !loginList.isEmpty() ? loginList.get(RegistrationConstants.PARAM_ZERO)
@@ -380,7 +372,7 @@ public class LoginController extends BaseController implements Initializable {
 		userDTO.setPassword(password.getText());
 
 		// TODO for temporary fix , but later userDto should be getting from session
-		ApplicationContext.getApplicationContext().getApplicationMap().put("userDTO", userDTO);
+		ApplicationContext.map().put("userDTO", userDTO);
 
 		boolean serverStatus = getConnectionCheck(userDTO);
 		boolean offlineStatus = false;

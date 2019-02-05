@@ -302,7 +302,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 			try {
 
 				if (!String
-						.valueOf(ApplicationContext.getApplicationContext().getApplicationMap()
+						.valueOf(ApplicationContext.map()
 								.get(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG))
 						.equals(RegistrationConstants.ENABLE)) {
 					updatePacketStatus();
@@ -343,7 +343,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 								.with(location -> location.setRegion(identity.getRegion().get(0).getValue()))
 								.with(location -> location.setPostalCode(identity.getPostalCode())).get()))
 						.get();
-				Map<String, Object> addr = SessionContext.getSessionContext().getMapObject();
+				Map<String, Object> addr = SessionContext.map();
 				addr.put("PrevAddress", addressDTO);
 			}
 		}
@@ -393,7 +393,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 	}
 
 	private RegistrationDTO getRegistrationDTOFromSession() {
-		return (RegistrationDTO) SessionContext.getSessionContext().getMapObject()
+		return (RegistrationDTO) SessionContext.map()
 				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
 }

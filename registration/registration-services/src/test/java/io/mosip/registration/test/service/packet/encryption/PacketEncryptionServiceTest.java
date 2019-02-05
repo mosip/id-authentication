@@ -82,11 +82,11 @@ public class PacketEncryptionServiceTest {
 		
 		ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
 		PowerMockito.mockStatic(ApplicationContext.class);
-		PowerMockito.when(ApplicationContext.getApplicationContext()).thenReturn(applicationContext);
 		
 		Map<String, Object> globalParams = new HashMap<>();
 		globalParams.put("MAX_REG_PACKET_SIZE", "1");
 		PowerMockito.when(applicationContext.getApplicationMap()).thenReturn(globalParams);
+		PowerMockito.when(ApplicationContext.map()).thenReturn(globalParams);
 	}
 
 	@Test

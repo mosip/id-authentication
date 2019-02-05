@@ -42,13 +42,6 @@ public class AuditFactoryImpl implements AuditFactory {
 	public void audit(AuditEvent auditEventEnum, Components appModuleEnum, String auditDescription, String refId,
 			String refIdType) {
 
-		// Get UserContext Object from SessionContext
-		SessionContext sessionContext = SessionContext.getSessionContext();
-		String userId = sessionContext == null || sessionContext.getUserContext().getUserId() == null ? "NA"
-				: sessionContext.getUserContext().getUserId();
-		String userName = sessionContext == null || sessionContext.getUserContext().getName() == null ? "NA"
-				: sessionContext.getUserContext().getName(); 
-
 		// Getting Host IP Address and Name
 		String hostIP = null;
 		String hostName = null;
@@ -65,11 +58,11 @@ public class AuditFactoryImpl implements AuditFactory {
 		auditRequestBuilder.setActionTimeStamp(LocalDateTime.now())
 				.setApplicationId(environment.getProperty(RegistrationConstants.AUDIT_APPLICATION_ID))
 				.setApplicationName(environment.getProperty(RegistrationConstants.AUDIT_APPLICATION_NAME))
-				.setCreatedBy(userName).setDescription(auditDescription).setEventId(auditEventEnum.getId())
-				.setEventName(auditEventEnum.getName()).setEventType(auditEventEnum.getType()).setHostIp(hostIP)
-				.setHostName(hostName).setId(refId).setIdType(refIdType).setModuleId(appModuleEnum.getId())
-				.setModuleName(appModuleEnum.getName()).setSessionUserId(userId)
-				.setSessionUserName(userName);
+				.setCreatedBy(SessionContext.userName()).setDescription(auditDescription)
+				.setEventId(auditEventEnum.getId()).setEventName(auditEventEnum.getName())
+				.setEventType(auditEventEnum.getType()).setHostIp(hostIP).setHostName(hostName).setId(refId)
+				.setIdType(refIdType).setModuleId(appModuleEnum.getId()).setModuleName(appModuleEnum.getName())
+				.setSessionUserId(SessionContext.userId()).setSessionUserName(SessionContext.userName());
 		auditHandler.addAudit(auditRequestBuilder.build());
 	}
 }

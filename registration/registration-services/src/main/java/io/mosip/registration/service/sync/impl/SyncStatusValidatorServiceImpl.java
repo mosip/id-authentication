@@ -148,8 +148,8 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 			auditFactory.audit(AuditEvent.PENDING_PKT_CNT_VALIDATE, Components.SYNC_VALIDATE,
 					"Validating the count of packets of status Registered with configured value", "refId", "refIdType");
 
-			if (registrationDetails.size() > Integer.parseInt(String.valueOf(ApplicationContext.getApplicationContext()
-					.getApplicationMap().get(RegistrationConstants.REG_PAK_MAX_CNT_APPRV_LIMIT)))) {
+			if (registrationDetails.size() > Integer.parseInt(
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PAK_MAX_CNT_APPRV_LIMIT)))) {
 
 				getErrorResponse(RegistrationConstants.PAK_APPRVL_MAX_CNT,
 						RegistrationConstants.REG_PKT_APPRVL_CNT_EXCEED, RegistrationConstants.ERROR,
@@ -269,7 +269,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	private boolean isCapturedForTheDay() {
 
 		// TODO : lastCapturedTime - get this from application context....
-		Map<String, Object> map = SessionContext.getSessionContext().getMapObject();
+		Map<String, Object> map = SessionContext.map();
 		Instant lastCapturedTime = (Instant) map.get(RegistrationConstants.OPT_TO_REG_LAST_CAPTURED_TIME);
 
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
@@ -290,10 +290,10 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Validating the geo location of machine w.r.t registration center started");
 
-		double centerLatitude = Double.parseDouble(SessionContext.getSessionContext().getUserContext()
+		double centerLatitude = Double.parseDouble(SessionContext.userContext()
 				.getRegistrationCenterDetailDTO().getRegistrationCenterLatitude());
 
-		double centerLongitude = Double.parseDouble(SessionContext.getSessionContext().getUserContext()
+		double centerLongitude = Double.parseDouble(SessionContext.userContext()
 				.getRegistrationCenterDetailDTO().getRegistrationCenterLongitude());
 
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
@@ -315,7 +315,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 							errorResponseDTOList);
 				} else {
 
-					SessionContext.getSessionContext().getMapObject()
+					SessionContext.map()
 							.put(RegistrationConstants.OPT_TO_REG_LAST_CAPTURED_TIME, Instant.now());
 				}
 			} else if (RegistrationConstants.GPS_CAPTURE_FAILURE_MSG
@@ -369,7 +369,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 
 			/* This will subtract configured number of days from current Date */
 			Date differDate = new Date(new Date().getTime()
-					- (Long.parseLong(String.valueOf(ApplicationContext.getApplicationContext().getApplicationMap()
+					- (Long.parseLong(String.valueOf(ApplicationContext.map()
 							.get(RegistrationConstants.REG_PAK_MAX_TIME_APPRV_LIMIT))) * 24 * 3600 * 1000));
 
 			/* This will convert timestamp to Date */

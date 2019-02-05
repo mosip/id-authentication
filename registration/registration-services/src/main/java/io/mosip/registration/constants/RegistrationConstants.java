@@ -278,6 +278,7 @@ public class RegistrationConstants {
 	// Audit - Constants
 	public static final String AUDIT_APPLICATION_ID = "audit.applicationId";
 	public static final String AUDIT_APPLICATION_NAME = "audit.applicationName";
+	public static final String AUDIT_DEFAULT_USER = "NA";
 
 	// Default Host IP Address and Name for Audit Logs
 	public static final String HOST_IP = "audit.hostIP";

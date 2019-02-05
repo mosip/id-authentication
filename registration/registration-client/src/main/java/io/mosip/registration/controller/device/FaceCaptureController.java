@@ -94,7 +94,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 				"Loading of FaceCapture screen started");
 
 		if (capturePhotoUsingDevice.equals(RegistrationConstants.ENABLE)
-				|| (boolean) SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+				|| (boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			if (toggleBiometricException != null) {
 				if (toggleBiometricException) {
 					captureExceptionImage.setDisable(false);
@@ -103,7 +103,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 				}
 			}
 			// for applicant biometrics
-			if ((boolean) SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 
 				if (getBiometricDTOFromSession() != null && getBiometricDTOFromSession().getOperatorBiometricDTO()
 						.getFaceDetailsDTO().getFace() != null) {
@@ -209,7 +209,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private void saveBiometricDetails() {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "saving the details of applicant biometrics");
-		if ((boolean) SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			if (validateOperatorPhoto()) {
 				registrationController.saveBiometricDetails(applicantBufferedImage, exceptionBufferedImage);
 				if (getBiometricDTOFromSession().getOperatorBiometricDTO().getFaceDetailsDTO().getFace() != null) {
@@ -250,7 +250,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	@FXML
 	private void goToPreviousPane() {
-		if ((boolean) SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			if (validateOperatorPhoto()) {
 				registrationController.saveBiometricDetails(applicantBufferedImage, exceptionBufferedImage);
 				if (getBiometricDTOFromSession().getOperatorBiometricDTO().getFaceDetailsDTO().getFace() != null) {
@@ -276,12 +276,12 @@ public class FaceCaptureController extends BaseController implements Initializab
 			applicantBufferedImage = capturedImage;
 			applicantImageCaptured = true;
 			try {
-				if ((boolean) SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+				if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 					ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
 							byteArrayOutputStream);
 					byte[] photoInBytes = byteArrayOutputStream.toByteArray();
-					((BiometricDTO) SessionContext.getSessionContext().getMapObject()
+					((BiometricDTO) SessionContext.map()
 							.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO().getFaceDetailsDTO()
 									.setFace(photoInBytes);
 				}
@@ -317,7 +317,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "validating applicant biometrics");
 
-		toggleBiometricException = (Boolean) SessionContext.getSessionContext().getUserContext().getUserMap()
+		toggleBiometricException = (Boolean) SessionContext.userContext().getUserMap()
 				.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 
 		boolean imageCaptured = false;
@@ -364,7 +364,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	}
 
 	private RegistrationDTO getRegistrationDTOFromSession() {
-		return (RegistrationDTO) SessionContext.getSessionContext().getMapObject()
+		return (RegistrationDTO) SessionContext.map()
 				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
 
@@ -387,7 +387,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	}
 
 	private BiometricDTO getBiometricDTOFromSession() {
-		return (BiometricDTO) SessionContext.getSessionContext().getMapObject().get(RegistrationConstants.USER_ONBOARD_DATA);
+		return (BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA);
 	}
 
 	/**

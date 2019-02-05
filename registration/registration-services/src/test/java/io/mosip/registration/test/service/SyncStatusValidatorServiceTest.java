@@ -87,12 +87,12 @@ public class SyncStatusValidatorServiceTest {
 		
 		ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
 		PowerMockito.mockStatic(ApplicationContext.class);
-		PowerMockito.when(ApplicationContext.getApplicationContext()).thenReturn(applicationContext);
 
 		Map<String, Object> globalParams = new HashMap<>();
 		globalParams.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "1");
 		globalParams.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "1");
 		PowerMockito.when(applicationContext.getApplicationMap()).thenReturn(globalParams);
+		PowerMockito.when(ApplicationContext.map()).thenReturn(globalParams);
 	}
 
 	@Test
