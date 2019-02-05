@@ -6,7 +6,6 @@ package io.mosip.preregistration.application.service.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -20,6 +19,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -39,6 +39,7 @@ import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.util.CryptoUtil;
 
 /**
  * This class provides the utility methods for DemographicService
@@ -56,6 +57,9 @@ public class DemographicServiceUtil {
 	 */
 	private Logger log = LoggerConfiguration.logConfig(DemographicServiceUtil.class);
 
+	@Autowired
+	CryptoUtil cryptoUtil;
+
 	/**
 	 * This setter method is used to assign the initial demographic entity values to
 	 * the createDTO
@@ -70,8 +74,10 @@ public class DemographicServiceUtil {
 		DemographicResponseDTO createDto = new DemographicResponseDTO();
 		try {
 			createDto.setPreRegistrationId(demographicEntity.getPreRegistrationId());
-			createDto.setDemographicDetails((JSONObject) jsonParser
-					.parse(new String(demographicEntity.getApplicantDetailJson(), StandardCharsets.UTF_8)));
+			createDto.setDemographicDetails((JSONObject) jsonParser.parse(cryptoUtil
+					.decrypt(demographicEntity.getApplicantDetailJson(), demographicEntity.getEncryptedDateTime())
+					.toString()));
+
 			createDto.setStatusCode(demographicEntity.getStatusCode());
 			createDto.setLangCode(demographicEntity.getLangCode());
 			createDto.setCreatedBy(demographicEntity.getCreatedBy());
@@ -105,9 +111,10 @@ public class DemographicServiceUtil {
 		DemographicEntity demographicEntity = new DemographicEntity();
 		demographicEntity.setPreRegistrationId(demographicRequest.getPreRegistrationId());
 		demographicEntity.setGroupId("1234567890");
-		demographicEntity.setApplicantDetailJson(
-				demographicRequest.getDemographicDetails().toJSONString().getBytes(StandardCharsets.UTF_8));
-
+		LocalDateTime encryptionDateTime = DateUtils.getUTCCurrentDateTime();
+		byte[] encryptedDemographicDetails = cryptoUtil
+				.encrypt(demographicRequest.getDemographicDetails().toJSONString().getBytes(), encryptionDateTime);
+		demographicEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		demographicEntity.setLangCode(demographicRequest.getLangCode());
 		demographicEntity.setCrAppuserId(requestId);
 		try {
@@ -121,6 +128,8 @@ public class DemographicServiceUtil {
 					demographicEntity.setUpdatedBy(null);
 					demographicEntity.setUpdateDateTime(DateUtils
 							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
+					demographicEntity.setEncryptedDateTime(encryptionDateTime);
+					demographicEntity.setConsumed(Boolean.FALSE);
 				} else {
 					throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_APP_012.toString(),
 							ErrorMessages.MISSING_REQUEST_PARAMETER.toString());
@@ -136,6 +145,8 @@ public class DemographicServiceUtil {
 					demographicEntity.setUpdatedBy(demographicRequest.getUpdatedBy());
 					demographicEntity.setUpdateDateTime(DateUtils
 							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getUpdatedDateTime())));
+					demographicEntity.setEncryptedDateTime(encryptionDateTime);
+					demographicEntity.setConsumed(Boolean.FALSE);
 				} else {
 					throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_APP_012.toString(),
 							ErrorMessages.MISSING_REQUEST_PARAMETER.toString());
@@ -185,7 +196,8 @@ public class DemographicServiceUtil {
 	public String getValueFromIdentity(byte[] demographicData, String identityKey) throws ParseException {
 		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pre-registration service util ");
 		JSONParser jsonParser = new JSONParser();
-		JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(demographicData, StandardCharsets.UTF_8));
+		String decryptedString = cryptoUtil.decrypt(demographicData, DateUtils.getUTCCurrentDateTime());
+		JSONObject jsonObj = (JSONObject) jsonParser.parse(decryptedString);
 		JSONObject identityObj = (JSONObject) jsonObj.get(RequestCodes.IDENTITY.getCode());
 		JSONArray keyArr = (JSONArray) identityObj.get(identityKey);
 		JSONObject valueObj = (JSONObject) keyArr.get(0);
@@ -307,4 +319,5 @@ public class DemographicServiceUtil {
 				return true;
 		return false;
 	}
+
 }

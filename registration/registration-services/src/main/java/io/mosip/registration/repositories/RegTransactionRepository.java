@@ -12,4 +12,5 @@ import io.mosip.registration.entity.RegistrationTransaction;
  */
 public interface RegTransactionRepository extends BaseRepository<RegistrationTransaction, String> {
 
+	public void deleteByRegId(String regId);
 }

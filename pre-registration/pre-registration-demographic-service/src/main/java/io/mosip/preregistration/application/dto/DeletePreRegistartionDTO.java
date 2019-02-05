@@ -28,7 +28,7 @@ public class DeletePreRegistartionDTO implements Serializable {
 	private static final long serialVersionUID = 6705845720255847210L;
 
 	/** The pre-registration-Id. */
-	private String prId;
+	private String preRegistrationId;
 
 	/** The created by. */
 	private String deletedBy;

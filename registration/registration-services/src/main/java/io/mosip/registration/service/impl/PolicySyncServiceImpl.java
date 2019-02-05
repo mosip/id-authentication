@@ -72,7 +72,7 @@ public class PolicySyncServiceImpl implements PolicySyncService {
 	 * @see io.mosip.registration.service.PolicySyncService#fetchPolicy(centerId)
 	 */
 	@Override
-	public ResponseDTO fetchPolicy(String centerId) {
+	synchronized public ResponseDTO fetchPolicy() {
 		LOGGER.info("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"synch the public key is started");
 
@@ -137,7 +137,7 @@ public class PolicySyncServiceImpl implements PolicySyncService {
 		return response;
 	}
 
-	public void getPublicKey(LocalDateTime timeStamp, String referenceId)
+	synchronized public void getPublicKey(LocalDateTime timeStamp, String referenceId)
 			throws KeyManagementException, IOException, java.security.NoSuchAlgorithmException {
 
 		KeyStore keyStore = new KeyStore();

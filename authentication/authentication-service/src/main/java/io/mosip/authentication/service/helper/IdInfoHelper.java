@@ -465,6 +465,13 @@ public class IdInfoHelper implements IdInfoFetcher {
 		} else {
 			entityInfo = Collections.emptyMap();
 		}
+		if(null==entityInfo ||entityInfo.isEmpty()) {
+			Category category=matchType.getCategory();
+			if(category == Category.BIO){
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING);
+			}
+		}
+		
 		return entityInfo;
 	}
 

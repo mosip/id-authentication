@@ -23,9 +23,8 @@ import io.mosip.registration.dto.OtpGeneratorResponseDTO;
 import io.mosip.registration.util.restclient.RequestHTTPDTO;
 import io.mosip.registration.util.restclient.RestClientUtil;
 
-
 public class RestClientUtilTest {
-	
+
 	@Mock
 	RestTemplate restTemplate;
 	@Rule
@@ -33,23 +32,88 @@ public class RestClientUtilTest {
 
 	@InjectMocks
 	RestClientUtil restClientUtil;
-	
+
+	@Mock
+	RequestHTTPDTO requestHTTPDTO;
+
 	@Test
-	public void invokeTest() throws URISyntaxException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
-		OtpGeneratorResponseDTO generatorResponseDto=new OtpGeneratorResponseDTO();
+	public void invokeTest() throws URISyntaxException, HttpClientErrorException, HttpServerErrorException,
+			ResourceAccessException, SocketTimeoutException {
+		OtpGeneratorResponseDTO generatorResponseDto = new OtpGeneratorResponseDTO();
 		generatorResponseDto.setOtp("099977");
-		OtpGeneratorRequestDTO otpGeneratorRequestDTO=new OtpGeneratorRequestDTO();
+		OtpGeneratorRequestDTO otpGeneratorRequestDTO = new OtpGeneratorRequestDTO();
 		otpGeneratorRequestDTO.setKey("tutuy");
-		HttpEntity<?> httpEntity=new HttpEntity<OtpGeneratorRequestDTO>(otpGeneratorRequestDTO);
-		URI uri=new URI("http://localhost:8080/otpmanager/otps");
-		RequestHTTPDTO requestHTTPDTO=new RequestHTTPDTO();
+		HttpEntity<?> httpEntity = new HttpEntity<OtpGeneratorRequestDTO>(otpGeneratorRequestDTO);
+		URI uri = new URI("http://localhost:8080/otpmanager/otps");
+		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
 		requestHTTPDTO.setClazz(OtpGeneratorResponseDTO.class);
-		
+
 		requestHTTPDTO.setHttpEntity(httpEntity);
 		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
 		requestHTTPDTO.setUri(uri);
-		
+
 		Assert.assertNull(restClientUtil.invoke(requestHTTPDTO));
+	}
+
+	@Test
+	public void invokeHeadersTest() throws URISyntaxException, HttpClientErrorException, HttpServerErrorException,
+			ResourceAccessException, SocketTimeoutException {
+		OtpGeneratorResponseDTO generatorResponseDto = new OtpGeneratorResponseDTO();
+		generatorResponseDto.setOtp("099977");
+		OtpGeneratorRequestDTO otpGeneratorRequestDTO = new OtpGeneratorRequestDTO();
+		otpGeneratorRequestDTO.setKey("tutuy");
+		HttpEntity<?> httpEntity = new HttpEntity<OtpGeneratorRequestDTO>(otpGeneratorRequestDTO);
+		URI uri = new URI("http://localhost:8080/otpmanager/otps");
+		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
+		requestHTTPDTO.setClazz(OtpGeneratorResponseDTO.class);
+
+		requestHTTPDTO.setHttpEntity(httpEntity);
+		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
+		requestHTTPDTO.setUri(uri);
+
+		Assert.assertNull(restClientUtil.invokeHeaders(requestHTTPDTO));
+	}
+
+	@Test
+	public void invokeHeadersException() throws URISyntaxException, HttpClientErrorException, HttpServerErrorException,
+			ResourceAccessException, SocketTimeoutException {
+
+		OtpGeneratorResponseDTO generatorResponseDto = new OtpGeneratorResponseDTO();
+		generatorResponseDto.setOtp("099977");
+		OtpGeneratorRequestDTO otpGeneratorRequestDTO = new OtpGeneratorRequestDTO();
+		otpGeneratorRequestDTO.setKey("tutuy");
+		HttpEntity<?> httpEntity = new HttpEntity<OtpGeneratorRequestDTO>(otpGeneratorRequestDTO);
+		URI uri = new URI("https://localhost:8080/otpmanager/otps");
+		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
+		requestHTTPDTO.setClazz(OtpGeneratorResponseDTO.class);
+
+		requestHTTPDTO.setHttpEntity(httpEntity);
+		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
+		requestHTTPDTO.setUri(uri);
+
+		Assert.assertNull(restClientUtil.invokeHeaders(requestHTTPDTO));
+
+	}
+
+	@Test
+	public void invokeHeaderException() throws URISyntaxException, HttpClientErrorException, HttpServerErrorException,
+			ResourceAccessException, SocketTimeoutException {
+
+		OtpGeneratorResponseDTO generatorResponseDto = new OtpGeneratorResponseDTO();
+		generatorResponseDto.setOtp("099977");
+		OtpGeneratorRequestDTO otpGeneratorRequestDTO = new OtpGeneratorRequestDTO();
+		otpGeneratorRequestDTO.setKey("tutuy");
+		HttpEntity<?> httpEntity = new HttpEntity<OtpGeneratorRequestDTO>(otpGeneratorRequestDTO);
+		URI uri = new URI("https://localhost:8080/otpmanager/otps");
+		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
+		requestHTTPDTO.setClazz(OtpGeneratorResponseDTO.class);
+
+		requestHTTPDTO.setHttpEntity(httpEntity);
+		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
+		requestHTTPDTO.setUri(uri);
+
+		Assert.assertNull(restClientUtil.invokeHeaders(requestHTTPDTO));
+
 	}
 
 }

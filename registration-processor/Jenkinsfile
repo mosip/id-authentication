@@ -6,7 +6,7 @@ node {
  //def branch = env.NEXT_BRANCH_NAME
  def branch = '0.8.0'
  def projectToBuild = 'registration-processor'
- def dockerImagesTagVersion = branch  //This will ensure that docker images tag should have 1-1 relation ship with project version
+ def dockerImagesTagVersion = 'NaV'  //This will ensure that docker images tag should have 1-1 relation ship with project version
  def registryUrl = 'http://docker-registry.mosip.io:5000'
  def registryName = 'docker-registry.mosip.io:5000'
  def registryCredentials = '305c7f35-2eb5-44b4-b574-a0855ef70c26'
@@ -60,6 +60,12 @@ stage('----------- Publish build info -------------') {
  
 stage('-----------Docker image push and cleanup-----------') {
 	dir(branch) {
+		/*
+	finding parent pom version to create Docker tags
+	*/
+   pomFile = readMavenPom file: projectToBuild+'/pom.xml'
+   dockerImagesTagVersion = pomFile.parent.version
+   echo dockerImagesTagVersion
 			sh "find . -name 'Dockerfile'> directoryDockerFiles"
 			locationOfDockerFiles = readFile( "directoryDockerFiles" ).split( "\\r?\\n" );
 			sh "rm -f directoryDockerFiles"

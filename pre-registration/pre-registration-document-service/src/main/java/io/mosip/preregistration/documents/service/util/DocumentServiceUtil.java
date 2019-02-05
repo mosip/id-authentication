@@ -69,7 +69,7 @@ public class DocumentServiceUtil {
 	 */
 	@Value("${max.file.size}")
 	private int maxFileSize;
-
+	
 	/**
 	 * Reference for ${file.extension} from property file
 	 */
@@ -164,6 +164,7 @@ public class DocumentServiceUtil {
 		documentEntity.setCrDtime(DateUtils.parseDateToLocalDateTime(new Date()));
 		documentEntity.setUpdBy(dto.getUploadBy());
 		documentEntity.setUpdDtime(DateUtils.parseDateToLocalDateTime(dto.getUploadDateTime()));
+		documentEntity.setEncryptedDateTime(DateUtils.parseDateToLocalDateTime(dto.getUploadDateTime()));
 		return documentEntity;
 	}
 

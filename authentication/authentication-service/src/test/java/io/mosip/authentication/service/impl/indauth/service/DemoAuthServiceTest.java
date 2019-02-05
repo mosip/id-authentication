@@ -1,5 +1,6 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -156,9 +157,9 @@ public class DemoAuthServiceTest {
 		Map<String, Object> matchProperties = new HashMap<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
-		DeviceInfo deviceInfo1=null;
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR,
-				MatchingStrategyType.PARTIAL.getType(), 60, matchProperties,deviceInfo, "fre"));
+		DeviceInfo deviceInfo1 = null;
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR, MatchingStrategyType.PARTIAL.getType(),
+				60, matchProperties, deviceInfo, "fre"));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
@@ -269,20 +270,20 @@ public class DemoAuthServiceTest {
 		// authRequestDTO.setVer("1.0");
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
-		DeviceInfo deviceInfo1=null;
+		DeviceInfo deviceInfo1 = null;
 		Map<String, Object> matchProperties = new HashMap<>();
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE1,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo,"fre"));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties, deviceInfo, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE2,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo,"fre"));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties, deviceInfo, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE3,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo,"fre"));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties, deviceInfo, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION1,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo,"fre"));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties, deviceInfo, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION2,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo,"fre"));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties, deviceInfo, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION3,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo,"fre"));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties, deviceInfo, "fre"));
 //		listMatchInputsExp.add(new MatchInput(DemoMatchType.PINCODE_SEC, MatchingStrategyType.EXACT.getType(), 100));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
@@ -360,20 +361,20 @@ public class DemoAuthServiceTest {
 		// authRequestDTO.setVer("1.0");
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
-		DeviceInfo deviceInfo1=null;
+		DeviceInfo deviceInfo1 = null;
 		Map<String, Object> matchProperties = new HashMap<>();
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.NAME,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo,"fre"));
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.NAME, MatchingStrategyType.EXACT.getType(),
+				100, matchProperties, deviceInfo, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.AGE, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties,deviceInfo,"fre"));
+				100, matchProperties, deviceInfo, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.DOB, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties,deviceInfo,"fre"));
+				100, matchProperties, deviceInfo, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.EMAIL, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties,deviceInfo,"fre"));
+				100, matchProperties, deviceInfo, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.PHONE, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties,deviceInfo,"fre"));
+				100, matchProperties, deviceInfo, "fre"));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.GENDER, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties,deviceInfo,"fre"));
+				100, matchProperties, deviceInfo, "fre"));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
@@ -599,7 +600,7 @@ public class DemoAuthServiceTest {
 		mockenv.setProperty("mosip.supported-languages", "eng,ara,fre");
 		ReflectionTestUtils.setField(actualidInfoHelper, "environment", mockenv);
 		AuthStatusInfo validateBioDetails = demoAuthServiceImpl.getDemoStatus(authRequestDTO, uin, demoIdentity);
-		assertTrue(validateBioDetails.isStatus());
+		assertFalse(validateBioDetails.isStatus());
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -667,7 +668,7 @@ public class DemoAuthServiceTest {
 		requestDTO.setIdentity(identity);
 		authRequestDTO.setRequest(requestDTO);
 		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
-		demoEntity.put("fullName", nameList);
+		demoEntity.put("name", nameList);
 		AuthStatusInfo demoStatus = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "274390482564", demoEntity);
 
 	}
