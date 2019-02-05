@@ -125,8 +125,9 @@ public class ServiceDelegateUtil {
 			}
 
 			responseMap = restClientUtil.invoke(requestHTTPDTO);
-			if (null != responseMap && responseMap.size() > 0 && null != responseMap.get("responseBody")) {
-				responseBody = responseMap.get("responseBody");
+			if (null != responseMap && responseMap.size() > 0
+					&& null != responseMap.get(RegistrationConstants.REST_RESPONSE_BODY)) {
+				responseBody = responseMap.get(RegistrationConstants.REST_RESPONSE_BODY);
 			}
 			LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
 					"Get method has been ended");
@@ -179,8 +180,9 @@ public class ServiceDelegateUtil {
 						baseCheckedException.getMessage());
 			}
 			responseMap = restClientUtil.invoke(requestDto);
-			if (null != responseMap && responseMap.size() > 0 && null != responseMap.get("responseBody")) {
-				responseBody = responseMap.get("responseBody");
+			if (null != responseMap && responseMap.size() > 0
+					&& null != responseMap.get(RegistrationConstants.REST_RESPONSE_BODY)) {
+				responseBody = responseMap.get(RegistrationConstants.REST_RESPONSE_BODY);
 			}
 			LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME, APPLICATION_ID,
 					"post method ended");
@@ -449,11 +451,12 @@ public class ServiceDelegateUtil {
 
 		if (null != responseMap && responseMap.size() > 0) {
 
-			responseHeader = (HttpHeaders) responseMap.get("responseHeader");
+			responseHeader = (HttpHeaders) responseMap.get(RegistrationConstants.REST_RESPONSE_HEADERS);
 
-			if (null != responseHeader.get("authorization") && null != responseHeader.get("authorization").get(0)) {
+			if (null != responseHeader.get(RegistrationConstants.REST_AUTHORIZATION)
+					&& null != responseHeader.get(RegistrationConstants.REST_AUTHORIZATION).get(0)) {
 
-				oAuthToken = responseHeader.get("authorization").get(0);
+				oAuthToken = responseHeader.get(RegistrationConstants.REST_AUTHORIZATION).get(0);
 
 			}
 		}

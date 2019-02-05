@@ -943,12 +943,15 @@ public class RegistrationConstants {
 	
 	//Rest Authentication Constants
 	
-	public static final String USER_DTO="userDTO";
-	public static final String REST_OAUTH="oauth";
-	public static final String REST_OAUTH_USER_NAME="userName";
-	public static final String REST_OAUTH_USER_PSWD="password";
-	public static final String REST_OAUTH_ERROR_CODE="REST-OAUTH-001";
-	public static final String REST_OAUTH_ERROR_MSG="Internal Server Error";
+	public static final String USER_DTO = "userDTO";
+	public static final String REST_OAUTH = "oauth";
+	public static final String REST_OAUTH_USER_NAME = "userName";
+	public static final String REST_OAUTH_USER_PSWD = "password";
+	public static final String REST_OAUTH_ERROR_CODE = "REST-OAUTH-001";
+	public static final String REST_OAUTH_ERROR_MSG = "Internal Server Error";
+	public static final String REST_AUTHORIZATION = "authorization";
+	public static final String REST_RESPONSE_BODY = "responseBody";
+	public static final String REST_RESPONSE_HEADERS = "responseHeader";
 	
 	//Packet Sync
 	public static final String PACKET_SYNC="packet_sync";

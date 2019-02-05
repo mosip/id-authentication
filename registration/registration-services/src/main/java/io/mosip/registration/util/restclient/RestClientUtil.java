@@ -25,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationConstants;
 
 /**
  * This is a general method which gives the response for all httpmethod
@@ -77,8 +78,8 @@ public class RestClientUtil {
 
 		if (responseEntity != null && responseEntity.hasBody()) {
 			responseMap = new HashMap<>();
-			responseMap.put("responseBody", responseEntity.getBody());
-			responseMap.put("responseHeader", responseEntity.getHeaders());
+			responseMap.put(RegistrationConstants.REST_RESPONSE_BODY, responseEntity.getBody());
+			responseMap.put(RegistrationConstants.REST_RESPONSE_HEADERS, responseEntity.getHeaders());
 		}
 
 		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
