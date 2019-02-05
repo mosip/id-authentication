@@ -67,7 +67,7 @@
                </graphic></Button>
             <Button fx:id="back" layoutX="116.0" layoutY="5.0" mnemonicParsing="false" styleClass="ackBackButton" text="%goToHome">
                <graphic>
-                  <ImageView fitHeight="18.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/arrowLeft.png" />
                      </image>
