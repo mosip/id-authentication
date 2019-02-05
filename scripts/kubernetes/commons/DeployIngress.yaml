@@ -90,6 +90,10 @@ spec:
         backend:
           serviceName: pre-registration-batchjob-service
           servicePort: 9096
+      - path: /transliterate
+        backend:
+          serviceName: pre-registration-translitration-service
+          servicePort: 9098
       - path: /identity
         backend:
           serviceName: authentication-service

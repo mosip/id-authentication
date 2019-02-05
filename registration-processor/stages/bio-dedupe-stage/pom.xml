@@ -5,7 +5,7 @@
   <parent>
     <groupId>io.mosip.registrationprocessor</groupId>
     <artifactId>stages</artifactId>
-    <version>0.8.0</version>
+    <version>0.8.1</version>
   </parent>
 
   <artifactId>bio-dedupe-stage</artifactId>
@@ -36,22 +36,6 @@
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
-		<!-- <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>com.h2database</groupId>
-					<artifactId>h2</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency> -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
