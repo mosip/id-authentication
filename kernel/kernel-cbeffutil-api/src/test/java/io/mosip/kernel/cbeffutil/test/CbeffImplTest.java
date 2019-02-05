@@ -13,9 +13,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -29,22 +30,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.cbeffutil.common.CbeffISOReader;
-import io.mosip.kernel.cbeffutil.entity.BDBInfo;
-import io.mosip.kernel.cbeffutil.entity.BIR;
-import io.mosip.kernel.cbeffutil.entity.BIRInfo;
-import io.mosip.kernel.cbeffutil.jaxbclasses.ProcessedLevelType;
-import io.mosip.kernel.cbeffutil.jaxbclasses.PurposeType;
-import io.mosip.kernel.cbeffutil.jaxbclasses.SingleType;
-import io.mosip.kernel.cbeffutil.service.CbeffI;
-import io.mosip.kernel.cbeffutil.service.impl.CbeffImpl;
+import io.mosip.kernel.core.cbeffutil.common.CbeffISOReader;
+import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
+import io.mosip.kernel.core.cbeffutil.entity.BIR;
+import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
+import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class CbeffImplTest {
 	
 	@Autowired
-	private CbeffI cbeffImpl;
+	private CbeffUtil cbeffUtilImpl;
 	
 	/*
 	 * XSD storage path from config server
@@ -74,7 +74,7 @@ public class CbeffImplTest {
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(7))
 						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
 						.withSubtype(Arrays.asList("Right IndexFinger MiddleFinger RingFinger LittleFinger"))
-						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).withCreationDate(new Date())
+						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).withCreationDate(LocalDateTime.now(ZoneId.of("UTC")))
 						.build())
 				.build();
 
@@ -83,7 +83,7 @@ public class CbeffImplTest {
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(7))
 						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
 						.withSubtype(Arrays.asList("Left IndexFinger MiddleFinger RingFinger LittleFinger"))
-						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).withCreationDate(new Date())
+						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).withCreationDate(LocalDateTime.now(ZoneId.of("UTC")))
 						.build())
 				.build();
 
@@ -92,28 +92,28 @@ public class CbeffImplTest {
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(7))
 						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
 						.withSubtype(Arrays.asList("Left Right Thumb")).withPurpose(PurposeType.ENROLL)
-						.withLevel(ProcessedLevelType.RAW).withCreationDate(new Date()).build())
+						.withLevel(ProcessedLevelType.RAW).withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
 				.build();
 
 		BIR face = new BIR.BIRBuilder().withBdb(new String("Test").getBytes())
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(8))
 						.withQuality(90).withType(Arrays.asList(SingleType.FACE)).withPurpose(PurposeType.ENROLL)
-						.withLevel(ProcessedLevelType.RAW).withCreationDate(new Date()).build())
+						.withLevel(ProcessedLevelType.RAW).withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
 				.build();
 
 		BIR leftIris = new BIR.BIRBuilder().withBdb(new String(irisImg).getBytes())
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(9))
 						.withQuality(80).withType(Arrays.asList(SingleType.IRIS)).withSubtype(Arrays.asList("Left"))
-						.withPurpose(PurposeType.ENROLL).withCreationDate(new Date()).withLevel(ProcessedLevelType.RAW).build())
+						.withPurpose(PurposeType.ENROLL).withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).withLevel(ProcessedLevelType.RAW).build())
 				.build();
 
 		BIR rightIris = new BIR.BIRBuilder().withBdb(new String(irisImg).getBytes())
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(9))
 						.withQuality(90).withType(Arrays.asList(SingleType.IRIS)).withSubtype(Arrays.asList("Right"))
-						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).withCreationDate(new Date()).build())
+						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
 				.build();
 
 		createList = new ArrayList<>();
@@ -130,7 +130,7 @@ public class CbeffImplTest {
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(2))
 						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
 						.withSubtype(Arrays.asList("Right IndexFinger MiddleFinger RingFinger LittleFinger"))
-						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).withCreationDate(new Date())
+						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).withCreationDate(LocalDateTime.now(ZoneId.of("UTC")))
 						.build())
 				.build();
 		
@@ -139,7 +139,7 @@ public class CbeffImplTest {
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(2))
 						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
 						.withSubtype(Arrays.asList("Right IndexFinger MiddleFinger RingFinger LittleFinger"))
-						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).withCreationDate(new Date(new Date().getTime()+(1 * 60 * 60 * 1000)))
+						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).withCreationDate(LocalDateTime.now(ZoneId.of("UTC")))
 						.build())
 				.build();
 
@@ -151,7 +151,7 @@ public class CbeffImplTest {
 
 	@Test
 	public void testCreateXML() throws Exception {
-		byte[] createXml = cbeffImpl.createXML(createList);
+		byte[] createXml = cbeffUtilImpl.createXML(createList);
 		createXMLFile(createXml, "createCbeff");
 		assertEquals(new String(createXml), new String(readCreatedXML("createCbeff")));
 
@@ -176,14 +176,14 @@ public class CbeffImplTest {
 
 	@Test
 	public void testUpdateXML() throws Exception {
-		byte[] updateXml = cbeffImpl.updateXML(updateList, readCreatedXML("createCbeff"));
+		byte[] updateXml = cbeffUtilImpl.updateXML(updateList, readCreatedXML("createCbeff"));
 		createXMLFile(updateXml, "updateCbeff");
 		assertEquals(new String(updateXml), new String(readCreatedXML("updateCbeff")));
 	}
 
 	@Test
 	public void testValidateXML() throws IOException, Exception {
-		assertTrue(cbeffImpl.validateXML(readCreatedXML("createCbeff"), getXSDfromConfigServer()));
+		assertTrue(cbeffUtilImpl.validateXML(readCreatedXML("createCbeff"), getXSDfromConfigServer()));
 	}
 	
 	private byte[] getXSDfromConfigServer() throws URISyntaxException, IOException {
@@ -209,15 +209,15 @@ public class CbeffImplTest {
 
 	@Test
 	public void testGetBDBBasedOnType() throws IOException, Exception {
-		Map<String,String> testMap = cbeffImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), "FMR", "Right");
+		Map<String,String> testMap = cbeffUtilImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), "FMR", "Right");
 		Set<String> testSet1 = new HashSet<>();
 		testSet1.add("FINGER_Right_2");
 		assertEquals(testMap.keySet(),testSet1);
-		Map<String,String> testMap1 = cbeffImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), "FMR", null);
+		Map<String,String> testMap1 = cbeffUtilImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), "FMR", null);
 		Set<String> testSet2 = new HashSet<>();
 		testSet2.add("FINGER_Right IndexFinger MiddleFinger RingFinger LittleFinger_2");
 		assertEquals(testMap1.keySet(),testSet2);
-		Map<String,String> testMap2 = cbeffImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), null, "Right");
+		Map<String,String> testMap2 = cbeffUtilImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), null, "Right");
 		Set<String> testSet3 = new HashSet<>();
 		testSet3.add("FINGER_Right IndexFinger MiddleFinger RingFinger LittleFinger_7");
 		testSet3.add("IRIS_Right_9");
