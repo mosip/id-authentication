@@ -494,11 +494,9 @@ public class AuthFacadeImpl implements AuthFacade {
 		kycAuthResponseDTO.setResponse(response);
 		kycAuthResponseDTO.getResponse().setKyc(info);
 		kycAuthResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
-
+		kycAuthResponseDTO.setErr(authResponseDTO.getErr());
 		kycAuthResponseDTO.setStatus(authResponseDTO.getStatus());
-
 		kycAuthResponseDTO.setResTime(resTime);
-
 		return kycAuthResponseDTO;
 	}
 

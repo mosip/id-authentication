@@ -40,8 +40,8 @@ public enum DemoMatchType implements MatchType {
 	/** Primary Name Match Type. */
 	NAME(IdaIdMapping.FULLNAME,
 			setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL, NameMatchingStrategy.PHONETICS),
-			IdentityDTO::getFullName, AuthUsageDataBit.USED_PI_NAME_PRI,
-			AuthUsageDataBit.MATCHED_PI_NAME_PRI),
+			IdentityDTO::getFullName, AuthUsageDataBit.USED_PI_NAME,
+			AuthUsageDataBit.MATCHED_PI_NAME),
 
 	/** Secondary Date of Birth Match Type. */
 	DOB(IdaIdMapping.DOB, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getDob,
@@ -81,43 +81,43 @@ public enum DemoMatchType implements MatchType {
 
 	/**  */
 	ADDR_LINE1(IdaIdMapping.ADDRESSLINE1, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine1,
-			AuthUsageDataBit.USED_AD_ADDR_LINE1_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_LINE1_PRI),
+			AuthUsageDataBit.USED_AD_ADDR_LINE1, AuthUsageDataBit.MATCHED_AD_ADDR_LINE1),
 
 	/** The addr line2 pri. */
 	ADDR_LINE2(IdaIdMapping.ADDRESSLINE2, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine2,
-			AuthUsageDataBit.USED_AD_ADDR_LINE2_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_LINE2_PRI),
+			AuthUsageDataBit.USED_AD_ADDR_LINE2, AuthUsageDataBit.MATCHED_AD_ADDR_LINE2),
 
 	/** The addr line3 pri. */
 	ADDR_LINE3(IdaIdMapping.ADDRESSLINE3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine3,
-			AuthUsageDataBit.USED_AD_ADDR_LINE3_PRI,
-			AuthUsageDataBit.MATCHED_AD_ADDR_LINE3_PRI),
+			AuthUsageDataBit.USED_AD_ADDR_LINE3,
+			AuthUsageDataBit.MATCHED_AD_ADDR_LINE3),
 
 	/** Location1 Match Type primary. */
 	LOCATION1(IdaIdMapping.LOCATION1, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation1,
-			AuthUsageDataBit.USED_AD_LOCATION1_PRI,
-			AuthUsageDataBit.MATCHED_AD_LOCATION1_PRI),
+			AuthUsageDataBit.USED_AD_LOCATION1,
+			AuthUsageDataBit.MATCHED_AD_LOCATION1),
 
 	/** Location2 Match Type primary. */
 	LOCATION2(IdaIdMapping.LOCATION2, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation2,
-			AuthUsageDataBit.USED_AD_LOCATION2_PRI,
-			AuthUsageDataBit.MATCHED_AD_LOCATION2_PRI),
+			AuthUsageDataBit.USED_AD_LOCATION2,
+			AuthUsageDataBit.MATCHED_AD_LOCATION2),
 
 	/** Location3 Match Type primary. */
 	LOCATION3(IdaIdMapping.LOCATION3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation3,
-			AuthUsageDataBit.USED_AD_LOCATION3_PRI,
-			AuthUsageDataBit.MATCHED_AD_LOCATION3_PRI),
+			AuthUsageDataBit.USED_AD_LOCATION3,
+			AuthUsageDataBit.MATCHED_AD_LOCATION3),
 
 	/** The pincode pri. */
 	PINCODE(IdaIdMapping.PINCODE, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getPinCode,
-			AuthUsageDataBit.USED_AD_ADDR_PINCODE_PRI,
-			AuthUsageDataBit.MATCHED_AD_ADDR_PINCODE_PRI),
+			AuthUsageDataBit.USED_AD_ADDR_PINCODE,
+			AuthUsageDataBit.MATCHED_AD_ADDR_PINCODE),
 
 	/** Primary Address MatchType. */
 	ADDR(IdaIdMapping.FULLADDRESS,
 			setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL,
 					FullAddressMatchingStrategy.PHONETICS),
-			IdentityDTO::getFullAddress, AuthUsageDataBit.USED_FAD_ADDR_PRI,
-			AuthUsageDataBit.MATCHED_FAD_ADDR_PRI),
+			IdentityDTO::getFullAddress, AuthUsageDataBit.USED_FAD_ADDR,
+			AuthUsageDataBit.MATCHED_FAD_ADDR),
 
 	/**  */
 	// @formatter:on

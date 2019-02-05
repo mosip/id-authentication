@@ -31,8 +31,10 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class KycAuthFilter extends BaseAuthFilter {
 
+	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(InternalAuthFilter.class);
 
+	/** The Constant TXN_ID. */
 	private static final String TXN_ID = "txnID";
 
 	/** The Constant AUTH_REQUEST. */
@@ -165,6 +167,10 @@ public class KycAuthFilter extends BaseAuthFilter {
 									DateUtils.parseToDate((String) responseBody.get(RES_TIME),
 											env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)),
 									env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)));
+					Map<String, Object> authResponse = (Map<String, Object>) responseBody.get(RESPONSE);
+					authResponse.replace(AUTH, setAuthResponseParam((Map<String, Object>) requestBody.get(AUTH_REQUEST),
+							(Map<String, Object>) ((Map<String, Object>) responseBody.get(RESPONSE)).get(AUTH)));
+					responseBody.replace(RESPONSE, authResponse);
 					return responseBody;
 				}
 			}
@@ -174,6 +180,8 @@ public class KycAuthFilter extends BaseAuthFilter {
 			return responseBody;
 		}
 	}
+	
+	
 
 	protected Object decodeToMap(String stringToDecode) throws IdAuthenticationAppException {
 		try {
