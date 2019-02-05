@@ -131,22 +131,6 @@ public enum PinAuthType implements AuthType {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * io.mosip.authentication.core.spi.indauth.match.AuthType#getMatchProperties(io
-	 * .mosip.authentication.core.dto.indauth.AuthRequestDTO,
-	 * io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher)
-	 */
-	@Override
-	public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
-		HashMap<String, Object> valuemap = new HashMap<>();
-		Optional<String> languageNameOpt = idInfoFetcher.getLanguageName(language);
-		valuemap.put("language", languageNameOpt.orElse("english"));
-		return valuemap;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#
 	 * isAuthTypeInfoAvailable(io.mosip.authentication.core.dto.indauth.
 	 * AuthRequestDTO)
