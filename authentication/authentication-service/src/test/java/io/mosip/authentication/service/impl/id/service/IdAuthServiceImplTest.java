@@ -199,7 +199,7 @@ public class IdAuthServiceImplTest {
 		String status = "Y";
 		String comment = "OTP_GENERATED";
 		ReflectionTestUtils.invokeMethod(autntxnrepository, "saveAndFlush", autnTxn);
-		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "saveAutnTxn", idvId, idvIdType, reqTime, txnId, status,
+		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "saveAutnTxn", idvId, idvIdType, uin,reqTime, txnId, status,
 				comment, requestType);
 	}
 
