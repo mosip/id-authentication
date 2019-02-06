@@ -389,7 +389,7 @@ public class TemplateGenerator extends BaseService {
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
 							localLanguageCode));
 			templateValues.put(RegistrationConstants.TEMPLATE_DOB_LOCAL_LANG_LABEL,
-					localProperties.getString("age/dob"));
+					localProperties.getString("ageDatePicker"));
 			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG_LABEL,
 					localProperties.getString("gender"));
 			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG,
