@@ -1,107 +1,45 @@
 package io.mosip.kernel.idgenerator.tokenid.impl;
 
-import javax.annotation.PostConstruct;
-
-import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.idgenerator.exception.TokenIdGeneratorException;
 import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
-import io.mosip.kernel.core.util.ChecksumUtils;
-import io.mosip.kernel.idgenerator.tokenid.constant.TokenIdGeneratorConstant;
-import io.mosip.kernel.idgenerator.tokenid.util.TokenIdFilterUtils;
+import io.mosip.kernel.idgenerator.tokenid.constant.TokenIDExceptionConstant;
+import io.mosip.kernel.idgenerator.tokenid.util.TokenIdGeneratorUtil;
 
 /**
- * Class generates TokenId
+ * Implementation class for {@link TokenIdGenerator}.
  * 
- * 
- * @author Srinivasan
- * @author Megha Tanga
+ * @author Sagar Mahapatra
+ * @since 1.0.0
  *
  */
 @Component
-public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
+public class TokenIdGeneratorImpl implements TokenIdGenerator<String, String> {
 
 	/**
-	 * Field to hold TokenIdFilterUtils object
-	 */
-	@Autowired
-	private TokenIdFilterUtils tokenIdFilterUtils;
-
-	/**
-	 * Field that takes Integer.This field decides the length of the tokenId. It is
-	 * read from the properties file.
+	 * The length of Token ID.[fetched from configuration]
 	 */
 	@Value("${mosip.kernel.tokenid.length}")
 	private Integer tokenIdLength;
 
-	private int generatedIdLength;
-
-	/**
-	 * Decided tokenIdLength based on the value given in the application properties
-	 */
-	@PostConstruct
-	public void tokenIdGeneratorPostConstruct() {
-		generatedIdLength = tokenIdLength - 2;
-	}
-
-	/**
-	 * Method is implementation method of
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return tokenId
+	 * @see
+	 * io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator#generateId(java.lang.
+	 * Object, java.lang.Object)
 	 */
 	@Override
-	public String generateId() {
-		return generateTokenId();
-
-	}
-
-	/**
-	 * Method generates RandomId. It also validates that the token is generated
-	 * based on the rules {@link TokenIdFilterUtils}.If it is not validated then
-	 * again another token is generated.
-	 * 
-	 * @return
-	 */
-	private String generateTokenId() {
-
-		String generatedTokenId = generateRandomId(generatedIdLength);
-		while (!tokenIdFilterUtils.isValidId(generatedTokenId)) {
-			generatedTokenId = generateRandomId(generatedIdLength);
+	public String generateId(String tspID, String uin) {
+		if (tspID == null || uin == null || tspID.trim().isEmpty() || uin.trim().isEmpty()) {
+			throw new TokenIdGeneratorException(TokenIDExceptionConstant.EMPTY_OR_NULL_VALUES.getErrorCode(),
+					TokenIDExceptionConstant.EMPTY_OR_NULL_VALUES.getErrorMessage());
 		}
-
-		return generatedTokenId;
+		String inputToSHA256Hash = DigestUtils.sha256Hex(tspID + uin);
+		String hexToNumericHash = TokenIdGeneratorUtil.encodeHexToNumeric(inputToSHA256Hash);
+		return TokenIdGeneratorUtil.compressHash(hexToNumericHash, tokenIdLength);
 	}
-
-	/**
-	 * Generates a id and then generate checksum
-	 * 
-	 * @param generatedIdLength
-	 *            - The length of id to generate
-	 * 
-	 * @return the tokenId
-	 */
-	private String generateRandomId(int generatedIdLength) {
-		String generatedTokenId = RandomStringUtils.random(1, TokenIdGeneratorConstant.DIGITS_WITHOUT_ZERO_OR_ONE)
-				+ RandomStringUtils.random(generatedIdLength, TokenIdGeneratorConstant.ZERO_TO_NINE);
-		String verhoeffDigit = ChecksumUtils.generateChecksumDigit(String.valueOf(generatedTokenId));
-		return appendChecksum(generatedIdLength, generatedTokenId, verhoeffDigit);
-
-	}
-
-	/**
-	 * Method will append checksum to the generated tokenId.
-	 * 
-	 * @param generatedIdLength
-	 * @param generatedVId
-	 * @param verhoeffDigit
-	 * @return generatedTokenId
-	 */
-	private String appendChecksum(int generatedIdLength, String generatedTokenId, String verhoeffDigit) {
-		StringBuilder vidSb = new StringBuilder();
-		vidSb.setLength(tokenIdLength);
-		return vidSb.insert(0, generatedTokenId).insert(generatedIdLength, verhoeffDigit).toString().trim();
-	}
-
 }
