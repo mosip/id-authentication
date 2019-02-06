@@ -20,6 +20,7 @@ import io.mosip.kernel.masterdata.entity.BaseEntity;
  * saved into database.
  * 
  * @author Bal Vikash Sharma
+ * @author Uday Kumar
  * @since 1.0.0
  * @see MapperUtils
  *
@@ -75,6 +76,10 @@ public class MetaDataUtils {
 	 * @return entity having isDeleted value as true and deleted times
 	 */
 	public static <E extends BaseEntity> E setDeleteMetaData(final E entity) {
+		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
+		if (!EmptyCheckUtils.isNullEmpty(authN)) {
+			contextUser = authN.getName();
+		}
 		entity.setUpdatedBy(contextUser);
 		entity.setIsDeleted(true);
 		entity.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
@@ -141,11 +146,11 @@ public class MetaDataUtils {
 		entity.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		entity.setUpdatedBy(contextUser);
 	}
-	
+
 	public static String getContextUser() {
 		return SecurityContextHolder.getContext().getAuthentication().getName();
 	}
-	
+
 	public static LocalDateTime getCurrentDateTime() {
 		return LocalDateTime.now(ZoneId.of("UTC"));
 	}

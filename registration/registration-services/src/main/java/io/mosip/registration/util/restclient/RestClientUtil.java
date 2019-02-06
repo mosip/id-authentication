@@ -7,6 +7,8 @@ import java.net.SocketTimeoutException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -14,7 +16,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -24,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationConstants;
 
 /**
  * This is a general method which gives the response for all httpmethod
@@ -52,13 +54,13 @@ public class RestClientUtil {
 	 * @throws HttpClientErrorException when client error exception from server
 	 * @throws HttpServerErrorException when server exception from server
 	 */
-	public Object invoke(RequestHTTPDTO requestHTTPDTO)
+	public Map<String, Object> invoke(RequestHTTPDTO requestHTTPDTO)
 			throws HttpClientErrorException, HttpServerErrorException, SocketTimeoutException, ResourceAccessException {
 		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
 				"invoke method called");
 
 		ResponseEntity<?> responseEntity = null;
-		Object responseBody = null;
+		Map<String, Object> responseMap = null;
 		restTemplate.setRequestFactory(requestHTTPDTO.getSimpleClientHttpRequestFactory());
 		try {
 			if (requestHTTPDTO.getUri().toString().contains("https"))
@@ -75,55 +77,15 @@ public class RestClientUtil {
 				requestHTTPDTO.getHttpEntity(), requestHTTPDTO.getClazz());
 
 		if (responseEntity != null && responseEntity.hasBody()) {
-			responseBody = responseEntity.getBody();
+			responseMap = new HashMap<>();
+			responseMap.put(RegistrationConstants.REST_RESPONSE_BODY, responseEntity.getBody());
+			responseMap.put(RegistrationConstants.REST_RESPONSE_HEADERS, responseEntity.getHeaders());
 		}
 
 		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
 				"invoke method ended");
 
-		return responseBody;
-	}
-
-	/**
-	 * Actual exchange using rest template.
-	 *
-	 * @param requestHTTPDTO the request HTTPDTO
-	 * @return ResponseEntity<?> response entity obtained from api
-	 * @throws HttpClientErrorException when client error exception from server
-	 * @throws HttpServerErrorException when server exception from server
-	 * @throws SocketTimeoutException   the socket timeout exception
-	 * @throws ResourceAccessException  the resource access exception
-	 */
-	public HttpHeaders invokeHeaders(RequestHTTPDTO requestHTTPDTO)
-			throws HttpClientErrorException, HttpServerErrorException, SocketTimeoutException, ResourceAccessException {
-		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
-				"invoke method called");
-
-		ResponseEntity<?> responseEntity = null;
-		HttpHeaders responseHeaders = null;
-		restTemplate.setRequestFactory(requestHTTPDTO.getSimpleClientHttpRequestFactory());
-		try {
-			if (requestHTTPDTO.getUri().toString().contains("https"))
-				turnOffSslChecking();
-		} catch (KeyManagementException keyManagementException) {
-			LOGGER.error("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
-					keyManagementException.getMessage());
-		} catch (NoSuchAlgorithmException noSuchAlgorithmException) {
-			LOGGER.error("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
-					noSuchAlgorithmException.getMessage());
-		}
-
-		responseEntity = restTemplate.exchange(requestHTTPDTO.getUri(), requestHTTPDTO.getHttpMethod(),
-				requestHTTPDTO.getHttpEntity(), requestHTTPDTO.getClazz());
-
-		if (responseEntity != null && responseEntity.hasBody()) {
-			responseHeaders = responseEntity.getHeaders();
-		}
-
-		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
-				"invoke method ended");
-
-		return responseHeaders;
+		return responseMap;
 	}
 
 	public static void turnOffSslChecking() throws NoSuchAlgorithmException, KeyManagementException {

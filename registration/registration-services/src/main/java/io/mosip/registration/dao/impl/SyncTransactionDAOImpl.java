@@ -63,7 +63,7 @@ public class SyncTransactionDAOImpl implements SyncTransactionDAO {
 	public List<SyncTransaction> getSyncTransactions(Timestamp req,String syncJobId) {
 		LOGGER.info(RegistrationConstants.SYNC_TRANSACTION_DAO_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Fetch  sync details based on crDtime from databse started");
-		return syncTranscRepository.findByCrDtimeAfterAndSyncJobIdNot(req, syncJobId);
+		return syncTranscRepository.findByCrDtimeAfterAndSyncJobIdNotOrderByCrDtimeDesc(req, syncJobId);
 	}
 
 }

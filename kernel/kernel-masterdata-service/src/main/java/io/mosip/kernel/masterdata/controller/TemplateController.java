@@ -91,7 +91,7 @@ public class TemplateController {
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
 	public ResponseEntity<IdResponseDto> createTemplate(@Valid @RequestBody RequestDto<TemplateDto> template) {
-		return new ResponseEntity<>(templateService.createTemplate(template.getRequest()), HttpStatus.CREATED);
+		return new ResponseEntity<>(templateService.createTemplate(template.getRequest()), HttpStatus.OK);
 	}
 
 	/**

@@ -62,9 +62,11 @@ public class AuditFactoryTest {
 		when(environment.getProperty(RegistrationConstants.AUDIT_APPLICATION_ID)).thenReturn("REG");
 		when(environment.getProperty(RegistrationConstants.AUDIT_APPLICATION_NAME)).thenReturn("REGISTRATION");
 		SessionContext.destroySession();
+		SessionContext.getInstance();
 
 		when(auditHandler.addAudit(Mockito.any(AuditRequestDto.class))).thenReturn(true);
 		auditFactory.audit(AuditEvent.PACKET_APPROVED, Components.PACKET_CREATOR, "description", "id", "ref");
+		SessionContext.destroySession();
 	}
 
 }

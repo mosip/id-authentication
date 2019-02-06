@@ -31,7 +31,10 @@ import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
+import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.packet.RegistrationApprovalService;
+import io.mosip.registration.service.sync.PacketSynchService;
+import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -75,6 +78,12 @@ public class RegistrationApprovalController extends BaseController implements In
 	/** The view ack controller. */
 	@Autowired
 	private ViewAckController viewAckController;
+
+	@Autowired
+	private PacketSynchService packetSynchService;
+
+	@Autowired
+	private PacketUploadService packetUploadService;
 
 	/** Table to display the created packets. */
 
@@ -274,7 +283,8 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			for (Map<String, String> registrationMap : approvalmapList) {
 
-				if (registrationMap.containsValue(table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId())) {
+				if (registrationMap
+						.containsValue(table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId())) {
 
 					approvalmapList.remove(registrationMap);
 
@@ -283,7 +293,8 @@ public class RegistrationApprovalController extends BaseController implements In
 			}
 
 			Map<String, String> map = new HashMap<>();
-			map.put(RegistrationConstants.REGISTRATIONID, table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId());
+			map.put(RegistrationConstants.REGISTRATIONID,
+					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId());
 			map.put(RegistrationConstants.STATUSCODE, RegistrationClientStatusCode.APPROVED.getCode());
 			map.put(RegistrationConstants.STATUSCOMMENT, RegistrationConstants.EMPTY);
 			approvalmapList.add(map);
@@ -302,15 +313,13 @@ public class RegistrationApprovalController extends BaseController implements In
 			table.getFocusModel().focus(rowNum);
 
 		} else {
-
+			Stage primarystage = new Stage();
 			try {
-
-				Stage primarystage = new Stage();
 
 				if (tBtn.getId().equals(rejectionBtn.getId())) {
 
-					rejectionController.initData(table.getItems().get(table.getSelectionModel().getFocusedIndex()), primarystage,
-							approvalmapList, table, "RegistrationApprovalController");
+					rejectionController.initData(table.getItems().get(table.getSelectionModel().getFocusedIndex()),
+							primarystage, approvalmapList, table, "RegistrationApprovalController");
 
 					loadStage(primarystage, RegistrationConstants.REJECTION_PAGE);
 
@@ -320,17 +329,19 @@ public class RegistrationApprovalController extends BaseController implements In
 
 				} else if (tBtn.getId().equals(authenticateBtn.getId())) {
 
-					loadStage(primarystage, RegistrationConstants.USER_AUTHENTICATION);
-
-					authenticationController.init(this, ProcessNames.EOD.getType());
-
 					authenticateBtn.setSelected(false);
+					loadStage(primarystage, RegistrationConstants.USER_AUTHENTICATION);
+					authenticationController.init(this, ProcessNames.EOD.getType());
 
 				}
 
-			} catch (RuntimeException runtimeException) {
+			} catch (RegBaseCheckedException checkedException) {
+				primarystage.close();
+				LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+						"No of Authentication modes is empty");
 
-				throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION, runtimeException.getMessage());
+			} catch (RuntimeException runtimeException) {
+				LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage());
 			}
 		}
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
@@ -380,14 +391,30 @@ public class RegistrationApprovalController extends BaseController implements In
 	public void updateAuthenticationStatus() {
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status started");
+		try {
 
-		for (Map<String, String> map : approvalmapList) {
-			registrationApprovalService.updateRegistration(map.get(RegistrationConstants.REGISTRATIONID),
-					map.get(RegistrationConstants.STATUSCOMMENT), map.get(RegistrationConstants.STATUSCODE));
+			List<String> regIds = new ArrayList<>();
+			for (Map<String, String> map : approvalmapList) {
+				registrationApprovalService.updateRegistration(map.get(RegistrationConstants.REGISTRATIONID),
+						map.get(RegistrationConstants.STATUSCOMMENT), map.get(RegistrationConstants.STATUSCODE));
+				regIds.add(map.get(RegistrationConstants.REGISTRATIONID));
+			}
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.AUTH_APPROVAL_SUCCESS_MSG);
+			primaryStage.close();
+			reloadTableView();
+
+			if (RegistrationAppHealthCheckUtil.isNetworkAvailable() && !regIds.isEmpty()) {
+
+				String response = packetSynchService.syncEODPackets(regIds);
+				if (response.equals(RegistrationConstants.EMPTY)) {
+					packetUploadService.uploadEODPackets(regIds);
+				}
+			}
+		} catch (RegBaseCheckedException checkedException) {
+			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Error in packet sync and upload");
+		}catch (RegBaseUncheckedException unCheckedException) {
+			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Error in packet sync and upload");
 		}
-		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.AUTH_APPROVAL_SUCCESS_MSG);
-		primaryStage.close();
-		reloadTableView();
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status ended");
 	}

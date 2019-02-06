@@ -2,9 +2,11 @@ package io.mosip.registration.test.jobs;
 
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -51,6 +53,20 @@ public class JobConfigDAOTest {
 		public void getActiveJobsTest() {
 			Mockito.when(jobConfigRepository.findByIsActiveTrue()).thenReturn(new LinkedList<SyncJobDef>());
 			assertThat(jobConfigDAOImpl.getActiveJobs(), is(new LinkedList<SyncJobDef>()));
+		}
+		
+		@Test
+		public void updateAllJobsTest() {
+			
+			List<SyncJobDef> list=new LinkedList<>();
+			SyncJobDef jobDef =new SyncJobDef();
+			jobDef.setId("12345");
+			list.add(jobDef);
+			
+			Iterable<SyncJobDef> iterable=list;
+			
+			Mockito.when(jobConfigRepository.saveAll(iterable)).thenReturn(list);
+			assertEquals(jobConfigDAOImpl.updateAll(list),list);
 		}
 
 

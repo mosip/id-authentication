@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.MasterSyncDao;
@@ -182,7 +183,10 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 
 		Map<String, String> requestParamMap = new LinkedHashMap<>();
 		requestParamMap.put(RegistrationConstants.MACHINE_ID, machineId);
-		requestParamMap.put(RegistrationConstants.MASTER_DATA_LASTUPDTAE, lastSyncTime.toString());
+		if (null != lastSyncTime) {
+			String time = DateUtils.formatToISOString(lastSyncTime);
+			requestParamMap.put(RegistrationConstants.MASTER_DATA_LASTUPDTAE, time);
+		}
 
 		try {
 			response = serviceDelegateUtil.get(RegistrationConstants.MASTER_VALIDATOR_SERVICE_NAME, requestParamMap,

@@ -15,13 +15,22 @@ import io.mosip.registration.entity.GlobalParamId;
  *
  */
 public interface GlobalParamRepository extends BaseRepository<GlobalParam, GlobalParamId> {
-	
+
 	/**
 	 * Retrieving global params.
 	 *
 	 * @return list of global param name
 	 */
 	List<GlobalParamName> findByIsActiveTrue();
-	
-	GlobalParam findByName(String name); 
+
+	GlobalParam findByName(String name);
+
+	/**
+	 * Get All global params
+	 * 
+	 * @param names
+	 *            global param names
+	 * @return list of global param
+	 */
+	List<GlobalParam> findByNameIn(List<String> names);
 }

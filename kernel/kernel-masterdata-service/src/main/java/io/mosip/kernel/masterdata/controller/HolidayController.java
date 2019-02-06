@@ -87,7 +87,7 @@ public class HolidayController {
 	 */
 	@PostMapping
 	public ResponseEntity<HolidayIDDto> saveHoliday(@Valid @RequestBody RequestDto<HolidayDto> holiday) {
-		return new ResponseEntity<>(holidayService.saveHoliday(holiday), HttpStatus.CREATED);
+		return new ResponseEntity<>(holidayService.saveHoliday(holiday), HttpStatus.OK);
 
 	}
 
