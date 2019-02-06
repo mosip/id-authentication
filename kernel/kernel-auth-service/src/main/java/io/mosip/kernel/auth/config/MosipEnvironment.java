@@ -5,6 +5,10 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
+/**
+ *  @author Sabbu Uday Kumar
+ *  @since 1.0.0
+ */
 @Configuration
 public class MosipEnvironment implements EnvironmentAware {
 
@@ -19,6 +23,8 @@ public class MosipEnvironment implements EnvironmentAware {
     private final String ldapSvcUrl = "ldap.svc.url";
     private final String ldapAuthenticate = "ldap.api.authenticate";
     private final String ldapVerifyOtpUser = "ldap.api.otp.user.verify";
+    private final String ldapGetAllRoles="ldap.api.all.roles";
+    private final String ldapGetAllUserDetails="ldap.api.user.details";
 
     private final String otpManagerSvcUrl = "otp.manager.svc.url";
     private final String generateOtpApi = "otp.manager.api.generate";
@@ -99,5 +105,13 @@ public class MosipEnvironment implements EnvironmentAware {
 
     public String getMasterDataOtpTemplate() {
         return environment.getProperty(masterDataOtpTemplate);
+    }
+    
+    public String getLdapAllRolesUrl() {
+    	return environment.getProperty(ldapGetAllRoles);
+    }
+    
+    public String getLdapAllUsersUrl() {
+    	return environment.getProperty(ldapGetAllUserDetails);
     }
 }

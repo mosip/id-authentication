@@ -94,6 +94,10 @@ spec:
         backend:
           serviceName: pre-registration-translitration-service
           servicePort: 9098
+      - path: /notification
+        backend:
+          serviceName: pre-registration-notification-service
+          servicePort: 9099
       - path: /identity
         backend:
           serviceName: authentication-service

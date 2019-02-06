@@ -45,7 +45,7 @@ public class OtpValidationsTest {
 	public void testNullKey() throws Exception {
 		when(otpRepository.findById(OtpEntity.class, "testKey")).thenReturn(null);
 		mockMvc.perform(get("/v1.0/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable()).andReturn();
+				.andExpect(status().isOk()).andReturn();
 	}
 
 	@Test
@@ -74,7 +74,7 @@ public class OtpValidationsTest {
 		when(otpRepository.findById(OtpEntity.class, "testKey"))
 				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
 		mockMvc.perform(get("/v1.0/otp/validate?key=&otp=1234").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable()).andReturn();
+				.andExpect(status().isOk()).andReturn();
 	}
 
 	@Test
@@ -85,7 +85,7 @@ public class OtpValidationsTest {
 		when(otpRepository.findById(OtpEntity.class, "testKey"))
 				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
 		mockMvc.perform(get("/v1.0/otp/validate?key=testkey&otp=").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable()).andReturn();
+				.andExpect(status().isOk()).andReturn();
 	}
 
 	@Test
@@ -96,7 +96,7 @@ public class OtpValidationsTest {
 		when(otpRepository.findById(OtpEntity.class, "testKey"))
 				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
 		mockMvc.perform(get("/v1.0/otp/validate").param("key", "sa").param("otp", "123456")
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable()).andReturn();
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
 	}
 
 	@Test
@@ -108,7 +108,7 @@ public class OtpValidationsTest {
 				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
 		mockMvc.perform(get("/v1.0/otp/validate").param("key",
 				"ykbbgyhogsmziqozetsyexoazpqhcpqywqmuyyijaweoswjlvhemamrmbuorixvnwlrhgfbnrmoorscjkllmgzqxtauoolvhoiyxfwoiotkvimcqshxvxplrqsfxmlmroyxcphstayxnowmjsnwdwhazpotqqrafuvpcaccaxneavptzwwsukhjqzwhjpdgrbqfybsyyryqlbrpdakuvtvswcwpzvkkaonblwlkjvytiodlnvsodsxkkgbbzvxkjbgbhnnvpkohydywdaudekflgbvbkeqwrekdgsneomyovczvnqhuitmr")
-				.param("otp", "123456").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable())
+				.param("otp", "123456").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andReturn();
 	}
 
@@ -120,6 +120,6 @@ public class OtpValidationsTest {
 		when(otpRepository.findById(OtpEntity.class, "testKey"))
 				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
 		mockMvc.perform(get("/v1.0/otp/validate").param("key", "test").param("otp", "INVALID-TYPE")
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable()).andReturn();
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
 	}
 }

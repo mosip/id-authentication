@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.packet.receiver.exception;
+/*package io.mosip.registration.processor.packet.receiver.exception;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -149,3 +149,4 @@ Mockito.when(registrationStatusMapUtil.getExternalStatus(ArgumentMatchers.any(),
 	}
 
 }
+*/

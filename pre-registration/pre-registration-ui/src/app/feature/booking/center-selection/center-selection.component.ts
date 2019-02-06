@@ -10,6 +10,7 @@ import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
 import { SharedService } from '../booking.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { TranslateService } from '@ngx-translate/core';
+import { NameList } from 'src/app/shared/models/demographic-model/name-list.modal';
 
 let REGISTRATION_CENTRES: RegistrationCentre[] = [];
 
@@ -57,13 +58,33 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   ngOnInit() {
+    REGISTRATION_CENTRES = [];
     this.getLocation();
     this.dataService.getLocationTypeData().subscribe(response => {
       this.locationTypes = response['locations'];
       console.log(this.locationTypes);
     });
     this.users = this.service.getNameList();
+//    this.getRecommendedCenters();
   }
+
+getRecommendedCenters() {
+    const pincodes = [];
+    this.users.forEach(user => {
+      const pincode = this.getUserDemographic(user).then(() => {
+        pincodes.push(pincode);
+        console.log(pincodes);
+      });
+    });
+  }
+
+async getUserDemographic(user) {
+  this.dataService.getUser(user.preRegId).subscribe(response => {
+      console.log(response);
+      return response['response'][0].demographicDetails.identity.postalCode;
+    });
+  }
+
   setSearchClick(flag: boolean) {
     this.searchClick = flag;
   }

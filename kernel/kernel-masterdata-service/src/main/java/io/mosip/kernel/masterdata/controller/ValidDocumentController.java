@@ -47,7 +47,7 @@ public class ValidDocumentController {
 	@ApiOperation(value = "Service to create valid document", notes = "Create valid document and return composite id", response = ValidDocumentID.class)
 	public ResponseEntity<ValidDocumentID> createValidDocument(
 			@Valid @RequestBody RequestDto<ValidDocumentDto> document) {
-		return new ResponseEntity<>(documentService.createValidDocument(document), HttpStatus.CREATED);
+		return new ResponseEntity<>(documentService.createValidDocument(document), HttpStatus.OK);
 	}
 
 	/**

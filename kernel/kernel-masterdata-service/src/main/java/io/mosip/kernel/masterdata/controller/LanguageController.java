@@ -58,7 +58,7 @@ public class LanguageController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Language any error occured") })
 	public ResponseEntity<CodeResponseDto> saveLanguage(@Valid @RequestBody RequestDto<LanguageDto> language) {
-		return new ResponseEntity<>(languageService.saveLanguage(language), HttpStatus.CREATED);
+		return new ResponseEntity<>(languageService.saveLanguage(language), HttpStatus.OK);
 	}
 
 	@PutMapping

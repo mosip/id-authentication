@@ -111,7 +111,7 @@ public class SyncDataControllerTest {
 	@Test
 	public void syncMasterDataWithlastUpdatedTimestampfailure() throws Exception {
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-01-016501:01:01", "1001"))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isOk());
 	}
 
 	@Test

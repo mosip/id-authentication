@@ -83,6 +83,19 @@
     "text_or": "أو",
     "action_view": "رأي"
   },
+  "acknowledgement": {
+    "title":"تم تأكيد الموعد",
+    "message":"تم إرسال تفاصيل هوية وتاريخ Pre-Registration إلى معرف البريد الإلكتروني المسجل ورقم الهاتف",
+    "label_name":"اسم",
+    "label_pre_id":"معرف التسجيل المسبق",
+    "label_reg_cntr":"مركز التسجيل",
+    "label_cntr_contact_number":"رقم مركز الاتصال",
+    "label_appointment_date_time":"موعد ووقت الموعد",
+    "container_guideline": "المبادئ التوجيهية الهامة",
+    "action_send":"إرسال EMAIL / SMS",
+    "action_download": "تحميل PDF",
+    "action_print": "طباعة"
+  },
   "preview": {
     "title_preview": "معاينة",
     "language": "عربى",
@@ -189,12 +202,6 @@
     "action_add": "إضافة",
     "action_close": "قريب",
     "action_add_to_slot": "أضف إلى الفتحة"
-  },
-  "acknowledgement": {
-    "title":"تم تأكيد الموعد",
-    "container_guideline": "المبادئ التوجيهية الهامة",
-    "action_download": "تحميل",
-    "action_print": "طباعة"
   },
   "centerSelection": {
     "title": " موعد الكتاب ",
