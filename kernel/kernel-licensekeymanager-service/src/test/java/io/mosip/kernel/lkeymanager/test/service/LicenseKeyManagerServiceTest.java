@@ -36,7 +36,6 @@ import io.mosip.kernel.lkeymanager.entity.LicenseKeyTspMap;
 import io.mosip.kernel.lkeymanager.repository.LicenseKeyListRepository;
 import io.mosip.kernel.lkeymanager.repository.LicenseKeyPermissionRepository;
 import io.mosip.kernel.lkeymanager.repository.LicenseKeyTspMapRepository;
-import io.mosip.kernel.lkeymanager.util.LicenseKeyManagerUtil;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
@@ -54,9 +53,6 @@ public class LicenseKeyManagerServiceTest {
 
 	@MockBean
 	private LicenseKeyTspMapRepository licenseKeyTspMapRepository;
-
-	@MockBean
-	private LicenseKeyManagerUtil licenseKeyManagerUtil;
 
 	private LicenseKeyList licensekeyList;
 
@@ -77,7 +73,7 @@ public class LicenseKeyManagerServiceTest {
 		licensekeyList.setCreatedAt(LocalDateTime.now());
 		licensekeyList.setCreatedBy("testadmin@mosip.io");
 		licensekeyList.setDeleted(false);
-		licensekeyList.setExpiryDateTimes(LocalDateTime.of(2019, Month.FEBRUARY, 6, 6, 23));
+		licensekeyList.setExpiryDateTimes(LocalDateTime.of(2600, Month.FEBRUARY, 6, 6, 23));
 		licensekeyList.setLicenseKey("tEsTlIcEnSe");
 
 	}
@@ -109,7 +105,6 @@ public class LicenseKeyManagerServiceTest {
 	@Test
 	public void testLKMGenerationService() throws Exception {
 		String json = "{\"licenseExpiryTime\": \"2019-02-06T06:23:00.000Z\", \"tspId\": \"TSP_ID_TEST\"}";
-		when(licenseKeyManagerUtil.generateLicense()).thenReturn("tEsTlIcEnSe");
 		when(licenseKeyListRepository.save(Mockito.any())).thenReturn(licensekeyList);
 		when(licenseKeyTspMapRepository.save(Mockito.any())).thenReturn(licenseKeyTspMap);
 		MvcResult result = mockMvc
@@ -118,7 +113,7 @@ public class LicenseKeyManagerServiceTest {
 		ObjectMapper mapper = new ObjectMapper();
 		LicenseKeyGenerationResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
 				LicenseKeyGenerationResponseDto.class);
-		assertThat(returnResponse.getLicenseKey(), is("tEsTlIcEnSe"));
+		assertThat(returnResponse.getLicenseKey(), isA(String.class));
 	}
 
 	@Test
@@ -156,7 +151,6 @@ public class LicenseKeyManagerServiceTest {
 	public void testLKMFetchService() throws Exception {
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(licenseKeyTspMap);
-		when(licenseKeyManagerUtil.getCurrentTimeInUTCTimeZone()).thenReturn(LocalDateTime.now());
 		when(licenseKeyListRepository.findByLicenseKey(Mockito.anyString())).thenReturn(licensekeyList);
 		when(licenseKeyPermissionRepository.findByLKey(Mockito.any())).thenReturn(licenseKeyPermission);
 		MvcResult result = mockMvc.perform(get("/v1.0/license/fetch?licenseKey=tEsTlIcEnSe&tspId=TSP_ID_TEST")

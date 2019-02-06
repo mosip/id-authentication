@@ -51,7 +51,7 @@ public class LicenseKeyManagerExceptionTest {
 	@MockBean
 	private LicenseKeyTspMapRepository licenseKeyTspMapRepository;
 
-	@MockBean
+	@Autowired
 	private LicenseKeyManagerUtil licenseKeyManagerUtil;
 
 	private LicenseKeyList licensekeyList;
@@ -112,7 +112,6 @@ public class LicenseKeyManagerExceptionTest {
 	public void testLKMFetchServiceExceptionWhenExpiredLicense() throws Exception {
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(licenseKeyTspMap);
-		when(licenseKeyManagerUtil.getCurrentTimeInUTCTimeZone()).thenReturn(LocalDateTime.now());
 		when(licenseKeyListRepository.findByLicenseKey(Mockito.anyString())).thenReturn(licensekeyList);
 		mockMvc.perform(get("/v1.0/license/fetch?licenseKey=tEsTlIcEnSe&tspId=TSP_ID_TEST")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
@@ -128,11 +127,32 @@ public class LicenseKeyManagerExceptionTest {
 	@Test
 	public void testLKMFetchServiceExceptionWhenInvalidValues() throws Exception {
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
-		when(licenseKeyManagerUtil.getCurrentTimeInUTCTimeZone()).thenReturn(LocalDateTime.now());
 		when(licenseKeyListRepository.findByLicenseKey(Mockito.anyString())).thenReturn(licensekeyList);
 		mockMvc.perform(get("/v1.0/license/fetch?licenseKey=tEsTlIcEnSe&tspId=TSP_ID_TEST")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
+	}
+
+	/**
+	 * TEST SCENARIO : When inputs has empty values.
+	 * 
+	 */
+	@Test
+	public void testLKMFetchServiceExceptionWhenEmptyValues() throws Exception {
+		mockMvc.perform(
+				get("/v1.0/license/fetch?licenseKey=&tspId=TSP_ID_TEST").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
+	}
+
+	/**
+	 * TEST SCENARIO : When inputs has null values.
+	 * 
+	 */
+	@Test
+	public void testLKMFetchServiceExceptionWhenNullValues() throws Exception {
+		mockMvc.perform(
+				get("/v1.0/license/fetch?licenseKey=hjdesufhdufyisehui").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest());
 	}
 
 }
