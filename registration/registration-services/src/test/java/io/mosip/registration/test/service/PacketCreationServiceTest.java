@@ -161,7 +161,7 @@ public class PacketCreationServiceTest {
 				.thenReturn(new ValidationReport());
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
-		ApplicationContext.getInstance().getApplicationMap().put(RegistrationConstants.CBEFF_ONLY_UNIQUE_TAGS, "N");
+		ApplicationContext.getInstance().map().put(RegistrationConstants.CBEFF_ONLY_UNIQUE_TAGS, "N");
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}

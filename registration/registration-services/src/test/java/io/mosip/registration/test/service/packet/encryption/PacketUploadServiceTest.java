@@ -145,7 +145,6 @@ public class PacketUploadServiceTest {
 		assertEquals("PUSHED", registration.getClientStatusCode());
 		assertEquals("S", registration.getFileUploadStatus());
 
-
 	}
 	
 	@Test
@@ -219,6 +218,41 @@ public class PacketUploadServiceTest {
 		packetUploadServiceImpl.uploadPacket("12345");
 		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
 		assertEquals("E", registration.getFileUploadStatus());
+	}
+	
+	@Test
+	public void testuploadEODPackets() throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
+		
+		List<String> regIds=new ArrayList<>();
+		regIds.add("123456789");
+		
+		Registration registration=new Registration();
+		List<Registration> regList=new ArrayList<>();
+		registration.setId("123456789");
+		registration.setAckFilename("..//registration-services/src/test/resources/123456789_Ack.png");
+		registration.setUploadCount((short)0);
+		regList.add(registration);
+		
+		Object respObj = new Object();
+		respObj="PACKET_UPLOADED_TO_VIRUS_SCAN";
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(),Mockito.anyMap())).thenReturn(respObj);
+		Mockito.when(registrationDAO.get(Mockito.anyList())).thenReturn(regList);
+		List<Registration> packetList=new ArrayList<>();
+		Registration registration1 = new Registration();
+		packetList.add(registration);
+		Mockito.when(registrationDAO.updateRegStatus(Mockito.anyObject())).thenReturn(registration1);
+		packetUploadServiceImpl.uploadEODPackets(regIds);
+		assertEquals("PUSHED", registration.getClientStatusCode());
+		assertEquals("S", registration.getFileUploadStatus());
 
+	}
+	
+	@Test(expected=RegBaseCheckedException.class)
+	public void testHttpServerException() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
+		File f=new File("");
+		Object respObj = new Object();
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(),Mockito.anyMap()))
+		.thenThrow(new HttpServerErrorException(HttpStatus.ACCEPTED));
+		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
 	}
 }

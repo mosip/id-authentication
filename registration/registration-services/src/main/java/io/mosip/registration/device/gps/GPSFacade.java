@@ -44,7 +44,7 @@ public class GPSFacade extends GPSBU343Connector {
 
 	/** Object forserialPortConnected. */
 	@Value("${GPS_DEVICE_ENABLE_FLAG}")
-	private String gpsEnableFlag;;
+	private String gpsEnableFlag;
 
 	/** Object forserialPortConnected. */
 	@Value("${GPS_SERIAL_PORT_LINUX}")

@@ -14,14 +14,17 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobKey;
@@ -45,6 +48,8 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.impl.PacketSyncStatusJob;
 import io.mosip.registration.service.config.impl.JobConfigurationServiceImpl;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ io.mosip.registration.context.ApplicationContext.class })
 public class JobConfigurationServiceTest {
 
 	@Mock
@@ -83,6 +88,9 @@ public class JobConfigurationServiceTest {
 	@Mock
 	io.mosip.registration.context.ApplicationContext context;
 	
+	@Mock
+	GlobalParamDAO globalParamDAO;
+	
 	List<SyncJobDef> syncJobList;
 
 	HashMap<String, SyncJobDef> jobMap = new HashMap<>();
@@ -108,14 +116,29 @@ public class JobConfigurationServiceTest {
 		
 		Map<String,Object> applicationMap =new HashMap<>();
 		applicationMap.put(RegistrationConstants.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT, "5");
-		
-		when(context.getApplicationMap()).thenReturn(applicationMap);
-
-
+		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
+		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
 	}
 
 	@Test
 	public void initiateJobTest() {
+		GlobalParam globalParam=new GlobalParam();
+		globalParam.setName("1234");
+		globalParam.setVal("0/10 * * * * ?");
+		globalParam.setIsActive(true);
+		List<GlobalParam> globalParams=new LinkedList<>();
+		globalParams.add(globalParam);
+		
+		List<SyncJobDef> updatedJobs = new LinkedList<>();
+		SyncJobDef syncJobDef=new SyncJobDef();
+		syncJobDef.setId(globalParam.getName());
+		syncJobDef.setSyncFrequency(globalParam.getVal());
+		syncJobDef.setIsActive(globalParam.getIsActive());
+		updatedJobs.add(syncJobDef);
+		
+		Mockito.when(globalParamDAO.getAll(Mockito.anyList())).thenReturn(globalParams);
+		Mockito.when(jobConfigDAO.updateAll(Mockito.anyList())).thenReturn(updatedJobs);
+		
 		jobConfigurationService.initiateJobs();
 
 	}

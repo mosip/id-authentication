@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
@@ -83,7 +84,7 @@ public class SyncManagerImpl extends BaseService implements SyncManager {
 	@Override
 	synchronized public SyncTransaction createSyncTransaction(final String status, final String statusComment,
 			final String triggerPoint, final String syncJobId) {
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Create Sync Transaction started");
 
 		SyncTransaction syncTransaction = new SyncTransaction();
@@ -117,7 +118,7 @@ public class SyncManagerImpl extends BaseService implements SyncManager {
 			syncTransaction = jobTransactionDAO.save(syncTransaction);
 
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE,
+			LOGGER.error(LoggerConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE,
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					runtimeException.getMessage());
 
@@ -125,7 +126,7 @@ public class SyncManagerImpl extends BaseService implements SyncManager {
 					runtimeException.getMessage());
 		}
 
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Create Sync Transaction Ended");
 
 		return syncTransaction;

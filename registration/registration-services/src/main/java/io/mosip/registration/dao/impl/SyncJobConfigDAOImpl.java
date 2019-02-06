@@ -36,20 +36,29 @@ public class SyncJobConfigDAOImpl implements SyncJobConfigDAO {
 	 */
 	@Override
 	public List<SyncJobDef> getAll() {
-		LOGGER.info("REGISTRATION-JOB_CONFIF_DAO", APPLICATION_NAME,
-				APPLICATION_ID, "Get all Sync Jobs");
+		LOGGER.info("REGISTRATION-JOB_CONFIF_DAO", APPLICATION_NAME, APPLICATION_ID, "Get all Sync Jobs");
 
 		return jobConfigRepository.findAll();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.mosip.registration.dao.SyncJobConfigDAO#getActiveJobs()
 	 */
 	@Override
 	public List<SyncJobDef> getActiveJobs() {
-		LOGGER.info("REGISTRATION-JOB_CONFIF_DAO", APPLICATION_NAME,
-				APPLICATION_ID, "Get all active Sync Jobs");
+		LOGGER.info("REGISTRATION-JOB_CONFIF_DAO", APPLICATION_NAME, APPLICATION_ID, "Get all active Sync Jobs");
 		return jobConfigRepository.findByIsActiveTrue();
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.SyncJobConfigDAO#updateAll(java.util.List)
+	 */
+	@Override
+	public List<SyncJobDef> updateAll(List<SyncJobDef> syncJobDefs) {
+		LOGGER.info("REGISTRATION-JOB_CONFIF_DAO", APPLICATION_NAME, APPLICATION_ID, "Update all active Sync Jobs");
+		return jobConfigRepository.saveAll(syncJobDefs);
 	}
 
 }

@@ -31,6 +31,7 @@ import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
+// TODO: Auto-generated Javadoc
 /**
  * 
  * This class will update the packet status in the table and also push the
@@ -43,21 +44,27 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 @Transactional
 public class PacketUploadServiceImpl implements PacketUploadService {
 
+	/** The registration DAO. */
 	@Autowired
 	private RegistrationDAO registrationDAO;
 
+	/** The service delegate util. */
 	@Autowired
 	private ServiceDelegateUtil serviceDelegateUtil;
 
+	/** The url path. */
 	@Value("${PACKET_UPLOAD_URL}")
 	private String urlPath;
 
+	/** The read timeout. */
 	@Value("${UPLOAD_API_READ_TIMEOUT}")
 	private int readTimeout;
 
+	/** The connect timeout. */
 	@Value("${UPLOAD_API_WRITE_TIMEOUT}")
 	private int connectTimeout;
 
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER = AppConfig.getLogger(PacketUploadServiceImpl.class);
 
 	/*
@@ -89,22 +96,28 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 			response = serviceDelegateUtil.post(RegistrationConstants.PACKET_UPLOAD, map);
 		} catch (HttpClientErrorException clientException) {
 			LOGGER.error("REGISTRATION - PUSH_PACKET_CLIENT_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, clientException.getRawStatusCode() + "Http error while pushing packets to the server");
-			throw new RegBaseCheckedException(Integer.toString(clientException.getRawStatusCode()), clientException.getStatusText());
+					APPLICATION_ID,
+					clientException.getRawStatusCode() + "Http error while pushing packets to the server");
+			throw new RegBaseCheckedException(Integer.toString(clientException.getRawStatusCode()),
+					clientException.getStatusText());
 		} catch (HttpServerErrorException serverException) {
 			LOGGER.error("REGISTRATION - PUSH_PACKET_SERVER_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, serverException.getRawStatusCode() + "Http server error while pushing packets to the server");
-			throw new RegBaseCheckedException(Integer.toString(serverException.getRawStatusCode()), serverException.getResponseBodyAsString());
-			
-		}catch (RuntimeException runtimeException) {
+					APPLICATION_ID,
+					serverException.getRawStatusCode() + "Http server error while pushing packets to the server");
+			throw new RegBaseCheckedException(Integer.toString(serverException.getRawStatusCode()),
+					serverException.getResponseBodyAsString());
+
+		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - PUSH_PACKET_CONNECTION_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, runtimeException.getMessage() + "Runtime error while pushing packets to the server");
+					APPLICATION_ID,
+					runtimeException.getMessage() + "Runtime error while pushing packets to the server");
 			throw new RegBaseUncheckedException(RegistrationExceptionConstants.REG_PACKET_UPLOAD_ERROR.getErrorCode(),
 					RegistrationExceptionConstants.REG_PACKET_UPLOAD_ERROR.getErrorMessage());
 		} catch (SocketTimeoutException socketTimeoutException) {
 			LOGGER.error("REGISTRATION - PUSH_PACKETS_TO_SERVER_SOCKET_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID, socketTimeoutException.getMessage() + "Error in sync packets to the server");
-			throw new RegBaseCheckedException((socketTimeoutException.getMessage()), socketTimeoutException.getLocalizedMessage());
+			throw new RegBaseCheckedException((socketTimeoutException.getMessage()),
+					socketTimeoutException.getLocalizedMessage());
 		}
 		return response;
 
@@ -127,44 +140,81 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.packet.PacketUploadService#uploadPacket(java.
+	 * lang.String)
+	 */
 	@Override
 	public void uploadPacket(String rid) {
 		Registration syncedPacket = registrationDAO
 				.getRegistrationById(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode(), rid);
+		List<Registration> packetList = new ArrayList<>();
+		packetList.add(syncedPacket);
+
+		uploadSyncedPacket(packetList);
+	}
+
+	/**
+	 * Upload synced packets.
+	 *
+	 * @param syncedPackets the synced packets
+	 */
+	private void uploadSyncedPacket(List<Registration> syncedPackets) {
+
 		List<Registration> packetUploadList = new ArrayList<>();
 
-		syncedPacket.setUploadCount((short) (syncedPacket.getUploadCount() + 1));
-		String ackFileName = syncedPacket.getAckFilename();
-		int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
-		String packetPath = ackFileName.substring(0, lastIndex);
-		File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
-		try {
-			if (packet.exists()) {
-				Object response = pushPacket(packet);
+		for (Registration syncedPacket : syncedPackets) {
 
-				String responseCode = response.toString();
-				if (responseCode.equals("PACKET_UPLOADED_TO_VIRUS_SCAN")) {
-					syncedPacket.setClientStatusCode(RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
-					syncedPacket.setFileUploadStatus(RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
-					packetUploadList.add(syncedPacket);
+			syncedPacket.setUploadCount((short) (syncedPacket.getUploadCount() + 1));
+			String ackFileName = syncedPacket.getAckFilename();
+			int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
+			String packetPath = ackFileName.substring(0, lastIndex);
+			File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
+			try {
+				if (packet.exists()) {
+					Object response = pushPacket(packet);
 
-				} else {
-					syncedPacket.setFileUploadStatus(RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
-					packetUploadList.add(syncedPacket);
+					String responseCode = response.toString();
+					if (responseCode.equals("PACKET_UPLOADED_TO_VIRUS_SCAN")) {
+						syncedPacket.setClientStatusCode(RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
+						syncedPacket.setFileUploadStatus(RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
+						packetUploadList.add(syncedPacket);
+
+					} else {
+						syncedPacket.setFileUploadStatus(RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+						packetUploadList.add(syncedPacket);
+					}
 				}
-			}
-		} catch (RegBaseCheckedException | URISyntaxException exception) {
-			LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, "Error while pushing packets to the server" + exception.getMessage());
-			syncedPacket.setFileUploadStatus(RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
-			packetUploadList.add(syncedPacket);
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_RUNTIME_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, "Run time error while connecting to the server" + runtimeException.getMessage());
+			} catch (RegBaseCheckedException | URISyntaxException exception) {
+				LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
+						APPLICATION_ID, "Error while pushing packets to the server" + exception.getMessage());
+				syncedPacket.setFileUploadStatus(RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+				packetUploadList.add(syncedPacket);
+			} catch (RuntimeException runtimeException) {
+				LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_RUNTIME_ERROR - PACKET_UPLOAD_SERVICE",
+						APPLICATION_NAME, APPLICATION_ID,
+						"Run time error while connecting to the server" + runtimeException.getMessage());
 
-			syncedPacket.setFileUploadStatus(RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
-			packetUploadList.add(syncedPacket);
+				syncedPacket.setFileUploadStatus(RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+				packetUploadList.add(syncedPacket);
+			}
 		}
 		updateStatus(packetUploadList);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.packet.PacketUploadService#uploadEODPackets(
+	 * java.util.List)
+	 */
+	@Override
+	public void uploadEODPackets(List<String> regIds) {
+		List<Registration> registrations = registrationDAO.get(regIds);
+		uploadSyncedPacket(registrations);
 	}
 }
