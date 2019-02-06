@@ -115,14 +115,4 @@ public interface AuthType {
 		return Stream.of(authTypes).filter(at -> at.isAssociatedMatchType(matchType)).findAny();
 	}
 	
-	/**
-	 * Returns the set of given match types
-	 *
-	 * @param supportedMatchTypes the supported match types
-	 * @return the sets the
-	 */
-	public static Set<MatchType> setOf(MatchType... supportedMatchTypes) {
-		return Stream.of(supportedMatchTypes).collect(Collectors.toSet());
-	}
-	
 }

@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
+import org.springframework.core.env.Environment;
+
 import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
@@ -65,5 +67,7 @@ public interface IdInfoFetcher {
 
 	public Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValues(Map<String, List<IdentityInfoDTO>> idEntity,
 			String string) throws IdAuthenticationBusinessException;
+
+	public Environment getEnvironment();
 
 }

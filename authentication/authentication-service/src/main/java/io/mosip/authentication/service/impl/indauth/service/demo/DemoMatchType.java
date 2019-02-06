@@ -26,6 +26,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The Enum DemoMatchType.
@@ -45,11 +46,11 @@ public enum DemoMatchType implements MatchType {
 
 	/** Secondary Date of Birth Match Type. */
 	DOB(IdaIdMapping.DOB, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getDob,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB),
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, false),
 
 	/** Secondary Date of Birth Type Match. */
 	DOBTYPE(IdaIdMapping.DOBTYPE, setOf(DOBTypeMatchingStrategy.EXACT), IdentityDTO::getDobType,
-			AuthUsageDataBit.USED_PI_DOBTYPE, AuthUsageDataBit.MATCHED_PI_DOB_TYPE),
+			AuthUsageDataBit.USED_PI_DOBTYPE, AuthUsageDataBit.MATCHED_PI_DOB_TYPE, false),
 
 	/** Secondary Date of Birth Type Match. */
 	AGE(IdaIdMapping.AGE, setOf(AgeMatchingStrategy.EXACT), IdentityDTO::getAge,
@@ -57,7 +58,7 @@ public enum DemoMatchType implements MatchType {
 				int age = -1;
 				try {
 					String value = entityInfoMap.values().stream().findFirst().orElse("");
-					age = Period.between(DOBMatchingStrategy.getDateFormat().parse(value).toInstant()
+					age = Period.between(DateUtils.parseToDate(value, getDatePattern()).toInstant()
 							.atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()).getYears();
 				} catch (ParseException e) {
 					getLogger().error("sessionId", "IdType", "Id", e.getMessage());
@@ -110,7 +111,7 @@ public enum DemoMatchType implements MatchType {
 	/** The pincode pri. */
 	PINCODE(IdaIdMapping.PINCODE, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getPinCode,
 			AuthUsageDataBit.USED_AD_ADDR_PINCODE,
-			AuthUsageDataBit.MATCHED_AD_ADDR_PINCODE),
+			AuthUsageDataBit.MATCHED_AD_ADDR_PINCODE, false),
 
 	/** Primary Address MatchType. */
 	ADDR(IdaIdMapping.FULLADDRESS,
@@ -122,6 +123,8 @@ public enum DemoMatchType implements MatchType {
 	/**  */
 	// @formatter:on
 	;
+
+	private static final String DATE_PATTERN = "yyyy/MM/dd";
 
 	/** The mosipLogger. */
 	private static final Logger mosipLogger = IdaLogger.getLogger(DemoMatchType.class);
@@ -175,6 +178,11 @@ public enum DemoMatchType implements MatchType {
 		this.usedBit = usedBit;
 		this.matchedBit = matchedBit;
 		this.multiLanguage = multiLanguage;
+	}
+
+	private static String getDatePattern() {
+		//FIXME get from env.
+		return DATE_PATTERN;
 	}
 
 	/**

@@ -845,4 +845,8 @@ public class IdInfoHelper implements IdInfoFetcher {
 				.map(Entry::getKey).findAny().orElse("");
 	}
 
+	@Override
+	public Environment getEnvironment() {
+		return environment;
+	}
 }

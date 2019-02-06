@@ -49,6 +49,7 @@ import io.mosip.kernel.core.datavalidator.exception.InvalidPhoneNumberException;
 import io.mosip.kernel.core.datavalidator.exception.InvalideEmailException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
 import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
 
@@ -154,10 +155,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The id info helper. */
 	@Autowired
 	protected IdInfoHelper idInfoHelper;
-
-	/** The Environment. */
-	@Autowired
-	private Environment environment;
 
 	/*
 	 * (non-Javadoc)
@@ -399,9 +396,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	private void validateMake(List<BioInfo> bioInfo, Errors errors) {
 		String deviceNameList = null;
 		if (isAvailableBioType(bioInfo, BioType.IRISIMG)) {
-			deviceNameList = environment.getProperty(IRIS_PROVIDER_ALL);
+			deviceNameList = env.getProperty(IRIS_PROVIDER_ALL);
 		} else if (isAvailableBioType(bioInfo, BioType.FGRMIN) || isAvailableBioType(bioInfo, BioType.FGRIMG)) {
-			deviceNameList = environment.getProperty(FINGERPRINT_PROVIDER_ALL);
+			deviceNameList = env.getProperty(FINGERPRINT_PROVIDER_ALL);
 		}
 		if (deviceNameList != null) {
 			String[] deviceName = deviceNameList.split(",");
@@ -1087,11 +1084,17 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		if (dobList != null) {
 			for (IdentityInfoDTO identityInfoDTO : dobList) {
 				try {
-					DOBMatchingStrategy.getDateFormat().parse(identityInfoDTO.getValue());
-				} catch (ParseException e) {
+					DateUtils.parseToDate(identityInfoDTO.getValue(),env.getProperty("date.pattern"));
+				} catch (io.mosip.kernel.core.exception.ParseException e) {
 					// FIXME change to DOB - Invalid -DOB - Please enter DOB in specified date
 					// format or Age in the acceptable range
 
+					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
+							"Demographic data – DOB(pi) did not match");
+					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { "dob" },
+							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+				} catch (ParseException e) {
 					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
 							"Demographic data – DOB(pi) did not match");
 					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
@@ -1113,7 +1116,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 *            the errors
 	 */
 	private void checkLangaugeDetails(MatchType demoMatchType, List<IdentityInfoDTO> identityInfos, Errors errors) {
-		String priLangCode = environment.getProperty(PRIMARY_LANG_CODE);
+		String priLangCode = env.getProperty(PRIMARY_LANG_CODE);
 
 		Map<String, Long> langCount = identityInfos.stream().map((IdentityInfoDTO idInfo) -> {
 			String language = idInfo.getLanguage();
@@ -1239,7 +1242,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private Set<String> extractAllowedLang() {
 		Set<String> allowedLang;
-		String languages = environment.getProperty("mosip.supported-languages");
+		String languages = env.getProperty("mosip.supported-languages");
 		if (null!=languages && languages.contains(",")) {
 			allowedLang = Arrays.stream(languages.split(",")).collect(Collectors.toSet());
 		}else {

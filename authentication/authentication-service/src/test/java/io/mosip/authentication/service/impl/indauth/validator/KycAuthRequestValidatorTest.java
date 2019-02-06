@@ -88,7 +88,6 @@ public class KycAuthRequestValidatorTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
-		ReflectionTestUtils.setField(authRequestValidator, "environment", env);
 		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "dateHelper", dateHelper);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "authRequestValidator", authRequestValidator);

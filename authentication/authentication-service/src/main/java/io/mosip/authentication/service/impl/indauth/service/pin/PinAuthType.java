@@ -1,13 +1,13 @@
 package io.mosip.authentication.service.impl.indauth.service.pin;
 
-import static io.mosip.authentication.core.spi.indauth.match.AuthType.setOf;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
@@ -142,4 +142,13 @@ public enum PinAuthType implements AuthType {
 				.isPresent();
 	}
 
+	/**
+	 * Returns the set of given match types
+	 *
+	 * @param supportedMatchTypes the supported match types
+	 * @return the sets the
+	 */
+	public static Set<MatchType> setOf(MatchType... supportedMatchTypes) {
+		return Stream.of(supportedMatchTypes).collect(Collectors.toSet());
+	}
 }

@@ -1,7 +1,5 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
-import static io.mosip.authentication.core.spi.indauth.match.AuthType.setOf;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +9,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.core.env.Environment;
 
@@ -192,6 +192,7 @@ public enum DemoAuthType implements AuthType {
 		HashMap<String, Object> valuemap = new HashMap<>();
 		Optional<String> languageNameOpt = idInfoFetcher.getLanguageName(language);
 		valuemap.put("language", languageNameOpt.orElse("english"));
+		valuemap.put(Environment.class.getSimpleName(), idInfoFetcher.getEnvironment());
 		return valuemap;
 	}
 
@@ -204,6 +205,16 @@ public enum DemoAuthType implements AuthType {
 				.ofNullable(authRequestDTO.getMatchInfo()).flatMap(list -> list.stream()
 						.filter(matchInfo -> matchInfo.getAuthType().equalsIgnoreCase(getType())).findAny())
 				.isPresent();
+	}
+	
+	/**
+	 * Returns the set of given match types
+	 *
+	 * @param supportedMatchTypes the supported match types
+	 * @return the sets the
+	 */
+	public static Set<MatchType> setOf(MatchType... supportedMatchTypes) {
+		return Stream.of(supportedMatchTypes).collect(Collectors.toSet());
 	}
 
 }

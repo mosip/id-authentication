@@ -92,7 +92,6 @@ public class AuthRequestValidatorTest {
 
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(authRequestValidator, "environment", env);
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "dateHelper", dateHelper);
@@ -398,7 +397,7 @@ public class AuthRequestValidatorTest {
 		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
 		idInfoDTO2.setLanguage(null);
 		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(env.getProperty("date.pattern"))).toString());
 		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
 		idInfoList1.add(idInfoDTO2);
 		// dobtype
@@ -468,7 +467,7 @@ public class AuthRequestValidatorTest {
 		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
 		idInfoDTO2.setLanguage(null);
 		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(env.getProperty("date.pattern"))).toString());
 		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
 		idInfoList1.add(idInfoDTO2);
 		// dobtype
@@ -513,7 +512,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(env.getProperty("date.pattern"))).toString());
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestDTO.setIdvIdType(IdType.VID.getType());
 		authRequestDTO.setIdvId("5371843613598206");
@@ -571,7 +570,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setAuthType(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertFalse(errors.hasErrors());
+		assertTrue(errors.hasErrors());
 	}
 
 	@Test
@@ -653,7 +652,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(env.getProperty("date.pattern"))).toString());
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestDTO.setIdvIdType(IdType.VID.getType());
 		authRequestDTO.setIdvId("5371843613598206");
