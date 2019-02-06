@@ -43,9 +43,5 @@ public class PropertiesConfig {
 		        return globalParamProps;
 		    }
 		});
-	}
-	
-	public void updateDBValue() {
-		jdbcTemplate.execute("UPDATE MASTER.GLOBAL_PARAM SET VAL='" +RandomStringUtils.random(2)+"' where NAME = 'IRIS_THRESHOLD' AND IS_ACTIVE=TRUE");
-	}
+	}	
 }

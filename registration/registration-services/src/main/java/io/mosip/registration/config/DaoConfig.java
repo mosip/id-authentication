@@ -79,12 +79,9 @@ public class DaoConfig extends HibernateDaoConfig{
 	    return ppc;
 	}
 	
-	@Scheduled(fixedRate = 1000)
 	public void reload() {
 		PropertyPlaceholderConfigurer propertyPlaceholderConfigurer = applicationContext.getBean(PropertyPlaceholderConfigurer.class);
 		PropertiesConfig propertiesConfig = applicationContext.getBean("propertiesConfig", PropertiesConfig.class);
-		
-		propertiesConfig.updateDBValue();
 		
 		Properties properties = new Properties();
 	    properties.putAll(propertiesConfig.getDBProps());

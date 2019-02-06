@@ -45,7 +45,6 @@ import io.mosip.registration.jobs.JobTriggerListener;
 @ComponentScan({ "io.mosip.registration", "io.mosip.kernel.core", "io.mosip.kernel.keygenerator",
 		"io.mosip.kernel.idvalidator", "io.mosip.kernel.ridgenerator", "io.mosip.kernel.qrcode",
 		"io.mosip.kernel.crypto", "io.mosip.kernel.jsonvalidator", "io.mosip.kernel.idgenerator" })
-@EnableScheduling
 public class AppConfig {
 
 	private static final RollingFileAppender MOSIP_ROLLING_APPENDER = new RollingFileAppender();
