@@ -64,7 +64,7 @@ Usage3: Store File
 @Autowired
 private FileSystemAdapter hdfsAdapterImpl;
 
-hdfsAdapterImpl.storeFile("2018782130000120112018104200", "BIOMETRIC/APPLICANT/BOTH_THUMBS", FileUtils.openInputStream(new File("D:/hdfstest/testfolder/2018782130000120112018104200/Biometric/Applicant/BothThumbs.jpg")));
+hdfsAdapterImpl.storeFile("91001984930000120", "BIOMETRIC/APPLICANT/BOTH_THUMBS", FileUtils.openInputStream(new File("D:/hdfstest/testfolder/91001984930000120/Biometric/Applicant/BothThumbs.jpg")));
 
  ```
 
@@ -84,7 +84,7 @@ Usage5: Get File
 @Autowired
 private FileSystemAdapter hdfsAdapterImpl;
 
-hdfsAdapterImpl.getFile("202020202", "DEMO/DEMO_FILE");
+hdfsAdapterImpl.getFile("91001984930000120", "BIOMETRIC/APPLICANT/BOTHTHUMBS");
 
 ```
 
@@ -114,7 +114,7 @@ Usage8: Check File Existence
 @Autowired
 private FileSystemAdapter hdfsAdapterImpl;
 
-hdfsAdapterImpl.checkFileExistence("91001984930000120", "DEMOGRAPHIC/POR_LICENCE");
+hdfsAdapterImpl.checkFileExistence("91001984930000120", "BIOMETRIC/APPLICANT/BOTHTHUMBS");
 
 ```
 
@@ -134,7 +134,7 @@ Usage10: Delete File
 @Autowired
 private FileSystemAdapter hdfsAdapterImpl;
 
-hdfsAdapterImpl.deleteFile("91001984930000120", "DEMO/NESTED_DEMO/NESTED-DEMO_FILE")
+hdfsAdapterImpl.deleteFile("91001984930000120", "BIOMETRIC/APPLICANT/BOTHTHUMBS")
 
 ```
 
@@ -144,6 +144,6 @@ Usage11: Copy File
 @Autowired
 private FileSystemAdapter hdfsAdapterImpl;
 
-hdfsAdapterImpl.copyFile("91001984930000120", "DEMO/DEMO_FILE", "202020202", "DEMO/DEMO_FILE");
+hdfsAdapterImpl.copyFile("91001984930000120", "BIOMETRIC/APPLICANT/BOTHTHUMBS", "202020202", "BIOMETRIC/APPLICANT/BOTHTHUMBS");
 
 ```
