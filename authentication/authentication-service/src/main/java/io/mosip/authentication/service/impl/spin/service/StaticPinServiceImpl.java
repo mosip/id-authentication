@@ -12,8 +12,8 @@ import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.spin.service.StaticPinService;
-import io.mosip.authentication.service.entity.StaticPinEntity;
-import io.mosip.authentication.service.entity.StaticPinHistoryEntity;
+import io.mosip.authentication.service.entity.StaticPin;
+import io.mosip.authentication.service.entity.StaticPinHistory;
 import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.repository.StaticPinHistoryRepository;
 import io.mosip.authentication.service.repository.StaticPinRepository;
@@ -64,44 +64,44 @@ public class StaticPinServiceImpl implements StaticPinService {
 			throws IdAuthenticationBusinessException {
 		try {
 			boolean status = false;
-			StaticPinEntity staticPinEntity = new StaticPinEntity();
-			StaticPinHistoryEntity staticPinHistoryEntity = new StaticPinHistoryEntity();
-			staticPinEntity.setUin(uinValue);
+			StaticPin staticPin = new StaticPin();
+			StaticPinHistory staticPinHistory = new StaticPinHistory();
+			staticPin.setUin(uinValue);
 			String pinValue = staticPinRequestDTO.getRequest().getStaticPin();
 			// TODO
 			String hashedPin = hashStaticPin(pinValue.getBytes());
-			staticPinEntity.setPin(hashedPin);
-			staticPinEntity.setCreatedBy(IDA);
-			staticPinEntity.setCreatedDTimes(new Date());
-			staticPinEntity.setUpdatedBy(IDA);
+			staticPin.setPin(hashedPin);
+			staticPin.setCreatedBy(IDA);
+			staticPin.setCreatedDTimes(new Date());
+			staticPin.setUpdatedBy(IDA);
 			Date convertStringToDate = null;
 			convertStringToDate = dateHelper.convertStringToDate(staticPinRequestDTO.getReqTime());
-			staticPinEntity.setUpdatedOn(convertStringToDate);
-			staticPinEntity.setActive(true);
-			staticPinEntity.setDeleted(false);
-			staticPinHistoryEntity.setUin(uinValue);
-			staticPinHistoryEntity.setPin(hashedPin);
-			staticPinHistoryEntity.setCreatedBy(IDA);
-			staticPinHistoryEntity.setCreatedDTimes(new Date());
-			staticPinHistoryEntity.setEffectiveDate(new Date());
-			staticPinHistoryEntity.setActive(true);
-			staticPinHistoryEntity.setDeleted(false);
-			staticPinHistoryEntity.setUpdatedBy(IDA);
-			staticPinHistoryEntity.setUpdatedOn(new Date());
-			Optional<StaticPinEntity> entityValues = staticPinRepo.findById(uinValue);
+			staticPin.setUpdatedOn(convertStringToDate);
+			staticPin.setActive(true);
+			staticPin.setDeleted(false);
+			staticPinHistory.setUin(uinValue);
+			staticPinHistory.setPin(hashedPin);
+			staticPinHistory.setCreatedBy(IDA);
+			staticPinHistory.setCreatedDTimes(new Date());
+			staticPinHistory.setEffectiveDate(new Date());
+			staticPinHistory.setActive(true);
+			staticPinHistory.setDeleted(false);
+			staticPinHistory.setUpdatedBy(IDA);
+			staticPinHistory.setUpdatedOn(new Date());
+			Optional<StaticPin> entityValues = staticPinRepo.findById(uinValue);
 
 			if (!entityValues.isPresent()) {
-				staticPinRepo.save(staticPinEntity);
+				staticPinRepo.save(staticPin);
 
 			} else {
-				StaticPinEntity entity = entityValues.get();
+				StaticPin entity = entityValues.get();
 				entity.setPin(hashedPin);
 				entity.setUpdatedOn(new Date());
 				entity.setUpdatedBy(IDA);
 				staticPinRepo.update(entity);
 			}
 			status = Boolean.TRUE;
-			staticPinHistoryRepo.save(staticPinHistoryEntity);
+			staticPinHistoryRepo.save(staticPinHistory);
 			return status;
 		} catch (DataAccessException e) {
 			logger.error(SESSION_ID, "StaticPinStoreImpl", e.getClass().getName(), e.getMessage());

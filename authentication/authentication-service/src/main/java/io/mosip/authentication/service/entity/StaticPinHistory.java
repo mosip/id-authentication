@@ -18,9 +18,9 @@ import lombok.Data;
  */
 @Data
 @Entity
-@IdClass(StaticPinHistoryEntity.IdClass.class)
+@IdClass(StaticPinHistory.IdClass.class)
 @Table(name="static_pin_h", schema="ida")
-public class StaticPinHistoryEntity {
+public class StaticPinHistory {
 	/** The pin. */
 	@NotNull
 	@Column(name = "pin", nullable = false)

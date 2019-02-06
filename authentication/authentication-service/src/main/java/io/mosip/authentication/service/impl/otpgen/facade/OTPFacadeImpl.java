@@ -124,7 +124,7 @@ public class OTPFacadeImpl implements OTPFacade {
 		if (otp == null || otp.trim().isEmpty()) {
 			status = "N";
 			comment = "OTP_GENERATION_FAILED";
-			idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.OTP_REQUEST);
+			idAuthService.saveAutnTxn(idvId, idvIdType,uin, reqTime, txnId, status, comment, RequestType.OTP_REQUEST);
 			// saveAutnTxn(otpRequestDto, status, comment, uin);
 			mosipLogger.error("SessionId", "NA", "NA", "OTP Generation failed");
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
@@ -154,7 +154,7 @@ public class OTPFacadeImpl implements OTPFacade {
 
 			// -- send otp notification --
 			notificationService.sendOtpNotification(otpRequestDto, otp, uin, email, mobileNumber, idInfo);
-			idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.OTP_REQUEST);
+			idAuthService.saveAutnTxn(idvId, idvIdType,uin, reqTime, txnId, status, comment, RequestType.OTP_REQUEST);
 
 		}
 		return otpResponseDTO;

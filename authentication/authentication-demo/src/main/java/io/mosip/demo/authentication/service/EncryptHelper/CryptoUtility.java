@@ -27,9 +27,9 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
  * The Class EncryptUtil.
  *
  * @author Arun Bose S
- * The Class EncryptUtil.
+ * The Class CryptoUtil.
  */
-public class EncryptUtil {
+public class CryptoUtility {
 
 	/** The Constant AESPADDING. */
 	private static final String AESPADDING = "AES/CBC/PKCS5Padding";
@@ -72,7 +72,7 @@ public class EncryptUtil {
 	public byte[] symmetricEncrypt(byte[] data, SecretKey secretKey)
 			throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
 			InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-		Cipher cipher = Cipher.getInstance(EncryptUtil.AESPADDING);
+		Cipher cipher = Cipher.getInstance(CryptoUtility.AESPADDING);
 		byte[] randomIV = generateIV(cipher.getBlockSize());
 		cipher.init(Cipher.ENCRYPT_MODE, secretKey, new IvParameterSpec(randomIV), secureRandom);
 		byte[] identityEncryptedValue = new byte[cipher.getOutputSize(data.length) + cipher.getBlockSize()];
@@ -97,10 +97,10 @@ public class EncryptUtil {
 	 * @throws BadPaddingException the bad padding exception
 	 */
 	public SecretKey asymmetricDecrypt(PrivateKey privateKey, byte[] encryptedSecretKeyByteArr) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-	   Cipher  cipher=Cipher.getInstance(EncryptUtil.RSAPADDING);
+	   Cipher  cipher=Cipher.getInstance(CryptoUtility.RSAPADDING);
 		cipher.init(Cipher.DECRYPT_MODE, privateKey);
 		 byte[] decryptedSecretKeyByteArr=cipher.doFinal(encryptedSecretKeyByteArr,0,encryptedSecretKeyByteArr.length);
-	      return new SecretKeySpec(decryptedSecretKeyByteArr, 0, decryptedSecretKeyByteArr.length,EncryptUtil.SYM_ALGORITHM);	 
+	      return new SecretKeySpec(decryptedSecretKeyByteArr, 0, decryptedSecretKeyByteArr.length,CryptoUtility.SYM_ALGORITHM);	 
 	}
 	
 	
@@ -118,7 +118,7 @@ public class EncryptUtil {
 	 * @throws InvalidAlgorithmParameterException the invalid algorithm parameter exception
 	 */
 	public byte[] symmetricDecrypt(SecretKey secretKey, byte[] encryptedDataByteArr) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
-	   Cipher  cipher=Cipher.getInstance(EncryptUtil.AESPADDING);
+	   Cipher  cipher=Cipher.getInstance(CryptoUtility.AESPADDING);
 	   cipher.init(Cipher.DECRYPT_MODE, secretKey,
 				new IvParameterSpec(Arrays.copyOfRange(encryptedDataByteArr, encryptedDataByteArr.length - cipher.getBlockSize(), encryptedDataByteArr.length)),
 				secureRandom);
@@ -159,8 +159,8 @@ public class EncryptUtil {
 	public SecretKey genSecKey() throws NoSuchAlgorithmException {
 		KeyGenerator keyGen;
 		SecretKey secretKey = null;
-        keyGen = KeyGenerator.getInstance(EncryptUtil.SYM_ALGORITHM, bouncyCastleProvider);
-		keyGen.init(EncryptUtil.SYM_ALGORITHM_LENGTH, new SecureRandom());
+        keyGen = KeyGenerator.getInstance(CryptoUtility.SYM_ALGORITHM, bouncyCastleProvider);
+		keyGen.init(CryptoUtility.SYM_ALGORITHM_LENGTH, new SecureRandom());
 		secretKey = keyGen.generateKey();
         return secretKey;
 
@@ -181,7 +181,7 @@ public class EncryptUtil {
 	public byte[] asymmetricEncrypt(byte[] data, PublicKey publicKey) throws NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 		byte[] sessionKeyEncryptedValue = null;
-		Cipher cipher = Cipher.getInstance(EncryptUtil.RSAPADDING);
+		Cipher cipher = Cipher.getInstance(CryptoUtility.RSAPADDING);
 		cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 		sessionKeyEncryptedValue = cipher.doFinal(data, 0, data.length);
 

@@ -71,9 +71,5 @@ public class IdAuthConfig implements WebMvcConfigurer {
 		source.addBasenames("errormessages", "eKycPDFTemplate");
 		return source;
 	}
-	
-	@Bean
-	public CbeffI cbeff() {
-		return new CbeffImpl();
-	}
+
 }

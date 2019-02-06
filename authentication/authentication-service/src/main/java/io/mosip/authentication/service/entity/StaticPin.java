@@ -20,7 +20,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name="static_pin", schema="ida")
-public class StaticPinEntity {
+public class StaticPin {
 	/** The pin. */
 	@NotNull
 	@Column(name = "pin", nullable = false)

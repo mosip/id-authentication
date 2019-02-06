@@ -80,7 +80,7 @@ public class MatchTest {
 		identityInfoDTO.setLanguage("FR");
 		identityInfoDTO.setValue("dinesh");
 		nameList.add(identityInfoDTO);
-		identity.setFullName(nameList);
+		identity.setName(nameList);
 		MatchType matchType = new MatchType() {
 
 			@Override
@@ -144,7 +144,7 @@ public class MatchTest {
 		identityInfoDTO.setLanguage("FR");
 		identityInfoDTO.setValue("dinesh");
 		nameList.add(identityInfoDTO);
-		identity.setFullName(nameList);
+		identity.setName(nameList);
 		MatchType matchType = new MatchType() {
 
 			@Override

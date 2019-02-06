@@ -32,8 +32,8 @@ import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
-import io.mosip.authentication.service.entity.StaticPinEntity;
-import io.mosip.authentication.service.entity.StaticPinHistoryEntity;
+import io.mosip.authentication.service.entity.StaticPin;
+import io.mosip.authentication.service.entity.StaticPinHistory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.helper.DateHelper;
@@ -83,7 +83,7 @@ public class StaticPinFacadeImplTest {
 	
 	/** The StaticPin Entity */
 	@Mock
-	StaticPinEntity staticPinEntity;
+	StaticPin staticPin;
 	
 	/** The Static Pin Repository */
 	@Mock
@@ -144,21 +144,21 @@ public class StaticPinFacadeImplTest {
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
-		StaticPinEntity stat = new StaticPinEntity();
+		StaticPin stat = new StaticPin();
 		stat.setCreatedDTimes(new Date());
 		stat.setPin("123456");
 		stat.setUin(uin);
-		StaticPinHistoryEntity staticPinHistoryEntity = new StaticPinHistoryEntity();
-		staticPinHistoryEntity.setUin(uin);
-		staticPinHistoryEntity.setPin(pin);
-		staticPinHistoryEntity.setCreatedBy(IDA);
-		staticPinHistoryEntity.setCreatedDTimes(new Date());
-		staticPinHistoryEntity.setEffectiveDate(new Date());
-		staticPinHistoryEntity.setActive(true);
-		staticPinHistoryEntity.setDeleted(false);
-		staticPinHistoryEntity.setUpdatedBy(IDA);
-		staticPinHistoryEntity.setUpdatedOn(new Date());
-		Optional<StaticPinEntity> entity = Optional.of(stat);
+		StaticPinHistory staticPinHistory = new StaticPinHistory();
+		staticPinHistory.setUin(uin);
+		staticPinHistory.setPin(pin);
+		staticPinHistory.setCreatedBy(IDA);
+		staticPinHistory.setCreatedDTimes(new Date());
+		staticPinHistory.setEffectiveDate(new Date());
+		staticPinHistory.setActive(true);
+		staticPinHistory.setDeleted(false);
+		staticPinHistory.setUpdatedBy(IDA);
+		staticPinHistory.setUpdatedOn(new Date());
+		Optional<StaticPin> entity = Optional.of(stat);
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", uin);
 		idRepo.put("registrationId", "1234567890");
@@ -177,7 +177,7 @@ public class StaticPinFacadeImplTest {
 		Mockito.when(idInfoService.getIdInfo(repoDetails(uin))).thenReturn(idInfo);
 
 		Mockito.when(staticPinRepository.findById(uin)).thenReturn(entity);
-		Mockito.when(staticPinHistoryRepo.save(staticPinHistoryEntity)).thenReturn(staticPinHistoryEntity);
+		Mockito.when(staticPinHistoryRepo.save(staticPinHistory)).thenReturn(staticPinHistory);
 		Mockito.when(staticPinRepository.update(entity.get())).thenReturn(stat);
 		pinFacadeImpl.storeSpin(staticPinRequestDTO);
 	}
@@ -199,21 +199,21 @@ public class StaticPinFacadeImplTest {
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
-		StaticPinEntity stat = new StaticPinEntity();
+		StaticPin stat = new StaticPin();
 		stat.setCreatedDTimes(new Date());
 		stat.setPin("123456");
 		stat.setUin(vid);
-		StaticPinHistoryEntity staticPinHistoryEntity = new StaticPinHistoryEntity();
-		staticPinHistoryEntity.setUin(vid);
-		staticPinHistoryEntity.setPin(pin);
-		staticPinHistoryEntity.setCreatedBy(IDA);
-		staticPinHistoryEntity.setCreatedDTimes(new Date());
-		staticPinHistoryEntity.setEffectiveDate(new Date());
-		staticPinHistoryEntity.setActive(true);
-		staticPinHistoryEntity.setDeleted(false);
-		staticPinHistoryEntity.setUpdatedBy(IDA);
-		staticPinHistoryEntity.setUpdatedOn(new Date());
-		Optional<StaticPinEntity> entity = Optional.of(stat);
+		StaticPinHistory staticPinHistory = new StaticPinHistory();
+		staticPinHistory.setUin(vid);
+		staticPinHistory.setPin(pin);
+		staticPinHistory.setCreatedBy(IDA);
+		staticPinHistory.setCreatedDTimes(new Date());
+		staticPinHistory.setEffectiveDate(new Date());
+		staticPinHistory.setActive(true);
+		staticPinHistory.setDeleted(false);
+		staticPinHistory.setUpdatedBy(IDA);
+		staticPinHistory.setUpdatedOn(new Date());
+		Optional<StaticPin> entity = Optional.of(stat);
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "284169042058");
 		idRepo.put("registrationId", "1234567890");
@@ -232,7 +232,7 @@ public class StaticPinFacadeImplTest {
 		Mockito.when(idInfoService.getIdInfo(repoDetails(vid))).thenReturn(idInfo);
 
 		Mockito.when(staticPinRepository.findById(vid)).thenReturn(entity);
-		Mockito.when(staticPinHistoryRepo.save(staticPinHistoryEntity)).thenReturn(staticPinHistoryEntity);
+		Mockito.when(staticPinHistoryRepo.save(staticPinHistory)).thenReturn(staticPinHistory);
 		Mockito.when(staticPinRepository.update(entity.get())).thenReturn(stat);
 		pinFacadeImpl.storeSpin(staticPinRequestDTO);
 	}
@@ -254,21 +254,21 @@ public class StaticPinFacadeImplTest {
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
-		StaticPinEntity stat = new StaticPinEntity();
+		StaticPin stat = new StaticPin();
 		stat.setCreatedDTimes(new Date());
 		stat.setPin("123456");
 		stat.setUin(vid);
-		StaticPinHistoryEntity staticPinHistoryEntity = new StaticPinHistoryEntity();
-		staticPinHistoryEntity.setUin(vid);
-		staticPinHistoryEntity.setPin(pin);
-		staticPinHistoryEntity.setCreatedBy(IDA);
-		staticPinHistoryEntity.setCreatedDTimes(new Date());
-		staticPinHistoryEntity.setEffectiveDate(new Date());
-		staticPinHistoryEntity.setActive(true);
-		staticPinHistoryEntity.setDeleted(false);
-		staticPinHistoryEntity.setUpdatedBy(IDA);
-		staticPinHistoryEntity.setUpdatedOn(new Date());
-		Optional<StaticPinEntity> entity = Optional.of(stat);
+		StaticPinHistory staticPinHistory = new StaticPinHistory();
+		staticPinHistory.setUin(vid);
+		staticPinHistory.setPin(pin);
+		staticPinHistory.setCreatedBy(IDA);
+		staticPinHistory.setCreatedDTimes(new Date());
+		staticPinHistory.setEffectiveDate(new Date());
+		staticPinHistory.setActive(true);
+		staticPinHistory.setDeleted(false);
+		staticPinHistory.setUpdatedBy(IDA);
+		staticPinHistory.setUpdatedOn(new Date());
+		Optional<StaticPin> entity = Optional.of(stat);
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", null);
 		idRepo.put("registrationId", "1234567890");
@@ -287,7 +287,7 @@ public class StaticPinFacadeImplTest {
 		Mockito.when(idInfoService.getIdInfo(repoDetails(vid))).thenReturn(idInfo);
 
 		Mockito.when(staticPinRepository.findById(vid)).thenReturn(entity);
-		Mockito.when(staticPinHistoryRepo.save(staticPinHistoryEntity)).thenReturn(staticPinHistoryEntity);
+		Mockito.when(staticPinHistoryRepo.save(staticPinHistory)).thenReturn(staticPinHistory);
 		Mockito.when(staticPinRepository.update(entity.get())).thenReturn(stat);
 		pinFacadeImpl.storeSpin(staticPinRequestDTO);
 	}

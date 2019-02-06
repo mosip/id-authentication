@@ -48,18 +48,18 @@ public class InternalAuthFilterTest {
 
 	@Autowired
 	ObjectMapper mapper;
-	
-	  @Before
-	    public void before() {
+
+	@Before
+	public void before() {
 		ReflectionTestUtils.setField(internalAuthFilter, "mapper", mapper);
 		ReflectionTestUtils.setField(internalAuthFilter, "env", env);
-	    }
+	}
 
 	@Ignore
 	@Test
-	public void testValidDecodedRequest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
-		Method decodeMethod = InternalAuthFilter.class.getDeclaredMethod("decodedRequest",
-				Map.class);
+	public void testValidDecodedRequest() throws IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
+		Method decodeMethod = InternalAuthFilter.class.getDeclaredMethod("decodedRequest", Map.class);
 		decodeMethod.setAccessible(true);
 		Map<String, Object> decodeValue = (Map<String, Object>) decodeMethod.invoke(internalAuthFilter,
 				createEncodedRequest());
@@ -68,9 +68,9 @@ public class InternalAuthFilterTest {
 	}
 
 	@Test
-	public void testValidEncodedRequest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
-		Method encodeMethod = InternalAuthFilter.class.getDeclaredMethod("encodedResponse",
-				Map.class);
+	public void testValidEncodedRequest() throws IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
+		Method encodeMethod = InternalAuthFilter.class.getDeclaredMethod("encodedResponse", Map.class);
 		encodeMethod.setAccessible(true);
 		Map<String, Object> decodeValue = (Map<String, Object>) encodeMethod.invoke(internalAuthFilter,
 				createResponse());
@@ -79,12 +79,12 @@ public class InternalAuthFilterTest {
 	}
 
 	@Ignore
-	public void testTxnId() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
-		Method txvIdMethod = InternalAuthFilter.class.getDeclaredMethod("setResponseParam",
-				Map.class, Map.class);
+	public void testTxnId() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+			IOException, NoSuchMethodException, SecurityException {
+		Method txvIdMethod = InternalAuthFilter.class.getDeclaredMethod("setResponseParam", Map.class, Map.class);
 		txvIdMethod.setAccessible(true);
-		Map<String, Object> decodeValue = (Map<String, Object>) txvIdMethod.invoke(internalAuthFilter, createEncodedRequest(),
-				createResponse());
+		Map<String, Object> decodeValue = (Map<String, Object>) txvIdMethod.invoke(internalAuthFilter,
+				createEncodedRequest(), createResponse());
 		assertNotNull(decodeValue);
 
 	}
@@ -98,7 +98,7 @@ public class InternalAuthFilterTest {
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 //		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -114,28 +114,27 @@ public class InternalAuthFilterTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 
-		String authRequest =mapper.writeValueAsString(authRequestDTO);
+		String authRequest = mapper.writeValueAsString(authRequestDTO);
 
-		Map<String, Object> map =(Map<String, Object>) mapper.readValue(authRequest.getBytes(), Map.class);
+		Map<String, Object> map = (Map<String, Object>) mapper.readValue(authRequest.getBytes(), Map.class);
 		return map;
 	}
 
-	public Map<String, Object> createResponse() throws IOException{
+	public Map<String, Object> createResponse() throws IOException {
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		authResponseDTO.setTxnID("12345");
 		AuthResponseInfo authResponseInfo = new AuthResponseInfo();
 		authResponseDTO.setInfo(authResponseInfo);
-		String authResponse =mapper.writeValueAsString(authResponseDTO);
-		Map<String, Object> map =(Map<String, Object>) mapper.readValue(authResponse.getBytes(), Map.class);
+		String authResponse = mapper.writeValueAsString(authResponseDTO);
+		Map<String, Object> map = (Map<String, Object>) mapper.readValue(authResponse.getBytes(), Map.class);
 		return map;
 
 	}
-
 
 }
