@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -31,7 +32,6 @@ import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.amazonaws.services.s3.AmazonS3;
@@ -43,28 +43,33 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
-import io.mosip.kernel.cbeffutil.entity.BDBInfo;
-import io.mosip.kernel.cbeffutil.entity.BIR;
-import io.mosip.kernel.cbeffutil.entity.BIRInfo;
-import io.mosip.kernel.cbeffutil.entity.BIRVersion;
-import io.mosip.kernel.cbeffutil.entity.SBInfo;
-import io.mosip.kernel.cbeffutil.jaxbclasses.BIRType;
-import io.mosip.kernel.cbeffutil.jaxbclasses.ProcessedLevelType;
-import io.mosip.kernel.cbeffutil.jaxbclasses.PurposeType;
-import io.mosip.kernel.cbeffutil.jaxbclasses.SBInfoType;
-import io.mosip.kernel.cbeffutil.jaxbclasses.SingleAnySubtypeType;
-import io.mosip.kernel.cbeffutil.jaxbclasses.SingleType;
-import io.mosip.kernel.cbeffutil.service.impl.CbeffImpl;
+import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
+import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
+import io.mosip.kernel.core.cbeffutil.entity.BIR;
+import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
+import io.mosip.kernel.core.cbeffutil.entity.BIRVersion;
+import io.mosip.kernel.core.cbeffutil.entity.SBInfo;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SBInfoType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
+import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
+import io.mosip.kernel.core.idrepo.exception.RestServiceException;
 import io.mosip.kernel.idrepo.dfsadapter.impl.AmazonS3DFSProvider;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.dto.RequestDTO;
+import io.mosip.kernel.idrepo.dto.RestRequestDTO;
 import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.entity.UinBiometric;
 import io.mosip.kernel.idrepo.entity.UinDocument;
+import io.mosip.kernel.idrepo.factory.RestRequestFactory;
 import io.mosip.kernel.idrepo.helper.AuditHelper;
+import io.mosip.kernel.idrepo.helper.RestHelper;
 import io.mosip.kernel.idrepo.provider.impl.FingerprintProvider;
 import io.mosip.kernel.idrepo.repository.UinBiometricHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinDocumentHistoryRepo;
@@ -121,7 +126,7 @@ public class IdRepoServiceTest {
 
 	/** The rest template. */
 	@Mock
-	private RestTemplate restTemplate;
+	private RestHelper restHelper;
 
 	@Mock
 	private DefaultShardResolver shardResolver;
@@ -140,7 +145,7 @@ public class IdRepoServiceTest {
 					.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
 					.withSubtype(Arrays.asList(SingleAnySubtypeType.RIGHT.value(),
 							SingleAnySubtypeType.INDEX_FINGER.value()))
-					.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).withCreationDate(new Date())
+					.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).withCreationDate(LocalDateTime.now())
 					.build())
 			.withSbInfo(new SBInfo.SBInfoBuilder()
                     .setFormatOwner(257l)
@@ -155,6 +160,9 @@ public class IdRepoServiceTest {
 	/** The uin history repo. */
 	@Mock
 	private UinHistoryRepo uinHistoryRepo;
+	
+	@Mock
+	RestRequestFactory restFactory;
 
 	/** The id. */
 	private Map<String, String> id;
@@ -178,11 +186,14 @@ public class IdRepoServiceTest {
 	 * 
 	 * @throws IOException
 	 * @throws FileNotFoundException
+	 * @throws IdRepoDataValidationException 
+	 * @throws RestServiceException 
 	 */
 	@SuppressWarnings("unchecked")
 	@Before
-	public void setup() throws FileNotFoundException, IOException {
-		when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(ObjectNode.class), Mockito.any(Class.class)))
+	public void setup() throws FileNotFoundException, IOException, IdRepoDataValidationException, RestServiceException {
+		when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+		when(restHelper.requestSync(Mockito.any()))
 				.thenReturn(mapper.readValue("{\"data\":\"1234\"}".getBytes(), ObjectNode.class));
 		ReflectionTestUtils.setField(service, "mapper", mapper);
 		ReflectionTestUtils.setField(service, "env", env);
@@ -729,8 +740,8 @@ public class IdRepoServiceTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testEncryptDecryptDocumentsException() throws Throwable {
 		try {
-			when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(ObjectNode.class),
-					Mockito.any(Class.class))).thenThrow(new RestClientException(""));
+			when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+			when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException());
 			Uin uin = new Uin();
 			uin.setUinData(new byte[] { 0 });
 			ReflectionTestUtils.invokeMethod(service, "encryptDecryptDocuments", "document", "encrypt");
@@ -743,8 +754,8 @@ public class IdRepoServiceTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testEncryptDecryptDocumentsNoData() throws Throwable {
 		try {
-			when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(ObjectNode.class),
-					Mockito.any(Class.class))).thenReturn(mapper.readValue("{}".getBytes(), ObjectNode.class));
+			when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+			when(restHelper.requestSync(Mockito.any())).thenReturn(mapper.readValue("{}".getBytes(), ObjectNode.class));
 			Uin uin = new Uin();
 			uin.setUinData(new byte[] { 0 });
 			ReflectionTestUtils.invokeMethod(service, "encryptDecryptDocuments", "document", "encrypt");
