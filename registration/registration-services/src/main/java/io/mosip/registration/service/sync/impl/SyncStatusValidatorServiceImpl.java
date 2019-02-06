@@ -103,7 +103,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 			auditFactory.audit(AuditEvent.PENDING_PKT_CNT_VALIDATE, Components.SYNC_VALIDATE,
 					"Validating the count of packets of status Registered with configured value", "refId", "refIdType");
 
-			if (registrationDetails.size() > Integer.parseInt(
+			if (registrationDetails.size() >= Integer.parseInt(
 					String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PAK_MAX_CNT_APPRV_LIMIT)))) {
 
 				getErrorResponse(RegistrationConstants.PAK_APPRVL_MAX_CNT,
