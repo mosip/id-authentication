@@ -35,9 +35,7 @@ table:tokenId
 
 ** Description **
 
-1.**ADMIN** _can only configure the length_ 
-
-2._Token ID is a numeric hash for the combination of TSP and UIN_
+_Token ID is a numeric hash for the combination of TSP and UIN_
 
 
 

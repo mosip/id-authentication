@@ -32,7 +32,7 @@ public class TokenIdGeneratorTest {
 	@Test
 	public void tokenIdLengthTest() {
 		int tokenLength = tokenIdGenerator.generateId("6475", "984763876283").length();
-		assertThat(tokenLength, is(36));
+		assertThat(tokenLength, is(tokenIdLength));
 	}
 
 	@Test(expected = TokenIdGeneratorException.class)
