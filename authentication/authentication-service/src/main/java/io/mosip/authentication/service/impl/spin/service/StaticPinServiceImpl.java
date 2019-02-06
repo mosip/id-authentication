@@ -4,10 +4,9 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -45,12 +44,6 @@ public class StaticPinServiceImpl implements StaticPinService {
 	@Autowired
 	private DateHelper dateHelper;
 
-	/** The logger. */
-	private static Logger logger = IdaLogger.getLogger(StaticPinServiceImpl.class);
-
-	/** The Constant SESSION_ID. */
-	private static final String SESSION_ID = "sessionId";
-
 	/**
 	 * This method is to store the StaticPin in StaticPin and StaticPinHistory
 	 * Table.
@@ -60,9 +53,9 @@ public class StaticPinServiceImpl implements StaticPinService {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	@Override
+	@Transactional
 	public boolean storeSpin(StaticPinRequestDTO staticPinRequestDTO, String uinValue)
 			throws IdAuthenticationBusinessException {
-		try {
 			boolean status = false;
 			StaticPin staticPin = new StaticPin();
 			StaticPinHistory staticPinHistory = new StaticPinHistory();
@@ -103,10 +96,6 @@ public class StaticPinServiceImpl implements StaticPinService {
 			status = Boolean.TRUE;
 			staticPinHistoryRepo.save(staticPinHistory);
 			return status;
-		} catch (DataAccessException e) {
-			logger.error(SESSION_ID, "StaticPinStoreImpl", e.getClass().getName(), e.getMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.STATICPIN_NOT_STORED_PINVAUE, e);
-		}
 	}
 
 	/**

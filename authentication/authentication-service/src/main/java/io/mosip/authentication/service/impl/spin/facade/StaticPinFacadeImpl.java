@@ -10,19 +10,24 @@ import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.spin.facade.StaticPinFacade;
 import io.mosip.authentication.core.spi.spin.service.StaticPinService;
 import io.mosip.authentication.service.helper.AuditHelper;
+import io.mosip.authentication.service.impl.spin.service.StaticPinServiceImpl;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
@@ -62,7 +67,12 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 	/** The AuditHelper */
 	@Autowired
 	private AuditHelper auditHelper;
+	
+	/** The logger. */
+	private static Logger logger = IdaLogger.getLogger(StaticPinFacadeImpl.class);
 
+	/** The Constant SESSION_ID. */
+	private static final String SESSION_ID = "sessionId";
 	/**
 	 * 
 	 * This method is to call the StaticPinServiceImpl and constructs the Response
@@ -74,6 +84,7 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 	@Override
 	public StaticPinResponseDTO storeSpin(StaticPinRequestDTO staticPinRequestDTO)
 			throws IdAuthenticationBusinessException {
+		try {
 		StaticPinResponseDTO staticPinResponseDTO = new StaticPinResponseDTO();
 		staticPinResponseDTO.setStatus(SUCCESS);
 		String uin = staticPinRequestDTO.getRequest().getIdentity().getUin();
@@ -119,15 +130,19 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 		if (status) {
 			staticPinResponseDTO.setStatus(SUCCESS);
 			staticPinResponseDTO.setErr(Collections.emptyList());
-			String statusValue = status ? SUCCESS : FAILED;
-			String comment = status ? "Static pin stored successfully" : "Faild to store Static pin";
-			idAuthService.saveAutnTxn(idvId, idvIdType,uin, reqTime, tspIdValue, statusValue, comment,
-					RequestType.STATICPIN_STORE_REQUEST);
-			 String desc="Static Pin Storage requested";
-			auditHelper.audit(AuditModules.STATIC_PIN_STORAGE, AuditEvents.STATIC_PIN_STORAGE_REQUEST_RESPONSE, idvId, idType, desc);
 		}
+		String statusValue = status ? SUCCESS : FAILED;
+		String comment = status ? "Static pin stored successfully" : "Faild to store Static pin";
+		idAuthService.saveAutnTxn(idvId, idvIdType,uin, reqTime, tspIdValue, statusValue, comment,
+				RequestType.STATICPIN_STORE_REQUEST);
+		String desc="Static Pin Storage requested";
+		auditHelper.audit(AuditModules.STATIC_PIN_STORAGE, AuditEvents.STATIC_PIN_STORAGE_REQUEST_RESPONSE, idvId, idType, desc);
 
 		return staticPinResponseDTO;
+		} catch (DataAccessException e) {
+			logger.error(SESSION_ID, "StaticPinFacadeImpl", e.getClass().getName(), e.getMessage());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.STATICPIN_NOT_STORED_PINVAUE, e);
+		}
 	}
 
 }

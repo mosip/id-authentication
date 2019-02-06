@@ -261,7 +261,7 @@ public class StaticPinFacadeImplTest {
 		StaticPinHistory staticPinHistory = new StaticPinHistory();
 		staticPinHistory.setUin(vid);
 		staticPinHistory.setPin(pin);
-		staticPinHistory.setCreatedBy(IDA);
+		staticPinHistory.setCreatedBy(null);
 		staticPinHistory.setCreatedDTimes(new Date());
 		staticPinHistory.setEffectiveDate(new Date());
 		staticPinHistory.setActive(true);

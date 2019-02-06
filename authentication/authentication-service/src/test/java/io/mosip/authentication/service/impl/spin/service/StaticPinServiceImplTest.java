@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -29,7 +28,6 @@ import io.mosip.authentication.core.dto.spinstore.StaticPinIdentityDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.service.entity.StaticPin;
@@ -97,7 +95,8 @@ public class StaticPinServiceImplTest {
 	@Mock
 	private IdRepoService idInfoService;
 	StaticPinRequestDTO staticPinRequestDTO = new StaticPinRequestDTO();
-	private Errors errors = new org.springframework.validation.BindException(staticPinRequestDTO, "staticPinRequestDTO");
+	private Errors errors = new org.springframework.validation.BindException(staticPinRequestDTO,
+			"staticPinRequestDTO");
 
 	@Before
 	public void before() {
@@ -112,7 +111,7 @@ public class StaticPinServiceImplTest {
 
 	@Test
 	public void testStorePin_Success_uin() throws IdAuthenticationBusinessException {
-		
+
 		String uin = "794138547620";
 		staticPinRequestDTO.setId("mosip.identity.static-pin");
 		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
@@ -150,18 +149,19 @@ public class StaticPinServiceImplTest {
 		Mockito.when(staticPinRepository.update(entity.get())).thenReturn(stat);
 		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "storeSpin", staticPinRequestDTO, "794138547620");
 	}
+
 	@Test
 	public void testStorePin_UniqueUin() throws IDDataValidationException {
-		
+
 		String uin = "794138547620";
 		staticPinRequestDTO.setId("mosip.identity.static-pin");
-		String reqTime = ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
+		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
+				.toString();
 		staticPinRequestDTO.setReqTime(reqTime);
 		staticPinRequestDTO.setVer("1.0");
-		StaticPinIdentityDTO dto=new StaticPinIdentityDTO();
+		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
 		dto.setUin(uin);
-		PinRequestDTO pinRequestDTO=new PinRequestDTO();
+		PinRequestDTO pinRequestDTO = new PinRequestDTO();
 		pinRequestDTO.setIdentity(dto);
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
@@ -185,14 +185,57 @@ public class StaticPinServiceImplTest {
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", uin);
 		idRepo.put("registrationId", "1234567890");
-		Optional<StaticPinHistory> entitySpin=Optional.of(staticPinHistory);
+		Optional<StaticPinHistory> entitySpin = Optional.of(staticPinHistory);
 		errors.rejectValue(null, "test error", "test error");
 		Mockito.when(staticPinRepository.findById(uin)).thenReturn(entity1);
 		Mockito.when(staticPinRepository.save(stat)).thenReturn(stat);
 		Mockito.when(staticPinHistoryRepo.save(staticPinHistory)).thenReturn(staticPinHistory);
-		Mockito.when(staticPinRepository.update(entity.get())).thenReturn(stat);	
-		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "storeSpin", staticPinRequestDTO,"794138547620");
+		Mockito.when(staticPinRepository.update(entity.get())).thenReturn(stat);
+		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "storeSpin", staticPinRequestDTO, "794138547620");
 	}
-	
-	
+
+	@Test
+	public void testStorePin_Failure() throws IDDataValidationException {
+
+		String uin = "794138547620";
+		staticPinRequestDTO.setId("mosip.identity.static-pin");
+		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
+				.toString();
+		staticPinRequestDTO.setReqTime(reqTime);
+		staticPinRequestDTO.setVer("1.0");
+		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
+		dto.setUin(uin);
+		PinRequestDTO pinRequestDTO = new PinRequestDTO();
+		pinRequestDTO.setIdentity(dto);
+		String pin = "123454";
+		pinRequestDTO.setStaticPin(pin);
+		staticPinRequestDTO.setRequest(pinRequestDTO);
+		StaticPin stat = new StaticPin();
+		stat.setCreatedDTimes(new Date());
+		stat.setPin("123456");
+		stat.setUin(uin);
+		StaticPinHistory staticPinHistory = new StaticPinHistory();
+		staticPinHistory.setUin(uin);
+		staticPinHistory.setPin(pin);
+		staticPinHistory.setCreatedBy(null);
+		staticPinHistory.setCreatedDTimes(new Date());
+		staticPinHistory.setEffectiveDate(new Date());
+		staticPinHistory.setActive(true);
+		staticPinHistory.setDeleted(false);
+		staticPinHistory.setUpdatedBy(IDA);
+		staticPinHistory.setUpdatedOn(new Date());
+		Optional<StaticPin> entity1 = Optional.empty();
+		Optional<StaticPin> entity = Optional.of(stat);
+		Map<String, Object> idRepo = new HashMap<>();
+		idRepo.put("uin", uin);
+		idRepo.put("registrationId", "1234567890");
+		Optional<StaticPinHistory> entitySpin = Optional.of(staticPinHistory);
+		errors.rejectValue(null, "test error", "test error");
+		Mockito.when(staticPinRepository.findById(uin)).thenReturn(entity1);
+		Mockito.when(staticPinRepository.save(stat)).thenReturn(stat);
+		Mockito.when(staticPinHistoryRepo.save(staticPinHistory)).thenReturn(staticPinHistory);
+		Mockito.when(staticPinRepository.update(entity.get())).thenReturn(stat);
+		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "storeSpin", staticPinRequestDTO, "794138547620");
+	}
+
 }
