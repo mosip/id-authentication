@@ -68,8 +68,8 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 			response = restTemplate.postForEntity(userDetailsUri.toString(), userIds, UserDetailResponseDto.class);
 			if (response.getStatusCode().is2xxSuccessful())
 				data = response.getBody();
-			if(data != null && data.getUserDetails() != null) {
-			List<UserDetailMapDto> userDetails = MapperUtils.mapUserDetailsToUserDetailMap(data.getUserDetails());
+			if(data != null && data.getMosipUserDtoList() != null) {
+			List<UserDetailMapDto> userDetails = MapperUtils.mapUserDetailsToUserDetailMap(data.getMosipUserDtoList());
 			syncUserDetailDto = new SyncUserDetailDto(userDetails);
 			}
 			return syncUserDetailDto;

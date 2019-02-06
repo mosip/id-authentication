@@ -8,5 +8,5 @@ import lombok.Data;
 @Data
 public class UserDetailResponseDto {
 
-	List<UserDetailDto> userDetails;
+	List<UserDetailDto> mosipUserDtoList;
 }

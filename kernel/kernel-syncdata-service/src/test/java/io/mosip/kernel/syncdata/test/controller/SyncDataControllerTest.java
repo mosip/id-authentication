@@ -76,11 +76,11 @@ public class SyncDataControllerTest {
 		 userDetailMapDto = new UserDetailMapDto();
 		userDetailMapDto.setMail("mosip@gmail.com");
 		userDetailMapDto.setMobile("9988866600");
-		userDetailMapDto.setUserId("100022");
+		userDetailMapDto.setName("100022");
 		userDetailMapDto.setUserName("individula");
 		userDetailMapDto.setRoles(roles);
 		users.add(userDetailMapDto);
-		syncUserDetailDto.setUsers(users);
+		syncUserDetailDto.setUserDetails(users);
 	}
 
 	public void configDetialsSyncSetup() {
@@ -173,7 +173,7 @@ public class SyncDataControllerTest {
 	@Test
 	public void getUsersBasedOnRegCenterFailure()throws Exception{
 		String regId ="110044";
-		when(syncUserDetailsService.getAllUserDetail(regId)).thenThrow(new SyncDataServiceException("KER-SYNC-127", "Error occured in service"));
+		when(syncUserDetailsService.getAllUserDetail(regId)).thenThrow(new SyncDataServiceException("KER-SYNC-301", "Error occured while fetching User Details"));
 		mockMvc.perform(get("/v1.0/userdetails/{regid}","110044")).andExpect(status().isInternalServerError());
 		
 	}

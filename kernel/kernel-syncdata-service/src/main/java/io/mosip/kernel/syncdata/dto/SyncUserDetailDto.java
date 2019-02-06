@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SyncUserDetailDto {
-	List<UserDetailMapDto> users;
+	List<UserDetailMapDto> userDetails;
 }

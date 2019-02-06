@@ -13,9 +13,11 @@ private String userName;
 	
 	private String mobile;
 	
+	private String langCode;
+	
 	private byte[] userPassword;
 	
-    private String userId;
+    private String name;
     
     private List<String> roles;
 

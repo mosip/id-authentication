@@ -2,7 +2,7 @@ package io.mosip.kernel.syncdata.constant;
 
 public enum UserDetailsErrorCode {
 	
-	USER_DETAILS_FETCH_EXCEPTION("KER-sync-xxx", "Error occured while fetching User Details");
+	USER_DETAILS_FETCH_EXCEPTION("KER-SNC-301", "Error occured while fetching User Details");
 	private final String errorCode;
 	private final String errorMessage;
 

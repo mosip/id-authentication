@@ -323,7 +323,8 @@ public class MapperUtils {
 			userDetailMapDto.setUserName(userDetail.getUserName());
 			userDetailMapDto.setMail(userDetail.getMail());
 			userDetailMapDto.setMobile(userDetail.getMobile());
-			userDetailMapDto.setUserId(userDetail.getUserId());
+			userDetailMapDto.setLangCode(userDetail.getLangCode());
+			userDetailMapDto.setName(userDetail.getName());
 			userDetailMapDto.setUserPassword(userDetail.getUserPassword());
 			List<String> roles = Arrays.asList(userDetail.getRole().split(","));
 			userDetailMapDto.setRoles(roles);
