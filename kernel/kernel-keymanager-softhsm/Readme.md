@@ -200,8 +200,8 @@ Output: certificate
 ```
 3. Modify following in environment variables:
 ```
-  set SOFTHSM2_CONF=D:\SoftHSM2\etc\softhsm2.conf
-  set PATH=%PATH%;D:\SoftHSM2\lib\
+> set SOFTHSM2_CONF=D:\SoftHSM2\etc\softhsm2.conf
+> set PATH=%PATH%;D:\SoftHSM2\lib\
 ```
 4. Create another conf file at `D:\SoftHSM2\etc\softhsm2-application.conf` with below content
 ```
