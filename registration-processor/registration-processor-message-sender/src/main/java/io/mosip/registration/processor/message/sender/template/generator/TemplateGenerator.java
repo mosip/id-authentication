@@ -41,19 +41,19 @@ public class TemplateGenerator {
 
 	/** The log. */
 	private static Logger log = LoggerFactory.getLogger(TemplateGenerator.class);
-	
+
 	/** The Constant TEMPLATES. */
 	private static final String TEMPLATES = "templates";
 
 	/** The resource loader. */
 	private String resourceLoader = "classpath";
-	
+
 	/** The template path. */
 	private String templatePath = ".";
-	
+
 	/** The cache. */
 	private boolean cache = Boolean.TRUE;
-	
+
 	/** The default encoding. */
 	private String defaultEncoding = StandardCharsets.UTF_8.name();
 
@@ -64,12 +64,17 @@ public class TemplateGenerator {
 	/**
 	 * Gets the template.
 	 *
-	 * @param templateTypeCode the template type code
-	 * @param attributes the attributes
-	 * @param langCode the lang code
+	 * @param templateTypeCode
+	 *            the template type code
+	 * @param attributes
+	 *            the attributes
+	 * @param langCode
+	 *            the lang code
 	 * @return the template
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
 	 */
 	public String getTemplate(String templateTypeCode, Map<String, Object> attributes, String langCode)
 			throws IOException, ApisResourceAccessException {

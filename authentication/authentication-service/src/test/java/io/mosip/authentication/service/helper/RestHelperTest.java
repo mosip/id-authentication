@@ -1,10 +1,8 @@
 package io.mosip.authentication.service.helper;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 import java.lang.reflect.UndeclaredThrowableException;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,18 +10,15 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
@@ -47,6 +42,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.RestServicesConstants;
+import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.RestServiceException;
@@ -267,7 +263,7 @@ public class RestHelperTest {
 	 * @throws RestServiceException
 	 *             the rest service exception
 	 */
-	@Test
+	@Test(expected = RestServiceException.class)
 	public void utestRequestSyncWithTimeout() throws IDDataValidationException, RestServiceException {
 		server.shutdown();
 		HttpResources.reset();
@@ -349,9 +345,12 @@ public class RestHelperTest {
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
 
-		AuditResponseDto response = (AuditResponseDto) restHelper.requestAsync(restRequest).get();
+		restRequest.setTimeout(100);
 
-		assertTrue(response.isStatus());
+		AuditResponseDto response = null;
+		response = (AuditResponseDto) restHelper.requestSync(restRequest);
+
+		assertTrue(response.isStatus());;
 	}
 
 	/**
@@ -414,12 +413,12 @@ public class RestHelperTest {
 	 * @throws InterruptedException
 	 *             the interrupted exception
 	 */
-	@Test
-	public void ztestRequestSyncFor4xx() throws IDDataValidationException, RestServiceException, InterruptedException {
+	@Test(expected = RestServiceException.class)
+	public void ztestRequestSyncWebClientResponseException() throws IDDataValidationException, RestServiceException, InterruptedException {
 		server.shutdown();
 		HttpResources.reset();
 		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.POST("/auditmanager/audits"),
-				request -> ServerResponse.status(HttpStatus.BAD_REQUEST).body(Mono.just(new AuditResponseDto(true)),
+				request -> ServerResponse.status(HttpStatus.BAD_REQUEST).body(Mono.just(new AuditResponseDto(false)),
 						AuditResponseDto.class));
 
 		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
@@ -446,7 +445,7 @@ public class RestHelperTest {
 	 * @throws RestServiceException
 	 *             the rest service exception
 	 */
-	@Test
+	@Test(expected = RestServiceException.class)
 	public void ztestRequestSyncFor5xx() throws IDDataValidationException, RestServiceException {
 		server.shutdown();
 		HttpResources.reset();
@@ -475,4 +474,57 @@ public class RestHelperTest {
 		assertTrue(ReflectionTestUtils.invokeMethod(restHelper, "getSslContext") instanceof SslContext);
 	}
 
+	@Test
+	public void testHandleStatusErrorWithoutResponseBody() throws Throwable {
+		try {
+			assertTrue(ReflectionTestUtils
+					.invokeMethod(restHelper, "handleStatusError",
+							new WebClientResponseException("message", 400, "failed", null, null, null), String.class)
+					.getClass().equals(RestServiceException.class));
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+
+	@Test
+	public void testHandleStatusError4xx() throws Throwable {
+		try {
+			assertTrue(ReflectionTestUtils
+					.invokeMethod(restHelper, "handleStatusError",
+							new WebClientResponseException("message", 400, "failed", null,
+									mapper.writeValueAsBytes(new AuthRequestDTO()), null),
+							AuthRequestDTO.class)
+					.getClass().equals(RestServiceException.class));
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+	
+	@Test
+	public void testHandleStatusError5xx() throws Throwable {
+		try {
+			assertTrue(ReflectionTestUtils
+					.invokeMethod(restHelper, "handleStatusError",
+							new WebClientResponseException("message", 500, "failed", null,
+									mapper.writeValueAsBytes(new AuthRequestDTO()), null),
+							AuthRequestDTO.class)
+					.getClass().equals(RestServiceException.class));
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+	
+	@Test(expected = RestServiceException.class)
+	public void testRequestSyncRuntimeException() throws IDDataValidationException, RestServiceException {
+		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
+
+		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+				AuditResponseDto.class);
+		restRequest.setUri("https://localhost:8082/auditmanager/v1.0/audits");
+		restRequest.setTimeout(100);
+
+		restHelper.requestSync(restRequest);
+	}
+	
 }

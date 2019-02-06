@@ -84,7 +84,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 
 	/** The Constant MATCHED_REFERENCE_TYPE. */
 	private static final String MATCHED_REFERENCE_TYPE = "uin";
-
+	
 	/**
 	 * Deploy verticle.
 	 */
@@ -160,6 +160,8 @@ public class DemodedupeStage extends MosipVerticleManager {
 				description = "Packet Demo dedupe successful for registration id : " + registrationId;
 			}
 
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, description);
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = true;

@@ -51,7 +51,6 @@ import io.mosip.preregistration.booking.dto.DateTimeDto;
 import io.mosip.preregistration.booking.dto.HolidayDto;
 import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdResponseDTO;
-import io.mosip.preregistration.booking.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.booking.dto.RegistrationCenterDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterHolidayDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterResponseDto;
@@ -71,6 +70,7 @@ import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.ValidationUtil;
@@ -107,6 +107,7 @@ public class BookingServiceTest {
 
 	@MockBean
 	private BookingDAO bookingDAO;
+	
 
 	private AvailabilityDto availability = new AvailabilityDto();
 	private List<DateTimeDto> dateList = new ArrayList<>();
@@ -123,6 +124,7 @@ public class BookingServiceTest {
 	MainListResponseDTO preRegResponse = new MainListResponseDTO();
 
 	List<BookingRequestDTO> bookingList = new ArrayList<>();
+	List<BookingRequestDTO> rebookingList = new ArrayList<>();
 	BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
 
 	BookingRequestDTO rebookingRequestDTO = new BookingRequestDTO();
@@ -151,6 +153,7 @@ public class BookingServiceTest {
 	PreRegIdsByRegCenterIdDTO preRegIdsByRegCenterIdDTO = new PreRegIdsByRegCenterIdDTO();
 	MainRequestDTO<PreRegIdsByRegCenterIdDTO> requestDTO = new MainRequestDTO<>();
 	MainListRequestDTO<BookingRequestDTO> bookingDto = new MainListRequestDTO<>();
+	MainListRequestDTO<BookingRequestDTO> reBookingDto = new MainListRequestDTO<>();
 
 	@Value("${version}")
 	String versionUrl;
@@ -197,7 +200,7 @@ public class BookingServiceTest {
 		oldBooking.setSlotFromTime("09:00");
 		oldBooking.setSlotToTime("09:13");
 		oldBooking.setRegDate("2018-12-06");
-		// rebookingRequestDTO.setOldBookingDetails(oldBooking);
+		rebookingRequestDTO.setOldBookingDetails(oldBooking);
 
 		newBooking.setRegistrationCenterId("1");
 		newBooking.setSlotFromTime("09:00");
@@ -215,6 +218,7 @@ public class BookingServiceTest {
 		bookingRequestDTO.setOldBookingDetails(null);
 
 		bookingList.add(bookingRequestDTO);
+		rebookingList.add(rebookingRequestDTO);
 
 		statusDTOA.setBookingStatus(StatusCodes.BOOKED.getCode());
 		statusDTOA.setPreRegistrationId(bookingRequestDTO.getPreRegistrationId());
@@ -291,7 +295,14 @@ public class BookingServiceTest {
 		bookingDto.setReqTime(new Date());
 		bookingDto.setVer("1.0");
 		bookingDto.setRequest(bookingList);
+		
+		//Rebook
+		reBookingDto.setId("mosip.pre-registration.booking.book");
+		reBookingDto.setReqTime(new Date());
+		reBookingDto.setVer("1.0");
+		reBookingDto.setRequest(rebookingList);
 	}
+	
 
 	@Test
 	public void getAvailabilityTest() {
@@ -379,6 +390,24 @@ public void getPreIdsByRegCenterIdFailureTest2() {
 		MainResponseDTO<List<BookingStatusDTO>> response = service.bookAppointment(bookingDto);
 		assertEquals(1, response.getResponse().size());
 	}
+	
+	@Test
+	public void successRebookAppointment() {
+		
+		preRegistartionStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
+		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
+		requestValidatorFlag = ValidationUtil.requestValidator(requestMap1, requiredRequestMap);
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		ResponseEntity<MainListResponseDTO> respEntity = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(MainListResponseDTO.class))).thenReturn(respEntity);
+		Mockito.when(mapper.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class))
+				.thenReturn(preRegistartionStatusDTO);
+
+		MainResponseDTO<List<BookingStatusDTO>> response = service.bookAppointment(reBookingDto);
+		assertEquals(1, response.getResponse().size());
+	}
 
 	@Test
 	public void addAvailabilityServiceTest() {
@@ -433,8 +462,11 @@ public void getPreIdsByRegCenterIdFailureTest2() {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
-	public void cancelAppointmentSuccessTest() {
+	public void cancelAppointmentSuccessTest() throws java.text.ParseException {
 
+		String date5 = "2016-11-09 14:20:00";
+		Date localDateTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date5);
+		preRegistartionStatusDTO.setCreatedDateTime(localDateTime1);
 		preRegistartionStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
 		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
 		statusList.add(preRegistartionStatusDTO);
@@ -508,7 +540,8 @@ public void getPreIdsByRegCenterIdFailureTest2() {
 	}
 
 	@Test
-	public void cancelSuccess() {
+	public void cancelSuccess() throws java.text.ParseException {
+		
 		preRegistartionStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
 		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
 		statusList.add(preRegistartionStatusDTO);
@@ -545,8 +578,11 @@ public void getPreIdsByRegCenterIdFailureTest2() {
 	}
 	
 	@Test(expected=TableNotAccessibleException.class)
-	public void cancelBookingFailureTest() {
+	public void cancelBookingFailureTest() throws java.text.ParseException {
 		
+		String date5 = "2016-11-09 14:20:00";
+		Date localDateTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date5);
+		preRegistartionStatusDTO.setCreatedDateTime(localDateTime1);
 		preRegistartionStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
 		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
 		statusList.add(preRegistartionStatusDTO);

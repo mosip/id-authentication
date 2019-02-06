@@ -1,17 +1,21 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgxPrintModule } from 'ngx-print';
+import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
+import { AuthService } from './auth/auth.service';
+import { AppConfigService } from './app-config.service';
+import { SharedService } from './feature/booking/booking.service';
 
 import { AppRoutingModule } from './app-routing.module';
-import { AuthService } from './auth/auth.service';
-import { RegistrationModule } from './registration/registration.module';
 import { CoreModule } from './core/core.module';
 import { AuthModule } from './auth/auth.module';
 import { SharedModule } from './shared/shared.module';
-import { SharedService } from './registration/booking/booking.service';
-import { AcknowledgementComponent } from './acknowledgement/acknowledgement.component';
-import { AppConfigService } from './app-config.service';
+
+import { AcknowledgementComponent } from './feature/components/acknowledgement/acknowledgement.component';
+import { PreviewComponent } from './feature/components/preview/preview.component';
 
 const appInitialization = (appConfig: AppConfigService) => {
   return () => {
@@ -20,8 +24,17 @@ const appInitialization = (appConfig: AppConfigService) => {
 };
 
 @NgModule({
-  declarations: [AppComponent, AcknowledgementComponent],
-  imports: [BrowserModule, AppRoutingModule, RegistrationModule, CoreModule, AuthModule, SharedModule],
+  declarations: [AppComponent, AcknowledgementComponent, PreviewComponent],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    AppRoutingModule,
+    CoreModule,
+    AuthModule,
+    SharedModule,
+    NgxPrintModule
+  ],
   providers: [
     AuthService,
     SharedService,

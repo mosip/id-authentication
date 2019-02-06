@@ -9,8 +9,7 @@ package io.mosip.registration.constants;
  */
 public enum RegistrationTransactionType {
 
-	// TODO: Have to include other types if applicable
-	CREATED("CREATED"), UPDATED("UPDATED");
+	CREATED("CREATED"), UPDATED("UPDATED"), EXPORTED("EXPORTED");
 
 	/**
 	 * @param code

@@ -11,6 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -95,7 +96,7 @@ public class CryptomanagerUtil {
 		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("applicationId", cryptomanagerRequestDto.getApplicationId());
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
-				.queryParam("timeStamp", cryptomanagerRequestDto.getTimeStamp())
+				.queryParam("timeStamp", cryptomanagerRequestDto.getTimeStamp().atOffset(ZoneOffset.UTC))
 				.queryParam("referenceId", cryptomanagerRequestDto.getReferenceId());
 		try {
 			KeymanagerPublicKeyResponseDto keyManagerResponseDto = restTemplate

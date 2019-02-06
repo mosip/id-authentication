@@ -14,7 +14,10 @@ public enum AuditEvents {
 	OTP_TRIGGER_REQUEST_RESPONSE("IDA-EVT-002", "Business Event"),
 	
 	/** The internal request response. */
-	INTERNAL_REQUEST_RESPONSE("IDA-EVT-003", "System Event");
+	INTERNAL_REQUEST_RESPONSE("IDA-EVT-003", "System Event"),
+	
+	/** Static_Pin_Storage_Request_Response */
+	STATIC_PIN_STORAGE_REQUEST_RESPONSE("IDA-EVT-004","Business Event");
 	
 	/** The event id. */
 	private final String eventId;

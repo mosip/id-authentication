@@ -292,7 +292,11 @@ public class PacketInfoDaoTest {
 		String docValue = "dGVzdA";
 		byte[] docStore = docValue.getBytes();
 		applicantDocument.setDocStore(docStore);
-
+		ApplicantDocumentPKEntity id = new ApplicantDocumentPKEntity();
+		id.setDocCatCode("individualBiometrics");
+		id.setDocTypCode("individualBiometrics");
+		id.setRegId("2018782130000224092018121229");
+		applicantDocument.setId(id);
 		applicantDocumentEntities.add(applicantDocument);
 		Mockito.when(applicantDocumentEntity.getDocumentsByRegId("2018782130000224092018121229"))
 				.thenReturn(applicantDocumentEntities);

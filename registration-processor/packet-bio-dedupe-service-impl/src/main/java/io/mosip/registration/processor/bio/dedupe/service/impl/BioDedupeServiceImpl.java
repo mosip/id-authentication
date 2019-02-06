@@ -48,7 +48,6 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 /**
  * The Class BioDedupeServiceImpl.
  */
-@RefreshScope
 @Service
 public class BioDedupeServiceImpl implements BioDedupeService {
 

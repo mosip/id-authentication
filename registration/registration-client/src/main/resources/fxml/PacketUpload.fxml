@@ -12,7 +12,7 @@
       <TableView fx:id="table" layoutX="52.0" layoutY="116.0" prefHeight="250.0" prefWidth="800.0">
         <columns>
           <TableColumn fx:id="fileNameColumn" prefWidth="400.0" text="%files" />
-          <TableColumn fx:id="uploadStatusColumn" prefWidth="400.0" text="%uploadstatus" />
+          <TableColumn fx:id="uploadStatusColumn" prefWidth="400.0" text="%status" />
         </columns>
       </TableView>
       <Button fx:id="formValidationButton" layoutX="770.0" layoutY="70.0" mnemonicParsing="false" onAction="#syncAndUploadPacket" text="%upload" />
@@ -35,5 +35,6 @@
             <Font size="10.0" />
          </font>
       </Text>
+      <Button layoutX="603.0" layoutY="70.0" mnemonicParsing="false" onAction="#packetExport" text="%saveToDevice" />
    </children>
 </AnchorPane>

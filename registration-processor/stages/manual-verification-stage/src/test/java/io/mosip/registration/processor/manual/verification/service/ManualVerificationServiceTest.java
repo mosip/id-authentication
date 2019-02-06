@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.manual.verification.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.io.ByteArrayInputStream;
@@ -8,6 +9,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -24,8 +27,16 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
+import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
@@ -46,7 +57,6 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
 public class ManualVerificationServiceTest {
 
 	private List<ManualVerificationEntity> entities;
@@ -67,6 +77,8 @@ public class ManualVerificationServiceTest {
 	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
 	@Mock
 	private BasePacketRepository<ManualVerificationEntity, String> basePacketRepository;
+	@Mock
+	private JsonUtil jsonUtil;
 
 	private InternalRegistrationStatusDto registrationStatusDto;
 	private ManualVerificationPKEntity PKId;

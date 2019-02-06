@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +30,6 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 /**
  * The Class OSIValidatorStage.
  */
-@RefreshScope
 @Service
 public class OSIValidatorStage extends MosipVerticleManager {
 
@@ -65,6 +63,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.OSI_BUS_IN, MessageBusAddress.OSI_BUS_OUT);
+
 	}
 
 	/*
@@ -91,7 +90,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 		osiValidator.registrationStatusDto = registrationStatusDto;
 		umcValidator.setRegistrationStatusDto(registrationStatusDto);
 		try {
-			isValidUMC = true;//umcValidator.isValidUMC(registrationId);
+			isValidUMC = umcValidator.isValidUMC(registrationId);
 			if (isValidUMC) {
 				isValidOSI = osiValidator.isValidOSI(registrationId);
 			}
@@ -116,6 +115,8 @@ public class OSIValidatorStage extends MosipVerticleManager {
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, description);
 		} catch (DataAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.OSI_VALIDATION_FAILED.name() + e.getMessage()

@@ -70,11 +70,11 @@ public class DocumentNotValidExceptionTest {
 
 		this.multiPartFile = new MockMultipartFile("file", "Doc.pdf", "mixed/multipart", new FileInputStream(file));
 
-		Mockito.when(documentUploadService.uploadDoucment(multiPartFile, json))
+		Mockito.when(documentUploadService.uploadDocument(multiPartFile, json))
 				.thenThrow(documentNotValidException);
 		try {
 
-			documentUploadService.uploadDoucment(multiPartFile, json);
+			documentUploadService.uploadDocument(multiPartFile, json);
 			fail();
 
 		} catch (DocumentNotValidException e) {

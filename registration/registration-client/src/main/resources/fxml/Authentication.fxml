@@ -66,7 +66,13 @@
                      </image>
                   </ImageView>
                   <Button layoutX="270.0" layoutY="224.0" mnemonicParsing="false" onAction="#validateFace" styleClass="RegbuttonStyle" text="Scan" />
-                  <TextField fx:id="faceUserId" layoutX="86.0" layoutY="89.0" styleClass="authenticationStyle" promptText="Username" />
+                  <TextField fx:id="faceUserId" layoutX="86.0" layoutY="89.0" promptText="Username" styleClass="authenticationStyle" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="errorPane" layoutY="1.0" styleClass="authenticationAnchorPaneStyle" visible="false">
+               <children>
+               	  <Label fx:id="errorLabel" layoutX="132.0" layoutY="38.0" />
+                  <Label fx:id="errorText" layoutX="50.0" layoutY="80.0" prefWidth="400" prefHeight="100.0" />
                </children>
             </AnchorPane>
          </children>

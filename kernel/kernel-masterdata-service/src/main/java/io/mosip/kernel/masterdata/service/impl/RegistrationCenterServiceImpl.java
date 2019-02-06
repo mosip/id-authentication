@@ -44,6 +44,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
+import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -285,7 +286,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			Set<String> codes = getLocationCode(
 					locationService.getLocationByLangCodeAndHierarchyLevel(languageCode, hierarchyLevel),
 					hierarchyLevel, text);
-			registrationCentersList = registrationCenterRepository.findRegistrationCenterByListOfLocationCode(codes);
+			if (!EmptyCheckUtils.isNullEmpty(codes)) {
+				registrationCentersList = registrationCenterRepository.findRegistrationCenterByListOfLocationCode(codes,
+						languageCode);
+			} else {
+				throw new DataNotFoundException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
@@ -382,14 +390,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				LocalTime startTime = registrationCenter.getCenterStartTime();
 				LocalTime endTime = registrationCenter.getCenterEndTime();
 				if (startTime != null && endTime != null) {
-					LocalTime locatime = localDateTime.toLocalTime();
-					boolean isAfterStartTime = locatime.isAfter(startTime);
-					boolean isBeforeEndTime = locatime.isBefore(endTime.plusHours(1));
+					LocalTime localTime = localDateTime.toLocalTime();
+					boolean isAfterStartTime = localTime.isAfter(startTime);
+					boolean isBeforeEndTime = localTime.isBefore(endTime.plusHours(1));
 					/*
 					 * below is the validation to check if the time that is sent is between start
 					 * and end time
 					 */
-					if ((locatime.equals(startTime) || isAfterStartTime) && isBeforeEndTime) {
+					if ((localTime.equals(startTime) || isAfterStartTime) && ((localTime.equals(endTime.plusHours(1))) || isBeforeEndTime)) {
 						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_ACCEPTED);
 					} else {
 						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_REJECTED);
@@ -488,9 +496,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				Set<String> codes = getLocationCode(parLocCodeToListOfLocation, hierarchyLevel, name);
 				uniqueLocCode.addAll(codes);
 			}
-
-			registrationCentersList = registrationCenterRepository
-					.findRegistrationCenterByListOfLocationCode(uniqueLocCode);
+			if (!EmptyCheckUtils.isNullEmpty(uniqueLocCode)) {
+				registrationCentersList = registrationCenterRepository
+						.findRegistrationCenterByListOfLocationCode(uniqueLocCode, languageCode);
+			} else {
+				throw new DataNotFoundException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
@@ -516,7 +529,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		for (Entry<Integer, List<Location>> data : levelToListOfLocationMap.entrySet()) {
 			if (!isParent) {
 				for (Location location : data.getValue()) {
-					if (text.equalsIgnoreCase(location.getName())) {
+					if (text.trim().equalsIgnoreCase(location.getName().trim())) {
 						uniqueLocCode.add(location.getCode());
 						isParent = true;
 						break;// parent code set

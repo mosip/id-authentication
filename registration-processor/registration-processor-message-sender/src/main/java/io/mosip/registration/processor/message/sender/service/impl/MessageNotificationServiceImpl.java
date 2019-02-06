@@ -51,6 +51,7 @@ import io.mosip.registration.processor.message.sender.exception.TemplateNotFound
 import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
 import io.mosip.registration.processor.message.sender.utility.MessageSenderUtil;
+import io.mosip.registration.processor.message.sender.utility.TemplateConstant;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
@@ -145,7 +146,7 @@ public class MessageNotificationServiceImpl
 
 			String artifact = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
 
-			if (templatejson.getPhoneNumber().isEmpty()) {
+			if (templatejson.getPhoneNumber().isEmpty() || templatejson.getPhoneNumber() == null) {
 				throw new PhoneNumberNotFoundException(PlatformErrorMessages.RPR_SMS_PHONE_NUMBER_NOT_FOUND.getCode());
 			}
 			smsDto.setNumber(templatejson.getPhoneNumber());
@@ -184,7 +185,7 @@ public class MessageNotificationServiceImpl
 
 			String artifact = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
 
-			if (template.getEmailID().isEmpty()) {
+			if (template.getEmailID().isEmpty() || template.getEmailID() == null) {
 				throw new EmailIdNotFoundException(PlatformErrorMessages.RPR_EML_EMAILID_NOT_FOUND.getCode());
 			}
 
@@ -220,6 +221,7 @@ public class MessageNotificationServiceImpl
 	 *            the attachment
 	 * @return the response dto
 	 * @throws Exception
+	 *             the exception
 	 */
 	private ResponseDto sendEmail(String[] mailTo, String[] mailCc, String subject, String artifact,
 			MultipartFile[] attachment) throws Exception {
@@ -278,23 +280,55 @@ public class MessageNotificationServiceImpl
 
 		demographicInfoStream = adapter.getFile(id,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-
+		
 		String demographicInfo = new String(IOUtils.toByteArray(demographicInfoStream));
 
 		NotificationTemplate templatejson = getKeysandValues(demographicInfo);
 
-		String firstName = null;
-		for (int count = 0; count < templatejson.getFirstName().length; count++) {
-			String lang = templatejson.getFirstName()[count].getLanguage();
-			if (langCode.contains(lang)) {
-				firstName = templatejson.getFirstName()[count].getValue();
-				break;
-			}
-		}
-
-		attributes.put("name", firstName);
+		attributes.put(TemplateConstant.FULLNAME, getParameter(templatejson.getFirstName()));
+		attributes.put(TemplateConstant.DATEOFBIRTH, templatejson.getDateOfBirth());
+		attributes.put(TemplateConstant.AGE, templatejson.getAge());
+		attributes.put(TemplateConstant.ADDRESSLINE1, getParameter(templatejson.getAddressLine1()));
+		attributes.put(TemplateConstant.ADDRESSLINE2, getParameter(templatejson.getAddressLine2()));
+		attributes.put(TemplateConstant.ADDRESSLINE3, getParameter(templatejson.getAddressLine3()));
+		attributes.put(TemplateConstant.REGION, getParameter(templatejson.getRegion()));
+		attributes.put(TemplateConstant.PROVINCE, getParameter(templatejson.getProvince()));
+		attributes.put(TemplateConstant.CITY, getParameter(templatejson.getCity()));
+		attributes.put(TemplateConstant.POSTALCODE, templatejson.getPostalCode());
+		attributes.put(TemplateConstant.PARENTORGUARDIANNAME, getParameter(templatejson.getParentOrGuardianName()));
+		attributes.put(TemplateConstant.PARENTORGUARDIANRIDORUIN, templatejson.getParentOrGuardianRIDOrUIN());
+		attributes.put(TemplateConstant.PROOFOFADDRESS, getParameter(templatejson.getProofOfAddress()));
+		attributes.put(TemplateConstant.PROOFOFIDENTITY, getParameter(templatejson.getProofOfIdentity()));
+		attributes.put(TemplateConstant.PROOFOFRELATIONSHIP, getParameter(templatejson.getProofOfRelationship()));
+		attributes.put(TemplateConstant.PROOFOFDATEOFBIRTH, getParameter(templatejson.getProofOfDateOfBirth()));
+		attributes.put(TemplateConstant.INDIVIDUALBIOMETRICS, getParameter(templatejson.getIndividualBiometrics()));
+		attributes.put(TemplateConstant.LOCALADMINISTRATIVEAUTHORITY,
+				getParameter(templatejson.getLocalAdministrativeAuthority()));
+		attributes.put(TemplateConstant.IDSCHEMAVERSION, templatejson.getIdSchemaVersion());
+		attributes.put(TemplateConstant.CNIENUMBER, templatejson.getCnieNumber());
 
 		return templatejson;
+	}
+
+	/**
+	 * Gets the parameter.
+	 *
+	 * @param jsonValues
+	 *            the json values
+	 * @return the parameter
+	 */
+	private String getParameter(JsonValue[] jsonValues) {
+		String parameter = null;
+		if (jsonValues != null) {
+			for (int count = 0; count < jsonValues.length; count++) {
+				String lang = jsonValues[count].getLanguage();
+				if (langCode.contains(lang)) {
+					parameter = jsonValues[count].getValue();
+					break;
+				}
+			}
+		}
+		return parameter;
 	}
 
 	/**
@@ -329,6 +363,28 @@ public class MessageNotificationServiceImpl
 			template.setFirstName(getJsonValues(regProcessorTemplateJson.getFirstName()));
 			template.setEmailID((String) demographicIdentity.get(regProcessorTemplateJson.getEmailID()));
 			template.setPhoneNumber((String) demographicIdentity.get(regProcessorTemplateJson.getPhoneNumber()));
+			template.setDateOfBirth((String) demographicIdentity.get(regProcessorTemplateJson.getDateOfBirth()));
+			template.setAge((Integer) demographicIdentity.get(regProcessorTemplateJson.getAge()));
+			template.setAddressLine1(getJsonValues(regProcessorTemplateJson.getAddressLine1()));
+			template.setAddressLine2(getJsonValues(regProcessorTemplateJson.getAddressLine2()));
+			template.setAddressLine3(getJsonValues(regProcessorTemplateJson.getAddressLine3()));
+			template.setRegion(getJsonValues(regProcessorTemplateJson.getRegion()));
+			template.setProvince(getJsonValues(regProcessorTemplateJson.getProvince()));
+			template.setCity(getJsonValues(regProcessorTemplateJson.getCity()));
+			template.setPostalCode((String) demographicIdentity.get(regProcessorTemplateJson.getPostalCode()));
+			template.setParentOrGuardianName(getJsonValues(regProcessorTemplateJson.getParentOrGuardianName()));
+			template.setParentOrGuardianRIDOrUIN(
+					(String) demographicIdentity.get(regProcessorTemplateJson.getParentOrGuardianRIDOrUIN()));
+			template.setProofOfRelationship(getJsonValues(regProcessorTemplateJson.getProofOfRelationship()));
+			template.setProofOfAddress(getJsonValues(regProcessorTemplateJson.getProofOfAddress()));
+			template.setProofOfIdentity(getJsonValues(regProcessorTemplateJson.getProofOfIdentity()));
+			template.setProofOfDateOfBirth(getJsonValues(regProcessorTemplateJson.getProofOfDateOfBirth()));
+			template.setIndividualBiometrics(getJsonValues(regProcessorTemplateJson.getIndividualBiometrics()));
+			template.setLocalAdministrativeAuthority(
+					getJsonValues(regProcessorTemplateJson.getLocalAdministrativeAuthority()));
+			template.setIdSchemaVersion(
+					(Double) demographicIdentity.get(regProcessorTemplateJson.getIdSchemaVersion()));
+			template.setCnieNumber((Integer) demographicIdentity.get(regProcessorTemplateJson.getCnieNumber()));
 
 		} catch (ParseException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

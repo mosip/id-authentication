@@ -5,7 +5,7 @@
   <parent>
     <groupId>io.mosip.registrationprocessor</groupId>
     <artifactId>registration-processor</artifactId>
-    <version>0.8.0</version>
+    <version>0.8.1</version>
   </parent>
   <artifactId>packet-bio-dedupe-service</artifactId>
 
@@ -21,7 +21,7 @@
 			<artifactId>spring-cloud-starter-config</artifactId>
 			<version>${spring-cloud-config.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

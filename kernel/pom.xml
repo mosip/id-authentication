@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.8.0</version>
+		<version>0.8.1</version>
 	</parent>
 
 
@@ -108,6 +108,11 @@
 		<velocity.tool.version>2.0</velocity.tool.version>
 		<!-- Orika -->
 		<datamapper.orika>1.5.2</datamapper.orika>
+		
+		<!-- HDFS -->
+		<log4j-over-slf4j>1.7.7</log4j-over-slf4j>
+		<hadoop-client>2.8.1</hadoop-client>
+		<htrace-core4>4.1.0-incubating</htrace-core4>
 
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
@@ -133,6 +138,7 @@
 		<module>kernel-idvalidator-tspid</module>
 		<module>kernel-datavalidator</module>
 		<module>kernel-jsonvalidator</module>
+		<module>kernel-pinvalidator</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-keygenerator-bouncycastle</module>
 		<module>kernel-crypto-jce</module>
@@ -142,11 +148,14 @@
 		<module>kernel-pdfgenerator-itext</module>
 		<module>kernel-datamapper-orika</module>
 		<module>kernel-qrcodegenerator-zxing</module>
+		<module>kernel-cbeffutil-api</module>
+		<module>kernel-fsadapter-hdfs</module>
 
-		<!-- <module>kernel-uingenerator-service</module> -->
+		<module>kernel-uingenerator-service</module>
 		<module>kernel-masterdata-service</module>
 		<module>kernel-auditmanager-service</module>
 		<module>kernel-otpmanager-service</module>
+		<module>kernel-otpnotification-service</module>
 		<module>kernel-emailnotification-service</module>
 		<module>kernel-smsnotification-service</module>
 		<module>kernel-keymanager-service</module>
@@ -158,9 +167,9 @@
 		<module>kernel-config-server</module>
 		
 		
-		<module>kernel-idgenerator-uin</module>
-		<module>kernel-packetserver-http</module>
 		<module>kernel-idvalidator</module>
+		<!-- <module>kernel-packetserver-http</module> -->
+		<!-- <module>kernel-idgenerator-uin</module> -->
 		<!-- <module>kernel-templatemanager-freemarker</module> -->
 		<!-- <module>kernel-packetserver-sftp</module> -->
 		<!-- <module>kernel-batch-framework</module> -->

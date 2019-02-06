@@ -14,7 +14,8 @@ import lombok.NoArgsConstructor;
 /**
  * Instantiates a new machine history response dto.
  *
- * @param machineHistoryDetails the machine history details
+ * @param machineHistoryDetails
+ *            the machine history details
  */
 @AllArgsConstructor
 
@@ -23,7 +24,9 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 public class MachineHistoryResponseDto {
-	
+
 	/** The machine history details. */
 	private List<MachineHistoryDto> machineHistoryDetails;
+
+	private List<ErrorDTO> errors;
 }

@@ -17,6 +17,7 @@ import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.exception.DateParsingException;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
+import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.swagger.annotations.ApiOperation;
 import net.minidev.json.JSONObject;
 
@@ -25,6 +26,7 @@ import net.minidev.json.JSONObject;
  * 
  * @author Abhishek Kumar
  * @author Srinivasan
+ * @author Bal Vikash Sharma
  * @since 1.0.0
  */
 @RestController
@@ -42,6 +44,17 @@ public class SyncDataController {
 	@Autowired
 	SyncConfigDetailsService syncConfigDetailsService;
 
+	/**
+	 * This API method would fetch all synced global config details from server
+	 * 
+	 * @return JSONObject - global config response
+	 */
+	@ApiOperation(value = "API to sync global config details")
+	@GetMapping(value = "/configs")
+	public JSONObject getConfigDetails() {
+		return syncConfigDetailsService.getConfigDetails();
+	}
+	
 	/**
 	 * This API method would fetch all synced global config details from server
 	 * 
@@ -94,7 +107,7 @@ public class SyncDataController {
 		LocalDateTime timestamp = null;
 		if (lastUpdated != null) {
 			try {
-				timestamp = LocalDateTime.parse(lastUpdated);
+				timestamp = MapperUtils.parseToLocalDateTime(lastUpdated);
 			} catch (DateTimeParseException e) {
 				throw new DateParsingException(MasterDataErrorCode.LAST_UPDATED_PARSE_EXCEPTION.getErrorCode(),
 						e.getMessage());

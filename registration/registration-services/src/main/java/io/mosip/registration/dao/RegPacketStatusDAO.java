@@ -33,4 +33,10 @@ public interface RegPacketStatusDAO {
 	 * @return registration
 	 */
 	Registration update(Registration registration);
+	
+	/**
+	 * Delete Registration
+	 * @param registration
+	 */
+	void delete(Registration registration);
 }

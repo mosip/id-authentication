@@ -77,13 +77,6 @@ public interface FileManager<D, F> {
 	public void cleanUpFile(D srcFolderLoc, D destFolderLoc, String fileName, String childPath);
 
 	/**
-	 * Get current directory location.
-	 *
-	 * @return FTP_ZONE path
-	 */
-	public String getCurrentDirectory();
-
-	/**
 	 * Delete packet.
 	 *
 	 * @param workingDirectory
@@ -106,4 +99,5 @@ public interface FileManager<D, F> {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public void deleteFolder(D destinationDirectory, String fileName) throws IOException;
+
 }
