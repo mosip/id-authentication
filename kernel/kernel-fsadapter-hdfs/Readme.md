@@ -12,9 +12,14 @@ mvn javadoc:javadoc
 **Application Properties**
 
 ```
+# Name node url for HDFS
 mosip.kernel.fsadapter.hdfs.name-node-url=hdfs://104.211.240.243:51000
-mosip.kernel.fsadapter.hdfs.user-name=mosipuser #Change this to application username (regprocessor,prereg or idrepo)
-logging.level.org.apache.hadoop=warn #Change this to debug to see hdfs logs
+
+# Username to access hdfs. Change this to application username (regprocessor,prereg or idrepo)
+mosip.kernel.fsadapter.hdfs.user-name=mosipuser
+
+# HDFS log level. Change this to debug to see hdfs logs
+logging.level.org.apache.hadoop=warn
 
 ```
 
