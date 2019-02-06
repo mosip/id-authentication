@@ -1,21 +1,18 @@
 package io.mosip.registration.cipher;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.UUID;
+import java.util.Base64;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.commons.io.FileUtils;
 
 import io.mosip.kernel.crypto.jce.constant.SecurityMethod;
 import io.mosip.kernel.crypto.jce.processor.SymmetricProcessor;
-import io.mosip.kernel.keygenerator.bouncycastle.util.KeyGeneratorUtils;
 
 /**
  * Encrypt the Client Jar with Symmetric Key
@@ -24,63 +21,49 @@ import io.mosip.kernel.keygenerator.bouncycastle.util.KeyGeneratorUtils;
  *
  */
 public class ClientJarEncryption {
-
 	/**
 	 * Encrypt the bytes
 	 * 
-	 * @param Jar bytes 
-	 * @throws UnsupportedEncodingException 
+	 * @param Jar
+	 *            bytes
+	 * @throws UnsupportedEncodingException
 	 */
-	public void encyrpt(byte[] data) throws UnsupportedEncodingException {
+	public byte[] encyrpt(byte[] data, byte[] encodedString) throws UnsupportedEncodingException {
 		// Generate AES Session Key
-		SecretKey symmetricKey = KeyGeneratorUtils.getKeyGenerator("AES", 256).generateKey();
-		System.out.println(new String(symmetricKey.getEncoded()));
-		// Encrypt the Data using AES
-		byte[] encryptedBytes = SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING, symmetricKey,
-				data, Cipher.ENCRYPT_MODE);
-		//FileInputStream fis = new FileInputStream(inFile);
+		SecretKey symmetricKey = new SecretKeySpec(encodedString, "AES");
+
+		return Base64.getEncoder().encode(SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING, symmetricKey, data,
+				Cipher.ENCRYPT_MODE));
 	}
 
-	public static void main(String[] args) throws Exception {
-		FileInputStream fis = new FileInputStream("../registration-client/target/registration-client.jar");
-		ClientJarEncryption aes = new ClientJarEncryption();
-		//aes.processFile(null, null);
-		String filePath = "";
-		aes.encyrpt(null);
-	}
-	
-	private String processFile(Cipher cipher, String inFile)
-			throws FileNotFoundException, IOException, IllegalBlockSizeException, BadPaddingException {
-		
-		FileInputStream fis = new FileInputStream("../registration-client/target/registration-client.jar");
-		File tempFile = createTempDirectory();
-		String outPutFile = tempFile.getAbsolutePath() + "/" + UUID.randomUUID().toString() + ".jar";
-		FileOutputStream fos = new FileOutputStream(outPutFile);
-		byte[] input = new byte[64];
-		int bytesRead;
-		while ((bytesRead = fis.read(input)) != -1) {
-			byte[] output = cipher.update(input, 0, bytesRead);
-			if (output != null)
-				fos.write(output);
+	/**
+	 * Encrypt and save the file in client module
+	 * 
+	 * args[0]/args[1] --> To provide the ciennt jar 
+	 * args[2] --> Secret key String
+	 * args[3] --> project version
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		try {
+			byte[] fileByteArray = null;
+
+			if (new File(args[0]).exists()) {
+				fileByteArray = FileUtils.readFileToByteArray(new File(args[0]));
+			} else if (new File(args[1]).exists()) {
+				fileByteArray = FileUtils.readFileToByteArray(new File(args[1]));
+			}
+
+			if (fileByteArray != null) {
+				String encryptedFileToSave = args[0].substring(0, args[0].lastIndexOf("/"));
+				ClientJarEncryption aes = new ClientJarEncryption();
+				byte[] encryptedFileBytes = aes.encyrpt(fileByteArray, Base64.getDecoder().decode(args[2].getBytes()));
+				FileUtils.writeByteArrayToFile(
+						new File(encryptedFileToSave + "/registration-client-" + args[3] + "-encrypted.jar"),
+						encryptedFileBytes);
+			}
+		} catch (IOException ioException) {
+			ioException.printStackTrace();
 		}
-		byte[] output = cipher.doFinal();
-		if (output != null)
-			fos.write(output);
-		fis.close();
-		fos.flush();
-		fos.close();
-		return outPutFile;
-	}
-	
-	public static File createTempDirectory() throws IOException {
-		final File temp;
-		temp = File.createTempFile("temp", Long.toString(System.nanoTime()));
-		if (!(temp.delete())) {
-			throw new IOException("Could not delete temp file: " + temp.getAbsolutePath());
-		}
-		if (!(temp.mkdir())) {
-			throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
-		}
-		return (temp);
 	}
 }
