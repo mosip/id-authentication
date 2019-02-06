@@ -109,6 +109,8 @@
 		<!-- Orika -->
 		<datamapper.orika>1.5.2</datamapper.orika>
 
+        <!-- icu4j -->
+		<icu4j.version>63.1</icu4j.version>
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
@@ -144,6 +146,7 @@
 		<module>kernel-datamapper-orika</module>
 		<module>kernel-qrcodegenerator-zxing</module>
 		<module>kernel-cbeffutil-api</module>
+		<module>kernel-transliteration-icu4j</module>
 
 		<module>kernel-uingenerator-service</module>
 		<module>kernel-masterdata-service</module>
