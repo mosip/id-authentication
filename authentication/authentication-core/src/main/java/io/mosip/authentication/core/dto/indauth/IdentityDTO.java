@@ -12,7 +12,7 @@ import lombok.Data;
 public class IdentityDTO {
 
 	/** List of identity info to hold name */
-	List<IdentityInfoDTO> fullName;
+	List<IdentityInfoDTO> name;
 
 	/** List of identity info to hold dateOfBirth */
 	List<IdentityInfoDTO> dob;

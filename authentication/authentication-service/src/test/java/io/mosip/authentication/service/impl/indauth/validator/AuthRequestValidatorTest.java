@@ -89,9 +89,6 @@ public class AuthRequestValidatorTest {
 
 	@InjectMocks
 	IdInfoHelper idinfoHelper;
-	
-	
-
 
 	@Before
 	public void before() {
@@ -141,7 +138,7 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);
@@ -190,7 +187,7 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);
@@ -358,7 +355,7 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList);
 		idDTO.setDobType(idInfoList);
 		idDTO.setGender(idInfoList);
@@ -424,7 +421,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList1);
 		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
@@ -494,7 +491,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList1);
 		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
@@ -564,7 +561,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList1);
 		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
@@ -634,7 +631,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(null);
 		idDTO.setDobType(null);
 		idDTO.setGender(null);
@@ -704,7 +701,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList1);
 		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
@@ -774,7 +771,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList1);
 		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
@@ -844,7 +841,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList1);
 		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
@@ -917,7 +914,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList1);
 		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
@@ -995,7 +992,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList1);
 		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
@@ -1071,7 +1068,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList1);
 		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
@@ -1180,7 +1177,7 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);

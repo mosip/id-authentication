@@ -40,7 +40,7 @@ public enum DemoMatchType implements MatchType {
 	/** Primary Name Match Type. */
 	NAME(IdaIdMapping.NAME,
 			setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL, NameMatchingStrategy.PHONETICS),
-			IdentityDTO::getFullName, AuthUsageDataBit.USED_PI_NAME,
+			IdentityDTO::getName, AuthUsageDataBit.USED_PI_NAME,
 			AuthUsageDataBit.MATCHED_PI_NAME),
 
 	/** Secondary Date of Birth Match Type. */
