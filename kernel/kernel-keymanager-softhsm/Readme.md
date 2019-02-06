@@ -210,7 +210,9 @@ name = SoftHSM2
 library = D:\SoftHSM2\lib\softhsm2-x64.dll 
 slotListIndex = 0
 ```
-5. Go to `D:\SoftHSM2\bin` and run below command:
+5. Install JCE With an Unlimited Strength Jurisdiction Policy as shown here:
+https://dzone.com/articles/install-java-cryptography-extension-jce-unlimited
+6. Go to `D:\SoftHSM2\bin` and run below command:
 ```
 > softhsm2-util.exe --init-token --slot 0 --label "My token 1"
 ```
@@ -253,7 +255,7 @@ Slot 1
         User PIN init.:   no
         Label:
 ```
-5. Put the newly conf file location `(D:\SoftHSM2\etc\softhsm2-application.conf)` in `mosip.kernel.keymanager.softhsm.config-path` property. Softhsm is ready to be used. 
+5. Put the newly conf filepath `D:\SoftHSM2\etc\softhsm2-application.conf` in `mosip.kernel.keymanager.softhsm.config-path` property. Softhsm is ready to be used. 
 
 ### Linux
 
