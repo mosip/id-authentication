@@ -103,50 +103,74 @@ public class LicenseKeyManagerUtil {
 	}
 
 	/**
-	 * This method checks for null or empty parameters passed as input.
+	 * Method to validate TSP ID.
 	 * 
-	 * @param parameters
-	 *            the input parameters.
+	 * @param tspID
+	 *            the TSP ID to be validated.
 	 */
-	public void hasNullOrEmptyParameters(String... parameters) {
-		List<ServiceError> validationErrorsList = new ArrayList<>();
-		for (String parameter : parameters) {
-			if (parameter == null || parameter.trim().length() == 0) {
-				validationErrorsList.add(
-						new ServiceError(LicenseKeyManagerExceptionConstants.ILLEGAL_INPUT_ARGUMENTS.getErrorCode(),
-								LicenseKeyManagerExceptionConstants.ILLEGAL_INPUT_ARGUMENTS.getErrorMessage()));
-			}
+	public void validateTSP(String tspID) {
+		List<ServiceError> errorList = new ArrayList<>();
+		if (tspID == null || tspID.trim().isEmpty()) {
+			errorList.add(new ServiceError(LicenseKeyManagerExceptionConstants.ILLEGAL_TSP.getErrorCode(),
+					LicenseKeyManagerExceptionConstants.ILLEGAL_TSP.getErrorMessage()));
 		}
-		if (!validationErrorsList.isEmpty()) {
-			throw new InvalidArgumentsException(validationErrorsList);
+		if (!errorList.isEmpty()) {
+			throw new InvalidArgumentsException(errorList);
 		}
 	}
 
 	/**
-	 * This method checks for null or empty parameters passed as input.
+	 * Method to validate TSP ID and License Key.
 	 * 
-	 * @param parameterList
-	 *            the list of input parameters.
-	 * @param parameters
-	 *            the input parameters.
+	 * @param tspID
+	 *            the TSP ID to be validated.
+	 * @param licenseKey
+	 *            the license key to be validated.
 	 */
-	public void hasNullOrEmptyParameters(List<String> parameterList, String... parameters) {
+	public void validateTSPAndLicenseKey(String tspID, String licenseKey) {
 		List<ServiceError> errorList = new ArrayList<>();
-		for (String parameter : parameterList) {
-			if (parameter == null || parameter.trim().length() == 0) {
-				errorList.add(
-						new ServiceError(LicenseKeyManagerExceptionConstants.ILLEGAL_INPUT_ARGUMENTS.getErrorCode(),
-								LicenseKeyManagerExceptionConstants.ILLEGAL_INPUT_ARGUMENTS.getErrorMessage()));
-				throw new LicenseKeyServiceException(errorList);
+		if (tspID == null || tspID.trim().isEmpty()) {
+			errorList.add(new ServiceError(LicenseKeyManagerExceptionConstants.ILLEGAL_TSP.getErrorCode(),
+					LicenseKeyManagerExceptionConstants.ILLEGAL_TSP.getErrorMessage()));
+		}
+		if (licenseKey == null || licenseKey.trim().isEmpty()) {
+			errorList.add(new ServiceError(LicenseKeyManagerExceptionConstants.ILLEGAL_LICENSE_KEY.getErrorCode(),
+					LicenseKeyManagerExceptionConstants.ILLEGAL_LICENSE_KEY.getErrorMessage()));
+		}
+		if (!errorList.isEmpty()) {
+			throw new InvalidArgumentsException(errorList);
+		}
+	}
+
+	/**
+	 * Method to validate TSP ID, License Key, and the list of permissions.
+	 * 
+	 * @param tspID
+	 *            the TSP ID.
+	 * @param licenseKey
+	 *            the License Key.
+	 * @param permissions
+	 *            the list of permissions.
+	 */
+	public void validateRequestParameters(String tspID, String licenseKey, List<String> permissions) {
+		List<ServiceError> errorList = new ArrayList<>();
+		if (tspID == null || tspID.trim().isEmpty()) {
+			errorList.add(new ServiceError(LicenseKeyManagerExceptionConstants.ILLEGAL_TSP.getErrorCode(),
+					LicenseKeyManagerExceptionConstants.ILLEGAL_TSP.getErrorMessage()));
+		}
+		if (licenseKey == null || licenseKey.trim().isEmpty()) {
+			errorList.add(new ServiceError(LicenseKeyManagerExceptionConstants.ILLEGAL_LICENSE_KEY.getErrorCode(),
+					LicenseKeyManagerExceptionConstants.ILLEGAL_LICENSE_KEY.getErrorMessage()));
+		}
+		for (String permission : permissions) {
+			if (permission.trim().isEmpty()) {
+				errorList.add(new ServiceError(LicenseKeyManagerExceptionConstants.ILLEGAL_PERMISSION.getErrorCode(),
+						LicenseKeyManagerExceptionConstants.ILLEGAL_PERMISSION.getErrorMessage()));
+				break;
 			}
 		}
-		for (String parameter : parameters) {
-			if (parameter == null || parameter.trim().length() == 0) {
-				errorList.add(
-						new ServiceError(LicenseKeyManagerExceptionConstants.ILLEGAL_INPUT_ARGUMENTS.getErrorCode(),
-								LicenseKeyManagerExceptionConstants.ILLEGAL_INPUT_ARGUMENTS.getErrorMessage()));
-				throw new LicenseKeyServiceException(errorList);
-			}
+		if (!errorList.isEmpty()) {
+			throw new InvalidArgumentsException(errorList);
 		}
 	}
 }

@@ -20,7 +20,7 @@ public class LicenseKeyMappingDto {
 	/**
 	 * The License Key for that TSP ID.
 	 */
-	private String lKey;
+	private String licenseKey;
 	/**
 	 * The list of permissions to be given.
 	 */

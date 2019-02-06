@@ -57,7 +57,7 @@ public class LicenseKeyController {
 	 *            the {@link LicenseKeyMappingDto}.
 	 * @return the response entity.
 	 */
-	@PostMapping(value = "/v1.0/license/map")
+	@PostMapping(value = "/v1.0/license/permission")
 	public ResponseEntity<LicenseKeyMappingResponseDto> mapLicenseKey(
 			@RequestBody LicenseKeyMappingDto licenseKeyMappingDto) {
 		LicenseKeyMappingResponseDto licenseKeyMappingResponseDto = new LicenseKeyMappingResponseDto();
@@ -72,12 +72,12 @@ public class LicenseKeyController {
 	 *            the license key of which the permissions need to be fetched.
 	 * @return the permissions fetched.
 	 */
-	@GetMapping(value = "/v1.0/license/fetch")
+	@GetMapping(value = "/v1.0/license/permission")
 	public ResponseEntity<LicenseKeyFetchResponseDto> fetchLicenseKeyPermissions(@RequestParam("tspId") String tspId,
 			@RequestParam("licenseKey") String licenseKey) {
 		LicenseKeyFetchResponseDto licenseKeyFetchResponseDto = new LicenseKeyFetchResponseDto();
 		licenseKeyFetchResponseDto
-				.setMappedPermissions(licenseKeyManagerService.fetchLicenseKeyPermissions(tspId, licenseKey));
+				.setPermissions(licenseKeyManagerService.fetchLicenseKeyPermissions(tspId, licenseKey));
 		return new ResponseEntity<>(licenseKeyFetchResponseDto, HttpStatus.OK);
 	}
 }

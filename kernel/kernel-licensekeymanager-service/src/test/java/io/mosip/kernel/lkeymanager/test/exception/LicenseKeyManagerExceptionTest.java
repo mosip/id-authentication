@@ -97,12 +97,12 @@ public class LicenseKeyManagerExceptionTest {
 		permissions.add("Biometric Authentication - IIR Data Match");
 		permissions.add("Biometric Authentication - FID Data Match");
 		LicenseKeyMappingDto licenseKeyMappingDto = new LicenseKeyMappingDto();
-		licenseKeyMappingDto.setLKey("tEsTlIcEnSe");
+		licenseKeyMappingDto.setLicenseKey("tEsTlIcEnSe");
 		licenseKeyMappingDto.setTspId("TSP_ID_TEST");
 		licenseKeyMappingDto.setPermissions(permissions);
 		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
-		mockMvc.perform(post("/v1.0/license/map").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
@@ -115,7 +115,7 @@ public class LicenseKeyManagerExceptionTest {
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(licenseKeyTspMap);
 		when(licenseKeyListRepository.findByLicenseKey(Mockito.anyString())).thenReturn(licensekeyList);
-		mockMvc.perform(get("/v1.0/license/fetch?licenseKey=tEsTlIcEnSe&tspId=TSP_ID_TEST")
+		mockMvc.perform(get("/v1.0/license/permission?licenseKey=tEsTlIcEnSe&tspId=TSP_ID_TEST")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
@@ -130,7 +130,7 @@ public class LicenseKeyManagerExceptionTest {
 	public void testLKMFetchServiceExceptionWhenInvalidValues() throws Exception {
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 		when(licenseKeyListRepository.findByLicenseKey(Mockito.anyString())).thenReturn(licensekeyList);
-		mockMvc.perform(get("/v1.0/license/fetch?licenseKey=tEsTlIcEnSe&tspId=TSP_ID_TEST")
+		mockMvc.perform(get("/v1.0/license/permission?licenseKey=tEsTlIcEnSe&tspId=TSP_ID_TEST")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
@@ -142,7 +142,7 @@ public class LicenseKeyManagerExceptionTest {
 	@Test
 	public void testLKMFetchServiceExceptionWhenEmptyValues() throws Exception {
 		mockMvc.perform(
-				get("/v1.0/license/fetch?licenseKey=&tspId=TSP_ID_TEST").contentType(MediaType.APPLICATION_JSON))
+				get("/v1.0/license/permission?licenseKey=&tspId=TSP_ID_TEST").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
@@ -153,8 +153,7 @@ public class LicenseKeyManagerExceptionTest {
 	@Test
 	public void testLKMFetchServiceExceptionWhenNullValues() throws Exception {
 		mockMvc.perform(
-				get("/v1.0/license/fetch?licenseKey=hjdesufhdufyisehui").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isBadRequest());
+				get("/v1.0/license/permission?licenseKey=hjdesufhdufyisehui").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isInternalServerError());
 	}
-
 }

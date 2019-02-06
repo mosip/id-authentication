@@ -16,5 +16,5 @@ public class LicenseKeyFetchResponseDto {
 	/**
 	 * List of mapped permissions.
 	 */
-	private List<String> mappedPermissions;
+	private List<String> permissions;
 }

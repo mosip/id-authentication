@@ -125,9 +125,8 @@ public class LicenseKeyManagerServiceTest {
 		MvcResult result = mockMvc
 				.perform(post("/v1.0/license/generate").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andReturn();
-		ObjectMapper mapper = new ObjectMapper();
-		LicenseKeyGenerationResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
-				LicenseKeyGenerationResponseDto.class);
+		LicenseKeyGenerationResponseDto returnResponse = objectMapper
+				.readValue(result.getResponse().getContentAsString(), LicenseKeyGenerationResponseDto.class);
 		assertThat(returnResponse.getLicenseKey(), isA(String.class));
 	}
 
@@ -143,7 +142,7 @@ public class LicenseKeyManagerServiceTest {
 		permissions.add("Biometric Authentication - IIR Data Match");
 		permissions.add("Biometric Authentication - FID Data Match");
 		LicenseKeyMappingDto licenseKeyMappingDto = new LicenseKeyMappingDto();
-		licenseKeyMappingDto.setLKey("tEsTlIcEnSe");
+		licenseKeyMappingDto.setLicenseKey("tEsTlIcEnSe");
 		licenseKeyMappingDto.setTspId("TSP_ID_TEST");
 		licenseKeyMappingDto.setPermissions(permissions);
 		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
@@ -151,10 +150,9 @@ public class LicenseKeyManagerServiceTest {
 				.thenReturn(licenseKeyTspMap);
 		when(licenseKeyPermissionRepository.findByLKey(Mockito.any())).thenReturn(licenseKeyPermission);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/license/map").contentType(MediaType.APPLICATION_JSON).content(json))
+				.perform(post("/v1.0/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andReturn();
-		ObjectMapper mapper = new ObjectMapper();
-		LicenseKeyMappingResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
+		LicenseKeyMappingResponseDto returnResponse = objectMapper.readValue(result.getResponse().getContentAsString(),
 				LicenseKeyMappingResponseDto.class);
 		assertThat(returnResponse.getStatus(), is("Mapped License with the permissions"));
 
@@ -172,7 +170,7 @@ public class LicenseKeyManagerServiceTest {
 		permissions.add("Biometric Authentication - IIR Data Match");
 		permissions.add("Biometric Authentication - FID Data Match");
 		LicenseKeyMappingDto licenseKeyMappingDto = new LicenseKeyMappingDto();
-		licenseKeyMappingDto.setLKey("tEsTlIcEnSe");
+		licenseKeyMappingDto.setLicenseKey("tEsTlIcEnSe");
 		licenseKeyMappingDto.setTspId("TSP_ID_TEST");
 		licenseKeyMappingDto.setPermissions(permissions);
 		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
@@ -180,10 +178,9 @@ public class LicenseKeyManagerServiceTest {
 				.thenReturn(licenseKeyTspMap);
 		when(licenseKeyPermissionRepository.findByLKey(Mockito.any())).thenReturn(null);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/license/map").contentType(MediaType.APPLICATION_JSON).content(json))
+				.perform(post("/v1.0/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andReturn();
-		ObjectMapper mapper = new ObjectMapper();
-		LicenseKeyMappingResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
+		LicenseKeyMappingResponseDto returnResponse = objectMapper.readValue(result.getResponse().getContentAsString(),
 				LicenseKeyMappingResponseDto.class);
 		assertThat(returnResponse.getStatus(), is("Mapped License with the permissions"));
 	}
@@ -199,11 +196,10 @@ public class LicenseKeyManagerServiceTest {
 				.thenReturn(licenseKeyTspMap);
 		when(licenseKeyListRepository.findByLicenseKey(Mockito.anyString())).thenReturn(licensekeyList);
 		when(licenseKeyPermissionRepository.findByLKey(Mockito.any())).thenReturn(licenseKeyPermission);
-		MvcResult result = mockMvc.perform(get("/v1.0/license/fetch?licenseKey=tEsTlIcEnSe&tspId=TSP_ID_TEST")
+		MvcResult result = mockMvc.perform(get("/v1.0/license/permission?licenseKey=tEsTlIcEnSe&tspId=TSP_ID_TEST")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
-		ObjectMapper mapper = new ObjectMapper();
-		LicenseKeyFetchResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
+		LicenseKeyFetchResponseDto returnResponse = objectMapper.readValue(result.getResponse().getContentAsString(),
 				LicenseKeyFetchResponseDto.class);
-		assertThat(returnResponse.getMappedPermissions().get(0), isA(String.class));
+		assertThat(returnResponse.getPermissions().get(0), isA(String.class));
 	}
 }
