@@ -1,19 +1,29 @@
 package io.mosip.kernel.auth;
 
-import io.mosip.kernel.auth.entities.*;
-import io.mosip.kernel.auth.entities.otp.OtpUser;
-import io.mosip.kernel.auth.entities.otp.OtpValidateRequestDto;
+import java.util.List;
 
+import io.mosip.kernel.auth.dto.*;
+import io.mosip.kernel.auth.dto.otp.OtpUserDto;
+import io.mosip.kernel.auth.dto.otp.OtpValidateRequestDto;
+
+/**
+ *  @author Sabbu Uday Kumar
+ *  @since 1.0.0
+ */
 public interface AuthService {
-    MosipUserWithToken authenticateUser(LoginUser loginUser) throws Exception;
+    MosipUserWithTokenDto authenticateUser(LoginUserDto loginUserDto) throws Exception;
 
-    MosipUserWithToken authenticateWithOtp(OtpUser otpUser) throws Exception;
+    MosipUserWithTokenDto authenticateWithOtp(OtpUserDto otpUserDto) throws Exception;
 
-    MosipUserWithToken authenticateUserWithOtp(LoginUser loginUser) throws Exception;
+    MosipUserWithTokenDto authenticateUserWithOtp(LoginUserDto loginUserDto) throws Exception;
 
-    MosipUserWithToken verifyOtp(OtpValidateRequestDto otpValidateRequestDto, String token) throws Exception;
+    MosipUserWithTokenDto verifyOtp(OtpValidateRequestDto otpValidateRequestDto, String token) throws Exception;
 
-    MosipUserWithToken validateToken(String token) throws Exception;
+    MosipUserWithTokenDto validateToken(String token) throws Exception;
 
     Boolean logout(String userName, String token) throws Exception;
+    
+    RolesListDto getAllRoles() throws Exception;
+    
+    MosipUserListDto getListOfUsersDetails(List<String> userDetails) throws Exception;
 }

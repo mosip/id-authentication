@@ -1,11 +1,11 @@
 package io.mosip.kernel.auth.adapter;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -20,22 +20,28 @@ import java.io.IOException;
  * 1. Intercept all the requests from the application and do the below tasks.
  * 2. Intercept a request to add auth token to the "Authorization" header.
  * 3. Intercept a response to modify the stored token with the "Authorization" header of the response.
+ *
+ * @author Sabbu Uday Kumar
+ * @since 1.0.0
  **********************************************************************************************************************/
 
 @Component
 public class ClientInterceptor implements ClientHttpRequestInterceptor {
 
-    @Autowired
-    AuthHeadersFilter authHeadersFilter;
+    private AuthUserDetails getAuthUserDetails() {
+        AuthUserDetails authUserDetails = (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return authUserDetails;
+    }
 
     private void addHeadersToRequest(HttpRequest httpRequest, byte[] bytes) {
         HttpHeaders headers = httpRequest.getHeaders();
-        headers.set("Authorization", authHeadersFilter.getToken());
+        headers.set("Authorization", getAuthUserDetails().getToken());
     }
 
     private void getHeadersFromResponse(ClientHttpResponse clientHttpResponse) {
         HttpHeaders headers = clientHttpResponse.getHeaders();
-        authHeadersFilter.setToken(headers.get("Authorization").get(0));
+        getAuthUserDetails().setToken(headers.get("Authorization").get(0));
+//        getAuthUserDetails().setToken("sabbu");
     }
 
     @Override

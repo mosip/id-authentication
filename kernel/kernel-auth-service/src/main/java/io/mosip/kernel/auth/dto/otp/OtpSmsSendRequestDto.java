@@ -1,5 +1,9 @@
-package io.mosip.kernel.auth.entities.otp;
+package io.mosip.kernel.auth.dto.otp;
 
+/**
+ *  @author Sabbu Uday Kumar
+ *  @since 1.0.0
+ */
 public class OtpSmsSendRequestDto {
     private String number;
     private String message;

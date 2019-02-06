@@ -1,9 +1,12 @@
-package io.mosip.kernel.ldap.entities;
+package io.mosip.kernel.auth.dto;
 
-public class LoginUser {
+/**
+ *  @author Sabbu Uday Kumar
+ *  @since 1.0.0
+ */
+public class LoginUserDto {
     private String userName;
     private String password;
-    private String mode;
 
     public String getUserName() {
         return userName;
@@ -21,11 +24,4 @@ public class LoginUser {
         this.password = password;
     }
 
-    public String getMode() {
-        return mode;
-    }
-
-    public void setMode(String mode) {
-        this.mode = mode;
-    }
 }

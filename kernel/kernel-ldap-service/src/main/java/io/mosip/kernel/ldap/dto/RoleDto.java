@@ -1,8 +1,12 @@
-package io.mosip.kernel.ldap.entities;
+package io.mosip.kernel.ldap.dto;
 
 import java.io.Serializable;
 
-public class RolesDto implements Serializable {
+/**
+ *  @author Sabbu Uday Kumar
+ *  @since 1.0.0
+ */
+public class RoleDto implements Serializable {
 
 	/**
 	 * 
