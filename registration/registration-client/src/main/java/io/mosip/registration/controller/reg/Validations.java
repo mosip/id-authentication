@@ -69,6 +69,7 @@ public class Validations extends BaseController {
 			noAlert.add("postalCode");
 			noAlert.add("postalCode");
 			noAlert.add("cniOrPinNumber");
+			noAlert.add("uinId");
 			validationMessage = new StringBuilder();
 			validationBundle = ApplicationContext.applicationLanguageValidationBundle();
 			messageBundle = ApplicationContext.applicationMessagesBundle();

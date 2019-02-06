@@ -176,7 +176,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 			}
 
 			if (syncJobInfo.getYetToExportCount() >= Double
-					.parseDouble(getGlobalConfigValueOf("REG_PAK_MAX_CNT_OFFLINE_FREQ"))) {
+					.parseDouble(getGlobalConfigValueOf(RegistrationConstants.REG_PAK_MAX_CNT_OFFLINE_FREQ))) {
 
 				LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 						"Checking the yet to export packets frequency with the configured limit count");
@@ -190,11 +190,12 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 						errorResponseDTOList);
 			}
 
-			if (RegistrationConstants.ENABLE.equals(getGlobalConfigValueOf("GEO_CAP_FREQ"))) {
+			if (RegistrationConstants.ENABLE.equals(getGlobalConfigValueOf(RegistrationConstants.GEO_CAP_FREQ))) {
 				if (!isCapturedForTheDay()) {
 					captureGeoLocation(errorResponseDTOList);
 				}
-			} else if (RegistrationConstants.DISABLE.equals(getGlobalConfigValueOf("GEO_CAP_FREQ"))) {
+			} else if (RegistrationConstants.DISABLE
+					.equals(getGlobalConfigValueOf(RegistrationConstants.GEO_CAP_FREQ))) {
 				captureGeoLocation(errorResponseDTOList);
 			}
 
@@ -262,7 +263,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 			if (RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG
 					.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
 
-				if (Double.parseDouble(getGlobalConfigValueOf("DIST_FRM_MACHN_TO_CENTER")) <= Double
+				if (Double.parseDouble(getGlobalConfigValueOf(RegistrationConstants.DIST_FRM_MACHN_TO_CENTER)) <= Double
 						.parseDouble(gpsMapDetails.get(RegistrationConstants.GPS_DISTANCE).toString())) {
 
 					getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_004,
