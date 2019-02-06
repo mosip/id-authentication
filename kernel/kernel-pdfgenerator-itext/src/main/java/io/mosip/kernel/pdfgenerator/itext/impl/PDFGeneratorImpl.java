@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,6 +26,10 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Image;
+//import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfCopy;
+import com.itextpdf.text.pdf.PdfReader;
 
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
@@ -37,6 +42,8 @@ import io.mosip.kernel.pdfgenerator.itext.constant.PDFGeneratorExceptionCodeCons
  * convert it to PDF in the form of an {@link OutputStream}, {@link File}
  * 
  * @author M1046571
+ * @author Neha
+ * 
  * @since 1.0.0
  *
  */
@@ -163,6 +170,11 @@ public class PDFGeneratorImpl implements PDFGenerator {
 		return os;
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator#asPDF(java.util.List)
+	 */
+	@Override
 	public byte[] asPDF(List<BufferedImage> bufferedImages) throws IOException {
 		byte[] scannedPdfFile = null;
 
@@ -197,4 +209,26 @@ public class PDFGeneratorImpl implements PDFGenerator {
 		return imageInByte;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator#mergePDF(java.util.List)
+	 */
+	@Override
+	public byte[] mergePDF(List<URL> pdfFiles) throws IOException {
+		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+			com.itextpdf.text.Document document = new com.itextpdf.text.Document();
+			PdfCopy pdfCopy = new PdfCopy(document, byteArrayOutputStream);
+			document.open();
+			for (URL file : pdfFiles) {
+				PdfReader reader = new PdfReader(file);
+				pdfCopy.addDocument(reader);
+				pdfCopy.freeReader(reader);
+				reader.close();
+			}
+			document.close();
+			return byteArrayOutputStream.toByteArray();
+		} catch (IOException | DocumentException e) {
+			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
+					e.getMessage());
+		}
+	}
 }
