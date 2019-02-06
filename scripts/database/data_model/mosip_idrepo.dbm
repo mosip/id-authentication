@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,0" last-zoom="1"
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,333" last-zoom="1"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -57,7 +57,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="idrepo"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Table to store individual data and the assigned UIN. This table will also contain the latest registration id that was used to update individual's information.]]></comment>
-	<position x="50" y="50"/>
+	<position x="49" y="51"/>
 	<column name="uin_ref_id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[UIN reference identification, a unique identity field that will be used in all reference tables within id repository db and in file store.]]></comment>
@@ -122,8 +122,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="idrepo"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Table to store biometric reference and hash value of the biometric file. ]]></comment>
-	<position x="626.216" y="432"/>
+	<position x="625.216" y="433"/>
 	<column name="uin_ref_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="biometric_file_type" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
 	<column name="bio_file_id" not-null="true">
@@ -165,9 +168,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Record deleted datetime]]></comment>
 	</column>
-	<column name="biometric_file_type" not-null="true">
-		<type name="character varying" length="36"/>
-	</column>
 	<constraint name="pk_uinb" type="pk-constr" table="idrepo.uin_biometric">
 		<columns names="uin_ref_id,biometric_file_type" ref-type="src-columns"/>
 	</constraint>
@@ -180,10 +180,13 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="idrepo"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Table to store history of biometric reference and hash value of the biometric file. This table will keep the history of changes to the biometric information. ]]></comment>
-	<position x="672.132" y="719"/>
+	<position x="671.132" y="720"/>
 	<column name="uin_ref_id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[reference id of an uin, refers to uin_ref_id of idrep.uin table]]></comment>
+	</column>
+	<column name="biometric_file_type" not-null="true">
+		<type name="character varying" length="36"/>
 	</column>
 	<column name="eff_dtimes" not-null="true">
 		<type name="timestamp" length="0"/>
@@ -227,11 +230,8 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Record deleted datetime]]></comment>
 	</column>
-	<column name="biometric_file_type" not-null="true">
-		<type name="character varying" length="36"/>
-	</column>
 	<constraint name="pk_uinbh" type="pk-constr" table="idrepo.uin_biometric_h">
-		<columns names="uin_ref_id,eff_dtimes,biometric_file_type" ref-type="src-columns"/>
+		<columns names="uin_ref_id,biometric_file_type,eff_dtimes" ref-type="src-columns"/>
 	</constraint>
 	<constraint name="uk_uinbh" type="uq-constr" table="idrepo.uin_biometric_h">
 		<columns names="uin_ref_id,bio_file_id,eff_dtimes" ref-type="src-columns"/>
@@ -242,14 +242,14 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="idrepo"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Table to store documents that are provided during the registration process and are related to this UIN. ]]></comment>
-	<position x="60.5487" y="391"/>
+	<position x="59.5487" y="392"/>
 	<column name="uin_ref_id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
 	<column name="doccat_code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
-	<column name="doctyp_code" not-null="true">
+	<column name="doctyp_code">
 		<type name="character varying" length="36"/>
 	</column>
 	<column name="doc_id">
@@ -298,7 +298,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<columns names="uin_ref_id,doc_id" ref-type="src-columns"/>
 	</constraint>
 	<constraint name="pk_uind" type="pk-constr" table="idrepo.uin_document">
-		<columns names="uin_ref_id,doccat_code,doctyp_code" ref-type="src-columns"/>
+		<columns names="uin_ref_id,doccat_code" ref-type="src-columns"/>
 	</constraint>
 </table>
 
@@ -306,7 +306,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="idrepo"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Table to store documents that are provided during the registration process and are related to this UIN. ]]></comment>
-	<position x="57.465" y="715"/>
+	<position x="56.465" y="716"/>
 	<column name="uin_ref_id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[reference id of an uin, refers to uin_ref_id of idrep.uin table]]></comment>
@@ -314,11 +314,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="doccat_code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
-	<column name="doctyp_code" not-null="true">
-		<type name="character varying" length="36"/>
-	</column>
 	<column name="eff_dtimes" not-null="true">
 		<type name="timestamp" length="0"/>
+	</column>
+	<column name="doctyp_code">
+		<type name="character varying" length="36"/>
 	</column>
 	<column name="doc_id" not-null="true">
 		<type name="character varying" length="128"/>
@@ -366,7 +366,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<columns names="uin_ref_id,doc_id,eff_dtimes" ref-type="src-columns"/>
 	</constraint>
 	<constraint name="pk_uindh" type="pk-constr" table="idrepo.uin_document_h">
-		<columns names="uin_ref_id,doccat_code,doctyp_code,eff_dtimes" ref-type="src-columns"/>
+		<columns names="uin_ref_id,doccat_code,eff_dtimes" ref-type="src-columns"/>
 	</constraint>
 </table>
 
@@ -374,7 +374,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="idrepo"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Table to store history of the individual data and the assigned UIN. This table will also contain the  registration id that was used to update individual's information.]]></comment>
-	<position x="577" y="61.25"/>
+	<position x="576" y="62.25"/>
 	<column name="uin_ref_id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[UIN reference identification, a unique identity field that will be used in all reference tables.]]></comment>

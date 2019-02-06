@@ -3,7 +3,7 @@
 CREATE TABLE idrepo.uin_document(
 	uin_ref_id character varying(36) NOT NULL,
 	doccat_code character varying(36) NOT NULL,
-	doctyp_code character varying(36) NOT NULL,
+	doctyp_code character varying(36),
 	doc_id character varying(128),
 	doc_name character varying(128) NOT NULL,
 	docfmt_code character varying(36),
@@ -15,7 +15,7 @@ CREATE TABLE idrepo.uin_document(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp,
-	CONSTRAINT pk_uind PRIMARY KEY (doccat_code,doctyp_code,uin_ref_id)
+	CONSTRAINT pk_uind PRIMARY KEY (uin_ref_id,doccat_code)
 
 );
 -- ddl-end --
@@ -41,6 +41,7 @@ COMMENT ON COLUMN idrepo.uin_document.del_dtimes IS 'Record deleted datetime';
 -- ddl-end --
 ALTER TABLE idrepo.uin_document OWNER TO sysadmin;
 -- ddl-end --
+
 
 -- object: uk_uind | type: CONSTRAINT --
 -- ALTER TABLE idrepo.uin_document DROP CONSTRAINT IF EXISTS uk_uind CASCADE;
