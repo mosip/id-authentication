@@ -1,9 +1,3 @@
-/*
- * 
- * 
- * 
- * 
- */
 package io.mosip.kernel.cryptomanager.exception;
 
 import java.net.ConnectException;
@@ -158,6 +152,22 @@ public class CryptomanagerExceptionHandler {
 		ServiceError error = new ServiceError(CryptomanagerErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
 				e.getMessage());
 		errorResponse.getErrors().add(error);
+		errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler(ParseResponseException.class)
+	public ResponseEntity<ErrorResponse<ServiceError>> parseResponseException(final ParseResponseException e) {
+		return new ResponseEntity<>(
+				getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.INTERNAL_SERVER_ERROR),
+				HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler(KeymanagerServiceException.class)
+	public ResponseEntity<ErrorResponse<ServiceError>> keymanagerServiceException(
+			final KeymanagerServiceException exception) {
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+		errorResponse.getErrors().addAll(exception.getList());
 		errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
