@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 /***********************************************************************************************************************
  * Used by spring security to store user details like roles and use this across the application for Authorization purpose.
+ * The user details can be fetched using principal in SecurityContextHolder
  *
  * @author Sabbu Uday Kumar
  * @since 1.0.0

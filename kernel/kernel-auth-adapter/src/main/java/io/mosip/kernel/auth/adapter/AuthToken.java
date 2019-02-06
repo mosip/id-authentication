@@ -3,7 +3,7 @@ package io.mosip.kernel.auth.adapter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 /***********************************************************************************************************************
- * AUTH_TOKEN USED TO STORE TOKEN DETAILS
+ * AUTH_TOKEN USED TO ACCESS TOKEN DETAILS
  *
  * @author Sabbu Uday Kumar
  * @since 1.0.0

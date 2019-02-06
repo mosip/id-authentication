@@ -32,7 +32,7 @@ import java.util.List;
  * Tasks:
  * 1. Contacts auth server to verify token validity.
  * 2. Stores the response body in an instance of MosipUserDto.
- * 3. Updates token into AuthHeadersFilter.
+ * 3. Updates token into in the security context through AuthUserDetails.
  * 4. Bind MosipUserDto instance details with the AuthUserDetails that extends Spring Security's UserDetails.
  *
  * @author Sabbu Uday Kumar

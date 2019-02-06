@@ -18,6 +18,7 @@ import java.io.IOException;
  * Attempt Authentication tasks:
  * 1. Receives "Authorization" Header from request headers.
  * 2. Use the assigned Authentication manager to authenticate with the token.
+ * 3. Endpoints that need to be exempted for authentication are put here.
  *
  * @author Sabbu Uday Kumar
  * @since 1.0.0
