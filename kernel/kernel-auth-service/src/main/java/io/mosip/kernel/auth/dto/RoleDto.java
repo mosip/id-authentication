@@ -11,12 +11,6 @@ public class RoleDto {
 	private String roleName;
 	
 	private String roleDescription;
-	
-	public RoleDto(String roleId, String roleName, String roleDescription){
-		this.roleId=roleId;
-		this.roleName=roleName;
-		this.roleDescription=roleDescription;
-	}
 
 	public String getRoleId() {
 		return roleId;
