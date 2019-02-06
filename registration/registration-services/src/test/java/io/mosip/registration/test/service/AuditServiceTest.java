@@ -48,7 +48,7 @@ public class AuditServiceTest {
 	@Before
 	public void intiate() {
 
-		Mockito.when(context.getApplicationMap()).thenReturn(applicationMap);
+		Mockito.when(context.map()).thenReturn(applicationMap);
 		Mockito.when(applicationMap.get(Mockito.anyString())).thenReturn("45");
 
 	}

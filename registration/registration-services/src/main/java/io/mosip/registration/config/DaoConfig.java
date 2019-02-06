@@ -1,5 +1,6 @@
 package io.mosip.registration.config;
 
+import java.util.Map;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -17,14 +18,14 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernatePersistenceConstant;
 
 public class DaoConfig extends HibernateDaoConfig{
 	
-	@Autowired
-	private Environment environment;
+	PropertyPlaceholderConfigurer ppc;
 	
 	@Override
 	@Bean(name="dataSource")
@@ -36,7 +37,8 @@ public class DaoConfig extends HibernateDaoConfig{
 	@Bean(name="dataSourceFor")
 	public static DataSource dataSourceFor() {
 		/**
-		 * The Database path should come from the outside
+		 * TODO:The Database path should come from the outside and the Password should come from TPM .
+		 * i.e. hard coded the values for embedded driver.
 		 */
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName("org.apache.derby.jdbc.EmbeddedDriver");
@@ -53,7 +55,6 @@ public class DaoConfig extends HibernateDaoConfig{
 	
 
 	@Bean
-    @Lazy(false)
     public static PropertiesConfig dbProperties() {
         PropertiesConfig propertiesConfig = new PropertiesConfig(jdbcTemplate());
         
@@ -65,19 +66,23 @@ public class DaoConfig extends HibernateDaoConfig{
     }
 	
 	@Bean
+	@Lazy(false)
 	public static PropertyPlaceholderConfigurer properties() {
-	    PropertyPlaceholderConfigurer ppc
-	      = new PropertyPlaceholderConfigurer();
-	    Resource[] resources = new ClassPathResource[ ]
-	    	      { new ClassPathResource( "spring.properties" ), 
-	    	    		  new ClassPathResource("application.properties") };
+	    PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
+	    
+	    Resource[] resources = new ClassPathResource[ ] { new ClassPathResource( "spring.properties" )};
 	    ppc.setLocations( resources );
+	    
 	    Properties properties = new Properties();
 	    properties.putAll(dbProperties().getDBProps());
 	    
 	    ppc.setProperties(properties);
-	    ppc.setIgnoreUnresolvablePlaceholders( true );
 	    return ppc;
+	}
+	
+	@Scheduled(fixedRate = 1000*120)
+	public void reload() {
+		properties();
 	}
 
 }

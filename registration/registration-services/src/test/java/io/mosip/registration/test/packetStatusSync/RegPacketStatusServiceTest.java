@@ -63,7 +63,7 @@ public class RegPacketStatusServiceTest {
 		Map<String,Object> applicationMap =new HashMap<>();
 		applicationMap.put(RegistrationConstants.REG_DELETION_CONFIGURED_DAYS, "5");
 		
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+		when(context.map()).thenReturn(applicationMap);
 		SessionContext.getInstance();
 
 	}

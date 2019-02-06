@@ -97,7 +97,7 @@ public class SyncStatusValidatorServiceTest {
 		Map<String, Object> globalParams = new HashMap<>();
 		globalParams.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "1");
 		globalParams.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "1");
-		PowerMockito.when(applicationContext.getApplicationMap()).thenReturn(globalParams);
+		PowerMockito.when(applicationContext.map()).thenReturn(globalParams);
 		PowerMockito.when(ApplicationContext.map()).thenReturn(globalParams);
 	}
 
@@ -144,7 +144,7 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("lastExportSyncJob", "1");
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
 		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobInfo);
@@ -220,7 +220,7 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "N");
 		applicationMap.put("masterSyncJob", "20");
 		applicationMap.put("lastExportSyncJob", "20");
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
 		Mockito.when(gpsFacade.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
@@ -279,7 +279,7 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("lastExportSyncJob", "1");
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
 		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
@@ -354,7 +354,7 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("lastExportSyncJob", "1");
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
 		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
@@ -430,7 +430,7 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("lastExportSyncJob", "1");
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
 		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
@@ -505,7 +505,7 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("lastExportSyncJob", "1");
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
 		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
@@ -582,7 +582,7 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "N");
 		applicationMap.put("masterSyncJob", "20");
 		applicationMap.put("lastExportSyncJob", "20");
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
 		Mockito.when(gpsFacade.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
@@ -644,7 +644,7 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "N");
 		applicationMap.put("masterSyncJob", "20");
 		applicationMap.put("lastExportSyncJob", "20");
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
 		Mockito.when(gpsFacade.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))

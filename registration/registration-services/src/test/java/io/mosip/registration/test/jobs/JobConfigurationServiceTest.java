@@ -111,7 +111,7 @@ public class JobConfigurationServiceTest {
 		Map<String,Object> applicationMap =new HashMap<>();
 		applicationMap.put(RegistrationConstants.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT, "5");
 		
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+		when(context.map()).thenReturn(applicationMap);
 
 
 	}

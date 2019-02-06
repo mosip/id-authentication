@@ -85,7 +85,7 @@ public class PacketEncryptionServiceTest {
 		
 		Map<String, Object> globalParams = new HashMap<>();
 		globalParams.put("MAX_REG_PACKET_SIZE", "1");
-		PowerMockito.when(applicationContext.getApplicationMap()).thenReturn(globalParams);
+		PowerMockito.when(applicationContext.map()).thenReturn(globalParams);
 		PowerMockito.when(ApplicationContext.map()).thenReturn(globalParams);
 	}
 

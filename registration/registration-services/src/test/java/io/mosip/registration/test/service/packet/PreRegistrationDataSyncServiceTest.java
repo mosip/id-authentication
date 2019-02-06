@@ -106,7 +106,7 @@ public class PreRegistrationDataSyncServiceTest {
 		Map<String,Object> applicationMap =new HashMap<>();
 		applicationMap.put(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS, "45");
 		
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+		when(context.map()).thenReturn(applicationMap);
 		
 	}
 
