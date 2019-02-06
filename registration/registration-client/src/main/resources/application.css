@@ -431,6 +431,98 @@
 }
 /*Onoard User page Design Ends here*/
 
+/*user onboard FP design starts */
+.userOnboardHeader{
+	-fx-background-color:#FFFFFF;
+	-fx-effect: dropshadow( three-pass-box , #000000 , 1.0, 0.0 , 0.0 , 0.0 );
+}
+.userOnboardBackPane{
+	-fx-background-color: #F7F8F9;
+}
+.userOnboardFooter{
+	-fx-background-color: #FFFFFF;	
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+}
+.onboardProgressPane{
+	-fx-border-width: 1.0 0.0 0.0 0.0;
+	-fx-border-color: #C9C9C9;
+}
+.onboardParenPane{
+	-fx-border-width: 0.0 1.0 1.0 1.0;
+	-fx-border-color: #F7F8F9;
+}
+#onboardHomeLink{
+	-fx-text-fill: #666666;
+	-fx-font-family: Roboto;
+	-fx-font-weight: lighter;
+	-fx-font-size: 13.0px;	
+}
+#onboardPageDesc{
+	-fx-text-fill: #666666;
+	-fx-font-family: Roboto;
+	-fx-font-size: 14.0px;	
+}
+#onboardPageTitle{
+	-fx-text-fill: #FD518C;
+	-fx-font-family: Roboto;
+	-fx-font-size: 18.0px;	
+}
+.onboardFingerPrintPanes{	
+	-fx-background-color : #efefef;
+}
+.onboardProgressbar{
+	-fx-background-color : #C9C9C9;
+}
+.onboardScanBtn{
+	-fx-background-color : #FFFFFF;
+	-fx-text-fill: #FF4081;
+	-fx-border-color: #FF4081;
+	-fx-font-size: 12.0px;
+}
+
+/*user onboard FP design ends */
+/*common useronboard class*/
+.onboardPageBioTitle{
+	-fx-text-fill: #FD518C;
+	-fx-font-family: Roboto;
+	-fx-font-size: 16.0px;
+}
+.onboardImgPane{
+	-fx-background-color:#ffffff;
+}
+/*  */
+/*user onboard Iris design starts */
+.onboardIrisPanes{
+	-fx-background-color : #efefef;
+}
+.onboardBioDetails{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+}
+.onboardBioDetailsHeader{
+	-fx-font-family: Roboto;
+	-fx-text-fill: #666666;
+	-fx-font-weight: lighter;
+	-fx-font-size: 14.0px;
+}
+/*user onboard Iris design ends */
+/*user onboard exception design starts */
+.onboardOperatorDetailsHeader{
+	-fx-font-family: Roboto;
+	-fx-font-size: 10.0px;
+	-fx-text-fill: #000000;
+}
+.onboardOperatorDetails{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #000000;
+}
+.onboardOperatorDetailsPane{
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+	-fx-border-color: #C9C9C9;
+}
+/*user onboard exception design ends */
+
 #mainBox{
 	-fx-border-width: 0.0;
 	-fx-border-color: black;

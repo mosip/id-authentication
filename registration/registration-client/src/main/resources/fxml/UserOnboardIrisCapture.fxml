@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
@@ -7,52 +9,117 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="userOnboardIris" prefHeight="461.0" prefWidth="835.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.IrisCaptureController">
+<AnchorPane fx:id="userOnboardIris" prefHeight="660.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.IrisCaptureController">
    <children>
-   <AnchorPane prefHeight="653.0" prefWidth="835.0" styleClass="anchorPanebgColor,borderStyle">
+   <AnchorPane layoutX="1.0" prefHeight="32.0" prefWidth="1278.0" styleClass="userOnboardHeader">
          <children>
-         <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="14.0" layoutY="10.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
-  	 			<image>
-					<Image url="@../images/Home.png" />
-		 		</image>
-    		</ImageView>
-    		<Text id="homeReg" fx:id="paneLabel" layoutX="44.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="10.0" text="/ Onboard User" />            
-      <Label layoutX="14.0" layoutY="48.0" text="Iris Scan"/>
-         
-      <Pane id="leftIrisPane" fx:id="leftIrisPane" layoutX="14.0" layoutY="85.0" onMouseClicked="#enableScan" prefHeight="221.0" prefWidth="253.0" styleClass="irisImagePane">
-         <children>
-            <ImageView fx:id="leftIrisImage" fitHeight="221.0" fitWidth="253.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/leftIris.png" />
-               </image>
-            </ImageView>
+            <Text fx:id="onboardHomeLink" layoutX="20.0" layoutY="20.0" onMouseClicked="#goToHomePage" text="Home /" />
+            <Text fx:id="onboardPageDesc" layoutX="68.0" layoutY="20.0" text=" Onboard Operator" />
+            <Label fx:id="onboardPageTitle" layoutX="559.0" layoutY="2.0" text="Onboard Operator" />
          </children>
-      </Pane>
-      <Label layoutX="20.0" layoutY="318.0" prefHeight="27.0" prefWidth="99.0" text="Quality %" />
-      <Label layoutX="146.0" layoutY="322.0" text=":" />
-      <Label fx:id="leftIrisQualityScore" layoutX="155.0" layoutY="322.0" />
-      <Label layoutX="20.0" layoutY="350.0" text="Threshold %" />
-      <Label layoutX="146.0" layoutY="350.0" text=":" />
-      <Label fx:id="leftIrisThreshold" layoutX="155.0" layoutY="350.0" />
-      <Pane id="rightIrisPane" fx:id="rightIrisPane" layoutX="288.0" layoutY="85.0" onMouseClicked="#enableScan" prefHeight="221.0" prefWidth="253.0" styleClass="irisImagePane">
-         <children>
-            <ImageView fx:id="rightIrisImage" fitHeight="221.0" fitWidth="253.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/rightIris.png" />
-               </image>
+      </AnchorPane>
+      <AnchorPane layoutX="1.0" layoutY="33.0" prefHeight="600.0" prefWidth="1278.0" styleClass="userOnboardBackPane">
+   <children>
+            <ImageView fitHeight="192.0" fitWidth="130.0" layoutX="1130.0" layoutY="152.0" pickOnBounds="true" preserveRatio="true">
+            	<image>
+                   <Image url="@../images/onboardirisProgress.png" />
+                </image>
             </ImageView>
-         </children>
-      </Pane>
-      <Label layoutX="294" layoutY="318.0" prefHeight="27.0" prefWidth="99.0" text="Quality %" />
-      <Label layoutX="420.0" layoutY="322.0" text=":" />
-      <Label fx:id="rightIrisQualityScore" layoutX="504.0" layoutY="322.0" />
-      <Label layoutX="294.0" layoutY="350.0" text="Threshold %" />
-      <Label layoutX="420.0" layoutY="350.0" text=":" />
-      <Label fx:id="rightIrisThreshold" layoutX="504.0" layoutY="350.0" />
-      <Button fx:id="scanIris" layoutX="17.0" layoutY="395.0" mnemonicParsing="false" onAction="#scan" text="Scan" styleClass="RegbuttonStyle" />
-      <Button fx:id="irisNext" layoutX="738.0" layoutY="592.0" mnemonicParsing="false" onAction="#nextSection" text="Next" styleClass="RegbuttonStyle" />
-      <Button fx:id="irisPrevious" layoutX="660.0" layoutY="592.0" mnemonicParsing="false" onAction="#previousSection" text="Previous" styleClass="RegbuttonStyle" />
+   <AnchorPane layoutX="180.0" prefHeight="590.0" prefWidth="938.0" styleClass="onboardImgPane">
+         <children>          
+      <Label layoutX="70.0" layoutY="48.0" text="Iris" styleClass="onboardPageBioTitle"/>
+                  <AnchorPane layoutX="160.0" layoutY="68.0" prefHeight="170.0" prefWidth="230.0" styleClass="onboardIrisPanes">
+               <children>
+                  <Pane id="leftIrisPane" fx:id="leftIrisPane" onMouseClicked="#enableScan" prefHeight="170.0" prefWidth="230.0">
+                     <children>
+                        <ImageView fx:id="leftIrisImage" fitHeight="150.0" fitWidth="150.0" layoutX="40.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/Eye.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </Pane>
+               </children>
+            </AnchorPane>
+                  <AnchorPane layoutX="560.0" layoutY="68.0" prefHeight="170.0" prefWidth="230.0" styleClass="onboardIrisPanes">
+               <children>
+                  <Pane id="rightIrisPane" fx:id="rightIrisPane" onMouseClicked="#enableScan" prefHeight="170.0" prefWidth="230.0">
+                     <children>
+                        <ImageView fx:id="rightIrisImage" fitHeight="150.0" fitWidth="150.0" layoutX="40.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/Eye.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </Pane>
+               </children>
+            </AnchorPane>
+                  <AnchorPane layoutX="160.0" layoutY="250.0" prefHeight="154.0" prefWidth="205.0">
+                     <children>
+                     	<Label layoutX="85.0" text="Left Iris" styleClass="onboardBioDetailsHeader"/>
+                        <Label fx:id="leftIrisThreshold" layoutY="55.0" styleClass="onboardBioDetails"/>
+                        <Label layoutY="30.0" text="Threshold %" styleClass="onboardBioDetails"/>
+                        <Label fx:id="leftIrisQualityScore" layoutX="120.0" layoutY="55.0" styleClass="onboardBioDetails"/>
+                        <Label layoutX="120.0" layoutY="30.0" text="Quality %" styleClass="onboardBioDetails"/>                        
+                        <Label layoutY="90.0" text="Attempts" styleClass="onboardBioDetails"/>
+                        <Label layoutX="120.0" layoutY="90.0" text="Exceptions" styleClass="onboardBioDetails"/>
+                        <Label layoutY="115.0" text="-" styleClass="onboardBioDetails"/>
+                        <Label layoutX="120.0" layoutY="115.0" text="-" styleClass="onboardBioDetails"/>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="560.0" layoutY="250.0" prefHeight="154.0" prefWidth="205.0">
+                     <children>
+                     	<Label layoutX="85.0" layoutY="1.0" text="Right Iris" styleClass="onboardBioDetailsHeader"/>
+                        <Label fx:id="rightIrisThreshold" layoutY="55.0" styleClass="onboardBioDetails"/>
+                        <Label layoutY="115.0" text="-" styleClass="onboardBioDetails"/>
+                        <Label layoutY="30.0" text="Threshold %" styleClass="onboardBioDetails"/>
+                        <Label fx:id="rightIrisQualityScore" layoutX="120.0" layoutY="55.0" styleClass="onboardBioDetails"/>
+                        <Label layoutX="120.0" layoutY="115.0" text="-" styleClass="onboardBioDetails"/>
+                        <Label layoutX="120.0" layoutY="30.0" prefHeight="27.0" prefWidth="99.0" text="Quality %" styleClass="onboardBioDetails"/>                        
+                        <Label layoutX="120.0" layoutY="90.0" text="Exceptions" styleClass="onboardBioDetails"/>
+                        <Label layoutY="90.0" text="Attempts" styleClass="onboardBioDetails"/>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="100.0" layoutY="415.0" prefHeight="160.0" prefWidth="750.0" styleClass="onboardProgressPane">
+                     <children>
+                        <Button fx:id="scanIris" layoutX="620.0" layoutY="65.0" mnemonicParsing="false" onAction="#scan" styleClass="onboardScanBtn" text="Scan">
+                        <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/scan.png" />
+                                       </image>
+                                    </ImageView>
+                                    </graphic>
+                        </Button>
+                        <Label layoutX="151.0" layoutY="71.0" text="Quality" />
+                        <Line endX="100.0" layoutX="372.0" layoutY="85.0" startX="-100.0" />
+                     </children>
+                  </AnchorPane>  
    </children>
    </AnchorPane>
+   </children>
+   </AnchorPane>
+   <AnchorPane layoutX="1.0" layoutY="605.0" prefHeight="50.0" prefWidth="1278.0" styleClass="userOnboardFooter">
+               <children>
+                <Button fx:id="irisPrevious" layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#previousSection" styleClass="backButton" text="Back">
+             <graphic>
+                  	<ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/arrowLeft.png" />
+                                       </image>
+                                    </ImageView>
+                  </graphic>
+            </Button>
+            <Button fx:id="irisNext" layoutX="991.0" layoutY="4.0" mnemonicParsing="false" onAction="#nextSection" styleClass="contiuneButton" text="Continue">
+            <graphic>
+                  	<ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/arrowRight.png" />
+                                       </image>
+                                    </ImageView>
+                  </graphic>
+            </Button>
+               </children>
+            </AnchorPane> 
    </children>
 </AnchorPane>

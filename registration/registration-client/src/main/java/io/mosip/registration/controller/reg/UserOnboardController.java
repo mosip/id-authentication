@@ -19,6 +19,9 @@ import io.mosip.registration.dto.biometric.BiometricDTO;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 /**
  * {@code UserOnboardController} is to capture and display the captured
@@ -67,10 +70,13 @@ public class UserOnboardController extends BaseController implements Initializab
 	 * @param fxml file name
 	 */
 	private void loadPage(String page) {
-		Parent createRoot;
+		VBox mainBox = new VBox();
 		try {
-			createRoot = BaseController.load(getClass().getResource(page));
-			getScene(createRoot).setRoot(createRoot);
+			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
+			mainBox.getChildren().add(headerRoot);
+			Parent createRoot = BaseController.load(getClass().getResource(page));			
+			mainBox.getChildren().add(createRoot);
+			getScene(mainBox).setRoot(mainBox);
 		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage());

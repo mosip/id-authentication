@@ -310,9 +310,12 @@ public class RegistrationController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "saving the details of applicant biometrics");
 		boolean isValid = true;
+		if (!(boolean) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.ONBOARD_USER)) {
 		isValid = demographicDetailController.validateThisPane();
 		if (isValid) {
 			isValid = validateDemographicPane(documentScanController.documentScanPane);
+		}
 		}
 		if (isValid) {
 			try {
