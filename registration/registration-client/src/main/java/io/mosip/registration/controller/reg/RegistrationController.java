@@ -1086,7 +1086,7 @@ public class RegistrationController extends BaseController {
 						.with(identity -> identity.setPhone(mobileNo.isDisabled() ? null : mobileNo.getText()))
 						.with(identity -> identity.setEmail(emailId.isDisabled() ? null : emailId.getText()))
 						.with(identity -> identity.setCnieNumber(
-								cniOrPinNumber.isDisabled() ? null : new BigInteger(cniOrPinNumber.getText())))
+								cniOrPinNumber.isDisabled() ? null : cniOrPinNumber.getText().equals(RegistrationConstants.EMPTY) ? null : new BigInteger(cniOrPinNumber.getText())))
 						.with(identity -> identity.setLocalAdministrativeAuthority(localAdminAuthority.isDisabled()
 								? null
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
@@ -1505,12 +1505,13 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Validating the fields in demographic pane");
 
 		boolean gotoNext = true;
-		List<String> excludedIds = new ArrayList<String>();
-		excludedIds.add("preRegistrationId");
-		excludedIds.add("virtualKeyboard");
-		excludedIds.add("docPageNumber");
-
+		List<String> excludedIds = RegistrationConstants.fieldsToExclude();
+		if(getRegistrationDtoContent().getSelectionListDTO() != null) {
+			excludedIds.remove("cniOrPinNumber");
+			excludedIds.remove("cniOrPinNumberLocalLanguage");
+		}
 		validation.setChild(isChild);
+		
 		validation.setValidationMessage();
 		gotoNext = validation.validate(paneToValidate, excludedIds, gotoNext, masterSync);
 		if (gotoNext)

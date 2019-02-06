@@ -1,5 +1,6 @@
 package io.mosip.registration.constants;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -960,5 +961,20 @@ public class RegistrationConstants {
 	
 	//Packet Sync
 	public static final String PACKET_SYNC="packet_sync";
+	
+	//Validations to ignore
+
+	public static List<String> fieldsToExclude(){
+		List<String> fieldToExclude = new ArrayList<String>();
+		fieldToExclude.add("preRegistrationId");
+		fieldToExclude.add("virtualKeyboard");
+		fieldToExclude.add("docPageNumber");
+		fieldToExclude.add("cniOrPinNumber");
+		fieldToExclude.add("cniOrPinNumberLocalLanguage");
+		
+		return fieldToExclude;
+		
+	}
+
 
 }
