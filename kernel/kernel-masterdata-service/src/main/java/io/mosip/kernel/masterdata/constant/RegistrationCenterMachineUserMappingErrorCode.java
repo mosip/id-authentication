@@ -14,7 +14,10 @@ public enum RegistrationCenterMachineUserMappingErrorCode {
 			"Error occurred while inserting mapping of Center, User and Machine details"), REGISTRATION_CENTER_USER_MACHINE_NOT_FOUND(
 					"KER-MSD-131",
 					"Registration Center, Machine and User Mapping not found"), REGISTRATION_CENTER_USER_MACHINE_DELETE_EXCEPTION(
-							"KER-MSD-108", "Error occurred while deleting mapping of Center, User and Machine details");
+							"KER-MSD-108",
+							"Error occurred while deleting mapping of Center, User and Machine details"), REGISTRATION_CENTER_USER_MACHINE_UPDATE_EXCEPTION(
+									"KER-MSD-136",
+									"Error occurred while updating mapping of Center, User and Machine details");
 
 	/**
 	 * The error code

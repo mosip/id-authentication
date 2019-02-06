@@ -27,8 +27,13 @@ import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.syncdata.dto.MachineTypeDto;
 import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.syncdata.dto.ReasonListDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDeviceDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterTypeDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.syncdata.dto.TemplateDto;
 import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
@@ -88,7 +93,13 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		CompletableFuture<List<DeviceTypeDto>> deviceTypes = null;
 		CompletableFuture<List<ValidDocumentDto>> validDocumentsMapping = null;
 		CompletableFuture<List<ReasonListDto>> reasonList = null;
-		// get data
+
+		CompletableFuture<List<RegistrationCenterMachineDto>> registrationCenterMachines = null;
+		CompletableFuture<List<RegistrationCenterDeviceDto>> registrationCenterDevices = null;
+		CompletableFuture<List<RegistrationCenterMachineDeviceDto>> registrationCenterMachineDevices = null;
+		CompletableFuture<List<RegistrationCenterUserMachineMappingDto>> registrationCenterUserMachines = null;
+		CompletableFuture<List<RegistrationCenterUserDto>> registrationCenterUsers = null;
+
 		applications = serviceHelper.getApplications(lastUpdated);
 		machineDetails = serviceHelper.getMachines(machineId, lastUpdated);
 		registrationCenters = serviceHelper.getRegistrationCenter(machineId, lastUpdated);
@@ -115,13 +126,24 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		deviceTypes = serviceHelper.getDeviceType(machineId, lastUpdated);
 		validDocumentsMapping = serviceHelper.getValidDocuments(lastUpdated);
 		reasonList = serviceHelper.getReasonList(lastUpdated);
-		// set data
 
-		CompletableFuture.allOf(applications, machineDetails, registrationCenterTypes, registrationCenters, templates,
-				templateFileFormats, reasonCategory, reasonList, holidays, blacklistedWords, biometricTypes,
-				biometricAttributes, titles, languages, devices, documentCategories, documentTypes, idTypes,
-				deviceSpecifications, locationHierarchy, machineSpecification, machineType, templateTypes, deviceTypes,
-				validDocumentsMapping).join();
+		registrationCenterMachines = serviceHelper.getRegistrationCenterMachines(machineId, lastUpdated);
+		List<RegistrationCenterMachineDto> registrationCenterMachineDto = registrationCenterMachines.get();
+
+		String regId = getRegistrationCenterId(registrationCenterMachineDto);
+		registrationCenterDevices = serviceHelper.getRegistrationCenterDevices(regId, lastUpdated);
+		registrationCenterMachineDevices = serviceHelper.getRegistrationCenterMachineDevices(regId, lastUpdated);
+		registrationCenterUserMachines = serviceHelper.getRegistrationCenterUserMachines(regId, lastUpdated);
+		registrationCenterUsers = serviceHelper.getRegistrationCenterUsers(regId, lastUpdated);
+
+		CompletableFuture
+				.allOf(applications, machineDetails, registrationCenterTypes, registrationCenters, templates,
+						templateFileFormats, reasonCategory, reasonList, holidays, blacklistedWords, biometricTypes,
+						biometricAttributes, titles, languages, devices, documentCategories, documentTypes, idTypes,
+						deviceSpecifications, locationHierarchy, machineSpecification, machineType, templateTypes,
+						deviceTypes, validDocumentsMapping, registrationCenterMachines, registrationCenterDevices,
+						registrationCenterMachineDevices, registrationCenterUserMachines, registrationCenterUsers)
+				.join();
 
 		response.setMachineDetails(machineDetails.get());
 		response.setApplications(applications.get());
@@ -149,6 +171,21 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		response.setTemplatesTypes(templateTypes.get());
 		response.setDeviceTypes(deviceTypes.get());
 		response.setValidDocumentMapping(validDocumentsMapping.get());
+
+		response.setRegistrationCenterMachines(registrationCenterMachines.get());
+		response.setRegistrationCenterDevices(registrationCenterDevices.get());
+		response.setRegistrationCenterMachineDevices(registrationCenterMachineDevices.get());
+		response.setRegistrationCenterUserMachines(registrationCenterUserMachines.get());
+		response.setRegistrationCenterUsers(registrationCenterUsers.get());
+
 		return response;
+	}
+
+	private static String getRegistrationCenterId(List<RegistrationCenterMachineDto> registrationCenterMachineDto) {
+		String regId = null;
+		if (registrationCenterMachineDto != null && !registrationCenterMachineDto.isEmpty()) {
+			regId = registrationCenterMachineDto.get(0).getRegCenterId();
+		}
+		return regId;
 	}
 }

@@ -50,7 +50,6 @@ import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
 import io.mosip.preregistration.booking.dto.HolidayDto;
-import io.mosip.preregistration.booking.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.booking.dto.RegistrationCenterDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterHolidayDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterResponseDto;
@@ -71,6 +70,7 @@ import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.exception.DemographicStatusUpdationException;
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
 import io.mosip.preregistration.booking.exception.RestCallException;
+import io.mosip.preregistration.booking.exception.TimeSpanException;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
@@ -78,6 +78,7 @@ import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 
 /**
@@ -114,12 +115,9 @@ public class BookingServiceUtil {
 	 */
 	@Value("${preRegResourceUrl}")
 	private String preRegResourceUrl;
-
-	/**
-	 * Reference for ${documentUrl} from property file
-	 */
-	@Value("${documentUrl}")
-	String documentUrl;
+	
+	@Value("${timeSpanCheck}")
+	private long timeSpanCheck;
 
 	private Logger log = LoggerConfiguration.logConfig(BookingServiceUtil.class);
 
@@ -323,9 +321,15 @@ public class BookingServiceUtil {
 
 				String statusCode = preRegResponsestatusDto.getStatusCode().trim();
 
+				Date createdDateTime=preRegResponsestatusDto.getCreatedDateTime();
+				
 				if (statusCode.equals(StatusCodes.PENDING_APPOINTMENT.getCode())) {
-					throw new AppointmentCannotBeCanceledException(ErrorCodes.PRG_BOOK_RCI_018.toString(),
-							ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.toString());
+					throw new AppointmentCannotBeCanceledException(ErrorCodes.PRG_BOOK_RCI_018.getCode(),
+							ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.getMessage());
+				}
+				if(!timeSpanCheck(createdDateTime)) {
+					throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
+							ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED_BEFORE.getMessage()+" "+timeSpanCheck+" hrs");
 				}
 			} else {
 				throw new DemographicGetStatusException(respEntity.getBody().getErr().getErrorCode(),
@@ -340,6 +344,15 @@ public class BookingServiceUtil {
 		}
 		return true;
 	}
+	public boolean timeSpanCheck(Date createdDateTime) {
+		
+		Date current=new Date();
+		long difference=current.getTime()-createdDateTime.getTime();
+		long timeDifference=difference /(60*60*1000);
+		if(timeDifference>timeSpanCheck) return true;
+		else return false;
+	}
+
 	/**
 	 * This method will do booking time slots.
 	 * 
@@ -673,4 +686,5 @@ public class BookingServiceUtil {
 		entity.setSlotToTime(LocalTime.parse(bookingRegistrationDTO.getSlotToTime()));
 		return entity;
 	}
+	
 }

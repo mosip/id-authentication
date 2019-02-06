@@ -28,7 +28,7 @@ export const APPEND_URL = {
   applicants: 'demographic/v0.1/pre-registration/applications',
   location: 'masterdata/',
   gender: 'masterdata/v1.0/gendertypes',
-  transliteration: 'translitrate/v0.1/pre-registration/translitrate'
+  transliteration: 'transliterate/v0.1/pre-registration/translitrate'
 };
 
 export const PARAMS_KEYS = {
@@ -50,7 +50,7 @@ export const DASHBOARD_RESPONSE_KEYS = {
     time_slot_to: 'time_slot_to'
   },
   applicant: {
-    preId: 'preId',
+    preId: 'preRegistrationId',
     fullname: 'fullname',
     statusCode: 'statusCode'
   }
@@ -91,6 +91,7 @@ export const virtual_keyboard_languages = {
 };
 
 export const DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY = 'file';
-export const DOCUMENT_UPLOAD_REQUEST_DTO_KEY = 'Document request DTO';
+export const DOCUMENT_UPLOAD_REQUEST_DTO_KEY = 'Document request';
 
 export const PREVIEW_DATA_APPEND_URL = 'demographic/v0.1/pre-registration/applicationData';
+// "BASE_URL": "https://dev.mosip.io/"

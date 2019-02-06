@@ -83,6 +83,19 @@
     "text_or": "أو",
     "action_view": "رأي"
   },
+  "acknowledgement": {
+    "title":"تم تأكيد الموعد",
+    "message":"تم إرسال تفاصيل هوية وتاريخ Pre-Registration إلى معرف البريد الإلكتروني المسجل ورقم الهاتف",
+    "label_name":"اسم",
+    "label_pre_id":"معرف التسجيل المسبق",
+    "label_reg_cntr":"مركز التسجيل",
+    "label_cntr_contact_number":"رقم مركز الاتصال",
+    "label_appointment_date_time":"موعد ووقت الموعد",
+    "container_guideline": "المبادئ التوجيهية الهامة",
+    "action_send":"إرسال EMAIL / SMS",
+    "action_download": "تحميل PDF",
+    "action_print": "طباعة"
+  },
   "preview": {
     "title_preview": "معاينة",
     "language": "عربى",
@@ -158,7 +171,7 @@
       "text_appoinment_date": "موعد موعد",
       "text_status": "الحالة",
       "action_modify_information": "تعديل المعلومات",
-      "action_modify_appointment": "تعديل موعد"
+      "action_modify_appointment": "عرض إقرار"
     }
   },
   "appointmentCentreSearch": {
@@ -177,9 +190,9 @@
     "action_print": "طباعة"
   },
   "dialog": {
-    "title_applicant": "عدد المتقدمون",
-    "content_applicant": "سيتم التعامل مع تفاصيل مقدم الطلب الأول على أنها أساسية",
-    "invalidApplicantNumber_msg": "يجب أن يكون الرقم بين 1 و 10",
+    "title_applicant": "إرسال تأكيد موعد",
+    "content_applicant": "البريد الإلكتروني / رقم الهاتف",
+    "invalidApplicantNumber_msg": "رقم البريد الإلكتروني / الهاتف غير صالح",
     "action_ok": "حسنا",
     "title_discard": "تجاهل",
     "action_discard_app": "تجاهل التطبيق بأكمله",
@@ -189,12 +202,6 @@
     "action_add": "إضافة",
     "action_close": "قريب",
     "action_add_to_slot": "أضف إلى الفتحة"
-  },
-  "ackowledgement": {
-    "title":"تم تأكيد الموعد",
-    "container_guideline": "المبادئ التوجيهية الهامة",
-    "action_download": "تحميل",
-    "action_print": "طباعة"
   },
   "centerSelection": {
     "title": " موعد الكتاب ",

@@ -26,6 +26,7 @@ import io.mosip.preregistration.application.exception.system.JsonValidationExcep
 import io.mosip.preregistration.application.exception.system.SystemFileIOException;
 import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
+import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 

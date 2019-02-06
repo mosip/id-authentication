@@ -1,0 +1,89 @@
+<div class="dashboard-body">
+  <div class="heading-row">
+    <div class="heading">
+      <p>{{ 'uidStatus.title' | translate }}</p>
+    </div>
+    <span class="spacer"></span>
+    <div class="buttons">
+      <span
+        ><button
+          mat-button
+          [disabled]="disableModifyAppointmentButton"
+          class="modify-app-btn"
+          (click)="onModifyMultipleAppointment()"
+        >
+          <img src="assets\Book_Modify Appointment.png" class="modify-app-img" />
+          {{ 'uidStatus.action_modify_appointment' | translate }}
+        </button></span
+      >
+      <span
+        ><button mat-button class="create-app-btn" (click)="onNewApplication()">
+          <img src="assets\Create new application.png" class="create-app-img" />
+          {{ 'uidStatus.action_cre_application' | translate }}
+        </button></span
+      >
+    </div>
+  </div>
+  <div class="spinner" *ngIf="!isFetched"><mat-spinner [diameter]="50"></mat-spinner></div>
+  <div *ngIf="!isNewApplication && isFetched">
+    <div class="card-container">
+      <div class="card-component" *ngFor="let user of users">
+        <mat-card>
+          <div class="card-header">
+            <span class="checkbox"
+              ><mat-checkbox (change)="onSelectUser(user, $event)"
+                >{{ 'uidStatus.card.text_app_id' | translate }}
+              </mat-checkbox></span
+            >
+            <span class="checkbox"
+              ><strong>{{ user.applicationID }}</strong></span
+            >
+            <span class="spacer"></span>
+            <button (click)="onDelete(user)" mat-icon-button><img src="assets\delete.png" class="delete-img" /></button>
+          </div>
+          <mat-card-content [ngStyle]="{ marginTop: getMargin(user.name) }">
+            <div class="card-content">
+              <table>
+                <tr>
+                  <td>{{ 'uidStatus.card.text_name' | translate }}</td>
+                  <td class="application-value">{{ user.name }}</td>
+                </tr>
+                <tr>
+                  <td>{{ 'uidStatus.card.text_appoinment_date' | translate }}</td>
+                  <td class="application-value">{{ user.appointmentDateTime }}</td>
+                </tr>
+                <tr>
+                  <td>{{ 'uidStatus.card.text_status' | translate }}</td>
+                  <td id="status" [ngStyle]="{ color: getColor(user.status) }">{{ user.status }}</td>
+                </tr>
+              </table>
+            </div>
+          </mat-card-content>
+          <mat-card-footer>
+            <mat-card-actions>
+              <button
+                mat-button
+                class="footer-btn"
+                [disabled]="disableModifyDataButton"
+                (click)="onModifyInformation(user.applicationID)"
+              >
+                <img src="assets\Modify information_grey.png" class="modifyinfo-btn-img" />{{
+                  'uidStatus.card.action_modify_information' | translate
+                }}
+              </button>
+              <!-- (click)="onSelectUser(user)" -->
+              <button mat-button class="footer-btn" (click)="onAcknowledgementView(user)">
+                <img src="assets\view.png" class="modifyapp-btn-img" />{{
+                  'uidStatus.card.action_modify_appointment' | translate
+                }}
+              </button>
+              <!-- <button mat-icon-button class="footer-download-btn">
+                <img src="assets\download.png" class="download-btn-img" />
+              </button> -->
+            </mat-card-actions>
+          </mat-card-footer>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>

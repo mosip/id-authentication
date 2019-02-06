@@ -1,7 +1,9 @@
 package io.mosip.kernel.pdfgenerator.itext.test;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -10,8 +12,14 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +36,23 @@ import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 public class PDFGeneratorTest {
 	@Autowired
 	private PDFGenerator pdfGenerator;
+
+	private static BufferedImage bufferedImage;
+	private static BufferedImage bufferedImage2;
+
+	private static List<BufferedImage> bufferedImages = new ArrayList<>();
+
+	@BeforeClass
+	public static void initialize() throws IOException, java.io.IOException {
+		URL url = PDFGeneratorTest.class.getResource("/Change.jpg");
+		URL url2 = PDFGeneratorTest.class.getResource("/nelsonmandela1-2x.jpg");
+
+		bufferedImage = ImageIO.read(url);
+		bufferedImages.add(bufferedImage);
+
+		bufferedImage2 = ImageIO.read(url2);
+		bufferedImages.add(bufferedImage2);
+	}
 
 	@Test
 	public void testPdfGenerationWithInputStream() throws IOException {
@@ -184,7 +209,26 @@ public class PDFGeneratorTest {
 		if (temp6.exists()) {
 			temp6.delete();
 		}
+		File OutPutPdfFile = new File(outputFilePath + fileSepetator + "merge"+outputFileExtension);
+		if (OutPutPdfFile.exists()) {
+			OutPutPdfFile.delete();
+		}
+	}
 
+	@Test
+	public void getSinglePDFInBytesTest() throws IOException {
+		byte[] data = pdfGenerator.asPDF(bufferedImages);
+		String outputPath = System.getProperty("user.dir");
+		String fileSeperator = System.getProperty("file.separator");
+		File OutPutPdfFile = new File(outputPath + fileSeperator + "merge.pdf");
+		FileOutputStream op = new FileOutputStream(OutPutPdfFile);
+		op.write(data);
+		op.flush();
+		assertNotNull(data);
+		assertTrue(OutPutPdfFile.exists());
+		if (op != null) {
+			op.close();
+		}
 	}
 
 }

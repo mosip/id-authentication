@@ -29,13 +29,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import io.mosip.preregistration.application.controller.DemographicController;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
-import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
 import io.mosip.preregistration.application.dto.UpdateResponseDTO;
 import io.mosip.preregistration.application.service.DemographicService;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
+import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
@@ -167,7 +167,7 @@ public class DemographicControllerTest {
 		MainListResponseDTO<PreRegistrationViewDTO> response = new MainListResponseDTO<>();
 		List<PreRegistrationViewDTO> viewList = new ArrayList<>();
 		PreRegistrationViewDTO viewDto = new PreRegistrationViewDTO();
-		viewDto.setPreId("1234");
+		viewDto.setPreRegistrationId("1234");
 		viewDto.setStatusCode("Pending_Appointment");
 		viewList.add(viewDto);
 		response.setResponse(viewList);
@@ -216,7 +216,7 @@ public class DemographicControllerTest {
 		List<DeletePreRegistartionDTO> DeleteList = new ArrayList<DeletePreRegistartionDTO>();
 		DeletePreRegistartionDTO deleteDto = new DeletePreRegistartionDTO();
 
-		deleteDto.setPrId("3");
+		deleteDto.setPreRegistrationId("3");
 		deleteDto.setDeletedBy("9527832358");
 		DeleteList.add(deleteDto);
 		response.setResponse(DeleteList);

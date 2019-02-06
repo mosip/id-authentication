@@ -25,8 +25,8 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	 *            the list of entity id's
 	 * @return the list of {@link Registration}
 	 */
-	@Query("select reg from Registration reg where reg.clientStatusCode= :syncStatus and (reg.serverStatusCode=:resendStatus or reg.serverStatusCode IS NULL) or reg.fileUploadStatus=:fileUploadStatus")
-	List<Registration> findByStatusCodes(@Param("syncStatus") String clientstatusCode,
+	@Query("select reg from Registration reg where reg.clientStatusCode= :syncStatus or reg.clientStatusCode= :exportStatus and (reg.serverStatusCode=:resendStatus or reg.serverStatusCode IS NULL) or reg.fileUploadStatus=:fileUploadStatus")
+	List<Registration> findByStatusCodes(@Param("syncStatus") String clientstatusCode, @Param("exportStatus") String exportstatusCode,
 			@Param("resendStatus") String serverStatusCode, @Param("fileUploadStatus") String fileUploadStatus);
 
 	/**
@@ -62,6 +62,25 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	 * @param clientStatus status of resgistrationPacket
 	 * @return list of registrations
 	 */
-	List<Registration> findByCrDtimeBeforeAndClientStatusCodeNot(Timestamp crDtimes, String clientStatus);
+	List<Registration> findByCrDtimeBefore(Timestamp crDtimes);
+	
+	/**
+	 * This method returns the list of {@link Registration} based on status code
+	 * 
+	 * @param statusCode
+	 *            the status code
+	 * @return the list of {@link Registration}
+	 */
+	List<Registration> findByclientStatusCodeOrderByCrDtimeAsc(String statusCode);
 
+	/**
+	 * Find by client status code and id.
+	 *
+	 * @param clientStatusCode 
+	 * 				the client status code
+	 * @param id 
+	 * 				the registration id
+	 * @return the registration
+	 */
+	Registration findByClientStatusCodeAndId(String clientStatusCode,String id);
 }

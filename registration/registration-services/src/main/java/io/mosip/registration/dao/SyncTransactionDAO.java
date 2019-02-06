@@ -38,4 +38,5 @@ public interface SyncTransactionDAO {
 	List<SyncTransaction> getSyncTransactions(Timestamp req,String syncJobId);
 
 
+
 }

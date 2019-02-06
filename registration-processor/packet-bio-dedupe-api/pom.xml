@@ -1,27 +1,28 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>io.mosip.registrationprocessor</groupId>
-    <artifactId>registration-processor</artifactId>
-    <version>0.8.0</version>
-  </parent>
-  <artifactId>packet-bio-dedupe-api</artifactId>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>io.mosip.registrationprocessor</groupId>
+		<artifactId>registration-processor</artifactId>
+		<version>0.8.1</version>
+	</parent>
+	<artifactId>packet-bio-dedupe-api</artifactId>
 
 
- <properties>
+	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 	</properties>
-  <dependencies>
-   <dependency>
+	<dependencies>
+		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-config</artifactId>
 			<version>${spring-cloud-config.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -49,13 +50,24 @@
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>packet-bio-dedupe-service</artifactId>
 			<version>${packet.bio.dedupe.service.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>io.mosip.registrationprocessor</groupId>
+					<artifactId>registration-processor-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>registration-processor-core</artifactId>
+			<version>${registration.processor.core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 		</dependency>
-  </dependencies>
-  <build>
+	</dependencies>
+	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

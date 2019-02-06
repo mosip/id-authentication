@@ -3,6 +3,7 @@ package io.mosip.registration.dao;
 import java.sql.Timestamp;
 import java.util.List;
 
+import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
@@ -21,11 +22,11 @@ public interface RegistrationDAO {
 	 * 
 	 * @param zipFileName
 	 *            the name of the zip file with absolute path
-	 * @param individualName
-	 *            the name of the individual
+	 * @param registrationDTO
+	 *            the {@link RegistrationDTO} of the individual
 	 * @throws RegBaseCheckedException
 	 */
-	void save(String zipFileName, String individualName) throws RegBaseCheckedException;
+	void save(String zipFileName, RegistrationDTO registrationDTO) throws RegBaseCheckedException;
 
 	/**
 	 * This method updates the status of the packet
@@ -93,6 +94,24 @@ public interface RegistrationDAO {
 	 * @param clientStatus status of resgistrationPacket
 	 * @return list of registrations
 	 */
-	List<Registration> getRegistrationsToBeDeleted(Timestamp crDtimes, String clientStatus);
+	List<Registration> getRegistrationsToBeDeleted(Timestamp crDtimes);
+
+	/**
+	 * Gets the registration by id.
+	 *
+	 * @param rId 
+	 * 			the registration id
+	 * @return the registration by id
+	 */
+	Registration getRegistrationById(String clientStatusCode,String rId);
+
+	/**
+	 * Get Registration
+	 * 
+	 * @param regIds
+	 *            id
+	 * @return List of Registrations
+	 */
+	List<Registration> get(List<String> regIds);
 
 }

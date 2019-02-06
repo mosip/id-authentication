@@ -23,7 +23,7 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
-import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
+import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.uploader.exception.DFSNotAccessibleException;
@@ -111,14 +111,15 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			this.isTransactionSuccessful = false;
 			this.description = "Registration status table is not accessible for packet " + this.registrationId;
 
-		} 
-		catch (Exception e) {
+		} catch (Exception e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.PACKET_UPLOAD_FAILED.name() + e.getMessage());
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
-		}
-		finally {
+		} finally {
+
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, description);
 
 			String eventId = "";
 			String eventName = "";

@@ -7,10 +7,19 @@ import net.minidev.json.JSONObject;
  * Configuration Sync service
  * 
  * @author Srinivasan
+ * @author Bal Vikash Sharma
  * @since 1.0.0
  *
  */
 public interface SyncConfigDetailsService {
+	/**
+	 * This service will fetch all  Configaration details available from
+	 * server
+	 * 
+	 * @return JSONObject - config synced data
+	 */
+	public JSONObject getConfigDetails();
+
 	/**
 	 * This service will fetch all Global Configaration details available from
 	 * server
@@ -28,6 +37,6 @@ public interface SyncConfigDetailsService {
 	 * @return JSONObject - registration center config synced data
 	 */
 	public JSONObject getRegistrationCenterConfigDetails(String regId);
-	
-	 ConfigDto getConfiguration(String registrationCenterId);
+
+	ConfigDto getConfiguration(String registrationCenterId);
 }

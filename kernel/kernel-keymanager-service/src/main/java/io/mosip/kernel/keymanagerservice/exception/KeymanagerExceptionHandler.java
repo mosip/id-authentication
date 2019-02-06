@@ -6,6 +6,7 @@
  */
 package io.mosip.kernel.keymanagerservice.exception;
 
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -63,6 +64,15 @@ public class KeymanagerExceptionHandler {
 						+ KeymanagerErrorConstant.DATE_TIME_PARSE_EXCEPTION.getErrorMessage(),
 				HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
 	}
+	
+	@ExceptionHandler(DateTimeParseException.class)
+	public ResponseEntity<ErrorResponse<ServiceError>> dateTimeParseException(final DateTimeParseException e) {
+		return new ResponseEntity<>(getErrorResponse(KeymanagerErrorConstant.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
+				e.getMessage() + KeymanagerConstant.WHITESPACE
+						+ KeymanagerErrorConstant.DATE_TIME_PARSE_EXCEPTION.getErrorMessage(),
+				HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+	}
+
 
 	@ExceptionHandler(InvalidDataException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> invalidDataException(final InvalidDataException e) {
