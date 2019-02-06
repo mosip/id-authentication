@@ -99,4 +99,5 @@ public interface FileManager<D, F> {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public void deleteFolder(D destinationDirectory, String fileName) throws IOException;
+
 }

@@ -84,7 +84,7 @@
 		<module>pre-registration-batchjob</module>
 		<module>pre-registration-batchjob-service</module>
 		<module>pre-registration-translitration-service</module>
-		<module>pre-registration-acknowledgement-service</module>
+		<module>pre-registration-notification-service</module>
 	</modules>
 
 	<profiles>

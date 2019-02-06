@@ -341,7 +341,7 @@ public class PacketInfoDao {
 
 	private ApplicantDocument convertEntityToApplicantDocumentDto(ApplicantDocumentEntity entity) {
 		ApplicantDocument applicantDocumentDto = new ApplicantDocument();
-		applicantDocumentDto.setDocName(entity.getDocName());
+		applicantDocumentDto.setDocName(entity.getId().getDocCatCode()); 
 		applicantDocumentDto.setDocStore(entity.getDocStore());
 		return applicantDocumentDto;
 	}

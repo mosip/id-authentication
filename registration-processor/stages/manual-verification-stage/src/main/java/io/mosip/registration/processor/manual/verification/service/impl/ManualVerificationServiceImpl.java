@@ -69,9 +69,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	/** The manual verification stage. */
 	@Autowired
 	private ManualVerificationStage manualVerificationStage;
-
-	/*
-	 * * (non-Javadoc)
+	
+	/*	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.registration.processor.manual.adjudication.service.
 	 * ManualAdjudicationService#assignStatus(io.mosip.registration.processor.manual
@@ -108,7 +107,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 					manualVerificationDTO.setRegId(updatedManualVerificationEntity.getId().getRegId());
 					manualVerificationDTO.setMatchedRefId(updatedManualVerificationEntity.getId().getMatchedRefId());
 					manualVerificationDTO
-							.setMatchedRefType(updatedManualVerificationEntity.getId().getMatchedRefType());
+					.setMatchedRefType(updatedManualVerificationEntity.getId().getMatchedRefType());
 					manualVerificationDTO.setMvUsrId(updatedManualVerificationEntity.getMvUsrId());
 					manualVerificationDTO.setStatusCode(updatedManualVerificationEntity.getStatusCode());
 				}
@@ -131,11 +130,12 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		byte[] file = null;
 		InputStream fileInStream = null;
 
-		if (checkBiometric(fileName)) {
-			fileInStream = getApplicantBiometricFile(regId, fileName);
+		if(checkBiometric(fileName)) {
+			fileInStream = getApplicantBiometricFile(regId,fileName);
 		} else if (checkDemographic(fileName)) {
-			fileInStream = getApplicantDemographicFile(regId, fileName);
-		} else {
+			fileInStream =	getApplicantDemographicFile(regId,fileName);
+		}
+		else {
 			throw new InvalidFileNameException(PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getCode(),
 					PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getMessage());
 		}
@@ -150,55 +150,47 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	/**
 	 * Gets the applicant biometric file.
 	 *
-	 * @param regId
-	 *            the reg id
-	 * @param fileName
-	 *            the file name
+	 * @param regId the reg id
+	 * @param fileName the file name
 	 * @return the applicant biometric file
 	 */
-	private InputStream getApplicantBiometricFile(String regId, String fileName) {
+	private InputStream getApplicantBiometricFile(String regId,String fileName){
 		return filesystemCephAdapterImpl.getFile(regId, PacketStructure.BIOMETRIC + fileName);
 	}
 
 	/**
 	 * Gets the applicant demographic file.
 	 *
-	 * @param regId
-	 *            the reg id
-	 * @param fileName
-	 *            the file name
+	 * @param regId the reg id
+	 * @param fileName the file name
 	 * @return the applicant demographic file
 	 */
-	private InputStream getApplicantDemographicFile(String regId, String fileName) {
+	private InputStream getApplicantDemographicFile(String regId,String fileName){
 		return filesystemCephAdapterImpl.getFile(regId, PacketStructure.APPLICANTDEMOGRAPHIC + fileName);
 	}
 
 	/**
 	 * Check biometric.
 	 *
-	 * @param fileName
-	 *            the file name
+	 * @param fileName the file name
 	 * @return true, if successful
 	 */
-	private boolean checkBiometric(String fileName) {
+	private boolean checkBiometric(String fileName){
 
-		return fileName.equals(PacketFiles.APPLICANTPHOTO.name()) || fileName.equals(PacketFiles.PROOFOFADDRESS.name())
-				|| fileName.equals(PacketFiles.PROOFOFIDENTITY.name())
-				|| fileName.equals(PacketFiles.EXCEPTIONPHOTO.name()) || fileName.equals(PacketFiles.ID.name());
+		return fileName.equals(PacketFiles.APPLICANTPHOTO.name()) || fileName.equals(PacketFiles.PROOFOFADDRESS.name()) || fileName.equals(PacketFiles.PROOFOFIDENTITY.name())
+				|| fileName.equals(PacketFiles.EXCEPTIONPHOTO.name()) || fileName.equals(PacketFiles.DEMOGRAPHIC.name());
 	}
 
 	/**
 	 * Check demographic.
 	 *
-	 * @param fileName
-	 *            the file name
+	 * @param fileName the file name
 	 * @return true, if successful
 	 */
-	private boolean checkDemographic(String fileName) {
+	private boolean checkDemographic(String fileName){
 
-		return fileName.equals(PacketFiles.RIGHTPALM.name()) || fileName.equals(PacketFiles.LEFTPALM.name())
-				|| fileName.equals(PacketFiles.BOTHTHUMBS.name()) || fileName.equals(PacketFiles.LEFTEYE.name())
-				|| fileName.equals(PacketFiles.RIGHTEYE.name());
+		return fileName.equals(PacketFiles.RIGHTPALM.name()) || fileName.equals(PacketFiles.LEFTPALM.name()) ||
+				fileName.equals(PacketFiles.BOTHTHUMBS.name()) || fileName.equals(PacketFiles.LEFTEYE.name()) || fileName.equals(PacketFiles.RIGHTEYE.name());
 	}
 
 	/*
@@ -210,7 +202,6 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 */
 	@Override
 	public ManualVerificationDTO updatePacketStatus(ManualVerificationDTO manualVerificationDTO) {
-
 		String registrationId = manualVerificationDTO.getRegId();
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setInternalError(false);
@@ -220,7 +211,6 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		String description = "";
 		boolean isTransactionSuccessful = false;
 		ManualVerificationEntity manualVerificationEntity;
-
 		if (!manualVerificationDTO.getStatusCode().equalsIgnoreCase(ManualVerificationStatus.REJECTED.name())
 				&& !manualVerificationDTO.getStatusCode().equalsIgnoreCase(ManualVerificationStatus.APPROVED.name())) {
 			throw new InvalidUpdateException(PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getCode(),

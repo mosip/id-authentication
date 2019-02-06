@@ -4,6 +4,9 @@ import { MatDialog } from '@angular/material';
 import { SharedService } from '../../booking/booking.service';
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 import { TranslateService } from '@ngx-translate/core';
+import { DataStorageService } from 'src/app/core/services/data-storage.service';
+import { NotificationDtoModel } from 'src/app/shared/models/notification-model/notification-dto.model';
+import { NameList } from 'src/app/shared/models/demographic-model/name-list.modal';
 
 @Component({
   selector: 'app-acknowledgement',
@@ -21,17 +24,27 @@ export class AcknowledgementComponent implements OnInit {
   //   },
   //   bookingData: '7 Jan 2019, 2:30pm'
   // }];
-
+  secondaryLanguagelabels: any;
+  secondaryLang = localStorage.getItem('secondaryLangCode');
   usersInfo = [];
 
   guidelines = ['Guidelines yet to be decided'];
 
   opt = {};
 
-  constructor(private sharedService: SharedService, private dialog: MatDialog, private translate: TranslateService) {
+  fileBlob: Blob;
+
+  notificationRequest = new FormData();
+
+  constructor(private sharedService: SharedService, 
+              private dialog: MatDialog, 
+              private translate: TranslateService,
+              private dataStorageService: DataStorageService) {
     this.translate.use(localStorage.getItem('langCode'));
   }
 
+
+  
   ngOnInit() {
     this.usersInfo = this.sharedService.getNameList();
     this.opt = {
@@ -40,7 +53,11 @@ export class AcknowledgementComponent implements OnInit {
       html2canvas: { scale: 1 },
       jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
     };
-    console.log('acknowledgement component', this.sharedService.getNameList());
+    this.usersInfo.forEach(user =>  this.generateQRCode(user));
+    this.generateBlob();
+    this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
+      this.secondaryLanguagelabels = response['acknowledgement'];
+    });
   }
 
   download() {
@@ -48,7 +65,7 @@ export class AcknowledgementComponent implements OnInit {
     html2pdf(element, this.opt);
   }
 
-  generateBlob() {
+ generateBlob() {
     const element = document.getElementById('print-section');
     html2pdf()
       .from(element)
@@ -67,9 +84,7 @@ export class AcknowledgementComponent implements OnInit {
         const arrayBuffer = new ArrayBuffer(byteString.length);
 
         const dataView = new DataView(arrayBuffer);
-        const blob = new Blob([dataView], { type: mimeString });
-        console.log(blob);
-        return blob;
+        this.fileBlob = new Blob([dataView], { type: mimeString });
       });
   }
 
@@ -85,8 +100,39 @@ export class AcknowledgementComponent implements OnInit {
       .afterClosed()
       .subscribe(applicantNumber => {
         console.log(applicantNumber);
-        console.log(this.generateBlob());
-        // Api call here
+        this.sendNotification(applicantNumber);
       });
+  }
+
+  generateQRCode(name: NameList) {
+    this.dataStorageService.generateQRCode(JSON.stringify(name)).subscribe(response => {
+      console.log(response);
+      const index = this.usersInfo.indexOf(name);
+      this.usersInfo[index].qrCodeBlob = response['response'].qrcode;
+    });
+  }
+
+  sendNotification(applicantNumber: string) {
+    console.log(this.usersInfo);
+    
+    this.usersInfo.forEach(user => {
+      console.log(user);
+      const bookingData = user.bookingData.split(',');
+      const notificationDto = new NotificationDtoModel(
+        user.fullName,
+        user.preRegId,
+        bookingData[0] + bookingData[1],
+        bookingData[2],
+        isNaN(parseInt(applicantNumber.trim().charAt(0), 10)) ?  null : applicantNumber,
+        isNaN(parseInt(applicantNumber.trim().charAt(0), 10)) ?  applicantNumber : null
+        );
+      this.notificationRequest.append('NotificationDTO', JSON.stringify(notificationDto));
+      this.notificationRequest.append('langCode', localStorage.getItem('langCode'));
+      this.notificationRequest.append('file', this.fileBlob);
+      this.dataStorageService.sendNotification(this.notificationRequest).subscribe(response => {
+        console.log(response);
+        this.notificationRequest = new FormData();
+      })
+    });
   }
 }

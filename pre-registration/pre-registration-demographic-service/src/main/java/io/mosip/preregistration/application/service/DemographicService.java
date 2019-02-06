@@ -37,7 +37,6 @@ import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
-import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
 import io.mosip.preregistration.application.dto.UpdateResponseDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
@@ -62,6 +61,7 @@ import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
@@ -294,7 +294,7 @@ public class DemographicService {
 				if (demographicEntity != null) {
 					statusdto.setPreRegistartionId(demographicEntity.getPreRegistrationId());
 					statusdto.setStatusCode(demographicEntity.getStatusCode());
-					statusdto.setCreatedDatTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse(demographicEntity.getCreateDateTime().toString()));
+					statusdto.setCreatedDateTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse(demographicEntity.getCreateDateTime().toString()));
 					statusList.add(statusdto);
 					response.setResponse(statusList);
 					response.setResTime(serviceUtil.getCurrentResponseTime());

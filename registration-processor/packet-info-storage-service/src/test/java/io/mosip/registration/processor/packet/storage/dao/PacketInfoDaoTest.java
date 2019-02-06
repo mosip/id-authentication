@@ -23,6 +23,7 @@ import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachine
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
+import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
@@ -261,7 +262,11 @@ public class PacketInfoDaoTest {
 		byte[] docStore = docValue.getBytes();
 		applicantDocument.setDocName("individualBiometrics");
 		applicantDocument.setDocStore(docStore);
-
+		ApplicantDocumentPKEntity id = new ApplicantDocumentPKEntity();
+		id.setDocCatCode("individualBiometrics");
+		id.setDocTypCode("individualBiometrics");
+		id.setRegId("2018782130000224092018121229");
+		applicantDocument.setId(id);
 		applicantDocumentEntities.add(applicantDocument);
 		Mockito.when(applicantDocumentEntity.getDocumentsByRegId("2018782130000224092018121229"))
 				.thenReturn(applicantDocumentEntities);

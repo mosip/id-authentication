@@ -160,6 +160,8 @@ public class DemodedupeStage extends MosipVerticleManager {
 				description = "Packet Demo dedupe successful for registration id : " + registrationId;
 			}
 
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, description);
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = true;

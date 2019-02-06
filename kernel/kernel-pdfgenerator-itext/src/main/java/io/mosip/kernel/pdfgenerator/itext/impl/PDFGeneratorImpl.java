@@ -1,11 +1,15 @@
 package io.mosip.kernel.pdfgenerator.itext.impl;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Objects;
+
+import javax.imageio.ImageIO;
 
 import org.springframework.stereotype.Component;
 
@@ -15,9 +19,12 @@ import com.itextpdf.html2pdf.css.media.MediaDeviceDescription;
 import com.itextpdf.html2pdf.css.media.MediaType;
 import com.itextpdf.html2pdf.css.util.CssUtils;
 import com.itextpdf.html2pdf.resolver.font.DefaultFontProvider;
+import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Image;
 
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
@@ -154,6 +161,40 @@ public class PDFGeneratorImpl implements PDFGenerator {
 					e.getMessage());
 		}
 		return os;
+	}
+
+	public byte[] asPDF(List<BufferedImage> bufferedImages) throws IOException {
+		byte[] scannedPdfFile = null;
+
+		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+
+			PdfWriter pdfWriter = new PdfWriter(byteArrayOutputStream);
+			Document document = new Document(new PdfDocument(pdfWriter));
+
+			for (BufferedImage bufferedImage : bufferedImages) {
+				document.add(new Image(ImageDataFactory.create(getImageBytesFromBufferedImage(bufferedImage))));
+			}
+
+			document.close();
+			pdfWriter.close();
+			scannedPdfFile = byteArrayOutputStream.toByteArray();
+		} catch (IOException e) {
+			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
+					e.getMessage());
+		}
+		return scannedPdfFile;
+	}
+
+	private byte[] getImageBytesFromBufferedImage(BufferedImage bufferedImage) throws IOException {
+		byte[] imageInByte;
+
+		ByteArrayOutputStream imagebyteArray = new ByteArrayOutputStream();
+		ImageIO.write(bufferedImage, "jpg", imagebyteArray);
+		imagebyteArray.flush();
+		imageInByte = imagebyteArray.toByteArray();
+		imagebyteArray.close();
+
+		return imageInByte;
 	}
 
 }
