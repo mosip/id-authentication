@@ -728,10 +728,7 @@
 	-fx-background-insets: 0.0,0.0 0.0 1.0 0.0;
   	-fx-border-width: 0.0 0.0 1.0 0.0;	
 }
-.operatorAuthenticationStyle{
-	-fx-pref-height: 39.0px; 
-	-fx-pref-width: 269.0px;
-}
+
 .operatorAuthenticationAnchorPaneStyle{
 	-fx-pref-height: 550.0px; 
 	-fx-pref-width: 850.0px;
@@ -985,6 +982,41 @@ Working on new Css
 
 .paneHeader{
 	-fx-pref-height: 28px;	
-	-fx-pref-width: 126px;
+	-fx-pref-width: 200px;
 	-fx-text-fill: #E43391;
+}
+
+.authenticationBiometricSubPane{
+	-fx-border-width: 0 0 1 0;
+	-fx-border-color: #C9C9C9;
+	-fx-pref-height: 444px;	
+	-fx-pref-width: 750px;
+}
+
+.authenticationBiometricPane{
+	-fx-pref-height: 547px;	
+	-fx-pref-width: 686px;
+}
+
+.operatorAuthenticationStyleTextTypeOne{
+	-fx-pref-height: 39px; 
+	-fx-pref-width: 269px;
+	-fx-text-fill: #666666;
+}
+
+.attempts{
+	-fx-pref-height: 39px; 
+	-fx-pref-width: 100px;
+	-fx-text-fill: #000000;
+}
+
+.scanButton{
+	-fx-background-color:#FFFFFF;
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: #FF4081;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;	
+	-fx-pref-width: 120px;
+	-fx-text-fill: #FF4081;
+	
 }

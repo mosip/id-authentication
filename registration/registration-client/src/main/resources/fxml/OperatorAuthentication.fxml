@@ -9,66 +9,107 @@
 
 <AnchorPane fx:id="operatorAuthenticationPane" styleClass="parentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.auth.AuthenticationController">
    <children>
-      <AnchorPane layoutX="74.0" prefHeight="471.0" prefWidth="910.0" styleClass="paneAtDisplayDocument">
+      <AnchorPane layoutX="74.0" styleClass="paneAtDisplayDocument">
          <children>
-            <AnchorPane fx:id="pwdBasedLogin" layoutX="162.0" layoutY="65.0" prefHeight="310.0" prefWidth="582.0" visible="false">
+            <AnchorPane fx:id="pwdBasedLogin" layoutX="230.0" layoutY="2.0" styleClass="authenticationBiometricPane" visible="false">
                <children>
-                  <TextField fx:id="username" layoutX="226.0" layoutY="65.0" promptText="%username" styleClass="operatorAuthenticationStyle" />
-                  <Label fx:id="passwdLabel" layoutX="6.0" layoutY="-3.0" text="%registrationofficerverification" />
-                  <PasswordField fx:id="password" layoutX="226.0" layoutY="120.0" promptText="%password" styleClass="operatorAuthenticationStyle" />
+                  <AnchorPane layoutX="2.0" layoutY="13.0" styleClass="authenticationBiometricSubPane">
+                     <children>
+                        <Label fx:id="passwdLabel" styleClass="paneHeader" text="%registrationofficerverification" />
+                        <TextField fx:id="username" layoutX="200.0" layoutY="128.0" promptText="%username" styleClass="operatorAuthenticationStyleTextTypeOne" />
+                        <PasswordField fx:id="password" layoutX="200.0" layoutY="183.0" promptText="%password" styleClass="operatorAuthenticationStyleTextTypeOne" />
+                     </children>
+                  </AnchorPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="faceBasedLogin" layoutX="200.0" layoutY="20.0" prefHeight="366.0" prefWidth="530.0" visible="false">
+            <AnchorPane fx:id="otpBasedLogin" layoutX="230.0" layoutY="2.0" styleClass="authenticationBiometricPane" visible="false">
                <children>
-                  <Label fx:id="faceLabel" layoutX="2.0" layoutY="3.0" text="%rofaceauthentication" />
-                  <ImageView fitHeight="136.0" fitWidth="158.0" layoutX="220.0" layoutY="127.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/Photo.png" />
-                     </image>
-                  </ImageView>
-                  <Button layoutX="260.0" layoutY="309.0" mnemonicParsing="false" onAction="#validateFace" styleClass="RegbuttonStyle" text="%scan" />
-                  <TextField fx:id="fpUserId" layoutX="200.0" layoutY="70.0" promptText="%username" styleClass="operatorAuthenticationStyle" />
-               </children>
-            </AnchorPane>
-            <AnchorPane fx:id="irisBasedLogin" layoutX="200.0" layoutY="1.0" prefHeight="398.0" prefWidth="582.0" visible="false">
-               <children>
-                  <Label fx:id="irisLabel" layoutX="2.0" layoutY="23.0" text="%roirisauthentication" />
-                  <ImageView fitHeight="143.0" fitWidth="197.0" layoutX="220.0" layoutY="127.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/Eye.png" />
-                     </image>
-                  </ImageView>
-                  <Button layoutX="260.0" layoutY="309.0" mnemonicParsing="false" onAction="#validateIris" styleClass="RegbuttonStyle" text="%scan" />
-                  <TextField fx:id="fpUserId" layoutX="200.0" layoutY="70.0" promptText="%username" styleClass="operatorAuthenticationStyle" />
-               </children>
-            </AnchorPane>
-            <AnchorPane fx:id="fingerprintBasedLogin" layoutX="230.0" layoutY="2.0" prefHeight="354.0" prefWidth="558.0" visible="true">
-               <children>
-                  <Label fx:id="fingerPrintLabel" layoutX="2.0" layoutY="13.0" text="%rofingerprintauthentication" />
-                  <ImageView fitHeight="169.0" fitWidth="179.0" layoutX="220.0" layoutY="127.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/rightHand.png" />
-                     </image>
-                  </ImageView>
-                  <Button layoutX="270.0" layoutY="309.0" mnemonicParsing="false" onAction="#validateFingerprint" styleClass="RegbuttonStyle" text="%scan" />
-                  <TextField fx:id="fpUserId" layoutX="200.0" layoutY="70.0" promptText="%username" styleClass="operatorAuthenticationStyle" />
-               </children>
-            </AnchorPane>
-            <AnchorPane fx:id="otpBasedLogin" layoutX="140.0" prefHeight="366.0" prefWidth="530.0" styleClass="operatorAuthenticationAnchorPaneStyle" visible="false">
-               <children>
-                  <Button layoutX="257.0" layoutY="217.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="RegbuttonStyle" text="%getotp" />
-                  <Label fx:id="otpLabel" layoutX="257.0" layoutY="58.0" text="%registrationofficerverification" />
-                  <TextField fx:id="otpUserId" layoutX="257.0" layoutY="108.0" promptText="%username" styleClass="operatorAuthenticationStyle" />
-                  <TextField fx:id="otp" layoutX="257.0" layoutY="159.0" promptText="%enterotp" styleClass="operatorAuthenticationStyle" />
-                  <Label fx:id="otpValidity" layoutX="297.0" layoutY="268.0">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                  </Label>
+                  <AnchorPane layoutX="2.0" layoutY="13.0" styleClass="authenticationBiometricSubPane">
+                     <children>
+                        <Label fx:id="otpLabel" styleClass="paneHeader" text="%registrationofficerverification" />
+                        <TextField fx:id="otpUserId" layoutX="190.0" layoutY="80.0" promptText="%username" styleClass="operatorAuthenticationStyleTextTypeOne" />
+                        <Label fx:id="otpValidity" layoutX="230.0" layoutY="239.0">
+                           <font>
+                              <Font size="10.0" />
+                           </font>
+                        </Label>
+                        <Button layoutX="190.0" layoutY="189.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="RegbuttonStyle" text="%getotp" />
+                        <TextField fx:id="otp" layoutX="190.0" layoutY="131.0" promptText="%enterotp" styleClass="operatorAuthenticationStyleTextTypeOne" />
+                     </children>
+                  </AnchorPane>
                </children>
             </AnchorPane>
            </children>
       </AnchorPane>
+            <AnchorPane fx:id="faceBasedLogin" layoutX="230.0" layoutY="2.0" styleClass="authenticationBiometricPane" visible="false">
+               <children>
+                  <AnchorPane layoutX="2.0" layoutY="13.0" styleClass="authenticationBiometricSubPane">
+                     <children>
+                  <AnchorPane layoutX="60.0">
+                     <children>
+                              <Label layoutX="204.0" layoutY="312.0" styleClass="operatorAuthenticationStyleTextTypeOne" text="%faceinstruction" />
+                              <ImageView fitHeight="169.0" fitWidth="179.0" layoutX="218.0" layoutY="134.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Photo.png" />
+                                 </image>
+                              </ImageView>
+                               <Label layoutX="546.0" layoutY="71.0" styleClass="attempts" text="%attempts" />
+                              <TextField fx:id="fpUserId" layoutX="178.0" layoutY="67.0" promptText="%username" styleClass="operatorAuthenticationStyleTextTypeOne" />
+                              <Label layoutX="552.0" layoutY="106.0" styleClass="attempts" text="_" />
+      					    <Label fx:id="faceLabel" styleClass="paneHeader" text="%rofaceauthentication" />
+                     </children>
+                  </AnchorPane>
+                     </children>
+                  </AnchorPane>
+                  <Button layoutX="310.0" layoutY="489.0" mnemonicParsing="false" onAction="#validateFace" styleClass="scanButton" text="%scan" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="irisBasedLogin" layoutX="230.0" layoutY="2.0" styleClass="authenticationBiometricPane" visible="false">
+               <children>
+                  <AnchorPane layoutX="2.0" layoutY="13.0" styleClass="authenticationBiometricSubPane">
+                     <children>
+                  <AnchorPane layoutX="60.0">
+                     <children>
+                               <Label layoutX="204.0" layoutY="312.0" styleClass="operatorAuthenticationStyleTextTypeOne" text="%irisinstruction" />
+                              <Label fx:id="irisLabel" styleClass="paneHeader" text="%roirisauthentication" />
+                              <Label layoutX="552.0" layoutY="106.0" styleClass="attempts" text="_" />
+                               <Label layoutX="546.0" layoutY="71.0" styleClass="attempts" text="%attempts" />
+                              <ImageView fitHeight="169.0" fitWidth="179.0" layoutX="218.0" layoutY="134.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Eye.png" />
+                                 </image>
+                              </ImageView>
+                               <TextField fx:id="fpUserId" layoutX="178.0" layoutY="67.0" promptText="%username" styleClass="operatorAuthenticationStyleTextTypeOne" />
+                     </children>
+                  </AnchorPane>
+                     </children>
+                  </AnchorPane>
+                  <Button layoutX="310.0" layoutY="489.0" mnemonicParsing="false" onAction="#validateIris" styleClass="scanButton" text="%scan" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="fingerprintBasedLogin" layoutX="230.0" layoutY="2.0" styleClass="authenticationBiometricPane" visible="false">
+               <children>
+                  <AnchorPane layoutX="2.0" layoutY="13.0" styleClass="authenticationBiometricSubPane">
+                     <children>
+                  <AnchorPane layoutX="60.0">
+                     <children>
+                              <TextField fx:id="fpUserId" layoutX="178.0" layoutY="67.0" promptText="%username" styleClass="operatorAuthenticationStyleTextTypeOne" />
+                              <Label layoutX="204.0" layoutY="312.0" styleClass="operatorAuthenticationStyleTextTypeOne" text="%fingerprintinstruction" />
+                              <ImageView fitHeight="169.0" fitWidth="179.0" layoutX="218.0" layoutY="134.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/rightHand.png" />
+                                 </image>
+                              </ImageView>
+                              <Label layoutX="552.0" layoutY="106.0" styleClass="attempts" text="_" />
+                              <Label fx:id="fingerPrintLabel" styleClass="paneHeader" text="%rofingerprintauthentication" />
+                              <Label layoutX="546.0" layoutY="71.0" styleClass="attempts" text="%attempts" />
+                     </children>
+                  </AnchorPane>
+                     </children>
+                  </AnchorPane>
+                  <Button layoutX="310.0" layoutY="489.0" mnemonicParsing="false" onAction="#validateFingerprint" styleClass="scanButton" text="%scan" />
+               </children>
+            </AnchorPane>
       <AnchorPane layoutY="581.0" styleClass="registrationFooter">
          <children>
             <Button layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="Back">
