@@ -73,19 +73,21 @@ public class AuthController {
     }
 
     @RequestMapping(value = "/roles", method = RequestMethod.GET)
-    public ResponseEntity<RolesListDto> getAllRoles(@RequestHeader("Authorization") String token) throws Exception {
-        MosipUserWithTokenDto mosipUserWithTokenDto = authService.validateToken(token);
+    public ResponseEntity<RolesListDto> getAllRoles() throws Exception {
+//    public ResponseEntity<RolesListDto> getAllRoles(@RequestHeader("Authorization") String token) throws Exception {
+//        MosipUserWithTokenDto mosipUserWithTokenDto = authService.validateToken(token);
         HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set(mosipEnvironment.getAuthTokenHeader(), mosipUserWithTokenDto.getToken());
+//        responseHeaders.set(mosipEnvironment.getAuthTokenHeader(), mosipUserWithTokenDto.getToken());
         RolesListDto rolesListDto = authService.getAllRoles();
         return new ResponseEntity(rolesListDto, responseHeaders, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/userdetails", method = RequestMethod.POST)
-    public ResponseEntity<MosipUserListDto> getListOfUsersDetails(@RequestHeader("Authorization") String token, @RequestBody List<String> userDetails) throws Exception {
-        MosipUserWithTokenDto mosipUserWithTokenDto = authService.validateToken(token);
+    public ResponseEntity<MosipUserListDto> getListOfUsersDetails(@RequestBody List<String> userDetails) throws Exception {
+//    public ResponseEntity<MosipUserListDto> getListOfUsersDetails(@RequestHeader("Authorization") String token, @RequestBody List<String> userDetails) throws Exception {
+//        MosipUserWithTokenDto mosipUserWithTokenDto = authService.validateToken(token);
         HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set(mosipEnvironment.getAuthTokenHeader(), mosipUserWithTokenDto.getToken());
+//        responseHeaders.set(mosipEnvironment.getAuthTokenHeader(), mosipUserWithTokenDto.getToken());
         MosipUserListDto mosipUsers = authService.getListOfUsersDetails(userDetails);
         return new ResponseEntity(mosipUsers, responseHeaders, HttpStatus.OK);
     }
