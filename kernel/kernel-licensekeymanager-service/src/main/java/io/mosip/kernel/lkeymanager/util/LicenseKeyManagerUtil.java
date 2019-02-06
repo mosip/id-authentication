@@ -32,12 +32,6 @@ public class LicenseKeyManagerUtil {
 	private List<String> validPermissions;
 
 	/**
-	 * The time after which a license key expires.
-	 */
-	@Value("${mosip.kernel.licensekey.expiry-period-in-days}")
-	private String licenseKeyExpiryPeriod;
-
-	/**
 	 * The length of license key as specified by ADMIN.
 	 */
 	@Value("${mosip.kernel.licensekey.length}")
