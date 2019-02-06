@@ -55,7 +55,7 @@ import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
 import io.mosip.authentication.service.integration.OTPManager;
-import io.mosip.kernel.cbeffutil.service.CbeffI;
+import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 
@@ -105,7 +105,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	private OTPManager otpManager;
 
 	@Autowired
-	private CbeffI cbeffUtil;
+	private CbeffUtil cbeffUtil;
 
 	/*
 	 * Fetch language Name based on language code

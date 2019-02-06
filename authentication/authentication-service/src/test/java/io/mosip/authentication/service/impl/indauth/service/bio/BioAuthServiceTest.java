@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -50,7 +49,7 @@ import io.mosip.authentication.service.impl.fingerauth.provider.impl.MantraFinge
 import io.mosip.authentication.service.impl.indauth.service.BioAuthServiceImpl;
 import io.mosip.authentication.service.impl.iris.CogentIrisProvider;
 import io.mosip.authentication.service.impl.iris.MorphoIrisProvider;
-import io.mosip.kernel.cbeffutil.service.CbeffI;
+import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -86,7 +85,7 @@ public class BioAuthServiceTest {
 	private IDAMappingConfig idMappingConfig;
 
 	@Mock
-	private CbeffI cbeffUtil;
+	private CbeffUtil cbeffUtil;
 
 	@Before
 	public void before() {

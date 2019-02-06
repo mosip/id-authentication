@@ -25,7 +25,6 @@ import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.integration.OTPManager;
-import io.mosip.kernel.cbeffutil.service.CbeffI;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -52,9 +51,6 @@ public class IdRepoServiceImpl implements IdRepoService {
 
 	@Autowired
 	private RestRequestFactory restRequestFactory;
-
-	@Autowired
-	private CbeffI cbeffUtil;
 
 	/**
 	 * Fetch data from Id Repo based on Individual's UIN / VID value

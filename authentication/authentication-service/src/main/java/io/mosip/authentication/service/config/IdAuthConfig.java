@@ -18,9 +18,6 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.cbeffutil.service.CbeffI;
-import io.mosip.kernel.cbeffutil.service.impl.CbeffImpl;
-
 /**
  * Class for defining configurations for the service.
  * 
