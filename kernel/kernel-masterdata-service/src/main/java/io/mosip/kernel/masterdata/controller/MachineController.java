@@ -120,7 +120,7 @@ public class MachineController {
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While creating Machine any error occured") })
 	public ResponseEntity<IdResponseDto> createMachine(@Valid @RequestBody RequestDto<MachineDto> machine) {
-		return new ResponseEntity<>(machineService.createMachine(machine), HttpStatus.CREATED);
+		return new ResponseEntity<>(machineService.createMachine(machine), HttpStatus.OK);
 	}
 
 	/**

@@ -49,7 +49,7 @@ public class RegistrationCenterTypeController {
 			@Valid @RequestBody RequestDto<RegistrationCenterTypeDto> registrationCenterTypeDto) {
 		return new ResponseEntity<>(
 				registrationCenterTypeService.createRegistrationCenterType(registrationCenterTypeDto),
-				HttpStatus.CREATED);
+				HttpStatus.OK);
 	}
 
 	/**

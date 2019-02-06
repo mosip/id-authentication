@@ -51,7 +51,7 @@ public class TemplateFileFormatController {
 	public ResponseEntity<CodeAndLanguageCodeID> createTemplateFileFormat(
 			@Valid @RequestBody RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto) {
 		return new ResponseEntity<>(templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto),
-				HttpStatus.CREATED);
+				HttpStatus.OK);
 
 	}
 
