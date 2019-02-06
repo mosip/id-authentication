@@ -1,4 +1,4 @@
-## Module kernel-idgenerator-tokenid
+## kernel-idgenerator-tokenid
 
 [Background & Design](../../docs/design/kernel/kernel-idgenerator-tokenid.md)
 
@@ -37,22 +37,21 @@ table:tokenId
 
 1.**ADMIN** _can only configure the length_ 
 
-2._The Token Id should not be generated sequentially,cannot not have repeated numbers and cannot contain alphanumeric values_
-
-3._The last digit of the generated token id should be reserved checksum_ .
-4._cannot contain any sequential number for configured number of digits or more than configured number of digits in property file.
+2._Token ID is a numeric hash for the combination of TSP and UIN_
 
 
 
 **Sample**
  
   ```
-//Autowire the interface class tokenIdGenerator
+//Autowire the interface TokenIdGenerator
+//First String parameter : TSP ID
+//Second String parameter : UIN ID
   @Autowired
-  private TokenIdGenerator<String> tokenIdGeneratorImpl;
+	TokenIdGenerator<String, String> tokenIdGenerator;
 
- //Call generateId from autowired tokenIdGenerator instance to generateId.
-  String tokenId = tokenIdGeneratorImpl.generateId());
+ //Call generateId()
+  String tokenId = tokenIdGenerator.generateId("8739","908757269171");
   
 ```
 **Sample TokenID**
