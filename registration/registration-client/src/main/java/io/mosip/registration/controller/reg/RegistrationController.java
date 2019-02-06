@@ -71,7 +71,6 @@ import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
-import io.mosip.registration.dto.demographic.CBEFFFilePropertiesDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.Identity;
@@ -707,6 +706,7 @@ public class RegistrationController extends BaseController {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private void populateFieldValue(Node nodeForPlatformLang, Node nodeForLocalLang, List<ValuesDTO> fieldValues) {
 		if (fieldValues != null) {
 			String platformLanguageCode = applicationContext.getApplicationLanguage();
@@ -1122,11 +1122,6 @@ public class RegistrationController extends BaseController {
 								.setUin(getRegistrationDtoContent().getRegistrationMetaDataDTO().getUin() == null ? null
 										: new BigInteger(
 												getRegistrationDtoContent().getRegistrationMetaDataDTO().getUin())))
-						.with(identity -> identity.setIndividualBiometrics(Builder.build(CBEFFFilePropertiesDTO.class)
-								.with(cbeff -> cbeff.setFormat("cbeff")).with(cbeff -> cbeff.setVersion(1.0))
-								.with(cbeff -> cbeff.setValue(
-										RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME.replace(".xml", "")))
-								.get()))
 						.get()))
 				.get();
 	}

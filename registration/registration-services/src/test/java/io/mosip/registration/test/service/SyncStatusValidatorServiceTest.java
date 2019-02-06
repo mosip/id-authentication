@@ -91,14 +91,7 @@ public class SyncStatusValidatorServiceTest {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
-		ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
 		PowerMockito.mockStatic(ApplicationContext.class);
-
-		Map<String, Object> globalParams = new HashMap<>();
-		globalParams.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "1");
-		globalParams.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "1");
-		PowerMockito.when(applicationContext.map()).thenReturn(globalParams);
-		PowerMockito.when(ApplicationContext.map()).thenReturn(globalParams);
 	}
 
 	@Test
@@ -144,6 +137,8 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("lastExportSyncJob", "1");
+		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
+		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
 		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
@@ -220,6 +215,8 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "N");
 		applicationMap.put("masterSyncJob", "20");
 		applicationMap.put("lastExportSyncJob", "20");
+		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
+		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
 		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
@@ -279,6 +276,8 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("lastExportSyncJob", "1");
+		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
+		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
 		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
@@ -354,6 +353,8 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("lastExportSyncJob", "1");
+		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
+		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
 		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
@@ -430,6 +431,8 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("lastExportSyncJob", "1");
+		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
+		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
 		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
@@ -505,6 +508,8 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("lastExportSyncJob", "1");
+		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
+		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
 		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
@@ -582,6 +587,8 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "N");
 		applicationMap.put("masterSyncJob", "20");
 		applicationMap.put("lastExportSyncJob", "20");
+		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "1");
+		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
 		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
@@ -644,6 +651,8 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "N");
 		applicationMap.put("masterSyncJob", "20");
 		applicationMap.put("lastExportSyncJob", "20");
+		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
+		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "1");
 		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);

@@ -23,7 +23,6 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
@@ -104,7 +103,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 					"Validating the count of packets of status Registered with configured value", "refId", "refIdType");
 
 			if (registrationDetails.size() >= Integer.parseInt(
-					String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PAK_MAX_CNT_APPRV_LIMIT)))) {
+					String.valueOf(getGlobalConfigValueOf(RegistrationConstants.REG_PAK_MAX_CNT_APPRV_LIMIT)))) {
 
 				getErrorResponse(RegistrationConstants.PAK_APPRVL_MAX_CNT,
 						RegistrationConstants.REG_PKT_APPRVL_CNT_EXCEED, RegistrationConstants.ERROR,
@@ -323,7 +322,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 
 			/* This will subtract configured number of days from current Date */
 			Date differDate = new Date(new Date().getTime() - (Long.parseLong(
-					String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PAK_MAX_TIME_APPRV_LIMIT)))
+					String.valueOf(getGlobalConfigValueOf(RegistrationConstants.REG_PAK_MAX_TIME_APPRV_LIMIT)))
 					* 24 * 3600 * 1000));
 
 			/* This will convert timestamp to Date */
