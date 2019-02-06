@@ -158,6 +158,18 @@ public class TemplateGenerator extends BaseService {
 
 			templateValues.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID, registration.getRegistrationId());
 
+			if (registration.getRegistrationMetaDataDTO().getUin() != null) {
+				templateValues.put(RegistrationConstants.TEMPLATE_UIN,
+						registration.getRegistrationMetaDataDTO().getUin());
+				templateValues.put(RegistrationConstants.TEMPLATE_UIN_USER_LANG_LABEL,
+						applicationLanguageProperties.getString("uin"));
+				templateValues.put(RegistrationConstants.TEMPLATE_UIN_LOCAL_LANG_LABEL,
+						localProperties.getString("uin"));
+			} else {
+				templateValues.put(RegistrationConstants.TEMPLATE_UIN_UPDATE,
+						RegistrationConstants.TEMPLATE_STYLE_HIDDEN_PROPERTY);
+			}
+
 			SimpleDateFormat sdf = new SimpleDateFormat(RegistrationConstants.TEMPLATE_DATE_FORMAT);
 			String currentDate = sdf.format(new Date());
 

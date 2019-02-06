@@ -16,11 +16,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobKey;
@@ -44,6 +48,8 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.impl.PacketSyncStatusJob;
 import io.mosip.registration.service.config.impl.JobConfigurationServiceImpl;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ io.mosip.registration.context.ApplicationContext.class })
 public class JobConfigurationServiceTest {
 
 	@Mock
@@ -110,10 +116,8 @@ public class JobConfigurationServiceTest {
 		
 		Map<String,Object> applicationMap =new HashMap<>();
 		applicationMap.put(RegistrationConstants.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT, "5");
-		
-		when(context.map()).thenReturn(applicationMap);
-
-
+		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
+		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
 	}
 
 	@Test

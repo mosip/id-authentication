@@ -313,6 +313,10 @@ public class RegistrationConstants {
 
 	// Velocity Template Generator Constants
 	public static final String TEMPLATE_REGISTRATION_ID = "RID";
+	public static final String TEMPLATE_UIN_UPDATE = "UINUpdate";	
+	public static final String TEMPLATE_UIN = "UIN";	
+	public static final String TEMPLATE_UIN_USER_LANG_LABEL = "UINUserLangLabel";
+	public static final String TEMPLATE_UIN_LOCAL_LANG_LABEL = "UINLocalLangLabel";
 	public static final String TEMPLATE_DATE = "Date";
 	public static final String TEMPLATE_FULL_NAME = "FullName";
 	public static final String TEMPLATE_DOB = "DOB";
