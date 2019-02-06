@@ -34,8 +34,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -62,8 +60,10 @@ import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.idrepo.constant.AuditEvents;
 import io.mosip.kernel.core.idrepo.constant.AuditModules;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.kernel.core.idrepo.constant.RestServicesConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
+import io.mosip.kernel.core.idrepo.exception.RestServiceException;
 import io.mosip.kernel.core.idrepo.spi.IdRepoService;
 import io.mosip.kernel.core.idrepo.spi.MosipDFSProvider;
 import io.mosip.kernel.core.idrepo.spi.MosipFingerprintProvider;
@@ -81,13 +81,16 @@ import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 import io.mosip.kernel.idrepo.dto.RequestDTO;
 import io.mosip.kernel.idrepo.dto.ResponseDTO;
+import io.mosip.kernel.idrepo.dto.RestRequestDTO;
 import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.entity.UinBiometric;
 import io.mosip.kernel.idrepo.entity.UinBiometricHistory;
 import io.mosip.kernel.idrepo.entity.UinDocument;
 import io.mosip.kernel.idrepo.entity.UinDocumentHistory;
 import io.mosip.kernel.idrepo.entity.UinHistory;
+import io.mosip.kernel.idrepo.factory.RestRequestFactory;
 import io.mosip.kernel.idrepo.helper.AuditHelper;
+import io.mosip.kernel.idrepo.helper.RestHelper;
 import io.mosip.kernel.idrepo.repository.UinBiometricHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinDocumentHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinHistoryRepo;
@@ -207,6 +210,12 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 
 	/** The Constant DEMOGRAPHICS. */
 	private static final String DEMOGRAPHICS = "Demographics";
+	
+	@Autowired
+	private RestRequestFactory restFactory;
+	
+	@Autowired
+	private RestHelper restHelper;
 
 	/** The env. */
 	@Autowired
@@ -256,9 +265,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Autowired
 	private MosipDFSProvider dfsProvider;
 
-	@Autowired
-	private RestTemplate restTemplate;
-	
 	@Autowired
 	private AuditHelper auditHelper;
 	
@@ -1111,14 +1117,20 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 */
 	private byte[] encryptDecryptDocuments(String document, String method) throws IdRepoAppException {
 		try {
+			RestRequestDTO restRequest = null;
 			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
 			request.put("applicationId", env.getProperty("application.id"));
 			request.put("referenceId", env.getProperty("mosip.kernel.keymanager.refId"));
 			request.put("timeStamp", DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN)));
 			request.put("data", document);
 
-			ObjectNode response = restTemplate.postForObject(
-					env.getProperty("mosip.kernel.cryptomanager." + method + ".url"), request, ObjectNode.class);
+			if (method.equals("encrypt")) {
+				restRequest = restFactory.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT, restRequest, ObjectNode.class);
+			} else {
+				restRequest = restFactory.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT, request, ObjectNode.class);
+			}
+			
+			ObjectNode response = restHelper.requestSync(restRequest);
 
 			if (response.has("data")) {
 				return response.get("data").asText().getBytes();
@@ -1127,10 +1139,10 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 						"No data block found in response");
 				throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED);
 			}
-		} catch (RestClientException e) {
+		} catch (RestServiceException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "encryptDecryptIdentity",
 					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED);
+			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 	}
 }

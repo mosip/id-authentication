@@ -11,23 +11,26 @@ import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
+import io.mosip.kernel.core.idrepo.constant.RestServicesConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
+import io.mosip.kernel.core.idrepo.exception.RestServiceException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
+import io.mosip.kernel.idrepo.dto.RestRequestDTO;
 import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.entity.UinHistory;
+import io.mosip.kernel.idrepo.factory.RestRequestFactory;
+import io.mosip.kernel.idrepo.helper.RestHelper;
 
 /**
  * The Class IdRepoEntityInterceptor.
@@ -53,6 +56,12 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 4985336846122302850L;
 
+	@Autowired
+	private transient RestRequestFactory restFactory;
+	
+	@Autowired
+	private transient RestHelper restHelper;
+	
 	/** The env. */
 	@Autowired
 	private transient Environment env;
@@ -60,10 +69,6 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 	/** The mapper. */
 	@Autowired
 	private transient ObjectMapper mapper;
-
-	/** The rest template. */
-	@Autowired
-	private transient RestTemplate restTemplate;
 
 	/*
 	 * (non-Javadoc)
@@ -163,14 +168,20 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 	 */
 	private byte[] encryptDecryptIdentity(byte[] identity, String method) throws IdRepoAppException {
 		try {
+			RestRequestDTO restRequest = null;
 			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
 			request.put("applicationId", env.getProperty("application.id"));
 			request.put("referenceId", env.getProperty("mosip.kernel.keymanager.refId"));
 			request.put("timeStamp", DateUtils.formatDate(new Date(), env.getProperty("datetime.pattern")));
 			request.put("data", new String(identity));
 
-			ObjectNode response = restTemplate.postForObject(
-					env.getProperty("mosip.kernel.cryptomanager." + method + ".url"), request, ObjectNode.class);
+			if (method.equals("encrypt")) {
+				restRequest = restFactory.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT, restRequest, ObjectNode.class);
+			} else {
+				restRequest = restFactory.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT, request, ObjectNode.class);
+			}
+			
+			ObjectNode response = restHelper.requestSync(restRequest);
 
 			if (response.has("data")) {
 				return response.get("data").asText().getBytes();
@@ -179,10 +190,10 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 						"No data block found in response");
 				throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED);
 			}
-		} catch (RestClientException e) {
+		} catch (RestServiceException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_ENTITY_INTERCEPTOR, "encryptDecryptIdentity",
 					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED);
+			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 	}
 
