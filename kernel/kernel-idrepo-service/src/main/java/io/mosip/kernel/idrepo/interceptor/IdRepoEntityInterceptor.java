@@ -176,7 +176,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 			request.put("data", new String(identity));
 
 			if (method.equals("encrypt")) {
-				restRequest = restFactory.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT, restRequest, ObjectNode.class);
+				restRequest = restFactory.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT, request, ObjectNode.class);
 			} else {
 				restRequest = restFactory.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT, request, ObjectNode.class);
 			}
