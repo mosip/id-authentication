@@ -191,7 +191,7 @@ Output: certificate
 
 ### Windows
 
-1. Download softhsm zip from https://github.com/disig/SoftHSM2-for-Windows
+1. Download softhsm zip from https://github.com/disig/SoftHSM2-for-Windows#download
 2. Extract it to any location, e.g `D:\SoftHSM2`
 3. Create a conf file at `D:\SoftHSM2\etc` with below content
 ```
