@@ -82,6 +82,19 @@
     "text_or": "OR",
     "action_view": "preiew"
   },
+  "acknowledgement": {
+    "title":"Appointment Confirmed",
+    "message":"The Pre-Registration id and Appointment details have been sent to the registered email id and phone number",
+    "label_name":"Name",
+    "label_pre_id":"Pre Registration ID",
+    "label_reg_cntr":"Registration Center",
+    "label_cntr_contact_number":"Center Contact Number",
+    "label_appointment_date_time":"Appointment Date & Time",
+    "container_guideline": "Important Guidelines",
+    "action_send":"SEND EMAIL/SMS",
+    "action_download": "DOWNLOAD PDF",
+    "action_print": "PRINT"
+  },
   "preview": {
     "title_preview": "Preview",
     "language": "English",
@@ -188,12 +201,6 @@
     "action_add":"Add",
     "action_close":"Close",
     "action_add_to_slot":"Add to Slot"
-  },
-  "acknowledgement": {
-    "title":"Appointment Confirmed",
-    "container_guideline": "Important Guidelines",
-    "action_download": "DOWNLOAD",
-    "action_print": "PRINT"
   },
   "centerSelection": {
     "title": " Book Appointment ",

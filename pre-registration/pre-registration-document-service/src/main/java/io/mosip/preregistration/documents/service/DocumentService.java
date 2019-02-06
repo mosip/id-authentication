@@ -167,7 +167,6 @@ public class DocumentService {
 		} finally {
 
 			if (isUploadSuccess) {
-				System.out.println("isUploadSuccess: " + isUploadSuccess);
 				setAuditValues(EventId.PRE_404.toString(), EventName.UPLOAD.toString(), EventType.BUSINESS.toString(),
 						"Document uploaded & the respective Pre-Registration data is saved in the document table",
 						AuditLogVariables.NO_ID.toString());
@@ -206,7 +205,7 @@ public class DocumentService {
 			documentEntity = documnetDAO.saveDocument(documentEntity);
 			if (documentEntity != null) {
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
-				byte[] encryptedDocument = cryptoUtil.encrypt((file.getBytes()), DateUtils.getUTCCurrentDateTime());
+				byte[] encryptedDocument = cryptoUtil.encrypt(file.getBytes(), DateUtils.getUTCCurrentDateTime());
 				boolean isStoreSuccess = ceph.storeFile(documentEntity.getPreregId(), key,
 						new ByteArrayInputStream(encryptedDocument));
 				if (!isStoreSuccess) {
@@ -376,7 +375,7 @@ public class DocumentService {
 				}
 				LocalDateTime decryptionDateTime = DateUtils.getUTCCurrentDateTime();
 
-				allDocDto.setMultipartFile(cryptoUtil.decrypt(cephBytes, decryptionDateTime).getBytes());
+				allDocDto.setMultipartFile(cryptoUtil.decrypt(cephBytes, decryptionDateTime));
 				allDocDto.setPrereg_id(doc.getPreregId());
 				allDocRes.add(allDocDto);
 			}
@@ -461,7 +460,7 @@ public class DocumentService {
 			String preregId) {
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
-		if (documnetDAO.deleteAllBypreregId(preregId) > 0) {
+		if (documnetDAO.deleteAllBypreregId(preregId) >= 0) {
 			for (DocumentEntity documentEntity : documentEntityList) {
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 				ceph.deleteFile(documentEntity.getPreregId(), key);

@@ -4,6 +4,6 @@ export interface NameList {
   fullNameSecondaryLang?: string;
   regDto?: any;
   status?: string;
-  registrationCenter?: any, 
-  bookingData?: any
+  registrationCenter?: any;
+  bookingData?: any;
 }

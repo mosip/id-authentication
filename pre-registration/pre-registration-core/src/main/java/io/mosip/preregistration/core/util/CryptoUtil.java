@@ -60,7 +60,6 @@ public class CryptoUtil {
 			response = restTemplate.exchange(cryptoResourceUrl + "/encrypt", HttpMethod.POST, request,
 					CryptoManagerResponseDTO.class);
 			encryptedBytes = response.getBody().getData().getBytes();
-			System.out.println("encryptedBytes: " + encryptedBytes);
 		} catch (HttpClientErrorException ex) {
 			log.error("sessionId", "idType", "id", "In encrypt method of CryptoUtil Util for HttpClientErrorException- "
 					+ ex.getResponseBodyAsString());
@@ -69,10 +68,10 @@ public class CryptoUtil {
 
 	}
 
-	public String decrypt(byte[] originalInput, LocalDateTime localDateTime) {
+	public byte[] decrypt(byte[] originalInput, LocalDateTime localDateTime) {
 		log.info("sessionId", "idType", "id", "In decrypt method of CryptoUtil service - " + originalInput);
 		ResponseEntity<CryptoManagerResponseDTO> response = null;
-		String decodedBytes = "";
+		byte[] decodedBytes = null;
 		try {
 
 			CryptoManagerRequestDTO dto = new CryptoManagerRequestDTO();
@@ -88,8 +87,7 @@ public class CryptoUtil {
 
 			response = restTemplate.exchange(cryptoResourceUrl + "/decrypt", HttpMethod.POST, request,
 					CryptoManagerResponseDTO.class);
-			decodedBytes = new String(Base64.decodeBase64(response.getBody().getData().getBytes()),
-					StandardCharsets.UTF_8);
+			decodedBytes = Base64.decodeBase64(response.getBody().getData().getBytes());
 
 		} catch (HttpClientErrorException ex) {
 			log.error("sessionId", "idType", "id", "In decrypt method of CryptoUtil Util for HttpClientErrorException- "

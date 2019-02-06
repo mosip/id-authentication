@@ -1,26 +1,14 @@
 package io.mosip.registration.processor.stages.app;
 	
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import io.mosip.registration.processor.stages.osivalidator.OSIValidatorStage;
 
 /**
  * The Class OSIValidatorApplication.
  */
-@SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.status",
-		"io.mosip.registration.processor.filesystem.ceph.adapter.impl", "io.mosip.registration.processor.core",
-		"io.mosip.registration.processor.rest.client", "io.mosip.registration.processor.stages.osivalidator",
-		"io.mosip.registration.processor.packet.storage" })
+
 public class OSIValidatorApplication {
-
-	/** The validatebean. */
-	@Autowired
-	private OSIValidatorStage validatebean;
-
 	/**
 	 * The main method.
 	 *
@@ -28,16 +16,18 @@ public class OSIValidatorApplication {
 	 *            the arguments
 	 */
 	public static void main(String[] args) {
-		SpringApplication.run(OSIValidatorApplication.class, args);
-	}
-
-	/**
-	 * Deploy verticle.
-	 */
-	@PostConstruct
-	public void deployVerticle() {
+		
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+		ctx.scan("io.mosip.registration.processor.stages.config",
+				"io.mosip.registration.processor.status.config",
+				"io.mosip.registration.processor.rest.client.config",
+				"io.mosip.registration.processor.filesystem.ceph.adapter.impl.config",
+				"io.mosip.registration.processor.packet.storage.config",
+				"io.mosip.registration.processor.core.config",
+				"io.mosip.registration.processor.core.kernel.beans");
+		ctx.refresh();
+		OSIValidatorStage validatebean = ctx.getBean(OSIValidatorStage.class);
 		validatebean.deployVerticle();
-
 	}
 
 }
