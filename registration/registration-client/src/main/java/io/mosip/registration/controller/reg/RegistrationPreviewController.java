@@ -5,8 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.Writer;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,9 +23,8 @@ import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.web.WebView;
+import netscape.javascript.JSObject;
 
 @Controller
 public class RegistrationPreviewController extends BaseController {
@@ -49,6 +46,9 @@ public class RegistrationPreviewController extends BaseController {
 	@Autowired
 	private RegistrationController registrationController;
 
+	@Autowired
+	private RegistrationPreviewController previewController;
+
 	@FXML
 	public void goToNextPage(ActionEvent event) {
 		SessionContext.getInstance().getMapObject().put("registrationPreview", false);
@@ -69,6 +69,9 @@ public class RegistrationPreviewController extends BaseController {
 				Writer stringWriter = (Writer) templateResponse.getSuccessResponseDTO().getOtherAttributes()
 						.get(RegistrationConstants.TEMPLATE_NAME);
 				webView.getEngine().loadContent(stringWriter.toString());
+				JSObject window = (JSObject) webView.getEngine()
+						.executeScript(RegistrationConstants.TEMPLATE_JS_OBJECT);
+				window.setMember(RegistrationConstants.TEMPLATE_REGISTRATION, previewController);
 			} else {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_PREVIEW_PAGE);
 				clearRegistrationData();
@@ -78,5 +81,20 @@ public class RegistrationPreviewController extends BaseController {
 			LOGGER.error("REGISTRATION - UI - PREVIEW", APPLICATION_NAME, APPLICATION_ID,
 					regBaseCheckedException.getMessage());
 		}
+	}
+
+	public void modifyDemographicInfo() {
+		//To-Do
+		System.out.println("Modify Demo Info");
+	}
+
+	public void modifyDocuments() {
+		//To-Do
+		System.out.println("Modify Documents");
+	}
+
+	public void modifyBiometrics() {
+		//To-Do
+		System.out.println("Modify Biometrics");
 	}
 }

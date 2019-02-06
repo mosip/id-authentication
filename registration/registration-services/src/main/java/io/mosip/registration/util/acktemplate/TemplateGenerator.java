@@ -304,7 +304,40 @@ public class TemplateGenerator extends BaseService {
 						applicationLanguageProperties.getString("preRegistrationId"));
 				templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID_LOCAL_LANG_LABEL,
 						localProperties.getString("preRegistrationId"));
-				templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID, registration.getPreRegistrationId());
+				if (!registration.getPreRegistrationId().isEmpty()) {
+					templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID, registration.getPreRegistrationId());
+				} else {
+					templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID, "-");
+				}
+
+				templateValues.put(RegistrationConstants.TEMPLATE_MODIFY,
+						applicationLanguageProperties.getString("modify"));
+
+				try {
+					BufferedImage modifyImage = ImageIO.read(
+							this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_MODIFY_IMAGE_PATH));
+					byteArrayOutputStream = new ByteArrayOutputStream();
+					ImageIO.write(modifyImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
+					byte[] modifyImageBytes = byteArrayOutputStream.toByteArray();
+					String modifyImageEncodedBytes = StringUtils
+							.newStringUtf8(Base64.encodeBase64(modifyImageBytes, false));
+					templateValues.put(RegistrationConstants.TEMPLATE_MODIFY_IMAGE_SOURCE,
+							RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + modifyImageEncodedBytes);
+				} catch (IOException ioException) {
+					setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
+					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+				} finally {
+					if (byteArrayOutputStream != null) {
+						try {
+							byteArrayOutputStream.close();
+						} catch (IOException exception) {
+							setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
+									null);
+							LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+									exception.getMessage());
+						}
+					}
+				}
 
 				for (FingerprintDetailsDTO fpDetailsDTO : registration.getBiometricDTO().getApplicantBiometricDTO()
 						.getFingerprintDetailsDTO()) {
@@ -592,8 +625,8 @@ public class TemplateGenerator extends BaseService {
 						localProperties);
 			}
 
-//			templateValues.put(RegistrationConstants.TEMPLATE_RO_IMAGE,
-//					RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+			templateValues.put(RegistrationConstants.TEMPLATE_RO_IMAGE,
+					RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("ro_name"));
 			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_LOCAL_LANG_LABEL,

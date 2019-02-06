@@ -457,6 +457,11 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_NAME = "Acknowledgement Template";
 	public static final String TEMPLATE_RESIDENT_NAME = "ResidentName";
 	public static final String TEMPLATE_RO_IMAGE = "ROImage";
+	public static final String TEMPLATE_MODIFY_IMAGE_PATH = "/images/Modify.png";
+	public static final String TEMPLATE_MODIFY_IMAGE_SOURCE = "ModifyImageSource";
+	public static final String TEMPLATE_MODIFY = "Modify";
+	public static final String TEMPLATE_REGISTRATION = "registration";
+	public static final String TEMPLATE_JS_OBJECT = "window";
 
 	// Web Camera Constants
 	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";

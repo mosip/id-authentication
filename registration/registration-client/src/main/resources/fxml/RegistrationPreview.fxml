@@ -31,10 +31,14 @@
             </Button>
          </children>
       </AnchorPane>
-      <AnchorPane id="anchor-pane-acknowledgement" layoutX="203.0" layoutY="-1.0" prefHeight="569.0" prefWidth="912.0">
-         <children>
-            <WebView fx:id="webView" layoutX="1.0" prefHeight="558.0" prefWidth="911.0" />
-         </children>
-      </AnchorPane>
+      <ScrollPane layoutX="203.0" prefHeight="571.0" prefWidth="912.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="567.0" prefWidth="912.0">
+               <children>
+                  <WebView fx:id="webView" prefHeight="560.0" prefWidth="911.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
 	</children>
 </AnchorPane>
