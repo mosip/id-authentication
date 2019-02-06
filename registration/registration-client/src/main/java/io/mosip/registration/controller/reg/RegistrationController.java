@@ -1513,8 +1513,15 @@ public class RegistrationController extends BaseController {
 		gotoNext = validation.validate(paneToValidate, excludedIds, gotoNext, masterSync);
 		if (gotoNext)
 			gotoNext = validation.validateUinOrRid(uinId, isChild, uinValidator, ridValidator);
+		if (gotoNext) {
+			if(Integer.parseInt(dd.getText())<1) {
+				dd.setText("01");
+			}
+			if(Integer.parseInt(mm.getText())<1) {
+				mm.setText("01");
+			}
+		}
 		displayValidationMessage(validation.getValidationMessage().toString());
-
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validated the fields");
 		return gotoNext;
