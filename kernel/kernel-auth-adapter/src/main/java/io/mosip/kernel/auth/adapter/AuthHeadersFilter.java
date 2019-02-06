@@ -18,6 +18,8 @@ import java.io.IOException;
  * 2. Sets headers to allow cross origin requests.
  * 3. Sets header to allow and expose "Authorization" header.
  * 4. Sets the authToken back to null.
+ * @author Sabbu Uday Kumar
+ * @since 1.0.0
  **********************************************************************************************************************/
 
 @Component

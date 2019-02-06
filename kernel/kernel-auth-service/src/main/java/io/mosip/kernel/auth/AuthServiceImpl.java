@@ -14,6 +14,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
+/**
+ *  @author Sabbu Uday Kumar
+ *  @since 1.0.0
+ */
 @Component
 public class AuthServiceImpl implements AuthService {
 

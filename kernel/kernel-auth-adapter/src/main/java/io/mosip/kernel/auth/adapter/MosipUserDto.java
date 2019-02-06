@@ -2,6 +2,9 @@ package io.mosip.kernel.auth.adapter;
 
 /***********************************************************************************************************************
  * MOSIP USER IS THE STANDARD SPEC THAT WILL BE TUNED BASED ON THE DETAILS STORED IN LDAP FOR A USER
+ *
+ * @author Sabbu Uday Kumar
+ * @since 1.0.0
  **********************************************************************************************************************/
 
 public class MosipUserDto {

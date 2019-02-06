@@ -8,6 +8,10 @@ import io.mosip.kernel.auth.dto.MosipUserWithTokenDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ *  @author Sabbu Uday Kumar
+ *  @since 1.0.0
+ */
 @Component
 public class TokenValidator {
 

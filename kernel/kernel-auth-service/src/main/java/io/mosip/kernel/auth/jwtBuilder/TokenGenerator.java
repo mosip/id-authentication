@@ -11,6 +11,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+/**
+ *  @author Sabbu Uday Kumar
+ *  @since 1.0.0
+ */
 @Component
 public class TokenGenerator {
 

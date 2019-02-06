@@ -34,6 +34,9 @@ import java.util.List;
  * 2. Stores the response body in an instance of MosipUserDto.
  * 3. Updates token into AuthHeadersFilter.
  * 4. Bind MosipUserDto instance details with the AuthUserDetails that extends Spring Security's UserDetails.
+ *
+ * @author Sabbu Uday Kumar
+ * @since 1.0.0
  **********************************************************************************************************************/
 
 @Component

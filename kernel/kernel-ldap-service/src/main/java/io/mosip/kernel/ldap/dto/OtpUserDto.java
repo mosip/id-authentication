@@ -1,5 +1,9 @@
 package io.mosip.kernel.ldap.dto;
 
+/**
+ *  @author Sabbu Uday Kumar
+ *  @since 1.0.0
+ */
 public class OtpUserDto {
     private String email;
     private String phone;

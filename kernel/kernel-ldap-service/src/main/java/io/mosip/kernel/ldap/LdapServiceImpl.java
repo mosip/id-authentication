@@ -13,6 +13,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+/**
+ *  @author Sabbu Uday Kumar
+ *  @since 1.0.0
+ */
 @Component
 public class LdapServiceImpl implements LdapService {
 

@@ -2,6 +2,10 @@ package io.mosip.kernel.auth.dto.otp;
 
 import io.mosip.kernel.auth.dto.MosipUserDto;
 
+/**
+ *  @author Sabbu Uday Kumar
+ *  @since 1.0.0
+ */
 public class OtpGenerateRequestDto {
     private String key;
 

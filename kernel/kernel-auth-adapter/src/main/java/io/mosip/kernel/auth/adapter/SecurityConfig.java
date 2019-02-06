@@ -46,6 +46,9 @@ import java.util.Collections;
  *      a. Binds the ClientInterceptor instance with the RestTemplate instance created.
  *      b. RETURNS an instance of the RestTemplate.
  *  4. Secures endpoints using antMatchers and adds filters in a sequence for execution.
+ *
+ * @author Sabbu Uday Kumar
+ * @since 1.0.0
  **********************************************************************************************************************/
 
 @Configuration

@@ -4,6 +4,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 
 /***********************************************************************************************************************
  * AUTH_TOKEN USED TO STORE TOKEN DETAILS
+ *
+ * @author Sabbu Uday Kumar
+ * @since 1.0.0
  **********************************************************************************************************************/
 
 public class AuthToken extends UsernamePasswordAuthenticationToken {

@@ -18,6 +18,9 @@ import java.io.IOException;
  * Attempt Authentication tasks:
  * 1. Receives "Authorization" Header from request headers.
  * 2. Use the assigned Authentication manager to authenticate with the token.
+ *
+ * @author Sabbu Uday Kumar
+ * @since 1.0.0
  **********************************************************************************************************************/
 
 public class AuthFilter extends AbstractAuthenticationProcessingFilter {

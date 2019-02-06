@@ -5,6 +5,10 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
+/**
+ *  @author Sabbu Uday Kumar
+ *  @since 1.0.0
+ */
 @Configuration
 public class MosipEnvironment implements EnvironmentAware {
 

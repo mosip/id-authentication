@@ -20,6 +20,9 @@ import java.io.IOException;
  * 1. Intercept all the requests from the application and do the below tasks.
  * 2. Intercept a request to add auth token to the "Authorization" header.
  * 3. Intercept a response to modify the stored token with the "Authorization" header of the response.
+ *
+ * @author Sabbu Uday Kumar
+ * @since 1.0.0
  **********************************************************************************************************************/
 
 @Component

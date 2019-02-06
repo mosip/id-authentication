@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ *  @author Sabbu Uday Kumar
+ *  @since 1.0.0
+ */
 @RestController
 public class LdapController {
 

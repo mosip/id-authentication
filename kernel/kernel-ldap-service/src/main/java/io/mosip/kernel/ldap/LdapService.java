@@ -8,6 +8,10 @@ import io.mosip.kernel.ldap.dto.RolesListDto;
 
 import java.util.List;
 
+/**
+ *  @author Sabbu Uday Kumar
+ *  @since 1.0.0
+ */
 public interface LdapService {
 	MosipUserDto authenticateUser(LoginUserDto user) throws Exception;
 

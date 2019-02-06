@@ -1,5 +1,9 @@
 package io.mosip.kernel.auth.dto;
 
+/**
+ *  @author Sabbu Uday Kumar
+ *  @since 1.0.0
+ */
 public class RoleDto {
 
 	private String roleId;

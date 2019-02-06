@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 
 /***********************************************************************************************************************
  * Used by spring security to store user details like roles and use this across the application for Authorization purpose.
+ *
+ * @author Sabbu Uday Kumar
+ * @since 1.0.0
  **********************************************************************************************************************/
 
 public class AuthUserDetails implements UserDetails {

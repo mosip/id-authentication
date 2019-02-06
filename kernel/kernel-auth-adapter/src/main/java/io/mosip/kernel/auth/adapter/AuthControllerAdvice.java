@@ -9,6 +9,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+/**
+ * Auth adapter Controller advice
+ *
+ * @author Sabbu Uday Kumar
+ * @since 1.0.0
+ *
+ */
+
 @RestControllerAdvice
 public class AuthControllerAdvice implements ResponseBodyAdvice<Object> {
 
