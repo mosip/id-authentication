@@ -1,6 +1,6 @@
 package io.mosip.kernel.idrepo.provider.impl;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.cbeffutil.entity.BDBInfo;
-import io.mosip.kernel.cbeffutil.entity.BIR;
-import io.mosip.kernel.cbeffutil.entity.BIRInfo;
-import io.mosip.kernel.cbeffutil.jaxbclasses.BIRType;
-import io.mosip.kernel.cbeffutil.jaxbclasses.ProcessedLevelType;
-import io.mosip.kernel.cbeffutil.jaxbclasses.PurposeType;
+import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
+import io.mosip.kernel.core.cbeffutil.entity.BIR;
+import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
 import io.mosip.kernel.core.idrepo.spi.MosipFingerprintProvider;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -36,7 +36,7 @@ public class FingerprintProvider implements MosipFingerprintProvider<BIRType, BI
 	 */
 	@Override
 	public List<BIR> convertFIRtoFMR(List<BIRType> listOfBIR) {
-		Map<String, Date> latestcreationDate = filterTimestamp(listOfBIR);
+		Map<String, LocalDateTime> latestcreationDate = filterTimestamp(listOfBIR);
 		return listOfBIR.parallelStream()
 				.filter(bir -> Objects.nonNull(bir.getBDBInfo())
 						&& bir.getBDBInfo().getFormatType().equals(7l)
@@ -58,15 +58,15 @@ public class FingerprintProvider implements MosipFingerprintProvider<BIRType, BI
 										.withSubtype(bdbInfo.getSubtype())
 										.withPurpose(PurposeType.IDENTIFY)
 										.withLevel(ProcessedLevelType.PROCESSED)
-										.withCreationDate(new Date())
+										.withCreationDate(LocalDateTime.now())
 										.build())
 								.orElseGet(() -> null))
 						.build())
 				.collect(Collectors.toList());
 	}
 
-	private Map<String, Date> filterTimestamp(List<BIRType> listOfBIR) {
-		Map<String, Date> latestcreationDate = new HashMap<>();
+	private Map<String, LocalDateTime> filterTimestamp(List<BIRType> listOfBIR) {
+		Map<String, LocalDateTime> latestcreationDate = new HashMap<>();
 		listOfBIR.stream()
 				.filter(bir -> Objects.nonNull(bir.getBDBInfo()) && 
 						bir.getBDBInfo().getFormatType().equals(7l) &&

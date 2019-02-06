@@ -48,13 +48,13 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.spi.json.JacksonJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 
-import io.mosip.kernel.cbeffutil.entity.BDBInfo;
-import io.mosip.kernel.cbeffutil.entity.BIR;
-import io.mosip.kernel.cbeffutil.entity.BIRInfo;
-import io.mosip.kernel.cbeffutil.entity.BIRVersion;
-import io.mosip.kernel.cbeffutil.entity.SBInfo;
-import io.mosip.kernel.cbeffutil.jaxbclasses.BIRType;
-import io.mosip.kernel.cbeffutil.service.CbeffI;
+import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
+import io.mosip.kernel.core.cbeffutil.entity.BIR;
+import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
+import io.mosip.kernel.core.cbeffutil.entity.BIRVersion;
+import io.mosip.kernel.core.cbeffutil.entity.SBInfo;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
+import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.idrepo.constant.AuditEvents;
@@ -259,7 +259,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 
 	/** The cbeff util. */
 	@Autowired
-	private CbeffI cbeffUtil;
+	private CbeffUtil cbeffUtil;
 
 	/** The dfs provider. */
 	@Autowired
