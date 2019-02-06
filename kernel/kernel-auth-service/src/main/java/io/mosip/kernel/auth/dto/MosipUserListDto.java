@@ -7,15 +7,17 @@ import java.util.List;
  *  @since 1.0.0
  */
 public class MosipUserListDto {
-	
-	private List<MosipUserDto> userDetails;
+    
+    private List<MosipUserDto> mosipUserDtoList;
 
-	public List<MosipUserDto> getUserDetails() {
-		return userDetails;
-	}
+    public List<MosipUserDto> getMosipUserDtoList() {
+          return mosipUserDtoList;
+    }
 
-	public void setUserDetails(List<MosipUserDto> userDetails) {
-		this.userDetails = userDetails;
-	}
+    public void setMosipUserDtoList(List<MosipUserDto> mosipUserDtoList) {
+          this.mosipUserDtoList = mosipUserDtoList;
+    }
 
+    
 }
+
