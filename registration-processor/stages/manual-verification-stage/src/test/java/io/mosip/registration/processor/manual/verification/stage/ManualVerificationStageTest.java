@@ -148,28 +148,28 @@ public class ManualVerificationStageTest{
 	
 	public void packetUploaderTest() throws ClientProtocolException, IOException {
 	    
-		HttpGet httpGet = new HttpGet("http://localhost:8084/health");
+		HttpGet httpGet = new HttpGet("http://localhost:8084/manualverification/health");
 		HttpClient client = HttpClientBuilder.create().build();
 		HttpResponse getResponse = client.execute(httpGet);
 		assertEquals(200, getResponse.getStatusLine().getStatusCode());
 		
-	    HttpPost applicantBiometric = getHttpPost("http://localhost:8084/v0.1/registration-processor/manual-verification/applicantBiometric");
+	    HttpPost applicantBiometric = getHttpPost("http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/applicantBiometric");
 	    CloseableHttpResponse response = HttpClients.createDefault().execute(applicantBiometric);
 	    assertEquals(response.getStatusLine().getStatusCode(), 200);
 	    
-	    HttpPost applicantDemographic = getHttpPost("http://localhost:8084/v0.1/registration-processor/manual-verification/applicantDemographic");
+	    HttpPost applicantDemographic = getHttpPost("http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/applicantDemographic");
 	    response = HttpClients.createDefault().execute(applicantDemographic);
 	    assertEquals(response.getStatusLine().getStatusCode(), 200);
 	    
-	    HttpPost assignment = getHttpPost("http://localhost:8084/v0.1/registration-processor/manual-verification/assignment");
+	    HttpPost assignment = getHttpPost("http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/assignment");
 	    response = HttpClients.createDefault().execute(assignment);
 	    assertEquals(response.getStatusLine().getStatusCode(), 200);
 	    
-	    HttpPost decision = getHttpPost("http://localhost:8084/v0.1/registration-processor/manual-verification/decision");
+	    HttpPost decision = getHttpPost("http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/decision");
 	    response = HttpClients.createDefault().execute(decision);
 	    assertEquals(response.getStatusLine().getStatusCode(), 200);
 
-	    HttpPost packetInfo = getHttpPost("http://localhost:8084/v0.1/registration-processor/manual-verification/packetInfo");
+	    HttpPost packetInfo = getHttpPost("http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/packetInfo");
 	    response = HttpClients.createDefault().execute(packetInfo);
 	    assertEquals(response.getStatusLine().getStatusCode(), 200);
 	    

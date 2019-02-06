@@ -1,6 +1,10 @@
-package io.mosip.kernel.auth.entities.otp;
+package io.mosip.kernel.auth.dto.otp;
 
-public class OtpUser {
+/**
+ *  @author Sabbu Uday Kumar
+ *  @since 1.0.0
+ */
+public class OtpUserDto {
     private String email;
     private String number;
     private String langCode;

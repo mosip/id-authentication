@@ -7,9 +7,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -18,6 +16,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.SSLContext;
@@ -46,6 +46,9 @@ import java.util.Collections;
  *      a. Binds the ClientInterceptor instance with the RestTemplate instance created.
  *      b. RETURNS an instance of the RestTemplate.
  *  4. Secures endpoints using antMatchers and adds filters in a sequence for execution.
+ *
+ * @author Sabbu Uday Kumar
+ * @since 1.0.0
  **********************************************************************************************************************/
 
 @Configuration
@@ -54,26 +57,7 @@ import java.util.Collections;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private AuthHeadersFilter authHeadersFilter;
-    @Autowired
     private AuthProvider authProvider;
-    @Autowired
-    private AuthEntryPoint entryPoint;
-    @Autowired
-    private ClientInterceptor clientInterceptor;
-
-    @Bean
-    public RestTemplate restTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
-            TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-            SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
-            SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-            CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
-            HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-            requestFactory.setHttpClient(httpClient);
-            RestTemplate restTemplate = new RestTemplate(requestFactory);
-            restTemplate.setInterceptors(Collections.singletonList(clientInterceptor));
-            return restTemplate;
-    }
 
     @Bean
     public AuthenticationManager authenticationManager() {
@@ -82,10 +66,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthFilter authFilter() {
-        AuthFilter filter = new AuthFilter("/api/**");
+        RequestMatcher requestMatcher = new AntPathRequestMatcher("*");
+        AuthFilter filter = new AuthFilter(requestMatcher);
         filter.setAuthenticationManager(authenticationManager());
         filter.setAuthenticationSuccessHandler(new AuthSuccessHandler());
         return filter;
+    }
+
+    @Bean
+    public RestTemplate restTemplate() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
+        SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
+        SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
+        CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        requestFactory.setHttpClient(httpClient);
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
+        restTemplate.setInterceptors(Collections.singletonList(new ClientInterceptor()));
+        return restTemplate;
     }
 
     @Override
@@ -93,12 +91,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests().antMatchers("*").authenticated()
                 .and()
-                .exceptionHandling().authenticationEntryPoint(entryPoint)
+                .exceptionHandling().authenticationEntryPoint(new AuthEntryPoint())
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(authHeadersFilter, AuthFilter.class);
+        http.addFilterBefore(new AuthHeadersFilter(), AuthFilter.class);
         http.headers().cacheControl();
     }
 }

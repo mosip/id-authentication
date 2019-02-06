@@ -94,13 +94,13 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 */
 	private void routes(Router router) {
 		
-		router.post("/v0.1/registration-processor/packet-receiver/registrationpackets").handler(ctx -> {
+		router.post("/packetreceiver/v0.1/registration-processor/packet-receiver/registrationpackets").handler(ctx -> {
 			processURL(ctx);
 		}).failureHandler(failureHandler -> {
 			this.setResponse(failureHandler, globalExceptionHandler.handler(failureHandler.failure()));
 		});
 		
-		router.get("/health").handler(ctx -> {
+		router.get("/packetreceiver/health").handler(ctx -> {
 			this.setResponse(ctx, "Server is up and running");
 		}).failureHandler(context->{
 			this.setResponse(context, context.failure().getMessage());
