@@ -1,5 +1,6 @@
 package io.mosip.authentication.service.impl.id.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
@@ -32,6 +33,8 @@ import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.UUIDUtils;
 
 /**
  * The class validates the UIN and VID.
@@ -216,14 +219,15 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public void saveAutnTxn(String idvId, String idvIdType, String reqTime, String txnId, String status, String comment,
+	public void saveAutnTxn(String idvId, String idvIdType,String uin, String reqTime, String txnId, String status, String comment,
 			RequestType requestType) throws IdAuthenticationBusinessException {
 
 		AutnTxn autnTxn = new AutnTxn();
 		autnTxn.setRefId(idvId);
 		autnTxn.setRefIdType(idvIdType);
 
-		autnTxn.setId(String.valueOf(new Date().getTime())); // FIXME
+		String id = createId(uin);
+		autnTxn.setId(id); // FIXME
 
 		// TODO check
 		autnTxn.setCrBy("IDA");
@@ -248,6 +252,12 @@ public class IdAuthServiceImpl implements IdAuthService {
 		autnTxn.setLangCode(env.getProperty("mosip.primary.lang-code"));
 
 		autntxnrepository.saveAndFlush(autnTxn);
+	}
+
+	private String createId(String uin) {
+		String currentDate= DateUtils.formatDate(new Date(), env.getProperty("datetime.pattern"));
+		String uinAndDate=uin + "-" + currentDate;
+		return UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uinAndDate).toString();
 	}
 
 }

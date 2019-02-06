@@ -92,6 +92,29 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 	 */
 	private void validateAuthType(AuthRequestDTO requestDTO, Errors errors, AuthTypeDTO authTypeDTO,
 			Set<String> allowedAuthType) {
+		checkAllowedAuthType(requestDTO, errors, authTypeDTO, allowedAuthType);
+		
+		if(authTypeDTO.isBio()) {
+			if(allowedAuthType.contains(InternalAuthType.BIO.getType())) {
+				validateBioDetails(requestDTO, errors);
+			} else {
+				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			}
+			
+		}
+	}
+
+	/**
+	 * Check allowed auth type.
+	 *
+	 * @param requestDTO the request DTO
+	 * @param errors the errors
+	 * @param authTypeDTO the auth type DTO
+	 * @param allowedAuthType the allowed auth type
+	 */
+	private void checkAllowedAuthType(AuthRequestDTO requestDTO, Errors errors, AuthTypeDTO authTypeDTO,
+			Set<String> allowedAuthType) {
 		if((authTypeDTO.isPersonalIdentity() || authTypeDTO.isFullAddress() || authTypeDTO.isAddress())) {
 			if(allowedAuthType.contains(InternalAuthType.DEMO.getType())) {
 				checkDemoAuth(requestDTO, errors);
@@ -110,14 +133,13 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 			}
 		}
 		
-		if(authTypeDTO.isBio()) {
-			if(allowedAuthType.contains(InternalAuthType.BIO.getType())) {
-				validateBioDetails(requestDTO, errors);
+		if(authTypeDTO.isPin()) {
+			if(allowedAuthType.contains(InternalAuthType.SPIN.getType())) {
+				validatePinDetails(requestDTO, errors);
 			} else {
 				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 			}
-			
 		}
 	}
 

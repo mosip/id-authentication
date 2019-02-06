@@ -12,9 +12,13 @@ import java.util.stream.Stream;
 public enum InternalAuthType {
 
 	/** The demo. */
-	DEMO("demo"), /** The otp. */
- OTP("otp"), /** The bio. */
- BIO("bio");
+	DEMO("demo"),
+	/** The otp. */
+	OTP("otp"),
+	/** The bio. */
+	BIO("bio"),
+	/** The spin. */
+	SPIN("pin");
 
 	/** The type. */
 	String type;
@@ -22,7 +26,8 @@ public enum InternalAuthType {
 	/**
 	 * Instantiates a new internal auth type.
 	 *
-	 * @param type the type
+	 * @param type
+	 *            the type
 	 */
 	private InternalAuthType(String type) {
 		this.type = type;
@@ -40,7 +45,8 @@ public enum InternalAuthType {
 	/**
 	 * Get Internal Auth type.
 	 *
-	 * @param type the type
+	 * @param type
+	 *            the type
 	 * @return the internal auth type
 	 */
 	public static Optional<InternalAuthType> getInternalAuthType(String type) {

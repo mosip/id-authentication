@@ -47,7 +47,7 @@ public class FingerPrintMatchingStrategyTest {
 	public void TestOtherType() throws IdAuthenticationBusinessException {
 		Map<String, Object> matchProperties = new HashMap<>();
 		MatchFunction matchFunction = FingerPrintMatchingStrategy.PARTIAL.getMatchFunction();
-		matchProperties.put(BioAuthType.class.getSimpleName(), DemoAuthType.AD_PRI);
+		matchProperties.put(BioAuthType.class.getSimpleName(), DemoAuthType.ADDRESS);
 		int value2 = matchFunction.match("dinesh karuppiah", 2, matchProperties);
 		assertEquals(0, value2);
 	}
