@@ -55,12 +55,12 @@
 		<dependency>
 			<groupId>org.modelmapper</groupId>
 			<artifactId>modelmapper</artifactId>
-			<version>0.7.4</version>
+			<version>${modelmapper.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.preregistration</groupId>
 			<artifactId>pre-registration-core</artifactId>
-			<version>0.8.1</version>
+			<version>${pre.registration.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
