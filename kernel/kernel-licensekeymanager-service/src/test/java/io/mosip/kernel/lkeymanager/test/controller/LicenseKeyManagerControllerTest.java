@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.licensekeymanager.spi.LicenseKeyManagerService;
 import io.mosip.kernel.lkeymanager.LicenseKeyManagerBootApplication;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyGenerationDto;
@@ -34,25 +38,47 @@ public class LicenseKeyManagerControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
+	@Autowired
+	private ObjectMapper objectMapper;
+
 	@MockBean
 	private LicenseKeyManagerService<String, LicenseKeyGenerationDto, LicenseKeyMappingDto> service;
 
+	/**
+	 * TEST SCENARIO : Testing generation end point.
+	 */
 	@Test
 	public void licenseKeyGenerationTest() throws Exception {
+		LicenseKeyGenerationDto licenseKeyGenerationDto = new LicenseKeyGenerationDto();
+		licenseKeyGenerationDto.setLicenseExpiryTime(LocalDateTime.of(2019, Month.FEBRUARY, 9, 10, 23, 0));
+		licenseKeyGenerationDto.setTspId("TESTID");
 		given(service.generateLicenseKey(Mockito.any())).willReturn("asdfghkngyrthgfyt");
-		String json = "{\"licenseExpiryTime\": \"2019-02-09T10:23:00.000Z\", \"tspId\": \"TESTID\"}";
+		String json = objectMapper.writeValueAsString(licenseKeyGenerationDto);
 		mockMvc.perform(post("/v1.0/license/generate").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.licenseKey", is("asdfghkngyrthgfyt")));
 	}
 
+	/**
+	 * TEST SCENARIO : Testing mapping end point.
+	 */
 	@Test
 	public void licenseKeyMappingTest() throws Exception {
+		List<String> permissions = new ArrayList<>();
+		permissions.add("permission1");
+		permissions.add("permission2");
+		LicenseKeyMappingDto licenseKeyMappingDto = new LicenseKeyMappingDto();
+		licenseKeyMappingDto.setLKey("fqELcNGoaEeuuJAs");
+		licenseKeyMappingDto.setTspId("TESTID");
+		licenseKeyMappingDto.setPermissions(permissions);
 		given(service.mapLicenseKey(Mockito.any())).willReturn("Mapped License with the permissions");
-		String json = "{\"lkey\": \"fqELcNGoaEeuuJAs\", \"permissions\": [ \"permission1\", \"permission2\" ], \"tspId\": \"TESTID\"}";
+		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
 		mockMvc.perform(post("/v1.0/license/map").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.status", is("Mapped License with the permissions")));
 	}
 
+	/**
+	 * TEST SCENARIO : Testing fetch end point.
+	 */
 	@Test
 	public void licenseKeyFetchTest() throws Exception {
 		List<String> listPermissions = new ArrayList<>();

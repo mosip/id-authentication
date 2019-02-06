@@ -10,6 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +30,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.lkeymanager.LicenseKeyManagerBootApplication;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyFetchResponseDto;
+import io.mosip.kernel.lkeymanager.dto.LicenseKeyGenerationDto;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyGenerationResponseDto;
+import io.mosip.kernel.lkeymanager.dto.LicenseKeyMappingDto;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyMappingResponseDto;
 import io.mosip.kernel.lkeymanager.entity.LicenseKeyList;
 import io.mosip.kernel.lkeymanager.entity.LicenseKeyPermission;
@@ -44,6 +48,9 @@ public class LicenseKeyManagerServiceTest {
 
 	@Autowired
 	private MockMvc mockMvc;
+
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@MockBean
 	private LicenseKeyListRepository licenseKeyListRepository;
@@ -102,9 +109,17 @@ public class LicenseKeyManagerServiceTest {
 		licenseKeyPermission.setUpdatedDateTimes(LocalDateTime.now());
 	}
 
+	/**
+	 * TEST SCENARIO : Testing License Key Generation service implementation.
+	 * 
+	 * @throws Exception.class
+	 */
 	@Test
 	public void testLKMGenerationService() throws Exception {
-		String json = "{\"licenseExpiryTime\": \"2019-02-06T06:23:00.000Z\", \"tspId\": \"TSP_ID_TEST\"}";
+		LicenseKeyGenerationDto licenseKeyGenerationDto = new LicenseKeyGenerationDto();
+		licenseKeyGenerationDto.setLicenseExpiryTime(LocalDateTime.of(2019, Month.FEBRUARY, 6, 6, 23, 0));
+		licenseKeyGenerationDto.setTspId("TSP_ID_TEST");
+		String json = objectMapper.writeValueAsString(licenseKeyGenerationDto);
 		when(licenseKeyListRepository.save(Mockito.any())).thenReturn(licensekeyList);
 		when(licenseKeyTspMapRepository.save(Mockito.any())).thenReturn(licenseKeyTspMap);
 		MvcResult result = mockMvc
@@ -116,9 +131,22 @@ public class LicenseKeyManagerServiceTest {
 		assertThat(returnResponse.getLicenseKey(), isA(String.class));
 	}
 
+	/**
+	 * TEST SCENARIO : Testing License Key Mapping service implementation when new
+	 * permissions are added to the already existing permissions.
+	 * 
+	 * @throws Exception.class
+	 */
 	@Test
 	public void testLKMMappingServiceUpdatePermission() throws Exception {
-		String json = "{ \"lkey\": \"tEsTlIcEnSe\", \"permissions\": [ \"Biometric Authentication - IIR Data Match\", \"Biometric Authentication - FID Data Match\" ], \"tspId\": \"TSP_ID_TEST\"}";
+		List<String> permissions = new ArrayList<>();
+		permissions.add("Biometric Authentication - IIR Data Match");
+		permissions.add("Biometric Authentication - FID Data Match");
+		LicenseKeyMappingDto licenseKeyMappingDto = new LicenseKeyMappingDto();
+		licenseKeyMappingDto.setLKey("tEsTlIcEnSe");
+		licenseKeyMappingDto.setTspId("TSP_ID_TEST");
+		licenseKeyMappingDto.setPermissions(permissions);
+		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(licenseKeyTspMap);
 		when(licenseKeyPermissionRepository.findByLKey(Mockito.any())).thenReturn(licenseKeyPermission);
@@ -132,9 +160,22 @@ public class LicenseKeyManagerServiceTest {
 
 	}
 
+	/**
+	 * TEST SCENARIO : Testing License Key Mapping service implementation when
+	 * permissions are added.
+	 * 
+	 * @throws Exception.class
+	 */
 	@Test
 	public void testLKMMappingServiceCreatePermission() throws Exception {
-		String json = "{ \"lkey\": \"tEsTlIcEnSe\", \"permissions\": [ \"Biometric Authentication - IIR Data Match\", \"Biometric Authentication - FID Data Match\" ], \"tspId\": \"TSP_ID_TEST\"}";
+		List<String> permissions = new ArrayList<>();
+		permissions.add("Biometric Authentication - IIR Data Match");
+		permissions.add("Biometric Authentication - FID Data Match");
+		LicenseKeyMappingDto licenseKeyMappingDto = new LicenseKeyMappingDto();
+		licenseKeyMappingDto.setLKey("tEsTlIcEnSe");
+		licenseKeyMappingDto.setTspId("TSP_ID_TEST");
+		licenseKeyMappingDto.setPermissions(permissions);
+		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(licenseKeyTspMap);
 		when(licenseKeyPermissionRepository.findByLKey(Mockito.any())).thenReturn(null);
@@ -147,6 +188,11 @@ public class LicenseKeyManagerServiceTest {
 		assertThat(returnResponse.getStatus(), is("Mapped License with the permissions"));
 	}
 
+	/**
+	 * TEST SCENARIO : Testing fetching permissions service implementation.
+	 * 
+	 * @throws Exception.class
+	 */
 	@Test
 	public void testLKMFetchService() throws Exception {
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString()))

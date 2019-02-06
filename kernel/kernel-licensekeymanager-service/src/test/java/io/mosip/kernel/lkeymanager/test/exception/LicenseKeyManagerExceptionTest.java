@@ -24,15 +24,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import io.mosip.kernel.core.exception.ServiceError;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.lkeymanager.LicenseKeyManagerBootApplication;
-import io.mosip.kernel.lkeymanager.constant.LicenseKeyManagerExceptionConstants;
+import io.mosip.kernel.lkeymanager.dto.LicenseKeyMappingDto;
 import io.mosip.kernel.lkeymanager.entity.LicenseKeyList;
 import io.mosip.kernel.lkeymanager.entity.LicenseKeyTspMap;
 import io.mosip.kernel.lkeymanager.repository.LicenseKeyListRepository;
 import io.mosip.kernel.lkeymanager.repository.LicenseKeyPermissionRepository;
 import io.mosip.kernel.lkeymanager.repository.LicenseKeyTspMapRepository;
-import io.mosip.kernel.lkeymanager.util.LicenseKeyManagerUtil;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
@@ -42,6 +42,9 @@ public class LicenseKeyManagerExceptionTest {
 	@Autowired
 	private MockMvc mockMvc;
 
+	@Autowired
+	private ObjectMapper objectMapper;
+
 	@MockBean
 	private LicenseKeyListRepository licenseKeyListRepository;
 
@@ -50,9 +53,6 @@ public class LicenseKeyManagerExceptionTest {
 
 	@MockBean
 	private LicenseKeyTspMapRepository licenseKeyTspMapRepository;
-
-	@Autowired
-	private LicenseKeyManagerUtil licenseKeyManagerUtil;
 
 	private LicenseKeyList licensekeyList;
 
@@ -93,12 +93,14 @@ public class LicenseKeyManagerExceptionTest {
 	 */
 	@Test()
 	public void testLKMMappingServiceExceptionWhenInvalidValues() throws Exception {
-		List<ServiceError> validationErrorsList = new ArrayList<>();
-		validationErrorsList
-				.add(new ServiceError(LicenseKeyManagerExceptionConstants.LICENSEKEY_NOT_FOUND.getErrorCode(),
-						LicenseKeyManagerExceptionConstants.LICENSEKEY_NOT_FOUND.getErrorMessage()));
-
-		String json = "{ \"lkey\": \"tEsTlIcEnSe\", \"permissions\": [ \"Biometric Authentication - IIR Data Match\", \"Biometric Authentication - FID Data Match\" ], \"tspId\": \"TSP_ID_TEST\"}";
+		List<String> permissions = new ArrayList<>();
+		permissions.add("Biometric Authentication - IIR Data Match");
+		permissions.add("Biometric Authentication - FID Data Match");
+		LicenseKeyMappingDto licenseKeyMappingDto = new LicenseKeyMappingDto();
+		licenseKeyMappingDto.setLKey("tEsTlIcEnSe");
+		licenseKeyMappingDto.setTspId("TSP_ID_TEST");
+		licenseKeyMappingDto.setPermissions(permissions);
+		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 		mockMvc.perform(post("/v1.0/license/map").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
