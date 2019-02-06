@@ -63,37 +63,37 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 	}
 
 	private void routes(Router router) {
-		router.post("/v0.1/registration-processor/manual-verification/applicantBiometric").handler(ctx -> {
+		router.post("/manualverification/v0.1/registration-processor/manual-verification/applicantBiometric").handler(ctx -> {
 			processBiometric(ctx);
 		}).failureHandler(handlerObj -> {
 			this.setResponse(handlerObj, handlerObj.failure().getMessage()); 
 		});
 
-		router.post("/v0.1/registration-processor/manual-verification/applicantDemographic").handler(ctx -> {
+		router.post("/manualverification/v0.1/registration-processor/manual-verification/applicantDemographic").handler(ctx -> {
 			processDemographic(ctx);
 		}).failureHandler(handlerObj -> {
 			this.setResponse(handlerObj, handlerObj.failure().getMessage()); 
 		});
 
-		router.post("/v0.1/registration-processor/manual-verification/assignment").handler(ctx -> {
+		router.post("/manualverification/v0.1/registration-processor/manual-verification/assignment").handler(ctx -> {
 			processAssignment(ctx);
 		}).failureHandler(handlerObj -> {
 			this.setResponse(handlerObj, handlerObj.failure().getMessage()); 
 		});
 
-		router.post("/v0.1/registration-processor/manual-verification/decision").handler(ctx -> {
+		router.post("/manualverification/v0.1/registration-processor/manual-verification/decision").handler(ctx -> {
 			processDecision(ctx);
 		}).failureHandler(handlerObj -> {
 			this.setResponse(handlerObj, handlerObj.failure().getMessage()); 
 		});
 
-		router.post("/v0.1/registration-processor/manual-verification/packetInfo").handler(ctx -> {
+		router.post("/manualverification/v0.1/registration-processor/manual-verification/packetInfo").handler(ctx -> {
 			processPacketInfo(ctx);
 		}).failureHandler(handlerObj -> {
 			this.setResponse(handlerObj, handlerObj.failure().getMessage()); 
 		});
 		
-		router.get("/health").handler(ctx -> {
+		router.get("/manualverification/health").handler(ctx -> {
 			this.setResponse(ctx, "Server is up and running");
 		}).failureHandler(handlerObj->{
 			this.setResponse(handlerObj, handlerObj.failure().getMessage()); 
