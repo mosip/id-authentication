@@ -3,7 +3,7 @@ package io.mosip.kernel.syncdata.dto;
 import lombok.Data;
 
 @Data
-public class RolesDto {
+public class RoleDto {
 
 	private String roleId;
 	
