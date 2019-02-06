@@ -3,6 +3,8 @@ package io.mosip.kernel.auth.adapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -20,8 +22,43 @@ import java.io.IOException;
 
 public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 
-    protected AuthFilter(String defaultFilterProcessesUrl) {
-        super(defaultFilterProcessesUrl);
+    private RequestMatcher requestMatcher;
+
+    private String[] allowedEndPoints() {
+        return new String[]{
+                "/assets/**",
+                "/icons/**",
+                "/screenshots/**",
+                "/favicon**",
+                "/**/favicon**",
+                "/css/**",
+                "/js/**",
+                "/**/error**",
+                "/**/webjars/**",
+                "/**/v2/api-docs",
+                "/**/configuration/ui",
+                "/**/configuration/security",
+                "/**/swagger-resources/**",
+                "/**/swagger-ui.html"
+        };
+    }
+
+    protected AuthFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
+        super(requiresAuthenticationRequestMatcher);
+        this.requestMatcher = requiresAuthenticationRequestMatcher;
+    }
+
+    @Override
+    protected boolean requiresAuthentication(HttpServletRequest request, HttpServletResponse response) {
+        String[] endpoints = allowedEndPoints();
+        for (String pattern : endpoints) {
+            RequestMatcher ignorePattern = new AntPathRequestMatcher(pattern);
+            if (ignorePattern.matches(request)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override

@@ -23,16 +23,6 @@ import java.io.IOException;
 @Component
 public class AuthHeadersFilter extends OncePerRequestFilter {
 
-    private String token;
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         response.setHeader("Access-Control-Allow-Origin", "*");
@@ -44,7 +34,6 @@ public class AuthHeadersFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             filterChain.doFilter(request, response);
-            setToken(null);
         }
     }
 }

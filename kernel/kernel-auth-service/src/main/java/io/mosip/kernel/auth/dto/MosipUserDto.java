@@ -1,29 +1,13 @@
-package io.mosip.kernel.auth.entities;
+package io.mosip.kernel.auth.dto;
 
-public class MosipUser {
+public class MosipUserDto {
     private String userName;
     private String mobile;
     private String mail;
-    private String role;
     private String langCode;
-
-    public MosipUser() {
-    }
-
-    public MosipUser(String userName, String mobile, String mail, String role) {
-        this.userName = userName;
-        this.mobile = mobile;
-        this.mail = mail;
-        this.role = role;
-    }
-
-    public MosipUser(String userName, String mobile, String mail, String role, String langCode) {
-        this.userName = userName;
-        this.mobile = mobile;
-        this.mail = mail;
-        this.role = role;
-        this.langCode = langCode;
-    }
+    private byte[] userPassword;
+    private String name;
+    private String role;
 
     public String getUserName() {
         return userName;
@@ -63,5 +47,21 @@ public class MosipUser {
 
     public void setLangCode(String langCode) {
         this.langCode = langCode;
+    }
+
+    public byte[] getUserPassword() {
+        return userPassword;
+    }
+
+    public void setUserPassword(byte[] userPassword) {
+        this.userPassword = userPassword;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

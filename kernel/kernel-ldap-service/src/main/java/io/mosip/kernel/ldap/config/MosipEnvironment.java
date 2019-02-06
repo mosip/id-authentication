@@ -20,7 +20,7 @@ public class MosipEnvironment implements EnvironmentAware {
     private String rolesSearchBase = "ldap.roles.base";
     private String rolesSearchPrefix = "ldap.roles.search.prefix";
     private String rolesSearchSuffix = "ldap.roles.search.suffix";
-    private String allrolesSearch="mosip.kernel.syncdata.search-all-roles";
+    private String ldapRolesClass ="ldap.roles.class";
 
     @Override
     public void setEnvironment(final Environment environment) {
@@ -63,7 +63,7 @@ public class MosipEnvironment implements EnvironmentAware {
         return environment.getProperty(userDnSuffix);
     }
     
-    public String getAllRoles() {
-        return environment.getProperty(allrolesSearch);
+    public String getLdapRolesClass() {
+        return environment.getProperty(ldapRolesClass);
     }
 }

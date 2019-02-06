@@ -1,6 +1,6 @@
-package io.mosip.kernel.auth.entities;
+package io.mosip.kernel.auth.dto;
 
-public class LoginUser {
+public class LoginUserDto {
     private String userName;
     private String password;
 

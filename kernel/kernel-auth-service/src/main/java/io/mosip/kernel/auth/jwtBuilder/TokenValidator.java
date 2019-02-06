@@ -3,8 +3,8 @@ package io.mosip.kernel.auth.jwtBuilder;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.mosip.kernel.auth.config.MosipEnvironment;
-import io.mosip.kernel.auth.entities.MosipUser;
-import io.mosip.kernel.auth.entities.MosipUserWithToken;
+import io.mosip.kernel.auth.dto.MosipUserDto;
+import io.mosip.kernel.auth.dto.MosipUserWithTokenDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,13 +27,14 @@ public class TokenValidator {
         return true;
     }
 
-    private MosipUser buildMosipUser(Claims claims) {
-        return new MosipUser(
-                claims.getSubject(),
-                (String) claims.get("mobile"),
-                (String) claims.get("mail"),
-                (String) claims.get("role")
-        );
+    private MosipUserDto buildMosipUser(Claims claims) {
+        MosipUserDto mosipUserDto = new MosipUserDto();
+        mosipUserDto.setUserName(claims.getSubject());
+        mosipUserDto.setMobile((String) claims.get("mobile"));
+        mosipUserDto.setMail((String) claims.get("mail"));
+        mosipUserDto.setRole((String) claims.get("role"));
+
+        return mosipUserDto;
     }
 
     private Claims getClaims(String token) {
@@ -56,23 +57,23 @@ public class TokenValidator {
         }
     }
 
-    public MosipUserWithToken validateForOtpVerification(String token) {
+    public MosipUserWithTokenDto validateForOtpVerification(String token) {
         Claims claims = getClaims(token);
         Boolean isOtpRequired = (Boolean) claims.get("isOtpRequired");
         if (isOtpRequired) {
-            MosipUser mosipUser = buildMosipUser(claims);
-            return new MosipUserWithToken(mosipUser, token);
+            MosipUserDto mosipUserDto = buildMosipUser(claims);
+            return new MosipUserWithTokenDto(mosipUserDto, token);
         } else {
             throw new RuntimeException("Invalid Token");
         }
     }
 
-    public MosipUserWithToken basicValidate(String token) {
+    public MosipUserWithTokenDto basicValidate(String token) {
         Claims claims = getClaims(token);
         Boolean isOtpValid = validateOtpDetails(claims);
         if (isOtpValid) {
-            MosipUser mosipUser = buildMosipUser(claims);
-            return new MosipUserWithToken(mosipUser, token);
+            MosipUserDto mosipUserDto = buildMosipUser(claims);
+            return new MosipUserWithTokenDto(mosipUserDto, token);
         } else {
             throw new RuntimeException("Invalid Token");
         }

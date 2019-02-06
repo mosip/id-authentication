@@ -11,11 +11,20 @@ import java.util.stream.Collectors;
  * Used by spring security to store user details like roles and use this across the application for Authorization purpose.
  **********************************************************************************************************************/
 
-public class AuthUserDetails extends MosipUser implements UserDetails {
+public class AuthUserDetails implements UserDetails {
 
     private String userName;
     private String token;
+    private String mail;
+    private String mobile;
     private Collection<? extends GrantedAuthority> authorities;
+
+    public AuthUserDetails(MosipUserDto mosipUserDto, String token) {
+        this.userName = mosipUserDto.getUserName();
+        this.token = token;
+        this.mail = mosipUserDto.getMail();
+        this.mobile = mosipUserDto.getMobile();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -59,12 +68,10 @@ public class AuthUserDetails extends MosipUser implements UserDetails {
         return true;
     }
 
-    @Override
     public String getUserName() {
         return userName;
     }
 
-    @Override
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -75,5 +82,21 @@ public class AuthUserDetails extends MosipUser implements UserDetails {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 }
