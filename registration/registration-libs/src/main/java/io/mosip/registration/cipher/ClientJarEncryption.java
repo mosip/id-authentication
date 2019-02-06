@@ -55,12 +55,17 @@ public class ClientJarEncryption {
 			}
 
 			if (fileByteArray != null) {
-				String encryptedFileToSave = args[0].substring(0, args[0].lastIndexOf("/"));
+				System.out.println("File Path :::" + args[0]);
+				System.out.println("File Path :::" + args[1]);
+				System.out.println("Key:::" + args[2]);
+				System.out.println("version :::" + args[3]);
+				
+				String encryptedFileToSave = args[0].substring(0, args[0].lastIndexOf("/")) + "/registration-client-" + args[3] + "-encrypted.jar";
 				ClientJarEncryption aes = new ClientJarEncryption();
 				byte[] encryptedFileBytes = aes.encyrpt(fileByteArray, Base64.getDecoder().decode(args[2].getBytes()));
-				FileUtils.writeByteArrayToFile(
-						new File(encryptedFileToSave + "/registration-client-" + args[3] + "-encrypted.jar"),
-						encryptedFileBytes);
+				FileUtils.writeByteArrayToFile(new File(encryptedFileToSave), encryptedFileBytes);
+				
+				System.out.println("File Path created :::" + encryptedFileToSave);
 			}
 		} catch (IOException ioException) {
 			ioException.printStackTrace();

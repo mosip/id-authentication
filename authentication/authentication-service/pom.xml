@@ -133,6 +133,13 @@
 			<version>${commons.lang.version}</version>
 		</dependency>
 
+		<!-- Commons Lang -->
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-cbeffutil-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<repositories>

@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.impl.indauth.service.demo;
+package io.mosip.authentication.service.impl.indauth.service.pin;
 
 import java.util.Map;
 

@@ -313,15 +313,15 @@ public class AuthResponseBuilderTest {
 		
 		
 		AuthStatusInfo authStatusInfo1 = AuthStatusInfoBuilder.newInstance()
-				.addMatchInfo(DemoAuthType.PI_PRI.getType(), "P", 60, PRIMARY_LANG_CODE)
+				.addMatchInfo(DemoAuthType.PERSONAL_IDENTITY.getType(), "P", 60, PRIMARY_LANG_CODE)
 				.addAuthUsageDataBits(AuthUsageDataBit.USED_OTP, AuthUsageDataBit.MATCHED_OTP)
 				.addErrors(new AuthError("101", "Error1"))
 				.build();
 		
 		AuthStatusInfo authStatusInfo2 = AuthStatusInfoBuilder
 				.newInstance()
-				.addMatchInfo(DemoAuthType.FAD_PRI.getType(), "E", 100, PRIMARY_LANG_CODE)
-				.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_NAME_PRI, AuthUsageDataBit.MATCHED_PI_NAME_PRI)
+				.addMatchInfo(DemoAuthType.FULL_ADDRESS.getType(), "E", 100, PRIMARY_LANG_CODE)
+				.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_NAME, AuthUsageDataBit.MATCHED_PI_NAME)
 				.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_EMAIL, AuthUsageDataBit.MATCHED_PI_EMAIL)
 				.addErrors(new AuthError("102", "Error2"), new AuthError("103", "Error3"))
 				.build();
@@ -333,9 +333,9 @@ public class AuthResponseBuilderTest {
 				.addAuthStatusInfo(authStatusInfo2)
 				.build();
 		
-		assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(0).getAuthType(), DemoAuthType.PI_PRI.getType());
-		assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(1).getAuthType(), DemoAuthType.FAD_PRI.getType());
-		assertEquals("0xc1000000c1000000", authResponseDTO2.getInfo().getUsageData());
+		assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(0).getAuthType(), DemoAuthType.PERSONAL_IDENTITY.getType());
+		assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(1).getAuthType(), DemoAuthType.FULL_ADDRESS.getType());
+		assertEquals("0xc2000000c2000000", authResponseDTO2.getInfo().getUsageData());
 		
 		assertEquals(3, authResponseDTO2.getErr().size());
 
