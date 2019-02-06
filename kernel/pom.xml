@@ -100,6 +100,8 @@
 		<itextcore.version>7.1.0</itextcore.version>
 		<!-- itext html2pdf version -->
 		<itexthtml2pdf.version>2.0.0</itexthtml2pdf.version>
+		<!--  itext version-->
+		<itext.version>5.5.13</itext.version>
 
 		<!-- Freemarker -->
 		<freemarker.version>2.3.23</freemarker.version>

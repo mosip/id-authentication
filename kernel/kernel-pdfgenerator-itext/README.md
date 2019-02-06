@@ -108,8 +108,45 @@ Input processed Template as inputStream, resource file path  and generate Output
 		ByteArrayOutputStream bos = (ByteArrayOutputStream) pdfGenerator.generate(is, resourceLoc);
   
  ```
+ 
+Usage5:
+ 
+Input is list of BufferedImage and generate Byte Array containing the resulting PDF.
+ 
+ ```
+		@Autowired
+ 		PDFGenerator pdfGenerator;
+ 		
+		BufferedImage bufferedImage;
+		BufferedImage bufferedImage2;
 
+		List<BufferedImage> bufferedImages = new ArrayList<>();
+	
+		URL url = PDFGeneratorTest.class.getResource("/Change.jpg");
+		URL url2 = PDFGeneratorTest.class.getResource("/nelsonmandela1-2x.jpg");
 
+		bufferedImage = ImageIO.read(url);
+		bufferedImages.add(bufferedImage);
+		bufferedImage2 = ImageIO.read(url2);
+		bufferedImages.add(bufferedImage2);
+		
+		byte[] data = pdfGenerator.asPDF(bufferedImages);
+  
+ ```
+
+Usage6:
+ 
+Input is list of URL of pdf files and generate Byte Array containing the resulting PDF.
+ 
+```
+		@Autowired
+ 		PDFGenerator pdfGenerator;
+
+		List<URL> pdfFiles = new ArrayList<URL>(Arrays.asList(PDFGeneratorTest.class.getResource("/sample.pdf"),
+				PDFGeneratorTest.class.getResource("/pdf-sample.pdf")));
+		byte[] byteArray = pdfGenerator.mergePDF(pdfFiles);
+  
+ ```
 
 
 
