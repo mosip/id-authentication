@@ -13,7 +13,7 @@ create schema if not exists master
 create table master.licensekey_permission (
 	
 	license_key		character varying (255) not null,   -- Refers to master.licensekey_list.license_key
-	permission  	character varying (255) not null, 
+	permission  	character varying (512) not null, 
 
 	is_active 	boolean not null,
 	cr_by 		character varying (32) not null,
