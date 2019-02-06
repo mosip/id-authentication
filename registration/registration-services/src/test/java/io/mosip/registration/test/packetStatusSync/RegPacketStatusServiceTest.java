@@ -1,9 +1,11 @@
 package io.mosip.registration.test.packetStatusSync;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.when;
 
 import java.net.SocketTimeoutException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -22,17 +24,18 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
+import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegPacketStatusDAO;
 import io.mosip.registration.dao.RegistrationDAO;
-import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.packet.impl.RegPacketStatusServiceImpl;
+import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 public class RegPacketStatusServiceTest {
@@ -40,11 +43,13 @@ public class RegPacketStatusServiceTest {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@Mock
-	ServiceDelegateUtil serviceDelegateUtil;
+	private ServiceDelegateUtil serviceDelegateUtil;
 	@Mock
-	RegPacketStatusDAO packetStatusDao;
+	private RegPacketStatusDAO packetStatusDao;
+	@Mock
+	private PacketSynchService packetSynchService;
 	@InjectMocks
-	RegPacketStatusServiceImpl packetStatusService;
+	private RegPacketStatusServiceImpl packetStatusService;
 
 	@Mock
 	RegistrationDAO registrationDAO;
@@ -150,6 +155,26 @@ public class RegPacketStatusServiceTest {
 				.thenThrow(RuntimeException.class);
 
 		assertSame( RegistrationConstants.REGISTRATION_DELETION_BATCH_JOBS_FAILURE, packetStatusService.deleteRegistrationPackets().getErrorResponseDTOs().get(0).getMessage());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void syncPacketTest() throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException, JsonProcessingException, URISyntaxException {
+		List<Registration> packetsToBeSynched=new ArrayList<>();
+		Registration reg=new Registration();
+		packetsToBeSynched.add(reg);
+		Mockito.when(registrationDAO.getPacketsToBeSynched(Mockito.anyList())).thenReturn(packetsToBeSynched);
+		Mockito.when(packetSynchService.syncPacketsToServer(Mockito.anyList())).thenReturn(new Object());
+		Mockito.when(packetSynchService.updateSyncStatus(Mockito.anyList())).thenReturn(true);
+		assertEquals("Success", packetStatusService.syncPacket().getSuccessResponseDTO().getMessage());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void syncPacketNegativeTest() {
+		List<Registration> packetsToBeSynched=new ArrayList<>();
+		Mockito.when(registrationDAO.getPacketsToBeSynched(Mockito.anyList())).thenReturn(packetsToBeSynched);
+		assertEquals("Success", packetStatusService.syncPacket().getSuccessResponseDTO().getMessage());
 	}
 
 }
