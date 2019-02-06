@@ -105,6 +105,18 @@ public class IdRepoEntityInterceptorTest {
 	
 	@SuppressWarnings("unchecked")
 	@Test(expected = IdRepoAppUncheckedException.class)
+	public void testOnLoadUinFailedEncrption() throws RestClientException, JsonParseException, JsonMappingException, IOException {
+		when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(ObjectNode.class), Mockito.any(Class.class)))
+				.thenThrow(new RestClientException(""));
+		Uin uin = new Uin();
+		uin.setUinData(new byte[] { 0 });
+		Object[] state = new Object[] { new byte[] { 0 } , "W3LDtXpyxkl0YSifynsfhl7W-wWWtEb-ofkq-TGl1Lc"};
+		String[] propertyNames = new String[] { "uinData", "uinDataHash" };
+		interceptor.onLoad(uin, null, state, propertyNames, null);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test(expected = IdRepoAppUncheckedException.class)
 	public void testOnLoadUinException() throws RestClientException, JsonParseException, JsonMappingException, IOException {
 		when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(ObjectNode.class), Mockito.any(Class.class)))
 				.thenReturn(mapper.readValue("{\"value\":\"1234\"}".getBytes(), ObjectNode.class));
@@ -125,5 +137,41 @@ public class IdRepoEntityInterceptorTest {
 		Object[] state = new Object[] { new byte[] { 0 } , "W3LDtXpyxkl0YSifynsfhl7W-wWWtEb-ofkq-TGl1L"};
 		String[] propertyNames = new String[] { "uinData", "uinDataHash" };
 		interceptor.onLoad(uin, null, state, propertyNames, null);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testOnFlushDirtyUin() throws RestClientException, JsonParseException, JsonMappingException, IOException {
+		when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(ObjectNode.class), Mockito.any(Class.class)))
+				.thenReturn(mapper.readValue("{\"data\":\"1234\"}".getBytes(), ObjectNode.class));
+		Uin uin = new Uin();
+		uin.setUinData(new byte[] { 0 });
+		Object[] state = new Object[] { new byte[] { 0 } };
+		String[] propertyNames = new String[] { "uinData" };
+		interceptor.onFlushDirty(uin, null, state, state, propertyNames, null);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testOnFlushDirtyUinHistory() throws RestClientException, JsonParseException, JsonMappingException, IOException {
+		when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(ObjectNode.class), Mockito.any(Class.class)))
+				.thenReturn(mapper.readValue("{\"data\":\"1234\"}".getBytes(), ObjectNode.class));
+		UinHistory uinH = new UinHistory();
+		uinH.setUinData(new byte[] { 0 });
+		Object[] state = new Object[] { new byte[] { 0 } };
+		String[] propertyNames = new String[] { "uinData" };
+		interceptor.onFlushDirty(uinH, null, state, state, propertyNames, null);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test(expected = IdRepoAppUncheckedException.class)
+	public void testOnFlushDirtyException() throws RestClientException, JsonParseException, JsonMappingException, IOException {
+		when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(ObjectNode.class), Mockito.any(Class.class)))
+		.thenThrow(new RestClientException(""));
+		Uin uin = new Uin();
+		uin.setUinData(new byte[] { 0 });
+		Object[] state = new Object[] { new byte[] { 0 } };
+		String[] propertyNames = new String[] { "uinData" };
+		interceptor.onFlushDirty(uin, null, state, state, propertyNames, null);
 	}
 }

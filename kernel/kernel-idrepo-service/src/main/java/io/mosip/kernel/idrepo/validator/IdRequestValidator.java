@@ -348,7 +348,6 @@ public class IdRequestValidator implements Validator {
 							}
 						});
 			}
-
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 					(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));

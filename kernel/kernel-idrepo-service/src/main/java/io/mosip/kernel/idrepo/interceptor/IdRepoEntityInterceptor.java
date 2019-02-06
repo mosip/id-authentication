@@ -133,7 +133,6 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 	public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState,
 			String[] propertyNames, Type[] types) {
 		try {
-
 			if (entity instanceof Uin) {
 				Uin uinEntity = (Uin) entity;
 				byte[] encryptedData = encryptDecryptIdentity(

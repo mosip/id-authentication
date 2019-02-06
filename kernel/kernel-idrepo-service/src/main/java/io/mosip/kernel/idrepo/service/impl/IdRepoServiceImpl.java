@@ -45,6 +45,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.InvalidJsonException;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.spi.json.JacksonJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
@@ -428,14 +429,13 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	private byte[] convertToFMR(String category, String encodedCbeffFile) throws IdRepoAppException {
 		try {
 			byte[] cbeffFileData = CryptoUtil.decodeBase64(encodedCbeffFile);
-				return cbeffUtil.updateXML(fpProvider.convertFIRtoFMR(cbeffUtil.getBIRDataFromXML(cbeffFileData)),
-						cbeffFileData);
+			return cbeffUtil.updateXML(fpProvider.convertFIRtoFMR(cbeffUtil.getBIRDataFromXML(cbeffFileData)),
+					cbeffFileData);
 		} catch (Exception e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String
-					.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), DOCUMENTS + " - " + category));
-
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String.format(
+					IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), DOCUMENTS + " - " + category));
 		}
 	}
 
@@ -640,7 +640,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 
 			mapper.setFilterProvider(new SimpleFilterProvider().addFilter(RESPONSE_FILTER,
 					SimpleBeanPropertyFilter.serializeAllExcept(ignoredProperties)));
-
 		}
 
 		idResponse.setResponse(response);
@@ -772,7 +771,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			} else {
 				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
 			}
-		} catch (JSONException e) {
+		} catch (JSONException | InvalidJsonException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, UPDATE_IDENTITY,
 					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(IdRepoErrorConstants.JSON_PROCESSING_FAILED, e);
@@ -961,7 +960,9 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		List<UinDocument> docList = new ArrayList<>();
 		List<UinBiometric> bioList = new ArrayList<>();
 
-		updateCbeff(uinObject, requestDTO);
+		if (Objects.nonNull(uinObject.getBiometrics())) {
+			updateCbeff(uinObject, requestDTO);
+		}
 
 		addDocuments(uin, convertToBytes(requestDTO.getIdentity()), requestDTO.getDocuments(), uinObject.getUinRefId(),
 				docList, bioList);
@@ -1007,7 +1008,9 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		ObjectNode identityMap = (ObjectNode) convertToObject(uinObject.getUinData(), ObjectNode.class);
 
 		uinObject.getBiometrics().stream().forEach(bio -> requestDTO.getDocuments().stream()
-				.filter(doc -> StringUtils.equals(bio.getBiometricFileType(), doc.getCategory())).forEach(doc -> {
+				.filter(doc -> 
+				StringUtils.equals(bio.getBiometricFileType(), doc.getCategory()))
+				.forEach(doc -> {
 					try {
 						String fileName = BIOMETRICS + SLASH + bio.getBioFileId() + DOT
 								+ identityMap.get(bio.getBiometricFileType()).get(FORMAT).asText();
