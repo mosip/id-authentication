@@ -1,8 +1,10 @@
 package io.mosip.kernel.core.pdfgenerator.spi;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 public interface PDFGenerator {
 	/**
@@ -54,5 +56,16 @@ public interface PDFGenerator {
 	 * @return outpustStream
 	 */
 	public OutputStream generate(InputStream is, String resourceLoc) throws IOException;
+
+	/**
+	 * This method will convert BufferedImage list to Byte Array
+	 * 
+	 * @param bufferedImages
+	 *            the input image to convert as PDF
+	 * @return byte array
+	 * @throws IOException
+	 *             throws IOException
+	 */
+	public byte[] asPDF(List<BufferedImage> bufferedImages) throws IOException;
 
 }

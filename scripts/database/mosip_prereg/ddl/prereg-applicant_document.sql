@@ -20,8 +20,10 @@ create schema if not exists prereg
 		doc_cat_code 	character varying(36) not null ,	-- master.doc_category.code
 		doc_typ_code	character varying(36) not null ,	-- master.doc_type.code
 		doc_file_format	character varying(36) not null ,	-- master.doc_format.code
-		doc_store		bytea ,
+		doc_id			character varying(128),
 			
+		encrypted_dtimes timestamp not null ,
+		
 		status_code 	character varying(36) not null ,	-- prereg.status_list.code
 		lang_code  		character varying(3) not null ,     -- master.language.code
 							

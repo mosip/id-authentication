@@ -45,7 +45,6 @@ import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
-import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
 import io.mosip.preregistration.datasync.code.RequestCodes;
 import io.mosip.preregistration.datasync.dto.DataSyncRequestDTO;
@@ -113,9 +112,6 @@ public class DataSyncServiceUtil {
 	private ObjectMapper mapper = new ObjectMapper();
 
 	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-
-	@Autowired
-	private CryptoUtil cryptoUtil;
 
 	private static Logger log = LoggerConfiguration.logConfig(DataSyncServiceUtil.class);
 
@@ -475,16 +471,14 @@ public class DataSyncServiceUtil {
 		try {
 			preRegArchiveDTO = preparePreRegArchiveDTO(preRegistrationDTO, bookingRegistrationDTO);
 			Map<String, byte[]> idJson = new HashMap<>();
-			String decryptedDemographicData = cryptoUtil.decrypt(
-					preRegistrationDTO.getDemographicDetails().toJSONString().getBytes(),
-					DateUtils.getUTCCurrentDateTime());
-			idJson.put("ID.json", JsonUtils.javaObjectToJsonString(decryptedDemographicData).getBytes());
+			idJson.put("ID.json",
+					JsonUtils.javaObjectToJsonString(preRegistrationDTO.getDemographicDetails()).getBytes());
 			if (documentEntityList != null && !documentEntityList.isEmpty()) {
 				for (int i = 0; i < documentEntityList.size(); i++) {
-					String decryptedDocument = cryptoUtil.decrypt(documentEntityList.get(i).getMultipartFile(),
-							DateUtils.getUTCCurrentDateTime());
-					idJson.put(documentEntityList.get(i).getDoc_cat_code().concat("_")
-							.concat(documentEntityList.get(i).getDoc_name()), decryptedDocument.getBytes());
+					idJson.put(
+							documentEntityList.get(i).getDoc_cat_code().concat("_")
+									.concat(documentEntityList.get(i).getDoc_name()),
+							documentEntityList.get(i).getMultipartFile());
 				}
 			}
 			preRegArchiveDTO.setZipBytes(getCompressed(idJson));

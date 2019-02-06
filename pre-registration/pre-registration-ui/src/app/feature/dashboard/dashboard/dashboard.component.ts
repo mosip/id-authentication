@@ -1,22 +1,23 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { MatDialog, MatCheckboxChange } from '@angular/material';
 
-import { DataStorageService } from 'src/app/core/services/data-storage.service';
-import { BookingModelRequest } from 'src/app/shared/booking-request.model';
-import * as appConstants from '../../../app.constants';
 import { TranslateService } from '@ngx-translate/core';
-import { FileModel } from 'src/app/shared/models/demographic-model/file.model';
-import { Applicant } from 'src/app/shared/models/dashboard-model/dashboard.modal';
+import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { SharedService } from '../../booking/booking.service';
+import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
+import { BookingModelRequest } from 'src/app/shared/booking-request.model';
+
+import { FileModel } from 'src/app/shared/models/demographic-model/file.model';
+import { Applicant } from 'src/app/shared/models/dashboard-model/dashboard.modal';
 import AttributeModel from 'src/app/shared/models/demographic-model';
 import { IdentityModel } from 'src/app/shared/models/demographic-model/identity.modal';
 import { RequestModel } from 'src/app/shared/models/demographic-model/request.modal';
 import { DemoIdentityModel } from 'src/app/shared/models/demographic-model/demo.identity.modal';
 import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
-import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
+import * as appConstants from '../../../app.constants';
 
 @Component({
   selector: 'app-registration',
@@ -47,16 +48,8 @@ export class DashBoardComponent implements OnInit {
     private translate: TranslateService
   ) {
     this.translate.use(localStorage.getItem('langCode'));
-    //need to remove
-    // translate.addLangs(['eng', 'fra', 'ara']);
-    // translate.setDefaultLang(localStorage.getItem('langCode'));
-    // const browserLang = translate.getBrowserLang();
-    // translate.use(browserLang.match(/eng|fra|ara/) ? browserLang : 'eng');
-    //till here
   }
   ngOnInit() {
-    // sessionStorage.clear();
-
     this.regService.changeMessage({ modifyUser: 'false' });
     this.route.params.subscribe((params: Params) => {
       this.loginId = params['id'];
@@ -347,72 +340,14 @@ export class DashBoardComponent implements OnInit {
     console.log(applicationID);
   }
 
-  // private createIdentityJSON(identityModal: IdentityModel) {
-  // const identity = new IdentityModel(
-  //   identityModal.IDSchemaVersion,
-  //   [
-  //     new AttributeModel(identityModal.fullName[0].language, identityModal.fullName[0].value),
-  //     new AttributeModel(identityModal.fullName[1].language, identityModal.fullName[1].value)
-  //   ],
-  //   identityModal.dateOfBirth,
-  //   [
-  //     new AttributeModel(identityModal.gender[0].language, identityModal.gender[0].value),
-  //     new AttributeModel(identityModal.gender[1].language, identityModal.gender[1].value)
-  //   ],
-  //   [
-  //     new AttributeModel(identityModal.addressLine1[0].language, identityModal.addressLine1[0].value),
-  //     new AttributeModel(identityModal.addressLine1[1].language, identityModal.addressLine1[1].value)
-  //   ],
-  //   [
-  //     new AttributeModel(identityModal.addressLine2[0].language, identityModal.addressLine2[0].value),
-  //     new AttributeModel(identityModal.addressLine2[1].language, identityModal.addressLine2[1].value)
-  //   ],
-  //   [
-  //     new AttributeModel(identityModal.addressLine3[0].language, identityModal.addressLine3[0].value),
-  //     new AttributeModel(identityModal.addressLine3[1].language, identityModal.addressLine3[1].value)
-  //   ],
-  //   [
-  //     new AttributeModel(identityModal.region[0].language, identityModal.region[0].value),
-  //     new AttributeModel(identityModal.region[1].language, identityModal.region[1].value)
-  //   ],
-  //   [
-  //     new AttributeModel(identityModal.province[0].language, identityModal.province[0].value),
-  //     new AttributeModel(identityModal.province[1].language, identityModal.province[1].value)
-  //   ],
-  //   [
-  //     new AttributeModel(identityModal.city[0].language, identityModal.city[0].value),
-  //     new AttributeModel(identityModal.city[1].language, identityModal.city[1].value)
-  //   ],
-  //   [
-  //     new AttributeModel(
-  //       identityModal.localAdministrativeAuthority[0].language,
-  //       identityModal.localAdministrativeAuthority[0].value
-  //     ),
-  //     new AttributeModel(
-  //       identityModal.localAdministrativeAuthority[1].language,
-  //       identityModal.localAdministrativeAuthority[1].value
-  //     )
-  //   ],
-  //   identityModal.postalcode,
-  //   identityModal.mobileNumber,
-  //   identityModal.emailId,
-  //   identityModal.CNEOrPINNumber
-  // );
-
-  // return identity;
-
-  // }
-
   private createIdentityJSON(identityModal: IdentityModel) {
     const identity = new IdentityModel(
+      identityModal.IDSchemaVersion,
       [
         new AttributeModel(identityModal.fullName[0].language, identityModal.fullName[0].value),
         new AttributeModel(identityModal.fullName[1].language, identityModal.fullName[1].value)
       ],
-      [
-        new AttributeModel(identityModal.dateOfBirth[0].language, identityModal.dateOfBirth[0].value),
-        new AttributeModel(identityModal.dateOfBirth[1].language, identityModal.dateOfBirth[1].value)
-      ],
+      identityModal.dateOfBirth,
       [
         new AttributeModel(identityModal.gender[0].language, identityModal.gender[0].value),
         new AttributeModel(identityModal.gender[1].language, identityModal.gender[1].value)
@@ -451,22 +386,10 @@ export class DashBoardComponent implements OnInit {
           identityModal.localAdministrativeAuthority[1].value
         )
       ],
-      [
-        new AttributeModel(identityModal.postalcode[0].language, identityModal.postalcode[0].value),
-        new AttributeModel(identityModal.postalcode[1].language, identityModal.postalcode[1].value)
-      ],
-      [
-        new AttributeModel(identityModal.mobileNumber[0].language, identityModal.mobileNumber[0].value),
-        new AttributeModel(identityModal.mobileNumber[1].language, identityModal.mobileNumber[1].value)
-      ],
-      [
-        new AttributeModel(identityModal.emailId[0].language, identityModal.emailId[0].value),
-        new AttributeModel(identityModal.emailId[1].language, identityModal.emailId[1].value)
-      ],
-      [
-        new AttributeModel(identityModal.CNEOrPINNumber[0].language, identityModal.CNEOrPINNumber[0].value),
-        new AttributeModel(identityModal.CNEOrPINNumber[1].language, identityModal.CNEOrPINNumber[1].value)
-      ]
+      identityModal.postalCode,
+      identityModal.phone,
+      identityModal.email,
+      identityModal.CNIENumber
     );
 
     return identity;
@@ -480,7 +403,6 @@ export class DashBoardComponent implements OnInit {
       createdDateTime: requestModal.createdDateTime,
       updatedBy: this.loginId,
       updatedDateTime: '',
-      statusCode: requestModal.statusCode,
       langCode: requestModal.langCode,
       demographicDetails: new DemoIdentityModel(identity)
     };

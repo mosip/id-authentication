@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="342,0" last-zoom="0.4"
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,0" last-zoom="0.4"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -462,7 +462,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="registration_transaction">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2826.8" y="359.25"/>
+	<position x="3591.8" y="314.25"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -514,7 +514,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="reg"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Registration / Enrolment table is to store id issuance registration/enrolment id and packet id details]]></comment>
-	<position x="3475.42" y="309.25"/>
+	<position x="3027.92" y="301.75"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="39"/>
 	</column>
@@ -736,7 +736,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="reg_center_user_machine">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2152" y="506.5"/>
+	<position x="2074.5" y="599"/>
 	<column name="regcntr_id" not-null="true">
 		<type name="character varying" length="10"/>
 	</column>
@@ -776,7 +776,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="reg"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Table to store all MOSIP Application users and their mapped registration centers]]></comment>
-	<position x="1886.72" y="941.5"/>
+	<position x="1849.22" y="914"/>
 	<column name="regcntr_id" not-null="true">
 		<type name="character varying" length="10"/>
 	</column>
@@ -812,7 +812,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="screen_authorization">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="3476.43" y="31.5"/>
+	<position x="3536.43" y="24"/>
 	<column name="screen_id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -1037,7 +1037,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="reg"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Registration  Transaction Type table, ]]></comment>
-	<position x="2932.82" y="51.75"/>
+	<position x="3032.82" y="24.25"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[Primary key of transaction code, with lang_cd for multi language ]]></comment>
@@ -2401,6 +2401,62 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<columns names="curr_seq_no" ref-type="src-columns"/>
 	</constraint>
 </table>
+
+<table name="audit_log_control" alias="algc">
+	<schema name="reg"/>
+	<comment><![CDATA[As part of the registration packet creation, the audit log information pending available in the system will also be enclosed within the packet. Once the packet is processed and a UIN is generated, the audit log information has to be purged. This table will store the needed details to control the audit log generation and purging.]]></comment>
+	<position x="2466.43" y="304"/>
+	<column name="audit_log_from_dtimes" not-null="true">
+		<type name="timestamp" length="36"/>
+		<comment><![CDATA[Start date of the audit log information that was considered to be included in the packet to be synched with the MOSIP server.]]></comment>
+	</column>
+	<column name="audit_log_to_dtimes" not-null="true">
+		<type name="timestamp" length="36"/>
+		<comment><![CDATA[Till date of the audit log information that was considered to be included in the packet to be synched with the MOSIP server. ]]></comment>
+	</column>
+	<column name="audit_log_sync_dtimes">
+		<type name="timestamp" length="36"/>
+		<comment><![CDATA[Date time on which the audit log information was synched with the MOSIP server. ]]></comment>
+	</column>
+	<column name="audit_log_purge_dtimes">
+		<type name="timestamp" length="36"/>
+		<comment><![CDATA[Date time on which the log information was purged from the audit log table ]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+
+	<customidxs object-type="column">
+		<object name="reg_id" index="0"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="fk_algc_reg" index="1"/>
+		<object name="pk_algc" index="0"/>
+	</customidxs>
+</table>
+
+<relationship name="audit_log_control_has_one_registration" type="rel11"
+	 src-col-pattern="reg_id"
+	 pk-pattern="pk_algc" uq-pattern="{dt}_uq"
+	 src-fk-pattern="fk_algc_reg"
+	 custom-color="#83af1f"
+	 src-table="reg.registration"
+	 dst-table="reg.audit_log_control"
+	 src-required="true" dst-required="false"
+	 identifier="true"
+
+	upd-action="NO ACTION"
+	del-action="NO ACTION"/>
 
 <constraint name="fk_devicem_dspec" type="fk-constr" comparison-type="MATCH SIMPLE"
 	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="reg.device_spec" table="reg.device_master">

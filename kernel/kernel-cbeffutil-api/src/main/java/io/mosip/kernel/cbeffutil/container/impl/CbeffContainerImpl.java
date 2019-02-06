@@ -6,13 +6,13 @@ package io.mosip.kernel.cbeffutil.container.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.mosip.kernel.cbeffutil.common.CbeffValidator;
-import io.mosip.kernel.cbeffutil.common.CbeffXSDValidator;
 import io.mosip.kernel.cbeffutil.container.CbeffContainerI;
-import io.mosip.kernel.cbeffutil.entity.BIR;
-import io.mosip.kernel.cbeffutil.jaxbclasses.BIRInfoType;
-import io.mosip.kernel.cbeffutil.jaxbclasses.BIRType;
-import io.mosip.kernel.cbeffutil.jaxbclasses.VersionType;
+import io.mosip.kernel.core.cbeffutil.common.CbeffValidator;
+import io.mosip.kernel.core.cbeffutil.common.CbeffXSDValidator;
+import io.mosip.kernel.core.cbeffutil.entity.BIR;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRInfoType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.VersionType;
 
 /**
  * @author Ramadurai Pandian

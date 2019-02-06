@@ -56,7 +56,7 @@ public class RegistrationStatusControllerTest {
 	@MockBean
 	SyncRegistrationService<SyncResponseDto, SyncRegistrationDto> syncRegistrationService;
 
-	/** The sync registration dto. */
+	/** The sync registration dto. */ 	
 	@MockBean
 	SyncRegistrationDto syncRegistrationDto;
 

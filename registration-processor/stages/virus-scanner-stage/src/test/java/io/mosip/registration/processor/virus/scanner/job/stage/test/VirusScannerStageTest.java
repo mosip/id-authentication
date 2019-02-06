@@ -146,7 +146,7 @@ public class VirusScannerStageTest {
 		virusScannerStage.process(dto);
 
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.containsExactly(
+				.contains(
 						Tuple.tuple(Level.INFO, "SESSIONID - REGISTRATIONID - 1000 - File is successfully scanned."));
 
 	}
@@ -162,7 +162,7 @@ public class VirusScannerStageTest {
 		virusScannerStage.process(dto);
 
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.containsExactly(Tuple.tuple(Level.INFO, "SESSIONID - REGISTRATIONID - 1000 - File is infected."));
+				.contains(Tuple.tuple(Level.INFO, "SESSIONID - REGISTRATIONID - 1000 - File is infected."));
 
 	}
 
@@ -181,7 +181,7 @@ public class VirusScannerStageTest {
 		virusScannerStage.process(dto);
 
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.containsExactly(Tuple.tuple(Level.INFO, "SESSIONID - REGISTRATIONID - 1000 - File is infected."));
+				.contains(Tuple.tuple(Level.INFO, "SESSIONID - REGISTRATIONID - 1000 - File is infected."));
 
 	}
 

@@ -26,7 +26,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -47,13 +47,13 @@
 			<version>${spring-cloud-config.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>io.mosip.preregistration</groupId>
 			<artifactId>pre-registration-core</artifactId>
-			<version>0.8.1</version>
+			<version>${pre.registration.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
 		</dependency>
 	</dependencies>
 	<build>
@@ -72,5 +72,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 </project>

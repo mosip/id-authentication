@@ -8,7 +8,6 @@ import java.util.List;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +44,6 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  *
  * @author M1022006
  */
-@RefreshScope
 @Service
 public class BioDedupeStage extends MosipVerticleManager {
 	/** The reg proc logger. */
@@ -117,6 +115,8 @@ public class BioDedupeStage extends MosipVerticleManager {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = true;
 
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId,description);
 		} catch (ABISInternalError e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,
@@ -171,7 +171,6 @@ public class BioDedupeStage extends MosipVerticleManager {
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 		} finally {
-
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
 					: EventName.EXCEPTION.toString();

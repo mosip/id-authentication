@@ -171,7 +171,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	 * @see
 	 * io.mosip.idissuance.packet.manager.service.FileManager#getCurrentDirectory()
 	 */
-	
+
 
 	/*
 	 * (non-Javadoc)

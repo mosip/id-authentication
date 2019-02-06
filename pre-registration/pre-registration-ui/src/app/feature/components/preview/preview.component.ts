@@ -31,10 +31,7 @@ export class PreviewComponent implements OnInit {
     this.user = { ...this.registrationService.getUser(this.registrationService.getUsers().length - 1) };
     console.log(this.user);
     this.previewData = this.user.request.demographicDetails.identity;
-    const now = new Date();
-    const born = new Date(this.previewData.dateOfBirth[0].value);
-    const years = Math.floor((now.getTime() - born.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
-    this.previewData.age = years;
+    this.calculateAge();
     let address =
       this.previewData.addressLine1[0].value +
       (this.previewData.addressLine2[0].value ? ', ' + this.previewData.addressLine2[0].value : '') +
@@ -56,13 +53,24 @@ export class PreviewComponent implements OnInit {
     this.previewData.gender[0].name = this.locCodeToName(this.previewData.gender[0].value,this.previewData.gender[0].language);
     this.previewData.gender[1].name = this.locCodeToName(this.previewData.gender[1].value,this.previewData.gender[1].language);
     console.log(this.previewData);
+    this.getSecondaryLanguageLabels();
+    this.files = this.user.files[0];
+  }
+
+  getSecondaryLanguageLabels() {
     this.dataStorageService
       .getSecondaryLanguageLabels(localStorage.getItem('secondaryLangCode'))
       .subscribe(response => {
         this.secondaryLanguagelabels = response['preview'];
         console.log(this.secondaryLanguagelabels);
       });
-    this.files = this.user.files[0];
+  }
+
+  calculateAge() {
+    const now = new Date();
+    const born = new Date(this.previewData.dateOfBirth);
+    const years = Math.floor((now.getTime() - born.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
+    this.previewData.age = years;
   }
 
   modifyDemographic() {

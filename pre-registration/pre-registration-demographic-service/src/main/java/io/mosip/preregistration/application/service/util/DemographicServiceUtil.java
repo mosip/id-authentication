@@ -74,10 +74,8 @@ public class DemographicServiceUtil {
 		DemographicResponseDTO createDto = new DemographicResponseDTO();
 		try {
 			createDto.setPreRegistrationId(demographicEntity.getPreRegistrationId());
-			createDto.setDemographicDetails((JSONObject) jsonParser.parse(cryptoUtil
-					.decrypt(demographicEntity.getApplicantDetailJson(), demographicEntity.getEncryptedDateTime())
-					.toString()));
-
+			createDto.setDemographicDetails((JSONObject) jsonParser.parse(new String(cryptoUtil
+					.decrypt(demographicEntity.getApplicantDetailJson(), demographicEntity.getEncryptedDateTime()))));
 			createDto.setStatusCode(demographicEntity.getStatusCode());
 			createDto.setLangCode(demographicEntity.getLangCode());
 			createDto.setCreatedBy(demographicEntity.getCreatedBy());
@@ -196,8 +194,8 @@ public class DemographicServiceUtil {
 	public String getValueFromIdentity(byte[] demographicData, String identityKey) throws ParseException {
 		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pre-registration service util ");
 		JSONParser jsonParser = new JSONParser();
-		String decryptedString = cryptoUtil.decrypt(demographicData, DateUtils.getUTCCurrentDateTime());
-		JSONObject jsonObj = (JSONObject) jsonParser.parse(decryptedString);
+		byte[] decryptedString = cryptoUtil.decrypt(demographicData, DateUtils.getUTCCurrentDateTime());
+		JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(decryptedString));
 		JSONObject identityObj = (JSONObject) jsonObj.get(RequestCodes.IDENTITY.getCode());
 		JSONArray keyArr = (JSONArray) identityObj.get(identityKey);
 		JSONObject valueObj = (JSONObject) keyArr.get(0);

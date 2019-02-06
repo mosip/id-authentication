@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.preregistration</groupId>
 		<artifactId>pre-registration-parent</artifactId>
-		<version>0.8.0</version>
+		<version>0.8.1</version>
 	</parent>
 
 	<artifactId>pre-registration-auth-service</artifactId>
@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>io.mosip.preregistration</groupId>
 			<artifactId>pre-registration-core</artifactId>
-			<version>0.8.0</version>
+			<version>${pre.registration.version}</version>
 		</dependency>
 	</dependencies>
 
