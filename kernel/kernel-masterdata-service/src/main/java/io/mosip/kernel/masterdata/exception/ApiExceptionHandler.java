@@ -69,21 +69,21 @@ public class ApiExceptionHandler {
 		});
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
-	
+
 	@ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse<ServiceError>> onHttpMessageNotReadable(
-                  final HttpMessageNotReadableException e) {
-           ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
-           ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(), e.getMessage());
-           errorResponse.getErrors().add(error);
-           errorResponse.setStatus(HttpStatus.OK.value());
-           return new ResponseEntity<>(errorResponse, HttpStatus.OK);
-    }
+	public ResponseEntity<ErrorResponse<ServiceError>> onHttpMessageNotReadable(
+			final HttpMessageNotReadableException e) {
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+		ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(), e.getMessage());
+		errorResponse.getErrors().add(error);
+		errorResponse.setStatus(HttpStatus.OK.value());
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+	}
 
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ErrorResponse<ServiceError>> defaultErrorHandler(HttpServletRequest request, Exception e) {
 		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
-		ServiceError error = new ServiceError("500", e.getMessage());
+		ServiceError error = new ServiceError(RequestErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
 		errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

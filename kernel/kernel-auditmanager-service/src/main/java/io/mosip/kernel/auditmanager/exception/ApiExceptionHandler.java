@@ -66,7 +66,7 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ErrorResponse<ServiceError>> defaultErrorHandler(HttpServletRequest request, Exception e) {
 		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
-		ServiceError error = new ServiceError("500", e.getMessage());
+		ServiceError error = new ServiceError(AuditErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
 		errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

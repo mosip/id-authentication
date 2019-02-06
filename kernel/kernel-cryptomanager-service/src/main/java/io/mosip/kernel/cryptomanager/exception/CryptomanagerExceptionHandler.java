@@ -45,15 +45,12 @@ public class CryptomanagerExceptionHandler {
 
 	@ExceptionHandler(NullDataException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> nullDataException(final NullDataException e) {
-		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.OK),
-				HttpStatus.OK);
+		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.OK), HttpStatus.OK);
 	}
 
 	@ExceptionHandler(InvalidKeyException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> invalidKeyException(final InvalidKeyException e) {
-		return new ResponseEntity<>(
-				getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.OK),
-				HttpStatus.OK);
+		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.OK), HttpStatus.OK);
 	}
 
 	@ExceptionHandler(NoSuchAlgorithmException.class)
@@ -67,8 +64,7 @@ public class CryptomanagerExceptionHandler {
 	public ResponseEntity<ErrorResponse<ServiceError>> illegalArgumentException(final IllegalArgumentException e) {
 		return new ResponseEntity<>(
 				getErrorResponse(CryptomanagerErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorCode(),
-						CryptomanagerErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorMessage(),
-						HttpStatus.OK),
+						CryptomanagerErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorMessage(), HttpStatus.OK),
 				HttpStatus.OK);
 	}
 
@@ -83,16 +79,19 @@ public class CryptomanagerExceptionHandler {
 
 	@ExceptionHandler(InvalidFormatException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> invalidFormatException(final InvalidFormatException e) {
-		return new ResponseEntity<>(getErrorResponse(CryptomanagerErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
-				e.getMessage() + CryptomanagerConstant.WHITESPACE
-						+ CryptomanagerErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorMessage(),
-				HttpStatus.OK), HttpStatus.OK);
+		return new ResponseEntity<>(
+				getErrorResponse(CryptomanagerErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
+						e.getMessage() + CryptomanagerConstant.WHITESPACE
+								+ CryptomanagerErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorMessage(),
+						HttpStatus.OK),
+				HttpStatus.OK);
 	}
 
 	@ExceptionHandler(InvalidDataException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> invalidDataException(final InvalidDataException e) {
-		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(),
-				e.getErrorText() + CryptomanagerErrorCode.INVALID_DATA.getErrorMessage(), HttpStatus.OK),
+		return new ResponseEntity<>(
+				getErrorResponse(e.getErrorCode(),
+						e.getErrorText() + CryptomanagerErrorCode.INVALID_DATA.getErrorMessage(), HttpStatus.OK),
 				HttpStatus.OK);
 	}
 
@@ -142,21 +141,22 @@ public class CryptomanagerExceptionHandler {
 		errorResponse.setStatus(httpStatus.value());
 		return errorResponse;
 	}
-	
+
 	@ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse<ServiceError>> onHttpMessageNotReadable(
-                  final HttpMessageNotReadableException e) {
-           ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
-           ServiceError error = new ServiceError(CryptomanagerErrorCode.INVALID_REQUEST.getErrorCode(), e.getMessage());
-           errorResponse.getErrors().add(error);
-           errorResponse.setStatus(HttpStatus.OK.value());
-           return new ResponseEntity<>(errorResponse, HttpStatus.OK);
-    }
+	public ResponseEntity<ErrorResponse<ServiceError>> onHttpMessageNotReadable(
+			final HttpMessageNotReadableException e) {
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+		ServiceError error = new ServiceError(CryptomanagerErrorCode.INVALID_REQUEST.getErrorCode(), e.getMessage());
+		errorResponse.getErrors().add(error);
+		errorResponse.setStatus(HttpStatus.OK.value());
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+	}
 
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ErrorResponse<ServiceError>> defaultErrorHandler(HttpServletRequest request, Exception e) {
 		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
-		ServiceError error = new ServiceError("500", e.getMessage());
+		ServiceError error = new ServiceError(CryptomanagerErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
+				e.getMessage());
 		errorResponse.getErrors().add(error);
 		errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

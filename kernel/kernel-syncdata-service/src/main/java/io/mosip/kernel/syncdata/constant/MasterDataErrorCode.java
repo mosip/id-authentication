@@ -30,7 +30,8 @@ public enum MasterDataErrorCode {
 	VALID_DOCUMENT_FETCH_EXCEPTION("KER-SYNC-126", "Error occurred while fetching Valid Document Type"),
 	REASON_LIST_FETCH_EXCEPTION("KER-SYNC-127", "Error occurred while fetching Valid Document Type"),
 	THREAD_INTERRUPTED_WHILE_FETCH_EXCEPTION("KER-SYNC-128", "Error occurred while fetching data"),
-	REQUEST_DATA_NOT_VALID("KER-SYNC-999","Request Data not valid");
+	REQUEST_DATA_NOT_VALID("KER-SYNC-999","Request Data not valid"), 
+	INTERNAL_SERVER_ERROR("KER-SYNC-500","Internal server error");
 
 	private final String errorCode;
 	private final String errorMessage;
