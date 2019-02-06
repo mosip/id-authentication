@@ -1,7 +1,7 @@
 package io.mosip.kernel.idgenerator.tokenid.constant;
 
 /**
- * Utility methods for Token ID Generator.
+ * Exception constant ENUM for Token ID Generator.
  * 
  * @author Sagar Mahapatra
  * @since 1.0.0
