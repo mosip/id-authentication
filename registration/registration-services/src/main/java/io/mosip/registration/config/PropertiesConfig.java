@@ -5,9 +5,9 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.scheduling.annotation.Scheduled;
 
 /**
  * Load properties from DB
@@ -19,13 +19,13 @@ public class PropertiesConfig {
 	
 	private static final String GLOBAL_PARAM_PROPERTIES = 
 			"SELECT NAME, VAL from MASTER.GLOBAL_PARAM where IS_ACTIVE=TRUE";
-	private String KEY = "NAME";
-	private String VALUE= "VAL";
+	
+	private static final String KEY = "NAME";
+	private static final String VALUE= "VAL";
 
 	private JdbcTemplate jdbcTemplate;
 	
 	public PropertiesConfig() {
-		
 	}
 	
 	public PropertiesConfig(JdbcTemplate jdbcTemplate) {
@@ -33,16 +33,19 @@ public class PropertiesConfig {
 	}
 	
 	public Map<String,Object> getDBProps() {
-		return jdbcTemplate.query("select NAME, VAL from MASTER.GLOBAL_PARAM where IS_ACTIVE=true", 
-				new ResultSetExtractor<Map<String,Object>>(){
+		return jdbcTemplate.query(GLOBAL_PARAM_PROPERTIES, new ResultSetExtractor<Map<String,Object>>(){
 		    @Override
-		    public Map<String,Object> extractData(ResultSet rs) throws SQLException {
-		        Map<String,Object> mapRet= new HashMap<>();
-		        while(rs.next()){
-		            mapRet.put(rs.getString(KEY),rs.getString(VALUE));
+		    public Map<String,Object> extractData(ResultSet globalParamResultset) throws SQLException {
+		        Map<String,Object> globalParamProps= new HashMap<>();
+		        while(globalParamResultset.next()){
+		        	globalParamProps.put(globalParamResultset.getString(KEY),globalParamResultset.getString(VALUE));
 		        }
-		        return mapRet;
+		        return globalParamProps;
 		    }
 		});
+	}
+	
+	public void updateDBValue() {
+		jdbcTemplate.execute("UPDATE MASTER.GLOBAL_PARAM SET VAL='" +RandomStringUtils.random(2)+"' where NAME = 'IRIS_THRESHOLD' AND IS_ACTIVE=TRUE");
 	}
 }

@@ -50,6 +50,7 @@ public class Initialization extends Application {
 
 	public static void main(String[] args) {
 		System.setProperty("java.net.useSystemProxies", "true");
+		System.setProperty("file.encoding", "UTF-8");
 		applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
 		
 		launch(args);
