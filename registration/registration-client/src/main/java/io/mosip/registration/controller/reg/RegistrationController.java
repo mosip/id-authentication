@@ -380,13 +380,12 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private TextField dd;
-
+	
 	@FXML
 	private TextField mm;
-
 	@FXML
 	private TextField yyyy;
-
+	
 	@FXML
 	private TextField ddLocalLanguage;
 
@@ -825,6 +824,7 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, "Loading the second demographic pane");
 
 			if (validateDemographicPane(demoGraphicPane1)) {
+				keyboardNode.setVisible(false);
 				demoGraphicTitlePane.setContent(null);
 				demoGraphicTitlePane.setExpanded(false);
 				demoGraphicTitlePane.setContent(demoGraphicPane2);
@@ -1556,6 +1556,10 @@ public class RegistrationController extends BaseController {
 			regionLocalLanguage.setPromptText(localProperties.getString("select"));
 			provinceLocalLanguage.setPromptText(localProperties.getString("select"));
 			titleDemographicPaneLocalLanguage.setText(localProperties.getString("titleDemographicPane"));
+			ddLocalLanguage.setPromptText(localProperties.getString("dd"));
+			mmLocalLanguage.setPromptText(localProperties.getString("mm"));
+			yyyyLocalLanguage.setPromptText(localProperties.getString("yyyy"));
+			
 			demoGraphicTitlePane.expandedProperty().addListener(new ChangeListener<Boolean>() {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
