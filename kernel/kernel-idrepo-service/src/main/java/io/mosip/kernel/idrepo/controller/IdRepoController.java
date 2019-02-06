@@ -138,6 +138,10 @@ public class IdRepoController {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, ADD_IDENTITY,
 					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e, id.get(CREATE));
+		} catch (IdRepoAppException e) {
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY,
+					"\n" + ExceptionUtils.getStackTrace(e));
+			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e, id.get(CREATE));
 		}
 	}
 
@@ -217,6 +221,10 @@ public class IdRepoController {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, UPDATE_IDENTITY,
 					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e, id.get(UPDATE));
+		} catch (IdRepoAppException e) {
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY,
+					"\n" + ExceptionUtils.getStackTrace(e));
+			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e, id.get(UPDATE));
 		}
 	}
 
