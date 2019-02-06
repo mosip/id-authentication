@@ -70,8 +70,8 @@ Below are details on the above classes -
 -	**StaticPinResponseDTO** - Response object with success or failure in Static Pin store request.
 -	**StaticPinController** - Spring Controller to receive Static Pin store Request
 -	**StaticPinRequestValidator** - Spring Validator to validate input request object StaticPinRequestDTO
--	**StaticPinFacade** - Sprint Component that acts like facade layer to validate UIN/VID and invoke OTPService to process OTP request
--	**StaticPinService** - Spring Service that interacts with OTPManager and OTPUtil to generate OTP
+-	**StaticPinFacade** - Spring Component that acts like facade layer to validate UIN/VID and invoke StaticPinService to process Static pin store request
+-	**StaticPinService** - Spring Service that interacts with StaticPinRepository to store Static pin
 -	**StaticPinRepository** - The repository interface that provide access to Static Pin table in the database.
 
 

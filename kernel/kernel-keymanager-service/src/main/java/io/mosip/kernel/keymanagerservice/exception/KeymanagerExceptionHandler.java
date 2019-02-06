@@ -9,8 +9,11 @@ package io.mosip.kernel.keymanagerservice.exception;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -39,15 +42,12 @@ public class KeymanagerExceptionHandler {
 
 	@ExceptionHandler(NullDataException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> nullDataException(final NullDataException e) {
-		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.BAD_REQUEST),
-				HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.OK), HttpStatus.OK);
 	}
 
 	@ExceptionHandler(InvalidKeyException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> invalidKeyException(final InvalidKeyException e) {
-		return new ResponseEntity<>(
-				getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.INTERNAL_SERVER_ERROR),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.OK), HttpStatus.OK);
 	}
 
 	@ExceptionHandler(NoSuchAlgorithmException.class)
@@ -59,10 +59,12 @@ public class KeymanagerExceptionHandler {
 
 	@ExceptionHandler(InvalidFormatException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> invalidFormatException(final InvalidFormatException e) {
-		return new ResponseEntity<>(getErrorResponse(KeymanagerErrorConstant.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
-				e.getMessage() + KeymanagerConstant.WHITESPACE
-						+ KeymanagerErrorConstant.DATE_TIME_PARSE_EXCEPTION.getErrorMessage(),
-				HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(
+				getErrorResponse(KeymanagerErrorConstant.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
+						e.getMessage() + KeymanagerConstant.WHITESPACE
+								+ KeymanagerErrorConstant.DATE_TIME_PARSE_EXCEPTION.getErrorMessage(),
+						HttpStatus.OK),
+				HttpStatus.OK);
 	}
 	
 	@ExceptionHandler(DateTimeParseException.class)
@@ -76,15 +78,12 @@ public class KeymanagerExceptionHandler {
 
 	@ExceptionHandler(InvalidDataException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> invalidDataException(final InvalidDataException e) {
-		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.BAD_REQUEST),
-				HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.OK), HttpStatus.OK);
 	}
 
 	@ExceptionHandler(NoUniqueAliasException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> noUniqueAliasException(final NoUniqueAliasException e) {
-		return new ResponseEntity<>(
-				getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.INTERNAL_SERVER_ERROR),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.OK), HttpStatus.OK);
 	}
 
 	@ExceptionHandler(CryptoException.class)
@@ -97,9 +96,7 @@ public class KeymanagerExceptionHandler {
 	@ExceptionHandler(InvalidApplicationIdException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> invalidApplicationIdException(
 			final InvalidApplicationIdException e) {
-		return new ResponseEntity<>(
-				getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.INTERNAL_SERVER_ERROR),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.OK), HttpStatus.OK);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
@@ -111,9 +108,29 @@ public class KeymanagerExceptionHandler {
 			ServiceError error = new ServiceError(KeymanagerErrorConstant.INVALID_REQUEST.getErrorCode(),
 					x.getField() + KeymanagerConstant.WHITESPACE + x.getDefaultMessage());
 			errorResponse.getErrors().add(error);
-			errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+			errorResponse.setStatus(HttpStatus.OK.value());
 		});
-		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+	}
+
+	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
+	public ResponseEntity<ErrorResponse<ServiceError>> defaultErrorHandler(HttpServletRequest request, Exception e) {
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+		ServiceError error = new ServiceError(KeymanagerErrorConstant.INTERNAL_SERVER_ERROR.getErrorCode(),
+				e.getMessage());
+		errorResponse.getErrors().add(error);
+		errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity<ErrorResponse<ServiceError>> onHttpMessageNotReadable(
+			final HttpMessageNotReadableException e) {
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+		ServiceError error = new ServiceError(KeymanagerErrorConstant.INVALID_REQUEST.getErrorCode(), e.getMessage());
+		errorResponse.getErrors().add(error);
+		errorResponse.setStatus(HttpStatus.OK.value());
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 
 	private ErrorResponse<ServiceError> getErrorResponse(String errorCode, String errorMessage, HttpStatus httpStatus) {

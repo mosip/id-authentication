@@ -41,7 +41,6 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.MappedCodeForLanguage;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -69,8 +68,6 @@ public class TemplateGenerator extends BaseService {
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(TemplateGenerator.class);
 
-	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
-
 	@Autowired
 	QrCodeGenerator<QrVersion> qrCodeGenerator;
 
@@ -94,8 +91,8 @@ public class TemplateGenerator extends BaseService {
 					RegistrationConstants.APPLICATION_ID,
 					"generateTemplate had been called for preparing Acknowledgement Template.");
 
-			ResourceBundle localProperties = applicationContext.getLocalLanguageProperty();
-			ResourceBundle applicationLanguageProperties = applicationContext.getApplicationLanguageBundle();
+			ResourceBundle localProperties = ApplicationContext.localLanguageProperty();
+			ResourceBundle applicationLanguageProperties = ApplicationContext.applicationLanguageBundle();
 
 			// Reader templateReader = new BufferedReader(
 			// new InputStreamReader(new ByteArrayInputStream(templateText.getBytes())));
@@ -106,12 +103,8 @@ public class TemplateGenerator extends BaseService {
 			Map<String, Object> templateValues = new HashMap<>();
 			ByteArrayOutputStream byteArrayOutputStream = null;
 
-			String platformLanguageCode = MappedCodeForLanguage
-					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
-					.getMappedCode().toLowerCase();
-			String localLanguageCode = MappedCodeForLanguage
-					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE))
-					.getMappedCode().toLowerCase();
+			String platformLanguageCode = ApplicationContext.applicationLanguage().toLowerCase();
+			String localLanguageCode = ApplicationContext.localLanguage().toLowerCase();
 
 			// Populating Template Labels in Primary Language
 			templateValues.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID_USER_LANG_LABEL,
@@ -164,6 +157,18 @@ public class TemplateGenerator extends BaseService {
 					applicationLanguageProperties.getString("parentUIN"));
 
 			templateValues.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID, registration.getRegistrationId());
+
+			if (registration.getRegistrationMetaDataDTO().getUin() != null) {
+				templateValues.put(RegistrationConstants.TEMPLATE_UIN,
+						registration.getRegistrationMetaDataDTO().getUin());
+				templateValues.put(RegistrationConstants.TEMPLATE_UIN_USER_LANG_LABEL,
+						applicationLanguageProperties.getString("uin"));
+				templateValues.put(RegistrationConstants.TEMPLATE_UIN_LOCAL_LANG_LABEL,
+						localProperties.getString("uin"));
+			} else {
+				templateValues.put(RegistrationConstants.TEMPLATE_UIN_UPDATE,
+						RegistrationConstants.TEMPLATE_STYLE_HIDDEN_PROPERTY);
+			}
 
 			SimpleDateFormat sdf = new SimpleDateFormat(RegistrationConstants.TEMPLATE_DATE_FORMAT);
 			String currentDate = sdf.format(new Date());
@@ -396,7 +401,7 @@ public class TemplateGenerator extends BaseService {
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
 							localLanguageCode));
 			templateValues.put(RegistrationConstants.TEMPLATE_DOB_LOCAL_LANG_LABEL,
-					localProperties.getString("age/dob"));
+					localProperties.getString("ageDatePicker"));
 			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG_LABEL,
 					localProperties.getString("gender"));
 			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG,
@@ -462,7 +467,7 @@ public class TemplateGenerator extends BaseService {
 							.mapToInt(capturedFinger -> capturedFinger.getSegmentedFingerprints().size()).sum(),
 					capturedIris.size() };
 
-			if (applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+			if (ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
 					.equals(RegistrationConstants.ENABLE)) {
 				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED,
 						"Iris (" + fingersAndIrises[1] + "), Face");
@@ -522,9 +527,7 @@ public class TemplateGenerator extends BaseService {
 			TemplateManagerBuilder templateManagerBuilder) throws RegBaseCheckedException {
 
 		try {
-			String applicationLanguageCode = MappedCodeForLanguage
-					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
-					.getMappedCode().toLowerCase();
+			String applicationLanguageCode = ApplicationContext.applicationLanguage().toLowerCase();
 			InputStream is = new ByteArrayInputStream(templateText.getBytes());
 			Map<String, Object> values = new LinkedHashMap<>();
 

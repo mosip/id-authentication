@@ -119,7 +119,7 @@ public class PacketUploadController extends BaseController {
 		String syncErrorStatus = "";
 		try {
 			auditFactory.audit(AuditEvent.SYNC_SERVER, Components.PACKET_SYNC, "Sync the packets status to the server",
-					sessionContext.getUserContext().getUserId(),
+					SessionContext.userContext().getUserId(),
 					RegistrationConstants.PACKET_SYNC_REF_ID);
 			List<Registration> packetsToBeSynched = packetSynchService.fetchPacketsToBeSynched();
 			List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
@@ -239,7 +239,7 @@ public class PacketUploadController extends BaseController {
 					if (!synchedPackets.isEmpty()) {
 						auditFactory.audit(AuditEvent.PACKET_UPLOAD, Components.PACKET_UPLOAD,
 								"Upload packets to the server",
-								sessionContext.getUserContext().getUserId(),
+								SessionContext.userContext().getUserId(),
 								RegistrationConstants.PACKET_UPLOAD_REF_ID);
 						progressIndicator.setVisible(true);
 						for (int i = 0; i < synchedPackets.size(); i++) {

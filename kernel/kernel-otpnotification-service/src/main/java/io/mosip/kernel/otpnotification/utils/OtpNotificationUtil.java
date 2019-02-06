@@ -23,15 +23,18 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.otpnotification.constant.OtpNotificationErrorConstant;
 import io.mosip.kernel.otpnotification.constant.OtpNotificationPropertyConstant;
-import io.mosip.kernel.otpnotification.dto.NotifierResponseDto;
 import io.mosip.kernel.otpnotification.dto.OtpNotificationRequestDto;
 import io.mosip.kernel.otpnotification.dto.OtpRequestDto;
-import io.mosip.kernel.otpnotification.dto.OtpResponseDto;
 import io.mosip.kernel.otpnotification.dto.SmsRequestDto;
+import io.mosip.kernel.otpnotification.exception.OtpNotificationInvalidArgumentException;
 import io.mosip.kernel.otpnotification.exception.OtpNotifierServiceException;
 
 /**
@@ -74,6 +77,12 @@ public class OtpNotificationUtil {
 	private RestTemplate restTemplate;
 
 	/**
+	 * Reference to ObjectMapper.
+	 */
+	@Autowired
+	private ObjectMapper mapper;
+
+	/**
 	 * This method merge template with otp provided.
 	 * 
 	 * @param otp
@@ -93,7 +102,7 @@ public class OtpNotificationUtil {
 		}
 
 		Map<String, Object> templateValues = new HashMap<>();
-		templateValues.put(OtpNotificationPropertyConstant.NOTIFICATION_TEMPLATE_OTP_VALUE.getProperty(), otp);
+		templateValues.put(OtpNotificationPropertyConstant.NOTIFICATION_OTP_VALUE.getProperty(), otp);
 
 		InputStream templateInputStream = new ByteArrayInputStream(template.getBytes(Charset.forName("UTF-8")));
 
@@ -131,7 +140,23 @@ public class OtpNotificationUtil {
 
 		HttpEntity<SmsRequestDto> smsEntity = new HttpEntity<>(smsRequest, smsHeaders);
 
-		restTemplate.exchange(smsServiceApi, HttpMethod.POST, smsEntity, NotifierResponseDto.class);
+		ResponseEntity<String> response = restTemplate.exchange(smsServiceApi, HttpMethod.POST, smsEntity,
+				String.class);
+
+		String responseBody = response.getBody();
+
+		List<ServiceError> validationErrorsList = null;
+		try {
+			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+		} catch (IOException e) {
+			throw new OtpNotifierServiceException(OtpNotificationErrorConstant.NOTIFIER_SMS_IO_ERROR.getErrorCode(),
+					OtpNotificationErrorConstant.NOTIFIER_SMS_IO_ERROR.getErrorMessage());
+		}
+
+		if (!validationErrorsList.isEmpty()) {
+			throw new OtpNotificationInvalidArgumentException(validationErrorsList);
+		}
+
 	}
 
 	/**
@@ -155,7 +180,22 @@ public class OtpNotificationUtil {
 		map.add(OtpNotificationPropertyConstant.NOTIFICATION_EMAIL_CONTENT.getProperty(), emailBodyTemplate);
 		HttpEntity<MultiValueMap<String, Object>> emailEntity = new HttpEntity<>(map, emailHeaders);
 
-		restTemplate.exchange(emailServiceApi, HttpMethod.POST, emailEntity, NotifierResponseDto.class);
+		ResponseEntity<String> response = restTemplate.exchange(emailServiceApi, HttpMethod.POST, emailEntity,
+				String.class);
+
+		String responseBody = response.getBody();
+
+		List<ServiceError> validationErrorsList = null;
+		try {
+			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+		} catch (IOException e) {
+			throw new OtpNotifierServiceException(OtpNotificationErrorConstant.NOTIFIER_EMAIL_IO_ERROR.getErrorCode(),
+					OtpNotificationErrorConstant.NOTIFIER_EMAIL_IO_ERROR.getErrorMessage());
+		}
+
+		if (!validationErrorsList.isEmpty()) {
+			throw new OtpNotificationInvalidArgumentException(validationErrorsList);
+		}
 	}
 
 	/**
@@ -167,16 +207,41 @@ public class OtpNotificationUtil {
 	 */
 	public String generateOtp(OtpRequestDto request) {
 
-		ResponseEntity<OtpResponseDto> response = null;
-
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		HttpEntity<OtpRequestDto> entity = new HttpEntity<>(request, headers);
 
-		response = restTemplate.exchange(otpServiceApi, HttpMethod.POST, entity, OtpResponseDto.class);
+		ResponseEntity<String> response = restTemplate.exchange(otpServiceApi, HttpMethod.POST, entity, String.class);
 
-		return response.getBody().getOtp();
+		String responseBody = response.getBody();
+
+		List<ServiceError> validationErrorsList = null;
+		try {
+			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+		} catch (IOException e1) {
+			throw new OtpNotifierServiceException(OtpNotificationErrorConstant.NOTIFIER_OTP_IO_ERROR.getErrorCode(),
+					OtpNotificationErrorConstant.NOTIFIER_OTP_IO_ERROR.getErrorMessage());
+		}
+
+		if (!validationErrorsList.isEmpty()) {
+			throw new OtpNotificationInvalidArgumentException(validationErrorsList);
+		}
+
+		JsonNode otpResponse = null;
+		String otp = null;
+		try {
+			otpResponse = mapper.readTree(responseBody);
+
+			otp = otpResponse.get(OtpNotificationPropertyConstant.NOTIFICATION_OTP_VALUE.getProperty()).asText();
+
+		} catch (IOException e) {
+			throw new OtpNotifierServiceException(
+					OtpNotificationErrorConstant.NOTIFIER_OTP_IO_RETRIVAL_ERROR.getErrorCode(),
+					OtpNotificationErrorConstant.NOTIFIER_OTP_IO_RETRIVAL_ERROR.getErrorMessage());
+		}
+
+		return otp;
 	}
 
 	/**

@@ -71,7 +71,7 @@ public class TitleController {
 	 */
 	@PostMapping("/v1.0/title")
 	public ResponseEntity<CodeAndLanguageCodeID> saveTitle(@Valid @RequestBody RequestDto<TitleDto> title) {
-		return new ResponseEntity<>(titleService.saveTitle(title), HttpStatus.CREATED);
+		return new ResponseEntity<>(titleService.saveTitle(title), HttpStatus.OK);
 
 	}
 

@@ -62,7 +62,7 @@ public class LocationController {
 			@Valid @RequestBody RequestDto<LocationDto> locationRequestDto) {
 
 		return new ResponseEntity<>(locationHierarchyService.createLocationHierarchy(locationRequestDto),
-				HttpStatus.CREATED);
+				HttpStatus.OK);
 	}
 
 	/**

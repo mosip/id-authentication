@@ -12,6 +12,7 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -85,7 +86,7 @@ public abstract class BaseJob extends QuartzJobBean {
 	 */
 	synchronized public void executeChildJob(String currentJobID, Map<String, SyncJobDef> jobMap) {
 
-		LOGGER.info(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execution started");
 
 		try {
@@ -117,7 +118,7 @@ public abstract class BaseJob extends QuartzJobBean {
 					noSuchBeanDefinitionException.getMessage());
 		}
 
-		LOGGER.info(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execution Ended");
 
 	}
@@ -196,13 +197,13 @@ public abstract class BaseJob extends QuartzJobBean {
 
 		} catch (NoSuchBeanDefinitionException | RegBaseUncheckedException exception) {
 
-			LOGGER.error(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.error(LoggerConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
 					exception.getMessage());
 		} catch (NullPointerException nullPointerException) {
 
-			LOGGER.error(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.error(LoggerConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, nullPointerException.getMessage());
 
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NULL_POINTER_EXCEPTION,

@@ -56,7 +56,7 @@ public class UserOnboardController extends BaseController implements Initializab
 	public void initUserOnboard() {		
 		biometricDTO = new BiometricDTO();
 		biometricDTO.setOperatorBiometricDTO(createBiometricInfoDTO());
-		sessionContextMap.put(RegistrationConstants.USER_ONBOARD_DATA, biometricDTO);		
+		SessionContext.map().put(RegistrationConstants.USER_ONBOARD_DATA, biometricDTO);		
 		loadPage(RegistrationConstants.BIO_EXCEPTION_PAGE);
 		clearAllValues();
 	}
