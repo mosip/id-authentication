@@ -38,13 +38,11 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 	@Autowired
 	RegistrationCenterUserService registrationCenterUserService;
 
-	@Value("${mosip.auth.user-detail-url:http://localhost:8092/ldapmanager/userdetails}")
-	private String authUrl;
 	
-	@Value("${mosip.kernel.syncdata.auth-user-details-base-uri:http://localhost:8092/ldapmanager}")
+	@Value("${mosip.kernel.syncdata.auth-manager-base-uri:http://localhost:8092/ldapmanager}")
 	private String authUserDetailsBaseUri;
 	
-	@Value("${mosip.kernel.syncdata.auth-user-details}")
+	@Value("${mosip.kernel.syncdata.auth-user-details:/userdetails}")
 	private String authUserDetailsUri;
 
 	/**

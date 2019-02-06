@@ -79,10 +79,10 @@ public class SyncDataServiceTest {
 	@Value("${mosip.kernel.syncdata.global-config-file}")
 	private String globalConfigFileName;
 
-	@Value("${mosip.kernel.syncdata.auth-user-details-base-uri}")
+	@Value("${mosip.kernel.syncdata.auth-manager-base-uri}")
 	private String authUserDetailsBaseUri;
 
-	@Value("${mosip.kernel.syncdata.auth-user-details}")
+	@Value("${mosip.kernel.syncdata.auth-user-details:/userdetails}")
 	private String authUserDetailsUri;
 
 	private String configServerUri = null;
