@@ -1,7 +1,5 @@
 package io.mosip.kernel.idrepo.config;
 
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -12,8 +10,6 @@ import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.persistence.EntityManagerFactory;
@@ -34,12 +30,10 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.spi.ShardDataSourceResolver;
 import io.mosip.kernel.core.logger.spi.Logger;
 
@@ -191,18 +185,6 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	}
 
 	/**
-	 * Rest template.
-	 *
-	 * @return the rest template
-	 */
-	@Bean
-	public RestTemplate restTemplate() {
-		turnOffSslChecking();
-		return new RestTemplate();
-
-	}
-
-	/**
 	 * Id.
 	 *
 	 * @return the map
@@ -322,17 +304,4 @@ public class IdRepoConfig implements WebMvcConfigurer {
 
 	} };
 
-	/**
-	 * Turn off ssl checking.
-	 */
-	public void turnOffSslChecking() {
-		try {
-			final SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
-			sslContext.init(null, UNQUESTIONING_TRUST_MANAGER, null);
-			HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
-		} catch (KeyManagementException | NoSuchAlgorithmException e) {
-			mosipLogger.error("sessionId", "IdRepoConfig", "REestTemplate - turnOffSslChecking",
-					ExceptionUtils.getStackTrace(e));
-		}
-	}
 }
