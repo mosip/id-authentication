@@ -46,7 +46,7 @@ public class RegistrationCenterMachineDeviceController {
 			@Valid @RequestBody RequestDto<RegistrationCenterMachineDeviceDto> requestDto) {
 		return new ResponseEntity<>(
 				registrationCenterMachineDeviceService.createRegistrationCenterMachineAndDevice(requestDto),
-				HttpStatus.CREATED);
+				HttpStatus.OK);
 	}
 
 	@DeleteMapping(value="/{regcenterid}/{machineid}/{deviceid}")

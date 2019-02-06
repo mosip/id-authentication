@@ -106,13 +106,13 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 				biometricId.setBioAttributeCode(fingerPrintData.getFingerprintImageName());
 				biometricId.setBioTypeCode(fingerPrintData.getFingerType());
-				biometricId.setUsrId(SessionContext.getInstance().getUserContext().getUserId());				
+				biometricId.setUsrId(SessionContext.userContext().getUserId());				
 				bioMetrics.setBioMinutia(new FingerprintTemplate().convert(fingerPrintData.getFingerPrint()).serialize());
 				bioMetrics.setNumberOfRetry(fingerPrintData.getNumRetry());
 				bioMetrics.setUserBiometricId(biometricId);
 				Double qualitySocre = fingerPrintData.getQualityScore();
 				bioMetrics.setQualityScore(qualitySocre.intValue());
-				bioMetrics.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
+				bioMetrics.setCrBy(SessionContext.userContext().getUserId());
 				bioMetrics.setCrDtime(new Timestamp(System.currentTimeMillis()));
 				bioMetrics.setIsActive(true);
 
@@ -127,13 +127,13 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 				biometricId.setBioAttributeCode(iries.getIrisImageName());
 				biometricId.setBioTypeCode(iries.getIrisType());
-				biometricId.setUsrId(SessionContext.getInstance().getUserContext().getUserId());
+				biometricId.setUsrId(SessionContext.userContext().getUserId());
 				bioMetrics.setBioIsoImage(iries.getIris());
 				bioMetrics.setNumberOfRetry(iries.getNumOfIrisRetry());
 				bioMetrics.setUserBiometricId(biometricId);
 				Double qualitySocre = iries.getQualityScore();
 				bioMetrics.setQualityScore(qualitySocre.intValue());
-				bioMetrics.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
+				bioMetrics.setCrBy(SessionContext.userContext().getUserId());
 				bioMetrics.setCrDtime(new Timestamp(System.currentTimeMillis()));
 				bioMetrics.setIsActive(true);
 
@@ -148,13 +148,13 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 			biometricId.setBioAttributeCode(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
 			biometricId.setBioTypeCode(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
-			biometricId.setUsrId(SessionContext.getInstance().getUserContext().getUserId());
+			biometricId.setUsrId(SessionContext.userContext().getUserId());
 			bioMetrics.setBioIsoImage(biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO().getFace());
 			bioMetrics.setNumberOfRetry(biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO().getNumOfRetries());
 			bioMetrics.setUserBiometricId(biometricId);
 			Double qualitySocre = biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO().getQualityScore();
 			bioMetrics.setQualityScore(qualitySocre.intValue());
-			bioMetrics.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
+			bioMetrics.setCrBy(SessionContext.userContext().getUserId());
 			bioMetrics.setCrDtime(new Timestamp(System.currentTimeMillis()));
 			bioMetrics.setIsActive(true);
 
@@ -172,15 +172,15 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 			
 			UserMachineMapping user = new UserMachineMapping();
 			UserMachineMappingID userID = new UserMachineMappingID();
-			userID.setUserID(SessionContext.getInstance().getUserContext().getUserId());
-			userID.setCentreID(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
+			userID.setUserID(SessionContext.userContext().getUserId());
+			userID.setCentreID(SessionContext.userContext().getRegistrationCenterDetailDTO()
 					.getRegistrationCenterId());
-			userID.setMachineID(SessionContext.getInstance().getMapObject().get(RegistrationConstants.USER_STATION_ID).toString());
+			userID.setMachineID(SessionContext.map().get(RegistrationConstants.USER_STATION_ID).toString());
 
 			user.setUserMachineMappingId(userID);
-			user.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
+			user.setCrBy(SessionContext.userContext().getUserId());
 			user.setCrDtime(new Timestamp(System.currentTimeMillis()));
-			user.setUpdBy(SessionContext.getInstance().getUserContext().getUserId());
+			user.setUpdBy(SessionContext.userContext().getUserId());
 			user.setUpdDtimes(new Timestamp(System.currentTimeMillis()));
 			user.setIsActive(true);
 

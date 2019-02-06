@@ -46,7 +46,7 @@ public class RegistrationCenterDeviceController {
 	public ResponseEntity<ResponseRegistrationCenterDeviceDto> createRegistrationCenterAndDevice(
 			@Valid @RequestBody RequestDto<RegistrationCenterDeviceDto> requestDto) {
 		return new ResponseEntity<>(registrationCenterDeviceService.createRegistrationCenterAndDevice(requestDto),
-				HttpStatus.CREATED);
+				HttpStatus.OK);
 	}
 	
 	/**

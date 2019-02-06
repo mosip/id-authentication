@@ -43,8 +43,7 @@ public class HolidayDto {
 	@Size(min = 1, max = 64)
 	private String holidayName;
 
-	@Size(min = 1, max = 128)
-	@NotBlank
+	@Size(min = 0, max = 128)
 	private String holidayDesc;
 
 	@Size(min = 1, max = 3)

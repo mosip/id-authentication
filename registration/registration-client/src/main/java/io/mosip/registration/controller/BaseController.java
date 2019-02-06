@@ -8,7 +8,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Timer;
 
@@ -94,9 +93,6 @@ public class BaseController {
 	private int usernamePwdLength;
 
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
-	protected static Map<String, Object> sessionContextMap;
-	protected static Map<String, Object> applicationContextMap;
-	public static SessionContext sessionContext;
 
 	protected Scene scene;
 
@@ -152,7 +148,7 @@ public class BaseController {
 	 */
 	public static <T> T load(URL url) throws IOException {
 		clearDeviceOnboardingContext();
-		FXMLLoader loader = new FXMLLoader(url, ApplicationContext.getInstance().getApplicationLanguageBundle());
+		FXMLLoader loader = new FXMLLoader(url, ApplicationContext.applicationLanguageBundle());
 		loader.setControllerFactory(Initialization.getApplicationContext()::getBean);
 		return loader.load();
 	}
@@ -240,7 +236,7 @@ public class BaseController {
 	 */
 	protected boolean validateScreenAuthorization(String screenId) {
 
-		return sessionContext.getUserContext().getAuthorizationDTO().getAuthorizationScreenId()
+		return SessionContext.userContext().getAuthorizationDTO().getAuthorizationScreenId()
 				.contains(screenId);
 	}
 
@@ -281,7 +277,6 @@ public class BaseController {
 	 */
 	protected void getGlobalParams() {
 		applicationContext.setApplicationMap(globalParamService.getGlobalParams());
-		applicationContextMap = applicationContext.getApplicationMap();
 	}
 	
 	/**
@@ -326,36 +321,34 @@ public class BaseController {
 	}
 
 	protected void clearRegistrationData() {
-		sessionContextMap.remove(RegistrationConstants.REGISTRATION_ISEDIT);
-		sessionContextMap.remove(RegistrationConstants.REGISTRATION_PANE1_DATA);
-		sessionContextMap.remove(RegistrationConstants.REGISTRATION_PANE2_DATA);
-		sessionContextMap.remove(RegistrationConstants.REGISTRATION_AGE_DATA);
-		sessionContextMap.remove(RegistrationConstants.REGISTRATION_DATA);
-		sessionContextMap.remove(RegistrationConstants.IS_Child);
-		sessionContextMap.remove("dd");
-		sessionContextMap.remove("mm");
-		sessionContextMap.remove("yyyy");
-		sessionContextMap.remove("toggleAgeOrDob");
-		sessionContextMap.remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
-		sessionContextMap.remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
+		SessionContext.map().remove(RegistrationConstants.REGISTRATION_ISEDIT);
+		SessionContext.map().remove(RegistrationConstants.REGISTRATION_PANE1_DATA);
+		SessionContext.map().remove(RegistrationConstants.REGISTRATION_PANE2_DATA);
+		SessionContext.map().remove(RegistrationConstants.REGISTRATION_AGE_DATA);
+		SessionContext.map().remove(RegistrationConstants.REGISTRATION_DATA);
+		SessionContext.map().remove(RegistrationConstants.IS_Child);
+		SessionContext.map().remove("dd");
+		SessionContext.map().remove("mm");
+		SessionContext.map().remove("yyyy");
+		SessionContext.map().remove("toggleAgeOrDob");
+		SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
+		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
 
-		sessionContext.getUserContext().getUserMap()
+		SessionContext.userContext().getUserMap()
 				.remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
-		sessionContextMap.remove(RegistrationConstants.DUPLICATE_FINGER);
-		
-		
+		SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
 	}
 	
 	protected void clearOnboardData() {
-		sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
-		sessionContextMap.put(RegistrationConstants.ONBOARD_USER, false);
-		sessionContextMap.remove(RegistrationConstants.USER_ONBOARD_DATA);
-		sessionContextMap.remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
-		sessionContextMap.remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);		
+		SessionContext.map().put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
+		SessionContext.map().put(RegistrationConstants.ONBOARD_USER, false);
+		SessionContext.map().remove(RegistrationConstants.USER_ONBOARD_DATA);
+		SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
+		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
 	}
 
-	public static FXMLLoader loadChild(URL url) throws IOException {
-		FXMLLoader loader = new FXMLLoader(url, ApplicationContext.getInstance().getApplicationLanguageBundle());
+	public static FXMLLoader loadChild(URL url) {
+		FXMLLoader loader = new FXMLLoader(url, ApplicationContext.applicationLanguageBundle());
 		loader.setControllerFactory(Initialization.getApplicationContext()::getBean);
 		return loader;
 	}
@@ -400,9 +393,9 @@ public class BaseController {
 	}
 
 	private static void clearDeviceOnboardingContext() {
-		if (sessionContextMap != null) {
-			sessionContextMap.remove(RegistrationConstants.ONBOARD_DEVICES_MAP);
-			sessionContextMap.remove(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
+		if (SessionContext.isSessionContextAvailable()) {
+			SessionContext.map().remove(RegistrationConstants.ONBOARD_DEVICES_MAP);
+			SessionContext.map().remove(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
 		}
 	}
 
@@ -510,17 +503,18 @@ public class BaseController {
 	}
 
 	protected void clearAllValues() {
-		if ((boolean) sessionContextMap.get(RegistrationConstants.ONBOARD_USER)) {
-			((BiometricDTO) sessionContextMap.get(RegistrationConstants.USER_ONBOARD_DATA))
-					.setOperatorBiometricDTO(createBiometricInfoDTO());
+		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+			((BiometricDTO) SessionContext.map()
+					.get(RegistrationConstants.USER_ONBOARD_DATA)).setOperatorBiometricDTO(createBiometricInfoDTO());
 			biometricExceptionController.clearSession();
 		} else {
-			((RegistrationDTO) sessionContextMap.get(RegistrationConstants.REGISTRATION_DATA))
-					.getBiometricDTO().setApplicantBiometricDTO(createBiometricInfoDTO());
-			biometricExceptionController.setExceptionImage();
+			((RegistrationDTO) SessionContext.map()
+					.get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
+							.setApplicantBiometricDTO(createBiometricInfoDTO());
+			biometricExceptionController.clearSession();
 			fingerPrintCaptureController.clearFingerPrintDTO();
 			irisCaptureController.clearIrisData();
-		}		
+		}
 	}
 
 	protected BiometricInfoDTO createBiometricInfoDTO() {

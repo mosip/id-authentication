@@ -86,7 +86,7 @@ public class ApplicationController {
 	@PostMapping
 	public ResponseEntity<CodeAndLanguageCodeID> createApplication(
 			@Valid @RequestBody RequestDto<ApplicationDto> application) {
-		return new ResponseEntity<>(applicationService.createApplication(application), HttpStatus.CREATED);
+		return new ResponseEntity<>(applicationService.createApplication(application), HttpStatus.OK);
 
 	}
 }

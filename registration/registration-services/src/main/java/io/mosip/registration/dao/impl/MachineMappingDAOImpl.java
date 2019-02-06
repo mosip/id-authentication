@@ -164,7 +164,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 			List<UserDetail> registrationUserDetail = userDetailRepository
 					.findByRegCenterUserRegCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike(
 							ceneterID, RegistrationConstants.BLOCKED,
-							SessionContext.getInstance().getUserContext().getUserId());
+							SessionContext.userContext().getUserId());
 			if (!registrationUserDetail.isEmpty()) {
 				return registrationUserDetail;
 			} else {

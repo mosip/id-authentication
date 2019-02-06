@@ -65,9 +65,6 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	@Value("${PRE_REG_NO_OF_DAYS_LIMIT}")
 	private int noOfDays;
 
-	@Value("${PRE_REG_PACKET_DELETION_DAYS_LIMIT}")
-	private int preRegPacketDeletionDaysLimit;
-
 	@Autowired
 	private PreRegZipHandlingService preRegZipHandlingService;
 
@@ -103,7 +100,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 			setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_PACKET_NETWORK_ERROR, null);
 			return responseDTO;
 		}
-		
+
 		/* prepare request DTO to pass on through REST call */
 		PreRegistrationDataSyncDTO preRegistrationDataSyncDTO = prepareDataSyncRequestDTO();
 
@@ -132,6 +129,11 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 						break;
 					}
 				}
+			} else {
+				LOGGER.error("PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, RegistrationConstants.PRE_REG_TO_GET_ID_ERROR);
+
+				setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_ID_ERROR, null);
 			}
 
 		} catch (HttpClientErrorException | ResourceAccessException | HttpServerErrorException | RegBaseCheckedException
@@ -433,7 +435,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 	}
 
-	synchronized public ResponseDTO fetchAndDeleteRecords() {
+	 public synchronized ResponseDTO fetchAndDeleteRecords() {
 
 		LOGGER.info(
 				"REGISTRATION - PRE_REGISTRATION_DATA_DELETION_RECORD_FETCH_STARTED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
@@ -443,7 +445,9 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		ResponseDTO responseDTO = new ResponseDTO();
 		// Set the Date 15 days before the current date
 		Calendar startCal = Calendar.getInstance();
-		startCal.add(Calendar.DATE, -preRegPacketDeletionDaysLimit);
+		startCal.add(Calendar.DATE,
+				-(Integer.parseInt(getGlobalConfigValueOf(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS))));
+
 		Date startDate = Date.from(startCal.toInstant());
 
 		// fetch the records that needs to be deleted

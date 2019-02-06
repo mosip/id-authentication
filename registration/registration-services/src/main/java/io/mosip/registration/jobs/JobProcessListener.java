@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 
@@ -59,7 +60,7 @@ public class JobProcessListener extends JobListenerSupport {
 	@Override
 	synchronized public void jobToBeExecuted(JobExecutionContext context) {
 
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job to be executed started");
 
 		/*
@@ -73,11 +74,11 @@ public class JobProcessListener extends JobListenerSupport {
 					RegistrationConstants.JOB_EXECUTION_STARTED, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
 					jobManager.getJobId(context));
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
-			LOGGER.error(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.error(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
 		}
 
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job to be executed ended");
 
 		
@@ -93,7 +94,7 @@ public class JobProcessListener extends JobListenerSupport {
 	synchronized public void jobExecutionVetoed(JobExecutionContext context) {
 
 		
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job to be rejected started");
 
 		/*
@@ -107,10 +108,10 @@ public class JobProcessListener extends JobListenerSupport {
 					RegistrationConstants.JOB_EXECUTION_REJECTED, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
 					jobManager.getJobId(context));
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
-			LOGGER.error(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.error(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
 		}
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job to be rejected ended");
 
 		
@@ -124,7 +125,7 @@ public class JobProcessListener extends JobListenerSupport {
 	 */
 	@Override
 	synchronized public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job was executed started");
 
 	
@@ -135,11 +136,11 @@ public class JobProcessListener extends JobListenerSupport {
 					jobManager.getJobId(context));
 
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
-			LOGGER.error(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.error(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
 		}
 
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job was executed ended");
 
 		/*

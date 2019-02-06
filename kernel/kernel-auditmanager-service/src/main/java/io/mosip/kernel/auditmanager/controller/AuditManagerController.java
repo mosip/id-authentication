@@ -40,6 +40,6 @@ public class AuditManagerController {
 	 */
 	@PostMapping(value = "/v1.0/audits")
 	public ResponseEntity<AuditResponseDto> addAudit(@RequestBody @Valid AuditRequestDto auditRequestDto) {
-		return new ResponseEntity<>(service.addAudit(auditRequestDto), HttpStatus.CREATED);
+		return new ResponseEntity<>(service.addAudit(auditRequestDto), HttpStatus.OK);
 	}
 }
