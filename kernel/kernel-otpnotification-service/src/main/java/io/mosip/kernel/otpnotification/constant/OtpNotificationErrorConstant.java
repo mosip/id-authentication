@@ -17,7 +17,11 @@ public enum OtpNotificationErrorConstant {
 	NOTITFIER_EMAIL_ID_ERROR("KER-NOT-007","Email id cannot be empty or null"),
 	NOTITFIER_EMAIL_SUBJECT_ERROR("KER-NOT-008","Email subject cannot be empty or null"),
 	NOTIFIER_EMAIL_BODY_TEMPLATE_ERROR("KER-NOT-009","Email body template cannot be empty or null"),
-	NOTIFIER_INVALID_REQUEST_ERROR("KER-NOT-010","notificationTypes: must not be empty");
+	NOTIFIER_INVALID_REQUEST_ERROR("KER-NOT-010","notificationTypes: must not be empty"),
+	NOTIFIER_SMS_IO_ERROR("KER-NOT-011","Io exception occur in sms notification response"),
+	NOTIFIER_EMAIL_IO_ERROR("KER-NOT-012","Io exception occur in email notification"),
+	NOTIFIER_OTP_IO_ERROR("KER-NOT-013","Io exception occur in otp generation"),
+	NOTIFIER_OTP_IO_RETRIVAL_ERROR("KER-NOT-014","Io exception occur in otp retrival");
 
 	/**
 	 * The error code.
