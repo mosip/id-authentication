@@ -87,7 +87,6 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	@Override
 	public AuthStatusInfo validateOtp(AuthRequestDTO authRequestDTO, String uin)
 			throws IdAuthenticationBusinessException {
-		boolean isOtpValid = false;
 		String txnId = authRequestDTO.getTxnID();
 		Optional<String> otp = getOtpValue(authRequestDTO);
 		if (otp.isPresent()) {

@@ -1,5 +1,6 @@
 package io.mosip.authentication.service.entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -43,7 +44,7 @@ public class StaticPin {
 	
 	/** The corrected date. */
 	@Column(name = "cr_dtimes")
-	private Date createdDTimes;
+	private LocalDateTime createdDTimes;
 	
 	/** The updated by. */
 	@Column(name = "upd_by")
@@ -51,7 +52,7 @@ public class StaticPin {
 
 	/** The updated on. */
 	@Column(name = "upd_dtimes")
-	private Date updatedOn;
+	private LocalDateTime updatedOn;
 	
 	/** The is deleted. */
 	@Column(name = "is_deleted")
@@ -59,5 +60,5 @@ public class StaticPin {
 	
 	/** The deleted on. */
 	@Column(name = "del_dtimes")
-	private Date deletedOn;
+	private LocalDateTime deletedOn;
 }
