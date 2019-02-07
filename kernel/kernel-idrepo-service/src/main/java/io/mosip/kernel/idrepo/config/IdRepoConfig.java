@@ -166,8 +166,8 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	@PostConstruct
 	public void setup() {
 		status.add(env.getProperty("mosip.kernel.idrepo.status.registered"));
-		mapper.setDateFormat(new SimpleDateFormat(env.getProperty("datetime.pattern")));
-		mapper.setTimeZone(TimeZone.getTimeZone(env.getProperty("datetime.timezone")));
+		mapper.setDateFormat(new SimpleDateFormat(env.getProperty("mosip.kernel.idrepo.datetime.pattern")));
+		mapper.setTimeZone(TimeZone.getTimeZone(env.getProperty("mosip.kernel.idrepo.datetime.timezone")));
 	}
 
 	/**
