@@ -150,7 +150,6 @@ public class DocumentScanController extends BaseController {
 					"initializing the registration controller",
 					SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
-			//init
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			toggleFunctionForBiometricException();
 			loadListOfDocuments(poaDocuments, "POA");

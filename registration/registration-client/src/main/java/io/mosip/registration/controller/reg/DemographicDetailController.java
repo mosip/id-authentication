@@ -349,7 +349,6 @@ public class DemographicDetailController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
-			//fx Utils settings
 			fxUtils = FXUtils.getInstance();
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED,
 					RegistrationConstants.DISABLE);
