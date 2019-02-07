@@ -20,8 +20,8 @@
    </AnchorPane>
       <AnchorPane layoutX="-190.0" layoutY="35.0" prefHeight="749.0" prefWidth="1139.0">
          <children>
-         	<fx:include fx:id="demographicDetail" source="DemographicDetail.fxml" visible="true" />
          	<fx:include fx:id="documentScan" source="DocumentScan.fxml" visible="false" />
+         	<fx:include fx:id="demographicDetail" source="DemographicDetail.fxml" visible="true" />
          	<fx:include fx:id="biometricException" source="BiometricException.fxml" visible="false" />
             <fx:include fx:id="fingerPrintCapture" source="FingerPrintCapture.fxml" visible="false" />
             <fx:include fx:id="irisCapture" source="IrisCapture.fxml" visible="false" />
