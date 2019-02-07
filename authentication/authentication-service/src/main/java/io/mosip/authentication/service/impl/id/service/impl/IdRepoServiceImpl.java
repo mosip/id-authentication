@@ -55,7 +55,7 @@ public class IdRepoServiceImpl implements IdRepoService {
 	/**
 	 * Fetch data from Id Repo based on Individual's UIN / VID value
 	 */
-	public Map<String, Object> getIdRepo(String uin, boolean isBio) throws IdAuthenticationBusinessException {
+	public Map<String, Object> getIdenity(String uin, boolean isBio) throws IdAuthenticationBusinessException {
 
 		RestRequestDTO buildRequest = null;
 		Map<String, Object> response = null;
