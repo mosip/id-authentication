@@ -1247,8 +1247,8 @@ public class MasterSyncServiceTest {
 	@Test
 	public void findDocumentCategories() {
 	
-		List<DocumentCategoryDto> documents = new ArrayList<>();
-		DocumentCategoryDto document = new DocumentCategoryDto();
+		List<MasterDocumentType> documents = new ArrayList<>();
+		MasterDocumentType document = new MasterDocumentType();
 		document.setName("Aadhar");
 		document.setDescription("Aadhar card");
 		document.setLangCode("ENG");
