@@ -53,6 +53,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -108,12 +109,6 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	public ImageView biometricTracker;
-	
-	@FXML
-	private AnchorPane RegistrationHeader;
-	
-	@FXML
-	private AnchorPane registrationPreviewHeader;
 	
 	@FXML
 	private AnchorPane registrationPreview;
@@ -354,8 +349,6 @@ public class RegistrationController extends BaseController {
 						saveDetail();
 						SessionContext.getInstance().getMapObject().put("faceCapture",false);
 						SessionContext.getInstance().getMapObject().put("registrationPreview",true);
-						RegistrationHeader.setVisible(false);
-						registrationPreviewHeader.setVisible(true);
 						registrationPreviewController.setUpPreviewContent();
 						showCurrentPage();
 					} else {
@@ -382,8 +375,6 @@ public class RegistrationController extends BaseController {
 	// Operator Authentication
 	public void goToAuthenticationPage() {
 		try {
-			RegistrationHeader.setVisible(true);
-			registrationPreviewHeader.setVisible(false);
 			SessionContext.getInstance().getMapObject().put("operatorAuthentication", true);
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 			loadScreen(RegistrationConstants.CREATE_PACKET_PAGE);
