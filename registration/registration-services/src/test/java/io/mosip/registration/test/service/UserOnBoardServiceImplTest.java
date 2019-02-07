@@ -1,8 +1,11 @@
 package io.mosip.registration.test.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,9 +17,9 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
@@ -35,7 +38,7 @@ import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecke
  * @since 1.0.0
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ UserOnBoardServiceImplTest.class ,RegistrationSystemPropertiesChecker.class})
+@PrepareForTest({ UserOnBoardServiceImplTest.class ,RegistrationSystemPropertiesChecker.class,ApplicationContext.class})
 public class UserOnBoardServiceImplTest {
 	
 	@Rule
@@ -49,6 +52,14 @@ public class UserOnBoardServiceImplTest {
 	
 	@Mock
 	private UserOnboardDAO userOnBoardDao;
+	
+	@Before
+	public void init() {
+		PowerMockito.mockStatic(ApplicationContext.class);
+		Map<String, Object> globalParams = new HashMap<>();
+		globalParams.put("USER_ON_BOARD_THRESHOLD_LIMIT", 10);
+		PowerMockito.when(ApplicationContext.map().get("USER_ON_BOARD_THRESHOLD_LIMIT")).thenReturn(globalParams);
+	}
 	
 	@Test
 	public void userOnBoard() {
@@ -147,11 +158,7 @@ public class UserOnBoardServiceImplTest {
 		info.setFaceDetailsDTO(face);
 		
 		biometricDTO.setOperatorBiometricDTO(info);
-		
-		ReflectionTestUtils.setField(userOnboardServiceImpl, "UserOnBoardThresholdLimit", 10);
-		
 		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.success);
-		
 		userOnboardServiceImpl.validate(biometricDTO);
 		
 	}
@@ -253,11 +260,7 @@ public class UserOnBoardServiceImplTest {
 		info.setFaceDetailsDTO(face);
 		
 		biometricDTO.setOperatorBiometricDTO(info);
-		
-		ReflectionTestUtils.setField(userOnboardServiceImpl, "UserOnBoardThresholdLimit", 100);
-		
 		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.success);
-		
 		userOnboardServiceImpl.validate(biometricDTO);
 		
 	}
@@ -360,11 +363,7 @@ public class UserOnBoardServiceImplTest {
 		info.setFaceDetailsDTO(face);
 		
 		biometricDTO.setOperatorBiometricDTO(info);
-		
-		ReflectionTestUtils.setField(userOnboardServiceImpl, "UserOnBoardThresholdLimit", 10);
-		
 		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenThrow(RegBaseUncheckedException.class);
-		
 		userOnboardServiceImpl.validate(biometricDTO);
 		
 	}
@@ -467,11 +466,7 @@ public class UserOnBoardServiceImplTest {
 		info.setFaceDetailsDTO(face);
 		
 		biometricDTO.setOperatorBiometricDTO(info);
-		
-		ReflectionTestUtils.setField(userOnboardServiceImpl, "UserOnBoardThresholdLimit", 10);
-		
 		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenThrow(RuntimeException.class);
-		
 		userOnboardServiceImpl.validate(biometricDTO);
 		
 	}

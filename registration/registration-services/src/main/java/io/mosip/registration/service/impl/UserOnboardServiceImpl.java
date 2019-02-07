@@ -9,12 +9,12 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -37,9 +37,6 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 	@Autowired
 	private UserOnboardDAO userOnBoardDao;
 
-	@Value("${USER_ON_BOARD_THRESHOLD_LIMIT}")
-	private int UserOnBoardThresholdLimit;
-
 	/**
 	 * logger for logging
 	 */
@@ -53,6 +50,8 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 	 */
 	@Override
 	public ResponseDTO validate(BiometricDTO biometricDTO) {
+		
+		int UserOnBoardThresholdLimit = (int) ApplicationContext.map().get("USER_ON_BOARD_THRESHOLD_LIMIT");
 
 		ResponseDTO responseDTO = null;
 
