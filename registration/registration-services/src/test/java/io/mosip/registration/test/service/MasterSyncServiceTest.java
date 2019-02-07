@@ -43,6 +43,7 @@ import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
+import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.mastersync.MasterBlacklistedWords;
@@ -1246,8 +1247,8 @@ public class MasterSyncServiceTest {
 	@Test
 	public void findDocumentCategories() {
 	
-		List<MasterDocumentType> documents = new ArrayList<>();
-		MasterDocumentType document = new MasterDocumentType();
+		List<DocumentCategoryDto> documents = new ArrayList<>();
+		DocumentCategoryDto document = new DocumentCategoryDto();
 		document.setName("Aadhar");
 		document.setDescription("Aadhar card");
 		document.setLangCode("ENG");
