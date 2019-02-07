@@ -118,13 +118,31 @@
 	-fx-border-color: black;
 }
 
-.ackHeading {
+.heading {
 	-fx-font-size: 16.0px;
 	-fx-text-fill: #FF4081;
 	-fx-font-family: Roboto;
 }
 
 .ackBackButton{
+	-fx-border-width: 1 1 1 1;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;
+	-fx-background-color:#FFFFFF;
+	-fx-border-color: #FF4081;
+	-fx-font-family: Roboto;	
+}
+
+.approveButton {
+	-fx-border-width: 1 1 1 1;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;
+	-fx-background-color: #FF4081;
+	-fx-text-fill: white;
+	-fx-font-family: Roboto;
+}
+
+.rejectButton{
 	-fx-border-width: 1 1 1 1;
 	-fx-border-radius: 3,3,3,3;
 	-fx-pref-height: 2px;
@@ -461,7 +479,7 @@
 	-fx-border-color: #F7F8F9;
 }
 #onboardHomeLink{
-	-fx-text-fill: #666666;
+	-fx-text-fill: #C9C9C9;
 	-fx-font-family: Roboto;
 	-fx-font-weight: lighter;
 	-fx-font-size: 13.0px;	
@@ -530,8 +548,42 @@
 	-fx-border-width: 0.0 0.0 1.0 0.0;
 	-fx-border-color: #C9C9C9;
 }
+.onboardInfoDetails{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #666666;
+	-fx-font-weight: lighter;
+}
+.onboardInfoDetailsName{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #333333;
+}
+.onboardExceptionDetails{
+	-fx-font-family: Roboto;
+	-fx-font-size: 10.0px;
+	-fx-text-fill: #666666;
+	-fx-font-weight: lighter;
+}
+.exceptionCombobox{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 0 0 1 0;
+	fx-text-fill: #000000;
+	-fx-border-color: #C9C9C9;
+	-fx-font-size: 12px;
+}
+.exceptionFingerPane{
+	-fx-border-width: 0.0 1.0 0.0 0.0;
+	-fx-border-color: #C9C9C9;
+}
+.onboardExceptionLayout{
+	-fx-pref-height: 574.0px;
+	-fx-pref-width: 938.0px;
+}
+.regExceptionLayout{
+	-fx-background-color:#ffffff;
+}
 /*user onboard exception design ends */
-
 #mainBox{
 	-fx-border-width: 0.0;
 	-fx-border-color: black;
@@ -579,7 +631,7 @@
 	-fx-background-color:#808080;
 }
 .anchorPanebgColor{
-	-fx-background-color:#ffffff;
+	-fx-background-color: #F0F0F0;
 	-fx-alignment: center ;
 }
 .comboboxStyle{
@@ -643,27 +695,16 @@
     -fx-background-insets: 0.0;
     -fx-padding: 0.0;
 } 
-.toggle-button{
-	-fx-background-color:#ffffff;
-	-fx-background-radius: 6.0,5.0;
-    -fx-background-insets: 0.0,1.0; 
-    -fx-text-fill: black;
-    -fx-font-size: 10.0px;   
-     -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
-}
-.toggle-button:selected{
-    -fx-background-color: #a9a9a9;
-     -fx-background-radius: 6.0,5.0;
-    -fx-background-insets: 0.0,1.0;
-    -fx-text-fill: black;
-    -fx-font-size: 10.0px;
-     -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
+
+#applicantImageHBox, #exceptionImageHBox {
+	-fx-border-color: black;
+	-fx-border-width: 2.0;
 }
 /* Registration - Biometric - Iris Capture */
-#leftHandPalmPane,#rightHandPalmPane,#thumbPane,.irisImagePane {
+#leftHandPalmPane,#rightHandPalmPane,#thumbPane,#rightIrisPane,#leftIrisPane {
 	-fx-border-color: lightgrey;
 }
-#leftHandPalmPane:focused ,#rightHandPalmPane:focused ,#thumbPane:focused ,.irisImagePane:focused{
+#leftHandPalmPane:focused ,#rightHandPalmPane:focused ,#thumbPane:focused ,#rightIrisPane:focused,#leftIrisPane:focused{
 	-fx-border-color: black;
 }
 
@@ -956,7 +997,7 @@ Working on new Css
 
 .paneAtDisplayDocument{
 	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 590px;	
+	-fx-pref-height: 580px;	
 	-fx-pref-width: 1050px;	
 }
 
@@ -1060,16 +1101,14 @@ Working on new Css
 }
 
 .IrisPanes{
-	-fx-pref-height: 160px;	
-	-fx-pref-width: 180px;
+	-fx-pref-height: 200px;	
+	-fx-pref-width: 300px;
 }
 
 .PhotoCaptureWindow{
 	-fx-pref-height: 100px;	
 	-fx-pref-width: 200px;
-	-fx-border-color: black;
-	-fx-border-width: 2.0;
-	
+	-fx-background-color : #C9C9C9;	
 }
 
 .qualityBox{

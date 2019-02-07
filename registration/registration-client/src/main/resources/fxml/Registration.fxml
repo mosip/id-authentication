@@ -18,11 +18,6 @@
     	<fx:include fx:id="Header" source="Header.fxml" /> 
     </children>
    </AnchorPane>
-   <AnchorPane layoutX="-190.0" layoutY="40.0">
-    <children>
-    	<fx:include fx:id="registrationPreviewHeader" source="RegistrationPreviewHeader.fxml" visible="false" />
-    </children>
-   </AnchorPane>
       <AnchorPane layoutX="-190.0" layoutY="35.0" prefHeight="749.0" prefWidth="1139.0">
          <children>
          	<fx:include fx:id="demographicDetail" source="DemographicDetail.fxml" visible="true" />

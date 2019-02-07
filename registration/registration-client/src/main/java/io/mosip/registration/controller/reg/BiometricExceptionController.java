@@ -17,7 +17,9 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.device.FingerPrintCaptureController;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -26,7 +28,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -72,30 +73,41 @@ public class BiometricExceptionController extends BaseController implements Init
 	@FXML
 	private Button previousBtn;
 	@FXML
-	private ImageView homePageImg;
+	private ImageView userOnboardImg;
 	@FXML
-	private Text homePageLbl;
+	private ImageView registrationImg;
 	@FXML
 	private AnchorPane biometricException;
 	@FXML
-	private AnchorPane biometricExceptionLayout;
+	private AnchorPane operatorExceptionLayout;
+	@FXML
+	private AnchorPane operatorExceptionHeader;
+	@FXML
+	private AnchorPane exceptionDocProof;
+	@FXML
+	private AnchorPane regExceptionHeader;
+	@FXML
+	private AnchorPane userOnboardFooter;
+	@FXML
+	private AnchorPane registrationFooter;
 
 	@Autowired
 	private RegistrationController registrationController;
 
 	private static final Logger LOGGER = AppConfig.getLogger(BiometricExceptionController.class);
 
-
 	@Autowired
 	private UserOnboardController userOnboardController;
+
+	@Autowired
+	private FingerPrintCaptureController fingerPrintCaptureController;
 
 	private List<String> fingerList = new ArrayList<>();
 	private List<String> irisList = new ArrayList<>();
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		fingerList.clear();
-		irisList.clear();
+		setExceptionImage();
 		fingerExceptionListener(leftLittle);
 		fingerExceptionListener(leftIndex);
 		fingerExceptionListener(leftMiddle);
@@ -108,20 +120,45 @@ public class BiometricExceptionController extends BaseController implements Init
 		fingerExceptionListener(rightThumb);
 		irisExceptionListener(leftEye);
 		irisExceptionListener(rightEye);
-}
+		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+			exceptionDocProof.setVisible(false);
+			regExceptionHeader.setVisible(false);
+			registrationImg.setVisible(false);
+			registrationFooter.setVisible(false);
+			userOnboardFooter.setVisible(true);
+			userOnboardImg.setVisible(true);
+			operatorExceptionLayout.setVisible(true);
+			operatorExceptionHeader.setVisible(true);
+		} else {
+			exceptionDocProof.setVisible(true);
+			regExceptionHeader.setVisible(true);
+			registrationImg.setVisible(true);
+			registrationFooter.setVisible(true);
+			userOnboardFooter.setVisible(false);
+			userOnboardImg.setVisible(false);
+			operatorExceptionLayout.setVisible(false);
+			operatorExceptionHeader.setVisible(false);
+		}
+	}
+
 	/**
-	 *  This method is used to capture the finger click from the UI
+	 * This method is used to capture the finger click from the UI
+	 * 
 	 * @param fingerLabel
 	 */
 	private void fingerExceptionListener(Label fingerLabel) {
-		
+
 		LOGGER.debug("REGISTRATION - FINGER_LABEL_LISTENER - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
 				APPLICATION_ID, "It will listen the finger click funtionality");
-		
+
 		SimpleBooleanProperty toggleFunctionForFinger = new SimpleBooleanProperty(false);
 		toggleFunctionForFinger.addListener(new ChangeListener<Boolean>() {
-			/* (non-Javadoc)
-			 * @see javafx.beans.value.ChangeListener#changed(javafx.beans.value.ObservableValue, java.lang.Object, java.lang.Object)
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * javafx.beans.value.ChangeListener#changed(javafx.beans.value.ObservableValue,
+			 * java.lang.Object, java.lang.Object)
 			 */
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				ImageView image;
@@ -130,7 +167,7 @@ public class BiometricExceptionController extends BaseController implements Init
 				} else {
 					image = (ImageView) rightHandPane.lookup("#" + fingerLabel.getId() + "Img");
 				}
-				if (newValue) {
+				if (newValue && !fingerList.contains(fingerLabel.getId())) {
 					fingerList.add(fingerLabel.getId());
 					image.setVisible(true);
 				} else {
@@ -159,27 +196,28 @@ public class BiometricExceptionController extends BaseController implements Init
 		fingerLabel.setOnMouseClicked((event) -> {
 			toggleFunctionForFinger.set(!toggleFunctionForFinger.get());
 		});
-		
+
 		LOGGER.debug("REGISTRATION - FINGER_LABEL_LISTENER_END - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
 				APPLICATION_ID, "End of Functionality");
-		
+
 	}
 
 	/**
 	 * This method is used to capture the Iris click from the UI
+	 * 
 	 * @param irisImage
 	 */
 	private void irisExceptionListener(ImageView irisImage) {
-		
+
 		LOGGER.debug("REGISTRATION - IRIS_EXCEPTION_LISTENER - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
 				APPLICATION_ID, "It will listen the iris on click functionality");
-		
+
 		SimpleBooleanProperty toggleFunctionForIris = new SimpleBooleanProperty(false);
 		Pane irisPane = (Pane) biometricException.lookup("#" + irisImage.getId() + "Pane");
 		toggleFunctionForIris.addListener(new ChangeListener<Boolean>() {
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				irisPane.getStyleClass().clear();
-				if (newValue) {
+				if (newValue && !irisList.contains(irisImage.getId())) {
 					irisList.add(irisImage.getId());
 					irisPane.getStyleClass().add(RegistrationConstants.ADD_BORDER);
 				} else {
@@ -193,10 +231,10 @@ public class BiometricExceptionController extends BaseController implements Init
 		irisImage.setOnMouseClicked((event) -> {
 			toggleFunctionForIris.set(!toggleFunctionForIris.get());
 		});
-		
+
 		LOGGER.debug("REGISTRATION - IRIS_EXCEPTION_LISTENER_END - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
 				APPLICATION_ID, "End of Iris Functionality");
-		
+
 	}
 
 	/**
@@ -204,13 +242,19 @@ public class BiometricExceptionController extends BaseController implements Init
 	 */
 	public void goToNextPage() {
 
-LOGGER.debug("REGISTRATION - NEXT_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
-				APPLICATION_ID, "Going to next page");
+		LOGGER.debug("REGISTRATION - NEXT_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME, APPLICATION_ID,
+				"Going to next page");
 
 		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
 			userOnboardController.loadFingerPrint();
+			exceptionDTOCreation();
+			fingerPrintCaptureController.clearImage();
 		} else {
 			exceptionDTOCreation();
+			if (fingerList.isEmpty() && irisList.isEmpty()) {
+				generateAlert(RegistrationConstants.ALERT_INFORMATION,
+						RegistrationUIConstants.BIOMETRIC_EXCEPTION_ALERT);
+			} else {exceptionDTOCreation();
 			if (fingerList.isEmpty() && irisList.isEmpty()) {
 				generateAlert(RegistrationConstants.ALERT_INFORMATION,
 						RegistrationUIConstants.BIOMETRIC_EXCEPTION_ALERT);
@@ -240,6 +284,7 @@ LOGGER.debug("REGISTRATION - NEXT_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICAT
 					registrationController.showCurrentPage();
 				}
 			}
+			}
 		}
 	}
 
@@ -247,19 +292,14 @@ LOGGER.debug("REGISTRATION - NEXT_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICAT
 	 * Adding biometric exception details to the Session context
 	 */
 	private void exceptionDTOCreation() {
-		
+
 		LOGGER.debug("REGISTRATION - EXCEPTION_DTO_CREATION - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
 				APPLICATION_ID, "Populating the exception dto in session context");
-		
 		List<String> bioList = new ArrayList<>();
 		bioList.addAll(fingerList);
 		bioList.addAll(irisList);
 		if (!bioList.isEmpty()) {
-			RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
-					.get(RegistrationConstants.REGISTRATION_DATA);
-			List<BiometricExceptionDTO> biometricExceptionList = registrationDTO.getBiometricDTO()
-					.getApplicantBiometricDTO().getBiometricExceptionDTO();
-			biometricExceptionList.clear();
+			List<BiometricExceptionDTO> biometricExceptionList = new ArrayList<>();
 			bioList.forEach(bioType -> {
 				BiometricExceptionDTO biometricExceptionDTO = new BiometricExceptionDTO();
 				if (bioType.contains("Eye")) {
@@ -270,18 +310,31 @@ LOGGER.debug("REGISTRATION - NEXT_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICAT
 				biometricExceptionDTO.setMissingBiometric(bioType);
 				biometricExceptionList.add(biometricExceptionDTO);
 			});
+			SessionContext.getInstance().getMapObject().put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION,
+					biometricExceptionList);
+			if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+				((BiometricDTO) SessionContext.getInstance().getMapObject()
+						.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO()
+								.setBiometricExceptionDTO(biometricExceptionList);
+			} else {
+				((RegistrationDTO) SessionContext.getInstance().getMapObject()
+						.get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO().getApplicantBiometricDTO()
+								.setBiometricExceptionDTO(biometricExceptionList);
+			}
+
 		}
-		
+
 		LOGGER.debug("REGISTRATION - EXCEPTION_DTO_CREATION_END - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
 				APPLICATION_ID, "End of exception dto creation functionality");
-		
+
 	}
 
 	/**
-	 * This method will call on click of previous button and toggle the visibility based
+	 * This method will call on click of previous button and toggle the visibility
+	 * based
 	 */
 	public void goToPreviousPage() {
-		
+
 		LOGGER.debug("REGISTRATION - PREVIOUS_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
 				APPLICATION_ID, "It will go to the previous page");
 		
@@ -294,7 +347,7 @@ LOGGER.debug("REGISTRATION - NEXT_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICAT
 			registrationController.showCurrentPage();
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void setExceptionImage() {
 
@@ -350,7 +403,6 @@ LOGGER.debug("REGISTRATION - NEXT_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICAT
 		}
 	}
 
-	
 	public void clearSession() {
 		SessionContext.getInstance().getMapObject().put(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION,
 				new ArrayList<>());
