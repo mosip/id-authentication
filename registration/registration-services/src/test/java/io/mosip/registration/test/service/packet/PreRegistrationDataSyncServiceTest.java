@@ -78,7 +78,7 @@ public class PreRegistrationDataSyncServiceTest {
 	PreRegistrationList preRegistrationList;
 
 	@Mock
-	PreRegZipHandlingService preRegZipHandlingService;	
+	PreRegZipHandlingService preRegZipHandlingService;
 
 	static byte[] preRegPacket;
 
@@ -93,15 +93,15 @@ public class PreRegistrationDataSyncServiceTest {
 
 		preRegData.put(RegistrationConstants.PRE_REG_FILE_NAME, "filename_2018-12-12 09:39:08.272.zip");
 		preRegData.put(RegistrationConstants.PRE_REG_FILE_CONTENT, preRegPacket);
-		
+
 		SessionContext.getInstance();
 	}
-	
+
 	@Before
 	public void initiate() {
-		Map<String,Object> applicationMap =new HashMap<>();
+		Map<String, Object> applicationMap = new HashMap<>();
 		applicationMap.put(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS, "45");
-		
+
 		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
 		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
 	}
@@ -110,7 +110,7 @@ public class PreRegistrationDataSyncServiceTest {
 	public static void destroy() {
 		SessionContext.destroySession();
 	}
-	
+
 	@Test
 	public void getPreRegistrationsTest()
 			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
@@ -220,14 +220,20 @@ public class PreRegistrationDataSyncServiceTest {
 	}
 
 	@Test
-	public void fetchAndDeleteRecordsTest() {
+	public void fetchAndDeleteRecordsTest() throws java.io.IOException {
+		File file = new File("testDeletePacket.txt");
+		file.createNewFile();
 		List<PreRegistrationList> preRegList = new ArrayList<>();
 		PreRegistrationList preRegistrationList = new PreRegistrationList();
-		preRegistrationList.setPacketPath("");
+		preRegistrationList.setPacketPath(file.getAbsolutePath());
 		preRegList.add(preRegistrationList);
 		Mockito.when(preRegistrationDAO.fetchRecordsToBeDeleted(Mockito.any())).thenReturn(preRegList);
 		Mockito.when(preRegistrationDAO.update(Mockito.anyObject())).thenReturn(preRegistrationList);
 		preRegistrationDataSyncServiceImpl.fetchAndDeleteRecords();
+
+		if (file.exists()) {
+			file.delete();
+		}
 	}
 
 }
