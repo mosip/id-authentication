@@ -5,9 +5,14 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.REG_UI_LOGIN_LOADER_EXCEPTION;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,10 +48,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -111,7 +115,7 @@ public class RegistrationApprovalController extends BaseController implements In
 	private ToggleButton authenticateBtn;
 	/** The image view. */
 	@FXML
-	private ImageView imageView;
+	private WebView imageView;
 
 	/** The approve registration root sub pane. */
 	@FXML
@@ -188,7 +192,7 @@ public class RegistrationApprovalController extends BaseController implements In
 				authenticateBtn.setDisable(false);
 			}
 
-			imageView.setImage(null);
+			imageView.getEngine().loadContent("");
 
 			approvalBtn.setSelected(false);
 			rejectionBtn.setSelected(false);
@@ -212,7 +216,24 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			try (FileInputStream file = new FileInputStream(
 					new File(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath()))) {
-				imageView.setImage(new Image(file));
+				Writer stringWriter = new StringWriter();
+				Reader bReader = null;
+				char[] buff = new char[1024];
+
+				try {
+					bReader = new BufferedReader(new InputStreamReader(file, "UTF-8"));
+					int n;
+					while ((n = bReader.read(buff)) != -1) {
+						stringWriter.write(buff, 0, n);
+					}
+				} finally {
+					if (bReader != null) {
+						bReader.close();
+					}
+					stringWriter.close();
+				}
+
+				imageView.getEngine().loadContent(stringWriter.toString());
 			} catch (IOException ioException) {
 				LOGGER.error("REGISTRATION_APPROVAL_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
 						APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());

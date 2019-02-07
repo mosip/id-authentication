@@ -118,13 +118,31 @@
 	-fx-border-color: black;
 }
 
-.ackHeading {
+.heading {
 	-fx-font-size: 16.0px;
 	-fx-text-fill: #FF4081;
 	-fx-font-family: Roboto;
 }
 
 .ackBackButton{
+	-fx-border-width: 1 1 1 1;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;
+	-fx-background-color:#FFFFFF;
+	-fx-border-color: #FF4081;
+	-fx-font-family: Roboto;	
+}
+
+.approveButton {
+	-fx-border-width: 1 1 1 1;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;
+	-fx-background-color: #FF4081;
+	-fx-text-fill: white;
+	-fx-font-family: Roboto;
+}
+
+.rejectButton{
 	-fx-border-width: 1 1 1 1;
 	-fx-border-radius: 3,3,3,3;
 	-fx-pref-height: 2px;
@@ -579,7 +597,7 @@
 	-fx-background-color:#808080;
 }
 .anchorPanebgColor{
-	-fx-background-color:#ffffff;
+	-fx-background-color: #F0F0F0;
 	-fx-alignment: center ;
 }
 .comboboxStyle{
@@ -643,22 +661,7 @@
     -fx-background-insets: 0.0;
     -fx-padding: 0.0;
 } 
-.toggle-button{
-	-fx-background-color:#ffffff;
-	-fx-background-radius: 6.0,5.0;
-    -fx-background-insets: 0.0,1.0; 
-    -fx-text-fill: black;
-    -fx-font-size: 10.0px;   
-     -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
-}
-.toggle-button:selected{
-    -fx-background-color: #a9a9a9;
-     -fx-background-radius: 6.0,5.0;
-    -fx-background-insets: 0.0,1.0;
-    -fx-text-fill: black;
-    -fx-font-size: 10.0px;
-     -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
-}
+
 #applicantImageHBox, #exceptionImageHBox {
 	-fx-border-color: black;
 	-fx-border-width: 2.0;
