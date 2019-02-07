@@ -5,9 +5,13 @@ import io.mosip.kernel.auth.dto.*;
 import io.mosip.kernel.auth.dto.otp.*;
 import io.mosip.kernel.auth.jwtBuilder.TokenGenerator;
 import io.mosip.kernel.auth.jwtBuilder.TokenValidator;
+
+import org.apache.http.client.HttpResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -199,7 +203,7 @@ public class AuthServiceImpl implements AuthService {
             } else {
                 throw new RuntimeException(rolesResponse.getStatusCode() + " :Error Code");
             }
-        } catch (RestClientException ex) {
+        } catch (HttpClientErrorException | HttpServerErrorException ex) {
             throw new Exception(ex);
         }
     }
@@ -215,8 +219,8 @@ public class AuthServiceImpl implements AuthService {
             } else {
                 throw new RuntimeException(userDetailResponse.getStatusCode() + " :Error Code");
             }
-        } catch (RestClientException ex) {
-            throw new Exception(ex);
+        } catch (HttpClientErrorException | HttpServerErrorException ex) {
+          throw new Exception(ex);
         }
 
     }

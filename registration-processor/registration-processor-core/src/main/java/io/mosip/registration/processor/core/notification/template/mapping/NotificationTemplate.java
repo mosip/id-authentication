@@ -24,7 +24,7 @@ public class NotificationTemplate {
 
 	private String dateOfBirth;
 
-	private Integer age;
+	private Long age;
 
 	private JsonValue[] gender;
 
@@ -39,7 +39,7 @@ public class NotificationTemplate {
 	private JsonValue[] addressLine1;
 
 	public JsonValue[] getAddressLine1() {
-		if(addressLine1 != null) 
+		if (addressLine1 != null)
 			return Arrays.copyOf(addressLine1, addressLine1.length);
 		return null;
 	}
@@ -51,7 +51,7 @@ public class NotificationTemplate {
 	private JsonValue[] addressLine2;
 
 	public JsonValue[] getAddressLine2() {
-		if(addressLine2 != null) 
+		if (addressLine2 != null)
 			return Arrays.copyOf(addressLine2, addressLine2.length);
 		return null;
 	}
@@ -63,7 +63,7 @@ public class NotificationTemplate {
 	private JsonValue[] addressLine3;
 
 	public JsonValue[] getAddressLine3() {
-		if(addressLine3 != null) 
+		if (addressLine3 != null)
 			return Arrays.copyOf(addressLine3, addressLine3.length);
 		return null;
 	}
@@ -75,7 +75,7 @@ public class NotificationTemplate {
 	private JsonValue[] region;
 
 	public JsonValue[] getRegion() {
-		if(region != null) 
+		if (region != null)
 			return Arrays.copyOf(region, region.length);
 		return null;
 	}
@@ -87,7 +87,7 @@ public class NotificationTemplate {
 	private JsonValue[] province;
 
 	public JsonValue[] getProvince() {
-		if(province != null) 
+		if (province != null)
 			return Arrays.copyOf(province, province.length);
 		return null;
 	}
@@ -99,7 +99,7 @@ public class NotificationTemplate {
 	private JsonValue[] city;
 
 	public JsonValue[] getCity() {
-		if(city != null) 
+		if (city != null)
 			return Arrays.copyOf(city, city.length);
 		return null;
 	}
@@ -110,105 +110,75 @@ public class NotificationTemplate {
 
 	private String postalCode;
 
-	private JsonValue[] parentOrGuardianName;
-
-	public JsonValue[] getParentOrGuardianName() {
-		if(parentOrGuardianName != null) 
-			return Arrays.copyOf(parentOrGuardianName, parentOrGuardianName.length);
-		return null;
-	}
-
-	public void setParentOrGuardianName(JsonValue[] parentOrGuardianName) {
-		this.parentOrGuardianName = parentOrGuardianName != null ? parentOrGuardianName : null;
-	}
-
 	private String parentOrGuardianRIDOrUIN;
 
-	private JsonValue[] proofOfAddress;
+	private String proofOfAddress;
 
-	public JsonValue[] getProofOfAddress() {
-		if(proofOfAddress != null) 
-			return Arrays.copyOf(proofOfAddress, proofOfAddress.length);
-		return null;
+	public String getProofOfAddress() {
+
+		return proofOfAddress;
 	}
 
-	public void setProofOfAddress(JsonValue[] proofOfAddress) {
-		this.proofOfAddress = proofOfAddress != null ? proofOfAddress : null;
+	public void setProofOfAddress(String proofOfAddress) {
+		this.proofOfAddress = proofOfAddress;
 	}
 
-	private JsonValue[] proofOfIdentity;
+	private String proofOfIdentity;
 
-	public JsonValue[] getProofOfIdentity() {
-		if(proofOfIdentity != null) 
-			return Arrays.copyOf(proofOfIdentity, proofOfIdentity.length);
-		return null;
+	public String getProofOfIdentity() {
+
+		return proofOfIdentity;
 	}
 
-	public void setProofOfIdentity(JsonValue[] proofOfIdentity) {
-		this.proofOfIdentity = proofOfIdentity != null ? proofOfIdentity : null;
+	public void setProofOfIdentity(String proofOfIdentity) {
+		this.proofOfIdentity = proofOfIdentity;
 	}
 
-	private JsonValue[] proofOfRelationship;
+	private String proofOfRelationship;
 
-	public JsonValue[] getProofOfRelationship() {
-		if(proofOfRelationship != null) 
-			return Arrays.copyOf(proofOfRelationship, proofOfRelationship.length);
-		return null;
+	public String getProofOfRelationship() {
+		return proofOfRelationship;
 	}
 
-	public void setProofOfRelationship(JsonValue[] proofOfRelationship) {
-		this.proofOfRelationship = proofOfRelationship != null ? proofOfRelationship : null;
+	public void setProofOfRelationship(String proofOfRelationship) {
+		this.proofOfRelationship = proofOfRelationship;
 	}
 
-	private JsonValue[] proofOfDateOfBirth;
+	private String proofOfDateOfBirth;
 
-	public JsonValue[] getProofOfDateOfBirth() {
-		if(proofOfDateOfBirth != null) 
-			return Arrays.copyOf(proofOfDateOfBirth, proofOfDateOfBirth.length);
-		return null;
+	public String getProofOfDateOfBirth() {
+
+		return proofOfDateOfBirth;
 	}
 
-	public void setProofOfDateOfBirth(JsonValue[] proofOfDateOfBirth) {
-		this.proofOfDateOfBirth = proofOfDateOfBirth != null ? proofOfDateOfBirth : null;
+	public void setProofOfDateOfBirth(String proofOfDateOfBirth) {
+		this.proofOfDateOfBirth = proofOfDateOfBirth;
 	}
 
-	private JsonValue[] individualBiometrics;
+	private String individualBiometrics;
 
-	public JsonValue[] getIndividualBiometrics() {
-		if(individualBiometrics != null) 
-			return Arrays.copyOf(individualBiometrics, individualBiometrics.length);
-		return null;
+	public String getIndividualBiometrics() {
+
+		return individualBiometrics;
 	}
 
-	public void setIndividualBiometrics(JsonValue[] individualBiometrics) {
-		this.individualBiometrics = individualBiometrics != null ? individualBiometrics : null;
+	public void setIndividualBiometrics(String individualBiometrics) {
+		this.individualBiometrics = individualBiometrics;
 	}
 
-	private JsonValue[] parentOrGuardianBiometrics;
+	private String localAdministrativeAuthority;
 
-	public JsonValue[] getParentOrGuardianBiometrics() {
-		if(parentOrGuardianBiometrics != null) 
-			return Arrays.copyOf(parentOrGuardianBiometrics, parentOrGuardianBiometrics.length);
-		return null;
+	public String getLocalAdministrativeAuthority() {
+
+		return localAdministrativeAuthority;
 	}
 
-	public void setParentOrGuardianBiometrics(JsonValue[] parentOrGuardianBiometrics) {
-		this.parentOrGuardianBiometrics = parentOrGuardianBiometrics != null ? parentOrGuardianBiometrics : null;
-	}
-
-	private JsonValue[] localAdministrativeAuthority;
-
-	public JsonValue[] getLocalAdministrativeAuthority() {
-		if(localAdministrativeAuthority != null) 
-			return Arrays.copyOf(localAdministrativeAuthority, localAdministrativeAuthority.length);
-		return null;
-	}
-
-	public void setLocalAdministrativeAuthority(JsonValue[] localAdministrativeAuthority) {
-		this.localAdministrativeAuthority = localAdministrativeAuthority != null ? localAdministrativeAuthority : null;
+	public void setLocalAdministrativeAuthority(String localAdministrativeAuthority) {
+		this.localAdministrativeAuthority = localAdministrativeAuthority;
 	}
 
 	private Double idSchemaVersion;
-	private Integer cnieNumber;
+
+	private Long cnieNumber;
 
 }
