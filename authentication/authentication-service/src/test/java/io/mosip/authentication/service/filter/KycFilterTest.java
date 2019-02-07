@@ -51,7 +51,7 @@ import io.mosip.kernel.core.util.DateUtils;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-public class KycFilterTest{
+public class KycFilterTest {
 
 	@Autowired
 	Environment env;
@@ -60,18 +60,18 @@ public class KycFilterTest{
 
 	@Autowired
 	ObjectMapper mapper;
-	
-	  @Before
-	    public void before() {
+
+	@Before
+	public void before() {
 		ReflectionTestUtils.setField(kycAuthFilter, "mapper", mapper);
 		ReflectionTestUtils.setField(kycAuthFilter, "env", env);
-	    }
+	}
 
 	@Ignore
 	@Test
-	public void testValidDecodedRequest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
-		Method decodeMethod = KycAuthFilter.class.getDeclaredMethod("decodedRequest",
-				Map.class);
+	public void testValidDecodedRequest() throws IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
+		Method decodeMethod = KycAuthFilter.class.getDeclaredMethod("decodedRequest", Map.class);
 		decodeMethod.setAccessible(true);
 		Map<String, Object> decodeValue = (Map<String, Object>) decodeMethod.invoke(kycAuthFilter,
 				createEncodedRequest());
@@ -80,16 +80,14 @@ public class KycFilterTest{
 	}
 
 	@Test
-	public void testInValidDecodedRequest() throws IllegalAccessException, IllegalArgumentException, 
-	InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
-		Method decodeMethod = KycAuthFilter.class.getDeclaredMethod("decodedRequest",
-				Map.class);
+	public void testInValidDecodedRequest() throws IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
+		Method decodeMethod = KycAuthFilter.class.getDeclaredMethod("decodedRequest", Map.class);
 		Map<String, Object> map = new HashMap<>();
 		map.put("authRequest", createResponse().get("response"));
 		decodeMethod.setAccessible(true);
 		try {
-			Map<String, Object> decodeValue = (Map<String, Object>) decodeMethod.invoke(kycAuthFilter,
-					map );
+			Map<String, Object> decodeValue = (Map<String, Object>) decodeMethod.invoke(kycAuthFilter, map);
 		} catch (InvocationTargetException e) {
 			assertTrue(e.getTargetException().getClass().equals(IdAuthenticationAppException.class));
 		}
@@ -97,26 +95,24 @@ public class KycFilterTest{
 	}
 
 	@Test
-	public void testValidEncodedRequest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
-		Method encodeMethod = KycAuthFilter.class.getDeclaredMethod("encodedResponse",
-				Map.class);
+	public void testValidEncodedRequest() throws IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
+		Method encodeMethod = KycAuthFilter.class.getDeclaredMethod("encodedResponse", Map.class);
 		encodeMethod.setAccessible(true);
-		Map<String, Object> decodeValue = (Map<String, Object>) encodeMethod.invoke(kycAuthFilter,
-				createResponse());
+		Map<String, Object> decodeValue = (Map<String, Object>) encodeMethod.invoke(kycAuthFilter, createResponse());
 		assertNotNull(decodeValue);
 
 	}
 
 	@Test
-	public void testInValidEncodedRequest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
-		Method encodeMethod = KycAuthFilter.class.getDeclaredMethod("encodedResponse",
-				Map.class);
+	public void testInValidEncodedRequest() throws IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
+		Method encodeMethod = KycAuthFilter.class.getDeclaredMethod("encodedResponse", Map.class);
 		encodeMethod.setAccessible(true);
 		Map<String, Object> map = new HashMap<>();
 		map.put("response", "sdfsdfjhds");
-		try{
-			Map<String, Object> decodeValue = (Map<String, Object>) encodeMethod.invoke(kycAuthFilter,
-					map);
+		try {
+			Map<String, Object> decodeValue = (Map<String, Object>) encodeMethod.invoke(kycAuthFilter, map);
 		} catch (InvocationTargetException e) {
 			assertTrue(e.getTargetException().getClass().equals(IdAuthenticationAppException.class));
 		}
@@ -125,34 +121,35 @@ public class KycFilterTest{
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testTxnId() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
-		Method txvIdMethod = KycAuthFilter.class.getDeclaredMethod("setResponseParam",
-				Map.class, Map.class);
+	public void testTxnId() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+			IOException, NoSuchMethodException, SecurityException {
+		Method txvIdMethod = KycAuthFilter.class.getDeclaredMethod("setResponseParam", Map.class, Map.class);
 		txvIdMethod.setAccessible(true);
 		Map<String, Object> requestBody = createEncodedRequest();
-		Map<String, Object> authRequest = (Map<String, Object>) decode((String) createEncodedRequest().get("authRequest"));
+		Map<String, Object> authRequest = (Map<String, Object>) decode(
+				(String) createEncodedRequest().get("authRequest"));
 		requestBody.replace("authRequest", authRequest);
-		Map<String, Object> decodeValue = (Map<String, Object>) txvIdMethod.invoke(kycAuthFilter,requestBody,
+		Map<String, Object> decodeValue = (Map<String, Object>) txvIdMethod.invoke(kycAuthFilter, requestBody,
 				createResponse());
 		assertNotNull(decodeValue);
 
 	}
 
-	private Map<String, Object> decode(String stringToDecode) throws JsonParseException, JsonMappingException, IOException {
+	private Map<String, Object> decode(String stringToDecode)
+			throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper2 = new ObjectMapper();
-		return mapper2.readValue(Base64.getDecoder().decode(stringToDecode),
-				new TypeReference<Map<String, Object>>() {
-				});
+		return mapper2.readValue(Base64.getDecoder().decode(stringToDecode), new TypeReference<Map<String, Object>>() {
+		});
 	}
 
 	public Map<String, Object> createEncodedRequest() throws IOException {
-		KycAuthRequestDTO k = new  KycAuthRequestDTO();
+		KycAuthRequestDTO k = new KycAuthRequestDTO();
 		k.setConsentReq(true);
 		k.setEKycAuthType(null);
 		k.setEPrintReq(true);
 		k.setSecLangReq(true);
 		k.setId(null);
-		//k.setVer(null);
+		// k.setVer(null);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setTxnID("121332");
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
@@ -161,7 +158,7 @@ public class KycFilterTest{
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 //		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -177,38 +174,39 @@ public class KycFilterTest{
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		k.setAuthRequest(authRequestDTO);
-		
+
 		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
 		IdentityDTO idDTO3 = new IdentityDTO();
 		idInfoDTO3.setLanguage("fre");
-		idInfoDTO3.setValue("Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA");
+		idInfoDTO3.setValue(
+				"Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA");
 		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
 		idInfoList1.add(idInfoDTO3);
 		idDTO3.setLeftIndex(idInfoList1);
 		RequestDTO r1 = new RequestDTO();
 		r1.setIdentity(idDTO3);
-		String r12 =mapper.writeValueAsString(r1);
-		Map<String, Object> map1 =(Map<String, Object>) mapper.readValue(r12.getBytes(), Map.class);
-		//System.out.println(map1);
-		String kycReq =mapper.writeValueAsString(k);
+		String r12 = mapper.writeValueAsString(r1);
+		Map<String, Object> map1 = (Map<String, Object>) mapper.readValue(r12.getBytes(), Map.class);
+		// System.out.println(map1);
+		String kycReq = mapper.writeValueAsString(k);
 
-		Map<String, Object> map =(Map<String, Object>) mapper.readValue(kycReq.getBytes(), Map.class);
+		Map<String, Object> map = (Map<String, Object>) mapper.readValue(kycReq.getBytes(), Map.class);
 
-		String authRequest =mapper.writeValueAsString(authRequestDTO);
-		String request =mapper.writeValueAsString(reqDTO);
+		String authRequest = mapper.writeValueAsString(authRequestDTO);
+		String request = mapper.writeValueAsString(reqDTO);
 		Map<String, Object> authRequestMap = (Map<String, Object>) map.get("authRequest");
 		authRequestMap.put("request", Base64.getEncoder().encodeToString(request.getBytes()));
 		map.put("authRequest", Base64.getEncoder().encodeToString(mapper.writeValueAsBytes(authRequestMap)));
 		return map;
 	}
 
-	public Map<String, Object> createResponse() throws IOException{
+	public Map<String, Object> createResponse() throws IOException {
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		authResponseDTO.setTxnID("12345");
 		AuthResponseInfo authResponseInfo = new AuthResponseInfo();
@@ -216,15 +214,15 @@ public class KycFilterTest{
 		KycResponseDTO kycResponseDTO = new KycResponseDTO();
 		kycResponseDTO.setAuth(authResponseDTO);
 		kycResponseDTO.setKyc(new KycInfo());
-		String kycResponse =mapper.writeValueAsString(kycResponseDTO);
+		String kycResponse = mapper.writeValueAsString(kycResponseDTO);
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		kycAuthResponseDTO.setResponse(kycResponseDTO);
 		kycAuthResponseDTO.setTxnID("12345");
 		kycAuthResponseDTO.setResTime(DateUtils.getUTCCurrentDateTimeString());
-		String kycAuthResponse =mapper.writeValueAsString(kycAuthResponseDTO);
-		Map<String, Object> map =(Map<String, Object>) mapper.readValue(kycAuthResponse.getBytes(), Map.class);
+		String kycAuthResponse = mapper.writeValueAsString(kycAuthResponseDTO);
+		Map<String, Object> map = (Map<String, Object>) mapper.readValue(kycAuthResponse.getBytes(), Map.class);
 		return map;
 
 	}
-	
+
 }

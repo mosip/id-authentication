@@ -9,7 +9,7 @@ import java.util.List;
  * 
  * @param <T> the generic type
  */
-public interface MosipFingerprintProvider<T> {
+public interface MosipFingerprintProvider<A, R> {
 
 	/**
 	 * Convert FIR to FMR.
@@ -17,5 +17,5 @@ public interface MosipFingerprintProvider<T> {
 	 * @param listOfBIR the list of BIR
 	 * @return the list
 	 */
-	List<T> convertFIRtoFMR(List<T> listOfBIR);
+	List<R> convertFIRtoFMR(List<A> listOfBIR);
 }

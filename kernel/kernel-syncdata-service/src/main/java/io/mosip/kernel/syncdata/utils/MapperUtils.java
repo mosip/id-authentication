@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.syncdata.dto.HolidayDto;
+import io.mosip.kernel.syncdata.dto.UserDetailDto;
+import io.mosip.kernel.syncdata.dto.UserDetailMapDto;
 import io.mosip.kernel.syncdata.entity.BaseEntity;
 import io.mosip.kernel.syncdata.entity.Holiday;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
@@ -299,5 +302,25 @@ public class MapperUtils {
 		dtf.set(destination, ef.get(source));
 		dtf.setAccessible(false);
 		ef.setAccessible(false);
+	}
+
+		public static List<UserDetailMapDto> mapUserDetailsToUserDetailMap(List<UserDetailDto> userDetails) {
+		List<UserDetailMapDto> userDetailMapDtoList = new ArrayList<>();
+
+		for (UserDetailDto userDetail : userDetails) {
+			UserDetailMapDto userDetailMapDto = new UserDetailMapDto();
+			userDetailMapDto.setUserName(userDetail.getUserName());
+			userDetailMapDto.setMail(userDetail.getMail());
+			userDetailMapDto.setMobile(userDetail.getMobile());
+			userDetailMapDto.setLangCode(userDetail.getLangCode());
+			userDetailMapDto.setName(userDetail.getName());
+			userDetailMapDto.setUserPassword(userDetail.getUserPassword());
+			List<String> roles = Arrays.asList(userDetail.getRole().split(","));
+			userDetailMapDto.setRoles(roles);
+			userDetailMapDtoList.add(userDetailMapDto);
+
+		}
+		return userDetailMapDtoList;
+
 	}
 }

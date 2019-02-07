@@ -109,7 +109,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			// Map object to store the UUID's generated for BIR in CBEFF
 			Map<String, String> birUUIDs = new HashMap<>();
-			SessionContext.getInstance().getMapObject().put(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME, birUUIDs);
+			SessionContext.map().put(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME, birUUIDs);
 
 			// Map object to store the byte array of JSON objects namely Demographic, HMAC,
 			// Packet Meta-Data and Audit
@@ -311,7 +311,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			List<BIR> birs = new ArrayList<>();
 
 			boolean onlyUniqueRequiredInCBEFF = RegistrationConstants.GLOBAL_CONFIG_TRUE_VALUE
-					.equalsIgnoreCase(String.valueOf(ApplicationContext.getInstance().getApplicationMap()
+					.equalsIgnoreCase(String.valueOf(ApplicationContext.map()
 							.get(RegistrationConstants.CBEFF_ONLY_UNIQUE_TAGS)));
 
 			if (biometricInfoDTO.getFingerprintDetailsDTO() != null

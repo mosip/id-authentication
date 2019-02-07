@@ -94,15 +94,15 @@ public class HeaderController extends BaseController {
 		LOGGER.info("REGISTRATION - OFFICER_DETAILS - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Displaying Registration Officer details");
 
-		registrationOfficerName.setText(sessionContext.getUserContext().getName());
+		registrationOfficerName.setText(SessionContext.userContext().getName());
 		registrationOfficeId
-				.setText(sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
+				.setText(SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
 		registrationOfficeLocation
-				.setText(sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterName());
+				.setText(SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterName());
 		menu.setBackground(Background.EMPTY);
 		menu.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-		if ((boolean) sessionContextMap.get(RegistrationConstants.ONBOARD_USER)
-				&& !(boolean) sessionContextMap
+		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)
+				&& !(boolean) SessionContext.map()
 						.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
 			homeSelectionMenu.setVisible(false);
 		} else {
@@ -173,8 +173,8 @@ public class HeaderController extends BaseController {
 	 * @throws IOException
 	 */
 	public void onBoardUser(ActionEvent event) throws IOException {
-		sessionContextMap.put(RegistrationConstants.ONBOARD_USER, true);
-		sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, true);
+		SessionContext.map().put(RegistrationConstants.ONBOARD_USER, true);
+		SessionContext.map().put(RegistrationConstants.ONBOARD_USER_UPDATE, true);
 		userOnboardController.initUserOnboard();
 
 		/*

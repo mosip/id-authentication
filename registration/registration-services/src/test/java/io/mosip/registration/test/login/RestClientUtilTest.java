@@ -71,7 +71,7 @@ public class RestClientUtilTest {
 		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
 		requestHTTPDTO.setUri(uri);
 
-		Assert.assertNull(restClientUtil.invokeHeaders(requestHTTPDTO));
+		Assert.assertNull(restClientUtil.invoke(requestHTTPDTO));
 	}
 
 	@Test
@@ -91,7 +91,7 @@ public class RestClientUtilTest {
 		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
 		requestHTTPDTO.setUri(uri);
 
-		Assert.assertNull(restClientUtil.invokeHeaders(requestHTTPDTO));
+		Assert.assertNull(restClientUtil.invoke(requestHTTPDTO));
 
 	}
 
@@ -112,7 +112,7 @@ public class RestClientUtilTest {
 		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
 		requestHTTPDTO.setUri(uri);
 
-		Assert.assertNull(restClientUtil.invokeHeaders(requestHTTPDTO));
+		Assert.assertNull(restClientUtil.invoke(requestHTTPDTO));
 
 	}
 

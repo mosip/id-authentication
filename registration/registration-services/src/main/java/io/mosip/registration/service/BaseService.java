@@ -18,7 +18,6 @@ import io.mosip.registration.constants.DeviceTypes;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dto.ErrorResponseDTO;
@@ -147,12 +146,11 @@ public class BaseService {
 	 */
 	protected String getUserIdFromSession() {
 
-		String userId = null;
-
-		UserContext userContext = SessionContext.getInstance().getUserContext();
-		if (userContext != null) {
-			userId = userContext.getUserId();
+		String userId = SessionContext.userId();
+		if (userId.equals(RegistrationConstants.AUDIT_DEFAULT_USER)) {
+			userId = RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
 		}
+
 		return userId;
 	}
 
@@ -172,13 +170,13 @@ public class BaseService {
 		return machineMappingDAO.isValidDevice(deviceType, serialNo);
 	}
 
-	public boolean isNull(List list) {
+	public boolean isNull(List<?> list) {
 		/* Check Whether the list is Null or not */
 		return list == null;
 
 	}
 
-	public boolean isEmpty(List list) {
+	public boolean isEmpty(List<?> list) {
 		/* Check Whether the list is empty or not */
 		return list.isEmpty();
 	}
@@ -250,7 +248,7 @@ public class BaseService {
 			}
 
 			/* Get Application Map */
-			applicationMap = applicationContext.getApplicationMap();
+			applicationMap = applicationContext.map();
 		}
 
 		return (String) applicationMap.get(key);

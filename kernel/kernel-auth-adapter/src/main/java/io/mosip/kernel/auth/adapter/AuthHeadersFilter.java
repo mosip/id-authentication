@@ -14,24 +14,15 @@ import java.io.IOException;
  * This filter is going to act as a CORS filter. It is assigned before AuthFilter in the filter chain.
  *
  * Tasks:
- * 1. Stores auth token to be used throughout the cycle across implementations.
- * 2. Sets headers to allow cross origin requests.
- * 3. Sets header to allow and expose "Authorization" header.
- * 4. Sets the authToken back to null.
+ * 1. Sets headers to allow cross origin requests.
+ * 2. Sets header to allow and expose "Authorization" header.
+ *
+ * @author Sabbu Uday Kumar
+ * @since 1.0.0
  **********************************************************************************************************************/
 
 @Component
 public class AuthHeadersFilter extends OncePerRequestFilter {
-
-    private String token;
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -44,7 +35,6 @@ public class AuthHeadersFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             filterChain.doFilter(request, response);
-            setToken(null);
         }
     }
 }

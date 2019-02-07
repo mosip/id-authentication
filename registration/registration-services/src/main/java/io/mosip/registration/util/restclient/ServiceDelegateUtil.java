@@ -73,7 +73,7 @@ public class ServiceDelegateUtil {
 	 * @throws RegBaseCheckedException  generalised exception with errorCode and
 	 *                                  errorMessage
 	 * @throws HttpClientErrorException when client error exception from server
-	 * @throws SocketTimeoutException the socket timeout exception
+	 * @throws SocketTimeoutException   the socket timeout exception
 	 * @throws HttpServerErrorException when server exception from server
 	 */
 	public Object get(String serviceName, Map<String, String> requestParams, boolean hasPathParams)
@@ -82,6 +82,7 @@ public class ServiceDelegateUtil {
 		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
 				"Get method has been called");
 
+		Map<String, Object> responseMap = null;
 		Object responseBody = null;
 		String authHeader = RegistrationConstants.EMPTY;
 
@@ -90,7 +91,7 @@ public class ServiceDelegateUtil {
 
 		if (authRequired) {
 			// TODO - if batch get secrete key , normal login get user from session context
-			LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.getInstance().getApplicationMap()
+			LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.map()
 					.get(RegistrationConstants.USER_DTO);
 			authHeader = getAuthTokenId(userDTO);
 
@@ -123,7 +124,11 @@ public class ServiceDelegateUtil {
 						RegistrationExceptionConstants.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorMessage());
 			}
 
-			responseBody = restClientUtil.invoke(requestHTTPDTO);
+			responseMap = restClientUtil.invoke(requestHTTPDTO);
+			if (null != responseMap && responseMap.size() > 0
+					&& null != responseMap.get(RegistrationConstants.REST_RESPONSE_BODY)) {
+				responseBody = responseMap.get(RegistrationConstants.REST_RESPONSE_BODY);
+			}
 			LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
 					"Get method has been ended");
 		}
@@ -141,8 +146,8 @@ public class ServiceDelegateUtil {
 	 * @throws RegBaseCheckedException  generalised exception with errorCode and
 	 *                                  errorMessage
 	 * @throws HttpClientErrorException when client error exception from server
-	 * @throws SocketTimeoutException the socket timeout exception
-	 * @throws ResourceAccessException the resource access exception
+	 * @throws SocketTimeoutException   the socket timeout exception
+	 * @throws ResourceAccessException  the resource access exception
 	 * @throws HttpServerErrorException when server exception from server
 	 */
 	public Object post(String serviceName, Object object)
@@ -152,7 +157,7 @@ public class ServiceDelegateUtil {
 
 		RequestHTTPDTO requestDto;
 		Object responseBody = null;
-
+		Map<String, Object> responseMap = null;
 		String authHeader = RegistrationConstants.EMPTY;
 
 		Boolean authRequired = Boolean
@@ -160,7 +165,7 @@ public class ServiceDelegateUtil {
 
 		if (authRequired) {
 			// TODO - if batch get secrete key , normal login get user from session context
-			LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.getInstance().getApplicationMap()
+			LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.map()
 					.get(RegistrationConstants.USER_DTO);
 			authHeader = getAuthTokenId(userDTO);
 
@@ -174,7 +179,11 @@ public class ServiceDelegateUtil {
 				throw new RegBaseCheckedException(RegistrationConstants.SERVICE_DELEGATE_UTIL,
 						baseCheckedException.getMessage());
 			}
-			responseBody = restClientUtil.invoke(requestDto);
+			responseMap = restClientUtil.invoke(requestDto);
+			if (null != responseMap && responseMap.size() > 0
+					&& null != responseMap.get(RegistrationConstants.REST_RESPONSE_BODY)) {
+				responseBody = responseMap.get(RegistrationConstants.REST_RESPONSE_BODY);
+			}
 			LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME, APPLICATION_ID,
 					"post method ended");
 		}
@@ -185,9 +194,9 @@ public class ServiceDelegateUtil {
 	 * Prepare GET request.
 	 *
 	 * @param requestHTTPDTO the request HTTPDTO
-	 * @param serviceName   service to be invoked
-	 * @param requestParams params need to add along with url
-	 * @param authHeader the auth header
+	 * @param serviceName    service to be invoked
+	 * @param requestParams  params need to add along with url
+	 * @param authHeader     the auth header
 	 * @return RequestHTTPDTO requestHTTPDTO with required data
 	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
@@ -221,7 +230,7 @@ public class ServiceDelegateUtil {
 	 *
 	 * @param serviceName service to be invoked
 	 * @param object      request type
-	 * @param authHeader the auth header
+	 * @param authHeader  the auth header
 	 * @return RequestHTTPDTO requestHTTPDTO with required data
 	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
@@ -256,8 +265,8 @@ public class ServiceDelegateUtil {
 	 * Sets the URI.
 	 *
 	 * @param requestHTTPDTO the request HTTPDTO
-	 * @param requestParams the request params
-	 * @param url the url
+	 * @param requestParams  the request params
+	 * @param url            the url
 	 */
 	private void setURI(RequestHTTPDTO requestHTTPDTO, Map<String, String> requestParams, String url) {
 		// BuildURIComponent
@@ -398,7 +407,9 @@ public class ServiceDelegateUtil {
 		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET_AUTH_TOKEN", APPLICATION_NAME, APPLICATION_ID,
 				" get auth method called");
 
+		String oAuthToken = RegistrationConstants.EMPTY;
 		List<String> authToken = new ArrayList<>();
+		Map<String, Object> responseMap = null;
 		HttpHeaders responseHeader = null;
 		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
 
@@ -429,7 +440,7 @@ public class ServiceDelegateUtil {
 		setTimeout(requestHTTPDTO);
 
 		try {
-			responseHeader = restClientUtil.invokeHeaders(requestHTTPDTO);
+			responseMap = restClientUtil.invoke(requestHTTPDTO);
 		} catch (HttpClientErrorException | HttpServerErrorException | ResourceAccessException
 				| SocketTimeoutException restException) {
 			LOGGER.error("REGISTRATION - SERVICE_DELEGATE_UTIL - GET_AUTH_TOKEN", APPLICATION_NAME, APPLICATION_ID,
@@ -438,14 +449,22 @@ public class ServiceDelegateUtil {
 					RegistrationConstants.REST_OAUTH_ERROR_MSG);
 		}
 
-		if (null != responseHeader && !responseHeader.isEmpty()) {
-			authToken = responseHeader.get("authorization");
+		if (null != responseMap && responseMap.size() > 0) {
+
+			responseHeader = (HttpHeaders) responseMap.get(RegistrationConstants.REST_RESPONSE_HEADERS);
+
+			if (null != responseHeader.get(RegistrationConstants.REST_AUTHORIZATION)
+					&& null != responseHeader.get(RegistrationConstants.REST_AUTHORIZATION).get(0)) {
+
+				oAuthToken = responseHeader.get(RegistrationConstants.REST_AUTHORIZATION).get(0);
+
+			}
 		}
 
 		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET_AUTH_TOKEN", APPLICATION_NAME, APPLICATION_ID,
 				" get auth method calling ends");
 
-		return authToken.get(0);
+		return oAuthToken;
 
 	}
 

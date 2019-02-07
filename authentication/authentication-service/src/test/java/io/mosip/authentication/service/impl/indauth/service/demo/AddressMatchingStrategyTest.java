@@ -109,7 +109,7 @@ public class AddressMatchingStrategyTest {
 		assertEquals(0, value1);
 
 		matchProperties = new HashMap<>();
-		matchProperties.put("languageType", DemoAuthType.AD_PRI);
+		matchProperties.put("languageType", DemoAuthType.ADDRESS);
 		int value2 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
 		assertEquals(0, value2);
 	}
@@ -119,7 +119,7 @@ public class AddressMatchingStrategyTest {
 		MatchFunction matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties = new HashMap<>();
-		matchProperties.put("languageType", DemoAuthType.AD_PRI);
+		matchProperties.put("languageType", DemoAuthType.ADDRESS);
 		int value2 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
 		assertEquals(0, value2);
 	}

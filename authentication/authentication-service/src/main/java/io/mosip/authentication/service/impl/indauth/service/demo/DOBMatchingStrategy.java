@@ -5,12 +5,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
+import org.springframework.core.env.Environment;
+
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The Enum DOBMatchingStrategy.
@@ -23,8 +26,13 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			try {
-				Date entityInfoDate = getDateFormat().parse((String) entityInfo);
-				Date reqInfoDate = getDateFormat().parse((String) reqInfo);
+//				String dateFormatReq = ((Environment)props.get(Environment.class.getSimpleName())).getProperty("date.pattern");
+				//FIXME get from property
+				String dateFormatReq = "dd/MM/yyyy";
+
+				String dateFormatEntity = "yyyy/MM/dd";
+				Date reqInfoDate = DateUtils.parseToDate((String) reqInfo, dateFormatReq);
+				Date entityInfoDate = DateUtils.parseToDate((String) entityInfo, dateFormatEntity);
 				return DemoMatcherUtil.doExactMatch(reqInfoDate, entityInfoDate);
 			} catch (ParseException e) {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DOB_MISMATCH, e);
@@ -74,10 +82,6 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 	@Override
 	public MatchFunction getMatchFunction() {
 		return matchFunction;
-	}
-
-	public static SimpleDateFormat getDateFormat() {
-		return new SimpleDateFormat("yyyy-MM-dd");
 	}
 
 }

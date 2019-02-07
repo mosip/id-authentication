@@ -47,7 +47,7 @@ public class TemplateTypeController {
 	public ResponseEntity<CodeAndLanguageCodeID> createTemplateType(
 			@Valid @RequestBody RequestDto<TemplateTypeDto> templateType) {
 		return new ResponseEntity<>(templateTypeService.createTemplateType(templateType.getRequest()),
-				HttpStatus.CREATED);
+				HttpStatus.OK);
 
 	}
 

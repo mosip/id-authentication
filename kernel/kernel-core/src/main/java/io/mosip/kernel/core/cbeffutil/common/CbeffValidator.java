@@ -61,7 +61,7 @@ public class CbeffValidator {
 		List<BIRType> birList = bir.getBIR();
 		for (BIRType birType : birList) {
 			if (birType != null) {
-				if (birType.getBDB().length < 0) {
+				if (birType.getBDB().length < 1) {
 					throw new CbeffException("BDB value can't be empty");
 				}
 				if (birType.getBDBInfo() != null) {

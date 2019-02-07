@@ -47,7 +47,7 @@ public class AuditExceptionTest {
 				"  \"description\": \"string\"\r\n" + 
 				"}";
 		mockMvc.perform(post("/v1.0/audits").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest())
+				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.errors[0].errorCode", is("KER-AUD-001")));
 	}
 	
@@ -73,7 +73,7 @@ public class AuditExceptionTest {
 				"  \"description\": \"string\"\r\n" + 
 				"}";
 		mockMvc.perform(post("/v1.0/audits").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest())
+				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.errors[0].errorCode", is("KER-AUD-001")));
 	}
 	

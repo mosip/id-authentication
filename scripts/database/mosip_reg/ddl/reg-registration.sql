@@ -32,8 +32,6 @@ create table reg.registration (
 	server_status_dtime      timestamp, 
 	client_status_comment 	character varying(256),
 	server_status_comment 	character varying(256),
-	
-	indv_name character varying(128), 
 
 	reg_usr_id character varying (36) not null,			-- reg.user_detail.id
 	regcntr_id character varying (10) not null,			-- reg.registration_center.id

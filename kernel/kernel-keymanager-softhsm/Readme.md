@@ -191,18 +191,30 @@ Output: certificate
 
 ### Windows
 
-1. Download softhsm zip from https://github.com/disig/SoftHSM2-for-Windows
-2. Extract it to any location, e.g `D:\SoftHSM2`
-3. Create a conf file at `D:\SoftHSM2\etc` with below content
+1. Download softhsm portable zip archive from https://github.com/disig/SoftHSM2-for-Windows#download
+2. Extract it to any location, e.g `D:\SoftHSM2`. SoftHSM2 searches for its configuration file in the following locations:
+```
+  1. Path specified by SOFTHSM2_CONF environment variable
+  2. User specific path %HOMEDRIVE%%HOMEPATH%\softhsm2.conf
+  3. File softhsm2.conf in the current working directory
+```
+3. Modify following in environment variables:
+```
+> set SOFTHSM2_CONF=D:\SoftHSM2\etc\softhsm2.conf
+> set PATH=%PATH%;D:\SoftHSM2\lib\
+```
+4. Create another conf file at `D:\SoftHSM2\etc\softhsm2-application.conf` with below content
 ```
 # Sun PKCS#11 provider configuration file for SoftHSMv2
 name = SoftHSM2
 library = D:\SoftHSM2\lib\softhsm2-x64.dll 
 slotListIndex = 0
 ```
-4. Go to `D:\SoftHSM2\bin` and run below command:
+5. Install JCE With an Unlimited Strength Jurisdiction Policy as shown here:
+https://dzone.com/articles/install-java-cryptography-extension-jce-unlimited
+6. Go to `D:\SoftHSM2\bin` and run below command:
 ```
-> softhsm2-util.exe --init-token --slot 1 --label "My token 1"
+> softhsm2-util.exe --init-token --slot 0 --label "My token 1"
 ```
 Check token is initialized in slot with below command:
 ```
@@ -243,7 +255,7 @@ Slot 1
         User PIN init.:   no
         Label:
 ```
-5. Put the conf file location in `mosip.kernel.keymanager.softhsm.config-path` property. Softhsm is ready to be used. 
+5. Put the newly conf filepath `D:\SoftHSM2\etc\softhsm2-application.conf` in `mosip.kernel.keymanager.softhsm.config-path` property. Softhsm is ready to be used. 
 
 ### Linux
 

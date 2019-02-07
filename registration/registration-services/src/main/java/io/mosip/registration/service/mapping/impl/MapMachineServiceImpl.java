@@ -101,7 +101,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 
 			if (user != null) {
 				/* if user already exists */
-				user.setUpdBy(SessionContext.getInstance().getUserContext().getUserId());
+				user.setUpdBy(SessionContext.userContext().getUserId());
 				user.setUpdDtimes(new Timestamp(System.currentTimeMillis()));
 				user.setIsActive(isActive);
 
@@ -112,9 +112,9 @@ public class MapMachineServiceImpl implements MapMachineService {
 				user = new UserMachineMapping();
 				user.setUserMachineMappingId(userID);
 				user.setIsActive(isActive);
-				user.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
+				user.setCrBy(SessionContext.userContext().getUserId());
 				user.setCrDtime(new Timestamp(System.currentTimeMillis()));
-				user.setUpdBy(SessionContext.getInstance().getUserContext().getUserId());
+				user.setUpdBy(SessionContext.userContext().getUserId());
 				user.setUpdDtimes(new Timestamp(System.currentTimeMillis()));
 
 				machineMappingDAO.save(user);
@@ -419,7 +419,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 				regCentreMachineDeviceId.setDeviceId(mappedDeviceDTO.getDeviceId());
 				regCentreMachineDevice.setRegCentreMachineDeviceId(regCentreMachineDeviceId);
 				regCentreMachineDevice.setIsActive(true);
-				regCentreMachineDevice.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
+				regCentreMachineDevice.setCrBy(SessionContext.userContext().getUserId());
 				regCentreMachineDevice.setCrDtime(new Timestamp(new Date().getTime()));
 
 				regCentreMachineDevices.add(regCentreMachineDevice);

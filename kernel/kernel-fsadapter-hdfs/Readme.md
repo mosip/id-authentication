@@ -12,9 +12,14 @@ mvn javadoc:javadoc
 **Application Properties**
 
 ```
+# Name node url for HDFS
 mosip.kernel.fsadapter.hdfs.name-node-url=hdfs://104.211.240.243:51000
+
+# Username to access hdfs. Change this to application username (regprocessor,prereg or idrepo)
 mosip.kernel.fsadapter.hdfs.user-name=mosipuser
-logging.level.org.apache.hadoop=warn #change this to debug to see hdfs logs
+
+# HDFS log level. Change this to debug to see hdfs logs
+logging.level.org.apache.hadoop=warn
 
 ```
 
@@ -64,7 +69,7 @@ Usage3: Store File
 @Autowired
 private FileSystemAdapter hdfsAdapterImpl;
 
-hdfsAdapterImpl.storeFile("2018782130000120112018104200", "BIOMETRIC/APPLICANT/BOTH_THUMBS", FileUtils.openInputStream(new File("D:/hdfstest/testfolder/2018782130000120112018104200/Biometric/Applicant/BothThumbs.jpg")));
+hdfsAdapterImpl.storeFile("91001984930000120", "BIOMETRIC/APPLICANT/BOTH_THUMBS", FileUtils.openInputStream(new File("D:/hdfstest/testfolder/91001984930000120/Biometric/Applicant/BothThumbs.jpg")));
 
  ```
 
@@ -84,7 +89,7 @@ Usage5: Get File
 @Autowired
 private FileSystemAdapter hdfsAdapterImpl;
 
-hdfsAdapterImpl.getFile("202020202", "DEMO/DEMO_FILE");
+hdfsAdapterImpl.getFile("91001984930000120", "BIOMETRIC/APPLICANT/BOTHTHUMBS");
 
 ```
 
@@ -114,7 +119,7 @@ Usage8: Check File Existence
 @Autowired
 private FileSystemAdapter hdfsAdapterImpl;
 
-hdfsAdapterImpl.checkFileExistence("91001984930000120", "DEMOGRAPHIC/POR_LICENCE");
+hdfsAdapterImpl.checkFileExistence("91001984930000120", "BIOMETRIC/APPLICANT/BOTHTHUMBS");
 
 ```
 
@@ -134,7 +139,7 @@ Usage10: Delete File
 @Autowired
 private FileSystemAdapter hdfsAdapterImpl;
 
-hdfsAdapterImpl.deleteFile("91001984930000120", "DEMO/NESTED_DEMO/NESTED-DEMO_FILE")
+hdfsAdapterImpl.deleteFile("91001984930000120", "BIOMETRIC/APPLICANT/BOTHTHUMBS")
 
 ```
 
@@ -144,6 +149,6 @@ Usage11: Copy File
 @Autowired
 private FileSystemAdapter hdfsAdapterImpl;
 
-hdfsAdapterImpl.copyFile("91001984930000120", "DEMO/DEMO_FILE", "202020202", "DEMO/DEMO_FILE");
+hdfsAdapterImpl.copyFile("91001984930000120", "BIOMETRIC/APPLICANT/BOTHTHUMBS", "202020202", "BIOMETRIC/APPLICANT/BOTHTHUMBS");
 
 ```

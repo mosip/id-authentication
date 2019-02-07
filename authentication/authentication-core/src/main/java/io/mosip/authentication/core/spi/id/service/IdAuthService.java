@@ -59,6 +59,6 @@ public interface IdAuthService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public void saveAutnTxn(String idvId, String idvIdType, String reqTime, String txnId, String status, String comment,
+	public void saveAutnTxn(String idvId, String idvIdType,String uin, String reqTime, String txnId, String status, String comment,
 			RequestType requestType) throws IdAuthenticationBusinessException;
 }

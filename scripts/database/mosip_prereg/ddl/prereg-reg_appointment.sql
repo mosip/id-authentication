@@ -17,18 +17,16 @@ create schema if not exists prereg
 		prereg_id 			character varying(36) not null ,     -- prereg.applicant_demographic.prereg_id
 		booking_dtimes		timestamp not null,
 		appointment_date 	date,
-		slot_from_time 	time,
-		slot_to_time 	time,
-		status_code 	character varying(36) not null ,	-- master.status_list.code
+		slot_from_time 		time,
+		slot_to_time 		time,
+		status_code 		character varying(36) not null ,	-- master.status_list.code
 		
-		lang_code  		character varying(3) not null ,		-- master.language.code
+		lang_code  	character varying(3) not null ,		-- master.language.code
 		
 		cr_by 		character varying (32) not null,      
 		cr_dtimes 	timestamp not null ,
 		upd_by 		character varying (32) ,
-		upd_dtimes 	timestamp ,
-		is_deleted 	boolean ,
-		del_dtimes	timestamp
+		upd_dtimes 	timestamp
 				
 	)
 ;

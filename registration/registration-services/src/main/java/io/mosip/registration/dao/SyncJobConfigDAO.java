@@ -26,4 +26,13 @@ public interface SyncJobConfigDAO {
 	 */
 	List<SyncJobDef> getActiveJobs();
 
+	/**
+	 * update all sync jobs
+	 * 
+	 * @param syncJobDefs
+	 *            list
+	 * @return updated syncJobs
+	 */
+	List<SyncJobDef> updateAll(List<SyncJobDef> syncJobDefs);
+
 }

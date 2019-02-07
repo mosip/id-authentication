@@ -16,7 +16,7 @@ CREATE TABLE idrepo.uin_document_h(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp,
-	CONSTRAINT pk_uindh PRIMARY KEY (uin_ref_id,doccat_code,doctyp_code,eff_dtimes),
+	CONSTRAINT pk_uindh PRIMARY KEY (uin_ref_id,doccat_code,eff_dtimes),
 	CONSTRAINT uk_uindh UNIQUE (uin_ref_id,doc_id,eff_dtimes)
 
 );

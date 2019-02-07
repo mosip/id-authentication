@@ -75,6 +75,6 @@ public class KeymanagerController {
 	public ResponseEntity<SymmetricKeyResponseDto> decryptSymmetricKey(@ApiParam("Data to decrypt in BASE64 encoding with meta-data")
 			@RequestBody SymmetricKeyRequestDto symmetricKeyRequestDto) {
 
-		return new ResponseEntity<>(keymanagerService.decryptSymmetricKey(symmetricKeyRequestDto), HttpStatus.CREATED);
+		return new ResponseEntity<>(keymanagerService.decryptSymmetricKey(symmetricKeyRequestDto), HttpStatus.OK);
 	}
 }

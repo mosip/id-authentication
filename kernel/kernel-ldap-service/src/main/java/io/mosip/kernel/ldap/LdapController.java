@@ -1,14 +1,19 @@
 package io.mosip.kernel.ldap;
 
-import io.mosip.kernel.ldap.entities.LoginUser;
-import io.mosip.kernel.ldap.entities.MosipUser;
-import io.mosip.kernel.ldap.entities.OtpUser;
-import io.mosip.kernel.ldap.entities.RolesResponseDto;
+
+import io.mosip.kernel.ldap.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
+import java.util.List;
 
+/**
+ *  @author Sabbu Uday Kumar
+ *  @since 1.0.0
+ */
 @RestController
 public class LdapController {
 
@@ -16,28 +21,23 @@ public class LdapController {
     private LdapService ldapService;
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public MosipUser authenticateUser(@RequestBody LoginUser user) throws Exception {
+    public MosipUserDto authenticateUser(@RequestBody LoginUserDto user) throws Exception {
         return ldapService.authenticateUser(user);
     }
 
     @RequestMapping(value = "/verify_otp_user", method = RequestMethod.POST)
-    public MosipUser verifyOtpUser(@RequestBody OtpUser otpUser) throws Exception {
-        return ldapService.verifyOtpUser(otpUser);
-    }
-
-    @RequestMapping(value = "/isAuthorized", method = RequestMethod.POST)
-    public Collection<String> isAuthorized(@RequestBody LoginUser user) throws Exception {
-        return ldapService.getRoles(user);
+    public MosipUserDto verifyOtpUser(@RequestBody OtpUserDto otpUserDto) throws Exception {
+        return ldapService.verifyOtpUser(otpUserDto);
     }
 
     @RequestMapping(value = "/allroles", method = RequestMethod.GET)
-    public RolesResponseDto getAllRoles() {
+    public RolesListDto getAllRoles() {
         return ldapService.getAllRoles();
 
     }
 
-    @RequestMapping(value = "/userdetails/{userid}", method = RequestMethod.GET)
-    public MosipUser getAllUserDetails(@PathVariable("userid") String user) {
-        return ldapService.getUserDetails(user);
+    @RequestMapping(value = "/userdetails", method = RequestMethod.POST)
+    public MosipUserListDto getListOfUsersDetails(@RequestBody List<String> users) throws Exception {
+        return ldapService.getListOfUsersDetails(users);
     }
 }

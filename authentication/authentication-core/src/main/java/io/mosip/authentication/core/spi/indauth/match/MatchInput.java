@@ -30,5 +30,7 @@ public class MatchInput {
 	private Map<String, Object> matchProperties;
 	
 	private DeviceInfo deviceInfo;
+	
+	private String language;
 
 }

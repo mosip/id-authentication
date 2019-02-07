@@ -22,21 +22,34 @@ public interface SyncTransactionDAO {
 	 * @return
 	 */
 	SyncTransaction save(SyncTransaction syncTransaction);
-	
+
 	/**
 	 * Get All sync Transaction
+	 * 
 	 * @return list of sync transaction
 	 */
 	List<SyncTransaction> getAll();
-	
+
 	/**
 	 * Get All sync Transaction
-	 * @param request time
-	 * @param syncJobId 
+	 * 
+	 * @param request
+	 *            time
+	 * @param syncJobId
 	 * @return list of sync transaction
 	 */
-	List<SyncTransaction> getSyncTransactions(Timestamp req,String syncJobId);
+	List<SyncTransaction> getSyncTransactions(Timestamp req, String syncJobId);
 
-
-
+	/**
+	 * Get All Sync Transactions
+	 * 
+	 * @param syncJobId
+	 *            id
+	 * @param previousFiredTime
+	 *            previous trigger time
+	 * @param currentFiredTime
+	 *            current trigger time
+	 * @return
+	 */
+	List<SyncTransaction> getAll(String syncJobId, Timestamp previousFiredTime, Timestamp currentFiredTime);
 }

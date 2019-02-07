@@ -85,7 +85,7 @@ public class IrisFacade {
 			if (irisType.equalsIgnoreCase("LeftEye")) {
 				qualityScore = 90.5;
 			} else {
-				if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+				if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					qualityScore = 90.0;
 				}else {
 					qualityScore = 50.0;
