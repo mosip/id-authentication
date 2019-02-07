@@ -15,8 +15,8 @@ ENV active_profile_env=${active_profile}
 # environment variable to pass github branch to pickup configuration from, at docker runtime
 ENV spring_config_label_env=${spring_config_label}
 
-COPY ./target/registration-status-api-*.jar registration-status-api.jar
+COPY ./target/registration-status-service-*.jar registration-status-service.jar
 
 EXPOSE 8083
 
-CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-jar","registration-status-api.jar"]
+CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-jar","registration-status-service.jar"]

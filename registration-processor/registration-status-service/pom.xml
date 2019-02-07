@@ -12,7 +12,7 @@
 	</parent>
 	<artifactId>registration-status-service</artifactId>
 
-	<name>registration-status-api</name>
+	<name>registration-status-service</name>
 	<!-- FIXME change it to the project's website -->
 	<url>http://www.example.com</url>
 
