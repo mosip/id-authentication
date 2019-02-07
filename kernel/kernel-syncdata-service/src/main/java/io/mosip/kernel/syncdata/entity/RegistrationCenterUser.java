@@ -34,7 +34,7 @@ public class RegistrationCenterUser extends BaseEntity implements Serializable {
 	
 	@EmbeddedId
 	@AttributeOverrides({ @AttributeOverride(name = "regCenterId", column = @Column(name = "regcntr_id")),
-			@AttributeOverride(name = "userId", column = @Column(name = "usr_id")) })
-	private RegistrationCenterUserID registrationCenterUserPk;
+			@AttributeOverride(name = "userId", column = @Column(name = "usr_Id")) })
+	private RegistrationCenterUserID registrationCenterUserID;
 
 }

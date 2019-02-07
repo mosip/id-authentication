@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 /***********************************************************************************************************************
  * Handles successful authentication.
  * If any action needs to be done after successful authentication, this is where you have to do it.
+ *
+ * @author Sabbu Uday Kumar
+ * @since 1.0.0
  **********************************************************************************************************************/
 
 public class AuthSuccessHandler implements AuthenticationSuccessHandler {

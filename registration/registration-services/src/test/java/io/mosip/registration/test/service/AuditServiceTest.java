@@ -1,6 +1,7 @@
 package io.mosip.registration.test.service;
 
 import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.when;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -9,13 +10,18 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.AuditLogControlDAO;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.entity.AuditLogControl;
@@ -23,6 +29,8 @@ import io.mosip.registration.entity.Registration;
 import io.mosip.registration.service.audit.impl.AuditServiceImpl;
 import io.mosip.registration.service.packet.RegPacketStatusService;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ ApplicationContext.class })
 public class AuditServiceTest {
 
 	@Mock
@@ -35,9 +43,6 @@ public class AuditServiceTest {
 	private AuditLogControlDAO auditLogControlDAO;
 
 	@Mock
-	io.mosip.registration.context.ApplicationContext context;
-
-	@Mock
 	Map<String, Object> applicationMap;
 	
 	@InjectMocks
@@ -47,8 +52,8 @@ public class AuditServiceTest {
 
 	@Before
 	public void intiate() {
-
-		Mockito.when(context.getApplicationMap()).thenReturn(applicationMap);
+		PowerMockito.mockStatic(ApplicationContext.class);
+		when(ApplicationContext.map()).thenReturn(applicationMap);
 		Mockito.when(applicationMap.get(Mockito.anyString())).thenReturn("45");
 
 	}

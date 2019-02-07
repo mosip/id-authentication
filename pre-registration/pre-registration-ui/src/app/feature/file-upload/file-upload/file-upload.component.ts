@@ -149,9 +149,15 @@ export class FileUploadComponent implements OnInit {
     if (this.registration.getUsers().length > 1) {
       this.multipleApplicants = true;
     }
-    this.route.params.subscribe((params: Params) => {
-      this.loginId = params['id'];
-    });
+    // this.route.params.subscribe((params: Params) => {
+    //   this.loginId = params['id'];
+    //   console.log('id', this.loginId);
+    // });
+
+    const arr = this.router.url.split('/');
+    console.log(arr);
+    this.loginId = arr[2];
+
     if (this.users[0].files[0].length != 0) {
       this.sortUserFiles();
       this.viewFirstFile();
@@ -279,9 +285,12 @@ export class FileUploadComponent implements OnInit {
     this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY, event.target.files.item(0));
     this.dataStroage.sendFile(this.formData).subscribe(
       response => {
+        console.log('response', response);
+
         this.updateUsers(response, event);
       },
       error => {
+        alert('The file coul not be uploaded, please try again.');
         console.log(error);
       },
       () => {
@@ -349,11 +358,16 @@ export class FileUploadComponent implements OnInit {
   }
   onNext() {
     // this.router.navigate(['pre-registration', this.loginId, 'pick-center']);
-    const arr = this.router.url.split('/');
-    arr.pop();
-    arr.push('preview');
-    const url = arr.join('/');
-    this.router.navigateByUrl(url);
+    if (this.LOD.length == this.users[0].files[0].length) {
+      const arr = this.router.url.split('/');
+      arr.pop();
+      arr.push('preview');
+      const url = arr.join('/');
+      this.router.navigateByUrl(url);
+    } else {
+      alert('please upload the files first');
+    }
+
     // this.router.navigate(['../preview'], { relativeTo: this.route });
   }
 

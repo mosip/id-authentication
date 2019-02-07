@@ -2,7 +2,7 @@ export interface FormControlModal {
   fullName: string;
   gender: string;
   age: string;
-  dob: string;
+  dateOfBirth: string;
   date: string;
   month: string;
   year: string;
@@ -15,10 +15,11 @@ export interface FormControlModal {
   localAdministrativeAuthority: string;
   email: string;
   postalCode: string;
-  mobilePhone: string;
-  pin: string;
-  secondaryFullName: string;
-  secondaryAddressLine1: string;
-  secondaryAddressLine2: string;
-  secondaryAddressLine3: string;
+  phone: string;
+  CNIENumber: string;
+
+  fullNameSecondary: string;
+  addressLine1Secondary: string;
+  addressLine2Secondary: string;
+  addressLine3Secondary: string;
 }

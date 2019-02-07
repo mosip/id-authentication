@@ -1,7 +1,6 @@
 package io.mosip.kernel.cryptomanager.test;
 
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -93,26 +92,9 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 	public void testMethodArgumentNotValidException() throws Exception {
 		String requestBody = "{\"applicationId\": \"\",\"data\": \"\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
 		mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isOk());
 	}
 
-	@Test
-	public void testHttpClientErrorException() throws Exception {
-		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString()))
-				.andRespond(withBadRequest());
-		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
-		mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isInternalServerError());
-	}
-
-	@Test
-	public void testHttpServerErrorException() throws Exception {
-		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString()))
-				.andRespond(withServerError());
-		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
-		mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isInternalServerError());
-	}
 
 	@Test
 	public void testInvalidFormatException() throws Exception {
@@ -120,14 +102,14 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 				.andRespond(withServerError());
 		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-0\"}";
 		mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void testIllegalArgumentException() throws Exception {
 		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
 		mockMvc.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isOk());
 	}
 
 }

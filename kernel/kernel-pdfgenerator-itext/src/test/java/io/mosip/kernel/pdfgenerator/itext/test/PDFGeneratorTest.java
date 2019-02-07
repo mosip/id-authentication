@@ -1,7 +1,9 @@
 package io.mosip.kernel.pdfgenerator.itext.test;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -10,8 +12,15 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +37,23 @@ import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 public class PDFGeneratorTest {
 	@Autowired
 	private PDFGenerator pdfGenerator;
+
+	private static BufferedImage bufferedImage;
+	private static BufferedImage bufferedImage2;
+
+	private static List<BufferedImage> bufferedImages = new ArrayList<>();
+
+	@BeforeClass
+	public static void initialize() throws IOException, java.io.IOException {
+		URL url = PDFGeneratorTest.class.getResource("/Change.jpg");
+		URL url2 = PDFGeneratorTest.class.getResource("/nelsonmandela1-2x.jpg");
+
+		bufferedImage = ImageIO.read(url);
+		bufferedImages.add(bufferedImage);
+
+		bufferedImage2 = ImageIO.read(url2);
+		bufferedImages.add(bufferedImage2);
+	}
 
 	@Test
 	public void testPdfGenerationWithInputStream() throws IOException {
@@ -155,36 +181,77 @@ public class PDFGeneratorTest {
 		pdfGenerator.generate(inputStream, resourceLoc);
 	}
 
+	@Test
+	public void getSinglePDFInBytesTest() throws IOException {
+		byte[] data = pdfGenerator.asPDF(bufferedImages);
+		String outputPath = System.getProperty("user.dir");
+		String fileSeperator = System.getProperty("file.separator");
+		File OutPutPdfFile = new File(outputPath + fileSeperator + "merge.pdf");
+		FileOutputStream op = new FileOutputStream(OutPutPdfFile);
+		op.write(data);
+		op.flush();
+		assertNotNull(data);
+		assertTrue(OutPutPdfFile.exists());
+		if (op != null) {
+			op.close();
+		}
+	}
+
+	@Test
+	public void mergePDFTest() throws IOException {
+		List<URL> pdfFiles = new ArrayList<URL>(Arrays.asList(PDFGeneratorTest.class.getResource("/sample.pdf"),
+				PDFGeneratorTest.class.getResource("/pdf-sample.pdf")));
+		byte[] byteArray = pdfGenerator.mergePDF(pdfFiles);
+
+		String outputPath = System.getProperty("user.dir");
+		String fileSeperator = System.getProperty("file.separator");
+		File OutPutPdfFile = new File(outputPath + fileSeperator + "new_merged.pdf");
+		FileOutputStream op = new FileOutputStream(OutPutPdfFile);
+		op.write(byteArray);
+		op.flush();
+		assertTrue(OutPutPdfFile.exists());
+		if (op != null) {
+			op.close();
+		}
+	}
+
 	@AfterClass
 	public static void deleteOutputFile() {
 		String outputFilePath = System.getProperty("user.dir");
 		String outputFileExtension = ".pdf";
-		String fileSepetator = System.getProperty("file.separator");
-		File temp2 = new File(outputFilePath + fileSepetator + "test" + outputFileExtension);
+		String fileSeperator = System.getProperty("file.separator");
+		File temp2 = new File(outputFilePath + fileSeperator + "test" + outputFileExtension);
 		if (temp2.exists()) {
 			temp2.delete();
 		}
-		File temp3 = new File(outputFilePath + fileSepetator + "textcontant" + outputFileExtension);
+		File temp3 = new File(outputFilePath + fileSeperator + "textcontant" + outputFileExtension);
 		if (temp3.exists()) {
 			temp3.delete();
 		}
-		File temp4 = new File(outputFilePath + fileSepetator + "Wiki" + outputFileExtension);
+		File temp4 = new File(outputFilePath + fileSeperator + "Wiki" + outputFileExtension);
 		if (temp4.exists()) {
 			temp4.delete();
 		}
-		File temp5 = new File(outputFilePath + fileSepetator + "csshtml" + outputFileExtension);
+		File temp5 = new File(outputFilePath + fileSeperator + "csshtml" + outputFileExtension);
 		if (temp5.exists()) {
 			temp5.delete();
 		}
-		File temp1 = new File(outputFilePath + fileSepetator + "emptyFile" + outputFileExtension);
+		File temp1 = new File(outputFilePath + fileSeperator + "emptyFile" + outputFileExtension);
 		if (temp1.exists()) {
 			temp1.delete();
 		}
-		File temp6 = new File(outputFilePath + fileSepetator + "responsive" + outputFileExtension);
+		File temp6 = new File(outputFilePath + fileSeperator + "responsive" + outputFileExtension);
 		if (temp6.exists()) {
 			temp6.delete();
 		}
-
+		File OutPutPdfFile = new File(outputFilePath + fileSeperator + "merge" + outputFileExtension);
+		if (OutPutPdfFile.exists()) {
+			OutPutPdfFile.delete();
+		}
+		File OutPutPdfFile2 = new File(outputFilePath + fileSeperator + "new_merged.pdf");
+		if (OutPutPdfFile2.exists()) {
+			OutPutPdfFile2.delete();
+		}
 	}
 
 }

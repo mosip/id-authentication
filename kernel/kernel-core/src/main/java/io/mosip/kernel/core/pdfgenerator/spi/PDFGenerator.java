@@ -1,8 +1,23 @@
 package io.mosip.kernel.core.pdfgenerator.spi;
 
+/**
+ * The PdfGenerator can be used mostly when converting processed
+ * Template to PDF. It contains a series of methods that accept processed
+ * Template as a {@link String}, {@link File}, or {@link InputStream}, and
+ * convert it to PDF in the form of an {@link OutputStream}, {@link File}
+ * 
+ * @author M1046571
+ * @author Neha
+ * 
+ * @since 1.0.0
+ *
+ */
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
+import java.util.List;
 
 public interface PDFGenerator {
 	/**
@@ -54,5 +69,27 @@ public interface PDFGenerator {
 	 * @return outpustStream
 	 */
 	public OutputStream generate(InputStream is, String resourceLoc) throws IOException;
+
+	/**
+	 * This method will convert BufferedImage list to Byte Array
+	 * 
+	 * @param bufferedImages
+	 *            the input image to convert as PDF
+	 * @return byte array
+	 * @throws IOException
+	 *             throws IOException
+	 */
+	public byte[] asPDF(List<BufferedImage> bufferedImages) throws IOException;
+
+	/**
+	 * This method will merge all the pdf files
+	 * 
+	 * @param pdfLists
+	 *            the url list of pdf files
+	 * @return the byte array of merged file
+	 * @throws IOException
+	 *             throws IOException
+	 */
+	public byte[] mergePDF(List<URL> pdfLists) throws IOException;
 
 }

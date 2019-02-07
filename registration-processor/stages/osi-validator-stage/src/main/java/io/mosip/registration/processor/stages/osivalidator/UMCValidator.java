@@ -316,19 +316,11 @@ public class UMCValidator {
 				rcmDto.getLatitude(), rcmDto.getLongitude())
 				&& isValidMachine(rcmDto.getMachineId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
 				&& isValidUMCmapping(rcmDto.getPacketCreationDate(), rcmDto.getRegcntrId(), rcmDto.getMachineId(),
-						regOsi.getSupervisorId(), regOsi.getOfficerId())) {
+						regOsi.getSupervisorId(), regOsi.getOfficerId()) && validateCenterIdAndTimestamp(rcmDto) && isValidDevice(rcmDto)) {
 			umc = true;
 		}
 
-		if (umc) {
-			// MOS-12822
-			boolean isValid = validateCenterIdAndTimestamp(rcmDto);
-			if (isValid) {
-				umc = isValidDevice(rcmDto);
-			}
-			// MOS-12831
-
-		}
+		
 
 		return umc;
 	}

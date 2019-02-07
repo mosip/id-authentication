@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.registration</groupId>
 		<artifactId>registration-parent</artifactId>
-		<version>0.8.0</version>
+		<version>0.8.1</version>
 	</parent>
 
 	<artifactId>registration-services</artifactId>
@@ -150,14 +150,14 @@
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 		</dependency>
-	<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
-	<dependency>
-		<groupId>com.fasterxml.jackson.datatype</groupId>
-		<artifactId>jackson-datatype-jsr310</artifactId>
-		<version>2.7.3</version>
-	</dependency>
-	
-		
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>2.7.3</version>
+		</dependency>
+
+
 		<dependency>
 			<groupId>com.github.oshi</groupId>
 			<artifactId>oshi-core</artifactId>
@@ -210,7 +210,7 @@
 			<artifactId>webcam-capture</artifactId>
 			<version>${webcam-capture.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<artifactId>faces</artifactId>
 			<groupId>org.openimaj</groupId>
@@ -221,7 +221,7 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-templatemanager-velocity</artifactId>
 		</dependency>
-		
+
 		<!-- scanner dependencies -->
 		<dependency>
 			<groupId>com.googlecode.jfreesane</groupId>
@@ -229,9 +229,9 @@
 			<version>0.98</version>
 		</dependency>
 		<dependency>
-		    <groupId>com.itextpdf</groupId>
-		    <artifactId>itextpdf</artifactId>
-		    <version>5.0.6</version>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+			<version>5.0.6</version>
 		</dependency>
 
 		<dependency>
@@ -246,6 +246,11 @@
 			<groupId>org.apache.pdfbox</groupId>
 			<artifactId>pdfbox</artifactId>
 			<version>1.8.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.cronutils</groupId>
+			<artifactId>cron-utils</artifactId>
 		</dependency>
 	</dependencies>
 

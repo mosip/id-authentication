@@ -85,7 +85,7 @@
       </Button>
       <Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="76.0" layoutY="161.0" prefHeight="15.0" prefWidth="9.0" />
       <Label id="toggleLabel1" fx:id="toggleLabel1" layoutX="85.0" layoutY="161.0" prefHeight="15.0" prefWidth="9.1" />
-      <HBox fx:id="biometricBox" layoutX="32.0" layoutY="232.0" prefHeight="100.0" prefWidth="900.0">
+      <HBox fx:id="biometricBox" layoutX="32.0" layoutY="232.0" prefHeight="40.0" prefWidth="900.0">
          <children>
             <CheckBox fx:id="biometricException" mnemonicParsing="false" prefHeight="17.0" prefWidth="196.0" text="%biometrics-exception">
             	<font>

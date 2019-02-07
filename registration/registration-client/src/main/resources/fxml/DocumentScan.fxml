@@ -27,6 +27,6 @@
       <Button fx:id="docPreviewPrev" disable="true" layoutX="526.0" layoutY="398.0" mnemonicParsing="false" onAction="#previewPrevPage" text="Previous" visible="false" />
       <Button fx:id="docPreviewNext" disable="true" layoutX="790.0" layoutY="398.0" mnemonicParsing="false" onAction="#previewNextPage" text="Next" visible="false" />
       <Text fx:id="docPageNumber" layoutX="686.0" layoutY="417.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="29.0" />
-      <ImageView fx:id="docPreviewImgView" fitHeight="364.0" fitWidth="448.0" layoutX="453.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="docPreviewImgView" fitHeight="364.0" fitWidth="396.0" layoutX="447.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true" />
 		</children>
 </AnchorPane>

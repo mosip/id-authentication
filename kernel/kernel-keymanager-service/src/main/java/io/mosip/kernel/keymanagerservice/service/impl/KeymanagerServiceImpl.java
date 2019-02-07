@@ -113,7 +113,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * .lang.String, java.time.LocalDateTime, java.util.Optional)
 	 */
 	@Override
-	public PublicKeyResponse<String> getPublicKey(String applicationId, LocalDateTime timeStamp,
+	public PublicKeyResponse<String> getPublicKey(String applicationId, String timeStamp,
 			Optional<String> referenceId) {
 		LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID, applicationId,
 				KeymanagerConstant.GETPUBLICKEY);
@@ -121,18 +121,19 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 				KeymanagerConstant.GETPUBLICKEY);
 		LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.REFERENCEID, referenceId.toString(),
 				KeymanagerConstant.GETPUBLICKEY);
+		LocalDateTime localDateTimeStamp =keymanagerUtil.parseToLocalDateTime(timeStamp);
 		PublicKeyResponse<String> publicKeyResponse = new PublicKeyResponse<>();
 		if (!referenceId.isPresent() || referenceId.get().trim().isEmpty()) {
 			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
 					"Reference Id is not present. Will get public key from SoftHSM");
-			PublicKeyResponse<PublicKey> hsmPublicKey = getPublicKeyFromHSM(applicationId, timeStamp);
+			PublicKeyResponse<PublicKey> hsmPublicKey = getPublicKeyFromHSM(applicationId, localDateTimeStamp);
 			publicKeyResponse.setPublicKey(CryptoUtil.encodeBase64(hsmPublicKey.getPublicKey().getEncoded()));
 			publicKeyResponse.setIssuedAt(hsmPublicKey.getIssuedAt());
 			publicKeyResponse.setExpiryAt(hsmPublicKey.getExpiryAt());
 		} else {
 			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
 					"Reference Id is present. Will get public key from DB store");
-			PublicKeyResponse<byte[]> dbPublicKey = getPublicKeyFromDBStore(applicationId, timeStamp,
+			PublicKeyResponse<byte[]> dbPublicKey = getPublicKeyFromDBStore(applicationId, localDateTimeStamp,
 					referenceId.get());
 			publicKeyResponse.setPublicKey(CryptoUtil.encodeBase64(dbPublicKey.getPublicKey()));
 			publicKeyResponse.setIssuedAt(dbPublicKey.getIssuedAt());

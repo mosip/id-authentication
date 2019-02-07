@@ -21,21 +21,6 @@ mvn javadoc:javadoc
 		<version>${project.version}</</version>
 	</dependency>
  ```
-  
- 
-
-All the supported logging systems can have the logger levels set in the Spring Environment (for example, in application.properties) by using logging.level.<logger-name> = level where level is one of *TRACE, DEBUG, INFO, WARN, ERROR, FATAL, or OFF*.
-
-**The root log level can be configured by using**  
-
-```
-logging.level.root=debug
-```
-**For any application log level can be configured by using logging.level.<logger-name> = level, For Example**
-
-```
-logging.level.io.mosip.authentication.service.*=debug 
-```
 
 **If there is any error which occurs while configuration in log factory, it will be thrown as Exception.** 
 
@@ -130,5 +115,39 @@ Logger logger= Logfactory.getDefaultRollingFileLogger(rollingFileAppenderXMLFile
 2018-11-23T17:20:05+05:30 - [Kernel] - WARN - sessionid - idType - id - description
 2018-11-23T17:20:05+05:30 - [Kernel] - DEBUG - sessionid - idType - id - description
 2018-11-23T17:20:05+05:30 - [Kernel] - TRACE  - sessionid - idType - id - description
+ ```
+
+   *Usage 3: To set a particular log level to a logger*
+
+1. Create an appender's object and provide configuration with log level 
+2. Pass that object and class name in *Logfactory* to get logger instance.
+ 
+ ```
+RollingFileAppender rollingFileAppender = new RollingFileAppender();
+       rollingFileAppender.setAppenderName("kernelrollingfileappender");
+		rollingFileAppender.setAppend(true);
+		rollingFileAppender.setFileName("/kernel-logs.log");
+		rollingFileAppender.setImmediateFlush(true);
+		rollingFileAppender.setPrudent(false);
+		rollingFileAppender.setFileNamePattern("/kernel-logs-%d{ss}-%i.log");
+		rollingFileAppender.setMaxHistory(5);
+		rollingFileAppender.setTotalCap("100KB");
+		rollingFileAppender.setMaxFileSize("10kb");
+		
+Logger logger=Logfactory.getDefaultRollingFileLogger(rollingFileAppender, Kernel.class,LogLevel.INFO);
+       
+       logger.error(sessionId,idType,id,description);
+       logger.debug(sessionId,idType,id,description);
+       logger.warn(sessionId,idType,id,description);
+       logger.info(sessionId,idType,id,description);
+       logger.trace(sessionId,idType,id,description); 		
+ 
+ ```
+ 
+  *Output*
+ 
+ ```
+2018-11-23T17:20:05+05:30 - [Kernel] - ERROR  - sessionid - idType - id - description
+2018-11-23T17:20:05+05:30 - [Kernel] - INFO - sessionid - idType - id - description
  ```
 

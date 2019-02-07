@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.8.0</version>
+		<version>0.8.1</version>
 	</parent>
 
 
@@ -100,6 +100,8 @@
 		<itextcore.version>7.1.0</itextcore.version>
 		<!-- itext html2pdf version -->
 		<itexthtml2pdf.version>2.0.0</itexthtml2pdf.version>
+		<!--  itext version-->
+		<itext.version>5.5.13</itext.version>
 
 		<!-- Freemarker -->
 		<freemarker.version>2.3.23</freemarker.version>
@@ -108,8 +110,16 @@
 		<velocity.tool.version>2.0</velocity.tool.version>
 		<!-- Orika -->
 		<datamapper.orika>1.5.2</datamapper.orika>
+		
+		<!-- HDFS -->
+		<log4j-over-slf4j>1.7.7</log4j-over-slf4j>
+		<hadoop-client>2.8.1</hadoop-client>
+		<htrace-core4>4.1.0-incubating</htrace-core4>
 
-		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java</sonar.coverage.exclusions>
+      <!-- icu4j -->
+		<icu4j.version>63.1</icu4j.version>
+
+		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
 
@@ -138,12 +148,14 @@
 		<module>kernel-keygenerator-bouncycastle</module>
 		<module>kernel-crypto-jce</module>
 		<module>kernel-keymanager-softhsm</module>
-		<module>kernel-packetuploader-sftp-jsch</module>
 		<module>kernel-templatemanager-velocity</module>
 		<module>kernel-pdfgenerator-itext</module>
 		<module>kernel-datamapper-orika</module>
 		<module>kernel-qrcodegenerator-zxing</module>
 		<module>kernel-cbeffutil-api</module>
+		<module>kernel-fsadapter-hdfs</module>
+		<module>kernel-transliteration-icu4j</module>
+
 
 		<module>kernel-uingenerator-service</module>
 		<module>kernel-masterdata-service</module>
@@ -158,14 +170,16 @@
 		<module>kernel-syncdata-service</module>
 		<module>kernel-auth-service</module>
 		<module>kernel-ldap-service</module>
+		<module>kernel-licensekeymanager-service</module>
 		<module>kernel-config-server</module>
 		
 		
 		<module>kernel-idvalidator</module>
+		<!-- <module>kernel-packetuploader-sftp-jsch</module> -->
 		<!-- <module>kernel-packetserver-http</module> -->
+		<!-- <module>kernel-packetserver-sftp</module> -->
 		<!-- <module>kernel-idgenerator-uin</module> -->
 		<!-- <module>kernel-templatemanager-freemarker</module> -->
-		<!-- <module>kernel-packetserver-sftp</module> -->
 		<!-- <module>kernel-batch-framework</module> -->
 		<!-- <module>kernel-batch-server</module> -->
 		<!--<module>kernel-crypto-bouncycastle</module> -->

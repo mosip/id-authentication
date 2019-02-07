@@ -1,17 +1,9 @@
 package io.mosip.kernel.ldap;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import io.mosip.kernel.ldap.config.MosipEnvironment;
+import io.mosip.kernel.ldap.dto.*;
 import org.apache.directory.api.ldap.model.cursor.EntryCursor;
-import org.apache.directory.api.ldap.model.entry.DefaultEntry;
-import org.apache.directory.api.ldap.model.entry.DefaultModification;
-import org.apache.directory.api.ldap.model.entry.Entry;
-import org.apache.directory.api.ldap.model.entry.Modification;
-import org.apache.directory.api.ldap.model.entry.ModificationOperation;
+import org.apache.directory.api.ldap.model.entry.*;
 import org.apache.directory.api.ldap.model.message.SearchScope;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.ldap.client.api.LdapConnection;
@@ -19,13 +11,12 @@ import org.apache.directory.ldap.client.api.LdapNetworkConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.ldap.config.MosipEnvironment;
-import io.mosip.kernel.ldap.entities.LoginUser;
-import io.mosip.kernel.ldap.entities.MosipUser;
-import io.mosip.kernel.ldap.entities.OtpUser;
-import io.mosip.kernel.ldap.entities.RolesDto;
-import io.mosip.kernel.ldap.entities.RolesResponseDto;
+import java.util.*;
 
+/**
+ *  @author Sabbu Uday Kumar
+ *  @since 1.0.0
+ */
 @Component
 public class LdapServiceImpl implements LdapService {
 
@@ -33,6 +24,8 @@ public class LdapServiceImpl implements LdapService {
     MosipEnvironment mosipEnvironment;
 
     private LdapConnection createAnonymousConnection() throws Exception {
+        System.out.println("getLdapHost:: " + mosipEnvironment.getLdapHost());
+        System.out.println(" getLdapPort:: " + mosipEnvironment.getLdapPort());
         LdapConnection connection = new LdapNetworkConnection
                 (mosipEnvironment.getLdapHost(), mosipEnvironment.getLdapPort());
 
@@ -43,15 +36,9 @@ public class LdapServiceImpl implements LdapService {
         return new Dn(mosipEnvironment.getLdapAdminDn());
     }
 
-    private Dn createUserDn(LoginUser user) throws Exception {
+    private Dn createUserDn(String userName) throws Exception {
         return new Dn(mosipEnvironment.getUserDnPrefix()
-                + user.getUserName()
-                + mosipEnvironment.getUserDnSuffix());
-    }
-
-    private Dn createOtpUserDn(OtpUser otpUser) throws Exception {
-        return new Dn(mosipEnvironment.getUserDnPrefix()
-                + otpUser.getPhone()
+                + userName
                 + mosipEnvironment.getUserDnSuffix());
     }
 
@@ -65,14 +52,11 @@ public class LdapServiceImpl implements LdapService {
         return rolesString.length() > 0 ? rolesString.substring(0, rolesString.length() - 1) : "";
     }
 
-    public Collection<String> getRoles(LoginUser user) {
+    private Collection<String> getUserRoles(Dn userdn, LdapConnection connection) {
         try {
-            LdapConnection connection = createAnonymousConnection();
-            Dn userdn = createUserDn(user);
             Dn searchBase = new Dn(mosipEnvironment.getRolesSearchBase());
             String searchFilter = mosipEnvironment.getRolesSearchPrefix() + userdn + mosipEnvironment.getRolesSearchSuffix();
 
-            connection.bind(userdn, user.getPassword());
             EntryCursor rolesData = connection.search(searchBase, searchFilter, SearchScope.ONELEVEL);
 
             Set<String> roles = new HashSet<String>();
@@ -81,89 +65,70 @@ public class LdapServiceImpl implements LdapService {
             }
 
             rolesData.close();
-            connection.unBind();
-            connection.close();
-
             return roles;
         } catch (Exception err) {
             throw new RuntimeException(err + "Unable to fetch user roles from LDAP");
         }
     }
 
-    private Collection<String> getRolesForOtpUsers(OtpUser otpUser) {
+    private MosipUserDto lookupUserDetails(Dn userdn, LdapConnection connection) throws Exception {
         try {
-            LdapConnection connection = createAnonymousConnection();
-            Dn preregUserDn = createOtpUserDn(otpUser);
-            Dn searchBase = new Dn(mosipEnvironment.getRolesSearchBase());
-            String searchFilter = mosipEnvironment.getRolesSearchPrefix() + preregUserDn + mosipEnvironment.getRolesSearchSuffix();
-
-            EntryCursor rolesData = connection.search(searchBase, searchFilter, SearchScope.ONELEVEL);
-
-            Set<String> roles = new HashSet<String>();
-            for (Entry entry : rolesData) {
-                roles.add(entry.get("cn").getString());
-            }
-
-            rolesData.close();
-            connection.close();
-
-            return roles;
+            //if lookup access is retricted only to admin then bind the connection with admin details
+            // connection.bind(createAdminDn(), mosipEnvironment.getLdapAdminPassword());
+            Entry userLookup = connection.lookup(userdn);
+            Collection<String> roles = getUserRoles(userdn, connection);
+            String rolesString = convertRolesToString(roles);
+            MosipUserDto mosipUserDto = new MosipUserDto();
+            mosipUserDto.setUserName(userLookup.get("uid").get().toString());
+            mosipUserDto.setMobile(userLookup.get("mobile").get().toString());
+            mosipUserDto.setMail(userLookup.get("mail").get().toString());
+            mosipUserDto.setUserPassword(userLookup.get("userPassword").get().getBytes());
+//            mosipUserDto.setLangCode(userLookup.get("preferredLanguage").get().toString());
+            mosipUserDto.setName(userLookup.get("cn").get().toString());
+            mosipUserDto.setRole(rolesString);
+            //unbind before closing the connection
+            //connection.unbind();
+            return mosipUserDto;
         } catch (Exception err) {
-            throw new RuntimeException(err + "Unable to fetch user roles from LDAP");
+            throw new RuntimeException("unable to fetch user details", err);
         }
     }
 
     @Override
-    public MosipUser authenticateUser(LoginUser user) throws Exception {
+    public MosipUserDto authenticateUser(LoginUserDto user) throws Exception {
         try {
             LdapConnection connection = createAnonymousConnection();
-            Dn userdn = createUserDn(user);
-
+            Dn userdn = createUserDn(user.getUserName());
             connection.bind(userdn, user.getPassword());
 
             if (connection.isAuthenticated()) {
-                Entry userLookup = connection.lookup(userdn);
-
-                connection.unBind();
-                connection.close();
-
-                Collection<String> roles = getRoles(user);
-                String rolesString = convertRolesToString(roles);
-                MosipUser mosipUser = new MosipUser(
-                        userLookup.get("uid").get().toString(),
-                        userLookup.get("mobile").get().toString(),
-                        userLookup.get("mail").get().toString(),
-                        rolesString
-                );
-
-                return mosipUser;
+                return lookupUserDetails(userdn, connection);
             }
-
             connection.unBind();
             connection.close();
 
-            return new MosipUser();
+            return new MosipUserDto();
         } catch (Exception err) {
             throw new RuntimeException(err + "Unable to authenticate user in LDAP");
         }
     }
 
     @Override
-    public MosipUser verifyOtpUser(OtpUser otpUser) throws Exception {
+    public MosipUserDto verifyOtpUser(OtpUserDto otpUserDto) throws Exception {
         try {
             LdapConnection connection = createAnonymousConnection();
-            Dn otpUserDn = createOtpUserDn(otpUser);
+            Dn otpUserDn = createUserDn(otpUserDto.getPhone());
             if (!connection.exists(otpUserDn)) {
                 Entry userEntry = new DefaultEntry(
-                        "uid=" + otpUser.getPhone() + ",ou=people,c=morocco",
+                        "uid=" + otpUserDto.getPhone() + ",ou=people,c=morocco",
                         "objectClass: organizationalPerson",
                         "objectClass: person",
                         "objectClass: inetOrgPerson",
                         "objectClass: top",
-                        "mobile", otpUser.getPhone(),
-                        "mail", otpUser.getEmail(),
-                        "uid", otpUser.getPhone(),
-                        "preferredLanguage", otpUser.getLangCode()
+                        "mobile", otpUserDto.getPhone(),
+                        "mail", otpUserDto.getEmail(),
+                        "uid", otpUserDto.getPhone(),
+                        "preferredLanguage", otpUserDto.getLangCode()
                 );
                 connection.add(userEntry);
 
@@ -176,86 +141,63 @@ public class LdapServiceImpl implements LdapService {
                 connection.modify("cn=PRE_REG_USER,ou=roles,c=morocco", roleModification);
             }
 
-            Entry userLookup = connection.lookup(otpUserDn);
+            MosipUserDto mosipUserDto = lookupUserDetails(otpUserDn, connection);
             connection.close();
-
-            Collection<String> roles = getRolesForOtpUsers(otpUser);
-            String rolesString = convertRolesToString(roles);
-            MosipUser mosipUser = new MosipUser(
-                    userLookup.get("uid").get().toString(),
-                    userLookup.get("mobile").get().toString(),
-                    userLookup.get("mail").get().toString(),
-                    rolesString,
-                    userLookup.get("preferredLanguage").get().toString()
-            );
-
-            return mosipUser;
+            return mosipUserDto;
         } catch (Exception err) {
             throw new RuntimeException(err);
         }
     }
-    
+
     @Override
-	public RolesResponseDto getAllRoles() {
+    public RolesListDto getAllRoles() {
+        RolesListDto rolesListDto = new RolesListDto();
 
-		LdapConnection connection = null;
-		RolesResponseDto rolesResponseDto = new RolesResponseDto();
+        try {
+            LdapConnection connection = createAnonymousConnection();
+            List<RoleDto> roleDtos = new ArrayList<>();
+            Dn searchBase = new Dn(mosipEnvironment.getRolesSearchBase());
+            String searchFilter = mosipEnvironment.getLdapRolesClass();
 
-		try {
-			connection = createAnonymousConnection();
-			List<RolesDto> rolesDtos = new ArrayList<>();
-			Dn searchBase = new Dn(mosipEnvironment.getRolesSearchBase());
-			String searchFilter = mosipEnvironment.getAllRoles();
+            EntryCursor rolesData = connection.search(searchBase, searchFilter, SearchScope.ONELEVEL);
 
-			EntryCursor rolesData = connection.search(searchBase, searchFilter, SearchScope.ONELEVEL);
+            for (Entry entry : rolesData) {
+                RoleDto roleDto = new RoleDto();
+                roleDto.setRoleId(entry.get("cn").get().toString());
+                roleDto.setRoleName(entry.get("cn").get().toString());
+                roleDto.setRoleDescription(entry.get("description").get().toString());
+                roleDtos.add(roleDto);
+            }
+            rolesListDto.setRoles(roleDtos);
+            rolesData.close();
+            connection.close();
 
-			for (Entry entry : rolesData) {
-				RolesDto rolesDto = new RolesDto();
-				rolesDto.setRoleId(entry.get("cn").get().toString());
-				rolesDto.setRoleName(entry.get("cn").get().toString());
-				rolesDto.setRoleDescription(entry.get("description").get().toString());
-				rolesDtos.add(rolesDto);
-			}
-			rolesResponseDto.setRoles(rolesDtos);
-			rolesData.close();
-			connection.unBind();
-			connection.close();
-			return rolesResponseDto;
-		
-		} catch (Exception e) {
+            return rolesListDto;
+        } catch (Exception e) {
+            throw new RuntimeException(e + " Unable to fetch user roles from LDAP");
+        }
+    }
 
-			throw new RuntimeException(e + " Unable to fetch user roles from LDAP");
-		}
+    @Override
+    public MosipUserListDto getListOfUsersDetails(List<String> users) throws Exception {
+        try {
+            MosipUserListDto userResponseDto = new MosipUserListDto();
+            List<MosipUserDto> mosipUserDtos = new ArrayList<>();
 
-		
-	}
+            LdapConnection connection = createAnonymousConnection();
 
-	@Override
-	public MosipUser getUserDetails(String user) {
-		LdapConnection connection = null;
+            for (String user : users) {
+                Dn userdn = createUserDn(user);
+                mosipUserDtos.add(lookupUserDetails(userdn, connection));
+            }
 
-		try {
-			connection = createAnonymousConnection();
-			LoginUser userObj = new LoginUser();
-			userObj.setUserName(user);
-			Dn userdn = null;
-
-			userdn = createUserDn(userObj);
-
-			Entry userLookup = connection.lookup(userdn);
-
-			connection.unBind();
-			connection.close();
-
-			return new MosipUser(userLookup.get("uid").get().toString(), userLookup.get("mobile").get().toString(),
-					userLookup.get("mail").get().toString(), null);
-
-		}  catch (Exception e) {
-			throw new RuntimeException(e + "  Unable to fetch user roles from LDAP");
-		}
-
-	}
-    
+            connection.close();
+            userResponseDto.setMosipUserDtoList(mosipUserDtos);
+            return userResponseDto;
+        } catch (Exception err) {
+            throw new RuntimeException(err + " Unable to fetch user roles from LDAP");
+        }
+    }
 }
 
 

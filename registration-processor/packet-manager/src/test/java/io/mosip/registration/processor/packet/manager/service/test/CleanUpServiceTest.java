@@ -143,8 +143,8 @@ public class CleanUpServiceTest {
 		assertEquals("Deleted file",false, exists);
 	}
 	
-	
-	
+
+
 	@Test
 	public void copyTest() throws FileNotFoundException, IOException {
 		String fileName = file.getName();

@@ -130,6 +130,7 @@ public class IdRepoExceptionHandlerTest {
 		});
 	}
 	
+	
 	@Test
 	public void testHandleIdAppExceptionWithUncheckedCause() {
 		IdRepoAppUncheckedException ex = new IdRepoAppUncheckedException(IdRepoErrorConstants.INVALID_UIN,

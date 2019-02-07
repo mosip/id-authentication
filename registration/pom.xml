@@ -7,17 +7,18 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.8.0</version>
+		<version>0.8.1</version>
 	</parent>
 	
 	<groupId>io.mosip.registration</groupId>
-	<version>0.8.0</version>
+	<version>0.8.1</version>
 	<artifactId>registration-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>registration</name>
 	<description>Parent project of MOSIP Registration</description>
 
 	<properties>
+		<main.basedir>${project.basedir}</main.basedir>
 		<maven.jacoco.version>0.8.2</maven.jacoco.version>
 		<javafx.version>2.2</javafx.version>
 		<maven.sonar.version>3.2</maven.sonar.version>
@@ -249,6 +250,13 @@
 				<artifactId>kernel-jsonvalidator</artifactId>
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
+
+			<dependency>
+				<groupId>com.cronutils</groupId>
+				<artifactId>cron-utils</artifactId>
+				<version>8.0.0</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 

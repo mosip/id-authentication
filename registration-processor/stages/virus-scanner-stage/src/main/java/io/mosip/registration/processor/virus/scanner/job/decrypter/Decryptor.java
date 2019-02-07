@@ -33,7 +33,6 @@ import io.mosip.registration.processor.virus.scanner.job.dto.CryptomanagerRespon
  *
  * @author Girish Yarru
  */
-@RefreshScope
 @Component
 public class Decryptor {
 	private static io.mosip.kernel.core.logger.spi.Logger regProcLogger = RegProcessorLogger.getLogger(Decryptor.class);

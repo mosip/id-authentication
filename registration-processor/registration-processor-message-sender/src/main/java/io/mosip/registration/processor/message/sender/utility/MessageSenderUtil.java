@@ -20,9 +20,9 @@ public class MessageSenderUtil {
 	/** The notification types. */
 	@Value("${registration.processor.globalconfigjson}")
 	private String getGlobalConfigJson;
-	
-	@Value("${registration.processor.templatejson}")
-	private String getRegProcessorTemplateJson;
+
+	@Value("${registration.processor.identityjson}")
+	private String getRegProcessorIdentityJson;
 
 	/** The get reg processor demographic identity. */
 	@Value("${registration.processor.demographic.identity}")

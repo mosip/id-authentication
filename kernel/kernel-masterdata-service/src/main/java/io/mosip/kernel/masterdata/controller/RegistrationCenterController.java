@@ -181,7 +181,7 @@ public class RegistrationCenterController {
 	public ResponseEntity<IdResponseDto> createRegistrationCenter(
 			@RequestBody @Valid RequestDto<RegistrationCenterDto> registrationCenterDto) {
 		return new ResponseEntity<>(registrationCenterService.createRegistrationCenter(registrationCenterDto),
-				HttpStatus.CREATED);
+				HttpStatus.OK);
 	}
 
 	/**

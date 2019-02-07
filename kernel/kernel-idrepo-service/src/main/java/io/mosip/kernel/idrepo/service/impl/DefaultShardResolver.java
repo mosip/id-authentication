@@ -8,15 +8,18 @@ import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.spi.ShardResolver;
 
 /**
- * The Class DefaultShardResolver.
+ * The Class DefaultShardResolver - to resolve which shard to use to store data.
  *
  * @author Manoj SP
  */
 @Component
 public class DefaultShardResolver implements ShardResolver {
 
-	/** The Constant pattern. */
-	private static final Pattern pattern = Pattern.compile("[0-4].*");
+	private static final String SHARD1 = "shard1";
+
+	private static final String SHARD2 = "shard2";
+
+	private static final Pattern PATTERN = Pattern.compile("[0-4].*");
 
 	/*
 	 * (non-Javadoc)
@@ -25,10 +28,10 @@ public class DefaultShardResolver implements ShardResolver {
 	 */
 	@Override
 	public String getShard(String id) throws IdRepoAppException {
-		if (pattern.matcher(id).matches()) {
-			return "shard1";
+		if (PATTERN.matcher(id).matches()) {
+			return SHARD1;
 		} else {
-			return "shard2";
+			return SHARD2;
 		}
 	}
 }

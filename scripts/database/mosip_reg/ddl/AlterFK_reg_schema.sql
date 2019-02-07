@@ -36,3 +36,9 @@ alter table reg.machine_master add constraint fk_machm_mspec foreign key (mspec_
 alter table reg.machine_spec add constraint fk_mspec_mtyp foreign key (mtyp_code, lang_code) references reg.machine_type(code, lang_code) on delete no action on update no action ;
 
 alter table reg.user_biometric add constraint fk_usrbio_usrdtl foreign key (usr_id) references reg.user_detail(id) on delete no action on update no action ;
+
+-- object: fk_algc_reg | type: CONSTRAINT --
+-- ALTER TABLE reg.audit_log_control DROP CONSTRAINT IF EXISTS fk_algc_reg CASCADE;
+ALTER TABLE reg.audit_log_control ADD CONSTRAINT fk_algc_reg FOREIGN KEY (reg_id)
+REFERENCES reg.registration (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --

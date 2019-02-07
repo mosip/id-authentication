@@ -106,3 +106,7 @@ alter table master.valid_document add constraint fk_valdoc_doccat foreign key (d
 alter table master.valid_document add constraint fk_valdoc_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 alter table master.blacklisted_words add constraint fk_blwrd_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 
+
+alter table master.tsp_licensekey_map add constraint fk_tsplkeym foreign key (license_key) references master.licensekey_list(license_key) on delete no action on update no action ;
+alter table master.licensekey_permission add constraint fk_lkeyper foreign key (license_key) references master.licensekey_list(license_key) on delete no action on update no action ;
+

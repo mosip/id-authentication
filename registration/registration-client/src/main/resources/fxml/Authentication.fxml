@@ -28,13 +28,13 @@
                   <Button layoutX="106.0" layoutY="197.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="RegbuttonStyle" text="%getotp" />
                   <Label fx:id="otpLabel" layoutX="126.0" layoutY="38.0" text="%registrationofficerverification" />
                   <Button layoutX="294.0" layoutY="197.0" mnemonicParsing="false" onAction="#validateOTP" styleClass="RegbuttonStyle" text="%submit" />
-                  <TextField fx:id="otpUserId" layoutX="106.0" layoutY="88.0" styleClass="authenticationStyle" promptText="%username" />
-                  <TextField fx:id="otp" layoutX="106.0" layoutY="139.0" styleClass="authenticationStyle" promptText="%enterotp" />
+                  <TextField fx:id="otpUserId" layoutX="106.0" layoutY="88.0" promptText="%username" styleClass="authenticationStyle" />
                   <Label fx:id="otpValidity" layoutX="106.0" layoutY="248.0">
                      <font>
                         <Font size="10.0" />
                      </font>
                   </Label>
+                  <PasswordField fx:id="otp" layoutX="106.0" layoutY="130.0" promptText="%enterotp" styleClass="authenticationStyle" />
                </children>
             </AnchorPane>
             <AnchorPane fx:id="pwdBasedLogin" layoutY="1.0" styleClass="authenticationAnchorPaneStyle">

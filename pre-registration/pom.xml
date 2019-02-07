@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.8.0</version>
+		<version>0.8.1</version>
 	</parent>
 
 	<groupId>io.mosip.preregistration</groupId>
@@ -51,13 +51,14 @@
 
 		<!-- For Cache -->
 		<ignite.version>2.3.0</ignite.version>
+        <apache.httpclient.version>4.5.6</apache.httpclient.version>
 
 		<!-- Support tools & utilities -->
 		<commons-math3>3.6.1</commons-math3>
 		<commons-lang3>3.7</commons-lang3>
 		<commons.beanutils.version>1.9.2</commons.beanutils.version>
 		<commons.configuration2.version>2.2</commons.configuration2.version>
-		<kernel.core.version>0.7.0-SNAPSHOT</kernel.core.version>
+		<kernel.core.version>0.7.0</kernel.core.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
@@ -70,6 +71,16 @@
 
 		<!-- Json Simple -->
 		<jsonsimple.version>1.1</jsonsimple.version>
+		
+		<uuid.fasterxml.version>3.1.4</uuid.fasterxml.version>
+		<org.json.version>20080701</org.json.version>
+		<modelmapper.version>0.7.4</modelmapper.version>
+		<java.interceptor.version>1.2</java.interceptor.version>
+		<icu.version>63.1</icu.version>
+		
+		<!-- Other module dependency -->
+		<pre.registration.version>0.8.1</pre.registration.version>
+		<registration.processor.version>0.7.0</registration.processor.version>
 
 		<sonar.coverage.exclusions>**/code/**,**/config/**,**/dao/**,**/dto/**,**/entity/**,**/errorcodes/**,**/exception/**,**/exception/system/**,**/exception/util/**,**/repository/**,**/*Config.java,**/*Application.java,**/transliteration/**,**/batchjobservices/**,**/batchjob/**,**/auth/**,**/util/**,**/stateUtil/**,**/datasync/**</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
@@ -84,7 +95,7 @@
 		<module>pre-registration-batchjob</module>
 		<module>pre-registration-batchjob-service</module>
 		<module>pre-registration-translitration-service</module>
-		<module>pre-registration-acknowledgement-service</module>
+		<module>pre-registration-notification-service</module>
 	</modules>
 
 	<profiles>

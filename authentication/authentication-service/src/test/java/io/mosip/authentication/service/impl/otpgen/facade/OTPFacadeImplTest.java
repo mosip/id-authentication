@@ -155,7 +155,7 @@ public class OTPFacadeImplTest {
 		idInfo.put("phone", list);
 
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME_PRI, idInfo)).thenReturn(name);
+		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn(name);
 
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn(emailId);
 
@@ -200,7 +200,7 @@ public class OTPFacadeImplTest {
 
 		Mockito.when(idAuthService.processIdType("D", uin, false)).thenReturn(repoDetails);
 		Mockito.when(idInfoService.getIdInfo(repoDetails)).thenReturn(idInfo);
-		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME_PRI, idInfo)).thenReturn(name);
+		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn(name);
 
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn(emailId);
 

@@ -40,7 +40,7 @@ public enum DirectoryPathDto {
 			return "registration.processor.VIRUS_SCAN_RETRY";
 		}
 	},
-	
+
 	/** The archive location. */
 	ARCHIVE_LOCATION {
 		@Override
