@@ -11,7 +11,7 @@ package io.mosip.kernel.transliteration.constant;
 public enum TransliterationErrorConstant {
 
 	TRANSLITERATION_INVALID_ID("KER-TRL-001", "Transliteration not possible"),
-	TRANSLITERATION_INVALID_LANGUAGE_CODE("KER-TRL-001","Language code not supported");
+	TRANSLITERATION_INVALID_LANGUAGE_CODE("KER-TRL-002","Language code not supported");
 
 	/**
 	 * The error code.

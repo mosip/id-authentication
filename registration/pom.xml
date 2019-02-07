@@ -18,6 +18,7 @@
 	<description>Parent project of MOSIP Registration</description>
 
 	<properties>
+		<main.basedir>${project.basedir}</main.basedir>
 		<maven.jacoco.version>0.8.2</maven.jacoco.version>
 		<javafx.version>2.2</javafx.version>
 		<maven.sonar.version>3.2</maven.sonar.version>
@@ -78,7 +79,6 @@
 			src/main/java/io/mosip/registration/exception/**/*,
 			src/main/java/io/mosip/registration/config/**/*,
 			src/main/java/io/mosip/registration/device/**/*
-			src/main/java/io/mosip/registration/cipher/**/*
 		</sonar.exclusions>
 	</properties>
 

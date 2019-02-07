@@ -35,6 +35,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycInfo;
 import io.mosip.authentication.core.dto.indauth.KycType;
+import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
@@ -242,8 +243,9 @@ public class KycServiceImpl implements KycService {
 		pdfDetails.put("uin_label_sec", messageSource.getMessage("uin_label", null, new Locale(secondaryLanguage)));
 		pdfDetails.put("name_label_pri", messageSource.getMessage("name_label", null, LocaleContextHolder.getLocale()));
 		pdfDetails.put("name_label_sec", messageSource.getMessage("name_label", null, new Locale(secondaryLanguage)));
-		pdfDetails.put("name_pri", demoHelper.getEntityInfoAsString(DemoMatchType.NAME_PRI, filteredIdentityInfo));
-		pdfDetails.put("name_sec", demoHelper.getEntityInfoAsString(DemoMatchType.NAME_SEC, filteredIdentityInfo));
+		pdfDetails.put("name_pri", demoHelper.getEntityInfoAsString(DemoMatchType.NAME, filteredIdentityInfo));
+		String langCode = demoHelper.getLanguageCode(LanguageType.SECONDARY_LANG);
+		pdfDetails.put("name_sec", demoHelper.getEntityInfoAsString(DemoMatchType.NAME, langCode, filteredIdentityInfo));
 		faceDetails(filteredIdentityInfo, maskedUin, pdfDetails);
 		return pdfDetails;
 	}

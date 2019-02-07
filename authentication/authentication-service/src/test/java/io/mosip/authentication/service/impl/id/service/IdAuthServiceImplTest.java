@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -199,7 +198,7 @@ public class IdAuthServiceImplTest {
 		String status = "Y";
 		String comment = "OTP_GENERATED";
 		ReflectionTestUtils.invokeMethod(autntxnrepository, "saveAndFlush", autnTxn);
-		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "saveAutnTxn", idvId, idvIdType, reqTime, txnId, status,
+		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "saveAutnTxn", idvId, idvIdType, uin,reqTime, txnId, status,
 				comment, requestType);
 	}
 

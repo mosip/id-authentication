@@ -21,31 +21,31 @@ spec:
         image: docker-registry.mosip.io:5000/packet-validator-stage
         env:
         - name: active_profile_env
-          value: dev-k8
+          value: dev
         imagePullPolicy: Always
       - name: registration-processor-osi-validator
         image: docker-registry.mosip.io:5000/osi-validator-stage
         env:
         - name: active_profile_env
-          value: dev-k8
+          value: dev
         imagePullPolicy: Always
       - name: registration-processor-demo-dedupe-stage
         image: docker-registry.mosip.io:5000/demo-dedupe-stage
         env:
         - name: active_profile_env
-          value: dev-k8
+          value: dev
         imagePullPolicy: Always
       - name: registration-processor-manual-verification-stage
         image: docker-registry.mosip.io:5000/manual-verification-stage
         env:
         - name: active_profile_env
-          value: dev-k8
+          value: dev
         imagePullPolicy: Always
       - name: registration-processor-camel-bridge
         image: docker-registry.mosip.io:5000/registration-processor-camel-bridge
         env:
         - name: active_profile_env
-          value: dev-k8
+          value: dev
         imagePullPolicy: Always
       imagePullSecrets:
       - name: pvt-reg-cred

@@ -1,7 +1,6 @@
 package io.mosip.kernel.cryptomanager.test;
 
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -70,7 +69,7 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 		uriParams = new HashMap<>();
 		uriParams.put("applicationId", "REGISTRATION");
 		builder = UriComponentsBuilder.fromUriString(publicKeyUrl)
-				.queryParam("timeStamp", "2018-12-06T12:07:44.403Z")
+				.queryParam("timeStamp", "2018-12-06T12:07:44.403")
 				.queryParam("referenceId","ref123");
 		
 	}
@@ -86,7 +85,7 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 						MediaType.APPLICATION_JSON));
 		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
 		mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isOk());
+				.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -96,23 +95,6 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 				.andExpect(status().isOk());
 	}
 
-	@Test
-	public void testHttpClientErrorException() throws Exception {
-		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString()))
-				.andRespond(withBadRequest());
-		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
-		mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isInternalServerError());
-	}
-
-	@Test
-	public void testHttpServerErrorException() throws Exception {
-		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString()))
-				.andRespond(withServerError());
-		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
-		mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isInternalServerError());
-	}
 
 	@Test
 	public void testInvalidFormatException() throws Exception {

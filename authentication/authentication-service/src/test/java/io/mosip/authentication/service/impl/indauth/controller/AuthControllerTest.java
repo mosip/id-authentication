@@ -103,7 +103,6 @@ public class AuthControllerTest {
 	@Mock
 	private KycServiceImpl kycService;
 
-
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(auditFactory, "env", env);
@@ -161,7 +160,6 @@ public class AuthControllerTest {
 		authFacade.authenticateApplicant(kycAuthReqDTO.getAuthRequest(), true);
 		authController.processKyc(kycAuthReqDTO, errors);
 	}
-	
 
 	@Test
 	public void processKycSuccess()
@@ -171,7 +169,7 @@ public class AuthControllerTest {
 		kycAuthRequestDTO.setConsentReq(true);
 		kycAuthRequestDTO.setEPrintReq(true);
 		kycAuthRequestDTO.setId("id");
-		//kycAuthRequestDTO.setVer("1.1");
+		// kycAuthRequestDTO.setVer("1.1");
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("234567890123");
@@ -179,7 +177,7 @@ public class AuthControllerTest {
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 //		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -196,7 +194,7 @@ public class AuthControllerTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);
@@ -222,7 +220,8 @@ public class AuthControllerTest {
 		authTypeDTOs.setOtp(true);
 		authRequestDTOs.setAuthType(authTypeDTO);
 		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
-		Mockito.when(authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest(), true)).thenReturn(authResponseDTO);
+		Mockito.when(authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest(), true))
+				.thenReturn(authResponseDTO);
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		kycAuthResponseDTO.setResTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -254,7 +253,8 @@ public class AuthControllerTest {
 		authTypeDTO.setOtp(true);
 		authRequestDTO.setAuthType(authTypeDTO);
 		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
-		Mockito.when(authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest(), true)).thenReturn(authResponseDTO);
+		Mockito.when(authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest(), true))
+				.thenReturn(authResponseDTO);
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		kycAuthResponseDTO.setStatus("Y");
 		kycAuthResponseDTO.setTxnID("34567");
@@ -268,23 +268,25 @@ public class AuthControllerTest {
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED));
 		authController.processKyc(kycAuthRequestDTO, errors);
 	}
+
 	@Ignore
-	@Test(expected=IdAuthenticationAppException.class)
-	public void showAuthenticateTspValidator() throws IdAuthenticationAppException, IdAuthenticationDaoException{
-	
+	@Test(expected = IdAuthenticationAppException.class)
+	public void showAuthenticateTspValidator() throws IdAuthenticationAppException, IdAuthenticationDaoException {
+
 		AuthRequestDTO authReqestsDTO = new AuthRequestDTO();
 		Errors error = new BindException(authReqestsDTO, "authReqDTO");
 		error.rejectValue("id", "errorCode", "defaultMessage");
-		//authController.authenticateTsp(authReqestsDTO, error);
+		// authController.authenticateTsp(authReqestsDTO, error);
 	}
+
 	@Ignore
 	@Test
-	public void auhtenticationTspSuccess() throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException{
+	public void auhtenticationTspSuccess()
+			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
 		Mockito.when(authFacade.authenticateTsp(authReqestDTO)).thenReturn(new AuthResponseDTO());
-	//	authController.authenticateTsp(authReqestDTO, error);
+		// authController.authenticateTsp(authReqestDTO, error);
 
-		
 	}
 
 }

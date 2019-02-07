@@ -22,6 +22,4 @@ public class DocumentPK implements Serializable {
 	private String uinRefId;
 	
 	private String doccatCode;
-	
-	private String doctypCode;
 }

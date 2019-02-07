@@ -28,32 +28,33 @@ import io.swagger.annotations.ApiResponses;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
- *  This Class will provide to Store the Static Pin value
- *  
+ * This Class will provide to Store the Static Pin value
+ * 
  * @author Prem Kumar
  *
  */
 @RestController
 public class StaticPinController {
-	
-	/** The  logger */
+
+	/** The logger */
 	private static Logger logger = IdaLogger.getLogger(StaticPinController.class);
-	
+
 	/** The Constant DEAFULT_SESSION_ID */
 	private static final String DEAFULT_SESSION_ID = "sessionId";
-	
+
 	/** The Static Pin Facade */
 	@Autowired
 	private StaticPinFacade staticPinFacade;
-	
-	/** The Static Pin Request Validator  */
+
+	/** The Static Pin Request Validator */
 	@Autowired
 	private StaticPinRequestValidator staticPinRequestValidator;
-	
+
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
 		binder.setValidator(staticPinRequestValidator);
 	}
+
 	/**
 	 * This class provides store Request of Static Pin and sends proper Response
 	 * 
@@ -64,22 +65,21 @@ public class StaticPinController {
 	 */
 	@PostMapping(path = "/v1.0/static-pin", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Static Pin Store Request", response = IdAuthenticationAppException.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request Stored successfully"),
-			@ApiResponse(code = 400, message = "Request Store failed") })
-	public StaticPinResponseDTO storeSpin(@Valid @RequestBody StaticPinRequestDTO staticPinRequestDTO,@ApiIgnore Errors errors)
-			throws IdAuthenticationAppException  {
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request Stored successfully") })
+	public StaticPinResponseDTO storeSpin(@Valid @RequestBody StaticPinRequestDTO staticPinRequestDTO,
+			@ApiIgnore Errors errors) throws IdAuthenticationAppException {
 		try {
 			DataValidationUtil.validate(errors);
-			StaticPinResponseDTO staticPinResponseDTO =staticPinFacade.storeSpin(staticPinRequestDTO);
+			StaticPinResponseDTO staticPinResponseDTO = staticPinFacade.storeSpin(staticPinRequestDTO);
 			return staticPinResponseDTO;
 		} catch (IDDataValidationException e) {
-			logger.error(DEAFULT_SESSION_ID, "StaticPinController",e.getClass().getName(), e.getErrorText());
+			logger.error(DEAFULT_SESSION_ID, "StaticPinController", e.getClass().getName(), e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
 			logger.error(DEAFULT_SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
-		
+
 	}
-	
+
 }
