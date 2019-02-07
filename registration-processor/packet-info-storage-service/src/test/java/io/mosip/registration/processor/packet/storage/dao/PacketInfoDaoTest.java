@@ -258,9 +258,13 @@ public class PacketInfoDaoTest {
 	public void getDocumentsByRegIdTest() {
 		List<ApplicantDocumentEntity> applicantDocumentEntities = new ArrayList<>();
 		ApplicantDocumentEntity applicantDocument = new ApplicantDocumentEntity();
+		ApplicantDocumentPKEntity pkEntity = new ApplicantDocumentPKEntity();
+		pkEntity.setDocCatCode("individualBiometrics");
+		pkEntity.setDocTypCode("POA");
+		pkEntity.setRegId("2018782130000224092018121229");
+		applicantDocument.setId(pkEntity);
 		String docValue = "dGVzdA";
 		byte[] docStore = docValue.getBytes();
-		applicantDocument.setDocName("individualBiometrics");
 		applicantDocument.setDocStore(docStore);
 		ApplicantDocumentPKEntity id = new ApplicantDocumentPKEntity();
 		id.setDocCatCode("individualBiometrics");
