@@ -21,7 +21,7 @@ spec:
         image: docker-registry.mosip.io:5000/kernel-auth-service
         env:
         - name: active_profile_env
-          value: dev-k8
+          value: dev
         ports:
         - containerPort: 8091
         imagePullPolicy: Always
