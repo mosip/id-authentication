@@ -23,6 +23,7 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
@@ -83,120 +84,13 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Validating the sync status started");
 
-		Map<String, String> map = getSyncJobId();
-
 		List<ErrorResponseDTO> errorResponseDTOList = new ArrayList<>();
-
-		int syncFailureCount = 0;
 
 		try {
 
-			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
-					"Fetching Registration details where status is Registered");
-
-			List<Registration> registrationDetails = syncJObDao.getRegistrationDetails();
-
-			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
-					"Validating the count of packets of status Registered with configured value");
-
-			auditFactory.audit(AuditEvent.PENDING_PKT_CNT_VALIDATE, Components.SYNC_VALIDATE,
-					"Validating the count of packets of status Registered with configured value", "refId", "refIdType");
-
-			if (registrationDetails.size() >= Integer.parseInt(
-					String.valueOf(getGlobalConfigValueOf(RegistrationConstants.REG_PAK_MAX_CNT_APPRV_LIMIT)))) {
-
-				getErrorResponse(RegistrationConstants.PAK_APPRVL_MAX_CNT,
-						RegistrationConstants.REG_PKT_APPRVL_CNT_EXCEED, RegistrationConstants.ERROR,
-						errorResponseDTOList);
-
-				LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
-						"Generating Error Response if count of packets of status Registered is greater than configured value");
-
-				auditFactory.audit(AuditEvent.PENDING_PKT_CNT_VALIDATE, Components.SYNC_VALIDATE,
-						"Generating Error Response if count of packets of status Registered is greater than configured value",
-						"refId", "refIdType");
-			}
-
-			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
-					"Validating the Duration of oldest packet of status Registered with configured duration");
-
-			auditFactory.audit(AuditEvent.PENDING_PKT_DUR_VALIDATE, Components.SYNC_VALIDATE,
-					"Validating the Duration of oldest packet of status Registered with configured duration", "refId",
-					"refIdType");
-
-			if (getDifference(!registrationDetails.isEmpty() ? registrationDetails.get(RegistrationConstants.PARAM_ZERO)
-					: null) < 0) {
-
-				getErrorResponse(RegistrationConstants.PAK_APPRVL_MAX_TIME,
-						RegistrationConstants.REG_PKT_APPRVL_TIME_EXCEED, RegistrationConstants.ERROR,
-						errorResponseDTOList);
-
-				LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
-						"Generating Error Response if Duration of oldest packet of status Registered is greater than configured value");
-
-				auditFactory.audit(AuditEvent.PENDING_PKT_DUR_VALIDATE, Components.SYNC_VALIDATE,
-						"Generating Error Response if Duration of oldest packet of status Registered is greater than configured value",
-						"refId", "refIdType");
-			}
-			SyncJobInfo syncJobInfo = syncJObDao.getSyncStatus();
-
-			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
-					"Fetched SyncJobInfo containing the synccontrol list and yettoexportpacket count");
-
-			if (syncJobInfo.getSyncControlList() != null && !syncJobInfo.getSyncControlList().isEmpty()) {
-
-				for (SyncControl syncControl : syncJobInfo.getSyncControlList()) {
-
-					// Comment:
-					Date lastSyncDate = new Date(syncControl.getLastSyncDtimes().getTime());
-
-					LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
-							"Checking the actualdaysfrequency with the configured frequency [" + lastSyncDate + "]");
-
-					if (map.get(syncControl.getSyncJobId()) != null
-							&& Integer.parseInt(map.get(syncControl.getSyncJobId())) <= getActualDays(lastSyncDate)) {
-
-						syncFailureCount++;
-
-						if (RegistrationConstants.OPT_TO_REG_LER_J00009.equals(syncControl.getSyncJobId().trim())) {
-							getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_002,
-									RegistrationConstants.OPT_TO_REG_TIME_EXPORT_EXCEED, RegistrationConstants.ERROR,
-									errorResponseDTOList);
-
-						}
-					}
-				}
-
-				if (syncFailureCount > 0) {
-					getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_001,
-							RegistrationConstants.OPT_TO_REG_TIME_SYNC_EXCEED, RegistrationConstants.ERROR,
-							errorResponseDTOList);
-				}
-			}
-
-			if (syncJobInfo.getYetToExportCount() >= Double
-					.parseDouble(getGlobalConfigValueOf(RegistrationConstants.REG_PAK_MAX_CNT_OFFLINE_FREQ))) {
-
-				LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
-						"Checking the yet to export packets frequency with the configured limit count");
-
-				auditFactory.audit(AuditEvent.SYNC_PKT_COUNT_VALIDATE, Components.SYNC_VALIDATE,
-						"Validating yet to export packets frequency with the configured limit count", "refId",
-						"refIdType");
-
-				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_003,
-						RegistrationConstants.OPT_TO_REG_REACH_MAX_LIMIT, RegistrationConstants.ERROR,
-						errorResponseDTOList);
-			}
-
-			if (RegistrationConstants.ENABLE.equals(getGlobalConfigValueOf(RegistrationConstants.GEO_CAP_FREQ))) {
-				if (!isCapturedForTheDay()) {
-					captureGeoLocation(errorResponseDTOList);
-				}
-			} else if (RegistrationConstants.DISABLE
-					.equals(getGlobalConfigValueOf(RegistrationConstants.GEO_CAP_FREQ))) {
-				captureGeoLocation(errorResponseDTOList);
-			}
+			validatingRegisteredPacketCountAndDuration(errorResponseDTOList);
+			validatingSyncJobsConfigAndYetToExportPacketCount(errorResponseDTOList);
+			validatingCenterToMachineDistance(errorResponseDTOList);
 
 			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 					"Validating the sync status ended");
@@ -217,6 +111,138 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	}
 
 	/**
+	 * Validating center to machine distance.
+	 *
+	 * @param errorResponseDTOList the error response DTO list
+	 */
+	private void validatingCenterToMachineDistance(List<ErrorResponseDTO> errorResponseDTOList) {
+		if (RegistrationConstants.ENABLE.equals(getGlobalConfigValueOf(RegistrationConstants.GEO_CAP_FREQ))) {
+			if (!isCapturedForTheDay()) {
+				captureGeoLocation(errorResponseDTOList);
+			}
+		} else if (RegistrationConstants.DISABLE.equals(getGlobalConfigValueOf(RegistrationConstants.GEO_CAP_FREQ))) {
+			captureGeoLocation(errorResponseDTOList);
+		}
+	}
+
+	/**
+	 * Validating last successful sync jobs config days and yet to export packet
+	 * count.
+	 *
+	 * @param errorResponseDTOList the error response DTO list
+	 */
+	private void validatingSyncJobsConfigAndYetToExportPacketCount(List<ErrorResponseDTO> errorResponseDTOList) {
+
+		Map<String, String> map = getSyncJobId();
+
+		int syncFailureCount = 0;
+
+		SyncJobInfo syncJobInfo = syncJObDao.getSyncStatus();
+
+		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+				"Fetched SyncJobInfo containing the synccontrol list and yettoexportpacket count");
+
+		if (syncJobInfo.getSyncControlList() != null && !syncJobInfo.getSyncControlList().isEmpty()) {
+
+			for (SyncControl syncControl : syncJobInfo.getSyncControlList()) {
+
+				// Comment:
+				Date lastSyncDate = new Date(syncControl.getLastSyncDtimes().getTime());
+
+				LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+						"Checking the actualdaysfrequency with the configured frequency [" + lastSyncDate + "]");
+
+				if (map.get(syncControl.getSyncJobId()) != null
+						&& Integer.parseInt(map.get(syncControl.getSyncJobId())) <= getActualDays(lastSyncDate)) {
+
+					syncFailureCount++;
+
+					if (RegistrationConstants.OPT_TO_REG_LER_J00009.equals(syncControl.getSyncJobId().trim())) {
+						getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_002,
+								RegistrationConstants.OPT_TO_REG_TIME_EXPORT_EXCEED, RegistrationConstants.ERROR,
+								errorResponseDTOList);
+
+					}
+				}
+			}
+
+			if (syncFailureCount > 0) {
+				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_001,
+						RegistrationConstants.OPT_TO_REG_TIME_SYNC_EXCEED, RegistrationConstants.ERROR,
+						errorResponseDTOList);
+			}
+		}
+
+		if (syncJobInfo.getYetToExportCount() >= Double
+				.parseDouble(getGlobalConfigValueOf(RegistrationConstants.REG_PAK_MAX_CNT_OFFLINE_FREQ))) {
+
+			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+					"Checking the yet to export packets frequency with the configured limit count");
+
+			auditFactory.audit(AuditEvent.SYNC_PKT_COUNT_VALIDATE, Components.SYNC_VALIDATE,
+					"Validating yet to export packets frequency with the configured limit count", "refId", "refIdType");
+
+			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_003,
+					RegistrationConstants.OPT_TO_REG_REACH_MAX_LIMIT, RegistrationConstants.ERROR,
+					errorResponseDTOList);
+		}
+	}
+
+	/**
+	 * Validating registered packet count and duration.
+	 *
+	 * @param errorResponseDTOList the error response DTO list
+	 */
+	private void validatingRegisteredPacketCountAndDuration(List<ErrorResponseDTO> errorResponseDTOList) {
+		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+				"Fetching Registration details where status is Registered");
+
+		List<Registration> registrationDetails = syncJObDao.getRegistrationDetails();
+
+		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+				"Validating the count of packets of status Registered with configured value");
+
+		auditFactory.audit(AuditEvent.PENDING_PKT_CNT_VALIDATE, Components.SYNC_VALIDATE,
+				"Validating the count of packets of status Registered with configured value", "refId", "refIdType");
+
+		if (registrationDetails.size() >= Integer
+				.parseInt(String.valueOf(getGlobalConfigValueOf(RegistrationConstants.REG_PAK_MAX_CNT_APPRV_LIMIT)))) {
+
+			getErrorResponse(RegistrationConstants.PAK_APPRVL_MAX_CNT, RegistrationConstants.REG_PKT_APPRVL_CNT_EXCEED,
+					RegistrationConstants.ERROR, errorResponseDTOList);
+
+			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+					"Generating Error Response if count of packets of status Registered is greater than configured value");
+
+			auditFactory.audit(AuditEvent.PENDING_PKT_CNT_VALIDATE, Components.SYNC_VALIDATE,
+					"Generating Error Response if count of packets of status Registered is greater than configured value",
+					"refId", "refIdType");
+		}
+
+		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+				"Validating the Duration of oldest packet of status Registered with configured duration");
+
+		auditFactory.audit(AuditEvent.PENDING_PKT_DUR_VALIDATE, Components.SYNC_VALIDATE,
+				"Validating the Duration of oldest packet of status Registered with configured duration", "refId",
+				"refIdType");
+
+		if (getDifference(!registrationDetails.isEmpty() ? registrationDetails.get(RegistrationConstants.PARAM_ZERO)
+				: null) < 0) {
+
+			getErrorResponse(RegistrationConstants.PAK_APPRVL_MAX_TIME,
+					RegistrationConstants.REG_PKT_APPRVL_TIME_EXCEED, RegistrationConstants.ERROR,
+					errorResponseDTOList);
+
+			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+					"Generating Error Response if Duration of oldest packet of status Registered is greater than configured value");
+
+			auditFactory.audit(AuditEvent.PENDING_PKT_DUR_VALIDATE, Components.SYNC_VALIDATE,
+					"Generating Error Response if Duration of oldest packet of status Registered is greater than configured value",
+					"refId", "refIdType");
+		}
+	}
+
+	/**
 	 * {@code isCapturedForTheDay} is to capture time for first time login for the
 	 * day.
 	 * 
@@ -224,8 +250,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	 */
 	private boolean isCapturedForTheDay() {
 
-		// TODO : lastCapturedTime - get this from application context....
-		Map<String, Object> map = SessionContext.map();
+		Map<String, Object> map = ApplicationContext.map();
 		Instant lastCapturedTime = (Instant) map.get(RegistrationConstants.OPT_TO_REG_LAST_CAPTURED_TIME);
 
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
@@ -270,7 +295,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 							errorResponseDTOList);
 				} else {
 
-					SessionContext.map().put(RegistrationConstants.OPT_TO_REG_LAST_CAPTURED_TIME, Instant.now());
+					ApplicationContext.map().put(RegistrationConstants.OPT_TO_REG_LAST_CAPTURED_TIME, Instant.now());
 				}
 			} else if (RegistrationConstants.GPS_CAPTURE_FAILURE_MSG
 					.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
@@ -322,8 +347,8 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 
 			/* This will subtract configured number of days from current Date */
 			Date differDate = new Date(new Date().getTime() - (Long.parseLong(
-					String.valueOf(getGlobalConfigValueOf(RegistrationConstants.REG_PAK_MAX_TIME_APPRV_LIMIT)))
-					* 24 * 3600 * 1000));
+					String.valueOf(getGlobalConfigValueOf(RegistrationConstants.REG_PAK_MAX_TIME_APPRV_LIMIT))) * 24
+					* 3600 * 1000));
 
 			/* This will convert timestamp to Date */
 			Date createdDate = new Date(registration.getCrDtime().getTime());
