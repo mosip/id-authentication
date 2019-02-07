@@ -32,6 +32,7 @@ import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
+import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
@@ -378,7 +379,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	 * lang.String)
 	 */
 	@Override
-	public List<MasterDocumentType> getDocumentCategories(String docCode, String langCode) {
+	public List<DocumentCategoryDto> getDocumentCategories(String docCode, String langCode) {
 
 		List<MasterValidDocument> masterValidDocuments = masterSyncDao.getValidDocumets(docCode, langCode);
 
@@ -387,12 +388,12 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 			validDocuments.add(docs.getDocTypeCode());
 		});
 
-		List<MasterDocumentType> documentsDTO = new ArrayList<>();
+		List<DocumentCategoryDto> documentsDTO = new ArrayList<>();
 		List<MasterDocumentType> masterDocuments = masterSyncDao.getDocumentTypes(validDocuments, langCode);
 
 		masterDocuments.forEach(document -> {
 
-			MasterDocumentType documents = new MasterDocumentType();
+			DocumentCategoryDto documents = new DocumentCategoryDto();
 			documents.setDescription(document.getDescription());
 			documents.setLangCode(document.getLangCode());
 			documents.setName(document.getName());

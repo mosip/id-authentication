@@ -2,11 +2,14 @@ package io.mosip.registration.dto.mastersync;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * @author Sreekar Chukka
  *
  * @since 1.0.0
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MasterDataResponseDto {
 	
 	private List<RegistrationCenterDto> registrationCenter;

@@ -29,3 +29,4 @@ reg/README_DO_NOT_TOUCH_FILES.txt
 #not ignore files
 !jfxrt.jar
 !exp.jar
+!exp-encrypted.jar
