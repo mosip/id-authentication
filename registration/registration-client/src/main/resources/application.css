@@ -940,6 +940,9 @@ Working on new Css
 
 #RegistrationHeader{
 	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 39px;
+	-fx-pref-width: 1290px;
+	
 }
 
 .parentPane{
@@ -1056,8 +1059,8 @@ Working on new Css
 }
 
 .fingerPrintPanes{
-	-fx-pref-height: 100px;	
-	-fx-pref-width: 250px;
+	-fx-pref-height: 160px;	
+	-fx-pref-width: 180px;
 }
 
 .IrisPanes{
@@ -1072,8 +1075,8 @@ Working on new Css
 }
 
 .qualityBox{
-	-fx-pref-height: 100px;	
-	-fx-pref-width: 210px;	
+	-fx-pref-height: 200px;	
+	-fx-pref-width: 250px;	
 }
 
 .qualityBox .label{
@@ -1124,6 +1127,9 @@ Working on new Css
 .registrationHeaderBorder{
 	-fx-border-width: 0 0 1 0;
 	-fx-border-color: #FF4081;
+	-fx-pref-height: 28px;	
+	-fx-pref-width: 40px;
+	
 }
 
 .documentOnlypane{

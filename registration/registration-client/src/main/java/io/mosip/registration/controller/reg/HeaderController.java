@@ -165,6 +165,7 @@ public class HeaderController extends BaseController {
 
 			VBox homePage = BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 			getScene(homePage);
+			clearRegistrationData();
 
 		} catch (IOException | RuntimeException exception) {
 
