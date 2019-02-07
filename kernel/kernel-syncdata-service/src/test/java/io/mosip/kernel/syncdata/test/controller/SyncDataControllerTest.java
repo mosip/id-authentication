@@ -24,10 +24,13 @@ import io.mosip.kernel.syncdata.dto.HolidayDto;
 import io.mosip.kernel.syncdata.dto.MachineDto;
 import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.syncdata.dto.MachineTypeDto;
+import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
+import io.mosip.kernel.syncdata.dto.UserDetailMapDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
-import io.mosip.kernel.syncdata.service.SyncMasterDataService;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
+import io.mosip.kernel.syncdata.service.SyncMasterDataService;
+import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
 import net.minidev.json.JSONObject;
 
 @SpringBootTest
@@ -43,6 +46,11 @@ public class SyncDataControllerTest {
 
 	@MockBean
 	private SyncConfigDetailsService syncConfigDetailsService;
+	
+	@MockBean
+	private SyncUserDetailsService syncUserDetailsService;
+	
+	
 
 	JSONObject globalConfigMap = null;
 	JSONObject regCentreConfigMap = null;
@@ -52,7 +60,27 @@ public class SyncDataControllerTest {
 
 		configDetialsSyncSetup();
 		syncMasterDataSetup();
+		getUsersBasedOnRegCenterSetUp();
 
+	}
+	SyncUserDetailDto syncUserDetailDto;
+	List<UserDetailMapDto> users;
+	UserDetailMapDto userDetailMapDto;
+	
+	public void getUsersBasedOnRegCenterSetUp() {
+		List<String> roles = new ArrayList<>();
+		roles.add("admin");
+		roles.add("superAdmin");
+		 syncUserDetailDto = new SyncUserDetailDto();
+		 users = new ArrayList<>();
+		 userDetailMapDto = new UserDetailMapDto();
+		userDetailMapDto.setMail("mosip@gmail.com");
+		userDetailMapDto.setMobile("9988866600");
+		userDetailMapDto.setName("100022");
+		userDetailMapDto.setUserName("individula");
+		userDetailMapDto.setRoles(roles);
+		users.add(userDetailMapDto);
+		syncUserDetailDto.setUserDetails(users);
 	}
 
 	public void configDetialsSyncSetup() {
@@ -111,7 +139,7 @@ public class SyncDataControllerTest {
 	@Test
 	public void syncMasterDataWithlastUpdatedTimestampfailure() throws Exception {
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-01-016501:01:01", "1001"))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isOk());
 	}
 
 	@Test
@@ -132,5 +160,21 @@ public class SyncDataControllerTest {
 		when(syncConfigDetailsService.getGlobalConfigDetails())
 				.thenThrow(new SyncDataServiceException("KER-SYNC-127", "Error occured in service"));
 		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	public void getUsersBasedOnRegCenter()throws Exception{
+		String regId ="110044";
+		when(syncUserDetailsService.getAllUserDetail(regId)).thenReturn(syncUserDetailDto);
+		mockMvc.perform(get("/v1.0/userdetails/{regid}","110044")).andExpect(status().isOk());
+		
+	}
+	
+	@Test
+	public void getUsersBasedOnRegCenterFailure()throws Exception{
+		String regId ="110044";
+		when(syncUserDetailsService.getAllUserDetail(regId)).thenThrow(new SyncDataServiceException("KER-SYNC-301", "Error occured while fetching User Details"));
+		mockMvc.perform(get("/v1.0/userdetails/{regid}","110044")).andExpect(status().isInternalServerError());
+		
 	}
 }

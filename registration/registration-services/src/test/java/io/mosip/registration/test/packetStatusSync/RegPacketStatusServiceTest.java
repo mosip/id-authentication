@@ -18,11 +18,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -38,6 +42,8 @@ import io.mosip.registration.service.packet.impl.RegPacketStatusServiceImpl;
 import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ io.mosip.registration.context.ApplicationContext.class })
 public class RegPacketStatusServiceTest {
 
 	@Rule
@@ -54,16 +60,13 @@ public class RegPacketStatusServiceTest {
 	@Mock
 	RegistrationDAO registrationDAO;
 	
-	@Mock
-	io.mosip.registration.context.ApplicationContext context;
-	
-	
 	@Before
 	public void initiate() {
 		Map<String,Object> applicationMap =new HashMap<>();
 		applicationMap.put(RegistrationConstants.REG_DELETION_CONFIGURED_DAYS, "5");
-		
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+	
+		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
+		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
 		SessionContext.getInstance();
 
 	}

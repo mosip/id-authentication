@@ -193,14 +193,14 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		boolean isOnline = RegistrationAppHealthCheckUtil.isNetworkAvailable();
 
 		/* check if the packet is not available in db and the machine is offline */
-		if (!isOnline && preRegistration == null) {
+		if (isPacketNotAvailable(preRegistration, isOnline)) {
 			setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_PACKET_NETWORK_ERROR, null);
 			return;
 		}
 
 		boolean isUpdated = false;
 
-		if (preRegistration != null && preRegistration.getLastUpdatedPreRegTimeStamp() != null) {
+		if (isPacketUpdatedInServer(preRegistration)) {
 
 			isUpdated = (preRegistration.getLastUpdatedPreRegTimeStamp().equals(lastUpdatedTimeStamp));
 		}
@@ -213,33 +213,20 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		 * Get Packet From REST call when the packet is updated in the server or always
 		 * if its a manual trigger
 		 */
-		if (isOnline && (!isUpdated || !isJob)) {
+		if (isFetchToBeTriggered(isOnline, isUpdated, isJob)) {
 
 			/* prepare request params to pass through URI */
 			Map<String, String> requestParamMap = new HashMap<>();
 			requestParamMap.put(RegistrationConstants.PRE_REGISTRATION_ID, preRegistrationId);
 
-			String triggerPoint = isJob ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM : getUserIdFromSession();
+			String triggerPoint = getTriggerPoint(isJob);
 
 			try {
 				/* REST call to get packet */
-				MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO;
-				if (!"yes".equalsIgnoreCase(isStubEnabled)) {
-					mainResponseDTO = (MainResponseDTO<LinkedHashMap<String, Object>>) serviceDelegateUtil
-							.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap, false);
-				} else {
-					/* TestData....stub code to be removed-start TODO */
-					mainResponseDTO = new MainResponseDTO<>();
-					LinkedHashMap<String, Object> linkedHashMap = new LinkedHashMap<>();
-					linkedHashMap.put("appointment-date", "2019-01-12");
-					linkedHashMap.put("zip-bytes",
-							FileUtils.readFileToByteArray(new File(PreRegistrationDataSyncServiceImpl.class
-									.getResource("/dataprovider/97285429827016.zip").getFile())));
-					mainResponseDTO.setResponse(linkedHashMap);
-					/* TestData.....stub code to be removed-end TODO */
-				}
+				MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO = (MainResponseDTO<LinkedHashMap<String, Object>>) serviceDelegateUtil
+						.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap, false);
 
-				if (isResponseNotEmpty(mainResponseDTO) && mainResponseDTO.getResponse().get("zip-bytes") != null) {
+				if (isResponseNotEmpty(mainResponseDTO)) {
 
 					PreRegArchiveDTO preRegArchiveDTO = new ObjectMapper().readValue(
 							new JSONObject(mainResponseDTO.getResponse()).toString(), PreRegArchiveDTO.class);
@@ -273,7 +260,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 					/* set success response */
 					setSuccessResponse(responseDTO, RegistrationConstants.PRE_REG_SUCCESS_MESSAGE, null);
 
-				} else {
+				} else if (preRegistration == null) {
 					/*
 					 * set error message if the packet is not available both in db as well as the
 					 * REST service
@@ -282,8 +269,8 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 					return;
 				}
 
-			} catch (HttpClientErrorException | RegBaseCheckedException | java.io.IOException | HttpServerErrorException
-					| IOException exception) {
+			} catch (HttpClientErrorException | RegBaseCheckedException | java.io.IOException
+					| HttpServerErrorException exception) {
 
 				LOGGER.error("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -298,7 +285,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		/* Only for Manual Trigger */
 		if (!isJob) {
 			try {
-				if (preRegistration != null && decryptedPacket == null) {
+				if (isPacketFromLocal(preRegistration, decryptedPacket)) {
 					/*
 					 * if the packet is already available,read encrypted packet from disk and
 					 * decrypt
@@ -333,8 +320,29 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 	}
 
+	private boolean isPacketNotAvailable(PreRegistrationList preRegistration, boolean isOnline) {
+		return !isOnline && preRegistration == null;
+	}
+
+	private boolean isPacketFromLocal(PreRegistrationList preRegistration, byte[] decryptedPacket) {
+		return preRegistration != null && decryptedPacket == null;
+	}
+
+	private boolean isPacketUpdatedInServer(PreRegistrationList preRegistration) {
+		return preRegistration != null && preRegistration.getLastUpdatedPreRegTimeStamp() != null;
+	}
+
+	private boolean isFetchToBeTriggered(boolean isOnline, boolean isUpdated, boolean isJob) {
+		return isOnline && (!isUpdated || !isJob);
+	}
+
+	private String getTriggerPoint(boolean isJob) {
+		return isJob ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM : getUserIdFromSession();
+	}
+
 	private boolean isResponseNotEmpty(MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO) {
-		return mainResponseDTO != null && mainResponseDTO.getResponse() != null;
+		return mainResponseDTO != null && mainResponseDTO.getResponse() != null
+				&& mainResponseDTO.getResponse().get("zip-bytes") != null;
 	}
 
 	@SuppressWarnings("unused")
@@ -404,8 +412,6 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(reqTime);
-		// TODO needs to be removed- added for demo purpose
-		cal.add(Calendar.MONTH, -3);
 
 		return formatDate(cal);
 	}
@@ -435,7 +441,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 	}
 
-	 public synchronized ResponseDTO fetchAndDeleteRecords() {
+	public synchronized ResponseDTO fetchAndDeleteRecords() {
 
 		LOGGER.info(
 				"REGISTRATION - PRE_REGISTRATION_DATA_DELETION_RECORD_FETCH_STARTED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",

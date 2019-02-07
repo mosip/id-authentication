@@ -1,6 +1,6 @@
 package io.mosip.preregistration.booking.test.service.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,7 +26,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
-import io.mosip.preregistration.booking.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.booking.dto.RegistrationCenterResponseDto;
 import io.mosip.preregistration.booking.entity.AvailibityEntity;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
@@ -51,6 +50,7 @@ import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

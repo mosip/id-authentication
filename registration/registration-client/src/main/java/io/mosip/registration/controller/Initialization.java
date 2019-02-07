@@ -46,11 +46,11 @@ public class Initialization extends Application {
 		LOGGER.info("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
 				APPLICATION_ID, "Login screen loaded"
 						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
-
 	}
 
 	public static void main(String[] args) {
 		System.setProperty("java.net.useSystemProxies", "true");
+		System.setProperty("file.encoding", "UTF-8");
 		applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
 		
 		launch(args);

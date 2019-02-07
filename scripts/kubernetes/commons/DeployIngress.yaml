@@ -62,6 +62,10 @@ spec:
         backend:
           serviceName: kernel-ldap-service
           servicePort: 8092
+      - path: /licensekeymanager
+        backend:
+          serviceName: kernel-licensekeymanager-service
+          servicePort: 8093
       - path: /config
         backend:
           serviceName: kernel-config-server
@@ -94,6 +98,10 @@ spec:
         backend:
           serviceName: pre-registration-translitration-service
           servicePort: 9098
+      - path: /notification
+        backend:
+          serviceName: pre-registration-notification-service
+          servicePort: 9099
       - path: /identity
         backend:
           serviceName: authentication-service

@@ -44,7 +44,7 @@ public class SmsNotificationController {
 
 		return new ResponseEntity<>(
 				smsNotifierService.sendSmsNotification(smsRequestDto.getNumber(), smsRequestDto.getMessage()),
-				HttpStatus.ACCEPTED);
+				HttpStatus.OK);
 
 	}
 

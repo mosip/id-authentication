@@ -1,5 +1,6 @@
 package io.mosip.registration.constants;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -312,6 +313,10 @@ public class RegistrationConstants {
 
 	// Velocity Template Generator Constants
 	public static final String TEMPLATE_REGISTRATION_ID = "RID";
+	public static final String TEMPLATE_UIN_UPDATE = "UINUpdate";	
+	public static final String TEMPLATE_UIN = "UIN";	
+	public static final String TEMPLATE_UIN_USER_LANG_LABEL = "UINUserLangLabel";
+	public static final String TEMPLATE_UIN_LOCAL_LANG_LABEL = "UINLocalLangLabel";
 	public static final String TEMPLATE_DATE = "Date";
 	public static final String TEMPLATE_FULL_NAME = "FullName";
 	public static final String TEMPLATE_DOB = "DOB";
@@ -410,8 +415,8 @@ public class RegistrationConstants {
 
 	// Web Camera Constants
 	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";
-	public static final String APPLICANT_PHOTOGRAPH_NAME = "Applicant Photograph";
-	public static final String EXCEPTION_PHOTOGRAPH_NAME = "Exception Photograph";
+	public static final String APPLICANT_PHOTOGRAPH_NAME = "Applicant Photograph.jpg";
+	public static final String EXCEPTION_PHOTOGRAPH_NAME = "Exception Photograph.jpg";
 	public static final String APPLICANT_IMAGE = "Applicant Image";
 	public static final String EXCEPTION_IMAGE = "Exception Image";
 	public static final String WEB_CAMERA_PAGE_TITLE = "Applicant Biometrics";
@@ -502,7 +507,11 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_RDJ_J00011 = "RDJ_J00011";
 	public static final String OPT_TO_REG_ADJ_J00012 = "ADJ_J00012";
 	public static final String OPT_TO_REG_DEL_001 = "DEL_001";
-	public static final String OPT_TO_REG_UDM_J00012 = "UDM_J00012";
+	public static final String OPT_TO_REG_UDM_J00012 = "UDM_J00012";	
+	public static final String GEO_CAP_FREQ = "GEO_CAP_FREQ";
+	public static final String DIST_FRM_MACHN_TO_CENTER = "DIST_FRM_MACHN_TO_CENTER";
+	public static final String REG_PAK_MAX_CNT_OFFLINE_FREQ = "REG_PAK_MAX_CNT_OFFLINE_FREQ";
+
 
 	/** Packet Status Sync Constants */
 	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
@@ -575,6 +584,8 @@ public class RegistrationConstants {
 	public static final String JOB_TRIGGER_POINT_USER = "User";
 	public static final String JOB_SYNC_TO_SERVER = "Server";
 	public static final String JOB_DETAIL = "jobDetail";
+	public static final String APPLICATION_CONTEXT = "applicationContext";
+	public static final String SYNC_TRANSACTION = "syncTransaction";
 
 	// GPS Device
 	public static final String GPS_LOGGER = "GPS-Device-Information";
@@ -956,5 +967,20 @@ public class RegistrationConstants {
 	
 	//Packet Sync
 	public static final String PACKET_SYNC="packet_sync";
+	
+	//Validations to ignore
+
+	public static List<String> fieldsToExclude(){
+		List<String> fieldToExclude = new ArrayList<String>();
+		fieldToExclude.add("preRegistrationId");
+		fieldToExclude.add("virtualKeyboard");
+		fieldToExclude.add("docPageNumber");
+		fieldToExclude.add("cniOrPinNumber");
+		fieldToExclude.add("cniOrPinNumberLocalLanguage");
+		
+		return fieldToExclude;
+		
+	}
+
 
 }

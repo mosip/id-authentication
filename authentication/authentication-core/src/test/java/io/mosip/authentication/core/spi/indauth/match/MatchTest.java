@@ -18,7 +18,6 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 public class MatchTest {
@@ -49,27 +48,6 @@ public class MatchTest {
 				// TODO Auto-generated method stub
 				return null;
 			}
-
-			@Override
-			public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq,
-					Function<LanguageType, String> languageInfoFetcher, Environment environment) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public Optional<String> getMatchingStrategy(AuthRequestDTO authReq,
-					Function<LanguageType, String> languageInfoFetcher) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public LanguageType getLangType() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
 			@Override
 			public String getDisplayName() {
 				// TODO Auto-generated method stub
@@ -80,15 +58,20 @@ public class MatchTest {
 			public Set<MatchType> getAssociatedMatchTypes() {
 				return null;
 			}
+
+			@Override
+			public Optional<String> getMatchingStrategy(AuthRequestDTO authReq, String language) {
+				// TODO Auto-generated method stub
+				return null;
+			}
 		};
 
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		boolean authTypeInfoAvailable = authType.isAuthTypeInfoAvailable(authRequestDTO);
 		assertFalse(authTypeInfoAvailable);
 		IdInfoFetcher languageInfoFetcher = null;
-		Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, languageInfoFetcher);
+		Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, languageInfoFetcher, null);
 		System.err.println(matchProperties);
-		System.err.println(authType.getLangType());
 		System.err.println(authType.getDisplayName());
 		System.err.println(authType.getAssociatedMatchTypes());
 		IdentityDTO identity = new IdentityDTO();
@@ -97,7 +80,7 @@ public class MatchTest {
 		identityInfoDTO.setLanguage("FR");
 		identityInfoDTO.setValue("dinesh");
 		nameList.add(identityInfoDTO);
-		identity.setFullName(nameList);
+		identity.setName(nameList);
 		MatchType matchType = new MatchType() {
 
 			@Override
@@ -149,7 +132,7 @@ public class MatchTest {
 		AuthType.getAuthTypeForMatchType(matchType, authTypes);
 		
 		Environment environment = null;
-		Function<LanguageType,String> newlanguageInfoFetcher = null;
+		String newlanguageInfoFetcher = null;
 		authType.getMatchingThreshold(authRequestDTO, newlanguageInfoFetcher, environment);
 	}
 
@@ -161,7 +144,7 @@ public class MatchTest {
 		identityInfoDTO.setLanguage("FR");
 		identityInfoDTO.setValue("dinesh");
 		nameList.add(identityInfoDTO);
-		identity.setFullName(nameList);
+		identity.setName(nameList);
 		MatchType matchType = new MatchType() {
 
 			@Override
@@ -215,7 +198,6 @@ public class MatchTest {
 		matchType.getAllowedMatchingStrategy(MatchingStrategyType.PHONETICS);
 		matchType.getAllowedMatchingStrategy(MatchingStrategyType.DEFAULT_MATCHING_STRATEGY);
 		matchType.getCategory();
-		matchType.getLanguageType();
 		matchType.getCategory().BIO.getType();
 		matchType.getCategory().DEMO.getType();
 		matchType.getCategory().OTP.getType();

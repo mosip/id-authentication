@@ -19,11 +19,16 @@ import io.mosip.kernel.syncdata.entity.id.RegistrationCenterUserID;
 @Repository
 public interface RegistrationCenterUserRepository extends BaseRepository<RegistrationCenterUser, RegistrationCenterUserID> {
 
-	@Query("FROM RegistrationCenterUser rcu WHERE rcu.registrationCenterUserPk.regCenterId = ?1 AND (rcu.createdDateTime > ?2 OR rcu.updatedDateTime > ?2 OR rcu.deletedDateTime > ?2)")
+	
+
+	@Query("FROM RegistrationCenterUser WHERE registrationCenterUserID.regCenterId=?1 and (isDeleted=false or isDeleted is null) ")
+	List<RegistrationCenterUser> findByRegistrationCenterUserByRegCenterId(String regCenter);
+	
+	@Query("FROM RegistrationCenterUser rcu WHERE rcu.registrationCenterUserID.regCenterId = ?1 AND (rcu.createdDateTime > ?2 OR rcu.updatedDateTime > ?2 OR rcu.deletedDateTime > ?2)")
 	public List<RegistrationCenterUser> findAllByRegistrationCenterIdCreatedUpdatedDeleted(String regId,
 			LocalDateTime lastUpdated) ;
 
-	@Query("FROM RegistrationCenterUser rcu WHERE rcu.registrationCenterUserPk.regCenterId = ?1")
+	@Query("FROM RegistrationCenterUser rcu WHERE rcu.registrationCenterUserID.regCenterId = ?1")
 	public List<RegistrationCenterUser> findAllByRegistrationCenterId(String regId);
 
 }

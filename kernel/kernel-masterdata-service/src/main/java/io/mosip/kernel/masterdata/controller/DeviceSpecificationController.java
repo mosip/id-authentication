@@ -113,7 +113,7 @@ public class DeviceSpecificationController {
 			@Valid @RequestBody RequestDto<DeviceSpecificationDto> deviceSpecification) {
 
 		return new ResponseEntity<>(deviceSpecificationService.createDeviceSpecification(deviceSpecification),
-				HttpStatus.CREATED);
+				HttpStatus.OK);
 	}
 
 	@PutMapping("/v1.0/devicespecifications")

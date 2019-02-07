@@ -168,6 +168,8 @@ public class VirusScannerStage extends MosipVerticleManager {
 			description = "Internal error occured while processing registration  id : " + registrationId;
 		} finally {
 
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, description);
 			String eventId = "";
 			String eventName = "";
 			String eventType = "";

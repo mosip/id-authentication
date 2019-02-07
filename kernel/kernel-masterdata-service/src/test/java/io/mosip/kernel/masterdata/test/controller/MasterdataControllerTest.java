@@ -467,7 +467,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	public void addBiometricType() throws Exception {
+	public void addBiometricTypeTest() throws Exception {
 		Mockito.when(biometricTypeService.createBiometricType(Mockito.any())).thenReturn(codeAndLanguageCodeId);
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/biometrictypes").contentType(MediaType.APPLICATION_JSON)
@@ -475,7 +475,7 @@ public class MasterdataControllerTest {
 						+ "  \"timestamp\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
 						+ "    \"code\": \"1\",\n" + "    \"description\": \"string\",\n" + "    \"isActive\": true,\n"
 						+ "    \"langCode\": \"eng\",\n" + "    \"name\": \"Abc\"\n" + "  }\n" + "}"))
-				.andExpect(status().isCreated());
+				.andExpect(status().isOk());
 	}
 
 	@Test
@@ -487,7 +487,7 @@ public class MasterdataControllerTest {
 						+ "  \"timestamp\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
 						+ "    \"code\": \"1\",\n" + "    \"description\": \"string\",\n" + "    \"isActive\": true,\n"
 						+ "    \"langCode\": \"akk\",\n" + "    \"name\": \"Abc\"\n" + "  }\n" + "}"))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isOk());
 	}
 
 	// -------------------------------ApplicationControllerTest--------------------------//
@@ -521,7 +521,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	public void addApplication() throws Exception {
+	public void addApplicationTest() throws Exception {
 		Mockito.when(applicationService.createApplication(Mockito.any())).thenReturn(codeAndLanguageCodeId);
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/applicationtypes").contentType(MediaType.APPLICATION_JSON)
@@ -530,7 +530,7 @@ public class MasterdataControllerTest {
 						+ "    \"code\": \"101\",\n" + "    \"description\": \"Pre-registration Application Form\",\n"
 						+ "    \"isActive\": true,\n" + "    \"langCode\": \"eng\",\n"
 						+ "    \"name\": \"pre-registeration\"\n" + "  }\n" + "}"))
-				.andExpect(status().isCreated());
+				.andExpect(status().isOk());
 	}
 
 	// -------------------------------BiometricAttributeControllerTest--------------------------
@@ -552,7 +552,7 @@ public class MasterdataControllerTest {
 				.thenThrow(new DataNotFoundException("KER-MAS-00000",
 						"No biometric attributes found for specified biometric code type and language code"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/getbiometricattributesbyauthtype/eng/face"))
-				.andExpect(MockMvcResultMatchers.status().isNotFound());
+				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	@Test
@@ -612,7 +612,7 @@ public class MasterdataControllerTest {
 				.thenThrow(new DataNotFoundException("KER-DOC-10001",
 						"No documents found for specified document category code and language code"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/documenttypes/poc/eng"))
-				.andExpect(MockMvcResultMatchers.status().isNotFound());
+				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	@Test
@@ -649,7 +649,7 @@ public class MasterdataControllerTest {
 		Mockito.when(languageService.getAllLaguages())
 				.thenThrow(new DataNotFoundException("KER-MAS-0987", "No Language found"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/languages"))
-				.andExpect(MockMvcResultMatchers.status().isNotFound());
+				.andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
 
@@ -713,7 +713,7 @@ public class MasterdataControllerTest {
 		Mockito.when(locationService.getLocationDetails(Mockito.anyString()))
 				.thenThrow(new DataNotFoundException("3333333", "Location Hierarchy does not exist"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/eng"))
-				.andExpect(MockMvcResultMatchers.status().isNotFound());
+				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	@Test
@@ -729,14 +729,14 @@ public class MasterdataControllerTest {
 		Mockito.when(locationService.getLocationHierarchyByLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new DataNotFoundException("3333333", "Location Hierarchy does not exist"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/KAR/eng"))
-				.andExpect(MockMvcResultMatchers.status().isNotFound());
+				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	@Test
 	public void testSaveLocationHierarchy() throws Exception {
 		Mockito.when(locationService.createLocationHierarchy(Mockito.any())).thenReturn(locationCodeDto);
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/locations").contentType(MediaType.APPLICATION_JSON)
-				.content(LOCATION_JSON_EXPECTED_POST)).andExpect(MockMvcResultMatchers.status().isCreated());
+				.content(LOCATION_JSON_EXPECTED_POST)).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	@Test
@@ -787,7 +787,7 @@ public class MasterdataControllerTest {
 		Mockito.when(locationService.getImmediateChildrenByLocCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new DataNotFoundException("111111", "data not found"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/immediatechildren/eng/KAR"))
-				.andExpect(MockMvcResultMatchers.status().isNotFound());
+				.andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
 
@@ -816,7 +816,7 @@ public class MasterdataControllerTest {
 				.thenThrow(new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage()));
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/locationhierarchy/123"))
-				.andExpect(MockMvcResultMatchers.status().isNotFound());
+				.andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
 
@@ -907,7 +907,7 @@ public class MasterdataControllerTest {
 						+ "  \"timestamp\": \"2018-12-17T07:19:33.655Z\",\n" + "  \"request\": {\n"
 						+ "    \"code\": \"xml\",\n" + "    \"description\": \"string\",\n"
 						+ "    \"isActive\": true,\n" + "    \"langCode\": \"eng\"\n" + "  }\n" + "}"))
-				.andExpect(status().isCreated());
+				.andExpect(status().isOk());
 	}
 	
 	@Test
@@ -919,7 +919,7 @@ public class MasterdataControllerTest {
 						+ "  \"timestamp\": \"2018-12-17T07:19:33.655Z\",\n" + "  \"request\": {\n"
 						+ "    \"code\": \"xml\",\n" + "    \"description\": \"string\",\n"
 						+ "    \"isActive\": true,\n" + "    \"langCode\": \"xxx\"\n" + "  }\n" + "}"))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isOk());
 	}
 
 	@Test
@@ -1000,7 +1000,7 @@ public class MasterdataControllerTest {
 				Mockito.anyString())).thenThrow(new DataNotFoundException("11111", "Data not found exception"));
 
 		mockMvc.perform(get("/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isOk());
 
 	}
 

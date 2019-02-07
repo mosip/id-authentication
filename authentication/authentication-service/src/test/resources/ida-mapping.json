@@ -1,149 +1,116 @@
 {
-	"ida-mapping" : 
-		{
-			"fullName" : 
-				[
-					"firstName",
-					"middleName",
-					"lastName"
-				],
-			"dob" : 
-				[
-					"dateOfBirth"
-				],
-			"dobType":
-				[
-					"dateOfBirthType"
-				],
-			"age" :
-				[
-					"dateOfBirth"
-				],
-			"gender" : 
-				[
-					"gender"
-				],
-			"phoneNumber" : 
-				[
-					"mobileNumber"
-				],
-			"emailId" : 
-				[
-					"emailId"
-				],
-			"addressLine1" : 
-				[
-					"addressLine1"
-				],
-			"addressLine2" : 
-				[
-					"addressLine2"
-				],
-			"addressLine3" : 
-				[
-					"addressLine3"
-				],
-			"location1" : 
-				[
-					"city"
-				],
-			"location2" : [
-					"region"
-				],
-			"location3" : [
-					"province"
-				],
-			"postalCode" : 
-				[
-					"postalCode"
-				],
-			"fullAddress" : 
-				[
-					"addressLine1", 
-					"addressLine2", 
-					"addressLine3", 
-					"city",
-					"region",
-					"province",
-					"postalCode"
-				],
-			"otp" : 
-				[
-					"otp"
-				],
-			"pin" : 
-				[
-					"pin"
-				],
-			"iris" : 
-				[
-					"leftEye", 
-					"rightEye"
-				],
-			"fingerprint" : 
-				[
-					"leftIndex", 
-					"leftLittle",
-					"leftMiddle",
-					"leftRing",
-					"leftThumb",
-					"rightIndex", 
-					"rightLittle",
-					"rightMiddle",
-					"rightRing",
-					"rightThumb"
-				],
-			"leftIndex" :
-				[
-					"leftIndex"
-				],
-			"leftLittle" :
-				[
-					"leftLittle"
-				],
-			"leftMiddle" :
-				[
-					"leftMiddle"
-				],
-			"leftRing" :
-				[
-					"leftRing"
-				],
-			"leftThumb" :
-				[
-					"leftThumb"
-				],
-			"rightIndex" :
-				[
-					"rightIndex"
-				],
-			"rightLittle" :
-				[
-					"rightLittle"
-				],
-			"rightMiddle" :
-				[
-					"rightMiddle"
-				],
-			"rightRing" :
-				[
-					"rightRing"
-				],
-			"rightThumb" :
-				[
-					"rightThumb"
-				],
-			"leftEye" :
-				[
-					"leftEye"
-				],
-			"rightEye" :
-				[
-					"rightEye"
-				],
-			"face" : 
-				[
-					"face"
-				]
-		}	
+	"ida-mapping": {
+		"name": [
+			"fullName"
+		],
+		"dob": [
+			"dateOfBirth"
+		],
+		"dobType": [
+			"dateOfBirthType"
+		],
+		"age": [
+			"dateOfBirth"
+		],
+		"gender": [
+			"gender"
+		],
+		"phoneNumber": [
+			"phone"
+		],
+		"emailId": [
+			"email"
+		],
+		"addressLine1": [
+			"addressLine1"
+		],
+		"addressLine2": [
+			"addressLine2"
+		],
+		"addressLine3": [
+			"addressLine3"
+		],
+		"location1": [
+			"city"
+		],
+		"location2": [
+			"region"
+		],
+		"location3": [
+			"province"
+		],
+		"postalCode": [
+			"postalCode"
+		],
+		"fullAddress": [
+			"addressLine1",
+			"addressLine2",
+			"addressLine3",
+			"city",
+			"region",
+			"province",
+			"postalCode"
+		],
+		"otp": [
+			"otp"
+		],
+		"pin": [
+			"pin"
+		],
+		"leftIndex": [
+			"FINGER_Left IndexFinger_2"
+		],
+		"leftLittle": [
+			"FINGER_Left LittleFinger_2"
+		],
+		"leftMiddle": [
+			"FINGER_Left MiddleFinger_2"
+		],
+		"leftRing": [
+			"FINGER_Left RingFinger_2"
+		],
+		"leftThumb": [
+			"FINGER_Left ThumbFinger_2"
+		],
+		"rightIndex": [
+			"FINGER_Right IndexFinger_2"
+		],
+		"rightLittle": [
+			"FINGER_Right LittleFinger_2"
+		],
+		"rightMiddle": [
+			"FINGER_Right MiddleFinger_2"
+		],
+		"rightRing": [
+			"FINGER_Right RingFinger_2"
+		],
+		"rightThumb": [
+			"FINGER_Right ThumbFinger_2"
+		],
+		"leftEye": [
+			"IRIS_Left_9"
+		],
+		"rightEye": [
+			"IRIS_Right_9"
+		],
+		"iris": [
+			"leftEye",
+			"rightEye"
+		],
+		"fingerprint": [
+			"leftIndex",
+			"leftLittle",
+			"leftMiddle",
+			"leftRing",
+			"leftThumb",
+			"rightIndex",
+			"rightLittle",
+			"rightMiddle",
+			"rightRing",
+			"rightThumb"
+		],
+		"face": [
+			"FACE"
+		]
+	}
 }

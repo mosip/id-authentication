@@ -252,8 +252,7 @@ public class BiometricExceptionController extends BaseController implements Init
 				generateAlert(RegistrationConstants.ALERT_INFORMATION,
 						RegistrationUIConstants.BIOMETRIC_EXCEPTION_ALERT);
 			} else {
-				if (((RegistrationDTO) SessionContext.map()
-						.get(RegistrationConstants.REGISTRATION_DATA)).getSelectionListDTO() != null) {
+				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
 					List<BiometricExceptionDTO> biometricExceptionDTOs = ((RegistrationDTO) SessionContext.map()
 							.get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO().getApplicantBiometricDTO()
@@ -262,7 +261,7 @@ public class BiometricExceptionController extends BaseController implements Init
 					long fingerPrintCount = biometricExceptionDTOs.stream()
 							.filter(bio -> bio.getBiometricType().equals("fingerprint")).count();
 
-					if (fingerPrintCount > 0) {
+					if ( getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint() || fingerPrintCount > 0) {
 						fingerPrintCaptureController.clearImage();
 						registrationController.toggleBiometricExceptionVisibility(false);
 						registrationController.toggleFingerprintCaptureVisibility(true);
@@ -407,6 +406,11 @@ public class BiometricExceptionController extends BaseController implements Init
 		SessionContext.map().put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION,
 				new ArrayList<>());
 		setExceptionImage();
+	}
+	
+	private RegistrationDTO getRegistrationDTOFromSession() {
+		return (RegistrationDTO) SessionContext.map()
+				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
 
 }

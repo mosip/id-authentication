@@ -29,10 +29,3 @@ CREATE ROLE appadmin WITH
 	PASSWORD 'Mosipadm@dev123';
 -- ddl-end --
 
--- object: admuser | type: ROLE --
--- DROP ROLE IF EXISTS admuser;
-CREATE ROLE admuser WITH 
-	INHERIT
-	LOGIN
-	PASSWORD 'Mosip@dev123';
--- ddl-end --

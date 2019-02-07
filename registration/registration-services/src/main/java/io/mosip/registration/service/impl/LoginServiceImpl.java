@@ -38,10 +38,6 @@ public class LoginServiceImpl implements LoginService {
 	 * Instance of LOGGER
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(LoginServiceImpl.class);
-	
-	
-	@Value("${IRIS_THRESHOLD}")
-	private String irisThreshold;
 
 	/**
 	 * Instance of {@code AuditFactory}
@@ -101,7 +97,6 @@ public class LoginServiceImpl implements LoginService {
 	@Override
 	public UserDetail getUserDetail(String userId) {
 		// Retrieving Officer details
-
 		LOGGER.info("REGISTRATION - USERDETAIL - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching User details");
 

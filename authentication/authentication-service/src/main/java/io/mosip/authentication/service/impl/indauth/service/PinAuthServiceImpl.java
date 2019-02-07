@@ -15,10 +15,10 @@ import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.service.PinAuthService;
-import io.mosip.authentication.service.entity.StaticPinEntity;
+import io.mosip.authentication.service.entity.StaticPin;
 import io.mosip.authentication.service.helper.IdInfoHelper;
-import io.mosip.authentication.service.impl.indauth.service.demo.PinAuthType;
-import io.mosip.authentication.service.impl.indauth.service.demo.PinMatchType;
+import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
+import io.mosip.authentication.service.impl.indauth.service.pin.PinMatchType;
 import io.mosip.authentication.service.repository.StaticPinRepository;
 
 /**
@@ -94,7 +94,7 @@ public class PinAuthServiceImpl implements PinAuthService {
 	public Map<String, String> getSPin(String uinValue, AuthRequestDTO authReq) {
 		Map<String, String> map = new HashMap<>();
 		String pin = null;
-		Optional<StaticPinEntity> entityValues = staticPinRepo.findById(uinValue);
+		Optional<StaticPin> entityValues = staticPinRepo.findById(uinValue);
 		if (entityValues.isPresent()) {
 			pin = entityValues.get().getPin();
 			map.put("value", pin);

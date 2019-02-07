@@ -12,8 +12,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.web.client.RestTemplate;
 
@@ -45,12 +45,11 @@ import io.mosip.registration.jobs.JobTriggerListener;
 @ComponentScan({ "io.mosip.registration", "io.mosip.kernel.core", "io.mosip.kernel.keygenerator",
 		"io.mosip.kernel.idvalidator", "io.mosip.kernel.ridgenerator", "io.mosip.kernel.qrcode",
 		"io.mosip.kernel.crypto", "io.mosip.kernel.jsonvalidator", "io.mosip.kernel.idgenerator" })
-//@PropertySource("spring.properties")
 public class AppConfig {
 
 	private static final RollingFileAppender MOSIP_ROLLING_APPENDER = new RollingFileAppender();
 
-	private static final ResourceBundle applicationProperties = ResourceBundle.getBundle("application");
+	private static final ResourceBundle applicationProperties = ResourceBundle.getBundle("reg_application");
 
 	@Autowired
 	@Qualifier("dataSource")

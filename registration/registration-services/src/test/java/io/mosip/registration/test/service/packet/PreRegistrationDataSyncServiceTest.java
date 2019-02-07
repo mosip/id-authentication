@@ -50,7 +50,7 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ RegistrationAppHealthCheckUtil.class })
+@PrepareForTest({ RegistrationAppHealthCheckUtil.class, io.mosip.registration.context.ApplicationContext.class })
 public class PreRegistrationDataSyncServiceTest {
 
 	@Rule
@@ -78,11 +78,7 @@ public class PreRegistrationDataSyncServiceTest {
 	PreRegistrationList preRegistrationList;
 
 	@Mock
-	PreRegZipHandlingService preRegZipHandlingService;
-	
-	@Mock
-	io.mosip.registration.context.ApplicationContext context;
-	
+	PreRegZipHandlingService preRegZipHandlingService;	
 
 	static byte[] preRegPacket;
 
@@ -106,8 +102,8 @@ public class PreRegistrationDataSyncServiceTest {
 		Map<String,Object> applicationMap =new HashMap<>();
 		applicationMap.put(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS, "45");
 		
-		when(context.getApplicationMap()).thenReturn(applicationMap);
-		
+		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
+		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
 	}
 
 	@AfterClass

@@ -65,8 +65,9 @@ public class AuditControllerTest {
 		when(service.addAudit(ArgumentMatchers.any())).thenReturn(auditResponseDto);
 
 		mockMvc.perform(post("/v1.0/audits").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(auditRequestDto))).andExpect(status().isCreated())
+				.content(objectMapper.writeValueAsString(auditRequestDto))).andExpect(status().isOk())
 				.andExpect(jsonPath("$.status", is(true)));
+
 
 	}
 

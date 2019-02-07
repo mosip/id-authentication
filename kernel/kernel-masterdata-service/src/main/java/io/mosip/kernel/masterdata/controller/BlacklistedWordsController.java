@@ -86,7 +86,7 @@ public class BlacklistedWordsController {
 	public ResponseEntity<WordAndLanguageCodeID> createBlackListedWord(
 			@RequestBody @Valid RequestDto<BlacklistedWordsDto> blackListedWordsRequestDto) {
 		return new ResponseEntity<>(blacklistedWordsService.createBlackListedWord(blackListedWordsRequestDto),
-				HttpStatus.CREATED);
+				HttpStatus.OK);
 	}
 
 	/**

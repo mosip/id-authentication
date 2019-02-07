@@ -20,7 +20,9 @@ import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SelectionListDTO;
@@ -79,12 +81,20 @@ public class UpdateUINController extends BaseController implements Initializable
 	@Autowired
 	@Qualifier(value = "uinValidator")
 	private IdValidator<String> uinValidatorImpl;
+	
+	private FXUtils fxUtils;
+	@Autowired
+	Validations validation;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		switchedOn = new SimpleBooleanProperty(false);
 		isChild = switchedOn.get();
 		toggleFunction();
+		fxUtils=FXUtils.getInstance();
+		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED,
+				RegistrationConstants.DISABLE);
+		fxUtils.validateOnType(uinId, validation);
 		if (applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
 				.equals(RegistrationConstants.ENABLE)) {
 

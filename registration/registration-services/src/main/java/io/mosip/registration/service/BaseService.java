@@ -248,7 +248,7 @@ public class BaseService {
 			}
 
 			/* Get Application Map */
-			applicationMap = applicationContext.getApplicationMap();
+			applicationMap = applicationContext.map();
 		}
 
 		return (String) applicationMap.get(key);

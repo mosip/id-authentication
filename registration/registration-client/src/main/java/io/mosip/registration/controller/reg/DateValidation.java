@@ -54,7 +54,7 @@ public class DateValidation extends BaseController {
 				int dateVal = 1;
 				if (date.getText().matches("\\d+")) {
 					dateVal = Integer.parseInt(date.getText());
-					if (dateVal > 31 || dateVal < 1) {
+					if (dateVal > 31 ) {
 						date.setText(oldValue);
 					}
 				}
@@ -81,7 +81,7 @@ public class DateValidation extends BaseController {
 			month.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				if (month.getText().matches("\\d+")) {
 					int monthVal = Integer.parseInt(month.getText());
-					if (monthVal > 12 || monthVal < 1) {
+					if (monthVal > 12) {
 						month.setText(oldValue);
 					}
 					if (date.getText().matches("\\d+") && month.getText().matches("\\d+")) {

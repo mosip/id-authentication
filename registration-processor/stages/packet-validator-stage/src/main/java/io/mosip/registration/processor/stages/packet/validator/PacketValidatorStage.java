@@ -18,8 +18,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.HttpStatusCodeException;
-
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -285,6 +283,9 @@ public class PacketValidatorStage extends MosipVerticleManager {
 						object.setRid(dto.getRegistrationId());
 
 					} finally {
+
+						regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+								LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
 						if (object.getInternalError()) {
 							registrationStatusDto.setUpdatedBy(USER);
 							int retryCount = registrationStatusDto.getRetryCount() != null
@@ -324,7 +325,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 			if (!registrationIds.isEmpty()) {
 				isTransactionSuccessful = false;
-				//preregIds = packetInfoManager.getRegOsiPreRegId(registrationIds);
+				// preregIds = packetInfoManager.getRegOsiPreRegId(registrationIds);
 				MainResponseDTO<ReverseDatasyncReponseDTO> mainResponseDto = null;
 				if (preRegistrationIds != null && !preRegistrationIds.isEmpty()) {
 					MainRequestDTO<ReverseDataSyncRequestDTO> mainRequestDto = new MainRequestDTO<>();

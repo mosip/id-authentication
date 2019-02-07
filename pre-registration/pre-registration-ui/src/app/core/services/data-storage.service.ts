@@ -23,6 +23,8 @@ export class DataStorageService {
   BOOKING_URL = this.BASE_URL + 'booking/v0.1/pre-registration/booking/book';
   DELETE_REGISTRATION_URL = this.BASE_URL + 'demographic/v0.1/pre-registration/applications';
   COPY_DOCUMENT_URL = this.BASE_URL + 'document/v0.1/pre-registration/copyDocuments';
+  QR_CODE_URL = this.BASE_URL + 'notification/v0.1/pre-registration/generateQRCode';
+  NOTIFICATION_URL = this.BASE_URL + 'notification/v0.1/pre-registration/notification';
   LANGUAGE_CODE = 'eng';
   DISTANCE = 2000;
 
@@ -193,5 +195,26 @@ export class DataStorageService {
       this.COPY_DOCUMENT_URL + '?catCode=POA&destinationPreId=' + destinationId + '&sourcePrId=' + sourceId;
 
     return this.httpClient.post(this.COPY_DOCUMENT_URL, '');
+  }
+
+  generateQRCode(data: string) {
+    return this.httpClient.post(this.QR_CODE_URL, data);
+  }
+
+  sendNotification(data: FormData) {
+    return this.httpClient.post(this.NOTIFICATION_URL, data);
+  }
+
+  recommendedCenters(langCode: string, locationHierarchyCode: number, data: string[]) {
+    let url = this.MASTER_DATA_URL + 'registrationcenters/' + langCode + '/' +
+                  locationHierarchyCode + '/names?';
+    data.forEach(name => {
+      url += 'name=' + name;
+      if (data.indexOf(name) !== data.length - 1) {
+        url += '&'
+      }
+    });
+    console.log(url);
+    return this.httpClient.get(url);
   }
 }

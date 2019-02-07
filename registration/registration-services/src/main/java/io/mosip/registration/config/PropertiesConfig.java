@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
@@ -15,11 +16,16 @@ import org.springframework.jdbc.core.ResultSetExtractor;
  *
  */
 public class PropertiesConfig {
+	
+	private static final String GLOBAL_PARAM_PROPERTIES = 
+			"SELECT NAME, VAL from MASTER.GLOBAL_PARAM where IS_ACTIVE=TRUE";
+	
+	private static final String KEY = "NAME";
+	private static final String VALUE= "VAL";
 
 	private JdbcTemplate jdbcTemplate;
 	
 	public PropertiesConfig() {
-		
 	}
 	
 	public PropertiesConfig(JdbcTemplate jdbcTemplate) {
@@ -27,52 +33,15 @@ public class PropertiesConfig {
 	}
 	
 	public Map<String,Object> getDBProps() {
-		
-		Map<String, Object> globalParams = jdbcTemplate.query("select NAME, VAL from MASTER.GLOBAL_PARAM where IS_ACTIVE=true", 
-				new ResultSetExtractor<Map<String,Object>>(){
+		return jdbcTemplate.query(GLOBAL_PARAM_PROPERTIES, new ResultSetExtractor<Map<String,Object>>(){
 		    @Override
-		    public Map<String,Object> extractData(ResultSet rs) throws SQLException {
-		        Map<String,Object> mapRet= new HashMap<>();
-		        while(rs.next()){
-		            mapRet.put(rs.getString("name"),rs.getString("val"));
+		    public Map<String,Object> extractData(ResultSet globalParamResultset) throws SQLException {
+		        Map<String,Object> globalParamProps= new HashMap<>();
+		        while(globalParamResultset.next()){
+		        	globalParamProps.put(globalParamResultset.getString(KEY),globalParamResultset.getString(VALUE));
 		        }
-		        return mapRet;
+		        return globalParamProps;
 		    }
 		});
-		
-		//System.out.println(globalParams.size());
-		return globalParams;
-	}
-
-	/*
-	@Autowired
-	public void setConfigurableEnvironment(ConfigurableEnvironment env) {
-		this.env = env;
-	}
-
-	@PostConstruct
-	public void init() {
-		MutablePropertySources propertySources = env.getPropertySources();
-		Map<String, Object> dbPropertiesMap = globalParamService.getGlobalParams();
-
-		// from configurationRepository get values and fill map
-		propertySources.addFirst(new MapPropertySource("DB_PROPS", dbPropertiesMap));
-	}
-
-	@Autowired
-	private StandardEnvironment environment;
-
-	@Scheduled(fixedRate = 60000)
-	public void reload() {
-		MutablePropertySources propertySources = environment.getPropertySources();
-		
-		PropertySource<?> resourcePropertySource = propertySources.get("DB_PROPS");
-		
-		Properties properties = new Properties();
-		Map<String, Object> dbPropertiesMap = globalParamService.getGlobalParams();
-		properties.putAll(dbPropertiesMap);
-		
-		// from configurationRepository get values and fill map
-		propertySources.replace("DB_PROPS",	new PropertiesPropertySource("DB_PROPS", properties));
-	}*/
+	}	
 }

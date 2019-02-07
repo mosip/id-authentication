@@ -91,14 +91,7 @@ public class SyncStatusValidatorServiceTest {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
-		ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
 		PowerMockito.mockStatic(ApplicationContext.class);
-
-		Map<String, Object> globalParams = new HashMap<>();
-		globalParams.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "1");
-		globalParams.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "1");
-		PowerMockito.when(applicationContext.getApplicationMap()).thenReturn(globalParams);
-		PowerMockito.when(ApplicationContext.map()).thenReturn(globalParams);
 	}
 
 	@Test
@@ -144,7 +137,9 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("lastExportSyncJob", "1");
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
+		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
+		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
 		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobInfo);
@@ -220,7 +215,9 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "N");
 		applicationMap.put("masterSyncJob", "20");
 		applicationMap.put("lastExportSyncJob", "20");
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
+		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
+		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
 		Mockito.when(gpsFacade.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
@@ -279,7 +276,9 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("lastExportSyncJob", "1");
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
+		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
+		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
 		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
@@ -354,7 +353,9 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("lastExportSyncJob", "1");
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
+		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
+		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
 		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
@@ -430,7 +431,9 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("lastExportSyncJob", "1");
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
+		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
+		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
 		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
@@ -505,7 +508,9 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("lastExportSyncJob", "1");
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
+		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
+		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
 		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
@@ -582,7 +587,9 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "N");
 		applicationMap.put("masterSyncJob", "20");
 		applicationMap.put("lastExportSyncJob", "20");
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "1");
+		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
+		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
 		Mockito.when(gpsFacade.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
@@ -644,7 +651,9 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "N");
 		applicationMap.put("masterSyncJob", "20");
 		applicationMap.put("lastExportSyncJob", "20");
-		when(context.getApplicationMap()).thenReturn(applicationMap);
+		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
+		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "1");
+		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
 		Mockito.when(gpsFacade.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
@@ -678,4 +687,71 @@ public class SyncStatusValidatorServiceTest {
 		syncStatusValidatorServiceImpl.validateSyncStatus();
 	}
 
+	@Test
+	public void testValidateSyncJobFailure() {
+		SyncControl syncControl1 = new SyncControl();
+		syncControl1.setSyncJobId("MDS_J00001");
+		syncControl1.setLastSyncDtimes(new Timestamp(System.currentTimeMillis()));
+		SyncControl syncControl2 = new SyncControl();
+		syncControl2.setSyncJobId("LER_J00009");
+		syncControl2.setLastSyncDtimes(new Timestamp(System.currentTimeMillis()));
+
+		List<SyncControl> listSync = new ArrayList<>();
+		listSync.add(syncControl1);
+		listSync.add(syncControl2);
+
+		List<Registration> registrationList = new ArrayList<>();
+		Registration registration = new Registration();
+		registration.setCrDtime(new Timestamp(System.currentTimeMillis()));
+		registrationList.add(registration);
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("latitude", 12.99194);
+		map.put("longitude", 80.2471);
+		map.put(RegistrationConstants.GPS_DISTANCE, 55.9);
+		map.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
+
+		SyncJobDef syncJobDef1 = new SyncJobDef();
+		syncJobDef1.setId("MDS_J00001");
+		syncJobDef1.setApiName("masterSyncJob");
+		SyncJobDef syncJobDef2 = new SyncJobDef();
+		syncJobDef2.setId("LER_J00009");
+		syncJobDef2.setApiName("lastExportSyncJob");
+
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "gpsEnableFlag", "Y");
+
+		List<SyncJobDef> listSyncJob = new ArrayList<>();
+		listSyncJob.add(syncJobDef1);
+		listSyncJob.add(syncJobDef2);
+
+		Map<String, Object> applicationMap = new HashMap<>();
+		applicationMap.put("REG_PAK_MAX_CNT_OFFLINE_FREQ", "10");
+		applicationMap.put("DIST_FRM_MACHN_TO_CENTER", "100");
+		applicationMap.put("GEO_CAP_FREQ", "Y");
+		applicationMap.put("masterSyncJob", "1");
+		applicationMap.put("lastExportSyncJob", "1");
+		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
+		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
+		applicationMap.put("lastCapturedTime", Instant.now());
+		when(context.map()).thenReturn(applicationMap);
+
+		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
+		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
+		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobInfo);
+		Mockito.when(syncJobInfo.getSyncControlList()).thenReturn(null);
+		Mockito.when(syncJobInfo.getYetToExportCount()).thenReturn((double) 20);
+
+		Mockito.when(gpsFacade.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
+				.thenReturn(map);
+
+		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
+		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
+
+		
+		assertEquals("REG-ICS‌-003", errorResponseDTOs.get(0).getCode());
+		assertEquals(
+				"Maximum limit for registration packets on client reached. Please export or upload packets to server before proceeding with this registration",
+				errorResponseDTOs.get(0).getMessage());
+	}
+	
 }

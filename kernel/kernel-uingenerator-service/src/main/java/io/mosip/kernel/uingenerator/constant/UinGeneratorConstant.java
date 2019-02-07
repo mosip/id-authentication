@@ -52,15 +52,15 @@ public final class UinGeneratorConstant {
 	/**
 	 * The string field JAVAX_PERSISTENCE_JDBC_PASS
 	 */
-	public static final String JAVAX_PERSISTENCE_JDBC_PASS = "javax.persistence.jdbc.password";
+	public static final String JAVAX_PERSISTENCE_JDBC_PASS = "uin_database_password";
 	/**
 	 * The string field JAVAX_PERSISTENCE_JDBC_USER
 	 */
-	public static final String JAVAX_PERSISTENCE_JDBC_USER = "javax.persistence.jdbc.user";
+	public static final String JAVAX_PERSISTENCE_JDBC_USER = "uin_database_username";
 	/**
 	 * The string field JAVAX_PERSISTENCE_JDBC_URL
 	 */
-	public static final String JAVAX_PERSISTENCE_JDBC_URL = "javax.persistence.jdbc.url";
+	public static final String JAVAX_PERSISTENCE_JDBC_URL = "uin_database_url";
 	/**
 	 * The string field JAVAX_PERSISTENCE_JDBC_DRIVER
 	 */
@@ -73,6 +73,10 @@ public final class UinGeneratorConstant {
 	 * The string field SPRING_APPLICATION_NAME
 	 */
 	public static final String SPRING_APPLICATION_NAME = "spring.application.name";
+	/**
+	 * The string field SPRING_APPLICATION_NAME
+	 */
+	public static final String SPRING_CLOUD_CONFIG_NAME = "spring.cloud.config.name";
 	/**
 	 * The string field PROPERTIES
 	 */

@@ -16,7 +16,7 @@
               50"
               placeholder="{{ 'demographic.label_name' | translate }}"
               [formControlName]="formControlNames.fullName"
-              (change)="onTransliteration(fullName, formControlNames.secondaryFullName)"
+              (change)="onTransliteration(fullName, formControlNames.fullNameSecondary)"
             />
             <mat-hint align="end">{{ fullName.value.length }} / 50</mat-hint>
             <mat-error *ngIf="!fullName.invalid"> {{ 'demographic.validation.name_required' | translate }} </mat-error>
@@ -95,7 +95,8 @@
           <div
             class="mat-error ng-star-inserted user__dob__error"
             *ngIf="
-              (userForm.get(formControlNames.dob).touched && userForm.get(formControlNames.dob).errors['incorrect']) ||
+              (userForm.get(formControlNames.dateOfBirth).touched &&
+                userForm.get(formControlNames.dateOfBirth).errors['incorrect']) ||
               (userForm.get(formControlNames.age).touched && !userForm.get(formControlNames.age).valid)
             "
           >
@@ -137,7 +138,7 @@
               placeholder="{{ 'demographic.label_address1' | translate }}"
               [formControlName]="formControlNames.addressLine1"
               (change)="onGenderChange()"
-              (change)="onTransliteration(addressLine1, formControlNames.secondaryAddressLine1)"
+              (change)="onTransliteration(addressLine1, formControlNames.addressLine1Secondary)"
             />
             <mat-hint align="end">{{ addressLine1.value.length }} / 50</mat-hint>
             <mat-error *ngIf="!addressLine1.invalid">{{
@@ -152,7 +153,7 @@
               maxlength="50"
               placeholder="{{ 'demographic.label_address2' | translate }}"
               [formControlName]="formControlNames.addressLine2"
-              (change)="onTransliteration(addressLine2, formControlNames.secondaryAddressLine2)"
+              (change)="onTransliteration(addressLine2, formControlNames.addressLine2Secondary)"
             />
             <mat-hint align="end">{{ addressLine2.value.length }} / 50</mat-hint>
             <mat-error *ngIf="!addressLine2.invalid">{{
@@ -167,7 +168,7 @@
               maxlength="50"
               placeholder="{{ 'demographic.label_address3' | translate }}"
               [formControlName]="formControlNames.addressLine3"
-              (change)="onTransliteration(addressLine3, formControlNames.secondaryAddressLine3)"
+              (change)="onTransliteration(addressLine3, formControlNames.addressLine3Secondary)"
             />
             <mat-hint align="end">{{ addressLine3.value.length }} / 50</mat-hint>
             <mat-error *ngIf="!addressLine3.invalid">{{
@@ -246,7 +247,7 @@
                 matInput
                 type="text"
                 #postalCode
-                maxlength="5"
+                maxlength="6"
                 placeholder="{{ 'demographic.label_postalCode' | translate }}"
                 [formControlName]="formControlNames.postalCode"
                 #postalCode
@@ -263,9 +264,9 @@
                 matInput
                 #mobileNumber
                 type="text"
-                maxlength="9"
+                maxlength="10"
                 placeholder="{{ 'demographic.label_mob_num' | translate }}"
-                [formControlName]="formControlNames.mobilePhone"
+                [formControlName]="formControlNames.phone"
               />
               <mat-hint align="end">{{ mobileNumber.value.length }} / 9</mat-hint>
               <mat-error *ngIf="!mobileNumber.invalid">{{
@@ -294,7 +295,7 @@
                 matInput
                 type="text"
                 placeholder="{{ 'demographic.label_pin' | translate }}"
-                [formControlName]="formControlNames.pin"
+                [formControlName]="formControlNames.CNIENumber"
               />
               <mat-hint align="end">{{ pin.value.length }} / 30</mat-hint>
               <mat-error *ngIf="!pin.invalid">{{ 'demographic.validation.pin_required' | translate }}</mat-error>
@@ -311,7 +312,7 @@
               [matKeyboard]="keyboardSecondaryLang"
               maxlength="50"
               [placeholder]="secondaryLanguagelabels.label_name"
-              [formControlName]="formControlNames.secondaryFullName"
+              [formControlName]="formControlNames.fullNameSecondary"
               name="t_fullName"
               #t_fullName
             />
@@ -372,10 +373,15 @@
           >
             <br />
           </div>
-          <div *ngIf="!userForm.get(formControlNames.year).valid && userForm.get(formControlNames.year).touched"><br /></div>
+          <div *ngIf="!userForm.get(formControlNames.year).valid && userForm.get(formControlNames.year).touched">
+            <br />
+          </div>
           <div
             class="mat-error ng-star-inserted user__dob__error"
-            *ngIf="userForm.get(formControlNames.dob).touched && userForm.get(formControlNames.dob).errors['incorrect']"
+            *ngIf="
+              userForm.get(formControlNames.dateOfBirth).touched &&
+              userForm.get(formControlNames.dateOfBirth).errors['incorrect']
+            "
           >
             <br />
           </div>
@@ -412,7 +418,7 @@
               name="t_addressLine1"
               maxlength="50"
               [placeholder]="secondaryLanguagelabels.label_address1"
-              [formControlName]="formControlNames.secondaryAddressLine1"
+              [formControlName]="formControlNames.addressLine1Secondary"
             />
             <mat-hint align="end">{{ t_addressLine1.value.length }} / 50</mat-hint>
             <mat-error *ngIf="!addressLine1.invalid">{{
@@ -421,7 +427,7 @@
           </mat-form-field>
           <mat-form-field>
             <input
-              [formControlName]="formControlNames.secondaryAddressLine2"
+              [formControlName]="formControlNames.addressLine2Secondary"
               matInput
               [matKeyboard]="keyboardSecondaryLang"
               #t_addressLine2
@@ -436,7 +442,7 @@
           </mat-form-field>
           <mat-form-field>
             <input
-              [formControlName]="formControlNames.secondaryAddressLine3"
+              [formControlName]="formControlNames.addressLine3Secondary"
               name="t_addressLine3"
               matInput
               [matKeyboard]="keyboardSecondaryLang"
@@ -525,7 +531,7 @@
                 matInput
                 type="text"
                 [placeholder]="secondaryLanguagelabels.label_mob_num"
-                [value]="userForm.get(formControlNames.mobilePhone).value"
+                [value]="userForm.get(formControlNames.phone).value"
               />
             </mat-form-field>
           </div>
@@ -546,7 +552,7 @@
                 matInput
                 type="text"
                 [placeholder]="secondaryLanguagelabels.label_pin"
-                [value]="userForm.get(formControlNames.pin).value"
+                [value]="userForm.get(formControlNames.CNIENumber).value"
               />
             </mat-form-field>
           </div>
@@ -558,7 +564,7 @@
     <button class="user__btn" type="button" (click)="onBack()" [disabled]="isNewApplicant">
       {{ 'demographic.action_back' | translate }}
     </button>
-    <button class="user__btn" type="button" [disabled]="!dataUploadComplete " (click)="onSubmit()">
+    <button class="user__btn" type="button" [disabled]="!dataUploadComplete || !userForm.valid || !transUserForm.valid" (click)="onSubmit()">
       {{ 'demographic.action_continue' | translate }}
     </button>
   </div>

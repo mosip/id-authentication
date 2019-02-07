@@ -112,7 +112,7 @@ public class BaseAuthRequestValidatorTest {
 		ReflectionTestUtils.setField(baseAuthRequestValidator, "emailValidatorImpl", emailValidatorImpl);
 		ReflectionTestUtils.setField(baseAuthRequestValidator, "phoneValidatorImpl", phoneValidatorImpl);
 		ReflectionTestUtils.setField(baseAuthRequestValidator, "idInfoHelper", idInfoHelper);
-		ReflectionTestUtils.setField(baseAuthRequestValidator, "environment", environment);
+		ReflectionTestUtils.setField(baseAuthRequestValidator, "env", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 
@@ -1147,7 +1147,7 @@ public class BaseAuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);
@@ -1191,7 +1191,7 @@ public class BaseAuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);
@@ -1242,7 +1242,7 @@ public class BaseAuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);
@@ -1295,7 +1295,7 @@ public class BaseAuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);
@@ -1458,7 +1458,7 @@ public class BaseAuthRequestValidatorTest {
 		authTypeDTO.setFullAddress(true);
 		authRequestDTO.setAuthType(authTypeDTO);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setAge(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
@@ -1476,13 +1476,9 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(environment.getProperty("mosip.primary.lang-code"));
-		idInfoDTO.setValue("16");
-		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage(environment.getProperty("mosip.secondary.lang-code"));
-		idInfoDTO1.setValue("Mike");
+		idInfoDTO.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
-		idInfoList.add(idInfoDTO1);
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
 		authTypeDTO.setFullAddress(true);

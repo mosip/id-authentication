@@ -109,7 +109,7 @@ public class EncryptTest {
 	 * @throws JsonParseException the json parse exception
 	 * @throws JsonMappingException the json mapping exception
 	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
+	 *//*
 	@Test
 	public void oldEncryptTest() throws JsonParseException, JsonMappingException, IOException   {
 		String testData="{\r\n" + 
@@ -130,7 +130,7 @@ public class EncryptTest {
 	 encryptionRequestDto.setIdentityRequest(new ObjectMapper().readValue(testData.getBytes(), Map.class));
 	 ReflectionTestUtils.invokeMethod(encryptMock, "oldEncrypt", encryptionRequestDto);
 	}
-	
+	*/
 	/**
 	 * Turnoff SSL check test.
 	 *
