@@ -3,13 +3,6 @@ package io.mosip.registration.processor.message.sender;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/**
- * The Class MessageNotificationApplication.
- *
- * @author Alok Ranjan
- * @author Ayush Keer
- */
-
 @SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.message.sender",
 		"io.mosip.registration.processor.message.sender.test", "io.mosip.registration.processor.core.constant",
 		"io.mosip.registration.processor.core", "io.mosip.registration.processor.packet.storage",
@@ -27,5 +20,4 @@ public class MessageNotificationApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MessageNotificationApplication.class, args);
 	}
-
 }

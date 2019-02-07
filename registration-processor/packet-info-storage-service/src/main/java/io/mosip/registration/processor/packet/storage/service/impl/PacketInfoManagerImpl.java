@@ -702,18 +702,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		return packetInfoDao.getEntitiesforRegOsi(regid);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
-	 * getRegistrationCenterMachine(java.lang.String)
-	 */
-	@Override
-	public RegistrationCenterMachineDto getRegistrationCenterMachine(String regid) {
-
-		return packetInfoDao.getRegistrationCenterMachine(regid);
-	}
 
 	/*
 	 * (non-Javadoc)

@@ -9,6 +9,7 @@ import org.springframework.web.context.request.WebRequest;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.PacketNotFoundException;
 import io.mosip.registration.processor.manual.verification.exception.FileNotPresentException;
+import io.mosip.registration.processor.manual.verification.exception.InvalidFieldsException;
 import io.mosip.registration.processor.manual.verification.exception.InvalidFileNameException;
 import io.mosip.registration.processor.manual.verification.exception.InvalidUpdateException;
 import io.mosip.registration.processor.manual.verification.exception.NoRecordAssignedException;
@@ -79,6 +80,13 @@ public class ManualVerificationExceptionHandler {
 	 */
 	@ExceptionHandler(InvalidUpdateException.class)
 	public ResponseEntity<ExceptionJSONInfo> invalidUpdateException(final InvalidUpdateException e,
+			WebRequest request) {
+		ExceptionJSONInfo exceptionJSONInfo = new ExceptionJSONInfo(e.getErrorCode(), e.getLocalizedMessage());
+		return new ResponseEntity<>(exceptionJSONInfo, HttpStatus.FORBIDDEN);
+	}
+	
+	@ExceptionHandler
+	public ResponseEntity<ExceptionJSONInfo> invalidFiledException(final InvalidFieldsException e,
 			WebRequest request) {
 		ExceptionJSONInfo exceptionJSONInfo = new ExceptionJSONInfo(e.getErrorCode(), e.getLocalizedMessage());
 		return new ResponseEntity<>(exceptionJSONInfo, HttpStatus.FORBIDDEN);

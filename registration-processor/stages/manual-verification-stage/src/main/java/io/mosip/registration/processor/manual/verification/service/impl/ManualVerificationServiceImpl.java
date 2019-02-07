@@ -78,6 +78,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 */
 	@Override
 	public ManualVerificationDTO assignApplicant(UserDto dto) {
+
 		ManualVerificationDTO manualVerificationDTO = new ManualVerificationDTO();
 		List<ManualVerificationEntity> entities;
 		entities = basePacketRepository.getAssignedApplicantDetails(dto.getUserId(),
@@ -156,7 +157,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	private InputStream getApplicantBiometricFile(String regId,String fileName){
 		return filesystemCephAdapterImpl.getFile(regId, PacketStructure.BIOMETRIC + fileName);
 	}
-	
+
 	/**
 	 * Gets the applicant demographic file.
 	 *
@@ -167,7 +168,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	private InputStream getApplicantDemographicFile(String regId,String fileName){
 		return filesystemCephAdapterImpl.getFile(regId, PacketStructure.APPLICANTDEMOGRAPHIC + fileName);
 	}
-	
+
 	/**
 	 * Check biometric.
 	 *
@@ -266,8 +267,22 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.manual.verification.service.ManualVerificationService#getApplicantPacketInfo(java.lang.String)
+	private boolean validateManualVerificationDTO(ManualVerificationDTO manualVerificationDTO) {
+		return !(manualVerificationDTO.getMvUsrId() != null || manualVerificationDTO.getMatchedRefId() != null
+				|| manualVerificationDTO.getMatchedRefType() != null || manualVerificationDTO.getReasonCode() != null
+				|| manualVerificationDTO.getRegId() != null || manualVerificationDTO.getStatusCode() != null ||
+
+				!(manualVerificationDTO.getMvUsrId() == "") || !manualVerificationDTO.getMatchedRefId().equals("")
+				|| !manualVerificationDTO.getMatchedRefType().equals("")
+				|| !manualVerificationDTO.getReasonCode().equals("") || !manualVerificationDTO.getRegId().equals("")
+				|| !manualVerificationDTO.getStatusCode().equals(""));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.processor.manual.verification.service.
+	 * ManualVerificationService#getApplicantPacketInfo(java.lang.String)
 	 */
 	@Override
 	public PacketMetaInfo getApplicantPacketInfo(String regId) {
