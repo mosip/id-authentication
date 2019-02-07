@@ -275,7 +275,7 @@ public class PacketUploadController extends BaseController {
 											synchedPacket.setFileUploadStatus(
 													RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
 											packetUploadList.add(synchedPacket);
-											tableMap.put(synchedPacket.getId(), "Error(" + responseCode + ")");
+											tableMap.put(synchedPacket.getId(), "Error");
 										}
 									}
 								} else {
