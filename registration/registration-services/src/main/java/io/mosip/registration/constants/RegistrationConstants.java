@@ -415,8 +415,8 @@ public class RegistrationConstants {
 
 	// Web Camera Constants
 	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";
-	public static final String APPLICANT_PHOTOGRAPH_NAME = "Applicant Photograph";
-	public static final String EXCEPTION_PHOTOGRAPH_NAME = "Exception Photograph";
+	public static final String APPLICANT_PHOTOGRAPH_NAME = "Applicant Photograph.jpg";
+	public static final String EXCEPTION_PHOTOGRAPH_NAME = "Exception Photograph.jpg";
 	public static final String APPLICANT_IMAGE = "Applicant Image";
 	public static final String EXCEPTION_IMAGE = "Exception Image";
 	public static final String WEB_CAMERA_PAGE_TITLE = "Applicant Biometrics";
