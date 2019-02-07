@@ -47,7 +47,6 @@ import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.message.sender.utility.NotificationTemplateType;
-import io.mosip.registration.processor.message.sender.utility.TriggerNotification;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
@@ -144,10 +143,6 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	/** The trigger notification for UIN. */
-	@Autowired
-	private TriggerNotification triggerNotification;
-
 	/** The id repo api version. */
 	private String idRepoApiVersion = "1.0";
 
@@ -208,9 +203,9 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			if ((idResponseDTO.getResponse() != null)) {
 				if (isUinCreate) {
 					demographicDedupeRepository.updateUinWrtRegistraionId(registrationId, uinResponseDto.getUin());
-					triggerNotification.triggerNotification(uinResponseDto.getUin(), NotificationTemplateType.UIN_CREATED);
+					// triggerNotification.triggerNotification(uinResponseDto.getUin(), NotificationTemplateType.UIN_CREATED);
 				} else {
-					triggerNotification.triggerNotification(uinFieldCheck, NotificationTemplateType.UIN_UPDATE);
+					// triggerNotification.triggerNotification(uinFieldCheck, NotificationTemplateType.UIN_UPDATE);
 
 				}
 
