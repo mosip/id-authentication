@@ -11,20 +11,19 @@
 <?import javafx.stage.Screen?>
 <?import javafx.scene.control.Label?>
 
-<AnchorPane styleClass="parentPane" fx:id="newRegistrationRoot" layoutX="190.0" maxHeight="1300.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.RegistrationController">
+<AnchorPane fx:id="newRegistrationRoot" layoutX="190.0" maxHeight="1300.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="parentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.RegistrationController">
    <children> 
-   <AnchorPane layoutX="-191.0" >
+   <AnchorPane layoutX="-191.0">
     <children>
     	<fx:include fx:id="Header" source="Header.fxml" /> 
     </children>
    </AnchorPane>
-   <AnchorPane layoutX="-190.0" layoutY="27.0">
+   <AnchorPane layoutX="-190.0" layoutY="40.0">
     <children>
-    	<fx:include fx:id="RegistrationHeader" source="RegistrationHeader.fxml" visible="true" />
     	<fx:include fx:id="registrationPreviewHeader" source="RegistrationPreviewHeader.fxml" visible="false" />
     </children>
    </AnchorPane>
-      <AnchorPane layoutX="-190.0" layoutY="75.0" prefHeight="749.0" prefWidth="1139.0">
+      <AnchorPane layoutX="-190.0" layoutY="35.0" prefHeight="749.0" prefWidth="1139.0">
          <children>
          	<fx:include fx:id="demographicDetail" source="DemographicDetail.fxml" visible="true" />
          	<fx:include fx:id="documentScan" source="DocumentScan.fxml" visible="false" />

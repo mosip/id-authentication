@@ -10,9 +10,9 @@
 
 <AnchorPane fx:id="demographicDetail" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="parentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.DemographicDetailController">
    <children>
-      <AnchorPane prefHeight="679.0" prefWidth="1245.0">
+      <AnchorPane prefHeight="710.0" prefWidth="1256.0">
          <children>
-            <AnchorPane layoutX="2.0" layoutY="584.0"  styleClass="registrationFooter">
+            <AnchorPane layoutX="2.0" layoutY="618.0" styleClass="registrationFooter">
                <children>
                   <Button layoutX="117.0" layoutY="2.0" mnemonicParsing="false" onAction="#back" styleClass="backButton" text="Back">
                   <graphic>
@@ -35,7 +35,7 @@
                   </Button>
                </children>
             </AnchorPane>
-            <ScrollPane layoutX="90.0" prefHeight="583.0" prefWidth="1050.0">
+            <ScrollPane layoutX="90.0" layoutY="34.0" prefHeight="583.0" prefWidth="1050.0">
                <content>
                   <AnchorPane fx:id="demoGraphicPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="786.0" prefWidth="1042.0" styleClass="paneAtDisplayDemoGraphic">
                      <children>
@@ -105,7 +105,7 @@
                                           <Label layoutX="3.0" layoutY="-6.0" text="%addressLine3" />
                                        </children>
                                     </AnchorPane>
-                                    <Button fx:id="copyPrevious" layoutX="178.0" layoutY="-37.0" mnemonicParsing="false" onAction="#loadAddressFromPreviousEntry" text="%copyPrevious" styleClass="demoGraphicPaneContentButton" />
+                                    <Button fx:id="copyPrevious" layoutX="178.0" layoutY="-37.0" mnemonicParsing="false" onAction="#loadAddressFromPreviousEntry" styleClass="demoGraphicPaneContentButton" text="%copyPrevious" />
                                     <AnchorPane layoutX="17.0" layoutY="163.0" prefHeight="61.0" prefWidth="153.0">
                                        <children>
                                           <ComboBox fx:id="region" layoutY="17.0" onAction="#addProvince" promptText="%select" styleClass="demographicCombobox" />
@@ -321,10 +321,10 @@
                            <children>
                               <Label fx:id="preRegistrationLabel" layoutX="1.0" prefHeight="10.0" prefWidth="320.0" text="%search_for_Pre_registration_id" />
                               <TextField fx:id="preRegistrationId" layoutY="26.0" prefHeight="10.0" prefWidth="220.00" />
-                              <Button fx:id="fetchBtn" layoutX="238.0" layoutY="26.0" mnemonicParsing="false" onAction="#fetchPreRegistration" text="%fetch"  styleClass="demoGraphicPaneContentButton" />
+                              <Button fx:id="fetchBtn" layoutX="238.0" layoutY="26.0" mnemonicParsing="false" onAction="#fetchPreRegistration" styleClass="demoGraphicPaneContentButton" text="%fetch" />
                            </children>
                         </AnchorPane>
-                        <Button fx:id="autoFillBtn" layoutX="619.0" layoutY="19.0" mnemonicParsing="false" onAction="#clickMe" text="Click Me To Fill The Form!!" styleClass="demoGraphicPaneContentButton" />
+                        <Button fx:id="autoFillBtn" layoutX="619.0" layoutY="19.0" mnemonicParsing="false" onAction="#clickMe" styleClass="demoGraphicPaneContentButton" text="Click Me To Fill The Form!!" />
                         <Label layoutX="76.0" layoutY="78.0" text="Language   -" />
                         <Label layoutX="622.0" layoutY="70.0" text="Arabic" />
                         <Label layoutX="177.0" layoutY="79.0" text="  English" />
@@ -332,7 +332,77 @@
                   </AnchorPane>
                </content>
             </ScrollPane>
+            <AnchorPane layoutX="1154.0" layoutY="55.0" prefHeight="544.0" prefWidth="88.0">
+               <children>
+                  <ImageView fx:id="PageTracker" fitHeight="406.0" fitWidth="73.0" layoutX="8.0" layoutY="55.0" pickOnBounds="true" preserveRatio="true">
+                  
+                  </ImageView>
+               </children>
+            </AnchorPane>
          </children>
       </AnchorPane>
+      <AnchorPane fx:id="RegistrationHeader" prefHeight="32.0" prefWidth="1220.0">
+         <children>
+            <AnchorPane layoutY="-3.0" prefHeight="39.0" prefWidth="1290.0">
+               <children>
+                  <AnchorPane prefHeight="25.0" prefWidth="196.0">
+                     <children>
+                        <Button layoutY="2.0" mnemonicParsing="false" text="Home" />
+                        <Label layoutX="65.0" layoutY="7.0" text="/  Registration" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="200.0" layoutY="9.0" styleClass="registrationHeaderBorder">
+               <children>
+                  <AnchorPane prefHeight="25.0" prefWidth="196.0">
+                     <children>
+                        <Label layoutX="59.0" layoutY="-3.0" text="Demographic Details" />
+                        <ImageView fitHeight="24.0" fitWidth="18.0" layoutX="16.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/activeDemographicDetails.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="709.0" prefHeight="25.0" prefWidth="196.0">
+                     <children>
+                        <Label layoutX="46.0" layoutY="-3.0" text="Authentication" />
+                        <ImageView fitHeight="24.0" fitWidth="18.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/deactiveAuthentication.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="476.0" prefHeight="25.0" prefWidth="196.0">
+                     <children>
+                        <Label layoutX="62.0" layoutY="-3.0" text="Biometric Details" />
+                        <ImageView fitHeight="24.0" fitWidth="18.0" layoutX="20.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/deactiveBiometriDetails.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="251.0" prefHeight="25.0" prefWidth="196.0">
+                     <children>
+                        <Label layoutX="42.0" layoutY="-3.0" text="Upload Documents" />
+                        <ImageView fitHeight="24.0" fitWidth="18.0" layoutX="1.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/deactiveUploadDocument.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <ImageView fx:id="trackerImage" fitHeight="41.0" fitWidth="218.0" layoutX="210.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true" y="24.0">
+         <image>
+            <Image url="@../images/DemographicpageTracker.PNG" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

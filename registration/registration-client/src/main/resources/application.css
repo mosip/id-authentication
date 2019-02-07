@@ -958,13 +958,12 @@ Working on new Css
 .paneAtDisplayDocument{
 	-fx-background-color:#FFFFFF;
 	-fx-pref-height: 580px;	
-	-fx-pref-width: 1050px;
-	
+	-fx-pref-width: 1050px;	
 }
 
 .registrationFooter{
 	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 60px;	
+	-fx-pref-height: 30px;	
 	-fx-pref-width: 1290px;
 }
 
@@ -1119,5 +1118,18 @@ Working on new Css
 	-fx-pref-height: 2px;	
 	-fx-pref-width: 120px;
 	-fx-text-fill: #FF4081;
+	
+}
+
+.registrationHeaderBorder{
+	-fx-border-width: 0 0 1 0;
+	-fx-border-color: #FF4081;
+}
+
+.documentOnlypane{
+	-fx-pref-height: 450px;	
+	-fx-pref-width: 900px;
+    -fx-border-width: 0 0 1 0;
+	-fx-border-color: #C9C9C9;
 	
 }
