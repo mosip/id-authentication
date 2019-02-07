@@ -14,14 +14,14 @@ spec:
   template:
     metadata:
       labels:
-        app: kernel-otpmanager-service
+        app: kernel-licensekeymanager-service
     spec:
       containers:
       - name: kernel-licensekeymanager-service
         image: docker-registry.mosip.io:5000/kernel-licensekeymanager-service
         env:
         - name: active_profile_env
-          value: dev-k8
+          value: dev
         ports:
         - containerPort: 8093
         imagePullPolicy: Always
@@ -34,7 +34,7 @@ metadata:
   name: kernel-licensekeymanager-service
 spec:
   ports:
-    - port: 8085
+    - port: 8093
   selector:
     app: kernel-licensekeymanager-service
 

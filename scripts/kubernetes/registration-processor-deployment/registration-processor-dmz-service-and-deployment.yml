@@ -21,7 +21,7 @@ spec:
         image: docker-registry.mosip.io:5000/packet-receiver-stage
         env:
         - name: active_profile_env
-          value: dev-k8
+          value: dev
         ports:
         - containerPort: 8081
         imagePullPolicy: Always
@@ -29,13 +29,13 @@ spec:
         image: docker-registry.mosip.io:5000/virus-scanner-stage
         env:
         - name: active_profile_env
-          value: dev-k8
+          value: dev
         imagePullPolicy: Always
       - name: registration-processor-packet-uploader-stage
         image: docker-registry.mosip.io:5000/packet-uploader-stage
         env:
         - name: active_profile_env
-          value: dev-k8
+          value: dev
         imagePullPolicy: Always
       imagePullSecrets:
       - name: pvt-reg-cred
