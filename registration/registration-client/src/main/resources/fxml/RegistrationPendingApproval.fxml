@@ -15,7 +15,7 @@
          <children>
             <AnchorPane fx:id="imageAnchorPane" layoutX="425.0" layoutY="18.0" prefHeight="539.0" prefWidth="843.0" styleClass="imageAnchorPaneStyle">
                <children>
-                  <WebView fx:id="imageView" prefHeight="533.0" prefWidth="843.0" />
+                  <WebView fx:id="webView" prefHeight="533.0" prefWidth="843.0" />
                </children>
             </AnchorPane>
             <TableView fx:id="table" layoutX="13.0" layoutY="20.0" prefHeight="533.0" prefWidth="398.0">

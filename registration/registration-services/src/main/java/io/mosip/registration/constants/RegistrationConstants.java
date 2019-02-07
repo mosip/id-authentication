@@ -253,11 +253,7 @@ public class RegistrationConstants {
 	public static final String ACKNOWLEDGEMENT_FORMAT = "html";
 	
 	public static final String IMAGE_FORMAT = "png";
-	/**
-	 * Specifies the path for storing the template in vm file
-	 */
-	public static final String TEMPLATE_PATH = "src/main/resources/templates/acktemplate.vm";
-
+	
 	// Constants for Registration ID Generator - will be removed after Kernel
 	// Integration
 	public static final String AGENCY_CODE = "2018";
@@ -462,6 +458,8 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_MODIFY = "Modify";
 	public static final String TEMPLATE_REGISTRATION = "registration";
 	public static final String TEMPLATE_JS_OBJECT = "window";
+	public static final String TEMPLATE_ENCODING = "UTF-8";
+	
 
 	// Web Camera Constants
 	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";
