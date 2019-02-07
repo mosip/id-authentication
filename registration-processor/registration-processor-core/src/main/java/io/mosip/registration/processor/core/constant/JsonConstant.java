@@ -148,5 +148,8 @@ public class JsonConstant {
 
 	/** The Constant INTRODUCERBIOMETRICSEQUENCE. */
 	public static final String INTRODUCERBIOMETRICSEQUENCE = "introducerBiometricSequence";
+	
+	/** The Constant APPLICANTBIOMETRICSEQUENCE. */
+	public static final String APPLICANTBIOMETRICSEQUENCE = "APPLICANTBIOMETRICSEQUENCE";
 
 }
