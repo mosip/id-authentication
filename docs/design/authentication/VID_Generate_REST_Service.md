@@ -22,22 +22,18 @@ Individual will send request to generate/re-generate VID from resident-service p
 **2. Solution**   
 VID generate REST service addresses the above requirement -  
 
-1.	Resident-service portal to construct a GET request with below details and send to Request URL *identity/vid/{uin}*, where the UIN value is passed as path parameter.
+1.	Resident-service portal to construct a GET request with below details and send to Request URL **identity/vid/{uin}**, where the UIN value is passed as path parameter.
 
-2.	Authenticate Resident Portal (JWT) ((TBD))
+2.	Authenticate Resident Portal ((TBD)).
 3.	Validate 'reqTime' for incoming Requests for valid format and timestamp not set as future datetime.
 4.	Integrate with kernel UIN Validator to check UIN for validity. Validate UIN for authenticity in AuthDB
 5.  Perform below conditional operations:
-
-- Check if a VID is already generated for the same UIN. 
-
-	- If yes, check if the VID is active and it is generated/updated within 24 hours. 
-	
-		-If yes, return the same VID. 
-		-If VID is not active or generated/updated before 24 hours generate a new VID and update the VID table for the UIN with *Active* status and update the updated_by and updated_dtimes values. 
-	-If there is no VID entry earlier, generate the new VID and insert the value to the VID table for the UIN with *Active* status, and set the generated_dtimes, cr_by, and cr_dtimes values.
+	- Check if a VID is already generated and stored for the same UIN in VID table. 
+	- If a VID is already present for the UIN, check if the VID is active and it is generated/updated within 24 hours. 
+		- If yes, return the same VID. 
+		- If VID is not active or generated/updated before 24 hours generate a new VID and update the VID table for the UIN with *Active* status and update the updated_by and updated_dtimes values. 
+     - If there is no VID entry earlier, generate the new VID and insert the value to the VID table for the UIN with *Active* status, and set the generated_dtimes, cr_by, and cr_dtimes values.
 5.  Integrate with kernel VID Generator to generate VID when required.
-6.	Store the static-pin in the database against the UIN of the individual.
 7.	Respond to Resident-service portal with below success status - 
 
 ```JSON
@@ -45,14 +41,14 @@ VID generate REST service addresses the above requirement -
   "id": "mosip.identity.vid",
   "version": "1.0",
   "responseTime": "2019-01-21T07:22:58.086+05:30",
-  "vid": "<VID>",
+  "VID": "<VID>",
   "err": []
 }
 ```
 
 **2.1. Class Diagram**
 
-![VID Request class diagram](_images/VID_Request_Class_Diagram.PNG)
+![VID Request class diagram](_images/VID_Request_Class_Diagram.png)
 
 Below are details on the above classes -
 -	**VIDController** - Spring Controller to receive VID generation Request
@@ -64,4 +60,4 @@ Below are details on the above classes -
 
 **2.2. Sequence Diagram:**
 
-![VID Request Sequence diagram](_images/VID_Request_Sequence_Diagram.PNG)
+![VID Request Sequence diagram](_images/VID_Request_Sequence_Diagram.png)
