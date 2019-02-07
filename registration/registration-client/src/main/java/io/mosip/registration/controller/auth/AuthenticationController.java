@@ -20,6 +20,7 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.PacketHandlerController;
+import io.mosip.registration.controller.reg.Validations;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.device.fp.MosipFingerprintProvider;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
@@ -135,6 +136,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	@Autowired
 	private LoginService loginService;
 
+	@Autowired
+	private Validations validations;
+
 	@Value("${USERNAME_PWD_LENGTH}")
 	private int usernamePwdLength;
 
@@ -187,11 +191,10 @@ public class AuthenticationController extends BaseController implements Initiali
 	public void validateOTP() {
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating OTP for OTP based Authentication");
-
-		if (isSupervisor) {
-			if (!otpUserId.getText().isEmpty()) {
-				if (fetchUserRole(otpUserId.getText())) {
-					if (otp.getText() != null) {
+		if (validations.validateTextField(otp, otp.getId(), RegistrationConstants.DISABLE)) {
+			if (isSupervisor) {
+				if (!otpUserId.getText().isEmpty()) {
+					if (fetchUserRole(otpUserId.getText())) {
 						if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText())
 								.getSuccessResponseDTO() != null) {
 							userNameField = otpUserId.getText();
@@ -205,16 +208,12 @@ public class AuthenticationController extends BaseController implements Initiali
 									RegistrationUIConstants.OTP_VALIDATION_ERROR_MESSAGE);
 						}
 					} else {
-						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.OTP_FIELD_EMPTY);
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
 					}
 				} else {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 				}
 			} else {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
-			}
-		} else {
-			if (otp.getText() != null) {
 				if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText()).getSuccessResponseDTO() != null) {
 					if (!isEODAuthentication) {
 						getOSIData().setOperatorAuthenticatedByPIN(true);
@@ -223,8 +222,6 @@ public class AuthenticationController extends BaseController implements Initiali
 				} else {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.OTP_VALIDATION_ERROR_MESSAGE);
 				}
-			} else {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.OTP_FIELD_EMPTY);
 			}
 		}
 	}
@@ -378,7 +375,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		userAuthenticationTypeList = loginService.getModesOfLogin(authType, RegistrationConstants.getRoles());
 
 		if (userAuthenticationTypeList.isEmpty()) {
-			isSupervisor=false;
+			isSupervisor = false;
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_ERROR_MSG);
 			if (isEODAuthentication) {
 				throw new RegBaseCheckedException();
@@ -446,7 +443,8 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * to enable the respective authentication mode
 	 * 
-	 * @param loginMode - name of authentication mode
+	 * @param loginMode
+	 *            - name of authentication mode
 	 */
 	public void loadAuthenticationScreen(String loginMode) {
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
@@ -636,8 +634,8 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * to check the role of supervisor in case of biometric exception
 	 * 
-	 * @param userId - username entered by the supervisor in the authentication
-	 *               screen
+	 * @param userId
+	 *            - username entered by the supervisor in the authentication screen
 	 * @return boolean variable "true", if the person is authenticated as supervisor
 	 *         or "false", if not
 	 */
@@ -656,7 +654,8 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * to capture and validate the fingerprint for authentication
 	 * 
-	 * @param userId - username entered in the textfield
+	 * @param userId
+	 *            - username entered in the textfield
 	 * @return true/false after validating fingerprint
 	 */
 	private boolean captureAndValidateFP(String userId) {
@@ -685,11 +684,13 @@ public class AuthenticationController extends BaseController implements Initiali
 				fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
 				if (!isEODAuthentication) {
 					if (isSupervisor) {
-						RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
+						RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
+								.get(RegistrationConstants.REGISTRATION_DATA);
 						registrationDTO.getBiometricDTO().getSupervisorBiometricDTO()
 								.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
 					} else {
-						RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
+						RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
+								.get(RegistrationConstants.REGISTRATION_DATA);
 						registrationDTO.getBiometricDTO().getOperatorBiometricDTO()
 								.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
 					}
@@ -717,7 +718,8 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * to capture and validate the iris for authentication
 	 * 
-	 * @param userId - username entered in the textfield
+	 * @param userId
+	 *            - username entered in the textfield
 	 * @return true/false after validating iris
 	 */
 	private boolean captureAndValidateIris(String userId) {
@@ -758,7 +760,8 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * to capture and validate the iris for authentication
 	 * 
-	 * @param userId - username entered in the textfield
+	 * @param userId
+	 *            - username entered in the textfield
 	 * @return true/false after validating face
 	 */
 	private boolean captureAndValidateFace(String userId) {
@@ -833,8 +836,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	}
 
 	private OSIDataDTO getOSIData() {
-		return ((RegistrationDTO) SessionContext.map()
-				.get(RegistrationConstants.REGISTRATION_DATA)).getOsiDataDTO();
+		return ((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA)).getOsiDataDTO();
 	}
 
 	@Override

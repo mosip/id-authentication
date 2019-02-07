@@ -12,7 +12,9 @@
 	<artifactId>registration-libs</artifactId>
 	<name>registration-libs</name>
 	<description>Maven project of MOSIP Registration library</description>
-
+	<properties>
+		<main.basedir>${project.parent.basedir}</main.basedir>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
@@ -22,42 +24,44 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-crypto-jce</artifactId>
 		</dependency>
+		<!-- JUnit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- Mockito -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-			<!-- <plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.1.1</version>
 				<executions>
 					<execution>
-						<phase>test</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>java</goal>
 						</goals>
 						<configuration>
 							<mainClass>io.mosip.registration.cipher.ClientJarEncryption</mainClass>
 							<arguments>
-								<argument>../registration-client/target/</argument>
-								<argument></argument>
+								<argument>${main.basedir}/registration-client/target/registration-client.jar</argument>
+								<argument>${main.basedir}/registration-client/target/registration-client-${project.version}-shaded.jar</argument>
+								<argument>fdHPgbFn5LZjPE8fX5S0UQ==</argument>
+								<argument>${project.version}</argument>
 							</arguments>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin> -->
+			</plugin>
 		</plugins>
 	</build>
 </project>

@@ -18,7 +18,14 @@ public enum OtpErrorConstants {
 											"OTP consists of only numeric characters. No other characters is allowed."), OTP_VAL_KEY_NOT_FOUND(
 													"KER-OTV-005",
 													"Validation can't be performed against this key. Generate OTP first."), INTERNAL_SERVER_ERROR(
-															"KER-OTV-500", "Internal server error");
+															"KER-OTV-500",
+															"Internal server error"), OTP_GEN_CRYPTO_FAILURE(
+																	"KER-OTG-002",
+																	"Crypto failure"), OTP_GEN_ALGO_FAILURE(
+																			"KER-OTG-003",
+																			"Invalid key or algorithm found"), OTP_GEN_IO_FAILURE(
+																					"KER-OTG-004",
+																					"IO exception found");
 	/**
 	 * The error code.
 	 */

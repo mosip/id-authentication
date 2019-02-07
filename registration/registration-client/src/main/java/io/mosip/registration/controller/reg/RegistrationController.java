@@ -1509,10 +1509,10 @@ public class RegistrationController extends BaseController {
 		if (gotoNext)
 			gotoNext = validation.validateUinOrRid(uinId, isChild, uinValidator, ridValidator);
 		if (gotoNext) {
-			if(Integer.parseInt(dd.getText())<1) {
+			if(dd!=null && dd.getText().matches("\\d+") && Integer.parseInt(dd.getText())<1) {
 				dd.setText("01");
 			}
-			if(Integer.parseInt(mm.getText())<1) {
+			if(mm!=null && mm.getText().matches("\\d+") && Integer.parseInt(mm.getText())<1) {
 				mm.setText("01");
 			}
 		}
