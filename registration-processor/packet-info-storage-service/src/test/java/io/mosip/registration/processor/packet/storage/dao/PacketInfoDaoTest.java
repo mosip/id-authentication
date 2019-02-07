@@ -168,32 +168,6 @@ public class PacketInfoDaoTest {
 
 	}
 
-	/**
-	 * Gets the registration center machine test.
-	 *
-	 * @return the registration center machine test
-	 */
-	@Test
-	public void getRegistrationCenterMachineTest() {
-		RegCenterMachineEntity regMachineEntity = new RegCenterMachineEntity();
-		RegCenterMachinePKEntity regMachinePKEntity = new RegCenterMachinePKEntity();
-		regMachinePKEntity.setRegId("2018782130000224092018121229");
-		regMachineEntity.setId(regMachinePKEntity);
-		regMachineEntity.setIsActive(true);
-		regMachineEntity.setLatitude("12.9716° N");
-		regMachineEntity.setLongitude("77.5946° E");
-		regMachineEntity.setCntrId("12245");
-		regMachineEntity.getId().getRegId();
-		regMachineEntity.setMachineId("yyeqy26356");
-		regMachineEntity.setPacketCreationDate(LocalDateTime.now());
-
-		Mockito.when(regCenterMachineRepository.findById(ArgumentMatchers.any(), ArgumentMatchers.any()))
-				.thenReturn(regMachineEntity);
-		RegistrationCenterMachineDto regCenterMachineDto = packetInfodao
-				.getRegistrationCenterMachine("2018782130000224092018121229");
-
-		assertEquals("2018782130000224092018121229", regCenterMachineDto.getRegId());
-	}
 
 	/**
 	 * Gets the all demo with UIN test.
