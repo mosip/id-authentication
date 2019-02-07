@@ -408,7 +408,7 @@ public class IdRequestValidatorTest {
 		});
 	}
 
-	//@Test
+	@Test
 	public void testValidateCreate() throws JsonParseException, JsonMappingException, JsonProcessingException,
 			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		ValidationReport value = new ValidationReport(true, null);
@@ -418,8 +418,8 @@ public class IdRequestValidatorTest {
 		IdRequestDTO request = new IdRequestDTO();
 		request.setId("mosip.id.create");
 		request.setRegistrationId("1234");
-		request.setStatus("REGISTERED");
-		request.setTimestamp("2018-12-15T15:28:43.824");
+		request.setStatus("ACTIVATED");
+		request.setTimestamp("2018-12-15T15:28:43.824Z");
 		request.setVersion("1.0");
 		Object obj = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
@@ -433,7 +433,7 @@ public class IdRequestValidatorTest {
 		assertFalse(errors.hasErrors());
 	}
 
-	//@Test
+	@Test
 	public void testValidateUpdate() throws JsonParseException, JsonMappingException, JsonProcessingException,
 			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		ValidationReport value = new ValidationReport(true, null);
@@ -443,9 +443,9 @@ public class IdRequestValidatorTest {
 		IdRequestDTO request = new IdRequestDTO();
 		request.setId("mosip.id.update");
 		request.setRegistrationId("1234");
-		request.setStatus("REGISTERED");
+		request.setStatus("ACTIVATED");
 		request.setVersion("1.0");
-		request.setTimestamp("2018-12-15T15:28:43.824");
+		request.setTimestamp("2018-12-15T15:28:43.824Z");
 		Object obj = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),

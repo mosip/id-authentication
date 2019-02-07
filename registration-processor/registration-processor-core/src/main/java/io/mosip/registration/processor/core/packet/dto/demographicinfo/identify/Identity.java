@@ -20,6 +20,9 @@ public class Identity {
 	/** The dob. */
 	private IdentityJsonValues dob;
 
+	/** The age. */
+	private IdentityJsonValues age;
+
 	/** The pheonitic name. */
 	private IdentityJsonValues pheoniticName;
 
@@ -34,16 +37,13 @@ public class Identity {
 
 	/** The pob. */
 	private IdentityJsonValues pob;
-	
+
 	/** The individual biometrics. */
 	private IdentityJsonValues individualBiometrics;
-	
-	/** The age */
-	private IdentityJsonValues age;
 
 	/** The city. */
 	private IdentityJsonValues city;
-	
+
 	/** The address line 1. */
 	private IdentityJsonValues addressLine1;
 

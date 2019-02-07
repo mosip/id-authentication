@@ -78,8 +78,7 @@
 			src/main/java/io/mosip/registration/entity/**/*,
 			src/main/java/io/mosip/registration/exception/**/*,
 			src/main/java/io/mosip/registration/config/**/*,
-			src/main/java/io/mosip/registration/device/**/*,
-			src/main/java/io/mosip/registration/cipher/**/*
+			src/main/java/io/mosip/registration/device/**/*
 		</sonar.exclusions>
 	</properties>
 
@@ -251,6 +250,13 @@
 				<artifactId>kernel-jsonvalidator</artifactId>
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
+
+			<dependency>
+				<groupId>com.cronutils</groupId>
+				<artifactId>cron-utils</artifactId>
+				<version>8.0.0</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 

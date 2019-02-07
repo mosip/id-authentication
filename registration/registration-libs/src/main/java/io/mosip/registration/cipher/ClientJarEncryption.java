@@ -21,6 +21,9 @@ import io.mosip.kernel.crypto.jce.processor.SymmetricProcessor;
  *
  */
 public class ClientJarEncryption {
+	private static final String SLASH = "/";
+	private static final String AES_ALGORITHM = "AES";
+
 	/**
 	 * Encrypt the bytes
 	 * 
@@ -28,47 +31,36 @@ public class ClientJarEncryption {
 	 *            bytes
 	 * @throws UnsupportedEncodingException
 	 */
-	public byte[] encyrpt(byte[] data, byte[] encodedString) throws UnsupportedEncodingException {
+	public byte[] encyrpt(byte[] data, byte[] encodedString) {
 		// Generate AES Session Key
-		SecretKey symmetricKey = new SecretKeySpec(encodedString, "AES");
+		SecretKey symmetricKey = new SecretKeySpec(encodedString, AES_ALGORITHM);
 
-		return Base64.getEncoder().encode(SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING, symmetricKey, data,
-				Cipher.ENCRYPT_MODE));
+		return Base64.getEncoder().encode(SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING,
+				symmetricKey, data, Cipher.ENCRYPT_MODE));
 	}
 
 	/**
 	 * Encrypt and save the file in client module
 	 * 
-	 * args[0]/args[1] --> To provide the ciennt jar 
-	 * args[2] --> Secret key String
+	 * args[0]/args[1] --> To provide the ciennt jar args[2] --> Secret key String
 	 * args[3] --> project version
+	 * 
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		try {
-			byte[] fileByteArray = null;
+	public static void main(String[] args) throws IOException {
+		if (args != null && args.length > 2) {
+			File file = args[0] != null ? new File(args[0]) : (args[1] != null ? new File(args[1]) : null);
 
-			if (new File(args[0]).exists()) {
-				fileByteArray = FileUtils.readFileToByteArray(new File(args[0]));
-			} else if (new File(args[1]).exists()) {
-				fileByteArray = FileUtils.readFileToByteArray(new File(args[1]));
-			}
-
-			if (fileByteArray != null) {
-				System.out.println("File Path :::" + args[0]);
-				System.out.println("File Path :::" + args[1]);
-				System.out.println("Key:::" + args[2]);
-				System.out.println("version :::" + args[3]);
-				
-				String encryptedFileToSave = args[0].substring(0, args[0].lastIndexOf("/")) + "/registration-client-" + args[3] + "-encrypted.jar";
+			if (file != null && file.exists()) {
+				byte[] fileByteArray = FileUtils.readFileToByteArray(file);
+				String encryptedFileToSave = file.getParent() + SLASH + file.getName().replaceAll(".jar", "")
+						+ "-encrypted.jar";
 				ClientJarEncryption aes = new ClientJarEncryption();
 				byte[] encryptedFileBytes = aes.encyrpt(fileByteArray, Base64.getDecoder().decode(args[2].getBytes()));
 				FileUtils.writeByteArrayToFile(new File(encryptedFileToSave), encryptedFileBytes);
-				
+
 				System.out.println("File Path created :::" + encryptedFileToSave);
 			}
-		} catch (IOException ioException) {
-			ioException.printStackTrace();
 		}
 	}
 }

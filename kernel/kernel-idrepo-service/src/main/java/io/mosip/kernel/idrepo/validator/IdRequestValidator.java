@@ -69,10 +69,10 @@ public class IdRequestValidator implements Validator {
 	private static final String UPDATE = "update";
 
 	/** The Constant DATETIME_TIMEZONE. */
-	private static final String DATETIME_TIMEZONE = "datetime.timezone";
+	private static final String DATETIME_TIMEZONE = "mosip.kernel.idrepo.datetime.timezone";
 
 	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "datetime.pattern";
+	private static final String DATETIME_PATTERN = "mosip.kernel.idrepo.datetime.pattern";
 
 	/** The Constant IDENTITY. */
 	private static final String IDENTITY = "identity";

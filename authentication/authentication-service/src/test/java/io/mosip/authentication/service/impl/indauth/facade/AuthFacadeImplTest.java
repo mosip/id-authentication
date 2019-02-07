@@ -15,10 +15,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -195,13 +193,12 @@ public class AuthFacadeImplTest {
 	 * @throws IllegalAccessException
 	 */
 
-	@Ignore
+	
 	@Test
 	public void authenticateApplicantTest()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, NoSuchMethodException,
 			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-		boolean authStatus = true;
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.VID.getType());
 		authRequestDTO.setId("1234567");
@@ -248,7 +245,6 @@ public class AuthFacadeImplTest {
 
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
 
-		Optional<String> uinOpt = Optional.of("426789089018");
 
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		authResponseDTO.setStatus("y");
@@ -660,7 +656,6 @@ public class AuthFacadeImplTest {
 	 */
 	@Test
 	public void testGetIdEntity() throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
-		String refId = "863537";
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
@@ -678,7 +673,6 @@ public class AuthFacadeImplTest {
 	 */
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testGetIdEntityException() throws IdAuthenticationBusinessException {
-		String refId = "863537";
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
@@ -797,7 +791,6 @@ public class AuthFacadeImplTest {
 		String uin = "794138547620";
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("284169042058");
-		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
@@ -842,7 +835,6 @@ public class AuthFacadeImplTest {
 		String uin = "794138547620";
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("284169042058");
-		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
@@ -891,7 +883,6 @@ public class AuthFacadeImplTest {
 		String uin = "794138547620";
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("284169042058");
-		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");

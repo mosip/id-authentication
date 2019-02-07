@@ -61,7 +61,7 @@
 		<sourceafis.version>3.4.0</sourceafis.version>
 		
 		<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
-		<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*,**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/service/entity/**,**io.mosip.authentication.service/*.java,**io.mosip.authentication.service/**/*Entity.java</sonar.exclusions>
+		<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*,**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/service/entity/**,**/service/IdAuthenticationApplication.java,**/service/**/*Entity.java</sonar.exclusions>
 	</properties>
 
 	<dependencies>

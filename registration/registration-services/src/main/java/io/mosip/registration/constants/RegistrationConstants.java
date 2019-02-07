@@ -415,8 +415,8 @@ public class RegistrationConstants {
 
 	// Web Camera Constants
 	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";
-	public static final String APPLICANT_PHOTOGRAPH_NAME = "Applicant Photograph";
-	public static final String EXCEPTION_PHOTOGRAPH_NAME = "Exception Photograph";
+	public static final String APPLICANT_PHOTOGRAPH_NAME = "Applicant Photograph.jpg";
+	public static final String EXCEPTION_PHOTOGRAPH_NAME = "Exception Photograph.jpg";
 	public static final String APPLICANT_IMAGE = "Applicant Image";
 	public static final String EXCEPTION_IMAGE = "Exception Image";
 	public static final String WEB_CAMERA_PAGE_TITLE = "Applicant Biometrics";
@@ -584,6 +584,8 @@ public class RegistrationConstants {
 	public static final String JOB_TRIGGER_POINT_USER = "User";
 	public static final String JOB_SYNC_TO_SERVER = "Server";
 	public static final String JOB_DETAIL = "jobDetail";
+	public static final String APPLICATION_CONTEXT = "applicationContext";
+	public static final String SYNC_TRANSACTION = "syncTransaction";
 
 	// GPS Device
 	public static final String GPS_LOGGER = "GPS-Device-Information";

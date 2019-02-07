@@ -38,6 +38,7 @@ import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.RegistrationCenterUserService;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
+import io.mosip.kernel.syncdata.service.SyncRolesService;
 import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 import net.minidev.json.JSONObject;
@@ -60,6 +61,9 @@ public class SyncDataServiceTest {
 
 	@Autowired
 	private SyncUserDetailsService syncUserDetailsService;
+
+	@Autowired
+	private SyncRolesService syncRolesService;
 
 	/**
 	 * Environment instance
@@ -85,6 +89,12 @@ public class SyncDataServiceTest {
 	@Value("${mosip.kernel.syncdata.auth-user-details:/userdetails}")
 	private String authUserDetailsUri;
 
+	@Value("${mosip.kernel.syncdata.auth-manager-base-uri}")
+	private String authBaseUri;
+
+	@Value("${mosip.kernel.syncdata.auth-manager-roles}")
+	private String authAllRolesUri;
+
 	private String configServerUri = null;
 	private String configLabel = null;
 	private String configProfile = null;
@@ -93,6 +103,8 @@ public class SyncDataServiceTest {
 	private StringBuilder uriBuilder;
 
 	StringBuilder userDetailsUri;
+
+	private StringBuilder builder;
 
 	@Autowired
 	private SyncConfigDetailsService syncConfigDetailsService;
@@ -159,6 +171,9 @@ public class SyncDataServiceTest {
 		uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
 				.append(configLabel + "/");
 
+		builder = new StringBuilder();
+		builder.append(authBaseUri).append(authAllRolesUri);
+
 	}
 
 	@Test(expected = SyncDataServiceException.class)
@@ -169,7 +184,7 @@ public class SyncDataServiceTest {
 
 	}
 
-	//@Test
+	// @Test
 	public void globalConfigsyncSuccess() {
 
 		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
@@ -178,7 +193,7 @@ public class SyncDataServiceTest {
 
 	}
 
-	//@Test
+	// @Test
 	public void registrationConfigsyncSuccess() {
 		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
 		server.expect(requestTo(uriBuilder.append(regCenterfileName).toString())).andRespond(withSuccess());
@@ -286,4 +301,25 @@ public class SyncDataServiceTest {
 		mockRestServiceServer.expect(requestTo(userDetailsUri.toString())).andRespond(withSuccess());
 		assertNull(syncUserDetailsService.getAllUserDetail(regId));
 	}
+
+	// ------------------------------------------AllRolesSync--------------------------//
+
+	@Test
+	public void getAllRoles() {
+
+		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
+
+		mockRestServer.expect(requestTo(builder.toString())).andRespond(withSuccess());
+		syncRolesService.getAllRoles();
+	}
+
+	@Test(expected = SyncDataServiceException.class)
+	public void getAllRolesException() {
+
+		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
+		mockRestServer.expect(requestTo(builder.toString())).andRespond(withServerError());
+		syncRolesService.getAllRoles();
+	}
+	
+	
 }

@@ -21,7 +21,7 @@ spec:
         image: docker-registry.mosip.io:5000/pre-registration-notification-service
         env:
         - name: active_profile_env
-          value: dev-k8
+          value: dev
         ports:
         - containerPort: 9099
         imagePullPolicy: Always
