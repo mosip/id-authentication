@@ -234,8 +234,10 @@ public class MessageNotificationServiceImpl
 		for (String item : mailTo) {
 			builder.queryParam("mailTo", item);
 		}
-		for (String item : mailCc) {
-			builder.queryParam("mailCc", item);
+		if (mailCc != null) {
+			for (String item : mailCc) {
+				builder.queryParam("mailCc", item);
+			}
 		}
 
 		builder.queryParam("mailSubject", subject);
@@ -280,7 +282,7 @@ public class MessageNotificationServiceImpl
 
 		demographicInfoStream = adapter.getFile(id,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-		
+
 		String demographicInfo = new String(IOUtils.toByteArray(demographicInfoStream));
 
 		NotificationTemplate templatejson = getKeysandValues(demographicInfo);

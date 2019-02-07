@@ -40,8 +40,6 @@ import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.message.sender.utility.NotificationTemplateType;
-import io.mosip.registration.processor.message.sender.utility.TriggerNotification;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
@@ -87,27 +85,27 @@ public class UinGeneratorStageTest {
 	private InputStream inputStream;
 
 	@Mock
-	Object identity;
+	private Object identity;
 
 	/** The registration status service. */
 	@Mock
-	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
+	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	/** The identity json. */
 	@Mock
-	JSONObject identityJson;
+	private JSONObject identityJson;
 
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
 	@Mock
-	RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
+	private RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
 
 	@Mock
 	private List<Documents> documents;
 
 	@Mock
-	JSONObject demographicIdentity;
+	private JSONObject demographicIdentity;
 
 	@Mock
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
@@ -116,16 +114,12 @@ public class UinGeneratorStageTest {
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
 
 	/** The registration status dto. */
-	InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
+	private InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 
 	/** The id request DTO. */
-	IdRequestDto idRequestDTO = new IdRequestDto();
+	private IdRequestDto idRequestDTO = new IdRequestDto();
 
-	IdResponseDTO idResponseDTO = new IdResponseDTO();
-
-	/** The trigger notification for UIN. */
-	@Mock
-	TriggerNotification triggerNotification;
+	private IdResponseDTO idResponseDTO = new IdResponseDTO();
 
 	@Before
 	public void setup() throws Exception {
@@ -176,7 +170,6 @@ public class UinGeneratorStageTest {
 		Mockito.when(packetInfoManager.getDocumentsByRegId(Matchers.anyString())).thenReturn(applicantDocument);
 		doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
 		doNothing().when(demographicDedupeRepository).updateUinWrtRegistraionId(any(), any());
-		doNothing().when(triggerNotification).triggerNotification("test", NotificationTemplateType.UIN_CREATED);
 
 		MessageDTO result = uinGeneratorStage.process(messageDTO);
 		//assertFalse(result.getInternalError());

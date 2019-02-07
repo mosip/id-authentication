@@ -38,8 +38,6 @@ import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAda
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
-import io.mosip.registration.processor.message.sender.utility.NotificationTemplateType;
-import io.mosip.registration.processor.message.sender.utility.TriggerNotification;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
@@ -120,24 +118,20 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	public static final String FILE_SEPARATOR = "\\";
 
 	/** The id response DTO. */
-	IdResponseDTO idResponseDTO = new IdResponseDTO();
+	private IdResponseDTO idResponseDTO = new IdResponseDTO();
 
 	/** The id request DTO. */
-	IdRequestDto idRequestDTO = new IdRequestDto();
+	private IdRequestDto idRequestDTO = new IdRequestDto();
 
 	/** The identity json. */
-	JSONObject identityJson = null;
+	private JSONObject identityJson = null;
 
 	/** The demographic identity. */
-	JSONObject demographicIdentity = null;
+	private JSONObject demographicIdentity = null;
 
 	/** The registration status service. */
 	@Autowired
-	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
-
-	/** The trigger notification for UIN. */
-	@Autowired
-	private TriggerNotification triggerNotification;
+	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	private String idRepoApiVersion = "1.0";
 
@@ -184,11 +178,6 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			if ((idResponseDTO.getResponse() != null)) {
 				if (isUinCreate) {
 					demographicDedupeRepository.updateUinWrtRegistraionId(registrationId, uinResponseDto.getUin());
-					triggerNotification.triggerNotification(uinResponseDto.getUin(),
-							NotificationTemplateType.UIN_CREATED);
-				} else {
-					triggerNotification.triggerNotification(uinFieldCheck, NotificationTemplateType.UIN_UPDATE);
-
 				}
 
 				registrationStatusDto.setStatusComment(UinStatusMessage.PACKET_UIN_UPDATION_SUCCESS_MSG);
