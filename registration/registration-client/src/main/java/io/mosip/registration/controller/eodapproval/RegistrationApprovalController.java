@@ -10,9 +10,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -115,7 +112,7 @@ public class RegistrationApprovalController extends BaseController implements In
 	private ToggleButton authenticateBtn;
 	/** The image view. */
 	@FXML
-	private WebView imageView;
+	private WebView webView;
 
 	/** The approve registration root sub pane. */
 	@FXML
@@ -192,7 +189,7 @@ public class RegistrationApprovalController extends BaseController implements In
 				authenticateBtn.setDisable(false);
 			}
 
-			imageView.getEngine().loadContent("");
+			webView.getEngine().loadContent("");
 
 			approvalBtn.setSelected(false);
 			rejectionBtn.setSelected(false);
@@ -216,24 +213,14 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			try (FileInputStream file = new FileInputStream(
 					new File(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath()))) {
-				Writer stringWriter = new StringWriter();
-				Reader bReader = null;
-				char[] buff = new char[1024];
-
-				try {
-					bReader = new BufferedReader(new InputStreamReader(file, "UTF-8"));
-					int n;
-					while ((n = bReader.read(buff)) != -1) {
-						stringWriter.write(buff, 0, n);
-					}
-				} finally {
-					if (bReader != null) {
-						bReader.close();
-					}
-					stringWriter.close();
+				BufferedReader bufferedReader = new BufferedReader(
+						new InputStreamReader(file, RegistrationConstants.TEMPLATE_ENCODING));
+				StringBuilder acknowledgementContent = new StringBuilder();
+				String line;
+				while ((line = bufferedReader.readLine()) != null) {
+					acknowledgementContent.append(line);
 				}
-
-				imageView.getEngine().loadContent(stringWriter.toString());
+				webView.getEngine().loadContent(acknowledgementContent.toString());
 			} catch (IOException ioException) {
 				LOGGER.error("REGISTRATION_APPROVAL_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
 						APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
@@ -264,12 +251,18 @@ public class RegistrationApprovalController extends BaseController implements In
 		listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
 
 		if (!listData.isEmpty()) {
-			/*eodController.getPendingApprovalTitledPane()
-					.setText(RegistrationUIConstants.PENDING_APPROVAL + "(" + listData.size() + ")");*/			
+			/*
+			 * eodController.getPendingApprovalTitledPane()
+			 * .setText(RegistrationUIConstants.PENDING_APPROVAL + "(" + listData.size() +
+			 * ")");
+			 */
 			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
 			table.setItems(oList);
 		} else {
-			/*eodController.getPendingApprovalTitledPane().setText(RegistrationUIConstants.PENDING_APPROVAL);*/			
+			/*
+			 * eodController.getPendingApprovalTitledPane().setText(RegistrationUIConstants.
+			 * PENDING_APPROVAL);
+			 */
 			approveRegistrationRootSubPane.disableProperty().set(true);
 			table.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
 			table.getItems().clear();
@@ -281,8 +274,10 @@ public class RegistrationApprovalController extends BaseController implements In
 	/**
 	 * {@code updateStatus} is to update the status of registration.
 	 *
-	 * @param event the event
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @param event
+	 *            the event
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public void updateStatus(ActionEvent event) throws RegBaseCheckedException {
 
@@ -295,7 +290,8 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			for (Map<String, String> registrationMap : approvalmapList) {
 
-				if (registrationMap.containsValue(table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId())) {
+				if (registrationMap
+						.containsValue(table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId())) {
 
 					approvalmapList.remove(registrationMap);
 
@@ -304,7 +300,8 @@ public class RegistrationApprovalController extends BaseController implements In
 			}
 
 			Map<String, String> map = new HashMap<>();
-			map.put(RegistrationConstants.REGISTRATIONID, table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId());
+			map.put(RegistrationConstants.REGISTRATIONID,
+					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId());
 			map.put(RegistrationConstants.STATUSCODE, RegistrationClientStatusCode.APPROVED.getCode());
 			map.put(RegistrationConstants.STATUSCOMMENT, RegistrationConstants.EMPTY);
 			approvalmapList.add(map);
@@ -330,8 +327,8 @@ public class RegistrationApprovalController extends BaseController implements In
 
 				if (tBtn.getId().equals(rejectionBtn.getId())) {
 
-					rejectionController.initData(table.getItems().get(table.getSelectionModel().getFocusedIndex()), primarystage,
-							approvalmapList, table, "RegistrationApprovalController");
+					rejectionController.initData(table.getItems().get(table.getSelectionModel().getFocusedIndex()),
+							primarystage, approvalmapList, table, "RegistrationApprovalController");
 
 					loadStage(primarystage, RegistrationConstants.REJECTION_PAGE);
 
@@ -361,10 +358,13 @@ public class RegistrationApprovalController extends BaseController implements In
 	/**
 	 * Loading stage.
 	 *
-	 * @param primarystage the stage
-	 * @param fxmlPath     the fxml path
+	 * @param primarystage
+	 *            the stage
+	 * @param fxmlPath
+	 *            the fxml path
 	 * @return the stage
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private Stage loadStage(Stage primarystage, String fxmlPath) throws RegBaseCheckedException {
 
