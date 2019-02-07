@@ -170,9 +170,8 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 		try {
 			RestRequestDTO restRequest = null;
 			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
-			request.put("applicationId", env.getProperty("application.id"));
-			request.put("referenceId", env.getProperty("mosip.kernel.keymanager.refId"));
-			request.put("timeStamp", DateUtils.formatDate(new Date(), env.getProperty("datetime.pattern")));
+			request.put("applicationId", env.getProperty("mosip.kernel.idrepo.application.id"));
+			request.put("timeStamp", DateUtils.formatDate(new Date(), env.getProperty("mosip.kernel.idrepo.datetime.pattern")));
 			request.put("data", new String(identity));
 
 			if (method.equals("encrypt")) {

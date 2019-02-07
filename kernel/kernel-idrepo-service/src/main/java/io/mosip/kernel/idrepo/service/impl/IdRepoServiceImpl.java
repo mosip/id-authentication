@@ -131,7 +131,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	private static final String ID_REPO_SERVICE = "IdRepoService";
 
 	/** The Constant APPLICATION_VERSION. */
-	private static final String APPLICATION_VERSION = "application.version";
+	private static final String APPLICATION_VERSION = "mosip.kernel.idrepo.application.version";
 
 	/** The Constant DOCUMENTS. */
 	private static final String DOCUMENTS = "documents";
@@ -194,7 +194,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	private static final String IDENTITY = "identity";
 
 	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "datetime.pattern";
+	private static final String DATETIME_PATTERN = "mosip.kernel.idrepo.datetime.pattern";
 
 	/** The Constant CREATED_BY. */
 	private static final String CREATED_BY = "createdBy";
@@ -1119,8 +1119,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		try {
 			RestRequestDTO restRequest = null;
 			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
-			request.put("applicationId", env.getProperty("application.id"));
-			request.put("referenceId", env.getProperty("mosip.kernel.keymanager.refId"));
+			request.put("applicationId", env.getProperty("mosip.kernel.idrepo.application.id"));
 			request.put("timeStamp", DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN)));
 			request.put("data", document);
 
