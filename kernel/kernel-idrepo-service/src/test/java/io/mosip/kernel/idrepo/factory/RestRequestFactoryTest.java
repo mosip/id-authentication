@@ -92,7 +92,7 @@ public class RestRequestFactoryTest {
 
 		MockEnvironment environment = new MockEnvironment();
 		environment.merge(env);
-		environment.setProperty("audit.rest.headers.mediaType", "multipart/form-data");
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.headers.mediaType", "multipart/form-data");
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.CREATE_IDENTITY,
@@ -109,7 +109,7 @@ public class RestRequestFactoryTest {
 
 		MockEnvironment environment = new MockEnvironment();
 		environment.merge(env);
-		environment.setProperty("audit.rest.uri", "");
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.uri", "");
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 
@@ -136,7 +136,7 @@ public class RestRequestFactoryTest {
 
 		MockEnvironment environment = new MockEnvironment();
 		environment.merge(env);
-		environment.setProperty("audit.rest.httpMethod", "");
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.httpMethod", "");
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 
@@ -157,7 +157,7 @@ public class RestRequestFactoryTest {
 
 		MockEnvironment environment = new MockEnvironment();
 		environment.merge(env);
-		environment.setProperty("audit.rest.timeout", "");
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.timeout", "");
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 
@@ -171,7 +171,7 @@ public class RestRequestFactoryTest {
 
 		MockEnvironment environment = new MockEnvironment();
 		environment.merge(env);
-		environment.setProperty("audit.rest.headers.accept", "application/json");
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.headers.accept", "application/json");
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 

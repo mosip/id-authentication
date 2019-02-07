@@ -36,7 +36,22 @@ public class TokenIdGeneratorTest {
 	}
 
 	@Test(expected = TokenIdGeneratorException.class)
-	public void tokenIdApiExceptionTest() {
-		tokenIdGenerator.generateId("", "");
+	public void tokenIdApiExceptionTestWhenTSPIsEmpty() {
+		tokenIdGenerator.generateId("", "874238947132894");
+	}
+
+	@Test(expected = TokenIdGeneratorException.class)
+	public void tokenIdApiExceptionTestWhenUINIsEmpty() {
+		tokenIdGenerator.generateId("6732874784", "");
+	}
+
+	@Test(expected = TokenIdGeneratorException.class)
+	public void tokenIdApiExceptonTestWhenTSPIsEmptyAndUINIsNull() {
+		tokenIdGenerator.generateId("", null);
+	}
+
+	@Test(expected = TokenIdGeneratorException.class)
+	public void tokenIdApiExcetionTestWhenTSPIsNullAndUINIsEmpty() {
+		tokenIdGenerator.generateId(null, "");
 	}
 }

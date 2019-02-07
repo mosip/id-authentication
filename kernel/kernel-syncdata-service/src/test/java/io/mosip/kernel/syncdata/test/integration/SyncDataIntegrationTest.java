@@ -2,6 +2,7 @@ package io.mosip.kernel.syncdata.test.integration;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -65,7 +66,6 @@ import io.mosip.kernel.syncdata.entity.id.RegistrationCenterDeviceID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineDeviceID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterUserID;
-import io.mosip.kernel.syncdata.entity.id.RegistrationCenterUserID;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.repository.ApplicationRepository;
 import io.mosip.kernel.syncdata.repository.BiometricAttributeRepository;
@@ -98,7 +98,6 @@ import io.mosip.kernel.syncdata.repository.TemplateRepository;
 import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
 import io.mosip.kernel.syncdata.repository.TitleRepository;
 import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
-import io.mosip.kernel.syncdata.service.SyncRolesService;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -107,10 +106,9 @@ public class SyncDataIntegrationTest {
 
 	@Autowired
 	private MockMvc mockMvc;
-	
-	@Autowired
-	private RestTemplate restTemplate;
 
+	@MockBean
+	private RestTemplate restTemplate;
 
 	private List<Application> applications;
 	private List<Machine> machines;
@@ -205,10 +203,10 @@ public class SyncDataIntegrationTest {
 	@MockBean
 	private RegistrationCenterUserMachineRepository registrationCenterUserMachineRepository;
 
-	
-	@MockBean
-	private RestTemplate restTemplateM;
-	
+	/*
+	 * @MockBean private RestTemplate restTemplateM;
+	 */
+
 	// ###########################CONFIG START#########################
 	private static final String JSON_CONFIG_RESPONSE = "{\r\n" + "\"registrationConfiguration\":\r\n"
 			+ "							{\"keyValidityPeriodPreRegPack\":\"3\",\"smsNotificationTemplateRegCorrection\":\"OTP for your request is $otp\",\"defaultDOB\":\"1-Jan\",\"smsNotificationTemplateOtp\":\"OTP for your request is $otp\",\"supervisorVerificationRequiredForExceptions\":\"true\",\"keyValidityPeriodRegPack\":\"3\",\"irisRetryAttempts\":\"10\",\"fingerprintQualityThreshold\":\"120\",\"multifactorauthentication\":\"true\",\"smsNotificationTemplateUpdateUIN\":\"OTP for your request is $otp\",\"supervisorAuthType\":\"password\",\"maxDurationRegPermittedWithoutMasterdataSyncInDays\":\"10\",\"modeOfNotifyingIndividual\":\"mobile\",\"emailNotificationTemplateUpdateUIN\":\"Hello $user the OTP is $otp\",\"maxDocSizeInMB\":\"150\",\"emailNotificationTemplateOtp\":\"Hello $user the OTP is $otp\",\"emailNotificationTemplateRegCorrection\":\"Hello $user the OTP is $otp\",\"faceRetry\":\"12\",\"noOfFingerprintAuthToOnboardUser\":\"10\",\"smsNotificationTemplateLostUIN\":\"OTP for your request is $otp\",\"supervisorAuthMode\":\"IRIS\",\"operatorRegSubmissionMode\":\"fingerprint\",\"officerAuthType\":\"password\",\"faceQualityThreshold\":\"25\",\"gpsDistanceRadiusInMeters\":\"3\",\"automaticSyncFreqServerToClient\":\"25\",\"maxDurationWithoutMasterdataSyncInDays\":\"7\",\"loginMode\":\"bootable dongle\",\"irisQualityThreshold\":\"25\",\"retentionPeriodAudit\":\"3\",\"fingerprintRetryAttempts\":\"234\",\"emailNotificationTemplateNewReg\":\"Hello $user the OTP is $otp\",\"passwordExpiryDurationInDays\":\"3\",\"emailNotificationTemplateLostUIN\":\"Hello $user the OTP is $otp\",\"blockRegistrationIfNotSynced\":\"10\",\"noOfIrisAuthToOnboardUser\":\"10\",\"smsNotificationTemplateNewReg\":\"OTP for your request is $otp\"},\r\n"
@@ -219,22 +217,19 @@ public class SyncDataIntegrationTest {
 	private static final String JSON_GLOBAL_CONFIG_RESPONSE = "{\"mosip.kernel.crypto.symmetric-algorithm-name\":\"AES\",\"mosip.kernel.virus-scanner.port\":\"3310\",\"mosip.kernel.email.max-length\":\"50\",\"mosip.kernel.email.domain.ext-max-lenght\":\"7\",\"mosip.kernel.rid.sequence-length\":\"5\",\"mosip.kernel.uin.uin-generation-cron\":\"0 * * * * *\",\"mosip.kernel.rid.centerid-length\":\"5\",\"mosip.kernel.email.special-char\":\"!#$%&'*+-\\/=?^_`{|}~.\",\"mosip.kernel.rid.timestamp-length\":\"14\",\"mosip.kernel.vid.length.sequence-limit\":\"3\",\"mosip.kernel.keygenerator.asymmetric-algorithm-length\":\"2048\",\"mosip.kernel.uin.min-unused-threshold\":\"100000\",\"mosip.kernel.prid.sequence-limit\":\"3\",\"auth.role.prefix\":\"ROLE_\",\"mosip.kernel.email.domain.ext-min-lenght\":\"2\",\"auth.server.validate.url\":\"http:\\/\\/localhost:8091\\/auth\\/validate_token\",\"mosip.kernel.machineid.length\":\"4\",\"mosip.supported-languages\":\"eng,ara,fra\",\"mosip.kernel.prid.length\":\"14\",\"auth.header.name\":\"Authorization\",\"mosip.kernel.crypto.asymmetric-algorithm-name\":\"RSA\",\"mosip.kernel.phone.min-length\":\"9\",\"mosip.kernel.uin.length\":\"10\",\"mosip.kernel.virus-scanner.host\":\"104.211.209.102\",\"mosip.kernel.email.min-length\":\"7\",\"mosip.kernel.rid.machineid-length\":\"5\",\"mosip.kernel.prid.repeating-block-limit\":\"3\",\"mosip.kernel.vid.length.repeating-block-limit\":\"2\",\"mosip.kernel.rid.length\":\"29\",\"mosip.kernel.phone.max-length\":\"15\",\"mosip.kernel.prid.repeating-limit\":\"2\",\"mosip.kernel.uin.restricted-numbers\":\"786,666\",\"mosip.kernel.email.domain.special-char\":\"-\",\"mosip.kernel.vid.length.repeating-limit\":\"2\",\"mosip.kernel.registrationcenterid.length\":\"4\",\"mosip.kernel.phone.special-char\":\"+ -\",\"mosip.kernel.uin.uins-to-generate\":\"200000\",\"mosip.kernel.vid.length\":\"16\",\"mosip.kernel.tokenid.length\":\"36\",\"mosip.kernel.uin.length.repeating-block-limit\":\"2\",\"mosip.kernel.tspid.length\":\"4\",\"mosip.kernel.tokenid.sequence-limit\":\"3\",\"mosip.kernel.uin.length.repeating-limit\":\"2\",\"mosip.kernel.uin.length.sequence-limit\":\"3\",\"mosip.kernel.keygenerator.symmetric-algorithm-length\":\"256\",\"mosip.kernel.data-key-splitter\":\"#KEY_SPLITTER#\"}";
 	// ###########################CONFIG END#########################
 
-
-		
 	@MockBean
 	private RegistrationCenterUserRepository registrationCenterUserRepository;
+
 	
-	@Autowired
-	private SyncRolesService syncRolesService;
-	
+
 	StringBuilder builder;
-	
+
 	@Value("${mosip.kernel.syncdata.auth-manager-base-uri}")
 	private String authBaseUri;
 
 	@Value("${mosip.kernel.syncdata.auth-manager-roles}")
 	private String authAllRolesUri;
-	
+
 	@Before
 	public void setup() {
 		LocalDateTime localdateTime = LocalDateTime.parse("2018-11-01T01:01:01");
@@ -326,23 +321,9 @@ public class SyncDataIntegrationTest {
 				.add(new RegistrationCenterUserMachine("01010", "qc001", "111", null, null, null));
 		registrationCenterUsers = new ArrayList<>();
 		registrationCenterUsers.add(new RegistrationCenterUser(new RegistrationCenterUserID("01010", "qc001")));
-		registrationCenterUserSetup();
-		builder= new StringBuilder();
+
+		builder = new StringBuilder();
 		builder.append(authBaseUri).append(authAllRolesUri);
-	
-
-	}
-
-
-
-	private void registrationCenterUserSetup() {
-		RegistrationCenterUser registrationCenterUser = new RegistrationCenterUser();
-		RegistrationCenterUserID registrationCenterUserId = new RegistrationCenterUserID();
-		registrationCenterUserId.setRegCenterId("1");
-		registrationCenterUserId.setUserId("1111");
-		registrationCenterUser.setRegistrationCenterUserID(registrationCenterUserId);
-		registrationCenterUsers = new ArrayList<>();
-		registrationCenterUsers.add(registrationCenterUser);
 
 	}
 
@@ -433,13 +414,11 @@ public class SyncDataIntegrationTest {
 				Mockito.any())).thenReturn(registrationCenterUsers);
 	}
 
-
-
 	@Test
 	public void testGetConfig() throws Exception {
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
-		when(restTemplateM.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
 		mockMvc.perform(get("/v1.0/configs")).andExpect(status().isOk());
 	}
 
@@ -447,15 +426,15 @@ public class SyncDataIntegrationTest {
 	public void testGlobalConfig() throws Exception {
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
-		when(restTemplateM.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
 		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void testRegistrationConfig() throws Exception {
-		when(restTemplateM.getForObject(Mockito.anyString(), Mockito.any()))
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
-		when(restTemplateM.getForObject(Mockito.anyString(), Mockito.any()))
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
 		mockMvc.perform(get("/v1.0/registrationcenterconfig/1")).andExpect(status().isOk());
 	}
@@ -771,49 +750,14 @@ public class SyncDataIntegrationTest {
 				.andExpect(status().isInternalServerError());
 	}
 
-	// ---------------------------RegistrationCenterUser--------------------------------//
-
-	@Test
-	public void getRegistrationCenterUser() throws Exception {
-		when(registrationCenterUserRepository.findByRegistrationCenterUserByRegCenterId(Mockito.anyString()))
-				.thenReturn(registrationCenterUsers);
-		mockMvc.perform(get("/v1.0/registrationcenteruser/1")).andExpect(status().isOk());
-	}
-
-	@Test
-	public void getRegistrationCenterUserMasterDataException() throws Exception {
-		when(registrationCenterUserRepository.findByRegistrationCenterUserByRegCenterId(Mockito.anyString()))
-				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/v1.0/registrationcenteruser/1")).andExpect(status().isInternalServerError());
-	}
-
 	@Test
 	public void getRegistrationCenterUserMasterDataNotFoundExcepetion() throws Exception {
 		when(registrationCenterUserRepository.findByRegistrationCenterUserByRegCenterId(Mockito.anyString()))
 				.thenReturn(new ArrayList<RegistrationCenterUser>());
-		
-	mockMvc.perform(get("/v1.0/registrationcenteruser/1")).andExpect(status().isNotFound());
-	}
-	
-	//------------------------------------------AllRolesSync--------------------------//
-	
-	@Test
-	public void getAllRoles() {
 
-		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
-
-		mockRestServer.expect(requestTo(builder.toString())).andRespond(withSuccess());
-		syncRolesService.getAllRoles();
+		mockMvc.perform(get("/v1.0/registrationcenteruser/1")).andExpect(status().isNotFound());
 	}
 
-	//@Test(expected = SyncDataServiceException.class)
-	public void getAllRolesException() {
-
-		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
-		mockRestServer.expect(requestTo(builder.toString())).andRespond(withServerError());
-		syncRolesService.getAllRoles();
-	}
 	
-
 
 }
