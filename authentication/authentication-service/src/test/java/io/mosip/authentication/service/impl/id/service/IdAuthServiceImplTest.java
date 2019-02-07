@@ -126,7 +126,7 @@ public class IdAuthServiceImplTest {
 	public void testGetIdRepoByVidAsRequest_IsNotNull() throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");
-		Mockito.when(idRepoService.getIdRepo(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Object invokeMethod = ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
 				Mockito.anyString());
 		assertNotNull(invokeMethod);
@@ -160,9 +160,9 @@ public class IdAuthServiceImplTest {
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_VID);
 
-		Mockito.when(idRepoService.getIdRepo(Mockito.anyString(), Mockito.anyBoolean())).thenThrow(idBusinessException);
+		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenThrow(idBusinessException);
 
-		Mockito.when(idAuthService.getIdRepoByVidNumber(Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idAuthService.getIdRepoByVID(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenThrow(idBusinessException);
 		Mockito.when(idAuthServiceImpl.processIdType(idvIdType, idvId, false)).thenThrow(idBusinessException);
 
@@ -176,9 +176,9 @@ public class IdAuthServiceImplTest {
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_UIN);
 
-		Mockito.when(idRepoService.getIdRepo(Mockito.anyString(), Mockito.anyBoolean())).thenThrow(idBusinessException);
+		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenThrow(idBusinessException);
 
-		Mockito.when(idAuthService.getIdRepoByVidNumber(Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idAuthService.getIdRepoByVID(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenThrow(idBusinessException);
 		Mockito.when(idAuthServiceImpl.processIdType(idvIdType, idvId, false)).thenThrow(idBusinessException);
 

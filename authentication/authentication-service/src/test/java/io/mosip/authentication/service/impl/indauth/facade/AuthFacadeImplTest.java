@@ -237,10 +237,10 @@ public class AuthFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		Mockito.when(otpAuthServiceImpl.validateOtp(authRequestDTO, uin)).thenReturn(authStatusInfo);
-		Mockito.when(idRepoService.getIdRepo(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Mockito.when(idAuthService.processIdType(authRequestDTO.getIdvIdType(), authRequestDTO.getIdvId(), false))
 				.thenReturn(idRepo);
-		Mockito.when(idAuthService.getIdRepoByUinNumber(Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(repoDetails());
 
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
@@ -815,8 +815,8 @@ public class AuthFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		Mockito.when(idAuthService.processIdType(IdType.UIN.getType(), uin, false)).thenReturn(idRepo);
-		Mockito.when(idRepoService.getIdRepo(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
-		Mockito.when(idAuthService.getIdRepoByUinNumber(Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(repoDetails());
 
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
@@ -859,8 +859,8 @@ public class AuthFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		Mockito.when(idAuthService.processIdType(IdType.UIN.getType(), uin, false)).thenReturn(idRepo);
-		Mockito.when(idRepoService.getIdRepo(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
-		Mockito.when(idAuthService.getIdRepoByUinNumber(Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(repoDetails());
 
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
@@ -907,8 +907,8 @@ public class AuthFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		Mockito.when(idAuthService.processIdType(IdType.UIN.getType(), uin, false)).thenReturn(idRepo);
-		Mockito.when(idRepoService.getIdRepo(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
-		Mockito.when(idAuthService.getIdRepoByUinNumber(Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(repoDetails());
 
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);

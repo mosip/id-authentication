@@ -141,7 +141,7 @@ public class OTPFacadeImplTest {
 		String productid = "IDA";
 		String uin = "8765";
 		String otp = "987654";
-		Mockito.when(idAuthService.getIdRepoByUinNumber(unqueId, false)).thenReturn(repoDetails());
+		Mockito.when(idAuthService.getIdRepoByUIN(unqueId, false)).thenReturn(repoDetails());
 		String otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getTspID());
 		Mockito.when(otpService.generateOtp(otpKey)).thenReturn(otp);
 
@@ -185,7 +185,7 @@ public class OTPFacadeImplTest {
 		String otp = "987654";
 		Map<String, Object> repoDetails = repoDetails();
 		repoDetails.put("uin", uin);
-		Mockito.when(idAuthService.getIdRepoByUinNumber(uin, false)).thenReturn(repoDetails);
+		Mockito.when(idAuthService.getIdRepoByUIN(uin, false)).thenReturn(repoDetails);
 		String otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getTspID());
 		Mockito.when(otpService.generateOtp(otpKey)).thenReturn(otp);
 
@@ -257,7 +257,7 @@ public class OTPFacadeImplTest {
 		String uin = "8765";
 		String otp = null;
 
-		Mockito.when(idAuthService.getIdRepoByUinNumber(unqueId, false)).thenReturn(repoDetails());
+		Mockito.when(idAuthService.getIdRepoByUIN(unqueId, false)).thenReturn(repoDetails());
 		String otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getTspID());
 		Mockito.when(otpService.generateOtp(otpKey)).thenReturn(otp);
 		Mockito.when(otpFacadeImpl.generateOtp(otpRequestDto))

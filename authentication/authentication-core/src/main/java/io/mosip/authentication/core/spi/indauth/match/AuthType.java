@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.core.env.Environment;
@@ -17,7 +16,7 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
  */
 
 /**
- * The Enum AuthType.
+ * Base interface for the Auth type.
  */
 public interface AuthType {
 
@@ -51,7 +50,7 @@ public interface AuthType {
 	 * Checks if is auth type enabled.
 	 *
 	 * @param authReq the auth req
-	 * @param helper the helper
+	 * @param helper  the helper
 	 * @return true, if is auth type enabled
 	 */
 	boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher helper);
@@ -59,7 +58,7 @@ public interface AuthType {
 	/**
 	 * Gets the matching strategy.
 	 *
-	 * @param authReq the auth req
+	 * @param authReq             the auth req
 	 * @param languageInfoFetcher the language info fetcher
 	 * @return the matching strategy
 	 */
@@ -68,12 +67,13 @@ public interface AuthType {
 	/**
 	 * Gets the matching threshold.
 	 *
-	 * @param authReq the auth req
+	 * @param authReq             the auth req
 	 * @param languageInfoFetcher the language info fetcher
-	 * @param environment the environment
+	 * @param environment         the environment
 	 * @return the matching threshold
 	 */
-	public default Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, String language, Environment environment){
+	public default Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, String language,
+			Environment environment) {
 		return Optional.of(DEFAULT_MATCHING_THRESHOLD);
 	}
 
@@ -83,7 +83,7 @@ public interface AuthType {
 	 * @return the associated match types
 	 */
 	Set<MatchType> getAssociatedMatchTypes();
-	
+
 	/**
 	 * Checks if is auth type info available.
 	 *
@@ -95,12 +95,12 @@ public interface AuthType {
 	/**
 	 * Gets the match properties.
 	 *
-	 * @param authRequestDTO the auth request DTO
+	 * @param authRequestDTO      the auth request DTO
 	 * @param languageInfoFetcher the language info fetcher
 	 * @return the match properties
 	 */
-	public default Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher languageInfoFetcher,
-			String language) {
+	public default Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO,
+			IdInfoFetcher languageInfoFetcher, String language) {
 		return Collections.emptyMap();
 	}
 
@@ -114,5 +114,5 @@ public interface AuthType {
 	public static Optional<AuthType> getAuthTypeForMatchType(MatchType matchType, AuthType[] authTypes) {
 		return Stream.of(authTypes).filter(at -> at.isAssociatedMatchType(matchType)).findAny();
 	}
-	
+
 }

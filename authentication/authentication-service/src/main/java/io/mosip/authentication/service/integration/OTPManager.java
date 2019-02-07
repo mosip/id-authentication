@@ -70,7 +70,6 @@ public class OTPManager {
 		RestRequestDTO restRequestDTO = null;
 		String response = null;
 		try {
-
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
 					otpGeneratorRequestDto, OtpGeneratorResponseDto.class);
 			otpGeneratorResponsetDto = restHelper.requestSync(restRequestDTO);
