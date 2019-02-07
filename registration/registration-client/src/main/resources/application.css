@@ -659,10 +659,6 @@
     -fx-font-size: 10.0px;
      -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
 }
-#applicantImageHBox, #exceptionImageHBox {
-	-fx-border-color: black;
-	-fx-border-width: 2.0;
-}
 /* Registration - Biometric - Iris Capture */
 #leftHandPalmPane,#rightHandPalmPane,#thumbPane,.irisImagePane {
 	-fx-border-color: lightgrey;
@@ -960,7 +956,7 @@ Working on new Css
 
 .paneAtDisplayDocument{
 	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 580px;	
+	-fx-pref-height: 590px;	
 	-fx-pref-width: 1050px;	
 }
 
@@ -1064,14 +1060,16 @@ Working on new Css
 }
 
 .IrisPanes{
-	-fx-pref-height: 200px;	
-	-fx-pref-width: 300px;
+	-fx-pref-height: 160px;	
+	-fx-pref-width: 180px;
 }
 
 .PhotoCaptureWindow{
 	-fx-pref-height: 100px;	
 	-fx-pref-width: 200px;
-	-fx-background-color : #C9C9C9;	
+	-fx-border-color: black;
+	-fx-border-width: 2.0;
+	
 }
 
 .qualityBox{

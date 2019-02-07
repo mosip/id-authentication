@@ -11,92 +11,96 @@
 
 <AnchorPane fx:id="fingerPrintCapture" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="parentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.FingerPrintCaptureController">
    <children>
-      <AnchorPane fx:id="fingerPrintCapturePane" layoutX="74.0" layoutY="37.0" styleClass="paneAtDisplayDocument">
+      <AnchorPane fx:id="fingerPrintCapturePane" layoutX="104.0" layoutY="37.0" styleClass="paneAtDisplayDocument">
          <children>
-            <AnchorPane layoutX="76.0" layoutY="32.0">
+            <AnchorPane layoutX="26.0" layoutY="32.0">
                <children>
-                  <Label fx:id="duplicateCheckLbl" layoutY="501.0" />
-                  <AnchorPane fx:id="thumbPane" layoutX="594.0" layoutY="37.0" styleClass="fingerPrintPanes">
+                  <AnchorPane layoutX="110.0">
                      <children>
-                        <ImageView fx:id="thumbImageview" fitHeight="160.0" fitWidth="180.0" layoutX="3.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/thumbs.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane fx:id="leftHandPalmPane" layoutX="11.0" layoutY="37.0" styleClass="fingerPrintPanes">
-                     <children>
-                        <ImageView fx:id="leftHandPalmImageview" fitHeight="160.0" fitWidth="180.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/leftHand.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane fx:id="rightHandPalmPane" layoutX="296.0" layoutY="37.0" styleClass="fingerPrintPanes">
-                     <children>
-                        <ImageView fx:id="rightHandPalmImageview" fitHeight="160.0" fitWidth="180.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/rightHand.PNG" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </AnchorPane>
-                  <Label layoutX="16.0" styleClass="paneHeader" text="%fingerprint" />
-                  <AnchorPane layoutX="10.0" layoutY="210.0" styleClass="qualityBox">
-                     <children>
-                        <Label layoutX="140.0" layoutY="40.0" text="%quality" />
-                        <Label fx:id="leftSlapQualityScore" layoutX="156.0" layoutY="66.0"  text="-" />
-                        <Label layoutY="40.0" text="%threshold" />
-                        <Label fx:id="leftSlapThresholdScoreLbl" layoutX="20.0" layoutY="65.0" />
-                        <Label layoutX="60.0" text="%leftHand" />
-                        <Label layoutX="10.0" layoutY="100.0" styleClass="onboardBioDetails" text="Attempts" />
-                        <Label fx:id="leftSlapAttempt" layoutX="30.0" layoutY="140.0" text="-" />
-                          <Label layoutX="120.0" layoutY="100.0" styleClass="onboardBioDetails" text="Exceptions" />
-                        <Label fx:id="leftSlapException" layoutX="156.0" layoutY="140.0" text="-" />
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane layoutX="290.0" layoutY="210.0" styleClass="qualityBox">
-                     <children>
-                        <Label layoutX="160.0" layoutY="40.0" text="%quality" />
-                        <Label fx:id="rightSlapQualityScore" layoutX="180.0" layoutY="66.0" text="-" />
-                        <Label layoutY="40.0" text="%threshold" />
-                        <Label fx:id="rightSlapThresholdScoreLbl" layoutX="32.0" layoutY="66.0" />
-                        <Label layoutX="70.0" text="%rightHand" />
-                        <Label layoutX="10.0" layoutY="100.0" styleClass="onboardBioDetails" text="Attempts" />
-                        <Label fx:id="rightSlapAttempt" layoutX="40.0" layoutY="130.0" text="-" />
-                        <Label layoutX="140.0" layoutY="100.0" styleClass="onboardBioDetails" text="Exceptions" />
-                        <Label fx:id="rightSlapException" layoutX="170.0" layoutY="130.0" text="-" />
-                        
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane layoutX="590.0" layoutY="210.0"  styleClass="qualityBox">
-                     <children>
-                        <Label layoutY="40.0" text="%threshold" />
-                        <Label fx:id="thumbsThresholdScoreLbl" layoutX="31.0" layoutY="66.0" />
-                        <Label layoutX="141.0" layoutY="40.0" text="%quality" />
-                        <Label fx:id="thumbsQualityScore" layoutX="160.0" layoutY="66.0" text="-" />
-                        <Label layoutX="70.0" text="%thumbs" />
-                        <Label layoutY="100.0" styleClass="onboardBioDetails" text="Attempts" />
-                        <Label fx:id="thumbSlapAttempt" layoutX="20.0" layoutY="130.0" text="-" />
-                        <Label layoutX="130.0" layoutY="100.0" styleClass="onboardBioDetails" text="Exceptions" />
-                        <Label fx:id="thumbSlapException" layoutX="170.0" layoutY="130.0" text="-" />
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane layoutX="44.0" layoutY="439.0" styleClass="onboardProgressPane">
-                     <children>
-                        <Button fx:id="scanBtn" layoutX="620.0" layoutY="25.0" mnemonicParsing="false" onAction="#scan" text="%scan">
-                           <graphic>
-                              <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                        <Label fx:id="duplicateCheckLbl" layoutY="501.0" />
+                        <AnchorPane layoutX="290.0" layoutY="210.0" styleClass="qualityBox">
+                           <children>
+                              <Label layoutX="160.0" layoutY="40.0" text="%quality" />
+                              <Label fx:id="rightSlapQualityScore" layoutX="180.0" layoutY="66.0" text="-" />
+                              <Label layoutY="40.0" text="%threshold" />
+                              <Label fx:id="rightSlapThresholdScoreLbl" layoutX="32.0" layoutY="66.0" />
+                              <Label layoutX="70.0" text="%rightHand" />
+                              <Label layoutX="10.0" layoutY="100.0" styleClass="onboardBioDetails" text="Attempts" />
+                              <Label fx:id="rightSlapAttempt" layoutX="40.0" layoutY="130.0" text="-" />
+                              <Label layoutX="140.0" layoutY="100.0" styleClass="onboardBioDetails" text="Exceptions" />
+                              <Label fx:id="rightSlapException" layoutX="170.0" layoutY="130.0" text="-" />
+                              
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="leftHandPalmPane" layoutX="11.0" layoutY="37.0" styleClass="fingerPrintPanes">
+                           <children>
+                              <ImageView fx:id="leftHandPalmImageview" fitHeight="160.0" fitWidth="180.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../images/scan.png" />
+                                    <Image url="@../images/leftHand.png" />
                                  </image>
                               </ImageView>
-                           </graphic>
-                        </Button>
-                        <Label layoutX="21.0" layoutY="31.0" text="Quality" />
-                        <Line endX="100.0" layoutX="372.0" layoutY="42.0" startX="-100.0" />
+                           </children>
+                        </AnchorPane>
+                        <Label layoutX="16.0" styleClass="paneHeader" text="%fingerprint" />
+                        <AnchorPane layoutX="10.0" layoutY="210.0" styleClass="qualityBox">
+                           <children>
+                              <Label layoutX="140.0" layoutY="40.0" text="%quality" />
+                              <Label fx:id="leftSlapQualityScore" layoutX="156.0" layoutY="66.0" text="-" />
+                              <Label layoutY="40.0" text="%threshold" />
+                              <Label fx:id="leftSlapThresholdScoreLbl" layoutX="20.0" layoutY="65.0" />
+                              <Label layoutX="60.0" text="%leftHand" />
+                              <Label layoutX="10.0" layoutY="100.0" styleClass="onboardBioDetails" text="Attempts" />
+                              <Label fx:id="leftSlapAttempt" layoutX="30.0" layoutY="140.0" text="-" />
+                                <Label layoutX="120.0" layoutY="100.0" styleClass="onboardBioDetails" text="Exceptions" />
+                              <Label fx:id="leftSlapException" layoutX="156.0" layoutY="140.0" text="-" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutX="590.0" layoutY="210.0" styleClass="qualityBox">
+                           <children>
+                              <Label layoutY="40.0" text="%threshold" />
+                              <Label fx:id="thumbsThresholdScoreLbl" layoutX="31.0" layoutY="66.0" />
+                              <Label layoutX="141.0" layoutY="40.0" text="%quality" />
+                              <Label fx:id="thumbsQualityScore" layoutX="160.0" layoutY="66.0" text="-" />
+                              <Label layoutX="70.0" text="%thumbs" />
+                              <Label layoutY="100.0" styleClass="onboardBioDetails" text="Attempts" />
+                              <Label fx:id="thumbSlapAttempt" layoutX="20.0" layoutY="130.0" text="-" />
+                              <Label layoutX="130.0" layoutY="100.0" styleClass="onboardBioDetails" text="Exceptions" />
+                              <Label fx:id="thumbSlapException" layoutX="170.0" layoutY="130.0" text="-" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="rightHandPalmPane" layoutX="296.0" layoutY="37.0" styleClass="fingerPrintPanes">
+                           <children>
+                              <ImageView fx:id="rightHandPalmImageview" fitHeight="160.0" fitWidth="180.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/rightHand.PNG" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutX="44.0" layoutY="439.0" styleClass="onboardProgressPane">
+                           <children>
+                              <Button fx:id="scanBtn" layoutX="620.0" layoutY="25.0" mnemonicParsing="false" onAction="#scan" text="%scan">
+                                 <graphic>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/scan.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Label layoutX="21.0" layoutY="31.0" text="Quality" />
+                              <Line endX="100.0" layoutX="372.0" layoutY="42.0" startX="-100.0" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="thumbPane" layoutX="594.0" layoutY="37.0" styleClass="fingerPrintPanes">
+                           <children>
+                              <ImageView fx:id="thumbImageview" fitHeight="160.0" fitWidth="180.0" layoutX="3.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/thumbs.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </AnchorPane>
                      </children>
                   </AnchorPane>
                </children>
@@ -125,9 +129,9 @@
             </Button>
          </children>
       </AnchorPane>
-      <AnchorPane >
+      <AnchorPane>
          <children>
-            <AnchorPane fx:id="RegistrationHeader" layoutY="-3.0">
+            <AnchorPane fx:id="RegistrationHeader" layoutY="0.0">
                <children>
                   <AnchorPane>
                      <children>

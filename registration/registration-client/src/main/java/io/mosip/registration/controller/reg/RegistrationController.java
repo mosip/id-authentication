@@ -110,9 +110,6 @@ public class RegistrationController extends BaseController {
 	public ImageView biometricTracker;
 	
 	@FXML
-	private AnchorPane RegistrationHeader;
-	
-	@FXML
 	private AnchorPane registrationPreviewHeader;
 	
 	@FXML
@@ -354,7 +351,6 @@ public class RegistrationController extends BaseController {
 						saveDetail();
 						SessionContext.getInstance().getMapObject().put("faceCapture",false);
 						SessionContext.getInstance().getMapObject().put("registrationPreview",true);
-						RegistrationHeader.setVisible(false);
 						registrationPreviewHeader.setVisible(true);
 						registrationPreviewController.setUpPreviewContent();
 						showCurrentPage();
@@ -382,7 +378,6 @@ public class RegistrationController extends BaseController {
 	// Operator Authentication
 	public void goToAuthenticationPage() {
 		try {
-			RegistrationHeader.setVisible(true);
 			registrationPreviewHeader.setVisible(false);
 			SessionContext.getInstance().getMapObject().put("operatorAuthentication", true);
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
