@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -25,6 +26,7 @@ import io.mosip.kernel.logger.logback.appender.ConsoleAppender;
 import io.mosip.kernel.logger.logback.appender.FileAppender;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstant;
+import io.mosip.kernel.logger.logback.constant.LogLevel;
 import io.mosip.kernel.logger.logback.constant.ConfigurationDefault;
 
 /**
@@ -56,7 +58,7 @@ public class LoggerImpl implements Logger {
 	 * @param name
 	 *            name of calling class to get logger
 	 */
-	private LoggerImpl(ConsoleAppender mosipConsoleAppender, String name) {
+	private LoggerImpl(ConsoleAppender mosipConsoleAppender, String name,LogLevel logLevel) {
 
 		LoggerContext context = (LoggerContext) LoggerFactory
 				.getILoggerFactory();
@@ -70,6 +72,11 @@ public class LoggerImpl implements Logger {
 				.setImmediateFlush(mosipConsoleAppender.isImmediateFlush());
 		consoleAppender.setTarget(mosipConsoleAppender.getTarget());
 		consoleAppender.start();
+		if(logLevel!=null) {
+			this.logger.setLevel(Level.valueOf(logLevel.getLevel()));
+		} else {
+			this.logger.setLevel(Level.valueOf(LogLevel.DEBUG.getLevel()));
+		}
 		this.logger.setAdditive(false);
 		this.logger.addAppender(consoleAppender);
 	}
@@ -83,7 +90,7 @@ public class LoggerImpl implements Logger {
 	 * @param name
 	 *            name of calling class to get logger
 	 */
-	private LoggerImpl(FileAppender mosipFileAppender, String name) {
+	private LoggerImpl(FileAppender mosipFileAppender, String name,LogLevel logLevel) {
 
 		LoggerContext context = (LoggerContext) LoggerFactory
 				.getILoggerFactory();
@@ -107,6 +114,11 @@ public class LoggerImpl implements Logger {
 			fileAppender = (ch.qos.logback.core.FileAppender<ILoggingEvent>) fileAppenders
 					.get(mosipFileAppender.getAppenderName());
 		}
+		if(logLevel!=null) {
+			this.logger.setLevel(Level.valueOf(logLevel.getLevel()));
+		} else {
+			this.logger.setLevel(Level.valueOf(LogLevel.DEBUG.getLevel()));
+		}
 		this.logger.addAppender(fileAppender);
 	}
 
@@ -120,7 +132,7 @@ public class LoggerImpl implements Logger {
 	 *            name of calling class to get logger
 	 */
 	private LoggerImpl(RollingFileAppender mosipRollingFileAppender,
-			String name) {
+			String name,LogLevel logLevel) {
 
 		LoggerContext context = (LoggerContext) LoggerFactory
 				.getILoggerFactory();
@@ -155,7 +167,11 @@ public class LoggerImpl implements Logger {
 			rollingFileAppender = (ch.qos.logback.core.rolling.RollingFileAppender<ILoggingEvent>) rollingFileAppenders
 					.get(mosipRollingFileAppender.getAppenderName());
 		}
-
+		if(logLevel!=null) {
+			this.logger.setLevel(Level.valueOf(logLevel.getLevel()));
+		} else {
+			this.logger.setLevel(Level.valueOf(LogLevel.DEBUG.getLevel()));
+		}
 		this.logger.addAppender(rollingFileAppender);
 
 	}
@@ -242,7 +258,7 @@ public class LoggerImpl implements Logger {
 	 * @return Configured {@link Logger} instance
 	 */
 	public static Logger getConsoleLogger(ConsoleAppender consoleAppender,
-			String name) {
+			String name,LogLevel loglevel) {
 		if (name.trim().isEmpty()) {
 			throw new ClassNameNotFoundException(
 					LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTION
@@ -250,7 +266,7 @@ public class LoggerImpl implements Logger {
 					LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTIONMESSAGE
 							.getValue());
 		} else {
-			return new LoggerImpl(consoleAppender, name);
+			return new LoggerImpl(consoleAppender, name,loglevel);
 		}
 	}
 
@@ -264,7 +280,7 @@ public class LoggerImpl implements Logger {
 	 *            name of the calling class
 	 * @return Configured {@link Logger} instance
 	 */
-	public static Logger getFileLogger(FileAppender fileAppender, String name) {
+	public static Logger getFileLogger(FileAppender fileAppender, String name,LogLevel loglevel) {
 
 		if (fileAppender.getFileName() == null)
 			throw new FileNameNotProvided(
@@ -283,7 +299,7 @@ public class LoggerImpl implements Logger {
 					LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTIONMESSAGE
 							.getValue());
 		else {
-			return new LoggerImpl(fileAppender, name);
+			return new LoggerImpl(fileAppender, name,loglevel);
 		}
 	}
 
@@ -298,7 +314,7 @@ public class LoggerImpl implements Logger {
 	 * @return Configured {@link Logger} instance
 	 */
 	public static Logger getRollingFileLogger(
-			RollingFileAppender rollingFileAppender, String name) {
+			RollingFileAppender rollingFileAppender, String name,LogLevel loglevel) {
 		if (rollingFileAppender.getFileNamePattern() == null)
 			throw new EmptyPatternException(
 					LogExeptionCodeConstant.EMPTYPATTERNEXCEPTION.getValue(),
@@ -339,7 +355,7 @@ public class LoggerImpl implements Logger {
 							.getValue());
 		else
 			try {
-				return new LoggerImpl(rollingFileAppender, name);
+				return new LoggerImpl(rollingFileAppender, name,loglevel);
 			} catch (java.lang.IllegalStateException e) {
 				throw new IllegalStateException(
 						LogExeptionCodeConstant.MOSIPILLEGALSTATEEXCEPTION

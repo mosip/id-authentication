@@ -68,4 +68,5 @@ public class IdAuthConfig implements WebMvcConfigurer {
 		source.addBasenames("errormessages", "eKycPDFTemplate");
 		return source;
 	}
+
 }

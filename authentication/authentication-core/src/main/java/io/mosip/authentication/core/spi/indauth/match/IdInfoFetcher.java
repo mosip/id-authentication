@@ -1,15 +1,18 @@
 package io.mosip.authentication.core.spi.indauth.match;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+
+import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
+import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;
-import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProvider;
-import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;;
+import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;;
 
 /**
  * The IdInfoFetcher interface that provides the helper methods invoked by the
@@ -42,7 +45,7 @@ public interface IdInfoFetcher {
 	 * @param identity  the identity
 	 * @return the identity info
 	 */
-	public Map<String, String> getIdentityRequestInfo(MatchType matchType, IdentityDTO identity);
+	public Map<String, String> getIdentityRequestInfo(MatchType matchType, IdentityDTO identity, String language);
 
 	/**
 	 * Gets the iris provider for the BioInfo value.
@@ -61,5 +64,10 @@ public interface IdInfoFetcher {
 	public MosipBiometricProvider getFingerPrintProvider(BioInfo bioinfovalue);
 
 	public ValidateOtpFunction getValidateOTPFunction();
+
+	public Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValues(Map<String, List<IdentityInfoDTO>> idEntity,
+			String string) throws IdAuthenticationBusinessException;
+
+	public Environment getEnvironment();
 
 }

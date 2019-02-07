@@ -14,6 +14,7 @@ import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.service.impl.indauth.service.pin.PinMatchingStrategy;
 
 /**
  * The Class PinMatchingStrategyTest.

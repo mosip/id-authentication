@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -116,6 +117,33 @@ public abstract class BaseAuthFilter implements Filter {
 	private static final String MOSIP_JWS_CERTIFICATE_ALGO = "mosip.jws.certificate.algo";
 
 	protected PublicKey publicKey;
+
+	/** The Constant FULL_ADDRESS. */
+	private static final String FULL_ADDRESS = "fullAddress";
+
+	/** The Constant PERSONAL_IDENTITY. */
+	private static final String PERSONAL_IDENTITY = "personalIdentity";
+	
+	/** The Constant ADDRESS. */
+	private static final String ADDRESS = "address";
+	
+	/** The Constant BIO_INFOS. */
+	private static final String BIO_INFOS = "bioInfos";
+
+	/** The Constant BIO. */
+	private static final String BIO = "bio";
+
+	/** The Constant AUTH_TYPE. */
+	private static final String AUTH_TYPE = "authType";
+
+	/** The Constant INFO. */
+	private static final String INFO = "info";
+
+	/** The Constant MATCH_INFOS. */
+	private static final String MATCH_INFOS = "matchInfos";
+
+	/** The Constant TXN_ID. */
+	private static final String TXN_ID = "txnID";
 
 	/*
 	 * (non-Javadoc)
@@ -524,6 +552,63 @@ public abstract class BaseAuthFilter implements Filter {
 		return Stream.of(subject).map(s -> s.split("=")).filter(ar -> ar.length == 2)
 				.filter(ar -> ar[0].trim().equals("O"))
 				.anyMatch(ar -> ar[1].trim().equals(env.getProperty(MOSIP_TSP_ORGANIZATION)));
+	}
+	
+	/**
+	 * Check demo enabled auth type.
+	 *
+	 * @param authType the auth type
+	 * @return true, if successful
+	 */
+	protected boolean checkDemoEnabledAuthType(Map<String, Object> authType) {
+		return (authType.get(PERSONAL_IDENTITY) instanceof Boolean && (boolean) authType.get(PERSONAL_IDENTITY))
+				|| (authType.get(FULL_ADDRESS) instanceof Boolean && (boolean) authType.get(FULL_ADDRESS))
+				|| (authType.get(ADDRESS) instanceof Boolean && (boolean) authType.get(ADDRESS));
+	}
+	
+	/**
+	 * Sets the auth response param.
+	 *
+	 * @param requestBody the request body
+	 * @param responseBody the response body
+	 * @return the map
+	 */
+	@SuppressWarnings("unchecked")
+	protected Map<String, Object> setAuthResponseParam(Map<String, Object> requestBody, Map<String, Object> responseBody) {
+		try {
+			if (null != responseBody.get(INFO)) {
+				Map<String, Object> authType = (Map<String, Object>) requestBody.get(AUTH_TYPE);
+				if (!checkDemoEnabledAuthType(authType)) {
+					Map<String, Object> info = (Map<String, Object>) responseBody.get(INFO);
+					info.remove(MATCH_INFOS);
+					responseBody.replace(INFO, info);
+				}
+				if (!(authType.get(BIO) instanceof Boolean) || !(boolean) authType.get(BIO)) {
+					Map<String, Object> info = (Map<String, Object>) responseBody.get(INFO);
+					info.remove(BIO_INFOS);
+					responseBody.replace(INFO, info);
+				} 
+			}			
+			if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(TXN_ID))) {
+				responseBody.replace(TXN_ID, requestBody.get(TXN_ID));
+			}
+
+			if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(REQ_TIME))
+					&& isDate((String) requestBody.get(REQ_TIME))) {
+				ZoneId zone = ZonedDateTime.parse((CharSequence) requestBody.get(REQ_TIME)).getZone();
+				responseBody.replace(RES_TIME,
+						DateUtils.formatDate(
+								DateUtils.parseToDate((String) responseBody.get(RES_TIME),
+										env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)),
+								env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)));
+				return responseBody;
+			} else {
+				return responseBody;
+			}
+		} catch (DateTimeParseException e) {
+			mosipLogger.error("sessionId", "IdAuthFilter", "setResponseParam", "\n" + ExceptionUtils.getStackTrace(e));
+			return responseBody;
+		}
 	}
 
 }

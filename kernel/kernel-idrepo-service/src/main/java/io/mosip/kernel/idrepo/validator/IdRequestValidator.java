@@ -37,6 +37,7 @@ import io.mosip.kernel.core.jsonvalidator.exception.NullJsonSchemaException;
 import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 
@@ -49,8 +50,6 @@ import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 public class IdRequestValidator implements Validator {
 
 	private static final String JSON_SCHEMA_FILE_NAME = "mosip.kernel.idrepo.json-schema-fileName";
-
-	private static final String MOSIP_KERNEL_IDREPO_STATUS_REGISTERED = "mosip.kernel.idrepo.status.registered";
 
 	/** The Constant VER. */
 	private static final String VER = "version";
@@ -122,7 +121,6 @@ public class IdRequestValidator implements Validator {
 	@Resource
 	private List<String> status;
 
-	/** The uin validator. */
 	@Autowired
 	private RidValidator<String> ridValidatorImpl;
 
@@ -164,14 +162,12 @@ public class IdRequestValidator implements Validator {
 		if (!errors.hasErrors()) {
 			if (request.getId().equals(id.get(CREATE))) {
 				validateStatus(request.getStatus(), errors, CREATE);
+				validateRequest(request.getRequest(), errors, CREATE);
 			} else if (request.getId().equals(id.get(UPDATE))) {
 				validateStatus(request.getStatus(), errors, UPDATE);
+				validateRequest(request.getRequest(), errors, UPDATE);
 			}
 			validateRegId(request.getRegistrationId(), errors);
-		}
-
-		if (!errors.hasErrors()) {
-			validateRequest(request.getRequest(), errors);
 		}
 
 	}
@@ -222,9 +218,7 @@ public class IdRequestValidator implements Validator {
 	 * @param method
 	 */
 	private void validateStatus(String status, Errors errors, String method) {
-		if (Objects.nonNull(status)
-				&& ((method.equals(CREATE) && !status.equals(env.getProperty(MOSIP_KERNEL_IDREPO_STATUS_REGISTERED)))
-						|| (method.equals(UPDATE) && !this.status.contains(status)))) {
+		if (Objects.nonNull(status) && (method.equals(UPDATE) && !this.status.contains(status))) {
 			errors.rejectValue(STATUS_FIELD, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), STATUS_FIELD));
 		}
@@ -261,31 +255,51 @@ public class IdRequestValidator implements Validator {
 	 *            the request
 	 * @param errors
 	 *            the errors
+	 * @param method
 	 */
-	private void validateRequest(Object request, Errors errors) {
+	@SuppressWarnings("rawtypes")
+	private void validateRequest(Object request, Errors errors, String method) {
 		try {
 			if (Objects.nonNull(request)) {
 				Map<String, Object> requestMap = convertToMap(request);
 				if (requestMap.containsKey(DOCUMENTS)) {
-					if (requestMap.containsKey(IDENTITY)) {
+					if (requestMap.containsKey(IDENTITY) && Objects.nonNull(requestMap.get(IDENTITY))) {
 						validateDocuments(requestMap.get(DOCUMENTS), requestMap.get(IDENTITY), errors);
 					}
 					requestMap.remove(DOCUMENTS);
 				}
-				if (!(requestMap.containsKey(IDENTITY) && Objects.nonNull(requestMap.get(IDENTITY)))) {
-					errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-							String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST));
-				} else {
-					jsonValidator.validateJson(mapper.writeValueAsString(requestMap),
-							env.getProperty(JSON_SCHEMA_FILE_NAME));
+				if (!errors.hasErrors()) {
+					if (!(requestMap.containsKey(IDENTITY) && Objects.nonNull(requestMap.get(IDENTITY)))) {
+						if (method.equals(CREATE)) {
+							errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+									String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
+											IDENTITY));
+						}
+					} else if (((Map) requestMap.get(IDENTITY)).isEmpty()) {
+						errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String
+								.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), IDENTITY));
+					} else {
+						jsonValidator.validateJson(mapper.writeValueAsString(requestMap),
+								env.getProperty(JSON_SCHEMA_FILE_NAME));
+					}
 				}
+			} else if (method.equals(CREATE)) {
+				errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST));
 			}
 		} catch (IdRepoAppException | UnidentifiedJsonException | IOException | JsonValidationProcessingException
 				| JsonIOException e) {
 			mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 					(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST));
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), IDENTITY + " - "
+							+ StringUtils.substringBefore(StringUtils.substringAfter(e.getMessage(), "\""), "\"")
+							+ " at /"
+							+ (StringUtils.isEmpty(
+									StringUtils.substringBefore(StringUtils.substringAfter(e.getMessage(), "/"), "\""))
+											? IDENTITY
+											: StringUtils.substringBefore(
+													StringUtils.substringAfter(e.getMessage(), "/"), "\""))));
 		} catch (FileIOException | NullJsonSchemaException | NullJsonNodeException | JsonSchemaIOException e) {
 			mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 					VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e));
@@ -323,14 +337,22 @@ public class IdRequestValidator implements Validator {
 										(VALIDATE_REQUEST + "- validateDocuments failed for " + doc.get(DOC_CAT)));
 								errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 										String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-												doc.get(DOC_CAT)));
+												"Documents - " + doc.get(DOC_CAT)));
+							}
+							if (StringUtils.isEmpty(doc.get("value"))) {
+								mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
+										(VALIDATE_REQUEST + "- empty doc value failed for " + doc.get(DOC_CAT)));
+								errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+										String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+												"Documents - " + doc.get(DOC_CAT)));
 							}
 						});
 			}
-
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 					(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), IDENTITY));
 		}
 	}
 

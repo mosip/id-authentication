@@ -97,7 +97,7 @@ public class UinGeneratorTestConfiguration implements EnvironmentAware {
 	 * @return AppNames
 	 */
 	public List<String> getAppNames() {
-		String names = env.getProperty(UinGeneratorConstant.SPRING_APPLICATION_NAME);
+		String names = env.getProperty(UinGeneratorConstant.SPRING_CLOUD_CONFIG_NAME);
 		return Stream.of(names.split(UinGeneratorConstant.COMMA)).collect(Collectors.toList());
 	}
 
