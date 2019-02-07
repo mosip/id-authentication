@@ -193,7 +193,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		boolean isOnline = RegistrationAppHealthCheckUtil.isNetworkAvailable();
 
 		/* check if the packet is not available in db and the machine is offline */
-		if (!isOnline && preRegistration == null) {
+		if (isPacketNotAvailable(preRegistration, isOnline)) {
 			setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_PACKET_NETWORK_ERROR, null);
 			return;
 		}
@@ -285,7 +285,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		/* Only for Manual Trigger */
 		if (!isJob) {
 			try {
-				if (preRegistration != null && decryptedPacket == null) {
+				if (isPacketFromLocal(preRegistration, decryptedPacket)) {
 					/*
 					 * if the packet is already available,read encrypted packet from disk and
 					 * decrypt
@@ -318,6 +318,14 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Get Pre-Registartion ended");
 
+	}
+
+	private boolean isPacketNotAvailable(PreRegistrationList preRegistration, boolean isOnline) {
+		return !isOnline && preRegistration == null;
+	}
+
+	private boolean isPacketFromLocal(PreRegistrationList preRegistration, byte[] decryptedPacket) {
+		return preRegistration != null && decryptedPacket == null;
 	}
 
 	private boolean isPacketUpdatedInServer(PreRegistrationList preRegistration) {
