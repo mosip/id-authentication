@@ -479,7 +479,7 @@
 	-fx-border-color: #F7F8F9;
 }
 #onboardHomeLink{
-	-fx-text-fill: #666666;
+	-fx-text-fill: #C9C9C9;
 	-fx-font-family: Roboto;
 	-fx-font-weight: lighter;
 	-fx-font-size: 13.0px;	
@@ -548,8 +548,42 @@
 	-fx-border-width: 0.0 0.0 1.0 0.0;
 	-fx-border-color: #C9C9C9;
 }
+.onboardInfoDetails{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #666666;
+	-fx-font-weight: lighter;
+}
+.onboardInfoDetailsName{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #333333;
+}
+.onboardExceptionDetails{
+	-fx-font-family: Roboto;
+	-fx-font-size: 10.0px;
+	-fx-text-fill: #666666;
+	-fx-font-weight: lighter;
+}
+.exceptionCombobox{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 0 0 1 0;
+	fx-text-fill: #000000;
+	-fx-border-color: #C9C9C9;
+	-fx-font-size: 12px;
+}
+.exceptionFingerPane{
+	-fx-border-width: 0.0 1.0 0.0 0.0;
+	-fx-border-color: #C9C9C9;
+}
+.onboardExceptionLayout{
+	-fx-pref-height: 574.0px;
+	-fx-pref-width: 938.0px;
+}
+.regExceptionLayout{
+	-fx-background-color:#ffffff;
+}
 /*user onboard exception design ends */
-
 #mainBox{
 	-fx-border-width: 0.0;
 	-fx-border-color: black;
