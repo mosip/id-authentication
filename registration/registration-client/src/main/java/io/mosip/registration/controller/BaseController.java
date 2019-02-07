@@ -327,6 +327,7 @@ public class BaseController {
 		SessionContext.getInstance().getMapObject().remove("faceCapture");
 		SessionContext.getInstance().getMapObject().remove("irisCapture");
 		SessionContext.getInstance().getMapObject().remove("operatorAuthentication");
+		SessionContext.getInstance().getMapObject().remove("registrationPreview");
 
 
 		SessionContext.getInstance().getUserContext().getUserMap()

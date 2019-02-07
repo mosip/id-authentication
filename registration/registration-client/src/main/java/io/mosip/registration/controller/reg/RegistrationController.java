@@ -348,8 +348,8 @@ public class RegistrationController extends BaseController {
 						setPreviewContent();
 						saveDetail();
 						SessionContext.getInstance().getMapObject().put("faceCapture",false);
-						SessionContext.getInstance().getMapObject().put("registrationPreview",true);
 						registrationPreviewController.setUpPreviewContent();
+						SessionContext.getInstance().getMapObject().put("registrationPreview",true);
 						showCurrentPage();
 					} else {
 						((BiometricDTO) SessionContext.getInstance().getMapObject()

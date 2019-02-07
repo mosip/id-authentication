@@ -84,17 +84,20 @@ public class RegistrationPreviewController extends BaseController {
 	}
 
 	public void modifyDemographicInfo() {
-		//To-Do
-		System.out.println("Modify Demo Info");
+		SessionContext.getInstance().getMapObject().put("demographicDetail", true);
+		SessionContext.getInstance().getMapObject().put("registrationPreview", false);
+		registrationController.showCurrentPage();
 	}
 
 	public void modifyDocuments() {
-		//To-Do
-		System.out.println("Modify Documents");
+		SessionContext.getInstance().getMapObject().put("documentScan", true);
+		SessionContext.getInstance().getMapObject().put("registrationPreview", false);
+		registrationController.showCurrentPage();
 	}
 
 	public void modifyBiometrics() {
-		//To-Do
-		System.out.println("Modify Biometrics");
+		SessionContext.getInstance().getMapObject().put("fingerPrintCapture", true);
+		SessionContext.getInstance().getMapObject().put("registrationPreview", false);
+		registrationController.showCurrentPage();
 	}
 }
