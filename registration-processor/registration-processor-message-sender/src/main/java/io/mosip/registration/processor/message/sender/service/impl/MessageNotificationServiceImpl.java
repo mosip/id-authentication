@@ -234,10 +234,12 @@ public class MessageNotificationServiceImpl
 		for (String item : mailTo) {
 			builder.queryParam("mailTo", item);
 		}
-		if (mailCc != null)
+		
+		if (mailCc != null) {
 			for (String item : mailCc) {
 				builder.queryParam("mailCc", item);
 			}
+		}
 
 		builder.queryParam("mailSubject", subject);
 		builder.queryParam("mailContent", artifact);
@@ -396,6 +398,7 @@ public class MessageNotificationServiceImpl
 					.get(regProcessorTemplateJson.getIdentity().getIdschemaversion().getValue()));
 			template.setCnieNumber(
 					(Long) demographicIdentity.get(regProcessorTemplateJson.getIdentity().getCnienumber().getValue()));
+			
 		} catch (ParseException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					null, "Error while parsing Json file" + ExceptionUtils.getStackTrace(e));

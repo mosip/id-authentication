@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.stages.uingenerator.config;
+package io.mosip.registration.processor.message.sender.config;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,10 +14,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
-import io.mosip.registration.processor.stages.uingenerator.stage.UinGeneratorStage;
+import io.mosip.registration.processor.message.sender.stage.MessageSenderStage;
+import io.mosip.registration.processor.message.sender.util.StatusNotificationTypeMapUtil;
 
 @Configuration
-public class UINBeanConfig {
+public class MessageSenderBeanConfig {
 	
 	@Bean
 	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env) throws IOException {
@@ -44,9 +45,15 @@ public class UINBeanConfig {
 		String names = env.getProperty("spring.application.name");
 		return Stream.of(names.split(",")).collect(Collectors.toList());
 	}
-
-	@Bean 
-	public UinGeneratorStage getUinGeneratorStage() {
-		return new UinGeneratorStage();
+	
+	@Bean
+	public MessageSenderStage getMessageSenderStage() {
+		return new MessageSenderStage();
 	}
+	
+	@Bean
+	public StatusNotificationTypeMapUtil getStatusNotificationTypeMapUtil() {
+		return new StatusNotificationTypeMapUtil();
+	}
+
 }

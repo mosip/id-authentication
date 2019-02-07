@@ -196,7 +196,6 @@ public class PacketValidatorStageTest {
 		documents.add(documentPob);
 		documents.add(document);
 		identity.setDocuments(documents);
-		Mockito.when(documentUtility.checkSum(anyString())).thenReturn(true);
 		Mockito.when(documentUtility.getDocumentList(any())).thenReturn(documents);
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 
@@ -223,6 +222,9 @@ public class PacketValidatorStageTest {
 		applicantDemographic.setValue(applicantDemographicValues);
 		fieldValueArrayList.add(applicantDemographic);
 		identity.setHashSequence(fieldValueArrayList);
+		List<String> sequence2 = new ArrayList<>();
+		sequence2.add("audit");
+		identity.setHashSequence2(sequence2);
 		packetMetaInfo.setIdentity(identity);
 
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
@@ -348,6 +350,10 @@ public class PacketValidatorStageTest {
 		applicantDemographic.setValue(applicantDemographicValues);
 		fieldValueArrayList.add(applicantDemographic);
 		identity.setHashSequence(fieldValueArrayList);
+		List<String> sequence2 = new ArrayList<>();
+		sequence2.add("audit");
+		identity.setHashSequence2(sequence2);
+		
 		packetMetaInfo.setIdentity(identity);
 
 		PowerMockito.mockStatic(JsonUtil.class);
@@ -429,6 +435,10 @@ public class PacketValidatorStageTest {
 		applicantDemographic.setValue(applicantDemographicValues);
 		fieldValueArrayList.add(applicantDemographic);
 		identity.setHashSequence(fieldValueArrayList);
+		List<String> sequence2 = new ArrayList<>();
+		sequence2.add("audit");
+		identity.setHashSequence2(sequence2);
+		
 		packetMetaInfo.setIdentity(identity);
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
@@ -449,7 +459,6 @@ public class PacketValidatorStageTest {
 		String test = "123456789";
 		byte[] data = "1234567890".getBytes();
 
-		Mockito.when(documentUtility.checkSum(anyString())).thenReturn(false);
 		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
@@ -561,7 +570,6 @@ public class PacketValidatorStageTest {
 	public void testCheckSumValidationFailureWithRetryCount() throws Exception {
 		String test = "123456789";
 		byte[] data = "1234567890".getBytes();
-		Mockito.when(documentUtility.checkSum(anyString())).thenReturn(false);
 		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)

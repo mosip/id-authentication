@@ -1,5 +1,4 @@
-package io.mosip.registration.processor.stages.uigenerator.config;
-
+package io.mosip.registration.processor.message.sender.config.test;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -14,18 +13,17 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
-import io.mosip.registration.processor.stages.uingenerator.config.UINBeanConfig;
-
-
+import io.mosip.registration.processor.message.sender.config.MessageSenderBeanConfig;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigTest {
 
 	@InjectMocks
-	UINBeanConfig config;
+	private MessageSenderBeanConfig config;
 
 	private Environment env;
-
+	
+	@SuppressWarnings("resource")
 	@Before
 	public void setUp() {
 
@@ -45,8 +43,13 @@ public class ConfigTest {
 	}
 
 	@Test
-	public void ggetUinGeneratorStageTest() {
-		assertNotNull(config.getUinGeneratorStage());
+	public void testgetMessageSenderStage() {
+		assertNotNull(config.getMessageSenderStage());
+	}
+
+	@Test
+	public void testgetStatusNotificationTypeMapUtil() {
+		assertNotNull(config.getStatusNotificationTypeMapUtil());
 	}
 
 }
