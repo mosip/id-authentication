@@ -104,7 +104,7 @@ import io.mosip.kernel.idrepo.repository.UinRepo;
 @Service
 public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponseDTO, Uin> {
 
-	private static final String DATETIME_TIMEZONE = "datetime.timezone";
+	private static final String DATETIME_TIMEZONE = "mosip.kernel.idrepo.datetime.timezone";
 
 	/** The Constant ROOT. */
 	private static final String ROOT = "$";
