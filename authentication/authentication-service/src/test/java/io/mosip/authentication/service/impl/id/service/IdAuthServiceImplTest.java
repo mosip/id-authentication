@@ -118,7 +118,7 @@ public class IdAuthServiceImplTest {
 	@Test
 	public void testGetIdRepoByVidNumber() throws IdAuthenticationBusinessException {
 
-		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidNumber", Mockito.anyString(), false);
+		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVID", Mockito.anyString(), false);
 	}
 
 	@Ignore
