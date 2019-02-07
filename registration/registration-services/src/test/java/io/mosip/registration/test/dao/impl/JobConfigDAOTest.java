@@ -1,4 +1,4 @@
-package io.mosip.registration.test.jobs;
+package io.mosip.registration.test.dao.impl;
 
 
 import static org.hamcrest.CoreMatchers.is;
