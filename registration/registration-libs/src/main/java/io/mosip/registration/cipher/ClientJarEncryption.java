@@ -49,21 +49,17 @@ public class ClientJarEncryption {
 	 */
 	public static void main(String[] args) throws IOException {
 		if (args != null && args.length > 2) {
-			byte[] fileByteArray = null;
 			File file = args[0] != null ? new File(args[0]) : (args[1] != null ? new File(args[1]) : null);
 
 			if (file != null && file.exists()) {
-				fileByteArray = FileUtils.readFileToByteArray(file);
-				if (fileByteArray != null) {
-					String encryptedFileToSave = file.getParent() + SLASH
-							+ file.getName().replaceAll(".jar", "") + "-encrypted.jar";
-					ClientJarEncryption aes = new ClientJarEncryption();
-					byte[] encryptedFileBytes = aes.encyrpt(fileByteArray,
-							Base64.getDecoder().decode(args[2].getBytes()));
-					FileUtils.writeByteArrayToFile(new File(encryptedFileToSave), encryptedFileBytes);
+				byte[] fileByteArray = FileUtils.readFileToByteArray(file);
+				String encryptedFileToSave = file.getParent() + SLASH + file.getName().replaceAll(".jar", "")
+						+ "-encrypted.jar";
+				ClientJarEncryption aes = new ClientJarEncryption();
+				byte[] encryptedFileBytes = aes.encyrpt(fileByteArray, Base64.getDecoder().decode(args[2].getBytes()));
+				FileUtils.writeByteArrayToFile(new File(encryptedFileToSave), encryptedFileBytes);
 
-					System.out.println("File Path created :::" + encryptedFileToSave);
-				}
+				System.out.println("File Path created :::" + encryptedFileToSave);
 			}
 		}
 	}
