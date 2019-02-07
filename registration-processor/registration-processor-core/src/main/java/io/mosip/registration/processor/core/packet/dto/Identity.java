@@ -19,6 +19,7 @@ public class Identity {
 	private List<FieldValue> metaData;
 	private List<FieldValue> osiData;
 	private List<FieldValueArray> hashSequence;
+	private List<String> hashSequence2;
 	private List<FieldValue> capturedRegisteredDevices;
 	private List<FieldValue> capturedNonRegisteredDevices;
 	private List<FieldValue> checkSum;
@@ -141,6 +142,21 @@ public class Identity {
 	 */
 	public void setHashSequence(List<FieldValueArray> hashSequence) {
 		this.hashSequence = hashSequence;
+	}
+	
+	/**
+	 * @return the hashSequence2
+	 */
+	public List<String> getHashSequence2() {
+		return hashSequence2;
+	}
+
+	/**
+	 * @param hashSequence2
+	 *            the hashSequence2 to set
+	 */
+	public void setHashSequence2(List<String> hashSequence2) {
+		this.hashSequence2 = hashSequence2;
 	}
 
 	/**

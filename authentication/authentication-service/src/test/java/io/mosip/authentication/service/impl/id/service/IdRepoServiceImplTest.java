@@ -68,7 +68,7 @@ public class IdRepoServiceImplTest {
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
-		Mockito.when(idReposerviceImpl.getIdRepo("76746685", false)).thenReturn(response);
+		Mockito.when(idReposerviceImpl.getIdenity("76746685", false)).thenReturn(response);
 
 		assertNotNull(response);
 	}
@@ -79,7 +79,7 @@ public class IdRepoServiceImplTest {
 
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null, Map.class))
 				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.SERVER_ERROR));
-		idReposerviceImpl.getIdRepo("76746685", false);
+		idReposerviceImpl.getIdenity("76746685", false);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -90,7 +90,7 @@ public class IdRepoServiceImplTest {
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any()))
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.SERVER_ERROR));
-		idReposerviceImpl.getIdRepo("76746685", false);
+		idReposerviceImpl.getIdenity("76746685", false);
 	}
 
 	@Test

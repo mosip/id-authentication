@@ -258,7 +258,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void checkPinType(List<PinInfo> pinInfo,Errors errors) {
 		for (PinInfo pinInfos : pinInfo) {
-			if (!Stream.of(PinAuthType.values()).anyMatch(pinType -> pinInfos.getType().equals(pinType.getType()))) {
+			if (!Stream.of(PinAuthType.values()).anyMatch(pinType -> pinInfos.getType().equalsIgnoreCase(pinType.getType()))) {
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						new Object[] { PIN_TYPE },
 						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
@@ -1178,7 +1178,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	private Optional<String> getOtpValue(AuthRequestDTO authreqdto) {
 		return Optional.ofNullable(authreqdto.getPinInfo())
 				.flatMap(pinInfos -> pinInfos.stream()
-						.filter(pinInfo -> pinInfo.getType() != null && pinInfo.getType().equals(PinType.OTP.getType()))
+						.filter(pinInfo -> pinInfo.getType() != null && pinInfo.getType().equalsIgnoreCase(PinType.OTP.getType()))
 						.findAny())
 				.map(PinInfo::getValue);
 	}

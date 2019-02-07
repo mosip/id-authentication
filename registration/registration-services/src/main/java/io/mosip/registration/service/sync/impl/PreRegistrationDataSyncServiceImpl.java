@@ -226,7 +226,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO = (MainResponseDTO<LinkedHashMap<String, Object>>) serviceDelegateUtil
 						.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap, false);
 
-				if (isResponseNotEmpty(mainResponseDTO)) {
+				if (isPacketNotEmpty(mainResponseDTO)) {
 
 					PreRegArchiveDTO preRegArchiveDTO = new ObjectMapper().readValue(
 							new JSONObject(mainResponseDTO.getResponse()).toString(), PreRegArchiveDTO.class);
@@ -341,8 +341,11 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	}
 
 	private boolean isResponseNotEmpty(MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO) {
-		return mainResponseDTO != null && mainResponseDTO.getResponse() != null
-				&& mainResponseDTO.getResponse().get("zip-bytes") != null;
+		return mainResponseDTO != null && mainResponseDTO.getResponse() != null;
+	}
+
+	private boolean isPacketNotEmpty(MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO) {
+		return isResponseNotEmpty(mainResponseDTO) && mainResponseDTO.getResponse().get("zip-bytes") != null;
 	}
 
 	@SuppressWarnings("unused")

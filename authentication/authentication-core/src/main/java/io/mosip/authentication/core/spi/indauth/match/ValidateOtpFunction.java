@@ -8,7 +8,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
  */
 
 /**
- * To validate Otp against Otpvalue and Otpkey
+ * To validate OTP against Otpvalue and Otpkey
  *
  */
 public interface ValidateOtpFunction {
