@@ -21,5 +21,13 @@ public interface SyncTransactionRepository extends BaseRepository<SyncTransactio
 	 */
 	List<SyncTransaction> findByCrDtimeAfterAndSyncJobIdNotOrderByCrDtimeDesc(Timestamp req,String syncJobId);
 
+	/**
+	 * Get All Transactions
+	 * @param syncJobId
+	 * @param previousFiredTime transaction created after
+	 * @param currentFiredTime transaction created before
+	 * @return
+	 */
+	List<SyncTransaction> findBySyncJobIdAndCrDtimeBetween(String syncJobId,Timestamp previousFiredTime, Timestamp currentFiredTime);
 	
 }
