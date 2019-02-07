@@ -69,9 +69,9 @@ public class RegistrationConstants {
 	public static final String FACE_IMG_PATH = "/images/face.jpg";
 	public static final String LEFTPALM_IMG_PATH = "/images/leftHandPalm.PNG";
 	public static final String RIGHTPALM_IMG_PATH = "/images/rightHandPalm.PNG";
-	public static final String THUMB_IMG_PATH = "/images/bothThumb.PNG";
-	public static final String RIGHT_IRIS_IMG_PATH = "/images/rightIris.png";
-	public static final String LEFT_IRIS_IMG_PATH = "/images/leftIris.png";
+	public static final String THUMB_IMG_PATH = "/images/thumbs.PNG";
+	public static final String RIGHT_IRIS_IMG_PATH = "/images/Eye.png";
+	public static final String LEFT_IRIS_IMG_PATH = "/images/Eye.png";
 	public static final String VIEW = "/images/View.png";
 	
 	// Authentication

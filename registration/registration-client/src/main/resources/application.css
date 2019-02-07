@@ -701,10 +701,10 @@
 	-fx-border-width: 2.0;
 }
 /* Registration - Biometric - Iris Capture */
-#leftHandPalmPane,#rightHandPalmPane,#thumbPane,.irisImagePane {
+#leftHandPalmPane,#rightHandPalmPane,#thumbPane,#rightIrisPane,#leftIrisPane {
 	-fx-border-color: lightgrey;
 }
-#leftHandPalmPane:focused ,#rightHandPalmPane:focused ,#thumbPane:focused ,.irisImagePane:focused{
+#leftHandPalmPane:focused ,#rightHandPalmPane:focused ,#thumbPane:focused ,#rightIrisPane:focused,#leftIrisPane:focused{
 	-fx-border-color: black;
 }
 

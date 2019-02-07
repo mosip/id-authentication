@@ -47,7 +47,7 @@
                   <Label layoutX="376.0" layoutY="25.0" styleClass="onboardOperatorDetails" text="Label" />
                </children>
             </AnchorPane>
-            <AnchorPane layoutX="66.0" layoutY="90.0" prefHeight="231.0" prefWidth="788.0">
+            <AnchorPane fx:id="irisPane" layoutX="66.0" layoutY="90.0" prefHeight="231.0" prefWidth="788.0">
                <children>
                   <AnchorPane layoutX="429.0" prefHeight="231.0" prefWidth="345.0">
                      <children>
@@ -74,7 +74,7 @@
                         <Label layoutX="225.0" layoutY="202.0" styleClass="onboardBioDetailsHeader" text="Left Iris" />
                      </children>
                   </AnchorPane>
-                  <AnchorPane layoutX="40.0" prefHeight="231.0" prefWidth="345.0" styleClass="exceptionFingerPane">
+                  <AnchorPane fx:id="fingerPane" layoutX="40.0" prefHeight="231.0" prefWidth="345.0" styleClass="exceptionFingerPane">
                      <children>
                         <Label styleClass="onboardPageBioTitle" text="%exception" />
                         <Pane fx:id="rightHandPane" layoutX="32.0" layoutY="33.0" prefHeight="157.0" prefWidth="120.0" styleClass="biometricExceptionPane">
