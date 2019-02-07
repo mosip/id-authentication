@@ -104,6 +104,12 @@ import io.mosip.kernel.idrepo.repository.UinRepo;
 @Service
 public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponseDTO, Uin> {
 
+	private static final String GET_FILES = "getFiles";
+
+	private static final String DECRYPT = "decrypt";
+
+	private static final String ENCRYPT = "encrypt";
+
 	private static final String DATETIME_TIMEZONE = "mosip.kernel.idrepo.datetime.timezone";
 
 	/** The Constant ROOT. */
@@ -379,7 +385,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 					byte[] cbeffDoc = convertToFMR(doc.getCategory(), doc.getValue());
 
 					dfsProvider.storeFile(uin, BIOMETRICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
-							encryptDecryptDocuments(CryptoUtil.encodeBase64(cbeffDoc), "encrypt"));
+							CryptoUtil.decodeBase64(
+									new String(encryptDecryptDocuments(CryptoUtil.encodeBase64(cbeffDoc), ENCRYPT))));
 
 					bioList.add(new UinBiometric(uinRefId, fileRefId, doc.getCategory(), docType.get(VALUE).asText(),
 							hash(cbeffDoc), LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now()));
@@ -393,7 +400,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 							.atZone(ZoneId.of(env.getProperty(DATETIME_TIMEZONE))).toInstant().toEpochMilli();
 
 					dfsProvider.storeFile(uin, DEMOGRAPHICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
-							encryptDecryptDocuments(doc.getValue(), "encrypt"));
+							CryptoUtil.decodeBase64(
+									new String(encryptDecryptDocuments(doc.getValue(), ENCRYPT))));
 
 					docList.add(new UinDocument(uinRefId, doc.getCategory(), docType.get(TYPE).asText(), fileRefId,
 							docType.get(VALUE).asText(), docType.get(FORMAT).asText(),
@@ -537,14 +545,14 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 				String fileName = DEMOGRAPHICS + SLASH + demo.getDocId() + DOT
 						+ identityMap.get(demo.getDoccatCode()).get(FORMAT).asText();
 				String data = new String(encryptDecryptDocuments(
-						new String(dfsProvider.getFile(uinObject.getUin(), fileName)), "decrypt"));
+						CryptoUtil.encodeBase64(dfsProvider.getFile(uinObject.getUin(), fileName)), DECRYPT));
 				if (demo.getDocHash().equals(hash(CryptoUtil.decodeBase64(data)))) {
 					documents.add(new Documents(demo.getDoccatCode(), data));
 				} else {
 					throw new IdRepoAppException(IdRepoErrorConstants.DOCUMENT_HASH_MISMATCH);
 				}
 			} catch (IdRepoAppException e) {
-				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "getFiles",
+				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
 						"\n" + ExceptionUtils.getStackTrace(e));
 				throw new IdRepoAppUncheckedException(e.getErrorCode(), e.getErrorText(), e);
 			}
@@ -568,7 +576,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 					String fileName = BIOMETRICS + SLASH + bio.getBioFileId() + DOT
 							+ identityMap.get(bio.getBiometricFileType()).get(FORMAT).asText();
 					String data = new String(encryptDecryptDocuments(
-							new String(dfsProvider.getFile(uinObject.getUin(), fileName)), "decrypt"));
+							CryptoUtil.encodeBase64(dfsProvider.getFile(uinObject.getUin(), fileName)), DECRYPT));
 					if (Objects.nonNull(data)) {
 						if (StringUtils.equals(bio.getBiometricFileHash(), hash(CryptoUtil.decodeBase64(data)))) {
 							documents.add(new Documents(bio.getBiometricFileType(), data));
@@ -577,7 +585,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 						}
 					}
 				} catch (IdRepoAppException e) {
-					mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "getFiles",
+					mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
 							"\n" + ExceptionUtils.getStackTrace(e));
 					throw new IdRepoAppUncheckedException(e.getErrorCode(), e.getErrorText(), e);
 				}
@@ -1020,11 +1028,13 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 					try {
 						String fileName = BIOMETRICS + SLASH + bio.getBioFileId() + DOT
 								+ identityMap.get(bio.getBiometricFileType()).get(FORMAT).asText();
+						String data = new String(encryptDecryptDocuments(
+								CryptoUtil.encodeBase64(dfsProvider.getFile(uinObject.getUin(), fileName)), DECRYPT));
 						doc.setValue(CryptoUtil.encodeBase64(cbeffUtil.updateXML(
 								convertToBIR(cbeffUtil.getBIRDataFromXML(CryptoUtil.decodeBase64(doc.getValue()))),
-								dfsProvider.getFile(uinObject.getUin(), fileName))));
+								CryptoUtil.decodeBase64(data))));
 					} catch (IdRepoAppException e) {
-						mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "getFiles",
+						mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
 								"\n" + ExceptionUtils.getStackTrace(e));
 						throw new IdRepoAppUncheckedException(e.getErrorCode(), e.getErrorText(), e);
 					} catch (Exception e) {
@@ -1123,7 +1133,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			request.put("timeStamp", DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN)));
 			request.put("data", document);
 
-			if (method.equals("encrypt")) {
+			if (method.equals(ENCRYPT)) {
 				restRequest = restFactory.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT, request, ObjectNode.class);
 			} else {
 				restRequest = restFactory.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT, request, ObjectNode.class);
