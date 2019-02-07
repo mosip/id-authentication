@@ -190,8 +190,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 		LOGGER.info("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"packet status sync called");
-
-		List<LinkedHashMap<String, String>> registrations = new ArrayList<>();
+		 
 		List<String> packetIds = getPacketIds();
 		LOGGER.info("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"PacketIds for sync with server have been retrieved");
@@ -210,7 +209,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 		try {
 			/* Obtain RegistrationStatusDTO from service delegate util */
-			registrations = (List<LinkedHashMap<String, String>>) serviceDelegateUtil.get(SERVICE_NAME, requestParamMap,
+			List<LinkedHashMap<String, String>> registrations = (List<LinkedHashMap<String, String>>) serviceDelegateUtil.get(SERVICE_NAME, requestParamMap,
 					false);
 			if (!registrations.isEmpty()) {
 				/* update the status of packets after sync with server */
