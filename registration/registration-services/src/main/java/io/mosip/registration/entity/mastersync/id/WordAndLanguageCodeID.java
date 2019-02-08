@@ -4,6 +4,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.Data;
+
 /**
  * ID class for the columns word and language code.
  * 
@@ -11,7 +13,7 @@ import javax.persistence.Embeddable;
  * @since 1.0.0
  */
 @Embeddable
-
+@Data
 public class WordAndLanguageCodeID implements Serializable {
 
 	/**
