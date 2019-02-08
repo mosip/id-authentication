@@ -5,7 +5,7 @@
   <parent>
     <groupId>io.mosip.registrationprocessor</groupId>
     <artifactId>registration-processor</artifactId>
-    <version>0.8.1</version>
+    <version>0.8.2</version>
   </parent>
 
   <artifactId>packet-bio-dedupe-service-impl</artifactId>
