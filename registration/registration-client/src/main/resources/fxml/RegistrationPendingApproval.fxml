@@ -13,16 +13,16 @@
    <children>
       <AnchorPane fx:id="approveRegistrationRootSubPane" layoutY="51.0" prefHeight="551.0" prefWidth="1272.0" styleClass="anchorPanebgColor">
          <children>
-            <AnchorPane fx:id="imageAnchorPane" layoutX="425.0" layoutY="18.0" prefHeight="539.0" prefWidth="843.0" styleClass="imageAnchorPaneStyle">
+            <AnchorPane fx:id="imageAnchorPane" layoutX="497.0" layoutY="14.0" prefHeight="545.0" prefWidth="775.0" styleClass="imageAnchorPaneStyle">
                <children>
-                  <WebView fx:id="webView" prefHeight="533.0" prefWidth="843.0" />
+                  <WebView fx:id="webView" layoutY="-3.0" prefHeight="539.0" prefWidth="770.0" />
                </children>
             </AnchorPane>
-            <TableView fx:id="table" layoutX="13.0" layoutY="20.0" prefHeight="533.0" prefWidth="398.0">
+            <TableView fx:id="table" styleClass="tableData" layoutX="13.0" layoutY="14.0" prefHeight="539.0" prefWidth="466.0">
                <columns>
                   <TableColumn fx:id="id" prefWidth="245.0" text="%registrationid" />
                   <TableColumn fx:id="acknowledgementFormPath" prefWidth="199.0" text="%registrtionid" visible="false" />
-                  <TableColumn fx:id="statusComment" prefWidth="165.0" text="%status" />
+                  <TableColumn fx:id="statusComment" prefWidth="220.0" text="%status" />
                </columns>
             </TableView>
          </children>

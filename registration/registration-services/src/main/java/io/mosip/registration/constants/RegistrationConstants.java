@@ -185,8 +185,9 @@ public class RegistrationConstants {
 	public static final String REJECTION_COMMENTS = "REJECT_COMMENTS";
 	public static final String EMPTY = "";
 	public static final String CONSTANTS_FILE_NAME = "/constants.properties";
-	public static final String APPROVED = "Approved";
-	public static final String REJECTED = "Rejected";
+	public static final String APPROVED = "Marked for Approval";
+	public static final String REJECTED = "Marked for Rejection";
+	public static final String PENDING = "Pending";
 
 	// AES Encryption Constants
 	public static final String AES_KEY_MANAGER_ALG = "aes.algorithm";

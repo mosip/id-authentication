@@ -646,6 +646,14 @@
     -fx-text-fill: black;
     -fx-font-size: 14.0px;
 }
+.tableData .table-column {
+	-fx-font-size: 12.0px;
+	-fx-alignment: CENTER;
+}
+
+.tableData {
+	-fx-font-family: Roboto;
+}
 #table,#pendingActionTable{
 	-fx-text-fill: black;
     -fx-font-size: 14.0px;
