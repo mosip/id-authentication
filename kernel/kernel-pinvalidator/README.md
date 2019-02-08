@@ -1,10 +1,10 @@
 ## kernel-pinvalidator
 
- 1- ** [Background & Design](../../design/kernel/kernel-pinvalidator.md) **
+[Background & Design -TBA-](../../design/kernel/kernel-pinvalidator.md)
  
 
- 
- 2- ** API Documentation **
+
+[API Documentation]
  
  ```
  mvn javadoc:javadoc
