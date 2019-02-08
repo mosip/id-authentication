@@ -16,15 +16,18 @@ MOSIP system can use multiple file systems. For example, the files system can be
 - When MOSIP decides to switch the file system, it should be configurable. 
 
 
-**Module diagram**
+
+
+**Class diagram**
 
 
 
-![Module Diagram](_images/kernel-filesystemadapter.jpg)
+
+![Module Diagram](_images/kernel-fsadapter-hdfs-cd.png)
 
 
 
 ## Implementation
 
 
-**kernel-filesystemadapter** [README](../../kernel/kernel-filesystemadapter/README.md)
+**kernel-fsadapter-hdfs** [README](../../../kernel/kernel-fsadapter-hdfs/README.md)

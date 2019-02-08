@@ -40,7 +40,7 @@ spring.cloud.config.server.git.cloneOnStart=true
 
 **Config hierarchy**
 
-![Confif Properties](../../docs/design/_images/GlobalProperties.jpg)
+![Confif Properties](../../docs/design/kernel/_images/GlobalProperties_1.jpg)
 
 
 
