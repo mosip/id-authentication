@@ -2,11 +2,14 @@ package io.mosip.registration.service.config.impl;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -26,11 +29,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
 
+import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.time.ExecutionTime;
+import com.cronutils.parser.CronParser;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
@@ -54,6 +61,9 @@ import io.mosip.registration.service.config.JobConfigurationService;
 @Service
 public class JobConfigurationServiceImpl extends BaseService implements JobConfigurationService {
 
+	/**
+	 *  To Fetch Job Configuration details
+	 */
 	@Autowired
 	private SyncJobConfigDAO jobConfigDAO;
 
@@ -64,9 +74,15 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	@Autowired
 	private SchedulerFactoryBean schedulerFactoryBean;
 
+	/**
+	 * To get Sync Transactions
+	 */
 	@Autowired
 	private SyncTransactionDAO syncJobTransactionDAO;
 
+	/**
+	 * To get last completed transactions
+	 */
 	@Autowired
 	private SyncJobControlDAO syncJobDAO;
 
@@ -87,12 +103,27 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 	private boolean isSchedulerRunning = false;
 
+	/**
+	 * To send it in job detail as Base job needs application context
+	 */
+	@Autowired
 	private ApplicationContext applicationContext;
 
+	/**
+	 * To load in JobDetail
+	 */
 	private JobDataMap jobDataMap = null;
 
+	/**
+	 * To fetch required global params
+	 */
 	@Autowired
 	private GlobalParamDAO globalParamDAO;
+
+	/**
+	 * Base Job
+	 */
+	BaseJob baseJob;
 
 	/*
 	 * (non-Javadoc)
@@ -144,7 +175,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	 * @see io.mosip.registration.service.JobConfigurationService#startJobs(org.
 	 * springframework.context.ApplicationContext)
 	 */
-	public ResponseDTO startScheduler(ApplicationContext applicationContext) {
+	public ResponseDTO startScheduler() {
 		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "start jobs invocation started");
 
@@ -156,9 +187,9 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		} else {
 			schedulerFactoryBean.start();
 			isSchedulerRunning = true;
+			
+			/* Job Data Map */
 			Map<String, Object> jobDataAsMap = new HashMap<>();
-
-			this.applicationContext = applicationContext;
 			jobDataAsMap.put("applicationContext", applicationContext);
 			jobDataAsMap.putAll(syncJobMap);
 
@@ -182,7 +213,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 						&& isSchedulerRunning && !schedulerFactoryBean.getScheduler().checkExists(new JobKey(jobId))) {
 
 					// Get Job instance through application context
-					BaseJob baseJob = (BaseJob) applicationContext.getBean(syncJob.getApiName());
+					baseJob = (BaseJob) applicationContext.getBean(syncJob.getApiName());
 
 					JobDetail jobDetail = JobBuilder.newJob(baseJob.jobClass()).withIdentity(syncJob.getId())
 							.usingJobData(jobDataMap).build();
@@ -192,6 +223,9 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 							.withSchedule(CronScheduleBuilder.cronSchedule(syncJob.getSyncFrequency())).build();
 
 					schedulerFactoryBean.getScheduler().scheduleJob(jobDetail, trigger);
+					
+					/* Check and execute if the job misses its previous scheduled trigger */
+					executeMissedTriggers(jobId, syncJob.getSyncFrequency());
 
 				}
 			} catch (SchedulerException | NoSuchBeanDefinitionException exception) {
@@ -201,7 +235,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				/* Stop, Clear Scheduler and set Error response */
 				setStartExceptionError(responseDTO);
 
-			} catch(RuntimeException runtimeException) {
+			} catch (RuntimeException runtimeException) {
 				LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 				setStartExceptionError(responseDTO);
@@ -222,15 +256,14 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		try {
 			/* Clear Scheduler */
 			clearScheduler();
-			
-		}  catch (SchedulerException schedulerException) {
+
+		} catch (SchedulerException schedulerException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
 		}
 
 		/* Error Response */
 		setErrorResponse(responseDTO, RegistrationConstants.START_SCHEDULER_ERROR_MESSAGE, null);
-
 
 	}
 
@@ -249,23 +282,20 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		try {
 			if (schedulerFactoryBean.isRunning()) {
 
-				try {
-					/* Clear and Stop Scheduler */
-					clearScheduler();
-					
-					setSuccessResponse(responseDTO, RegistrationConstants.BATCH_JOB_STOP_SUCCESS_MESSAGE, null);
+				/* Clear and Stop Scheduler */
+				clearScheduler();
 
-				} catch (SchedulerException schedulerException) {
-					LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-							RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
-					setErrorResponse(responseDTO, RegistrationConstants.STOP_SCHEDULER_ERROR_MESSAGE, null);
-
-				}
+				setSuccessResponse(responseDTO, RegistrationConstants.BATCH_JOB_STOP_SUCCESS_MESSAGE, null);
 
 			} else {
 				setErrorResponse(responseDTO, RegistrationConstants.SYNC_DATA_PROCESS_ALREADY_STOPPED, null);
 
 			}
+		} catch (SchedulerException schedulerException) {
+			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
+			setErrorResponse(responseDTO, RegistrationConstants.STOP_SCHEDULER_ERROR_MESSAGE, null);
+
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
@@ -336,15 +366,12 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		return responseDTO;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.registration.service.JobConfigurationService#executeJob(java.lang.
-	 * String)
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.config.JobConfigurationService#executeJob(java.lang.String)
 	 */
 	@Override
-	public ResponseDTO executeJob(ApplicationContext applicationContext, String jobId) {
+	public ResponseDTO executeJob(String jobId) {
 
 		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Execute job started");
@@ -353,13 +380,18 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 			SyncJobDef syncJobDef = syncActiveJobMap.get(jobId);
 
-			// Get Job using application context and api name
-			BaseJob job = (BaseJob) applicationContext.getBean(syncJobDef.getApiName());
+			if(syncJobDef!=null) {
+				// Get Job using application context and api name
+				baseJob = (BaseJob) applicationContext.getBean(syncJobDef.getApiName());
 
-			String triggerPoint = SessionContext.userContext().getUserId();
+				String triggerPoint = getUserIdFromSession()!=null ? getUserIdFromSession() :RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
 
-			// Job Invocation
-			responseDTO = job.executeJob(triggerPoint, jobId);
+				// Job Invocation
+				responseDTO = baseJob.executeJob(triggerPoint, jobId);
+			} else {
+				responseDTO =new ResponseDTO();
+				setErrorResponse(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE, null);
+			}
 
 		} catch (NoSuchBeanDefinitionException | NullPointerException | IllegalArgumentException exception) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -555,4 +587,33 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		return jobConfigDAO.updateAll(syncJobDefs);
 	}
 
+	private void executeMissedTriggers(String jobId, String syncFrequency) {
+
+		/* create a parser based on provided definition */
+		CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+
+		ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(syncFrequency));
+
+		Optional<ZonedDateTime> last = executionTime.lastExecution(ZonedDateTime.now(ZoneOffset.systemDefault()));
+		Optional<ZonedDateTime> next = executionTime.nextExecution(ZonedDateTime.now(ZoneOffset.systemDefault()));
+
+		/* Check last and next has values present */
+		if (last.isPresent() && next.isPresent()) {
+
+			/* Get all Transactions in between last and next crDtimes */
+			List<SyncTransaction> syncTransactions = syncJobTransactionDAO.getAll(jobId,
+					Timestamp.from(last.get().toInstant()), Timestamp.from(next.get().toInstant()));
+
+			/* Execute the Job if it was not started on previous pre-scheduled time */
+			if ((isNull(syncTransactions) || isEmpty(syncTransactions))
+					&& (executeJob(jobId).getSuccessResponseDTO() != null)) {
+				baseJob.setApplicationContext(applicationContext);
+
+				/* Execute all its child jobs */
+				baseJob.executeChildJob(jobId, syncJobMap);
+
+			}
+		}
+
+	}
 }

@@ -33,12 +33,12 @@ public enum PinMatchType implements MatchType {
 
 	/** Primary Pin Match Type. */
 	SPIN(IdaIdMapping.PIN, setOf(PinMatchingStrategy.EXACT), authReqDTO -> {
-		return authReqDTO.getPinInfo().stream().filter(type -> type.getType().equals("pin")).findFirst()
+		return authReqDTO.getPinInfo().stream().filter(type -> type.getType().equalsIgnoreCase(PinAuthType.SPIN.getType())).findFirst()
 				.map(PinInfo::getValue).orElse("");
 	}, AuthUsageDataBit.USED_STATIC_PIN, AuthUsageDataBit.MATCHED_STATIC_PIN),
 	OTP(IdaIdMapping.OTP, setOf(OtpMatchingStrategy.EXACT), 
 		authReqDTO -> {
-			return authReqDTO.getPinInfo().stream().filter(type -> type.getType().equalsIgnoreCase("otp")).findFirst()
+			return authReqDTO.getPinInfo().stream().filter(type -> type.getType().equalsIgnoreCase(PinAuthType.OTP.getType())).findFirst()
 					.map(PinInfo::getValue).orElse("");
 		}, AuthUsageDataBit.USED_OTP, AuthUsageDataBit.MATCHED_OTP);
 

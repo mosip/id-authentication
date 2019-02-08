@@ -82,7 +82,7 @@ public class LogfactoryTest {
 		assertThat(Logfactory.getDefaultConsoleLogger(mosipConsoleAppender, "LogfactoryTest"), isA(Logger.class));
 
 	}
-	
+
 	@Test
 	public void testgetDefaultConsoleLoggerLogLevelClazz() {
 		mosipConsoleAppender.setAppenderName("testConsoleappender");
@@ -167,7 +167,7 @@ public class LogfactoryTest {
 		mosipFileAppender.setPrudent(false);
 		assertThat(Logfactory.getDefaultFileLogger(mosipFileAppender, "LogfactoryTest"), isA(Logger.class));
 	}
-	
+
 	@Test
 	public void testgetDefaultFileLoggerClassLogLevelWithoutRolling() {
 		mosipFileAppender.setAppenderName("testFileappender");
@@ -289,7 +289,7 @@ public class LogfactoryTest {
 		assertThat(Logfactory.getDefaultRollingFileLogger(mosipRollingFileAppender, "LogfactoryTest"),
 				isA(Logger.class));
 	}
-	
+
 	@Test
 	public void testgetDefaultFileLoggerClazzLogLevelWithRolling() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");

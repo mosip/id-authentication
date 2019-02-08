@@ -40,6 +40,7 @@ import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.dao.SyncTransactionDAO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
@@ -145,15 +146,23 @@ public class JobConfigurationServiceTest {
 
 	@Test
 	public void startJobs() throws SchedulerException {
-		BaseJob job = new PacketSyncStatusJob();
+		//BaseJob job = new PacketSyncStatusJob();
 
 		Mockito.when(schedulerFactoryBean.getScheduler()).thenReturn(scheduler);
 		Mockito.when(scheduler.scheduleJob(Mockito.any(), Mockito.any())).thenReturn(new Date());
 
 		initiateJobTest();
-		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(job);
+		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(packetSyncJob);
+		Mockito.when(packetSyncJob.jobClass()).thenReturn(PacketSyncStatusJob.class);
+		Mockito.when(syncJobTransactionDAO.getAll(Mockito.anyString(),new Timestamp(Mockito.anyLong()),new Timestamp(Mockito.anyLong()))).thenReturn(new LinkedList<>());
+		
+		ResponseDTO responseDTO=new ResponseDTO();
+		SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
+		responseDTO.setSuccessResponseDTO(successResponseDTO);
+		Mockito.when(packetSyncJob.executeJob(Mockito.anyString(), Mockito.anyString())).thenReturn(responseDTO);
+
 		assertSame(RegistrationConstants.BATCH_JOB_START_SUCCESS_MESSAGE,
-				jobConfigurationService.startScheduler(applicationContext).getSuccessResponseDTO().getMessage());
+				jobConfigurationService.startScheduler().getSuccessResponseDTO().getMessage());
 	}
 
 	@Test
@@ -166,7 +175,7 @@ public class JobConfigurationServiceTest {
 		doNothing().when(scheduler).clear();
 		initiateJobTest();
 		assertSame(RegistrationConstants.START_SCHEDULER_ERROR_MESSAGE,
-				jobConfigurationService.startScheduler(applicationContext).getErrorResponseDTOs().get(0).getMessage());
+				jobConfigurationService.startScheduler().getErrorResponseDTOs().get(0).getMessage());
 
 	}
 
@@ -243,13 +252,13 @@ public class JobConfigurationServiceTest {
 		initiateJobTest();
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(packetSyncJob);
 		Mockito.when(packetSyncJob.executeJob(Mockito.anyString(), Mockito.anyString())).thenReturn(new ResponseDTO());
-		jobConfigurationService.executeJob(applicationContext, "1234");
+		jobConfigurationService.executeJob( "1234");
 	}
 
 	@Test
 	public void executeJobExceptionJobTest() throws SchedulerException {
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenThrow(NoSuchBeanDefinitionException.class);
-		jobConfigurationService.executeJob(applicationContext, "packetSyncStatusJob");
+		jobConfigurationService.executeJob("packetSyncStatusJob");
 	}
 
 	@Test

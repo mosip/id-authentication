@@ -4,26 +4,23 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.SocketTimeoutException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
-import com.google.gson.Gson;
-
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dto.ErrorResponseDTO;
+import io.mosip.registration.dto.RegCenterMachineUserReqDto;
+import io.mosip.registration.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.UserMachineMapping;
@@ -33,7 +30,11 @@ import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.UserMachineMappingService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
-
+/**
+ * 
+ * @author Brahmananda Reddy
+ *
+ */
 @Service
 public class UserMachineMappingServiceImpl implements UserMachineMappingService {
 	@Autowired
@@ -48,11 +49,11 @@ public class UserMachineMappingServiceImpl implements UserMachineMappingService 
 	public ResponseDTO syncUserDetails() {
 		LOGGER.debug("REGISTRATION-ONBOARDED-USER-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"sync user details is started");
-
 		String systemMacId = null;
 		String machineId = null;
 		String centerId = null;
 		List<UserMachineMapping> userMachineMappingList = null;
+		List<RegistrationCenterUserMachineMappingDto> list = new ArrayList<>();
 		ResponseDTO responseDTO = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
@@ -60,47 +61,41 @@ public class UserMachineMappingServiceImpl implements UserMachineMappingService 
 					RegistrationConstants.POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE);
 		} else {
 
-		try {
+			try {
+				systemMacId = baseService.getMacAddress();
+				machineId = baseService.getStationId(systemMacId);
+				centerId = baseService.getCenterId(machineId);
+				userMachineMappingList = machineMappingDAO.getUserMappingDetails(machineId);
+				RegCenterMachineUserReqDto<RegistrationCenterUserMachineMappingDto> regCenterMachineUserReqDto = new RegCenterMachineUserReqDto<>();
+				regCenterMachineUserReqDto.setId("REGISTRATION");
+				regCenterMachineUserReqDto.setTimestamp(LocalDateTime.now());
+				for (UserMachineMapping userMachineMapping : userMachineMappingList) {
+					RegistrationCenterUserMachineMappingDto registrationCenterUserMachineMappingDto = new RegistrationCenterUserMachineMappingDto();
+					registrationCenterUserMachineMappingDto.setCntrId(centerId);
+					registrationCenterUserMachineMappingDto.setMachineId(machineId);
+					registrationCenterUserMachineMappingDto.setActive(true);
+					registrationCenterUserMachineMappingDto.setUsrId(userMachineMapping.getUserDetail().getId());
+					list.add(registrationCenterUserMachineMappingDto);
+				}
+				regCenterMachineUserReqDto.setVer("0.08");
+				regCenterMachineUserReqDto.setRequest(list);
+				serviceDelegateUtil.post("user_machine_mapping", regCenterMachineUserReqDto);
+				successResponseDTO.setCode(RegistrationConstants.POLICY_SYNC_SUCCESS_CODE);
+				successResponseDTO.setMessage(RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE);
+				successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
+				responseDTO.setSuccessResponseDTO(successResponseDTO);
 
-			systemMacId = baseService.getMacAddress();
-			machineId = baseService.getStationId(systemMacId);
-			centerId = baseService.getCenterId(machineId);
-			
-			userMachineMappingList = machineMappingDAO.getUserMappingDetails(machineId);
-			Map<String, Object> jsonMap = new HashMap<>();
-			jsonMap.put("id", "REGISTRATION");
+				LOGGER.debug("REGISTRATION-ONBOARDED-USER-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
+						"sync user details is ended");
+			} catch (HttpClientErrorException | ResourceAccessException | SocketTimeoutException
+					| RegBaseCheckedException | RegBaseUncheckedException exception) {
+				exception.printStackTrace();
+				LOGGER.error("REGISTRATION-ONBOARDED-USER-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
+						exception.getMessage());
+				responseDTO = buildErrorRespone(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_CODE,
+						RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE);
 
-			List<Map<String, Object>> userDetailsList = new ArrayList();
-			for (UserMachineMapping userMachineMapping : userMachineMappingList) {
-				Map<String, Object> map = new HashMap<>();
-				map.put("cntrId", centerId);
-				map.put("isActive", userMachineMapping.getUserDetail().getIsActive());
-				map.put("machineId", machineId);
-				map.put("userId", userMachineMapping.getUserDetail().getId());
-				userDetailsList.add(map);
 			}
-			jsonMap.put("request", userDetailsList);
-			jsonMap.put("timeStamp", Timestamp.valueOf(LocalDateTime.now()));
-			jsonMap.put("ver", "0.08");
-			Gson gson = new Gson();
-			String json = gson.toJson(jsonMap);
-			
-			serviceDelegateUtil.post("user_machine_mapping", json);
-			successResponseDTO.setCode(RegistrationConstants.POLICY_SYNC_SUCCESS_CODE);
-			successResponseDTO.setMessage(RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE);
-			successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
-			responseDTO.setSuccessResponseDTO(successResponseDTO);
-
-			LOGGER.debug("REGISTRATION-ONBOARDED-USER-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
-					"sync user details is ended");
-		} catch (HttpClientErrorException | ResourceAccessException | SocketTimeoutException
-				| RegBaseCheckedException|RegBaseUncheckedException exception) {
-			LOGGER.error("REGISTRATION-ONBOARDED-USER-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage());
-			responseDTO = buildErrorRespone(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_CODE,
-					RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE);
-		
-		}
 		}
 
 		return responseDTO;

@@ -21,14 +21,13 @@ import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.Identity;
-import io.mosip.registration.entity.mastersync.MasterDocumentType;
+import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.util.scan.DocumentScanFacade;
 import javafx.embed.swing.SwingFXUtils;
@@ -125,7 +124,7 @@ public class DocumentScanController extends BaseController {
 
 	List<BufferedImage> scannedPages;
 
-	private List<MasterDocumentType> documents;
+	private List<DocumentCategoryDto> documents;
 
 	@Value("${DOCUMENT_SIZE}")
 	public int documentSize;

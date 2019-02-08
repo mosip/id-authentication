@@ -87,7 +87,7 @@ public class IdAuthServiceTest {
 	public void testValidateUIN() throws IdAuthenticationBusinessException {
 		String uin = "1234567890";
 //		Mockito.when(uinRepository.findByUinRefId(Mockito.anyString())).thenReturn(null);
-		idAuthServiceImpl.getIdRepoByUinNumber(uin, false);
+		idAuthServiceImpl.getIdRepoByUIN(uin, false);
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class IdAuthServiceTest {
 	public void testValidateVID() throws IdAuthenticationBusinessException {
 		String vid = "1234567890";
 		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(null);
-		idAuthServiceImpl.getIdRepoByVidNumber(vid, false);
+		idAuthServiceImpl.getIdRepoByVID(vid, false);
 	}
 
 	/*
@@ -114,7 +114,7 @@ public class IdAuthServiceTest {
 		VIDEntity vidEntity = new VIDEntity();
 		vidEntity.setActive(false);
 		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
-		idAuthServiceImpl.getIdRepoByVidNumber(vid, false);
+		idAuthServiceImpl.getIdRepoByVID(vid, false);
 	}
 
 	/**
@@ -130,7 +130,7 @@ public class IdAuthServiceTest {
 		vidEntity.setActive(true);
 		vidEntity.setExpiryDate(new Date(2018, 9, 24));
 		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
-		idAuthServiceImpl.getIdRepoByVidNumber(vid, false);
+		idAuthServiceImpl.getIdRepoByVID(vid, false);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)

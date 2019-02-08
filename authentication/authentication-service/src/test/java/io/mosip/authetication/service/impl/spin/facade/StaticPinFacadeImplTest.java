@@ -171,8 +171,8 @@ public class StaticPinFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		Mockito.when(idAuthService.processIdType(IdType.UIN.getType(), uin, false)).thenReturn(idRepo);
-		Mockito.when(idRepoService.getIdRepo(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
-		Mockito.when(idAuthService.getIdRepoByUinNumber(Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(repoDetails(uin));
 
 		Mockito.when(idInfoService.getIdInfo(repoDetails(uin))).thenReturn(idInfo);
@@ -225,8 +225,8 @@ public class StaticPinFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		Mockito.when(idAuthService.processIdType(IdType.VID.getType(), vid, false)).thenReturn(idRepo);
-		Mockito.when(idRepoService.getIdRepo(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
-		Mockito.when(idAuthService.getIdRepoByUinNumber(Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(repoDetails(vid));
 
 		Mockito.when(idInfoService.getIdInfo(repoDetails(vid))).thenReturn(idInfo);
@@ -279,8 +279,8 @@ public class StaticPinFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		Mockito.when(idAuthService.processIdType(IdType.VID.getType(), vid, false)).thenReturn(idRepo);
-		Mockito.when(idRepoService.getIdRepo(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
-		Mockito.when(idAuthService.getIdRepoByUinNumber(Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(repoDetails(vid));
 
 		Mockito.when(idInfoService.getIdInfo(repoDetails(vid))).thenReturn(idInfo);

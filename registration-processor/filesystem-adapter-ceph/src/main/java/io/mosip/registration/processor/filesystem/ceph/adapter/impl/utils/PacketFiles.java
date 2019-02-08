@@ -102,5 +102,15 @@ public enum PacketFiles {
 	/** The introducerfingerprintype. */
 	INTRODUCERFINGERPRINTYPE,
 	/** The introduceriristype. */
-	INTRODUCERIRISTYPE
+	INTRODUCERIRISTYPE,
+	/** The officer bio cbeff. */
+	OFFICER_BIO_CBEFF,
+	/** The supervisor bio cbeff. */
+	SUPERVISOR_BIO_CBEFF,
+	/** The audit. */
+	AUDIT,
+	/** The packet data hash. */
+	PACKET_DATA_HASH,
+	/** The packet osi hash. */
+	PACKET_OSI_HASH
 }

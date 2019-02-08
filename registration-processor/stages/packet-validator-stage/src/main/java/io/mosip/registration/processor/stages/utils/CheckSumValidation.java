@@ -10,6 +10,7 @@ import org.apache.commons.io.IOUtils;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
+import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 /**
@@ -20,20 +21,19 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 public class CheckSumValidation {
 
-	/** The Constant HMAC_FILE. */
-	public static final String HMAC_FILE = "HMACFILE";
-
 	/** The adapter. */
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
 	/** The registration status dto. */
-	InternalRegistrationStatusDto registrationStatusDto;
+	private InternalRegistrationStatusDto registrationStatusDto;
 
 	/**
 	 * Instantiates a new check sum validation.
 	 *
-	 * @param adapter            the adapter
-	 * @param registrationStatusDto the registration status dto
+	 * @param adapter
+	 *            the adapter
+	 * @param registrationStatusDto
+	 *            the registration status dto
 	 */
 	public CheckSumValidation(FileSystemAdapter<InputStream, Boolean> adapter,
 			InternalRegistrationStatusDto registrationStatusDto) {
@@ -45,28 +45,44 @@ public class CheckSumValidation {
 	/**
 	 * Checksumvalidation.
 	 *
-	 * @param registrationId            the registration id
-	 * @param identity the identity
+	 * @param registrationId
+	 *            the registration id
+	 * @param identity
+	 *            the identity
 	 * @return true, if successful
-	 * @throws IOException             Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public boolean checksumvalidation(String registrationId, Identity identity) throws IOException {
 		List<FieldValueArray> hashSequence = identity.getHashSequence();
+		List<String> hashSequence2 = identity.getHashSequence2();
 
-		// Getting checksum from HMAC File
-		InputStream hmacFileStream = adapter.getFile(registrationId, HMAC_FILE);
-		byte[] hmacFileHashByte = IOUtils.toByteArray(hmacFileStream);
+		Boolean isValid = false;
 
-		// Generating checksum using hashSequence
+		// Getting hash bytes from packet
+		InputStream packetDataHashStream = adapter.getFile(registrationId, PacketFiles.PACKET_DATA_HASH.name());
+		InputStream packetOsiHashStream = adapter.getFile(registrationId, PacketFiles.PACKET_OSI_HASH.name());
+
+		byte[] packetDataHashByte = IOUtils.toByteArray(packetDataHashStream);
+		byte[] packetOsiHashByte = IOUtils.toByteArray(packetOsiHashStream);
+
+		// Generating hash bytes using files
 		CheckSumGeneration checkSumGeneration = new CheckSumGeneration(adapter);
 		byte[] generatedHash = checkSumGeneration.generateIdentityHash(hashSequence, registrationId);
+		byte[] packetOsiHash = checkSumGeneration.generatePacketOSIHash(hashSequence2, registrationId);
 
-		Boolean isChecksumValid = Arrays.equals(generatedHash, hmacFileHashByte);
+		Boolean isDataCheckSumEqual = Arrays.equals(generatedHash, packetDataHashByte);
+		Boolean isOsiCheckSumEqual = Arrays.equals(packetOsiHash, packetOsiHashByte);
 
-		if (!isChecksumValid)
+		if ((!isDataCheckSumEqual) || (!isOsiCheckSumEqual)) {
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_CHECKSUM_VALIDATION_FAILURE);
+		}
 
-		return isChecksumValid;
+		if (isDataCheckSumEqual && isOsiCheckSumEqual) {
+			isValid = true;
+		}
+
+		return isValid;
 	}
 
 }

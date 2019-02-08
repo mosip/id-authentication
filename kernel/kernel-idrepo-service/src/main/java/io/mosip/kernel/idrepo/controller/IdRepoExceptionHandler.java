@@ -44,7 +44,7 @@ import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 @RestControllerAdvice
 public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
-	private static final String APPLICATION_VERSION = "application.version";
+	private static final String APPLICATION_VERSION = "mosip.kernel.idrepo.application.version";
 
 	/** The Constant ID_REPO_EXCEPTION_HANDLER. */
 	private static final String ID_REPO_EXCEPTION_HANDLER = "IdRepoExceptionHandler";
@@ -56,7 +56,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	private static final String SESSION_ID = "sessionId";
 
 	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "datetime.pattern";
+	private static final String DATETIME_PATTERN = "mosip.kernel.idrepo.datetime.pattern";
 
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoExceptionHandler.class);

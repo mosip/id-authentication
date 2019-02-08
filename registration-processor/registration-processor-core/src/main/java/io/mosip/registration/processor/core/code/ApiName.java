@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.core.code;
 
-
 /**
  * The Enum ApiName.
  * 
@@ -31,13 +30,13 @@ public enum ApiName {
 
 	/** The regsync. */
 	REGSYNC,
-	
+
 	/** The machine history. */
 	MACHINEHISTORY,
-	
+
 	/** The center history. */
 	CENTERHISTORY,
-	
+
 	/** The center-machine-user history. */
 	CENTERUSERMACHINEHISTORY,
 
