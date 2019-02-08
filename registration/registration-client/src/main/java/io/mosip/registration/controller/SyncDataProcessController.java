@@ -157,7 +157,7 @@ public class SyncDataProcessController extends BaseController implements Initial
 	@FXML
 	public void start(ActionEvent event) {
 
-		ResponseDTO responseDTO = jobConfigurationService.startScheduler(Initialization.getApplicationContext());
+		ResponseDTO responseDTO = jobConfigurationService.startScheduler();
 
 		if (responseDTO.getErrorResponseDTOs() != null) {
 			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
