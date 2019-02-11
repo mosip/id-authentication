@@ -133,7 +133,7 @@
 
           <!-- <div class="genderAndForeigner"> -->
           <div class="user__genderAndForeigner">
-            <span class="user__genderAndForeigner--text">Residence Status</span>
+            <span class="user__genderAndForeigner--text">{{ 'demographic.text_residence_status' | translate }}</span>
             <mat-button-toggle-group
               [formControlName]="formControlNames.residenceStatus"
               (change)="onGenderChange([primaryGender, secondaryGender], $event)"
@@ -141,8 +141,8 @@
               name="fontStyle"
               aria-label="Font Style"
             >
-              <mat-button-toggle value="national"> National </mat-button-toggle>
-              <mat-button-toggle value="foreigner"> Foreigner </mat-button-toggle>
+              <mat-button-toggle value="national"> {{ 'demographic.button_national' | translate }} </mat-button-toggle>
+              <mat-button-toggle value="foreigner"> {{ 'demographic.button_foreigner' | translate }} </mat-button-toggle>
             </mat-button-toggle-group>
           </div>
           <!-- </div> -->
@@ -428,7 +428,7 @@
           </div>
 
           <div class="user__genderAndForeigner">
-            <span class="user__genderAndForeigner--text">Residence Status</span>
+            <span class="user__genderAndForeigner--text">{{ secondaryLanguagelabels.text_residence_status }}</span>
             <mat-button-toggle-group
               [disabled]="true"
               [value]="userForm.get(formControlNames.residenceStatus).value"
@@ -436,8 +436,8 @@
               name="fontStyle"
               aria-label="Font Style"
             >
-              <mat-button-toggle value="national"> National </mat-button-toggle>
-              <mat-button-toggle value="foreigner"> Foreigner </mat-button-toggle>
+              <mat-button-toggle value="national"> {{ secondaryLanguagelabels.button_national }} </mat-button-toggle>
+              <mat-button-toggle value="foreigner"> {{ secondaryLanguagelabels.button_foreigner }} </mat-button-toggle>
             </mat-button-toggle-group>
           </div>
 
