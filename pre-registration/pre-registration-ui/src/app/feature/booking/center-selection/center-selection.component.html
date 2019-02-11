@@ -260,7 +260,7 @@
       <button mat-button (click)="routeDashboard()" class="user-book_later-btn">
         {{ 'centerSelection.action_book_later' | translate }}
       </button>
-      <button (click)="routeNext()" mat-button class="user-continue-btn">
+      <button (click)="routeNext()" mat-button [disabled]="selectedCentre === null" class="user-continue-btn">
         {{ 'centerSelection.action_continue' | translate }}
       </button>
     </mat-card>

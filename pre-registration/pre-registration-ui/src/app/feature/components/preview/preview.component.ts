@@ -42,16 +42,46 @@ export class PreviewComponent implements OnInit {
       (this.previewData.addressLine2[1].value ? ', ' + this.previewData.addressLine2[1].value : '') +
       (this.previewData.addressLine3[1].value ? ', ' + this.previewData.addressLine3[1].value : '');
     this.previewData.secondaryAddress = address;
-    this.previewData.region[0].name = this.locCodeToName(this.previewData.region[0].value,this.previewData.region[0].language);
-    this.previewData.region[1].name = this.locCodeToName(this.previewData.region[1].value,this.previewData.region[1].language);
-    this.previewData.province[0].name = this.locCodeToName(this.previewData.province[0].value,this.previewData.province[0].language);
-    this.previewData.province[1].name = this.locCodeToName(this.previewData.province[1].value,this.previewData.province[1].language);
-    this.previewData.city[0].name = this.locCodeToName(this.previewData.city[0].value,this.previewData.city[0].language);
-    this.previewData.city[1].name = this.locCodeToName(this.previewData.city[1].value,this.previewData.city[1].language);
-    this.previewData.localAdministrativeAuthority[0].name = this.locCodeToName(this.previewData.localAdministrativeAuthority[0].value,this.previewData.localAdministrativeAuthority[0].language);
-    this.previewData.localAdministrativeAuthority[1].name = this.locCodeToName(this.previewData.localAdministrativeAuthority[1].value,this.previewData.localAdministrativeAuthority[1].language);
-    this.previewData.gender[0].name = this.locCodeToName(this.previewData.gender[0].value,this.previewData.gender[0].language);
-    this.previewData.gender[1].name = this.locCodeToName(this.previewData.gender[1].value,this.previewData.gender[1].language);
+    this.previewData.region[0].name = this.locCodeToName(
+      this.previewData.region[0].value,
+      this.previewData.region[0].language
+    );
+    this.previewData.region[1].name = this.locCodeToName(
+      this.previewData.region[1].value,
+      this.previewData.region[1].language
+    );
+    this.previewData.province[0].name = this.locCodeToName(
+      this.previewData.province[0].value,
+      this.previewData.province[0].language
+    );
+    this.previewData.province[1].name = this.locCodeToName(
+      this.previewData.province[1].value,
+      this.previewData.province[1].language
+    );
+    this.previewData.city[0].name = this.locCodeToName(
+      this.previewData.city[0].value,
+      this.previewData.city[0].language
+    );
+    this.previewData.city[1].name = this.locCodeToName(
+      this.previewData.city[1].value,
+      this.previewData.city[1].language
+    );
+    this.previewData.localAdministrativeAuthority[0].name = this.locCodeToName(
+      this.previewData.localAdministrativeAuthority[0].value,
+      this.previewData.localAdministrativeAuthority[0].language
+    );
+    this.previewData.localAdministrativeAuthority[1].name = this.locCodeToName(
+      this.previewData.localAdministrativeAuthority[1].value,
+      this.previewData.localAdministrativeAuthority[1].language
+    );
+    this.previewData.gender[0].name = this.locCodeToName(
+      this.previewData.gender[0].value,
+      this.previewData.gender[0].language
+    );
+    this.previewData.gender[1].name = this.locCodeToName(
+      this.previewData.gender[1].value,
+      this.previewData.gender[1].language
+    );
     console.log(this.previewData);
     this.getSecondaryLanguageLabels();
     this.files = this.user.files[0];
@@ -77,7 +107,7 @@ export class PreviewComponent implements OnInit {
     const routeParams = this.router.url.split('/');
     this.router.navigate([routeParams[1], routeParams[2], 'demographic']);
     localStorage.setItem('newApplicant', 'false');
-    this.registrationService.changeMessage({ modifyUser: 'true' });
+    this.registrationService.changeMessage({ modifyUserFromPreview: 'true' });
   }
 
   modifyDocument() {
@@ -98,7 +128,6 @@ export class PreviewComponent implements OnInit {
     this.router.navigate(['../demographic'], { relativeTo: this.route });
     // sessionStorage.setItem('newApplicant', 'true');
     localStorage.setItem('newApplicant', 'false');
-    this.registrationService.changeMessage({ modifyUser: 'false' });
   }
 
   navigateBack() {

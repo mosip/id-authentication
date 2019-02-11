@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, NgForm, FormControlName } from '@angular/forms';
-import { MatSelectChange, MatButtonToggleChange } from '@angular/material';
+import { MatSelectChange, MatButtonToggleChange, MatSlideToggleChange } from '@angular/material';
 import { DatePipe } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
@@ -43,7 +43,9 @@ export class DemographicComponent implements OnInit, OnDestroy {
   isNewApplicant = false;
   checked = true;
   dataUploadComplete = true;
+  isReadOnly = false;
   dataModification: boolean;
+  showPreviewButton = false;
 
   step: number = 0;
   id: number;
@@ -91,6 +93,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     fullName: 'fullNamee',
     gender: 'gendere',
     dateOfBirth: 'dobe',
+    residenceStatus: 'residenceStatus',
     addressLine1: 'addressLine1e',
     addressLine2: 'addressLine2e',
     addressLine3: 'addressLine3e',
@@ -115,7 +118,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
+    // private route: ActivatedRoute,
     private regService: RegistrationService,
     private dataStorageService: DataStorageService,
     private sharedService: SharedService,
@@ -137,11 +140,13 @@ export class DemographicComponent implements OnInit, OnDestroy {
       this.isNewApplicant = true;
     }
     this.regService.currentMessage.subscribe(message => (this.message = message));
+
     // this.message$ = this.regService.currentMessage;
     // this.message$.subscribe(message => (this.message = message));
-    if (this.message['modifyUser'] === 'true') {
+    if (this.message['modifyUser'] === 'true' || this.message['modifyUserFromPreview'] === 'true') {
       this.dataModification = true;
       this.step = this.regService.getUsers().length - 1;
+      if (this.message['modifyUserFromPreview'] === 'true') this.showPreviewButton = true;
     } else {
       this.dataModification = false;
       this.step = this.regService.getUsers().length;
@@ -165,6 +170,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         this.noWhitespaceValidator
       ]),
       [this.formControlNames.gender]: new FormControl(this.formControlValues.gender, Validators.required),
+      [this.formControlNames.residenceStatus]: new FormControl(this.formControlValues.residenceStatus),
       [this.formControlNames.age]: new FormControl(this.formControlValues.age, [
         Validators.required,
         Validators.max(150),
@@ -220,7 +226,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
       [this.formControlNames.phone]: new FormControl(this.formControlValues.phone, [
         Validators.maxLength(10),
         Validators.minLength(10),
-        Validators.pattern(this.numberPattern)
+        Validators.pattern(appConstants.MOBILE_PATTERN)
       ]),
       [this.formControlNames.CNIENumber]: new FormControl(this.formControlValues.CNIENumber, [
         Validators.required,
@@ -283,6 +289,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
       this.formControlValues = {
         fullName: '',
         gender: '',
+        residenceStatus: '',
         date: '',
         month: '',
         year: '',
@@ -307,12 +314,10 @@ export class DemographicComponent implements OnInit, OnDestroy {
       };
     } else {
       const dob = this.user.request.demographicDetails.identity.dateOfBirth;
-      console.log(dob);
-      console.log(this.user);
-
       this.formControlValues = {
         fullName: this.user.request.demographicDetails.identity.fullName[0].value,
         gender: this.user.request.demographicDetails.identity.gender[0].value,
+        residenceStatus: 'national',
         date: this.user.request.demographicDetails.identity.dateOfBirth.split('/')[2],
         month: this.user.request.demographicDetails.identity.dateOfBirth.split('/')[1],
         year: this.user.request.demographicDetails.identity.dateOfBirth.split('/')[0],
@@ -336,6 +341,14 @@ export class DemographicComponent implements OnInit, OnDestroy {
         addressLine2Secondary: this.user.request.demographicDetails.identity.addressLine2[1].value,
         addressLine3Secondary: this.user.request.demographicDetails.identity.addressLine3[1].value
       };
+    }
+  }
+
+  onPreferenceChange(event: MatSlideToggleChange) {
+    if (event.checked) {
+      this.isReadOnly = true;
+    } else {
+      this.isReadOnly = false;
     }
   }
 
@@ -475,7 +488,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
       this.userForm.controls[this.formControlNames.date].patchValue('01');
       this.userForm.controls[this.formControlNames.month].patchValue('01');
       this.userForm.controls[this.formControlNames.year].patchValue(calulatedYear);
-      this.userForm.controls[this.formControlNames.dateOfBirth].patchValue('01/01/' + calulatedYear);
+      this.userForm.controls[this.formControlNames.dateOfBirth].patchValue(calulatedYear + '/01/01');
       this.userForm.controls[this.formControlNames.dateOfBirth].setErrors(null);
     }
   }
@@ -523,13 +536,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
   }
 
   onTransliteration(fromControl: FormControl, toControl: any) {
-    // from   -   To
-    // eng - ara - T
-    // ara - eng - T
-    // eng - fre - F
-    // fre - eng - F
-    // ara - fre - T
-    // fre - ara - T
     if (fromControl.value) {
       const request: any = {
         from_field_lang: this.primaryLang,
@@ -556,54 +562,62 @@ export class DemographicComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    const request = this.createRequestJSON();
-    this.dataUploadComplete = false;
-    this.dataStorageService.addUser(request).subscribe(
-      response => {
-        console.log(response);
-
-        if (this.dataModification) {
-          this.regService.updateUser(
-            this.step,
-            new UserModel(this.preRegId, request, this.regService.getUserFiles(this.step), this.codeValue)
-          );
-          this.sharedService.updateNameList(this.step, {
-            fullName: this.userForm.controls[this.formControlNames.fullName].value,
-            fullNameSecondaryLang: this.formControlValues.fullNameSecondary,
-            preRegId: this.preRegId
-          });
-        } else if (response !== null) {
-          console.log(response);
-
-          this.preRegId = response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
-          this.regService.addUser(new UserModel(this.preRegId, request, [], this.codeValue));
-          this.sharedService.addNameList({
-            fullName: this.userForm.controls[this.formControlNames.fullName].value,
-            fullNameSecondaryLang: this.formControlValues.fullNameSecondary,
-            preRegId: this.preRegId
-          });
-        } else {
-          console.log('Response is null');
+    this.markFormGroupTouched(this.userForm);
+    this.markFormGroupTouched(this.transUserForm);
+    if (this.userForm.valid && this.transUserForm.valid) {
+      const request = this.createRequestJSON();
+      this.dataUploadComplete = false;
+      this.dataStorageService.addUser(request).subscribe(
+        response => {
+          //response is ok but error from backend
+          // if(){
+          //   this.router.navigate(['error']);
+          // }
+          if (this.dataModification) {
+            this.regService.updateUser(
+              this.step,
+              new UserModel(this.preRegId, request, this.regService.getUserFiles(this.step), this.codeValue)
+            );
+            this.sharedService.updateNameList(this.step, {
+              fullName: this.userForm.controls[this.formControlNames.fullName].value,
+              fullNameSecondaryLang: this.formControlValues.fullNameSecondary,
+              preRegId: this.preRegId
+            });
+          } else if (response !== null) {
+            this.preRegId =
+              response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
+            this.regService.addUser(new UserModel(this.preRegId, request, [], this.codeValue));
+            this.sharedService.addNameList({
+              fullName: this.userForm.controls[this.formControlNames.fullName].value,
+              fullNameSecondaryLang: this.formControlValues.fullNameSecondary,
+              preRegId: this.preRegId
+            });
+          } else {
+            console.log('Response is null');
+            this.router.navigate(['error']);
+          }
+        },
+        error => {
+          console.log(error);
           this.router.navigate(['error']);
+        },
+        () => {
+          this.checked = true;
+          this.dataUploadComplete = true;
+          let url = '';
+          if (this.message['modifyUserFromPreview'] === 'true') {
+            url = Utils.getURL(this.router.url, 'preview');
+            this.router.navigate([url]);
+          } else {
+            url = Utils.getURL(this.router.url, 'file-upload');
+            this.router.navigate([url]);
+          }
         }
-      },
-      error => {
-        console.log(error);
-        this.router.navigate(['error']);
-      },
-      () => {
-        this.checked = true;
-        this.dataUploadComplete = true;
-        const url = Utils.getURL(this.router.url, 'file-upload');
-        console.log(this.regService.getUsers());
-
-        this.router.navigateByUrl(url);
-      }
-    );
+      );
+    }
   }
 
   private createAttributeArray(element: string, identity: IdentityModel) {
-    console.log(element, typeof identity[element]);
     let attr: any;
     if (typeof identity[element] === 'object') {
       let forms = [];
@@ -629,6 +643,15 @@ export class DemographicComponent implements OnInit, OnDestroy {
       identity[element] = attr = +this.userForm.controls[this.formControlNames[element]].value;
     }
     identity[element] = attr;
+  }
+
+  private markFormGroupTouched(formGroup: FormGroup) {
+    (<any>Object).values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+      if (control.controls) {
+        this.markFormGroupTouched(control);
+      }
+    });
   }
 
   private createIdentityJSONDynamic() {

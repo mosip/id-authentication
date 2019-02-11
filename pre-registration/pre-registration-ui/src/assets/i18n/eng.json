@@ -57,7 +57,7 @@
     "validation": {
       "name_required": "Please enter valid name",
       "age_validation": "Age should be less than 150",
-      "gender_validation":"Please select gender",
+      "gender_validation": "Please select gender",
       "DOB_validation": "Enter Valid DOB or age (Age should be less than 150 and whole number)",
       "date_required": "Enter 2 numeric digits for date",
       "month_required": "Enter 2 numeric digits for month",
@@ -85,15 +85,15 @@
     "action_view": "preiew"
   },
   "acknowledgement": {
-    "title":"Appointment Confirmed",
-    "message":"The Pre-Registration id and Appointment details have been sent to the registered email id and phone number",
-    "label_name":"Name",
-    "label_pre_id":"Pre Registration ID",
-    "label_reg_cntr":"Registration Center",
-    "label_cntr_contact_number":"Center Contact Number",
-    "label_appointment_date_time":"Appointment Date & Time",
+    "title": "Appointment Confirmed",
+    "message": "The Pre-Registration id and Appointment details have been sent to the registered email id and phone number",
+    "label_name": "Name",
+    "label_pre_id": "Pre Registration ID",
+    "label_reg_cntr": "Registration Center",
+    "label_cntr_contact_number": "Center Contact Number",
+    "label_appointment_date_time": "Appointment Date & Time",
     "container_guideline": "Important Guidelines",
-    "action_send":"SEND EMAIL/SMS",
+    "action_send": "SEND EMAIL/SMS",
     "action_download": "DOWNLOAD PDF",
     "action_print": "PRINT"
   },
@@ -172,7 +172,7 @@
       "text_appoinment_date": "Appointment Date",
       "text_status": "Status",
       "action_modify_information": "Modify Information",
-      "action_modify_appointment": "View Acknowledgement"
+      "action_view_acknowledgement": "View Acknowledgement"
     }
   },
   "appointmentCentreSearch": {
@@ -190,19 +190,19 @@
     "action_download": "DOWNLOAD",
     "action_print": "PRINT"
   },
-  "dialog":{
-    "title_applicant":"Send Appointment Confirmation",
-    "content_applicant":"Email/Phone Number",
-    "invalidApplicantNumber_msg":"Invalid Email/Phone Number",
-    "action_ok":"OK",
-    "title_discard":"Discard",
-    "action_discard_app":"Discard entire application",
-    "action_cancel":"Cancel appointment and save the details",
-    "action_submit":"Submit",
-    "action_dismiss":"Ok",
-    "action_add":"Add",
-    "action_close":"Close",
-    "action_add_to_slot":"Add to Slot"
+  "dialog": {
+    "title_applicant": "Send Appointment Confirmation",
+    "content_applicant": "Email/Phone Number",
+    "invalidApplicantNumber_msg": "Invalid Email/Phone Number",
+    "action_ok": "OK",
+    "title_discard": "Discard",
+    "action_discard_app": "Discard entire application",
+    "action_cancel": "Cancel appointment and save the details",
+    "action_submit": "Submit",
+    "action_dismiss": "Ok",
+    "action_add": "Add",
+    "action_close": "Close",
+    "action_add_to_slot": "Add to Slot"
   },
   "centerSelection": {
     "title": " Book Appointment ",
