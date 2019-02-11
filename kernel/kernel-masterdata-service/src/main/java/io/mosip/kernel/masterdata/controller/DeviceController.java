@@ -106,7 +106,7 @@ public class DeviceController {
 			@ApiResponse(code = 500, message = "While creating device any error occured") })
 	public ResponseEntity<IdResponseDto> createDevice(@Valid @RequestBody RequestDto<DeviceDto> deviceRequestDto) {
 
-		return new ResponseEntity<>(deviceService.createDevice(deviceRequestDto), HttpStatus.CREATED);
+		return new ResponseEntity<>(deviceService.createDevice(deviceRequestDto), HttpStatus.OK);
 	}
 
 	/**

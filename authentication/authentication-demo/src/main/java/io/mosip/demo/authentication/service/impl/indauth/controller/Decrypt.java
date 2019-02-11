@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.demo.authentication.service.EncryptHelper.EncryptUtil;
+import io.mosip.demo.authentication.service.EncryptHelper.CryptoUtility;
 import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;;
 
 
@@ -88,30 +88,7 @@ public class Decrypt {
 
 
 
-	/**
-	 * Old decrypt.
-	 *
-	 * @param finalvalue the finalvalue
-	 * @param privateKey the private key
-	 * @param encodedKey the encoded key
-	 * @param encodeData the encode data
-	 * @return the string
-	 * @throws NoSuchAlgorithmException the no such algorithm exception
-	 */
-	private String oldDecrypt(byte[] finalvalue, PrivateKey privateKey, String encodedKey, String encodeData)
-			throws NoSuchAlgorithmException {
-		EncryptUtil encryptUtil=new EncryptUtil();
-		SecretKey secKey=null;;
-		try {
-			secKey = encryptUtil.asymmetricDecrypt(privateKey, org.apache.commons.codec.binary.Base64.decodeBase64(encodedKey));
-			 finalvalue = encryptUtil.symmetricDecrypt(secKey, org.apache.commons.codec.binary.Base64.decodeBase64(encodeData));
-		} catch (InvalidKeyException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
-			return new String(e.getMessage());
-		}
-		
-		return new String(finalvalue);
-	}
+	
 	
 	
 	

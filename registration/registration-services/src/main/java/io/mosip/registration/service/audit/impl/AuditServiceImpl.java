@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.AuditLogControlDAO;
@@ -59,7 +60,7 @@ public class AuditServiceImpl extends BaseService implements AuditService {
 	@Override
 	public synchronized ResponseDTO deleteAuditLogs() {
 
-		LOGGER.info(RegistrationConstants.AUDIT_SERVICE_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.AUDIT_SERVICE_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Deletion of Audit Logs Started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -101,7 +102,7 @@ public class AuditServiceImpl extends BaseService implements AuditService {
 				setSuccessResponse(responseDTO, RegistrationConstants.AUDIT_LOGS_DELETION_SUCESS_MSG, null);
 
 			} catch (RuntimeException runtimeException) {
-				LOGGER.error(RegistrationConstants.AUDIT_SERVICE_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				LOGGER.error(LoggerConstants.AUDIT_SERVICE_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 
 				setErrorResponse(responseDTO, RegistrationConstants.AUDIT_LOGS_DELETION_FLR_MSG, null);
@@ -112,7 +113,7 @@ public class AuditServiceImpl extends BaseService implements AuditService {
 			setErrorResponse(responseDTO, RegistrationConstants.AUDIT_LOGS_DELETION_FLR_MSG, null);
 		}
 
-		LOGGER.info(RegistrationConstants.AUDIT_SERVICE_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.AUDIT_SERVICE_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Deletion of Audit Logs Completed");
 
 		return responseDTO;

@@ -57,4 +57,21 @@ public class GlobalParamDAOTest {
 		//globalContextParamDAOImpl.get("name");
 		assertEquals(globalParam.getName(), globalContextParamDAOImpl.get("name").getName());
 	}  
+	
+	@Test
+	public void getAllTest()
+	{  
+		List<GlobalParam> params = new ArrayList<>(); 
+		
+		GlobalParam globalParam=new GlobalParam();
+		globalParam.setName("1234");
+		params.add(globalParam);
+		
+		List<String> list=new  LinkedList<>();
+		list.add("1234");
+		
+		Mockito.when(globalParamRepository.findByNameIn(list)).thenReturn(params);
+		//globalContextParamDAOImpl.get("name");
+		assertEquals(params, globalContextParamDAOImpl.getAll(list));
+	}  
 }

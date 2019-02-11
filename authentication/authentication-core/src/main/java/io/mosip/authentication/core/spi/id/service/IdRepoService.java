@@ -16,19 +16,21 @@ public interface IdRepoService {
 	/**
 	 * Method to get entity from ID Repo.
 	 *
-	 * @param uin the uin
-	 * @param isBio 
+	 * @param uin   the uin
+	 * @param isBio
 	 * @return the id repo
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
-	public Map<String, Object> getIdRepo(String uin, boolean isBio) throws IdAuthenticationBusinessException;
+	public Map<String, Object> getIdenity(String uin, boolean isBio) throws IdAuthenticationBusinessException;
 
 	/**
 	 * Method to get Identity info.
 	 *
 	 * @param idResponseDTO the id response DTO
 	 * @return the id info
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO)
 			throws IdAuthenticationBusinessException;

@@ -637,7 +637,6 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(utility.getConfigServerFileStorageURL())
 				.thenReturn("http://104.211.212.28:51000/registration-processor/default/DEV/");
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("test");
-		Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentityNew.json");
 		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, metaDataList);
 	}
 
@@ -756,29 +755,7 @@ public class PacketInfoManagerImplTest {
 
 	}
 
-	/**
-	 * Gets the registration center machine test.
-	 *
-	 * @return the registration center machine test
-	 */
-	@Test
-	public void getRegistrationCenterMachineTest() {
-		RegistrationCenterMachineDto regCenterMachineDto = new RegistrationCenterMachineDto();
-		regCenterMachineDto.setIsActive(true);
-		regCenterMachineDto.setLatitude("12.9716° N");
-		regCenterMachineDto.setLongitude("77.5946° E");
-		regCenterMachineDto.setMachineId("123");
-		regCenterMachineDto.setRegId("2018782130000103122018100224");
-
-		Mockito.when(packetInfoDao.getRegistrationCenterMachine(ArgumentMatchers.anyString()))
-				.thenReturn(regCenterMachineDto);
-		RegistrationCenterMachineDto resultDto = packetInfoManagerImpl
-				.getRegistrationCenterMachine("2018782130000103122018100224");
-		assertEquals(
-				"Fetching regCenterMachine records from db . verifing first record,expected id is 2018782130000103122018100224",
-				"2018782130000103122018100224", resultDto.getRegId());
-	}
-
+	
 	/**
 	 * Gets the applicant finger print image name by id test.
 	 *

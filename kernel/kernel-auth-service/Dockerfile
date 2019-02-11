@@ -1,14 +1,23 @@
-FROM java:8
+FROM openjdk:8
 
+#Uncomment below and Comment above line(i.e. FROM openjdk:8) for OS specific (e.g. Alpine OS ) docker base image
+#FROM openjdk:8-jdk-alpine
+
+# can be passed during Docker build as build time environment for github branch to pickup configuration from.
+ARG spring_config_label
+
+# can be passed during Docker build as build time environment for spring profiles active 
 ARG active_profile
+
 # environment variable to pass active profile such as DEV, QA etc at docker runtime
 ENV active_profile_env=${active_profile}
 
-# change volume to whichever storage directory you want to use for this container.
-VOLUME /tmp
+# environment variable to pass github branch to pickup configuration from, at docker runtime
+ENV spring_config_label_env=${spring_config_label}
 
-copy ./target/kernel-auth-service*.jar kernel-auth-service.jar
+COPY ./target/kernel-auth-service-*.jar kernel-auth-service.jar
 
 EXPOSE 8091
 
-CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","kernel-auth-service.jar"]
+CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","kernel-auth-service.jar"]
+

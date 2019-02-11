@@ -72,6 +72,6 @@ public class IdTypeController {
 			@ApiResponse(code = 500, message = "Error occured while creating id type.") })
 	public ResponseEntity<CodeAndLanguageCodeID> createIdType(
 			@Valid @RequestBody RequestDto<IdTypeDto> idTypeRequestDto) {
-		return new ResponseEntity<>(idService.createIdType(idTypeRequestDto), HttpStatus.CREATED);
+		return new ResponseEntity<>(idService.createIdType(idTypeRequestDto), HttpStatus.OK);
 	}
 }

@@ -45,11 +45,6 @@ public class ConfigTest {
 	}
 
 	@Test
-	public void getTriggerNotificationForUINTest() {
-		assertNotNull(config.getTriggerNotificationForUIN());
-	}
-	
-	@Test
 	public void ggetUinGeneratorStageTest() {
 		assertNotNull(config.getUinGeneratorStage());
 	}

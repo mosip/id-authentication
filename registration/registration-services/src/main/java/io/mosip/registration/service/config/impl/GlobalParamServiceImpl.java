@@ -24,6 +24,7 @@ import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dao.UserOnboardDAO;
@@ -74,7 +75,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	 */
 	public Map<String, Object> getGlobalParams() {
 
-		LOGGER.info(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching list of global params");
 
 		auditFactory.audit(AuditEvent.LOGIN_MODES_FETCH, Components.LOGIN_MODES, "Fetching list of global params",
@@ -91,13 +92,13 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	 */
 	@Override
 	public ResponseDTO synchConfigData() {
-		LOGGER.info(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"config data synch is started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable() && getGlobalParams().isEmpty()) {
-			LOGGER.info(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 					" Unable to synch config data");
 			return setErrorResponse(responseDTO, RegistrationConstants.GLOBAL_CONFIG_ERROR_MSG, null);
 		}
@@ -161,7 +162,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 			setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
 			LOGGER.error("REGISTRATION_SYNCH_CONFIG_DATA", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 		}
-		LOGGER.info(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"config data synch is completed");
 
 		return responseDTO;

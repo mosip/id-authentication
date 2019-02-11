@@ -52,12 +52,6 @@ public class TemplateConstant {
 	/** The Constant POSTALCODE. */
 	public static final String POSTALCODE = "postalCode";
 
-	/** The Constant PARENTORGUARDIANNAME. */
-	public static final String PARENTORGUARDIANNAME = "parentOrGuardianName";
-
-	/** The Constant PARENTORGUARDIANRIDORUIN. */
-	public static final String PARENTORGUARDIANRIDORUIN = "parentOrGuardianRIDOrUIN";
-
 	/** The Constant PROOFOFADDRESS. */
 	public static final String PROOFOFADDRESS = "proofOfAddress";
 
@@ -72,9 +66,6 @@ public class TemplateConstant {
 
 	/** The Constant INDIVIDUALBIOMETRICS. */
 	public static final String INDIVIDUALBIOMETRICS = "individualBiometrics";
-
-	/** The Constant PARENTORGUARDIANBIOMETRICS. */
-	public static final String PARENTORGUARDIANBIOMETRICS = "parentOrGuardianBiometrics";
 
 	/** The Constant LOCALADMINISTRATIVEAUTHORITY. */
 	public static final String LOCALADMINISTRATIVEAUTHORITY = "localAdministrativeAuthority";

@@ -18,7 +18,7 @@ public class FingerPrintCaptureServiceImpl {
 
 	public boolean validateFingerprint(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
 		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
-		authenticationValidatorDTO.setUserId(SessionContext.getInstance().getUserContext().getUserId());
+		authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
 		authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 		authenticationValidatorDTO.setAuthValidationType("multiple");
 		return authenticationService.authValidator("Fingerprint", authenticationValidatorDTO);

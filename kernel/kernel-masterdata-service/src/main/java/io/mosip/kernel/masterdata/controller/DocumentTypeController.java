@@ -74,7 +74,7 @@ public class DocumentTypeController {
 	@ApiOperation(value = "Service to create document type", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentType(
 			@Valid @RequestBody RequestDto<DocumentTypeDto> types) {
-		return new ResponseEntity<>(documentTypeService.createDocumentType(types), HttpStatus.CREATED);
+		return new ResponseEntity<>(documentTypeService.createDocumentType(types), HttpStatus.OK);
 	}
 
 	/**

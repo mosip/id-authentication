@@ -426,7 +426,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		// Add Operator ID
 		osiData.add(buildFieldValue("officerId", registrationDTO.getOsiDataDTO().getOperatorID()));
 		// Add Officer CBEFF File
-		if (((Map<String, String>) SessionContext.getInstance().getMapObject()
+		if (((Map<String, String>) SessionContext.map()
 				.get(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME)).keySet().stream()
 						.anyMatch(key -> key.startsWith(RegistrationConstants.OFFICER.toLowerCase()))) {
 			osiData.add(buildFieldValue("officerBiometricFileName",
@@ -438,7 +438,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		// Add Supervisor ID
 		osiData.add(buildFieldValue("supervisorId", registrationDTO.getOsiDataDTO().getSupervisorID()));
 		// Add Officer CBEFF File
-		if (((Map<String, String>) SessionContext.getInstance().getMapObject()
+		if (((Map<String, String>) SessionContext.map()
 				.get(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME)).keySet().stream()
 						.anyMatch(key -> key.startsWith(RegistrationConstants.SUPERVISOR.toLowerCase()))) {
 			osiData.add(buildFieldValue("supervisorBiometricFileName",
@@ -575,7 +575,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 
 	@SuppressWarnings("unchecked")
 	private String getBIRUUID(String personType, String biometricType) {
-		return ((Map<String, String>) SessionContext.getInstance().getMapObject()
+		return ((Map<String, String>) SessionContext.map()
 				.get(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME))
 						.get(personType.concat(biometricType).toLowerCase());
 	}

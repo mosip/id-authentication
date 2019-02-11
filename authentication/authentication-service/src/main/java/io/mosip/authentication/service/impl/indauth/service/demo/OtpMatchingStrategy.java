@@ -1,20 +1,18 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.Map;
-
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
-import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * @author M1047697
- *
+ * 
+ * @author Dinesh Karuppiah.T
  */
 public enum OtpMatchingStrategy implements TextMatchingStrategy {
 

@@ -133,7 +133,7 @@ public class PacketReceiverStageTest {
 	}
 
 	public void healthCheckTest() throws ClientProtocolException, IOException {
-		HttpGet httpGet = new HttpGet("http://localhost:8081/health");
+		HttpGet httpGet = new HttpGet("http://localhost:8081/packetreceiver/health");
 		HttpClient client = HttpClientBuilder.create().build();
 		HttpResponse response = client.execute(httpGet);
 		assertEquals(200, response.getStatusLine().getStatusCode());
@@ -148,7 +148,7 @@ public class PacketReceiverStageTest {
 		builder.addPart("file", fileBody);
 		HttpEntity entity = builder.build();
 
-		HttpPost request = new HttpPost("http://localhost:8081/v0.1/registration-processor/packet-receiver/registrationpackets");
+		HttpPost request = new HttpPost("http://localhost:8081/packetreceiver/v0.1/registration-processor/packet-receiver/registrationpackets");
 		request.setEntity(entity);
 
 		HttpClient client = HttpClientBuilder.create().build();

@@ -113,10 +113,10 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	private String registrationId = "";
 
 	/** The description. */
-	String description;
+	private String description;
 
 	/** The is transaction successful. */
-	boolean isTransactionSuccessful;
+	private boolean isTransactionSuccessful;
 
 	/** The secs. */
 	private long secs = 30;
@@ -195,11 +195,12 @@ public class PacketValidatorStage extends MosipVerticleManager {
 									PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 							bytes = IOUtils.toByteArray(documentInfoStream);
 							documentList = documentUtility.getDocumentList(bytes);
+							
 							CheckSumValidation checkSumValidation = new CheckSumValidation(adapter,
 									registrationStatusDto);
-							isCheckSumValidated = documentUtility.checkSum(registrationId);
-							// isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
-							// packetMetaInfo.getIdentity());
+
+							isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
+									packetMetaInfo.getIdentity());
 
 							if (isCheckSumValidated) {
 								ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(

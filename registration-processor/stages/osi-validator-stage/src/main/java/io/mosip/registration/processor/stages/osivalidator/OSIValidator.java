@@ -655,7 +655,7 @@ public class OSIValidator {
 		List<FieldValueArray> hashSequence = identity.getHashSequence();
 		List<String> hashList = identityIteratorUtil.getHashSequence(hashSequence, field);
 		if (hashList != null)
-			return hashList.get(0);
+			return hashList.get(0).toUpperCase();
 
 		return null;
 

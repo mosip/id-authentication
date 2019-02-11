@@ -57,7 +57,7 @@ public class MachineSpecificationController {
 			@Valid @RequestBody RequestDto<MachineSpecificationDto> machineSpecification) {
 
 		return new ResponseEntity<>(machineSpecificationService.createMachineSpecification(machineSpecification),
-				HttpStatus.CREATED);
+				HttpStatus.OK);
 	}
 
 	/**

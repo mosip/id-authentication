@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>0.8.1</version>
+		<version>0.8.2</version>
 	</parent>
 
 	<artifactId>authentication-service</artifactId>
@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-core</artifactId>
-			<version>0.8.1</version>
+			<version>0.8.2</version>
 		</dependency>
 
 		<!-- Kernel Template -->
@@ -131,6 +131,13 @@
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>${commons.lang.version}</version>
+		</dependency>
+
+		<!-- Commons Lang -->
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-cbeffutil-api</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
 	</dependencies>

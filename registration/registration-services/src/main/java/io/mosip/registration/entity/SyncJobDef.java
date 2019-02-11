@@ -36,7 +36,6 @@ public class SyncJobDef extends RegistrationCommonFields {
 	private String langCode;
 
 	@Column(name = "is_deleted")
-	@Type(type = "true_false")
 	private Boolean isDeleted;
 	@Column(name = "del_dtimes")
 	private Timestamp deletedDateTime;

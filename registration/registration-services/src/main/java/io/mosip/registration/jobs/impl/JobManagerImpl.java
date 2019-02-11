@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.jobs.JobManager;
@@ -41,7 +42,7 @@ public class JobManagerImpl implements JobManager {
 	@Override
 	synchronized public Map<String, SyncJobDef> getChildJobs(final JobExecutionContext context) {
 
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Get Job started");
 
 		// Get Job Map
@@ -59,7 +60,7 @@ public class JobManagerImpl implements JobManager {
 
 		});
 
-		LOGGER.info(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Get Job Ended");
 
 		return syncjobMap;

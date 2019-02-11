@@ -5,7 +5,7 @@
   <parent>
     <groupId>io.mosip.registrationprocessor</groupId>
     <artifactId>stages</artifactId>
-    <version>0.8.1</version>
+    <version>0.8.2</version>
   </parent>
 
   <artifactId>bio-dedupe-stage</artifactId>
@@ -53,7 +53,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>registration-status-service</artifactId>
+			<artifactId>registration-status-service-impl</artifactId>
 			<version>${registration.status.service.version}</version>
 		</dependency>
 		<dependency>
@@ -68,8 +68,8 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>packet-bio-dedupe-service</artifactId>
-			<version>${packet.bio.dedupe.service.version}</version>
+			<artifactId>packet-bio-dedupe-service-impl</artifactId>
+			<version>${packet.bio.dedupe.service.impl.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

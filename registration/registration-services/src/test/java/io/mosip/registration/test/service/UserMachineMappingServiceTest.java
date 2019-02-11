@@ -1,5 +1,7 @@
 package io.mosip.registration.test.service;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,14 +69,14 @@ public class UserMachineMappingServiceTest {
 		map.put("machineId", machineId);
 		map.put("userId", userMachineMapping.getUserDetail().getId());
 
-		userMachineMappingServiceImpl.syncUserDetails();
+		assertNotNull(userMachineMappingServiceImpl.syncUserDetails());
 	}
 
 	@Test
 	public void syncUserDetailsOffLineTest() {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(false);
-		userMachineMappingServiceImpl.syncUserDetails();
+		assertNotNull(userMachineMappingServiceImpl.syncUserDetails());
 
 	}
 

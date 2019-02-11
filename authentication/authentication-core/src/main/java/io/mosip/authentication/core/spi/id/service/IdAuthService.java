@@ -21,7 +21,7 @@ public interface IdAuthService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	Map<String, Object> getIdRepoByUinNumber(String uin, boolean isBio) throws IdAuthenticationBusinessException;
+	Map<String, Object> getIdRepoByUIN(String uin, boolean isBio) throws IdAuthenticationBusinessException;
 
 	/**
 	 * validates the VID.
@@ -31,7 +31,7 @@ public interface IdAuthService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	Map<String, Object> getIdRepoByVidNumber(String vid, boolean isBio) throws IdAuthenticationBusinessException;
+	Map<String, Object> getIdRepoByVID(String vid, boolean isBio) throws IdAuthenticationBusinessException;
 
 	/**
 	 * Process the IdType and validates the Idtype and upon validation reference Id
@@ -59,6 +59,6 @@ public interface IdAuthService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public void saveAutnTxn(String idvId, String idvIdType, String reqTime, String txnId, String status, String comment,
+	public void saveAutnTxn(String idvId, String idvIdType,String uin, String reqTime, String txnId, String status, String comment,
 			RequestType requestType) throws IdAuthenticationBusinessException;
 }

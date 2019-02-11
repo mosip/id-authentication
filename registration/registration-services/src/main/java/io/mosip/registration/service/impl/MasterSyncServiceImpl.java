@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.MasterSyncDao;
@@ -31,6 +32,7 @@ import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
+import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
@@ -182,7 +184,10 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 
 		Map<String, String> requestParamMap = new LinkedHashMap<>();
 		requestParamMap.put(RegistrationConstants.MACHINE_ID, machineId);
-		requestParamMap.put(RegistrationConstants.MASTER_DATA_LASTUPDTAE, lastSyncTime.toString());
+		if (null != lastSyncTime) {
+			String time = DateUtils.formatToISOString(lastSyncTime);
+			requestParamMap.put(RegistrationConstants.MASTER_DATA_LASTUPDTAE, time);
+		}
 
 		try {
 			response = serviceDelegateUtil.get(RegistrationConstants.MASTER_VALIDATOR_SERVICE_NAME, requestParamMap,
@@ -374,7 +379,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	 * lang.String)
 	 */
 	@Override
-	public List<MasterDocumentType> getDocumentCategories(String docCode, String langCode) {
+	public List<DocumentCategoryDto> getDocumentCategories(String docCode, String langCode) {
 
 		List<MasterValidDocument> masterValidDocuments = masterSyncDao.getValidDocumets(docCode, langCode);
 
@@ -383,12 +388,12 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 			validDocuments.add(docs.getDocTypeCode());
 		});
 
-		List<MasterDocumentType> documentsDTO = new ArrayList<>();
+		List<DocumentCategoryDto> documentsDTO = new ArrayList<>();
 		List<MasterDocumentType> masterDocuments = masterSyncDao.getDocumentTypes(validDocuments, langCode);
 
 		masterDocuments.forEach(document -> {
 
-			MasterDocumentType documents = new MasterDocumentType();
+			DocumentCategoryDto documents = new DocumentCategoryDto();
 			documents.setDescription(document.getDescription());
 			documents.setLangCode(document.getLangCode());
 			documents.setName(document.getName());

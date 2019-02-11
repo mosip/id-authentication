@@ -50,15 +50,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 */
 	public RegOsiDto getOsi(String regid);
 
-	/**
-	 * Gets the RegistrationCenterMachine deatils for registration id.
-	 *
-	 * @param regid
-	 *            the registration id
-	 * @return RegistrationCenterMachineDto for the registration id
-	 */
-	public RegistrationCenterMachineDto getRegistrationCenterMachine(String regid);
-
+	
 	/**
 	 * Gets the packetsfor QC user.
 	 *

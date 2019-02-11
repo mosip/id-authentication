@@ -47,7 +47,7 @@ public class MultiFingerPrintMatchingStratergyTest {
 		assertEquals(0, value1);
 
 		matchProperties = new HashMap<>();
-		matchProperties.put(BioAuthType.class.getSimpleName(), DemoAuthType.AD_PRI);
+		matchProperties.put(BioAuthType.class.getSimpleName(), DemoAuthType.ADDRESS);
 		int value2 = matchFunction.match(reqValues, entityValues, matchProperties);
 		assertEquals(0, value2);
 
