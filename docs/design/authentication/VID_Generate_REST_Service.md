@@ -22,7 +22,7 @@ Individual will send request to generate/re-generate VID from resident-service p
 **2. Solution**   
 VID generate REST service addresses the above requirement -  
 
-1.	Resident-service portal to construct a GET request with below details and send to Request URL **identity/vid/<version>/{uin}**, where the UIN value is passed as path parameter.
+1.	Resident-service portal to construct a GET request with below details and send to Request URL **identity/vid/&lt;version&gt;/{uin}**, where the UIN value is passed as path parameter.<br>
 [VID Generator API Spec](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#5-vid-generator) 
 2.	Authenticate Resident Portal ((TBD)).
 3.	Integrate with kernel UIN Validator to check UIN for validity. Validate UIN for authenticity in AuthDB
