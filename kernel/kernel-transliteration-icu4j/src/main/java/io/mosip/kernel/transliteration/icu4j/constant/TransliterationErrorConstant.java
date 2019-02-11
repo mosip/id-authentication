@@ -1,4 +1,4 @@
-package io.mosip.kernel.transliteration.constant;
+package io.mosip.kernel.transliteration.icu4j.constant;
 
 /**This enum contains all exception for transliteration.
  * @author Ritesh Sinha

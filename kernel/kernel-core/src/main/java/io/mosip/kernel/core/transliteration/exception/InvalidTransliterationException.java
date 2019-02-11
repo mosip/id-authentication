@@ -1,4 +1,4 @@
-package io.mosip.kernel.transliteration.exception;
+package io.mosip.kernel.core.transliteration.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 

@@ -1,4 +1,4 @@
-package io.mosip.kernel.transliteration.impl;
+package io.mosip.kernel.transliteration.icu4j.impl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 
 import com.ibm.icu.text.Transliterator;
 
+import io.mosip.kernel.core.transliteration.exception.InvalidTransliterationException;
 import io.mosip.kernel.core.transliteration.spi.Transliteration;
-import io.mosip.kernel.transliteration.constant.LanguageIdConstant;
-import io.mosip.kernel.transliteration.constant.TransliterationErrorConstant;
-import io.mosip.kernel.transliteration.constant.TransliterationPropertyConstant;
-import io.mosip.kernel.transliteration.exception.InvalidTransliterationException;
+import io.mosip.kernel.transliteration.icu4j.constant.LanguageIdConstant;
+import io.mosip.kernel.transliteration.icu4j.constant.TransliterationErrorConstant;
+import io.mosip.kernel.transliteration.icu4j.constant.TransliterationPropertyConstant;
 
 /**
  * This class perform transliteration of text based on language code mention.

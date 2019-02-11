@@ -1,4 +1,4 @@
-package io.mosip.kernel.transliteration.constant;
+package io.mosip.kernel.transliteration.icu4j.constant;
 
 /**
  * This ENUM contains language id for transliteration.

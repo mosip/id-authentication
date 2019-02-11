@@ -1,4 +1,4 @@
-package io.mosip.kerneel.transliteration.test;
+package io.mosip.kernel.transliteration.icu4j.test;
 
 import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertThat;
@@ -10,9 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.kernel.core.transliteration.exception.InvalidTransliterationException;
 import io.mosip.kernel.core.transliteration.spi.Transliteration;
-import io.mosip.kernel.transliteration.TransliterationBootApplication;
-import io.mosip.kernel.transliteration.exception.InvalidTransliterationException;
 
 /**
  * This Unit test class contains test methods for transliteration

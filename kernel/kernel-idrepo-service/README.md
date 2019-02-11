@@ -71,13 +71,3 @@ application.version=1.0
 mosip.kernel.jsonvalidator.file-storage-uri=${spring.cloud.config.uri}/${spring.application.name}/${spring.profiles.active}/${spring.cloud.config.label}/
 
 ```
-
-
-
-**ERD**
------------------------------
-
-
-![ERD](kernel-idreo-erd.png)
-
-

@@ -1,4 +1,4 @@
-package io.mosip.kernel.transliteration;
+package io.mosip.kernel.transliteration.icu4j.test;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
