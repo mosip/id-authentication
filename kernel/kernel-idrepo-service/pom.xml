@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.8.1</version>
+		<version>0.8.2</version>
 	</parent>
 	<artifactId>kernel-idrepo-service</artifactId>
 	<dependencies>
@@ -45,7 +45,12 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-idvalidator</artifactId>
+			<artifactId>kernel-idvalidator-uin</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idvalidator-rid</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -82,6 +87,16 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-logger-logback</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-cbeffutil-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+			<version>${spring.boot.version}</version>
 		</dependency>
 	</dependencies>
 	<build>

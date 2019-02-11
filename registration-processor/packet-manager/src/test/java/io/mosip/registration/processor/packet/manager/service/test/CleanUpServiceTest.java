@@ -138,6 +138,9 @@ public class CleanUpServiceTest {
 		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN);
 		
 		fileManager.deletePacket(DirectoryPathDto.LANDING_ZONE, fileNameWithoutExtn);
+		fileManager.put("child" + File.separator + fileNameWithoutExtn, new FileInputStream(file),
+				DirectoryPathDto.LANDING_ZONE);
+		fileManager.deleteFolder(DirectoryPathDto.LANDING_ZONE, "child");
 		
 		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.LANDING_ZONE,fileNameWithoutExtn);
 		assertEquals("Deleted file",false, exists);

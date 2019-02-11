@@ -1,5 +1,6 @@
 package io.mosip.registration.test.dao.impl;
 
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyObject;
 
 import java.io.File;
@@ -188,7 +189,7 @@ public class UserOnBoardDAOImlpTest {
 		Mockito.when(userBiometricRepository.saveAll(bioMetricsList)).thenReturn(bioMetricsList);
 		Mockito.when(machineMappingDAO.save(user)).thenReturn("success");
 		
-		userOnboardDAOImpl.insert(biometricDTO);
+		assertNotNull(userOnboardDAOImpl.insert(biometricDTO));
 		
 
 	}
@@ -296,7 +297,7 @@ public class UserOnBoardDAOImlpTest {
 		try {
 			Mockito.when(userBiometricRepository.saveAll(anyObject())).thenThrow(new RuntimeException("...") {
 			});
-			userOnboardDAOImpl.insert(biometricDTO);
+			assertNotNull(userOnboardDAOImpl.insert(biometricDTO));
 		}catch(Exception e) {
 			
 		}

@@ -69,7 +69,7 @@ public class OTPFacadeImpl implements OTPFacade {
 	NotificationManager notificationManager;
 
 	@Autowired
-	private IdInfoHelper demoHelper;
+	private IdInfoHelper idInfoHelper;
 
 	@Autowired
 	IdRepoService idInfoService;
@@ -96,66 +96,52 @@ public class OTPFacadeImpl implements OTPFacade {
 		String email = null;
 		String comment = null;
 		String status = null;
-
 		String idvId = otpRequestDto.getIdvId();
 		String idvIdType = otpRequestDto.getIdvIdType();
 		String reqTime = otpRequestDto.getReqTime();
 		String txnId = otpRequestDto.getTxnID();
-
-		Map<String, Object> idResDTO = idAuthService.processIdType(otpRequestDto.getIdvIdType(),
-				otpRequestDto.getIdvId(), false);
-		String productid = env.getProperty("application.id");
-		String txnID = otpRequestDto.getTxnID();
-
+		String tspID = otpRequestDto.getTspID();
+		Map<String, Object> idResDTO = idAuthService.processIdType(idvIdType, idvId, false);
 		String uin = String.valueOf(idResDTO.get("uin"));
 		if (isOtpFlooded(otpRequestDto)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
-			otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getTspID());
+			String productid = env.getProperty("application.id");
+			otpKey = OTPUtil.generateKey(productid, uin, txnId, tspID);
 			try {
 				otp = otpService.generateOtp(otpKey);
 			} catch (IdAuthenticationBusinessException e) {
-				mosipLogger.error("", otpRequestDto.getIdvIdType(), e.getErrorCode(), "Error: " + e);
+				mosipLogger.error("", idvIdType, e.getErrorCode(), "Error: " + e);
 			}
 		}
 		mosipLogger.info(SESSION_ID, "NA", "generated OTP", otp);
-
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
 		if (otp == null || otp.trim().isEmpty()) {
 			status = "N";
 			comment = "OTP_GENERATION_FAILED";
-			idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.OTP_REQUEST);
-			// saveAutnTxn(otpRequestDto, status, comment, uin);
+			idAuthService.saveAutnTxn(idvId, idvIdType, uin, reqTime, txnId, status, comment, RequestType.OTP_REQUEST);
 			mosipLogger.error("SessionId", "NA", "NA", "OTP Generation failed");
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 		} else {
 			mosipLogger.info("NA", "NA", "NA", "generated OTP is: " + otp);
 			otpResponseDTO.setStatus("Y");
 			otpResponseDTO.setErr(Collections.emptyList());
-			otpResponseDTO.setTxnID(txnID);
+			otpResponseDTO.setTxnID(txnId);
 			status = "Y";
 			comment = "OTP_GENERATED";
-
 			Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(idResDTO);
-
 			mobileNumber = getMobileNumber(idInfo);
 			email = getEmail(idInfo);
-
 			String responseTime = formatDate(new Date(), env.getProperty(DATETIME_PATTERN));
 			otpResponseDTO.setResTime(responseTime);
-
-			if (email != null && email.length() > 0) {
+			if (email != null && !email.isEmpty() && email.length() > 0) {
 				otpResponseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
 			}
-
-			if (mobileNumber != null && mobileNumber.length() > 0) {
+			if (mobileNumber != null && !mobileNumber.isEmpty() && mobileNumber.length() > 0) {
 				otpResponseDTO.setMaskedMobile(MaskUtil.maskMobile(mobileNumber));
 			}
-
-			// -- send otp notification --
 			notificationService.sendOtpNotification(otpRequestDto, otp, uin, email, mobileNumber, idInfo);
-			idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.OTP_REQUEST);
-
+			idAuthService.saveAutnTxn(idvId, idvIdType, uin, reqTime, txnId, status, comment, RequestType.OTP_REQUEST);
 		}
 		return otpResponseDTO;
 
@@ -175,7 +161,6 @@ public class OTPFacadeImpl implements OTPFacade {
 		String uniqueID = otpRequestDto.getIdvId();
 		Date requestTime = dateHelper.convertStringToDate(otpRequestDto.getReqTime());
 		Date addMinutesInOtpRequestDTime = addMinutes(requestTime, -1);
-
 		if (autntxnrepository.countRequestDTime(requestTime, addMinutesInOtpRequestDTime, uniqueID) > 3) {
 			isOtpFlooded = true;
 		}
@@ -212,9 +197,10 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * 
 	 * @param idInfo List of IdentityInfoDTO
 	 * @return mail
+	 * @throws IdAuthenticationBusinessException
 	 */
-	private String getEmail(Map<String, List<IdentityInfoDTO>> idInfo) {
-		return demoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
+	private String getEmail(Map<String, List<IdentityInfoDTO>> idInfo) throws IdAuthenticationBusinessException {
+		return idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
 	}
 
 	/**
@@ -222,9 +208,10 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * 
 	 * @param idInfo List of IdentityInfoDTO
 	 * @return Mobile number
+	 * @throws IdAuthenticationBusinessException
 	 */
-	private String getMobileNumber(Map<String, List<IdentityInfoDTO>> idInfo) {
-		return demoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
+	private String getMobileNumber(Map<String, List<IdentityInfoDTO>> idInfo) throws IdAuthenticationBusinessException {
+		return idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
 	}
 
 }

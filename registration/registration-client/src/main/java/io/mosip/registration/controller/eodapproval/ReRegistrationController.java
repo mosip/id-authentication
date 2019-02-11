@@ -21,10 +21,10 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.auth.AuthenticationController;
 import io.mosip.registration.dto.PacketStatusDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.packet.ReRegistrationService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -197,15 +197,18 @@ public class ReRegistrationController extends BaseController implements Initiali
 	public void authenticateReregister() {
 		LOGGER.info("RE_REGISTRATION_CONTROLLER - AUTHENTICATE_USER", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the table after the authentication finished successfully");
-
+		Stage primarystage = new Stage();
 		try {
-			Stage primarystage = new Stage();
 			showAuthenticatePage(primarystage);
 			authenticationController.init(this, ProcessNames.EOD.getType());
 
 		} catch (IOException e) {
 			LOGGER.error("RE_REGISTRATION_CONTROLLER - AUTHENTICATE_USER_FAILED", APPLICATION_NAME, APPLICATION_ID,
 					e.getMessage());
+		} catch (RegBaseCheckedException e) {
+			primarystage.close();
+			LOGGER.error("RE_REGISTRATION_CONTROLLER - AUTHENTICATE_USER_FAILED", APPLICATION_NAME, APPLICATION_ID,
+					"No of authentication modes is empty");
 		}
 	}
 
@@ -253,7 +256,8 @@ public class ReRegistrationController extends BaseController implements Initiali
 			ObservableList<PacketStatusDTO> observableList = FXCollections
 					.observableArrayList(reRegistrationPacketsList);
 			table.setItems(observableList);
-			eodController.getReRegisterTitledPane().setText( RegistrationUIConstants.REREGISTER_TITLEPANE+"( " + reRegistrationPacketsList.size() + " )");
+			eodController.getReRegisterTitledPane().setText(
+					RegistrationUIConstants.REREGISTER_TITLEPANE + "( " + reRegistrationPacketsList.size() + " )");
 		} else {
 			eodController.getReRegisterTitledPane().setText(RegistrationUIConstants.REREGISTER_TITLEPANE);
 			reRegistrationRootPane.disableProperty().set(true);

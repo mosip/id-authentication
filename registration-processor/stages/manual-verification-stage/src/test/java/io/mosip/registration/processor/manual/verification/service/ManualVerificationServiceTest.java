@@ -5,11 +5,14 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.io.ByteArrayInputStream;
-
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -240,6 +243,15 @@ public class ManualVerificationServiceTest {
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(any(), any())).thenReturn(null);
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
+	}
+
+	@Test
+	public void getApplicantPacketInfoSuccess() throws UnsupportedEncodingException, FileNotFoundException {
+		ClassLoader classLoader = getClass().getClassLoader();
+		File idJsonFile = new File(classLoader.getResource("ID.json").getFile());
+		InputStream idJsonStream = new FileInputStream(idJsonFile);
+		Mockito.when(filesystemCephAdapterImpl.getFile(any(), any())).thenReturn(idJsonStream);
+		manualAdjudicationService.getApplicantPacketInfo("Id");
 	}
 
 }

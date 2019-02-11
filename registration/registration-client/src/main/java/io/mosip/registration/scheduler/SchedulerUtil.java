@@ -66,8 +66,8 @@ public class SchedulerUtil {
 		LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
 				"Timer has been called " + new SimpleDateFormat("HH:mm:ss").format(System.currentTimeMillis()));
 		timer = new Timer("Timer");
-		refreshTime = TimeUnit.SECONDS.toMillis(BaseController.sessionContext.getRefreshedLoginTime());
-		sessionTimeOut = TimeUnit.SECONDS.toMillis(BaseController.sessionContext.getIdealTime());
+		refreshTime = TimeUnit.SECONDS.toMillis(SessionContext.refreshedLoginTime());
+		sessionTimeOut = TimeUnit.SECONDS.toMillis(SessionContext.idealTime());
 		startTimerForSession();
 	}
 
@@ -176,7 +176,7 @@ public class SchedulerUtil {
 	
 	private static Scene getScene() throws IOException {
 		BorderPane loginRoot = BaseController.load(BaseController.class.getResource(RegistrationConstants.INITIAL_PAGE),
-				ApplicationContext.getInstance().getApplicationMessagesBundle());
+				ApplicationContext.applicationMessagesBundle());
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		Scene scene = new Scene(loginRoot, 950, 630);
 		scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());

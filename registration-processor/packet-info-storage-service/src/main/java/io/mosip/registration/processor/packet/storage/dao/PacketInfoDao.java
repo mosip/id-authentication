@@ -124,28 +124,7 @@ public class PacketInfoDao {
 		return regOsiDto;
 	}
 
-	/**
-	 * Gets the registration center machine.
-	 *
-	 * @param regid
-	 *            the regid
-	 * @return the registration center machine
-	 */
-	public RegistrationCenterMachineDto getRegistrationCenterMachine(String regid) {
-		RegCenterMachinePKEntity regCenterMachinePKEntity = new RegCenterMachinePKEntity();
-		regCenterMachinePKEntity.setRegId(regid);
-		RegCenterMachineEntity regCenterMachineEntity = regCenterMachineRepository
-				.findById(RegCenterMachineEntity.class, regCenterMachinePKEntity);
-		RegistrationCenterMachineDto dto = new RegistrationCenterMachineDto();
-		dto.setIsActive(regCenterMachineEntity.getIsActive());
-		dto.setLatitude(regCenterMachineEntity.getLatitude());
-		dto.setLongitude(regCenterMachineEntity.getLongitude());
-		dto.setRegcntrId(regCenterMachineEntity.getCntrId());
-		dto.setRegId(regCenterMachineEntity.getId().getRegId());
-		dto.setMachineId(regCenterMachineEntity.getMachineId());
-		// dto.setPacketCreationDate(regCenterMachineEntity.getPacketCreationDate());
-		return dto;
-	}
+	
 
 	/**
 	 * Convert reg osi entity to dto.

@@ -13,7 +13,7 @@ import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 
 public enum IdaIdMapping implements IdMapping{
 
-	FULLNAME("fullName", MappingConfig::getFullName), 
+	NAME("name", MappingConfig::getName), 
 	DOB("dob", MappingConfig::getDob),
 	DOBTYPE("dobType", MappingConfig::getDobType),
 	AGE("age", MappingConfig::getAge),

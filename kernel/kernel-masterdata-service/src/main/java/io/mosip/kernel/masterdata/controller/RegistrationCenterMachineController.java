@@ -46,7 +46,7 @@ public class RegistrationCenterMachineController {
 	public ResponseEntity<ResponseRrgistrationCenterMachineDto> createRegistrationCenterAndMachine(
 			@Valid @RequestBody RequestDto<RegistrationCenterMachineDto> requestDto) {
 		return new ResponseEntity<>(registrationCenterMachineService.createRegistrationCenterAndMachine(requestDto),
-				HttpStatus.CREATED);
+				HttpStatus.OK);
 	}
 
 	/**

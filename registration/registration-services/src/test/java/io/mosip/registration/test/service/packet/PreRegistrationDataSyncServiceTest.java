@@ -1,6 +1,7 @@
 package io.mosip.registration.test.service.packet;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.net.SocketTimeoutException;
@@ -11,6 +12,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,6 +33,7 @@ import org.springframework.web.client.ResourceAccessException;
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
 import io.mosip.registration.dto.MainResponseDTO;
 import io.mosip.registration.dto.PreRegistrationDTO;
@@ -46,7 +50,7 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ RegistrationAppHealthCheckUtil.class })
+@PrepareForTest({ RegistrationAppHealthCheckUtil.class, io.mosip.registration.context.ApplicationContext.class })
 public class PreRegistrationDataSyncServiceTest {
 
 	@Rule
@@ -89,6 +93,22 @@ public class PreRegistrationDataSyncServiceTest {
 
 		preRegData.put(RegistrationConstants.PRE_REG_FILE_NAME, "filename_2018-12-12 09:39:08.272.zip");
 		preRegData.put(RegistrationConstants.PRE_REG_FILE_CONTENT, preRegPacket);
+
+		SessionContext.getInstance();
+	}
+
+	@Before
+	public void initiate() {
+		Map<String, Object> applicationMap = new HashMap<>();
+		applicationMap.put(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS, "45");
+
+		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
+		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
+	}
+
+	@AfterClass
+	public static void destroy() {
+		SessionContext.destroySession();
 	}
 
 	@Test
@@ -200,14 +220,20 @@ public class PreRegistrationDataSyncServiceTest {
 	}
 
 	@Test
-	public void fetchAndDeleteRecordsTest() {
+	public void fetchAndDeleteRecordsTest() throws java.io.IOException {
+		File file = new File("testDeletePacket.txt");
+		file.createNewFile();
 		List<PreRegistrationList> preRegList = new ArrayList<>();
 		PreRegistrationList preRegistrationList = new PreRegistrationList();
-		preRegistrationList.setPacketPath("");
+		preRegistrationList.setPacketPath(file.getAbsolutePath());
 		preRegList.add(preRegistrationList);
 		Mockito.when(preRegistrationDAO.fetchRecordsToBeDeleted(Mockito.any())).thenReturn(preRegList);
 		Mockito.when(preRegistrationDAO.update(Mockito.anyObject())).thenReturn(preRegistrationList);
 		preRegistrationDataSyncServiceImpl.fetchAndDeleteRecords();
+
+		if (file.exists()) {
+			file.delete();
+		}
 	}
 
 }

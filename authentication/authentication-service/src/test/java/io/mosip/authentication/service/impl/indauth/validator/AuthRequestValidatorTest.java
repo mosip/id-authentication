@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,15 +38,12 @@ import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
-import io.mosip.authentication.service.validator.IdAuthValidator;
-import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
 import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
-import java.time.temporal.ChronoUnit;
 
 /**
  * This class validates the AuthRequestValidator
@@ -91,13 +89,9 @@ public class AuthRequestValidatorTest {
 
 	@InjectMocks
 	IdInfoHelper idinfoHelper;
-	
-	
-
 
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(authRequestValidator, "environment", env);
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "dateHelper", dateHelper);
@@ -143,7 +137,7 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);
@@ -192,7 +186,7 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);
@@ -360,7 +354,7 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList);
 		idDTO.setDobType(idInfoList);
 		idDTO.setGender(idInfoList);
@@ -403,7 +397,7 @@ public class AuthRequestValidatorTest {
 		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
 		idInfoDTO2.setLanguage(null);
 		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(env.getProperty("date.pattern"))).toString());
 		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
 		idInfoList1.add(idInfoDTO2);
 		// dobtype
@@ -426,7 +420,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList1);
 		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
@@ -473,7 +467,7 @@ public class AuthRequestValidatorTest {
 		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
 		idInfoDTO2.setLanguage(null);
 		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(env.getProperty("date.pattern"))).toString());
 		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
 		idInfoList1.add(idInfoDTO2);
 		// dobtype
@@ -496,7 +490,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList1);
 		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
@@ -518,7 +512,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(env.getProperty("date.pattern"))).toString());
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestDTO.setIdvIdType(IdType.VID.getType());
 		authRequestDTO.setIdvId("5371843613598206");
@@ -566,7 +560,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList1);
 		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
@@ -636,7 +630,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(null);
 		idDTO.setDobType(null);
 		idDTO.setGender(null);
@@ -658,7 +652,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(env.getProperty("date.pattern"))).toString());
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestDTO.setIdvIdType(IdType.VID.getType());
 		authRequestDTO.setIdvId("5371843613598206");
@@ -706,7 +700,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList1);
 		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
@@ -776,7 +770,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList1);
 		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
@@ -846,7 +840,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList1);
 		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
@@ -919,7 +913,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList1);
 		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
@@ -997,7 +991,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList1);
 		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
@@ -1073,7 +1067,7 @@ public class AuthRequestValidatorTest {
 		idInfoList4.add(idInfoDTO5);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		idDTO.setDob(idInfoList1);
 		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
@@ -1182,7 +1176,7 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setFullName(idInfoList);
+		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);

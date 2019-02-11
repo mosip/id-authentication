@@ -56,7 +56,7 @@ public class RegistrationCenterUserMachineController {
 	public ResponseEntity<RegistrationCenterMachineUserID> createRegistrationCentersMachineUserMapping(
 			@ApiParam("Registration center id,user id and ,machine id with metadata") @RequestBody @Valid RequestDto<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDto) {
 		return new ResponseEntity<>(registrationCenterMachineUserService.createRegistrationCentersMachineUserMapping(
-				registrationCenterUserMachineMappingDto), HttpStatus.CREATED);
+				registrationCenterUserMachineMappingDto), HttpStatus.OK);
 	}
 
 	/**

@@ -8,7 +8,7 @@ public class RegistrationUIConstants {
 
 	// Key values to read value from messages.properties file
 
-	public static final ResourceBundle bundle = ApplicationContext.getInstance().getApplicationMessagesBundle();
+	public static final ResourceBundle bundle = ApplicationContext.applicationMessagesBundle();
 
 	// LOGIN
 	public static final String UNABLE_LOAD_LOGIN_SCREEN = bundle.getString("UNABLE_LOAD_LOGIN_SCREEN");

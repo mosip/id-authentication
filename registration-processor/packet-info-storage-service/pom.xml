@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>registration-processor</artifactId>
-		<version>0.8.1</version>
+		<version>0.8.2</version>
 	</parent>
 	<artifactId>packet-info-storage-service</artifactId>
 	<name>packet-info-storage-service</name>
@@ -77,7 +77,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>registration-status-service</artifactId>
+			<artifactId>registration-status-service-impl</artifactId>
 			<version>${registration.status.service.version}</version>
 		</dependency>
 		<dependency>

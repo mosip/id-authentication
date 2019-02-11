@@ -34,7 +34,7 @@ import io.swagger.annotations.ApiParam;
  */
 @CrossOrigin
 @RestController
-@Api(value = "Operation related to Gender Type",tags = { "GenderType" })
+@Api(value = "Operation related to Gender Type", tags = { "GenderType" })
 public class GenderTypeController {
 	@Autowired
 	private GenderTypeService genderTypeService;
@@ -69,9 +69,8 @@ public class GenderTypeController {
 	 * @return primary key of entered row of gender
 	 */
 	@PostMapping("/v1.0/gendertypes")
-	public ResponseEntity<CodeAndLanguageCodeID> saveGenderType(
-			@Valid @RequestBody RequestDto<GenderTypeDto> gender) {
-		return new ResponseEntity<>(genderTypeService.saveGenderType(gender), HttpStatus.CREATED);
+	public ResponseEntity<CodeAndLanguageCodeID> saveGenderType(@Valid @RequestBody RequestDto<GenderTypeDto> gender) {
+		return new ResponseEntity<>(genderTypeService.saveGenderType(gender), HttpStatus.OK);
 
 	}
 
@@ -86,8 +85,7 @@ public class GenderTypeController {
 	@PutMapping("/v1.0/gendertypes")
 	public ResponseEntity<CodeAndLanguageCodeID> updateGenderType(
 			@ApiParam("Data to update with metadata") @Valid @RequestBody RequestDto<GenderTypeDto> gender) {
-		return new ResponseEntity<>(genderTypeService.updateGenderType(gender),
-				HttpStatus.OK);
+		return new ResponseEntity<>(genderTypeService.updateGenderType(gender), HttpStatus.OK);
 
 	}
 
@@ -102,8 +100,6 @@ public class GenderTypeController {
 	@DeleteMapping("/v1.0/gendertypes/{code}")
 	public ResponseEntity<CodeResponseDto> deleteGenderType(
 			@ApiParam("Gender type Code of gender to be deleted") @PathVariable("code") String code) {
-		return new ResponseEntity<>(
-				genderTypeService.deleteGenderType(code),
-				HttpStatus.OK);
+		return new ResponseEntity<>(genderTypeService.deleteGenderType(code), HttpStatus.OK);
 	}
 }

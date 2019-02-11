@@ -1,5 +1,6 @@
 package io.mosip.registration.constants;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -150,6 +151,11 @@ public class RegistrationConstants {
 
 	public static final String UIN_UPDATE_ISUINUPDATE = "isUINUpdate";
 	public static final String LOCAL_LANGUAGE = "LocalLanguage";
+	public static final String PRIMARY_LANGUAGE = "primary";
+	public static final String SECONDARY_LANGUAGE = "secondary";
+	public static final String LANGUAGE_ENGLISH = "english";
+	public static final String LANGUAGE_ARABIC = "arabic";
+	
 	public static final String APPLICATION_LANGUAGE = "application_language";
 	public static final String REGISTRATION_LOCAL_LANGUAGE = "local_language";
 	public static final String PACKET_TYPE_NEW = "New";
@@ -273,6 +279,7 @@ public class RegistrationConstants {
 	// Audit - Constants
 	public static final String AUDIT_APPLICATION_ID = "audit.applicationId";
 	public static final String AUDIT_APPLICATION_NAME = "audit.applicationName";
+	public static final String AUDIT_DEFAULT_USER = "NA";
 
 	// Default Host IP Address and Name for Audit Logs
 	public static final String HOST_IP = "audit.hostIP";
@@ -306,6 +313,10 @@ public class RegistrationConstants {
 
 	// Velocity Template Generator Constants
 	public static final String TEMPLATE_REGISTRATION_ID = "RID";
+	public static final String TEMPLATE_UIN_UPDATE = "UINUpdate";	
+	public static final String TEMPLATE_UIN = "UIN";	
+	public static final String TEMPLATE_UIN_USER_LANG_LABEL = "UINUserLangLabel";
+	public static final String TEMPLATE_UIN_LOCAL_LANG_LABEL = "UINLocalLangLabel";
 	public static final String TEMPLATE_DATE = "Date";
 	public static final String TEMPLATE_FULL_NAME = "FullName";
 	public static final String TEMPLATE_DOB = "DOB";
@@ -404,8 +415,8 @@ public class RegistrationConstants {
 
 	// Web Camera Constants
 	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";
-	public static final String APPLICANT_PHOTOGRAPH_NAME = "Applicant Photograph";
-	public static final String EXCEPTION_PHOTOGRAPH_NAME = "Exception Photograph";
+	public static final String APPLICANT_PHOTOGRAPH_NAME = "Applicant Photograph.jpg";
+	public static final String EXCEPTION_PHOTOGRAPH_NAME = "Exception Photograph.jpg";
 	public static final String APPLICANT_IMAGE = "Applicant Image";
 	public static final String EXCEPTION_IMAGE = "Exception Image";
 	public static final String WEB_CAMERA_PAGE_TITLE = "Applicant Biometrics";
@@ -496,7 +507,11 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_RDJ_J00011 = "RDJ_J00011";
 	public static final String OPT_TO_REG_ADJ_J00012 = "ADJ_J00012";
 	public static final String OPT_TO_REG_DEL_001 = "DEL_001";
-	public static final String OPT_TO_REG_UDM_J00012 = "UDM_J00012";
+	public static final String OPT_TO_REG_UDM_J00012 = "UDM_J00012";	
+	public static final String GEO_CAP_FREQ = "GEO_CAP_FREQ";
+	public static final String DIST_FRM_MACHN_TO_CENTER = "DIST_FRM_MACHN_TO_CENTER";
+	public static final String REG_PAK_MAX_CNT_OFFLINE_FREQ = "REG_PAK_MAX_CNT_OFFLINE_FREQ";
+
 
 	/** Packet Status Sync Constants */
 	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
@@ -569,6 +584,8 @@ public class RegistrationConstants {
 	public static final String JOB_TRIGGER_POINT_USER = "User";
 	public static final String JOB_SYNC_TO_SERVER = "Server";
 	public static final String JOB_DETAIL = "jobDetail";
+	public static final String APPLICATION_CONTEXT = "applicationContext";
+	public static final String SYNC_TRANSACTION = "syncTransaction";
 
 	// GPS Device
 	public static final String GPS_LOGGER = "GPS-Device-Information";
@@ -788,22 +805,7 @@ public class RegistrationConstants {
 	// Scan
 	public static final String USER_REG_SCAN_EXP = USER_REG_SCAN_EXP_CODE + "DOC-001";
 
-	// To be moved to Logger Constants
-	public static final String BASE_JOB_TITLE = "REGISTRATION - Base Job";
-	public static final String BATCH_JOBS_PROCESS_LOGGER_TITLE = "REGISTRATION - Job Process Listener";
-	public static final String BATCH_JOBS_TRIGGER_LOGGER_TITLE = "REGISTRATION - Job Trigger Listener";
-	public static final String PACKET_SYNC_STATUS_JOB_TITLE = "REGISTRATION - Packet Sync Status Job";
-	public static final String MASTER_SYNC_STATUS_JOB_TITLE = "REGISTRATION - Master Sync Status Job";
-	public static final String BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE = "REGISTRATION - Sync Transaction Manager";
-	public static final String BATCH_JOBS_CONFIG_LOGGER_TITLE = "REGISTRATION - Job Configuration Service";
-	public static final String PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync Job";
-	public static final String PRE_REG_DATA_SYNC_SERVICE_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync Service";
-	public static final String PRE_REG_DATA_SYNC_DAO_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync DAO";
-	public static final String REGISTRATION_DELETION_JOB_LOGGER_TITLE = "REGISTRATION - Registration Deletion Job";
-	public static final String SYNC_CONFIG_DATA_JOB_LOGGER_TITLE = "REGISTRATION - Sync Config Data Job";
-	public static final String GLOBAL_PARAM_SERVICE_LOGGER_TITLE = "REGISTRATION - SYNCHCONFIGDATA - GLOBALPARAMSSERVICE";
-	public static final String AUDIT_SERVICE_LOGGER_TITLE = "REGISTRATION - AUDIT - AUDIT SERVICE";
-
+	
 	// Regex Constants
 	public static final String FULL_NAME_REGEX = "([A-z]+\\s?\\.?)+";
 	public static final int FULL_NAME_LENGTH = 50;
@@ -843,9 +845,7 @@ public class RegistrationConstants {
 	public static final String SYNCH_CONFIG_DATA_JOB_TITLE="synch config data job";
 	public static final String REG_USER_MAPPING_SYNC_JOB_TITLE="registration user mapping sync job";
 	
-	public static final String KEY_POLICY_SYNC_JOB_TITLE = "REGISTRATION - key policy synch Job";
-	public static final String DELETE_AUDIT_LOGS_JOB = "REGISTRATION - Delete Audit Logs Job";
-
+	
 
 	// PRE-REG DELETE JOB
 	public static final String PRE_REG_DELETE_SUCCESS = "Pre-Registration Records deleted";
@@ -944,6 +944,8 @@ public class RegistrationConstants {
 	public static final String AUDIT_LOG_DELETION_CONFIGURED_DAYS="AUDIT_LOG_DELETION_CONFIGURED_DAYS";
 	public static final String SYNC_TRANSACTION_NO_OF_DAYS_LIMIT="SYNC_TRANSACTION_NO_OF_DAYS_LIMIT";
 	public static final String REG_DELETION_CONFIGURED_DAYS="REG_DELETION_CONFIGURED_DAYS";
+	public static final String PRE_REG_DELETION_CONFIGURED_DAYS="PRE_REG_DELETION_CONFIGURED_DAYS";
+	
 	
 	
 	//Audit Constants
@@ -953,14 +955,32 @@ public class RegistrationConstants {
 	
 	//Rest Authentication Constants
 	
-	public static final String USER_DTO="userDTO";
-	public static final String REST_OAUTH="oauth";
-	public static final String REST_OAUTH_USER_NAME="userName";
-	public static final String REST_OAUTH_USER_PSWD="password";
-	public static final String REST_OAUTH_ERROR_CODE="REST-OAUTH-001";
-	public static final String REST_OAUTH_ERROR_MSG="Internal Server Error";
+	public static final String USER_DTO = "userDTO";
+	public static final String REST_OAUTH = "oauth";
+	public static final String REST_OAUTH_USER_NAME = "userName";
+	public static final String REST_OAUTH_USER_PSWD = "password";
+	public static final String REST_OAUTH_ERROR_CODE = "REST-OAUTH-001";
+	public static final String REST_OAUTH_ERROR_MSG = "Internal Server Error";
+	public static final String REST_AUTHORIZATION = "authorization";
+	public static final String REST_RESPONSE_BODY = "responseBody";
+	public static final String REST_RESPONSE_HEADERS = "responseHeader";
 	
 	//Packet Sync
 	public static final String PACKET_SYNC="packet_sync";
+	
+	//Validations to ignore
+
+	public static List<String> fieldsToExclude(){
+		List<String> fieldToExclude = new ArrayList<String>();
+		fieldToExclude.add("preRegistrationId");
+		fieldToExclude.add("virtualKeyboard");
+		fieldToExclude.add("docPageNumber");
+		fieldToExclude.add("cniOrPinNumber");
+		fieldToExclude.add("cniOrPinNumberLocalLanguage");
+		
+		return fieldToExclude;
+		
+	}
+
 
 }

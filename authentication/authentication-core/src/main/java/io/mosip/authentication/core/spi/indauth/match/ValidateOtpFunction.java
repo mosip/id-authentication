@@ -6,6 +6,11 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
  * 
  * @author Dinesh Karuppiah.T
  */
+
+/**
+ * To validate OTP against Otpvalue and Otpkey
+ *
+ */
 public interface ValidateOtpFunction {
 
 	/**
@@ -16,6 +21,6 @@ public interface ValidateOtpFunction {
 	 * @return
 	 * @throws IdAuthenticationBusinessException
 	 */
-	public boolean validateOtp(String otpValue, String otpKey) throws IdAuthenticationBusinessException; 
+	public boolean validateOtp(String otpValue, String otpKey) throws IdAuthenticationBusinessException;
 
 }

@@ -1,5 +1,6 @@
 package io.mosip.authentication.service.impl.spin.service;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -8,7 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -24,23 +24,24 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.spinstore.PinRequestDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinIdentityDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
-import io.mosip.authentication.service.entity.StaticPinEntity;
-import io.mosip.authentication.service.entity.StaticPinHistoryEntity;
+import io.mosip.authentication.service.entity.StaticPin;
+import io.mosip.authentication.service.entity.StaticPinHistory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.AuditHelper;
-import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.authentication.service.repository.StaticPinHistoryRepository;
 import io.mosip.authentication.service.repository.StaticPinRepository;
+import io.mosip.kernel.core.exception.ParseException;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
@@ -70,11 +71,8 @@ public class StaticPinServiceImplTest {
 	@Mock
 	private AuditHelper auditHelper;
 
-	@InjectMocks
-	DateHelper dateHelper;
-
 	@Mock
-	StaticPinEntity staticPinEntity;
+	StaticPin staticPin;
 
 	@Mock
 	StaticPinRepository staticPinRepository;
@@ -93,26 +91,26 @@ public class StaticPinServiceImplTest {
 	/** The Constant for IDA */
 	private static final String IDA = "IDA";
 
+	private static final String DATETIME_PATTERN = "datetime.pattern";
+
 	/** The IdRepoService **/
 	@Mock
 	private IdRepoService idInfoService;
 	StaticPinRequestDTO staticPinRequestDTO = new StaticPinRequestDTO();
-	private Errors errors = new org.springframework.validation.BindException(staticPinRequestDTO, "staticPinRequestDTO");
+	private Errors errors = new org.springframework.validation.BindException(staticPinRequestDTO,
+			"staticPinRequestDTO");
 
 	@Before
 	public void before() {
-
-		ReflectionTestUtils.setField(staticPinServiceImpl, "dateHelper", dateHelper);
-		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(staticPinServiceImpl, "staticPinRepo", staticPinRepository);
+		ReflectionTestUtils.setField(staticPinServiceImpl, "env", env);
 		ReflectionTestUtils.setField(staticPinServiceImpl, "staticPinHistoryRepo", staticPinHistoryRepo);
 		ReflectionTestUtils.setField(restRequestFactory, "env", env);
-
 	}
 
 	@Test
 	public void testStorePin_Success_uin() throws IdAuthenticationBusinessException {
-		
+
 		String uin = "794138547620";
 		staticPinRequestDTO.setId("mosip.identity.static-pin");
 		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
@@ -126,73 +124,131 @@ public class StaticPinServiceImplTest {
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
-		StaticPinEntity stat = new StaticPinEntity();
-		stat.setCreatedDTimes(new Date());
+		StaticPin stat = new StaticPin();
+		stat.setCreatedDTimes(now());
 		stat.setPin("123456");
 		stat.setUin(uin);
-		StaticPinHistoryEntity staticPinHistoryEntity = new StaticPinHistoryEntity();
-		staticPinHistoryEntity.setUin(uin);
-		staticPinHistoryEntity.setPin(pin);
-		staticPinHistoryEntity.setCreatedBy(IDA);
-		staticPinHistoryEntity.setCreatedDTimes(new Date());
-		staticPinHistoryEntity.setEffectiveDate(new Date());
-		staticPinHistoryEntity.setActive(true);
-		staticPinHistoryEntity.setDeleted(false);
-		staticPinHistoryEntity.setUpdatedBy(IDA);
-		staticPinHistoryEntity.setUpdatedOn(new Date());
-		Optional<StaticPinEntity> entity = Optional.of(stat);
+		StaticPinHistory staticPinHistory = new StaticPinHistory();
+		staticPinHistory.setUin(uin);
+		staticPinHistory.setPin(pin);
+		staticPinHistory.setCreatedBy(IDA);
+		staticPinHistory.setCreatedDTimes(now());
+		staticPinHistory.setEffectiveDate(now());
+		staticPinHistory.setActive(true);
+		staticPinHistory.setDeleted(false);
+		staticPinHistory.setUpdatedBy(IDA);
+		staticPinHistory.setUpdatedOn(now());
+		Optional<StaticPin> entity = Optional.of(stat);
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", uin);
 		idRepo.put("registrationId", "1234567890");
 		Mockito.when(staticPinRepository.findById(uin)).thenReturn(entity);
-		Optional<StaticPinHistoryEntity> entitySpin = Optional.of(staticPinHistoryEntity);
-		Mockito.when(staticPinHistoryRepo.save(staticPinHistoryEntity)).thenReturn(staticPinHistoryEntity);
+		Optional<StaticPinHistory> entitySpin = Optional.of(staticPinHistory);
+		Mockito.when(staticPinHistoryRepo.save(staticPinHistory)).thenReturn(staticPinHistory);
 		Mockito.when(staticPinRepository.update(entity.get())).thenReturn(stat);
 		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "storeSpin", staticPinRequestDTO, "794138547620");
 	}
+
 	@Test
-	public void testStorePin_UniqueUin() throws IDDataValidationException {
-		
+	public void testStorePin_UniqueUin() throws IdAuthenticationBusinessException {
+
 		String uin = "794138547620";
 		staticPinRequestDTO.setId("mosip.identity.static-pin");
-		String reqTime = ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
+		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
+				.toString();
 		staticPinRequestDTO.setReqTime(reqTime);
 		staticPinRequestDTO.setVer("1.0");
-		StaticPinIdentityDTO dto=new StaticPinIdentityDTO();
+		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
 		dto.setUin(uin);
-		PinRequestDTO pinRequestDTO=new PinRequestDTO();
+		PinRequestDTO pinRequestDTO = new PinRequestDTO();
 		pinRequestDTO.setIdentity(dto);
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
-		StaticPinEntity stat = new StaticPinEntity();
-		stat.setCreatedDTimes(new Date());
+		StaticPin stat = new StaticPin();
+		stat.setCreatedDTimes(now());
 		stat.setPin("123456");
 		stat.setUin(uin);
-		StaticPinHistoryEntity staticPinHistoryEntity = new StaticPinHistoryEntity();
-		staticPinHistoryEntity.setUin(uin);
-		staticPinHistoryEntity.setPin(pin);
-		staticPinHistoryEntity.setCreatedBy(IDA);
-		staticPinHistoryEntity.setCreatedDTimes(new Date());
-		staticPinHistoryEntity.setEffectiveDate(new Date());
-		staticPinHistoryEntity.setActive(true);
-		staticPinHistoryEntity.setDeleted(false);
-		staticPinHistoryEntity.setUpdatedBy(IDA);
-		staticPinHistoryEntity.setUpdatedOn(new Date());
-		Optional<StaticPinEntity> entity1 = Optional.empty();
-		Optional<StaticPinEntity> entity = Optional.of(stat);
+		StaticPinHistory staticPinHistory = new StaticPinHistory();
+		staticPinHistory.setUin(uin);
+		staticPinHistory.setPin(pin);
+		staticPinHistory.setCreatedBy(IDA);
+		staticPinHistory.setCreatedDTimes(now());
+		staticPinHistory.setEffectiveDate(now());
+		staticPinHistory.setActive(true);
+		staticPinHistory.setDeleted(false);
+		staticPinHistory.setUpdatedBy(IDA);
+		staticPinHistory.setUpdatedOn(now());
+		Optional<StaticPin> entity1 = Optional.empty();
+		Optional<StaticPin> entity = Optional.of(stat);
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", uin);
 		idRepo.put("registrationId", "1234567890");
-		Optional<StaticPinHistoryEntity> entitySpin=Optional.of(staticPinHistoryEntity);
+		Optional<StaticPinHistory> entitySpin = Optional.of(staticPinHistory);
 		errors.rejectValue(null, "test error", "test error");
 		Mockito.when(staticPinRepository.findById(uin)).thenReturn(entity1);
 		Mockito.when(staticPinRepository.save(stat)).thenReturn(stat);
-		Mockito.when(staticPinHistoryRepo.save(staticPinHistoryEntity)).thenReturn(staticPinHistoryEntity);
-		Mockito.when(staticPinRepository.update(entity.get())).thenReturn(stat);	
-		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "storeSpin", staticPinRequestDTO,"794138547620");
+		Mockito.when(staticPinHistoryRepo.save(staticPinHistory)).thenReturn(staticPinHistory);
+		Mockito.when(staticPinRepository.update(entity.get())).thenReturn(stat);
+		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "storeSpin", staticPinRequestDTO, "794138547620");
 	}
-	
-	
+
+	@Test
+	public void testStorePin_Failure() throws IdAuthenticationBusinessException {
+
+		String uin = "794138547620";
+		staticPinRequestDTO.setId("mosip.identity.static-pin");
+		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
+				.toString();
+		staticPinRequestDTO.setReqTime(reqTime);
+		staticPinRequestDTO.setVer("1.0");
+		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
+		dto.setUin(uin);
+		PinRequestDTO pinRequestDTO = new PinRequestDTO();
+		pinRequestDTO.setIdentity(dto);
+		String pin = "123454";
+		pinRequestDTO.setStaticPin(pin);
+		staticPinRequestDTO.setRequest(pinRequestDTO);
+		StaticPin stat = new StaticPin();
+		stat.setCreatedDTimes(now());
+		stat.setPin("123456");
+		stat.setUin(uin);
+		StaticPinHistory staticPinHistory = new StaticPinHistory();
+		staticPinHistory.setUin(uin);
+		staticPinHistory.setPin(pin);
+		staticPinHistory.setCreatedBy(null);
+		staticPinHistory.setCreatedDTimes(now());
+		staticPinHistory.setEffectiveDate(now());
+		staticPinHistory.setActive(true);
+		staticPinHistory.setDeleted(false);
+		staticPinHistory.setUpdatedBy(IDA);
+		staticPinHistory.setUpdatedOn(now());
+		Optional<StaticPin> entity1 = Optional.empty();
+		Optional<StaticPin> entity = Optional.of(stat);
+		Map<String, Object> idRepo = new HashMap<>();
+		idRepo.put("uin", uin);
+		idRepo.put("registrationId", "1234567890");
+		Optional<StaticPinHistory> entitySpin = Optional.of(staticPinHistory);
+		errors.rejectValue(null, "test error", "test error");
+		Mockito.when(staticPinRepository.findById(uin)).thenReturn(entity1);
+		Mockito.when(staticPinRepository.save(stat)).thenReturn(stat);
+		Mockito.when(staticPinHistoryRepo.save(staticPinHistory)).thenReturn(staticPinHistory);
+		Mockito.when(staticPinRepository.update(entity.get())).thenReturn(stat);
+		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "storeSpin", staticPinRequestDTO, "794138547620");
+	}
+
+	private LocalDateTime now() throws IdAuthenticationBusinessException {
+		try {
+			return DateUtils.parseUTCToLocalDateTime(
+					DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN)),
+					env.getProperty(DATETIME_PATTERN));
+		} catch (ParseException e) {
+
+			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							"DATETIME_PATTERN"),
+					e);
+		}
+	}
+
 }

@@ -1,12 +1,18 @@
 # kernel-otpnotification-service
 
-[Background & Design](../../docs/design/kernel/kernel-otpmanager.md)
+[Background & Design -TBA-](../../docs/design/kernel/kernel-otpnotification.md)
 
-[Api Documentation]
+[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#7-otp-notification)
 
 Default Port and Context Path
 
+```
+server.port=8082
+server.servlet.path=/otpnotifier
 
+```
+
+localhost:8082/otpnotifier/swagger-ui.html
 
 **Application Properties**
 

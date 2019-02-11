@@ -93,7 +93,7 @@ node {
 	  // clearing the stash
 	  sh "git stash clear"
 	  // commiting changes to branch
-	  sh "git commit -m 'changing versions'"
+	  sh "git commit -m 'MOS-14569 updating versions and tagging the code for giving it to QA'"
       sshagent(['fd9c5f45-e6ac-45ea-b345-f6fbeb303044']) {
        sh "git push origin $branch"
       }
@@ -105,6 +105,8 @@ node {
       }
  
   }
+  // Clean the workspace to avoid GIT conflicts when next time this pipeline is triggered
+  	cleanWs()
  } 
 }
 

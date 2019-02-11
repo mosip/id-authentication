@@ -30,7 +30,7 @@ import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.service.config.IDAMappingConfig;
-import io.mosip.authentication.service.entity.StaticPinEntity;
+import io.mosip.authentication.service.entity.StaticPin;
 import io.mosip.authentication.service.factory.BiometricProviderFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.IdInfoHelper;
@@ -92,9 +92,9 @@ public class PinAuthServiceImplTest {
 
 	@Test
 	public void validPinTest() throws IdAuthenticationBusinessException {
-		StaticPinEntity stat = new StaticPinEntity();
+		StaticPin stat = new StaticPin();
 		stat.setPin(CryptoUtil.encodeBase64(HMACUtils.generateHash(("12345").getBytes())));
-		Optional<StaticPinEntity> entityValue = Optional.of(stat);
+		Optional<StaticPin> entityValue = Optional.of(stat);
 		Mockito.when(staticPinRepo.findById(Mockito.anyString())).thenReturn(entityValue);
 		AuthStatusInfo validatePin = pinAuthServiceImpl.validatePin(constructRequest(), "284169042058");
 		assertTrue(validatePin.isStatus());
@@ -102,9 +102,9 @@ public class PinAuthServiceImplTest {
 
 	@Test
 	public void invalidPinTest() throws IdAuthenticationBusinessException {
-		StaticPinEntity stat = new StaticPinEntity();
+		StaticPin stat = new StaticPin();
 		stat.setPin("123456");
-		Optional<StaticPinEntity> entityValue = Optional.of(stat);
+		Optional<StaticPin> entityValue = Optional.of(stat);
 		Mockito.when(staticPinRepo.findById(Mockito.anyString())).thenReturn(entityValue);
 		AuthStatusInfo validatePin = pinAuthServiceImpl.validatePin(constructRequest(), "284169042058");
 		assertFalse(validatePin.isStatus());

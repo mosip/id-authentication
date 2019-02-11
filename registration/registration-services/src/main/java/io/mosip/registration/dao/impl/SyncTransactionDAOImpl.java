@@ -34,8 +34,12 @@ public class SyncTransactionDAOImpl implements SyncTransactionDAO {
 	@Autowired
 	private SyncTransactionRepository syncTranscRepository;
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.dao.JobTransactionDAO#save(io.mosip.registration.entity.SyncTransaction)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.JobTransactionDAO#save(io.mosip.registration.entity
+	 * .SyncTransaction)
 	 */
 	@Override
 	public SyncTransaction save(SyncTransaction syncTransaction) {
@@ -45,8 +49,10 @@ public class SyncTransactionDAOImpl implements SyncTransactionDAO {
 		return syncTranscRepository.save(syncTransaction);
 
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.mosip.registration.dao.SyncJobTransactionDAO#getAll()
 	 */
 	@Override
@@ -56,14 +62,28 @@ public class SyncTransactionDAOImpl implements SyncTransactionDAO {
 		return syncTranscRepository.findAll();
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.dao.SyncTransactionDAO#getSyncTransactions(java.sql.Timestamp, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.SyncTransactionDAO#getSyncTransactions(java.sql.
+	 * Timestamp, java.lang.String)
 	 */
 	@Override
-	public List<SyncTransaction> getSyncTransactions(Timestamp req,String syncJobId) {
+	public List<SyncTransaction> getSyncTransactions(Timestamp req, String syncJobId) {
 		LOGGER.info(RegistrationConstants.SYNC_TRANSACTION_DAO_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Fetch  sync details based on crDtime from databse started");
-		return syncTranscRepository.findByCrDtimeAfterAndSyncJobIdNot(req, syncJobId);
+		return syncTranscRepository.findByCrDtimeAfterAndSyncJobIdNotOrderByCrDtimeDesc(req, syncJobId);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.SyncTransactionDAO#getAll(java.lang.String, java.sql.Timestamp, java.sql.Timestamp)
+	 */
+	@Override
+	public List<SyncTransaction> getAll(String syncJobId, Timestamp previousFiredTime, Timestamp currentFiredTime) {
+		LOGGER.info(RegistrationConstants.SYNC_TRANSACTION_DAO_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"Fetch  sync details based on crDtime from databse started");
+		return syncTranscRepository.findBySyncJobIdAndCrDtimeBetween(syncJobId, previousFiredTime, currentFiredTime);
+
+	}
 }

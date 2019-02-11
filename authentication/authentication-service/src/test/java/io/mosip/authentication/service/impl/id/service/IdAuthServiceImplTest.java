@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -119,7 +118,7 @@ public class IdAuthServiceImplTest {
 	@Test
 	public void testGetIdRepoByVidNumber() throws IdAuthenticationBusinessException {
 
-		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidNumber", Mockito.anyString(), false);
+		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVID", Mockito.anyString(), false);
 	}
 
 	@Ignore
@@ -127,7 +126,7 @@ public class IdAuthServiceImplTest {
 	public void testGetIdRepoByVidAsRequest_IsNotNull() throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");
-		Mockito.when(idRepoService.getIdRepo(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Object invokeMethod = ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
 				Mockito.anyString());
 		assertNotNull(invokeMethod);
@@ -161,9 +160,9 @@ public class IdAuthServiceImplTest {
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_VID);
 
-		Mockito.when(idRepoService.getIdRepo(Mockito.anyString(), Mockito.anyBoolean())).thenThrow(idBusinessException);
+		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenThrow(idBusinessException);
 
-		Mockito.when(idAuthService.getIdRepoByVidNumber(Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idAuthService.getIdRepoByVID(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenThrow(idBusinessException);
 		Mockito.when(idAuthServiceImpl.processIdType(idvIdType, idvId, false)).thenThrow(idBusinessException);
 
@@ -177,9 +176,9 @@ public class IdAuthServiceImplTest {
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_UIN);
 
-		Mockito.when(idRepoService.getIdRepo(Mockito.anyString(), Mockito.anyBoolean())).thenThrow(idBusinessException);
+		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenThrow(idBusinessException);
 
-		Mockito.when(idAuthService.getIdRepoByVidNumber(Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idAuthService.getIdRepoByVID(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenThrow(idBusinessException);
 		Mockito.when(idAuthServiceImpl.processIdType(idvIdType, idvId, false)).thenThrow(idBusinessException);
 
@@ -199,7 +198,7 @@ public class IdAuthServiceImplTest {
 		String status = "Y";
 		String comment = "OTP_GENERATED";
 		ReflectionTestUtils.invokeMethod(autntxnrepository, "saveAndFlush", autnTxn);
-		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "saveAutnTxn", idvId, idvIdType, reqTime, txnId, status,
+		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "saveAutnTxn", idvId, idvIdType, uin,reqTime, txnId, status,
 				comment, requestType);
 	}
 

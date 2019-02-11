@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.8.1</version>
+		<version>0.8.2</version>
 	</parent>
 	<artifactId>kernel-pdfgenerator-itext</artifactId>
 	<name>kernel-pdfgenerator</name>
@@ -27,5 +27,11 @@
 			<artifactId>html2pdf</artifactId>
 			<version>${itexthtml2pdf.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+			<version>${itext.version}</version>
+		</dependency>
+
 	</dependencies>
 </project>

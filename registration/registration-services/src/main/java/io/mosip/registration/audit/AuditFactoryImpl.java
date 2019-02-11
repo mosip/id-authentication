@@ -15,7 +15,6 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.context.SessionContext.UserContext;
 
 /**
  * Class to Audit the events of Registration.
@@ -43,11 +42,6 @@ public class AuditFactoryImpl implements AuditFactory {
 	public void audit(AuditEvent auditEventEnum, Components appModuleEnum, String auditDescription, String refId,
 			String refIdType) {
 
-		// Get UserContext Object from SessionContext
-		UserContext userContext = SessionContext.getInstance().getUserContext();
-		String userId = userContext.getUserId() == null ? "NA" : userContext.getUserId();
-		String userName = userContext.getName() == null ? "NA" : userContext.getName(); 
-
 		// Getting Host IP Address and Name
 		String hostIP = null;
 		String hostName = null;
@@ -64,11 +58,11 @@ public class AuditFactoryImpl implements AuditFactory {
 		auditRequestBuilder.setActionTimeStamp(LocalDateTime.now())
 				.setApplicationId(environment.getProperty(RegistrationConstants.AUDIT_APPLICATION_ID))
 				.setApplicationName(environment.getProperty(RegistrationConstants.AUDIT_APPLICATION_NAME))
-				.setCreatedBy(userName).setDescription(auditDescription).setEventId(auditEventEnum.getId())
-				.setEventName(auditEventEnum.getName()).setEventType(auditEventEnum.getType()).setHostIp(hostIP)
-				.setHostName(hostName).setId(refId).setIdType(refIdType).setModuleId(appModuleEnum.getId())
-				.setModuleName(appModuleEnum.getName()).setSessionUserId(userId)
-				.setSessionUserName(userName);
+				.setCreatedBy(SessionContext.userName()).setDescription(auditDescription)
+				.setEventId(auditEventEnum.getId()).setEventName(auditEventEnum.getName())
+				.setEventType(auditEventEnum.getType()).setHostIp(hostIP).setHostName(hostName).setId(refId)
+				.setIdType(refIdType).setModuleId(appModuleEnum.getId()).setModuleName(appModuleEnum.getName())
+				.setSessionUserId(SessionContext.userId()).setSessionUserName(SessionContext.userName());
 		auditHandler.addAudit(auditRequestBuilder.build());
 	}
 }

@@ -1,16 +1,16 @@
 package io.mosip.kernel.idgenerator.tokenid.test;
 
-
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-/*
- * (non-Javadoc)
- * PridGenerator Boot Application for SpringBootTest
+/**
+ * Test Boot Application for Token ID Generator.
+ * 
+ * @author Sagar Mahapatra
+ * @since 1.0.0
+ *
  */
-
 @SpringBootApplication
 @ComponentScan(basePackages = "io.mosip.kernel.*")
 public class TokenIdGeneratorBootApplication {
@@ -18,4 +18,3 @@ public class TokenIdGeneratorBootApplication {
 		SpringApplication.run(TokenIdGeneratorBootApplication.class, args);
 	}
 }
-

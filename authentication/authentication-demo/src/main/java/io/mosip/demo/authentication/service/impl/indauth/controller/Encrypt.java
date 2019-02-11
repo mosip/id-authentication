@@ -58,8 +58,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.mosip.demo.authentication.service.EncryptHelper.EncryptUtil;
+import io.mosip.demo.authentication.service.EncryptHelper.CryptoUtility;
 import io.mosip.demo.authentication.service.dto.CryptomanagerRequestDto;
 import io.mosip.demo.authentication.service.dto.CryptomanagerResponseDto;
 import io.mosip.demo.authentication.service.dto.EncryptedRequest;
@@ -77,7 +76,7 @@ import io.swagger.annotations.ApiOperation;
  * The Class Encrypt.
  *
  * @author Dinesh Karuppiah
- * @author Arun Bose S
+ * @author A
  */
 
 @RestController
@@ -101,8 +100,7 @@ public class Encrypt {
 	/** The Constant PUBLICKEY. */
 	private static final String PUBLICKEY = "publicKey";
 	
-	/** The Constant fileInfoPath. */
-	private static final String fileInfoPath ="lib\\Keystore\\PublicKey.txt";
+
 	
 	/** The Constant ASYMMETRIC_ALGORITHM. */
 	private static final String ASYMMETRIC_ALGORITHM ="RSA";
@@ -173,62 +171,9 @@ public class Encrypt {
 		
 	}
 
-	private EncryptionResponseDto oldEncrypt(EncryptionRequestDto encryptionRequestDto)
-			throws NoSuchAlgorithmException, JsonProcessingException, InvalidKeySpecException, IOException {
-		EncryptionResponseDto encryptionResponseDto = new EncryptionResponseDto();
-		EncryptUtil encryptUtil=new EncryptUtil();
-		SecretKey secKey=encryptUtil.genSecKey();
-		byte encryptedDateArr[]=null;
-		try {
-			encryptedDateArr = encryptUtil.symmetricEncrypt(objMapper.writeValueAsString(encryptionRequestDto.getIdentityRequest()).getBytes(), secKey);
-		} catch (InvalidKeyException | NoSuchPaddingException | InvalidAlgorithmParameterException
-				| IllegalBlockSizeException | BadPaddingException e) {
-			encryptionResponseDto.setEncryptedIdentity(e.getMessage());
-		}
-		encryptionResponseDto.setEncryptedIdentity(Base64.encodeBase64URLSafeString(encryptedDateArr));
-		byte encryptedSessionKeyArr[]=null;
-		try {
-			encryptedSessionKeyArr = encryptUtil.asymmetricEncrypt(secKey.getEncoded(),loadPublicKey());
-		} catch (InvalidKeyException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e) {
-			encryptionResponseDto.setEncryptedSessionKey(e.getMessage());
-		}
-		encryptionResponseDto.setEncryptedSessionKey(Base64.encodeBase64URLSafeString(encryptedSessionKeyArr));
-		System.out.println(Base64.encodeBase64URLSafeString(encryptedSessionKeyArr).length());
-		return encryptionResponseDto;
-	}
-
-	/**
-	 * Gets the public key.
-	 *
-	 * @return the public key
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private byte[] getPublicKey() throws IOException {
-		byte[] publicKeyByteArr=null;
-		File publicKeyFile= FileUtils.getFile("./lib/Keystore/PublicKey");
-			if(publicKeyFile.exists())
-			{
-				byte[] publicKeyByteEncodedArr=Files.readAllBytes(publicKeyFile.toPath());
-				publicKeyByteArr= Base64.decodeBase64(publicKeyByteEncodedArr);
-			}
-		 return publicKeyByteArr;
-		
-	}
 	
-	/**
-	 * Load public key.
-	 *
-	 * @return the public key
-	 * @throws InvalidKeySpecException the invalid key spec exception
-	 * @throws NoSuchAlgorithmException the no such algorithm exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private PublicKey loadPublicKey()
-			throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
-		byte[] publicKeyBytes = getPublicKey();
-		PublicKey publicKey = KeyFactory.getInstance(Encrypt.ASYMMETRIC_ALGORITHM).generatePublic(new X509EncodedKeySpec(publicKeyBytes));
-        return publicKey;
-	}
+
+	
 
 	/**
 	 * Split.

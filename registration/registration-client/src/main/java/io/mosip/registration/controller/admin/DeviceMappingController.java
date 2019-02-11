@@ -111,11 +111,11 @@ public class DeviceMappingController extends BaseController implements Initializ
 
 		try {
 			auditFactory.audit(AuditEvent.GET_ONBOARDING_DEVICES_TYPES, Components.DEVICE_ONBOARD,
-					"Get the types of onboarding devices", sessionContext.getUserContext().getUserId(),
+					"Get the types of onboarding devices", SessionContext.userContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			// Set Machine ID
-			sessionContextMap.put(RegistrationConstants.MACHINE_ID, "1947");
+			SessionContext.map().put(RegistrationConstants.MACHINE_ID, "1947");
 
 			// Add 'All' option to Device Types dropdown
 			deviceTypes.getItems().add(RegistrationConstants.DEVICE_TYPES_ALL_OPTION);
@@ -198,14 +198,14 @@ public class DeviceMappingController extends BaseController implements Initializ
 
 			auditFactory.audit(AuditEvent.GET_ONBOARDING_DEVICES, Components.DEVICE_ONBOARD,
 					"Get all the available and mapped devices",
-					sessionContext.getUserContext().getUserId(),
+					SessionContext.userContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			// Create a map of list based on device type
 			Map<String, List<DeviceDTO>> devicesMap = mapMachineService.getDeviceMappingList(
-					sessionContext.getUserContext().getRegistrationCenterDetailDTO()
+					SessionContext.userContext().getRegistrationCenterDetailDTO()
 							.getRegistrationCenterId(),
-					(String) sessionContextMap.get(RegistrationConstants.MACHINE_ID));
+					(String) SessionContext.map().get(RegistrationConstants.MACHINE_ID));
 
 			// If Available Devices or Mapped Devices or both not available, add new
 			// ArrayList
@@ -218,11 +218,11 @@ public class DeviceMappingController extends BaseController implements Initializ
 
 			// Add the Actual Devices Map and Updated Devices Map (Placeholder) to
 			// SessionContext object
-			sessionContextMap.put(RegistrationConstants.ONBOARD_DEVICES_MAP, devicesMap);
+			SessionContext.map().put(RegistrationConstants.ONBOARD_DEVICES_MAP, devicesMap);
 			Map<String, Set<DeviceDTO>> upadtedDevicesMap = new HashMap<>();
 			upadtedDevicesMap.put(RegistrationConstants.ONBOARD_AVAILABLE_DEVICES, new HashSet<DeviceDTO>());
 			upadtedDevicesMap.put(RegistrationConstants.ONBOARD_MAPPED_DEVICES, new HashSet<DeviceDTO>());
-			sessionContextMap.put(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED,
+			SessionContext.map().put(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED,
 					upadtedDevicesMap);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -264,7 +264,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 
 			auditFactory.audit(AuditEvent.GET_ONBOARDING_DEVICES, Components.DEVICE_ONBOARD,
 					"Get the available and mapped devices for ".concat(selectedDeviceType),
-					sessionContext.getUserContext().getUserId(),
+					SessionContext.userContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			// Get the list of Available and Mapped Devices for selected Device Type
@@ -326,7 +326,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 			List<DeviceDTO> devicesAdded = mapDevices(availableDevices, mappedDevices);
 
 			// Update the Devices added in Session Context
-			Map<String, Set<DeviceDTO>> updatedDevicesMap = (Map<String, Set<DeviceDTO>>) sessionContextMap.get(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
+			Map<String, Set<DeviceDTO>> updatedDevicesMap = (Map<String, Set<DeviceDTO>>) SessionContext.map().get(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
 			Set<DeviceDTO> deviceMaster = updatedDevicesMap.get(RegistrationConstants.ONBOARD_MAPPED_DEVICES);
 			deviceMaster.addAll(devicesAdded);
 
@@ -363,7 +363,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 			List<DeviceDTO> devicesRemoved = mapDevices(mappedDevices, availableDevices);
 
 			// Update the Devices Removed in Session Context
-			Map<String, Set<DeviceDTO>> updatedDevicesMap = (Map<String, Set<DeviceDTO>>) sessionContextMap.get(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
+			Map<String, Set<DeviceDTO>> updatedDevicesMap = (Map<String, Set<DeviceDTO>>) SessionContext.map().get(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
 			Set<DeviceDTO> deviceMaster = updatedDevicesMap.get(RegistrationConstants.ONBOARD_AVAILABLE_DEVICES);
 			deviceMaster.addAll(devicesRemoved);
 
@@ -456,17 +456,17 @@ public class DeviceMappingController extends BaseController implements Initializ
 
 		try {
 			auditFactory.audit(AuditEvent.UPDATE_DEVICES_ONBOARDING, Components.DEVICE_ONBOARD,
-					"Updating mapping of devices", sessionContext.getUserContext().getUserId(),
+					"Updating mapping of devices", SessionContext.userContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			// Get updated added and removed devices
-			Map<String, Set<DeviceDTO>> devicesMap = (Map<String, Set<DeviceDTO>>) sessionContextMap
+			Map<String, Set<DeviceDTO>> devicesMap = (Map<String, Set<DeviceDTO>>) SessionContext.map()
 					.get(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
 			Set<DeviceDTO> devicesAdded = devicesMap.get(RegistrationConstants.ONBOARD_MAPPED_DEVICES);
 			Set<DeviceDTO> devicesRemoved = devicesMap.get(RegistrationConstants.ONBOARD_AVAILABLE_DEVICES);
 
 			// Get existing available and mapped devices
-			devicesMap = (Map<String, Set<DeviceDTO>>) sessionContextMap
+			devicesMap = (Map<String, Set<DeviceDTO>>) SessionContext.map()
 					.get(RegistrationConstants.ONBOARD_DEVICES_MAP);
 
 			// Update the Added and Removed Devices
@@ -474,7 +474,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 			devicesRemoved.retainAll(devicesMap.get(RegistrationConstants.ONBOARD_MAPPED_DEVICES));
 
 			// Get the Machine ID
-			String machineId = (String) sessionContextMap
+			String machineId = (String) SessionContext.map()
 					.get(RegistrationConstants.MACHINE_ID);
 
 			// Update the Machine ID
@@ -559,8 +559,8 @@ public class DeviceMappingController extends BaseController implements Initializ
 					"Clearing Session Context objects used for Device Onboarding");
 
 			// Remove the Onboard Devices specific objects from Session Context
-			sessionContextMap.remove(RegistrationConstants.ONBOARD_DEVICES_MAP);
-			sessionContextMap.remove(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
+			SessionContext.map().remove(RegistrationConstants.ONBOARD_DEVICES_MAP);
+			SessionContext.map().remove(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					RegistrationConstants.DEVICE_ONBOARD_CLEAR_CONTEXT_EXCEPTION
@@ -584,11 +584,11 @@ public class DeviceMappingController extends BaseController implements Initializ
 					"Filtering the devices by deviceType");
 
 			// Get actual Devices from Session Context
-			actualDevicesMap = new HashMap<>((Map<String, List<DeviceDTO>>) sessionContextMap
+			actualDevicesMap = new HashMap<>((Map<String, List<DeviceDTO>>) SessionContext.map()
 					.get(RegistrationConstants.ONBOARD_DEVICES_MAP));
 
 			// Get updated Devices Map from Session Context
-			Map<String, Set<DeviceDTO>> updatedDevicesMap = (Map<String, Set<DeviceDTO>>) sessionContextMap.get(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
+			Map<String, Set<DeviceDTO>> updatedDevicesMap = (Map<String, Set<DeviceDTO>>) SessionContext.map().get(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
 
 			// Get actual available devices
 			List<DeviceDTO> availableDevicesToDisplay = (List<DeviceDTO>) getDevicesByType(

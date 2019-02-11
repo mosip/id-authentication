@@ -7,14 +7,9 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.8.1</version>
+		<version>0.8.2</version>
 	</parent>
 	<artifactId>kernel-idgenerator-tokenid</artifactId>
-	<name>kernel-idgenerator-tokenid</name>
-	<url>http://maven.apache.org</url>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
@@ -27,9 +22,9 @@
 			<artifactId>spring-cloud-starter-config</artifactId>
 			<version>${spring-cloud-config.version}</version>
 		</dependency>
-		
+
 	</dependencies>
-		<build>
+	<build>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>

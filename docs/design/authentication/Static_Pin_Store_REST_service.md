@@ -5,12 +5,12 @@
 
 An individual can set a static pin using the resident-service portal, which can be used to perform Static Pin based authentication using Static Pin Store API for that Individual.
 
- **1.1.Target users **  
+ **1.1.Target users**  
 Individual will send request to store a static pin from resident-service portal.
 
 
- **1.2. Key requirements **   
-1. UIN of the individual should have been generated and mapped to the Auth database
+ **1.2. Key requirements**   
+1. UIN of the individual should have been generated and stored in ID repo.
 
 2. Basic UIN Validations on the input UIN should have been executed. (Eg: Length of the UIN based on the UIN policy etc.)
 
@@ -20,14 +20,14 @@ Individual will send request to store a static pin from resident-service portal.
 
 5. The individual has set or changed the static pin in the portal after OTP based authetication of the individual.
 
- **1.3. Key non-functional requirements **   
+ **1.3. Key non-functional requirements**   
 <TBD>
 
 **2. Solution**   
-Static Pin Store REST service addresses the above requirement -  
+Static Pin Store REST service addresses the above requirement 
 
-1.	Resident-service portal to construct a POST request with below details and send to Request URL identity/otp
-Sample Request Body - 
+1.	Resident-service portal to construct a POST request with below details and send to Request URL identity/static-pin
+Sample Request Body 
 
 ```JSON
 {
@@ -70,8 +70,8 @@ Below are details on the above classes -
 -	**StaticPinResponseDTO** - Response object with success or failure in Static Pin store request.
 -	**StaticPinController** - Spring Controller to receive Static Pin store Request
 -	**StaticPinRequestValidator** - Spring Validator to validate input request object StaticPinRequestDTO
--	**StaticPinFacade** - Sprint Component that acts like facade layer to validate UIN/VID and invoke OTPService to process OTP request
--	**StaticPinService** - Spring Service that interacts with OTPManager and OTPUtil to generate OTP
+-	**StaticPinFacade** - Spring Component that acts like facade layer to validate UIN/VID and invoke StaticPinService to process Static pin store request
+-	**StaticPinService** - Spring Service that interacts with StaticPinRepository to store Static pin
 -	**StaticPinRepository** - The repository interface that provide access to Static Pin table in the database.
 
 

@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.8.1</version>
+		<version>0.8.2</version>
 	</parent>
 	
 	<groupId>io.mosip.authentication</groupId>
@@ -34,10 +34,10 @@
 		<maven.sonar.version>3.2</maven.sonar.version>
 		
 		<!-- Kernel components -->
-		<kernel.core.version>0.8.0</kernel.core.version>
-		<kernel.hibernate.version>0.8.0</kernel.hibernate.version>
-		<kernel.template.version>0.8.0</kernel.template.version>
-		<kernel.pdfgenerate.version>0.8.0</kernel.pdfgenerate.version>
+		<kernel.core.version>0.8.1</kernel.core.version>
+		<kernel.hibernate.version>0.8.1</kernel.hibernate.version>
+		<kernel.template.version>0.8.1</kernel.template.version>
+		<kernel.pdfgenerate.version>0.8.1</kernel.pdfgenerate.version>
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.10.19</mockito.version>
@@ -61,7 +61,7 @@
 		<sourceafis.version>3.4.0</sourceafis.version>
 		
 		<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
-		<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*,**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/service/entity/**,**io.mosip.authentication.service/*.java,**io.mosip.authentication.service/**/*Entity.java</sonar.exclusions>
+		<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*,**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/service/entity/**,**/service/IdAuthenticationApplication.java,**/service/**/*Entity.java</sonar.exclusions>
 	</properties>
 
 	<dependencies>

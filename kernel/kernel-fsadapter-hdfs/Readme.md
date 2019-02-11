@@ -1,6 +1,6 @@
 ## kernel-fsadapter-hdfs
 
-[Background & Design]
+[Background & Design -TBA-] 
 
 [Api Documentation]
 
@@ -12,9 +12,14 @@ mvn javadoc:javadoc
 **Application Properties**
 
 ```
+# Name node url for HDFS
 mosip.kernel.fsadapter.hdfs.name-node-url=hdfs://104.211.240.243:51000
+
+# Username to access hdfs. Change this to application username (regprocessor,prereg or idrepo)
 mosip.kernel.fsadapter.hdfs.user-name=mosipuser
-logging.level.org.apache.hadoop=warn #change this to debug to see hdfs logs
+
+# HDFS log level. Change this to debug to see hdfs logs
+logging.level.org.apache.hadoop=warn
 
 ```
 
