@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.virus.scanner.job.decrypter;
 
 import java.io.ByteArrayInputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
@@ -12,7 +13,7 @@ import java.util.Date;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -40,10 +41,10 @@ public class Decryptor {
 	@Value("${registration.processor.application.id}")
 	private String applicationId;
 
-	// @Value("${registration.processor.reference.id}")
-	// private String referenceId;
+	 @Value("${mosip.kernel.rid.machineid-length}")
+	private int machineIdLength;
 
-	@Value("${registration.processor.rid.centerid.length}")
+	@Value("${mosip.kernel.rid.centerid-length}")
 	private int centerIdLength;
 
 	@Autowired
@@ -72,13 +73,13 @@ public class Decryptor {
 			throws PacketDecryptionFailureException {
 		InputStream outstream = null;
 		try {
-			// String centerId = registrationId.substring(0, centerIdLength);
+			String centerId = registrationId.substring(machineIdLength, machineIdLength + centerIdLength);
 			String encryptedPacketString = IOUtils.toString(encryptedPacket, "UTF-8");
 			CryptomanagerRequestDto cryptomanagerRequestDto = new CryptomanagerRequestDto();
 			cryptomanagerRequestDto.setApplicationId(applicationId);
 			cryptomanagerRequestDto.setData(encryptedPacketString);
-			// cryptomanagerRequestDto.setReferenceId(centerId);
-			cryptomanagerRequestDto.setReferenceId("1001");
+			cryptomanagerRequestDto.setReferenceId(centerId);
+			
 			// setLocal Date Time
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
 			if (registrationId.length() > 14) {
@@ -102,6 +103,7 @@ public class Decryptor {
 					ApiName.CRYPTOMANAGERDECRYPT, "", "", cryptomanagerRequestDto, CryptomanagerResponseDto.class);
 			byte[] decryptedPacket = CryptoUtil.decodeBase64(cryptomanagerResponseDto.getData());
 			outstream = new ByteArrayInputStream(decryptedPacket);
+			 
 
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
