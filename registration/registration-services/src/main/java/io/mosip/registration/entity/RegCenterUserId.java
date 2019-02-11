@@ -5,8 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * Composite key for RegCenterUser entity
@@ -15,8 +14,7 @@ import lombok.Setter;
  * @since 1.0.0
  */
 @Embeddable
-@Getter
-@Setter
+@Data
 public class RegCenterUserId implements Serializable {
 
 	private static final long serialVersionUID = -7306845601917592413L;

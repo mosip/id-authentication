@@ -27,6 +27,7 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 public class DaoConfig extends HibernateDaoConfig {
 
 	private static DataSource dataSource;
+	
 	static {
 		DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
 		driverManagerDataSource.setDriverClassName("org.apache.derby.jdbc.EmbeddedDriver");

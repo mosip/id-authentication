@@ -131,4 +131,64 @@ public class MasterSyncBaseEntity {
 		this.deletedDateTime = deletedDateTime;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+		result = prime * result + ((createdDateTime == null) ? 0 : createdDateTime.hashCode());
+		result = prime * result + ((deletedDateTime == null) ? 0 : deletedDateTime.hashCode());
+		result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
+		result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
+		result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
+		result = prime * result + ((updatedDateTime == null) ? 0 : updatedDateTime.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MasterSyncBaseEntity other = (MasterSyncBaseEntity) obj;
+		if (createdBy == null) {
+			if (other.createdBy != null)
+				return false;
+		} else if (!createdBy.equals(other.createdBy))
+			return false;
+		if (createdDateTime == null) {
+			if (other.createdDateTime != null)
+				return false;
+		} else if (!createdDateTime.equals(other.createdDateTime))
+			return false;
+		if (deletedDateTime == null) {
+			if (other.deletedDateTime != null)
+				return false;
+		} else if (!deletedDateTime.equals(other.deletedDateTime))
+			return false;
+		if (isActive == null) {
+			if (other.isActive != null)
+				return false;
+		} else if (!isActive.equals(other.isActive))
+			return false;
+		if (isDeleted == null) {
+			if (other.isDeleted != null)
+				return false;
+		} else if (!isDeleted.equals(other.isDeleted))
+			return false;
+		if (updatedBy == null) {
+			if (other.updatedBy != null)
+				return false;
+		} else if (!updatedBy.equals(other.updatedBy))
+			return false;
+		if (updatedDateTime == null) {
+			if (other.updatedDateTime != null)
+				return false;
+		} else if (!updatedDateTime.equals(other.updatedDateTime))
+			return false;
+		return true;
+	}
 }

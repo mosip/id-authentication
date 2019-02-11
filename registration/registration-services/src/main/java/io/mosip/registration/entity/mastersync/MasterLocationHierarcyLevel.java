@@ -123,8 +123,60 @@ public class MasterLocationHierarcyLevel extends MasterSyncBaseEntity implements
 	public void setLanguageCode(String languageCode) {
 		this.languageCode = languageCode;
 	}
-	
-	
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((code == null) ? 0 : code.hashCode());
+		result = prime * result + ((hierarchyLevel == null) ? 0 : hierarchyLevel.hashCode());
+		result = prime * result + ((hierarchyName == null) ? 0 : hierarchyName.hashCode());
+		result = prime * result + ((languageCode == null) ? 0 : languageCode.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((parentLocCode == null) ? 0 : parentLocCode.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MasterLocationHierarcyLevel other = (MasterLocationHierarcyLevel) obj;
+		if (code == null) {
+			if (other.code != null)
+				return false;
+		} else if (!code.equals(other.code))
+			return false;
+		if (hierarchyLevel == null) {
+			if (other.hierarchyLevel != null)
+				return false;
+		} else if (!hierarchyLevel.equals(other.hierarchyLevel))
+			return false;
+		if (hierarchyName == null) {
+			if (other.hierarchyName != null)
+				return false;
+		} else if (!hierarchyName.equals(other.hierarchyName))
+			return false;
+		if (languageCode == null) {
+			if (other.languageCode != null)
+				return false;
+		} else if (!languageCode.equals(other.languageCode))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (parentLocCode == null) {
+			if (other.parentLocCode != null)
+				return false;
+		} else if (!parentLocCode.equals(other.parentLocCode))
+			return false;
+		return true;
+	}
 }
 

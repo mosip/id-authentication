@@ -42,7 +42,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 	private static final Logger LOGGER = AppConfig.getLogger(JobTriggerListener.class);
 
 	@Override
-	synchronized public void triggerMisfired(Trigger trigger) {
+	public synchronized void triggerMisfired(Trigger trigger) {
 
 		
 		LOGGER.info(LoggerConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -74,7 +74,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 	}
 
 	@Override
-	synchronized public void triggerFired(Trigger trigger, JobExecutionContext context) {
+	public synchronized void triggerFired(Trigger trigger, JobExecutionContext context) {
 
 		
 		LOGGER.info(LoggerConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -97,7 +97,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 	}
 
 	@Override
-	synchronized public void triggerComplete(Trigger trigger, JobExecutionContext context,
+	public synchronized void triggerComplete(Trigger trigger, JobExecutionContext context,
 			CompletedExecutionInstruction triggerInstructionCode) {
 
 		
