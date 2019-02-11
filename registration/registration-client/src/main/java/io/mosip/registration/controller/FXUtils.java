@@ -4,6 +4,9 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.OptionalInt;
+import java.util.function.IntPredicate;
+import java.util.stream.IntStream;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
@@ -11,6 +14,10 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.Validations;
+import io.mosip.registration.dto.mastersync.GenderDto;
+import io.mosip.registration.dto.mastersync.LocationDto;
+
+import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
@@ -52,10 +59,10 @@ public class FXUtils {
 		});
 	}
 	
-	public void populateLocalComboBox(ComboBox<String> applicationField, ComboBox<String> localField) {
-		applicationField.getSelectionModel().selectedItemProperty().addListener((options,oldValue,newValue)->{
-			localField.setValue(applicationField.getValue());
-		});
+	public void populateLocalComboBox(ComboBox<?> applicationField, ComboBox<String> localField) {
+		applicationField.getSelectionModel().selectedItemProperty()
+				.addListener((options, oldValue, newValue) -> localField
+						.setValue(getSelectedValue(applicationField.getSelectionModel().getSelectedItem())));
 	}
 
 	/**
@@ -146,6 +153,65 @@ public class FXUtils {
 			LOGGER.error("REGISTRATION - DISABLE FUTURE DATE FAILED", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
+	}
+
+	private String getSelectedValue(Object selectedOption) {
+		String selectedValue = RegistrationConstants.EMPTY;
+		
+		if (selectedOption instanceof LocationDto) {
+			selectedValue = ((LocationDto) selectedOption).getName();
+		} else if(selectedOption instanceof GenderDto) {
+			selectedValue = ((GenderDto) selectedOption).getGenderName();
+		} if (selectedOption instanceof String) {
+			selectedValue = (String) selectedOption;
+		}
+		
+		return selectedValue;
+	}
+
+	public void selectComboBoxValue(ComboBox<?> comboBox, String selectedValue) {
+		ObservableList<?> comboBoxValues = comboBox.getItems();
+
+		if (!comboBoxValues.isEmpty()) {
+			IntPredicate findIndexOfSelectedItem = null;
+			if (comboBoxValues.get(0) instanceof LocationDto) {
+				findIndexOfSelectedItem = index -> ((LocationDto) comboBoxValues.get(index)).getName()
+						.equals(selectedValue);
+			} else if (comboBoxValues.get(0) instanceof GenderDto) {
+				findIndexOfSelectedItem = index -> ((GenderDto) comboBoxValues.get(index)).getGenderName()
+						.equals(selectedValue);
+			}
+
+			OptionalInt indexOfSelectedLocation = getIndexOfSelectedItem(comboBoxValues, findIndexOfSelectedItem);
+
+			if (indexOfSelectedLocation.isPresent()) {
+				comboBox.getSelectionModel().select(indexOfSelectedLocation.getAsInt());
+			}
+		}
+	}
+
+	private OptionalInt getIndexOfSelectedItem(ObservableList<?> comboBoxValues, IntPredicate lambdaExpression) {
+		return IntStream.range(0, comboBoxValues.size()).filter(lambdaExpression).findFirst();
+	}
+
+	public <T> StringConverter<T> getStringConverterForComboBox() {
+		return new StringConverter<T>() {
+			@Override
+			public String toString(T object) {
+				String value = null;
+				if (object instanceof LocationDto) {
+					value = ((LocationDto) object).getName();
+				} else if (object instanceof GenderDto) {
+					value = ((GenderDto) object).getGenderName();
+				}
+				return value;
+			}
+
+			@Override
+			public T fromString(String string) {
+				return null;
+			}
+		};
 	}
 
 }

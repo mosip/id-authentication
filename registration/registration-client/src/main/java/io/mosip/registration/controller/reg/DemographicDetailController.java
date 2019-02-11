@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,6 +24,7 @@ import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
@@ -38,7 +38,9 @@ import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.dto.demographic.ValuesDTO;
+import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -54,6 +56,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.util.StringConverter;
 
 /**
  * Class for Registration Page Controller
@@ -149,7 +152,7 @@ public class DemographicDetailController extends BaseController {
 	private SimpleBooleanProperty switchedOn;
 
 	@FXML
-	private ComboBox<String> gender;
+	private ComboBox<GenderDto> gender;
 
 	@FXML
 	private ComboBox<String> genderLocalLanguage;
@@ -194,19 +197,19 @@ public class DemographicDetailController extends BaseController {
 	private TextField mobileNoLocalLanguage;
 
 	@FXML
-	private ComboBox<String> region;
+	private ComboBox<LocationDto> region;
 
 	@FXML
 	private ComboBox<String> regionLocalLanguage;
 
 	@FXML
-	private ComboBox<String> city;
+	private ComboBox<LocationDto> city;
 
 	@FXML
 	private ComboBox<String> cityLocalLanguage;
 
 	@FXML
-	private ComboBox<String> province;
+	private ComboBox<LocationDto> province;
 
 	@FXML
 	private ComboBox<String> provinceLocalLanguage;
@@ -218,7 +221,7 @@ public class DemographicDetailController extends BaseController {
 	private TextField postalCodeLocalLanguage;
 
 	@FXML
-	private ComboBox<String> localAdminAuthority;
+	private ComboBox<LocationDto> localAdminAuthority;
 
 	@FXML
 	private ComboBox<String> localAdminAuthorityLocalLanguage;
@@ -323,10 +326,6 @@ public class DemographicDetailController extends BaseController {
 	private DocumentScanController documentScanController;
 
 	private FXUtils fxUtils;
-	private List<LocationDto> locationDtoRegion;
-	private List<LocationDto> locationDtoProvince;
-	private List<LocationDto> locationDtoCity;
-	private List<LocationDto> locactionlocalAdminAuthority;
 	private Date dateOfBirth;
 
 	@FXML
@@ -345,13 +344,13 @@ public class DemographicDetailController extends BaseController {
 			loadLocalLanguageFields();
 			loadKeyboard();
 			ageField.setDisable(true);
+			renderComboBoxes();
 			addRegions();
+			populateGender();
 
 		} catch (IOException | RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
-			exception.printStackTrace();
-			System.out.println("Hello");
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
 	}
@@ -598,17 +597,14 @@ public class DemographicDetailController extends BaseController {
 	 */
 	private void addRegions() {
 		try {
-			locationDtoRegion = masterSync.findLocationByHierarchyCode(
-					applicationContext.getApplicationLanguageBundle().getString(region.getId()),
-					applicationContext.getApplicationLanguage());
-			region.getItems().addAll(
-					locationDtoRegion.stream().map(location -> location.getName()).collect(Collectors.toList()));
+			region.getItems()
+					.addAll(masterSync.findLocationByHierarchyCode(
+							applicationContext.getApplicationLanguageBundle().getString(region.getId()),
+							applicationContext.getApplicationLanguage()));
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING FAILED FOR REGION SELECTION LIST ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-
 		}
-
 	}
 
 	/**
@@ -620,18 +616,10 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private void addProvince() {
 		try {
-			List<LocationDto> listOfCodes = locationDtoRegion.stream()
-					.filter(location -> location.getName().equals(region.getValue())).collect(Collectors.toList());
-			String code = "";
-			String langCode = "";
-			if (!listOfCodes.isEmpty()) {
-				code = listOfCodes.get(0).getCode();
-				langCode = listOfCodes.get(0).getLangCode();
-				locationDtoProvince = masterSync.findProvianceByHierarchyCode(code, langCode);
-				province.getItems().clear();
-				province.getItems().addAll(
-						locationDtoProvince.stream().map(location -> location.getName()).collect(Collectors.toList()));
-			}
+			retrieveAndPopulateLocationByHierarchy(region, province);
+
+			city.getItems().clear();
+			localAdminAuthority.getItems().clear();
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING FAILED FOR PROVINCE SELECTION LIST ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
@@ -646,18 +634,9 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private void addCity() {
 		try {
-			List<LocationDto> listOfCodes = locationDtoProvince.stream()
-					.filter(location -> location.getName().equals(province.getValue())).collect(Collectors.toList());
-			String code = "";
-			String langCode = "";
-			if (!listOfCodes.isEmpty()) {
-				code = listOfCodes.get(0).getCode();
-				langCode = listOfCodes.get(0).getLangCode();
-				locationDtoCity = masterSync.findProvianceByHierarchyCode(code, langCode);
-				city.getItems().clear();
-				city.getItems().addAll(
-						locationDtoCity.stream().map(location -> location.getName()).collect(Collectors.toList()));
-			}
+			retrieveAndPopulateLocationByHierarchy(province, city);
+
+			localAdminAuthority.getItems().clear();
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING FAILED FOR CITY SELECTION LIST ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
@@ -672,24 +651,11 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private void addlocalAdminAuthority() {
 		try {
-			List<LocationDto> listOfCodes = locationDtoCity.stream()
-					.filter(location -> location.getName().equals(city.getValue())).collect(Collectors.toList());
-			String code = "";
-			String langCode = "";
-			if (!listOfCodes.isEmpty()) {
-				code = listOfCodes.get(0).getCode();
-				langCode = listOfCodes.get(0).getLangCode();
-				List<LocationDto> locationlocalAdminAuthority = masterSync.findProvianceByHierarchyCode(code, langCode);
-				localAdminAuthority.getItems().clear();
-				localAdminAuthority.getItems().addAll(
-						locationlocalAdminAuthority.stream().map(loc -> loc.getName()).collect(Collectors.toList()));
-			}
+			retrieveAndPopulateLocationByHierarchy(city, localAdminAuthority);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING FAILED FOR LOCAL ADMIN AUTHORITY SELECTOIN LIST ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-
 		}
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -719,7 +685,7 @@ public class DemographicDetailController extends BaseController {
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(gender.getValue())).get()))
+												.with(value -> value.setValue(gender.getValue().getGenderName())).get()))
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value.setValue(genderLocalLanguage.getValue())).get()))
@@ -758,7 +724,7 @@ public class DemographicDetailController extends BaseController {
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(region.getValue())).get()))
+												.with(value -> value.setValue(region.getValue().getName())).get()))
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value.setValue(regionLocalLanguage.getValue())).get()))
@@ -767,7 +733,7 @@ public class DemographicDetailController extends BaseController {
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(province.getValue())).get()))
+												.with(value -> value.setValue(province.getValue().getName())).get()))
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value.setValue(provinceLocalLanguage.getValue())).get()))
@@ -776,7 +742,7 @@ public class DemographicDetailController extends BaseController {
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(city.getValue())).get()))
+												.with(value -> value.setValue(city.getValue().getName())).get()))
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value.setValue(cityLocalLanguage.getValue())).get()))
@@ -792,7 +758,7 @@ public class DemographicDetailController extends BaseController {
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(localAdminAuthority.getValue())).get()))
+												.with(value -> value.setValue(localAdminAuthority.getValue().getName())).get()))
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value
@@ -967,12 +933,13 @@ public class DemographicDetailController extends BaseController {
 
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void populateFieldValue(Node nodeForPlatformLang, Node nodeForLocalLang, List<ValuesDTO> fieldValues) {
 		if (fieldValues != null) {
 			String platformLanguageCode = applicationContext.getApplicationLanguage();
 			String localLanguageCode = applicationContext.getLocalLanguage();
-			String valueInPlatformLang = "";
-			String valueinLocalLang = "";
+			String valueInPlatformLang = RegistrationConstants.EMPTY;
+			String valueinLocalLang = RegistrationConstants.EMPTY;
 
 			for (ValuesDTO fieldValue : fieldValues) {
 				if (fieldValue.getLanguage().equalsIgnoreCase(platformLanguageCode)) {
@@ -989,7 +956,7 @@ public class DemographicDetailController extends BaseController {
 					((TextField) nodeForLocalLang).setText(valueinLocalLang);
 				}
 			} else if (nodeForPlatformLang instanceof ComboBox) {
-				((ComboBox) nodeForPlatformLang).setValue(valueInPlatformLang);
+				fxUtils.selectComboBoxValue((ComboBox<?>) nodeForPlatformLang, valueInPlatformLang);
 
 				if (nodeForLocalLang != null) {
 					((ComboBox) nodeForLocalLang).setValue(valueinLocalLang);
@@ -1015,7 +982,7 @@ public class DemographicDetailController extends BaseController {
 		}
 
 		registrationController.createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
-		//documentScanController.clearDocSection();
+		documentScanController.clearDocSection();
 		
 		ResponseDTO responseDTO = preRegistrationDataSyncService.getPreRegistration(preRegId);
 
@@ -1052,9 +1019,13 @@ public class DemographicDetailController extends BaseController {
 			} else {
 				LocationDTO locationDto = ((AddressDTO) SessionContext.map().get(RegistrationConstants.ADDRESS_KEY))
 						.getLocationDTO();
-				region.setValue(locationDto.getRegion());
-				city.setValue(locationDto.getCity());
-				province.setValue(locationDto.getProvince());
+				fxUtils.selectComboBoxValue(region, locationDto.getRegion());
+				retrieveAndPopulateLocationByHierarchy(region, province);
+				fxUtils.selectComboBoxValue(province, locationDto.getProvince());
+				retrieveAndPopulateLocationByHierarchy(province, city);
+				fxUtils.selectComboBoxValue(city, locationDto.getCity());
+				retrieveAndPopulateLocationByHierarchy(city, localAdminAuthority);
+
 				postalCode.setText(locationDto.getPostalCode());
 				LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Loaded address from previous entry");
@@ -1116,15 +1087,29 @@ public class DemographicDetailController extends BaseController {
 		int age = 45;
 		switchedOn.set(true);
 		ageField.setText("" + age);
-		gender.setValue("MALE");
+		populateGender();
+		if (!gender.getItems().isEmpty()) {
+			gender.getSelectionModel().select(0);
+		}
 		addressLine1.setText("Mind Tree Ltd");
 		addressLine2.setText("RamanuJan It park");
 		addressLine3.setText("Taramani");
-		region.setValue("Taramani");
-		city.setValue("Chennai");
-		province.setValue("Tamilnadu");
+		if (!region.getItems().isEmpty()) {
+			region.getSelectionModel().select(0);
+			retrieveAndPopulateLocationByHierarchy(region, province);
+		}
+		if (!province.getItems().isEmpty()) {
+			province.getSelectionModel().select(0);
+			retrieveAndPopulateLocationByHierarchy(province, city);
+		}
+		if (!city.getItems().isEmpty()) {
+			city.getSelectionModel().select(0);
+			retrieveAndPopulateLocationByHierarchy(city, localAdminAuthority);
+		}
+		if (!localAdminAuthority.getItems().isEmpty()) {
+			localAdminAuthority.getSelectionModel().select(0);
+		}
 		postalCode.setText("600111");
-		localAdminAuthority.setValue("MindTree");
 		mobileNo.setText("9965625706");
 		emailId.setText("taleevaalam@mindtree.com");
 		cniOrPinNumber.setText("012345678901234567890123456789");
@@ -1176,8 +1161,66 @@ public class DemographicDetailController extends BaseController {
 		registrationController.displayValidationMessage(validation.getValidationMessage().toString());
 
 		return isValid;
+	}
 
-		
+	@SuppressWarnings("unchecked")
+	private <T> void renderComboBoxes() {
+		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - RENDER_COMBOBOXES", RegistrationConstants.APPLICATION_ID,
+				RegistrationConstants.APPLICATION_NAME, "Rendering of comboboxes started");
+
+		try {
+			StringConverter<T> uiRenderForComboBox = fxUtils.getStringConverterForComboBox();
+
+			region.setConverter((StringConverter<LocationDto>) uiRenderForComboBox);
+			province.setConverter((StringConverter<LocationDto>) uiRenderForComboBox);
+			city.setConverter((StringConverter<LocationDto>) uiRenderForComboBox);
+			localAdminAuthority.setConverter((StringConverter<LocationDto>) uiRenderForComboBox);
+			gender.setConverter((StringConverter<GenderDto>) uiRenderForComboBox);
+		} catch (RuntimeException runtimeException) {
+			throw new RegBaseUncheckedException(RegistrationConstants.REGISTRATION_CONTROLLER,
+					runtimeException.getMessage(), runtimeException);
+		}
+		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - RENDER_COMBOBOXES", RegistrationConstants.APPLICATION_ID,
+				RegistrationConstants.APPLICATION_NAME, "Rendering of comboboxes ended");
+	}
+
+	private void retrieveAndPopulateLocationByHierarchy(ComboBox<LocationDto> sourceLocationHierarchy,
+			ComboBox<LocationDto> destinationLocationHierarchy) {
+		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - RETRIEVE_AND_POPULATE_LOCATION_BY_HIERARCHY",
+				RegistrationConstants.APPLICATION_ID, RegistrationConstants.APPLICATION_NAME,
+				"Retrieving and populating of location by selected hirerachy started");
+
+		try {
+			LocationDto selectedLocationHierarchy = sourceLocationHierarchy.getSelectionModel().getSelectedItem();
+			destinationLocationHierarchy.getItems().clear();
+
+			if (selectedLocationHierarchy != null) {
+				destinationLocationHierarchy.getItems().addAll(masterSync.findProvianceByHierarchyCode(
+						selectedLocationHierarchy.getCode(), selectedLocationHierarchy.getLangCode()));
+			}
+		} catch (RuntimeException runtimeException) {
+			throw new RegBaseUncheckedException(RegistrationConstants.REGISTRATION_CONTROLLER,
+					runtimeException.getMessage(), runtimeException);
+		}
+		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - RETRIEVE_AND_POPULATE_LOCATION_BY_HIERARCHY",
+				RegistrationConstants.APPLICATION_ID, RegistrationConstants.APPLICATION_NAME,
+				"Retrieving and populating of location by selected hirerachy ended");
+	}
+
+	private void populateGender() {
+		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - POPULATE_GENDER", RegistrationConstants.APPLICATION_ID,
+				RegistrationConstants.APPLICATION_NAME, "Fetching Gender based on Application Language started");
+
+		try {
+			gender.getItems().clear();
+			genderLocalLanguage.getItems().clear();
+			gender.getItems().addAll(masterSync.getGenderDtls(ApplicationContext.applicationLanguage()));
+		} catch (RuntimeException runtimeException) {
+			throw new RegBaseUncheckedException(RegistrationConstants.REGISTRATION_CONTROLLER,
+					runtimeException.getMessage(), runtimeException);
+		}
+		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - POPULATE_GENDER", RegistrationConstants.APPLICATION_ID,
+				RegistrationConstants.APPLICATION_NAME, "Fetching Gender based on Application Language ended");
 	}
 
 }

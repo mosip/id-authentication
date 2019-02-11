@@ -382,8 +382,8 @@ public class PacketHandlerController extends BaseController {
 								.with(location -> location.setRegion(identity.getRegion().get(0).getValue()))
 								.with(location -> location.setPostalCode(identity.getPostalCode())).get()))
 						.get();
-				Map<String, Object> addr = SessionContext.map();
-				addr.put("PrevAddress", addressDTO);
+				
+				SessionContext.map().put(RegistrationConstants.ADDRESS_KEY, addressDTO);
 			}
 		} else {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PACKET_CREATION_FAILURE);
