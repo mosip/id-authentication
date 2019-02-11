@@ -3,7 +3,7 @@
 
 **1. Background**
 
-An individual can request to generate a VID using the resident-service portal, which can be used later to perform any authentication using ID-Authentication API with the new VID intead of his UIN number.
+An individual can request to generate a VID using the resident-service portal, which can be used later to perform any authentication using ID-Authentication API with the new VID instead of his UIN number.
 
  **1.1.Target users**  
 Individual will send request to generate/re-generate VID from resident-service portal.
@@ -41,7 +41,7 @@ VID generate REST service addresses the above requirement -
   "id": "mosip.identity.vid",
   "version": "1.0",
   "responseTime": "2019-01-21T07:22:58.086+05:30",
-  "VID": "<VID>",
+  "vid": "<VID>",
   "err": []
 }
 ```
