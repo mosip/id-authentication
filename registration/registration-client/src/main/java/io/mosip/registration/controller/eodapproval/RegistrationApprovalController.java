@@ -5,9 +5,11 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.REG_UI_LOGIN_LOADER_EXCEPTION;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,10 +48,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -71,9 +72,6 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	@Autowired
 	private RegistrationApprovalService registration;
-
-	@Autowired
-	private EODController eodController;
 
 	/** The view ack controller. */
 	@Autowired
@@ -120,7 +118,7 @@ public class RegistrationApprovalController extends BaseController implements In
 	private ToggleButton authenticateBtn;
 	/** The image view. */
 	@FXML
-	private ImageView imageView;
+	private WebView webView;
 
 	/** The approve registration root sub pane. */
 	@FXML
@@ -197,7 +195,7 @@ public class RegistrationApprovalController extends BaseController implements In
 				authenticateBtn.setDisable(false);
 			}
 
-			imageView.setImage(null);
+			webView.getEngine().loadContent("");
 
 			approvalBtn.setSelected(false);
 			rejectionBtn.setSelected(false);
@@ -221,7 +219,14 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			try (FileInputStream file = new FileInputStream(
 					new File(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath()))) {
-				imageView.setImage(new Image(file));
+				BufferedReader bufferedReader = new BufferedReader(
+						new InputStreamReader(file, RegistrationConstants.TEMPLATE_ENCODING));
+				StringBuilder acknowledgementContent = new StringBuilder();
+				String line;
+				while ((line = bufferedReader.readLine()) != null) {
+					acknowledgementContent.append(line);
+				}
+				webView.getEngine().loadContent(acknowledgementContent.toString());
 			} catch (IOException ioException) {
 				LOGGER.error("REGISTRATION_APPROVAL_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
 						APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
@@ -252,12 +257,18 @@ public class RegistrationApprovalController extends BaseController implements In
 		listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
 
 		if (!listData.isEmpty()) {
-			eodController.getPendingApprovalTitledPane()
-					.setText(RegistrationUIConstants.PENDING_APPROVAL + "(" + listData.size() + ")");
+			/*
+			 * eodController.getPendingApprovalTitledPane()
+			 * .setText(RegistrationUIConstants.PENDING_APPROVAL + "(" + listData.size() +
+			 * ")");
+			 */
 			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
 			table.setItems(oList);
 		} else {
-			eodController.getPendingApprovalTitledPane().setText(RegistrationUIConstants.PENDING_APPROVAL);
+			/*
+			 * eodController.getPendingApprovalTitledPane().setText(RegistrationUIConstants.
+			 * PENDING_APPROVAL);
+			 */
 			approveRegistrationRootSubPane.disableProperty().set(true);
 			table.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
 			table.getItems().clear();
@@ -269,8 +280,10 @@ public class RegistrationApprovalController extends BaseController implements In
 	/**
 	 * {@code updateStatus} is to update the status of registration.
 	 *
-	 * @param event the event
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @param event
+	 *            the event
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public void updateStatus(ActionEvent event) throws RegBaseCheckedException {
 

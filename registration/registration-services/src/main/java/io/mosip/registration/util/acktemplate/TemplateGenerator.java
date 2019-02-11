@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigInteger;
+import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -43,6 +44,7 @@ import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
@@ -82,7 +84,7 @@ public class TemplateGenerator extends BaseService {
 	 * @throws RegBaseCheckedException
 	 */
 	public ResponseDTO generateTemplate(String templateText, RegistrationDTO registration,
-			TemplateManagerBuilder templateManagerBuilder) {
+			TemplateManagerBuilder templateManagerBuilder, String templateType) {
 
 		ResponseDTO response = new ResponseDTO();
 
@@ -106,80 +108,297 @@ public class TemplateGenerator extends BaseService {
 			String platformLanguageCode = ApplicationContext.applicationLanguage().toLowerCase();
 			String localLanguageCode = ApplicationContext.localLanguage().toLowerCase();
 
-			// Populating Template Labels in Primary Language
-			templateValues.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("registrationid"));
+			String dob = getValue(
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getDateOfBirth(), null);
+
 			templateValues.put(RegistrationConstants.TEMPLATE_DATE_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("date"));
-			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("fullName"));
-			templateValues.put(RegistrationConstants.TEMPLATE_DOB_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("ageDatePicker"));
-			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("gender"));
-			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("addressLine1"));
-			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("addressLine2"));
-			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("addressLine3"));
-			templateValues.put(RegistrationConstants.TEMPLATE_CITY_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("city"));
-			templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("postalCode"));
-			templateValues.put(RegistrationConstants.TEMPLATE_PROVINCE_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("province"));
-			templateValues.put(RegistrationConstants.TEMPLATE_REGION_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("region"));
-			templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("localAdminAuthority"));
-			templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("mobileNo"));
-			templateValues.put(RegistrationConstants.TEMPLATE_EMAIL_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("emailId"));
-			templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("cniOrPinNumber"));
-			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("documents"));
-			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("biometrics_captured"));
-			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("ro_name"));
-			templateValues.put(RegistrationConstants.TEMPLATE_INDIVIDUAL_PHOTO_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("individualphoto"));
-			templateValues.put(RegistrationConstants.TEMPLATE_EXCEPTION_PHOTO_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("exceptionphoto"));
-			templateValues.put(RegistrationConstants.TEMPLATE_FINGERPRINT_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("fingerprint"));
-			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("parentName"));
-			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_USER_LANG_LABEL,
-					applicationLanguageProperties.getString("parentUIN"));
-
-			templateValues.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID, registration.getRegistrationId());
-
-			if (registration.getRegistrationMetaDataDTO().getUin() != null) {
-				templateValues.put(RegistrationConstants.TEMPLATE_UIN,
-						registration.getRegistrationMetaDataDTO().getUin());
-				templateValues.put(RegistrationConstants.TEMPLATE_UIN_USER_LANG_LABEL,
-						applicationLanguageProperties.getString("uin"));
-				templateValues.put(RegistrationConstants.TEMPLATE_UIN_LOCAL_LANG_LABEL,
-						localProperties.getString("uin"));
-			} else {
-				templateValues.put(RegistrationConstants.TEMPLATE_UIN_UPDATE,
-						RegistrationConstants.TEMPLATE_STYLE_HIDDEN_PROPERTY);
-			}
+			templateValues.put(RegistrationConstants.TEMPLATE_DATE_LOCAL_LANG_LABEL, localProperties.getString("date"));
 
 			SimpleDateFormat sdf = new SimpleDateFormat(RegistrationConstants.TEMPLATE_DATE_FORMAT);
 			String currentDate = sdf.format(new Date());
 
 			// map the respective fields with the values in the registrationDTO
 			templateValues.put(RegistrationConstants.TEMPLATE_DATE, currentDate);
+
+			if (templateType.equals(RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE)) {
+				templateValues.put(RegistrationConstants.TEMPLATE_PREVIEW,
+						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+				templateValues.put(RegistrationConstants.TEMPLATE_RID_USER_LANG_LABEL,
+						applicationLanguageProperties.getString("registrationid"));
+				templateValues.put(RegistrationConstants.TEMPLATE_RID_LOCAL_LANG_LABEL,
+						localProperties.getString("registrationid"));
+				templateValues.put(RegistrationConstants.TEMPLATE_RID, registration.getRegistrationId());
+				// QR Code Generation
+				StringBuilder qrCodeString = new StringBuilder();
+				qrCodeString.append(applicationLanguageProperties.getString("fullName")).append(" : ")
+						.append(getValue(
+								registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
+								platformLanguageCode));
+				qrCodeString.append("\n");
+				qrCodeString.append(applicationLanguageProperties.getString("age/dob")).append(" : ");
+
+				if (dob == "") {
+					qrCodeString.append(getValue(
+							registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge(), null));
+				} else {
+					qrCodeString.append(DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
+				}
+
+				qrCodeString.append("\n");
+				qrCodeString.append(applicationLanguageProperties.getString("address")).append(" : ");
+				qrCodeString.append(getValue(
+						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine1(),
+						platformLanguageCode));
+				qrCodeString.append("\n");
+				qrCodeString.append(getValue(
+						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine2(),
+						platformLanguageCode));
+				qrCodeString.append("\n");
+				qrCodeString.append(applicationLanguageProperties.getString("uinId")).append(" : ")
+						.append(registration.getRegistrationId());
+				qrCodeString.append("\n");
+				qrCodeString.append(applicationLanguageProperties.getString("gender")).append(" : ")
+						.append(getValue(
+								registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getGender(),
+								platformLanguageCode));
+				qrCodeString.append("\n");
+
+				try {
+					byte[] qrCodeInBytes;
+					if (registration.getDemographicDTO().getApplicantDocumentDTO().getCompressedFacePhoto() != null) {
+						byte[] applicantPhoto = registration.getDemographicDTO().getApplicantDocumentDTO()
+								.getCompressedFacePhoto();
+
+						qrCodeString.append(applicationLanguageProperties.getString("image")).append(" : ")
+								.append(CryptoUtil.encodeBase64(applicantPhoto));
+
+						qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V30);
+					} else {
+						qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V25);
+					}
+
+					String qrCodeImageEncodedBytes = CryptoUtil.encodeBase64(qrCodeInBytes);
+					templateValues.put(RegistrationConstants.TEMPLATE_QRCODE_SOURCE,
+							RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + qrCodeImageEncodedBytes);
+				} catch (IOException | QrcodeGenerationException exception) {
+					setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
+					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+				}
+
+				templateValues = countMissingIrises(templateValues, registration);
+
+				try {
+					BufferedImage eyeImage = ImageIO
+							.read(this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_EYE_IMAGE_PATH));
+					byteArrayOutputStream = new ByteArrayOutputStream();
+					ImageIO.write(eyeImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
+					byte[] eyeImageBytes = byteArrayOutputStream.toByteArray();
+					String eyeImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(eyeImageBytes, false));
+					templateValues.put(RegistrationConstants.TEMPLATE_EYE_IMAGE_SOURCE,
+							RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + eyeImageEncodedBytes);
+				} catch (IOException ioException) {
+					setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
+					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+				} finally {
+					if (byteArrayOutputStream != null) {
+						try {
+							byteArrayOutputStream.close();
+						} catch (IOException exception) {
+							setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
+									null);
+							LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+									exception.getMessage());
+						}
+					}
+				}
+
+				try {
+					BufferedImage leftPalmImage = ImageIO.read(
+							this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_LEFT_SLAP_IMAGE_PATH));
+					byteArrayOutputStream = new ByteArrayOutputStream();
+					ImageIO.write(leftPalmImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
+					byte[] leftPalmImageBytes = byteArrayOutputStream.toByteArray();
+					String leftPalmImageEncodedBytes = StringUtils
+							.newStringUtf8(Base64.encodeBase64(leftPalmImageBytes, false));
+					templateValues.put(RegistrationConstants.TEMPLATE_LEFT_PALM_IMAGE_SOURCE,
+							RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + leftPalmImageEncodedBytes);
+				} catch (IOException ioException) {
+					setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
+					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+				} finally {
+					if (byteArrayOutputStream != null) {
+						try {
+							byteArrayOutputStream.close();
+						} catch (IOException exception) {
+							setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
+									null);
+							LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+									exception.getMessage());
+						}
+					}
+				}
+
+				try {
+					BufferedImage rightPalmImage = ImageIO.read(
+							this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_RIGHT_SLAP_IMAGE_PATH));
+					byteArrayOutputStream = new ByteArrayOutputStream();
+					ImageIO.write(rightPalmImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
+					byte[] rightPalmImageBytes = byteArrayOutputStream.toByteArray();
+					String rightPalmImageEncodedBytes = StringUtils
+							.newStringUtf8(Base64.encodeBase64(rightPalmImageBytes, false));
+					templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_PALM_IMAGE_SOURCE,
+							RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + rightPalmImageEncodedBytes);
+				} catch (IOException ioException) {
+					setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
+					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+				} finally {
+					if (byteArrayOutputStream != null) {
+						try {
+							byteArrayOutputStream.close();
+						} catch (IOException exception) {
+							setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
+									null);
+							LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+									exception.getMessage());
+						}
+					}
+				}
+
+				try {
+					BufferedImage thumbsImage = ImageIO.read(
+							this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_THUMBS_IMAGE_PATH));
+					byteArrayOutputStream = new ByteArrayOutputStream();
+					ImageIO.write(thumbsImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
+					byte[] thumbsImageBytes = byteArrayOutputStream.toByteArray();
+					String thumbsImageEncodedBytes = StringUtils
+							.newStringUtf8(Base64.encodeBase64(thumbsImageBytes, false));
+					templateValues.put(RegistrationConstants.TEMPLATE_THUMBS_IMAGE_SOURCE,
+							RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + thumbsImageEncodedBytes);
+				} catch (IOException ioException) {
+					setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
+					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+				} finally {
+					if (byteArrayOutputStream != null) {
+						try {
+							byteArrayOutputStream.close();
+						} catch (IOException exception) {
+							setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
+									null);
+							LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+									exception.getMessage());
+						}
+					}
+				}
+
+			} else {
+				templateValues.put(RegistrationConstants.TEMPLATE_ACKNOWLEDGEMENT,
+						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+				templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID_USER_LANG_LABEL,
+						applicationLanguageProperties.getString("preRegistrationId"));
+				templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID_LOCAL_LANG_LABEL,
+						localProperties.getString("preRegistrationId"));
+				if (!registration.getPreRegistrationId().isEmpty()) {
+					templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID, registration.getPreRegistrationId());
+				} else {
+					templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID, "-");
+				}
+
+				templateValues.put(RegistrationConstants.TEMPLATE_MODIFY,
+						applicationLanguageProperties.getString("modify"));
+
+				try {
+					BufferedImage modifyImage = ImageIO.read(
+							this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_MODIFY_IMAGE_PATH));
+					byteArrayOutputStream = new ByteArrayOutputStream();
+					ImageIO.write(modifyImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
+					byte[] modifyImageBytes = byteArrayOutputStream.toByteArray();
+					String modifyImageEncodedBytes = StringUtils
+							.newStringUtf8(Base64.encodeBase64(modifyImageBytes, false));
+					templateValues.put(RegistrationConstants.TEMPLATE_MODIFY_IMAGE_SOURCE,
+							RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + modifyImageEncodedBytes);
+				} catch (IOException ioException) {
+					setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
+					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+				} finally {
+					if (byteArrayOutputStream != null) {
+						try {
+							byteArrayOutputStream.close();
+						} catch (IOException exception) {
+							setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
+									null);
+							LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+									exception.getMessage());
+						}
+					}
+				}
+
+				for (FingerprintDetailsDTO fpDetailsDTO : registration.getBiometricDTO().getApplicantBiometricDTO()
+						.getFingerprintDetailsDTO()) {
+					if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.LEFTPALM)) {
+						byte[] leftPalmBytes = fpDetailsDTO.getFingerPrint();
+						String leftPalmEncodedBytes = StringUtils
+								.newStringUtf8(Base64.encodeBase64(leftPalmBytes, false));
+						templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_LEFT_SLAP,
+								RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + leftPalmEncodedBytes);
+					} else if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.RIGHTPALM)) {
+						byte[] rightPalmBytes = fpDetailsDTO.getFingerPrint();
+						String rightPalmEncodedBytes = StringUtils
+								.newStringUtf8(Base64.encodeBase64(rightPalmBytes, false));
+						templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_RIGHT_SLAP,
+								RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + rightPalmEncodedBytes);
+					} else if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.THUMBS)) {
+						byte[] thumbsBytes = fpDetailsDTO.getFingerPrint();
+						String thumbsEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(thumbsBytes, false));
+						templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_THUMBS,
+								RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + thumbsEncodedBytes);
+					}
+				}
+
+				for (IrisDetailsDTO capturedIris : registration.getBiometricDTO().getApplicantBiometricDTO()
+						.getIrisDetailsDTO()) {
+					if (capturedIris.getIrisType().contains(RegistrationConstants.LEFT)) {
+						byte[] leftIrisBytes = capturedIris.getIris();
+						String leftIrisEncodedBytes = StringUtils
+								.newStringUtf8(Base64.encodeBase64(leftIrisBytes, false));
+						templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_LEFT_EYE,
+								RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + leftIrisEncodedBytes);
+					} else if (capturedIris.getIrisType().contains(RegistrationConstants.RIGHT)) {
+						byte[] rightIrisBytes = capturedIris.getIris();
+						String rightIrisEncodedBytes = StringUtils
+								.newStringUtf8(Base64.encodeBase64(rightIrisBytes, false));
+						templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_RIGHT_EYE,
+								RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + rightIrisEncodedBytes);
+					}
+				}
+			}
+
+			templateValues.put(RegistrationConstants.TEMPLATE_DEMO_INFO,
+					applicationLanguageProperties.getString("demographicInformation"));
+			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("fullName"));
+			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL,
+					localProperties.getString("fullName"));
 			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
 							platformLanguageCode));
-			String dob = getValue(
-					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getDateOfBirth(), null);
+			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG,
+					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
+							localLanguageCode));
+			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("gender"));
+			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG_LABEL,
+					localProperties.getString("gender"));
+			templateValues.put(RegistrationConstants.TEMPLATE_GENDER,
+					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getGender(),
+							platformLanguageCode));
+			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG,
+					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getGender(),
+							localLanguageCode));
+			templateValues.put(RegistrationConstants.TEMPLATE_DOB_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("ageDatePicker"));
+			templateValues.put(RegistrationConstants.TEMPLATE_DOB_LOCAL_LANG_LABEL,
+					localProperties.getString("ageDatePicker"));
 			if (dob == null || dob == "") {
 				templateValues.put(RegistrationConstants.TEMPLATE_DOB, getValue(
 						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge(), null));
@@ -187,58 +406,88 @@ public class TemplateGenerator extends BaseService {
 				templateValues.put(RegistrationConstants.TEMPLATE_DOB,
 						DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
 			}
-			templateValues.put(RegistrationConstants.TEMPLATE_GENDER,
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getGender(),
-							platformLanguageCode));
+			templateValues.put(RegistrationConstants.TEMPLATE_AGE_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("ageField"));
+			templateValues.put(RegistrationConstants.TEMPLATE_AGE_LOCAL_LANG_LABEL,
+					localProperties.getString("ageField"));
+			templateValues.put(RegistrationConstants.TEMPLATE_AGE,
+					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge(), null));
+			templateValues.put(RegistrationConstants.TEMPLATE_YEARS_USER_LANG,
+					applicationLanguageProperties.getString("years"));
+			templateValues.put(RegistrationConstants.TEMPLATE_YEARS_LOCAL_LANG, localProperties.getString("years"));
+			templateValues.put(RegistrationConstants.TEMPLATE_FOREIGNER_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("foreigner"));
+			templateValues.put(RegistrationConstants.TEMPLATE_FOREIGNER_LOCAL_LANG_LABEL,
+					localProperties.getString("foreigner"));
+			templateValues.put(RegistrationConstants.TEMPLATE_RESIDENCE_STATUS,
+					applicationLanguageProperties.getString("national"));
+			templateValues.put(RegistrationConstants.TEMPLATE_RESIDENCE_STATUS_LOCAL_LANG,
+					localProperties.getString("national"));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("addressLine1"));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_LOCAL_LANG_LABEL,
+					localProperties.getString("addressLine1"));
 			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine1(),
 							platformLanguageCode));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_LOCAL_LANG,
+					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine1(),
+							localLanguageCode));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("addressLine2"));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2_LOCAL_LANG_LABEL,
+					localProperties.getString("addressLine2"));
 			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine2(),
 							platformLanguageCode));
-			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3,
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine3(),
-							platformLanguageCode));
-			templateValues.put(RegistrationConstants.TEMPLATE_CITY,
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getCity(),
-							platformLanguageCode));
-			templateValues.put(RegistrationConstants.TEMPLATE_STATE,
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getProvince(),
-							platformLanguageCode));
-			templateValues.put(RegistrationConstants.TEMPLATE_COUNTRY,
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2_LOCAL_LANG,
+					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine2(),
+							localLanguageCode));
+			templateValues.put(RegistrationConstants.TEMPLATE_REGION_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("region"));
+			templateValues.put(RegistrationConstants.TEMPLATE_REGION_LOCAL_LANG_LABEL,
+					localProperties.getString("region"));
+			templateValues.put(RegistrationConstants.TEMPLATE_REGION,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getRegion(),
 							platformLanguageCode));
-			templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE, getValue(
-					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getPostalCode(), null));
-			templateValues.put(RegistrationConstants.TEMPLATE_MOBILE,
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getPhone(), null));
+			templateValues.put(RegistrationConstants.TEMPLATE_REGION_LOCAL_LANG,
+					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getRegion(),
+							localLanguageCode));
+			templateValues.put(RegistrationConstants.TEMPLATE_PROVINCE_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("province"));
+			templateValues.put(RegistrationConstants.TEMPLATE_PROVINCE_LOCAL_LANG_LABEL,
+					localProperties.getString("province"));
+			templateValues.put(RegistrationConstants.TEMPLATE_PROVINCE,
+					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getProvince(),
+							platformLanguageCode));
+			templateValues.put(RegistrationConstants.TEMPLATE_PROVINCE_LOCAL_LANG,
+					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getProvince(),
+							localLanguageCode));
+			templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("localAdminAuthority"));
+			templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG_LABEL,
+					localProperties.getString("localAdminAuthority"));
 			templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY, getValue(registration.getDemographicDTO()
 					.getDemographicInfoDTO().getIdentity().getLocalAdministrativeAuthority(), platformLanguageCode));
-			templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER, getValue(
-					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getCnieNumber(), null));
-			templateValues.put(RegistrationConstants.TEMPLATE_CNIE_LOCAL_LANG_LABEL,
-					localProperties.getString("cniOrPinNumber"));
-
-			boolean isChild = registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
-					.getParentOrGuardianRIDOrUIN() != null;
-
-			if (isChild) {
-				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME, getValue(registration.getDemographicDTO()
-						.getDemographicInfoDTO().getIdentity().getParentOrGuardianName(), platformLanguageCode));
-				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN, getValue(registration.getDemographicDTO()
-						.getDemographicInfoDTO().getIdentity().getParentOrGuardianRIDOrUIN(), null));
-				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG_LABEL,
-						localProperties.getString("parentName"));
-				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
-						localProperties.getString("parentUIN"));
-				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG,
-						getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
-								.getParentOrGuardianName(), localLanguageCode));
-			} else {
-				templateValues.put(RegistrationConstants.TEMPLATE_WITH_PARENT_DETAILS,
-						RegistrationConstants.TEMPLATE_STYLE_HIDDEN_PROPERTY);
-			}
-
+			templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG,
+					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+							.getLocalAdministrativeAuthority(), localLanguageCode));
+			templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("mobileNo"));
+			templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_LOCAL_LANG_LABEL,
+					localProperties.getString("mobileNo"));
+			templateValues.put(RegistrationConstants.TEMPLATE_MOBILE,
+					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getPhone(), null));
+			templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("postalCode"));
+			templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE_LOCAL_LANG_LABEL,
+					localProperties.getString("postalCode"));
+			templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE, getValue(
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getPostalCode(), null));
+			templateValues.put(RegistrationConstants.TEMPLATE_EMAIL_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("emailId"));
+			templateValues.put(RegistrationConstants.TEMPLATE_EMAIL_LOCAL_LANG_LABEL,
+					localProperties.getString("emailId"));
 			String email = getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getEmail(),
 					null);
 			if (email == null || email.isEmpty()) {
@@ -246,7 +495,16 @@ public class TemplateGenerator extends BaseService {
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_EMAIL, email);
 			}
-
+			templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("cniOrPinNumber"));
+			templateValues.put(RegistrationConstants.TEMPLATE_CNIE_LOCAL_LANG_LABEL,
+					localProperties.getString("cniOrPinNumber"));
+			templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER, getValue(
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getCnieNumber(), null));
+			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("documents"));
+			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG_LABEL,
+					localProperties.getString("documents"));
 			StringBuilder documentsList = new StringBuilder();
 			if (registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getProofOfIdentity() != null) {
 				documentsList.append(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
@@ -266,194 +524,15 @@ public class TemplateGenerator extends BaseService {
 				documentsList.append(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 						.getProofOfDateOfBirth().getValue());
 			}
-
 			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS, documentsList.toString());
-			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME, registration.getOsiDataDTO().getOperatorID());
 
-			byte[] applicantImageBytes = registration.getDemographicDTO().getApplicantDocumentDTO().getPhoto();
-			String applicantImageEncodedBytes = StringUtils
-					.newStringUtf8(Base64.encodeBase64(applicantImageBytes, false));
-			templateValues.put(RegistrationConstants.TEMPLATE_IMAGE_SOURCE,
-					RegistrationConstants.TEMPLATE_IMAGE_ENCODING + applicantImageEncodedBytes);
-
-			if (registration.getDemographicDTO().getApplicantDocumentDTO().isHasExceptionPhoto()) {
-				templateValues.put(RegistrationConstants.TEMPLATE_WITH_EXCEPTION_IMAGE, null);
-				templateValues.put(RegistrationConstants.TEMPLATE_WITHOUT_EXCEPTION_IMAGE,
-						RegistrationConstants.TEMPLATE_STYLE_PROPERTY);
-				byte[] exceptionImageBytes = registration.getDemographicDTO().getApplicantDocumentDTO()
-						.getExceptionPhoto();
-				String exceptionImageEncodedBytes = StringUtils
-						.newStringUtf8(Base64.encodeBase64(exceptionImageBytes, false));
-				templateValues.put(RegistrationConstants.TEMPLATE_EXCEPTION_IMAGE_SOURCE,
-						RegistrationConstants.TEMPLATE_IMAGE_ENCODING + exceptionImageEncodedBytes);
-			} else {
-				templateValues.put(RegistrationConstants.TEMPLATE_WITHOUT_EXCEPTION_IMAGE, null);
-				templateValues.put(RegistrationConstants.TEMPLATE_WITH_EXCEPTION_IMAGE,
-						RegistrationConstants.TEMPLATE_STYLE_PROPERTY);
-			}
-
-			if (registration.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO().isEmpty()) {
-				templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_FINGERPRINTS,
-						RegistrationConstants.TEMPLATE_STYLE_PROPERTY);
-			} else {
-				templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_FINGERPRINTS, null);
-				// get the quality ranking for fingerprints of the applicant
-				HashMap<String, Integer> fingersQuality = getFingerPrintQualityRanking(registration);
-				for (Map.Entry<String, Integer> entry : fingersQuality.entrySet()) {
-					if (entry.getValue() != 0) {
-						// display rank of quality for the captured fingerprints
-						templateValues.put(entry.getKey(), entry.getValue());
-					} else {
-						// display cross mark for missing fingerprints
-						templateValues.put(entry.getKey(), RegistrationConstants.TEMPLATE_MISSING_FINGER);
-					}
-				}
-			}
-
-			try {
-				BufferedImage handsImage = ImageIO
-						.read(this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_HANDS_IMAGE_PATH));
-				byteArrayOutputStream = new ByteArrayOutputStream();
-				ImageIO.write(handsImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE, byteArrayOutputStream);
-				byte[] handsImageBytes = byteArrayOutputStream.toByteArray();
-				String handsImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(handsImageBytes, false));
-				templateValues.put(RegistrationConstants.TEMPLATE_HANDS_IMAGE_SOURCE,
-						RegistrationConstants.TEMPLATE_IMAGE_ENCODING + handsImageEncodedBytes);
-			} catch (IOException ioException) {
-				setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
-			} finally {
-				if (byteArrayOutputStream != null) {
-					try {
-						byteArrayOutputStream.close();
-					} catch (IOException exception) {
-						setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
-								null);
-						LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
-					}
-				}
-			}
-
-			// QR Code Generation
-			StringBuilder qrCodeString = new StringBuilder();
-			qrCodeString.append(applicationLanguageProperties.getString("fullName")).append(" : ")
-					.append(getValue(
-							registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
-							platformLanguageCode));
-			qrCodeString.append("\n");
-			qrCodeString.append(applicationLanguageProperties.getString("age/dob")).append(" : ");
-
-			if (dob == "") {
-				qrCodeString.append(getValue(
-						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge(), null));
-			} else {
-				qrCodeString.append(DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
-			}
-
-			qrCodeString.append("\n");
-			qrCodeString.append(applicationLanguageProperties.getString("address")).append(" : ");
-			qrCodeString.append(
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine1(),
-							platformLanguageCode));
-			qrCodeString.append("\n");
-			qrCodeString.append(
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine2(),
-							platformLanguageCode));
-			qrCodeString.append("\n");
-			qrCodeString.append(
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine3(),
-							platformLanguageCode));
-			qrCodeString.append("\n");
-			qrCodeString.append(applicationLanguageProperties.getString("uinId")).append(" : ")
-					.append(registration.getRegistrationId());
-			qrCodeString.append("\n");
-			qrCodeString.append(applicationLanguageProperties.getString("gender")).append(" : ")
-					.append(getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getGender(),
-							platformLanguageCode));
-			qrCodeString.append("\n");
-
-			try {
-				byte[] qrCodeInBytes;
-				if (registration.getDemographicDTO().getApplicantDocumentDTO().getCompressedFacePhoto() != null) {
-					byte[] applicantPhoto = registration.getDemographicDTO().getApplicantDocumentDTO()
-							.getCompressedFacePhoto();
-
-					qrCodeString.append(applicationLanguageProperties.getString("image")).append(" : ")
-							.append(CryptoUtil.encodeBase64(applicantPhoto));
-
-					qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V40);
-				} else {
-					qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V25);
-				}
-
-				String qrCodeImageEncodedBytes = CryptoUtil.encodeBase64(qrCodeInBytes);
-				templateValues.put(RegistrationConstants.TEMPLATE_QRCODE_SOURCE,
-						RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + qrCodeImageEncodedBytes);
-			} catch (IOException | QrcodeGenerationException exception) {
-				setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
-			}
-
-			templateValues.put(RegistrationConstants.TEMPLATE_DATE_LOCAL_LANG_LABEL, localProperties.getString("date"));
-			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL,
-					localProperties.getString("fullName"));
-			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG,
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
-							localLanguageCode));
-			templateValues.put(RegistrationConstants.TEMPLATE_DOB_LOCAL_LANG_LABEL,
-					localProperties.getString("ageDatePicker"));
-			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG_LABEL,
-					localProperties.getString("gender"));
-			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG,
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getGender(),
-							localLanguageCode));
-			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_LOCAL_LANG_LABEL,
-					localProperties.getString("addressLine1"));
-			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_LOCAL_LANG,
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine1(),
-							localLanguageCode));
-			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2_LOCAL_LANG_LABEL,
-					localProperties.getString("addressLine2"));
-			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2_LOCAL_LANG,
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine2(),
-							localLanguageCode));
-			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3_LOCAL_LANG_LABEL,
-					localProperties.getString("addressLine3"));
-			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3_LOCAL_LANG,
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine3(),
-							localLanguageCode));
-			templateValues.put(RegistrationConstants.TEMPLATE_CITY_LOCAL_LANG_LABEL, localProperties.getString("city"));
-			templateValues.put(RegistrationConstants.TEMPLATE_CITY_LOCAL_LANG,
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getCity(),
-							localLanguageCode));
-			templateValues.put(RegistrationConstants.TEMPLATE_PROVINCE_LOCAL_LANG_LABEL,
-					localProperties.getString("province"));
-			templateValues.put(RegistrationConstants.TEMPLATE_PROVINCE_LOCAL_LANG,
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getProvince(),
-							localLanguageCode));
-			templateValues.put(RegistrationConstants.TEMPLATE_COUNTRY_LOCAL_LANG_LABEL,
-					localProperties.getString("region"));
-			templateValues.put(RegistrationConstants.TEMPLATE_COUNTRY_LOCAL_LANG,
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getRegion(),
-							localLanguageCode));
-			templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG_LABEL,
-					localProperties.getString("localAdminAuthority"));
-			templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG,
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
-							.getLocalAdministrativeAuthority(), localLanguageCode));
-			templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE_LOCAL_LANG_LABEL,
-					localProperties.getString("postalCode"));
-			templateValues.put(RegistrationConstants.TEMPLATE_EMAIL_LOCAL_LANG_LABEL,
-					localProperties.getString("emailId"));
-			templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_LOCAL_LANG_LABEL,
-					localProperties.getString("mobileNo"));
-			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG_LABEL,
-					localProperties.getString("documents"));
 			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG, documentsList.toString());
-			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_LOCAL_LANG_LABEL,
-					localProperties.getString("ro_name"));
-			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_LOCAL_LANG,
-					registration.getOsiDataDTO().getOperatorID());
+			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("biometricsHeading"));
+			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("biometrics_captured"));
+			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED_LOCAL_LANG_LABEL,
+					localProperties.getString("biometrics_captured"));
 
 			// get the total count of fingerprints captured and irises captured
 			List<FingerprintDetailsDTO> capturedFingers = registration.getBiometricDTO().getApplicantBiometricDTO()
@@ -467,26 +546,123 @@ public class TemplateGenerator extends BaseService {
 							.mapToInt(capturedFinger -> capturedFinger.getSegmentedFingerprints().size()).sum(),
 					capturedIris.size() };
 
-			if (ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-					.equals(RegistrationConstants.ENABLE)) {
-				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED,
-						"Iris (" + fingersAndIrises[1] + "), Face");
-				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_LOCAL_LANG,
-						"Iris (" + fingersAndIrises[1] + "), Face");
+			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED,
+					MessageFormat.format((String) applicationLanguageProperties.getString("biometricscount"),
+							String.valueOf(fingersAndIrises[0]), String.valueOf(fingersAndIrises[1])));
+			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED_LOCAL_LANG,
+					MessageFormat.format((String) localProperties.getString("biometricscount"),
+							String.valueOf(fingersAndIrises[0]), String.valueOf(fingersAndIrises[1])));
+			if (registration.getDemographicDTO().getApplicantDocumentDTO().isHasExceptionPhoto()) {
+				templateValues.put(RegistrationConstants.TEMPLATE_WITHOUT_EXCEPTION,
+						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+				templateValues.put(RegistrationConstants.TEMPLATE_EXCEPTION_PHOTO_USER_LANG_LABEL,
+						applicationLanguageProperties.getString("exceptionphoto"));
+				templateValues.put(RegistrationConstants.TEMPLATE_EXCEPTION_PHOTO_LOCAL_LANG_LABEL,
+						localProperties.getString("exceptionphoto"));
+				byte[] exceptionImageBytes = registration.getDemographicDTO().getApplicantDocumentDTO()
+						.getExceptionPhoto();
+				String exceptionImageEncodedBytes = StringUtils
+						.newStringUtf8(Base64.encodeBase64(exceptionImageBytes, false));
+				templateValues.put(RegistrationConstants.TEMPLATE_EXCEPTION_IMAGE_SOURCE,
+						RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + exceptionImageEncodedBytes);
 			} else {
-				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED,
-						"Fingers (" + fingersAndIrises[0] + "), Iris (" + fingersAndIrises[1] + "), Face");
-				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_LOCAL_LANG,
-						"Fingers (" + fingersAndIrises[0] + "), Iris (" + fingersAndIrises[1] + "), Face");
+				templateValues.put(RegistrationConstants.TEMPLATE_WITHOUT_EXCEPTION, null);
+				templateValues.put(RegistrationConstants.TEMPLATE_WITH_EXCEPTION,
+						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+			}
+			templateValues.put(RegistrationConstants.TEMPLATE_PHOTO_USER_LANG,
+					applicationLanguageProperties.getString("individualphoto"));
+			templateValues.put(RegistrationConstants.TEMPLATE_PHOTO_LOCAL_LANG,
+					localProperties.getString("individualphoto"));
+			byte[] applicantImageBytes = registration.getDemographicDTO().getApplicantDocumentDTO().getPhoto();
+			String applicantImageEncodedBytes = StringUtils
+					.newStringUtf8(Base64.encodeBase64(applicantImageBytes, false));
+			templateValues.put(RegistrationConstants.TEMPLATE_APPLICANT_IMAGE_SOURCE,
+					RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + applicantImageEncodedBytes);
+
+			templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("lefteye"));
+			templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE_LOCAL_LANG_LABEL,
+					localProperties.getString("lefteye"));
+			templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_EYE_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("righteye"));
+			templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_EYE_LOCAL_LANG_LABEL,
+					localProperties.getString("righteye"));
+			if (registration.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO().isEmpty()) {
+				templateValues.put(RegistrationConstants.TEMPLATE_FINGERPRINTS_CAPTURED,
+						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+			} else {
+				templateValues.put(RegistrationConstants.TEMPLATE_FINGERPRINTS_CAPTURED, null);
+				templateValues.put(RegistrationConstants.TEMPLATE_LEFT_PALM_USER_LANG_LABEL,
+						applicationLanguageProperties.getString("lefthandpalm"));
+				templateValues.put(RegistrationConstants.TEMPLATE_LEFT_PALM_LOCAL_LANG_LABEL,
+						localProperties.getString("lefthandpalm"));
+				templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_PALM_USER_LANG_LABEL,
+						applicationLanguageProperties.getString("righthandpalm"));
+				templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_PALM_LOCAL_LANG_LABEL,
+						localProperties.getString("righthandpalm"));
+				templateValues.put(RegistrationConstants.TEMPLATE_THUMBS_USER_LANG_LABEL,
+						applicationLanguageProperties.getString("thumbs"));
+				templateValues.put(RegistrationConstants.TEMPLATE_THUMBS_LOCAL_LANG_LABEL,
+						localProperties.getString("thumbs"));
+				// get the quality ranking for fingerprints of the applicant
+				HashMap<String, Integer> fingersQuality = getFingerPrintQualityRanking(registration);
+				for (Map.Entry<String, Integer> entry : fingersQuality.entrySet()) {
+					if (entry.getValue() != 0) {
+						// display rank of quality for the captured fingerprints
+						templateValues.put(entry.getKey(), entry.getValue());
+					} else {
+						// display cross mark for missing fingerprints
+						templateValues.put(entry.getKey(), RegistrationConstants.TEMPLATE_CROSS_MARK);
+					}
+				}
+				templateValues = countMissingFingers(registration, templateValues, applicationLanguageProperties,
+						localProperties);
 			}
 
-			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_LOCAL_LANG_LABEL,
-					localProperties.getString("biometrics_captured"));
+			templateValues.put(RegistrationConstants.TEMPLATE_RO_IMAGE,
+					RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("ro_name"));
+			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_LOCAL_LANG_LABEL,
+					localProperties.getString("ro_name"));
+			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME,
+					getValue(registration.getOsiDataDTO().getOperatorID(), platformLanguageCode));
+			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_LOCAL_LANG,
+					getValue(registration.getOsiDataDTO().getOperatorID(), localLanguageCode));
+			templateValues.put(RegistrationConstants.TEMPLATE_REG_CENTER_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("registrationcenter"));
+			templateValues.put(RegistrationConstants.TEMPLATE_REG_CENTER_LOCAL_LANG_LABEL,
+					localProperties.getString("registrationcenter"));
+			templateValues.put(RegistrationConstants.TEMPLATE_REG_CENTER, SessionContext.userContext()
+					.getRegistrationCenterDetailDTO().getRegistrationCenterName());
+			templateValues.put(RegistrationConstants.TEMPLATE_REG_CENTER_LOCAL_LANG, "");
+			templateValues.put(RegistrationConstants.TEMPLATE_IMPORTANT_GUIDELINES,
+					applicationLanguageProperties.getString("importantguidelines"));
+
+			boolean isChild = registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+					.getParentOrGuardianRIDOrUIN() != null;
+
+			if (isChild) {
+				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_USER_LANG_LABEL,
+						applicationLanguageProperties.getString("parentName"));
+				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME, getValue(registration.getDemographicDTO()
+						.getDemographicInfoDTO().getIdentity().getParentOrGuardianName(), platformLanguageCode));
+				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG_LABEL,
+						localProperties.getString("parentName"));
+				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG,
+						getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+								.getParentOrGuardianName(), localLanguageCode));
+			} else {
+				templateValues.put(RegistrationConstants.TEMPLATE_WITH_PARENT,
+						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+			}
 
 			Writer writer = new StringWriter();
-			//Velocity.evaluate(templateValues, writer, "Acknowledgement Template", templateReader);
+			// Velocity.evaluate(templateValues, writer, "Acknowledgement Template",
+			// templateReader);
 			try {
-				LOGGER.info(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+				LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
 						"merge method of TemplateManager had been called for preparing Acknowledgement Template.");
 
 				TemplateManager templateManager = templateManagerBuilder.build();
@@ -497,7 +673,7 @@ public class TemplateGenerator extends BaseService {
 				setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
 				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 			}
-			LOGGER.info(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
 					"generateTemplate method has been ended for preparing Acknowledgement Template.");
 
 			Map<String, Object> responseMap = new HashMap<>();
@@ -511,6 +687,93 @@ public class TemplateGenerator extends BaseService {
 			LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage());
 		}
 		return response;
+	}
+
+	private Map<String, Object> countMissingIrises(Map<String, Object> templateValues, RegistrationDTO registration) {
+		boolean missingLeftIris = false;
+		boolean missingRightIris = false;
+
+		List<BiometricExceptionDTO> exceptionBiometrics = registration.getBiometricDTO().getApplicantBiometricDTO()
+				.getBiometricExceptionDTO();
+		if (exceptionBiometrics != null) {
+			for (BiometricExceptionDTO exceptionBiometric : exceptionBiometrics) {
+				if (exceptionBiometric.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)) {
+					if (exceptionBiometric.getMissingBiometric().toLowerCase()
+							.contains(RegistrationConstants.LEFT.toLowerCase())) {
+						missingLeftIris = true;
+					} else if (exceptionBiometric.getMissingBiometric().toLowerCase()
+							.contains(RegistrationConstants.RIGHT.toLowerCase())) {
+						missingRightIris = true;
+					}
+				}
+			}
+		}
+		if (missingLeftIris) {
+			templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE, RegistrationConstants.TEMPLATE_CROSS_MARK);
+		} else {
+			templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE, RegistrationConstants.TEMPLATE_RIGHT_MARK);
+		}
+		if (missingRightIris) {
+			templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_EYE, RegistrationConstants.TEMPLATE_CROSS_MARK);
+		} else {
+			templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_EYE, RegistrationConstants.TEMPLATE_RIGHT_MARK);
+		}
+		return templateValues;
+	}
+
+	private Map<String, Object> countMissingFingers(RegistrationDTO registration, Map<String, Object> templateValues,
+			ResourceBundle applicationLanguageProperties, ResourceBundle localProperties) {
+		int missingLeftFingers = 0;
+		int missingRightFingers = 0;
+		int missingThumbs = 0;
+		List<BiometricExceptionDTO> exceptionFingers = registration.getBiometricDTO().getApplicantBiometricDTO()
+				.getBiometricExceptionDTO();
+		if (exceptionFingers != null) {
+			for (BiometricExceptionDTO exceptionFinger : exceptionFingers) {
+				if (exceptionFinger.getBiometricType().equalsIgnoreCase(RegistrationConstants.FINGERPRINT)) {
+					if (exceptionFinger.getMissingBiometric().toLowerCase()
+							.contains(RegistrationConstants.THUMB.toLowerCase())) {
+						missingThumbs++;
+					} else if (exceptionFinger.getMissingBiometric().toLowerCase()
+							.contains(RegistrationConstants.LEFT.toLowerCase())) {
+						missingLeftFingers++;
+					} else if (exceptionFinger.getMissingBiometric().toLowerCase()
+							.contains(RegistrationConstants.RIGHT.toLowerCase())) {
+						missingRightFingers++;
+					}
+				}
+			}
+			if (missingLeftFingers != 0) {
+				templateValues.put(RegistrationConstants.TEMPLATE_LEFT_SLAP_EXCEPTION_USER_LANG,
+						MessageFormat.format((String) applicationLanguageProperties.getString("exception"),
+								String.valueOf(missingLeftFingers)));
+				templateValues.put(RegistrationConstants.TEMPLATE_LEFT_SLAP_EXCEPTION_LOCAL_LANG, MessageFormat
+						.format((String) localProperties.getString("exception"), String.valueOf(missingLeftFingers)));
+			} else {
+				templateValues.put(RegistrationConstants.TEMPLATE_MISSING_LEFT_FINGERS,
+						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+			}
+			if (missingRightFingers != 0) {
+				templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_SLAP_EXCEPTION_USER_LANG,
+						MessageFormat.format((String) applicationLanguageProperties.getString("exception"),
+								String.valueOf(missingRightFingers)));
+				templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_SLAP_EXCEPTION_LOCAL_LANG, MessageFormat
+						.format((String) localProperties.getString("exception"), String.valueOf(missingRightFingers)));
+			} else {
+				templateValues.put(RegistrationConstants.TEMPLATE_MISSING_RIGHT_FINGERS,
+						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+			}
+			if (missingThumbs != 0) {
+				templateValues.put(RegistrationConstants.TEMPLATE_THUMBS_EXCEPTION_USER_LANG, MessageFormat.format(
+						(String) applicationLanguageProperties.getString("exception"), String.valueOf(missingThumbs)));
+				templateValues.put(RegistrationConstants.TEMPLATE_THUMBS_EXCEPTION_LOCAL_LANG, MessageFormat
+						.format((String) localProperties.getString("exception"), String.valueOf(missingThumbs)));
+			} else {
+				templateValues.put(RegistrationConstants.TEMPLATE_MISSING_THUMBS,
+						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+			}
+		}
+		return templateValues;
 	}
 
 	/**
@@ -534,7 +797,7 @@ public class TemplateGenerator extends BaseService {
 			values.put(RegistrationConstants.TEMPLATE_RESIDENT_NAME,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
 							applicationLanguageCode));
-			values.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID,
+			values.put(RegistrationConstants.TEMPLATE_RID,
 					getValue(registration.getRegistrationId(), applicationLanguageCode));
 
 			SimpleDateFormat sdf = new SimpleDateFormat(RegistrationConstants.TEMPLATE_DATE_FORMAT);
@@ -562,16 +825,10 @@ public class TemplateGenerator extends BaseService {
 			values.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine2(),
 							applicationLanguageCode));
-			values.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3,
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine3(),
-							applicationLanguageCode));
-			values.put(RegistrationConstants.TEMPLATE_CITY,
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getCity(),
-							applicationLanguageCode));
-			values.put(RegistrationConstants.TEMPLATE_STATE,
+			values.put(RegistrationConstants.TEMPLATE_PROVINCE,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getProvince(),
 							applicationLanguageCode));
-			values.put(RegistrationConstants.TEMPLATE_COUNTRY,
+			values.put(RegistrationConstants.TEMPLATE_REGION,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getRegion(),
 							applicationLanguageCode));
 			values.put(RegistrationConstants.TEMPLATE_POSTAL_CODE, getValue(
@@ -619,10 +876,10 @@ public class TemplateGenerator extends BaseService {
 		// list of missing fingers
 		List<BiometricExceptionDTO> exceptionFingers = registration.getBiometricDTO().getApplicantBiometricDTO()
 				.getBiometricExceptionDTO();
-		//
+
 		if (exceptionFingers != null) {
 			for (BiometricExceptionDTO exceptionFinger : exceptionFingers) {
-				if (exceptionFinger.getBiometricType().equalsIgnoreCase("fingerprint")) {
+				if (exceptionFinger.getBiometricType().equalsIgnoreCase(RegistrationConstants.FINGERPRINT)) {
 					fingersQuality.put(exceptionFinger.getMissingBiometric(), (double) 0);
 				}
 			}
@@ -671,7 +928,6 @@ public class TemplateGenerator extends BaseService {
 				fingersQualityRanking.put(entry.getKey(), entry.getValue().intValue());
 			}
 		}
-
 		return fingersQualityRanking;
 	}
 

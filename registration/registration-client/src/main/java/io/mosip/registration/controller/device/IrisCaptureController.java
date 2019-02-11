@@ -36,7 +36,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -296,8 +298,10 @@ public class IrisCaptureController extends BaseController {
 				}
 			} else {
 				if (validateIris() && validateIrisLocalDedup()) {
-					registrationController.toggleIrisCaptureVisibility(false);
-					registrationController.togglePhotoCaptureVisibility(true);
+					SessionContext.map().put("irisCapture",false);
+					SessionContext.map().put("faceCapture",true);
+					registrationController.showCurrentPage();
+				
 				}
 			}
 
@@ -325,62 +329,35 @@ public class IrisCaptureController extends BaseController {
 
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 				if (validateIris()) {
-					
-					if (applicationContext.getApplicationMap()
-							.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-							.equals(RegistrationConstants.ENABLE)) {
-						
-						loadPage(RegistrationConstants.BIO_EXCEPTION_PAGE);
-					} else {
-						loadPage(RegistrationConstants.USER_ONBOARD_FP);
-					}
+					loadPage(RegistrationConstants.USER_ONBOARD_FP);
 				}
 			} else {
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 					if (validateIris() && validateIrisLocalDedup()) {
-
-						long fingerPrintCount = getRegistrationDTOFromSession().getBiometricDTO()
-								.getApplicantBiometricDTO().getBiometricExceptionDTO().stream()
+						
+						long fingerPrintCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getBiometricExceptionDTO().stream()
 								.filter(bio -> bio.getBiometricType().equals("fingerprint")).count();
-
-						if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
-								|| fingerPrintCount > 0) {
-							registrationController.toggleFingerprintCaptureVisibility(true);
-							registrationController.toggleIrisCaptureVisibility(false);
-						} else if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
-								&& fingerPrintCount == 0) {
-							biometricExceptionController.setExceptionImage();
-							registrationController.toggleBiometricExceptionVisibility(true);
-							registrationController.toggleIrisCaptureVisibility(false);
-						} else {
-							registrationController.getDemoGraphicTitlePane().setExpanded(true);
+						
+						if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint() || fingerPrintCount > 0) {
+							SessionContext.map().put("fingerPrintCapture",false);
+							SessionContext.map().put("irisCapture",false);
+						}else if(getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException() && fingerPrintCount==0) {
+							biometricExceptionController.setExceptionImage();							
+							SessionContext.map().put("irisCapture",true);
+							SessionContext.map().put("faceCapture",false);
 						}
+						registrationController.showCurrentPage();
 					}
 				} else {
 					if (validateIris() && validateIrisLocalDedup()) {
-						registrationController.toggleIrisCaptureVisibility(false);
-						
-						if (applicationContext.getApplicationMap()
-								.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-								.equals(RegistrationConstants.ENABLE)) {
-							
-							if ((boolean) SessionContext.userContext().getUserMap()
-									.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
-								registrationController.toggleFingerprintCaptureVisibility(false);
-								biometricExceptionController.setExceptionImage();
-								registrationController.toggleBiometricExceptionVisibility(true);
-							} else {
-								registrationController.getDemoGraphicTitlePane().setExpanded(true);
-							}
-							
-						} else {
-							registrationController.toggleFingerprintCaptureVisibility(true);
-						}
+						SessionContext.map().put("irisCapture",false);
+						SessionContext.map().put("fingerPrintCapture",true);
+						registrationController.showCurrentPage();
 					}
 				}
 			}
 
-			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Fingerprint capture page for user registration completed");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
@@ -549,15 +526,17 @@ public class IrisCaptureController extends BaseController {
 	}
 	
 	private void loadPage(String page) {
-		Parent createRoot;
+		VBox mainBox = new VBox();
 		try {
-			createRoot = BaseController.load(getClass().getResource(page));
-			getScene(createRoot).setRoot(createRoot);
+			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
+			mainBox.getChildren().add(headerRoot);
+			Parent createRoot = BaseController.load(getClass().getResource(page));			
+			mainBox.getChildren().add(createRoot);
+			getScene(mainBox).setRoot(mainBox);
 		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage());
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
 		}
 	}
-
 }

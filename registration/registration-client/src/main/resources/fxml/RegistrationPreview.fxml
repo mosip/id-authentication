@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="anchor-pane-acknowledgement" fx:id="registrationPreview" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="1252.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.RegistrationPreviewController">
+	<children>
+      <AnchorPane id="ackScreen-anchor-pane" layoutX="-4.0" layoutY="611.0" prefHeight="47.0" prefWidth="1276.0">
+         <children>
+			<Button layoutX="1048.0" layoutY="8.0" mnemonicParsing="false" onAction="#goToNextPage" styleClass="ackBackButton" text="%continue">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/arrowRight.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Button layoutX="153.0" layoutY="8.0" mnemonicParsing="false" styleClass="ackBackButton" text="%back">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/arrowLeft.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </AnchorPane>
+      <ScrollPane layoutX="203.0" layoutY="36.0" prefHeight="578.0" prefWidth="912.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="570.0" prefWidth="912.0">
+               <children>
+                  <WebView fx:id="webView" layoutY="-1.0" prefHeight="567.0" prefWidth="911.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+      <AnchorPane id="ackScreen-anchor-pane" fx:id="registrationPreviewHeader" layoutX="-4.0" layoutY="-2.0" prefHeight="39.0" prefWidth="1289.0">
+         <children>
+            <Text layoutX="55.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/newregistration" wrappingWidth="154.2451171875" />
+            <Label layoutX="526.0" layoutY="11.0" styleClass="heading" text="%registrationpreview" />
+            <Text layoutX="14.0" layoutY="31.0" onMouseClicked="#goToHomePageFromRegistration" strokeType="OUTSIDE" strokeWidth="0.0" text="%home" />
+         </children>
+      </AnchorPane>
+	</children>
+</AnchorPane>

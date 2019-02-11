@@ -266,7 +266,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			File zipFile = null;
 			String ackPath = registration.getAckFilename();
 			ackFile = new File(ackPath);
-			String zipPath = ackPath.replace("_Ack.png", RegistrationConstants.ZIP_FILE_EXTENSION);
+			String zipPath = ackPath.replace("_Ack.html", RegistrationConstants.ZIP_FILE_EXTENSION);
 			zipFile = new File(zipPath);
 
 			if (ackFile != null) {

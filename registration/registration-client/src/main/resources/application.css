@@ -9,44 +9,41 @@
 }
 
 #demographicPane {
- 	-fx-padding: 10;
+ 	-fx-padding: 10.0;
 	-fx-border-color: black;
     -fx-background-color : white;
-    -fx-border-width: 0 0 0 0;
-	-fx-font-size : 12px;   
+    -fx-border-width: 0.0 0.0 0.0 0.0;
+	-fx-font-size : 12.0px;   
     
 }
 
-#operatorAuthenticationPane {
-	-fx-background-color : white;
-}
 
 #virtualKeyboard {
 	-fx-background-color: white;
-	-fx-border-width:1 1 1 1;
+	-fx-border-width:1.0 1.0 1.0 1.0;
 	-fx-border-color: black;
-	-fx-background-radius: 6,5;
+	-fx-background-radius: 6.0,5.0;
 }
 
 #registrationAccordian.accordion .title > .arrow-button .arrow{
-    -fx-translate-x: 750;
+    -fx-translate-x: 750.0;
 	-fx-shape: "M 10,150 L 70,10 L 130,150 z";    
 }
 
 #registrationAccordian.accordion > .titled-pane {
-    -fx-padding: 0 0 0.5em 0;
+    -fx-padding: 0.0 0.0 0.5em 0.0;
 }
 
 #registrationAccordian.accordion > .titled-pane > .title{
     -fx-background-color : white;
-    -fx-font-size:15px;
+    -fx-font-size:15.0px;
     -fx-font-weight:bold;
     -fx-border-color: #D3D3D3;
-    -fx-border-width : 1 1 0 1;
+    -fx-border-width : 1.0 1.0 0.0 1.0;
 }
 
 #titleDemographicPaneApplicationLanguage, #titleDemographicPaneLocalLanguage, #documentTitlePaneApplicationLanguage{
-	 -fx-font-size:20px;
+	 -fx-font-size:20.0px;
     -fx-font-weight:bold;
    
 }
@@ -54,87 +51,131 @@
 #registrationAccordian.accordion >.titled-pane:collapsed > .title {	
  
  
-    -fx-border-width : 1 1 1 1;
+    -fx-border-width : 1.0 1.0 1.0 1.0;
     -fx-border-color: black;
 	
 
 }
 
 #doc_label{
-	-fx-font-size:10px;
+	-fx-font-size:10.0px;
 }
 
 #toggleLabel1{
 	-fx-background-color: grey;
-	-fx-border-width: 1 1 1 1;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: black;
 }
 
 #toggleLabel2{
 	-fx-background-color: white;
-	-fx-border-width: 1 1 1 1;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: black;
 }
 .biometricExceptionPane{
-	-fx-border-width: 1 1 1 1;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: white;
 }
 #anchor-pane-registration .text-field {		
 	-fx-background-color: white;
 	-fx-border-color: black;
-	-fx-background-insets: 0,0 0 1 0;
-  	-fx-border-width: 0 0 1 0;	
-}	
-#anchor-pane-acknowledgement {
-	-fx-border-style: solid inside;
-	-fx-border-width: 1;
-	-fx-border-insets: 5;
-	-fx-border-radius: 5;
-	-fx-border-color: #A9A9A9;
-}
-
-#ackScreen > .viewport {
-	-fx-background-color: white;
-}
-
-#ackScreen-anchor-pane{
-	-fx-border-style: solid inside;
-	-fx-border-width: 1;
-	-fx-border-insets: 5;
-	-fx-border-radius: 5;
-	-fx-border-color: #A9A9A9;
+	-fx-background-insets: 0.0,0.0 0.0 1.0 0.0;
+  	-fx-border-width: 0.0 0.0 1.0 0.0;	
 }
 
 #anchor-pane-registration{
 	-fx-background-color: white;
 }
 
-#anchor-pane-registration .text-field:focused{
-	-fx-border-color: red;
-	-fx-background-insets: 0,0 0 2 0;
-  	
+#anchor-pane-acknowledgement {
+	 -fx-background-color: #F0F0F0;
 }
 
-#anchor-pane-registration .button {
-	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,1), 10, 0, 0, 0);
+#ackScreen-anchor-pane {
+	-fx-background-color: white;
 }
 
-#anchor-pane-acknowledgement .button{
-    -fx-border-color: transparent;
+.ackTextField{
+	-fx-pref-height: 10px;	
+	-fx-pref-width: 315px;
+	-fx-border-color: black;
+	-fx-background-insets: 0,0 0 0 0;
+  	-fx-border-width: 0 0 1 0;	
+  	-fx-background-color: white;	
+}
+
+.previewButton {
+	-fx-border-color: transparent;
     -fx-border-width: 0;
     -fx-background-radius: 0;
     -fx-background-color: transparent;
     -fx-text-fill: black;
-    -fx-font-weight: bold
+    -fx-font-family: Roboto;
 }
 
-#anchor-pane-acknowledgement .button:pressed {
-    -fx-background-color: black;
-    -fx-text-fill: white;
+.sendNotificationPane {
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: black;
+}
+
+.heading {
+	-fx-font-size: 16.0px;
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+}
+
+.ackBackButton{
+	-fx-border-width: 1 1 1 1;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;
+	-fx-background-color:#FFFFFF;
+	-fx-border-color: #FF4081;
+	-fx-font-family: Roboto;	
+}
+
+.approveButton {
+	-fx-border-width: 1 1 1 1;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;
+	-fx-background-color: #FF4081;
+	-fx-text-fill: white;
+	-fx-font-family: Roboto;
+}
+
+.rejectButton{
+	-fx-border-width: 1 1 1 1;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;
+	-fx-background-color:#FFFFFF;
+	-fx-border-color: #FF4081;
+	-fx-font-family: Roboto;	
+}
+
+#anchor-pane-registration{
+	-fx-background-color: white;
+}
+
+.ackPageButton {
+	-fx-border-width: 1 1 1 1;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;
+	-fx-background-color: #FF4081;
+	-fx-text-fill: white;
+	-fx-font-family: Roboto;
+}
+
+#anchor-pane-registration .text-field:focused{
+	-fx-border-color: red;
+	-fx-background-insets: 0.0,0.0 0.0 2.0 0.0;
+  	
+}
+
+#anchor-pane-registration .button {
+	-fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,1.0), 10.0, 0.0, 0.0, 0.0);
 }
 
 #homeReg{
-	-fx-font-size:15px;
+	-fx-font-size:15.0px;
 }
 
 #hbox {
@@ -180,16 +221,371 @@
     -fx-background-color: #d9d9d9;
 }
 
-#commonImage{
-	-fx-background-color:#b3b3b3;
+/*Header page design starts here*/
+#headerParent{
+	-fx-pref-height: 37.0px;
+	-fx-pref-width: 1280.0px;
 }
 
-#headerImage{
-	-fx-background-color:transparent;
+#headerPage{
+	-fx-text-fill: white;  
+	-fx-background-color:#0B6A82;
+	-fx-pref-height: 37.0px;
+	-fx-pref-width: 1000.0px;
 }
 
+#headerDetails {
+    -fx-background-color: #175768;
+	-fx-pref-height: 37.0px;
+	-fx-pref-width: 820.0px;
+}
+
+#headerDetails .label{
+	-fx-text-fill: white;
+	-fx-font-family: Roboto;
+	-fx-font-size: 14.0px;
+}
+
+#menu{
+	-fx-pref-height: 24.0px;
+	-fx-pref-width: 228.0px;	
+}
+.context-menu {
+  -fx-background-color: #FFFFFF;
+  -fx-border-color: #C9C9C9;
+  -fx-padding: 0em 0em 0em 0em;
+  -fx-page-information-alignment: 10;
+}
+.menu-item .label{
+    -fx-text-fill: #000000;
+    -fx-font-size: 14.0px;
+}
+
+.separator .line { 
+	-fx-background-color: #C9C9C9;
+	-fx-border-width: 0.1px;
+}
+#registrationOfficeLocation{
+	-fx-pref-height: 21.0px;
+	-fx-pref-width: 155.0px;
+}
+
+#registrationOfficerName{
+	-fx-pref-height: 21.0px;
+	-fx-pref-width: 120.0px;
+}
+
+#registrationOfficerIdPane{
+	-fx-background-radius: 21.0,21.0,21.0,21.0;	
+	-fx-background-color: #F57E20;
+	-fx-border-radius: 21.0,21.0,21.0,21.0;
+	-fx-border-color: #61AB01;
+	-fx-pref-height: 25.0px;
+	-fx-pref-width: 155.0px;
+}
+
+#registrationOfficeId{
+	-fx-pref-height: 21.0px;
+	-fx-pref-width: 81.0px;
+}
+
+.internetMode{
+	-fx-pref-height: 21.0px;
+	-fx-pref-width: 115.0px;
+}
+
+#internetModePane{
+	-fx-background-radius: 21.0,21.0,21.0,21.0;
+	-fx-background-color: #1EBD22;
+	-fx-border-radius: 21.0,21.0,21.0,21.0;
+	-fx-border-color: #61AB01;
+	-fx-pref-height: 25.0px;
+	-fx-pref-width: 187.0px;
+}
+.headerParentBorder{
+	-fx-border-color: #F4F4F4;
+	-fx-border-width: 1.0 1.0 0.0 1.0;
+	
+}
+#logout{
+	-fx-background-color: #FF4081;
+}
+/* Header Page design Ends Here */
+
+/* Home page design starts here */
+
+.newRegBtnStyle{
+	-fx-background-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FF4081;
+	-fx-text-fill: white;
+	-fx-font-family: Roboto;
+	-fx-pref-height: 80.0px;
+	-fx-pref-width: 400.0px;
+}
+.optionHeaderStyle{
+	-fx-text-fill: #666666;
+	-fx-font-family: Roboto;
+	-fx-font-size: 16.0px;
+	-fx-font-weight: lighter;
+	-fx-pref-height: 27.0px;
+	-fx-pref-width: 173.0px;
+}
+.uinUpdateBtnStyle{
+	-fx-background-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FFFFFF;
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+	-fx-pref-height: 80.0px;
+	-fx-pref-width: 400.0px;	
+}
+.reggistrationPaneStyle{
+	-fx-border-width: 0.0 1.0 0.0 0.0;
+	-fx-border-color: #C9C9C9;
+	-fx-Opacity: 1.0; 
+	-fx-pref-height: 517.0px;
+	-fx-pref-width: 453.0px;	
+}
+.operationalPaneStyle{
+	-fx-pref-height: 261.0px;
+	-fx-pref-width: 465.0px;
+}
+.operationalPaneDetails{
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 70.0px;
+	-fx-pref-width: 450.0px;
+}
+.operationalPaneDetailsSync{
+	 -fx-border-radius: 4.0 4.0 0.0 0.0;
+  	 -fx-background-radius: 4.0 4.0 0.0 0.0;
+}
+.operationalPaneDetailsBioUpdate{
+	 -fx-border-radius: 0.0 0.0 4.0 4.0;
+  	 -fx-background-radius: 0.0 0.0 4.0 4.0;
+}
+.operationalDetails{
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+	-fx-font-size: 10.0px;
+	-fx-pref-height: 27.0px;
+	-fx-pref-width: 337.0px;
+}
+.operationalTitle{
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+	-fx-font-size: 16.0px;
+	-fx-pref-height: 27.0px;
+	-fx-pref-width: 337.0px;
+} 
+.newsUpdatePaneStyle{
+	-fx-pref-height: 523.0px;
+	-fx-pref-width: 314.0px;
+}
+.newsUpdateDescPaneStyle{
+	-fx-pref-height: 103.0px;
+	-fx-pref-width: 281.0px;
+}
+.newsUpdates{
+	-fx-background-color:#FFFFFF;
+	-fx-border-color: #C9C9C9;
+	-fx-border-radius: 4.0 4.0 4.0 4.0;
+  	-fx-background-radius: 4.0 4.0 4.0 4.0;
+  	-fx-pref-height: 478.0px;
+	-fx-pref-width: 300.0px;
+}
+.newsUpdatesTitle{
+	-fx-font-size: 11.0px;	
+	-fx-text-fill: #666666;
+	-fx-font-family: Roboto;
+	-fx-font-weight: bold;
+}
+.newsUpdateTime{
+	-fx-font-size: 10.0px;	
+	-fx-text-fill: #666666;
+	-fx-font-family: Roboto;
+	-fx-font-weight: lighter;
+}
+.newsUpdateDescription{
+	-fx-font-size: 12.0px;	
+	-fx-text-fill: #666666;
+	-fx-font-family: Roboto;
+}
+.homeParentPane{
+	-fx-border-color: #F4F4F4;
+	-fx-border-width: 0.0 1.0 1.0 1.0;
+	-fx-pref-height: 667.0px;
+	-fx-pref-width: 1280.0px;	
+}
+#newsViewAll{
+	-fx-font-size: 10.0px;	
+	-fx-text-fill: #666666;
+	-fx-font-family: Roboto;
+	-fx-font-weight: bold;
+	-fx-pref-height: 27.0px;
+	-fx-pref-width: 64.0px;
+}
+/* Home Page Design Ends */
+
+/*Onoard User page Design Starts here*/
+.onboardUserPaneStyle{
+	-fx-background-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FFFFFF;	
+	-fx-pref-height: 80.0px;
+	-fx-pref-width: 200.0px;
+}
+.useronBoardLink{
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+	-fx-pref-height: 27.0px;
+	-fx-pref-width: 100.0px;	
+}
+.onboardUserParenrPane{
+	-fx-background-color:#F4F4F4;
+	-fx-pref-height: 667.0px;
+	-fx-pref-width: 1280.0px;
+}
+.useronBoardLinkDesc{
+	-fx-font-family: Roboto;
+	-fx-font-size: 18.0px;
+	-fx-text-fill: #666666;	
+}
+/*Onoard User page Design Ends here*/
+
+/*user onboard FP design starts */
+.userOnboardHeader{
+	-fx-background-color:#FFFFFF;
+	-fx-effect: dropshadow( three-pass-box , #000000 , 1.0, 0.0 , 0.0 , 0.0 );
+}
+.userOnboardBackPane{
+	-fx-background-color: #F7F8F9;
+}
+.userOnboardFooter{
+	-fx-background-color: #FFFFFF;	
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+}
+.onboardProgressPane{
+	-fx-border-width: 1.0 0.0 0.0 0.0;
+	-fx-border-color: #C9C9C9;
+}
+.onboardParenPane{
+	-fx-border-width: 0.0 1.0 1.0 1.0;
+	-fx-border-color: #F7F8F9;
+}
+#onboardHomeLink{
+	-fx-text-fill: #C9C9C9;
+	-fx-font-family: Roboto;
+	-fx-font-weight: lighter;
+	-fx-font-size: 13.0px;	
+}
+#onboardPageDesc{
+	-fx-text-fill: #666666;
+	-fx-font-family: Roboto;
+	-fx-font-size: 14.0px;	
+}
+#onboardPageTitle{
+	-fx-text-fill: #FD518C;
+	-fx-font-family: Roboto;
+	-fx-font-size: 18.0px;	
+}
+.onboardFingerPrintPanes{	
+	-fx-background-color : #efefef;
+}
+.onboardProgressbar{
+	-fx-background-color : #C9C9C9;
+}
+.onboardScanBtn{
+	-fx-background-color : #FFFFFF;
+	-fx-text-fill: #FF4081;
+	-fx-border-color: #FF4081;
+	-fx-font-size: 12.0px;
+}
+
+/*user onboard FP design ends */
+/*common useronboard class*/
+.onboardPageBioTitle{
+	-fx-text-fill: #FD518C;
+	-fx-font-family: Roboto;
+	-fx-font-size: 16.0px;
+}
+.onboardImgPane{
+	-fx-background-color:#ffffff;
+}
+/*  */
+/*user onboard Iris design starts */
+.onboardIrisPanes{
+	-fx-background-color : #efefef;
+}
+.onboardBioDetails{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+}
+.onboardBioDetailsHeader{
+	-fx-font-family: Roboto;
+	-fx-text-fill: #666666;
+	-fx-font-weight: lighter;
+	-fx-font-size: 14.0px;
+}
+/*user onboard Iris design ends */
+/*user onboard exception design starts */
+.onboardOperatorDetailsHeader{
+	-fx-font-family: Roboto;
+	-fx-font-size: 10.0px;
+	-fx-text-fill: #000000;
+}
+.onboardOperatorDetails{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #000000;
+}
+.onboardOperatorDetailsPane{
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+	-fx-border-color: #C9C9C9;
+}
+.onboardInfoDetails{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #666666;
+	-fx-font-weight: lighter;
+}
+.onboardInfoDetailsName{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #333333;
+}
+.onboardExceptionDetails{
+	-fx-font-family: Roboto;
+	-fx-font-size: 10.0px;
+	-fx-text-fill: #666666;
+	-fx-font-weight: lighter;
+}
+.exceptionCombobox{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 0 0 1 0;
+	fx-text-fill: #000000;
+	-fx-border-color: #C9C9C9;
+	-fx-font-size: 12px;
+}
+.exceptionFingerPane{
+	-fx-border-width: 0.0 1.0 0.0 0.0;
+	-fx-border-color: #C9C9C9;
+}
+.onboardExceptionLayout{
+	-fx-pref-height: 574.0px;
+	-fx-pref-width: 938.0px;
+}
+.regExceptionLayout{
+	-fx-background-color:#ffffff;
+}
+/*user onboard exception design ends */
 #mainBox{
-	-fx-border-width: 0;
+	-fx-border-width: 0.0;
 	-fx-border-color: black;
 }
 
@@ -212,15 +608,15 @@
 .inputFields {
 	-fx-background-color: white;
 	-fx-border-color: black;
-	-fx-background-insets: 0,0 0 1 0;
+	-fx-background-insets: 0.0,0.0 0.0 1.0 0.0;
 }
 
 .inputFieldNoBorder {
-  	-fx-border-width: 0 0 0 0;
+  	-fx-border-width: 0.0 0.0 0.0 0.0;
 }
 
 .inputFieldBottomBorder {
-  	-fx-border-width: 0 0 1 0;
+  	-fx-border-width: 0.0 0.0 1.0 0.0;
 }
 .imageAnchorPaneStyle{
 	-fx-background-color:#ffffff;
@@ -228,171 +624,164 @@
 	-fx-border-color: black;
 }
 .rootPaneStyle{
-	-fx-border-width: 1 1 1 1;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: black;
 }
 .labelAnchorPanebgColor{
 	-fx-background-color:#808080;
 }
 .anchorPanebgColor{
-	-fx-background-color:#ffffff;
+	-fx-background-color: #F0F0F0;
 	-fx-alignment: center ;
 }
 .comboboxStyle{
 	-fx-background-color:#ffffff;
-	-fx-border-width: 0 0 1 0;
+	-fx-border-width: 0.0 0.0 1.0 0.0;
 	-fx-border-color: black;
-	-fx-font-size: 14px;
+	-fx-font-size: 14.0px;
 }
 .exitButtonStyle{
 	-fx-border-color: transparent;
-    -fx-padding: 4 0 4 0;
+    -fx-padding: 4.0 0.0 4.0 0.0;
     -fx-text-fill: black;
-    -fx-font-size: 14px;
+    -fx-font-size: 14.0px;
+}
+.tableData .table-column {
+	-fx-font-size: 12.0px;
+	-fx-alignment: CENTER;
+}
+
+.tableData {
+	-fx-font-family: Roboto;
 }
 #table,#pendingActionTable{
 	-fx-text-fill: black;
-    -fx-font-size: 14px;
+    -fx-font-size: 14.0px;
 }
 #approvalAccordion .title > .arrow-button .arrow{
-    -fx-translate-x: 870;
+    -fx-translate-x: 870.0;
 }
 .titled-pane > .title 
 {
   -fx-background-color: white;
-  -fx-border-width: 1 1 1 1;
+  -fx-border-width: 1.0 1.0 1.0 1.0;
   -fx-border-color: #dcdcdc;
   -fx-font-weight: bold;
 }
 .titledPaneStyle{
 	-fx-background-color:#ffffff; 
-    -fx-background-radius: 0;
-    -fx-background-insets: 0;
-    -fx-padding: 0 0 0.5em 0;
+    -fx-background-radius: 0.0;
+    -fx-background-insets: 0.0;
+    -fx-padding: 0.0 0.0 0.5em 0.0;
 }
 
 #table .scroll-bar:vertical > .increment-button,
 #table .scroll-bar:vertical > .decrement-button {
     -fx-background-color: null;
-    -fx-background-radius: 0;
-    -fx-background-insets: 0;
-    -fx-padding: 0;
+    -fx-background-radius: 0.0;
+    -fx-background-insets: 0.0;
+    -fx-padding: 0.0;
 }
 #table .scroll-bar:horizontal > .increment-button,
 #table .scroll-bar:horizontal > .decrement-button {
     -fx-background-color: null;
-    -fx-background-radius: 0;
-    -fx-background-insets: 0;
-    -fx-padding: 0;
+    -fx-background-radius: 0.0;
+    -fx-background-insets: 0.0;
+    -fx-padding: 0.0;
 }
 #pendingActionTable .scroll-bar:vertical > .increment-button,
 #pendingActionTable .scroll-bar:vertical > .decrement-button {
     -fx-background-color: null;
-    -fx-background-radius: 0;
-    -fx-background-insets: 0;
-    -fx-padding: 0;
+    -fx-background-radius: 0.0;
+    -fx-background-insets: 0.0;
+    -fx-padding: 0.0;
 }
 #pendingActionTable .scroll-bar:horizontal > .increment-button,
 #pendingActionTable .scroll-bar:horizontal > .decrement-button {
     -fx-background-color: null;
-    -fx-background-radius: 0;
-    -fx-background-insets: 0;
-    -fx-padding: 0;
+    -fx-background-radius: 0.0;
+    -fx-background-insets: 0.0;
+    -fx-padding: 0.0;
 } 
-.toggle-button{
-	-fx-background-color:#ffffff;
-	-fx-background-radius: 6,5;
-    -fx-background-insets: 0,1; 
-    -fx-text-fill: black;
-    -fx-font-size: 10px;   
-     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
-}
-.toggle-button:selected{
-    -fx-background-color: #a9a9a9;
-     -fx-background-radius: 6,5;
-    -fx-background-insets: 0,1;
-    -fx-text-fill: black;
-    -fx-font-size: 10px;
-     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
-}
+
 #applicantImageHBox, #exceptionImageHBox {
 	-fx-border-color: black;
-	-fx-border-width: 2;
+	-fx-border-width: 2.0;
 }
 /* Registration - Biometric - Iris Capture */
-#leftHandPalmPane,#rightHandPalmPane,#thumbPane,.irisImagePane {
+#leftHandPalmPane,#rightHandPalmPane,#thumbPane,#rightIrisPane,#leftIrisPane {
 	-fx-border-color: lightgrey;
 }
-#leftHandPalmPane:focused ,#rightHandPalmPane:focused ,#thumbPane:focused ,.irisImagePane:focused{
+#leftHandPalmPane:focused ,#rightHandPalmPane:focused ,#thumbPane:focused ,#rightIrisPane:focused,#leftIrisPane:focused{
 	-fx-border-color: black;
 }
 
 .scanScrollPane {
 	-fx-background-color: white;
-	-fx-border-width:0 0 0 0;
+	-fx-border-width:0.0 0.0 0.0 0.0;
 }
 
 .scanVBox {
 	-fx-background-color: white;
-	-fx-border-width:0 0 0 0;
+	-fx-border-width:0.0 0.0 0.0 0.0;
 }
 
 .headerPane {
 	-fx-background-color:#808080;
-	-fx-pref-height: 54px;
-	-fx-pref-width: 483px;
+	-fx-pref-height: 54.0px;
+	-fx-pref-width: 483.0px;
 }
 
 .paneRoot {
-	-fx-border-width: 1 1 1 1;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: black;
-	-fx-pref-height: 359px;
-	-fx-pref-width: 477px;
+	-fx-pref-height: 359.0px;
+	-fx-pref-width: 477.0px;
 }
 
 .subPane {
 	-fx-background-color:#ffffff;
-	-fx-pref-height: 307px;
-	-fx-pref-width: 483px;
+	-fx-pref-height: 307.0px;
+	-fx-pref-width: 483.0px;
 }
 
 #submit, #rejectionSubmit,#submitBtn, #fetchBtn, #copyPrevious{
 	-fx-background-color:#ffffff; 
-    -fx-background-radius: 6,5;
-    -fx-background-insets: 0,1;
+    -fx-background-radius: 6.0,5.0;
+    -fx-background-insets: 0.0,1.0;
     -fx-text-fill: black;
-    -fx-font-size: 10px;
-    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    -fx-font-size: 10.0px;
+    -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
 } 
 
 .RegbuttonStyle {
 	-fx-background-color:#ffffff; 
-    -fx-background-radius: 6,5;
-    -fx-background-insets: 0,1;
+    -fx-background-radius: 6.0,5.0;
+    -fx-background-insets: 0.0,1.0;
     -fx-text-fill: black;
-    -fx-font-size: 10px;
-    -fx-pref-height:20px;
-    -fx-pref-width:60px;
-    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    -fx-font-size: 10.0px;
+    -fx-pref-height:20.0px;
+    -fx-pref-width:60.0px;
+    -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
 }
 
 .imagePane {
 	-fx-background-color:#ffffff;
 	-fx-border-width: 1.0;
 	-fx-border-color: black;
-	-fx-pref-height: 238px;
-	-fx-pref-width: 349px;
+	-fx-pref-height: 238.0px;
+	-fx-pref-width: 349.0px;
 }
 
 .exit {
 	-fx-border-color: transparent;
-    -fx-padding: 4 0 4 0;
+    -fx-padding: 4.0 0.0 4.0 0.0;
     -fx-text-fill: black;
 }
 
 #duplicateCheckLbl{
 	-fx-text-fill: red;
-	-fx-font-size: 12px;
+	-fx-font-size: 12.0px;
 }
 
 #bioPreviewGridId{
@@ -400,65 +789,64 @@
 }
 
 .scanPopupHeader {
-	-fx-font-size: 18px;
+	-fx-font-size: 18.0px;
 	-fx-font-weight: bold;
 	-fx-font-family: System;
 }
 
 .loginBorderPaneStyle{
-	-fx-pref-height: 530px;
-	-fx-pref-width: 808px;
+	-fx-pref-height: 530.0px;
+	-fx-pref-width: 808.0px;
 }
 
 .loginLeftPaneStyle{
-	-fx-pref-height: 326px;
-	-fx-pref-width: 285px;
+	-fx-pref-height: 326.0px;
+	-fx-pref-width: 285.0px;
 }
 
 .loginCenterPaneStyle{
-	-fx-pref-height: 500px;
-	-fx-pref-width: 500px;
+	-fx-pref-height: 500.0px;
+	-fx-pref-width: 500.0px;
 }
 
 .loginAnchorPaneStyle{
-	-fx-pref-height: 172px;
-	-fx-pref-width: 228px;
+	-fx-pref-height: 172.0px;
+	-fx-pref-width: 228.0px;
 }
 
 .loginTextStyle{
-	-fx-pref-height: 39px;
-	-fx-pref-width: 221px;
+	-fx-pref-height: 39.0px;
+	-fx-pref-width: 221.0px;
 }
 
 .loginSubmitStyle{
-	-fx-pref-height: 30px;
-	-fx-pref-width: 81px;
+	-fx-pref-height: 30.0px;
+	-fx-pref-width: 81.0px;
 	-fx-background-color:#ffffff; 
-    -fx-background-radius: 6,5;
-    -fx-background-insets: 0,1;
+    -fx-background-radius: 6.0,5.0;
+    -fx-background-insets: 0.0,1.0;
     -fx-text-fill: black;
-    -fx-font-size: 10px;
-    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    -fx-font-size: 10.0px;
+    -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
 }
 
 .loginOtpValidStyle{
-	-fx-pref-height: 18px;
-	-fx-pref-width: 136px;
+	-fx-pref-height: 18.0px;
+	-fx-pref-width: 136.0px;
 }
 
 .headerStyle{
-	-fx-pref-height: 10px;
-	-fx-pref-width: 10px;
+	-fx-pref-height: 10.0px;
+	-fx-pref-width: 10.0px;
 }
 
 .optionsStyle{
-	-fx-pref-height: 244px;
-	-fx-pref-width: 944px;
+	-fx-pref-height: 244.0px;
+	-fx-pref-width: 944.0px;
 }
 
 .optionsButtonStyle{
-	-fx-pref-height: 127px;
-	-fx-pref-width: 231px;
+	
 }
 
 .reRegAnchorPane{
@@ -483,36 +871,33 @@
 .uinUpdateTextFiledStyle{
 	-fx-background-color: white;
 	-fx-border-color: black;
-	-fx-background-insets: 0,0 0 1 0;
-  	-fx-border-width: 0 0 1 0;	
+	-fx-background-insets: 0.0,0.0 0.0 1.0 0.0;
+  	-fx-border-width: 0.0 0.0 1.0 0.0;	
 }
-.operatorAuthenticationStyle{
-	-fx-pref-height: 39px; 
-	-fx-pref-width: 269px;
-}
+
 .operatorAuthenticationAnchorPaneStyle{
-	-fx-pref-height: 550px; 
-	-fx-pref-width: 850px;
+	-fx-pref-height: 550.0px; 
+	-fx-pref-width: 850.0px;
 }
 .operatorAuthenticationAnchorPane{
-	-fx-pref-height: 600px; 
-	-fx-pref-width: 850px;
+	-fx-pref-height: 600.0px; 
+	-fx-pref-width: 850.0px;
 }
 #authenticateRootSubPane, .authenticationAnchorPaneStyle{
-	-fx-pref-height: 300px; 
-	-fx-pref-width: 480px;
+	-fx-pref-height: 300.0px; 
+	-fx-pref-width: 480.0px;
 }
 .authenticationStyle{
-	-fx-pref-height: 39px; 
-	-fx-pref-width: 269px;
+	-fx-pref-height: 39.0px; 
+	-fx-pref-width: 269.0px;
 }
 #authenticateRootPane{
-	-fx-pref-height: 54px; 
-	-fx-pref-width: 483px;
+	-fx-pref-height: 54.0px; 
+	-fx-pref-width: 483.0px;
 }
 #fingerPrintScanRoot{
-	-fx-pref-height: 359px; 
-	-fx-pref-width: 477px;
+	-fx-pref-height: 359.0px; 
+	-fx-pref-width: 477.0px;
 }
 .borderStyle{
 	-fx-border-color:black; 
@@ -524,4 +909,278 @@
 }
 .addBorderStyle{
 	-fx-border-color: black;
+}
+/*
+Working on new Css
+*/
+
+
+#loginScreen{
+	-fx-background-image : url('/images/LoginBackGround.png');
+	-fx-background-size: cover, auto;
+	-fx-background-position: left top, center;
+}
+
+#header-section{
+		-fx-background-color : rgb(11, 106, 130,0.3);
+		-fx-pref-height: 30px;
+		-fx-pref-width: 1920px;
+	
+}
+#footer-section{
+		-fx-background-color : rgb(0, 0, 0, 0);
+		-fx-alignment: center;
+		
+}
+
+.loginTopPaneStyle{
+	-fx-pref-height: 10px;
+	-fx-pref-width: 10px;
+}
+
+.loginAnchorPaneStyle{
+	-fx-pref-height: 250px;
+	-fx-pref-width: 400px;
+	-fx-background-color: #FFFFFF;
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: #808080;
+
+}
+
+.loginAnchorPaneExtendedStyle{
+	-fx-pref-height: 300px;
+	-fx-pref-width: 400px;
+	-fx-background-color: #FFFFFF;
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: #808080;
+
+}
+
+
+.loginTextStyle{
+	-fx-pref-height: 35px;
+	-fx-pref-width: 312px;
+	-fx-border-width: 0 0 2 0;
+    -fx-border-color: #FF4081;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.3) , 5, 0.0 , 0 , 1 );
+
+}
+
+.higlightedLoginLable{
+	-fx-font-size: 30.0px;
+}
+.loginSubmitStyle{
+	-fx-pref-height: 35px;
+	-fx-pref-width: 312px;
+	-fx-background-color:#FF4081
+}
+
+.loginOtpValidStyle{
+	-fx-pref-height: 35px;
+	-fx-pref-width: 312px;
+	-fx-alignment: center;
+	-fx-border-width: 2 2 2 2;
+	-fx-border-color: #FF4081
+}
+
+#RegistrationHeader{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 39px;
+	-fx-pref-width: 1290px;
+	
+}
+
+.parentPane{
+	-fx-background-color:#F4F4F4;
+	-fx-pref-height: 794px;
+	-fx-pref-width: 700px;
+}
+
+.paneAtDisplayDemoGraphic{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 800px;	
+	-fx-pref-width: 1100px;
+	
+}
+
+.paneAtDisplayDocument{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 580px;	
+	-fx-pref-width: 1050px;	
+}
+
+.registrationFooter{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 30px;	
+	-fx-pref-width: 1290px;
+}
+
+.demoGraphicPaneContentButton{
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: #FF4081;
+	-fx-background-color : #FFFFFF;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;	
+	-fx-pref-width: 150px;
+	 
+}
+
+.documentContentButton{
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: #FF4081;
+	-fx-background-color : #FFFFFF;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;	
+	-fx-pref-width: 120px;
+	 
+}
+
+#demographicDetail .label{
+	-fx-font-size: 12px;
+}
+
+.contiuneButton{
+	-fx-background-color:#FF4081;
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: #FF4081;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;	
+	-fx-pref-width: 120px;
+	
+}
+
+.backButton{
+	-fx-background-color:#FFFFFF;
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: #FF4081;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;	
+	-fx-pref-width: 120px;
+	
+}
+
+.demoGraphicTextField{
+	-fx-pref-height: 10px;	
+	-fx-pref-width: 315px;
+	-fx-border-color: black;
+	-fx-background-insets: 0,0 0 0 0;
+  	-fx-border-width: 0 0 1 0;	
+  	-fx-background-color: white;
+  		
+	
+}
+
+.demoGraphicTextFieldTypeSecond{
+	-fx-pref-height: 10px;	
+	-fx-pref-width: 150px;
+	-fx-border-color: black;
+	-fx-background-insets: 0,0 0 0 0;
+  	-fx-border-width: 0 0 1 0;	
+  	-fx-background-color: white;
+  		
+}
+
+.demographicCombobox{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 0 0 1 0;
+	-fx-border-color: black;
+	-fx-font-size: 14px;
+	-fx-pref-height: 10px;	
+	-fx-pref-width: 150px;
+}
+
+.documentCombobox{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 0 0 1 0;
+	-fx-border-color: black;
+	-fx-font-size: 14px;
+	-fx-pref-height: 10px;	
+	-fx-pref-width: 170px;
+}
+
+.toggleButton{
+	-fx-pref-height: 15px;	
+	-fx-pref-width: 9px;
+}
+
+.fingerPrintPanes{
+	-fx-pref-height: 160px;	
+	-fx-pref-width: 180px;
+}
+
+.IrisPanes{
+	-fx-pref-height: 160px;	
+	-fx-pref-width: 180px;
+}
+
+.PhotoCaptureWindow{
+	-fx-pref-height: 100px;	
+	-fx-pref-width: 200px;
+	-fx-background-color : #C9C9C9;	
+}
+
+.qualityBox{
+	-fx-pref-height: 200px;	
+	-fx-pref-width: 250px;	
+}
+
+.qualityBox .label{
+	-fx-text-fill: #000000;
+}
+
+.paneHeader{
+	-fx-pref-height: 28px;	
+	-fx-pref-width: 200px;
+	-fx-text-fill: #E43391;
+}
+
+.authenticationBiometricSubPane{
+	-fx-border-width: 0 0 1 0;
+	-fx-border-color: #C9C9C9;
+	-fx-pref-height: 444px;	
+	-fx-pref-width: 750px;
+}
+
+.authenticationBiometricPane{
+	-fx-pref-height: 547px;	
+	-fx-pref-width: 686px;
+}
+
+.operatorAuthenticationStyleTextTypeOne{
+	-fx-pref-height: 39px; 
+	-fx-pref-width: 269px;
+	-fx-text-fill: #666666;
+}
+
+.attempts{
+	-fx-pref-height: 39px; 
+	-fx-pref-width: 100px;
+	-fx-text-fill: #000000;
+}
+
+.scanButton{
+	-fx-background-color:#FFFFFF;
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: #FF4081;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;	
+	-fx-pref-width: 120px;
+	-fx-text-fill: #FF4081;
+	
+}
+
+.registrationHeaderBorder{
+	-fx-border-width: 0 0 1 0;
+	-fx-border-color: #FF4081;
+	-fx-pref-height: 28px;	
+	-fx-pref-width: 40px;
+	
+}
+
+.documentOnlypane{
+	-fx-pref-height: 450px;	
+	-fx-pref-width: 900px;
+    -fx-border-width: 0 0 1 0;
+	-fx-border-color: #C9C9C9;
+	
 }

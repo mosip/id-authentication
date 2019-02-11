@@ -55,6 +55,7 @@ public class RegistrationUIConstants {
 			.getString("USER_ACCOUNT_LOCK_MESSAGE_MINUTES");
 
 	// NOTIFICATIONS
+	public static final String NOTIFICATION_SUCCESS = bundle.getString("NOTIFICATION_SUCCESS");
 	public static final String NOTIFICATION_FAIL = bundle.getString("NOTIFICATION_FAIL");
 	public static final String NOTIFICATION_SMS_FAIL = bundle.getString("NOTIFICATION_SMS_FAIL");
 	public static final String NOTIFICATION_EMAIL_FAIL = bundle.getString("NOTIFICATION_EMAIL_FAIL");
@@ -145,6 +146,9 @@ public class RegistrationUIConstants {
 	public static final String UNABLE_LOAD_LOGOUT_PAGE = bundle.getString("UNABLE_LOAD_LOGOUT_PAGE");
 	public static final String UNABLE_LOAD_APPROVAL_PAGE = bundle.getString("UNABLE_LOAD_APPROVAL_PAGE");
 	public static final String UNABLE_LOAD_REG_PAGE = bundle.getString("UNABLE_LOAD_REG_PAGE");
+	public static final String UNABLE_LOAD_NOTIFICATION_PAGE = bundle.getString("UNABLE_LOAD_NOTIFICATION_PAGE");
+	public static final String UNABLE_LOAD_PREVIEW_PAGE = bundle.getString("UNABLE_LOAD_PREVIEW_PAGE");
+	public static final String UNABLE_LOAD_ACKNOWLEDGEMENT_PAGE = bundle.getString("UNABLE_LOAD_ACKNOWLEDGEMENT_PAGE");
 
 	// Individual Registartion - Iris Capture
 	public static final String UNABLE_LOAD_IRIS_SCAN_POPUP = bundle.getString("UNABLE_LOAD_IRIS_SCAN_POPUP");

@@ -28,6 +28,7 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
 import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
@@ -35,6 +36,8 @@ import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -86,8 +89,24 @@ public class TemplateGeneratorTest {
 		PowerMockito.mockStatic(ApplicationContext.class);
 		BufferedImage image = null;
 		when(ImageIO.read(
-				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_HANDS_IMAGE_PATH)))
+				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_EYE_IMAGE_PATH)))
 						.thenReturn(image);
+		when(ImageIO.read(
+				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_LEFT_SLAP_IMAGE_PATH)))
+						.thenReturn(image);
+		when(ImageIO.read(
+				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_RIGHT_SLAP_IMAGE_PATH)))
+						.thenReturn(image);
+		when(ImageIO.read(
+				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_THUMBS_IMAGE_PATH)))
+						.thenReturn(image);
+		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
+		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
+		centerDetailDTO.setRegistrationCenterId("mosip");
+		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
+
+		when(qrCodeGenerator.generateQrCode(Mockito.anyString(), Mockito.any())).thenReturn(new byte[1024]);
+
 		
 		Map<String,Object> applicationMap =new HashMap<>();
 		applicationMap.put(RegistrationConstants.FINGERPRINT_DISABLE_FLAG, RegistrationConstants.ENABLE);
@@ -97,8 +116,8 @@ public class TemplateGeneratorTest {
 		when(ApplicationContext.localLanguageProperty()).thenReturn(dummyResourceBundle);
 		when(ApplicationContext.applicationLanguageBundle()).thenReturn(dummyResourceBundle);
 		when(ApplicationContext.map()).thenReturn(applicationMap);
-		when(qrCodeGenerator.generateQrCode(Mockito.anyString(), Mockito.any())).thenReturn(new byte[1024]);
-		ResponseDTO response = templateGenerator.generateTemplate("sample text", registrationDTO, template);	
+
+		ResponseDTO response = templateGenerator.generateTemplate("sample text", registrationDTO, template, RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
 		assertNotNull(response.getSuccessResponseDTO());
 	}
 

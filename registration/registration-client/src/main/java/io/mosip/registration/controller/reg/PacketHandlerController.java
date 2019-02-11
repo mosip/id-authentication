@@ -1,19 +1,28 @@
 package io.mosip.registration.controller.reg;
 
+import static io.mosip.kernel.core.util.DateUtils.formatDate;
 import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
+import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
@@ -22,7 +31,13 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.dto.demographic.AddressDTO;
+import io.mosip.registration.dto.demographic.Identity;
+import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.service.packet.PacketHandlerService;
+import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import javafx.collections.ObservableList;
@@ -68,6 +83,21 @@ public class PacketHandlerController extends BaseController {
 	@Autowired
 	private TemplateGenerator templateGenerator;
 
+	@Autowired
+	PreRegistrationDataSyncService preRegistrationDataSyncService;
+
+	@Autowired
+	private UserOnboardController userOnboardController;
+	
+	@Autowired
+	private PacketHandlerService packetHandlerService;
+
+	@Value("${SAVE_ACKNOWLEDGEMENT_INSIDE_PACKET}")
+	private String saveAck;
+
+	@Autowired
+	private Environment environment;
+
 	/**
 	 * Validating screen authorization and Creating Packet and displaying
 	 * acknowledgement form
@@ -108,22 +138,29 @@ public class PacketHandlerController extends BaseController {
 	}
 
 	public void showReciept(String capturePhotoUsingDevice) {
-
 		try {
 			RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
 					.get(RegistrationConstants.REGISTRATION_DATA);
 			ackReceiptController.setRegistrationData(registrationDTO);
 			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
 			ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText, registrationDTO,
-					templateManagerBuilder);
+					templateManagerBuilder, RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
 			if (templateResponse != null && templateResponse.getSuccessResponseDTO() != null) {
 				Writer stringWriter = (Writer) templateResponse.getSuccessResponseDTO().getOtherAttributes()
 						.get(RegistrationConstants.TEMPLATE_NAME);
 				ackReceiptController.setStringWriter(stringWriter);
-				Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH));
-				getScene(createRoot);
+				ResponseDTO packetCreationResponse = savePacket(stringWriter, registrationDTO);
+				if (packetCreationResponse.getSuccessResponseDTO() != null) {
+					Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH),
+							applicationContext.getApplicationLanguageBundle());
+					getScene(createRoot).setRoot(createRoot);
+				} else {
+					clearRegistrationData();
+					createPacket();
+				}
 			} else if (templateResponse != null && templateResponse.getErrorResponseDTOs() != null) {
-				generateAlert(RegistrationConstants.ERROR, "Unable to display Acknowledgement Screen");
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_ACKNOWLEDGEMENT_PAGE);
+				clearRegistrationData();
 				createPacket();
 			}
 
@@ -134,7 +171,6 @@ public class PacketHandlerController extends BaseController {
 			LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage());
 		}
-
 	}
 
 	/**
@@ -142,7 +178,7 @@ public class PacketHandlerController extends BaseController {
 	 */
 	public void approvePacket() {
 		try {
-			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.APPROVAL_PAGE));
+			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.PENDING_APPROVAL_PAGE));
 
 			LOGGER.info("REGISTRATION - APPROVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Validating Approve Packet screen for specific role");
@@ -226,5 +262,132 @@ public class PacketHandlerController extends BaseController {
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- UIN Update", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 		}
+	}
+
+	/**
+	 * Sync data through batch jobs.
+	 *
+	 * @param event
+	 *            the event
+	 */
+	public void syncData() {
+
+		AnchorPane syncData;
+		try {
+			syncData = BaseController.load(getClass().getResource(RegistrationConstants.SYNC_DATA));
+			ObservableList<Node> nodes = homeController.getMainBox().getChildren();
+			IntStream.range(1, nodes.size()).forEach(index -> {
+				nodes.get(index).setVisible(false);
+				nodes.get(index).setManaged(false);
+			});
+			nodes.add(syncData);
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, ioException.getMessage());
+		}
+	}
+
+	/**
+	 * This method is to trigger the Pre registration sync service
+	 * 
+	 * @param event
+	 */
+	@FXML
+	public void downloadPreRegData() {
+		ResponseDTO responseDTO = preRegistrationDataSyncService
+				.getPreRegistrationIds(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+		if (responseDTO.getSuccessResponseDTO() != null) {
+			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
+			generateAlert(successResponseDTO.getCode(), successResponseDTO.getMessage());
+
+		} else if (responseDTO.getErrorResponseDTOs() != null) {
+
+			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
+			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
+
+		}
+	}
+
+	/**
+	 * change On-Board user Perspective
+	 * 
+	 * @param event
+	 *            is an action event
+	 * @throws IOException
+	 */
+	public void onBoardUser() {
+		SessionContext.map().put(RegistrationConstants.ONBOARD_USER, true);
+		SessionContext.map().put(RegistrationConstants.ONBOARD_USER_UPDATE, true);
+		userOnboardController.initUserOnboard();
+	}
+
+	/**
+	 * To save the acknowledgement receipt along with the registration data and
+	 * create packet
+	 */
+	private ResponseDTO savePacket(Writer stringWriter, RegistrationDTO registrationDTO) {
+		LOGGER.debug("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
+				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+				"packet creation has been started");
+		byte[] ackInBytes = null;
+		try {
+			ackInBytes = stringWriter.toString().getBytes("UTF-8");
+		} catch (java.io.IOException ioException) {
+			LOGGER.error("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, ioException.getMessage());
+		}
+
+		if (saveAck.equalsIgnoreCase("Y")) {
+			registrationDTO.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceipt(ackInBytes);
+			registrationDTO.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceiptName(
+					"RegistrationAcknowledgement." + RegistrationConstants.ACKNOWLEDGEMENT_FORMAT);
+		}
+
+		// packet creation
+		ResponseDTO response = packetHandlerService.handle(registrationDTO);
+
+		if (response.getSuccessResponseDTO() != null
+				&& response.getSuccessResponseDTO().getMessage().equals("Success")) {
+			try {
+				// Generate the file path for storing the Encrypted Packet and Acknowledgement
+				// Receipt
+				String seperator = "/";
+				String filePath = environment.getProperty(RegistrationConstants.PACKET_STORE_LOCATION) + seperator
+						+ formatDate(new Date(),
+								environment.getProperty(RegistrationConstants.PACKET_STORE_DATE_FORMAT))
+										.concat(seperator).concat(registrationDTO.getRegistrationId());
+
+				// Storing the Registration Acknowledge Receipt Image
+				FileUtils.copyToFile(new ByteArrayInputStream(ackInBytes),
+						new File(filePath.concat("_Ack.").concat(RegistrationConstants.ACKNOWLEDGEMENT_FORMAT)));
+
+				LOGGER.debug("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+						APPLICATION_ID, "Registration's Acknowledgement Receipt saved");
+			} catch (io.mosip.kernel.core.exception.IOException ioException) {
+				LOGGER.error("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+						APPLICATION_ID, ioException.getMessage());
+			}
+
+			if (registrationDTO.getSelectionListDTO() == null) {
+
+				Identity identity = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity();
+				AddressDTO addressDTO = Builder.build(AddressDTO.class)
+						.with(address -> address.setAddressLine1(identity.getAddressLine1().get(0).getValue()))
+						.with(address -> address.setAddressLine2(identity.getAddressLine2().get(0).getValue()))
+						.with(address -> address.setLine3(identity.getAddressLine3().get(0).getValue()))
+						.with(address -> address.setLocationDTO(Builder.build(LocationDTO.class)
+								.with(location -> location.setCity(identity.getCity().get(0).getValue()))
+								.with(location -> location.setProvince(identity.getProvince().get(0).getValue()))
+								.with(location -> location.setRegion(identity.getRegion().get(0).getValue()))
+								.with(location -> location.setPostalCode(identity.getPostalCode())).get()))
+						.get();
+				Map<String, Object> addr = SessionContext.map();
+				addr.put("PrevAddress", addressDTO);
+			}
+		} else {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PACKET_CREATION_FAILURE);
+		}
+		return response;
 	}
 }

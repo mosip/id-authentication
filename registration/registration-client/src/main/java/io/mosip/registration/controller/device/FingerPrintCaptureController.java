@@ -45,6 +45,8 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -634,27 +636,29 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 					if (validateFingerPrints()) {
 						SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
-
-						long irisCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
-								.getBiometricExceptionDTO().stream()
-								.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS))
-								.count();
-
+						
+						long irisCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getBiometricExceptionDTO().stream()
+								.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)).count();
+						
 						if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris() || irisCount > 0) {
-							irisCaptureController.clearIrisBasedOnExceptions();
-							registrationController.toggleFingerprintCaptureVisibility(false);
-							registrationController.toggleIrisCaptureVisibility(true);
+							irisCaptureController.clearIrisBasedOnExceptions();							
+							SessionContext.map().put("fingerPrintCapture",false);
+							SessionContext.map().put("irisCapture",true);
 						} else {
-							registrationController.toggleFingerprintCaptureVisibility(false);
-							registrationController.togglePhotoCaptureVisibility(true);
+							SessionContext.map().put("fingerPrintCapture",false);
+							SessionContext.map().put("faceCapture",true);
 						}
+						registrationController.showCurrentPage();
 					}
 				} else {
 					if (validateFingerPrints()) {
 						SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
 						irisCaptureController.clearIrisBasedOnExceptions();
-						registrationController.toggleFingerprintCaptureVisibility(false);
-						registrationController.toggleIrisCaptureVisibility(true);
+						
+						SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
+						SessionContext.map().put("fingerPrintCapture",false);
+						SessionContext.map().put("irisCapture",true);
+						registrationController.showCurrentPage();
 					}
 				}
 			}
@@ -688,13 +692,14 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			} else {
 				if (validateFingerPrints()) {
 					SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
-					if ((boolean) SessionContext.userContext().getUserMap()
-							.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
-						registrationController.toggleFingerprintCaptureVisibility(false);
-						biometricExceptionController.setExceptionImage();
-						registrationController.toggleBiometricExceptionVisibility(true);
-					} else {
-						registrationController.getDemoGraphicTitlePane().setExpanded(true);
+					if ((boolean) SessionContext.userMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
+						SessionContext.map().put("fingerPrintCapture",false);
+						SessionContext.map().put("biometricException",true);
+						registrationController.showCurrentPage();
+					}else {
+						SessionContext.map().put("fingerPrintCapture",false);
+						SessionContext.map().put("documentScan",true);
+						registrationController.showCurrentPage();
 					}
 				}
 			}
@@ -899,11 +904,19 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		return (String) applicationContext.getApplicationMap().get(key);
 	}
 
+	/**
+	 * Method to load fxml page
+	 * 
+	 * @param fxml file name
+	 */
 	private void loadPage(String page) {
-		Parent createRoot;
+		VBox mainBox = new VBox();
 		try {
-			createRoot = BaseController.load(getClass().getResource(page));
-			getScene(createRoot).setRoot(createRoot);
+			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
+			mainBox.getChildren().add(headerRoot);
+			Parent createRoot = BaseController.load(getClass().getResource(page));			
+			mainBox.getChildren().add(createRoot);
+			getScene(mainBox).setRoot(mainBox);
 		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage());

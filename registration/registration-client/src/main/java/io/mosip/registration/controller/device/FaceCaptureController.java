@@ -38,6 +38,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -258,10 +259,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 				}
 			}
 
-		} else
-
-		{
-			registrationController.goToPreviousPane();
+		} else {
+			SessionContext.map().put("faceCapture", false);
+			SessionContext.map().put("irisCapture", true);
+			registrationController.showCurrentPage();
 		}
 	}
 
@@ -396,10 +397,13 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 * @param fxml file name
 	 */
 	private void loadPage(String page) {
-		Parent createRoot;
+		VBox mainBox = new VBox();
 		try {
-			createRoot = BaseController.load(getClass().getResource(page));
-			getScene(createRoot).setRoot(createRoot);
+			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
+			mainBox.getChildren().add(headerRoot);
+			Parent createRoot = BaseController.load(getClass().getResource(page));			
+			mainBox.getChildren().add(createRoot);
+			getScene(mainBox).setRoot(mainBox);
 		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage());

@@ -69,6 +69,12 @@ public class HeaderController extends BaseController {
 	private ImageView availableIcon;
 
 	@FXML
+	private Label online;
+	
+	@FXML
+	private Label offline;
+
+	@FXML
 	private Menu homeSelectionMenu;
 
 	@Autowired
@@ -82,7 +88,7 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	PacketHandlerController packetHandlerController;
-	
+
 	@Autowired
 	private UserOnboardController userOnboardController;
 
@@ -100,20 +106,22 @@ public class HeaderController extends BaseController {
 		registrationOfficeLocation
 				.setText(SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterName());
 		menu.setBackground(Background.EMPTY);
-		menu.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+
+		menu.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)
-				&& !(boolean) SessionContext.map()
-						.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
-			homeSelectionMenu.setVisible(false);
+				&& !(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
+			homeSelectionMenu.setDisable(true);
 		} else {
-			homeSelectionMenu.setVisible(true);
+			homeSelectionMenu.setDisable(false);
 		}
 
 		getTimer().schedule(new TimerTask() {
 
 			@Override
 			public void run() {
-				availableIcon.setVisible(RegistrationAppHealthCheckUtil.isNetworkAvailable());
+				Boolean flag=RegistrationAppHealthCheckUtil.isNetworkAvailable();
+				online.setVisible(flag);
+				offline.setVisible(!flag);
 			}
 		}, 0, 5000);
 	}
@@ -156,6 +164,7 @@ public class HeaderController extends BaseController {
 
 			VBox homePage = BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 			getScene(homePage);
+			clearRegistrationData();
 
 		} catch (IOException | RuntimeException exception) {
 
@@ -176,17 +185,6 @@ public class HeaderController extends BaseController {
 		SessionContext.map().put(RegistrationConstants.ONBOARD_USER, true);
 		SessionContext.map().put(RegistrationConstants.ONBOARD_USER_UPDATE, true);
 		userOnboardController.initUserOnboard();
-
-		/*
-		 * if (!validateScreenAuthorization(onBoardRoot.getId())) {
-		 * generateAlert(RegistrationConstants.ALERT_ERROR,
-		 * RegistrationUIConstants.AUTHORIZATION_ERROR); } else { VBox pane = (VBox)
-		 * menu.getParent().getParent().getParent(); Object parent =
-		 * pane.getChildren().get(0); pane.getChildren().clear();
-		 * pane.getChildren().add((Node) parent); pane.getChildren().add(onBoardRoot);
-		 * 
-		 * }
-		 */
 	}
 
 	/**

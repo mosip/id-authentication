@@ -123,12 +123,7 @@ public class BaseController {
 		getScene(createRoot);
 	}
 
-	protected Scene getScene(Parent borderPane) {
-
-		if (!borderPane.getId().equals("loginScreen")) {
-			Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-			borderPane.setLayoutX((fXComponents.getStage().getWidth() - 900) / 2);
-		}
+	protected Scene getScene(Parent borderPane) {		
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		scene = fXComponents.getScene();
 		if (scene == null) {
@@ -321,6 +316,7 @@ public class BaseController {
 	}
 
 	protected void clearRegistrationData() {
+
 		SessionContext.map().remove(RegistrationConstants.REGISTRATION_ISEDIT);
 		SessionContext.map().remove(RegistrationConstants.REGISTRATION_PANE1_DATA);
 		SessionContext.map().remove(RegistrationConstants.REGISTRATION_PANE2_DATA);
@@ -333,8 +329,17 @@ public class BaseController {
 		SessionContext.map().remove("toggleAgeOrDob");
 		SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
 		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
+		
+		SessionContext.map().remove("demographicDetail");
+		SessionContext.map().remove("documentScan");
+		SessionContext.map().remove("fingerPrintCapture");
+		SessionContext.map().remove("biometricException");
+		SessionContext.map().remove("faceCapture");
+		SessionContext.map().remove("irisCapture");
+		SessionContext.map().remove("operatorAuthentication");
+		SessionContext.map().remove("registrationPreview");
 
-		SessionContext.userContext().getUserMap()
+		SessionContext.userMap()
 				.remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 		SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
 	}
