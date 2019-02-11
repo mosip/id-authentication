@@ -71,20 +71,6 @@
                                     </AnchorPane>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane layoutX="14.0" layoutY="82.0" prefHeight="59.0" prefWidth="116.0">
-                                 <children>
-                                    <Label fx:id="genderLabel" layoutX="2.0" text="%gender" />
-                                    <ComboBox fx:id="gender" layoutY="19.0" promptText="%select" styleClass="demographicCombobox">
-                                       <items>
-                                          <FXCollections fx:factory="observableArrayList">
-                                             <String fx:value="Male" />
-                                             <String fx:value="Female" />
-                                             <String fx:value="Unidentified" />
-                                          </FXCollections>
-                                       </items>
-                                    </ComboBox>
-                                 </children>
-                              </AnchorPane>
                               <AnchorPane fx:id="applicationLanguageAddressAnchorPane" layoutY="136.0" prefHeight="336.0" prefWidth="365.0">
                                  <children>
                                     <AnchorPane layoutX="14.0" prefHeight="61.0" prefWidth="329.0">
@@ -162,6 +148,20 @@
                                     <TextField fx:id="parentName" layoutX="5.0" layoutY="21.0" styleClass="demoGraphicTextField" />
                                     <TextField fx:id="uinId" layoutX="5.0" layoutY="85.0" styleClass="demoGraphicTextField" />
                                     <Label layoutX="5.0" layoutY="60.0" text="%uinId" />
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutX="14.0" layoutY="82.0" prefHeight="59.0" prefWidth="116.0">
+                                 <children>
+                                    <Label fx:id="genderLabel" layoutX="2.0" text="%gender" />
+                                    <ComboBox fx:id="gender" layoutY="19.0" promptText="%select" styleClass="demographicCombobox">
+                                       <items>
+                                          <FXCollections fx:factory="observableArrayList">
+                                             <String fx:value="Male" />
+                                             <String fx:value="Female" />
+                                             <String fx:value="Unidentified" />
+                                          </FXCollections>
+                                       </items>
+                                    </ComboBox>
                                  </children>
                               </AnchorPane>
                            </children>

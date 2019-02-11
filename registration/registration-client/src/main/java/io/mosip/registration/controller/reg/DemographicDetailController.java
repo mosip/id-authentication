@@ -350,9 +350,7 @@ public class DemographicDetailController extends BaseController {
 		} catch (IOException | RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
-			exception.printStackTrace();
-			System.out.println("Hello");
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_DEMOGRAPHIC_PAGE);
 		}
 	}
 
@@ -880,7 +878,7 @@ public class DemographicDetailController extends BaseController {
 			cniOrPinNumberLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
 			cniOrPinNumberLocalLanguageLabel
 					.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
-
+			switchedOn.set(true);
 			if (!isChild)
 				isChild = getRegistrationDtoContent().getSelectionListDTO().isChild()
 						|| getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails();
