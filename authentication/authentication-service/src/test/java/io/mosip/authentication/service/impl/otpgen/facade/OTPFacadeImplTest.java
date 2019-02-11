@@ -30,7 +30,6 @@ import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
-import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
@@ -39,7 +38,6 @@ import io.mosip.authentication.core.util.OTPUtil;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.factory.RestRequestFactory;
-import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
@@ -63,9 +61,6 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 public class OTPFacadeImplTest {
 
 	OtpRequestDTO otpRequestDto;
-
-	@InjectMocks
-	DateHelper dateHelper;
 	@Mock
 	OtpResponseDTO otpResponseDTO;
 	@Mock
@@ -109,8 +104,6 @@ public class OTPFacadeImplTest {
 		otpResponseDTO = getOtpResponseDTO();
 
 		ReflectionTestUtils.setField(otpFacadeImpl, "env", env);
-		ReflectionTestUtils.setField(dateHelper, "env", env);
-		ReflectionTestUtils.setField(otpFacadeImpl, "dateHelper", dateHelper);
 		ReflectionTestUtils.setField(otpFacadeImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(notificationService, "env", env);
 		ReflectionTestUtils.setField(notificationService, "idTemplateManager", idTemplateManager);
@@ -162,10 +155,6 @@ public class OTPFacadeImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn(mobileNumber);
 
 		Optional<String> uinOpt = Optional.of("426789089018");
-
-		ReflectionTestUtils.setField(dateHelper, "env", env);
-		ReflectionTestUtils.setField(otpFacadeImpl, "dateHelper", dateHelper);
-
 		otpFacadeImpl.generateOtp(otpRequestDto);
 	}
 
@@ -207,9 +196,6 @@ public class OTPFacadeImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn(mobileNumber);
 
 		Optional<String> uinOpt = Optional.of("426789089018");
-
-		ReflectionTestUtils.setField(dateHelper, "env", env);
-		ReflectionTestUtils.setField(otpFacadeImpl, "dateHelper", dateHelper);
 
 		otpFacadeImpl.generateOtp(otpRequestDto);
 	}
@@ -264,17 +250,6 @@ public class OTPFacadeImplTest {
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
 	}
 
-	@Test
-	public void testIsOtpFlooded_False() throws IDDataValidationException {
-		String uniqueID = otpRequestDto.getIdvId();
-		Date requestTime = dateHelper.convertStringToDate(otpRequestDto.getReqTime());
-		Date addMinutesInOtpRequestDTime = new Date();
-
-		ReflectionTestUtils.setField(otpFacadeImpl, "autntxnrepository", autntxnrepository);
-		ReflectionTestUtils.invokeMethod(autntxnrepository, "countRequestDTime", requestTime,
-				addMinutesInOtpRequestDTime, uniqueID);
-		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "isOtpFlooded", otpRequestDto);
-	}
 
 	@Test
 	public void testAddMinute() {
@@ -312,11 +287,6 @@ public class OTPFacadeImplTest {
 		ReflectionTestUtils.invokeMethod(idAuthService, "getIdRepoByVID", uniqueID, false);
 	}
 
-	@Test
-	public void testGetDateAndTime() {
-		String reqquestTime = otpRequestDto.getReqTime();
-		DateHelper.getDateAndTime(reqquestTime, env.getProperty("datetime.pattern"));
-	}
 
 	// =========================================================
 	// ************ Helping Method *****************************

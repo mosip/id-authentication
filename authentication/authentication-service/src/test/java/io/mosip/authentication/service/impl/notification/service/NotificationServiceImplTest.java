@@ -57,7 +57,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
-import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.id.service.impl.IdAuthServiceImpl;
@@ -276,12 +275,6 @@ public class NotificationServiceImplTest {
 				IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any()))
 				.thenThrow(idAuthenticationBusinessException.getCause());
-		String[] dateAndTime = DateHelper.getDateAndTime(otpRequestDto.getReqTime(),
-				"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-		//String[] dateAndTime = DateHelper.getDateAndTime(otpRequestDto.getReqTime(),
-		//		environment.getProperty("datetime.pattern"));
-		date = dateAndTime[0];
-		time = dateAndTime[1];
 
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));

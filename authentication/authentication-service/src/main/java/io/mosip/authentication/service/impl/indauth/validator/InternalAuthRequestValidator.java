@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
@@ -12,8 +11,8 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.InternalAuthType;
-import io.mosip.authentication.core.exception.IDDataValidationException;
-import io.mosip.authentication.service.helper.DateHelper;
+import io.mosip.kernel.core.exception.ParseException;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * Validator for internal authentication request
@@ -34,10 +33,6 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 	
 	/** The Constant AUTH_TYPE. */
 	private static final String AUTH_TYPE = "authType";
-
-	/** The datehelper. */
-	@Autowired
-	private DateHelper datehelper;
 
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.service.impl.indauth.validator.BaseAuthRequestValidator#supports(java.lang.Class)
@@ -171,13 +166,13 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 	public void validateDate(AuthRequestDTO authRequestDTO, Errors errors) {
 		if (null != authRequestDTO.getReqTime() && !authRequestDTO.getReqTime().isEmpty()) {
 			try {
-				Date reqDate = datehelper.convertStringToDate(authRequestDTO.getReqTime());
+				Date reqDate = DateUtils.parseToDate(authRequestDTO.getReqTime(),env.getProperty("datetime.pattern"));
 				if (reqDate.after(new Date())) {
 					errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 							new Object[] {REQ_TIME},IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 				}
 
-			} catch (IDDataValidationException e) {
+			} catch (ParseException | java.text.ParseException e) {
 				errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 						new Object[] {REQ_TIME},IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 			}

@@ -1084,7 +1084,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		if (dobList != null) {
 			for (IdentityInfoDTO identityInfoDTO : dobList) {
 				try {
-					DateUtils.parseToDate(identityInfoDTO.getValue(),env.getProperty("date.pattern"));
+					DateUtils.parseToDate(identityInfoDTO.getValue(),env.getProperty("dob.req.date.pattern"));
 				} catch (io.mosip.kernel.core.exception.ParseException e) {
 					// FIXME change to DOB - Invalid -DOB - Please enter DOB in specified date
 					// format or Age in the acceptable range

@@ -39,7 +39,6 @@ import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
-import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
@@ -78,13 +77,8 @@ public class InternalAuthRequestValidatorTest {
 	@Autowired
 	Environment env;
 
-	@InjectMocks
-	DateHelper dateHelper;
-
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(internalAuthRequestValidator, "datehelper", dateHelper);
-		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "env", env);
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "idInfoHelper", idinfoHelper);
 		ReflectionTestUtils.setField(idinfoHelper, "environment", env);
@@ -135,6 +129,7 @@ public class InternalAuthRequestValidatorTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("internal.allowed.auth.type", "fulladdress");
+		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "env", mockenv);
 		/*
 		 * Environment env = mock(Environment.class);
@@ -195,7 +190,7 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("234567890123");
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
@@ -317,9 +312,7 @@ public class InternalAuthRequestValidatorTest {
 	public void testValidInternalAuthRequestValidatorEmptyID() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("234567890123");
-		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime("2018-11-23T17:00:57.086+0530");
+		authRequestDTO.setReqTime(Instant.now().toString());
 		authRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setTspID("1234567890");
@@ -384,7 +377,7 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("234567890123");
 
-		authRequestDTO.setReqTime("2018-11-24T17:00:57.086+0530");
+		authRequestDTO.setReqTime(Instant.now().toString());
 		authRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setTspID("1234567890");

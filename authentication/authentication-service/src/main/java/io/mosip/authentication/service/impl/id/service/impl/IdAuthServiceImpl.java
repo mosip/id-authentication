@@ -3,9 +3,11 @@ package io.mosip.authentication.service.impl.id.service.impl;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -24,10 +26,10 @@ import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
-import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
+import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.UUIDUtils;
@@ -69,9 +71,6 @@ public class IdAuthServiceImpl implements IdAuthService {
 
 	@Autowired
 	private IdRepoService idRepoService;
-
-	@Autowired
-	private DateHelper dateHelper;
 
 	/** The autntxnrepository. */
 	@Autowired
@@ -189,9 +188,9 @@ public class IdAuthServiceImpl implements IdAuthService {
 		// FIXME utilize Instant
 		Date convertStringToDate = null;
 		try {
-			convertStringToDate = dateHelper.convertStringToDate(reqTime);
-		} catch (IDDataValidationException e) {
-			logger.error(DEFAULT_SESSION_ID, null, null, e.getErrorText());
+			convertStringToDate = DateUtils.parseToDate(reqTime,env.getProperty("datetime.pattern"));
+		} catch (ParseException | java.text.ParseException e) {
+			logger.error(DEFAULT_SESSION_ID, null, null, e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
 					e);
 		}

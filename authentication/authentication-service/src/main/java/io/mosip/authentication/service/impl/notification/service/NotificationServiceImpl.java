@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
@@ -27,12 +29,10 @@ import io.mosip.authentication.core.dto.indauth.SenderType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.core.util.MaskUtil;
-import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
@@ -99,10 +99,6 @@ public class NotificationServiceImpl implements NotificationService {
 	/** The demo auth service. */
 	@Autowired
 	private IdInfoHelper infoHelper;
-	
-	/** The id auth service. */
-	@Autowired
-	private IdAuthService idAuthService;
 
 	@Autowired
 	IdRepoService idInfoService;
@@ -180,9 +176,9 @@ public class NotificationServiceImpl implements NotificationService {
 	public void sendOtpNotification(OtpRequestDTO otpRequestDto, String otp, String uin, String email,
 			String mobileNumber, Map<String, List<IdentityInfoDTO>> idInfo) {
 
-		String[] dateAndTime = DateHelper.getDateAndTime(otpRequestDto.getReqTime(), env.getProperty(DATETIME_PATTERN));
-		String date = dateAndTime[0];
-		String time = dateAndTime[1];
+		Entry<String, String> dateAndTime = getDateAndTime(otpRequestDto.getReqTime(), env.getProperty(DATETIME_PATTERN));
+		String date = dateAndTime.getKey();
+		String time = dateAndTime.getValue();
 
 		String maskedUin = null;
 		Map<String, Object> values = new HashMap<>();
@@ -359,6 +355,32 @@ public class NotificationServiceImpl implements NotificationService {
 		String mailSubject = applyTemplate(values, subjectTemplate);
 		String mailContent = applyTemplate(values, contentTemplate);
 		notificationManager.sendEmailNotification(emailId, mailSubject, mailContent);
+	}
+	
+	/**
+	 * Gets the date and time.
+	 *
+	 * @param requestTime the request time
+	 * @param pattern the pattern
+	 * @return the date and time
+	 */
+	private static Entry<String, String> getDateAndTime(String requestTime, String pattern) {
+
+		String[] dateAndTime = new String[2];
+
+		DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(pattern);
+
+		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(requestTime, isoPattern);
+		ZoneId zone = zonedDateTime2.getZone();
+		ZonedDateTime dateTime3 = ZonedDateTime.now(zone);
+		ZonedDateTime dateTime = dateTime3.withZoneSameInstant(zone);
+		String date = dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+		dateAndTime[0] = date;
+		String time = dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+		dateAndTime[1] = time;
+
+		return new SimpleEntry<>(date, time);
+
 	}
 
 }

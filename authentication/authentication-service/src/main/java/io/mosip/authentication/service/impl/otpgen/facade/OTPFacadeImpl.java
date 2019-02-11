@@ -15,7 +15,6 @@ import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
-import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
@@ -25,11 +24,11 @@ import io.mosip.authentication.core.spi.otpgen.facade.OTPFacade;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
 import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.authentication.core.util.OTPUtil;
-import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
+import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -61,10 +60,6 @@ public class OTPFacadeImpl implements OTPFacade {
 	/** The env. */
 	@Autowired
 	private Environment env;
-
-	@Autowired
-	private DateHelper dateHelper;
-
 	@Autowired
 	NotificationManager notificationManager;
 
@@ -153,13 +148,19 @@ public class OTPFacadeImpl implements OTPFacade {
 	 *
 	 * @param otpRequestDto the otp request dto
 	 * @return true, if is otp flooded
-	 * @throws IDDataValidationException
 	 * @throws IdAuthenticationBusinessException
 	 */
-	private boolean isOtpFlooded(OtpRequestDTO otpRequestDto) throws IDDataValidationException {
+	private boolean isOtpFlooded(OtpRequestDTO otpRequestDto) throws IdAuthenticationBusinessException {
 		boolean isOtpFlooded = false;
 		String uniqueID = otpRequestDto.getIdvId();
-		Date requestTime = dateHelper.convertStringToDate(otpRequestDto.getReqTime());
+		Date requestTime;
+		try {
+			requestTime = DateUtils.parseToDate(otpRequestDto.getReqTime(),env.getProperty(DATETIME_PATTERN));
+		} catch (ParseException | java.text.ParseException e) {
+			mosipLogger.error(SESSION_ID, null, null, e.getMessage());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
+					e);
+		}
 		Date addMinutesInOtpRequestDTime = addMinutes(requestTime, -1);
 		if (autntxnrepository.countRequestDTime(requestTime, addMinutesInOtpRequestDTime, uniqueID) > 3) {
 			isOtpFlooded = true;

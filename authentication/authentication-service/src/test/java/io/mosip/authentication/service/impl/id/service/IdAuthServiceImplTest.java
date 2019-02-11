@@ -33,7 +33,6 @@ import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
-import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.id.service.impl.IdAuthServiceImpl;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
@@ -73,9 +72,6 @@ public class IdAuthServiceImplTest {
 	@Mock
 	AutnTxn autnTxn;
 
-	@InjectMocks
-	DateHelper dateHelper;
-
 	@Autowired
 	Environment env;
 
@@ -86,8 +82,6 @@ public class IdAuthServiceImplTest {
 		ReflectionTestUtils.setField(idAuthServiceImpl, "restFactory", restFactory);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "vidRepository", vidRepository);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "env", env);
-		ReflectionTestUtils.setField(idAuthServiceImpl, "dateHelper", dateHelper);
-		ReflectionTestUtils.setField(dateHelper, "env", env);
 
 		/*
 		 * ReflectionTestUtils.setField(idAuthServiceImplMock, "idRepoService",
