@@ -34,7 +34,7 @@
     "date_yyyy": "السنة",
     "text_or": "أو",
     "text_years": "سنوات",
-    "text_foreigner":"أجنبي",
+    "text_foreigner": "أجنبي",
     "text_gender": "جنس",
     "button_male": "الذكر",
     "button_female": "إناثا",
@@ -55,7 +55,7 @@
     "validation": {
       "name_required": "الإسم الكامل ضروري",
       "age_validation": "يجب أن يكون العمر أقل من 150",
-      "gender_validation":"يرجى تحديد الجنس",
+      "gender_validation": "يرجى تحديد الجنس",
       "DOB_validation": "أدخل DOB صالحًا أو العمر  ",
       "date_required": "مطلوب رقمين التاريخ",
       "month_required": "أدخل رقمين رقميين للشهر",
@@ -84,15 +84,15 @@
     "action_view": "رأي"
   },
   "acknowledgement": {
-    "title":"تم تأكيد الموعد",
-    "message":"تم إرسال تفاصيل هوية وتاريخ Pre-Registration إلى معرف البريد الإلكتروني المسجل ورقم الهاتف",
-    "label_name":"اسم",
-    "label_pre_id":"معرف التسجيل المسبق",
-    "label_reg_cntr":"مركز التسجيل",
-    "label_cntr_contact_number":"رقم مركز الاتصال",
-    "label_appointment_date_time":"موعد ووقت الموعد",
+    "title": "تم تأكيد الموعد",
+    "message": "تم إرسال تفاصيل هوية وتاريخ Pre-Registration إلى معرف البريد الإلكتروني المسجل ورقم الهاتف",
+    "label_name": "اسم",
+    "label_pre_id": "معرف التسجيل المسبق",
+    "label_reg_cntr": "مركز التسجيل",
+    "label_cntr_contact_number": "رقم مركز الاتصال",
+    "label_appointment_date_time": "موعد ووقت الموعد",
     "container_guideline": "المبادئ التوجيهية الهامة",
-    "action_send":"إرسال EMAIL / SMS",
+    "action_send": "إرسال EMAIL / SMS",
     "action_download": "تحميل PDF",
     "action_print": "طباعة"
   },
@@ -171,7 +171,7 @@
       "text_appoinment_date": "موعد موعد",
       "text_status": "الحالة",
       "action_modify_information": "تعديل المعلومات",
-      "action_modify_appointment": "عرض إقرار"
+      "action_view_acknowledgement": "عرض إقرار"
     }
   },
   "appointmentCentreSearch": {

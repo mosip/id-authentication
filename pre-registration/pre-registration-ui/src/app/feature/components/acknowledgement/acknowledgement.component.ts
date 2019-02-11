@@ -22,7 +22,8 @@ export class AcknowledgementComponent implements OnInit {
   //     addressLine2: 'Global Village',
   //     contactPhone: '1234567890'
   //   },
-  //   bookingData: '7 Jan 2019, 2:30pm'
+  //   bookingData: '7 Jan 2019, 2:30pm',
+  //   qrCodeBlob: Blob
   // }];
   secondaryLanguagelabels: any;
   secondaryLang = localStorage.getItem('secondaryLangCode');
@@ -42,8 +43,6 @@ export class AcknowledgementComponent implements OnInit {
               private dataStorageService: DataStorageService) {
     this.translate.use(localStorage.getItem('langCode'));
   }
-
-
   
   ngOnInit() {
     this.usersInfo = this.sharedService.getNameList();
@@ -54,7 +53,6 @@ export class AcknowledgementComponent implements OnInit {
       jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
     };
     this.usersInfo.forEach(user =>  this.generateQRCode(user));
-    this.generateBlob();
     this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
       this.secondaryLanguagelabels = response['acknowledgement'];
     });
@@ -65,27 +63,32 @@ export class AcknowledgementComponent implements OnInit {
     html2pdf(element, this.opt);
   }
 
- generateBlob() {
+ async generateBlob() {
     const element = document.getElementById('print-section');
-    html2pdf()
-      .from(element)
-      .outputPdf('dataurlstring', this.opt)
-      .then(response => {
-        // convert base64 to raw binary data held in a string
-        const byteString = atob(response.split(',')[1]);
+    return await html2pdf().set(this.opt).from(element).outputPdf('dataurlstring');
+  }
 
-        // separate out the mime component
-        const mimeString = response
-          .split(',')[0]
-          .split(':')[1]
-          .split(';')[0];
+ async createBlob() {
+    const dataUrl = await this.generateBlob();
+      // convert base64 to raw binary data held in a string
+      const byteString = atob(dataUrl.split(',')[1]);
 
-        // write the bytes of the string to an ArrayBuffer
-        const arrayBuffer = new ArrayBuffer(byteString.length);
+      // separate out the mime component
+      const mimeString = dataUrl
+        .split(',')[0]
+        .split(':')[1]
+        .split(';')[0];
 
-        const dataView = new DataView(arrayBuffer);
-        this.fileBlob = new Blob([dataView], { type: mimeString });
-      });
+      // write the bytes of the string to an ArrayBuffer
+      const arrayBuffer = new ArrayBuffer(byteString.length);
+
+      var _ia = new Uint8Array(arrayBuffer);
+      for (let i = 0; i < byteString.length; i++) {
+        _ia[i] = byteString.charCodeAt(i);
+      }
+
+      const dataView = new DataView(arrayBuffer);
+      return await new Blob([dataView], { type: mimeString });
   }
 
   sendAcknowledgement() {
@@ -104,7 +107,7 @@ export class AcknowledgementComponent implements OnInit {
       });
   }
 
-  generateQRCode(name: NameList) {
+  generateQRCode(name) {
     this.dataStorageService.generateQRCode(JSON.stringify(name)).subscribe(response => {
       console.log(response);
       const index = this.usersInfo.indexOf(name);
@@ -112,9 +115,9 @@ export class AcknowledgementComponent implements OnInit {
     });
   }
 
-  sendNotification(applicantNumber: string) {
+ async sendNotification(applicantNumber: string) {
     console.log(this.usersInfo);
-    
+    this.fileBlob = await this.createBlob();
     this.usersInfo.forEach(user => {
       console.log(user);
       const bookingData = user.bookingData.split(',');
@@ -128,7 +131,7 @@ export class AcknowledgementComponent implements OnInit {
         );
       this.notificationRequest.append('NotificationDTO', JSON.stringify(notificationDto));
       this.notificationRequest.append('langCode', localStorage.getItem('langCode'));
-      this.notificationRequest.append('file', this.fileBlob);
+      this.notificationRequest.append('file', this.fileBlob, `${user.preRegId}.pdf`);
       this.dataStorageService.sendNotification(this.notificationRequest).subscribe(response => {
         console.log(response);
         this.notificationRequest = new FormData();
