@@ -358,6 +358,8 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 				successResponseDTO.setMessage(RegistrationConstants.SUCCESS);
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
 			}
+			LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER_END - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
+					APPLICATION_ID, "Sync the packets to the server ending");
 
 		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException | URISyntaxException e) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - REG_PACKET_STATUS_SYNC", APPLICATION_NAME,
