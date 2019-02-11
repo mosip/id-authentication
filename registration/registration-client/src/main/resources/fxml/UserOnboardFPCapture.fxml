@@ -9,16 +9,16 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="fingerPrintCapturePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="1280.0" styleClass="onboardParenPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.FingerPrintCaptureController">
+<AnchorPane fx:id="fingerPrintCapturePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="onboardParenPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.FingerPrintCaptureController">
    <children>
-   <AnchorPane layoutX="1.0" prefHeight="32.0" prefWidth="1278.0" styleClass="userOnboardHeader">
+   <AnchorPane layoutX="1.0" styleClass="userOnboardHeader">
          <children>
             <Text fx:id="onboardHomeLink" layoutX="20.0" layoutY="20.0" onMouseClicked="#goToHomePage" text="Home /" />
             <Text fx:id="onboardPageDesc" layoutX="68.0" layoutY="20.0" text=" Onboard Operator" />
             <Label fx:id="onboardPageTitle" layoutX="559.0" layoutY="2.0" text="Onboard Operator" />
          </children>
       </AnchorPane>
-   <AnchorPane layoutX="1.0" layoutY="33.0" prefHeight="600.0" prefWidth="1278.0" styleClass="userOnboardBackPane">
+   <AnchorPane layoutX="1.0" layoutY="33.0" styleClass="userOnboardBackPane">
    <children>
             <ImageView fitHeight="192.0" fitWidth="130.0" layoutX="1130.0" layoutY="152.0" pickOnBounds="true" preserveRatio="true">
             	<image>
@@ -26,10 +26,10 @@
                 </image>
             </ImageView>
             <Label fx:id="duplicateCheckLbl" layoutY="501.0" />
-      <AnchorPane layoutX="180.0" prefHeight="590.0" prefWidth="938.0" styleClass="onboardImgPane">
+      <AnchorPane layoutX="180.0" styleClass="onboardImgPane">
          <children>
           <Label layoutX="100.0" layoutY="30.0" text="Fingerprint" styleClass="onboardPageBioTitle" />
-            <AnchorPane fx:id="leftHandPalmPane" layoutX="100.0" layoutY="70.0" prefHeight="160.0" prefWidth="180.0" styleClass="onboardFingerPrintPanes">
+            <AnchorPane fx:id="leftHandPalmPane" layoutX="100.0" layoutY="70.0" styleClass="onboardFingerPrintPanes">
                      <children>
                         <ImageView fx:id="leftHandPalmImageview" fitHeight="160.0" fitWidth="180.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -39,7 +39,7 @@
                      </children>
                   </AnchorPane>
            
-           <AnchorPane fx:id="rightHandPalmPane" layoutX="380.0" layoutY="70.0" prefHeight="160.0" prefWidth="180.0" styleClass="onboardFingerPrintPanes">
+           <AnchorPane fx:id="rightHandPalmPane" layoutX="380.0" layoutY="70.0" styleClass="onboardFingerPrintPanes">
                      <children>
                         <ImageView fx:id="rightHandPalmImageview" fitHeight="160.0" fitWidth="180.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -48,7 +48,7 @@
                         </ImageView>
                      </children>
                   </AnchorPane>
-             <AnchorPane fx:id="thumbPane" layoutX="660.0" layoutY="70.0" prefHeight="160.0" prefWidth="180.0" styleClass="onboardFingerPrintPanes">
+             <AnchorPane fx:id="thumbPane" layoutX="660.0" layoutY="70.0" styleClass="onboardFingerPrintPanes">
                      <children>
                         <ImageView fx:id="thumbImageview" fitHeight="160.0" fitWidth="180.0" layoutX="3.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -57,7 +57,7 @@
                         </ImageView>
                      </children>
                   </AnchorPane>
-            <AnchorPane layoutX="100.0" layoutY="250.0" prefHeight="159.0" prefWidth="220.0">
+            <AnchorPane layoutX="100.0" layoutY="250.0" styleClass="onboardFingerDetails">
             <children>
             <Label layoutX="52.0" text="Left Hand" styleClass="onboardBioDetailsHeader"/>
             <Label layoutX="100.0" layoutY="40.0" text="Quality %" styleClass="onboardBioDetails"/>
@@ -70,7 +70,7 @@
             <Label fx:id="leftSlapException" layoutX="120.0" layoutY="130.0" text="-" styleClass="onboardBioDetails"/>                        
             </children>
             </AnchorPane>
-                  <AnchorPane layoutX="380.0" layoutY="250.0" prefHeight="159.0" prefWidth="220.0">
+                  <AnchorPane layoutX="380.0" layoutY="250.0" styleClass="onboardFingerDetails">
                      <children>
                      	<Label layoutX="63.0" text="Right Hand" styleClass="onboardBioDetailsHeader"/>
                         <Label fx:id="rightSlapThresholdScoreLbl" layoutX="20.0" layoutY="70.0" styleClass="onboardBioDetails"/>
@@ -83,7 +83,7 @@
                         <Label layoutY="100.0" text="Attempts" styleClass="onboardBioDetails"/>
                      </children>
                   </AnchorPane>
-                  <AnchorPane layoutX="665.0" layoutY="250.0" prefHeight="159.0" prefWidth="220.0">
+                  <AnchorPane layoutX="665.0" layoutY="250.0" styleClass="onboardFingerDetails">
                      <children>
                      	<Label layoutX="61.0" text="Thumbs" styleClass="onboardBioDetailsHeader"/>
                         <Label fx:id="thumbsThresholdScoreLbl" layoutX="20.0" layoutY="70.0" styleClass="onboardBioDetails"/>
@@ -96,7 +96,7 @@
                         <Label fx:id="thumbSlapException" layoutX="120.0" layoutY="130.0" text="-" styleClass="onboardBioDetails"/>
                      </children>
                   </AnchorPane>
-                  <AnchorPane layoutX="100.0" layoutY="415.0" prefHeight="160.0" prefWidth="750.0" styleClass="onboardProgressPane">
+                  <AnchorPane layoutX="100.0" layoutY="415.0" styleClass="onboardProgressPane">
                      <children>
                         <Button fx:id="scanBtn" layoutX="620.0" layoutY="65.0" mnemonicParsing="false" onAction="#scan" styleClass="onboardScanBtn" text="Scan">
                         <graphic>
@@ -115,7 +115,7 @@
       </AnchorPane>            
       </children>
    </AnchorPane>
-   <AnchorPane layoutX="1.0" layoutY="605.0" prefHeight="50.0" prefWidth="1278.0" styleClass="userOnboardFooter">
+   <AnchorPane layoutX="1.0" layoutY="605.0" styleClass="userOnboardFooter">
                <children>
                 <Button fx:id="previousBtn" layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="Back">
              <graphic>

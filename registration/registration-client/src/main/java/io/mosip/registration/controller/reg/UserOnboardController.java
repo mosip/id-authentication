@@ -22,6 +22,7 @@ import io.mosip.registration.dto.biometric.BiometricDTO;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -42,17 +43,21 @@ public class UserOnboardController extends BaseController implements Initializab
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(UserOnboardController.class);
 	
+	@FXML
+	private Label operatorName;
+	
 	@Autowired
 	private FingerPrintCaptureController fingerPrintCaptureController;
 
 	@Autowired
 	private IrisCaptureController irisCaptureController;
 
-	private BiometricDTO biometricDTO;
-
+	private BiometricDTO biometricDTO;	
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
+		operatorName
+		.setText(SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterName());
 	}
 
 	@FXML

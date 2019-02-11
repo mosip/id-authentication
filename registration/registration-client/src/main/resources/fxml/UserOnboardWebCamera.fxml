@@ -10,26 +10,26 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.stage.Screen?>
 
-<AnchorPane fx:id="biometricsPane" layoutX="11.0" prefHeight="616.0" prefWidth="790.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.FaceCaptureController">
+<AnchorPane fx:id="biometricsPane" layoutX="11.0" styleClass="onboardParenPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.FaceCaptureController">
 <children>
-<AnchorPane layoutX="1.0" prefHeight="32.0" prefWidth="1278.0" styleClass="userOnboardHeader">
+<AnchorPane layoutX="1.0" styleClass="userOnboardHeader">
          <children>
             <Text fx:id="onboardHomeLink" layoutX="20.0" layoutY="20.0" onMouseClicked="#goToHomePage" text="Home /" />
             <Text fx:id="onboardPageDesc" layoutX="68.0" layoutY="20.0" text=" Onboard Operator" />
             <Label fx:id="onboardPageTitle" layoutX="559.0" layoutY="2.0" text="Onboard Operator" />
          </children>
       </AnchorPane>  
-      <AnchorPane layoutX="1.0" layoutY="33.0" prefHeight="600.0" prefWidth="1278.0" styleClass="userOnboardBackPane">
+      <AnchorPane layoutX="1.0" layoutY="33.0" styleClass="userOnboardBackPane">
    <children>
             <ImageView fitHeight="192.0" fitWidth="130.0" layoutX="1130.0" layoutY="152.0" pickOnBounds="true" preserveRatio="true">
             	<image>
                    <Image url="@../images/onboardFaceProgress.png" />
                 </image>
             </ImageView>
-<AnchorPane layoutX="180.0" prefHeight="590.0" prefWidth="938.0" styleClass="onboardImgPane">
+<AnchorPane layoutX="180.0" styleClass="onboardImgPane">
          <children>
        <Button fx:id="captureExceptionImage" disable="true" layoutX="471.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForExceptionPhoto" styleClass="RegbuttonStyle" text="Capture" visible="false" />
-       <AnchorPane layoutX="357.0" layoutY="254.0" prefHeight="160.0" prefWidth="228.0">
+       <AnchorPane layoutX="357.0" layoutY="254.0" styleClass="onboardFaceDetails">
        <children>
        <Label layoutX="106.0" layoutY="1.0" text="Photo" styleClass="onboardBioDetailsHeader"/>
        <Label layoutY="35.0" text="Threshold" styleClass="onboardBioDetails"/>
@@ -41,12 +41,9 @@
                         <Label layoutX="150.0" layoutY="125.0" text="-" styleClass="onboardBioDetails"/>
                         <Label layoutY="125.0" text="-" styleClass="onboardBioDetails"/>
        </children>
-       </AnchorPane>
-       <Label layoutX="506.0" layoutY="328.0" text="Exception Photo" visible="false" />        
-       <Label layoutX="488.0" layoutY="390.0" text="Threshold Percentage :" visible="false" />      
-       <Label layoutX="488.0" layoutY="363.0" text="Quality Percentage     :" visible="false" />       
-       <Label layoutX="656.0" layoutY="390.0" text="    85%" visible="false" />
-       <HBox fx:id="applicantImageHBox" layoutX="357.0" layoutY="60.0" prefHeight="180.0" prefWidth="201.0" styleClass="onboardIrisPanes">
+       </AnchorPane>       
+       
+       <HBox fx:id="applicantImageHBox" layoutX="357.0" layoutY="60.0" styleClass="onboardIrisPanes">
           <children>
              <ImageView fx:id="applicantImage" fitHeight="180.0" fitWidth="240.0" pickOnBounds="true" preserveRatio="true">
                 <image>
@@ -55,6 +52,11 @@
              </ImageView>
           </children>
        </HBox>
+       
+       <Label layoutX="506.0" layoutY="328.0" text="Exception Photo" visible="false" />        
+       <Label layoutX="488.0" layoutY="390.0" text="Threshold Percentage :" visible="false" />      
+       <Label layoutX="488.0" layoutY="363.0" text="Quality Percentage     :" visible="false" />       
+       <Label layoutX="656.0" layoutY="390.0" text="    85%" visible="false" />
        <HBox fx:id="exceptionImageHBox" layoutX="471.0" layoutY="106.0" prefHeight="182.0" prefWidth="265.0" styleClass="onboardIrisPanes" visible="false">
           <children>
              <ImageView fx:id="exceptionImage" fitHeight="210.0" fitWidth="265.0" pickOnBounds="true" preserveRatio="true">
@@ -65,7 +67,7 @@
           </children>
        </HBox>
        <Label layoutX="248.0" layoutY="30.0" styleClass="onboardPageBioTitle" text="Photo" />
-       <AnchorPane layoutX="100.0" layoutY="415.0" prefHeight="160.0" prefWidth="750.0" styleClass="onboardProgressPane">
+       <AnchorPane layoutX="100.0" layoutY="415.0" styleClass="onboardProgressPane">
                      <children>
                         <Button fx:id="captureImage" layoutX="620.0" layoutY="65.0" mnemonicParsing="false" onAction="#openCamForApplicantPhoto" styleClass="onboardScanBtn" text="Scan">
                         <graphic>
@@ -84,7 +86,7 @@
    </AnchorPane>
    </children>
       </AnchorPane> 
-      <AnchorPane layoutX="1.0" layoutY="605.0" prefHeight="50.0" prefWidth="1278.0" styleClass="userOnboardFooter">
+      <AnchorPane layoutX="1.0" layoutY="605.0" styleClass="userOnboardFooter">
                <children>
                 <Button fx:id="biometricPrevBtn" layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPane" styleClass="backButton" text="Back">
              <graphic>

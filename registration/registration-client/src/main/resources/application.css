@@ -462,21 +462,31 @@
 .userOnboardHeader{
 	-fx-background-color:#FFFFFF;
 	-fx-effect: dropshadow( three-pass-box , #000000 , 1.0, 0.0 , 0.0 , 0.0 );
+	-fx-pref-height: 32.0px;
+	-fx-pref-width: 1278.0px;
 }
 .userOnboardBackPane{
 	-fx-background-color: #F7F8F9;
+	-fx-pref-height: 600.0px;
+	-fx-pref-width: 1278.0px;
 }
 .userOnboardFooter{
 	-fx-background-color: #FFFFFF;	
 	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+	-fx-pref-height: 50.0px;
+	-fx-pref-width: 1278.0px;
 }
 .onboardProgressPane{
 	-fx-border-width: 1.0 0.0 0.0 0.0;
 	-fx-border-color: #C9C9C9;
+	-fx-pref-height: 160.0px;
+	-fx-pref-width: 750.0px;
 }
 .onboardParenPane{
 	-fx-border-width: 0.0 1.0 1.0 1.0;
 	-fx-border-color: #F7F8F9;
+	-fx-pref-height: 660.0px;
+	-fx-pref-width: 1280.0px;
 }
 #onboardHomeLink{
 	-fx-text-fill: #C9C9C9;
@@ -496,6 +506,8 @@
 }
 .onboardFingerPrintPanes{	
 	-fx-background-color : #efefef;
+	-fx-pref-height: 160.0px;
+	-fx-pref-width: 180.0px;
 }
 .onboardProgressbar{
 	-fx-background-color : #C9C9C9;
@@ -516,11 +528,19 @@
 }
 .onboardImgPane{
 	-fx-background-color:#ffffff;
+	-fx-pref-height: 590.0px;
+	-fx-pref-width: 938.0px;
+}
+.onboardFingerDetails{
+	-fx-pref-height: 159.0px;
+	-fx-pref-width: 200.0px;
 }
 /*  */
 /*user onboard Iris design starts */
 .onboardIrisPanes{
 	-fx-background-color : #efefef;
+	-fx-pref-height: 170.0px;
+	-fx-pref-width: 230.0px;
 }
 .onboardBioDetails{
 	-fx-font-family: Roboto;
@@ -532,7 +552,22 @@
 	-fx-font-weight: lighter;
 	-fx-font-size: 14.0px;
 }
+.onboardIrisDetails{
+	-fx-pref-height: 154.0px;
+	-fx-pref-width: 205.0px;
+}
 /*user onboard Iris design ends */
+/*user onboard Face design starts*/
+.onboardFaceDetails{
+	-fx-pref-height: 160.0px;
+	-fx-pref-width: 228.0px;
+}
+.onboardFacePanes{
+	-fx-background-color : #efefef;
+	-fx-pref-height: 180.0px;
+	-fx-pref-width: 201.0px;
+}
+/*user onboard Face design ends*/
 /*user onboard exception design starts */
 .onboardOperatorDetailsHeader{
 	-fx-font-family: Roboto;
@@ -575,6 +610,8 @@
 .exceptionFingerPane{
 	-fx-border-width: 0.0 1.0 0.0 0.0;
 	-fx-border-color: #C9C9C9;
+	-fx-pref-height: 231.0px;
+	-fx-pref-width: 345.0px;
 }
 .onboardExceptionLayout{
 	-fx-pref-height: 574.0px;
@@ -582,9 +619,43 @@
 }
 .regExceptionLayout{
 	-fx-background-color:#ffffff;
+	-fx-pref-height: 34.0px;
+	-fx-pref-width: 938.0px;
 }
-/*user onboard exception design ends */
-#mainBox{
+.exceptionBackPane{
+	-fx-background-color: #F7F8F9;
+	-fx-pref-height: 660.0px;
+	-fx-pref-width: 1280.0px;
+}
+.operatorExceptionLayout{
+	-fx-pref-height: 59.0px;
+	-fx-pref-width: 772.0px;
+}
+.exceptionIrisPaneParent{
+	-fx-pref-height: 231.0px;
+	-fx-pref-width: 788.0px;
+}
+.exceptionPanes{
+	-fx-pref-height: 231.0px;
+	-fx-pref-width: 345.0px;
+}
+.biometricExceptionPaneIris{
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: white;
+	-fx-pref-height: 90.0px;
+	-fx-pref-width: 160.0px;
+}
+.biometricExceptionPaneFinger{
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: white;
+	-fx-pref-height: 157.0px;
+	-fx-pref-width: 120.0px;
+}
+.exceptionDocProof{
+	-fx-pref-height: 157.0px;
+	-fx-pref-width: 370.0px;
+}
+/*user onboard exception design ends */#mainBox{
 	-fx-border-width: 0.0;
 	-fx-border-color: black;
 }

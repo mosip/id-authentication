@@ -12,7 +12,7 @@
 <?import javafx.collections.*?>
 <?import javafx.stage.Screen?>
 
-<AnchorPane fx:id="biometricException" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="1280.0" styleClass="userOnboardBackPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.BiometricExceptionController">
+<AnchorPane fx:id="biometricException" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="exceptionBackPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.BiometricExceptionController">
    <children>
    <ImageView fx:id="userOnboardImg" fitHeight="192.0" fitWidth="130.0" layoutX="1130.0" layoutY="152.0" pickOnBounds="true" preserveRatio="true">
             	<image>
@@ -24,18 +24,18 @@
                    <Image url="@../images/exceptionProgressImg.png" />
                 </image>
             </ImageView>                    
-   <AnchorPane fx:id="operatorExceptionHeader" layoutX="1.0" prefHeight="32.0" prefWidth="1278.0" styleClass="userOnboardHeader">
+   <AnchorPane fx:id="operatorExceptionHeader" layoutX="1.0" styleClass="userOnboardHeader">
          <children>
             <Text fx:id="onboardHomeLink" layoutX="20.0" layoutY="20.0" onMouseClicked="#goToHomePage" text="Home /" />
             <Text fx:id="onboardPageDesc" layoutX="68.0" layoutY="20.0" text=" Onboard Operator" />
             <Label fx:id="onboardPageTitle" layoutX="559.0" layoutY="2.0" text="Onboard Operator" />
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="regExceptionHeader" layoutX="180.0" prefHeight="34.0" prefWidth="938.0" styleClass="regExceptionLayout">
+      <AnchorPane fx:id="regExceptionHeader" layoutX="180.0" styleClass="regExceptionLayout">
       </AnchorPane>
-   <AnchorPane layoutX="180.0" layoutY="34.0" prefHeight="574.0" prefWidth="938.0" styleClass="onboardImgPane">
+   <AnchorPane layoutX="180.0" layoutY="34.0" styleClass="onboardImgPane">
          <children>
-            <AnchorPane fx:id="operatorExceptionLayout" layoutX="66.0" layoutY="14.0" prefHeight="59.0" prefWidth="772.0" styleClass="onboardOperatorDetailsPane">
+            <AnchorPane fx:id="operatorExceptionLayout" layoutX="66.0" layoutY="14.0" styleClass="operatorExceptionLayout">
                <children>
                   <Label styleClass="onboardOperatorDetailsHeader" text="Employee Name" />
                   <Label layoutX="192.0" styleClass="onboardOperatorDetailsHeader" text="Employee Code" />
@@ -47,11 +47,11 @@
                   <Label layoutX="376.0" layoutY="25.0" styleClass="onboardOperatorDetails" text="Label" />
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="irisPane" layoutX="66.0" layoutY="90.0" prefHeight="231.0" prefWidth="788.0">
+            <AnchorPane fx:id="irisPane" layoutX="66.0" layoutY="90.0" styleClass="exceptionIrisPaneParent">
                <children>
-                  <AnchorPane layoutX="429.0" prefHeight="231.0" prefWidth="345.0">
+                  <AnchorPane layoutX="429.0" styleClass="exceptionPanes">
                      <children>
-                        <Pane fx:id="rightEyePane" layoutX="4.0" layoutY="71.0" prefHeight="90.0" prefWidth="160.0" styleClass="biometricExceptionPane">
+                        <Pane fx:id="rightEyePane" layoutX="4.0" layoutY="71.0" prefHeight="90.0" prefWidth="160.0" styleClass="biometricExceptionPaneIris">
                            <children>
                               <ImageView fx:id="rightEye" fitHeight="100.0" fitWidth="150.0" layoutX="5.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -60,7 +60,7 @@
                               </ImageView>
                            </children>
                         </Pane>
-                        <Pane fx:id="leftEyePane" layoutX="173.0" layoutY="71.0" prefHeight="90.0" prefWidth="160.0" styleClass="biometricExceptionPane">
+                        <Pane fx:id="leftEyePane" layoutX="173.0" layoutY="71.0" prefHeight="90.0" prefWidth="160.0" styleClass="biometricExceptionPaneIris">
                            <children>
                               <ImageView fx:id="leftEye" fitHeight="100.0" fitWidth="150.0" layoutX="5.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -74,10 +74,10 @@
                         <Label layoutX="225.0" layoutY="202.0" styleClass="onboardBioDetailsHeader" text="Left Iris" />
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="fingerPane" layoutX="40.0" prefHeight="231.0" prefWidth="345.0" styleClass="exceptionFingerPane">
+                  <AnchorPane fx:id="fingerPane" layoutX="40.0" styleClass="exceptionFingerPane">
                      <children>
                         <Label styleClass="onboardPageBioTitle" text="%exception" />
-                        <Pane fx:id="rightHandPane" layoutX="32.0" layoutY="33.0" prefHeight="157.0" prefWidth="120.0" styleClass="biometricExceptionPane">
+                        <Pane fx:id="rightHandPane" layoutX="32.0" layoutY="33.0" prefHeight="157.0" prefWidth="120.0" styleClass="biometricExceptionPaneFinger">
                            <children>
                               <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="12.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -116,7 +116,7 @@
                               </ImageView>
                            </children>
                         </Pane>
-                        <Pane fx:id="leftHandPane" layoutX="189.0" layoutY="33.0" prefHeight="157.0" prefWidth="120.0" styleClass="biometricExceptionPane">
+                        <Pane fx:id="leftHandPane" layoutX="189.0" layoutY="33.0" prefHeight="157.0" prefWidth="120.0" styleClass="biometricExceptionPaneFinger">
                            <children>
                               <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="10.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -178,7 +178,7 @@
                                     </ImageView>                  
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="exceptionDocProof" layoutX="508.0" layoutY="410.0" prefHeight="157.0" prefWidth="370.0">
+            <AnchorPane fx:id="exceptionDocProof" layoutX="508.0" layoutY="410.0" styleClass="exceptionDocProof">
                <children>
                   <Label layoutX="1.0" layoutY="1.0" styleClass="onboardExceptionDetails" text="Document Evidence" />
                   <ComboBox layoutX="1.0" layoutY="17.0" prefHeight="35.0" prefWidth="200.0" promptText="Select a Proof for Exception" styleClass="exceptionCombobox" />
@@ -195,7 +195,7 @@
             </AnchorPane>
  	</children>
 	</AnchorPane>
-	<AnchorPane fx:id="userOnboardFooter" layoutX="1.0" layoutY="605.0" prefHeight="50.0" prefWidth="1278.0" styleClass="userOnboardFooter">
+	<AnchorPane fx:id="userOnboardFooter" layoutX="1.0" layoutY="605.0" styleClass="userOnboardFooter">
                <children>
                 <Button fx:id="previousBtn" layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="Back">
              <graphic>
@@ -217,7 +217,7 @@
             </Button>
                </children>
             </AnchorPane>
-      <AnchorPane fx:id="registrationFooter" layoutY="581.0" styleClass="registrationFooter">
+      <AnchorPane fx:id="registrationFooter" layoutY="624.0" styleClass="registrationFooter">
          <children>
             <Button layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="Back">
              <graphic>
@@ -239,5 +239,68 @@
             </Button>
          </children>
       </AnchorPane>
+      <AnchorPane>
+         <children>
+            <AnchorPane fx:id="RegistrationHeader" layoutY="0.0">
+               <children>
+                  <AnchorPane>
+                     <children>
+                        <Button layoutY="2.0" mnemonicParsing="false" text="Home" />
+                        <Label layoutX="65.0" layoutY="7.0" text="/  Registration" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="200.0" layoutY="9.0" styleClass="registrationHeaderBorder">
+               <children>
+                  <AnchorPane>
+                     <children>
+                        <Label layoutX="59.0" layoutY="-3.0" text="Demographic Details" />
+                        <ImageView fitHeight="24.0" fitWidth="18.0" layoutX="16.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/activeDemographicDetails.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="709.0">
+                     <children>
+                        <Label layoutX="46.0" layoutY="-3.0" text="Authentication" />
+                        <ImageView fitHeight="24.0" fitWidth="18.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/deactiveAuthentication.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="476.0">
+                     <children>
+                        <Label layoutX="62.0" layoutY="-3.0" text="Biometric Details" />
+                        <ImageView fitHeight="24.0" fitWidth="18.0" layoutX="20.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/deactiveBiometriDetails.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="251.0">
+                     <children>
+                        <Label layoutX="42.0" layoutY="-3.0" text="Upload Documents" />
+                        <ImageView fitHeight="24.0" fitWidth="18.0" layoutX="1.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/deactiveUploadDocument.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <ImageView fx:id="trackerImage" fitHeight="25.0" fitWidth="194.0" layoutX="710.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/DemographicpageTracker.PNG" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>
