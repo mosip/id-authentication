@@ -25,16 +25,15 @@ VID generate REST service addresses the above requirement -
 1.	Resident-service portal to construct a GET request with below details and send to Request URL **identity/vid/{uin}**, where the UIN value is passed as path parameter.
 
 2.	Authenticate Resident Portal ((TBD)).
-3.	Validate 'reqTime' for incoming Requests for valid format and timestamp not set as future datetime.
-4.	Integrate with kernel UIN Validator to check UIN for validity. Validate UIN for authenticity in AuthDB
-5.  Perform below conditional operations:
+3.	Integrate with kernel UIN Validator to check UIN for validity. Validate UIN for authenticity in AuthDB
+4.  Perform below conditional operations:
 	- Check if a VID is already generated and stored for the same UIN in VID table. 
 	- If a VID is already present for the UIN, check if the VID is active and it is generated/updated within 24 hours. 
 		- If yes, return the same VID. 
 		- If VID is not active or generated/updated before 24 hours generate a new VID and update the VID table for the UIN with *Active* status and update the updated_by and updated_dtimes values. 
      - If there is no VID entry earlier, generate the new VID and insert the value to the VID table for the UIN with *Active* status, and set the generated_dtimes, cr_by, and cr_dtimes values.
 5.  Integrate with kernel VID Generator to generate VID when required.
-7.	Respond to Resident-service portal with below success status - 
+6.	Respond to Resident-service portal with below success status - 
 
 ```JSON
 {
