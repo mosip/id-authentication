@@ -129,6 +129,101 @@ Response response = client.newCall(request).execute();
   ```
   
   
+## Setup steps:
+
+### Linux (Docker)
+
+1. (First time only) Build kernel-keymanager-softhsm docker image using  `softhsm\Dockerfile` with command:
+
+```
+docker build --build-arg softhsm_pin=1234 --tag kernel-keymanager-softhsm:1.0 .
+```
+
+The pin passed to the variable `softhsm_pin` in docker build command should be same as the value of property `mosip.kernel.keymanager.softhsm.keystore-pass` in properties file.
+
+2. (First time only) Push kernel-keymanager-softhsm docker image to private repository and modify `Dockerfile` with its URI.
+
+3. Build kernel-keymanager-service docker image using `Dockerfile` with command:
+
+```
+docker build --tag kernel-keymanager-service:1.0 .
+```
+
+4. Run docker container using command:
+
+```
+docker run -tid --ulimit memlock=-1  -p 8088:8088 -v softhsm:/softhsm --name kernel-keymanager-service kernel-keymanager-service:1.0
+```
+
+### Windows
+
+1. Download softhsm portable zip archive from https://github.com/disig/SoftHSM2-for-Windows#download
+2. Extract it to any location, e.g `D:\SoftHSM2`. SoftHSM2 searches for its configuration file in the following locations:
+```
+  1. Path specified by SOFTHSM2_CONF environment variable
+  2. User specific path %HOMEDRIVE%%HOMEPATH%\softhsm2.conf
+  3. File softhsm2.conf in the current working directory
+```
+3. Modify following in environment variables:
+```
+> set SOFTHSM2_CONF=D:\SoftHSM2\etc\softhsm2.conf
+> set PATH=%PATH%;D:\SoftHSM2\lib\
+```
+4. Create another conf file at `D:\SoftHSM2\etc\softhsm-application.conf` with below content
+```
+# Sun PKCS#11 provider configuration file for SoftHSMv2
+name = SoftHSM2
+library = D:\SoftHSM2\lib\softhsm2-x64.dll 
+slotListIndex = 0
+```
+5. Install JCE With an Unlimited Strength Jurisdiction Policy as shown here:
+https://dzone.com/articles/install-java-cryptography-extension-jce-unlimited
+6. Go to `D:\SoftHSM2\bin` and run below command:
+```
+> softhsm2-util.exe --init-token --slot 0 --label "My token 1"
+```
+Check token is initialized in slot with below command:
+```
+> softhsm2-util.exe --show-slots
+```
+The output should be like below:
+```
+Slot 569035518
+    Slot info:
+        Description:      SoftHSM slot ID 0x21eacafe
+        Manufacturer ID:  SoftHSM project
+        Hardware version: 2.4
+        Firmware version: 2.4
+        Token present:    yes
+    Token info:
+        Manufacturer ID:  SoftHSM project
+        Model:            SoftHSM v2
+        Hardware version: 2.4
+        Firmware version: 2.4
+        Serial number:    b1ee933e21eacafe
+        Initialized:      yes
+        User PIN init.:   yes
+        Label:            My token 1
+Slot 1
+    Slot info:
+        Description:      SoftHSM slot ID 0x1
+        Manufacturer ID:  SoftHSM project
+        Hardware version: 2.4
+        Firmware version: 2.4
+        Token present:    yes
+    Token info:
+        Manufacturer ID:  SoftHSM project
+        Model:            SoftHSM v2
+        Hardware version: 2.4
+        Firmware version: 2.4
+        Serial number:
+        Initialized:      no
+        User PIN init.:   no
+        Label:
+```
+5. Put the newly created conf filepath `D:\SoftHSM2\etc\softhsm-application.conf` in `mosip.kernel.keymanager.softhsm.config-path` property. Softhsm is ready to be used. 
+
+For more information, check https://github.com/opendnssec/SoftHSMv2
 
 
 
