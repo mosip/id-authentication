@@ -24,7 +24,10 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
+import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationPKEntity;
@@ -55,9 +58,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 	@Autowired
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	/** The manual verfication repository. */
-	@Autowired
-	private BasePacketRepository<ManualVerificationEntity, String> manualVerficationRepository;
+
 
 	/** The demographic dedupe repository. */
 	@Autowired
@@ -84,6 +85,9 @@ public class DemodedupeStage extends MosipVerticleManager {
 
 	/** The Constant MATCHED_REFERENCE_TYPE. */
 	private static final String MATCHED_REFERENCE_TYPE = "uin";
+	
+	@Autowired
+	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 	
 	/**
 	 * Deploy verticle.
@@ -118,11 +122,12 @@ public class DemodedupeStage extends MosipVerticleManager {
 			List<DemographicInfoDto> duplicateDtos = demoDedupe.performDedupe(registrationId);
 			Set<String> uniqueUins = new HashSet<>();
 			Set<String> uniqueMatchedRefIds = new HashSet<>();
+			List<String> uniqueMatchedRefIdList = new ArrayList<>();
 			for (DemographicInfoDto demographicInfoDto : duplicateDtos) {
 				uniqueUins.add(demographicInfoDto.getUin());
 				uniqueMatchedRefIds.add(demographicInfoDto.getRegId());
 			}
-
+			uniqueMatchedRefIdList.addAll(uniqueMatchedRefIds);
 			List<String> duplicateUINList = new ArrayList<>(uniqueUins);
 
 			if (!duplicateDtos.isEmpty()) {
@@ -150,7 +155,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 					description = "Potential duplicate packet found for registration id : " + registrationId;
 
 					// Saving potential duplicates in reg_manual_verification table
-					saveManualAdjudicationData(uniqueMatchedRefIds, registrationId);
+					packetInfoManager.saveManualAdjudicationData(uniqueMatchedRefIdList, registrationId);
 				}
 
 			} else {
@@ -194,53 +199,5 @@ public class DemodedupeStage extends MosipVerticleManager {
 		return object;
 	}
 
-	/**
-	 * Save manual adjudication data.
-	 *
-	 * @param uniqueMatchedRefIds
-	 *            the unique matched ref ids
-	 * @param registrationId
-	 *            the registration id
-	 */
-	private void saveManualAdjudicationData(Set<String> uniqueMatchedRefIds, String registrationId) {
-		boolean isTransactionSuccessful = false;
-		String description = "";
-		try {
-			for (String matchedRefId : uniqueMatchedRefIds) {
-				ManualVerificationEntity manualVerificationEntity = new ManualVerificationEntity();
-				ManualVerificationPKEntity manualVerificationPKEntity = new ManualVerificationPKEntity();
-				manualVerificationPKEntity.setMatchedRefId(matchedRefId);
-				manualVerificationPKEntity.setMatchedRefType(MATCHED_REFERENCE_TYPE);
-				manualVerificationPKEntity.setRegId(registrationId);
 
-				manualVerificationEntity.setId(manualVerificationPKEntity);
-				manualVerificationEntity.setLangCode("eng");
-				manualVerificationEntity.setMatchedScore(null);
-				manualVerificationEntity.setMvUsrId(null);
-				manualVerificationEntity.setReasonCode("Potential Match");
-				manualVerificationEntity.setStatusCode("PENDING");
-				manualVerificationEntity.setStatusComment("Assigned to manual Adjudication");
-				manualVerificationEntity.setIsActive(true);
-				manualVerificationEntity.setIsDeleted(false);
-				manualVerificationEntity.setCrBy("SYSTEM");
-
-				manualVerficationRepository.save(manualVerificationEntity);
-				isTransactionSuccessful = true;
-				description = "Packet Demo dedupe successful for registration id : " + registrationId;
-
-			}
-
-		} finally {
-
-			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
-			String eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
-					: EventName.EXCEPTION.toString();
-			String eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
-					: EventType.SYSTEM.toString();
-
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId);
-
-		}
-	}
 }
