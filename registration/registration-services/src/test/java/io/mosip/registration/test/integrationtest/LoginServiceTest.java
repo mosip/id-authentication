@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,12 +14,8 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.service.impl.LoginServiceImpl;
@@ -33,23 +30,23 @@ import net.minidev.json.parser.ParseException;
  * @author Priya Soni
  *
  */
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = AppConfig.class)
-public class LoginServiceTest {
+public class LoginServiceTest extends BaseIntegrationTest {
 
-	@Autowired
+	@Autowired	
 	private LoginServiceImpl loginServiceImpl;
 
 	/**
 	 * This method tests the functionality of getModesOfLogin method
 	 * Verify whether list of modes of login is returned with respect
 	 *  to the user roles passed as input
+	 * @throws URISyntaxException 
 	 * 
 	 */
 	@Test
-	public void getModesOfLoginTest() {
+	public void getModesOfLoginTest() throws URISyntaxException {
 
-		File jsonInputFile = new File("src/test/resources/LoginServiceData/LoginServiceTestResources.json");
+		File jsonInputFile = new File(this.getClass().getClassLoader().
+				getResource("src/test/resources/LoginServiceData/LoginServiceTestResources.json").toURI());
 		try {
 			Object obj;
 			try {
@@ -150,7 +147,7 @@ public class LoginServiceTest {
 				obj = new JSONParser(JSONParser.MODE_PERMISSIVE).parse(new FileReader(jsonInputFile));
 				JSONObject jsonObject = (JSONObject) obj;
 
-				List<String> roleSet = new ArrayList();
+				List<String> roleSet = new ArrayList<>();
 				JSONArray rolesArray = (JSONArray) jsonObject.get("roles");
 				for(int i=0;i<rolesArray.size();i++) {
 					roleSet.add(rolesArray.get(i).toString());

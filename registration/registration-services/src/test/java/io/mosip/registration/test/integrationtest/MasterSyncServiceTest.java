@@ -1,71 +1,23 @@
 package io.mosip.registration.test.integrationtest;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
-import javax.crypto.SecretKey;
-
-import org.assertj.core.api.Assertions;
-import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.MessageSourceResolvable;
-import org.springframework.context.NoSuchMessageException;
-import org.springframework.core.ResolvableType;
-import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.core.crypto.spi.Encryptor;
-import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
-import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.device.scanner.DocumentScannerService;
-import io.mosip.registration.dto.RegistrationCenterDetailDTO;
-import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
+import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MasterReasonListDto;
-import io.mosip.registration.entity.UserDetail;
-import io.mosip.registration.entity.mastersync.MasterDocumentType;
-import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.AESEncryptionService;
-import io.mosip.registration.service.AuthenticationService;
-import io.mosip.registration.service.BaseService;
-import io.mosip.registration.service.LoginService;
 import io.mosip.registration.service.MasterSyncService;
-import io.mosip.registration.service.RSAEncryptionService;
-import io.mosip.registration.service.config.GlobalParamService;
-import io.mosip.registration.service.config.JobConfigurationService;
-import io.mosip.registration.service.template.NotificationService;
 
-@RunWith(SpringRunner.class)
-@ContextConfiguration(classes=AppConfig.class)
-
-public class MasterSyncServiceTest {
+public class MasterSyncServiceTest extends BaseIntegrationTest{
 	
 
 	@Autowired
@@ -562,7 +514,7 @@ public class MasterSyncServiceTest {
 	public void masterSync_verifygetDocumentCategories_getDescription_POA()
 	{
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
-		List<MasterDocumentType> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POA_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
+		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POA_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
 		list1.addAll(Arrays.asList("Rental Agreement of address", "Proof of Resident"));
@@ -584,7 +536,7 @@ public class MasterSyncServiceTest {
 	public void masterSync_verifygetDocumentCategories_getDescription_POI()
 	{
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
-		List<MasterDocumentType> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POI_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
+		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POI_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
 		list1.addAll(Arrays.asList("Moroccan National Electronic ID Card", "Proof of Idendity"));
@@ -606,7 +558,7 @@ public class MasterSyncServiceTest {
 	public void masterSync_verifygetDocumentCategories_getDescription_POR()
 	{
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
-		List<MasterDocumentType> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POR_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
+		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POR_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
 		list1.addAll(Arrays.asList("Proof relationship of a person"));
@@ -628,7 +580,7 @@ public class MasterSyncServiceTest {
 	public void masterSync_verifygetDocumentCategories_getDescription_POB()
 	{
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
-		List<MasterDocumentType> result = mastersyncservice.getDocumentCategories(RegistrationConstants.DOB_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
+		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.DOB_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
 		list1.addAll(Arrays.asList("Proof birth and age of a person"));
@@ -650,7 +602,7 @@ public class MasterSyncServiceTest {
 	public void masterSync_verifygetDocumentCategories_getLangCode_POA()
 	{
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
-		List<MasterDocumentType> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POA_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
+		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POA_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
 		list1.addAll(Arrays.asList("eng","eng"));
@@ -673,7 +625,7 @@ public class MasterSyncServiceTest {
 	public void masterSync_verifygetDocumentCategories_getLangCode_POI()
 	{
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
-		List<MasterDocumentType> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POI_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
+		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POI_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
 		list1.addAll(Arrays.asList("eng","eng"));
@@ -695,7 +647,7 @@ public class MasterSyncServiceTest {
 	public void masterSync_verifygetDocumentCategories_getLangCode_POR()
 	{
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
-		List<MasterDocumentType> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POR_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
+		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POR_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
 		list1.addAll(Arrays.asList("eng"));
@@ -717,7 +669,7 @@ public class MasterSyncServiceTest {
 	public void masterSync_verifygetDocumentCategories_getLangCode_POB()
 	{
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
-		List<MasterDocumentType> result = mastersyncservice.getDocumentCategories(RegistrationConstants.DOB_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
+		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.DOB_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
 		list1.addAll(Arrays.asList("eng"));
@@ -739,7 +691,7 @@ public class MasterSyncServiceTest {
 	public void masterSync_verifygetDocumentCategories_getName_POA()
 	{
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
-		List<MasterDocumentType> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POA_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
+		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POA_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
 		list1.addAll(Arrays.asList("Rental contract","Certificate of residence"));
@@ -761,7 +713,7 @@ public class MasterSyncServiceTest {
 	public void masterSync_verifygetDocumentCategories_getName_POI()
 	{
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
-		List<MasterDocumentType> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POI_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
+		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POI_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
 		list1.addAll(Arrays.asList("CNIE card","Passport"));
@@ -783,7 +735,7 @@ public class MasterSyncServiceTest {
 	public void masterSync_verifygetDocumentCategories_getName_POR()
 	{
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
-		List<MasterDocumentType> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POR_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
+		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POR_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
 		list1.addAll(Arrays.asList("Certificate of Relationship"));
@@ -805,7 +757,7 @@ public class MasterSyncServiceTest {
 	public void masterSync_verifygetDocumentCategories_getName_POB()
 	{
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
-		List<MasterDocumentType> result = mastersyncservice.getDocumentCategories(RegistrationConstants.DOB_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
+		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.DOB_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
 		list1.addAll(Arrays.asList("Certificate of Birth"));
@@ -827,7 +779,7 @@ public class MasterSyncServiceTest {
 	public void masterSync_verify_getDocumentCategories_WithInvaliddocCode()
 	{
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
-		List<MasterDocumentType> result = mastersyncservice.getDocumentCategories(testdataparsejson.getDataFromJsonViaKey("invaliddocCode"),testdataparsejson.getDataFromJsonViaKey("langCode"));
+		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(testdataparsejson.getDataFromJsonViaKey("invaliddocCode"),testdataparsejson.getDataFromJsonViaKey("langCode"));
 		System.out.println("*********"+result);
 		System.out.println("*********"+result.size());
 		assertEquals(0, result.size());
@@ -838,7 +790,7 @@ public class MasterSyncServiceTest {
 	public void masterSync_verify_getDocumentCategories_WithInvalidlangCode()
 	{
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
-		List<MasterDocumentType> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POA_DOCUMENT,testdataparsejson.getDataFromJsonViaKey("invalidlangCode"));
+		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POA_DOCUMENT,testdataparsejson.getDataFromJsonViaKey("invalidlangCode"));
 		System.out.println("*********"+result);
 		System.out.println("*********"+result.size());
 		assertEquals(0, result.size());
@@ -849,7 +801,7 @@ public class MasterSyncServiceTest {
 	public void masterSync_verify_getDocumentCategories_WithdocCodenull()
 	{
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
-		List<MasterDocumentType> result = mastersyncservice.getDocumentCategories(null,testdataparsejson.getDataFromJsonViaKey("langCode"));
+		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(null,testdataparsejson.getDataFromJsonViaKey("langCode"));
 		System.out.println("*********"+result);
 		System.out.println("*********"+result.size());
 		assertEquals(0, result.size());
@@ -860,7 +812,7 @@ public class MasterSyncServiceTest {
 	public void masterSync_verify_getDocumentCategories_WithlangCodenull()
 	{
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
-		List<MasterDocumentType> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POA_DOCUMENT,null);
+		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POA_DOCUMENT,null);
 		System.out.println("*********"+result);
 		System.out.println("*********"+result.size());
 		assertEquals(0, result.size());
@@ -871,7 +823,7 @@ public class MasterSyncServiceTest {
 	public void masterSync_verify_getDocumentCategories_WithdocCodenull_WithlangCodenull()
 	{
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
-		List<MasterDocumentType> result = mastersyncservice.getDocumentCategories(null,null);
+		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(null,null);
 		System.out.println("*********"+result);
 		System.out.println("*********"+result.size());
 		assertEquals(0, result.size());

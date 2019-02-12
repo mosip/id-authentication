@@ -1,4 +1,4 @@
-package testPackage;
+package io.mosip.registration.test.integrationtest;
 
 import static org.junit.Assert.assertEquals;
 
@@ -13,16 +13,12 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.AfterClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JsonParseException;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
@@ -33,9 +29,8 @@ import io.mosip.registration.service.device.impl.FingerPrintCaptureServiceImpl;
  * @author Leona Mary S
  *
  */
-@RunWith(SpringRunner.class)
-@ContextConfiguration(classes=AppConfig.class)
-public class FingerPrintServiceTest
+
+public class FingerPrintServiceTest extends BaseIntegrationTest
 {	
 	@Autowired
 	private FingerPrintCaptureServiceImpl fingerprintservice;

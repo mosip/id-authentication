@@ -1,31 +1,23 @@
 package io.mosip.registration.test.integrationtest;
+
 import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.castor.util.concurrent.Sync;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.config.DaoConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
-import io.mosip.registration.controller.Initialization;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.repositories.JobConfigRepository;
 import io.mosip.registration.service.config.JobConfigurationService;
 
-@RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { AppConfig.class, DaoConfig.class })
-public class JobConfigurationServiceTest {
+public class JobConfigurationServiceTest extends BaseIntegrationTest {
 
 	@Autowired
 	JobConfigurationService jobConfigurationService;
@@ -54,7 +46,7 @@ public class JobConfigurationServiceTest {
 	 */
 	@Test
 	public void startSchedulerTest() {
-		ResponseDTO response = jobConfigurationService.startScheduler(Initialization.getApplicationContext());
+		ResponseDTO response = jobConfigurationService.startScheduler();
 		assertEquals(response.getErrorResponseDTOs(), null);
 		assertEquals(response.getSuccessResponseDTO(), null);
 	}
