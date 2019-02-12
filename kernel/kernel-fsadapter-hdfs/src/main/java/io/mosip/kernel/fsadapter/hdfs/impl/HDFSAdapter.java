@@ -14,6 +14,8 @@ import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
@@ -30,6 +32,8 @@ import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtil;
  */
 @Component
 public class HDFSAdapter implements FileSystemAdapter {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(HDFSAdapter.class.getName());
 
 	/**
 	 * The field for Hadoop filesystem
@@ -54,8 +58,9 @@ public class HDFSAdapter implements FileSystemAdapter {
 	 * lang.String, java.lang.String)
 	 */
 	@Override
-	public boolean checkFileExistence(String id, String fileName) {
-		Path path = new Path(FilenameUtils.concat(id, fileName));
+	public boolean checkFileExistence(String id, String filePath) {
+		LOGGER.info("Checking if file exist in packet {} with path {}", id, getFilePath(filePath));
+		Path path = getHadoopPath(id, filePath);
 		try {
 			return fs.exists(path);
 		} catch (IOException e) {
@@ -71,9 +76,11 @@ public class HDFSAdapter implements FileSystemAdapter {
 	 * String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public boolean copyFile(String sourceBucketName, String sourceKey, String destinationBucketName,
-			String destinationKey) {
-		return storeFile(destinationBucketName, destinationKey, getFile(sourceBucketName, sourceKey));
+	public boolean copyFile(String sourcePacket, String sourceFilePath, String destinationPacket,
+			String destinationFilePath) {
+		LOGGER.info("Copying file from packet {} with path {} to packet {} with path {}", sourcePacket, sourceFilePath,
+				destinationPacket, destinationFilePath);
+		return storeFile(destinationPacket, destinationFilePath, getFile(sourcePacket, sourceFilePath));
 	}
 
 	/*
@@ -84,8 +91,9 @@ public class HDFSAdapter implements FileSystemAdapter {
 	 * String, java.lang.String)
 	 */
 	@Override
-	public boolean deleteFile(String id, String fileName) {
-		Path path = new Path(FilenameUtils.concat(id, fileName));
+	public boolean deleteFile(String id, String filePath) {
+		LOGGER.info("Deleting file in packet {} with path {}", id, getFilePath(filePath));
+		Path path = getHadoopPath(id, filePath);
 		try {
 			return fs.delete(path, true);
 		} catch (IOException e) {
@@ -103,7 +111,8 @@ public class HDFSAdapter implements FileSystemAdapter {
 	 */
 	@Override
 	public boolean deletePacket(String id) {
-		Path path = new Path(FilenameUtils.concat(id, id));
+		LOGGER.info("Deleting packet {}", id);
+		Path path = getHadoopPath(id, id);
 		try {
 			return fs.delete(path, true);
 		} catch (IOException e) {
@@ -119,8 +128,9 @@ public class HDFSAdapter implements FileSystemAdapter {
 	 * String, java.lang.String)
 	 */
 	@Override
-	public InputStream getFile(String id, String fileName) {
-		Path inFile = new Path(FilenameUtils.concat(id, fileName.toUpperCase()));
+	public InputStream getFile(String id, String filePath) {
+		LOGGER.info("Getting file from packet {} with path {}", id, getFilePath(filePath));
+		Path inFile = getHadoopPath(id, filePath);
 		try {
 			if (!fs.exists(inFile)) {
 				throw new FSAdapterException(HDFSAdapterErrorCode.FILE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -142,8 +152,9 @@ public class HDFSAdapter implements FileSystemAdapter {
 	 */
 	@Override
 	public InputStream getPacket(String id) {
+		LOGGER.info("Getting packet {} ", id);
 		try {
-			Path inFile = new Path(FilenameUtils.concat(id, id));
+			Path inFile = getHadoopPath(id, id);
 			if (!fs.exists(inFile)) {
 				throw new FSAdapterException(HDFSAdapterErrorCode.FILE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						HDFSAdapterErrorCode.FILE_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -164,7 +175,8 @@ public class HDFSAdapter implements FileSystemAdapter {
 	 */
 	@Override
 	public boolean isPacketPresent(String id) {
-		Path path = new Path(FilenameUtils.concat(id, id));
+		LOGGER.info("Checking if packet {} exists", id);
+		Path path = getHadoopPath(id, id);
 		try {
 			return fs.exists(path);
 		} catch (IOException e) {
@@ -181,8 +193,9 @@ public class HDFSAdapter implements FileSystemAdapter {
 	 * String, java.lang.String, java.io.InputStream)
 	 */
 	@Override
-	public boolean storeFile(String id, String key, InputStream content) {
-		Path path = new Path(FilenameUtils.concat(id, key));
+	public boolean storeFile(String id, String filePath, InputStream content) {
+		LOGGER.info("Storing file in packet {} with path {}", id, getFilePath(filePath));
+		Path path = getHadoopPath(id, filePath);
 		FSDataOutputStream out = null;
 		try {
 			out = fs.create(path);
@@ -205,7 +218,8 @@ public class HDFSAdapter implements FileSystemAdapter {
 	 */
 	@Override
 	public boolean storePacket(String id, File file) {
-		Path path = new Path(FilenameUtils.concat(id, id));
+		LOGGER.info("Storing packet {}", id);
+		Path path = getHadoopPath(id, id);
 		FSDataOutputStream out = null;
 		try {
 			out = fs.create(path);
@@ -228,7 +242,8 @@ public class HDFSAdapter implements FileSystemAdapter {
 	 */
 	@Override
 	public boolean storePacket(String id, InputStream content) {
-		Path path = new Path(FilenameUtils.concat(id, id));
+		LOGGER.info("Storing packet {}", id);
+		Path path = getHadoopPath(id, id);
 		FSDataOutputStream out = null;
 		try {
 			out = fs.create(path);
@@ -251,6 +266,7 @@ public class HDFSAdapter implements FileSystemAdapter {
 	 */
 	@Override
 	public void unpackPacket(String id) {
+		LOGGER.info("Unpacking packet {}", id);
 		InputStream packetStream = getPacket(id);
 		ZipInputStream zis = new ZipInputStream(packetStream);
 		byte[] buffer = new byte[2048];
@@ -268,7 +284,7 @@ public class HDFSAdapter implements FileSystemAdapter {
 				String filePath = FilenameUtils.getPathNoEndSeparator(ze.getName());
 				String fileName = FilenameUtils.getBaseName(ze.getName());
 				if (!fileName.isEmpty()) {
-					storeFile(FilenameUtils.concat(id, filePath.toUpperCase()), fileName.toUpperCase(), inputStream);
+					storeFile(id, FilenameUtils.concat(filePath, fileName), inputStream);
 				}
 				inputStream.close();
 				ze = zis.getNextEntry();
@@ -279,5 +295,29 @@ public class HDFSAdapter implements FileSystemAdapter {
 			throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
 					HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
 		}
+	}
+
+	/**
+	 * Construct a hadoop path from a String
+	 * 
+	 * @param id
+	 *            the packetId
+	 * @param filePath
+	 *            the filePath
+	 * @return the path
+	 */
+	public Path getHadoopPath(String id, String filePath) {
+		return new Path(FilenameUtils.concat(getFilePath(id), getFilePath(filePath)));
+	}
+
+	/**
+	 * Get formatted filePath
+	 * 
+	 * @param filePath
+	 *            filePath
+	 * @return formatted filePath
+	 */
+	public String getFilePath(String filePath) {
+		return filePath.toUpperCase();
 	}
 }
