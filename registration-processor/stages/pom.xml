@@ -27,6 +27,7 @@
         <module>bio-dedupe-stage</module>
         <module>uin-generator-stage</module>
     	<module>message-sender-stage</module>
+    <module>printing-stage</module>
   </modules>
 
 </project>
