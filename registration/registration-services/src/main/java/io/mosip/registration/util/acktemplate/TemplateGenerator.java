@@ -129,6 +129,22 @@ public class TemplateGenerator extends BaseService {
 				templateValues.put(RegistrationConstants.TEMPLATE_RID_LOCAL_LANG_LABEL,
 						localProperties.getString("registrationid"));
 				templateValues.put(RegistrationConstants.TEMPLATE_RID, registration.getRegistrationId());
+				if (registration.getRegistrationMetaDataDTO().getUin() != null
+						&& !registration.getRegistrationMetaDataDTO().getUin().isEmpty()) {
+					templateValues.put(RegistrationConstants.TEMPLATE_HEADER_TABLE,
+							RegistrationConstants.TEMPLATE_UIN_HEADER_TABLE);
+					templateValues.put(RegistrationConstants.TEMPLATE_UIN_USER_LANG_LABEL,
+							applicationLanguageProperties.getString("uin"));
+					templateValues.put(RegistrationConstants.TEMPLATE_UIN_LOCAL_LANG_LABEL,
+							localProperties.getString("uin"));
+					templateValues.put(RegistrationConstants.TEMPLATE_UIN,
+							registration.getRegistrationMetaDataDTO().getUin());
+				} else {
+					templateValues.put(RegistrationConstants.TEMPLATE_HEADER_TABLE,
+							RegistrationConstants.TEMPLATE_HEADER_TABLE);
+					templateValues.put(RegistrationConstants.TEMPLATE_UIN_UPDATE,
+							RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+				}
 				// QR Code Generation
 				StringBuilder qrCodeString = new StringBuilder();
 				qrCodeString.append(applicationLanguageProperties.getString("fullName")).append(" : ")
@@ -634,8 +650,8 @@ public class TemplateGenerator extends BaseService {
 					applicationLanguageProperties.getString("registrationcenter"));
 			templateValues.put(RegistrationConstants.TEMPLATE_REG_CENTER_LOCAL_LANG_LABEL,
 					localProperties.getString("registrationcenter"));
-			templateValues.put(RegistrationConstants.TEMPLATE_REG_CENTER, SessionContext.userContext()
-					.getRegistrationCenterDetailDTO().getRegistrationCenterName());
+			templateValues.put(RegistrationConstants.TEMPLATE_REG_CENTER,
+					SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterName());
 			templateValues.put(RegistrationConstants.TEMPLATE_REG_CENTER_LOCAL_LANG, "");
 			templateValues.put(RegistrationConstants.TEMPLATE_IMPORTANT_GUIDELINES,
 					applicationLanguageProperties.getString("importantguidelines"));

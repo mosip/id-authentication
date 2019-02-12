@@ -1,5 +1,6 @@
 package io.mosip.registration.service.template.impl;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,7 @@ public class TemplateServiceImpl implements TemplateService {
 	
 
 	public String getHtmlTemplate(String templateName) throws RegBaseCheckedException {
-		return getTemplate(templateName).getFileTxt();
+		byte[] templateInBytes = getTemplate(templateName).getFileTxt();
+		return new String(templateInBytes, StandardCharsets.UTF_8);
 	}
 }

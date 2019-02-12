@@ -315,6 +315,9 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_ACKNOWLEDGEMENT = "AckReceipt";
 	public static final String TEMPLATE_PREVIEW = "Preview";
 	public static final String TEMPLATE_QRCODE_SOURCE = "QRCodeSource";
+	public static final String TEMPLATE_UIN_UPDATE = "UINUpdate";
+	public static final String TEMPLATE_HEADER_TABLE = "headerTable";
+	public static final String TEMPLATE_UIN_HEADER_TABLE = "uinHeaderTable";	
 	public static final String TEMPLATE_UIN_USER_LANG_LABEL = "UINUserLangLabel";
 	public static final String TEMPLATE_UIN_LOCAL_LANG_LABEL = "UINLocalLangLabel";
 	public static final String TEMPLATE_UIN = "UIN";
@@ -472,6 +475,10 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_REGISTRATION = "registration";
 	public static final String TEMPLATE_JS_OBJECT = "window";
 	public static final String TEMPLATE_ENCODING = "UTF-8";
+	public static final String TEMPLATE_FACE_CAPTURE_ENABLED = "FaceCaptureEnabled";
+	public static final String TEMPLATE_DOCUMENTS_ENABLED = "DocumentsEnabled";
+	public static final String TEMPLATE_BIOMETRICS_ENABLED = "BiometricsEnabled";
+	public static final String TEMPLATE_IRIS_ENABLED = "IrisEnabled";
 
 	// Web Camera Constants
 	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";

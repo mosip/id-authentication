@@ -45,7 +45,7 @@ public class TemplateDaoImplTest {
 		List<Template> templates = new ArrayList<>();
 		Template template = new Template();
 		template.setId("T01");
-		template.setFileTxt("sample text");
+		template.setFileTxt(new byte[1024]);
 		template.setLangCode("en");
 		template.setActive(true);
 		templates.add(template);
