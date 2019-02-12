@@ -1,6 +1,11 @@
 package io.mosip.authentication.service.impl.otpgen.facade;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -24,13 +29,14 @@ import io.mosip.authentication.core.spi.otpgen.facade.OTPFacade;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
 import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.authentication.core.util.OTPUtil;
+import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
-import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.UUIDUtils;
 
 /**
  * Facade implementation of OTPfacade to generate OTP.
@@ -40,10 +46,14 @@ import io.mosip.kernel.core.util.DateUtils;
 @Service
 public class OTPFacadeImpl implements OTPFacade {
 
+	private static final String UTC = "UTC";
+
 	private static final String DATETIME_PATTERN = "datetime.pattern";
 
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SessionID";
+
+	private static final String IDA = "IDA";
 
 	/** The otp service. */
 	@Autowired
@@ -51,7 +61,7 @@ public class OTPFacadeImpl implements OTPFacade {
 
 	/** The id auth service. */
 	@Autowired
-	private IdAuthService idAuthService;
+	private IdAuthService<AutnTxn> idAuthService;
 
 	/** The autntxnrepository. */
 	@Autowired
@@ -78,10 +88,11 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * Generate OTP, store the OTP request details for success/failure. And send OTP
 	 * notification by sms(on mobile)/mail(on email-id).
 	 *
-	 * @param otpRequestDto the otp request dto
+	 * @param otpRequestDto
+	 *            the otp request dto
 	 * @return otpResponseDTO
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
 	 */
 	@Override
 	public OtpResponseDTO generateOtp(OtpRequestDTO otpRequestDto) throws IdAuthenticationBusinessException {
@@ -114,7 +125,9 @@ public class OTPFacadeImpl implements OTPFacade {
 		if (otp == null || otp.trim().isEmpty()) {
 			status = "N";
 			comment = "OTP_GENERATION_FAILED";
-			idAuthService.saveAutnTxn(idvId, idvIdType, uin, reqTime, txnId, status, comment, RequestType.OTP_REQUEST);
+			AutnTxn authTxn = createAuthTxn(idvId, idvIdType, uin, reqTime, txnId, status, comment,
+					RequestType.OTP_REQUEST);
+			idAuthService.saveAutnTxn(authTxn);
 			mosipLogger.error("SessionId", "NA", "NA", "OTP Generation failed");
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 		} else {
@@ -136,17 +149,82 @@ public class OTPFacadeImpl implements OTPFacade {
 				otpResponseDTO.setMaskedMobile(MaskUtil.maskMobile(mobileNumber));
 			}
 			notificationService.sendOtpNotification(otpRequestDto, otp, uin, email, mobileNumber, idInfo);
-			idAuthService.saveAutnTxn(idvId, idvIdType, uin, reqTime, txnId, status, comment, RequestType.OTP_REQUEST);
+			AutnTxn authTxn = createAuthTxn(idvId, idvIdType, uin, reqTime, txnId, status, comment,
+					RequestType.OTP_REQUEST);
+			idAuthService.saveAutnTxn(authTxn);
 		}
 		return otpResponseDTO;
 
 	}
 
 	/**
+	 * sets AuthTxn entity values
+	 * 
+	 * @param idvId
+	 * @param idvIdType
+	 * @param uin
+	 * @param reqTime
+	 * @param txnId
+	 * @param status
+	 * @param comment
+	 * @param otpRequest
+	 * @return
+	 */
+	private AutnTxn createAuthTxn(String idvId, String idvIdType, String uin, String reqTime, String txnId,
+			String status, String comment, RequestType otpRequest) throws IdAuthenticationBusinessException {
+		try {
+			AutnTxn autnTxn = new AutnTxn();
+			autnTxn.setRefId(idvId);
+			autnTxn.setRefIdType(idvIdType);
+			String id = createId(uin);
+			autnTxn.setId(id); // FIXME
+			// TODO check
+			autnTxn.setCrBy(IDA);
+			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+			Date reqDate = null;
+			reqDate = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
+			String dateTimePattern = env.getProperty(DATETIME_PATTERN);
+			DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
+			LocalDateTime utcLocalDateTime = DateUtils.parseDateToLocalDateTime(reqDate);
+			ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(reqTime, isoPattern);
+			ZoneId zone = zonedDateTime2.getZone();
+			ZonedDateTime ldtZoned = utcLocalDateTime.atZone(zone);
+			ZonedDateTime utcDateTime = ldtZoned.withZoneSameInstant(ZoneId.of(UTC));
+			LocalDateTime localDateTime = utcDateTime.toLocalDateTime();
+			autnTxn.setRequestDTtimes(localDateTime);
+			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime()); // TODO check this
+			autnTxn.setAuthTypeCode(otpRequest.getRequestType());
+			autnTxn.setRequestTrnId(txnId);
+			autnTxn.setStatusCode(status);
+			autnTxn.setStatusComment(comment);
+			// FIXME
+			autnTxn.setLangCode(env.getProperty("mosip.primary.lang-code"));
+			return autnTxn;
+		} catch (ParseException e) {
+			mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
+					e);
+		}
+	}
+
+	/**
+	 * Creates UUID
+	 * 
+	 * @param uin
+	 * @return
+	 */
+	private String createId(String uin) {
+		String currentDate = DateUtils.formatDate(new Date(), env.getProperty("datetime.pattern"));
+		String uinAndDate = uin + "-" + currentDate;
+		return UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uinAndDate).toString();
+	}
+
+	/**
 	 * Validate the number of request for OTP generation. Limit for the number of
 	 * request for OTP is should not exceed 3 in 60sec.
 	 *
-	 * @param otpRequestDto the otp request dto
+	 * @param otpRequestDto
+	 *            the otp request dto
 	 * @return true, if is otp flooded
 	 * @throws IdAuthenticationBusinessException
 	 */
@@ -155,8 +233,8 @@ public class OTPFacadeImpl implements OTPFacade {
 		String uniqueID = otpRequestDto.getIdvId();
 		Date requestTime;
 		try {
-			requestTime = DateUtils.parseToDate(otpRequestDto.getReqTime(),env.getProperty(DATETIME_PATTERN));
-		} catch (ParseException | java.text.ParseException e) {
+			requestTime = DateUtils.parseToDate(otpRequestDto.getReqTime(), env.getProperty(DATETIME_PATTERN));
+		} catch (java.text.ParseException e) {
 			mosipLogger.error(SESSION_ID, null, null, e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
 					e);
@@ -174,8 +252,10 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * object. Add positive, date increase in minutes. Add negative, date reduce in
 	 * minutes.
 	 *
-	 * @param date   the date
-	 * @param minute the minute
+	 * @param date
+	 *            the date
+	 * @param minute
+	 *            the minute
 	 * @return the date
 	 */
 	private Date addMinutes(Date date, int minute) {
@@ -185,8 +265,10 @@ public class OTPFacadeImpl implements OTPFacade {
 	/**
 	 * Formate date.
 	 *
-	 * @param date   the date
-	 * @param format the formate
+	 * @param date
+	 *            the date
+	 * @param format
+	 *            the formate
 	 * @return the date
 	 */
 	private String formatDate(Date date, String format) {
@@ -196,7 +278,8 @@ public class OTPFacadeImpl implements OTPFacade {
 	/**
 	 * Get Mail.
 	 * 
-	 * @param idInfo List of IdentityInfoDTO
+	 * @param idInfo
+	 *            List of IdentityInfoDTO
 	 * @return mail
 	 * @throws IdAuthenticationBusinessException
 	 */
@@ -207,7 +290,8 @@ public class OTPFacadeImpl implements OTPFacade {
 	/**
 	 * Get Mobile number.
 	 * 
-	 * @param idInfo List of IdentityInfoDTO
+	 * @param idInfo
+	 *            List of IdentityInfoDTO
 	 * @return Mobile number
 	 * @throws IdAuthenticationBusinessException
 	 */

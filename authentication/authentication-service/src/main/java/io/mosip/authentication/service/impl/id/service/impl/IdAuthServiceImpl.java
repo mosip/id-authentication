@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.impl.id.service.impl;
 
-import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -29,10 +27,7 @@ import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
-import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.UUIDUtils;
 
 /**
  * The class validates the UIN and VID.
@@ -41,7 +36,7 @@ import io.mosip.kernel.core.util.UUIDUtils;
  * @author Rakesh Roshan
  */
 @Service
-public class IdAuthServiceImpl implements IdAuthService {
+public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
@@ -107,9 +102,11 @@ public class IdAuthServiceImpl implements IdAuthService {
 	/**
 	 * Do validate VID entity and checks for the expiry date.
 	 *
-	 * @param vid the vid
+	 * @param vid
+	 *            the vid
 	 * @return the string
-	 * @throws IdValidationFailedException the id validation failed exception
+	 * @throws IdValidationFailedException
+	 *             the id validation failed exception
 	 */
 	Map<String, Object> getIdRepoByVidAsRequest(String vid, boolean isBio) throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = null;
@@ -131,12 +128,14 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * Process the IdType and validates the Idtype and upon validation reference Id
 	 * is returned in AuthRequestDTO.
 	 *
-	 * @param idvIdType idType
-	 * @param idvId     id-number
+	 * @param idvIdType
+	 *            idType
+	 * @param idvId
+	 *            id-number
 	 * @param isBio
 	 * @return map map
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
 	 */
 	@Override
 	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio)
@@ -164,58 +163,32 @@ public class IdAuthServiceImpl implements IdAuthService {
 	/**
 	 * Store entry in Auth_txn table for all authentications.
 	 *
-	 * @param idvId       idvId
-	 * @param idvIdType   idvIdType(D/V)
-	 * @param reqTime     reqTime
-	 * @param txnId       txnId
-	 * @param status      status('Y'/'N')
-	 * @param comment     comment
-	 * @param requestType requestType(OTP_REQUEST,OTP_AUTH,DEMO_AUTH,BIO_AUTH)
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
+	 * @param idvId
+	 *            idvId
+	 * @param idvIdType
+	 *            idvIdType(D/V)
+	 * @param reqTime
+	 *            reqTime
+	 * @param txnId
+	 *            txnId
+	 * @param status
+	 *            status('Y'/'N')
+	 * @param comment
+	 *            comment
+	 * @param requestType
+	 *            requestType(OTP_REQUEST,OTP_AUTH,DEMO_AUTH,BIO_AUTH)
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
 	 */
-	public void saveAutnTxn(String idvId, String idvIdType, String uin, String reqTime, String txnId, String status,
-			String comment, RequestType requestType) throws IdAuthenticationBusinessException {
-
-		AutnTxn autnTxn = new AutnTxn();
-		autnTxn.setRefId(idvId);
-		autnTxn.setRefIdType(idvIdType);
-		String id = createId(uin);
-		autnTxn.setId(id); // FIXME
-		// TODO check
-		autnTxn.setCrBy("IDA");
-		autnTxn.setCrDTimes(new Date());
-		// FIXME utilize Instant
-		Date convertStringToDate = null;
-		try {
-			convertStringToDate = DateUtils.parseToDate(reqTime,env.getProperty("datetime.pattern"));
-		} catch (ParseException | java.text.ParseException e) {
-			logger.error(DEFAULT_SESSION_ID, null, null, e.getMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
-					e);
-		}
-		autnTxn.setRequestDTtimes(convertStringToDate);
-		autnTxn.setResponseDTimes(new Date()); // TODO check this
-		autnTxn.setAuthTypeCode(requestType.getRequestType());
-		autnTxn.setRequestTrnId(txnId);
-		autnTxn.setStatusCode(status);
-		autnTxn.setStatusComment(comment);
-		// FIXME
-		autnTxn.setLangCode(env.getProperty("mosip.primary.lang-code"));
-		autntxnrepository.saveAndFlush(autnTxn);
-	}
-
-	private String createId(String uin) {
-		String currentDate = DateUtils.formatDate(new Date(), env.getProperty("datetime.pattern"));
-		String uinAndDate = uin + "-" + currentDate;
-		return UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uinAndDate).toString();
+	public void saveAutnTxn(AutnTxn authTxn) throws IdAuthenticationBusinessException {
+		autntxnrepository.saveAndFlush(authTxn);
 	}
 
 	/**
 	 * Audit data.
 	 *
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
 	 */
 	private void auditData() throws IdAuthenticationBusinessException {
 		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,

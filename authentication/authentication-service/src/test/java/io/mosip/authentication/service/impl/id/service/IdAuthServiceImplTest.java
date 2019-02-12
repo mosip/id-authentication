@@ -126,7 +126,6 @@ public class IdAuthServiceImplTest {
 		assertNotNull(invokeMethod);
 	}
 
-	
 	@Test
 	public void testProcessIdType_IdTypeIsD() throws IdAuthenticationBusinessException {
 		String idvIdType = "D";
@@ -154,7 +153,8 @@ public class IdAuthServiceImplTest {
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_VID);
 
-		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenThrow(idBusinessException);
+		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
+				.thenThrow(idBusinessException);
 
 		Mockito.when(idAuthService.getIdRepoByVID(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenThrow(idBusinessException);
@@ -170,7 +170,8 @@ public class IdAuthServiceImplTest {
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_UIN);
 
-		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenThrow(idBusinessException);
+		Mockito.when(idRepoService.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
+				.thenThrow(idBusinessException);
 
 		Mockito.when(idAuthService.getIdRepoByVID(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenThrow(idBusinessException);
@@ -192,8 +193,7 @@ public class IdAuthServiceImplTest {
 		String status = "Y";
 		String comment = "OTP_GENERATED";
 		ReflectionTestUtils.invokeMethod(autntxnrepository, "saveAndFlush", autnTxn);
-		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "saveAutnTxn", idvId, idvIdType, uin,reqTime, txnId, status,
-				comment, requestType);
+		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "saveAutnTxn", autnTxn);
 	}
 
 	// =========================================================

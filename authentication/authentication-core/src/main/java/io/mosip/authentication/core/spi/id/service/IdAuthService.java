@@ -2,7 +2,6 @@ package io.mosip.authentication.core.spi.id.service;
 
 import java.util.Map;
 
-import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 /**
@@ -11,7 +10,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
  * @author Arun Bose
  */
 
-public interface IdAuthService {
+public interface IdAuthService<T> {
 
 	/**
 	 * validates the UIN.
@@ -59,6 +58,5 @@ public interface IdAuthService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public void saveAutnTxn(String idvId, String idvIdType,String uin, String reqTime, String txnId, String status, String comment,
-			RequestType requestType) throws IdAuthenticationBusinessException;
+	public void saveAutnTxn(T t) throws IdAuthenticationBusinessException;
 }

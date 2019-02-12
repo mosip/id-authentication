@@ -290,8 +290,8 @@ public class AuthFacadeImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		List<AuthStatusInfo> authStatusList = authFacadeImpl.processAuthType(authRequestDTO, idInfo, "1233", true);
-
+		List<AuthStatusInfo> authStatusList =ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType", authRequestDTO, idInfo, "1233", true);
+		
 		assertTrue(authStatusList.stream().noneMatch(
 				status -> status.getUsageDataBits().contains(AuthUsageDataBit.USED_OTP) || status.isStatus()));
 	}
@@ -307,6 +307,23 @@ public class AuthFacadeImplTest {
 	@Test
 	public void processAuthTypeTestSuccess() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIdvIdType(IdType.VID.getType());
+		authRequestDTO.setId("1234567");
+		authRequestDTO.setIdvId("457984792857");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setTspID("64378643");
+		PinInfo pinInfo = new PinInfo();
+		pinInfo.setType(PinType.OTP.getType());
+		pinInfo.setValue("736643");
+		PinInfo pinInfo1 = new PinInfo();
+		pinInfo1.setType(PinType.PIN.getType());
+		pinInfo1.setValue("736643");
+		List<PinInfo> list1 = new ArrayList<>();
+		list1.add(pinInfo);
+		list1.add(pinInfo1);
+		authRequestDTO.setPinInfo(list1);
+		authRequestDTO.setReqTime(ZonedDateTime.now()
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setOtp(true);
 		authTypeDTO.setBio(true);
@@ -371,7 +388,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		List<AuthStatusInfo> authStatusList = authFacadeImpl.processAuthType(authRequestDTO, idInfo, "1242", true);
+		List<AuthStatusInfo> authStatusList =ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType", authRequestDTO, idInfo, "1242", true);
 		assertTrue(authStatusList.stream().anyMatch(
 				status -> status.getUsageDataBits().contains(AuthUsageDataBit.USED_OTP) && status.isStatus()));
 	}
@@ -379,6 +396,23 @@ public class AuthFacadeImplTest {
 	@Test
 	public void processAuthTypeTestFailure() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIdvIdType(IdType.VID.getType());
+		authRequestDTO.setId("1234567");
+		authRequestDTO.setIdvId("457984792857");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setTspID("64378643");
+		PinInfo pinInfo = new PinInfo();
+		pinInfo.setType(PinType.OTP.getType());
+		pinInfo.setValue("736643");
+		PinInfo pinInfo1 = new PinInfo();
+		pinInfo1.setType(PinType.PIN.getType());
+		pinInfo1.setValue("736643");
+		List<PinInfo> list1 = new ArrayList<>();
+		list1.add(pinInfo);
+		list1.add(pinInfo1);
+		authRequestDTO.setPinInfo(list1);
+		authRequestDTO.setReqTime(ZonedDateTime.now()
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setOtp(true);
 		authTypeDTO.setBio(true);
@@ -442,7 +476,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		List<AuthStatusInfo> authStatusList = authFacadeImpl.processAuthType(authRequestDTO, idInfo, "1242", false);
+		List<AuthStatusInfo> authStatusList =ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType", authRequestDTO, idInfo, "1242", false);
 		assertTrue(authStatusList.stream().anyMatch(
 				status -> status.getUsageDataBits().contains(AuthUsageDataBit.USED_OTP) && status.isStatus()));
 	}
@@ -648,42 +682,6 @@ public class AuthFacadeImplTest {
 		assertNotNull(authFacadeImpl.authenticateTsp(authRequestDTO));
 	}
 
-	/**
-	 * Test Case for getIdentity method Success case
-	 * 
-	 * @throws IdAuthenticationBusinessException
-	 * @throws IdAuthenticationDaoException
-	 */
-	@Test
-	public void testGetIdEntity() throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
-		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
-		list.add(new IdentityInfoDTO("en", "mosip"));
-		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
-		idInfo.put("name", list);
-		idInfo.put("email", list);
-		idInfo.put("phone", list);
-		authFacadeImpl.getIdEntity(repoDetails());
-	}
-
-	/**
-	 * Test Case for getIdEntity method Exception case
-	 * 
-	 * @throws IdAuthenticationBusinessException
-	 * @throws IdAuthenticationDaoException
-	 */
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void testGetIdEntityException() throws IdAuthenticationBusinessException {
-		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
-		list.add(new IdentityInfoDTO("en", "mosip"));
-		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
-		idInfo.put("name", list);
-		idInfo.put("email", list);
-		idInfo.put("phone", list);
-
-		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenThrow(new IdAuthenticationBusinessException());
-		authFacadeImpl.getIdEntity(repoDetails());
-	}
-
 	@Test
 	public void testGetAuditEvent() {
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "getAuditEvent", true);
@@ -697,6 +695,23 @@ public class AuthFacadeImplTest {
 	@Test
 	public void testProcessBioAuthType() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIdvIdType(IdType.VID.getType());
+		authRequestDTO.setId("1234567");
+		authRequestDTO.setIdvId("457984792857");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setTspID("64378643");
+		PinInfo pinInfo = new PinInfo();
+		pinInfo.setType(PinType.OTP.getType());
+		pinInfo.setValue("736643");
+		PinInfo pinInfo1 = new PinInfo();
+		pinInfo1.setType(PinType.PIN.getType());
+		pinInfo1.setValue("736643");
+		List<PinInfo> list1 = new ArrayList<>();
+		list1.add(pinInfo);
+		list1.add(pinInfo1);
+		authRequestDTO.setPinInfo(list1);
+		authRequestDTO.setReqTime(ZonedDateTime.now()
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		List<BioInfo> info = new ArrayList<>();
 		BioInfo bioInfo = new BioInfo();
 		bioInfo.setBioType("fgrMin");

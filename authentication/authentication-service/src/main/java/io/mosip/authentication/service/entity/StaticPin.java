@@ -38,11 +38,11 @@ public class StaticPin {
 	@Column(name = "is_active")
 	private boolean isActive;
 	
-	/** The corrected by. */
+	/** The created by. */
 	@Column(name = "cr_by")
 	private String createdBy ;
 	
-	/** The corrected date. */
+	/** The created date. */
 	@Column(name = "cr_dtimes")
 	private LocalDateTime createdDTimes;
 	
