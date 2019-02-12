@@ -47,8 +47,8 @@
                   </AnchorPane>
                   <AnchorPane fx:id="internetModePane" layoutX="600.0" layoutY="5.0">
                      <children>
-                        <Label fx:id="online" layoutX="48.0" layoutY="3.0" text="System Online" visible="false" styleClass="internetMode"/>
-                        <Label fx:id="offline" layoutX="48.0" layoutY="3.0" text="System Offline" visible="false" styleClass="internetMode"/>
+                        <Label fx:id="online" layoutX="48.0" layoutY="3.0" styleClass="internetMode" text="System Online" visible="false" />
+                        <Label fx:id="offline" layoutX="48.0" layoutY="3.0" styleClass="internetMode" text="System Offline" visible="false" />
                         <ImageView fx:id="availableIcon" fitHeight="24.0" fitWidth="24.0" layoutX="8.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/SystemOnline.png" />
@@ -69,21 +69,6 @@
                         </ImageView>
                      </graphic>
                      <items>
-                        <MenuItem mnemonicParsing="false" onAction="#eodProcess" text="%eodprocess">
-                          <graphic>
-                        	<AnchorPane>                        		
-                        		<children>
-                        			<Label text="               " visible="false"/>                        			
-                        			<ImageView fitHeight="20.0" fitWidth="20.0" layoutX="20.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
-                           				<image>
-                              				<Image url="@../images/MenuItems.png" />
-                           				</image>
-                        			</ImageView>                        			
-                        		</children>                        	
-                        	</AnchorPane>
-                          </graphic>
-                        </MenuItem>
-                        <SeparatorMenuItem />
                         <MenuItem mnemonicParsing="false" onAction="#uploadPacketToServer" text="%uploadpacket">
 						  <graphic>
                         	<AnchorPane>                        		
@@ -167,7 +152,7 @@
                         	</AnchorPane>
                             </graphic>
                         </MenuItem>
-                        <SeparatorMenuItem/>
+                        <SeparatorMenuItem />
                         <MenuItem mnemonicParsing="false" onAction="#redirectHome" text="%home">
                         	<graphic>
                         	<AnchorPane>                        		
@@ -181,8 +166,8 @@
                         	</AnchorPane>
                             </graphic>
                         </MenuItem>
-                        <SeparatorMenuItem/>
-                        <MenuItem fx:id="logout" mnemonicParsing="false" onAction="#logout" text="Logout" style="-fx-text-fill: white;">
+                        <SeparatorMenuItem />
+                        <MenuItem fx:id="logout" mnemonicParsing="false" onAction="#logout" style="-fx-text-fill: white;" text="Logout">
                         	<graphic>
                         	<AnchorPane>                        		
                         		<children>                        			

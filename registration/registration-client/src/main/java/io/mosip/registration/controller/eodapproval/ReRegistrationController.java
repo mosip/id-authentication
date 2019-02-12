@@ -58,9 +58,6 @@ public class ReRegistrationController extends BaseController implements Initiali
 	@Autowired
 	private ReRegistrationService reRegistrationServiceImpl;
 
-	@Autowired
-	private EODController eodController;
-
 	/**
 	 * Table to display the created packets
 	 */
@@ -256,10 +253,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 			ObservableList<PacketStatusDTO> observableList = FXCollections
 					.observableArrayList(reRegistrationPacketsList);
 			table.setItems(observableList);
-			eodController.getReRegisterTitledPane().setText(
-					RegistrationUIConstants.REREGISTER_TITLEPANE + "( " + reRegistrationPacketsList.size() + " )");
 		} else {
-			eodController.getReRegisterTitledPane().setText(RegistrationUIConstants.REREGISTER_TITLEPANE);
 			reRegistrationRootPane.disableProperty().set(true);
 			table.getItems().clear();
 		}

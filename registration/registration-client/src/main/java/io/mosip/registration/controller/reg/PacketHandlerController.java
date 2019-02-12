@@ -9,9 +9,10 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +25,14 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.ErrorResponseDTO;
+import io.mosip.registration.dto.PacketStatusDTO;
+import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
@@ -37,14 +41,17 @@ import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.packet.PacketHandlerService;
+import io.mosip.registration.service.packet.ReRegistrationService;
+import io.mosip.registration.service.packet.RegistrationApprovalService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 
 /**
@@ -55,7 +62,7 @@ import javafx.scene.layout.AnchorPane;
  *
  */
 @Controller
-public class PacketHandlerController extends BaseController {
+public class PacketHandlerController extends BaseController implements Initializable {
 
 	private static final Logger LOGGER = AppConfig.getLogger(PacketHandlerController.class);
 
@@ -67,6 +74,15 @@ public class PacketHandlerController extends BaseController {
 
 	@FXML
 	private AnchorPane optionRoot;
+
+	@FXML
+	private Label pendingApprovalCountLbl;
+
+	@FXML
+	private Label reRegistrationCountLbl;
+
+	@FXML
+	private AnchorPane eodProcessAnchorPane;
 
 	@Autowired
 	private AckReceiptController ackReceiptController;
@@ -88,7 +104,7 @@ public class PacketHandlerController extends BaseController {
 
 	@Autowired
 	private UserOnboardController userOnboardController;
-	
+
 	@Autowired
 	private PacketHandlerService packetHandlerService;
 
@@ -97,6 +113,35 @@ public class PacketHandlerController extends BaseController {
 
 	@Autowired
 	private Environment environment;
+
+	@Autowired
+	private RegistrationApprovalService registrationApprovalService;
+
+	@Autowired
+	private ReRegistrationService reRegistrationService;
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+
+		if (SessionContext.userContext().getRoles().get(0).equals(RegistrationConstants.OFFICER)) {
+			eodProcessAnchorPane.setVisible(false);
+		}
+		pendingApprovalCountLbl.setText(RegistrationUIConstants.NO_PENDING_APPLICATIONS);
+		reRegistrationCountLbl.setText(RegistrationUIConstants.NO_RE_REGISTER_APPLICATIONS);
+
+		List<RegistrationApprovalDTO> pendingApprovalRegistrations = registrationApprovalService
+				.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
+		List<PacketStatusDTO> reRegisterRegistrations = reRegistrationService.getAllReRegistrationPackets();
+
+		if (!pendingApprovalRegistrations.isEmpty()) {
+			pendingApprovalCountLbl
+					.setText(pendingApprovalRegistrations.size() + " " + RegistrationUIConstants.APPLICATIONS);
+		}
+		if (!reRegisterRegistrations.isEmpty()) {
+			reRegistrationCountLbl.setText(reRegisterRegistrations.size() + " " + RegistrationUIConstants.APPLICATIONS);
+		}
+
+	}
 
 	/**
 	 * Validating screen authorization and Creating Packet and displaying
@@ -119,8 +164,7 @@ public class PacketHandlerController extends BaseController {
 				List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 				if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
 					for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-						errorMessage
-								.append(errorResponseDTO.getMessage() + "\n\n");
+						errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
 					}
 					generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 
@@ -151,7 +195,8 @@ public class PacketHandlerController extends BaseController {
 				ackReceiptController.setStringWriter(stringWriter);
 				ResponseDTO packetCreationResponse = savePacket(stringWriter, registrationDTO);
 				if (packetCreationResponse.getSuccessResponseDTO() != null) {
-					Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH),
+					Parent createRoot = BaseController.load(
+							getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH),
 							applicationContext.getApplicationLanguageBundle());
 					getScene(createRoot).setRoot(createRoot);
 				} else {
@@ -228,7 +273,7 @@ public class PacketHandlerController extends BaseController {
 		}
 	}
 
-	public void updateUIN(ActionEvent event) {
+	public void updateUIN() {
 		try {
 			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
 
@@ -245,8 +290,7 @@ public class PacketHandlerController extends BaseController {
 				List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 				if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
 					for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-						errorMessage
-								.append(errorResponseDTO.getMessage() + "\n\n");
+						errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
 					}
 					generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 
@@ -267,8 +311,7 @@ public class PacketHandlerController extends BaseController {
 	/**
 	 * Sync data through batch jobs.
 	 *
-	 * @param event
-	 *            the event
+	 * @param event the event
 	 */
 	public void syncData() {
 
@@ -312,8 +355,7 @@ public class PacketHandlerController extends BaseController {
 	/**
 	 * change On-Board user Perspective
 	 * 
-	 * @param event
-	 *            is an action event
+	 * @param event is an action event
 	 * @throws IOException
 	 */
 	public void onBoardUser() {
@@ -382,12 +424,40 @@ public class PacketHandlerController extends BaseController {
 								.with(location -> location.setRegion(identity.getRegion().get(0).getValue()))
 								.with(location -> location.setPostalCode(identity.getPostalCode())).get()))
 						.get();
-				
+
 				SessionContext.map().put(RegistrationConstants.ADDRESS_KEY, addressDTO);
 			}
 		} else {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PACKET_CREATION_FAILURE);
 		}
 		return response;
+	}
+
+	/**
+	 * Load re registration screen.
+	 */
+	public void loadReRegistrationScreen() {
+		try {
+			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.REREGISTRATION_PAGE));
+
+			LOGGER.info("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
+					APPLICATION_NAME, APPLICATION_ID, "Loading reregistration screen");
+
+			if (!validateScreenAuthorization(root.getId())) {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
+			} else {
+				ObservableList<Node> nodes = homeController.getMainBox().getChildren();
+				IntStream.range(1, nodes.size()).forEach(index -> {
+					nodes.get(index).setVisible(false);
+					nodes.get(index).setManaged(false);
+				});
+				nodes.add(root);
+			}
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
+					APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_APPROVAL_PAGE);
+		}
 	}
 }

@@ -33,47 +33,17 @@
             <Font size="12.0" />
          </font>
       </TextField>
-      <Label layoutX="32.0" layoutY="120.0" text="%selecttoupdate">
+      <Label layoutX="32.0" layoutY="173.0" text="%selecttoupdate">
          <font>
             <Font size="12.0" />
          </font>
       </Label>
-      <CheckBox fx:id="age" layoutX="335.0" layoutY="166.0" mnemonicParsing="false" text="%age/dob">
-         <font>
-            <Font size="12.0" />
-         </font>
-      </CheckBox>
-      <CheckBox fx:id="name" layoutX="216.0" layoutY="166.0" mnemonicParsing="false" text="%name">
-         <font>
-            <Font size="12.0" />
-         </font>
-      </CheckBox>
-      <CheckBox fx:id="gender" layoutX="483.0" layoutY="166.0" mnemonicParsing="false" text="%gender">
-         <font>
-            <Font size="12.0" />
-         </font>
-      </CheckBox>
-      <CheckBox fx:id="parentOrGuardianDetails" layoutX="32.0" layoutY="295.0" mnemonicParsing="false" text="%parent/guardiandetails">
-         <font>
-            <Font size="12.0" />
-         </font>
-      </CheckBox>
-      <CheckBox fx:id="address" layoutX="618.0" layoutY="166.0" mnemonicParsing="false" text="%address">
-         <font>
-            <Font size="12.0" />
-         </font>
-      </CheckBox>
-      <CheckBox fx:id="contactDetails" layoutX="764.0" layoutY="166.0" mnemonicParsing="false" text="%contactdetails">
-         <font>
-            <Font size="12.0" />
-         </font>
-      </CheckBox>
-      <Label layoutX="32.0" layoutY="166.0" text="%adult">
+      <Label layoutX="32.0" layoutY="133.0" text="%adult">
          <font>
             <Font size="12.0" />
          </font>
       </Label>
-      <Label layoutX="137.0" layoutY="166.0" text="%child">
+      <Label layoutX="137.0" layoutY="133.0" text="%child">
          <font>
             <Font size="12.0" />
          </font>
@@ -83,9 +53,9 @@
             <Font size="14.0" />
          </font>
       </Button>
-      <Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="76.0" layoutY="161.0" prefHeight="15.0" prefWidth="9.0" />
-      <Label id="toggleLabel1" fx:id="toggleLabel1" layoutX="85.0" layoutY="161.0" prefHeight="15.0" prefWidth="9.1" />
-      <HBox fx:id="biometricBox" layoutX="32.0" layoutY="232.0" prefHeight="40.0" prefWidth="900.0">
+      <Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="76.0" layoutY="128.0" prefHeight="15.0" prefWidth="9.0" />
+      <Label id="toggleLabel1" fx:id="toggleLabel1" layoutX="85.0" layoutY="128.0" prefHeight="15.0" prefWidth="9.1" />
+      <HBox fx:id="biometricBox" layoutX="32.0" layoutY="267.0" prefHeight="40.0" prefWidth="900.0">
          <children>
             <CheckBox fx:id="biometricException" mnemonicParsing="false" prefHeight="17.0" prefWidth="196.0" text="%biometrics-exception">
             	<font>
@@ -106,6 +76,40 @@
             	 <font>
       		            <Font size="12.0" />
       		         </font>
+            </CheckBox>
+         </children>
+      </HBox>
+      <HBox layoutX="32.0" layoutY="219.0" prefHeight="40.0" prefWidth="900.0">
+         <children>
+            <CheckBox fx:id="name" mnemonicParsing="false" prefHeight="17.0" prefWidth="125.0" text="%name">
+               <font>
+                  <Font size="12.0" />
+               </font>
+            </CheckBox>
+            <CheckBox fx:id="age" mnemonicParsing="false" prefHeight="17.0" prefWidth="144.0" text="%age/dob">
+               <font>
+                  <Font size="12.0" />
+               </font>
+            </CheckBox>
+            <CheckBox fx:id="gender" mnemonicParsing="false" prefHeight="17.0" prefWidth="142.0" text="%gender">
+               <font>
+                  <Font size="12.0" />
+               </font>
+            </CheckBox>
+            <CheckBox fx:id="address" mnemonicParsing="false" prefHeight="17.0" prefWidth="135.0" text="%address">
+               <font>
+                  <Font size="12.0" />
+               </font>
+            </CheckBox>
+            <CheckBox fx:id="contactDetails" mnemonicParsing="false" prefHeight="17.0" prefWidth="154.0" text="%contactdetails">
+               <font>
+                  <Font size="12.0" />
+               </font>
+            </CheckBox>
+            <CheckBox fx:id="parentOrGuardianDetails" mnemonicParsing="false" prefHeight="17.0" prefWidth="194.0" text="%parent/guardiandetails">
+               <font>
+                  <Font size="12.0" />
+               </font>
             </CheckBox>
          </children>
       </HBox>

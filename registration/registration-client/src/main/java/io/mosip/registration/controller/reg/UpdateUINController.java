@@ -6,7 +6,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +22,6 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
-import io.mosip.registration.dto.ErrorResponseDTO;
-import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SelectionListDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -81,8 +78,7 @@ public class UpdateUINController extends BaseController implements Initializable
 	@Autowired
 	@Qualifier(value = "uinValidator")
 	private IdValidator<String> uinValidatorImpl;
-	
-	private FXUtils fxUtils;
+
 	@Autowired
 	Validations validation;
 
@@ -91,9 +87,8 @@ public class UpdateUINController extends BaseController implements Initializable
 		switchedOn = new SimpleBooleanProperty(false);
 		isChild = switchedOn.get();
 		toggleFunction();
-		fxUtils=FXUtils.getInstance();
-		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED,
-				RegistrationConstants.DISABLE);
+		FXUtils fxUtils = FXUtils.getInstance();
+		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 		fxUtils.validateOnType(uinId, validation);
 		if (applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
 				.equals(RegistrationConstants.ENABLE)) {
@@ -156,36 +151,17 @@ public class UpdateUINController extends BaseController implements Initializable
 
 					SelectionListDTO selectionListDTO = new SelectionListDTO();
 
-					if (name.isSelected()) {
-						selectionListDTO.setName(true);
-					}
-					if (age.isSelected()) {
-						selectionListDTO.setAge(true);
-					}
-					if (gender.isSelected()) {
-						selectionListDTO.setGender(true);
-					}
-					if (address.isSelected()) {
-						selectionListDTO.setAddress(true);
-					}
-					if (contactDetails.isSelected()) {
-						selectionListDTO.setContactDetails(true);
-					}
-					if (biometricException.isSelected()) {
-						selectionListDTO.setBiometricException(true);
-					}
-					if (biometricIris.isSelected()) {
-						selectionListDTO.setBiometricIris(true);
-					}
-					if (biometricFingerprint.isSelected()) {
-						selectionListDTO.setBiometricFingerprint(true);
-					}
-					if (cnieNumber.isSelected()) {
-						selectionListDTO.setCnieNumber(true);
-					}
-					if (parentOrGuardianDetails.isSelected()) {
-						selectionListDTO.setParentOrGuardianDetails(true);
-					}
+					selectionListDTO.setName(name.isSelected());
+					selectionListDTO.setAge(age.isSelected());
+					selectionListDTO.setGender(gender.isSelected());
+					selectionListDTO.setAddress(address.isSelected());
+					selectionListDTO.setContactDetails(contactDetails.isSelected());
+					selectionListDTO.setBiometricException(biometricException.isSelected());
+					selectionListDTO.setBiometricIris(biometricIris.isSelected());
+					selectionListDTO.setBiometricFingerprint(biometricFingerprint.isSelected());
+					selectionListDTO.setCnieNumber(cnieNumber.isSelected());
+					selectionListDTO.setParentOrGuardianDetails(parentOrGuardianDetails.isSelected());
+
 					selectionListDTO.setChild(isChild);
 					selectionListDTO.setUinId(uinId.getText());
 

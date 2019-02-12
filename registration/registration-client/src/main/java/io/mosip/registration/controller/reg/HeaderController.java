@@ -70,7 +70,7 @@ public class HeaderController extends BaseController {
 
 	@FXML
 	private Label online;
-	
+
 	@FXML
 	private Label offline;
 
@@ -119,7 +119,7 @@ public class HeaderController extends BaseController {
 
 			@Override
 			public void run() {
-				Boolean flag=RegistrationAppHealthCheckUtil.isNetworkAvailable();
+				Boolean flag = RegistrationAppHealthCheckUtil.isNetworkAvailable();
 				online.setVisible(flag);
 				offline.setVisible(!flag);
 			}
@@ -291,10 +291,6 @@ public class HeaderController extends BaseController {
 			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
 
 		}
-	}
-
-	public void eodProcess() {
-		packetHandlerController.approvePacket();
 	}
 
 	public void uploadPacketToServer() {

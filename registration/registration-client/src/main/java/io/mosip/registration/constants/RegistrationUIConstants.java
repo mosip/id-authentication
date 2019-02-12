@@ -66,7 +66,9 @@ public class RegistrationUIConstants {
 	public static final String PRINT_INITIATION_SUCCESS = bundle.getString("PRINT_INITIATION_SUCCESS");
 	public static final String REREGISTRATION_APPROVE_SUCCESS = bundle.getString("REREGISTRATION_APPROVE_SUCCESS");
 	public static final String REREGISTER_TITLEPANE=bundle.getString("REREGISTER_TITLEPANE");
-	public static final String PENDING_APPROVAL=bundle.getString("PENDING_APPROVAL");
+	public static final String APPLICATIONS=bundle.getString("APPLICATIONS");
+	public static final String NO_PENDING_APPLICATIONS=bundle.getString("NO_PENDING_APPLICATIONS");
+	public static final String NO_RE_REGISTER_APPLICATIONS=bundle.getString("NO_RE_REGISTER_APPLICATIONS");
 
 
 	// DEVICE MAPPING
