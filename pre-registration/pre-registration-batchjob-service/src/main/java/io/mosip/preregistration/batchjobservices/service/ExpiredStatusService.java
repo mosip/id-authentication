@@ -70,8 +70,6 @@ public class ExpiredStatusService {
 					LOGGER.info(LOGDISPLAY,
 							"Update the status successfully into Registration Appointment table and Demographic table");
 
-				} else {
-					LOGGER.info("The status of the PreId is already expired");
 				}
 			});
 			
