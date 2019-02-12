@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
  * Entity for Machine Details
  * 
  * @author Megha Tanga
- * @since 1.0.0
+ * @since 1.0.1
  *
  */
 
