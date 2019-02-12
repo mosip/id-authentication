@@ -11,15 +11,15 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.device.scanner.DocumentScannerService;
+import io.mosip.registration.device.scanner.MosipDocumentScannerService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
 @Component
 public class DocumentScanFacade {
 
-	private DocumentScannerService documentScannerService;
+	private MosipDocumentScannerService documentScannerService;
 
-	private List<DocumentScannerService> documentScannerServices;
+	private List<MosipDocumentScannerService> documentScannerServices;
 
 	private static final Logger LOGGER = AppConfig.getLogger(DocumentScanFacade.class);
 
@@ -38,7 +38,7 @@ public class DocumentScanFacade {
 	}
 
 	@Autowired
-	public void setFingerprintProviders(List<DocumentScannerService> documentScannerServices) {
+	public void setFingerprintProviders(List<MosipDocumentScannerService> documentScannerServices) {
 		this.documentScannerServices = documentScannerServices;
 	}
 
@@ -51,7 +51,7 @@ public class DocumentScanFacade {
 			factoryName = "sane";
 		}
 
-		for (DocumentScannerService documentScannerService : documentScannerServices) {
+		for (MosipDocumentScannerService documentScannerService : documentScannerServices) {
 			if (documentScannerService.getClass().getName().toLowerCase().contains(factoryName.toLowerCase())) {
 				this.documentScannerService = documentScannerService;
 				return true;

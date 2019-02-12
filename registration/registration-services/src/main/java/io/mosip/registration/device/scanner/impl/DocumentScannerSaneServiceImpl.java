@@ -19,7 +19,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 
 @Service
-public class DocumentScannerSaneServiceImpl extends DocumentScannerServiceImpl {
+public class DocumentScannerSaneServiceImpl extends DocumentScannerService {
 
 	private static final Logger LOGGER = AppConfig.getLogger(DocumentScannerSaneServiceImpl.class);
 
