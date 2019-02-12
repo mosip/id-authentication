@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.packet.receiver.global.handler;
+/*package io.mosip.registration.processor.packet.receiver.global.handler;
 
 import static org.junit.Assert.assertEquals;
 
@@ -93,3 +93,4 @@ public class ExceptionHandlerTest {
 	}
 	
 }
+*/
