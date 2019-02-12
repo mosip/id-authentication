@@ -139,7 +139,8 @@ Response response = client.newCall(request).execute();
 docker build --build-arg softhsm_pin=1234 --tag kernel-keymanager-softhsm:1.0 .
 ```
 
-The pin passed to the variable `softhsm_pin` in docker build command should be same as the value of property `mosip.kernel.keymanager.softhsm.keystore-pass` in properties file.
+The pin passed to the variable `softhsm_pin` in docker build command should be same as the value of property
+`mosip.kernel.keymanager.softhsm.keystore-pass` in properties file.
 
 2. (First time only) Push kernel-keymanager-softhsm docker image to private repository and modify kernel-keymanager-service Dockerfile with kernel-keymanager-softhsm docker image URI.
 
@@ -154,12 +155,43 @@ docker build --tag kernel-keymanager-service:1.0 .
 ```
 docker run -tid --ulimit memlock=-1  -p 8088:8088 -v softhsm:/softhsm --name kernel-keymanager-service kernel-keymanager-service:1.0
 ```
-Remember to use docker volume using `-v softhsm:/softhsm` and do not add bind mount (`-v /softhsm:/softhsm`).
-Keys will be stored in a docker volume named softhsm. To view information of this volume, run:
+#### Note:
+- Remember to use docker volume using `-v softhsm:/softhsm` and do not add bind mount `(-v /softhsm:/softhsm)`.
+- Keys will be stored in a docker volume named softhsm. To view information of this volume, run:
+
 ```
 docker volume inspect softhsm
 ```
+
 Know more about docker volume: https://docs.docker.com/storage/volumes/
+- It is recommended to set ulimit for memlock (the maximum size that may be locked into memory) to unlimited using 
+`--ulimit memlock=-1`. If not, the softhsm will warn with this message:
+
+```
+SoftHSM has been configured to store sensitive data in non-page RAM
+(i.e. memory that is not swapped out to disk). This is the default and
+most secure configuration. Your system, however, is not configured to
+support this model in non-privileged accounts (i.e. user accounts).
+
+You can check the setting on your system by running the following
+command in a shell:
+
+        ulimit -l
+
+If this does not return "unlimited" and you plan to run SoftHSM from
+non-privileged accounts then you should edit the configuration file
+/etc/security/limits.conf (on most systems).
+
+You will need to add the following lines to this file:
+
+#<domain>       <type>          <item>          <value>
+*               -               memlock         unlimited
+
+Alternatively, you can elect to disable this feature of SoftHSM by
+re-running configure with the option "--disable-non-paged-memory".
+Please be advised that this may seriously degrade the security of
+SoftHSM.
+```
 
 ### Windows
 
