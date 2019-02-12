@@ -78,7 +78,7 @@ public class ConnectionUtil {
 			try {
 				loginUser(userName + "@" + kdcDomain, userPass);
 				return FileSystem.get(configuration);
-			} catch (NoSuchAlgorithmException | LoginException | URISyntaxException | IOException e) {
+			} catch (IOException e) {
 				throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
 						HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
 			}
@@ -86,6 +86,11 @@ public class ConnectionUtil {
 		return configuredFileSystem;
 	}
 
+	/**
+	 * Prepares hadoop configuration object with required properties
+	 * 
+	 * @return hadoop configuration
+	 */
 	private Configuration prepareConfiguration() {
 		Configuration configuration = new Configuration();
 		configuration.set("fs.defaultFS", nameNodeUrl);
@@ -99,21 +104,45 @@ public class ConnectionUtil {
 		return configuration;
 	}
 
-	private void loginUser(final String principal, final String pass)
-			throws URISyntaxException, NoSuchAlgorithmException, LoginException, IOException {
-
-		URIParameter uriParameter = new URIParameter(getClass().getClassLoader().getResource("jaas.conf").toURI());
-		LoginContext loginContext = new LoginContext("HdfsAuth", new Subject(), (Callback[] callbacks) -> {
-			for (Callback callback : callbacks) {
-				if (callback instanceof NameCallback) {
-					((NameCallback) callback).setName(principal);
+	/**
+	 * Instantiate a new LoginContext object with user principal and user passkey
+	 * and performs authentication
+	 * 
+	 * @param principal
+	 *            the user principal
+	 * @param passkey
+	 *            the user passkey
+	 * @throws IOException
+	 *             if login fails
+	 */
+	private void loginUser(final String principal, final String passkey) throws IOException {
+		URIParameter uriParameter = null;
+		LoginContext loginContext = null;
+		try {
+			uriParameter = new URIParameter(getClass().getClassLoader().getResource("jaas.conf").toURI());
+		} catch (URISyntaxException e) {
+			throw new FSAdapterException(HDFSAdapterErrorCode.URI_SYNTAX_EXCEPTION.getErrorCode(),
+					HDFSAdapterErrorCode.URI_SYNTAX_EXCEPTION.getErrorMessage(), e);
+		}
+		try {
+			loginContext = new LoginContext("HdfsAuth", new Subject(), (Callback[] callbacks) -> {
+				for (Callback callback : callbacks) {
+					if (callback instanceof NameCallback) {
+						((NameCallback) callback).setName(principal);
+					}
+					if (callback instanceof PasswordCallback) {
+						((PasswordCallback) callback).setPassword(passkey.toCharArray());
+					}
 				}
-				if (callback instanceof PasswordCallback) {
-					((PasswordCallback) callback).setPassword(pass.toCharArray());
-				}
-			}
-		}, javax.security.auth.login.Configuration.getInstance("JavaLoginConfig", uriParameter));
-		loginContext.login();
-		UserGroupInformation.loginUserFromSubject(loginContext.getSubject());
+			}, javax.security.auth.login.Configuration.getInstance("JavaLoginConfig", uriParameter));
+			loginContext.login();
+			UserGroupInformation.loginUserFromSubject(loginContext.getSubject());
+		} catch (LoginException e) {
+			throw new FSAdapterException(HDFSAdapterErrorCode.LOGIN_EXCEPTION.getErrorCode(),
+					HDFSAdapterErrorCode.LOGIN_EXCEPTION.getErrorMessage(), e);
+		} catch (NoSuchAlgorithmException e) {
+			throw new FSAdapterException(HDFSAdapterErrorCode.NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					HDFSAdapterErrorCode.NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(), e);
+		}
 	}
 }
