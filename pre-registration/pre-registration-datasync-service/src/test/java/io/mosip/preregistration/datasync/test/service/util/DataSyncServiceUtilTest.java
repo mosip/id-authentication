@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
@@ -225,5 +226,23 @@ public class DataSyncServiceUtilTest {
 //	public void callGetPreIdsRestServiceTest() {
 //		
 //	}
+	
+	@Test
+	public void prepareRequestParamMapTest() {
+		Map<String, String> inputValidation = new HashMap<>();
+		MainRequestDTO<DataSyncRequestDTO> datasyncReqDto = new MainRequestDTO<>();
+		dataSyncRequestDTO.setRegClientId("1005");
+		dataSyncRequestDTO.setFromDate("2018-01-17 00:00:00");
+		dataSyncRequestDTO.setToDate("2018-12-17 00:00:00");
+		dataSyncRequestDTO.setUserId("256752365832");
+
+		datasyncReqDto.setId(idUrl);
+		datasyncReqDto.setVer(versionUrl);
+		datasyncReqDto.setReqTime(new Timestamp(System.currentTimeMillis()));
+		datasyncReqDto.setRequest(dataSyncRequestDTO);
+		
+		inputValidation=serviceUtil.prepareRequestParamMap(datasyncReqDto);
+		
+	}
 	
 }

@@ -110,7 +110,7 @@ public class DataSyncServiceTest {
 	MainResponseDTO<ReverseDatasyncReponseDTO> reverseResponseDTO = new MainResponseDTO<>();
 	ReverseDataSyncRequestDTO reverseDataSyncRequestDTO = new ReverseDataSyncRequestDTO();
 	ReverseDatasyncReponseDTO reverseDatasyncReponse = new ReverseDatasyncReponseDTO();
-
+	
 	@Before
 	public void setUp() throws URISyntaxException, IOException, org.json.simple.parser.ParseException, ParseException,
 			java.text.ParseException {
