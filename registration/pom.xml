@@ -52,7 +52,7 @@
 		<jackson.version>2.8.8</jackson.version>
 		<jackson.mapper.asl.version>1.7.1</jackson.mapper.asl.version>
 
-		<mosip.core.kernel.version>0.7.0-SNAPSHOT</mosip.core.kernel.version>
+		<mosip.core.kernel.version>0.8.1</mosip.core.kernel.version>
 		<!-- Derby Version -->
 		<apache.derby.version>10.13.1.1</apache.derby.version>
 
@@ -162,7 +162,19 @@
 			</dependency>
 			<dependency>
 				<groupId>io.mosip.kernel</groupId>
-				<artifactId>kernel-idvalidator</artifactId>
+				<artifactId>kernel-idvalidator-rid</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-idvalidator-uin</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-idvalidator-prid</artifactId>
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
 			<dependency>

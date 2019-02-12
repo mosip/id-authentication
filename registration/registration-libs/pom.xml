@@ -32,6 +32,10 @@
 		</dependency>
 		<!-- Mockito -->
 		<dependency>
+				<groupId>org.apache.derby</groupId>
+				<artifactId>derby</artifactId>
+			</dependency>
+		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
 			<scope>test</scope>

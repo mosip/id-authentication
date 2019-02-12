@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
+import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -279,7 +280,7 @@ public class Validations extends BaseController {
 		return true;
 	}
 
-	public boolean validateUinOrRid(TextField field, boolean isChild, IdValidator<String> uinValidator,
+	public boolean validateUinOrRid(TextField field, boolean isChild, UinValidator<String> uinValidator,
 			RidValidator<String> ridValidator) {
 		if (!isChild)
 			return true;

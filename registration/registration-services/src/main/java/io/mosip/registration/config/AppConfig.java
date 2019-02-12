@@ -13,13 +13,14 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.auditmanager.config.AuditConfig;
 import io.mosip.kernel.core.idvalidator.spi.IdValidator;
+import io.mosip.kernel.core.idvalidator.spi.PridValidator;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
+import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryImpl;
@@ -97,21 +98,6 @@ public class AppConfig {
 	@Bean
 	public TemplateManagerBuilder getTemplateManagerBuilder() {
 		return new TemplateManagerBuilderImpl();
-	}
-
-	@Bean(name = "preRegIdValidator")
-	public IdValidator<String> getPreRegIdValidator() {
-		return new PridValidatorImpl();
-	}
-
-	@Bean(name = "uinValidator")
-	public IdValidator<String> getUINValidator() {
-		return new UinValidatorImpl();
-	}
-
-	@Bean(name = "ridValidator")
-	public RidValidator<String> getRIDValidator() {
-		return new RidValidatorImpl();
 	}
 
 	/**
