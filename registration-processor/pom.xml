@@ -95,19 +95,19 @@
 		<jsonsimple.version>1.1.1</jsonsimple.version>
 
 		<!-- local -->
-		<registration.status.service.version>0.8.1</registration.status.service.version>
-		<registration.processor.core.version>0.8.1</registration.processor.core.version>
-		<filesystem.adapter.ceph.version>0.8.1</filesystem.adapter.ceph.version>
-		<packet.manager.version>0.8.1</packet.manager.version>
-		<registration.processor.rest.client.version>0.8.1</registration.processor.rest.client.version>
-		<packet.info.storage.service.version>0.8.1</packet.info.storage.service.version>
-		<packet.bio.dedupe.service.impl.version>0.8.1</packet.bio.dedupe.service.impl.version>
-		<registration.processor.rest.client.version>0.8.1</registration.processor.rest.client.version>
-		<registration.processor.message.sender.version>0.8.1</registration.processor.message.sender.version>
-		<packet.bio.dedupe.api.version>0.8.1</packet.bio.dedupe.api.version>
-		<ui.generator.stage>0.8.1</ui.generator.stage>
-		<bio.dedupe.stage>0.8.1</bio.dedupe.stage>
-		<quality.checker>0.8.1</quality.checker>
+		<registration.status.service.version>0.8.3</registration.status.service.version>
+		<registration.processor.core.version>0.8.3</registration.processor.core.version>
+		<filesystem.adapter.ceph.version>0.8.3</filesystem.adapter.ceph.version>
+		<packet.manager.version>0.8.3</packet.manager.version>
+		<registration.processor.rest.client.version>0.8.3</registration.processor.rest.client.version>
+		<packet.info.storage.service.version>0.8.3</packet.info.storage.service.version>
+		<packet.bio.dedupe.service.impl.version>0.8.3</packet.bio.dedupe.service.impl.version>
+		<registration.processor.rest.client.version>0.8.3</registration.processor.rest.client.version>
+		<registration.processor.message.sender.version>0.8.3</registration.processor.message.sender.version>
+		<packet.bio.dedupe.api.version>0.8.3</packet.bio.dedupe.api.version>
+		<ui.generator.stage>0.8.3</ui.generator.stage>
+		<bio.dedupe.stage>0.8.3</bio.dedupe.stage>
+		<quality.checker>0.8.3</quality.checker>
 
 		<!-- Kernel -->
 		<kernel.core.version>0.7.0</kernel.core.version>
