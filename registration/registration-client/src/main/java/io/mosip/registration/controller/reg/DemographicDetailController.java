@@ -1113,7 +1113,7 @@ public class DemographicDetailController extends BaseController {
 		postalCode.setText("600111");
 		mobileNo.setText("9965625706");
 		emailId.setText("taleevaalam@mindtree.com");
-		cniOrPinNumber.setText("012345678901234567890123456789");
+		cniOrPinNumber.setText("0123456789");
 		parentName.setText("Mokhtar");
 		uinId.setText("93939939");
 		registrationController.displayValidationMessage(validation.getValidationMessage().toString());
