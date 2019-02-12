@@ -51,8 +51,7 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 	@Override
 	public ResponseDTO validate(BiometricDTO biometricDTO) {
 
-		int UserOnBoardThresholdLimit = Integer
-				.parseInt((String) ApplicationContext.map().get("USER_ON_BOARD_THRESHOLD_LIMIT"));
+		int UserOnBoardThresholdLimit = (Integer)(ApplicationContext.map().get("USER_ON_BOARD_THRESHOLD_LIMIT"));
 
 		ResponseDTO responseDTO = null;
 
