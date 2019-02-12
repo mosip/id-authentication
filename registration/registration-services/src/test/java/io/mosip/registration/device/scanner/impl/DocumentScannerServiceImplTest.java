@@ -26,7 +26,7 @@ public class DocumentScannerServiceImplTest {
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	@InjectMocks
-	private DocumentScannerServiceImpl documentScannerServiceImpl;
+	private DocumentScannerSaneServiceImpl documentScannerServiceImpl;
 
 	static BufferedImage bufferedImage;
 
