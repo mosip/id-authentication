@@ -154,6 +154,7 @@ docker build --tag kernel-keymanager-service:1.0 .
 ```
 docker run -tid --ulimit memlock=-1  -p 8088:8088 -v softhsm:/softhsm --name kernel-keymanager-service kernel-keymanager-service:1.0
 ```
+Remember to volume mount using `-v softhsm:/softhsm` and do not add bind mount (`-v /softhsm:/softhsm`)
 
 ### Windows
 
