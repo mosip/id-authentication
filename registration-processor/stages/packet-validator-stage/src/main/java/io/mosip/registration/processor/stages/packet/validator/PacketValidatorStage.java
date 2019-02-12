@@ -18,6 +18,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -195,7 +196,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 									PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 							bytes = IOUtils.toByteArray(documentInfoStream);
 							documentList = documentUtility.getDocumentList(bytes);
-							
+
 							CheckSumValidation checkSumValidation = new CheckSumValidation(adapter,
 									registrationStatusDto);
 
@@ -232,6 +233,8 @@ public class PacketValidatorStage extends MosipVerticleManager {
 							if (preRegId != null)
 								preRegistrationIds.add(preRegId);
 							object.setRid(dto.getRegistrationId());
+							isTransactionSuccessful = true;
+							description = "Structural validation success for registrationId " + registrationId;
 
 						} else {
 							object.setIsValid(Boolean.FALSE);
@@ -239,12 +242,15 @@ public class PacketValidatorStage extends MosipVerticleManager {
 							int retryCount = registrationStatusDto.getRetryCount() != null
 									? registrationStatusDto.getRetryCount() + 1
 									: 1;
-							description = registrationStatusDto.getStatusComment() + registrationId;
+							description = "File validation(" + isFilesValidated + ")/Checksum validation("
+									+ isCheckSumValidated + ")/Applicant Document Validation("
+									+ isApplicantDocumentValidation + ") failed for registrationId " + registrationId;
+							isTransactionSuccessful = false;
 							registrationStatusDto.setRetryCount(retryCount);
 
 							registrationStatusDto
 									.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
-
+							registrationStatusDto.setStatusComment(description);
 						}
 
 						registrationStatusDto.setUpdatedBy(USER);
@@ -252,14 +258,15 @@ public class PacketValidatorStage extends MosipVerticleManager {
 						setApplicant(packetMetaInfo.getIdentity(), registrationStatusDto);
 
 						registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-						isTransactionSuccessful = true;
 					} catch (DataAccessException e) {
 						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 								PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + e.getMessage()
 										+ ExceptionUtils.getStackTrace(e));
 						object.setInternalError(Boolean.TRUE);
-						description = "Data voilation in reg packet : " + registrationId;
+						isTransactionSuccessful = false;
+						description = "Data access exception for the packet with registrationId " + registrationId
+								+ "::" + e.getMessage();
 						object.setIsValid(Boolean.FALSE);
 						object.setRid(dto.getRegistrationId());
 
@@ -269,7 +276,8 @@ public class PacketValidatorStage extends MosipVerticleManager {
 								PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + exc.getMessage()
 										+ ExceptionUtils.getStackTrace(exc));
 						object.setInternalError(Boolean.TRUE);
-						description = "Internal error occured while processing registration  id : " + registrationId;
+						description = "Internal error occured while processing for the registrationId " + registrationId
+								+ "::" + exc.getMessage();
 						object.setIsValid(Boolean.FALSE);
 						object.setRid(dto.getRegistrationId());
 
@@ -279,7 +287,9 @@ public class PacketValidatorStage extends MosipVerticleManager {
 								PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + ex.getMessage()
 										+ ExceptionUtils.getStackTrace(ex));
 						object.setInternalError(Boolean.TRUE);
-						description = "Internal error occured while processing registration  id : " + registrationId;
+						isTransactionSuccessful = false;
+						description = "Internal error occured while processing for the registrationId " + registrationId
+								+ "::" + ex.getMessage();
 						object.setIsValid(Boolean.FALSE);
 						object.setRid(dto.getRegistrationId());
 
@@ -292,11 +302,12 @@ public class PacketValidatorStage extends MosipVerticleManager {
 							int retryCount = registrationStatusDto.getRetryCount() != null
 									? registrationStatusDto.getRetryCount() + 1
 									: 1;
-							description = registrationStatusDto.getStatusComment() + registrationId;
+							isTransactionSuccessful = false;
 							registrationStatusDto.setRetryCount(retryCount);
 
 							registrationStatusDto
 									.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
+							registrationStatusDto.setStatusComment(description);
 							registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
 						}
@@ -306,13 +317,11 @@ public class PacketValidatorStage extends MosipVerticleManager {
 						String eventType = "";
 
 						if (isTransactionSuccessful) {
-							description = "Packet uploaded to file system";
 							eventId = EventId.RPR_402.toString();
 							eventName = EventName.UPDATE.toString();
 							eventType = EventType.BUSINESS.toString();
 						} else {
 
-							description = "Packet uploading to file system is unsuccessful";
 							eventId = EventId.RPR_405.toString();
 							eventName = EventName.EXCEPTION.toString();
 							eventType = EventType.SYSTEM.toString();
@@ -345,12 +354,17 @@ public class PacketValidatorStage extends MosipVerticleManager {
 					mainResponseDto = (MainResponseDTO) restClientService.postApi(ApiName.REVERSEDATASYNC, "", "",
 							mainRequestDto, MainResponseDTO.class);
 					isTransactionSuccessful = true;
+					description = "Reverse data sync in packet validator successful for " + preRegistrationIds.size()
+							+ " pre-registrationIds";
 
 				} else {
 					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationIds.toString(),
 							PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage()
 									+ "as pre registartion Ids are not found");
+					isTransactionSuccessful = false;
+					description = "Reverse data sync in packet validator failed as there are no any pre-registrationIds";
+
 				}
 
 				if (mainResponseDto != null && mainResponseDto.getErr() != null) {
@@ -358,6 +372,8 @@ public class PacketValidatorStage extends MosipVerticleManager {
 							PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage(),
 							mainResponseDto.getErr().toString());
 					isTransactionSuccessful = false;
+					description = "Internal error occured while processing reverse data sync for "
+							+ preRegistrationIds.size() + " preRegistrationIds" + mainResponseDto.getErr().toString();
 
 				}
 
@@ -366,10 +382,11 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		} catch (TablenotAccessibleException e) {
 			object.setInternalError(Boolean.TRUE);
 			sendMessage(mosipEventBus, object);
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), registrationId,
+			regProcLogger.error(LoggerFileConstant.REGISTRATIONID.toString(), registrationIds.toString(),
 					PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), e.toString());
-
-			description = "Registration status table is not accessible for packet ";
+			isTransactionSuccessful = false;
+			description = "Registration status table not accessible for any of these " + registrationIds.size()
+					+ " registrationIds";
 
 		} catch (ApisResourceAccessException e) {
 
@@ -379,16 +396,23 @@ public class PacketValidatorStage extends MosipVerticleManager {
 				regProcLogger.info(LoggerFileConstant.REGISTRATIONID.toString(), registrationIds.toString(),
 						PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage(),
 						httpClientException.getResponseBodyAsString() + ExceptionUtils.getStackTrace(e));
-
+				isTransactionSuccessful = false;
+				description = "HttpClientErrorException while processing reverse data sync "
+						+ httpClientException.getResponseBodyAsString();
 			} else if (e.getCause() instanceof HttpServerErrorException) {
 				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
 				regProcLogger.info(LoggerFileConstant.REGISTRATIONID.toString(), registrationIds.toString(),
 						PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage(),
 						httpServerException.getResponseBodyAsString() + ExceptionUtils.getStackTrace(e));
+				isTransactionSuccessful = false;
+				description = "HttpServerErrorException while processing reverse data sync "
+						+ httpServerException.getResponseBodyAsString();
 			} else {
 
 				regProcLogger.info(LoggerFileConstant.REGISTRATIONID.toString(), registrationIds.toString(),
 						PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage(), e.getMessage());
+				isTransactionSuccessful = false;
+				description = "Internal error occured while processing reverse data sync " + e.getMessage();
 
 			}
 
@@ -397,13 +421,11 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			String eventName = "";
 			String eventType = "";
 			if (isTransactionSuccessful) {
-				description = "Reverse data sync of Pre-RegistrationIds sucessful";
 				eventId = EventId.RPR_402.toString();
 				eventName = EventName.UPDATE.toString();
 				eventType = EventType.BUSINESS.toString();
 			} else {
 
-				description = "Reverse data sync of Pre-RegistrationIds failed";
 				eventId = EventId.RPR_405.toString();
 				eventName = EventName.EXCEPTION.toString();
 				eventType = EventType.SYSTEM.toString();

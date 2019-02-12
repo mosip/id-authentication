@@ -144,11 +144,14 @@ public class VirusScannerStage extends MosipVerticleManager {
 
 			}
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			description = "virus scan successful for registrationId " + registrationId;
+			isTransactionSuccessful = true;
 		} catch (VirusScanFailedException | IOException | io.mosip.kernel.core.exception.IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
 					VIRUS_SCAN_FAILED + " " + e.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
+			description = "virus scan failed for registrationId " + registrationId + "::" + e.getMessage();
 		} catch (PacketDecryptionFailureException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					e.getErrorCode(), e.getErrorText());
@@ -158,14 +161,16 @@ public class VirusScannerStage extends MosipVerticleManager {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = false;
 			object.setInternalError(Boolean.TRUE);
-			description = "Packet decryption failed for packet " + registrationId;
+			description = "Packet decryption failed for registrationId " + registrationId + "::" + e.getErrorCode()
+					+ e.getErrorText();
 		} catch (Exception ex) {
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PSJ_VIRUS_SCAN_FAILED.getMessage() + ex.getMessage()
 							+ ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
-			description = "Internal error occured while processing registration  id : " + registrationId;
+			description = "Internal error occured in virus scanner stage while processing registrationId : "
+					+ registrationId + ex.getMessage();
 		} finally {
 
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

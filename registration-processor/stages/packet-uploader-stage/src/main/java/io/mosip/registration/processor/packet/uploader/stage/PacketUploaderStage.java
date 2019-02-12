@@ -23,10 +23,10 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
-import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.uploader.exception.DFSNotAccessibleException;
+import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -76,10 +76,10 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	private Environment env;
 
 	/** The description. */
-	private String description = "";
+	// private String description = "";
 
 	/** The is transaction successful. */
-	private boolean isTransactionSuccessful = false;
+	// private boolean isTransactionSuccessful = false;
 
 	/** The registration id. */
 	private String registrationId = "";
@@ -97,25 +97,29 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
+		boolean isTransactionSuccessful = false;
+		String description = "";
 		try {
 
 			this.registrationId = object.getRid();
 			InternalRegistrationStatusDto dto = registrationStatusService.getRegistrationStatus(registrationId);
 			uploadpacket(dto);
-
+			isTransactionSuccessful = true;
+			description = "Packet uploaded to DFS sucessfully for registrationId " + this.registrationId;
 		} catch (TablenotAccessibleException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,
 					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.name() + e.getMessage());
 
-			this.isTransactionSuccessful = false;
-			this.description = "Registration status table is not accessible for packet " + this.registrationId;
+			description = "Registration status TablenotAccessibleException for registrationId " + this.registrationId
+					+ "::" + e.getMessage();
 
 		} catch (Exception e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.PACKET_UPLOAD_FAILED.name() + e.getMessage());
 			object.setInternalError(Boolean.TRUE);
-			description = "Internal error occured while processing registration  id : " + registrationId;
+			description = "Internal error occured while processing for registrationId " + registrationId + "::"
+					+ e.getMessage();
 		} finally {
 
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -124,13 +128,13 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			String eventId = "";
 			String eventName = "";
 			String eventType = "";
-			eventId = this.isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
 					: EventName.EXCEPTION.toString();
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(this.description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					this.registrationId);
 
 		}
@@ -145,6 +149,8 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	 *            the dto
 	 */
 	private void uploadpacket(InternalRegistrationStatusDto dto) {
+		boolean isTransactionSuccessful = false;
+		String description = "";
 		try {
 			packetArchiver.archivePacket(dto.getRegistrationId());
 			String filepath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_DEC.toString()) + File.separator
@@ -152,12 +158,31 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			File file = new File(filepath);
 			InputStream decryptedData = new FileInputStream(file);
 			sendToDFS(dto, decryptedData);
+			isTransactionSuccessful = true;
+			description = "Packet sent to DFS with registrationId " + dto.getRegistrationId();
 		} catch (PacketNotFoundException ex) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PUM_PACKET_NOT_FOUND_EXCEPTION.name() + ex.getMessage());
+			description = "Packet not found in DFS for registrationId " + registrationId + "::" + ex.getMessage();
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.name() + e.getMessage());
+			description = "Virus scan decryption path not found for registrationId " + registrationId + "::"
+					+ e.getMessage();
+
+		} finally {
+
+			String eventId = "";
+			String eventName = "";
+			String eventType = "";
+			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					registrationId);
 
 		}
 	}
@@ -171,7 +196,8 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	 *            the decrypted data
 	 */
 	private void sendToDFS(InternalRegistrationStatusDto entry, InputStream decryptedData) {
-
+		boolean isTransactionSuccessful = false;
+		String description = "";
 		registrationId = entry.getRegistrationId();
 		try {
 
@@ -189,7 +215,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 
 				registrationStatusService.updateRegistrationStatus(entry);
 				isTransactionSuccessful = true;
-				description = registrationId + " packet successfully has been send to DFS";
+				description = " packet sent to DFS for registrationId " + registrationId;
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						PlatformErrorMessages.RPR_PUM_PACKET_DELETION_INFO.getMessage());
@@ -199,16 +225,17 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_DFS.name() + e.getMessage());
 
-			description = "FileSytem is not accessible for packet " + registrationId;
+			description = "DFS not accessible for registrationId " + registrationId + "::" + e.getMessage();
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.name() + e.getMessage());
-			description = "Virus scan path is not accessible for packet " + registrationId;
+			description = "Virus scan path not accessible for registrationId " + registrationId + "::" + e.getMessage();
 		} catch (TablenotAccessibleException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,
 					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.name() + e.getMessage());
-			description = "The Registration Status table is not accessible for packet " + registrationId;
+			description = "The Registration Status table not accessible for registrationId " + registrationId + "::"
+					+ e.getMessage();
 		} finally {
 
 			String eventId = "";
