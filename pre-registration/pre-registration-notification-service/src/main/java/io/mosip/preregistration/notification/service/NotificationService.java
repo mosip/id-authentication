@@ -1,12 +1,9 @@
 package io.mosip.preregistration.notification.service;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
 import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
@@ -94,7 +91,8 @@ public class NotificationService {
 		 qrCode=	qrCodeGenerator.generateQrCode(data, QrVersion.V25);
 		 
 		 responsedto.setQrcode(qrCode);
-		} catch (QrcodeGenerationException  |IOException ex) {
+		 
+		} catch (Exception ex) {
 			
 			new NotificationExceptionCatcher().handle(ex);
 		} 
