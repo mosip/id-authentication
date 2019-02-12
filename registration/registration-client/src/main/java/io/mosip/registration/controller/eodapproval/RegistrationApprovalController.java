@@ -257,18 +257,10 @@ public class RegistrationApprovalController extends BaseController implements In
 		listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
 
 		if (!listData.isEmpty()) {
-			/*
-			 * eodController.getPendingApprovalTitledPane()
-			 * .setText(RegistrationUIConstants.PENDING_APPROVAL + "(" + listData.size() +
-			 * ")");
-			 */
+
 			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
 			table.setItems(oList);
 		} else {
-			/*
-			 * eodController.getPendingApprovalTitledPane().setText(RegistrationUIConstants.
-			 * PENDING_APPROVAL);
-			 */
 			approveRegistrationRootSubPane.disableProperty().set(true);
 			table.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
 			table.getItems().clear();
@@ -280,10 +272,8 @@ public class RegistrationApprovalController extends BaseController implements In
 	/**
 	 * {@code updateStatus} is to update the status of registration.
 	 *
-	 * @param event
-	 *            the event
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
+	 * @param event the event
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	public void updateStatus(ActionEvent event) throws RegBaseCheckedException {
 
@@ -423,10 +413,9 @@ public class RegistrationApprovalController extends BaseController implements In
 					packetUploadService.uploadEODPackets(regIds);
 				}
 			}
-		} catch (RegBaseCheckedException checkedException) {
-			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Error in packet sync and upload");
-		}catch (RegBaseUncheckedException unCheckedException) {
-			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Error in packet sync and upload");
+		} catch (RegBaseCheckedException | RegBaseUncheckedException exception) {
+			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+					"Error in packet sync and upload" + exception.getMessage());
 		}
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status ended");

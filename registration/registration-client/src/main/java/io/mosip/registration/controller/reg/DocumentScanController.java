@@ -29,13 +29,12 @@ import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
-import io.mosip.registration.entity.mastersync.MasterDocumentType;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.util.scan.DocumentScanFacade;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -363,6 +362,12 @@ public class DocumentScanController extends BaseController {
 	}
 
 	private void scanFromScanner() throws IOException {
+
+		/* setting the scanner factory */
+		if (!documentScanFacade.setScannerFactory()) {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONNECTION_ERR);
+			return;
+		}
 		if (!documentScanFacade.isConnected()) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONNECTION_ERR);
 			return;
@@ -511,7 +516,7 @@ public class DocumentScanController extends BaseController {
 				docPages = documentScanFacade.pdfToImages(document);
 				if (!docPages.isEmpty()) {
 					docPreviewImgView.setImage(SwingFXUtils.toFXImage(docPages.get(0), null));
-					
+
 					docPreviewLabel.setVisible(true);
 					if (docPages.size() > 1) {
 						docPageNumber.setText("1");
@@ -588,6 +593,9 @@ public class DocumentScanController extends BaseController {
 
 			@Override
 			public void handle(MouseEvent event) {
+				
+				initializePreviewSection();
+				
 				GridPane gridpane = (GridPane) ((ImageView) event.getSource()).getParent();
 
 				switch (((VBox) gridpane.getParent()).getId()) {
@@ -665,7 +673,8 @@ public class DocumentScanController extends BaseController {
 				}
 
 				if (selectedDocumentToDisplay != null) {
-					displayDocument(selectedDocumentToDisplay.getDocument(), hyperLink.getText());
+					displayDocument(selectedDocumentToDisplay.getDocument(),
+							selectedDocumentToDisplay.getValue() + "." + selectedDocumentToDisplay.getFormat());
 				}
 
 			}
@@ -774,7 +783,7 @@ public class DocumentScanController extends BaseController {
 	}
 
 	public void initializePreviewSection() {
-		
+
 		docPreviewLabel.setVisible(false);
 		docPreviewNext.setVisible(false);
 		docPreviewPrev.setVisible(false);
@@ -794,11 +803,10 @@ public class DocumentScanController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Entering into toggle function for Biometric exception");
 
-			if (SessionContext.userMap()
-					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION) == null) {
+			if (SessionContext.userMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION) == null) {
 				toggleBiometricException = false;
-				SessionContext.userMap()
-						.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
+				SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION,
+						toggleBiometricException);
 
 			} else {
 				toggleBiometricException = (boolean) SessionContext.userMap()
@@ -828,8 +836,8 @@ public class DocumentScanController extends BaseController {
 						faceCaptureController.disableExceptionPhotoCapture(true);
 						faceCaptureController.clearExceptionImage();
 					}
-					SessionContext.userMap()
-							.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
+					SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION,
+							toggleBiometricException);
 				}
 			});
 			bioExceptionToggleLabel1.setOnMouseClicked((event) -> {
@@ -851,8 +859,7 @@ public class DocumentScanController extends BaseController {
 			bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 			bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 			toggleBiometricException = true;
-			SessionContext.userMap()
-					.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
+			SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
 			faceCaptureController.disableExceptionPhotoCapture(false);
 		} else {
 			bioExceptionToggleLabel1.setDisable(true);
@@ -860,8 +867,7 @@ public class DocumentScanController extends BaseController {
 			bioExceptionToggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 			bioExceptionToggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 			toggleBiometricException = false;
-			SessionContext.userMap()
-					.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
+			SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
 			faceCaptureController.disableExceptionPhotoCapture(true);
 			faceCaptureController.clearExceptionImage();
 		}

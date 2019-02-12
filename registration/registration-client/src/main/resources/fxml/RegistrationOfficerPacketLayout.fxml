@@ -72,7 +72,7 @@
             </AnchorPane>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="449.0" layoutY="340.0" styleClass="operationalPaneStyle">
+      <AnchorPane fx:id="eodProcessAnchorPane" layoutX="449.0" layoutY="340.0" styleClass="operationalPaneStyle">
          <children>
             <Label layoutX="60.0" styleClass="optionHeaderStyle" text="End of Day Processes" />
             <AnchorPane layoutX="16.0" layoutY="37.0" onMouseClicked="#approvePacket" styleClass="operationalPaneDetails,operationalPaneDetailsSync">
@@ -83,17 +83,17 @@
                      </image>
                   </ImageView>
                   <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="Pending Approval" />
-                  <Label layoutX="80.0" layoutY="33.0" styleClass="operationalDetails" text="18 Applications" />
+                  <Label fx:id="pendingApprovalCountLbl" layoutX="80.0" layoutY="33.0" styleClass="operationalDetails" text="18 Applications" />
                </children>
             </AnchorPane>
-            <AnchorPane layoutX="16.0" layoutY="106.0" styleClass="operationalPaneDetails">
+            <AnchorPane layoutX="16.0" layoutY="106.0" onMouseClicked="#loadReRegistrationScreen" styleClass="operationalPaneDetails">
                <children>                  
                   <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/Re-Registration.png" />
                      </image>
                   </ImageView>
-                  <Label layoutX="80.0" layoutY="33.0" styleClass="operationalDetails" text="8 Applications" />
+                  <Label fx:id="reRegistrationCountLbl" layoutX="80.0" layoutY="33.0" styleClass="operationalDetails" text="8 Applications" />
                   <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="Re-Registration" />
                </children>
             </AnchorPane>
