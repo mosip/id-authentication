@@ -82,6 +82,12 @@
 			<artifactId>kernel-cryptomanager-service</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency> 
+		
+		 <dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idgenerator-tokenid</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency> 
 
 
 		<!-- Postgres -->

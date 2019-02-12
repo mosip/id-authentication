@@ -23,6 +23,12 @@ public class AuthResponseDTO extends BaseAuthResponseDTO {
 	 * Version
 	 */
 	private String ver;
+	
+
+	/**
+	 * Static token
+	 */
+	private String staticToken;
 
 
 }

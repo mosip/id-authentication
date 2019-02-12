@@ -71,6 +71,7 @@ import io.mosip.authentication.service.impl.notification.service.NotificationSer
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
+import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
@@ -155,13 +156,16 @@ public class AuthFacadeImplTest {
 
 	@Mock
 	private PinAuthService pinAuthService;
-
+	
+	@Mock
+	private TokenIdGenerator<String, String> tokenIdGenerator;
 	/**
 	 * Before.
 	 */
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authFacadeImpl, "otpService", otpAuthServiceImpl);
+		ReflectionTestUtils.setField(authFacadeImpl, "tokenIdGenerator", tokenIdGenerator);
 		ReflectionTestUtils.setField(authFacadeImpl, "pinAuthService", pinAuthService);
 		ReflectionTestUtils.setField(authFacadeImpl, "kycService", kycService);
 		ReflectionTestUtils.setField(authFacadeImpl, "bioAuthService", bioAuthService);
@@ -201,7 +205,7 @@ public class AuthFacadeImplTest {
 
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.VID.getType());
-		authRequestDTO.setId("1234567");
+		authRequestDTO.setId("274390482564");
 		authRequestDTO.setIdvId("457984792857");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setTspID("64378643");
@@ -262,7 +266,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
-
+		Mockito.when(tokenIdGenerator.generateId(Mockito.anyString(), Mockito.anyString())).thenReturn("247334310780728918141754192454591343");
 		authFacadeImpl.authenticateApplicant(authRequestDTO, true);
 
 	}
@@ -290,7 +294,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		List<AuthStatusInfo> authStatusList =ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType", authRequestDTO, idInfo, "1233", true);
+		List<AuthStatusInfo> authStatusList =ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType", authRequestDTO, idInfo, "1233", true,"247334310780728918141754192454591343");
 		
 		assertTrue(authStatusList.stream().noneMatch(
 				status -> status.getUsageDataBits().contains(AuthUsageDataBit.USED_OTP) || status.isStatus()));
@@ -388,7 +392,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		List<AuthStatusInfo> authStatusList =ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType", authRequestDTO, idInfo, "1242", true);
+		List<AuthStatusInfo> authStatusList =ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType", authRequestDTO, idInfo, "1242", true,"247334310780728918141754192454591343");
 		assertTrue(authStatusList.stream().anyMatch(
 				status -> status.getUsageDataBits().contains(AuthUsageDataBit.USED_OTP) && status.isStatus()));
 	}
@@ -476,7 +480,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		List<AuthStatusInfo> authStatusList =ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType", authRequestDTO, idInfo, "1242", false);
+		List<AuthStatusInfo> authStatusList =ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType", authRequestDTO, idInfo, "1242", false,"247334310780728918141754192454591343");
 		assertTrue(authStatusList.stream().anyMatch(
 				status -> status.getUsageDataBits().contains(AuthUsageDataBit.USED_OTP) && status.isStatus()));
 	}
@@ -751,7 +755,7 @@ public class AuthFacadeImplTest {
 		IdType idType = IdType.VID;
 		String uin = "1234567890";
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "saveAndAuditBioAuthTxn", authRequestDTO, isAuth, uin, idType,
-				true);
+				true,"247334310780728918141754192454591343");
 	}
 
 	@Test
@@ -796,7 +800,7 @@ public class AuthFacadeImplTest {
 		IdType idType = IdType.VID;
 		String uin = "1234567890";
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "saveAndAuditBioAuthTxn", authRequestDTO, isAuth, uin, idType,
-				true);
+				true,"247334310780728918141754192454591343");
 	}
 
 	@Test
@@ -839,7 +843,7 @@ public class AuthFacadeImplTest {
 		AuthStatusInfo pinValidationStatus = null;
 		Mockito.when(pinAuthService.validatePin(authRequestDTO, uin)).thenReturn(pinValidationStatus);
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processPinAuth", authRequestDTO, uin, true, authStatusList,
-				IdType.UIN);
+				IdType.UIN,"247334310780728918141754192454591343");
 
 	}
 
@@ -887,7 +891,7 @@ public class AuthFacadeImplTest {
 		pinValidationStatus.setUsageDataBits(Collections.emptyList());
 		Mockito.when(pinAuthService.validatePin(authRequestDTO, uin)).thenReturn(pinValidationStatus);
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processPinAuth", authRequestDTO, uin, true, authStatusList,
-				IdType.UIN);
+				IdType.UIN,"247334310780728918141754192454591343");
 
 	}
 
@@ -935,7 +939,7 @@ public class AuthFacadeImplTest {
 		pinValidationStatus.setUsageDataBits(Collections.emptyList());
 		Mockito.when(pinAuthService.validatePin(authRequestDTO, uin)).thenReturn(pinValidationStatus);
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processPinAuth", authRequestDTO, uin, true, authStatusList,
-				IdType.UIN);
+				IdType.UIN,"247334310780728918141754192454591343");
 
 	}
 
