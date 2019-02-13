@@ -262,6 +262,12 @@ public class JobConfigurationServiceTest {
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenThrow(NoSuchBeanDefinitionException.class);
 		jobConfigurationService.executeJob("packetSyncStatusJob");
 	}
+	
+	@Test
+	public void executeJobRunTimeExceptionJobTest() throws SchedulerException {
+		Mockito.when(packetSyncJob.executeJob(Mockito.anyString(),Mockito.anyString())).thenThrow(NoSuchBeanDefinitionException.class);
+		jobConfigurationService.executeJob("packetSyncStatusJob");
+	}
 
 	@Test
 	public void getLastCompletedSyncJobsTest() {
