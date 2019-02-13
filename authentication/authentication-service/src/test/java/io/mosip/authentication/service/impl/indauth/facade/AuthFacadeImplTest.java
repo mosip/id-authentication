@@ -664,27 +664,6 @@ public class AuthFacadeImplTest {
 
 	}
 
-	/**
-	 * 
-	 * 
-	 * Test Method for AuthenticateTsp
-	 * 
-	 */
-	@Test
-	public void testAuthenticateTsp() {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setTxnID("2345678");
-		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		String resTime = new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date());
-		AuthResponseDTO authResponseTspDto = new AuthResponseDTO();
-		authResponseTspDto.setStatus(STATUS_SUCCESS);
-		authResponseTspDto.setErr(Collections.emptyList());
-		authResponseTspDto.setResTime(resTime);
-		authResponseTspDto.setTxnID(authRequestDTO.getTxnID());
-		assertNotNull(authFacadeImpl.authenticateTsp(authRequestDTO));
-	}
 
 	@Test
 	public void testGetAuditEvent() {

@@ -175,7 +175,7 @@ public class AuthControllerTest {
 		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setTxnID("1234567890");
-//		authRequestDTO.setReqHmac("zdskfkdsnj");
+		// authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
 		authTypeDTO.setOtp(true);
@@ -272,16 +272,6 @@ public class AuthControllerTest {
 		Errors error = new BindException(authReqestsDTO, "authReqDTO");
 		error.rejectValue("id", "errorCode", "defaultMessage");
 		// authController.authenticateTsp(authReqestsDTO, error);
-	}
-
-	@Ignore
-	@Test
-	public void auhtenticationTspSuccess()
-			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
-		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
-		Mockito.when(authFacade.authenticateTsp(authReqestDTO)).thenReturn(new AuthResponseDTO());
-		// authController.authenticateTsp(authReqestDTO, error);
-
 	}
 
 }

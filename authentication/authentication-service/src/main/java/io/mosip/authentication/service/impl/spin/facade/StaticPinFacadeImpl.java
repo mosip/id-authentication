@@ -224,7 +224,7 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 	 * @return
 	 */
 	private String createId(String uin) {
-		String currentDate = DateUtils.formatDate(new Date(), env.getProperty("datetime.pattern"));
+		String currentDate = DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN));
 		String uinAndDate = uin + "-" + currentDate;
 		return UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uinAndDate).toString();
 	}

@@ -31,7 +31,6 @@ public interface AuthFacade {
 	AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequest, boolean request)
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException;
 
-	AuthResponseDTO authenticateTsp(AuthRequestDTO authRequestDTO);
 
 	KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO)
 			throws IdAuthenticationBusinessException;
