@@ -4,7 +4,6 @@
 package io.mosip.kernel.core.util;
 
 import java.security.MessageDigest;
-//import java.security.NoSuchAlgorithmException;
 
 import javax.xml.bind.DatatypeConverter;
 
