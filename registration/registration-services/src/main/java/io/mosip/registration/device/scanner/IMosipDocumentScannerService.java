@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
 
-public interface MosipDocumentScannerService {
+public interface IMosipDocumentScannerService {
 
 	/**
 	 * This method is used to check whether the scanner is connected to the machine
