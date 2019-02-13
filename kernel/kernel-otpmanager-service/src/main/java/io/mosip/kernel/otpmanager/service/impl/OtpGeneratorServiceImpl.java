@@ -44,6 +44,11 @@ public class OtpGeneratorServiceImpl implements OtpGenerator<OtpGeneratorRequest
 	@Value("${mosip.kernel.otp.mac-algorithm}")
 	String macAlgorithm;
 
+	
+	
+	@Value("${javax.persistence.jdbc.url}")
+	String jdbcUrl;
+	
 	/*
 	 * (non-Javadoc)
 	 * 

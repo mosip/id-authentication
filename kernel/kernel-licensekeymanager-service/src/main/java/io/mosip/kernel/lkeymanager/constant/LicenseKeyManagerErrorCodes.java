@@ -8,8 +8,8 @@ package io.mosip.kernel.lkeymanager.constant;
  *
  */
 public enum LicenseKeyManagerErrorCodes {
-	HTTP_MESSAGE_NOT_READABLE("KER-LKM-008"), 
-	RUNTIME_EXCEPTION("KER-LKM-009");
+	HTTP_MESSAGE_NOT_READABLE("KER-LKM-999"), 
+	RUNTIME_EXCEPTION("KER-LKM-500");
 
 	/**
 	 * The error code.

@@ -1,16 +1,28 @@
 # kernel-licensekeymanager-service
 
-[Background & Design](../../docs/design/kernel/kernel-licensekeymanager.md)
+[Background & Design -TBA-](../../docs/design/kernel/kernel-licensekeymanager.md)
 
  
-[API Documentation]
+[API Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#9-license-key-manager)
 
- ```
-localhost:8093/swagger-ui.html
 
- ```
+Default Port and Context Path
+
+```
+server.port=8093
+server.servlet.path=/licensekeymanager
+
+```
+
+localhost:8093/licensekeymanager/swagger-ui.html
+
+
+**Application Properties**
+
+[kernel-otpmanager-service-dev.properties](../../config/kernel-otpmanager-service-dev.properties)
+
  
-3- Usage Sample
+**Usage Sample**
  
  Usage1:
  

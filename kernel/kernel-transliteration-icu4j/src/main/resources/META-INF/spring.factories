@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.mosip.kernel.transliteration.impl.TransliterationImpl
+io.mosip.kernel.transliteration.icu4j.impl.TransliterationImpl
