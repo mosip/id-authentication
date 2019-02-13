@@ -7,8 +7,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
+import io.mosip.registration.dto.RegistrationDTO;
 import javafx.scene.control.TextField;
 
 @Component
@@ -54,7 +57,7 @@ public class DateValidation extends BaseController {
 				int dateVal = 1;
 				if (date.getText().matches("\\d+")) {
 					dateVal = Integer.parseInt(date.getText());
-					if (dateVal > 31 ) {
+					if (dateVal > 31) {
 						date.setText(oldValue);
 					}
 				}
@@ -146,7 +149,14 @@ public class DateValidation extends BaseController {
 				if (year.getText().matches("\\d{4}")) {
 					int yearVal = Integer.parseInt(year.getText());
 					LocalDate localDate = LocalDate.now();
-					if (yearVal < 1900 || yearVal > localDate.getYear()) {
+					int minYear = 1900;
+					RegistrationDTO registrationDto = ((RegistrationDTO) SessionContext.map()
+							.get(RegistrationConstants.REGISTRATION_DATA));
+					if (registrationDto.getSelectionListDTO() != null
+							&& registrationDto.getSelectionListDTO().isChild()) {
+						minYear = LocalDate.now().getYear() - 5;
+					}
+					if (yearVal < minYear || yearVal > localDate.getYear()) {
 						year.setText(oldValue);
 					}
 					if (!(yearVal % 4 == 0)) {
