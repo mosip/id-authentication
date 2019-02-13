@@ -1123,12 +1123,6 @@ public class DemographicDetailController extends BaseController {
 				RegistrationConstants.DISABLE);
 	}
 
-	public void setPreviewContent() {
-		autoFillBtn.setVisible(false);
-		fetchBtn.setVisible(false);
-		SessionContext.map().put("demoGraphicPaneContent", demoGraphicPane);
-	}
-
 	@FXML
 	private void back() {
 		goToHomePageFromRegistration();

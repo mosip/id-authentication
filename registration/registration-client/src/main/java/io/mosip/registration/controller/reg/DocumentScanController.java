@@ -188,13 +188,6 @@ public class DocumentScanController extends BaseController {
 		loadListOfDocuments(dobDocuments, "POB");
 	}
 
-	public void setPreviewContent() {
-		poaScanBtn.setVisible(false);
-		poiScanBtn.setVisible(false);
-		porScanBtn.setVisible(false);
-		dobScanBtn.setVisible(false);
-	}
-
 	/**
 	 * This method scans and uploads Proof of Address documents
 	 */

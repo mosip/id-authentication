@@ -413,12 +413,6 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
-	private void setPreviewContent() {
-		faceCaptureController.setPreviewContent();
-		documentScanController.setPreviewContent();
-		demographicDetailController.setPreviewContent();
-	}
-
 	public RegistrationDTO getRegistrationDtoContent() {
 		return (RegistrationDTO) SessionContext.map()
 				.get(RegistrationConstants.REGISTRATION_DATA);
