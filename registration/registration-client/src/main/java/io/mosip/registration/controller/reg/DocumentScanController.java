@@ -532,6 +532,7 @@ public class DocumentScanController extends BaseController {
 				return;
 			}
 		} else {
+			docPreviewLabel.setVisible(true);
 			docPreviewImgView.setImage(convertBytesToImage(document));
 		}
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,

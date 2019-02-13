@@ -20,7 +20,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.exception.IOException;
 
-public class DocumentScannerServiceImplTest {
+public class DocumentScannerServiceTest {
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -34,7 +34,7 @@ public class DocumentScannerServiceImplTest {
 
 	@BeforeClass
 	public static void initialize() throws IOException, java.io.IOException {
-		URL url = DocumentScannerServiceImplTest.class.getResource("/applicantPhoto.jpg");
+		URL url = DocumentScannerServiceTest.class.getResource("/applicantPhoto.jpg");
 
 		bufferedImage = ImageIO.read(url);
 		bufferedImages.add(bufferedImage);

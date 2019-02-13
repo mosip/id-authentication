@@ -20,7 +20,7 @@ import io.mosip.registration.device.scanner.wia.WiaImageBias;
 import io.mosip.registration.device.scanner.wia.WiaImageIntent;
 
 @Service
-public class DocumentScannerWiaServiceImpl extends DocumentScannerServiceImpl {
+public class DocumentScannerWiaServiceImpl extends DocumentScannerService {
 
 	private static final Logger LOGGER = AppConfig.getLogger(DocumentScannerSaneServiceImpl.class);
 

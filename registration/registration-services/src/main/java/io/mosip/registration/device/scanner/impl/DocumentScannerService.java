@@ -28,7 +28,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.device.scanner.DocumentScannerService;
+import io.mosip.registration.device.scanner.MosipDocumentScannerService;
 
 /**
  * This class is used to handle all the requests related to scanner devices
@@ -38,7 +38,7 @@ import io.mosip.registration.device.scanner.DocumentScannerService;
  *
  */
 @Service
-public abstract class DocumentScannerServiceImpl implements DocumentScannerService {
+public abstract class DocumentScannerService implements MosipDocumentScannerService {
 
 	@Value("${DOCUMENT_SCANNER_DPI}")
 	protected int scannerDpi;
@@ -64,7 +64,7 @@ public abstract class DocumentScannerServiceImpl implements DocumentScannerServi
 	@Value("${DOCUMENT_SCANNER_IMGTYPE}")
 	protected String scannerImgType;
 
-	private static final Logger LOGGER = AppConfig.getLogger(DocumentScannerServiceImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(DocumentScannerService.class);
 
 	/**
 	 * This method converts the BufferedImage to byte[]
