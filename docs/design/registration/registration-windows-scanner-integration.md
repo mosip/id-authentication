@@ -1,4 +1,10 @@
-This document provides the detail about configuring of Image capturing service in Windows 10. There are three different set of services / libraries has been analyzed.
+**Approach to integrate with Image Scanner in Windows OS**
+
+This document provides the detail about configuring of Image capturing service in 
+Windows 10 that will be used to integrate from Registration client application. 
+ 
+
+There are three different set of services / libraries has been analyzed.
 1.	Twain - 
 2.	WIA
 3.	SANE – It works only in Linux version. Not in Windows. 
@@ -23,7 +29,7 @@ This document provides the detail about configuring of Image capturing service i
 
 
 **WIA Service:**
- 	![WIA Service diagram](_images/WIA_service.jpg)
+ 	![WIA Service diagram](_images/wia_diagram.jpg)
 
 **Command to create the Com4j Wrapper class from dll file :**
 java -jar tlbimp.jar -o wia -p wia %WINDIR%\system32\wiaaut.dll
