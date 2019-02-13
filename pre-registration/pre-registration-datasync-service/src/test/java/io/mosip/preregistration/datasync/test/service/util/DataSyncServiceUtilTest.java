@@ -3,9 +3,11 @@ package io.mosip.preregistration.datasync.test.service.util;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import java.util.Map;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -28,6 +31,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
@@ -49,6 +53,7 @@ import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.datasync.dto.DataSyncRequestDTO;
 import io.mosip.preregistration.datasync.dto.PreRegArchiveDTO;
 import io.mosip.preregistration.datasync.dto.ReverseDataSyncRequestDTO;
+import io.mosip.preregistration.datasync.dto.ReverseDatasyncReponseDTO;
 import io.mosip.preregistration.datasync.repository.InterfaceDataSyncRepo;
 import io.mosip.preregistration.datasync.repository.ProcessedDataSyncRepo;
 import io.mosip.preregistration.datasync.service.util.DataSyncServiceUtil;
@@ -131,6 +136,16 @@ public class DataSyncServiceUtilTest {
 	DemographicResponseDTO demographicResponseDTO = new DemographicResponseDTO();
 	BookingRegistrationDTO bookingRegistrationDTO = new BookingRegistrationDTO();
 	PreRegArchiveDTO preRegArchiveDTO = new PreRegArchiveDTO();
+	File file;
+	private MockMultipartFile mockMultipartFile;
+	
+	@Before
+	public void setUp() throws Exception {
+		ClassLoader classLoader = getClass().getClassLoader();
+		URI uri = new URI(classLoader.getResource("Doc.pdf").getFile().trim().replaceAll("\\u0020", "%20"));
+		file = new File(uri.getPath());
+		//mockMultipartFile = new MockMultipartFile("file", "Doc.pdf", "mixed/multipart", new FileInputStream(file));
+	}
 	
 	@Test
 	public void validateDataSyncRequestTest() {
@@ -390,6 +405,7 @@ public class DataSyncServiceUtilTest {
 		assertEquals(bookingRegistrationDTO.getRegistrationCenterId(), response.getRegistrationCenterId());
 	}
 	
+
 	@Test
 	public void preparePreRegArchiveDTOTest() {
 		demographicResponseDTO.setPreRegistrationId(preId);
@@ -402,27 +418,66 @@ public class DataSyncServiceUtilTest {
 	private JSONObject jsonObject;
 	private JSONParser parser = null;
 	
-//	@Test
-//	public void archivingFilesTest() throws FileNotFoundException, IOException, ParseException {
-//		parser = new JSONParser();
-//
-//		ClassLoader classLoader = getClass().getClassLoader();
-//		File file = new File(classLoader.getResource("pre-registration.json").getFile());
-//		jsonObject = (JSONObject) parser.parse(new FileReader(file));
-//		
-//		demographicResponseDTO.setPreRegistrationId(preId);
-//		demographicResponseDTO.setDemographicDetails(jsonObject);
-//		
-//		bookingRegistrationDTO.setRegistrationCenterId("1005");
-//		bookingRegistrationDTO.setRegDate(resTime);
-//		
-//		multipartResponseDTOs.setPrereg_id("23587986034785");
-//		multipartResponseDTOs.setDoc_name("Address.pdf");
-//		multipartResponseDTOs.setDoc_id("1234");
-//		multipartResponseDTOs.setDoc_cat_code("POA");
-//		multipartResponseDTOs.setMultipartFile(MultipartFile);
-//		responsestatusDto.add(multipartResponseDTOs);
-//		serviceUtil.archivingFiles(demographicResponseDTO,bookingRegistrationDTO,responsestatusDto);
-//	}
+	@Test
+	public void archivingFilesTest() throws FileNotFoundException, IOException, ParseException {
+		parser = new JSONParser();
+
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource("pre-registration.json").getFile());
+		jsonObject = (JSONObject) parser.parse(new FileReader(file));
+		
+		demographicResponseDTO.setPreRegistrationId(preId);
+		demographicResponseDTO.setDemographicDetails(jsonObject);
+		
+		bookingRegistrationDTO.setRegistrationCenterId("1005");
+		bookingRegistrationDTO.setRegDate(resTime);
+		
+		multipartResponseDTOs.setPrereg_id("23587986034785");
+		multipartResponseDTOs.setDoc_name("Address.pdf");
+		multipartResponseDTOs.setDoc_id("1234");
+		multipartResponseDTOs.setDoc_cat_code("POA");
+		multipartResponseDTOs.setMultipartFile(file.toString().getBytes());
+		responsestatusDto.add(multipartResponseDTOs);
+		serviceUtil.archivingFiles(demographicResponseDTO,bookingRegistrationDTO,responsestatusDto);
+	}
+	
+	@Test
+	public void reverseDateSyncSaveTest() {
+		List<String> preIdList =new ArrayList<>();
+		preIdList.add(preId);
+		
+		reverseDataSyncRequestDTO.setPreRegistrationIds(preIdList);
+		reverseDataSyncRequestDTO.setLangCode("AR");
+		reverseDataSyncRequestDTO.setCreatedBy("5766477466");
+		reverseDataSyncRequestDTO.setCreatedDateTime(date);
+		reverseDataSyncRequestDTO.setUpdateBy("5766477466");
+		reverseDataSyncRequestDTO.setUpdateDateTime(date);
+		
+		ReverseDatasyncReponseDTO reverseDatasyncReponse = new ReverseDatasyncReponseDTO();
+		reverseDatasyncReponse.setTransactionId("1111");
+		reverseDatasyncReponse.setAlreadyStoredPreRegIds(preId);
+		reverseDatasyncReponse.setCountOfStoredPreRegIds("1");
+		serviceUtil.reverseDateSyncSave(date, reverseDataSyncRequestDTO);
+	}
+	
+	@Test
+	public void getLastUpdateTimeStampTest() {
+		List<String> preIdList =new ArrayList<>();
+		preIdList.add(preId);
+		
+		List<DemographicResponseDTO> list=new ArrayList<>();
+		list.add(demographicResponseDTO);
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		MainListResponseDTO mainResponseDTO=new MainListResponseDTO();
+		mainResponseDTO.setStatus(true);
+		mainResponseDTO.setResTime(resTime);
+		mainResponseDTO.setErr(exceptionJSONInfo);
+		mainResponseDTO.setResponse(list);
+		ResponseEntity<MainListResponseDTO> respEntity=new ResponseEntity<>(mainResponseDTO, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(MainListResponseDTO.class))).thenReturn(respEntity);
+		serviceUtil.getLastUpdateTimeStamp(preIdList);
+	}
 	
 }
