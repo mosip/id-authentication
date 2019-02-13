@@ -20,6 +20,7 @@ public class RidValidatorTest {
 	@Autowired
 	RidValidator<String> ridValidatorImpl;
 
+	
 	@Value("${mosip.kernel.rid.test.center-id}")
 	private String centerId;
 

@@ -3,8 +3,6 @@ package io.mosip.kernel.idgenerator.rid.impl;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -43,20 +41,14 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	@Value("${mosip.kernel.rid.sequence-length:-1}")
 	private int sequenceLength;
 
+	@Value("${mosip.kernel.rid.timestamp-length:-1}")
+	private int timeStampLength;
+
 	@Value("${mosip.kernel.rid.sequence-initial-value:1}")
 	private int sequenceInitialValue;
 
-	private String sequenceFormat;
-	private int sequenceEndvalue;
-
 	@Autowired
 	RidRepository ridRepository;
-
-	@PostConstruct
-	public void constructValue() {
-		sequenceFormat = "%0" + sequenceLength + "d";
-		sequenceEndvalue = MathUtils.getPow(10, sequenceLength) - 1;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -66,9 +58,9 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	 */
 	@Override
 	public String generateId(String centreId, String machineId) {
-		validateInput(centreId, machineId, centerIdLength, machineIdLength);
+		validateInput(centreId, machineId, centerIdLength, machineIdLength, timeStampLength);
 
-		String randomDigitRid = sequenceNumberGenerator();
+		String randomDigitRid = sequenceNumberGenerator(sequenceLength);
 
 		return appendString(randomDigitRid, getcurrentTimeStamp(), centreId, machineId);
 	}
@@ -80,10 +72,11 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	 * String, java.lang.String, int, int)
 	 */
 	@Override
-	public String generateId(String centreId, String machineId, int centerIdLength, int machineIdLength) {
-		validateInput(centreId, machineId, centerIdLength, machineIdLength);
+	public String generateId(String centreId, String machineId, int centerIdLength, int machineIdLength,
+			int sequenceLength, int timeStampLength) {
+		validateInput(centreId, machineId, centerIdLength, machineIdLength, timeStampLength);
 
-		String randomDigitRid = sequenceNumberGenerator();
+		String randomDigitRid = sequenceNumberGenerator(sequenceLength);
 
 		return appendString(randomDigitRid, getcurrentTimeStamp(), centreId, machineId);
 	}
@@ -96,13 +89,13 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	 * @param machineId
 	 *            input by user
 	 */
-	private void validateInput(String centreId, String machineId, int centerIdLength, int machineIdLength) {
+	private void validateInput(String centreId, String machineId, int centerIdLength, int machineIdLength,
+			int timeStampLength) {
 
-		if (centerIdLength <= 0 || machineIdLength <= 0) {
+		if (centerIdLength <= 0 || machineIdLength <= 0 || timeStampLength <= 0) {
 			throw new InputLengthException(
-					RidGeneratorExceptionConstant.CENTERIDLENGTH_AND_MACHINEIDLENGTH_VALUE_ERROR_CODE.getErrorCode(),
-					RidGeneratorExceptionConstant.CENTERIDLENGTH_AND_MACHINEIDLENGTH_VALUE_ERROR_CODE
-							.getErrorMessage());
+					RidGeneratorExceptionConstant.INVALID_CENTERID_OR_MACHINEID_TIMESTAMP_LENGTH.getErrorCode(),
+					RidGeneratorExceptionConstant.INVALID_CENTERID_OR_MACHINEID_TIMESTAMP_LENGTH.getErrorMessage());
 		}
 
 		if (centreId == null || machineId == null) {
@@ -128,9 +121,17 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	 * 
 	 * @return generated five digit random number
 	 */
-	private String sequenceNumberGenerator() {
+	private String sequenceNumberGenerator(int sequenceLength) {
 		int sequenceId = 0;
 		Rid entity = null;
+		int sequenceEndvalue = MathUtils.getPow(10, sequenceLength) - 1;
+		String sequenceFormat = "%0" + sequenceLength + "d";
+
+		if (sequenceLength <= 0) {
+			throw new InputLengthException(RidGeneratorExceptionConstant.INVALID_SEQ_LENGTH_EXCEPTION.getErrorCode(),
+					RidGeneratorExceptionConstant.INVALID_SEQ_LENGTH_EXCEPTION.getErrorMessage());
+		}
+
 		try {
 			entity = ridRepository.findLastRid();
 		} catch (DataAccessException | DataAccessLayerException e) {
