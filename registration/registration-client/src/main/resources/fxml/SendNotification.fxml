@@ -6,22 +6,36 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane styleClass="sendNotificationPane" prefHeight="287.0" prefWidth="532.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.SendNotificationController">
+<AnchorPane prefHeight="287.0" prefWidth="532.0" styleClass="sendNotificationPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.SendNotificationController">
    <children>
       <Label layoutX="24.0" layoutY="28.0" prefHeight="27.0" prefWidth="263.0" text="Email / SMS  Acknowledgement" />
-      <TextField fx:id="email" layoutX="147.0" layoutY="91.0" promptText="Enter email ID" styleClass="ackTextField" />
-      <TextField fx:id="mobile" layoutX="147.0" layoutY="143.0" promptText="Enter mobile number" styleClass="ackTextField" />
-      <Button layoutX="234.0" layoutY="215.0" mnemonicParsing="false" onAction="#sendNotification" styleClass="ackPageButton" text="Send" />
+      <TextField fx:id="email" disable="true" layoutX="147.0" layoutY="91.0" promptText="Enter email ID" styleClass="ackTextField" />
+      <TextField fx:id="mobile" disable="true" layoutX="147.0" layoutY="143.0" promptText="Enter mobile number" styleClass="ackTextField" />
+      <Button layoutX="212.0" layoutY="206.0" mnemonicParsing="false" onAction="#sendNotification" prefHeight="39.0" prefWidth="105.0" styleClass="ackPageButton" text="Send" />
       <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="108.0" layoutY="98.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/SendEmail.png" />
+            <Image url="@../images/Email.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="108.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/SendEmail.png" />
+            <Image url="@../images/EnterMobile.png" />
          </image>
       </ImageView>
-      <Label layoutX="495.0" layoutY="7.0" onMouseClicked="#closeWindow" text="%x" />
+      <ImageView fitHeight="28.0" fitWidth="28.0" layoutX="490.0" layoutY="14.0" onMouseClicked="#closeWindow" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/Close.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="mobileImageView" fitHeight="25.0" fitWidth="25.0" layoutX="70.0" layoutY="151.0" onMouseClicked="#selectMobile" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/BlankRound.PNG" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="emailImageView" fitHeight="25.0" fitWidth="25.0" layoutX="70.0" layoutY="99.0" onMouseClicked="#selectEmail" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/BlankRound.PNG" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

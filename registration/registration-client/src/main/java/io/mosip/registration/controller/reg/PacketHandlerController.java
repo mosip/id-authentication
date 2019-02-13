@@ -391,6 +391,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		if (response.getSuccessResponseDTO() != null
 				&& response.getSuccessResponseDTO().getMessage().equals("Success")) {
+			
+			String mobile = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity().getPhone();
+			String email = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity().getEmail();
+			sendEmailNotification(email);
+			sendSMSNotification(mobile);
+			
 			try {
 				// Generate the file path for storing the Encrypted Packet and Acknowledgement
 				// Receipt
