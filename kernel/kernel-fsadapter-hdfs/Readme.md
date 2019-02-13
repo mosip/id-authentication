@@ -34,11 +34,15 @@ logging.level.org.apache.hadoop=warn
 1. Login to hdfs name-node (104.211.240.243)
 2. Get KDC ticket with this command. Replace ${username} with application username (regprocessor,prereg or idrepo). When prompted for password, provide the configured password (Mosip@dev123) 
 ```
-kinit ${username}
+> kinit ${username}
 ```
 3. Use this command to check files in hdfs. Replace ${username} with application username.
 ```
-hdfs dfs -ls /user/${username}
+> hdfs dfs -ls /user/${username}
+```
+4. Invalidate KDC ticket with this command.
+```
+> kdestory -A
 ```
 
 - To use this api, add this to dependency list:
