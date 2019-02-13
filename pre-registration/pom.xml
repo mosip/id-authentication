@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.8.3</version>
+		<version>0.8.4</version>
 	</parent>
 
 	<groupId>io.mosip.preregistration</groupId>
@@ -79,7 +79,7 @@
 		<icu.version>63.1</icu.version>
 		
 		<!-- Other module dependency -->
-		<pre.registration.version>0.8.1</pre.registration.version>
+		<pre.registration.version>0.8.3</pre.registration.version>
 		<registration.processor.version>0.7.0</registration.processor.version>
 
 		<sonar.coverage.exclusions>**/code/**,**/config/**,**/dao/**,**/dto/**,**/entity/**,**/errorcodes/**,**/exception/**,**/exception/system/**,**/exception/util/**,**/repository/**,**/*Config.java,**/*Application.java,**/transliteration/**,**/batchjobservices/**,**/batchjob/**,**/auth/**,**/util/**,**/stateUtil/**,**/datasync/**</sonar.coverage.exclusions>
