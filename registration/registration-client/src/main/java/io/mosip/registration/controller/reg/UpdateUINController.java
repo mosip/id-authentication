@@ -9,11 +9,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.IdValidator;
+import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
@@ -76,8 +75,7 @@ public class UpdateUINController extends BaseController implements Initializable
 	private boolean isChild;
 
 	@Autowired
-	@Qualifier(value = "uinValidator")
-	private IdValidator<String> uinValidatorImpl;
+	private UinValidator<String> uinValidatorImpl;
 
 	@Autowired
 	Validations validation;
