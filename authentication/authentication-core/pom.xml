@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>0.8.3</version>
+		<version>0.8.4</version>
 	</parent>
 
 	<artifactId>authentication-core</artifactId>
