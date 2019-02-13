@@ -63,7 +63,7 @@ public class StorageServiceTest extends BaseIntegrationTest{
 		try {
 			registrationDTO = mapper.readValue(new File("src/test/resources/testData/StorageServiceData/user.json"),
 					RegistrationDTO.class);
-			byte[] data = IOUtils.toByteArray(new FileInputStream(new File("PANStubbed.jpg")));
+			byte[] data = IOUtils.toByteArray(new FileInputStream(new File("src/test/resources/testData/StorageServiceData/PANStubbed.jpg")));
 			DemographicDTO documentDetails = registrationDTO.getDemographicDTO();
 			DocumentDetailsDTO documentDetailsDTO = documentDetails.getDemographicInfoDTO().getIdentity()
 					.getProofOfIdentity();

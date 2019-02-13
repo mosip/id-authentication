@@ -67,6 +67,7 @@ public class DaoConfig extends HibernateDaoConfig {
 		ppc.setLocations(resources);
 
 		Properties properties = new Properties();
+		System.out.println(propertiesConfig().getDBProps());
 		properties.putAll(propertiesConfig().getDBProps());
 
 		ppc.setProperties(properties);

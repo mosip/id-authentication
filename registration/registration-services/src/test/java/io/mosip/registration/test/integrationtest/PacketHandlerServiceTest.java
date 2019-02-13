@@ -48,7 +48,7 @@ public class PacketHandlerServiceTest extends BaseIntegrationTest {
 	public void testHandelPacket() throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JSR310Module());
-		RegistrationDTO obj = mapper.readValue(new File("user.json"), RegistrationDTO.class);
+		RegistrationDTO obj = mapper.readValue(new File("src/test/resources/testData/PacketHandlerServiceData/user.json"), RegistrationDTO.class);
 		byte[] data = IOUtils.toByteArray(
 				new FileInputStream(new File("src/test/resources/testData/PacketHandlerServiceData/PANStubbed.jpg")));
 		DemographicDTO documentDetails = obj.getDemographicDTO();
