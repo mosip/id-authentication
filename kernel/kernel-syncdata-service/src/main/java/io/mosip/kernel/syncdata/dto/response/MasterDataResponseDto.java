@@ -1,5 +1,6 @@
 package io.mosip.kernel.syncdata.dto.response;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import io.mosip.kernel.syncdata.dto.ApplicationDto;
@@ -77,5 +78,6 @@ public class MasterDataResponseDto {
 	private List<RegistrationCenterMachineDeviceDto> registrationCenterMachineDevices;
 	private List<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachines;
 	private List<RegistrationCenterUserDto> registrationCenterUsers;
+	private LocalDateTime lastSyncTime;
 
 }
