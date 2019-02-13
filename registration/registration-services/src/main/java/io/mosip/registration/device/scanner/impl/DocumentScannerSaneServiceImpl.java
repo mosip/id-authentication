@@ -18,6 +18,13 @@ import au.com.southsky.jfreesane.SaneSession;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 
+/**
+ * This class is used to provide document scanner functionalities for Linux
+ * platform through SANE Daemon service
+ * 
+ * @author balamurugan.ramamoorthy
+ *
+ */
 @Service
 public class DocumentScannerSaneServiceImpl extends DocumentScannerService {
 

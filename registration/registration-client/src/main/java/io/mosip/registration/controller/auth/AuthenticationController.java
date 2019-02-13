@@ -19,6 +19,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.PacketHandlerController;
@@ -430,7 +431,9 @@ public class AuthenticationController extends BaseController implements Initiali
 				}
 			} else {
 				if (!isSupervisor) {
-					if (toogleBioException != null && toogleBioException.booleanValue()) {
+					
+					/* Check whether the biometric exceptions are enabled and supervisor authentication is required */
+					if ((toogleBioException != null && toogleBioException.booleanValue()) && isSupervisorAuthenticationRequired()) {
 						authCount = 0;
 						isSupervisor = true;
 						getAuthenticationModes(ProcessNames.EXCEPTION.getType());
@@ -888,6 +891,16 @@ public class AuthenticationController extends BaseController implements Initiali
 		default:
 			
 		}
+
+	}
+	
+	private boolean isSupervisorAuthenticationRequired() {
+		
+		/* Get Value from global_param_config */
+		String val = (String) (ApplicationContext.getInstance().getApplicationMap().get("SUPERVISOR_AUTHENTICATION_CONFIGURATION"));
+
+		/* Whether supervisor authentication required or not */
+		return (val != null) ? (val.equalsIgnoreCase("Y")) : val!=null;
 
 	}
 

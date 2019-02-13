@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.core.idvalidator.spi.PridValidator;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
@@ -336,8 +335,7 @@ public class DemographicDetailController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
 			fxUtils = FXUtils.getInstance();
-			SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED,
-					RegistrationConstants.DISABLE);
+			SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 			switchedOn = new SimpleBooleanProperty(false);
 			isChild = false;
 			toggleFunction();
@@ -451,11 +449,14 @@ public class DemographicDetailController extends BaseController {
 				}
 				int age = 0;
 				if (newValue.matches("\\d{1,3}")) {
-					if (Integer.parseInt(ageField.getText()) > Integer
-							.parseInt(AppConfig.getApplicationProperty("max_age"))) {
+					int maxAge = Integer.parseInt(AppConfig.getApplicationProperty("max_age"));
+					if (getRegistrationDtoContent().getSelectionListDTO() != null
+							&& getRegistrationDtoContent().getSelectionListDTO().isChild())
+						maxAge = 5;
+					if (Integer.parseInt(ageField.getText()) > maxAge) {
 						ageField.setText(oldValue);
-						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.MAX_AGE_WARNING + " "
-								+ AppConfig.getApplicationProperty("max_age"));
+						generateAlert(RegistrationConstants.ERROR,
+								RegistrationUIConstants.MAX_AGE_WARNING + " " + maxAge);
 					} else {
 						age = Integer.parseInt(ageField.getText());
 						LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
@@ -648,8 +649,7 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	/**
-	 * To load the localAdminAuthorities selection list based on the language
-	 * code
+	 * To load the localAdminAuthorities selection list based on the language code
 	 */
 	@FXML
 	private void addlocalAdminAuthority() {
@@ -688,7 +688,8 @@ public class DemographicDetailController extends BaseController {
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(gender.getValue().getGenderName())).get()))
+												.with(value -> value.setValue(gender.getValue().getGenderName()))
+												.get()))
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value.setValue(genderLocalLanguage.getValue())).get()))
@@ -761,7 +762,8 @@ public class DemographicDetailController extends BaseController {
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(localAdminAuthority.getValue().getName())).get()))
+												.with(value -> value.setValue(localAdminAuthority.getValue().getName()))
+												.get()))
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value
@@ -986,7 +988,7 @@ public class DemographicDetailController extends BaseController {
 
 		registrationController.createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
 		documentScanController.clearDocSection();
-		
+
 		ResponseDTO responseDTO = preRegistrationDataSyncService.getPreRegistration(preRegId);
 
 		SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
@@ -1083,8 +1085,7 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	public void clickMe() {
-		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED,
-				RegistrationConstants.ENABLE);
+		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.ENABLE);
 		validation.setValidationMessage();
 		fullName.setText("Taleev Aalam");
 		int age = 45;
@@ -1119,14 +1120,7 @@ public class DemographicDetailController extends BaseController {
 		parentName.setText("Mokhtar");
 		uinId.setText("93939939");
 		registrationController.displayValidationMessage(validation.getValidationMessage().toString());
-		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED,
-				RegistrationConstants.DISABLE);
-	}
-
-	public void setPreviewContent() {
-		autoFillBtn.setVisible(false);
-		fetchBtn.setVisible(false);
-		SessionContext.map().put("demoGraphicPaneContent", demoGraphicPane);
+		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 	}
 
 	@FXML
@@ -1138,27 +1132,26 @@ public class DemographicDetailController extends BaseController {
 	private void next() {
 		if (validateThisPane()) {
 
-				if (!switchedOn.get()) {
-					LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()),
-							Integer.parseInt(mm.getText()), Integer.parseInt(dd.getText()));
-					dateOfBirth = Date.from(currentYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
-					SessionContext.map().put(RegistrationConstants.REGISTRATION_AGE_DATA,
-							dateOfBirth);
-					SessionContext.map().put("dd", dd.getText());
-					SessionContext.map().put("mm", mm.getText());
-					SessionContext.map().put("yyyy", yyyy.getText());
-				}
-				SessionContext.map().put("demographicDetail", false);
-				SessionContext.map().put("documentScan", true);
-				registrationController.showCurrentPage();
-			
+			if (!switchedOn.get()) {
+				LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()),
+						Integer.parseInt(dd.getText()));
+				dateOfBirth = Date.from(currentYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
+				SessionContext.map().put(RegistrationConstants.REGISTRATION_AGE_DATA, dateOfBirth);
+				SessionContext.map().put("dd", dd.getText());
+				SessionContext.map().put("mm", mm.getText());
+				SessionContext.map().put("yyyy", yyyy.getText());
+			}
+			SessionContext.map().put("demographicDetail", false);
+			SessionContext.map().put("documentScan", true);
+			registrationController.showCurrentPage();
+
 		}
 
 	}
-	
+
 	public boolean validateThisPane() {
-		boolean isValid=true;
-		isValid=registrationController.validateDemographicPane(demoGraphicPane);
+		boolean isValid = true;
+		isValid = registrationController.validateDemographicPane(demoGraphicPane);
 		if (isValid)
 			isValid = validation.validateUinOrRid(uinId, isChild, uinValidator, ridValidator);
 		registrationController.displayValidationMessage(validation.getValidationMessage().toString());

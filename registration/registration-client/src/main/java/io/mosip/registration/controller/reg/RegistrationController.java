@@ -373,7 +373,6 @@ public class RegistrationController extends BaseController {
 								RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 								"showing demographic preview");
 
-						setPreviewContent();
 						saveDetail();
 						SessionContext.map().put("faceCapture",false);
 						registrationPreviewController.setUpPreviewContent();
@@ -411,12 +410,6 @@ public class RegistrationController extends BaseController {
 			LOGGER.error("REGISTRATION - REGSITRATION_OPERATOR_AUTHENTICATION_PAGE_LOADING_FAILED", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 		}
-	}
-
-	private void setPreviewContent() {
-		faceCaptureController.setPreviewContent();
-		documentScanController.setPreviewContent();
-		demographicDetailController.setPreviewContent();
 	}
 
 	public RegistrationDTO getRegistrationDtoContent() {

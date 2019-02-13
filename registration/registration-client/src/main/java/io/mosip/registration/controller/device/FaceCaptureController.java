@@ -359,11 +359,6 @@ public class FaceCaptureController extends BaseController implements Initializab
 		}
 	}
 
-	public void setPreviewContent() {
-		saveBiometricDetailsBtn.setVisible(false);
-		biometricPrevBtn.setVisible(false);
-	}
-
 	private RegistrationDTO getRegistrationDTOFromSession() {
 		return (RegistrationDTO) SessionContext.map()
 				.get(RegistrationConstants.REGISTRATION_DATA);

@@ -24,14 +24,14 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamDiscoveryService;
 
-import io.mosip.registration.device.webcam.impl.LogitechPhotoProvider;
+import io.mosip.registration.device.webcam.impl.WebcamSarxosServiceImpl;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Webcam.class })
-public class LogitechPhotoProviderTest {
+public class WebcamSarxosServiceTest {
 	
 	@InjectMocks
-	LogitechPhotoProvider logitechPhotoProvider;
+	WebcamSarxosServiceImpl webcamSarxosServiceImpl;
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -39,15 +39,12 @@ public class LogitechPhotoProviderTest {
 	@Mock
 	WebcamDiscoveryService discoveryService;
 	
+	@Mock
+	Webcam webcam;
 	
 	@Test
-	public void connectFailureTest() {
-		PowerMockito.mockStatic(Webcam.class);
-		Webcam webcam = Mockito.mock(Webcam.class);
-		List<Webcam> webcams = new ArrayList<>();
-		when(Webcam.getWebcams()).thenReturn(webcams);
-		webcam = null;
-		assertThat(logitechPhotoProvider.connect(640, 480), is(webcam));		
+	public void testIsWebcamConnected() {
+		assertThat(webcamSarxosServiceImpl.isWebcamConnected(), is(true));
 	}
 	
 	@Test
@@ -61,20 +58,20 @@ public class LogitechPhotoProviderTest {
 		when(Webcam.getWebcams()).thenReturn(webcams);
 		when(Webcam.getDiscoveryService()).thenReturn(discoveryService);
 		discoveryService.stop();
-		assertThat(logitechPhotoProvider.connect(640, 480), is(webcam));		
+		webcamSarxosServiceImpl.connect(640, 480);		
 	}
 	
 	@Test
 	public void captureImageTest() {
-		PowerMockito.mockStatic(Webcam.class);
-		Webcam webcam = Mockito.mock(Webcam.class);
-		when(webcam.getName()).thenReturn("Test-Cam");
-		when(webcam.getViewSize()).thenReturn(new Dimension(640, 480));
-		when(Webcam.getDefault()).thenReturn(webcam);
+//		PowerMockito.mockStatic(Webcam.class);
+//		Webcam webcam = Mockito.mock(Webcam.class);
+//		when(webcam.getName()).thenReturn("Test-Cam");
+//		when(webcam.getViewSize()).thenReturn(new Dimension(640, 480));
+//		when(Webcam.getDefault()).thenReturn(webcam);
 		BufferedImage image = null;		
 		when(webcam.getImage()).thenReturn(image);
-		assertThat(logitechPhotoProvider.captureImage(webcam), is(image));
-		logitechPhotoProvider.close(webcam);
+		assertThat(webcamSarxosServiceImpl.captureImage(), is(image));
+		webcamSarxosServiceImpl.close();
 	}
 	
 }

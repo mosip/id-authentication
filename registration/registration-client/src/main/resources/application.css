@@ -982,7 +982,7 @@
 	-fx-border-color: black;
 }
 /*
-Working on new Css
+Working on new Css by taleev
 */
 
 
@@ -1255,3 +1255,68 @@ Working on new Css
 	-fx-border-color: #C9C9C9;
 	
 }
+
+.uploadIds{
+	-fx-background-color : #F4F4F4;
+	-fx-pref-width : 1200px;
+	-fx-padding : 20 20 20 20;
+}
+
+#uploadPanes{
+	-fx-background-color : #FFFFFF;
+	-fx-padding : 5 5 5 5;
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
+}
+
+#uploadPanesFirst{
+	-fx-background-color : #FFFFFF;
+	-fx-padding : 5 5 5 5;
+	-fx-border-color : #E457A0;
+	-fx-border-width : 0 0 1 0;
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
+}
+
+#uploadPageText{
+	-fx-text-fill: #666666;
+}
+
+#uploadPacketHeaderLabel{
+	-fx-text-fill : #666666;
+}
+
+#uploadPacketMainHeader{
+		-fx-text-fill : #FD518C;
+		-fx-font-size : 20px;
+		-fx-pref-height : 10;
+		-fx-pref-width : 250;
+		
+	
+}
+#saveToDevice, #formValidationButton{
+	-fx-background-color : #FF4081;
+	-fx-pref-height : 10;
+	-fx-pref-width : 120;
+}
+
+.homeButton{
+		-fx-background-color : #FFFFFF;
+		-fx-pref-height : 10;
+		-fx-pref-width : 70;
+		-fx-padding : 0 0 0 0;
+		
+}
+
+
+#uploadPacketHeader{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 35px;
+	-fx-pref-width: 1290px;
+	
+}
+
+.uploadPacketparentPane{
+	-fx-background-color:#F4F4F4;
+	-fx-pref-height: 794px;
+	-fx-pref-width: 1400px;
+}
+

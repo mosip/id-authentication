@@ -28,7 +28,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.device.scanner.MosipDocumentScannerService;
+import io.mosip.registration.device.scanner.IMosipDocumentScannerService;
 
 /**
  * This class is used to handle all the requests related to scanner devices
@@ -38,7 +38,7 @@ import io.mosip.registration.device.scanner.MosipDocumentScannerService;
  *
  */
 @Service
-public abstract class DocumentScannerService implements MosipDocumentScannerService {
+public abstract class DocumentScannerService implements IMosipDocumentScannerService {
 
 	@Value("${DOCUMENT_SCANNER_DPI}")
 	protected int scannerDpi;

@@ -186,4 +186,7 @@ public class RegistrationUIConstants {
 
 	// User Onboard
 	public static final String UNABLE_LOAD_USERONBOARD_SCREEN = bundle.getString("UNABLE_LOAD_USERONBOARD_SCREEN");
+	
+	// Supervisor Authentication configuration from global_param
+	public static final String SUPERVISOR_AUTHENTICATION_CONFIGURATION = "SUPERVISOR_AUTHENTICATION_CONFIGURATION";
 }
