@@ -14,6 +14,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.Validations;
+import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 
@@ -169,6 +170,14 @@ public class FXUtils {
 		return selectedValue;
 	}
 
+	/**
+	 * Shows the selected value in the combo-box
+	 * 
+	 * @param comboBox
+	 *            the combo-box from which selected value has to be shown
+	 * @param selectedValue
+	 *            the selected value from the combo-box
+	 */
 	public void selectComboBoxValue(ComboBox<?> comboBox, String selectedValue) {
 		ObservableList<?> comboBoxValues = comboBox.getItems();
 
@@ -179,6 +188,9 @@ public class FXUtils {
 						.equals(selectedValue);
 			} else if (comboBoxValues.get(0) instanceof GenderDto) {
 				findIndexOfSelectedItem = index -> ((GenderDto) comboBoxValues.get(index)).getGenderName()
+						.equals(selectedValue);
+			} else if (comboBoxValues.get(0) instanceof DocumentCategoryDto) {
+				findIndexOfSelectedItem = index -> ((DocumentCategoryDto) comboBoxValues.get(index)).getName()
 						.equals(selectedValue);
 			}
 
@@ -194,6 +206,12 @@ public class FXUtils {
 		return IntStream.range(0, comboBoxValues.size()).filter(lambdaExpression).findFirst();
 	}
 
+	/**
+	 * The custom {@link StringConverter} for displaying only the name in the
+	 * combo-box based on the combo-box type
+	 * 
+	 * @return the custom {@link StringConverter}
+	 */
 	public <T> StringConverter<T> getStringConverterForComboBox() {
 		return new StringConverter<T>() {
 			@Override
@@ -203,6 +221,8 @@ public class FXUtils {
 					value = ((LocationDto) object).getName();
 				} else if (object instanceof GenderDto) {
 					value = ((GenderDto) object).getGenderName();
+				} else if (object instanceof DocumentCategoryDto) {
+					value = ((DocumentCategoryDto) object).getName();
 				}
 				return value;
 			}
