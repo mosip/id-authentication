@@ -368,11 +368,12 @@ public class DocumentService {
 				allDocDto.setDoc_id(doc.getDocumentId());
 				allDocDto.setDoc_typ_code(doc.getDocTypeCode());
 				String key = doc.getDocCatCode() + "_" + doc.getDocumentId();
-				byte[] cephBytes = IOUtils.toByteArray(ceph.getFile(doc.getPreregId(), key));
-				if (cephBytes == null) {
+				InputStream file=ceph.getFile(doc.getPreregId(), key);
+				if (file == null) {
 					throw new CephServerException(ErrorCodes.PRG_PAM_DOC_005.toString(),
 							ErrorMessages.DOCUMENT_FAILED_TO_FETCH.toString());
 				}
+				byte[] cephBytes = IOUtils.toByteArray(file);
 				LocalDateTime decryptionDateTime = DateUtils.getUTCCurrentDateTime();
 
 				allDocDto.setMultipartFile(cryptoUtil.decrypt(cephBytes, decryptionDateTime));

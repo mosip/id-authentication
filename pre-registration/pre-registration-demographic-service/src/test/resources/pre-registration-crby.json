@@ -1,131 +1,113 @@
 {
-  "id": "mosip.pre-registration.demographic.create",
-  "ver": "1.0",
-  "reqTime": "2018-10-17T07:22:57.086Z",
-  "request": {
-    "preRegistrationId": "",
-    "createdBy": "",
-    "createdDateTime": "",
-    "updatedBy": "",
-    "updatedDateTime": "",
-    "langCode": "",
-	"demographicDetails":{
-    "identity": {
-    "IDSchemaVersion": "1.0",
-      "fullName": [
-        {
-          "language": "ar",
-          "label": "Ø§Ù„Ø§Ø³Ù… Ø§Ù„Ø§ÙˆÙ„",
-          "value": "Ø§Ø¨Ø±Ø§Ù‡ÙŠÙ…"
-        },
-        {
-          "language": "fr",
-          "label": "PrÃ©nom",
-          "value": "Ibrahim"
-        }
-      ],
-      "dateOfBirth":"12/01/2019",
-      "gender": [
-        {
-          "language": "ar",
-          "label": "Ø¬Ù†Ø³",
-          "value": "Ø§Ù„Ø°ÙƒØ±"
-        },
-        {
-          "language": "fr",
-          "label": "Le sexe",
-          "value": "Male"
-        }
-      ],
-      "addressLine1": [
-        {
-          "language": "ar",
-          "label": "Ø§Ù„Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø³Ø·Ø± 1",
-          "value": "Ø¹Ø§Ù„Ù…ÙŠ"
-        },
-        {
-          "language": "fr",
-          "label": "Adresse 1",
-          "value": "Global"
-        }
-      ],
-      "addressLine2": [
-        {
-          "language": "ar",
-          "label": "Ø³Ø·Ø± Ø§Ù„Ø¹Ù†ÙˆØ§Ù† 2",
-          "value": "Ù‚Ø±ÙŠØ©"
-        },
-        {
-          "language": "fr",
-          "label": "Adresse 2",
-          "value": "Village"
-        }
-      ],
-      "addressLine3": [
-        {
-          "language": "ar",
-          "label": "Ø§Ù„Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø®Ø· 3",
-          "value": "Ø§Ø¨Ø±Ø§Ù‡ÙŠÙ…"
-        },
-        {
-          "language": "fr",
-          "label": "Adresse 3",
-          "value": "Mindtree"
-        }
-      ],
-      "region": [
-        {
-          "language": "ar",
-          "label": "Ù…Ù†Ø·Ù‚Ø©",
-          "value": "Ø£ÙˆØ¯ÙˆØ¨ÙŠ"
-        },
-        {
-          "language": "fr",
-          "label": "PrÃ©nom",
-          "value": "Udupi"
-        }
-      ],
-      "province": [
-        {
-          "language": "ar",
-          "label": "Ø§Ù„Ù…Ø­Ø§Ù�Ø¸Ø©",
-          "value": "ÙƒÙˆØ¨"
-        },
-        {
-          "language": "fr",
-          "label": "PrÃ©nom",
-          "value": "Koppa"
-        }
-      ],
-      "city": [
-        {
-          "language": "ar",
-          "label": "Ù…Ø¯ÙŠÙ†Ø©",
-          "value": "Ù…Ø§Ù†Ø¬Ø§Ù„ÙˆØ±"
-        },
-        {
-          "language": "fr",
-          "label": "PrÃ©nom",
-          "value": "Mangalore"
-        }
-      ],
-      "postalCode":"1234",
-      "localAdministrativeAuthority": [
-        {
-          "language": "ar",
-          "label": "Ø§Ù„Ø³Ù„Ø·Ø© Ø§Ù„Ø¥Ø¯Ø§Ø±ÙŠØ© Ø§Ù„Ù…Ø­Ù„ÙŠØ©",
-          "value": "Ø¥Ø¯Ø§Ø±Ø©"
-        },
-        {
-          "language": "fr",
-          "label": "PrÃ©nom",
-          "value": "La gestion"
-        }
-      ],
-      "email": "raj@gmail.com",
-      "phone":"9457897386",
-      "CNIENumber": "78432794820"
-    }
-  }
-  }
+	"id": "mosip.pre-registration.demographic.create",
+	"ver": "1.0",
+	"reqTime": "2019-01-22T07:22:57.086Z",
+	"request": {
+		"preRegistrationId": "",
+		"createdBy": "",
+		"updatedBy": "",
+		"langCode": "ENG",
+		"demographicDetails": {
+			"identity": {
+				"dateOfBirth": "1995/03/24",
+				"gender": [
+					{
+						"language": "eng",
+						"value": "male"
+					},
+					{
+						"language": "ara",
+						"value": "الذكر"
+					}
+				],
+				"addressLine1": [
+					{
+						"language": "eng",
+						"value": "c-63 South Extension Part-2 New Delhi"
+					},
+					{
+						"language": "ara",
+						"value": "c-63 South Extension Part-2 New Delhi"
+					}
+				],
+				"addressLine2": [
+					{
+						"language": "eng",
+						"value": "Jammu"
+					},
+					{
+						"language": "ara",
+						"value": "جامو"
+					}
+				],
+				"addressLine3": [
+					{
+						"language": "eng",
+						"value": "Kashmir"
+					},
+					{
+						"language": "ara",
+						"value": "كشمير"
+					}
+				],
+				"region": [
+					{
+						"language": "eng",
+						"value": "Bangalore"
+					},
+					{
+						"language": "ara",
+						"value": "BLR"
+					}
+				],
+				"province": [
+					{
+						"language": "eng",
+						"value": "Bangalore"
+					},
+					{
+						"language": "ara",
+						"value": "بنغالور"
+					}
+				],
+				"city": [
+					{
+						"language": "eng",
+						"value": "Bangalore"
+					},
+					{
+						"language": "ara",
+						"value": "بنغالور"
+					}
+				],
+				"localAdministrativeAuthority": [
+					{
+						"language": "eng",
+						"value": "Bangalore"
+					},
+					{
+						"language": "ara",
+						"value": "بنغالور"
+					}
+				],
+				"IDSchemaVersion": 1.0,
+				"fullName": [
+					{
+						"language": "eng",
+						"value": "Sanober"
+					},
+					{
+						"language": "ara",
+						"value": "Sanober"
+					}
+				],
+				"phone": "9480548558",
+				"CNIENumber": 6789545678912,
+				"postalCode": "570000",
+				"email": "sanober@gmail.com"
+			}
+		},
+		"createdDateTime": "2019-01-08T17:05:48.953Z",
+		"updatedDateTime": ""
+	}
 }

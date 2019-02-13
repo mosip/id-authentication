@@ -23,7 +23,7 @@
             </table>
           </div>
           <div class="spacer"></div>
-          <div id="table-container">
+          <div id="table-container" *ngIf="secondaryLanguagelabels">
               <table>
                   <tr><td>{{secondaryLanguagelabels.label_name}}</td><td>: {{user.fullName}}</td></tr>
                   <tr><td>{{secondaryLanguagelabels.label_pre_id}}</td><td>: {{user.preRegId}}</td></tr>
