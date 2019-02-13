@@ -35,9 +35,9 @@ import lombok.NoArgsConstructor;
 public class Template extends BaseEntity implements Serializable {
 
 	/**
-	 * Generated serialization id
+	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 3582557516673178996L;
 
 	@Id
 	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
