@@ -8,6 +8,8 @@ This document provides the detail about configuring of Image capturing service i
 	- Downloaded the jar from this location and configured required Twain based Device manager and Data Source to capture the image.  
 	- Unable to integrate with scanner and didn’t get any output. Seems like Windows 10 doesn’t support Twain 64 bit libraries.  
 
+
+
 **WIA – Windows Image Acquisition:** 
 	We couldn’t find any open source libraries to use this service to capture the image.  
   But found the com4j open source library to communicate with dll files through the respective wrapper classes.  
