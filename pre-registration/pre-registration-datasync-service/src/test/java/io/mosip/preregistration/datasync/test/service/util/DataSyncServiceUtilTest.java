@@ -54,6 +54,8 @@ import io.mosip.preregistration.datasync.dto.DataSyncRequestDTO;
 import io.mosip.preregistration.datasync.dto.PreRegArchiveDTO;
 import io.mosip.preregistration.datasync.dto.ReverseDataSyncRequestDTO;
 import io.mosip.preregistration.datasync.dto.ReverseDatasyncReponseDTO;
+import io.mosip.preregistration.datasync.entity.InterfaceDataSyncEntity;
+import io.mosip.preregistration.datasync.entity.ProcessedPreRegEntity;
 import io.mosip.preregistration.datasync.repository.InterfaceDataSyncRepo;
 import io.mosip.preregistration.datasync.repository.ProcessedDataSyncRepo;
 import io.mosip.preregistration.datasync.service.util.DataSyncServiceUtil;
@@ -85,6 +87,8 @@ public class DataSyncServiceUtilTest {
 
 	@MockBean
 	AuditLogUtil auditLogUtil;
+	
+	
 
 	@Value("${ver}")
 	String versionUrl;
@@ -415,6 +419,7 @@ public class DataSyncServiceUtilTest {
 		serviceUtil.preparePreRegArchiveDTO(demographicResponseDTO,bookingRegistrationDTO);
 		
 	}
+
 	private JSONObject jsonObject;
 	private JSONParser parser = null;
 	
@@ -478,6 +483,40 @@ public class DataSyncServiceUtilTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(MainListResponseDTO.class))).thenReturn(respEntity);
 		serviceUtil.getLastUpdateTimeStamp(preIdList);
+	}
+	
+	@Test
+	public void storeReverseDataSyncTest() {
+		InterfaceDataSyncEntity interfaceDataSyncEntity=new InterfaceDataSyncEntity();
+		interfaceDataSyncEntity.setCreatedBy("Sanober Noor");
+		interfaceDataSyncEntity.setCreatedDate(null);
+		interfaceDataSyncEntity.setDeleted(true);
+		interfaceDataSyncEntity.setDelTime(null);
+		interfaceDataSyncEntity.setIpprlst_PK(null);
+		interfaceDataSyncEntity.setLangCode("eng");
+		interfaceDataSyncEntity.setUpdatedBy("sanober");
+		interfaceDataSyncEntity.setUpdatedDate(null);
+		List<InterfaceDataSyncEntity> entityList=new ArrayList<>();
+	entityList.add(interfaceDataSyncEntity);
+	ProcessedPreRegEntity processedPreRegEntity=new ProcessedPreRegEntity();
+	processedPreRegEntity.setCrBy("sanober Noor");
+	processedPreRegEntity.setCrDate(null);
+	processedPreRegEntity.setDeleted(true);
+	processedPreRegEntity.setDelTime(null);
+	processedPreRegEntity.setLangCode("eng");
+	processedPreRegEntity.setPreRegistrationId("1234567890");
+	processedPreRegEntity.setPreregTrnId("976543211324");
+	processedPreRegEntity.setReceivedDTime(null);
+	processedPreRegEntity.setStatusCode("");
+	processedPreRegEntity.setUpBy("sanober");
+	processedPreRegEntity.setUpdDate(null);
+		List<ProcessedPreRegEntity> processedEntityList=new ArrayList<>();
+		processedEntityList.add(processedPreRegEntity);
+		
+		Mockito.when(interfaceDataSyncRepo.saveAll(Mockito.any())).thenReturn(entityList);
+		ReverseDatasyncReponseDTO reponse=serviceUtil.storeReverseDataSync(entityList, processedEntityList);
+	
+		assertEquals("1", reponse.getCountOfStoredPreRegIds());
 	}
 	
 }
