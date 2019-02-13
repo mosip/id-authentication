@@ -93,7 +93,7 @@ public class PinAuthServiceImplTest {
 	@Test
 	public void validPinTest() throws IdAuthenticationBusinessException {
 		StaticPin stat = new StaticPin();
-		stat.setPin(CryptoUtil.encodeBase64(HMACUtils.generateHash(("12345").getBytes())));
+		stat.setPin(HMACUtils.digestAsPlainText(HMACUtils.generateHash(("12345").getBytes())));
 		Optional<StaticPin> entityValue = Optional.of(stat);
 		Mockito.when(staticPinRepo.findById(Mockito.anyString())).thenReturn(entityValue);
 		AuthStatusInfo validatePin = pinAuthServiceImpl.validatePin(constructRequest(), "284169042058");

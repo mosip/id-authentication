@@ -35,6 +35,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
+import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.entity.StaticPin;
 import io.mosip.authentication.service.entity.StaticPinHistory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
@@ -75,7 +76,7 @@ public class StaticPinFacadeImplTest {
 
 	/** The IdAuthService */
 	@Mock
-	private IdAuthService idAuthService;
+	private IdAuthService<AutnTxn> idAuthService;
 
 	/** The Audit Helper */
 	@Mock
@@ -136,7 +137,6 @@ public class StaticPinFacadeImplTest {
 				.toString();
 		staticPinRequestDTO.setReqTime(reqTime);
 		staticPinRequestDTO.setVer("1.0");
-		staticPinRequestDTO.setTspID("TSP0001");
 		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
 		dto.setUin(uin);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
@@ -145,14 +145,14 @@ public class StaticPinFacadeImplTest {
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
 		StaticPin stat = new StaticPin();
-		stat.setCreatedDTimes(now());
+		stat.setCreatedOn(now());
 		stat.setPin("123456");
 		stat.setUin(uin);
 		StaticPinHistory staticPinHistory = new StaticPinHistory();
 		staticPinHistory.setUin(uin);
 		staticPinHistory.setPin(pin);
 		staticPinHistory.setCreatedBy(IDA);
-		staticPinHistory.setCreatedDTimes(now());
+		staticPinHistory.setCreatedOn(now());
 		staticPinHistory.setEffectiveDate(now());
 		staticPinHistory.setActive(true);
 		staticPinHistory.setDeleted(false);
@@ -190,7 +190,6 @@ public class StaticPinFacadeImplTest {
 				.toString();
 		staticPinRequestDTO.setReqTime(reqTime);
 		staticPinRequestDTO.setVer("1.0");
-		staticPinRequestDTO.setTspID("TSP0001");
 		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
 		dto.setVid(vid);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
@@ -199,14 +198,14 @@ public class StaticPinFacadeImplTest {
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
 		StaticPin stat = new StaticPin();
-		stat.setCreatedDTimes(now());
+		stat.setCreatedOn(now());
 		stat.setPin("123456");
 		stat.setUin(vid);
 		StaticPinHistory staticPinHistory = new StaticPinHistory();
 		staticPinHistory.setUin(vid);
 		staticPinHistory.setPin(pin);
 		staticPinHistory.setCreatedBy(IDA);
-		staticPinHistory.setCreatedDTimes(now());
+		staticPinHistory.setCreatedOn(now());
 		staticPinHistory.setEffectiveDate(now());
 		staticPinHistory.setActive(true);
 		staticPinHistory.setDeleted(false);
@@ -244,7 +243,6 @@ public class StaticPinFacadeImplTest {
 				.toString();
 		staticPinRequestDTO.setReqTime(reqTime);
 		staticPinRequestDTO.setVer("1.0");
-		staticPinRequestDTO.setTspID("TSP0001");
 		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
 		dto.setVid(vid);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
@@ -253,14 +251,14 @@ public class StaticPinFacadeImplTest {
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
 		StaticPin stat = new StaticPin();
-		stat.setCreatedDTimes(now());
+		stat.setCreatedOn(now());
 		stat.setPin("123456");
 		stat.setUin(vid);
 		StaticPinHistory staticPinHistory = new StaticPinHistory();
 		staticPinHistory.setUin(vid);
 		staticPinHistory.setPin(pin);
 		staticPinHistory.setCreatedBy(IDA);
-		staticPinHistory.setCreatedDTimes(now());
+		staticPinHistory.setCreatedOn(now());
 		staticPinHistory.setEffectiveDate(now());
 		staticPinHistory.setActive(true);
 		staticPinHistory.setDeleted(false);

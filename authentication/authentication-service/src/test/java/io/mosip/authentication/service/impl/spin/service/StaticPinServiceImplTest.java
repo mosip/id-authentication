@@ -29,6 +29,7 @@ import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
+import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.entity.StaticPin;
 import io.mosip.authentication.service.entity.StaticPinHistory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
@@ -62,7 +63,7 @@ public class StaticPinServiceImplTest {
 
 	/** The IdAuthService */
 	@Mock
-	private IdAuthService idAuthService;
+	private IdAuthService<AutnTxn> idAuthService;
 
 	@Mock
 	private AuditHelper auditHelper;
@@ -120,14 +121,14 @@ public class StaticPinServiceImplTest {
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
 		StaticPin stat = new StaticPin();
-		stat.setCreatedDTimes(now());
+		stat.setCreatedOn(now());
 		stat.setPin("123456");
 		stat.setUin(uin);
 		StaticPinHistory staticPinHistory = new StaticPinHistory();
 		staticPinHistory.setUin(uin);
 		staticPinHistory.setPin(pin);
 		staticPinHistory.setCreatedBy(IDA);
-		staticPinHistory.setCreatedDTimes(now());
+		staticPinHistory.setCreatedOn(now());
 		staticPinHistory.setEffectiveDate(now());
 		staticPinHistory.setActive(true);
 		staticPinHistory.setDeleted(false);
@@ -160,14 +161,14 @@ public class StaticPinServiceImplTest {
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
 		StaticPin stat = new StaticPin();
-		stat.setCreatedDTimes(now());
+		stat.setCreatedOn(now());
 		stat.setPin("123456");
 		stat.setUin(uin);
 		StaticPinHistory staticPinHistory = new StaticPinHistory();
 		staticPinHistory.setUin(uin);
 		staticPinHistory.setPin(pin);
 		staticPinHistory.setCreatedBy(IDA);
-		staticPinHistory.setCreatedDTimes(now());
+		staticPinHistory.setCreatedOn(now());
 		staticPinHistory.setEffectiveDate(now());
 		staticPinHistory.setActive(true);
 		staticPinHistory.setDeleted(false);
@@ -203,14 +204,14 @@ public class StaticPinServiceImplTest {
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
 		StaticPin stat = new StaticPin();
-		stat.setCreatedDTimes(now());
+		stat.setCreatedOn(now());
 		stat.setPin("123456");
 		stat.setUin(uin);
 		StaticPinHistory staticPinHistory = new StaticPinHistory();
 		staticPinHistory.setUin(uin);
 		staticPinHistory.setPin(pin);
 		staticPinHistory.setCreatedBy(null);
-		staticPinHistory.setCreatedDTimes(now());
+		staticPinHistory.setCreatedOn(now());
 		staticPinHistory.setEffectiveDate(now());
 		staticPinHistory.setActive(true);
 		staticPinHistory.setDeleted(false);

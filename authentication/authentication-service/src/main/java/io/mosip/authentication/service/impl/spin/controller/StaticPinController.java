@@ -70,8 +70,7 @@ public class StaticPinController {
 			@ApiIgnore Errors errors) throws IdAuthenticationAppException {
 		try {
 			DataValidationUtil.validate(errors);
-			StaticPinResponseDTO staticPinResponseDTO = staticPinFacade.storeSpin(staticPinRequestDTO);
-			return staticPinResponseDTO;
+			return  staticPinFacade.storeSpin(staticPinRequestDTO);
 		} catch (IDDataValidationException e) {
 			logger.error(DEAFULT_SESSION_ID, "StaticPinController", e.getClass().getName(), e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);

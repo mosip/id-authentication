@@ -74,7 +74,7 @@ public class OTPFacadeImplTest {
 	@Mock
 	AutnTxn autnTxn;
 	@Mock
-	IdAuthService idAuthService;
+	IdAuthService<AutnTxn> idAuthService;
 	@InjectMocks
 	IdTemplateManager idTemplateManager;
 

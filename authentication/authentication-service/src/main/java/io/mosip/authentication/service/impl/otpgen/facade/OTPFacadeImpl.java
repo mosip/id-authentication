@@ -181,8 +181,7 @@ public class OTPFacadeImpl implements OTPFacade {
 			// TODO check
 			autnTxn.setCrBy(IDA);
 			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			Date reqDate = null;
-			reqDate = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
+			Date reqDate = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
 			String dateTimePattern = env.getProperty(DATETIME_PATTERN);
 			DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
 			LocalDateTime utcLocalDateTime = DateUtils.parseDateToLocalDateTime(reqDate);

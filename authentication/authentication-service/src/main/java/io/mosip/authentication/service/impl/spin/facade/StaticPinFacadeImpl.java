@@ -1,7 +1,5 @@
 package io.mosip.authentication.service.impl.spin.facade;
 
-import java.text.ParseException;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Service;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.spinstore.StaticPinIdentityDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
@@ -33,7 +30,6 @@ import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.UUIDUtils;
 
 /**
  * This Class Provide facade implementation for calling the StaticPinServiceImpl
@@ -45,20 +41,8 @@ import io.mosip.kernel.core.util.UUIDUtils;
 @Service
 public class StaticPinFacadeImpl implements StaticPinFacade {
 
-	/** The Constant MOSIP_PRIMARY_LANG_CODE */
-	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary.lang-code";
-
-	/** The Constant IDA */
-	private static final String IDA = "IDA";
-
-	/** The Constant UTC */
-	private static final String UTC = "UTC";
-
 	/** The Constant UIN_Key */
 	private static final String UIN_KEY = "uin";
-
-	/** The Constant FAILED. */
-	private static final String FAILED = "N";
 
 	/** The Constant SUCCESS. */
 	private static final String SUCCESS = "Y";
@@ -75,9 +59,8 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 	private StaticPinService staticPinService;
 
 	/** The id auth service. */
-	@SuppressWarnings("rawtypes")
 	@Autowired
-	private IdAuthService idAuthService;
+	private IdAuthService<AutnTxn> idAuthService;
 
 	/** The AuditHelper */
 	@Autowired
@@ -97,40 +80,33 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 	 * @param staticPinRequestDTO
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public StaticPinResponseDTO storeSpin(StaticPinRequestDTO staticPinRequestDTO)
 			throws IdAuthenticationBusinessException {
 		try {
-			boolean status = false;
 			StaticPinIdentityDTO requestdto = staticPinRequestDTO.getRequest().getIdentity();
 			IdType uinidtype = IdType.UIN;
 			IdType vididtype = IdType.VID;
 			IdType idtype = null;
 			String uin = requestdto.getUin();
 			String vid = requestdto.getVid();
-			String idvIdType = null;
 			Map<String, Object> idResDTO = new HashMap<>();
 			String idvId = null;
 			if (uin != null) {
 				idResDTO = idAuthService.processIdType(uinidtype.getType(), uin, false);
 				idvId = uin;
 				idtype = uinidtype;
-				idvIdType = uinidtype.getType();
 			} else if (vid != null) {
 				idResDTO = idAuthService.processIdType(vididtype.getType(), vid, false);
 				idvId = vid;
 				idtype = vididtype;
-				idvIdType = vididtype.getType();
 			}
 			String uinValue = null;
 			if (idResDTO != null && idResDTO.containsKey(UIN_KEY)) {
 				uinValue = (String) idResDTO.get(UIN_KEY);
 			}
 			if (uinValue != null && !uinValue.isEmpty()) {
-				status = staticPinService.storeSpin(staticPinRequestDTO, uinValue);
-			} else {
-				status = false;
+				staticPinService.storeSpin(staticPinRequestDTO, uinValue);
 			}
 			String dateTimePattern = env.getProperty(DATETIME_PATTERN);
 			DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
@@ -139,23 +115,10 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 			ZoneId zone = zonedDateTime2.getZone();
 			String resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
 			StaticPinResponseDTO staticPinResponseDTO = new StaticPinResponseDTO();
-			if (status) {
-				String tspIdValue = staticPinRequestDTO.getTspID();
-				String statusValue = status ? SUCCESS : FAILED;
-				String comment = status ? "Static pin stored successfully" : "Faild to store Static pin";
-				AutnTxn auth_txn = createAuthTxn(idvId, idvIdType, uin, reqTime, tspIdValue, statusValue, comment,
-						RequestType.STATICPIN_STORE_REQUEST);
-
-				// idAuthService.saveAutnTxn(auth_txn);
-				String desc = "Static Pin Storage requested";
-				auditHelper.audit(AuditModules.STATIC_PIN_STORAGE, AuditEvents.STATIC_PIN_STORAGE_REQUEST_RESPONSE,
-						idvId, idtype, desc);
-				staticPinResponseDTO.setStatus(SUCCESS);
-				staticPinResponseDTO.setErr(Collections.emptyList());
-
-			} else {
-				staticPinResponseDTO.setStatus(FAILED);
-			}
+			auditHelper.audit(AuditModules.STATIC_PIN_STORAGE, AuditEvents.STATIC_PIN_STORAGE_REQUEST_RESPONSE, idvId,
+					idtype, AuditModules.STATIC_PIN_STORAGE.getDesc());
+			staticPinResponseDTO.setStatus(SUCCESS);
+			staticPinResponseDTO.setErr(Collections.emptyList());
 			staticPinResponseDTO.setId(staticPinRequestDTO.getId());
 			staticPinResponseDTO.setVer(staticPinRequestDTO.getVer());
 			staticPinResponseDTO.setResTime(resTime);
@@ -166,76 +129,4 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 		}
 	}
 
-	/**
-	 * sets AuthTxn entity values
-	 * 
-	 * @param idvId
-	 * @param idvIdType
-	 * @param uin
-	 * @param reqTime
-	 * @param tspIdValue
-	 * @param statusValue
-	 * @param comment
-	 * @param requestType
-	 * @return
-	 * @throws IdAuthenticationBusinessException
-	 */
-	private AutnTxn createAuthTxn(String idvId, String idvIdType, String uin, String reqTime, String tspIdValue,
-			String statusValue, String comment, RequestType requestType) throws IdAuthenticationBusinessException {
-		try {
-			AutnTxn autnTxn = new AutnTxn();
-			autnTxn.setRefId(idvId);
-			autnTxn.setRefIdType(idvIdType);
-			String id = createId(uin);
-			autnTxn.setId(id); // FIXME
-			// TODO check
-			autnTxn.setCrBy(IDA);
-			autnTxn.setCrDTimes(now());
-			Date reqDate = null;
-			reqDate = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
-			String dateTimePattern = env.getProperty(DATETIME_PATTERN);
-			DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
-			LocalDateTime utcLocalDateTime = DateUtils.parseDateToLocalDateTime(reqDate);
-			ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(reqTime, isoPattern);
-			ZoneId zone = zonedDateTime2.getZone();
-			ZonedDateTime ldtZoned = utcLocalDateTime.atZone(zone);
-			ZonedDateTime utcDateTime = ldtZoned.withZoneSameInstant(ZoneId.of(UTC));
-			LocalDateTime localDateTime = utcDateTime.toLocalDateTime();
-			autnTxn.setRequestDTtimes(localDateTime);
-			autnTxn.setResponseDTimes(now()); // TODO check this
-			autnTxn.setAuthTypeCode(requestType.getRequestType());
-			autnTxn.setRequestTrnId(tspIdValue);
-			autnTxn.setStatusCode(statusValue);
-			autnTxn.setStatusComment(comment);
-			// FIXME
-			autnTxn.setLangCode(env.getProperty(MOSIP_PRIMARY_LANG_CODE));
-			return autnTxn;
-		} catch (ParseException e) {
-			logger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
-					e);
-		}
-	}
-
-	/**
-	 * Creates UUID
-	 * 
-	 * @param uin
-	 * @return
-	 */
-	private String createId(String uin) {
-		String currentDate = DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN));
-		String uinAndDate = uin + "-" + currentDate;
-		return UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uinAndDate).toString();
-	}
-
-	/**
-	 * Method to get UTC Date time from kernal
-	 * 
-	 * @return
-	 * @throws IdAuthenticationBusinessException
-	 */
-	private LocalDateTime now() throws IdAuthenticationBusinessException {
-		return DateUtils.getUTCCurrentDateTime();
-	}
 }

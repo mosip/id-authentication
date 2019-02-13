@@ -60,6 +60,7 @@ import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.spi.indauth.service.PinAuthService;
 import io.mosip.authentication.service.config.IDAMappingConfig;
+import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
@@ -107,7 +108,7 @@ public class AuthFacadeImplTest {
 	private OTPAuthService otpAuthServiceImpl;
 	/** The IdAuthService */
 	@Mock
-	private IdAuthService idAuthService;
+	private IdAuthService<AutnTxn> idAuthService;
 	/** The KycService **/
 	@Mock
 	private KycService kycService;

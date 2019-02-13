@@ -135,6 +135,7 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 	 * io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider#
 	 * matchMultiImage(java.util.Map, java.util.Map)
 	 */
+	@SuppressWarnings("unchecked")
 	public double matchMultiImage(Object reqInfo, Object entityInfo) {
 		double matchScore = 0;
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {

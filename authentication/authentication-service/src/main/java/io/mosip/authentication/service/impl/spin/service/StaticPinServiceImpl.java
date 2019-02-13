@@ -15,7 +15,6 @@ import io.mosip.authentication.service.entity.StaticPin;
 import io.mosip.authentication.service.entity.StaticPinHistory;
 import io.mosip.authentication.service.repository.StaticPinHistoryRepository;
 import io.mosip.authentication.service.repository.StaticPinRepository;
-import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 
@@ -65,7 +64,7 @@ public class StaticPinServiceImpl implements StaticPinService {
 			staticPin.setUin(uinValue);
 			staticPin.setPin(hashedPin);
 			staticPin.setCreatedBy(IDA);
-			staticPin.setCreatedDTimes(now());
+			staticPin.setCreatedOn(now());
 			staticPin.setUpdatedBy(IDA);
 			staticPin.setUpdatedOn(now());
 			staticPin.setActive(true);
@@ -101,7 +100,7 @@ public class StaticPinServiceImpl implements StaticPinService {
 	 * @return the string
 	 */
 	private String hashStaticPin(byte[] pinValue) {
-		return CryptoUtil.encodeBase64(HMACUtils.generateHash(pinValue));
+		return HMACUtils.digestAsPlainText(HMACUtils.generateHash(pinValue));
 	}
 
 	/**
@@ -117,7 +116,7 @@ public class StaticPinServiceImpl implements StaticPinService {
 		staticPinHistory.setUin(uinValue);
 		staticPinHistory.setPin(hashedPin);
 		staticPinHistory.setCreatedBy(IDA);
-		staticPinHistory.setCreatedDTimes(now());
+		staticPinHistory.setCreatedOn(now());
 		staticPinHistory.setEffectiveDate(now());
 		staticPinHistory.setActive(true);
 		staticPinHistory.setDeleted(false);
