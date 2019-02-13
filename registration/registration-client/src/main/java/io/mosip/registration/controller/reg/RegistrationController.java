@@ -373,7 +373,6 @@ public class RegistrationController extends BaseController {
 								RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 								"showing demographic preview");
 
-						setPreviewContent();
 						saveDetail();
 						SessionContext.map().put("faceCapture",false);
 						registrationPreviewController.setUpPreviewContent();
