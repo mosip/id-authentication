@@ -38,7 +38,7 @@ logging.level.org.apache.hadoop=warn
 ```
 3. Use this command to check files in hdfs. Replace ${username} with application username.
 ```
-> hdfs dfs -ls /user/${username}
+> hdfs dfs -ls -R /user/${username}
 ```
 4. Invalidate KDC ticket with this command.
 ```
