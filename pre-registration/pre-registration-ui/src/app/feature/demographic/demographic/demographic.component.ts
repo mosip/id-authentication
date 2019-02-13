@@ -228,7 +228,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         Validators.minLength(10),
         Validators.pattern(appConstants.MOBILE_PATTERN)
       ]),
-      [this.formControlNames.CNIENumber]: new FormControl(this.formControlValues.CNIENumber, [
+      [this.formControlNames.CNIENumber]: new FormControl(Number(this.formControlValues.CNIENumber), [
         Validators.required,
         Validators.maxLength(30),
         Validators.pattern(this.numberPattern)
@@ -305,7 +305,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         email: '',
         postalCode: '',
         phone: '',
-        CNIENumber: '',
+        CNIENumber: null,
 
         fullNameSecondary: '',
         addressLine1Secondary: '',
@@ -569,10 +569,15 @@ export class DemographicComponent implements OnInit, OnDestroy {
       this.dataUploadComplete = false;
       this.dataStorageService.addUser(request).subscribe(
         response => {
+          // console.log(response[appConstants.NESTED_ERROR][appConstants.ERROR_CODE]);
+
           //response is ok but error from backend
-          // if(){
+          // if (response[appConstants.NESTED_ERROR] !== null) {
+          //   console.log('yoyoy');
+
           //   this.router.navigate(['error']);
-          // }
+          //   return;
+          // } else
           if (this.dataModification) {
             this.regService.updateUser(
               this.step,
@@ -584,6 +589,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
               preRegId: this.preRegId
             });
           } else if (response !== null) {
+            console.log(response);
+
             this.preRegId =
               response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
             this.regService.addUser(new UserModel(this.preRegId, request, [], this.codeValue));
@@ -619,7 +626,11 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
   private createAttributeArray(element: string, identity: IdentityModel) {
     let attr: any;
-    if (typeof identity[element] === 'object') {
+    if (element === 'residenceStatus') {
+      return;
+    } else if (element === 'CNIENumber') {
+      attr = +this.userForm.controls[this.formControlNames[element]].value;
+    } else if (typeof identity[element] === 'object') {
       let forms = [];
       let formControlNames = [];
       const transliterateField = ['fullName', 'addressLine1', 'addressLine2', 'addressLine3'];
@@ -639,9 +650,10 @@ export class DemographicComponent implements OnInit, OnDestroy {
       }
     } else if (typeof identity[element] === 'string') {
       attr = this.userForm.controls[this.formControlNames[element]].value;
-    } else if (typeof identity[element] === 'number') {
-      identity[element] = attr = +this.userForm.controls[this.formControlNames[element]].value;
     }
+    // else if (typeof identity[element] === 'number') {
+    //   attr = +this.userForm.controls[this.formControlNames[element]].value;
+    // }
     identity[element] = attr;
   }
 
@@ -655,7 +667,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   }
 
   private createIdentityJSONDynamic() {
-    const identity = new IdentityModel(1, [], '', [], [], [], [], [], [], [], [], '', '', '', 0);
+    const identity = new IdentityModel(1, [], '', [], [], [], [], [], [], [], [], '', '', '', null);
     let keyArr: any[] = Object.keys(this.formControlNames);
     for (let index = 0; index < keyArr.length - 8; index++) {
       const element = keyArr[index];
