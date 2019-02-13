@@ -25,7 +25,7 @@ import io.mosip.kernel.crypto.jce.processor.SymmetricProcessor;
 
 
 /**
- * Factory class for  Encryptor
+ * Factory class for Mosip Encryptor
  * 
  * @author Urvil Joshi
  * @since 1.0.0
