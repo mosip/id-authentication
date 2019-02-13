@@ -16,6 +16,7 @@ import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.packet.manager.exception.systemexception.UnexpectedException;
 import io.mosip.registration.processor.packet.receiver.exception.handler.GlobalExceptionHandler;
@@ -128,6 +129,8 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 				this.setResponse(ctx, RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED);
 			}
 		} catch (IOException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					null, e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new UnexpectedException(e.getMessage());
 		} finally {
 			if (file.exists())

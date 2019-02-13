@@ -6,17 +6,19 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.util.JsonUtil;
@@ -46,7 +48,8 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 public class ManualVerificationServiceImpl implements ManualVerificationService {
 
 	/** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(ManualVerificationServiceImpl.class);
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(ManualVerificationServiceImpl.class);
+	
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 	/** The audit log request builder. */
@@ -78,11 +81,12 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 */
 	@Override
 	public ManualVerificationDTO assignApplicant(UserDto dto) {
-
 		ManualVerificationDTO manualVerificationDTO = new ManualVerificationDTO();
 		List<ManualVerificationEntity> entities;
 		entities = basePacketRepository.getAssignedApplicantDetails(dto.getUserId(),
 				ManualVerificationStatus.ASSIGNED.name());
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				dto.getUserId(), "ManualVerificationServiceImpl::assignApplicant()::entry");
 		ManualVerificationEntity manualVerificationEntity;
 		if (!entities.isEmpty()) {
 			manualVerificationEntity = entities.get(0);
@@ -114,6 +118,9 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			}
 
 		}
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				dto.getUserId(), "ManualVerificationServiceImpl::assignApplicant()::exit");
 		return manualVerificationDTO;
 
 	}
@@ -129,7 +136,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	public byte[] getApplicantFile(String regId, String fileName) {
 		byte[] file = null;
 		InputStream fileInStream = null;
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				regId, "ManualVerificationServiceImpl::getApplicantFile()::entry");
 		if(checkBiometric(fileName)) {
 			fileInStream = getApplicantBiometricFile(regId,fileName);
 		} else if (checkDemographic(fileName)) {
@@ -142,8 +150,12 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		try {
 			file = IOUtils.toByteArray(fileInStream);
 		} catch (IOException e) {
-			logger.error(e.getLocalizedMessage());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId,
+					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage() + ExceptionUtils.getStackTrace(e));
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				regId, "ManualVerificationServiceImpl::getApplicantFile()::exit");
 		return file;
 	}
 
@@ -211,6 +223,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		String description = "";
 		boolean isTransactionSuccessful = false;
 		ManualVerificationEntity manualVerificationEntity;
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				manualVerificationDTO.getRegId(), "ManualVerificationServiceImpl::updatePacketStatus()::entry");
 		if (!manualVerificationDTO.getStatusCode().equalsIgnoreCase(ManualVerificationStatus.REJECTED.name())
 				&& !manualVerificationDTO.getStatusCode().equalsIgnoreCase(ManualVerificationStatus.APPROVED.name())) {
 			throw new InvalidUpdateException(PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getCode(),
@@ -246,8 +260,13 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			manualVerificationDTO.setStatusCode(maVerificationEntity.getStatusCode());
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					manualVerificationDTO.getRegId(), description);
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					manualVerificationDTO.getRegId(), "ManualVerificationServiceImpl::updatePacketStatus()::exit");
 		} catch (TablenotAccessibleException e) {
-			logger.error(e.getMessage());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					manualVerificationDTO.getRegId(), e.getMessage() + ExceptionUtils.getStackTrace(e));
 		}
 
 		finally {
@@ -287,11 +306,15 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	@Override
 	public PacketMetaInfo getApplicantPacketInfo(String regId) {
 		PacketMetaInfo packetMetaInfo = new PacketMetaInfo();
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				regId, "ManualVerificationServiceImpl::getApplicantPacketInfo()::entry");
 		InputStream fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.PACKETMETAINFO);
 		try {
 			packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(fileInStream, PacketMetaInfo.class);
 		} catch (UnsupportedEncodingException e) {
-			logger.error(e.getLocalizedMessage());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId, e.getMessage() + ExceptionUtils.getStackTrace(e));
 		}
 		if (packetMetaInfo != null) {
 			packetMetaInfo.getIdentity().setMetaData(null);
@@ -299,7 +322,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			packetMetaInfo.getIdentity().setCheckSum(null);
 			packetMetaInfo.getIdentity().setOsiData(null);
 		}
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				regId, "ManualVerificationServiceImpl::getApplicantPacketInfo()::exit");
 		return packetMetaInfo;
 	}
 

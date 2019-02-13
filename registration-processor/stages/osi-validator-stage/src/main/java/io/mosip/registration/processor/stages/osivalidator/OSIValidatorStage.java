@@ -75,7 +75,6 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
-
 		object.setMessageBusAddress(MessageBusAddress.OSI_BUS_IN);
 		object.setIsValid(Boolean.FALSE);
 		object.setInternalError(Boolean.FALSE);
@@ -83,6 +82,8 @@ public class OSIValidatorStage extends MosipVerticleManager {
 		boolean isTransactionSuccessful = false;
 		boolean isValidUMC = false;
 		String registrationId = object.getRid();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "OSIValidatorStage::process()::entry");
 		boolean isValidOSI = false;
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 				.getRegistrationStatus(registrationId);
@@ -114,7 +115,8 @@ public class OSIValidatorStage extends MosipVerticleManager {
 			}
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "OSIValidatorStage::process()::exit");
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, description);
 		} catch (DataAccessException e) {

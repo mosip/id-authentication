@@ -302,6 +302,8 @@ public class UMCValidator {
 	 */
 	public boolean isValidUMC(String registrationId) throws ApisResourceAccessException, JsonParseException,
 			JsonMappingException, io.mosip.kernel.core.exception.IOException, IOException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "UMCValidator::isValidUMC()::entry");
 		RegistrationCenterMachineDto rcmDto = getCenterMachineDto(registrationId);
 
 		RegOsiDto regOsi = packetInfoManager.getOsi(registrationId);
@@ -319,9 +321,8 @@ public class UMCValidator {
 						regOsi.getSupervisorId(), regOsi.getOfficerId()) && validateCenterIdAndTimestamp(rcmDto) && isValidDevice(rcmDto)) {
 			umc = true;
 		}
-
-		
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "UMCValidator::isValidUMC()::exit");
 		return umc;
 	}
 
@@ -597,7 +598,7 @@ public class UMCValidator {
 	 * @throws UMCValidationException
 	 * 
 	 */
-	boolean validateCenterIdAndTimestamp(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException {
+	private boolean validateCenterIdAndTimestamp(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException {
 		boolean isValid = false;
 		try {
 			List<String> pathsegments = new ArrayList<>();

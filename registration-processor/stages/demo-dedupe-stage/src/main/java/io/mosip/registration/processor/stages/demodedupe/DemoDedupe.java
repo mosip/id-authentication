@@ -17,12 +17,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.auth.dto.AuthRequestDTO;
 import io.mosip.registration.processor.core.auth.dto.AuthTypeDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityInfoDTO;
 import io.mosip.registration.processor.core.auth.dto.RequestDTO;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
@@ -40,6 +43,9 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
  */
 @Component
 public class DemoDedupe {
+	
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(DemoDedupe.class);
 
 	/** The Constant FILE_SEPARATOR. */
 	private static final String FILE_SEPARATOR = "\\";
@@ -94,12 +100,17 @@ public class DemoDedupe {
 	 * @return the list
 	 */
 	public List<DemographicInfoDto> performDedupe(String refId) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+				refId, "DemoDedupe::performDedupe()::entry");
+		
 		List<DemographicInfoDto> applicantDemoDto = packetInfoDao.findDemoById(refId);
 		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();
 		for (DemographicInfoDto demoDto : applicantDemoDto) {
 			demographicInfoDtos.addAll(packetInfoDao.getAllDemographicInfoDtos(demoDto.getName(),
 					demoDto.getGenderCode(), demoDto.getDob(), demoDto.getLangCode()));
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+				refId, "DemoDedupe::performDedupe()::exit");
 		return demographicInfoDtos;
 	}
 
@@ -118,6 +129,10 @@ public class DemoDedupe {
 	 */
 	public boolean authenticateDuplicates(String regId, List<String> duplicateUins)
 			throws ApisResourceAccessException, IOException {
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				regId, "DemoDedupe::authenticateDuplicates()::entry");
+		
 		List<String> applicantfingerprintImageNames = packetInfoManager.getApplicantFingerPrintImageNameById(regId);
 		List<String> applicantIrisImageNames = packetInfoManager.getApplicantIrisImageNameById(regId);
 		boolean isDuplicate = false;
@@ -131,6 +146,8 @@ public class DemoDedupe {
 				break;
 			}
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				regId, "DemoDedupe::authenticateDuplicates()::exit");
 		return isDuplicate;
 	}
 

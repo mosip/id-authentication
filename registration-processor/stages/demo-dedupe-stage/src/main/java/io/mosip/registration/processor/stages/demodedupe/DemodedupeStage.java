@@ -109,7 +109,9 @@ public class DemodedupeStage extends MosipVerticleManager {
 		boolean isTransactionSuccessful = false;
 
 		String registrationId = object.getRid();
-
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "DemodedupeStage::process()::entry");
 		try {
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(registrationId);
@@ -159,7 +161,9 @@ public class DemodedupeStage extends MosipVerticleManager {
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DEMO_DEDUPE_SUCCESS.toString());
 				description = "Packet Demo dedupe successful for registration id : " + registrationId;
 			}
-
+			
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "DemodedupeStage::process()::exit");
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, description);
 			registrationStatusDto.setUpdatedBy(USER);

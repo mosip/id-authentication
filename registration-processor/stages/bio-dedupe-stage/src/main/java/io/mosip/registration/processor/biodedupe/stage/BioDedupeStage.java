@@ -46,6 +46,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  */
 @Service
 public class BioDedupeStage extends MosipVerticleManager {
+	
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(BioDedupeStage.class);
 
@@ -97,9 +98,13 @@ public class BioDedupeStage extends MosipVerticleManager {
 		boolean isTransactionSuccessful = false;
 
 		String registrationId = object.getRid();
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "biodedupe::process()::entry");
 
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 				.getRegistrationStatus(registrationId);
+		
 		try {
 			String insertionResult = bioDedupeService.insertBiometrics(registrationId);
 			if (insertionResult.equalsIgnoreCase(ResponseStatusCode.SUCCESS.name())) {
@@ -117,6 +122,10 @@ public class BioDedupeStage extends MosipVerticleManager {
 
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,description);
+			
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, regProcLogger.getClass().getName() + "process()::exit");
+
 		} catch (ABISInternalError e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,

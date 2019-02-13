@@ -150,11 +150,10 @@ public class MessageSenderStage extends MosipVerticleManager {
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		object.setMessageBusAddress(MessageBusAddress.MESSAGE_SENDER_BUS);
-		
 		boolean isTransactionSuccessful = false;
-
 		String id = object.getRid();
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				id, "MessageSenderStage::process()::entry");
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(id);
 
 		try {
@@ -181,27 +180,30 @@ public class MessageSenderStage extends MosipVerticleManager {
 			sendNotification(id, attributes, ccEMailList, allNotificationTypes);
 			isTransactionSuccessful = true;
 			description = "Notification sent successfully" + id;
-
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					id, "MessageSenderStage::process()::exit");
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					id, description);
 		} catch (EmailIdNotFoundException | PhoneNumberNotFoundException | TemplateGenerationFailedException
 				| ConfigurationNotFoundException e) {
 
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id,
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
 			description = "Email, phone, template or notification type is missing" + id;
 			throw new TemplateGenerationFailedException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
 		} catch (JsonParseException | JsonMappingException jp) {
 
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id,
 					jp.getMessage() + ExceptionUtils.getStackTrace(jp));
 			description = "Json parsing exception" + id;
 		} catch (TemplateNotFoundException tnf) {
 
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id,
 					tnf.getMessage() + ExceptionUtils.getStackTrace(tnf));
 			description = "template was not found for notification" + id;
 		} catch (Exception ex) {
 
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id,
 					ex.getMessage() + ExceptionUtils.getStackTrace(ex));
 			description = "Internal error occured while processing registration  id : " + id;
 		} finally {
@@ -234,6 +236,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 	 */
 	private void sendNotification(String id, Map<String, Object> attributes, String[] ccEMailList,
 			String[] allNotificationTypes) throws Exception {
+		
 		for (String notificationType : allNotificationTypes) {
 
 			if (notificationType.equalsIgnoreCase(SMS_TYPE) && isTemplateAvailable(smsTemplateCode.name())) {
