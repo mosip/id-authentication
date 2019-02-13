@@ -38,7 +38,7 @@ public class HDFSAdapter implements FileSystemAdapter {
 	/**
 	 * The field for Hadoop filesystem
 	 */
-	private final FileSystem fs;
+	private FileSystem fs;
 
 	/**
 	 * Constructor to initalize HDFSAdapter by injecting {@link ConnectionUtil}
@@ -47,7 +47,9 @@ public class HDFSAdapter implements FileSystemAdapter {
 	 *            connectionUtil instanse
 	 */
 	public HDFSAdapter(ConnectionUtil connectionUtil) {
-		fs = connectionUtil.getConfiguredFileSystem();
+		if (fs == null) {
+			fs = connectionUtil.getConfiguredFileSystem();
+		}
 	}
 
 	/*
