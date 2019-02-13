@@ -524,7 +524,7 @@ public final class DateUtilTest {
 	@Test(expected = io.mosip.kernel.core.exception.ParseException.class)
 	public void testParseMethod() throws java.text.ParseException {
 		DateUtils.parse("2019-01-01");
-		DateUtils.parse("2019.01.01");
+		DateUtils.parse("2019.01.01"); 
 	}
 
 }
