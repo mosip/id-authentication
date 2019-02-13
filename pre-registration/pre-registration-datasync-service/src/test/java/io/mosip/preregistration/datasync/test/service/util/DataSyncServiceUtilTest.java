@@ -2,10 +2,6 @@ package io.mosip.preregistration.datasync.test.service.util;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,7 +12,6 @@ import java.util.Map;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -49,6 +44,9 @@ import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.datasync.dto.DataSyncRequestDTO;
 import io.mosip.preregistration.datasync.dto.PreRegArchiveDTO;
 import io.mosip.preregistration.datasync.dto.ReverseDataSyncRequestDTO;
+import io.mosip.preregistration.datasync.dto.ReverseDatasyncReponseDTO;
+import io.mosip.preregistration.datasync.entity.InterfaceDataSyncEntity;
+import io.mosip.preregistration.datasync.entity.ProcessedPreRegEntity;
 import io.mosip.preregistration.datasync.repository.InterfaceDataSyncRepo;
 import io.mosip.preregistration.datasync.repository.ProcessedDataSyncRepo;
 import io.mosip.preregistration.datasync.service.util.DataSyncServiceUtil;
@@ -80,6 +78,8 @@ public class DataSyncServiceUtilTest {
 
 	@MockBean
 	AuditLogUtil auditLogUtil;
+	
+	
 
 	@Value("${ver}")
 	String versionUrl;
@@ -390,15 +390,15 @@ public class DataSyncServiceUtilTest {
 		assertEquals(bookingRegistrationDTO.getRegistrationCenterId(), response.getRegistrationCenterId());
 	}
 	
-	@Test
-	public void preparePreRegArchiveDTOTest() {
-		demographicResponseDTO.setPreRegistrationId(preId);
-		bookingRegistrationDTO.setRegistrationCenterId("1005");
-		bookingRegistrationDTO.setRegDate(resTime);
-		
-		serviceUtil.preparePreRegArchiveDTO(demographicResponseDTO,bookingRegistrationDTO);
-		
-	}
+//	@Test
+//	public void preparePreRegArchiveDTOTest() {
+//		demographicResponseDTO.setPreRegistrationId(preId);
+//		bookingRegistrationDTO.setRegistrationCenterId("1005");
+//		bookingRegistrationDTO.setRegDate(resTime);
+//		
+//		serviceUtil.preparePreRegArchiveDTO(demographicResponseDTO,bookingRegistrationDTO);
+//		
+//	} 
 	private JSONObject jsonObject;
 	private JSONParser parser = null;
 	
@@ -424,5 +424,39 @@ public class DataSyncServiceUtilTest {
 //		responsestatusDto.add(multipartResponseDTOs);
 //		serviceUtil.archivingFiles(demographicResponseDTO,bookingRegistrationDTO,responsestatusDto);
 //	}
+	
+	@Test
+	public void storeReverseDataSyncTest() {
+		InterfaceDataSyncEntity interfaceDataSyncEntity=new InterfaceDataSyncEntity();
+		interfaceDataSyncEntity.setCreatedBy("Sanober Noor");
+		interfaceDataSyncEntity.setCreatedDate(null);
+		interfaceDataSyncEntity.setDeleted(true);
+		interfaceDataSyncEntity.setDelTime(null);
+		interfaceDataSyncEntity.setIpprlst_PK(null);
+		interfaceDataSyncEntity.setLangCode("eng");
+		interfaceDataSyncEntity.setUpdatedBy("sanober");
+		interfaceDataSyncEntity.setUpdatedDate(null);
+		List<InterfaceDataSyncEntity> entityList=new ArrayList<>();
+	entityList.add(interfaceDataSyncEntity);
+	ProcessedPreRegEntity processedPreRegEntity=new ProcessedPreRegEntity();
+	processedPreRegEntity.setCrBy("sanober Noor");
+	processedPreRegEntity.setCrDate(null);
+	processedPreRegEntity.setDeleted(true);
+	processedPreRegEntity.setDelTime(null);
+	processedPreRegEntity.setLangCode("eng");
+	processedPreRegEntity.setPreRegistrationId("1234567890");
+	processedPreRegEntity.setPreregTrnId("976543211324");
+	processedPreRegEntity.setReceivedDTime(null);
+	processedPreRegEntity.setStatusCode("");
+	processedPreRegEntity.setUpBy("sanober");
+	processedPreRegEntity.setUpdDate(null);
+		List<ProcessedPreRegEntity> processedEntityList=new ArrayList<>();
+		processedEntityList.add(processedPreRegEntity);
+		
+		Mockito.when(interfaceDataSyncRepo.saveAll(Mockito.any())).thenReturn(entityList);
+		ReverseDatasyncReponseDTO reponse=serviceUtil.storeReverseDataSync(entityList, processedEntityList);
+	
+		assertEquals("1", reponse.getCountOfStoredPreRegIds());
+	}
 	
 }
