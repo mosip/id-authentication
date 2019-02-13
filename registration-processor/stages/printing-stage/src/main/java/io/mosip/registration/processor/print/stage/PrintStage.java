@@ -47,12 +47,16 @@ import io.mosip.registration.processor.packet.storage.exception.IdentityNotFound
 import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.dto.IdResponseDTO;
+import io.mosip.registration.processor.print.exception.PrintGlobalExceptionHandler;
 import io.mosip.registration.processor.print.exception.UINNotFoundInDatabase;
 import io.mosip.registration.processor.print.util.UINCardConstant;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
 
 /**
  * The Class PrintStage.
@@ -129,12 +133,20 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The rest client service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
+	
+	@Autowired
+	public PrintGlobalExceptionHandler globalExceptionHandler;
+	
+	@Value("${server.port}")
+	private String port;
+	
+	private MosipEventBus mosipEventBus;
 
 	/**
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
+		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.PRINTING_BUS_IN, MessageBusAddress.PRINTING_BUS_OUT);
 	}
 
@@ -345,6 +357,46 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 		return javaObject;
 
+	}
+	
+	// Need clarify where to push the template
+	public void sendMessage(MessageDTO messageDTO) {
+		this.send(this.mosipEventBus, MessageBusAddress.VIRUS_SCAN_BUS_IN, messageDTO);
+	}
+
+	@Override
+	public void start() {
+		Router router = this.postUrl(vertx);
+		this.routes(router);
+		this.createServer(router, Integer.parseInt(port));
+	}
+
+	/**
+	 * contains all the routes in the stage
+	 * 
+	 * @param router
+	 */
+	private void routes(Router router) {
+
+		router.post("/v0.1/registration-processor/print-stage/resend").handler(ctx -> {
+			reSendPrintPdf(ctx);
+		}).failureHandler(failureHandler -> {
+			this.setResponse(failureHandler, globalExceptionHandler.handler(failureHandler.failure()));
+		});
+
+		router.get("/print-stage/health").handler(ctx -> {
+			this.setResponse(ctx, "Server is up and running");
+		}).failureHandler(context -> {
+			this.setResponse(context, context.failure().getMessage());
+		});
+	}
+
+	private void reSendPrintPdf(RoutingContext ctx) {
+		JsonObject object = ctx.getBodyAsJson();
+		System.out.println(object.toString());
+		MessageDTO messageDTO = new MessageDTO();
+		this.setResponse(ctx, "Re-sending to Queue");
+		// this.sendMessage(messageDTO);
 	}
 
 }
