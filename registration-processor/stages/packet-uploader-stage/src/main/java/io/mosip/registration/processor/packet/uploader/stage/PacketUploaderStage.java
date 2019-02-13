@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -21,12 +22,11 @@ import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
-import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.uploader.exception.DFSNotAccessibleException;
+import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -60,8 +60,11 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	/** The adapter. */
+	// @Autowired
+	// private FileSystemAdapter<InputStream, Boolean> adapter;
+
 	@Autowired
-	private FileSystemAdapter<InputStream, Boolean> adapter;
+	private FileSystemAdapter hdfsAdapter;
 
 	/** The audit log request builder. */
 	@Autowired
@@ -175,10 +178,13 @@ public class PacketUploaderStage extends MosipVerticleManager {
 		registrationId = entry.getRegistrationId();
 		try {
 
-			adapter.storePacket(registrationId, decryptedData);
-			adapter.unpackPacket(registrationId);
+			hdfsAdapter.storePacket(registrationId, decryptedData);
+			hdfsAdapter.unpackPacket(registrationId);
+			// adapter.storePacket(registrationId, decryptedData);
+			// adapter.unpackPacket(registrationId);
 
-			if (adapter.isPacketPresent(registrationId)) {
+			if (hdfsAdapter.isPacketPresent(registrationId)) {
+				// if (adapter.isPacketPresent(registrationId)) {
 				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_DEC, registrationId);
 				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
 				fileManager.deleteFolder(DirectoryPathDto.VIRUS_SCAN_UNPACK, registrationId);
