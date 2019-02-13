@@ -569,59 +569,59 @@ export class DemographicComponent implements OnInit, OnDestroy {
       this.dataUploadComplete = false;
       this.dataStorageService.addUser(request).subscribe(
         response => {
-          // console.log(response[appConstants.NESTED_ERROR][appConstants.ERROR_CODE]);
-
-          //response is ok but error from backend
-          // if (response[appConstants.NESTED_ERROR] !== null) {
-          //   console.log('yoyoy');
-
-          //   this.router.navigate(['error']);
-          //   return;
-          // } else
-          if (this.dataModification) {
-            this.regService.updateUser(
-              this.step,
-              new UserModel(this.preRegId, request, this.regService.getUserFiles(this.step), this.codeValue)
-            );
-            this.sharedService.updateNameList(this.step, {
-              fullName: this.userForm.controls[this.formControlNames.fullName].value,
-              fullNameSecondaryLang: this.formControlValues.fullNameSecondary,
-              preRegId: this.preRegId
-            });
-          } else if (response !== null) {
-            console.log(response);
-
-            this.preRegId =
-              response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
-            this.regService.addUser(new UserModel(this.preRegId, request, [], this.codeValue));
-            this.sharedService.addNameList({
-              fullName: this.userForm.controls[this.formControlNames.fullName].value,
-              fullNameSecondaryLang: this.formControlValues.fullNameSecondary,
-              preRegId: this.preRegId
-            });
-          } else {
-            console.log('Response is null');
+          console.log(response);
+          if (response[appConstants.NESTED_ERROR] !== null) {
             this.router.navigate(['error']);
+          } else if (this.dataModification) {
+            this.onModification(request);
           }
+          //  if (response !== null)
+          else {
+            this.onAddition(response, request);
+          }
+          // else {
+          //   console.log('Response is null');
+          //   this.router.navigate(['error']);
+          // }
         },
         error => {
           console.log(error);
           this.router.navigate(['error']);
-        },
-        () => {
-          this.checked = true;
-          this.dataUploadComplete = true;
-          let url = '';
-          if (this.message['modifyUserFromPreview'] === 'true') {
-            url = Utils.getURL(this.router.url, 'preview');
-            this.router.navigate([url]);
-          } else {
-            url = Utils.getURL(this.router.url, 'file-upload');
-            this.router.navigate([url]);
-          }
         }
       );
     }
+  }
+
+  private onModification(request: RequestModel) {
+    this.regService.updateUser(
+      this.step,
+      new UserModel(this.preRegId, request, this.regService.getUserFiles(this.step), this.codeValue)
+    );
+    this.sharedService.updateNameList(this.step, {
+      fullName: this.userForm.controls[this.formControlNames.fullName].value,
+      fullNameSecondaryLang: this.formControlValues.fullNameSecondary,
+      preRegId: this.preRegId
+    });
+  }
+
+  private onAddition(response: any, request: RequestModel) {
+    this.preRegId = response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
+    this.regService.addUser(new UserModel(this.preRegId, request, [], this.codeValue));
+    this.sharedService.addNameList({
+      fullName: this.userForm.controls[this.formControlNames.fullName].value,
+      fullNameSecondaryLang: this.formControlValues.fullNameSecondary,
+      preRegId: this.preRegId
+    });
+
+    this.checked = true;
+    this.dataUploadComplete = true;
+    let url = '';
+    if (this.message['modifyUserFromPreview'] === 'true') {
+      url = Utils.getURL(this.router.url, 'preview');
+    } else {
+      url = Utils.getURL(this.router.url, 'file-upload');
+    }
+    this.router.navigate([url]);
   }
 
   private createAttributeArray(element: string, identity: IdentityModel) {
