@@ -12,6 +12,7 @@ import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocalFileSystem;
@@ -101,6 +102,9 @@ public class ConnectionUtil {
 		configuration.set("dfs.client.use.datanode.hostname", "true");
 		configuration.set("dfs.data.transfer.protection", "authentication");
 		System.setProperty("java.security.krb5.conf", getClass().getClassLoader().getResource("krb5.conf").getPath());
+		if (SystemUtils.IS_OS_WINDOWS) {
+			System.setProperty("hadoop.home.dir", getClass().getClassLoader().getResource("hadoop-2.8.1").getPath());
+		}
 		UserGroupInformation.setConfiguration(configuration);
 		return configuration;
 	}
