@@ -105,9 +105,6 @@
 		<registration.processor.rest.client.version>0.8.2</registration.processor.rest.client.version>
 		<registration.processor.message.sender.version>0.8.2</registration.processor.message.sender.version>
 		<packet.bio.dedupe.api.version>0.8.2</packet.bio.dedupe.api.version>
-		<ui.generator.stage>0.8.2</ui.generator.stage>
-		<bio.dedupe.stage>0.8.2</bio.dedupe.stage>
-		<quality.checker>0.8.2</quality.checker>
 
 		<!-- Kernel -->
 		<kernel.core.version>0.7.0</kernel.core.version>

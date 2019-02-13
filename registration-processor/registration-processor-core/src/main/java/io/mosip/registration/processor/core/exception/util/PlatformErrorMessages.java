@@ -317,7 +317,15 @@ public enum PlatformErrorMessages {
 	RPR_SYS_PARSING_DATE_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "011", "Error while parsing date "),
 
 	/** The rpr sys io exception. */
-	RPR_SYS_IO_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "012", "IO EXCEPTION ");
+	RPR_SYS_IO_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "012", "IO EXCEPTION "),
+	
+	//Printing stage exceptions
+	RPR_PRT_PDF_NOT_GENERATED(PlatformErrorConstants.RPR_PRINTING_MODULE + "001", "Error while generating PDF for UIN Card"),
+	
+	RPR_PRT_UIN_NOT_FOUND_IN_DATABASE(PlatformErrorConstants.RPR_PRINTING_MODULE + "002", "UIN not found in database"),
+	
+	RPR_PRT_PDF_GENERATION_FAILED(PlatformErrorConstants.RPR_PRINTING_MODULE + "003", "PDF Generation Failed");
+	
 	/** The error message. */
 	private final String errorMessage;
 

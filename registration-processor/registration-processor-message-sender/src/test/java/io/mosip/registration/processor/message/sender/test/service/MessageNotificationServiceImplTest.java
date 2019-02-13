@@ -8,11 +8,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,13 +55,13 @@ import io.mosip.registration.processor.rest.client.utils.RestApiClient;
  * The Class MessageNotificationServiceImplTest.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ MessageSenderUtil.class, JsonUtils.class })
+@PrepareForTest({ MessageSenderUtil.class, JsonUtils.class, IOUtils.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class MessageNotificationServiceImplTest {
 
 	/** The message notification service impl. */
 	@InjectMocks
-	MessageNotificationService<SmsResponseDto, ResponseDto, MultipartFile[]> messageNotificationServiceImpl = new MessageNotificationServiceImpl();
+	private MessageNotificationService<SmsResponseDto, ResponseDto, MultipartFile[]> messageNotificationServiceImpl = new MessageNotificationServiceImpl();
 
 	/** The adapter. */
 	@Mock
@@ -79,7 +81,7 @@ public class MessageNotificationServiceImplTest {
 
 	/** The rest client service. */
 	@Mock
-	RegistrationProcessorRestClientService<Object> restClientService;
+	private RegistrationProcessorRestClientService<Object> restClientService;
 
 	/** The rest api client. */
 	@Mock
@@ -88,6 +90,9 @@ public class MessageNotificationServiceImplTest {
 	/** The env. */
 	@Mock
 	private Environment env;
+	
+	@Mock
+	private StringWriter writer;
 
 	/** The attributes. */
 	private Map<String, Object> attributes = new HashMap<>();
@@ -172,10 +177,13 @@ public class MessageNotificationServiceImplTest {
 		PowerMockito.when(MessageSenderUtil.class, "getJson", anyString(), anyString()).thenReturn(value);
 
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
-
+		
 		String artifact = "Hi Alok, Your UIN is generated";
-
-		Mockito.when(templateGenerator.getTemplate(any(), any(), any())).thenReturn(artifact);
+		InputStream in  = IOUtils.toInputStream("Hi Alok, Your UIN is generated", "UTF-8");
+		Mockito.when(templateGenerator.getTemplate(any(), any(), any())).thenReturn(in);
+		
+		Mockito.when(writer.toString()).thenReturn(artifact);
+		
 	}
 
 	/**

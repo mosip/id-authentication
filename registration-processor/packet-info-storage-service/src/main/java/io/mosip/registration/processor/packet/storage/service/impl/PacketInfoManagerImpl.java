@@ -750,6 +750,14 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public List<String> getRegIdByUIN(String uin) {
 		return packetInfoDao.getRegIdByUIN(uin);
 	}
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getUINByRid(java.lang.String)
+	 */
+	@Override
+	public List<String> getUINByRid(String rid) {
+		return packetInfoDao.getUINByRid(rid);
+	}
 
 	@Override
 	public List<ApplicantDocument> getDocumentsByRegId(String regId) {

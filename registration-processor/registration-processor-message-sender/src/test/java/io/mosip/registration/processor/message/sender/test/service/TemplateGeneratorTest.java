@@ -4,11 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.h2.util.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,9 +79,10 @@ public class TemplateGeneratorTest {
 		String langCode = "eng";
 		Map<String, Object> attributes = new HashMap<>();
 		attributes.put("FirstName", "Alok");
-
-		String result = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
-		assertEquals("Test for Successful Template generation", "Hi Alok, your UIN is generated", result);
+		InputStream expected = IOUtils.getInputStreamFromString("Hi Alok, your UIN is generated");
+		InputStream result = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
+		
+		assertEquals(expected, result);
 	}
 
 }

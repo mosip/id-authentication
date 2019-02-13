@@ -2,6 +2,7 @@ package io.mosip.registration.processor.message.sender.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -144,7 +145,10 @@ public class MessageNotificationServiceImpl
 
 			NotificationTemplate templatejson = getTemplateJson(id, idType, attributes);
 
-			String artifact = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
+			InputStream in = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(in, writer, "UTF-8");
+			String artifact = writer.toString();
 
 			if (templatejson.getPhoneNumber().isEmpty() || templatejson.getPhoneNumber() == null) {
 				throw new PhoneNumberNotFoundException(PlatformErrorMessages.RPR_SMS_PHONE_NUMBER_NOT_FOUND.getCode());
@@ -183,7 +187,10 @@ public class MessageNotificationServiceImpl
 
 			NotificationTemplate template = getTemplateJson(id, idType, attributes);
 
-			String artifact = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
+			InputStream in = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(in, writer, "UTF-8");
+			String artifact = writer.toString();
 
 			if (template.getEmailID().isEmpty() || template.getEmailID() == null) {
 				throw new EmailIdNotFoundException(PlatformErrorMessages.RPR_EML_EMAILID_NOT_FOUND.getCode());
@@ -283,8 +290,9 @@ public class MessageNotificationServiceImpl
 
 		demographicInfoStream = adapter.getFile(id,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-
-		String demographicInfo = new String(IOUtils.toByteArray(demographicInfoStream));
+		
+		byte[] bytearray = IOUtils.toByteArray(demographicInfoStream);
+		String demographicInfo = new String(bytearray);
 
 		NotificationTemplate templatejson = getKeysandValues(demographicInfo);
 

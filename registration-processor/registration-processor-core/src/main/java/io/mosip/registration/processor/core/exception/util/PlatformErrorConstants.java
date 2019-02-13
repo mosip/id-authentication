@@ -56,6 +56,9 @@ public final class PlatformErrorConstants {
 
 	/** The Constant RPR_BIO_DEDUPE_SERVICE_MODULE. */
 	public static final String RPR_BIO_DEDUPE_SERVICE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "BDD-";
+	
+	/** The Constant RPR_PRINTING_MODULE. */
+	public static final String RPR_PRINTING_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PRT-";
 
 	/**
 	 * Instantiates a new RPR platform error codes.
