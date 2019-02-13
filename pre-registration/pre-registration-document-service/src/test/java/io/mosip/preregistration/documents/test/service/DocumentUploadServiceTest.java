@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,6 +36,8 @@ import org.springframework.web.client.RestTemplate;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
+import io.mosip.preregistration.core.code.AuditLogVariables;
+import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
@@ -48,9 +52,11 @@ import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.exception.CephServerException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToCopyException;
+import io.mosip.preregistration.documents.exception.DocumentFailedToUploadException;
 import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
 import io.mosip.preregistration.documents.exception.DocumentNotValidException;
 import io.mosip.preregistration.documents.exception.DocumentSizeExceedException;
+import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
 import io.mosip.preregistration.documents.repository.DocumentRepository;
 import io.mosip.preregistration.documents.repository.util.DocumentDAO;
 import io.mosip.preregistration.documents.service.DocumentService;
@@ -64,7 +70,7 @@ public class DocumentUploadServiceTest {
 	@Autowired
 	private DocumentService documentUploadService;
 
-	@Mock
+	@Autowired
 	private DocumentServiceUtil serviceUtil;
 
 	@MockBean
@@ -82,7 +88,7 @@ public class DocumentUploadServiceTest {
 	private DocumentDAO documnetDAO;
 
 	@MockBean
-	private AuditLogUtil util;
+	private AuditLogUtil auditLogUtil;
 	
 	@MockBean 
 	private CryptoUtil cryptoUtil;
@@ -101,6 +107,7 @@ public class DocumentUploadServiceTest {
 	private DocumentEntity copyEntity;
 	String documentId;
 	String preId;
+	AuditRequestDto auditRequestDto = new AuditRequestDto();
 	private Map<String, String> map = new HashMap<>();
 	boolean flag;
 	MainListResponseDTO<DocumentDeleteResponseDTO> responsedelete = new MainListResponseDTO<>();
@@ -174,6 +181,17 @@ public class DocumentUploadServiceTest {
 
 		docEntity.add(entity);
 		preId = "98076543218976";
+		
+		auditRequestDto.setActionTimeStamp(LocalDateTime.now(ZoneId.of("UTC")));
+		auditRequestDto.setApplicationId(AuditLogVariables.MOSIP_1.toString());
+		auditRequestDto.setApplicationName(AuditLogVariables.PREREGISTRATION.toString());
+		auditRequestDto.setCreatedBy(AuditLogVariables.SYSTEM.toString());
+		auditRequestDto.setHostIp(auditLogUtil.getServerIp());
+		auditRequestDto.setHostName(auditLogUtil.getServerName());
+		auditRequestDto.setId(AuditLogVariables.NO_ID.toString());
+		auditRequestDto.setIdType(AuditLogVariables.PRE_REGISTRATION_ID.toString());
+		auditRequestDto.setSessionUserId(AuditLogVariables.SYSTEM.toString());
+		auditRequestDto.setSessionUserName(AuditLogVariables.SYSTEM.toString());
 	}
 
 	@Test
@@ -207,24 +225,69 @@ public class DocumentUploadServiceTest {
 		documentUploadService.uploadDocument(mockMultipartFile, errJson);
 	}
 
-	// @Test(expected = DocumentVirusScanException.class)
-	// public void uploadDocumentVirusScanFailureTest() throws Exception {
-	// Mockito.when(serviceUtil.isVirusScanSuccess(mockMultipartFile)).thenReturn(false);
-	// //
-	// Mockito.when(virusScan.scanDocument(mockMultipartFileSizeCheck.getBytes())).thenReturn(false);
-	// documentUploadService.uploadDocument(mockMultipartFile, docJson);
-	// }
+	 @Test(expected = DocumentVirusScanException.class)
+	 public void uploadDocumentVirusScanFailureTest1() throws Exception {
+	 Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(false);
+	 documentUploadService.uploadDocument(mockMultipartFile, docJson);
+	 }
+	 
+	 @Test(expected = DocumentVirusScanException.class)
+	 public void uploadDocumentVirusScanFailureTest2() throws Exception {
+	 Mockito.when(virusScan.scanDocument(mockMultipartFileSizeCheck.getBytes())).thenReturn(false);
+	 documentUploadService.uploadDocument(mockMultipartFileSizeCheck, docJson);
+	 }
+	 
+	 @Test(expected = DocumentVirusScanException.class)
+	 public void uploadDocumentVirusScanFailureTest3() throws Exception {
+		 Mockito.when(virusScan.scanDocument(mockMultipartFileExtnCheck.getBytes())).thenReturn(false);
+		 documentUploadService.uploadDocument(mockMultipartFileExtnCheck, docJson);
+	 }
 
 	@Test(expected = DocumentSizeExceedException.class)
-	public void uploadDocumentSizeFailurTest() throws IOException {
+	public void uploadDocumentSizeFailurTest1() throws IOException {
 		Mockito.when(virusScan.scanDocument(mockMultipartFileSizeCheck.getBytes())).thenReturn(true);
 		documentUploadService.uploadDocument(mockMultipartFileSizeCheck, docJson);
 	}
-
+	
 	@Test(expected = DocumentNotValidException.class)
-	public void uploadDocumentExtnFailurTest() throws IOException {
+	public void uploadDocumentSizeFailurTest2() throws IOException {
 		Mockito.when(virusScan.scanDocument(mockMultipartFileExtnCheck.getBytes())).thenReturn(true);
 		documentUploadService.uploadDocument(mockMultipartFileExtnCheck, docJson);
+	}
+	
+
+	@Test(expected = DocumentSizeExceedException.class)
+	public void uploadDocumentExtnFailurTest1() throws IOException {
+		Mockito.when(virusScan.scanDocument(mockMultipartFileSizeCheck.getBytes())).thenReturn(true);
+		documentUploadService.uploadDocument(mockMultipartFileSizeCheck, docJson);
+	}
+	
+	@Test(expected = DocumentNotValidException.class)
+	public void uploadDocumentExtnFailurTest2() throws IOException {
+		Mockito.when(virusScan.scanDocument(mockMultipartFileExtnCheck.getBytes())).thenReturn(true);
+		documentUploadService.uploadDocument(mockMultipartFileExtnCheck, docJson);
+	}
+	
+	@Test(expected=DocumentFailedToUploadException.class)
+	public void DocumentFailedToUploadExceptionTest() throws IOException {
+		List<DocumentResponseDTO> responseUploadList = new ArrayList<>();
+		MainListResponseDTO restRes = new MainListResponseDTO<>();
+		responseUpload.setResponse(responseUploadList);
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		restRes.setStatus(true);
+
+		ResponseEntity<MainListResponseDTO> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(MainListResponseDTO.class))).thenReturn(rescenter);
+		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(true);
+		Mockito.doReturn(true).when(ceph).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(entity);
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any())).thenReturn(mockMultipartFileSizeCheck.toString().getBytes());
+		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(null);
+	    documentUploadService.uploadDocument(mockMultipartFile,
+				docJson);
 	}
 
 	@Test(expected = TableNotAccessibleException.class)
@@ -240,6 +303,30 @@ public class DocumentUploadServiceTest {
 		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(DataAccessLayerException.class);
 		documentUploadService.uploadDocument(mockMultipartSaveCheck, docJson);
+	}
+	
+	
+	@Test(expected = CephServerException.class)
+	public void uploadDocumentRepoFailurTest2() throws IOException {
+		List<DocumentResponseDTO> responseUploadList = new ArrayList<>();
+		MainListResponseDTO restRes = new MainListResponseDTO<>();
+		docResp.setResMsg(DocumentStatusMessages.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
+		responseUploadList.add(docResp);
+		responseUpload.setResponse(responseUploadList);
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		restRes.setStatus(true);
+
+		ResponseEntity<MainListResponseDTO> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(MainListResponseDTO.class))).thenReturn(rescenter);
+		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(true);
+		Mockito.doReturn(false).when(ceph).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(entity);
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any())).thenReturn(mockMultipartFileSizeCheck.toString().getBytes());
+		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(entity);
+		documentUploadService.uploadDocument(mockMultipartFile,docJson);
 	}
 
 	@Test
@@ -287,7 +374,30 @@ public class DocumentUploadServiceTest {
 		Mockito.when(documentRepository.save(Mockito.any())).thenThrow(DataAccessLayerException.class);
 		documentUploadService.copyDocument("POA", "48690172097498", "48690172097499");
 	}
+	
+	@Test(expected = InvalidRequestParameterException.class)
+	public void InvalidRequestParameterExceptionTest1() throws Exception {
+		documentUploadService.copyDocument("POA", "486", "48690172097499");
+	}
+	
+	@Test(expected = InvalidRequestParameterException.class)
+	public void InvalidRequestParameterExceptionTest2() throws Exception {
+		documentUploadService.copyDocument("POA", "48690172097499", "48");
+	}
+	
+	@Test(expected = InvalidRequestParameterException.class)
+	public void InvalidRequestParameterExceptionTest3() throws Exception {
+		documentUploadService.copyDocument("abc", "48690172097499", "48690172097498");
+	}
 
+	@Test(expected = CephServerException.class)
+	public void documentCopyFailureTest4() {
+		Mockito.doReturn(false).when(ceph).copyFile(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyString());
+		Mockito.when(documentRepository.findSingleDocument("48690172097498", "POA")).thenReturn(entity);
+		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(copyEntity);
+		documentUploadService.copyDocument("POA", "48690172097498", "48690172097499");
+	}
 	@Test
 	public void getAllDocumentForPreIdSuccessTest() throws Exception {
 		List<DocumentMultipartResponseDTO> documentGetAllDtos = new ArrayList<>();
@@ -379,4 +489,19 @@ public class DocumentUploadServiceTest {
 		Mockito.when(documentRepository.findBypreregId(Mockito.anyString())).thenThrow(DataAccessLayerException.class);
 		documentUploadService.deleteAllByPreId("91324567567565");
 	}
+	@Test(expected = CephServerException.class)
+	public void deleteDocumentTest() throws Exception {
+		List<DocumentDeleteResponseDTO> deleteresponseList = new ArrayList<>();
+		documentDeleteDTO = new DocumentDeleteResponseDTO();
+		documentDeleteDTO.setDocumnet_Id("1");
+		documentDeleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
+		deleteresponseList.add(documentDeleteDTO);
+
+		responsedelete.setResponse(deleteresponseList);
+		Mockito.doReturn(false).when(ceph).deleteFile(Mockito.anyString(), Mockito.anyString());
+		Mockito.when(documentRepository.findBydocumentId(documentId)).thenReturn(entity);
+		Mockito.when(documentRepository.deleteAllBydocumentId(documentId)).thenReturn(1);
+	    documentUploadService.deleteDocument(documentId);
+	}
+	
 }
