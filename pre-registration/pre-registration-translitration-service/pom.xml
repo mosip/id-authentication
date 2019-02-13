@@ -56,7 +56,7 @@
 		<dependency>
 			<groupId>io.mosip.preregistration</groupId>
 			<artifactId>pre-registration-core</artifactId>
-			<version>${pre.registration.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 		    <groupId>com.ibm.icu</groupId>
