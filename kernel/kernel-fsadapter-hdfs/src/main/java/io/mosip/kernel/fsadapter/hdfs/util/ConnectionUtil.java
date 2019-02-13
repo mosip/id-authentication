@@ -62,9 +62,10 @@ public class ConnectionUtil {
 	private FileSystem configuredFileSystem;
 
 	/**
-	 * Private constructor for ConnectionUtil
+	 * Instantiate a ConnectionUtil
 	 */
-	private ConnectionUtil() {
+	public ConnectionUtil() {
+		// Used when a new bean is created for ConnectionUtil
 	}
 
 	/**
