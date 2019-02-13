@@ -146,7 +146,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.PRINTING_BUS_IN, MessageBusAddress.PRINTING_BUS_OUT);
 	}
 
