@@ -88,9 +88,14 @@
 			<artifactId>kernel-idgenerator-tokenid</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency> 
-
-
-		<!-- Postgres -->
+		
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idgenerator-vid</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency> 
+     
+     <!-- Postgres -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>

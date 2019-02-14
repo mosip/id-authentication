@@ -1,5 +1,6 @@
 package io.mosip.authentication.core.constant;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Enum AuditEvents - Contains all the events for auditing.
  *
@@ -16,8 +17,12 @@ public enum AuditEvents {
 	/** The internal request response. */
 	INTERNAL_REQUEST_RESPONSE("IDA-EVT-003", "System Event"),
 	
-	/** Static_Pin_Storage_Request_Response */
-	STATIC_PIN_STORAGE_REQUEST_RESPONSE("IDA-EVT-004","Business Event");
+	/**  Static_Pin_Storage_Request_Response. */
+	STATIC_PIN_STORAGE_REQUEST_RESPONSE("IDA-EVT-004","Business Event"),
+	
+	
+	/** The vid generate request response. */
+	VID_GENERATE_REQUEST_RESPONSE("IDA-EVT-005","Business Event");
 	
 	/** The event id. */
 	private final String eventId;

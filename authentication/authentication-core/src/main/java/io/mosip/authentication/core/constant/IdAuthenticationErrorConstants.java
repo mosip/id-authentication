@@ -120,6 +120,11 @@ public enum IdAuthenticationErrorConstants {
 	//Static Pin Store
 	STATICPIN_NOT_STORED_PINVAUE("IDA-SPA-003","Could not store the static pin of the individual"),
 	
+	//VID Generator
+	VID_GENERATION_FAILED("IDA-MLC-010","Could not generate VID for the individual"),
+	
+	VID_REGENERATION_FAILED("IDA-MLC-011","VID regeneration not allowed.Use existing VID %s"),
+	
 	// for No authentication type selected
 	NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST("IDA-MLC-008","No authentication type selected");
 

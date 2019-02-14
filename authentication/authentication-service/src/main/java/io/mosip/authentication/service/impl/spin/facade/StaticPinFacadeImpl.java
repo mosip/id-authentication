@@ -1,17 +1,20 @@
 package io.mosip.authentication.service.impl.spin.facade;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.constant.AuditEvents;
@@ -21,15 +24,20 @@ import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.spinstore.StaticPinIdentityDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinResponseDTO;
+import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
+import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.spin.facade.StaticPinFacade;
 import io.mosip.authentication.core.spi.spin.service.StaticPinService;
 import io.mosip.authentication.service.entity.AutnTxn;
+import io.mosip.authentication.service.entity.VIDEntity;
 import io.mosip.authentication.service.helper.AuditHelper;
+import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.idgenerator.vid.impl.VidGeneratorImpl;
 
 /**
  * This Class Provide facade implementation for calling the StaticPinServiceImpl
@@ -65,6 +73,12 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 	/** The AuditHelper */
 	@Autowired
 	private AuditHelper auditHelper;
+	
+    @Autowired
+	private VIDRepository vidRepository;
+
+	@Autowired
+	private VidGeneratorImpl vidGenerator;
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(StaticPinFacadeImpl.class);
@@ -127,6 +141,74 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 			logger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.STATICPIN_NOT_STORED_PINVAUE, e);
 		}
+	}
+	
+	// FIXME this method has to be in refactored facade as seperate facade should
+	// not be created.
+	// @Override
+	public VIDResponseDTO generateVID(String uin) throws IdAuthenticationBusinessException {
+		Map<String, Object> uinMap = idAuthService.processIdType(IdType.UIN.getType(), uin, false);
+		VIDEntity vidEntityObj = null;
+		VIDResponseDTO vidResponseDTO = new VIDResponseDTO();
+		vidResponseDTO.setId("mosip.identity.vid");
+		vidResponseDTO.setVersion("1.0");
+		if (!uinMap.isEmpty())  {            //FIXME
+			List<VIDEntity> vidEntityList = vidRepository.findByUIN(uin,PageRequest.of(0,1));
+			if (vidEntityList.isEmpty()) {
+				vidEntityObj = new VIDEntity();
+				vidEntityObj.setId((String) vidGenerator.generateId());
+				vidEntityObj.setUin(uin);
+				vidEntityObj.setActive(true);
+				vidEntityObj.setCreatedBy("IDA");
+				vidEntityObj.setCreatedDTimes(LocalDateTime.now());
+				vidEntityObj.setExpiryDate(
+						LocalDateTime.now().plusHours(env.getProperty("mosip.vid.validity.hours", Long.class)));
+				vidEntityObj.setGeneratedOn(LocalDateTime.now());
+				vidEntityObj.setDeleted(false);
+				try {
+					vidRepository.save(vidEntityObj);
+				} catch (DataAccessException ex) {
+					logger.error(SESSION_ID, this.getClass().getName(), ex.getClass().getName(), ex.getMessage());
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VID_GENERATION_FAILED,
+							ex);
+				}
+				vidResponseDTO.setVid(vidEntityObj.getId());
+			}
+
+			else {
+				vidEntityObj = vidEntityList.get(0);
+				if (vidEntityObj.isActive() && vidEntityObj.getExpiryDate().isAfter(LocalDateTime.now())) {
+					throw new IDDataValidationException(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED, vidEntityObj.getId());
+				}
+
+				else if (!vidEntityObj.isActive() || vidEntityObj.getExpiryDate().isBefore(DateUtils.getUTCCurrentDateTime())) {
+					vidEntityObj = new VIDEntity();
+					vidEntityObj.setId((String) vidGenerator.generateId());
+					vidEntityObj.setUin(uin);
+					vidEntityObj.setActive(true);
+					vidEntityObj.setCreatedBy("IDA");
+					vidEntityObj.setCreatedDTimes(DateUtils.getUTCCurrentDateTime());
+					vidEntityObj.setExpiryDate(
+					DateUtils.getUTCCurrentDateTime().plusHours(env.getProperty("mosip.vid.validity.hours", Long.class)));
+					vidEntityObj.setGeneratedOn(DateUtils.getUTCCurrentDateTime());
+					vidEntityObj.setDeleted(false);
+					try {
+						vidRepository.save(vidEntityObj);
+					} catch (DataAccessException ex) {
+						logger.error(SESSION_ID, this.getClass().getName(), ex.getClass().getName(), ex.getMessage());
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VID_GENERATION_FAILED,
+								ex);
+					}
+					vidResponseDTO.setVid(vidEntityObj.getId());
+				}
+			}
+		}
+		vidResponseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString(env.getProperty("datetime.pattern")));
+		vidResponseDTO.setError(Collections.EMPTY_LIST);
+		String desc = "VID generation request";
+		auditHelper.audit(AuditModules.VID_GENERATION_REQUEST, AuditEvents.VID_GENERATE_REQUEST_RESPONSE,
+				IdType.UIN.getType(),IdType.UIN, desc);
+		return vidResponseDTO;
 	}
 
 }

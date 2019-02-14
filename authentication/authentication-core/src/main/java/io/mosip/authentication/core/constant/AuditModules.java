@@ -34,6 +34,9 @@ public enum AuditModules {
 	/** The Static Pin Storage */
 	STATIC_PIN_STORAGE("IDA-MOD-108","Static Pin Storage requested"),
 	
+	/** The vid generation request. */
+	VID_GENERATION_REQUEST("IDA-MOD-109"),
+	
 	/** The otp request. */
 	OTP_REQUEST("IDA-MOD-110","OTP requested");
 
