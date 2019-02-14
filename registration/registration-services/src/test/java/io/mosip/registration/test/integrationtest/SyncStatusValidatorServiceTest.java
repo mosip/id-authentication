@@ -1,5 +1,6 @@
 package io.mosip.registration.test.integrationtest;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,6 +14,7 @@ public class SyncStatusValidatorServiceTest extends BaseIntegrationTest
 	private SyncStatusValidatorService syncstatusvalidatorservice;
 	
 	@Test
+	@Ignore
 	public void syncstatusvalidatorservice_verify()
 	{
 		//syncstatusvalidatorservice.validateSyncStatus();
