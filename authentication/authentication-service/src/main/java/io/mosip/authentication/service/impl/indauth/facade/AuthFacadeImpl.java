@@ -4,7 +4,7 @@
 package io.mosip.authentication.service.impl.indauth.facade;
 
 import java.text.ParseException;
-import java.time.LocalDateTime;
+import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -422,7 +422,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			String staticTokenId, boolean isStatus) throws IdAuthenticationBusinessException {
 		try {
 			String status = isStatus ? SUCCESS_STATUS : FAILED;
-			String comment = isStatus ? requestType.getMessage() + "Success" : requestType.getMessage() + "Failed";
+			String comment = isStatus ? requestType.getMessage() + " Success" : requestType.getMessage() + " Failed";
 			String idvId = authRequestDTO.getIdvId();
 			String reqTime = authRequestDTO.getReqTime();
 			String idvIdType = authRequestDTO.getIdvIdType();
@@ -437,15 +437,11 @@ public class AuthFacadeImpl implements AuthFacade {
 			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			Date reqDate = null;
 			reqDate = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
-			String dateTimePattern = env.getProperty(DATETIME_PATTERN);
-			DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
-			LocalDateTime utcLocalDateTime = DateUtils.parseDateToLocalDateTime(reqDate);
-			ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(reqTime, isoPattern);
-			ZoneId zone = zonedDateTime2.getZone();
-			ZonedDateTime ldtZoned = utcLocalDateTime.atZone(zone);
-			ZonedDateTime utcDateTime = ldtZoned.withZoneSameInstant(ZoneId.of(UTC));
-			LocalDateTime localDateTime = utcDateTime.toLocalDateTime();
-			autnTxn.setRequestDTtimes(localDateTime);
+			  SimpleDateFormat dateFormatter = new SimpleDateFormat(
+					  env.getProperty(DATETIME_PATTERN));
+			dateFormatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of(UTC)));
+			String strUTCDate = dateFormatter.format(reqDate);
+			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
 			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime()); // TODO check this
 			autnTxn.setAuthTypeCode(requestType.getRequestType());
 			autnTxn.setRequestTrnId(txnID);

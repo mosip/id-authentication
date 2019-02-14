@@ -4,12 +4,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -181,16 +180,13 @@ public class OTPFacadeImpl implements OTPFacade {
 			// TODO check
 			autnTxn.setCrBy(IDA);
 			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			Date reqDate = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
-			String dateTimePattern = env.getProperty(DATETIME_PATTERN);
-			DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
-			LocalDateTime utcLocalDateTime = DateUtils.parseDateToLocalDateTime(reqDate);
-			ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(reqTime, isoPattern);
-			ZoneId zone = zonedDateTime2.getZone();
-			ZonedDateTime ldtZoned = utcLocalDateTime.atZone(zone);
-			ZonedDateTime utcDateTime = ldtZoned.withZoneSameInstant(ZoneId.of(UTC));
-			LocalDateTime localDateTime = utcDateTime.toLocalDateTime();
-			autnTxn.setRequestDTtimes(localDateTime);
+			Date reqDate = null;
+			reqDate = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
+			  SimpleDateFormat dateFormatter = new SimpleDateFormat(
+					  env.getProperty(DATETIME_PATTERN));
+			dateFormatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of(UTC)));
+			String strUTCDate = dateFormatter.format(reqDate);
+			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
 			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime()); // TODO check this
 			autnTxn.setAuthTypeCode(otpRequest.getRequestType());
 			autnTxn.setRequestTrnId(txnId);
@@ -231,15 +227,18 @@ public class OTPFacadeImpl implements OTPFacade {
 		boolean isOtpFlooded = false;
 		String uniqueID = otpRequestDto.getIdvId();
 		Date requestTime;
+		LocalDateTime reqTime;
 		try {
 			requestTime = DateUtils.parseToDate(otpRequestDto.getReqTime(), env.getProperty(DATETIME_PATTERN));
+			reqTime=DateUtils.parseDateToLocalDateTime(requestTime);
 		} catch (java.text.ParseException e) {
 			mosipLogger.error(SESSION_ID, null, null, e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
 					e);
 		}
 		Date addMinutesInOtpRequestDTime = addMinutes(requestTime, -1);
-		if (autntxnrepository.countRequestDTime(requestTime, addMinutesInOtpRequestDTime, uniqueID) > 3) {
+		LocalDateTime addMinutesInOtpRequestDTimes=DateUtils.parseDateToLocalDateTime(addMinutesInOtpRequestDTime);
+		if (autntxnrepository.countRequestDTime(reqTime, addMinutesInOtpRequestDTimes, uniqueID) > 3) {
 			isOtpFlooded = true;
 		}
 

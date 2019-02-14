@@ -1,6 +1,6 @@
 package io.mosip.authentication.service.repository;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -38,7 +38,7 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	 */
 	@Query("Select count(requestDTtimes) from AutnTxn  where requestDTtimes <= :otpRequestDTime and "
 			+ "request_dtimes >= :oneMinuteBeforeTime and refId=:refId")
-	public int countRequestDTime(@Param("otpRequestDTime") Date otpRequestDTime,
-			@Param("oneMinuteBeforeTime") Date oneMinuteBeforeTime, @Param("refId") String refId);
+	public int countRequestDTime(@Param("otpRequestDTime") LocalDateTime otpRequestDTime,
+			@Param("oneMinuteBeforeTime") LocalDateTime oneMinuteBeforeTime, @Param("refId") String refId);
 
 }
