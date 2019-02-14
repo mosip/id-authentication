@@ -7,11 +7,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
@@ -43,6 +45,28 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 	//check if responsedto is not null
 		//valid data=get from location table
 		//invalid data=any data returnes null
+	
+	@Test
+	public void masterSync_verify_getMasterSync_getErrorResponseDTOs() {
+//this test validates the message when sync is failed
+		// mastersyncservice.getMasterSync(masterSyncDetails);
+		ResponseDTO result = mastersyncservice.getMasterSync("MDS_J00001");
+		assertEquals(RegistrationConstants.MASTER_SYNC_OFFLINE_FAILURE_MSG,
+				result.getErrorResponseDTOs().get(0).getMessage());
+
+	}
+	
+	
+	@Ignore
+	public void masterSync_verify_getMasterSync_getSuccessResponseDTOs() {
+//this test validates the message when sync is success
+		// mastersyncservice.getMasterSync(masterSyncDetails);
+		ResponseDTO result = mastersyncservice.getMasterSync("MDS_J00001");
+		assertEquals(RegistrationConstants.MASTER_SYNC_SUCCESS,
+				result.getSuccessResponseDTO().getMessage());
+
+	}
+	
 	@Test
 	public void masterSync_verify_findLocationByHierarchyCode_getCode()
 	{
@@ -339,7 +363,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		//mastersyncservice.getAllReasonsList(langCode);
 		List<MasterReasonListDto> result = mastersyncservice.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		List<String> list1=new ArrayList<>();
-		list1.addAll(Arrays.asList("APM", "GPM", "IAD", "DPG", "OTH", "OPM", "SDM"));
+		list1.addAll(Arrays.asList("1","2","APM", "GPM", "IAD", "DPG", "OTH","ADM","ADD", "OPM", "SDM"));
 		
 		List<String> list2=new ArrayList<>();
 		
@@ -359,7 +383,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		//this test validates if expected names are fetched from reason_list table
 		List<MasterReasonListDto> result = mastersyncservice.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		List<String> list1=new ArrayList<>();
-		list1.addAll(Arrays.asList("Age-Photo Mismatch","Gender-Photo Mismatch","Invalid Address","Duplicate Registration","Others","Only the Photograph is Matching","Some of the Demographic Details are Matching"));
+		list1.addAll(Arrays.asList("document","document","Age-Photo Mismatch","Gender-Photo Mismatch","Invalid Address","Duplicate Registration","Others","All the Details are matching","All the Demographic Details are Matching","Only the Photograph is Matching","Some of the Demographic Details are Matching"));
 		
 		List<String> list2=new ArrayList<>();
 		
@@ -379,7 +403,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		//this test validates if expected rsncatcode is fetched from reason_list table
 		List<MasterReasonListDto> result = mastersyncservice.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		List<String> list1=new ArrayList<>();
-		list1.addAll(Arrays.asList("CLR", "CLR", "CLR", "CLR", "CLR", "MNA", "MNA"));
+		list1.addAll(Arrays.asList("1","1","CLR", "CLR", "CLR", "CLR", "CLR", "MNA", "MNA","MNA","MNA"));
 		
 		List<String> list2=new ArrayList<>();
 		
@@ -399,7 +423,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		//this test validates if expected language code is fetched from reason_list table
 		List<MasterReasonListDto> result = mastersyncservice.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		List<String> list1=new ArrayList<>();
-		list1.addAll(Arrays.asList("eng", "eng", "eng", "eng", "eng", "eng", "eng"));
+		list1.addAll(Arrays.asList("eng", "eng", "eng", "eng", "eng", "eng", "eng","eng","eng","eng","eng"));
 		
 		List<String> list2=new ArrayList<>();
 		

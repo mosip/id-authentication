@@ -680,7 +680,7 @@ public class RegistrationConstants {
 	public static final String POA_DOCUMENT = "POA";
 	public static final String POI_DOCUMENT = "POI";
 	public static final String POR_DOCUMENT = "POR";
-	public static final String DOB_DOCUMENT = "DOB";
+	public static final String DOB_DOCUMENT = "POB";
 
 	public static final List<String> PACKET_STATUS = Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");
 	
