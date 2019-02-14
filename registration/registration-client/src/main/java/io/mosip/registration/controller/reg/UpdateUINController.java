@@ -86,6 +86,7 @@ public class UpdateUINController extends BaseController implements Initializable
 		isChild = switchedOn.get();
 		toggleFunction();
 		FXUtils fxUtils = FXUtils.getInstance();
+		listenerOnFields(fxUtils);
 		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 		fxUtils.validateOnType(uinId, validation);
 		if (applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
@@ -98,6 +99,19 @@ public class UpdateUINController extends BaseController implements Initializable
 				}
 			});
 		}
+	}
+
+	private void listenerOnFields(FXUtils fxUtils) {
+		fxUtils.listenOnSelectedCheckBox(name);
+		fxUtils.listenOnSelectedCheckBox(age);
+		fxUtils.listenOnSelectedCheckBox(gender);
+		fxUtils.listenOnSelectedCheckBox(address);
+		fxUtils.listenOnSelectedCheckBox(contactDetails);
+		fxUtils.listenOnSelectedCheckBox(biometricException);
+		fxUtils.listenOnSelectedCheckBox(biometricIris);
+		fxUtils.listenOnSelectedCheckBox(biometricFingerprint);
+		fxUtils.listenOnSelectedCheckBox(cnieNumber);
+		fxUtils.listenOnSelectedCheckBox(parentOrGuardianDetails);
 	}
 
 	/**

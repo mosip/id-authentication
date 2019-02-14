@@ -19,6 +19,7 @@ import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 
 import javafx.collections.ObservableList;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
@@ -47,6 +48,23 @@ public class FXUtils {
 
 		return fxUtils;
 	}
+	
+	/**
+	 * Listener to change the style when field is selected for
+	 */
+	public void listenOnSelectedCheckBox(CheckBox field) {
+	
+		field.selectedProperty().addListener((obsValue, oldValue, newValue)->{
+			if(newValue) {
+				field.getStyleClass().remove("updateUinCheckBox");
+				field.getStyleClass().add("updateUinCheckBoxSelected");
+			}else {
+				field.getStyleClass().remove("updateUinCheckBoxSelected");
+				field.getStyleClass().add("updateUinCheckBox");
+			}
+		});
+	}
+	
 
 	/**
 	 * Validator method for field during onType
