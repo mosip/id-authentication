@@ -19,15 +19,14 @@
       <AnchorPane layoutY="70.0" styleClass="reggistrationPaneStyle">
          <children>
          	<Label layoutX="60.0" styleClass="optionHeaderStyle" text="Registration Tasks" />
-            <Button layoutX="40.0" layoutY="147.0" mnemonicParsing="false" onAction="#updateUIN" styleClass="uinUpdateBtnStyle" text="%uinupdate" />
-            <Button layoutX="40.0" layoutY="257.0" mnemonicParsing="false" styleClass="uinUpdateBtnStyle" text="%lostuin" />            
-            <Button layoutX="40.0" layoutY="37.0" mnemonicParsing="false" onAction="#createPacket" styleClass="newRegBtnStyle" text="%newregistration" />
+            <Button fx:id="uinUpdateBtn" layoutX="40.0" layoutY="147.0" mnemonicParsing="false" onAction="#updateUIN" styleClass="uinUpdateBtnStyle" text="%uinupdate" />            
+            <Button fx:id="newRegistrationBtn" layoutX="40.0" layoutY="37.0" mnemonicParsing="false" onAction="#createPacket" styleClass="newRegBtnStyle" text="%newregistration" />
             <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="60.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/NewRegistration.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="60.0" layoutY="172.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="uinUpdateImage" fitHeight="30.0" fitWidth="30.0" layoutX="60.0" layoutY="172.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/UINUpdate.png" />
                </image>

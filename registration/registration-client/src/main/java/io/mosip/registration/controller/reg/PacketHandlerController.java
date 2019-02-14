@@ -28,6 +28,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.ErrorResponseDTO;
@@ -51,7 +52,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
 /**
@@ -68,6 +71,15 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@FXML
 	private AnchorPane acknowRoot;
+
+	@FXML
+	private Button uinUpdateBtn;
+
+	@FXML
+	private ImageView uinUpdateImage;
+
+	@FXML
+	private Button newRegistrationBtn;
 
 	@FXML
 	private AnchorPane uploadRoot;
@@ -123,7 +135,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
-		if (SessionContext.userContext().getRoles().get(0).equals(RegistrationConstants.OFFICER)) {
+		if (!SessionContext.userContext().getRoles().contains(RegistrationConstants.SUPERVISOR)
+				&& !SessionContext.userContext().getRoles().contains(RegistrationConstants.ADMIN_ROLE)) {
 			eodProcessAnchorPane.setVisible(false);
 		}
 		pendingApprovalCountLbl.setText(RegistrationUIConstants.NO_PENDING_APPLICATIONS);
@@ -139,6 +152,10 @@ public class PacketHandlerController extends BaseController implements Initializ
 		}
 		if (!reRegisterRegistrations.isEmpty()) {
 			reRegistrationCountLbl.setText(reRegisterRegistrations.size() + " " + RegistrationUIConstants.APPLICATIONS);
+		}
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FLAG).equals(RegistrationConstants.ENABLE)) {
+			uinUpdateBtn.setVisible(false);
+			uinUpdateImage.setVisible(false);
 		}
 
 	}
@@ -391,12 +408,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		if (response.getSuccessResponseDTO() != null
 				&& response.getSuccessResponseDTO().getMessage().equals("Success")) {
-			
+
 			String mobile = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity().getPhone();
 			String email = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity().getEmail();
 			sendEmailNotification(email);
 			sendSMSNotification(mobile);
-			
+
 			try {
 				// Generate the file path for storing the Encrypted Packet and Acknowledgement
 				// Receipt
