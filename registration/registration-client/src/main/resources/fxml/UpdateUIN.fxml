@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="uinUpdateRoot" prefHeight="500.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UpdateUINController">
+<AnchorPane fx:id="uinUpdateRoot" prefHeight="500.0" prefWidth="1126.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UpdateUINController">
 	<children>
       <ImageView fitHeight="17.0" fitWidth="22.0" layoutX="24.0" layoutY="21.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -48,14 +48,14 @@
             <Font size="12.0" />
          </font>
       </Label>
-      <Button layoutX="858.0" layoutY="447.0" mnemonicParsing="false" onAction="#submitUINUpdate" styleClass="RegbuttonStyle" text="%submit">
+      <Button layoutX="1013.0" layoutY="447.0" mnemonicParsing="false" onAction="#submitUINUpdate" styleClass="RegbuttonStyle" text="%submit">
          <font>
             <Font size="14.0" />
          </font>
       </Button>
       <Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="76.0" layoutY="128.0" prefHeight="15.0" prefWidth="9.0" />
       <Label id="toggleLabel1" fx:id="toggleLabel1" layoutX="85.0" layoutY="128.0" prefHeight="15.0" prefWidth="9.1" />
-      <HBox fx:id="biometricBox" layoutX="32.0" layoutY="267.0" prefHeight="40.0" prefWidth="900.0">
+      <HBox fx:id="biometricBox" layoutX="32.0" layoutY="267.0" prefHeight="40.0" prefWidth="1055.0">
          <children>
             <CheckBox fx:id="biometricException" mnemonicParsing="false" prefHeight="17.0" prefWidth="196.0" text="%biometrics-exception">
             	<font>
@@ -79,7 +79,7 @@
             </CheckBox>
          </children>
       </HBox>
-      <HBox layoutX="32.0" layoutY="219.0" prefHeight="40.0" prefWidth="900.0">
+      <HBox fx:id="demographicHBox" layoutX="32.0" layoutY="219.0" prefHeight="40.0" prefWidth="1055.0">
          <children>
             <CheckBox fx:id="name" mnemonicParsing="false" prefHeight="17.0" prefWidth="125.0" text="%name">
                <font>
@@ -107,6 +107,11 @@
                </font>
             </CheckBox>
             <CheckBox fx:id="parentOrGuardianDetails" mnemonicParsing="false" prefHeight="17.0" prefWidth="194.0" text="%parent/guardiandetails">
+               <font>
+                  <Font size="12.0" />
+               </font>
+            </CheckBox>
+            <CheckBox fx:id="foreigner" mnemonicParsing="false" prefHeight="17.0" prefWidth="194.0" text="%Foreigner/National">
                <font>
                   <Font size="12.0" />
                </font>
