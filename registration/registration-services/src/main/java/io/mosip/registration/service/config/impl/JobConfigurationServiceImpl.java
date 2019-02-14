@@ -62,7 +62,7 @@ import io.mosip.registration.service.config.JobConfigurationService;
 public class JobConfigurationServiceImpl extends BaseService implements JobConfigurationService {
 
 	/**
-	 *  To Fetch Job Configuration details
+	 * To Fetch Job Configuration details
 	 */
 	@Autowired
 	private SyncJobConfigDAO jobConfigDAO;
@@ -123,7 +123,12 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	/**
 	 * Base Job
 	 */
-	BaseJob baseJob;
+	private BaseJob baseJob;
+
+	/**
+	 * create a parser based on provided definition
+	 */
+	private static CronParser cronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
 
 	/*
 	 * (non-Javadoc)
@@ -158,6 +163,13 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 				}
 			}
+
+			/* Check and Execute missed triggers */
+			executeMissedTriggers(syncActiveJobMap);
+			
+			/* Start Scheduler */
+			startScheduler();
+
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
@@ -187,7 +199,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		} else {
 			schedulerFactoryBean.start();
 			isSchedulerRunning = true;
-			
+
 			/* Job Data Map */
 			Map<String, Object> jobDataAsMap = new HashMap<>();
 			jobDataAsMap.put("applicationContext", applicationContext);
@@ -209,7 +221,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	private void loadScheduler(ResponseDTO responseDTO) {
 		syncActiveJobMap.forEach((jobId, syncJob) -> {
 			try {
-				if (syncJob.getParentSyncJobId() == null && responseDTO.getErrorResponseDTOs() == null
+				if (syncJob.getParentSyncJobId() == null && syncJob.getApiName()!=null && responseDTO.getErrorResponseDTOs() == null
 						&& isSchedulerRunning && !schedulerFactoryBean.getScheduler().checkExists(new JobKey(jobId))) {
 
 					// Get Job instance through application context
@@ -223,9 +235,6 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 							.withSchedule(CronScheduleBuilder.cronSchedule(syncJob.getSyncFrequency())).build();
 
 					schedulerFactoryBean.getScheduler().scheduleJob(jobDetail, trigger);
-					
-					/* Check and execute if the job misses its previous scheduled trigger */
-					executeMissedTriggers(jobId, syncJob.getSyncFrequency());
 
 				}
 			} catch (SchedulerException | NoSuchBeanDefinitionException exception) {
@@ -366,9 +375,12 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		return responseDTO;
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.config.JobConfigurationService#executeJob(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.config.JobConfigurationService#executeJob(java.
+	 * lang.String)
 	 */
 	@Override
 	public ResponseDTO executeJob(String jobId) {
@@ -380,22 +392,29 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 			SyncJobDef syncJobDef = syncActiveJobMap.get(jobId);
 
-			if(syncJobDef!=null) {
+			if (syncJobDef != null && syncJobDef.getApiName()!=null) {
 				// Get Job using application context and api name
 				baseJob = (BaseJob) applicationContext.getBean(syncJobDef.getApiName());
 
-				String triggerPoint = getUserIdFromSession()!=null ? getUserIdFromSession() :RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
+				String triggerPoint = getUserIdFromSession() != null ? getUserIdFromSession()
+						: RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
 
 				// Job Invocation
 				responseDTO = baseJob.executeJob(triggerPoint, jobId);
 			} else {
-				responseDTO =new ResponseDTO();
+				responseDTO = new ResponseDTO();
 				setErrorResponse(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE, null);
 			}
 
 		} catch (NoSuchBeanDefinitionException | NullPointerException | IllegalArgumentException exception) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
+
+			responseDTO = new ResponseDTO();
+			setErrorResponse(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE, null);
+		} catch(RuntimeException runtimeException) {
+			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 
 			responseDTO = new ResponseDTO();
 			setErrorResponse(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE, null);
@@ -587,15 +606,14 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		return jobConfigDAO.updateAll(syncJobDefs);
 	}
 
-	private void executeMissedTriggers(String jobId, String syncFrequency) {
+	private void executeMissedTrigger(final String jobId, final String syncFrequency) {
 
-		/* create a parser based on provided definition */
-		CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+		ExecutionTime executionTime = ExecutionTime.forCron(cronParser.parse(syncFrequency));
 
-		ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(syncFrequency));
+		ZonedDateTime currentTime = ZonedDateTime.now(ZoneOffset.systemDefault());
 
-		Optional<ZonedDateTime> last = executionTime.lastExecution(ZonedDateTime.now(ZoneOffset.systemDefault()));
-		Optional<ZonedDateTime> next = executionTime.nextExecution(ZonedDateTime.now(ZoneOffset.systemDefault()));
+		Optional<ZonedDateTime> last = executionTime.lastExecution(currentTime);
+		Optional<ZonedDateTime> next = executionTime.nextExecution(currentTime);
 
 		/* Check last and next has values present */
 		if (last.isPresent() && next.isPresent()) {
@@ -614,6 +632,18 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 			}
 		}
+
+	}
+
+	private void executeMissedTriggers(Map<String, SyncJobDef> map) {
+
+		map.forEach((jobId, syncJob) -> {
+			if (syncJob.getParentSyncJobId() == null && syncJob.getSyncFrequency() != null) {
+				/* An Async task to complete missed trigger */
+				new Thread(() -> executeMissedTrigger(jobId, syncJob.getSyncFrequency())).start();
+			}
+
+		});
 
 	}
 }

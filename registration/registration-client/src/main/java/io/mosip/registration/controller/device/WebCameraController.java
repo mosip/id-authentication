@@ -13,17 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
-import com.github.sarxos.webcam.Webcam;
-import com.github.sarxos.webcam.WebcamPanel;
-
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.device.webcam.MosipWebcamProvider;
+import io.mosip.registration.device.webcam.IMosipWebcamService;
 import io.mosip.registration.device.webcam.PhotoCaptureFacade;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -62,14 +58,13 @@ public class WebCameraController extends BaseController implements Initializable
 
 	private BufferedImage capturedImage = null;
 
-	private MosipWebcamProvider photoProvider = null;
+	private IMosipWebcamService photoProvider = null;
 	@Autowired
 	private PhotoCaptureFacade photoCaptureFacade;
 
-	private Webcam webcam;
 	private String imageType;
 
-	@Value("${WEBCAM_PROVIDER_NAME}")
+	@Value("${WEBCAM_LIBRARY_NAME}")
 	private String photoProviderName;
 
 	@Override
@@ -77,10 +72,7 @@ public class WebCameraController extends BaseController implements Initializable
 		LOGGER.info("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been started");
 		
-		WebcamPanel cameraPanel = new WebcamPanel(webcam);
-		JPanel jPanelWindow = new JPanel();
-		jPanelWindow.add(cameraPanel);
-		jPanelWindow.setVisible(true);
+		JPanel jPanelWindow = photoProvider.getCameraPanel();
 		webcamera.setContent(jPanelWindow);
 	}
 
@@ -97,14 +89,11 @@ public class WebCameraController extends BaseController implements Initializable
 				"Connecting to the webcam");
 		
 		photoProvider = photoCaptureFacade.getPhotoProviderFactory(photoProviderName);
-		if (webcam != null) {
-			photoProvider.close(webcam);
+		if (photoProvider.isWebcamConnected()) {
+			photoProvider.close();
 		}
-		webcam = photoProvider.connect(640, 480);
-		if (webcam != null) {
-			return true;
-		} 
-		return false;
+		photoProvider.connect(640, 480);
+		return photoProvider.isWebcamConnected();
 	}
 
 	@FXML
@@ -114,7 +103,7 @@ public class WebCameraController extends BaseController implements Initializable
 		if (capturedImage != null) {
 			capturedImage.flush();
 		}
-		capturedImage = photoProvider.captureImage(webcam);
+		capturedImage = photoProvider.captureImage();
 		parentController.saveApplicantPhoto(capturedImage, imageType);
 
 		clear.setDisable(false);
@@ -134,7 +123,7 @@ public class WebCameraController extends BaseController implements Initializable
 		LOGGER.info("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"closing the webcam window");
 
-		photoProvider.close(webcam);
+		photoProvider.close();
 		Stage stage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
 		stage.close();
 	}

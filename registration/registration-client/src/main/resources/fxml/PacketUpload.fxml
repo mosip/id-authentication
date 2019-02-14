@@ -7,34 +7,26 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="uploadPacketRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="590.0" prefWidth="944.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.PacketUploadController">
+<AnchorPane fx:id="uploadPacketRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="uploadPacketparentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.PacketUploadController">
    <children>
-      <TableView fx:id="table" layoutX="52.0" layoutY="116.0" prefHeight="250.0" prefWidth="800.0">
-        <columns>
-          <TableColumn fx:id="fileNameColumn" prefWidth="400.0" text="%files" />
-          <TableColumn fx:id="uploadStatusColumn" prefWidth="400.0" text="%status" />
-        </columns>
-      </TableView>
-      <Button fx:id="formValidationButton" layoutX="770.0" layoutY="70.0" mnemonicParsing="false" onAction="#syncAndUploadPacket" text="%upload" />
-      <Label layoutX="379.0" layoutY="31.0" prefHeight="39.0" prefWidth="161.0" text="%uploadpacket">
-         <font>
-            <Font size="23.0" />
-         </font>
-      </Label>
-      <ProgressIndicator fx:id="progressIndicator" layoutX="394.0" layoutY="62.0" prefHeight="109.0" prefWidth="90.0" progress="0.0" visible="false" />
-      <ImageView fitHeight="15.0" fitWidth="15.0" layoutX="52.0" layoutY="24.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-         <image>
-            <Image url="@../images/Home.png" />
-         </image>
-      </ImageView>
-      <Text layoutX="69.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/uploadpacket">
-         <font>
-            <Font size="10.0" />
-         </font>
-      </Text>
-      <Button layoutX="603.0" layoutY="70.0" mnemonicParsing="false" onAction="#packetExport" text="%saveToDevice" />
+      <AnchorPane fx:id="uploadPacketHeader" layoutX="-1.0">
+         <children>
+            <Button fx:id="saveToDevice" layoutX="990.0" layoutY="5.0" mnemonicParsing="false" onAction="#packetExport" text="%saveToDevice" />
+            <Button fx:id="formValidationButton" layoutX="1130.0" layoutY="5.0" mnemonicParsing="false" onAction="#syncAndUploadPacket" text="%upload" />
+            <AnchorPane layoutX="2.0" layoutY="-5.0">
+               <children>
+                  <Button layoutY="14.0" mnemonicParsing="false" styleClass="homeButton" text="%home" onAction="#goToHomePageFromRegistration"/>
+                  <Label fx:id="uploadPacketHeaderLabel" layoutX="60.0" layoutY="16.0" text="%/uploadpacket" />
+               </children>
+            </AnchorPane>
+            <Label fx:id="uploadPacketMainHeader" layoutX="530.0" layoutY="2.0" text="%uploadpacket" />
+         </children>
+      </AnchorPane>
+      <ProgressIndicator fx:id="progressIndicator" layoutX="400.0" layoutY="20.0" prefHeight="109.0" prefWidth="90.0" progress="0.0" visible="false" />
+      <AnchorPane layoutX="27.0" layoutY="86.0">
+         <children>
+            <VBox fx:id="uploadIds" layoutY="10.0" spacing="1" styleClass="uploadIds" />
+         </children>
+      </AnchorPane>	
    </children>
 </AnchorPane>

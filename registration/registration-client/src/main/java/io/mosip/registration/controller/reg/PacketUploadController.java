@@ -30,6 +30,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.sync.PacketSynchService;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
@@ -37,25 +38,23 @@ import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 
 @Controller
 public class PacketUploadController extends BaseController {
 
-	@FXML
-	private TableColumn<PacketStatusDTO, String> fileNameColumn;
-
-	@FXML
-	private TableColumn<PacketStatusDTO, String> uploadStatusColumn;
-
-	@FXML
-	private TableView<PacketStatusDTO> table;
 
 	@FXML
 	private ProgressIndicator progressIndicator;
+	
+	@FXML
+	private VBox uploadIds;
 
 	@Autowired
 	private PacketUploadService packetUploadService;
@@ -73,11 +72,11 @@ public class PacketUploadController extends BaseController {
 	 * 
 	 */
 	public void syncAndUploadPacket() {
+		
 		LOGGER.info("REGISTRATION - SYNCH_PACKETS_AND_PUSH_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Sync the packets and push it to the server");
-		table.getItems().clear();
-		table.refresh();
 		service.reset();
+		uploadIds.getChildren().clear();
 		try {
 			String packetSyncStatus = packetSync();
 			progressIndicator.progressProperty().bind(service.progressProperty());
@@ -175,21 +174,6 @@ public class PacketUploadController extends BaseController {
 	}
 
 	/**
-	 * To display the Uploaded packet details in UI
-	 * 
-	 * @param tableData
-	 */
-	private void displayData(List<PacketStatusDTO> tableData) {
-		LOGGER.info("REGISTRATION - DISPLAY_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-				"To display all the ui data");
-		fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("fileName"));
-		uploadStatusColumn.setCellValueFactory(new PropertyValueFactory<>("uploadStatus"));
-
-		ObservableList<PacketStatusDTO> list = FXCollections.observableArrayList(tableData);
-		table.setItems(list);
-	}
-
-	/**
 	 * To populate the data for the UI table
 	 * 
 	 * @param verifiedPackets
@@ -234,8 +218,8 @@ public class PacketUploadController extends BaseController {
 							APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 					List<Registration> synchedPackets = packetUploadService.getSynchedPackets();
 					List<Registration> packetUploadList = new ArrayList<>();
-					Map<String, String> tableMap = new HashMap<String, String>();
 					String status = "";
+					addToDisplay("Packet ID","Upload Status","uploadPanesFirst");
 					if (!synchedPackets.isEmpty()) {
 						auditFactory.audit(AuditEvent.PACKET_UPLOAD, Components.PACKET_UPLOAD,
 								"Upload packets to the server",
@@ -268,18 +252,18 @@ public class PacketUploadController extends BaseController {
 											synchedPacket.setFileUploadStatus(
 													RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
 											packetUploadList.add(synchedPacket);
-											tableMap.put(synchedPacket.getId(),
+											addToDisplay(synchedPacket.getId(),
 													RegistrationConstants.PACKET_UPLOAD_SUCCESS);
 
 										} else {
 											synchedPacket.setFileUploadStatus(
 													RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
 											packetUploadList.add(synchedPacket);
-											tableMap.put(synchedPacket.getId(), "Error");
+											addToDisplay(synchedPacket.getId(), "Error");
 										}
 									}
 								} else {
-									tableMap.put(synchedPacket.getId(), "Error(Packet not available)");
+									addToDisplay(synchedPacket.getId(), "Error(Packet not available)");
 								}
 
 							} catch (URISyntaxException e) {
@@ -291,20 +275,21 @@ public class PacketUploadController extends BaseController {
 								LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_ERROR - PACKET_UPLOAD_CONTROLLER",
 										APPLICATION_NAME, APPLICATION_ID, "Error while pushing packets to the server");
 								if(e.getMessage().contains(RegistrationConstants.PACKET_DUPLICATE)) {
-									tableMap.put(synchedPacket.getId(), "Error(Duplicate Packets)");
+									addToDisplay(synchedPacket.getId(), "Error(Duplicate Packets)");
 									synchedPacket.setClientStatusCode(RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
 									synchedPacket.setFileUploadStatus(
 											RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
 								} else {
 									synchedPacket.setFileUploadStatus(
 											RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
-									tableMap.put(synchedPacket.getId(), "Error(" + e.getErrorTexts().toString() + ")");
+									addToDisplay(synchedPacket.getId(), "Error(" + e.getErrorTexts().toString() + ")");
 								}
 								packetUploadList.add(synchedPacket);
 								synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
 								
 
 							} catch (RuntimeException e) {
+								e.printStackTrace();
 								LOGGER.error(
 										"REGISTRATION - HANDLE_PACKET_UPLOAD_RUNTIME_ERROR - PACKET_UPLOAD_CONTROLLER",
 										APPLICATION_NAME, APPLICATION_ID,
@@ -320,7 +305,7 @@ public class PacketUploadController extends BaseController {
 											RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
 									synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
 									packetUploadList.add(synchedPacket);
-									tableMap.put(synchedPacket.getId(), "Error");
+									addToDisplay(synchedPacket.getId(), "Error");
 								}
 								break;
 							}
@@ -329,7 +314,6 @@ public class PacketUploadController extends BaseController {
 						}
 						packetUploadService.updateStatus(packetUploadList);
 						progressIndicator.setVisible(false);
-						displayData(populateTableData(tableMap));
 					} else {
 						status = "Info-No packets to upload.";
 					}
@@ -339,6 +323,40 @@ public class PacketUploadController extends BaseController {
 			};
 		}
 	};
+	
+	public void addToDisplay(String id, String message) {
+		addToDisplay(id, message, "uploadPanes");
+	}
+	
+	public void addToDisplay(String id, String message, String idForAnchorPane) {
+		try {
+			
+		AnchorPane paneToDisplay = new AnchorPane();
+		paneToDisplay.setId(idForAnchorPane);
+		Label packetId = new Label(id);
+		packetId.setId("uploadPageText");
+		Label status = new Label(message);
+		packetId.setLayoutX(26.0);
+		status.setLayoutX(300.0);
+		packetId.setLayoutY(10);
+		status.setLayoutY(10);
+
+		
+		paneToDisplay.getChildren().add(packetId);
+		paneToDisplay.getChildren().add(status);
+		
+		Platform.runLater(()->{
+			uploadIds.getChildren().add(paneToDisplay);
+		});
+		
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+	
 
 	/**
 	 * Export the packets and show the exported packets in the table
@@ -353,6 +371,5 @@ public class PacketUploadController extends BaseController {
 		exportedPackets.forEach(regPacket -> {
 			exportedPacketMap.put(regPacket.getId(), RegistrationClientStatusCode.EXPORT.getCode());
 		});
-		displayData(populateTableData(exportedPacketMap));
 	}
 }

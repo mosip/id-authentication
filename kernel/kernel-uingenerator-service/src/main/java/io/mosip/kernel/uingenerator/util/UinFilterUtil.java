@@ -75,6 +75,9 @@ public class UinFilterUtil {
 	@Value("#{'${mosip.kernel.uin.restricted-numbers}'.split(',')}")
 	private List<String> restrictedAdminDigits;
 
+	@Value("#{'${mosip.kernel.uin.not-start-with}'.split(',')}")
+	private List<String> notStartWith;
+
 	/**
 	 * Ascending digits which will be checked for sequence in id
 	 */
@@ -147,7 +150,8 @@ public class UinFilterUtil {
 		return !(sequenceFilter(id) || regexFilter(id, repeatingPattern) || regexFilter(id, repeatingBlockPattern)
 				|| regexFilter(id, conjugativeEvenDigitsLimitPattern)
 				|| firstAndLastDigitsValidation(id, digitsGroupLimit)
-				|| firstAndLastDigitsReverseValidation(id, reverseDigitsGroupLimit) || restrictedAdminFilter(id));
+				|| firstAndLastDigitsReverseValidation(id, reverseDigitsGroupLimit) || restrictedAdminFilter(id)
+				|| validateNotStartWith(id));
 	}
 
 	/**
@@ -218,5 +222,23 @@ public class UinFilterUtil {
 
 	private boolean firstAndLastDigitsValidation(String id, int digitsGroupLimit) {
 		return (id.substring(0, digitsGroupLimit).equals(id.substring(id.length() - digitsGroupLimit, id.length())));
+	}
+
+	/**
+	 * Method to validate that the prid should not contains the specified digit at
+	 * first index
+	 * 
+	 * @param id
+	 *            The input id to validate
+	 * @return true if found otherwise false
+	 */
+	private boolean validateNotStartWith(String id) {
+		if (notStartWith != null && !notStartWith.isEmpty()) {
+			for (String str : notStartWith) {
+				if (id.startsWith(str))
+					return true;
+			}
+		}
+		return false;
 	}
 }

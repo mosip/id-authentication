@@ -2,9 +2,12 @@ package io.mosip.kernel.syncdata.controller;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,17 +16,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.ConfigDto;
+import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
 import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
 import io.mosip.kernel.syncdata.exception.DateParsingException;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
-import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
 import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
+import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import net.minidev.json.JSONObject;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * Sync Handler Controller
@@ -63,6 +69,7 @@ public class SyncDataController {
 	 * 
 	 * @return JSONObject - global config response
 	 */
+	
 	@ApiOperation(value = "API to sync global config details")
 	@GetMapping(value = "/configs")
 	public JSONObject getConfigDetails() {
@@ -74,6 +81,7 @@ public class SyncDataController {
 	 * 
 	 * @return JSONObject - global config response
 	 */
+	@ApiIgnore
 	@ApiOperation(value = "API to sync global config details")
 	@GetMapping(value = "/globalconfigs")
 	public JSONObject getGlobalConfigDetails() {
@@ -88,12 +96,14 @@ public class SyncDataController {
 	 *            registration Id
 	 * @return JSONObject
 	 */
+	@ApiIgnore
 	@ApiOperation(value = "Api to get registration center configuration")
 	@GetMapping(value = "/registrationcenterconfig/{registrationcenterid}")
 	public JSONObject getRegistrationCentreConfig(@PathVariable(value = "registrationcenterid") String regId) {
 		return syncConfigDetailsService.getRegistrationCenterConfigDetails(regId);
 	}
 
+	@ApiIgnore
 	@GetMapping("/configuration/{registrationCenterId}")
 	public ConfigDto getConfiguration(@PathVariable("registrationCenterId") String registrationCenterId) {
 		return syncConfigDetailsService.getConfiguration(registrationCenterId);
@@ -149,5 +159,26 @@ public class SyncDataController {
 	@GetMapping("/userdetails/{regid}")
 	public SyncUserDetailDto getUserDetails(@PathVariable("regid") String regId) {
 		return syncUserDetailsService.getAllUserDetail(regId);
+	}
+	
+	/**
+	 * Request mapping to get Public Key
+	 * 
+	 * @param applicationId
+	 *            Application id of the application requesting publicKey
+	 * @param timeStamp
+	 *            Timestamp of the request
+	 * @param referenceId
+	 *            Reference id of the application requesting publicKey
+	 * @return {@link PublicKeyResponse} instance
+	 */
+	@ApiOperation(value = "Get the public key of a particular application",response = PublicKeyResponse.class)
+	@GetMapping(value = "/publickey/{applicationId}")
+	public ResponseEntity<PublicKeyResponse<String>> getPublicKey(@ApiParam("Id of application")@PathVariable("applicationId") String applicationId,
+			@ApiParam("Timestamp as metadata")	@RequestParam("timeStamp") String timeStamp,
+			@ApiParam("Refrence Id as metadata")@RequestParam("referenceId")  Optional<String>referenceId) {
+
+		return new ResponseEntity<>(syncConfigDetailsService.getPublicKey(applicationId, timeStamp, referenceId),
+				HttpStatus.OK);
 	}
 }

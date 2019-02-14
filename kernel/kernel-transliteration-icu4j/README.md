@@ -1,6 +1,6 @@
 ## kernel-transliteration-icu4j
 
-[Background & Design]
+[Background & Design](../../docs/design/kernel/kernel-transliteration.md)
  
 
  

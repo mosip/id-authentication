@@ -7,10 +7,16 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+
+import javax.activation.UnsupportedDataTypeException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,17 +30,25 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.syncdata.dto.ApplicationDto;
 import io.mosip.kernel.syncdata.dto.HolidayDto;
 import io.mosip.kernel.syncdata.dto.MachineDto;
 import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.syncdata.dto.MachineTypeDto;
+import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.dto.response.RegistrationCenterUserResponseDto;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
+import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
 import io.mosip.kernel.syncdata.service.RegistrationCenterUserService;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
@@ -58,6 +72,9 @@ public class SyncDataServiceTest {
 
 	@MockBean
 	private RegistrationCenterUserService registrationCenterUserService;
+
+	@MockBean
+	private ObjectMapper objectMapper;
 
 	@Autowired
 	private SyncUserDetailsService syncUserDetailsService;
@@ -95,6 +112,9 @@ public class SyncDataServiceTest {
 	@Value("${mosip.kernel.syncdata.auth-manager-roles}")
 	private String authAllRolesUri;
 
+	@Value("${mosip.kernel.syncdata.public-key-url}")
+	private String publicKeyUrl;
+
 	private String configServerUri = null;
 	private String configLabel = null;
 	private String configProfile = null;
@@ -114,6 +134,7 @@ public class SyncDataServiceTest {
 	List<MachineDto> machines;
 	List<MachineSpecificationDto> machineSpecifications;
 	List<MachineTypeDto> machineTypes;
+	Map<String, String> uriParams = null;
 
 	JSONObject globalConfigMap = null;
 	JSONObject regCentreConfigMap = null;
@@ -124,6 +145,7 @@ public class SyncDataServiceTest {
 		configDetialsSyncSetup();
 		userDetailsUri = new StringBuilder();
 		userDetailsUri.append(authUserDetailsBaseUri).append(authUserDetailsUri);
+
 	}
 
 	public void masterDataSyncSetup() {
@@ -320,6 +342,88 @@ public class SyncDataServiceTest {
 		mockRestServer.expect(requestTo(builder.toString())).andRespond(withServerError());
 		syncRolesService.getAllRoles();
 	}
-	
-	
+
+	// -----------------------------------------publicKey-----------------------//
+
+	@Test
+	public void getPublicKey() throws JsonParseException, JsonMappingException, IOException {
+
+		uriParams = new HashMap<>();
+		uriParams.put("applicationId", "REGISTRATION");
+
+		// Query parameters
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(publicKeyUrl)
+				// Add query parameter
+				.queryParam("referenceId", Optional.of("referenceId"))
+				.queryParam("timeStamp", "2019-09-09T09:00:00.000Z");
+		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
+
+		mockRestServer.expect(MockRestRequestMatchers.requestTo(builder.buildAndExpand(uriParams).toString()))
+				.andRespond(withSuccess().body("{\"publicKey\": \"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw2OmxIpq_BL9iYbL2nb845hNM86I0ujhC4CCkuOrVjHjw1zoOOSN2bPR-hitfZBGxgxnANZ4h63EJgCBXZRr0vaUJHbjhDp_hn0ETu1b2yqeJEFsIIm_SCg4no-EKVB77u59TFAZgDlkAbE21AJAUzC_B00QLlRB47VkLUwLL0kE9pctcmblJIr3iFKMBfGMBcIbs795RsLH-FsYFWQCcNqg4ku6LPlJZ2sOIDGPgHzx7ruH5t0RRCoUVmwqTQsdCqF7618m_W8N10S54aItUQaERqGs6gRj56f9-6tt-yyxFwm4qxv5UWyN9aGBxSEV-lNta074NTYpG-6qCKr3AwIDAQAB\", \"issuedAt\": \"2019-09-09T09:00:00\", \"expiryAt\": \"2020-09-08T09:00:00\"}"));
+        PublicKeyResponse<String> publicKeyResp= new PublicKeyResponse<>();
+        publicKeyResp.setExpiryAt(LocalDateTime.parse("2020-09-08T09:00:00"));
+        publicKeyResp.setIssuedAt(LocalDateTime.parse("2019-09-09T09:00:00"));
+        publicKeyResp.setPublicKey("sdfsfsdfsadfdsfsdfasf");
+        
+		when(objectMapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenReturn(publicKeyResp);
+		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", Optional.of("referenceId"));
+	}
+
+	@Test(expected = SyncDataServiceException.class)
+	public void getPublicKeyServiceExceptionTest() {
+
+		uriParams = new HashMap<>();
+		uriParams.put("applicationId", "REGISTRATION");
+
+		// Query parameters
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(publicKeyUrl)
+				// Add query parameter
+				.queryParam("referenceId", Optional.of("referenceId"))
+				.queryParam("timeStamp", "2019-09-09T09:00:00.000Z");
+		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
+
+		mockRestServer.expect(MockRestRequestMatchers.requestTo(builder.buildAndExpand(uriParams).toString()))
+				.andRespond(withServerError());
+
+		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", Optional.of("referenceId"));
+	}
+
+	@Test(expected = SyncInvalidArgumentException.class)
+	public void getPublicIoException() throws IOException {
+		uriParams = new HashMap<>();
+		uriParams.put("applicationId", "REGISTRATION");
+
+		// Query parameters
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(publicKeyUrl)
+				// Add query parameter
+				.queryParam("referenceId", Optional.of("referenceId"))
+				.queryParam("timeStamp", "2019-09-09T09:00:00.000Z");
+		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
+
+		mockRestServer.expect(MockRestRequestMatchers.requestTo(builder.buildAndExpand(uriParams).toString()))
+				.andRespond(withSuccess().body(
+						"{ \"errors\": [ {   \"errorCode\": \"KER-KMS-002\",  \"errorMessage\": \"ApplicationId not found in Key Policy\" }] }"));
+
+		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", Optional.of("referenceId"));
+	}
+
+	@Test(expected = SyncDataServiceException.class)
+	public void getPublicServiceException() throws IOException {
+		uriParams = new HashMap<>();
+		uriParams.put("applicationId", "REGISTRATION");
+
+		// Query parameters
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(publicKeyUrl)
+				// Add query parameter
+				.queryParam("referenceId", Optional.of("referenceId"))
+				.queryParam("timeStamp", "2019-09-09T09:00:00.000Z");
+		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
+
+		mockRestServer.expect(MockRestRequestMatchers.requestTo(builder.buildAndExpand(uriParams).toString()))
+				.andRespond(withSuccess().body("{\"publicKey\": \"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw2OmxIpq_BL9iYbL2nb845hNM86I0ujhC4CCkuOrVjHjw1zoOOSN2bPR-hitfZBGxgxnANZ4h63EJgCBXZRr0vaUJHbjhDp_hn0ETu1b2yqeJEFsIIm_SCg4no-EKVB77u59TFAZgDlkAbE21AJAUzC_B00QLlRB47VkLUwLL0kE9pctcmblJIr3iFKMBfGMBcIbs795RsLH-FsYFWQCcNqg4ku6LPlJZ2sOIDGPgHzx7ruH5t0RRCoUVmwqTQsdCqF7618m_W8N10S54aItUQaERqGs6gRj56f9-6tt-yyxFwm4qxv5UWyN9aGBxSEV-lNta074NTYpG-6qCKr3AwIDAQAB\", \"issuedAt\": \"2019-09-09T09:00:00\", \"expiryAt\": \"2020-09-08T09:00:00\"}"));
+		when(objectMapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenThrow(new IOException());
+
+		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", Optional.of("referenceId"));
+	}
+
 }
