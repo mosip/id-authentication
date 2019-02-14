@@ -14,6 +14,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +91,7 @@ public class PreRegistrationDataSyncServiceImplTest {
 	 * 
 	 */
 	@Test 
+	@Ignore
 	public void getPreRegistrationIds_InvalidRegistrationCenterId() {
 		System.setProperty("http.proxyHost", "172.22.218.218");
 		System.setProperty("http.proxyPort", "8085");

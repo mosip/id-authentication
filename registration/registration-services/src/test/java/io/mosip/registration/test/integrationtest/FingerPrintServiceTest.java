@@ -12,6 +12,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.AfterClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JsonParseException;
@@ -131,6 +132,7 @@ public class FingerPrintServiceTest extends BaseIntegrationTest
 	
 	
 	@Test
+	@Ignore
 	public void Validate_FingerPrintSingleAuth_true() throws IOException, ParseException
 	{
 	
