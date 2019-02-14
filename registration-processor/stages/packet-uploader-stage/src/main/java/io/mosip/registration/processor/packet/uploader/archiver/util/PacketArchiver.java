@@ -9,10 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.constant.EventType;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
@@ -25,6 +28,9 @@ import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequest
  */
 @Component
 public class PacketArchiver {
+	
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketArchiver.class);
 
 	/** The audit log request builder. */
 	@Autowired
@@ -53,10 +59,11 @@ public class PacketArchiver {
 	public void archivePacket(String registrationId) throws IOException {
 		boolean isTransactionSuccessful = false;
 		String description = "";
-
 		String filepath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_ENC.toString()) + File.separator + registrationId
 				+ ".zip";
 		File file = new File(filepath);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "PacketArchiver::archivePacket()::entry");
 		try {
 			if (file.exists()) {
 
@@ -66,10 +73,15 @@ public class PacketArchiver {
 				description = "Packet successfully archived for registrationId " + registrationId;
 
 				isTransactionSuccessful = true;
-
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+						registrationId, "PacketArchiver::archivePacket()::exit");
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+						registrationId, description);
 			} else {
 				description = "Packet not found in VIRUS SCAN ENCRYPTED FOLDER DURING ARCHIVAL " + registrationId + "::"
 						+ PlatformErrorMessages.RPR_PUM_PACKET_NOT_FOUND_EXCEPTION.getMessage();
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
 				throw new PacketNotFoundException(
 						PlatformErrorMessages.RPR_PUM_PACKET_NOT_FOUND_EXCEPTION.getMessage());
 

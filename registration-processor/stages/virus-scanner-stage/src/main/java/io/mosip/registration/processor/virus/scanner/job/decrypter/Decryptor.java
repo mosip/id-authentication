@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
@@ -38,7 +39,7 @@ import io.mosip.registration.processor.virus.scanner.job.dto.CryptomanagerRespon
  */
 @Component
 public class Decryptor {
-	private static io.mosip.kernel.core.logger.spi.Logger regProcLogger = RegProcessorLogger.getLogger(Decryptor.class);
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(Decryptor.class);
 
 	@Value("${registration.processor.application.id}")
 	private String applicationId;
@@ -81,6 +82,8 @@ public class Decryptor {
 		InputStream outstream = null;
 		boolean isTransactionSuccessful = false;
 		String description = "";
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "Decryptor::decrypt()::entry");
 		try {
 			String centerId = registrationId.substring(machineIdLength, machineIdLength + centerIdLength);
 			String encryptedPacketString = IOUtils.toString(encryptedPacket, "UTF-8");
@@ -114,7 +117,11 @@ public class Decryptor {
 			outstream = new ByteArrayInputStream(decryptedPacket);
 
 			isTransactionSuccessful = true;
-			description = DECRYPTION_FAILURE + registrationId;
+			description = DECRYPTION_SUCCESS + registrationId;
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "Decryptor::decrypt()::exit");
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, description);
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, IO_EXCEPTION);

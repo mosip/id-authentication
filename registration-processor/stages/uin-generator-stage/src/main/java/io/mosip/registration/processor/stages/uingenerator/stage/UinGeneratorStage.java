@@ -173,6 +173,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		String description = "";
 		boolean isTransactionSuccessful = false;
 		this.registrationId = object.getRid();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "UinGeneratorStage::process()::entry");
 		UinResponseDto uinResponseDto = null;
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 				.getRegistrationStatus(registrationId);
@@ -215,7 +217,10 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
 				isTransactionSuccessful = true;
 				description = "UIN updated succesfully for registrationId " + registrationId;
-
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+						registrationId, "UinGeneratorStage::process()::exit");
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+						registrationId, description);
 			} else {
 				String statusComment = idResponseDTO.getError().get(0).getErrMessage();
 				registrationStatusDto.setStatusComment(statusComment);

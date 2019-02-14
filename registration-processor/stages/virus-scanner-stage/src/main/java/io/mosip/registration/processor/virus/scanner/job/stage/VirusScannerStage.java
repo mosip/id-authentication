@@ -101,6 +101,8 @@ public class VirusScannerStage extends MosipVerticleManager {
 	public MessageDTO process(MessageDTO object) {
 
 		String registrationId = object.getRid();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "VirusScannerStage::process()::entry");
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 				.getRegistrationStatus(registrationId);
 		String extension = env.getProperty("registration.processor.packet.ext");
@@ -146,6 +148,10 @@ public class VirusScannerStage extends MosipVerticleManager {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			description = "virus scan successful for registrationId " + registrationId;
 			isTransactionSuccessful = true;
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "VirusScannerStage::process()::exit");
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, description);
 		} catch (VirusScanFailedException | IOException | io.mosip.kernel.core.exception.IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
@@ -172,9 +178,6 @@ public class VirusScannerStage extends MosipVerticleManager {
 			description = "Internal error occured in virus scanner stage while processing registrationId : "
 					+ registrationId + ex.getMessage();
 		} finally {
-
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, description);
 			String eventId = "";
 			String eventName = "";
 			String eventType = "";

@@ -159,7 +159,8 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		List<InternalRegistrationStatusDto> dtolist = null;
 		List<String> registrationIds = new ArrayList<>();
 		List<String> preRegistrationIds = new ArrayList<>();
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				"", "PacketValidatorStage::process()::entry");
 		try {
 
 			object.setMessageBusAddress(MessageBusAddress.PACKET_VALIDATOR_BUS_IN);
@@ -235,7 +236,10 @@ public class PacketValidatorStage extends MosipVerticleManager {
 							object.setRid(dto.getRegistrationId());
 							isTransactionSuccessful = true;
 							description = "Structural validation success for registrationId " + registrationId;
-
+							regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+									registrationId, "PacketValidatorStage::process()::exit");
+							regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+									registrationId,description);
 						} else {
 							object.setIsValid(Boolean.FALSE);
 							object.setRid(dto.getRegistrationId());
