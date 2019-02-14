@@ -32,6 +32,7 @@ public class PolicySyncServiceTest extends BaseIntegrationTest {
 	@Test
 	public void getPolicyTest() {
 		ResponseDTO response=policySyncService.fetchPolicy();
-		assertEquals(response.getSuccessResponseDTO().getCode(), "REG-MDS‌-001");
+		assertEquals(response.getSuccessResponseDTO().getCode(), "INFORMATION");
+		//assertEquals(response.getSuccessResponseDTO().getCode(), "REG-MDS‌-001");
 	}
 }
