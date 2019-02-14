@@ -36,9 +36,6 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 	/** The conn. */
 	private AmazonS3 conn;
 
-//	/** The Constant LOGGER. */
-//	private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemCephAdapterImpl.class);
-
 	/** The logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(FilesystemCephAdapterImpl.class);
 	
