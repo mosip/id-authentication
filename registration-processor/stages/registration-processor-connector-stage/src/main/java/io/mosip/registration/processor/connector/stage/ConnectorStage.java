@@ -72,10 +72,12 @@ public class ConnectorStage extends MosipVerticleAPIManager{
 
 	public void processURL(RoutingContext ctx) {
 		JsonObject obj = ctx.getBodyAsJson();
+		
 		MessageDTO messageDTO= new MessageDTO();
 		messageDTO.setInternalError(Boolean.FALSE);
-		messageDTO.setIsValid(Boolean.valueOf(obj.getString("isValid")));
+		messageDTO.setIsValid(obj.getBoolean("isValid"));
 		messageDTO.setRid(obj.getString("rid"));
+		
 		sendMessage( messageDTO);
 		this.setResponse(ctx, "Packet with registrationId '"+obj.getString("rid")+"' has been forwarded to Packet validation stage");
 	}

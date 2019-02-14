@@ -28,8 +28,10 @@ import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.constant.EventId;
 import io.mosip.registration.processor.core.constant.EventName;
 import io.mosip.registration.processor.core.constant.EventType;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
+import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
@@ -65,7 +67,8 @@ public class PacketUploaderJobTest {
 		public void consume(MosipEventBus mosipEventBus, MessageBusAddress fromAddress) {
 		}
 	};
-
+	@Mock
+	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 	/** The audit log request builder. */
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
@@ -243,7 +246,24 @@ public class PacketUploaderJobTest {
 						Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_SYS_IO_EXCEPTIONnull"));
 
 	}
-
+	@Test
+	public void ConnectorstageConnectionFailureTest() throws ApisResourceAccessException, IOException {
+	     listAppender.start();
+	     fooLogger.addAppender(listAppender);
+		ApisResourceAccessException exp = new ApisResourceAccessException("errorMessage");
+		Mockito.when(registrationProcessorRestService.postApi(any(), any(), any(), any(), any())).thenThrow(exp);
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource("1001.zip").getFile());
+		Mockito.doNothing().when(registrationStatusService)
+				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
+		Mockito.when(adapter.storePacket("1001", file)).thenReturn(Boolean.TRUE);
+		Mockito.when(adapter.isPacketPresent("1001")).thenReturn(Boolean.TRUE);
+		Mockito.doNothing().when(adapter).unpackPacket("1001");
+		packetUploaderStage.process(dto);
+		Assertions.assertThat(listAppender.list)
+        .extracting( ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
+		.contains(Tuple.tuple( Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLERPR-RCT-001 --> errorMessage")); 
+	}
 	@Test
 	public void PacketNotFoundExceptionTest() throws Exception {
 

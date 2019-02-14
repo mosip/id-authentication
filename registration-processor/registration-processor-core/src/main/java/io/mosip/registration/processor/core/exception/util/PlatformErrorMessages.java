@@ -317,7 +317,9 @@ public enum PlatformErrorMessages {
 	RPR_SYS_PARSING_DATE_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "011", "Error while parsing date "),
 
 	/** The rpr sys io exception. */
-	RPR_SYS_IO_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "012", "IO EXCEPTION ");
+	RPR_SYS_IO_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "012", "IO EXCEPTION "), 
+	
+	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible ");
 	/** The error message. */
 	private final String errorMessage;
 
