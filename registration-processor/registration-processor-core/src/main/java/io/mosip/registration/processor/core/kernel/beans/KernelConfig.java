@@ -4,11 +4,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.fsadapter.hdfs.impl.HDFSAdapter;
 import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtil;
 import io.mosip.kernel.idvalidator.rid.impl.RidValidatorImpl;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 
 @Configuration
 public class KernelConfig {
