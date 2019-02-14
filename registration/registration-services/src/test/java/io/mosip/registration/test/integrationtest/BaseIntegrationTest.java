@@ -7,6 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.config.DaoConfig;
+import org.junit.runners.Suite;
 
 /**
  * Base integration test class
@@ -16,6 +17,20 @@ import io.mosip.registration.config.DaoConfig;
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes= {AppConfig.class, DaoConfig.class})
+@Suite.SuiteClasses({
+	GlobalParamServiceTest.class,
+	DocumentScannerServiceTest.class,
+	FingerPrintServiceTest.class,
+	JobConfigurationServiceTest.class,
+	LoginServiceTest.class,
+	MasterSyncServiceTest.class,
+	PacketHandlerServiceTest.class,
+	PolicySyncServiceTest.class,
+	PreRegistrationDataSyncServiceImplTest.class,
+	RegPacketStatusServiceImplTest.class,
+	StorageServiceTest.class,
+	SyncStatusValidatorServiceTest.class
+	})
 @ActiveProfiles(profiles="integration-test")
 public abstract class BaseIntegrationTest {
 
