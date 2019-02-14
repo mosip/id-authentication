@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.mosip.registration.processor.biodedupe.stage;
+package io.mosip.registrationprocessor.stages.demodedupe;
 
 import static org.junit.Assert.assertTrue;
 
@@ -15,6 +15,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.stages.demodedupe.DemodedupeProcessor;
+import io.mosip.registration.processor.stages.demodedupe.DemodedupeStage;
 import io.vertx.core.Vertx;
 
 /**
@@ -22,15 +24,15 @@ import io.vertx.core.Vertx;
  *
  */
 @RunWith(MockitoJUnitRunner.class)
-public class BioDedupeStageTest {
+public class DemoDedupeStageTest {
 
 	MessageDTO dto = new MessageDTO();
 
 	@Mock
-	private BioDedupeProcessor bioDedupeProcessor;
+	private DemodedupeProcessor demodedupeProcessor;
 
 	@InjectMocks
-	private BioDedupeStage bioDedupeStage = new BioDedupeStage() {
+	private DemodedupeStage demodedupeStage = new DemodedupeStage() {
 		@Override
 		public MosipEventBus getEventBus(Class<?> verticleName, String url) {
 			vertx = Vertx.vertx();
@@ -50,15 +52,15 @@ public class BioDedupeStageTest {
 	 */
 	@Test
 	public void testDeployVerticle() {
-		bioDedupeStage.deployVerticle();
+		demodedupeStage.deployVerticle();
 	}
 
 	@Test
 	public void testProcess() {
 		MessageDTO result = new MessageDTO();
 		result.setIsValid(true);
-		Mockito.when(bioDedupeProcessor.process(dto)).thenReturn(result);
-		dto = bioDedupeStage.process(dto);
+		Mockito.when(demodedupeProcessor.process(dto)).thenReturn(result);
+		dto = demodedupeStage.process(dto);
 		assertTrue(dto.getIsValid());
 	}
 
