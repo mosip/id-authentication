@@ -29,14 +29,7 @@ public class GlobalParamServiceTest extends BaseIntegrationTest {
 	/**
 	 * Setup Test Cases
 	 */
-	@Before
-	public void setUp() {
-		ApplicationContext applicationContext = ApplicationContext.getInstance();
-		applicationContext.setApplicationLanguageBundle();
-		applicationContext.setApplicationMessagesBundle();
-		applicationContext.setLocalLanguageProperty();
-		applicationContext.setLocalMessagesBundle();
-	}
+
 
 	// IRIS_THRESHOLD=70, LEFTSLAP_FINGERPRINT_THRESHOLD=80,
 	// NUM_OF_FINGERPRINT_RETRIES=3, NUM_OF_IRIS_RETRIES=0,
@@ -120,7 +113,7 @@ public class GlobalParamServiceTest extends BaseIntegrationTest {
 			Assert.assertEquals(response.getErrorResponseDTOs().get(0).getMessage(),
 					RegistrationConstants.GLOBAL_CONFIG_ERROR_MSG);
 		} else {
-			Assert.assertEquals(response.getSuccessResponseDTO().getMessage(),
+			Assert.assertEquals(response.getSuccessResponseDTO().getMessage().toString(),
 					Matchers.anyOf(Matchers.is(RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE),
 							Matchers.is(RegistrationConstants.MASTER_SYNC_FAILURE_MSG)));
 			Assert.assertEquals(response.getSuccessResponseDTO().getCode(), RegistrationConstants.ALERT_INFORMATION);

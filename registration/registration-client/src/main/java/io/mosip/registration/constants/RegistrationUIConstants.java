@@ -189,4 +189,9 @@ public class RegistrationUIConstants {
 	
 	// Supervisor Authentication configuration from global_param
 	public static final String SUPERVISOR_AUTHENTICATION_CONFIGURATION = "SUPERVISOR_AUTHENTICATION_CONFIGURATION";
+
+	//Registration Approval - EOD Process
+	public static final String ERROR_IN_SYNC_AND_UPLOAD = bundle.getString("ERROR_IN_SYNC_AND_UPLOAD");
+	public static final String UNABLE_TO_SYNC_AND_UPLOAD = bundle.getString("UNABLE_TO_SYNC_AND_UPLOAD");
+
 }

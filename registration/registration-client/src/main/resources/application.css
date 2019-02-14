@@ -65,12 +65,19 @@
 	-fx-background-color: grey;
 	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: black;
+	-fx-pref-height : 15;
+	-fx-pref-width : 9.1;
+	
 }
 
 #toggleLabel2{
 	-fx-background-color: white;
 	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: black;
+	-fx-pref-height : 15;
+	-fx-pref-width : 9.1;
+	
+	
 }
 .biometricExceptionPane{
 	-fx-border-width: 1.0 1.0 1.0 1.0;
@@ -939,12 +946,6 @@
 	-fx-pref-height: 316.0px; 
 	-fx-pref-width: 900.0px;
 }
-.uinUpdateTextFiledStyle{
-	-fx-background-color: white;
-	-fx-border-color: black;
-	-fx-background-insets: 0.0,0.0 0.0 1.0 0.0;
-  	-fx-border-width: 0.0 0.0 1.0 0.0;	
-}
 
 .operatorAuthenticationAnchorPaneStyle{
 	-fx-pref-height: 550.0px; 
@@ -1280,11 +1281,11 @@ Working on new Css by taleev
 	-fx-text-fill: #666666;
 }
 
-#uploadPacketHeaderLabel{
+.headerLabel{
 	-fx-text-fill : #666666;
 }
 
-#uploadPacketMainHeader{
+.mainHeader{
 		-fx-text-fill : #FD518C;
 		-fx-font-size : 20px;
 		-fx-pref-height : 10;
@@ -1314,9 +1315,89 @@ Working on new Css by taleev
 	
 }
 
+#uinUpdateHeader{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 35px;
+	-fx-pref-width: 1290px;
+	-fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,1.0), 10.0, 0.0, 0.0, 0.0);
+	
+}
+
 .uploadPacketparentPane{
 	-fx-background-color:#F4F4F4;
 	-fx-pref-height: 794px;
 	-fx-pref-width: 1400px;
 }
 
+.updateUinparentPane{
+	-fx-background-color:#F4F4F4;
+	-fx-pref-height: 794px;
+	-fx-pref-width: 1400px;
+}
+
+.uinUpdateContentPane{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 794px;
+	-fx-pref-width: 1100px;
+}
+
+.updateUinCheckBoxCommon .check-box > .box {
+    -fx-background-radius: 50;
+    -fx-border-radius: 50;
+    -fx-border-width: 1;
+    -fx-border-color: #FF4081;
+    -fx-padding: 1;
+    -fx-background-color: #FFFFFF;
+	-fx-background-insets: 0 0 0 0;
+}
+
+.updateUinCheckBoxCommon .check-box:selected > .box > .mark {
+     -fx-background-color: #FF4081;
+}
+
+.updateUinCheckBox {
+    -fx-background-color : #FFFFFF;
+    -fx-border-width : 1 1 1 1;
+    -fx-border-color : #FD528C;
+    -fx-padding : 3 10 5 3;
+    -fx-text-fill : #FD518C;
+    
+}
+
+.updateUinCheckBoxSelected{
+	-fx-background-color : #FF4081;
+    -fx-border-width : 1 1 1 1;
+    -fx-border-color : #FD528C;
+    -fx-padding : 0 10 5 3;
+	-fx-text-fill : #FFFFFF;
+	
+}
+
+.uinUpdateTextFiledStyle{
+	-fx-background-color: white;
+	-fx-border-color:#FD528C;
+	-fx-background-insets: 0.0,0.0 0.0 1.0 0.0;
+  	-fx-border-width: 0.0 0.0 1.0 0.0;	
+}
+
+.uinUpdateLabels{
+	-fx-text-fill : #000000;
+}
+
+.uinUpdateLabelsTypeTwo{
+	-fx-text-fill : #666666;
+}
+
+.uinUpdateFooter{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 40px;	
+	-fx-pref-width: 1290px;
+	-fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,1.0), 10.0, 0.0, 0.0, 0.0);
+}
+
+.uinUpdateSubPane{
+	-fx-border-width: 0 0 1 0;
+	-fx-border-color: #C9C9C9;
+	-fx-pref-height: 344px;	
+	-fx-pref-width: 750px;
+}

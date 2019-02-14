@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,6 +17,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.repositories.JobConfigRepository;
 import io.mosip.registration.service.config.JobConfigurationService;
+import junit.framework.Assert;
 
 public class JobConfigurationServiceTest extends BaseIntegrationTest {
 
@@ -24,8 +26,8 @@ public class JobConfigurationServiceTest extends BaseIntegrationTest {
 	@Autowired
 	private JobConfigRepository jobConfigRepository;
 
-	@Before
-	public void setUp() {
+	@BeforeClass
+	public static void setUp() {
 		ApplicationContext applicationContext = ApplicationContext.getInstance();
 		applicationContext.setApplicationLanguageBundle();
 		applicationContext.setApplicationMessagesBundle();
@@ -47,8 +49,10 @@ public class JobConfigurationServiceTest extends BaseIntegrationTest {
 	@Test
 	public void startSchedulerTest() {
 		ResponseDTO response = jobConfigurationService.startScheduler();
-		assertEquals(response.getErrorResponseDTOs(), null);
-		assertEquals(response.getSuccessResponseDTO(), null);
+		Assert.assertNotNull(response);
+	//code=ERROR, message=SYNC-DATA Process already running, otherAttributes=null, infoType=nul
+		Assert.assertEquals(response.getErrorResponseDTOs().get(0).getCode(), "ERROR");
+		Assert.assertEquals(response.getErrorResponseDTOs().get(0).getMessage(),"SYNC-DATA Process already running");
 	}
 
 	@Test

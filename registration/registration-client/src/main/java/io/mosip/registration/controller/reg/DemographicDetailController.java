@@ -348,9 +348,9 @@ public class DemographicDetailController extends BaseController {
 			addRegions();
 			populateGender();
 
-		} catch (IOException | RuntimeException exception) {
+		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					exception.getMessage());
+					runtimeException.getMessage());
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_DEMOGRAPHIC_PAGE);
 
 		}
@@ -536,7 +536,7 @@ public class DemographicDetailController extends BaseController {
 	 * Loading the the labels of local language fields
 	 * 
 	 */
-	private void loadLocalLanguageFields() throws IOException {
+	private void loadLocalLanguageFields() {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading label fields of local language");
@@ -893,9 +893,9 @@ public class DemographicDetailController extends BaseController {
 			populateFieldValue(gender, genderLocalLanguage, demo.getIdentity().getGender());
 			Boolean isSwitchedOn = (Boolean) SessionContext.map().get(RegistrationConstants.DOB_TOGGLE);
 			switchedOn.set(isSwitchedOn == null ? false : isSwitchedOn);
-			postalCode.setText(demo.getIdentity().getPostalCode());
-			mobileNo.setText(demo.getIdentity().getPhone());
-			emailId.setText(demo.getIdentity().getEmail());
+			postalCode.setText(demo.getIdentity().getPostalCode()+"");
+			mobileNo.setText(demo.getIdentity().getPhone()+"");
+			emailId.setText(demo.getIdentity().getEmail()+"");
 			if (demo.getIdentity().getAge() != null)
 				ageField.setText(demo.getIdentity().getAge() + "");
 			cniOrPinNumber.setText(demo.getIdentity().getCnieNumber() + "");
@@ -904,12 +904,8 @@ public class DemographicDetailController extends BaseController {
 			emailIdLocalLanguage.setText(demo.getIdentity().getEmail());
 			cniOrPinNumberLocalLanguage.setText(demo.getIdentity().getCnieNumber() + "");
 
-			if (!StringUtils.isEmpty(demo.getIdentity().getDateOfBirth())) {
-				String[] dob = demo.getIdentity().getDateOfBirth().split("/");
-				dd.setText(dob[2]);
-				mm.setText(dob[1]);
-				yyyy.setText(dob[0]);
-			} else {
+			
+			if (switchedOn.get()) {
 				dd.setText((String) SessionContext.map().get("dd"));
 				mm.setText((String) SessionContext.map().get("mm"));
 				yyyy.setText((String) SessionContext.map().get("yyyy"));
@@ -982,6 +978,8 @@ public class DemographicDetailController extends BaseController {
 				pridValidatorImpl.validateId(preRegId);
 			} catch (InvalidIDException invalidIDException) {
 				generateAlert(RegistrationConstants.ERROR, invalidIDException.getErrorText());
+				LOGGER.error("PRID VALIDATION FAILED", APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, invalidIDException.getMessage());
 				return;
 			}
 		}

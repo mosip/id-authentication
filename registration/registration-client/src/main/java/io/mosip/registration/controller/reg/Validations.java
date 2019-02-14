@@ -289,6 +289,8 @@ public class Validations extends BaseController {
 				uinValidator.validateId(field.getText());
 			} catch (InvalidIDException invalidUinException) {
 				generateAlert(RegistrationConstants.ERROR, invalidUinException.getErrorText());
+				LOGGER.error("UIN VALIDATOIN FAILED", APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, invalidUinException.getMessage());
 				field.requestFocus();
 				return false;
 			}
@@ -297,6 +299,8 @@ public class Validations extends BaseController {
 				ridValidator.validateId(field.getText());
 			} catch (InvalidIDException invalidRidException) {
 				generateAlert(RegistrationConstants.ERROR, invalidRidException.getErrorText());
+				LOGGER.error("RID VALIDATOIN FAILED", APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, invalidRidException.getMessage());
 				field.requestFocus();
 				return false;
 			}

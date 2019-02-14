@@ -27,6 +27,10 @@ public class LoggerConstants {
 	private static final String UIN_UPDATE = APP_NAME + "UIN_UPDATE - ";
 	private static final String USER_ONBOARD = APP_NAME + "USER_ONBOARD - ";
 	private static final String SYNC = APP_NAME + "SYNC - ";
+	private static final String OTP = APP_NAME + "OTP";
+	private static final String PKT_HANDLER= APP_NAME + "PACKET_HANDLER - ";
+	
+	
 
 	// Session IDs' for logging
 	public static final String LOG_PKT_HANLDER = PKT_CREATION + "PACKET_HANDLER";
@@ -88,6 +92,8 @@ public class LoggerConstants {
 	public static final String DELETE_AUDIT_LOGS_JOB = SYNC + "Delete_Audit_Logs_Job";
 	public static final String KEY_POLICY_SYNC_JOB_TITLE =SYNC+"key_policy_synch_Job";
 	public static final String REG_PACKET_SYNC_STATUS_JOB = SYNC + "Packet_Sync Status_Job";
+	public static final String PACKET_HANDLER = PKT_HANDLER + "Packet_Handler_Controller";
+	public static final String OTP_MANAGER_LOGGER_TITLE = OTP + "OTP_MANAGER";
 
 
 }
