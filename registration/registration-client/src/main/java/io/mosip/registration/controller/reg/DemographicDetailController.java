@@ -893,9 +893,9 @@ public class DemographicDetailController extends BaseController {
 			populateFieldValue(gender, genderLocalLanguage, demo.getIdentity().getGender());
 			Boolean isSwitchedOn = (Boolean) SessionContext.map().get(RegistrationConstants.DOB_TOGGLE);
 			switchedOn.set(isSwitchedOn == null ? false : isSwitchedOn);
-			postalCode.setText(demo.getIdentity().getPostalCode());
-			mobileNo.setText(demo.getIdentity().getPhone());
-			emailId.setText(demo.getIdentity().getEmail());
+			postalCode.setText(demo.getIdentity().getPostalCode()+"");
+			mobileNo.setText(demo.getIdentity().getPhone()+"");
+			emailId.setText(demo.getIdentity().getEmail()+"");
 			if (demo.getIdentity().getAge() != null)
 				ageField.setText(demo.getIdentity().getAge() + "");
 			cniOrPinNumber.setText(demo.getIdentity().getCnieNumber() + "");
@@ -904,12 +904,8 @@ public class DemographicDetailController extends BaseController {
 			emailIdLocalLanguage.setText(demo.getIdentity().getEmail());
 			cniOrPinNumberLocalLanguage.setText(demo.getIdentity().getCnieNumber() + "");
 
-			if (!StringUtils.isEmpty(demo.getIdentity().getDateOfBirth())) {
-				String[] dob = demo.getIdentity().getDateOfBirth().split("/");
-				dd.setText(dob[2]);
-				mm.setText(dob[1]);
-				yyyy.setText(dob[0]);
-			} else {
+			
+			if (switchedOn.get()) {
 				dd.setText((String) SessionContext.map().get("dd"));
 				mm.setText((String) SessionContext.map().get("mm"));
 				yyyy.setText((String) SessionContext.map().get("yyyy"));
