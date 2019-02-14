@@ -31,7 +31,6 @@ import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
-// TODO: Auto-generated Javadoc
 /**
  * 
  * This class will update the packet status in the table and also push the

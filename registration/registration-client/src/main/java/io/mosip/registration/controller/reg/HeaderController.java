@@ -22,6 +22,7 @@ import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.config.JobConfigurationService;
+import io.mosip.registration.service.packet.impl.RegistrationPacketVirusScanService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.event.ActionEvent;
@@ -91,6 +92,9 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	private UserOnboardController userOnboardController;
+
+	@Autowired
+	private RegistrationPacketVirusScanService registrationPacketVirusScanService;
 
 	/**
 	 * Mapping Registration Officer details
@@ -295,5 +299,22 @@ public class HeaderController extends BaseController {
 
 	public void uploadPacketToServer() {
 		packetHandlerController.uploadPacket();
+	}
+
+	public void virusScan() {
+		ResponseDTO responseDTO = registrationPacketVirusScanService.scanPacket();
+
+		SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
+		if (successResponseDTO != null) {
+			if (successResponseDTO.getMessage().equals(RegistrationConstants.SUCCESS)) {
+				generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.VIRUS_SCAN_SUCCESS);
+			} else {
+				generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.VIRUS_SCAN_ERROR_FIRST_PART
+						+ successResponseDTO.getMessage() + RegistrationUIConstants.VIRUS_SCAN_ERROR_SECOND_PART);
+			}
+		} else if (responseDTO.getErrorResponseDTOs() != null) {
+			ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
+			generateAlert(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
+		}
 	}
 }

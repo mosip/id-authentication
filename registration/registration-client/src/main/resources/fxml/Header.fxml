@@ -83,7 +83,7 @@
                           </graphic>
 						</MenuItem>
                         <SeparatorMenuItem />
-                        <MenuItem mnemonicParsing="false" text="%virusscan">
+                        <MenuItem fx:id="virusScan" mnemonicParsing="false" onAction="#virusScan" text="%virusscan">
                         	<graphic>
                         	<AnchorPane>                        		
                         		<children>                        			

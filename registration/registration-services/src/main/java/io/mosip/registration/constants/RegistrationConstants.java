@@ -220,8 +220,9 @@ public class RegistrationConstants {
 	public static final String AES_KEY_CIPHER_SPLITTER = "aes.keySplitter";
 
 	// Packet Store Location Constants
-	public static final String PACKET_STORE_LOCATION = "packet.storageLocation";
+	public static final String PACKET_STORE_LOCATION = "PACKET_STORE_LOCATION";
 	public static final String PACKET_STORE_DATE_FORMAT = "packet.location.dateFormat";
+	public static final String PRE_REG_PACKET_LOCATION="PRE_REG_PACKET_LOCATION";
 
 	// Packet Creation Constants
 	public static final String ZIP_FILE_EXTENSION = ".zip";
@@ -1061,6 +1062,11 @@ public class RegistrationConstants {
 		return fieldToExclude;
 		
 	}
+	
+	//Virus Scan
+	public static final String VIRUS_SCAN_PACKET_NOT_FOUND = "FILE_NOT_PRESENT_FOR_SCAN";
+	public static final String VIRUS_SCAN_INFECTED_FILES = "Infected Files";
+	public static final String ANTIVIRUS_SERVICE_NOT_ACCESSIBLE = "Unable to access antivirus service";
 
 
 }
