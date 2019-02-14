@@ -2,9 +2,9 @@ package io.mosip.kernel.syncdata.constant;
 
 public enum RegistrationCenterUserErrorCode {
 
-	REGISTRATION_USER_FETCH_EXCEPTION("KER-SYNC-XXX", "Error occurred while fetching Registration center users"),
+	REGISTRATION_USER_FETCH_EXCEPTION("KER-SNC-302", "Error occurred while fetching Registration center users"),
 	
-	REGISTRATION_USER_DATA_NOT_FOUND_EXCEPTION("KER-SYNC-XXX","Registration center user not found ");
+	REGISTRATION_USER_DATA_NOT_FOUND_EXCEPTION("KER-SNC-303","Registration center user not found ");
 	
 	private final String errorCode;
 	private final String errorMessage;
