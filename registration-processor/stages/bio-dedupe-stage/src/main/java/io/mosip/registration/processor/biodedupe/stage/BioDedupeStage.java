@@ -15,7 +15,7 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 /**
  * The Class BioDedupeStage.
  *
- * @author M1022006
+ * @author Sowmya
  */
 @Service
 public class BioDedupeStage extends MosipVerticleManager {
