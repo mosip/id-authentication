@@ -9,8 +9,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.idvalidator.rid.constant.RidExceptionProperty;
@@ -18,8 +19,10 @@ import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.AuditLogConstant;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.ResponseStatusCode;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
@@ -67,6 +70,8 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 
 	/** The lancode length. */
 	private int LANCODE_LENGTH = 3;
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(SyncRegistrationServiceImpl.class);
 
 	/**
 	 * Instantiates a new sync registration service impl.
@@ -84,6 +89,8 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	 */
 	public List<SyncResponseDto> sync(List<SyncRegistrationDto> resgistrationDtos) {
 		List<SyncResponseDto> synchResponseList = new ArrayList<>();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "SyncRegistrationServiceImpl::sync()::entry");
 
 		boolean isTransactionSuccessful = false;
 		try {
@@ -91,7 +98,12 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 				synchResponseList = validateSync(registrationDto, synchResponseList);
 			}
 			isTransactionSuccessful = true;
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", "");
 		} catch (DataAccessLayerException e) {
+
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new TablenotAccessibleException(
 					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
@@ -110,6 +122,8 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "SyncRegistrationServiceImpl::sync()::exit");
 		return synchResponseList;
 
 	}
@@ -318,6 +332,8 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	 */
 	public List<SyncResponseDto> validateRegId(SyncRegistrationDto registrationDto,
 			List<SyncResponseDto> syncResponseList) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationDto.getRegistrationId(), "SyncRegistrationServiceImpl::validateRegId()::entry");
 		SyncResponseDto syncResponseDto = new SyncResponseDto();
 		SyncRegistrationEntity existingSyncRegistration = findByRegistrationId(
 				registrationDto.getRegistrationId().trim());
@@ -343,6 +359,8 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		syncResponseDto.setStatus(ResponseStatusCode.SUCCESS.toString());
 		syncResponseDto.setMessage("Registartion Id's are successfully synched in Sync table");
 		syncResponseList.add(syncResponseDto);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationDto.getRegistrationId(), "SyncRegistrationServiceImpl::validateRegId()::exit");
 		return syncResponseList;
 	}
 

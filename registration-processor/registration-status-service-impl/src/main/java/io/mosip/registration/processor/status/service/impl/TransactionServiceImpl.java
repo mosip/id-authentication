@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.entity.TransactionEntity;
 import io.mosip.registration.processor.status.exception.TransactionTableNotAccessibleException;
@@ -21,6 +23,9 @@ import io.mosip.registration.processor.status.service.TransactionService;
 @Service
 public class TransactionServiceImpl implements TransactionService<TransactionDto> {
 
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(TransactionServiceImpl.class);
+	
 	/** The transaction repositary. */
 	@Autowired
 	RegistrationRepositary<TransactionEntity, String> transactionRepositary;
@@ -34,12 +39,17 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 	@Override
 	public TransactionEntity addRegistrationTransaction(TransactionDto transactionStatusDto) {
 		try {
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+					transactionStatusDto.getRegistrationId(), "TransactionServiceImpl::addRegistrationTransaction()::entry");
 			TransactionEntity entity = convertDtoToEntity(transactionStatusDto);
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+					transactionStatusDto.getRegistrationId(), "TransactionServiceImpl::addRegistrationTransaction()::exit");
 			return transactionRepositary.save(entity);
 		} catch (DataAccessLayerException e) {
 			throw new TransactionTableNotAccessibleException(
 					PlatformErrorMessages.RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		}
+		
 
 	}
 
@@ -70,6 +80,8 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 	 */
 	@Override
 	public TransactionDto getTransactionByRegIdAndStatusCode(String regId, String statusCode) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				regId, "TransactionServiceImpl::addRegistrationTransaction()::entry");
 		TransactionDto dto = null;
 		List<TransactionEntity> transactionEntityList = transactionRepositary.getTransactionByRegIdAndStatusCode(regId,
 				statusCode);
@@ -77,6 +89,8 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 			dto = convertEntityToDto(transactionEntityList.get(0));
 		}
 
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				regId, "TransactionServiceImpl::addRegistrationTransaction()::exit");
 		return dto;
 	}
 
