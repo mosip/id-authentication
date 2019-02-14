@@ -348,9 +348,9 @@ public class DemographicDetailController extends BaseController {
 			addRegions();
 			populateGender();
 
-		} catch (IOException | RuntimeException exception) {
+		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					exception.getMessage());
+					runtimeException.getMessage());
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_DEMOGRAPHIC_PAGE);
 
 		}
@@ -536,7 +536,7 @@ public class DemographicDetailController extends BaseController {
 	 * Loading the the labels of local language fields
 	 * 
 	 */
-	private void loadLocalLanguageFields() throws IOException {
+	private void loadLocalLanguageFields() {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading label fields of local language");
@@ -978,6 +978,8 @@ public class DemographicDetailController extends BaseController {
 				pridValidatorImpl.validateId(preRegId);
 			} catch (InvalidIDException invalidIDException) {
 				generateAlert(RegistrationConstants.ERROR, invalidIDException.getErrorText());
+				LOGGER.error("PRID VALIDATION FAILED", APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, invalidIDException.getMessage());
 				return;
 			}
 		}

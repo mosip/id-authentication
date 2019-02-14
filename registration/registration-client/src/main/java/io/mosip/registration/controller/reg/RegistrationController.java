@@ -229,8 +229,15 @@ public class RegistrationController extends BaseController {
 				jsonValidator.validateJson(JsonUtils.javaObjectToJsonString(demographicInfoDTO),
 						"mosip-identity-json-schema.json");
 			} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException | FileIOException
-					| JsonProcessingException | RuntimeException exception) {
+					| JsonProcessingException exception) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
+				LOGGER.error("JASON VALIDATOIN FAILED ", APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, exception.getMessage());
+				return;
+			} catch ( RuntimeException runtimeException) {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
+				LOGGER.error("JASON VALIDATOIN FAILED ", APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 				return;
 			}
 
