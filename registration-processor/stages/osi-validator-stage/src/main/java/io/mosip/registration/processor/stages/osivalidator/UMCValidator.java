@@ -616,7 +616,7 @@ public class UMCValidator {
 			}
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					rcmDto.getRegId(), "" + e.getMessage() + ExceptionUtils.getStackTrace(e));
+					rcmDto.getRegId(), e.getMessage() + ExceptionUtils.getStackTrace(e));
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 

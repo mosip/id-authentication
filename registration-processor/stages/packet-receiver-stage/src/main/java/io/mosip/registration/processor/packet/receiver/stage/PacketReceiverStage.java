@@ -130,7 +130,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 			}
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					null, e.getMessage() + ExceptionUtils.getStackTrace(e));
+					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new UnexpectedException(e.getMessage());
 		} finally {
 			if (file.exists())
