@@ -16,10 +16,10 @@
             <AnchorPane layoutX="2.0" layoutY="-5.0">
                <children>
                   <Button layoutY="14.0" mnemonicParsing="false" styleClass="homeButton" text="%home" onAction="#goToHomePageFromRegistration"/>
-                  <Label fx:id="uploadPacketHeaderLabel" layoutX="60.0" layoutY="16.0" text="%/uploadpacket" />
+                  <Label layoutX="60.0" layoutY="16.0" text="%/uploadpacket" styleClass="headerLabel"/>
                </children>
             </AnchorPane>
-            <Label fx:id="uploadPacketMainHeader" layoutX="530.0" layoutY="2.0" text="%uploadpacket" />
+            <Label styleClass="mainHeader" layoutX="530.0" layoutY="2.0" text="%uploadpacket" />
          </children>
       </AnchorPane>
       <ProgressIndicator fx:id="progressIndicator" layoutX="400.0" layoutY="20.0" prefHeight="109.0" prefWidth="90.0" progress="0.0" visible="false" />

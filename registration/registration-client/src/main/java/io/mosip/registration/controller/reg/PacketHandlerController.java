@@ -1,6 +1,7 @@
 package io.mosip.registration.controller.reg;
 
 import static io.mosip.kernel.core.util.DateUtils.formatDate;
+import static io.mosip.registration.constants.LoggerConstants.PACKET_HANDLER;
 import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -153,7 +154,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 		if (!reRegisterRegistrations.isEmpty()) {
 			reRegistrationCountLbl.setText(reRegisterRegistrations.size() + " " + RegistrationUIConstants.APPLICATIONS);
 		}
-		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FLAG).equals(RegistrationConstants.ENABLE)) {
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FLAG)
+				.equals(RegistrationConstants.ENABLE)) {
 			uinUpdateBtn.setVisible(false);
 			uinUpdateImage.setVisible(false);
 		}
@@ -165,7 +167,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * acknowledgement form
 	 */
 	public void createPacket() {
-
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creating of Registration Starting.");
 		try {
 			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
 					applicationContext.getApplicationLanguageBundle());
@@ -196,9 +198,11 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creating of Registration ended.");
 	}
 
 	public void showReciept(String capturePhotoUsingDevice) {
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Showing receipt Started.");
 		try {
 			RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
 					.get(RegistrationConstants.REGISTRATION_DATA);
@@ -233,12 +237,14 @@ public class PacketHandlerController extends BaseController implements Initializ
 			LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage());
 		}
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Showing receipt ended.");
 	}
 
 	/**
 	 * Validating screen authorization and Approve, Reject and Hold packets
 	 */
 	public void approvePacket() {
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Pending Approval screen started.");
 		try {
 			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.PENDING_APPROVAL_PAGE));
 
@@ -261,12 +267,14 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_APPROVAL_PAGE);
 		}
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Pending Approval screen ended.");
 	}
 
 	/**
 	 * Validating screen authorization and Uploading packets to FTP server
 	 */
 	public void uploadPacket() {
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Packet Upload screen started.");
 		try {
 			uploadRoot = BaseController.load(getClass().getResource(RegistrationConstants.FTP_UPLOAD_PAGE));
 
@@ -288,9 +296,11 @@ public class PacketHandlerController extends BaseController implements Initializ
 			LOGGER.error("REGISTRATION - UI- Officer Packet upload", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage());
 		}
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Packet Upload screen ended.");
 	}
 
 	public void updateUIN() {
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen started.");
 		try {
 			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
 
@@ -323,6 +333,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- UIN Update", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 		}
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen ended.");
 	}
 
 	/**
@@ -331,7 +342,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * @param event the event
 	 */
 	public void syncData() {
-
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Sync Data screen started.");
 		AnchorPane syncData;
 		try {
 			syncData = BaseController.load(getClass().getResource(RegistrationConstants.SYNC_DATA));
@@ -345,6 +356,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, ioException.getMessage());
 		}
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Sync Data screen ended.");
 	}
 
 	/**
@@ -354,6 +366,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 */
 	@FXML
 	public void downloadPreRegData() {
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Downloading pre-registration data started.");
 		ResponseDTO responseDTO = preRegistrationDataSyncService
 				.getPreRegistrationIds(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
@@ -367,6 +380,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
 
 		}
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Downloading pre-registration data ended.");
+
 	}
 
 	/**
@@ -386,9 +401,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * create packet
 	 */
 	private ResponseDTO savePacket(Writer stringWriter, RegistrationDTO registrationDTO) {
-		LOGGER.debug("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
-				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-				"packet creation has been started");
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "packet creation has been started");
 		byte[] ackInBytes = null;
 		try {
 			ackInBytes = stringWriter.toString().getBytes("UTF-8");
@@ -427,8 +440,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				FileUtils.copyToFile(new ByteArrayInputStream(ackInBytes),
 						new File(filePath.concat("_Ack.").concat(RegistrationConstants.ACKNOWLEDGEMENT_FORMAT)));
 
-				LOGGER.debug("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
-						APPLICATION_ID, "Registration's Acknowledgement Receipt saved");
+				LOGGER.info(PACKET_HANDLER, APPLICATION_NAME,APPLICATION_ID, "Registration's Acknowledgement Receipt saved");
 			} catch (io.mosip.kernel.core.exception.IOException ioException) {
 				LOGGER.error("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 						APPLICATION_ID, ioException.getMessage());
@@ -460,6 +472,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * Load re registration screen.
 	 */
 	public void loadReRegistrationScreen() {
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading re-registration screen sarted.");
 		try {
 			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.REREGISTRATION_PAGE));
 
@@ -482,5 +495,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_APPROVAL_PAGE);
 		}
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading re-registration screen ended.");
 	}
 }
