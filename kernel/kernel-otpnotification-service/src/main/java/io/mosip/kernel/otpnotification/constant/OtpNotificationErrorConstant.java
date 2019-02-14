@@ -21,7 +21,9 @@ public enum OtpNotificationErrorConstant {
 	NOTIFIER_SMS_IO_ERROR("KER-NOT-011","Io exception occur in sms notification response"),
 	NOTIFIER_EMAIL_IO_ERROR("KER-NOT-012","Io exception occur in email notification"),
 	NOTIFIER_OTP_IO_ERROR("KER-NOT-013","Io exception occur in otp generation"),
-	NOTIFIER_OTP_IO_RETRIVAL_ERROR("KER-NOT-014","Io exception occur in otp retrival");
+	NOTIFIER_OTP_IO_RETRIVAL_ERROR("KER-NOT-014","Io exception occur in otp retrival"),
+	HTTP_MESSAGE_NOT_READABLE("KER-NOT-999",""), 
+	RUNTIME_EXCEPTION("KER-NOT-500","");
 
 	/**
 	 * The error code.

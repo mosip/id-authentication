@@ -1,36 +1,57 @@
-## kernel-idgenerator-uin
+## kernel-uingenerator-service
 
-[Background & Design](../../docs/design/kernel/kernel-idgenerator-uin.md)
+[Background & Design](../../docs/design/kernel/kernel-uingenerator.md)
 
-Uin generator functionality is to generate, store and provide uins.
+[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#4-uin)
 
-Rules of UIN generation:
-1. The number should not contain any alphanumeric characters
-2. The number should not contain any repeating numbers for 2 or more than 2 digits
-3. The number should not contain any sequential number for 3 or more than 3 digits
-4. The numbers should not be generated sequentially
-5. The number should not have repeated block of numbers for 2 or more than 2 digits
-6. The number should not contain the restricted numbers defined by the ADMIN
-7. The last digit in the number should be reserved for a checksum
-8. The number should not contain '0' or '1' as the first digit
-9. First 5 digits should be different from the last 5 digits (E.g. 4345643456)
-10. First 5 digits should be different to the last 5 digits reversed (E.g. 4345665434)
-11. UIN should not be an ascending or descending cyclic figure (E.g. 4567890123, 6543210987)
-12. UIN should be different from the repetition of the first two digits 5 times (E.g. 3434343434)
-13. UIN should not contain three even adjacent digits (E.g. 3948613752)
-14. UIN should not contain ADMIN defined restricted number
 
-**Api Documentation**
-
+Default Port and Context Path
 
 ```
-mvn javadoc:javadoc
-```
+server.port=8080
+server.servlet.path=/uingenerator
 
+```
 
 ** Properties to be added in parent Spring Application environment **
 
-[kernel-uingenerator-service-dev.properties](../../config/kernel-uingenerator-service-dev.properties)
+```
+#-----------------------------UIN Properties--------------------------------------
+#length of the uin
+mosip.kernel.uin.length=10
+#minimun threshold of uin
+mosip.kernel.uin.min-unused-threshold=100000
+#number of uins to generate
+mosip.kernel.uin.uins-to-generate=200000
+#restricted numbers for uin
+mosip.kernel.uin.restricted-numbers=786,666
+#sequence limit for uin filter
+#to disable validation assign zero or negative value
+mosip.kernel.uin.length.sequence-limit=3
+#repeating block limit for uin filter
+#to disable validation assign zero or negative value
+mosip.kernel.uin.length.repeating-block-limit=2
+#repeating limit for uin filter
+#to disable validation assign zero or negative value
+mosip.kernel.uin.length.repeating-limit=2
+#reverse group digit limit for uin filter
+mosip.kernel.uin.length.reverse-digits-limit=5
+#group digit limit for uin filter
+mosip.kernel.uin.length.digits-limit=5
+#should not start with
+mosip.kernel.uin.not-start-with=0,1
+#adjacent even digit limit for uin filter
+mosip.kernel.uin.length.conjugative-even-digits-limit=3
+
+
+
+#Database mappings uin
+uin_database_url=jdbc:postgresql://localhost:8888/mosip_kernel
+uin_database_username=dbusername
+uin_database_password=dbpwd
+hibernate.current_session_context_class=org.springframework.orm.hibernate5.SpringSessionContext
+
+```
 
 
 
@@ -49,7 +70,7 @@ Table : uin
 OkHttpClient client = new OkHttpClient();
 
 Request request = new Request.Builder()
-  .url("https://integ.mosip.io/uingenerator/v1.0/uin")
+  .url("http://localhost:8080/uingenerator/v1.0/uin")
   .get()
   .build();
 

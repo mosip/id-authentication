@@ -9,6 +9,9 @@
 mvn javadoc:javadoc
 ```
 
+**Java Dependency**
+*JDK version should be "1.8.0_181" or above.*
+
 **Maven dependency**
   
  ```

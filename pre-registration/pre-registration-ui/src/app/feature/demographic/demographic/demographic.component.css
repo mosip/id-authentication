@@ -11,7 +11,7 @@
   background-color: #ffffff;
   z-index: 1;
   margin: auto;
-  padding: 3rem;
+  padding: 1.2rem 3rem 0 3rem;
   padding-top: 1.2rem;
   background-color: white;
   border-bottom: 1px solid lightgray;
@@ -36,7 +36,7 @@
 .user__container {
   font-size: 1rem;
   /* box-shadow: 3px 3px 5px 3px rgba(0, 0, 0, 0.3); */
-  padding: 2rem 0 3.5rem 1.5rem;
+  padding: 1rem 0 0.5rem 1.5rem;
   width: 48%;
   margin-left: 2%;
   float: left;
@@ -54,6 +54,10 @@
 .user__form {
   width: 90%;
   margin: auto;
+}
+
+.user__form h4 {
+  margin: 0;
 }
 
 .user__form mat-form-field {
@@ -109,40 +113,43 @@
   font-size: 75%;
 }
 
-.genderAndForeigner {
+/* .genderAndForeigner {
   display: flex;
 }
 
 .genderAndForeigner--foreigner {
   align-self: center;
   margin: 0 6%;
-}
+} */
 
-.user__gender {
+.user__genderAndForeigner {
   font-weight: inherit;
   font-size: 1rem;
-  align-self: center;
-  width: 100%;
+  display: flex;
+  margin-bottom: 6px;
+  margin-top: 0px;
+  /* align-self: center;
+  width: 100%; */
 }
 
-.user__gender mat-button-toggle-group {
+.user__genderAndForeigner mat-button-toggle-group {
   box-shadow: none;
   width: 60%;
 }
 
-.user__gender mat-button-toggle {
+.user__genderAndForeigner mat-button-toggle {
   font-family: Helvetica, Regular;
   font-size: 1rem;
   margin: 10px 10px 10px 10px;
-  color: #30badd;
+  color: #fd518c;
   width: 80%;
   max-width: 124px;
-  padding: 0.5rem 0;
+  padding: 0.2rem 0;
   box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.068);
 }
 
-.user__gender .mat-button-toggle-checked {
-  background-color: #30badd;
+.user__genderAndForeigner .mat-button-toggle-checked {
+  background-color: #fd518c;
   color: white;
 }
 
@@ -153,6 +160,12 @@
   font-size: 75%;
 }
 
+.user__genderAndForeigner--text {
+  width: 37%;
+  font-size: 1rem;
+  align-self: center;
+}
+
 .user__dropdown {
   width: 47%;
   margin-right: 3%;
@@ -161,9 +174,13 @@
 
 .user__buttons {
   width: 100%;
+  /* position: fixed;
+  top: 93%; */
+  /* left: 17px; */
   display: flex;
   justify-content: space-between;
-  margin-top: 1rem;
+  margin-top: 0.2rem;
+  background-color: #f4f4f4;
 }
 
 .user__btn {
@@ -228,17 +245,17 @@
 }
 
 @media (max-width: 1000px) {
-  .genderAndForeigner {
+  /* .genderAndForeigner {
     display: block;
   }
 
   .genderAndForeigner--foreigner {
     margin: 10px 0 0 0%;
-  }
+  } */
 
-  .user__gender mat-button-toggle {
+  .user__genderAndForeigner mat-button-toggle {
     margin: 6px 4px 1px 1px;
-    padding: 0.5rem 0;
+    padding: 0.2rem 0;
   }
 
   user__age-or-date .user__age {

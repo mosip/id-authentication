@@ -6,18 +6,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MasterReasonListDto;
 import io.mosip.registration.service.MasterSyncService;
+import io.mosip.registration.service.config.GlobalParamService;
 
-public class MasterSyncServiceTest extends BaseIntegrationTest{
+public class MasterSyncServiceTest extends BaseIntegrationTest {
 	
 
 	@Autowired
@@ -43,9 +46,8 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_findLocationByHierarchyCode_getCode()
 	{
-		//This test verifies if correct code is fetched from local database for given inputs
-		//inputs passed are hierarchyCode and langCode from table called location
-		//Expected output is RSK
+		//This test verifies if correct code is fetched from local database from table location
+		
 		//mastersyncservice.findLocationByHierarchyCode(hierarchyCode, langCode);
 		List<LocationDto> result = mastersyncservice.findLocationByHierarchyCode(testdataparsejson.getDataFromJsonViaKey("hierarchyCode"),testdataparsejson.getDataFromJsonViaKey("langCode"));
 		for(int i=0;i<result.size();i++) 
@@ -59,9 +61,8 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_findLocationByHierarchyCode_getHierarchyName()
 	{
-		//This test verifies if correct heirarchy name is fetched from local database for given inputs
-				//inputs passed are hierarchyCode and langCode from table called location
-				//Expected output is Region
+		//This test verifies if correct heirarchy name is fetched from local database from table location
+				
 		//mastersyncservice.findLocationByHierarchyCode(hierarchyCode, langCode);
 		List<LocationDto> result = mastersyncservice.findLocationByHierarchyCode(testdataparsejson.getDataFromJsonViaKey("hierarchyCode"),testdataparsejson.getDataFromJsonViaKey("langCode"));
 		for(int i=0;i<result.size();i++) 
@@ -75,9 +76,8 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_findLocationByHierarchyCode_getLangCode()
 	{
-		//This test verifies if correct langcode is fetched from local database for given inputs
-				//inputs passed are hierarchyCode and langCode from table called location
-				//Expected output is eng
+		//This test verifies if correct langcode is fetched from local database from location table
+				
 		//mastersyncservice.findLocationByHierarchyCode(hierarchyCode, langCode);
 		List<LocationDto> result = mastersyncservice.findLocationByHierarchyCode(testdataparsejson.getDataFromJsonViaKey("hierarchyCode"),testdataparsejson.getDataFromJsonViaKey("langCode"));
 		for(int i=0;i<result.size();i++) 
@@ -91,9 +91,8 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_findLocationByHierarchyCode_getName()
 	{
-		//This test verifies if correct name is fetched from local database for given inputs
-		//inputs passed are hierarchyCode and langCode from table called location
-		//Expected output is eng
+		//This test verifies if correct name is fetched from local database from location table
+		
 		//mastersyncservice.findLocationByHierarchyCode(hierarchyCode, langCode);
 		List<LocationDto> result = mastersyncservice.findLocationByHierarchyCode(testdataparsejson.getDataFromJsonViaKey("hierarchyCode"),testdataparsejson.getDataFromJsonViaKey("langCode"));
 		for(int i=0;i<result.size();i++) 
@@ -107,6 +106,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_findLocationByHierarchyCode_WithInvalidhierarchyCode()
 	{
+		//this test validates that no data will be fetched from location table when invalid heirarchy code is passed
 		//mastersyncservice.findLocationByHierarchyCode(hierarchyCode, langCode);
 		List<LocationDto> result = mastersyncservice.findLocationByHierarchyCode(testdataparsejson.getDataFromJsonViaKey("invalidhierarchyCode"),testdataparsejson.getDataFromJsonViaKey("langCode"));
 		System.out.println("*********"+result);
@@ -118,6 +118,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_findLocationByHierarchyCode_WithInvalidlangCode()
 	{
+		//this test validates that no data will be fetched from location table when invalid lang code is passed
 		//mastersyncservice.findLocationByHierarchyCode(hierarchyCode, langCode);
 		List<LocationDto> result = mastersyncservice.findLocationByHierarchyCode(testdataparsejson.getDataFromJsonViaKey("hierarchyCode"),testdataparsejson.getDataFromJsonViaKey("invalidlangCode"));
 		System.out.println("*********"+result);
@@ -130,6 +131,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_findLocationByHierarchyCode_WithhierarchyCodeNull()
 	{
+		//this test validates that no data will be fetched from location table when invalid heirarchy code and invalid lang code are passed
 		//mastersyncservice.findLocationByHierarchyCode(hierarchyCode, langCode);
 		List<LocationDto> result = mastersyncservice.findLocationByHierarchyCode(null, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		System.out.println("*********"+result);
@@ -142,6 +144,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_findLocationByHierarchyCode_WithlangCodeNull()
 	{
+		//this test validates that no data will be fetched from location table when lang code is passed as null
 		//mastersyncservice.findLocationByHierarchyCode(hierarchyCode, langCode);
 		List<LocationDto> result = mastersyncservice.findLocationByHierarchyCode(testdataparsejson.getDataFromJsonViaKey("hierarchyCode"), null);
 		System.out.println("*********"+result);
@@ -154,6 +157,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_findLocationByHierarchyCode_WithhierarchyCodeNull_WithlangCodeNull()
 	{
+		//this test validates that no data will be fetched from location table when lang code and heirarchy code are passed as null
 		//mastersyncservice.findLocationByHierarchyCode(hierarchyCode, langCode);
 		List<LocationDto> result = mastersyncservice.findLocationByHierarchyCode(null, null);
 		System.out.println("*********"+result);
@@ -169,6 +173,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_findProvianceByHierarchyCode_getCode()
 	{
+		//this test validates if expected codes are fetched from location table for inputs passed
 		
 		//mastersyncservice.findProvianceByHierarchyCode(code, langCode);
 		
@@ -195,6 +200,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifyfindProvianceByHierarchyCode_getHierarchyName()
 	{
+		//this test validates if expected heirarchy names are fetched from location table for inputs passed
 		List<LocationDto> result = mastersyncservice.findProvianceByHierarchyCode(testdataparsejson.getDataFromJsonViaKey("code"),testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		
@@ -218,6 +224,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifyfindProvianceByHierarchyCode_getName()
 	{
+		//this test validates if expected codes are fetched from location table for inputs passed
 		List<LocationDto> result = mastersyncservice.findProvianceByHierarchyCode(testdataparsejson.getDataFromJsonViaKey("code"),testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		
@@ -241,6 +248,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifyfindProvianceByHierarchyCode_getLangCode()
 	{
+		//this test validates if expected language codes are fetched from location table for inputs passed
 		List<LocationDto> result = mastersyncservice.findProvianceByHierarchyCode(testdataparsejson.getDataFromJsonViaKey("code"),testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		
@@ -264,6 +272,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_findProvianceByHierarchyCode_WithInvalidCode()
 	{
+		//this test validates no data should be fetched from location table when invalid code is passed as input for this method
 		//mastersyncservice.findProvianceByHierarchyCode(code, langCode);
 		List<LocationDto> result = mastersyncservice.findProvianceByHierarchyCode(testdataparsejson.getDataFromJsonViaKey("invalidcode"),testdataparsejson.getDataFromJsonViaKey("langCode"));
 		System.out.println("*********"+result);
@@ -275,6 +284,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_findProvianceByHierarchyCode_WithInvalidlangCode()
 	{
+		//this test validates no data should be fetched from location table when invalid  language code is passed as input for this method
 		//mastersyncservice.findProvianceByHierarchyCode(code, langCode);
 		List<LocationDto> result = mastersyncservice.findProvianceByHierarchyCode(testdataparsejson.getDataFromJsonViaKey("code"),testdataparsejson.getDataFromJsonViaKey("invalidlangCode"));
 		System.out.println("*********"+result);
@@ -286,6 +296,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_findProvianceByHierarchyCode_WithCodeNull()
 	{
+		//this test validates no data should be fetched from location table when code is passed as null as input for this method
 		//mastersyncservice.findProvianceByHierarchyCode(code, langCode);
 		List<LocationDto> result = mastersyncservice.findProvianceByHierarchyCode(null, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		System.out.println("*********"+result);
@@ -297,6 +308,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_findProvianceByHierarchyCode_WithlangCodeNull()
 	{
+		//this test validates no data should be fetched from location table when language code is passed as null as input for this method
 		//mastersyncservice.findProvianceByHierarchyCode(code, langCode);
 		List<LocationDto> result = mastersyncservice.findProvianceByHierarchyCode(testdataparsejson.getDataFromJsonViaKey("code"), null);
 		System.out.println("*********"+result);
@@ -308,6 +320,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_findProvianceByHierarchyCode_WithCodeNull_WithlangCodeNull()
 	{
+		//this test validates no data should be fetched from location table when code and language code are passed as null as input for this method
 		//mastersyncservice.findProvianceByHierarchyCode(code, langCode);
 		List<LocationDto> result = mastersyncservice.findProvianceByHierarchyCode(null, null);
 		System.out.println("*********"+result);
@@ -322,6 +335,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetAllReasonsList_getCode()
 	{
+		//this test validates if expected code is fetched from reason_list table
 		//mastersyncservice.getAllReasonsList(langCode);
 		List<MasterReasonListDto> result = mastersyncservice.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		List<String> list1=new ArrayList<>();
@@ -342,9 +356,10 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetAllReasonsList_getName()
 	{
+		//this test validates if expected names are fetched from reason_list table
 		List<MasterReasonListDto> result = mastersyncservice.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		List<String> list1=new ArrayList<>();
-		list1.addAll(Arrays.asList("Age-Photo Mismatch", "Gender-Photo Mismatch", "Invalid Address", "Duplicate Registration", "Others", "Only the Photograph is Matching", "Some of the Demographic Details are Matching"));
+		list1.addAll(Arrays.asList("Age-Photo Mismatch","Gender-Photo Mismatch","Invalid Address","Duplicate Registration","Others","Only the Photograph is Matching","Some of the Demographic Details are Matching"));
 		
 		List<String> list2=new ArrayList<>();
 		
@@ -361,6 +376,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetAllReasonsList_getRsnCatCode()
 	{
+		//this test validates if expected rsncatcode is fetched from reason_list table
 		List<MasterReasonListDto> result = mastersyncservice.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		List<String> list1=new ArrayList<>();
 		list1.addAll(Arrays.asList("CLR", "CLR", "CLR", "CLR", "CLR", "MNA", "MNA"));
@@ -380,6 +396,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetAllReasonsList_getLangCode()
 	{
+		//this test validates if expected language code is fetched from reason_list table
 		List<MasterReasonListDto> result = mastersyncservice.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		List<String> list1=new ArrayList<>();
 		list1.addAll(Arrays.asList("eng", "eng", "eng", "eng", "eng", "eng", "eng"));
@@ -399,6 +416,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_getAllReasonsList_WithInvalidlangCode()
 	{
+		//this test validates that no data will be fetched from reason_list table when invalid language code is passed
 		//mastersyncservice.getAllReasonsList(langCode);
 	
 		List<MasterReasonListDto> result = mastersyncservice.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("invalidlangCode"));
@@ -411,6 +429,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_getAllReasonsList_WithlangCodeNull()
 	{
+		//this test validates that no data will be fetched from reason_list table when language code is passed as null
 		//mastersyncservice.getAllReasonsList(langCode);
 	
 		List<MasterReasonListDto> result = mastersyncservice.getAllReasonsList(null);
@@ -426,6 +445,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetAllBlackListedWords_getDescription()
 	{
+		//this test validates if expected description is fetched from blacklisted_words table
 		//mastersyncservice.getAllBlackListedWords(langCode);
 		
 		List<BlacklistedWordsDto> result = mastersyncservice.getAllBlackListedWords(testdataparsejson.getDataFromJsonViaKey("langCode"));
@@ -448,6 +468,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetAllBlackListedWords_getLangCode()
 	{
+		//this test validates if expected language code is fetched from blacklisted_words table
 		List<BlacklistedWordsDto> result = mastersyncservice.getAllBlackListedWords(testdataparsejson.getDataFromJsonViaKey("langCode"));
 
 		List<String> list1=new ArrayList<>();
@@ -468,6 +489,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetAllBlackListedWords_getWord()
 	{
+		//this test validates if expected words are fetched from blacklisted_words table
 		List<BlacklistedWordsDto> result = mastersyncservice.getAllBlackListedWords(testdataparsejson.getDataFromJsonViaKey("langCode"));
 
 		List<String> list1=new ArrayList<>();
@@ -488,6 +510,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_getAllBlackListedWords_WithInvalidlangCode()
 	{
+		//this test validates if no data will be fetched blacklisted_words table when invalid language code is fetched
 		//mastersyncservice.getAllBlackListedWords(langCode);
 		List<BlacklistedWordsDto> result = mastersyncservice.getAllBlackListedWords(testdataparsejson.getDataFromJsonViaKey("invalidlangCode"));
 		System.out.println("*********"+result);
@@ -499,6 +522,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_getAllBlackListedWords_WithlangCodeNull()
 	{
+		//this test validates if no data will be fetched blacklisted_words table when language code is passed as null
 		//mastersyncservice.getAllBlackListedWords(langCode);
 		List<BlacklistedWordsDto> result = mastersyncservice.getAllBlackListedWords(null);
 		System.out.println("*********"+result);
@@ -513,6 +537,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetDocumentCategories_getDescription_POA()
 	{
+		//this test validates if expected descriptions are fetched from doc_type table for POA document category
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POA_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
@@ -535,6 +560,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetDocumentCategories_getDescription_POI()
 	{
+		//this test validates if expected descriptions are fetched from doc_type table for POI document category
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POI_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
@@ -557,6 +583,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetDocumentCategories_getDescription_POR()
 	{
+		//this test validates if expected descriptions are fetched from doc_type table for POR document category
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POR_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
@@ -579,6 +606,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetDocumentCategories_getDescription_POB()
 	{
+		//this test validates if expected descriptions are fetched from doc_type table for POB document category
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.DOB_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
@@ -601,6 +629,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetDocumentCategories_getLangCode_POA()
 	{
+		//this test validates if expected language codes are fetched from doc_type table for POA document category
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POA_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
@@ -624,6 +653,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetDocumentCategories_getLangCode_POI()
 	{
+		//this test validates if expected language codes are fetched from doc_type table for POI document category
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POI_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
@@ -646,6 +676,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetDocumentCategories_getLangCode_POR()
 	{
+		//this test validates if expected language codes are fetched from doc_type table for POR document category
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POR_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
@@ -668,6 +699,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetDocumentCategories_getLangCode_POB()
 	{
+		//this test validates if expected language codes are fetched from doc_type table for POB document category
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.DOB_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
@@ -690,6 +722,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetDocumentCategories_getName_POA()
 	{
+		//this test validates if expected names are fetched from doc_type table for POA document category
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POA_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
@@ -712,6 +745,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetDocumentCategories_getName_POI()
 	{
+		//this test validates if expected names are fetched from doc_type table for POI document category
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POI_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
@@ -734,6 +768,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetDocumentCategories_getName_POR()
 	{
+		//this test validates if expected names are fetched from doc_type table for POR document category
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POR_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
@@ -756,6 +791,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetDocumentCategories_getName_POB()
 	{
+		//this test validates if expected names are fetched from doc_type table for POB document category
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.DOB_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
@@ -778,6 +814,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_getDocumentCategories_WithInvaliddocCode()
 	{
+		//this test validates if no data is fetched from doc_type table when invalid document code is passed
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(testdataparsejson.getDataFromJsonViaKey("invaliddocCode"),testdataparsejson.getDataFromJsonViaKey("langCode"));
 		System.out.println("*********"+result);
@@ -789,6 +826,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_getDocumentCategories_WithInvalidlangCode()
 	{
+		//this test validates if no data is fetched from doc_type table when invalid language code is passed
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POA_DOCUMENT,testdataparsejson.getDataFromJsonViaKey("invalidlangCode"));
 		System.out.println("*********"+result);
@@ -800,6 +838,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_getDocumentCategories_WithdocCodenull()
 	{
+		//this test validates if no data is fetched from doc_type table when document code is passed as null
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(null,testdataparsejson.getDataFromJsonViaKey("langCode"));
 		System.out.println("*********"+result);
@@ -811,6 +850,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_getDocumentCategories_WithlangCodenull()
 	{
+		//this test validates if no data is fetched from doc_type table when language code is passed as null
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POA_DOCUMENT,null);
 		System.out.println("*********"+result);
@@ -822,6 +862,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_getDocumentCategories_WithdocCodenull_WithlangCodenull()
 	{
+		//this test validates if no data is fetched from doc_type table when language code and document code are passed as null
 		//mastersyncservice.getDocumentCategories(docCode, langCode);
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(null,null);
 		System.out.println("*********"+result);
@@ -838,6 +879,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetGenderDtls_getCode()
 	{
+		//this test validates if expected code is fetched from gender table
 		//mastersyncservice.getGenderDtls(langCode);
 		List<GenderDto> result = mastersyncservice.getGenderDtls(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
@@ -859,6 +901,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetGenderDtls_getGenderName()
 	{
+		//this test validates if expected gender names are fetched from gender table
 		//mastersyncservice.getGenderDtls(langCode);
 		List<GenderDto> result = mastersyncservice.getGenderDtls(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
@@ -880,6 +923,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetGenderDtls_getIsActive()
 	{
+		//this test validates if expected boolean values are fetched for gender details from gender table
 		//mastersyncservice.getGenderDtls(langCode);
 		List<GenderDto> result = mastersyncservice.getGenderDtls(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
@@ -901,6 +945,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verifygetGenderDtls_getLangCode()
 	{
+		//this test validates if expected language codes are fetched from gender table
 		//mastersyncservice.getGenderDtls(langCode);
 		List<GenderDto> result = mastersyncservice.getGenderDtls(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
@@ -922,6 +967,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_getGenderDtls_WithInvalidlangCode()
 	{
+		//this test validates that no data is fetched from gender table when invalid language code is fetched
 		//mastersyncservice.getGenderDtls(langCode);
 		List<GenderDto> result = mastersyncservice.getGenderDtls(testdataparsejson.getDataFromJsonViaKey("invalidlangCode"));
 		System.out.println("*********"+result);
@@ -933,6 +979,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest{
 	@Test
 	public void masterSync_verify_getGenderDtls_WithlangCodeNull()
 	{
+		//this test validates that no data is fetched from gender table when language code is passed as null
 		//mastersyncservice.getGenderDtls(langCode);
 		List<GenderDto> result = mastersyncservice.getGenderDtls(null);
 		System.out.println("*********"+result);

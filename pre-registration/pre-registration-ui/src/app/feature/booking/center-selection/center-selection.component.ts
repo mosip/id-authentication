@@ -59,6 +59,7 @@ export class CenterSelectionComponent implements OnInit {
 
   ngOnInit() {
     REGISTRATION_CENTRES = [];
+    this.selectedCentre = null;
     this.getLocation();
     this.dataService.getLocationTypeData().subscribe(response => {
       this.locationTypes = response['locations'];

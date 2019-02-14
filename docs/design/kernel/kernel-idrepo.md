@@ -105,6 +105,20 @@ ID Repo provides default shard implementation where shards are decided based on 
 ![UIN Database Sharding](_images/kernel-idrepo-databasesharding.png)   
 
 
+**ERD**
+
+![ERD](_images/kernel-idrepo-erd.png) 
+
 **2.4.	Encrypting/Decrypting Identity**    
 
 Identity stored in UIN DB is encrypted/decrypted outside the DB. Details on the approach of encryption/decryption is available here - [Identity Encryption/Decryption](https://github.com/mosip/mosip/wiki/Security#database-encryption)
+
+
+
+
+
+## Implementation
+
+
+**kernel-idrepo-service** [README](../../../kernel/kernel-idrepo-service/README.md)
+

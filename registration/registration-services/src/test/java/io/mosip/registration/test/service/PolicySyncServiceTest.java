@@ -3,10 +3,12 @@ package io.mosip.registration.test.service;
 import static org.junit.Assert.assertNotNull;
 
 import java.net.SocketTimeoutException;
+import java.security.KeyManagementException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,19 +23,18 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.PolicySyncDAO;
+import io.mosip.registration.dto.PublicKeyResponse;
 import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.repositories.PolicySyncRepository;
 import io.mosip.registration.service.impl.PolicySyncServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
+import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 /**
  * 
@@ -42,7 +43,6 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ RegistrationAppHealthCheckUtil.class })
-@PowerMockIgnore({ "javax.net.ssl.*", "javax.security.*" })
 public class PolicySyncServiceTest {
 	@Rule
 	public MockitoRule MockitoRule = MockitoJUnit.rule();
@@ -51,9 +51,8 @@ public class PolicySyncServiceTest {
 
 	@Mock
 	private PolicySyncDAO policySyncDAO;
-
 	@Mock
-	private PolicySyncRepository policySyncRepository;
+	private ServiceDelegateUtil serviceDelegateUtil;
 
 	@InjectMocks
 	private PolicySyncServiceImpl policySyncServiceImpl;
@@ -70,9 +69,23 @@ public class PolicySyncServiceTest {
 
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
-		ReflectionTestUtils.setField(policySyncServiceImpl, "url",
-				"https://integ.mosip.io/keymanager/v1.0/publickey/{applicationId}");
+
+		PublicKeyResponse<String> publicKeyResponse = new PublicKeyResponse<>();
+		publicKeyResponse.setAlias("ALIAS");
+		publicKeyResponse.setExpiryAt(LocalDateTime.now());
+		publicKeyResponse.setIssuedAt(LocalDateTime.now());
+		publicKeyResponse.setPublicKey("MY_PUBLIC_KEY");
+
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean()))
+				.thenReturn(publicKeyResponse);
+		KeyStore keyStore = new KeyStore();
+		keyStore.setValidTillDtimes(Timestamp.valueOf(publicKeyResponse.getExpiryAt()));
+		keyStore.setValidFromDtimes(Timestamp.valueOf(publicKeyResponse.getIssuedAt()));
+		keyStore.setPublicKey(publicKeyResponse.getPublicKey().getBytes());
+		Mockito.doNothing().when(policySyncDAO).updatePolicy(keyStore);
+
 		assertNotNull(policySyncServiceImpl.fetchPolicy());
+
 	}
 
 	@Test
@@ -88,8 +101,7 @@ public class PolicySyncServiceTest {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
 		Date date = dateFormat.parse("2020-12-29");
 		Timestamp timestamp = new Timestamp(date.getTime());
-		ReflectionTestUtils.setField(policySyncServiceImpl, "url",
-				"https://integ.mosip.io/keymanager/v1.0/publickey/{applicationId}");
+
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 		KeyStore keyStore = new KeyStore();
@@ -101,23 +113,24 @@ public class PolicySyncServiceTest {
 	}
 
 	@Test
-	public void testPublicKey() throws ParseException {
-
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
-
-		Date date = dateFormat.parse("2018-12-29");
-		Timestamp timestamp = new Timestamp(date.getTime());
-		ReflectionTestUtils.setField(policySyncServiceImpl, "url",
-				"https://integ.mosip.io/keymanager/v1.0/publickey/{applicationId}");
+	public void failureTest() throws HttpClientErrorException, SocketTimeoutException, RegBaseCheckedException {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
-		KeyStore keyStore = new KeyStore();
-		keyStore.setValidTillDtimes(timestamp);
-
-		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean()))
+				.thenThrow(KeyManagementException.class);
 
 		assertNotNull(policySyncServiceImpl.fetchPolicy());
+	}
 
+	@Test
+	public void getPublicKeyfailureTest()
+			throws HttpClientErrorException, SocketTimeoutException, RegBaseCheckedException {
+		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
+		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean()))
+				.thenThrow(HttpClientErrorException.class);
+
+		assertNotNull(policySyncServiceImpl.fetchPolicy());
 	}
 
 }

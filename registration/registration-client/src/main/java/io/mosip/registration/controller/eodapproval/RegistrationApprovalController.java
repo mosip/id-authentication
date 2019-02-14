@@ -376,10 +376,14 @@ public class RegistrationApprovalController extends BaseController implements In
 			this.primaryStage = primarystage;
 
 		} catch (IOException ioException) {
+			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
 					RegistrationExceptionConstants.REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
-
 		} catch (RuntimeException runtimeException) {
+
+			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage());
+
 			throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION, runtimeException.getMessage());
 		}
 		return primarystage;
@@ -413,9 +417,16 @@ public class RegistrationApprovalController extends BaseController implements In
 					packetUploadService.uploadEODPackets(regIds);
 				}
 			}
-		} catch (RegBaseCheckedException | RegBaseUncheckedException exception) {
+		} catch (RegBaseCheckedException checkedException) {
 			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
-					"Error in packet sync and upload" + exception.getMessage());
+					"Error in sync and upload of packets" + checkedException.getMessage());
+
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.ERROR_IN_SYNC_AND_UPLOAD);
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+					"unable to sync and upload of packets" + runtimeException.getMessage());
+
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_SYNC_AND_UPLOAD);
 		}
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status ended");

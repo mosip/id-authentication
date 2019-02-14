@@ -29,14 +29,7 @@ public class GlobalParamServiceTest extends BaseIntegrationTest {
 	/**
 	 * Setup Test Cases
 	 */
-	@Before
-	public void setUp() {
-		ApplicationContext applicationContext = ApplicationContext.getInstance();
-		applicationContext.setApplicationLanguageBundle();
-		applicationContext.setApplicationMessagesBundle();
-		applicationContext.setLocalLanguageProperty();
-		applicationContext.setLocalMessagesBundle();
-	}
+
 
 	// IRIS_THRESHOLD=70, LEFTSLAP_FINGERPRINT_THRESHOLD=80,
 	// NUM_OF_FINGERPRINT_RETRIES=3, NUM_OF_IRIS_RETRIES=0,

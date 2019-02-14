@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="uinUpdateRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="727.0" prefWidth="1245.0" styleClass="updateUinparentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UpdateUINController">
+<AnchorPane fx:id="uinUpdateRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="updateUinparentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UpdateUINController">
    <children>
       <AnchorPane layoutX="91.0" layoutY="34.0" styleClass="uinUpdateContentPane">
          <children>
@@ -36,7 +36,7 @@
                         <Label layoutX="100.0" styleClass="uinUpdateLabelsTypeTwo" text="Yes" />
                      </children>
                   </AnchorPane>
-                  <HBox layoutY="155.0" spacing="30" styleClass="updateUinCheckBoxCommon">
+                  <HBox fx:id="demographicHBox" layoutY="155.0" spacing="30" styleClass="updateUinCheckBoxCommon">
                      <children>
                         <CheckBox fx:id="name" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%name">
                   </CheckBox>
@@ -50,6 +50,8 @@
                   </CheckBox>
                         <CheckBox fx:id="parentOrGuardianDetails" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%parent/guardiandetails">
                   </CheckBox>
+                   		<CheckBox fx:id="foreigner" mnemonicParsing="false" text="%Foreigner/National" styleClass="updateUinCheckBox">
+           		 </CheckBox>
                      </children>
                   </HBox>
                   <Label layoutX="5.0" layoutY="64.0" styleClass="uinUpdateLabelsTypeTwo" text="%isadult">

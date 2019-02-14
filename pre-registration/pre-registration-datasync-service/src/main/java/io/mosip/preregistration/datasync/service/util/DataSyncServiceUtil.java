@@ -447,7 +447,7 @@ public class DataSyncServiceUtil {
 	 * @param documentEntityList
 	 * @return zipped file's byte array
 	 */
-	private PreRegArchiveDTO preparePreRegArchiveDTO(DemographicResponseDTO preRegistrationDTO,
+	public PreRegArchiveDTO preparePreRegArchiveDTO(DemographicResponseDTO preRegistrationDTO,
 			BookingRegistrationDTO bookingRegistrationDTO) {
 		log.info("sessionId", "idType", "id", "In preparePreRegArchiveDTO method of datasync service util");
 		PreRegArchiveDTO preRegArchiveDTO = new PreRegArchiveDTO();

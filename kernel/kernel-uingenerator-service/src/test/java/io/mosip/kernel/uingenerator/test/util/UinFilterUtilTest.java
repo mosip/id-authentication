@@ -120,7 +120,7 @@ public class UinFilterUtilTest {
 	@Test
 	public void filterRepeatGroupFailTest() {
 
-		boolean res = uinFilterUtils.isValidId(invalidRepeatingGroupUin);
+		boolean res = uinFilterUtils.isValidId(invalidRepeatingBlockUin);
 		assertThat(res, is(false));
 	}
 
