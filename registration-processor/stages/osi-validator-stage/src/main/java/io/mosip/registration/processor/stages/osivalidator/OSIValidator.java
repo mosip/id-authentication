@@ -88,6 +88,8 @@ public class OSIValidator {
 	/** The message. */
 	private String message = null;
 
+	private static final String TRUE = "true";
+
 	/** The registration status dto. */
 	InternalRegistrationStatusDto registrationStatusDto;
 
@@ -158,9 +160,18 @@ public class OSIValidator {
 			String irisType = regOsi.getOfficerIrisType();
 			String face = regOsi.getOfficerPhotoName();
 			String pin = regOsi.getOfficerHashedPin();
+			// officer password and otp check
+			String officerPassword = getOsiDataValue(registrationId, JsonConstant.OFFICERPWR);
+			String officerOTPAuthentication = getOsiDataValue(registrationId, JsonConstant.OFFICEROTPAUTHENTICATION);
 			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
-				registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
-				return false;
+				boolean flag = validateOtpAndPwd(officerPassword, officerOTPAuthentication);
+				if (flag) {
+					registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + "Operator");
+				} else {
+					registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + "Operator");
+
+				}
+				return flag;
 			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
 					&& (validateIris(uin, iris, irisType, registrationId)) && (validateFace(uin, face, registrationId))
 					&& (validatePin(uin, pin))) {
@@ -209,14 +220,24 @@ public class OSIValidator {
 		else {
 
 			String fingerPrint = getOsiDataValue(registrationId, JsonConstant.SUPERVISORBIOMETRICFILENAME);
+			// superVisior otp and password
+			String supervisiorPassword = getOsiDataValue(registrationId, JsonConstant.SUPERVISORPWR);
+			String supervisorOTPAuthentication = getOsiDataValue(registrationId,
+					JsonConstant.SUPERVISOROTPAUTHENTICATION);
 			String fingerPrintType = regOsi.getSupervisorFingerType();
 			String iris = regOsi.getSupervisorIrisImageName();
 			String irisType = regOsi.getSupervisorIrisType();
 			String face = regOsi.getSupervisorPhotoName();
 			String pin = regOsi.getSupervisorHashedPin();
 			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
-				registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
-				return false;
+				boolean flag = validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication);
+				if (flag) {
+					registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + "Supervisor");
+				} else {
+					registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + "Supervisor");
+
+				}
+				return flag;
 			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
 					&& (validateIris(uin, iris, irisType, registrationId)) && (validateFace(uin, face, registrationId))
 					&& (validatePin(uin, pin))) {
@@ -477,6 +498,16 @@ public class OSIValidator {
 		 */
 		isValidPin = true;
 		return isValidPin;
+	}
+
+	boolean validateOtpAndPwd(String password, String otp) {
+		if (password.equals(TRUE) || otp.equals(TRUE)) {
+			return true;
+		} else {
+			return false;
+
+		}
+
 	}
 
 	/**

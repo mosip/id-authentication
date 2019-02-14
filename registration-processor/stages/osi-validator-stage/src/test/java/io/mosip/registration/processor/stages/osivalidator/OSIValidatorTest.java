@@ -175,12 +175,28 @@ public class OSIValidatorTest {
 		officerBiofileName.setLabel(JsonConstant.OFFICERBIOMETRICFILENAME);
 		officerBiofileName.setValue("officer_bio_CBEFF");
 
+		FieldValue officerPassword= new FieldValue();
+		officerPassword.setLabel(JsonConstant.OFFICERPWR);
+		officerPassword.setValue("false");
+		
+		FieldValue officerOtp= new FieldValue();
+		officerOtp.setLabel(JsonConstant.OFFICEROTPAUTHENTICATION);
+		officerOtp.setValue("false");
+		
+		FieldValue supervisorPassword= new FieldValue();
+		supervisorPassword.setLabel(JsonConstant.SUPERVISORPWR);
+		supervisorPassword.setValue("false");
+		
+		FieldValue supervisorOtp= new FieldValue();
+		supervisorOtp.setLabel(JsonConstant.SUPERVISOROTPAUTHENTICATION);
+		supervisorOtp.setValue("false");
+		
 		FieldValue supervisorBiofileName = new FieldValue();
 		supervisorBiofileName.setLabel(JsonConstant.SUPERVISORBIOMETRICFILENAME);
 		officerBiofileName.setValue("supervisor_bio_CBEFF");
 	
 
-		identity.setOsiData((Arrays.asList(officerBiofileName, officerBiofileName)));
+		identity.setOsiData((Arrays.asList(officerBiofileName, officerBiofileName,officerOtp,officerPassword,supervisorOtp,supervisorPassword)));
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 		FieldValueArray introducerBiometric = new FieldValueArray();
 		introducerBiometric.setLabel(PacketFiles.INTRODUCERBIOMETRICSEQUENCE.name());
@@ -328,6 +344,7 @@ public class OSIValidatorTest {
 		regOsiDto.setSupervisorIrisImageName(null);
 		regOsiDto.setSupervisorPhotoName(null);
 		regOsiDto.setSupervisorHashedPin(null);
+		
 
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 
