@@ -18,6 +18,7 @@ import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
@@ -65,11 +66,15 @@ public class UpdateUINController extends BaseController implements Initializable
 	@FXML
 	private CheckBox parentOrGuardianDetails;
 	@FXML
+	private CheckBox foreigner;
+	@FXML
 	private Label toggleLabel1;
 	@FXML
 	private Label toggleLabel2;
 	@FXML
 	private HBox biometricBox;
+	@FXML
+	private HBox demographicHBox;
 
 	private SimpleBooleanProperty switchedOn;
 	private boolean isChild;
@@ -95,6 +100,116 @@ public class UpdateUINController extends BaseController implements Initializable
 				if (bio.getId().equals("biometricFingerprint")) {
 					bio.setVisible(false);
 					bio.setManaged(false);
+				}
+			});
+		}
+		configuringUpdateUINDemographicFields();
+		configuringUpdateUINBiometricFields();
+	}
+
+	/**
+	 * Configuring update UIN fields.
+	 */
+	private void configuringUpdateUINDemographicFields() {
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_NAME_ENABLE_FLAG)
+				.equals(RegistrationConstants.ENABLE)) {
+			demographicHBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("name")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_AGE_ENABLE_FLAG)
+				.equals(RegistrationConstants.ENABLE)) {
+			demographicHBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("age")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_GENDER_ENABLE_FLAG)
+				.equals(RegistrationConstants.ENABLE)) {
+			demographicHBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("gender")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_ADDRESS_ENABLE_FLAG)
+				.equals(RegistrationConstants.ENABLE)) {
+			demographicHBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("address")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONTACT_DTLS_ENABLE_FLG)
+				.equals(RegistrationConstants.ENABLE)) {
+			demographicHBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("contactDetails")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_PARENT_DTLS_ENABLE_FLG)
+				.equals(RegistrationConstants.ENABLE)) {
+			demographicHBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("parentOrGuardianDetails")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_FOREIGNER_ENABLE_FLG)
+				.equals(RegistrationConstants.ENABLE)) {
+			demographicHBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("foreigner")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CNIE_NUMBER_ENABLE_FLAG)
+				.equals(RegistrationConstants.ENABLE)) {
+			biometricBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("cnieNumber")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+	}
+
+	private void configuringUpdateUINBiometricFields() {
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION_ENABLE_FLG)
+				.equals(RegistrationConstants.ENABLE)) {
+			biometricBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("biometricException")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_BIO_FP_ENABLE_FLG)
+				.equals(RegistrationConstants.ENABLE)) {
+			biometricBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("biometricFingerprint")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_BIO_IRIS_ENABLE_FLG)
+				.equals(RegistrationConstants.ENABLE)) {
+			biometricBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("biometricIris")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
 				}
 			});
 		}
@@ -159,6 +274,7 @@ public class UpdateUINController extends BaseController implements Initializable
 					selectionListDTO.setBiometricFingerprint(biometricFingerprint.isSelected());
 					selectionListDTO.setCnieNumber(cnieNumber.isSelected());
 					selectionListDTO.setParentOrGuardianDetails(parentOrGuardianDetails.isSelected());
+					selectionListDTO.setForeigner(foreigner.isSelected());
 
 					selectionListDTO.setChild(isChild);
 					selectionListDTO.setUinId(uinId.getText());
@@ -166,7 +282,8 @@ public class UpdateUINController extends BaseController implements Initializable
 					if (name.isSelected() || age.isSelected() || gender.isSelected() || address.isSelected()
 							|| contactDetails.isSelected() || biometricException.isSelected()
 							|| biometricIris.isSelected() || biometricFingerprint.isSelected()
-							|| cnieNumber.isSelected() || parentOrGuardianDetails.isSelected()) {
+							|| cnieNumber.isSelected() || parentOrGuardianDetails.isSelected()
+							|| foreigner.isSelected()) {
 						registrationController.init(selectionListDTO);
 
 						Parent createRoot = BaseController.load(

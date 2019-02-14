@@ -182,6 +182,19 @@ public class RegistrationConstants {
 	public static final String SECOND_TOGGLE_LABEL = "toggleLabel2";
 	public static final String PACKET_TYPE_UPDATE = "Update";
 	public static final String DOB_TOGGLE = "toggleAgeOrDob";
+	public static final String UIN_UPDATE_CONFIG_FLAG = "UIN_UPDATE_CONFIG_FLAG";
+	public static final String UIN_UPDATE_NAME_ENABLE_FLAG = "UIN_UPDATE.NAME_ENABLE_FLAG";
+	public static final String UIN_UPDATE_AGE_ENABLE_FLAG = "UIN_UPDATE.AGE_ENABLE_FLAG";
+	public static final String UIN_UPDATE_GENDER_ENABLE_FLAG = "UIN_UPDATE.GENDER_ENABLE_FLAG";
+	public static final String UIN_UPDATE_ADDRESS_ENABLE_FLAG = "UIN_UPDATE.ADDRESS_ENABLE_FLAG";
+	public static final String UIN_UPDATE_CONTACT_DTLS_ENABLE_FLG = "UIN_UPDATE.CONTACT_DTLS_ENABLE_FLG";
+	public static final String UIN_UPDATE_PARENT_DTLS_ENABLE_FLG = "UIN_UPDATE.PARENT_DTLS_ENABLE_FLG";
+	public static final String UIN_UPDATE_CNIE_NUMBER_ENABLE_FLAG = "UIN_UPDATE.CNIE_NUMBER_ENABLE_FLAG";
+	public static final String UIN_UPDATE_BIO_EXCEPTION_ENABLE_FLG = "UIN_UPDATE.BIO_EXCEPTION_ENABLE_FLG";
+	public static final String UIN_UPDATE_BIO_FP_ENABLE_FLG = "UIN_UPDATE.BIO_FP_ENABLE_FLG";
+	public static final String UIN_UPDATE_BIO_IRIS_ENABLE_FLG = "UIN_UPDATE.BIO_IRIS_ENABLE_FLG";
+	public static final String UIN_UPDATE_FOREIGNER_ENABLE_FLG = "UIN_UPDATE.FOREIGNER_ENABLE_FLG";
+	
 
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";
