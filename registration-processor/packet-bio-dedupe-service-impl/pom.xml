@@ -65,11 +65,6 @@
                     <version>${packet.info.storage.service.version}</version>
              </dependency>
              <dependency>
-                    <groupId>io.mosip.registrationprocessor</groupId>
-                    <artifactId>filesystem-adapter-ceph</artifactId>
-                    <version>${filesystem.adapter.ceph.version}</version>
-             </dependency>
-             <dependency>
                     <groupId>org.powermock</groupId>
                     <artifactId>powermock-module-junit4</artifactId>
                     <version>${powermock.module.junit4.version}</version>
@@ -81,5 +76,10 @@
                     <version>${powermock.api.mockito.version}</version>
                     <scope>test</scope>
              </dependency>
+             <dependency>
+			       <groupId>io.mosip.kernel</groupId>
+			       <artifactId>kernel-fsadapter-hdfs</artifactId>
+			       <version>${kernel.core.version}</version>
+		    </dependency>
   </dependencies>
 </project>

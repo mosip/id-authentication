@@ -105,11 +105,6 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>filesystem-adapter-ceph</artifactId>
-			<version>${filesystem.adapter.ceph.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>packet-info-storage-service</artifactId>
 			<version>${packet.info.storage.service.version}</version>
 		</dependency>

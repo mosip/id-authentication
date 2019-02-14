@@ -42,12 +42,6 @@
 			<artifactId>spring-context</artifactId>
 			<version>${spring-framework.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>filesystem-adapter-ceph</artifactId>
-			<version>${filesystem.adapter.ceph.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>packet-manager</artifactId>
@@ -94,6 +88,11 @@
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>packet-info-storage-service</artifactId>
 			<version>${packet.info.storage.service.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-fsadapter-hdfs</artifactId>
+			<version>${kernel.core.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
