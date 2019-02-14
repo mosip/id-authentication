@@ -393,10 +393,11 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 	private void reSendPrintPdf(RoutingContext ctx) {
 		JsonObject object = ctx.getBodyAsJson();
-		System.out.println(object.toString());
 		MessageDTO messageDTO = new MessageDTO();
-		this.setResponse(ctx, "Re-sending to Queue");
-		// this.sendMessage(messageDTO);
+		messageDTO.setRid(object.getString("regId"));
+		this.start();
+		this.process(messageDTO);
+		this.setResponse(ctx, "Re-sending to Queue"); 
 	}
 
 }
