@@ -4,8 +4,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import io.mosip.registration.processor.connector.stage.ConnectorStage;
 
-
-
 /**
  * Hello world!
  *
@@ -19,7 +17,7 @@ public class ConnectorApplication
 				  "io.mosip.registration.processor.connector.config",
 				  "io.mosip.registration.processor.connector.stage");
 		configApplicationContext.refresh();
-		ConnectorStage connectorStage = configApplicationContext.getBean(ConnectorStage.class);
+		ConnectorStage connectorStage = (ConnectorStage) configApplicationContext.getBean("connectorStage");
 		connectorStage.deployVerticle();
     }
 }

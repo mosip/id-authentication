@@ -16,19 +16,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
-import io.mosip.registration.processor.connector.stage.ConnectorStage;
-
 @Configuration
 @EnableAspectJAutoProxy
 @PropertySource("classpath:bootstrap.properties")
 public class ConnectorConfig {
-	/**
-	 * Loads config server values
-	 * 
-	 * @param env
-	 * @return
-	 * @throws IOException
-	 */
 	@Bean
 	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env) throws IOException {
 
@@ -49,6 +40,7 @@ public class ConnectorConfig {
 		pspc.setLocations(appResources);
 		return pspc;
 	}
+
 	/**
 	 * Gets list of application name mentioned in bootstrap.properties
 	 * 
@@ -59,14 +51,5 @@ public class ConnectorConfig {
 		String names = env.getProperty("spring.application.name");
 		return Stream.of(names.split(",")).collect(Collectors.toList());
 	}
-	
-	/**
-	 * ConnectorStage bean
-	 * 
-	 * @return
-	 */
-	@Bean 
-	public ConnectorStage connectorStage() {
-		return new ConnectorStage();
-	}
+
 }

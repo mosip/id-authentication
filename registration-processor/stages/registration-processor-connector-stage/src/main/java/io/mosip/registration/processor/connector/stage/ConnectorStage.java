@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.connector.stage;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -12,9 +12,8 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-
-@Service
-public class ConnectorStage extends MosipVerticleAPIManager {
+@Component("connectorStage")
+public class ConnectorStage extends MosipVerticleAPIManager{
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(ConnectorStage.class);
 	
@@ -39,9 +38,8 @@ public class ConnectorStage extends MosipVerticleAPIManager {
 	 * deploys this verticle
 	 */
 	public void deployVerticle() {
-		
-		this.mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
-		start();
+		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl);
+
 	}
 
 	/*
@@ -51,9 +49,9 @@ public class ConnectorStage extends MosipVerticleAPIManager {
 	 * 
 	 */
 	
-	
+	@Override
 	public void start() {
-		Router router = this.postUrl(this.mosipEventBus.getEventbus());
+		Router router = this.postUrl(vertx);
 		this.routes(router);
 		this.createServer(router, Integer.parseInt(port));
 	}
@@ -74,9 +72,8 @@ public class ConnectorStage extends MosipVerticleAPIManager {
 
 	public void processURL(RoutingContext ctx) {
 		JsonObject obj = ctx.getBodyAsJson();
-		
 		MessageDTO messageDTO= new MessageDTO();
-		messageDTO.setInternalError(Boolean.valueOf(obj.getString("internalError")));
+		messageDTO.setInternalError(Boolean.FALSE);
 		messageDTO.setIsValid(Boolean.valueOf(obj.getString("isValid")));
 		messageDTO.setRid(obj.getString("rid"));
 		sendMessage( messageDTO);
@@ -92,9 +89,11 @@ public class ConnectorStage extends MosipVerticleAPIManager {
 		this.send(this.mosipEventBus, MessageBusAddress.PACKET_VALIDATOR_BUS_IN, messageDTO);
 	}
 
+	
+
 	@Override
 	public MessageDTO process(MessageDTO object) {
+		// TODO Auto-generated method stub
 		return null;
 	}
-
 }
