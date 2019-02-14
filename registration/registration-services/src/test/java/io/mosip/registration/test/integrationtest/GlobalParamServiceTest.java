@@ -113,7 +113,7 @@ public class GlobalParamServiceTest extends BaseIntegrationTest {
 			Assert.assertEquals(response.getErrorResponseDTOs().get(0).getMessage(),
 					RegistrationConstants.GLOBAL_CONFIG_ERROR_MSG);
 		} else {
-			Assert.assertEquals(response.getSuccessResponseDTO().getMessage(),
+			Assert.assertEquals(response.getSuccessResponseDTO().getMessage().toString(),
 					Matchers.anyOf(Matchers.is(RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE),
 							Matchers.is(RegistrationConstants.MASTER_SYNC_FAILURE_MSG)));
 			Assert.assertEquals(response.getSuccessResponseDTO().getCode(), RegistrationConstants.ALERT_INFORMATION);
