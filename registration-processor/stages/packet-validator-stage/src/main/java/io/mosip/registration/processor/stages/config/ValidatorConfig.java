@@ -15,6 +15,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
+import io.mosip.registration.processor.stages.packet.validator.PacketValidateProcessor;
 import io.mosip.registration.processor.stages.packet.validator.PacketValidatorStage;
 import io.mosip.registration.processor.stages.utils.DocumentUtility;
 
@@ -53,6 +54,11 @@ public class ValidatorConfig{
 	@Bean
 	public DocumentUtility getDocumentUtility() {
 		return new DocumentUtility();
+	}
+	@Bean
+	public PacketValidateProcessor getPacketValidateProcessor()
+	{
+		return new PacketValidateProcessor();
 	}
 
 }

@@ -14,8 +14,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
-
-
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigTest {
 
@@ -46,10 +44,15 @@ public class ConfigTest {
 	public void getPacketValidatorStageTest() {
 		assertNotNull(config.getPacketValidatorStage());
 	}
-	
+
 	@Test
 	public void getDocumentUtilityTest() {
 		assertNotNull(config.getDocumentUtility());
+	}
+
+	@Test
+	public void getPacketValidateProcessorTest() {
+		assertNotNull(config.getPacketValidateProcessor());
 	}
 
 }
