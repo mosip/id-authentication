@@ -24,22 +24,23 @@ import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 public class SyncHandlerControllerAdvice {
 	@ExceptionHandler(SyncDataServiceException.class)
 	public ResponseEntity<ErrorResponse<Error>> controlDataServiceException(final SyncDataServiceException e) {
-		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(getErrorResponse(e,HttpStatus.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(DateParsingException.class)
 	public ResponseEntity<ErrorResponse<Error>> controlDataServiceException(final DateParsingException e) {
-		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.OK);
+		return new ResponseEntity<>(getErrorResponse(e,HttpStatus.OK), HttpStatus.OK);
 	}
 	
 	@ExceptionHandler(DataNotFoundException.class)
 	public ResponseEntity<ErrorResponse<Error>> controlDataNotFoundException(final DataNotFoundException e) {
-		return new ResponseEntity<>(getErrorResponse(e),HttpStatus.NOT_FOUND); 
+		return new ResponseEntity<>(getErrorResponse(e,HttpStatus.NOT_FOUND),HttpStatus.NOT_FOUND); 
 	}
 
-	private ErrorResponse<Error> getErrorResponse(BaseUncheckedException e) {
+	private ErrorResponse<Error> getErrorResponse(BaseUncheckedException e,HttpStatus httpStatus) {
 		Error error = new Error(e.getErrorCode(), e.getErrorText());
 		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
+		errorResponse.setStatus(httpStatus.value());
 		errorResponse.getErrors().add(error);
 		return errorResponse;
 	}

@@ -1,183 +1,100 @@
 {
-	"identity": {
-		"FullName": [
-			{
-				"label": "الاسم الاول",
-				"value": "ابراهيم"
-			},
-			{
-				"language": "fr",
-				"label": "Prénom",
-				"value": "Ibrahim"
+		"identity": {
+				"dateOfBirth": "1995/03/24",
+				"gender": [
+					{
+						"language": "eng",
+						"value": "male"
+					},
+					{
+						"language": "ara",
+						"value": "الذكر"
+					}
+				],
+				"addressLine1": [
+					{
+						"language": "eng",
+						"value": "c-63 South Extension Part-2 New Delhi"
+					},
+					{
+						"language": "ara",
+						"value": "c-63 South Extension Part-2 New Delhi"
+					}
+				],
+				"addressLine2": [
+					{
+						"language": "eng",
+						"value": "Jammu"
+					},
+					{
+						"language": "ara",
+						"value": "جامو"
+					}
+				],
+				"addressLine3": [
+					{
+						"language": "eng",
+						"value": "Kashmir"
+					},
+					{
+						"language": "ara",
+						"value": "كشمير"
+					}
+				],
+				"region": [
+					{
+						"language": "eng",
+						"value": "Bangalore"
+					},
+					{
+						"language": "ara",
+						"value": "BLR"
+					}
+				],
+				"province": [
+					{
+						"language": "eng",
+						"value": "Bangalore"
+					},
+					{
+						"language": "ara",
+						"value": "بنغالور"
+					}
+				],
+				"city": [
+					{
+						"language": "eng",
+						"value": "Bangalore"
+					},
+					{
+						"language": "ara",
+						"value": "بنغالور"
+					}
+				],
+				"localAdministrativeAuthority": [
+					{
+						"language": "eng",
+						"value": "Bangalore"
+					},
+					{
+						"language": "ara",
+						"value": "بنغالور"
+					}
+				],
+				"IDSchemaVersion": 1.0,
+				"FullName": [
+					{
+						"language": "eng",
+						"value": "Sanober"
+					},
+					{
+						"language": "ara",
+						"value": "Sanober"
+					}
+				],
+				"phone": "9480548558",
+				"CNIENumber": 6789545678912,
+				"postalCode": "570000",
+				"email": "sanober@gmail.com"
 			}
-		],
-		"dateOfBirth": [
-			{
-				"language": "ar",
-				"label": "الاسم الاول",
-				"value": "ابراهيم"
-			},
-			{
-				"language": "fr",
-				"label": "Prénom",
-				"value": "Ibrahim"
-			}
-		],
-		"gender": [
-			{
-				"language": "ar",
-				"label": "الاسم الاول",
-				"value": "ابراهيم"
-			},
-			{
-				"language": "fr",
-				"label": "Prénom",
-				"value": "Ibrahim"
-			}
-		],
-		"addressLine1": [
-			{
-				"language": "ar",
-				"label": "الاسم الاول",
-				"value": "ابراهيم"
-			},
-			{
-				"language": "fr",
-				"label": "Prénom",
-				"value": "Ibrahim"
-			}
-		],
-		"addressLine2": [
-			{
-				"language": "ar",
-				"label": "الاسم الاول",
-				"value": "ابراهيم"
-			},
-			{
-				"language": "fr",
-				"label": "Prénom",
-				"value": "Ibrahim"
-			}
-		],
-		"addressLine3": [
-			{
-				"language": "ar",
-				"label": "الاسم الاول",
-				"value": "ابراهيم"
-			},
-			{
-				"language": "fr",
-				"label": "Prénom",
-				"value": "Ibrahim"
-			}
-		],
-		"region": [
-			{
-				"language": "ar",
-				"label": "الاسم الاول",
-				"value": "ابراهيم"
-			},
-			{
-				"language": "fr",
-				"label": "Prénom",
-				"value": "Ibrahim"
-			}
-		],
-		"province": [
-			{
-				"language": "ar",
-				"label": "الاسم الاول",
-				"value": "ابراهيم"
-			},
-			{
-				"language": "fr",
-				"label": "Prénom",
-				"value": "Ibrahim"
-			}
-		],
-		"city": [
-			{
-				"language": "ar",
-				"label": "الاسم الاول",
-				"value": "ابراهيم"
-			},
-			{
-				"language": "fr",
-				"label": "Prénom",
-				"value": "Ibrahim"
-			}
-		],
-		"postalcode": [
-			{
-				"language": "ar",
-				"label": "الاسم الاول",
-				"value": "ابراهيم"
-			},
-			{
-				"language": "fr",
-				"label": "Prénom",
-				"value": "Ibrahim"
-			}
-		],
-		"localAdministrativeAuthority": [
-			{
-				"language": "ar",
-				"label": "الاسم الاول",
-				"value": "ابراهيم"
-			},
-			{
-				"language": "fr",
-				"label": "Prénom",
-				"value": "Ibrahim"
-			}
-		],
-		"emailId": [
-			{
-				"language": "ar",
-				"label": "الاسم الاول",
-				"value": "ابراهيم"
-			},
-			{
-				"language": "fr",
-				"label": "Prénom",
-				"value": "Ibrahim"
-			}
-		],
-		"mobileNumber": [
-			{
-				"language": "ar",
-				"label": "الاسم الاول",
-				"value": "ابراهيم"
-			},
-			{
-				"language": "fr",
-				"label": "Prénom",
-				"value": "Ibrahim"
-			}
-		],
-		"CNEOrPINNumber": [
-			{
-				"language": "ar",
-				"label": "الاسم الاول",
-				"value": "ابراهيم"
-			},
-			{
-				"language": "fr",
-				"label": "Prénom",
-				"value": "Ibrahim"
-			}
-		],
-		"age": [
-			{
-				"language": "ar",
-				"label": "الاسم الاول",
-				"value": "ابراهيم"
-			},
-			{
-				"language": "fr",
-				"label": "Prénom",
-				"value": "Ibrahim"
-			}
-		]
-	}
 }

@@ -36,6 +36,7 @@ import io.mosip.preregistration.transliteration.entity.LanguageIdEntity;
 import io.mosip.preregistration.transliteration.errorcode.ErrorCodes;
 import io.mosip.preregistration.transliteration.errorcode.ErrorMessage;
 import io.mosip.preregistration.transliteration.exception.IllegalParamException;
+import io.mosip.preregistration.transliteration.exception.MandatoryFieldRequiredException;
 import io.mosip.preregistration.transliteration.repository.LanguageIdRepository;
 import io.mosip.preregistration.transliteration.service.TransliterationService;
 import io.mosip.preregistration.transliteration.service.util.TransliterationServiceUtil;
@@ -106,14 +107,14 @@ public class TransliterationServiceTest {
 		responseDTO.setErr(null);
 	}
 	
-//	@Test
+	@Test
 	public void successTest() {
 		Mockito.when(idRepository.findByFromLangAndToLang(Mockito.any(), Mockito.any())).thenReturn(idEntity);
 		TransliterationDTO transliterationRequest2=new TransliterationDTO();
-		transliterationRequest2.setFromFieldLang("English");
+		transliterationRequest2.setFromFieldLang("eng");
 		transliterationRequest2.setFromFieldName("Name1");
 		transliterationRequest2.setFromFieldValue("Kishan");
-		transliterationRequest2.setToFieldLang("Arabic");
+		transliterationRequest2.setToFieldLang("ara");
 		transliterationRequest2.setToFieldName("Name2");
 		transliterationRequest2.setToFieldValue("كِسهَن");
 		requestDto=new MainRequestDTO<TransliterationDTO>();
@@ -135,15 +136,40 @@ public class TransliterationServiceTest {
 				ErrorMessage.INCORRECT_MANDATORY_FIELDS.toString(), null);
 		Mockito.when(idRepository.findByFromLangAndToLang(Mockito.any(), Mockito.any())).thenThrow(exception);
 		TransliterationDTO transliterationRequest2=new TransliterationDTO();
-		transliterationRequest2.setFromFieldLang("Hindi");
+		transliterationRequest2.setFromFieldLang("eng");
 		transliterationRequest2.setFromFieldName("Name1");
 		transliterationRequest2.setFromFieldValue("Kishan");
-		transliterationRequest2.setToFieldLang("Arabic");
+		transliterationRequest2.setToFieldLang("ara");
 		transliterationRequest2.setToFieldName("Name2");
 		transliterationRequest2.setToFieldValue("كِسهَن");
 		requestDto=new MainRequestDTO<TransliterationDTO>();
 		requestDto.setRequest(transliterationRequest);
 		transliterationServiceImpl.translitratorService(requestDto);
+	}
+	
+	@Test(expected=MandatoryFieldRequiredException.class)
+	public void mandatoryFieldFailTest() {
+		MandatoryFieldRequiredException exception=new MandatoryFieldRequiredException(ErrorCodes.PRG_TRL_APP_002.getCode()
+				, ErrorMessage.INCORRECT_MANDATORY_FIELDS.getCode());
+		
+		Mockito.when(idRepository.findByFromLangAndToLang(Mockito.any(), Mockito.any())).thenReturn(idEntity);
+		
+		TransliterationDTO transliterationRequest2=new TransliterationDTO();
+		TransliterationDTO request=new TransliterationDTO();
+		request.setFromFieldLang("");
+		request.setFromFieldName("Name1");
+		request.setFromFieldValue("Kishan");
+		request.setToFieldLang("ara");
+		request.setToFieldName("Name2");
+		request.setToFieldValue("");
+		requestDto=new MainRequestDTO<TransliterationDTO>();
+		requestDto.setId("mosip.pre-registration.transliteration.transliterate");
+		requestDto.setReqTime(new Timestamp(System.currentTimeMillis()));
+		requestDto.setVer("1.0");
+		requestDto.setRequest(request);
+		responseDTO.setResponse(transliterationRequest2);
+		MainResponseDTO<TransliterationDTO> result=transliterationServiceImpl.translitratorService(requestDto);
+		
 	}
 
 	
