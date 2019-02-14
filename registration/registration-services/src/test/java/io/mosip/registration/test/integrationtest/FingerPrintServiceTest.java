@@ -151,7 +151,7 @@ public class FingerPrintServiceTest extends BaseIntegrationTest
 	
 	@AfterClass
 	public static void cleanUp() {
-		System.exit(0);
+	//	System.exit(0);
 	}
 	
 public static List<FingerprintDetailsDTO> testData(String Path) throws IOException, ParseException {
