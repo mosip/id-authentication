@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -368,11 +369,10 @@ public final class DateUtilTest {
 
 	@Test
 	public void testParseUTCToLocalDateTime() {
-		LocalDateTime expectedDate = LocalDateTime.parse("2018/11/20 20:02:39",
+		LocalDateTime exp = LocalDateTime.parse("2018/11/20 20:02:39",
 				DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
-		LocalDateTime actualDate = DateUtils.parseUTCToLocalDateTime("2018/11/20 14:32:39", "yyyy/MM/dd HH:mm:ss");
-		// assertTrue(expectedDate.withMinute(0).withSecond(0).withNano(0).compareTo(actualDate.withMinute(0).withSecond(0).withNano(0))==
-		// 0);
+		LocalDateTime act = DateUtils.parseUTCToLocalDateTime("2018/11/20 14:32:39", "yyyy/MM/dd HH:mm:ss");
+		compareTwoLocalDateTime(exp, act);
 	}
 
 	@Test
@@ -380,7 +380,22 @@ public final class DateUtilTest {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date expectedDate = sdf.parse("2018/11/20 20:02:39");
 		Date actualDate = DateUtils.parseToDate("2018/11/20 20:02:39", "yyyy/MM/dd HH:mm:ss", TimeZone.getDefault());
-		// assertTrue(expectedDate.compareTo(actualDate) == 0);
+		LocalDateTime exp = convertToLocalDateTimeViaInstant(expectedDate);
+		LocalDateTime act = convertToLocalDateTimeViaInstant(actualDate);
+		compareTwoLocalDateTime(exp, act);
+	}
+
+	private void compareTwoLocalDateTime(LocalDateTime exp, LocalDateTime act) {
+		assertTrue(exp.getDayOfMonth() == act.getDayOfMonth());
+		assertTrue(exp.getMonth() == act.getMonth());
+		assertTrue(exp.getYear() == act.getYear());
+		assertTrue(exp.getHour() == act.getHour());
+		assertTrue(exp.getMinute() == act.getMinute());
+		assertTrue(exp.getSecond() == act.getSecond());
+	}
+
+	public LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
+		return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
 
 	@Test(expected = io.mosip.kernel.core.exception.NullPointerException.class)
@@ -404,7 +419,9 @@ public final class DateUtilTest {
 		Date expectedDate = sdf.parse("2018/11/20 20:02:39");
 		Date actualDate = DateUtils.parseToDate("2018/11/20 14:32:39", "yyyy/MM/dd HH:mm:ss",
 				TimeZone.getTimeZone("UTC"));
-		// assertTrue(expectedDate.compareTo(actualDate) == 0);
+		LocalDateTime exp = convertToLocalDateTimeViaInstant(expectedDate);
+		LocalDateTime act = convertToLocalDateTimeViaInstant(actualDate);
+		compareTwoLocalDateTime(exp, act);
 	}
 
 	@Test
@@ -414,7 +431,6 @@ public final class DateUtilTest {
 		String expectedDateString = DateUtils.toISOString(expectedDate);
 		String actualDateString = DateUtils.getUTCCurrentDateTimeString();
 		LocalDateTime defaultLocal = DateUtils.parseToLocalDateTime(actualDateString);
-
 	}
 
 	@Test
@@ -516,15 +532,17 @@ public final class DateUtilTest {
 		DateUtils.parseToDate(LocalDateTime.now().toString(), "dd.MM.yyyy", TimeZone.getDefault());
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test(expected = io.mosip.kernel.core.exception.NullPointerException.class)
 	public void testParseMethodNullPointerException() throws java.text.ParseException {
 		DateUtils.parse(null);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test(expected = io.mosip.kernel.core.exception.ParseException.class)
 	public void testParseMethod() throws java.text.ParseException {
 		DateUtils.parse("2019-01-01");
-		DateUtils.parse("2019.01.01"); 
+		DateUtils.parse("2019.01.01");
 	}
 
 }
