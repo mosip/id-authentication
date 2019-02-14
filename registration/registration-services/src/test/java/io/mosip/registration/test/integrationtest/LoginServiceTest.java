@@ -12,11 +12,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.service.impl.LoginServiceImpl;
@@ -31,10 +32,23 @@ import net.minidev.json.parser.ParseException;
  * @author Priya Soni
  *
  */
+
 public class LoginServiceTest extends BaseIntegrationTest {
+	
 
 	@Autowired
 	private LoginServiceImpl loginServiceImpl;
+	
+	
+	@Before
+	public void setUp() {
+		System.out.println("---------------------------");
+		ApplicationContext applicationContext = ApplicationContext.getInstance();
+		applicationContext.setApplicationLanguageBundle();
+		applicationContext.setApplicationMessagesBundle();
+		applicationContext.setLocalLanguageProperty();
+		applicationContext.setLocalMessagesBundle();
+	}
 
 	/**
 	 * This method tests the functionality of getModesOfLogin method Verify whether
@@ -179,7 +193,6 @@ public class LoginServiceTest extends BaseIntegrationTest {
 
 	}
 
-	@Disabled
 	@Test
 	public void updateLoginParams() {
 
