@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -98,6 +99,7 @@ public class LoginServiceTest extends BaseIntegrationTest {
 	 * 
 	 */
 	@Test
+	@Ignore
 	public void getUserDetailTest() {
 		String path = new ClassPathResource(
 				"src/test/resources/testData/LoginServiceData/LoginServiceTestResources.json").getPath();
@@ -194,7 +196,7 @@ public class LoginServiceTest extends BaseIntegrationTest {
 		}
 
 	}
-
+	@Ignore
 	@Test
 	public void updateLoginParams() {
 
