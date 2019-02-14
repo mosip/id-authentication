@@ -1,6 +1,5 @@
 package io.mosip.kernel.idgenerator.rid.test;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
@@ -16,7 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
-import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.idgenerator.rid.entity.Rid;
 import io.mosip.kernel.idgenerator.rid.exception.EmptyInputException;
@@ -71,13 +69,13 @@ public class RidGeneratorTest {
 	int sequenceLimit = 5;
 	int timestampLength = 14;
 
-	@Test
-	public void generateIdTypeTest() {
-		Rid entity = new Rid();
-		entity.setCurrentSequenceNo(00001);
-		when(repository.findLastRid()).thenReturn(entity);
-		assertThat(ridGeneratorImpl.generateId(centerId, machineId), isA(String.class));
-	}
+	/*
+	 * @Test public void generateIdTypeTest() { Rid entity = new Rid();
+	 * entity.setCurrentSequenceNo(00001);
+	 * when(repository.findLastRid()).thenReturn(entity);
+	 * assertThat(ridGeneratorImpl.generateId(centerId, machineId),
+	 * isA(String.class)); }
+	 */
 
 	@Test(expected = NullValueException.class)
 	public void centerIdNullExceptionTest() {
@@ -109,19 +107,20 @@ public class RidGeneratorTest {
 		ridGeneratorImpl.generateId(centerId, invalidMachineId);
 	}
 
-	@Test
-	public void generateIdFirstSequenceTypeTest() {
-		when(repository.findLastRid()).thenReturn(null);
-		assertThat(ridGeneratorImpl.generateId(centerId, machineId), isA(String.class));
-	}
+	/*
+	 * @Test public void generateIdFirstSequenceTypeTest() {
+	 * when(repository.findLastRid()).thenReturn(null);
+	 * assertThat(ridGeneratorImpl.generateId(centerId, machineId),
+	 * isA(String.class)); }
+	 */
 
-	@Test
-	public void generateIdMaxSequenceTypeTest() {
-		Rid entity = new Rid();
-		entity.setCurrentSequenceNo(99999);
-		when(repository.findLastRid()).thenReturn(entity);
-		assertThat(ridGeneratorImpl.generateId(centerId, machineId), isA(String.class));
-	}
+	/*
+	 * @Test public void generateIdMaxSequenceTypeTest() { Rid entity = new Rid();
+	 * entity.setCurrentSequenceNo(99999);
+	 * when(repository.findLastRid()).thenReturn(entity);
+	 * assertThat(ridGeneratorImpl.generateId(centerId, machineId),
+	 * isA(String.class)); }
+	 */
 
 	@Test
 	public void generateIdTest() {
