@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -40,8 +41,8 @@ public class LoginServiceTest extends BaseIntegrationTest {
 	private LoginServiceImpl loginServiceImpl;
 	
 	
-	@Before
-	public void setUp() {
+	@BeforeClass
+	public static void setUp() {
 		System.out.println("---------------------------");
 		ApplicationContext applicationContext = ApplicationContext.getInstance();
 		applicationContext.setApplicationLanguageBundle();
@@ -111,6 +112,7 @@ public class LoginServiceTest extends BaseIntegrationTest {
 
 				UserDetail userDetail = loginServiceImpl.getUserDetail(array.get(i).toString());
 				assertTrue(userDetail.getName() != null);
+				
 			}
 
 		} catch (FileNotFoundException e) {
