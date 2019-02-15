@@ -211,9 +211,5 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 		return vidResponseDTO;
 	}
 	
-	
-	public void generateVIDTest() {
-		
-	}
 
 }
