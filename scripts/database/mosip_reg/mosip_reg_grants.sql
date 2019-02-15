@@ -24,6 +24,12 @@ GRANT CREATE,USAGE
    TO sysadmin;
 -- ddl-end --
 
+-- object: grant_3543fb6cf7 | type: PERMISSION --
+GRANT USAGE
+   ON SCHEMA reg
+   TO reguser;
+-- ddl-end --
+
 -- object: grant_8e1a2559ed | type: PERMISSION --
 GRANT SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES
    ON ALL TABLES IN SCHEMA reg

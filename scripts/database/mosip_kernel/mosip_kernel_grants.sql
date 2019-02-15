@@ -25,6 +25,12 @@ GRANT CREATE,USAGE
 -- ddl-end --
 
 -- object: grant_8e1a2559ed | type: PERMISSION --
+GRANT USAGE
+   ON SCHEMA kernel
+   TO kerneluser;
+-- ddl-end --
+
+-- object: grant_8e1a2559ed | type: PERMISSION --
 GRANT SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES
    ON ALL TABLES IN SCHEMA kernel
    TO kerneluser;
