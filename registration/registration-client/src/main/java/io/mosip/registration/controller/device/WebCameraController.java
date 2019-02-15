@@ -71,7 +71,7 @@ public class WebCameraController extends BaseController implements Initializable
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.info("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been started");
-		
+
 		JPanel jPanelWindow = photoProvider.getCameraPanel();
 		webcamera.setContent(jPanelWindow);
 	}
@@ -87,12 +87,12 @@ public class WebCameraController extends BaseController implements Initializable
 	public boolean isWebcamPluggedIn() {
 		LOGGER.info("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Connecting to the webcam");
-		
+
 		photoProvider = photoCaptureFacade.getPhotoProviderFactory(photoProviderName);
 		if (photoProvider.isWebcamConnected()) {
 			photoProvider.close();
 		}
-		photoProvider.connect(640, 480);
+		photoProvider.connect(480, 480);
 		return photoProvider.isWebcamConnected();
 	}
 
@@ -127,7 +127,6 @@ public class WebCameraController extends BaseController implements Initializable
 		Stage stage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
 		stage.close();
 	}
-
 
 	public void captureStubApplicantPhoto(ApplicantDocumentDTO applicantDocumentDTO, boolean isExceptionPhoto)
 			throws RegBaseCheckedException {

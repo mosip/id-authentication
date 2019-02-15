@@ -8,10 +8,15 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 
+import org.joda.time.DateTime;
+import org.joda.time.Seconds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -28,6 +33,11 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.service.UserOnboardService;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,13 +45,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 
 @Controller
 public class FaceCaptureController extends BaseController implements Initializable {
@@ -52,15 +66,15 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private static final Logger LOGGER = AppConfig.getLogger(FaceCaptureController.class);
 
 	@FXML
-	private Button captureImage;
+	private Button takePhoto;
+
+	private Pane selectedPhoto;
 	@FXML
-	public Button captureExceptionImage;
-	@FXML
-	private HBox applicantImageHBox;
+	private Pane applicantImagePane;
 	@FXML
 	private ImageView applicantImage;
 	@FXML
-	private HBox exceptionImageHBox;
+	private Pane exceptionImagePane;
 	@FXML
 	private ImageView exceptionImage;
 	@FXML
@@ -80,6 +94,13 @@ public class FaceCaptureController extends BaseController implements Initializab
 	@Value("${capture_photo_using_device}")
 	public String capturePhotoUsingDevice;
 
+	private Timestamp lastPhotoCaptured;
+
+	private Timestamp lastExceptionPhotoCaptured;
+
+	@FXML
+	private Label photoAlert;
+
 	private BufferedImage applicantBufferedImage;
 	private BufferedImage exceptionBufferedImage;
 	private Image defaultImage;
@@ -94,15 +115,11 @@ public class FaceCaptureController extends BaseController implements Initializab
 		LOGGER.info("REGISTRATION - UI - FACE_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Loading of FaceCapture screen started");
 
+		takePhoto.setDisable(true);
+		applicantImage.setPreserveRatio(true);
+		exceptionImage.setPreserveRatio(true);
 		if (capturePhotoUsingDevice.equals(RegistrationConstants.ENABLE)
 				|| (boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-			if (toggleBiometricException != null) {
-				if (toggleBiometricException) {
-					captureExceptionImage.setDisable(false);
-				} else {
-					captureExceptionImage.setDisable(true);
-				}
-			}
 			// for applicant biometrics
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 
@@ -150,35 +167,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	/**
 	 * 
-	 * To open camera to capture Applicant Image
-	 * 
-	 */
-	@FXML
-	private void openCamForApplicantPhoto() {
-		if (webCameraController.webCameraPane == null
-				|| !(webCameraController.webCameraPane.getScene().getWindow().isShowing())) {
-			openWebCamWindow(RegistrationConstants.APPLICANT_IMAGE);
-		}
-	}
-
-	/**
-	 * 
-	 * To open camera to capture Exception Image
-	 * 
-	 */
-	@FXML
-	private void openCamForExceptionPhoto() {
-		if (webCameraController.webCameraPane == null
-				|| !(webCameraController.webCameraPane.getScene().getWindow().isShowing())) {
-			openWebCamWindow(RegistrationConstants.EXCEPTION_IMAGE);
-		}
-	}
-
-	/**
-	 * 
 	 * To open camera for the type of image that is to be captured
 	 * 
-	 * @param imageType type of image that is to be captured
+	 * @param imageType
+	 *            type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -186,6 +178,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 		if (webCameraController.isWebcamPluggedIn()) {
 			try {
 				Stage primaryStage = new Stage();
+				primaryStage.initStyle(StageStyle.UNDECORATED);
 				FXMLLoader loader = BaseController
 						.loadChild(getClass().getResource(RegistrationConstants.WEB_CAMERA_PAGE));
 				Parent webCamRoot = loader.load();
@@ -195,7 +188,12 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 				primaryStage.setTitle(RegistrationConstants.WEB_CAMERA_PAGE_TITLE);
 				Scene scene = new Scene(webCamRoot);
+				ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+				scene.getStylesheets()
+						.add(classLoader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 				primaryStage.setScene(scene);
+				primaryStage.initModality(Modality.WINDOW_MODAL);
+				primaryStage.initOwner(fXComponents.getStage());
 				primaryStage.show();
 			} catch (IOException ioException) {
 				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
@@ -272,6 +270,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
 
 		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE)) {
+
+			/* Set Time which last photo was captured */
+			lastPhotoCaptured = getCurrentTimestamp();
+
 			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
 			applicantImage.setImage(capture);
 			applicantBufferedImage = capturedImage;
@@ -282,15 +284,17 @@ public class FaceCaptureController extends BaseController implements Initializab
 					ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
 							byteArrayOutputStream);
 					byte[] photoInBytes = byteArrayOutputStream.toByteArray();
-					((BiometricDTO) SessionContext.map()
-							.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO().getFaceDetailsDTO()
-									.setFace(photoInBytes);
+					((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
+							.getOperatorBiometricDTO().getFaceDetailsDTO().setFace(photoInBytes);
 				}
 			} catch (Exception ioException) {
 				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 			}
 		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE)) {
+
+			/* Set Time which last Exception photo was captured */
+			lastExceptionPhotoCaptured = getCurrentTimestamp();
 			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
 			exceptionImage.setImage(capture);
 			exceptionBufferedImage = capturedImage;
@@ -360,12 +364,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	}
 
 	private RegistrationDTO getRegistrationDTOFromSession() {
-		return (RegistrationDTO) SessionContext.map()
-				.get(RegistrationConstants.REGISTRATION_DATA);
-	}
-
-	public void disableExceptionPhotoCapture(boolean value) {
-		captureExceptionImage.setDisable(value);
+		return (RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
 	}
 
 	public void clearExceptionImage() {
@@ -389,14 +388,15 @@ public class FaceCaptureController extends BaseController implements Initializab
 	/**
 	 * Method to load fxml page
 	 * 
-	 * @param fxml file name
+	 * @param fxml
+	 *            file name
 	 */
 	private void loadPage(String page) {
 		VBox mainBox = new VBox();
 		try {
 			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
 			mainBox.getChildren().add(headerRoot);
-			Parent createRoot = BaseController.load(getClass().getResource(page));			
+			Parent createRoot = BaseController.load(getClass().getResource(page));
 			mainBox.getChildren().add(createRoot);
 			getScene(mainBox).setRoot(mainBox);
 		} catch (IOException exception) {
@@ -413,5 +413,84 @@ public class FaceCaptureController extends BaseController implements Initializab
 			popupStage.close();
 			goToHomePage();
 		}
+	}
+
+	@FXML
+	private void enableCapture(MouseEvent mouseEvent) {
+		boolean hasBiometricException = (Boolean) SessionContext.userContext().getUserMap()
+				.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
+
+		Pane sourcePane = (Pane) mouseEvent.getSource();
+		sourcePane.requestFocus();
+		selectedPhoto = sourcePane;
+		takePhoto.setDisable(true);
+		if (selectedPhoto.getId().equals(RegistrationConstants.APPLICANT_PHOTO_PANE)
+				|| (selectedPhoto.getId().equals(RegistrationConstants.EXCEPTION_PHOTO_PANE)
+						&& hasBiometricException)) {
+			takePhoto.setDisable(false);
+		}
+	}
+
+	@FXML
+	private void takePhoto() {
+		if (selectedPhoto.getId().equals(RegistrationConstants.APPLICANT_PHOTO_PANE)) {
+			if (webCameraController.webCameraPane == null
+					|| !(webCameraController.webCameraPane.getScene().getWindow().isShowing())) {
+				if (validatePhotoTimer(lastPhotoCaptured, 10, photoAlert)) {
+					openWebCamWindow(RegistrationConstants.APPLICANT_IMAGE);
+				} else {
+					takePhoto.setDisable(true);
+				}
+			}
+		} else if (selectedPhoto.getId().equals(RegistrationConstants.EXCEPTION_PHOTO_PANE)) {
+			if (webCameraController.webCameraPane == null
+					|| !(webCameraController.webCameraPane.getScene().getWindow().isShowing())) {
+
+				if (validatePhotoTimer(lastExceptionPhotoCaptured, 10, photoAlert)) {
+					openWebCamWindow(RegistrationConstants.EXCEPTION_IMAGE);
+				} else {
+					takePhoto.setDisable(true);
+				}
+			}
+		}
+	}
+
+	private boolean validatePhotoTimer(Timestamp lastPhoto, int configuredSecs, Label photoLabel) {
+		if (lastPhoto == null) {
+			return true;
+		}
+		/* Get Calendar instance */
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Timestamp(System.currentTimeMillis()));
+		cal.add(Calendar.SECOND, -configuredSecs);
+
+		int diffSeconds = Seconds.secondsBetween(new DateTime(lastPhoto.getTime()), DateTime.now()).getSeconds();
+		if (diffSeconds >= configuredSecs) {
+			return true;
+		} else {
+			setTimeLabel(photoLabel, configuredSecs, diffSeconds);
+			return false;
+		}
+	}
+
+	private void setTimeLabel(Label photoLabel, int configuredSecs, int diffSeconds) {
+		SimpleIntegerProperty timeDiff = new SimpleIntegerProperty((Integer) (configuredSecs - diffSeconds));
+
+		photoLabel.setVisible(true);
+		// Bind the photoLabel text property to the timeDiff property
+		photoLabel.textProperty().bind(Bindings.concat("Recapture after ", timeDiff.asString(), " seconds"));
+		Timeline timeline = new Timeline();
+		timeline.getKeyFrames().add(
+				new KeyFrame(Duration.seconds((Integer) (configuredSecs - diffSeconds)), new KeyValue(timeDiff, 1)));
+		timeline.setOnFinished(event -> {
+			takePhoto.setDisable(false);
+			photoLabel.setVisible(false);
+		});
+		timeline.play();
+
+	}
+
+	private Timestamp getCurrentTimestamp() {
+		return Timestamp.from(Instant.now());
 	}
 }

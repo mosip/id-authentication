@@ -15,7 +15,7 @@
    <children>
       <AnchorPane layoutX="90.0" layoutY="37.0" styleClass="paneAtDisplayDocument" visible="true">
          <children>
-            <Label layoutX="274.0" layoutY="288.0" text="%applicantimage" />
+            <Label layoutX="293.0" layoutY="268.0" text="%applicantimage" />
             <Label layoutX="621.0" layoutY="288.0" text="%exceptionimage" />
             <Label layoutX="115.0" layoutY="390.0" text="%threshold" visible="false">
                <font>
@@ -47,49 +47,40 @@
                   <Font size="16.0" />
                </font>
             </Label>
-            <HBox fx:id="applicantImageHBox" layoutX="274.0" layoutY="105.0" styleClass="PhotoCaptureWindow">
+            <Label layoutX="94.0" layoutY="54.0" styleClass="paneHeader" text="%image" />
+            <AnchorPane layoutX="180.0" layoutY="400.0" styleClass="onboardProgressPane">
                <children>
-                  <ImageView fx:id="applicantImage" fitHeight="210.0" fitWidth="265.0" pickOnBounds="true" preserveRatio="true">
+                  <Label layoutX="151.0" layoutY="31.0" text="Quality" />
+                  <Line endX="100.0" layoutX="372.0" layoutY="40.0" startX="-100.0" />
+                  <Button fx:id="takePhoto" disable="true" layoutX="620.0" layoutY="27.0" mnemonicParsing="false" onAction="#takePhoto" styleClass="documentContentButton" text="Take Photo">
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/scan.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                </children>
+            </AnchorPane>
+            <Pane id="applicantPhoto" fx:id="applicantImagePane" layoutX="243.0" layoutY="100.0" onMouseClicked="#enableCapture" prefHeight="250.0" prefWidth="282.0">
+               <children>
+                  <ImageView fx:id="applicantImage" fitHeight="245.0" fitWidth="280.0" layoutX="2.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/Photo.png" />
                      </image>
                   </ImageView>
                </children>
-            </HBox>
-            <HBox fx:id="exceptionImageHBox" layoutX="621.0" layoutY="106.0" styleClass="PhotoCaptureWindow">
+            </Pane>
+            <Pane id="exceptionPhoto" fx:id="exceptionImagePane" layoutX="608.0" layoutY="100.0" onMouseClicked="#enableCapture" prefHeight="250.0" prefWidth="269.0">
                <children>
-                  <ImageView fx:id="exceptionImage" fitHeight="210.0" fitWidth="265.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="exceptionImage" fitHeight="245.0" fitWidth="280.0" layoutX="2.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/ExceptionPhoto.png" />
                      </image>
                   </ImageView>
                </children>
-            </HBox>
-            <Label layoutX="94.0" layoutY="54.0" styleClass="paneHeader" text="%image" />
-            <AnchorPane layoutX="180.0" layoutY="400.0" styleClass="onboardProgressPane">
-               <children>
-                  <Button fx:id="captureImage" layoutY="23.0" mnemonicParsing="false" onAction="#openCamForApplicantPhoto" styleClass="documentContentButton" text="Take Photo">
-                     <graphic>
-                        <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/scan.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Label layoutX="151.0" layoutY="31.0" text="Quality" />
-                  <Line endX="100.0" layoutX="372.0" layoutY="40.0" startX="-100.0" />
-                  <Button fx:id="captureExceptionImage" disable="true"   layoutX="620.0" layoutY="27.0" mnemonicParsing="false" onAction="#openCamForExceptionPhoto" styleClass="documentContentButton" text="Take Photo">
-                     <graphic>
-                        <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/scan.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-               </children>
-            </AnchorPane>
+            </Pane>
          </children>
       </AnchorPane>
       <AnchorPane layoutY="627.0" styleClass="registrationFooter">
@@ -177,5 +168,6 @@
             <Image url="@../images/DemographicpageTracker.PNG" />
          </image>
       </ImageView>
+      <Label fx:id="photoAlert" layoutX="894.0" layoutY="512.0" prefHeight="27.0" prefWidth="194.0" />
    </children>
 </AnchorPane>

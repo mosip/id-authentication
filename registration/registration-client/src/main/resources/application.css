@@ -712,7 +712,10 @@
     -fx-text-fill: black;
     -fx-font-size: 14.0px;
 }
-
+.webCamPane {
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: black;
+}
 #approvalAccordion .title > .arrow-button .arrow{
     -fx-translate-x: 870.0;
 }
@@ -739,7 +742,8 @@
 #leftHandPalmPane,#rightHandPalmPane,#thumbPane,#rightIrisPane,#leftIrisPane {
 	-fx-border-color: lightgrey;
 }
-#leftHandPalmPane:focused ,#rightHandPalmPane:focused ,#thumbPane:focused ,#rightIrisPane:focused,#leftIrisPane:focused{
+#leftHandPalmPane:focused ,#rightHandPalmPane:focused ,#thumbPane:focused ,#rightIrisPane:focused,
+#leftIrisPane:focused, #applicantPhoto:focused, #exceptionPhoto:focused {
 	-fx-border-color: black;
 }
 

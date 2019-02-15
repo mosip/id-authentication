@@ -231,7 +231,8 @@ public class DocumentScanController extends BaseController {
 	/**
 	 * This method scans and uploads documents
 	 */
-	private void scanDocument(ComboBox<DocumentCategoryDto> documents, VBox vboxElement, String document, String errorMessage) {
+	private void scanDocument(ComboBox<DocumentCategoryDto> documents, VBox vboxElement, String document,
+			String errorMessage) {
 
 		if (documents.getValue() == null) {
 			LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -585,9 +586,9 @@ public class DocumentScanController extends BaseController {
 
 			@Override
 			public void handle(MouseEvent event) {
-				
+
 				initializePreviewSection();
-				
+
 				GridPane gridpane = (GridPane) ((ImageView) event.getSource()).getParent();
 
 				switch (((VBox) gridpane.getParent()).getId()) {
@@ -688,7 +689,8 @@ public class DocumentScanController extends BaseController {
 			LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading list of documents");
 
-			selectionList.getItems().addAll(masterSync.getDocumentCategories(docCode, applicationContext.getApplicationLanguage()));
+			selectionList.getItems()
+					.addAll(masterSync.getDocumentCategories(docCode, applicationContext.getApplicationLanguage()));
 
 			LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loaded list of documents");
@@ -793,12 +795,10 @@ public class DocumentScanController extends BaseController {
 						bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						toggleBiometricException = true;
-						faceCaptureController.disableExceptionPhotoCapture(false);
 					} else {
 						bioExceptionToggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						bioExceptionToggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						toggleBiometricException = false;
-						faceCaptureController.disableExceptionPhotoCapture(true);
 						faceCaptureController.clearExceptionImage();
 					}
 					SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION,
@@ -825,7 +825,6 @@ public class DocumentScanController extends BaseController {
 			bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 			toggleBiometricException = true;
 			SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
-			faceCaptureController.disableExceptionPhotoCapture(false);
 		} else {
 			bioExceptionToggleLabel1.setDisable(true);
 			bioExceptionToggleLabel2.setDisable(true);
@@ -833,7 +832,6 @@ public class DocumentScanController extends BaseController {
 			bioExceptionToggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 			toggleBiometricException = false;
 			SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
-			faceCaptureController.disableExceptionPhotoCapture(true);
 			faceCaptureController.clearExceptionImage();
 		}
 	}
@@ -876,8 +874,9 @@ public class DocumentScanController extends BaseController {
 	 */
 	@SuppressWarnings("unchecked")
 	private <T> void renderComboBoxes() {
-		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION_DOCUMENTS - RENDER_COMBOBOXES", RegistrationConstants.APPLICATION_ID,
-				RegistrationConstants.APPLICATION_NAME, "Rendering of comboboxes started");
+		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION_DOCUMENTS - RENDER_COMBOBOXES",
+				RegistrationConstants.APPLICATION_ID, RegistrationConstants.APPLICATION_NAME,
+				"Rendering of comboboxes started");
 
 		try {
 			StringConverter<T> uiRenderForComboBox = FXUtils.getInstance().getStringConverterForComboBox();
@@ -890,8 +889,9 @@ public class DocumentScanController extends BaseController {
 			throw new RegBaseUncheckedException(RegistrationConstants.REGISTRATION_CONTROLLER,
 					runtimeException.getMessage(), runtimeException);
 		}
-		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION_DOCUMENTS - RENDER_COMBOBOXES", RegistrationConstants.APPLICATION_ID,
-				RegistrationConstants.APPLICATION_NAME, "Rendering of comboboxes ended");
+		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION_DOCUMENTS - RENDER_COMBOBOXES",
+				RegistrationConstants.APPLICATION_ID, RegistrationConstants.APPLICATION_NAME,
+				"Rendering of comboboxes ended");
 	}
 
 }
