@@ -174,10 +174,8 @@ public class PacketValidatorStage extends MosipVerticleManager {
 					description = "";
 					isTransactionSuccessful = false;
 					InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
-
 					try {
 						registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
-
 						InputStream packetMetaInfoStream = adapter.getFile(registrationId,
 								PacketFiles.PACKET_META_INFO.name());
 						PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil

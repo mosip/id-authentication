@@ -148,7 +148,6 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			packetArchiver.archivePacket(dto.getRegistrationId());
 			String filepath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_DEC.toString()) + File.separator
 					+ dto.getRegistrationId() + ".zip";
-
 			File file = new File(filepath);
 			InputStream decryptedData = new FileInputStream(file);
 			sendToDFS(dto, decryptedData);
