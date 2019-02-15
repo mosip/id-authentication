@@ -15,6 +15,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.google.gson.Gson;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
@@ -42,7 +43,6 @@ import io.mosip.registration.processor.core.packet.dto.regcentermachine.Registra
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterResponseDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterUserMachineMappingHistoryDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterUserMachineMappingHistoryResponseDto;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
@@ -76,7 +76,7 @@ public class UMCValidator {
 
 	/** The adapter. */
 	@Autowired
-	private FileSystemAdapter<InputStream, Boolean> adapter;
+	private FileSystemAdapter adapter;
 
 	/** The primary languagecode. */
 	@Value("${primary.language}")
@@ -316,11 +316,10 @@ public class UMCValidator {
 				rcmDto.getLatitude(), rcmDto.getLongitude())
 				&& isValidMachine(rcmDto.getMachineId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
 				&& isValidUMCmapping(rcmDto.getPacketCreationDate(), rcmDto.getRegcntrId(), rcmDto.getMachineId(),
-						regOsi.getSupervisorId(), regOsi.getOfficerId()) && validateCenterIdAndTimestamp(rcmDto) && isValidDevice(rcmDto)) {
+						regOsi.getSupervisorId(), regOsi.getOfficerId())
+				&& validateCenterIdAndTimestamp(rcmDto) && isValidDevice(rcmDto)) {
 			umc = true;
 		}
-
-		
 
 		return umc;
 	}
