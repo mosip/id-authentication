@@ -2,10 +2,7 @@ package io.mosip.authentication.service.impl.vid.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,7 +11,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.spin.facade.StaticPinFacade;
-import io.mosip.authentication.service.impl.vid.validator.VIDRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.swagger.annotations.ApiOperation;

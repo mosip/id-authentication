@@ -2,7 +2,6 @@ package io.mosip.authentication.core.spi.spin.facade;
 
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinResponseDTO;
-import io.mosip.authentication.core.dto.vid.VIDRequestDTO;
 import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
