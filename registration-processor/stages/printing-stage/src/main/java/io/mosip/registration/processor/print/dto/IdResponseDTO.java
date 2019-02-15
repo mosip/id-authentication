@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.ErrorDTO;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * The Class IdResponseDTO.
@@ -13,14 +14,16 @@ import lombok.Data;
  * @author M1048358 Alok
  */
 @Data
-public class IdResponseDTO {
-
+@EqualsAndHashCode(callSuper = true)
+@JsonFilter("responseFilter")
+public class IdResponseDTO extends BaseIdRequestResponseDTO {
+	
 	/** The err. */
 	private List<ErrorDTO> error;
-
+	
 	/** The status. */
 	private String status;
-
+	
 	/** The response. */
 	@JsonFilter("responseFilter")
 	private ResponseDTO response;

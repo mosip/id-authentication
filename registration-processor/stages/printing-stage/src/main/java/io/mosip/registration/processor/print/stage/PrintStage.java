@@ -1,8 +1,8 @@
 package io.mosip.registration.processor.print.stage;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -28,6 +28,9 @@ import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.UinCardType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -40,6 +43,7 @@ import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerator;
+import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
@@ -51,9 +55,6 @@ import io.mosip.registration.processor.print.exception.PrintGlobalExceptionHandl
 import io.mosip.registration.processor.print.exception.UINNotFoundInDatabase;
 import io.mosip.registration.processor.print.util.UINCardConstant;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
-import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
-import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
-import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -82,12 +83,11 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The Constant ARA. */
 	private static final String ARA = "ara";
 
+	/** The Constant UIN_CARD_TEMPLATE. */
+	private static final String UIN_CARD_TEMPLATE = "RPR_UIN_CARD_TEMPLATE";
+
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PrintStage.class);
-
-	/** The registration status service. */
-	@Autowired
-	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	/** The cluster manager url. */
 	@Value("${vertx.ignite.configuration}")
@@ -95,7 +95,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 	/** The primary language. */
 	@Value("${primary.language}")
-	private String LocallangCode;
+	private String langCode;
 
 	/** The core audit request builder. */
 	@Autowired
@@ -104,9 +104,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The utility. */
 	@Autowired
 	private Utilities utility;
-
-	/** The Constant USER. */
-	private static final String USER = "MOSIP_SYSTEM";
 
 	/** The reg processor identity json. */
 	@Autowired
@@ -128,37 +125,50 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 	/** The uin card generator. */
 	@Autowired
-	private UinCardGenerator<OutputStream> uinCardGenerator;
+	private UinCardGenerator<ByteArrayOutputStream> uinCardGenerator;
 
 	/** The rest client service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
-	
+
+	/** The global exception handler. */
 	@Autowired
 	public PrintGlobalExceptionHandler globalExceptionHandler;
-	
+
+	/** The port. */
 	@Value("${server.port}")
 	private String port;
-	
+
+	/** The mosip event bus. */
 	private MosipEventBus mosipEventBus;
+
+	/** The is transactional. */
+	private boolean isTransactionSuccessful = false;
+
+	/** The description. */
+	private String description;
 
 	/**
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
 		mosipEventBus = this.getEventBus(this, clusterManagerUrl);
-		this.consumeAndSend(mosipEventBus, MessageBusAddress.PRINTING_BUS_IN, MessageBusAddress.PRINTING_BUS_OUT);
+		this.consume(mosipEventBus, MessageBusAddress.PRINTING_BUS);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(
+	 * java.lang.Object)
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public MessageDTO process(MessageDTO object) {
-		object.setMessageBusAddress(MessageBusAddress.BIO_DEDUPE_BUS_IN);
+		object.setMessageBusAddress(MessageBusAddress.PRINTING_BUS);
 		object.setInternalError(Boolean.FALSE);
 
-		boolean isTransactionSuccessful = false;
 		String regId = object.getRid();
 
 		try {
@@ -171,28 +181,58 @@ public class PrintStage extends MosipVerticleAPIManager {
 			}
 
 			List<String> pathsegments = new ArrayList<>();
-			pathsegments.add("v1.0");
 			pathsegments.add(uin);
-			String queryParamName = "type";
-			String queryParamValue = "demo";
+			IdResponseDTO response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOSITORY, pathsegments, "",
+					"", IdResponseDTO.class);
 
-			IdResponseDTO response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOSITORY, pathsegments,
-					queryParamName, queryParamValue, IdResponseDTO.class);
+			String jsonString = new JSONObject((Map) response.getResponse().getIdentity()).toString();
 
-			getArtifacts(response.getResponse().getEntity());
+			getArtifacts(jsonString);
+			attributes.put(UINCardConstant.UIN, uin);
 
-			InputStream uinArtifact = templateGenerator.getTemplate("", attributes, LocallangCode);
+			InputStream uinArtifact = templateGenerator.getTemplate(UIN_CARD_TEMPLATE, attributes, langCode);
 
-			OutputStream pdf = (OutputStream) uinCardGenerator.generateUinCard(uinArtifact, UinCardType.PDF);
+			ByteArrayOutputStream pdf = (ByteArrayOutputStream) uinCardGenerator.generateUinCard(uinArtifact,
+					UinCardType.PDF);
 
-		} catch (IOException | ParseException | ApisResourceAccessException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regId, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
-							+ ExceptionUtils.getStackTrace(e));
+			byte[] pdfBytes = pdf.toByteArray();
+
 		} catch (UINNotFoundInDatabase e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId, PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.name() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			description = "Uin is not present for registration  id : " + regId;
+		} catch (TemplateProcessingFailureException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId, PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+		} catch (IOException | ApisResourceAccessException | ParseException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
+		} catch (Exception e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			description = "Internal error occured while processing registration  id : " + regId;
+		} finally {
+			String eventId = "";
+			String eventName = "";
+			String eventType = "";
+			if (isTransactionSuccessful) {
+				description = "Reverse data sync of Pre-RegistrationIds sucessful";
+				eventId = EventId.RPR_402.toString();
+				eventName = EventName.UPDATE.toString();
+				eventType = EventType.BUSINESS.toString();
+			} else {
+
+				description = "Reverse data sync of Pre-RegistrationIds failed";
+				eventId = EventId.RPR_405.toString();
+				eventName = EventName.EXCEPTION.toString();
+				eventType = EventType.SYSTEM.toString();
+			}
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					regId.isEmpty() ? null : regId);
 		}
 
 		return object;
@@ -201,29 +241,28 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/**
 	 * Gets the artifacts.
 	 *
-	 * @param idJsonString the id json string
+	 * @param idJsonString
+	 *            the id json string
 	 * @return the artifacts
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParseException the parse exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ParseException
+	 *             the parse exception
 	 */
 	private void getArtifacts(String idJsonString) throws IOException, ParseException {
 		NotificationTemplate template = new NotificationTemplate();
 		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
 				utility.getGetRegProcessorIdentityJson());
-		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
 
-		regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
+		regProcessorIdentityJson = (new ObjectMapper()).readValue(getIdentityJsonString,
 				RegistrationProcessorIdentity.class);
-		JSONParser parser = new JSONParser();
-		JSONObject demographicJson = (JSONObject) parser.parse(idJsonString);
+		demographicIdentity = (JSONObject) (new JSONParser()).parse(idJsonString);
 
-		demographicIdentity = (JSONObject) demographicJson.get(utility.getGetRegProcessorDemographicIdentity());
 		if (demographicIdentity == null)
 			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 
 		template.setFirstName(getJsonValues(regProcessorIdentityJson.getIdentity().getName().getValue()));
 		template.setGender(getJsonValues(regProcessorIdentityJson.getIdentity().getGender().getValue()));
-
 		template.setEmailID(
 				(String) demographicIdentity.get(regProcessorIdentityJson.getIdentity().getEmail().getValue()));
 		template.setPhoneNumber(
@@ -240,13 +279,13 @@ public class PrintStage extends MosipVerticleAPIManager {
 				(String) demographicIdentity.get(regProcessorIdentityJson.getIdentity().getPostalCode().getValue()));
 
 		setAtrributes(template);
-
 	}
 
 	/**
 	 * Sets the atrributes.
 	 *
-	 * @param template the new atrributes
+	 * @param template
+	 *            the new atrributes
 	 */
 	private void setAtrributes(NotificationTemplate template) {
 		attributes.put(UINCardConstant.NAME_ENG, getParameter(template.getFirstName(), ENG));
@@ -269,14 +308,15 @@ public class PrintStage extends MosipVerticleAPIManager {
 		attributes.put(UINCardConstant.POSTALCODE, template.getPostalCode());
 		attributes.put(UINCardConstant.PHONENUMBER, template.getPhoneNumber());
 		attributes.put(UINCardConstant.EMAILID, template.getEmailID());
-
 	}
 
 	/**
 	 * Gets the parameter.
 	 *
-	 * @param jsonValues the json values
-	 * @param langCode the lang code
+	 * @param jsonValues
+	 *            the json values
+	 * @param langCode
+	 *            the lang code
 	 * @return the parameter
 	 */
 	private String getParameter(JsonValue[] jsonValues, String langCode) {
@@ -296,7 +336,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/**
 	 * Gets the json values.
 	 *
-	 * @param identityKey the identity key
+	 * @param identityKey
+	 *            the identity key
 	 * @return the json values
 	 */
 	private JsonValue[] getJsonValues(Object identityKey) {
@@ -358,12 +399,23 @@ public class PrintStage extends MosipVerticleAPIManager {
 		return javaObject;
 
 	}
-	
+
+	/**
+	 * Send message.
+	 *
+	 * @param messageDTO
+	 *            the message DTO
+	 */
 	// Need clarify where to push the template
 	public void sendMessage(MessageDTO messageDTO) {
-		this.send(this.mosipEventBus, MessageBusAddress.VIRUS_SCAN_BUS_IN, messageDTO);
+		this.send(this.mosipEventBus, MessageBusAddress.PRINTING_BUS, messageDTO);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.vertx.core.AbstractVerticle#start()
+	 */
 	@Override
 	public void start() {
 		Router router = this.postUrl(vertx);
@@ -372,9 +424,10 @@ public class PrintStage extends MosipVerticleAPIManager {
 	}
 
 	/**
-	 * contains all the routes in the stage
-	 * 
+	 * contains all the routes in the stage.
+	 *
 	 * @param router
+	 *            the router
 	 */
 	private void routes(Router router) {
 
@@ -391,14 +444,20 @@ public class PrintStage extends MosipVerticleAPIManager {
 		});
 	}
 
+	/**
+	 * Re send print pdf.
+	 *
+	 * @param ctx
+	 *            the ctx
+	 */
 	private void reSendPrintPdf(RoutingContext ctx) {
 		JsonObject object = ctx.getBodyAsJson();
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid(object.getString("regId"));
 		this.start();
 		this.process(messageDTO);
-		this.setResponse(ctx, "Re-sending to Queue"); 
-		
+		this.setResponse(ctx, "Re-sending to Queue");
+
 	}
 
 }

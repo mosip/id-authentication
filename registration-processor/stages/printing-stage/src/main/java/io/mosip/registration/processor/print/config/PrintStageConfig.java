@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.print.config;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
+import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerator;
 import io.mosip.registration.processor.print.exception.PrintGlobalExceptionHandler;
 import io.mosip.registration.processor.print.stage.PrintStage;
 import io.mosip.registration.processor.print.util.UinCardGeneratorImpl;
@@ -76,7 +78,7 @@ public class PrintStageConfig {
 	}
 	
 	@Bean
-	public UinCardGeneratorImpl getUinCardGeneratorImpl() {
+	public UinCardGenerator<ByteArrayOutputStream> getUinCardGeneratorImpl() {
 		return new UinCardGeneratorImpl();
 	}
 	

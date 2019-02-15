@@ -1,8 +1,8 @@
 package io.mosip.registration.processor.print.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerato
  * @author M1048358 Alok
  */
 @Component
-public class UinCardGeneratorImpl implements UinCardGenerator<OutputStream> {
+public class UinCardGeneratorImpl implements UinCardGenerator<ByteArrayOutputStream> {
 
 	/** The pdf generator. */
 	@Autowired
@@ -42,10 +42,10 @@ public class UinCardGeneratorImpl implements UinCardGenerator<OutputStream> {
 	 * io.mosip.registration.processor.core.constant.UinCardType)
 	 */
 	@Override
-	public OutputStream generateUinCard(InputStream in, UinCardType type) {
-		OutputStream out = null;
+	public ByteArrayOutputStream generateUinCard(InputStream in, UinCardType type) {
+		ByteArrayOutputStream out = null;
 		try {
-			out = pdfGenerator.generate(in);
+			out = (ByteArrayOutputStream) pdfGenerator.generate(in);
 		} catch (IOException | PDFGeneratorException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", PlatformErrorMessages.RPR_PRT_PDF_NOT_GENERATED.name() + e.getMessage()
