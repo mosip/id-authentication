@@ -34,11 +34,17 @@ public class StatusMessage {
 	public static final String PIN = "Pin validation failed";
 
 	/** The Constant VALIDATION_DETAILS. */
-	public static final String VALIDATION_DETAILS = "All the validation details are null";
+	public static final String VALIDATION_DETAILS_SUCCESS = "Either iris/fingerprint/face/pin is null but password/OTP is verified for ";
+	public static final String VALIDATION_DETAILS_FAILURE = "Either iris/fingerprint/face/pin is null and password/OTP is not verified for ";
+	public static final String VALIDATION_DETAILS = "Either iris/fingerprint/photo is null for Introducer";
+
 
 	/** The Constant OSI_VALIDATION_SUCCESS. */
 	public static final String OSI_VALIDATION_SUCCESS = "OSI Validation is successful";
+	/** Osi Validation failed */
+	public static final String OSI_VALIDATION_FAILURE = "OSI Validation failed ";
 
+ 
 	/** The Constant PARENT_UIN_AND_RID_NOT_IN_PACKET. */
 	public static final String PARENT_UIN_AND_RID_NOT_IN_PACKET = "The UIN and RID of Parent is not present in Packet";
 

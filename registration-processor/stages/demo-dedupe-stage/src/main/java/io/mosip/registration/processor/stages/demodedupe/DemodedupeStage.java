@@ -142,6 +142,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DEMO_DEDUPE_FAILED.toString());
 					description = "Packet Demo dedupe failed for registration id : " + registrationId;
 					demographicDedupeRepository.updateIsActiveIfDuplicateFound(registrationId);
+					object.setIsValid(Boolean.TRUE);
 
 				} else {
 					object.setIsValid(Boolean.FALSE);

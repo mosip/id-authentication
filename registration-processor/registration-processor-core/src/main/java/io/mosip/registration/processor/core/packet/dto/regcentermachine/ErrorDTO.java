@@ -11,7 +11,6 @@ import lombok.Data;
  *
  */
 @Data
-@AllArgsConstructor
 public class ErrorDTO {
 
 	private String errorCode;
