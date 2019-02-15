@@ -150,11 +150,9 @@ public class JsonConstant {
 	public static final String INTRODUCERBIOMETRICSEQUENCE = "INTRODUCERBIOMETRICSEQUENCE";
 
 	public static final String APPLICANTBIOMETRICSEQUENCE = "APPLICANTBIOMETRICSEQUENCE";
-	
+	/** Supervisor Authentication */
 	public static final String SUPERVISOROTPAUTHENTICATION = "SUPERVISOROTPAUTHENTICATION";
+	/** officer Authentication */
 	public static final String OFFICEROTPAUTHENTICATION = "OFFICEROTPAUTHENTICATION";
-
-	
-	
 
 }

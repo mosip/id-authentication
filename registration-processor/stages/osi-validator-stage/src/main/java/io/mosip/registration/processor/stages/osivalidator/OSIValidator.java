@@ -128,7 +128,15 @@ public class OSIValidator {
 	public boolean isValidOSI(String registrationId) throws IOException, ApisResourceAccessException {
 		boolean isValidOsi = false;
 		RegOsiDto regOsi = packetInfoManager.getOsi(registrationId);
-		if (((isValidOperator(regOsi, registrationId)) &&(isValidSupervisor(regOsi, registrationId)))
+		String officerId = getOsiDataValue(registrationId, JsonConstant.OFFICERID);
+		String supervisorId = getOsiDataValue(registrationId, JsonConstant.SUPERVISORID);
+		if (officerId == null && supervisorId == null) {
+			registrationStatusDto
+					.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " Officer and Supervisor are null");
+			return false;
+
+		}
+		if (((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId)))
 				&& (isValidIntroducer(regOsi, registrationId)))
 			isValidOsi = true;
 		return isValidOsi;
@@ -150,10 +158,8 @@ public class OSIValidator {
 	private boolean isValidOperator(RegOsiDto regOsi, String registrationId)
 			throws IOException, ApisResourceAccessException {
 
-		String uin = regOsi.getOfficerId(); 
-		if (uin == null)
-			return false;
-		else {
+		String officerId = getOsiDataValue(registrationId, JsonConstant.OFFICERID);
+		if (officerId != null) {
 			String fingerPrint = getOsiDataValue(registrationId, JsonConstant.OFFICERBIOMETRICFILENAME);
 			String fingerPrintType = regOsi.getOfficerfingerType();
 			String iris = regOsi.getOfficerIrisImageName();
@@ -172,9 +178,11 @@ public class OSIValidator {
 
 				}
 				return flag;
-			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
-					&& (validateIris(uin, iris, irisType, registrationId)) && (validateFace(uin, face, registrationId))
-					&& (validatePin(uin, pin))&& validateOtpAndPwd(officerPassword, officerOTPAuthentication)) {
+			} else if ((validateUIN(officerId))
+					&& (validateFingerprint(officerId, fingerPrint, fingerPrintType, registrationId))
+					&& (validateIris(officerId, iris, irisType, registrationId))
+					&& (validateFace(officerId, face, registrationId)) && (validatePin(officerId, pin))
+					&& validateOtpAndPwd(officerPassword, officerOTPAuthentication)) {
 				return true;
 			}
 		}
@@ -214,10 +222,8 @@ public class OSIValidator {
 	 */
 	private boolean isValidSupervisor(RegOsiDto regOsi, String registrationId)
 			throws IOException, ApisResourceAccessException {
-		String uin = regOsi.getSupervisorId();
-		if (uin == null)
-			return false;
-		else {
+		String supervisorId = getOsiDataValue(registrationId, JsonConstant.SUPERVISORID);
+		if (supervisorId != null) {
 
 			String fingerPrint = getOsiDataValue(registrationId, JsonConstant.SUPERVISORBIOMETRICFILENAME);
 			// superVisior otp and password
@@ -238,9 +244,11 @@ public class OSIValidator {
 
 				}
 				return flag;
-			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
-					&& (validateIris(uin, iris, irisType, registrationId)) && (validateFace(uin, face, registrationId))
-					&& (validatePin(uin, pin))&& validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication)) {
+			} else if ((validateUIN(supervisorId))
+					&& (validateFingerprint(supervisorId, fingerPrint, fingerPrintType, registrationId))
+					&& (validateIris(supervisorId, iris, irisType, registrationId))
+					&& (validateFace(supervisorId, face, registrationId)) && (validatePin(supervisorId, pin))
+					&& validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication)) {
 				return true;
 			}
 		}
@@ -501,7 +509,7 @@ public class OSIValidator {
 	}
 
 	boolean validateOtpAndPwd(String password, String otp) {
-		if (password!=null && password.equals(TRUE) || otp!=null && otp.equals(TRUE)) {
+		if (password != null && password.equals(TRUE) || otp != null && otp.equals(TRUE)) {
 			return true;
 		} else {
 			return false;
