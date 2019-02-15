@@ -18,6 +18,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -40,11 +41,8 @@ import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainRespo
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDataSyncRequestDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDatasyncReponseDTO;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
-import io.mosip.registration.processor.core.queue.factory.MosipQueueConnectionFactoryImpl;
-import io.mosip.registration.processor.core.queue.impl.MosipActiveMqImpl;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
-import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;

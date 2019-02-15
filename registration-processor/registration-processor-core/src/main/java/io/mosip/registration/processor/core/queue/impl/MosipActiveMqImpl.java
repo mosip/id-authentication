@@ -25,7 +25,13 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 	private Session session;
 	private Destination destination;
 
-	public void setup(MosipActiveMq mosipActiveMq, String address) {
+	/**
+	 * The method to set up session and destination
+	 * 
+	 * @param mosipActiveMq The Mosip ActiveMq instance
+	 * @param address The address to set up
+	 */
+	private void setup(MosipActiveMq mosipActiveMq, String address) {
 		if (connection == null) {
 			try {
 				this.connection = mosipActiveMq.getActiveMQConnectionFactory().createConnection();
@@ -53,6 +59,9 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.queue.MosipQueueManager#send(java.lang.Object, java.lang.Object, java.lang.String)
+	 */
 	@Override
 	public Boolean send(MosipQueue mosipQueue, byte[] message, String address) {
 		boolean flag = false;
@@ -77,6 +86,9 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 		return flag;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.queue.MosipQueueManager#consume(java.lang.Object, java.lang.String)
+	 */
 	@Override
 	public byte[] consume(MosipQueue mosipQueue, String address) {
 		MosipActiveMq mosipActiveMq = (MosipActiveMq) mosipQueue;
