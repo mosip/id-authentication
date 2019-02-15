@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.manual.verification.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.io.ByteArrayInputStream;
@@ -9,10 +8,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,32 +17,21 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-
-import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.util.JsonUtil;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationStatus;
 import io.mosip.registration.processor.manual.verification.dto.UserDto;
 import io.mosip.registration.processor.manual.verification.exception.InvalidFileNameException;
 import io.mosip.registration.processor.manual.verification.exception.InvalidUpdateException;
 import io.mosip.registration.processor.manual.verification.exception.NoRecordAssignedException;
-import io.mosip.registration.processor.manual.verification.service.ManualVerificationService;
 import io.mosip.registration.processor.manual.verification.service.impl.ManualVerificationServiceImpl;
 import io.mosip.registration.processor.manual.verification.stage.ManualVerificationStage;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
@@ -74,7 +60,7 @@ public class ManualVerificationServiceTest {
 	@Mock
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 	@Mock
-	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
+	FileSystemAdapter filesystemAdapterImpl;
 	@Mock
 	private BasePacketRepository<ManualVerificationEntity, String> basePacketRepository;
 	@Mock
@@ -103,7 +89,7 @@ public class ManualVerificationServiceTest {
 		manualVerificationEntity.setCrBy("regprc");
 		manualVerificationEntity.setMvUsrId("test");
 		manualVerificationEntity.setIsActive(true);
-		 Date date = new Date();
+		Date date = new Date();
 		manualVerificationEntity.setDelDtimes(new Timestamp(date.getTime()));
 		manualVerificationEntity.setIsDeleted(true);
 		manualVerificationEntity.setStatusComment("test");
@@ -158,7 +144,7 @@ public class ManualVerificationServiceTest {
 		String fileName = PacketFiles.APPLICANTPHOTO.name();
 		byte[] file = "Str".getBytes();
 		InputStream fileInStream = new ByteArrayInputStream(file);
-		Mockito.when(filesystemCephAdapterImpl.getFile(any(), any())).thenReturn(fileInStream);
+		Mockito.when(filesystemAdapterImpl.getFile(any(), any())).thenReturn(fileInStream);
 
 		file = manualAdjudicationService.getApplicantFile(regId, fileName);
 		fileName = PacketFiles.PROOFOFADDRESS.name();
@@ -250,7 +236,7 @@ public class ManualVerificationServiceTest {
 		ClassLoader classLoader = getClass().getClassLoader();
 		File idJsonFile = new File(classLoader.getResource("ID.json").getFile());
 		InputStream idJsonStream = new FileInputStream(idJsonFile);
-		Mockito.when(filesystemCephAdapterImpl.getFile(any(), any())).thenReturn(idJsonStream);
+		Mockito.when(filesystemAdapterImpl.getFile(any(), any())).thenReturn(idJsonStream);
 		manualAdjudicationService.getApplicantPacketInfo("Id");
 	}
 
