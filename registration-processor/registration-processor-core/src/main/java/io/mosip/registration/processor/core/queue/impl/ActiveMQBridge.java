@@ -1,11 +1,4 @@
-package io.mosip.registration.processor.core.queue;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+package io.mosip.registration.processor.core.queue.impl;
 
 import javax.jms.BytesMessage;
 import javax.jms.Connection;
@@ -15,14 +8,8 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
-import javax.jms.ObjectMessage;
 import javax.jms.Session;
-import javax.jms.TextMessage;
-
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.commons.io.IOUtils;
-
-import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 public class ActiveMQBridge {
 
