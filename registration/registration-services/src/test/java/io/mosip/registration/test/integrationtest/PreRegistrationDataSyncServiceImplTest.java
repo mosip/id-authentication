@@ -3,6 +3,7 @@ package io.mosip.registration.test.integrationtest;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
@@ -13,12 +14,12 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
@@ -83,13 +84,14 @@ public class PreRegistrationDataSyncServiceImplTest {
 		preRegEntity.setAppointmentDate(Date.from(c.toInstant()));
 		preRegistrationDataSyncRepository.save(preRegEntity);
 		assertEquals(preRegistrationDataSyncService.fetchAndDeleteRecords().getSuccessResponseDTO().getMessage(),"Pre-Registration Records deleted");
+		preRegistrationDataSyncRepository.saveAll(list);
 	}
 	
 	/**
 	 * Inavlid Registration_Center_Id Test Case
 	 * 
 	 */
-	@Test 
+	@Test
 	public void getPreRegistrationIds_InvalidRegistrationCenterId() {
 		System.setProperty("http.proxyHost", "172.22.218.218");
 		System.setProperty("http.proxyPort", "8085");
