@@ -1,6 +1,6 @@
 ## kernel-fsadapter-hdfs
 
-[Background & Design -TBA-] 
+[Background & Design](../../docs/design/kernel/kernel-filesystemadapter.md)
 
 [Api Documentation]
 

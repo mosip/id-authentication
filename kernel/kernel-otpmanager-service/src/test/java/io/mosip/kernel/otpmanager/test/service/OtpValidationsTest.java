@@ -10,10 +10,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -38,6 +40,9 @@ public class OtpValidationsTest {
 	@Autowired
 	MockMvc mockMvc;
 
+	@Value("${mosip.kernel.otp.default-length}")
+	double otpLength;
+
 	@MockBean
 	private OtpRepository otpRepository;
 
@@ -50,9 +55,11 @@ public class OtpValidationsTest {
 
 	@Test
 	public void testOtpValidatorServiceExpiredOTPCase() throws Exception {
+		Random randomKey = new Random();
+		double id = Math.pow(10, otpLength) + randomKey.nextInt((int) (9 * Math.pow(10, otpLength)));
 		OtpEntity entity = new OtpEntity();
 		entity.setOtp("1234");
-		entity.setId("testKey");
+		entity.setId(Double.toString(id));
 		entity.setValidationRetryCount(0);
 		entity.setStatusCode("OTP_UNUSED");
 		entity.setGeneratedDtimes(LocalDateTime.now(ZoneId.of("UTC")).minusMinutes(3));
@@ -108,8 +115,7 @@ public class OtpValidationsTest {
 				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
 		mockMvc.perform(get("/v1.0/otp/validate").param("key",
 				"ykbbgyhogsmziqozetsyexoazpqhcpqywqmuyyijaweoswjlvhemamrmbuorixvnwlrhgfbnrmoorscjkllmgzqxtauoolvhoiyxfwoiotkvimcqshxvxplrqsfxmlmroyxcphstayxnowmjsnwdwhazpotqqrafuvpcaccaxneavptzwwsukhjqzwhjpdgrbqfybsyyryqlbrpdakuvtvswcwpzvkkaonblwlkjvytiodlnvsodsxkkgbbzvxkjbgbhnnvpkohydywdaudekflgbvbkeqwrekdgsneomyovczvnqhuitmr")
-				.param("otp", "123456").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andReturn();
+				.param("otp", "123456").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
 	}
 
 	@Test
