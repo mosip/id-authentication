@@ -26,8 +26,8 @@ public class ConfigTest {
 
 		System.setProperty("spring.cloud.config.uri", "http://104.211.212.28:51000");
 		System.setProperty("spring.profiles.active", "dev");
-		System.setProperty("spring.cloud.config.label", "DEV");
-		System.setProperty("spring.application.name", "registration-processor-packet-uploader");
+		System.setProperty("spring.cloud.config.label", "0.8.0");
+		System.setProperty("spring.application.name", "registration-processor");
 
 		@SuppressWarnings("resource")
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();

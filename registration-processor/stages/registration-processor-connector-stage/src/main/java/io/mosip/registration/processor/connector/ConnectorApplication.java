@@ -5,12 +5,18 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import io.mosip.registration.processor.connector.stage.ConnectorStage;
 
 /**
- * Hello world!
+ * Connector application class
+ * @author Jyoti Prakash Nayak
  *
  */
 public class ConnectorApplication 
 {
-    public static void main( String[] args )
+	
+    /**
+     * the main method
+     * @param args
+     */
+    public static void main( String[] args ) 
     {
     	AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext();
 		configApplicationContext.scan(

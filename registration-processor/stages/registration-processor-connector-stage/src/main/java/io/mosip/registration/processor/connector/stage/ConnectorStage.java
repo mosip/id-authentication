@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.connector.stage;
 
 import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -12,6 +13,12 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+
+/**
+ * ConnectorStage 
+ * @author Jyoti Prakash Nayak
+ *
+ */
 @Component("connectorStage")
 public class ConnectorStage extends MosipVerticleAPIManager{
 	/** The reg proc logger. */
@@ -55,6 +62,10 @@ public class ConnectorStage extends MosipVerticleAPIManager{
 		this.routes(router);
 		this.createServer(router, Integer.parseInt(port));
 	}
+	/**
+	 * contains all the routes in this stage
+	 * @param router
+	 */
 	private void routes(Router router) {
 		router.post("/registrationconnector/v0.1/registration-processor/connector").handler(ctx -> {
 			processURL(ctx);
@@ -70,6 +81,10 @@ public class ConnectorStage extends MosipVerticleAPIManager{
 		
 	}
 
+	/**
+	 * method to process the context received
+	 * @param ctx
+	 */
 	public void processURL(RoutingContext ctx) {
 		JsonObject obj = ctx.getBodyAsJson();
 		
@@ -93,9 +108,12 @@ public class ConnectorStage extends MosipVerticleAPIManager{
 
 	
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
+	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 }

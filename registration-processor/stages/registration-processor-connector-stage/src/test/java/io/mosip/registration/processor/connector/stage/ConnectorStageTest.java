@@ -1,19 +1,9 @@
 package io.mosip.registration.processor.connector.stage;
 
-import org.springframework.test.context.junit4.SpringRunner;
-
-import io.mosip.registration.processor.connector.ConnectorApplication;
-import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
-import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
-import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
-import io.vertx.core.Vertx;
-import io.vertx.ext.web.RoutingContext;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,6 +20,12 @@ import org.apache.http.impl.client.HttpClients;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import io.mosip.registration.processor.connector.ConnectorApplication;
+import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
+import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
@@ -250,8 +246,8 @@ public class ConnectorStageTest {
 			public JsonObject getBodyAsJson() {
 				JsonObject obj= new JsonObject();
 				obj.put("rid", "51130282650000320190117144316");
-				obj.put("isValid", "true");
-				obj.put("internalError", "false");
+				obj.put("isValid", true);
+				obj.put("internalError", false);
 				return obj;
 			}
 

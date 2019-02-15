@@ -20,6 +20,12 @@ import org.springframework.core.io.support.ResourcePropertySource;
 @EnableAspectJAutoProxy
 @PropertySource("classpath:bootstrap.properties")
 public class ConnectorConfig {
+	/**
+	 * method to load config server values
+	 * @param env
+	 * @return
+	 * @throws IOException
+	 */
 	@Bean
 	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env) throws IOException {
 
