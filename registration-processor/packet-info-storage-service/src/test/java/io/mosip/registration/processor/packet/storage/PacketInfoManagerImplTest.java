@@ -2,11 +2,12 @@
 package io.mosip.registration.processor.packet.storage;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -22,11 +23,14 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
@@ -42,10 +46,8 @@ import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
-import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
-import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
@@ -74,12 +76,14 @@ import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequest
 /**
  * The Class PacketInfoManagerImplTest.
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ Utilities.class })
+@PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class PacketInfoManagerImplTest {
 
 	/** The packet info manager impl. */
 	@InjectMocks
-	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManagerImpl = new PacketInfoManagerImpl();
+	PacketInfoManagerImpl packetInfoManagerImpl;
 
 	/** The audit log request builder. */
 	@Mock
@@ -174,25 +178,18 @@ public class PacketInfoManagerImplTest {
 	private File demographicJsonFile;
 
 	/** The Constant CONFIG_SERVER_URL. */
-	private static final String CONFIG_SERVER_URL = "http://104.211.212.28:51000/registration-processor/default/DEV/";
+	private static final String CONFIG_SERVER_URL = "url";
+
+	private String identityMappingjsonString;
 
 	/**
 	 * Setup.
-	 *
-	 * @throws NoSuchFieldException
-	 *             the no such field exception
-	 * @throws SecurityException
-	 *             the security exception
-	 * @throws IllegalArgumentException
-	 *             the illegal argument exception
-	 * @throws IllegalAccessException
-	 *             the illegal access exception
-	 * @throws FileNotFoundException
-	 *             the file not found exception
+	 * 
+	 * @throws Exception
 	 */
 	@Before
-	public void setup() throws NoSuchFieldException, SecurityException, IllegalArgumentException,
-			IllegalAccessException, FileNotFoundException {
+	public void setup() throws Exception {
+		MockitoAnnotations.initMocks(this);
 
 		ClassLoader classLoader = getClass().getClassLoader();
 		demographicJsonFile = new File(classLoader.getResource("ID.json").getFile());
@@ -203,6 +200,17 @@ public class PacketInfoManagerImplTest {
 			e.printStackTrace();
 		}
 
+		File identityMappingjson = new File(classLoader.getResource("RegistrationProcessorIdentity.json").getFile());
+		InputStream identityMappingjsonStream = new FileInputStream(identityMappingjson);
+
+		try {
+			identityMappingjsonString = IOUtils.toString(identityMappingjsonStream, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		PowerMockito.mockStatic(Utilities.class);
+		PowerMockito.when(Utilities.class, "getJson", CONFIG_SERVER_URL, "RegistrationProcessorIdentity.json")
+				.thenReturn(identityMappingjsonString);
 		identity = new Identity();
 		Photograph applicantPhotograph = new Photograph();
 
@@ -295,10 +303,10 @@ public class PacketInfoManagerImplTest {
 
 		Applicant applicant = new Applicant();
 		applicant.setLeftEye(lefteye);
-		//applicant.setLeftSlap(leftPalm);
+		// applicant.setLeftSlap(leftPalm);
 		applicant.setRightEye(rightEye);
-		//applicant.setRightSlap(rightPalm);
-		//applicant.setThumbs(bothThumbs);
+		// applicant.setRightSlap(rightPalm);
+		// applicant.setThumbs(bothThumbs);
 		Introducer introducer = new Introducer();
 		introducer.setIntroducerFingerprint(rightThumb);
 		introducer.setIntroducerImage(face);
@@ -536,16 +544,15 @@ public class PacketInfoManagerImplTest {
 		String inputString = "test";
 		InputStream inputStream = new ByteArrayInputStream(inputString.getBytes(StandardCharsets.UTF_8));
 
-		Mockito.when(filesystemCephAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
-				.thenReturn(inputStream);
+		Mockito.when(filesystemCephAdapterImpl.getFile(any(), any())).thenReturn(inputStream);
 		exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.toString(), "errorMessage", new Exception());
 		classLoader = getClass().getClassLoader();
 		demographicJsonFile = new File(classLoader.getResource("ID.json").getFile());
 		demographicJsonStream = new FileInputStream(demographicJsonFile);
-
 		Mockito.when(utility.getConfigServerFileStorageURL()).thenReturn(CONFIG_SERVER_URL);
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
 		Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentity.json");
+
 	}
 
 	/**
@@ -562,8 +569,7 @@ public class PacketInfoManagerImplTest {
 		// test to cover IoException
 		InputStream inputStream = Mockito.mock(InputStream.class);
 
-		Mockito.when(filesystemCephAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
-				.thenReturn(inputStream);
+		Mockito.when(filesystemCephAdapterImpl.getFile(any(), any())).thenReturn(inputStream);
 
 		// Mockito.when(inputStream.read(ArgumentMatchers.any())).thenThrow(new
 		// IOException());
@@ -612,7 +618,7 @@ public class PacketInfoManagerImplTest {
 	@Test(expected = UnableToInsertData.class)
 	public void unableToInsertDataTest() {
 
-		Mockito.when(demographicDedupeRepository.save(ArgumentMatchers.any())).thenThrow(exp);
+		Mockito.when(demographicDedupeRepository.save(any())).thenThrow(exp);
 
 		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, metaDataList);
 	}
@@ -623,7 +629,7 @@ public class PacketInfoManagerImplTest {
 	@Test(expected = UnableToInsertData.class)
 	public void demographicDedupeUnableToInsertDataTest() {
 
-		Mockito.when(demographicDedupeRepository.save(ArgumentMatchers.any())).thenThrow(exp);
+		Mockito.when(demographicDedupeRepository.save(any())).thenThrow(exp);
 		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, metaDataList);
 
 	}
@@ -634,9 +640,7 @@ public class PacketInfoManagerImplTest {
 	@Test(expected = IdentityNotFoundException.class)
 	public void identityNotFoundExceptionTest() {
 
-		Mockito.when(utility.getConfigServerFileStorageURL())
-				.thenReturn("http://104.211.212.28:51000/registration-processor/default/DEV/");
-		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("test");
+		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn(null);
 		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, metaDataList);
 	}
 
@@ -654,8 +658,7 @@ public class PacketInfoManagerImplTest {
 		photographDto.setPreRegId("PEN1345T");
 		photographDto.setNoOfRetry(4);
 		photographDto.setHasExcpPhotograph(false);
-		
-		
+
 		DemographicInfoDto demoDto = new DemographicInfoDto();
 		List<DemographicInfoDto> demoDedupeList = new ArrayList<>();
 		demoDto.setRegId("2018782130000224092018121229");
@@ -666,7 +669,7 @@ public class PacketInfoManagerImplTest {
 		applicantInfoDto.setApplicantPhotograph(photographDto);
 		applicantInfoDtoList.add(applicantInfoDto);
 
-		Mockito.when(packetInfoDao.getPacketsforQCUser(ArgumentMatchers.any())).thenReturn(applicantInfoDtoList);
+		Mockito.when(packetInfoDao.getPacketsforQCUser(any())).thenReturn(applicantInfoDtoList);
 		packetInfoManagerImpl.getPacketsforQCUser("1234");
 		List<ApplicantInfoDto> applicantList = packetInfoDao.getPacketsforQCUser("1234");
 		assertEquals(applicantInfoDtoList, applicantList);
@@ -681,7 +684,7 @@ public class PacketInfoManagerImplTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void getPacketsForQcUserTablenotAccessibleExceptionTest() {
 
-		Mockito.when(packetInfoDao.getPacketsforQCUser(ArgumentMatchers.any())).thenThrow(exp);
+		Mockito.when(packetInfoDao.getPacketsforQCUser(any())).thenThrow(exp);
 		packetInfoManagerImpl.getPacketsforQCUser("1234");
 
 	}
@@ -692,7 +695,7 @@ public class PacketInfoManagerImplTest {
 	@Test(expected = UnableToInsertData.class)
 	public void saveJsonUnableToInsertDataTest() {
 
-		Mockito.when(demographicJsonRepository.save(ArgumentMatchers.any())).thenThrow(exp);
+		Mockito.when(demographicJsonRepository.save(any())).thenThrow(exp);
 		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, metaDataList);
 
 	}
@@ -708,7 +711,7 @@ public class PacketInfoManagerImplTest {
 		regOsi.setRegId("2018782130000224092018121229");
 		regOsi.setPreregId("PET431");
 		regOsi.setIsActive(true);
-		Mockito.when(packetInfoDao.getEntitiesforRegOsi(ArgumentMatchers.anyString())).thenReturn(regOsi);
+		Mockito.when(packetInfoDao.getEntitiesforRegOsi(anyString())).thenReturn(regOsi);
 
 		RegOsiDto regOsiDto = packetInfoManagerImpl.getOsi("2018782130000224092018121229");
 
@@ -745,7 +748,7 @@ public class PacketInfoManagerImplTest {
 		depdupeList.add(uinDto);
 		depdupeList.add(uinDto1);
 
-		Mockito.when(packetInfoDao.findDemoById(ArgumentMatchers.anyString())).thenReturn(depdupeList);
+		Mockito.when(packetInfoDao.findDemoById(anyString())).thenReturn(depdupeList);
 
 		List<DemographicInfoDto> result = packetInfoManagerImpl.findDemoById("2018782130000103122018100224");
 
@@ -755,7 +758,6 @@ public class PacketInfoManagerImplTest {
 
 	}
 
-	
 	/**
 	 * Gets the applicant finger print image name by id test.
 	 *
@@ -767,7 +769,7 @@ public class PacketInfoManagerImplTest {
 		applicantFingerPrintImages.add("LeftThumb");
 		applicantFingerPrintImages.add("RightThumb");
 
-		Mockito.when(packetInfoDao.getApplicantFingerPrintImageNameById(ArgumentMatchers.anyString()))
+		Mockito.when(packetInfoDao.getApplicantFingerPrintImageNameById(anyString()))
 				.thenReturn(applicantFingerPrintImages);
 
 		List<String> resultList = packetInfoManagerImpl
@@ -789,8 +791,7 @@ public class PacketInfoManagerImplTest {
 		applicantIrisImageList.add("LeftEye");
 		applicantIrisImageList.add("RightEye");
 
-		Mockito.when(packetInfoDao.getApplicantIrisImageNameById(ArgumentMatchers.anyString()))
-				.thenReturn(applicantIrisImageList);
+		Mockito.when(packetInfoDao.getApplicantIrisImageNameById(anyString())).thenReturn(applicantIrisImageList);
 		List<String> resultList = packetInfoManagerImpl.getApplicantIrisImageNameById("2018782130000103122018100224");
 		assertEquals(
 				"Fetching applicant iris images from db. verifing image name of first record, expected value is LeftEye",
@@ -852,8 +853,7 @@ public class PacketInfoManagerImplTest {
 		document.setDocumentName("ResidenceCopy");
 		document.setDocumentType("Passport");
 		documents.add(document);
-		Mockito.when(filesystemCephAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
-				.thenReturn(demographicJsonStream);
+		Mockito.when(filesystemCephAdapterImpl.getFile(any(), any())).thenReturn(demographicJsonStream);
 
 		packetInfoManagerImpl.savePacketData(identity);
 		packetInfoManagerImpl.saveDocuments(documents);
@@ -864,7 +864,7 @@ public class PacketInfoManagerImplTest {
 	 */
 	@Test(expected = UnableToInsertData.class)
 	public void saveDocumentTestException() {
-		Mockito.when(applicantDocumentRepository.save(ArgumentMatchers.any())).thenThrow(exp);
+		Mockito.when(applicantDocumentRepository.save(any())).thenThrow(exp);
 
 		Document document = new Document();
 		List<Document> documents = new ArrayList<Document>();
@@ -873,8 +873,7 @@ public class PacketInfoManagerImplTest {
 		document.setDocumentName("ResidenceCopy");
 		document.setDocumentType("Passport");
 		documents.add(document);
-		Mockito.when(filesystemCephAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
-				.thenReturn(demographicJsonStream);
+		Mockito.when(filesystemCephAdapterImpl.getFile(any(), any())).thenReturn(demographicJsonStream);
 
 		packetInfoManagerImpl.savePacketData(identity);
 		packetInfoManagerImpl.saveDocuments(documents);
@@ -895,7 +894,7 @@ public class PacketInfoManagerImplTest {
 	 */
 	@Test(expected = UnableToInsertData.class)
 	public void testSaveManualAdjudicationDataException() {
-		Mockito.when(manualVerficationRepository.save(ArgumentMatchers.any())).thenThrow(exp);
+		Mockito.when(manualVerficationRepository.save(any())).thenThrow(exp);
 		String registrationId = "1234";
 		List<String> uniqueMatchedRefIds = Arrays.asList("123av", "124abc", "125abcd");
 		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId);
@@ -910,7 +909,7 @@ public class PacketInfoManagerImplTest {
 		RegAbisRefDto regAbisRefDto = new RegAbisRefDto();
 		regAbisRefDto.setAbis_ref_id("ref1234");
 		regAbisRefDto.setReg_id("1234");
-		Mockito.when(regAbisRefRepository.save(ArgumentMatchers.any())).thenReturn(regAbisRefEntity);
+		Mockito.when(regAbisRefRepository.save(any())).thenReturn(regAbisRefEntity);
 		packetInfoManagerImpl.saveAbisRef(regAbisRefDto);
 
 	}
@@ -920,7 +919,7 @@ public class PacketInfoManagerImplTest {
 	 */
 	@Test(expected = UnableToInsertData.class)
 	public void saveAbisRefTestException() {
-		Mockito.when(regAbisRefRepository.save(ArgumentMatchers.any())).thenThrow(exp);
+		Mockito.when(regAbisRefRepository.save(any())).thenThrow(exp);
 		RegAbisRefDto regAbisRefDto = new RegAbisRefDto();
 		regAbisRefDto.setAbis_ref_id("ref1234");
 		regAbisRefDto.setReg_id("1234");

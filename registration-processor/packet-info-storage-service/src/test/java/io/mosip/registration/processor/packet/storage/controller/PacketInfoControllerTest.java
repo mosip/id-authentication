@@ -1,17 +1,14 @@
 package io.mosip.registration.processor.packet.storage.controller;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -77,7 +74,7 @@ public class PacketInfoControllerTest {
 	@Before
 	public void setUp() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
-		when(packetInfoManager.getPacketsforQCUser(ArgumentMatchers.any())).thenReturn(packets);
+		when(packetInfoManager.getPacketsforQCUser(any())).thenReturn(packets);
 		packets = new ArrayList<>();
 
 		ApplicantInfoDto infoDto = new ApplicantInfoDto();
