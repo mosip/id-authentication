@@ -105,8 +105,7 @@ public class UMCValidator {
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 */
-	private boolean isValidRegistrationCenter(String registrationCenterId, String langCode, String effectiveDate,
-			String latitude, String longitude) throws ApisResourceAccessException {
+	private boolean isValidRegistrationCenter(String registrationCenterId, String langCode, String effectiveDate) throws ApisResourceAccessException {
 		boolean activeRegCenter = false;
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(registrationCenterId);
@@ -117,19 +116,13 @@ public class UMCValidator {
 			rcpdto = (RegistrationCenterResponseDto) registrationProcessorRestService.getApi(ApiName.CENTERHISTORY,
 					pathsegments, "", "", RegistrationCenterResponseDto.class);
 
-			RegistrationCenterDto dto = rcpdto.getRegistrationCentersHistory().get(0);
-
-			if (dto.getLatitude() != null && dto.getLongitude() != null && dto.getLatitude().matches(latitude)
-					&& dto.getLongitude().matches(longitude)) {
-
-				activeRegCenter = dto.getIsActive();
+					
+				activeRegCenter = rcpdto.getRegistrationCentersHistory().get(0).getIsActive();
 				if (!activeRegCenter) {
 					this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
 				}
 
-			} else {
-				this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
-			}
+			
 
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
@@ -312,8 +305,7 @@ public class UMCValidator {
 			this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
 		}
 
-		else if (isValidRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode, rcmDto.getPacketCreationDate(),
-				rcmDto.getLatitude(), rcmDto.getLongitude())
+		else if (isValidRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
 				&& isValidMachine(rcmDto.getMachineId(), primaryLanguagecode, rcmDto.getPacketCreationDate())
 				&& isValidUMCmapping(rcmDto.getPacketCreationDate(), rcmDto.getRegcntrId(), rcmDto.getMachineId(),
 						regOsi.getSupervisorId(), regOsi.getOfficerId()) && validateCenterIdAndTimestamp(rcmDto) && isValidDevice(rcmDto)) {

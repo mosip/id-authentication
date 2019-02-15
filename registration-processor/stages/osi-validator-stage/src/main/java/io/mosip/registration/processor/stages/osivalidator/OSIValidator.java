@@ -128,7 +128,7 @@ public class OSIValidator {
 	public boolean isValidOSI(String registrationId) throws IOException, ApisResourceAccessException {
 		boolean isValidOsi = false;
 		RegOsiDto regOsi = packetInfoManager.getOsi(registrationId);
-		if ((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId))
+		if (((isValidOperator(regOsi, registrationId)) || (isValidSupervisor(regOsi, registrationId)))
 				&& (isValidIntroducer(regOsi, registrationId)))
 			isValidOsi = true;
 		return isValidOsi;
@@ -150,9 +150,9 @@ public class OSIValidator {
 	private boolean isValidOperator(RegOsiDto regOsi, String registrationId)
 			throws IOException, ApisResourceAccessException {
 
-		String uin = regOsi.getOfficerId();
+		String uin = regOsi.getOfficerId(); 
 		if (uin == null)
-			return true;
+			return false;
 		else {
 			String fingerPrint = getOsiDataValue(registrationId, JsonConstant.OFFICERBIOMETRICFILENAME);
 			String fingerPrintType = regOsi.getOfficerfingerType();

@@ -327,54 +327,7 @@ public class UMCValidatorTest {
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
 
-	/**
-	 * Gps datanot present in master test.
-	 *
-	 * @throws ApisResourceAccessException the apis resource access exception
-	 * @throws JsonParseException the json parse exception
-	 * @throws JsonMappingException the json mapping exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	@Test
-	public void gpsDatanotPresentInMasterTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException {
-		RegistrationCenterDto rcdto = new RegistrationCenterDto();
-		rcdto.setIsActive(true);
-		rcdto.setId("12245");
-
-		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
-		rcdtos.add(rcdto);
-		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCentersHistory(rcdtos);
-
-		MachineHistoryDto mcdto = new MachineHistoryDto();
-		mcdto.setIsActive(true);
-		mcdto.setId("yyeqy26356");
-
-		List<MachineHistoryDto> mcdtos = new ArrayList<>();
-		mcdtos.add(mcdto);
-		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
-		mhrepdto.setMachineHistoryDetails(mcdtos);
-
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
-		officerucmdto.setIsActive(true);
-		officerucmdto.setCntrId("12245");
-		officerucmdto.setMachineId("yyeqy26356");
-		officerucmdto.setUsrId("O1234");
-
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
-		officerucmdtos.add(officerucmdto);
-
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
-		offrepdto.setRegistrationCenters(officerucmdtos);
-
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
-				.thenReturn(mhrepdto).thenReturn(offrepdto);
-        // UMC validation Failure;
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
-	}
-
+	
 	/**
 	 * Wronggps data present in master test.
 	 *
