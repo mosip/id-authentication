@@ -5,6 +5,8 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.stereotype.Controller;
@@ -42,20 +44,20 @@ public class SendNotificationController extends BaseController implements Initia
 	private ImageView emailImageView;
 	@FXML
 	private ImageView mobileImageView;
-	
+
 	private Image deSelectImage;
-	
+
 	private boolean selectedEmail = false;
 	private boolean selectedMobile = false;
 
 	private Image selectImage;
-	
+
 	private Stage popupStage;
-	
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		deSelectImage = emailImageView.getImage();
-		selectImage = new Image(getClass().getResourceAsStream("/images/GreenRoundTick.png"));
+		selectImage = new Image(getClass().getResourceAsStream(RegistrationConstants.SELECTION_IMG_PATH));
 	}
 
 	public void init() {
@@ -88,37 +90,52 @@ public class SendNotificationController extends BaseController implements Initia
 		LOGGER.debug("REGISTRATION - UI - GENERATE_NOTIFICATION", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "generating Email/SMS notification after packet creation");
 
-		ResponseDTO emailNotificationResponse = sendEmailNotification(email.getText());
-		ResponseDTO smsNotificationResponse = sendSMSNotification(mobile.getText());
+		ResponseDTO emailNotificationResponse = new ResponseDTO();
+		ResponseDTO smsNotificationResponse = new ResponseDTO();
 
-		String alert = RegistrationConstants.EMPTY;
-
-		if (smsNotificationResponse != null && emailNotificationResponse != null
-				&& smsNotificationResponse.getSuccessResponseDTO() != null
-				&& emailNotificationResponse.getSuccessResponseDTO() != null) {
-			generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.NOTIFICATION_SUCCESS);
-		} else {
-			if (emailNotificationResponse != null && emailNotificationResponse.getErrorResponseDTOs() != null
-					&& emailNotificationResponse.getErrorResponseDTOs().get(0) != null) {
-				alert = alert + RegistrationConstants.EMAIL_SERVICE.toUpperCase();
+		if (selectedEmail && !email.getText().isEmpty()) {
+			String emails = email.getText();
+			List<String> emailList = Arrays.asList(emails.split(","));
+			for (String emailId : emailList) {
+				emailNotificationResponse = sendEmailNotification(emailId);
 			}
-			// generate alert for email notification
-			if (!alert.equals("")) {
-				generateNotificationAlert(RegistrationUIConstants.NOTIFICATION_FAIL);
-				if (alert.equals("EMAIL")) {
-					generateNotificationAlert(RegistrationUIConstants.NOTIFICATION_EMAIL_FAIL);
+			if (smsNotificationResponse != null && smsNotificationResponse.getSuccessResponseDTO() != null) {
+				generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.NOTIFICATION_SUCCESS);
+			} else {
+				String alert = RegistrationConstants.EMPTY;
+				if (emailNotificationResponse != null && emailNotificationResponse.getErrorResponseDTOs() != null
+						&& emailNotificationResponse.getErrorResponseDTOs().get(0) != null) {
+					alert = alert + RegistrationConstants.EMAIL_SERVICE.toUpperCase();
+				}
+				// generate alert for email notification
+				if (!alert.equals("")) {
+					generateNotificationAlert(RegistrationUIConstants.NOTIFICATION_FAIL);
+					if (alert.equals("EMAIL")) {
+						generateNotificationAlert(RegistrationUIConstants.NOTIFICATION_EMAIL_FAIL);
+					}
 				}
 			}
-
-			if (smsNotificationResponse != null && smsNotificationResponse.getErrorResponseDTOs() != null
-					&& smsNotificationResponse.getErrorResponseDTOs().get(0) != null) {
-				alert = RegistrationConstants.SMS_SERVICE.toUpperCase();
+		}
+		if (selectedMobile && !mobile.getText().isEmpty()) {
+			String mobileNos = mobile.getText();
+			List<String> mobileList = Arrays.asList(mobileNos.split(","));
+			for (String mobileNo : mobileList) {
+				smsNotificationResponse = sendSMSNotification(mobileNo);
 			}
-			// generate alert for SMS notification
-			if (!alert.equals("")) {
-				generateNotificationAlert(RegistrationUIConstants.NOTIFICATION_FAIL);
-				if (alert.equals("SMS")) {
-					generateNotificationAlert(RegistrationUIConstants.NOTIFICATION_SMS_FAIL);
+			if (smsNotificationResponse != null && smsNotificationResponse.getSuccessResponseDTO() != null) {
+				generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.NOTIFICATION_SUCCESS);
+			} else {
+				String alert = RegistrationConstants.EMPTY;
+				if (smsNotificationResponse != null && smsNotificationResponse.getErrorResponseDTOs() != null
+						&& smsNotificationResponse.getErrorResponseDTOs().get(0) != null) {
+					alert = RegistrationConstants.SMS_SERVICE.toUpperCase();
+				}
+				// generate alert for SMS notification
+				if (!alert.equals("")) {
+					generateNotificationAlert(RegistrationUIConstants.NOTIFICATION_FAIL);
+					if (alert.equals("SMS")) {
+						generateNotificationAlert(RegistrationUIConstants.NOTIFICATION_SMS_FAIL);
+					}
 				}
 			}
 		}

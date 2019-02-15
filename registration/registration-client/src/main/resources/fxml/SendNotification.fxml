@@ -27,12 +27,12 @@
             <Image url="@../images/Close.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="mobileImageView" fitHeight="25.0" fitWidth="25.0" layoutX="70.0" layoutY="151.0" onMouseClicked="#selectMobile" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="mobileImageView" fitHeight="25.0" fitWidth="25.0" layoutX="70.0" layoutY="147.0" onMouseClicked="#selectMobile" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/BlankRound.PNG" />
          </image>
       </ImageView>
-      <ImageView fx:id="emailImageView" fitHeight="25.0" fitWidth="25.0" layoutX="70.0" layoutY="99.0" onMouseClicked="#selectEmail" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="emailImageView" fitHeight="25.0" fitWidth="25.0" layoutX="70.0" layoutY="96.0" onMouseClicked="#selectEmail" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/BlankRound.PNG" />
          </image>
