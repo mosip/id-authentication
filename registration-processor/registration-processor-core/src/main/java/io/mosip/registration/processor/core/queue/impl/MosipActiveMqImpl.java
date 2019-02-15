@@ -10,9 +10,10 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 
 import io.mosip.registration.processor.core.queue.factory.MosipActiveMq;
+import io.mosip.registration.processor.core.queue.factory.MosipQueue;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 
-public class MosipActiveMqImpl implements MosipQueueManager<MosipActiveMq, byte[]> {
+public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> {
 
 	private Connection connection;
 	private Session session;
@@ -47,14 +48,12 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipActiveMq, byte[
 	}
 
 	@Override
-	public Boolean send(MosipActiveMq mosipActiveMq, byte[] message, String address) {
+	public Boolean send(MosipQueue mosipQueue, byte[] message, String address) {
 		boolean flag = false;
+		MosipActiveMq mosipActiveMq = (MosipActiveMq) mosipQueue;
 		ActiveMQConnectionFactory activeMQConnectionFactory = mosipActiveMq.getActiveMQConnectionFactory();
 		if(activeMQConnectionFactory==null) {
 			System.out.println("Problem");
-		}
-		else {
-			setup(mosipActiveMq, address);
 		}
 		if (destination == null) {
 			setup(mosipActiveMq, address);
@@ -74,7 +73,8 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipActiveMq, byte[
 	}
 
 	@Override
-	public byte[] consume(MosipActiveMq mosipActiveMq, String address) {
+	public byte[] consume(MosipQueue mosipQueue, String address) {
+		MosipActiveMq mosipActiveMq = (MosipActiveMq) mosipQueue;
 		if (destination == null) {
 			setup(mosipActiveMq, address);
 		}
