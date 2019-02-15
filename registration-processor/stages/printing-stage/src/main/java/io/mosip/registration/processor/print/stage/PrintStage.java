@@ -168,7 +168,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 	public MessageDTO process(MessageDTO object) {
 		object.setMessageBusAddress(MessageBusAddress.PRINTING_BUS);
 		object.setInternalError(Boolean.FALSE);
-
 		String regId = object.getRid();
 
 		try {
@@ -192,29 +191,35 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 			InputStream uinArtifact = templateGenerator.getTemplate(UIN_CARD_TEMPLATE, attributes, langCode);
 
-			ByteArrayOutputStream pdf = (ByteArrayOutputStream) uinCardGenerator.generateUinCard(uinArtifact,
+			ByteArrayOutputStream pdf = uinCardGenerator.generateUinCard(uinArtifact,
 					UinCardType.PDF);
 
 			byte[] pdfBytes = pdf.toByteArray();
+			
+			object.setIsValid(Boolean.TRUE);
 
 		} catch (UINNotFoundInDatabase e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			description = "Uin is not present for registration  id : " + regId;
+			object.setInternalError(Boolean.TRUE);
 		} catch (TemplateProcessingFailureException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
+			object.setInternalError(Boolean.TRUE);
 		} catch (IOException | ApisResourceAccessException | ParseException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
+			object.setInternalError(Boolean.TRUE);
 		} catch (Exception e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			description = "Internal error occured while processing registration  id : " + regId;
+			object.setInternalError(Boolean.TRUE);
 		} finally {
 			String eventId = "";
 			String eventName = "";
