@@ -52,8 +52,7 @@ public class PacketHandlerServiceTest extends BaseIntegrationTest {
 		byte[] data = IOUtils.toByteArray(
 				new FileInputStream(new File("src/test/resources/testData/PacketHandlerServiceData/PANStubbed.jpg")));
 		DemographicDTO documentDetails = obj.getDemographicDTO();
-		DocumentDetailsDTO documentDetailsDTO = documentDetails.getDemographicInfoDTO().getIdentity()
-				.getProofOfIdentity();
+		DocumentDetailsDTO documentDetailsDTO = documentDetails.getDemographicInfoDTO().getIdentity().getProofOfIdentity();
 		documentDetailsDTO.setDocument(data);
 		documentDetailsDTO = documentDetails.getDemographicInfoDTO().getIdentity().getProofOfAddress();
 		documentDetailsDTO.setDocument(data);
