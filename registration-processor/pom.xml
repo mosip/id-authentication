@@ -97,7 +97,6 @@
 		<!-- local -->
 		<registration.status.service.version>0.8.4</registration.status.service.version>
 		<registration.processor.core.version>0.8.4</registration.processor.core.version>
-		<filesystem.adapter.ceph.version>0.8.4</filesystem.adapter.ceph.version>
 		<packet.manager.version>0.8.4</packet.manager.version>
 		<registration.processor.rest.client.version>0.8.4</registration.processor.rest.client.version>
 		<packet.info.storage.service.version>0.8.4</packet.info.storage.service.version>
@@ -123,8 +122,6 @@
 		**/registration/processor/rest/client/*.java,
 **/registration/processor/rest/client/audit/builder/*.java,
 **/registration/processor/rest/client/utils/*.java,
-**/registration/processor/filesystem/ceph/adapter/impl/exception/*.java,
-**/registration/processor/filesystem/ceph/adapter/impl/exception/systemexception/*.java,
 **/registration/processor/packet/receiver/config/*.java,
 **/registration/processor/packet/receiver/*.java,
 **/registration/processor/packet/receiver/exception/systemexception/*.java,
@@ -145,7 +142,6 @@
 **/registration/processor/core/packet/dto/demographicinfo/identify/*.java,
 **/registration/processor/core/packet/dto/regcentermachine/*.java,
 **/registration/processor/core/util/*.java,
-**/registration/processor/filesystem/ceph/adapter/impl/exception/handler/*.java,
 
 **/registration/processor/quality/check/client/*.java,
 **/registration/processor/quality/check/code/*.java,
@@ -198,7 +194,6 @@
 		<module>registration-processor-core</module>
 		<module>registration-status-service-impl</module>
 		<module>registration-status-service</module>
-		<module>filesystem-adapter-ceph</module>
 		<module>registration-processor-rest-client</module>
 		<module>packet-manager</module>
 		<module>registration-processor-camel-bridge</module>
