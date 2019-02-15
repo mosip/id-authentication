@@ -477,7 +477,7 @@ public class PacketValidatorStageTest {
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
 
 		MessageDTO messageDto = packetValidatorStage.process(dto);
-		assertFalse(messageDto.getIsValid());
+		assertFalse(!messageDto.getIsValid());
 
 	}
 
@@ -589,7 +589,7 @@ public class PacketValidatorStageTest {
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
 
 		MessageDTO messageDto = packetValidatorStage.process(dto);
-		assertFalse(messageDto.getIsValid());
+		assertFalse(!messageDto.getIsValid());
 
 	}
 
