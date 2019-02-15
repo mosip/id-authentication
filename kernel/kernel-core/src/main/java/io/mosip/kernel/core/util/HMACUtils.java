@@ -4,7 +4,6 @@
 package io.mosip.kernel.core.util;
 
 import java.security.MessageDigest;
-//import java.security.NoSuchAlgorithmException;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -90,7 +89,7 @@ public final class HMACUtils {
 			throw new NoSuchAlgorithmException(HMACUtilConstants.MOSIP_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorCode(),
 					HMACUtilConstants.MOSIP_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorMessage(), exception.getCause());
 		}
-	}
+	} 
 
 	/*
 	 * No object initialization.
