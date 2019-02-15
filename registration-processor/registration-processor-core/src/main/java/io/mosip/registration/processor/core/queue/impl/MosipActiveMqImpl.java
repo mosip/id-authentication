@@ -10,34 +10,22 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 
 import io.mosip.registration.processor.core.queue.factory.MosipActiveMq;
-import io.mosip.registration.processor.core.queue.factory.MosipQueueConnectionFactoryImpl;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 
-public class MosipActiveMqImpl implements MosipQueueManager<MosipActiveMq, byte[], ActiveMQConnectionFactory> {
+public class MosipActiveMqImpl implements MosipQueueManager<MosipActiveMq, byte[]> {
 
 	private Connection connection;
 	private Session session;
 	private Destination destination;
 
-	@Override
-	public ActiveMQConnectionFactory createConnection(String typeOfQueue, String username, String password,
-			String Url) {
-		MosipQueueConnectionFactoryImpl mosipQueueConnectionFactoryImpl = new MosipQueueConnectionFactoryImpl();
-		MosipActiveMq mosipActiveMq = (MosipActiveMq) mosipQueueConnectionFactoryImpl.createConnection(typeOfQueue,
-				username, password, Url);
-		try {
-			this.connection = mosipActiveMq.getActiveMQConnectionFactory().createConnection();
-		} catch (JMSException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-
 	public void setup(MosipActiveMq mosipActiveMq, String address) {
 		if (connection == null) {
-			createConnection("ACTIVEMQ", mosipActiveMq.getUsername(), mosipActiveMq.getPassword(),
-					mosipActiveMq.getBrokerUrl());
+			try {
+				this.connection = mosipActiveMq.getActiveMQConnectionFactory().createConnection();
+			} catch (JMSException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		if (session == null) {
 			try {
@@ -61,6 +49,13 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipActiveMq, byte[
 	@Override
 	public Boolean send(MosipActiveMq mosipActiveMq, byte[] message, String address) {
 		boolean flag = false;
+		ActiveMQConnectionFactory activeMQConnectionFactory = mosipActiveMq.getActiveMQConnectionFactory();
+		if(activeMQConnectionFactory==null) {
+			System.out.println("Problem");
+		}
+		else {
+			setup(mosipActiveMq, address);
+		}
 		if (destination == null) {
 			setup(mosipActiveMq, address);
 		} else {

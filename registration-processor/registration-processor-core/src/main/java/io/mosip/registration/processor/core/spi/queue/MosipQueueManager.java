@@ -3,10 +3,10 @@ package io.mosip.registration.processor.core.spi.queue;
 /**
  * @author Pranav Kumar
  * 
+ * @param <T> Type Of Queue
  * @param <V> Type of Message
- * @param <Q> Type Of Queue
  */
-public interface MosipQueueManager<T, V, Q> extends MosipQueueConnectionFactory<Q> {
+public interface MosipQueueManager<T, V>{
 
 	/**
 	 * This method sends a message on a given Address
