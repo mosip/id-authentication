@@ -160,10 +160,10 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 				vidEntityObj.setUin(uin);
 				vidEntityObj.setActive(true);
 				vidEntityObj.setCreatedBy("IDA");
-				vidEntityObj.setCreatedDTimes(LocalDateTime.now());
+				vidEntityObj.setCreatedDTimes(DateUtils.getUTCCurrentDateTime());
 				vidEntityObj.setExpiryDate(
-						LocalDateTime.now().plusHours(env.getProperty("mosip.vid.validity.hours", Long.class)));
-				vidEntityObj.setGeneratedOn(LocalDateTime.now());
+						DateUtils.getUTCCurrentDateTime().plusHours(env.getProperty("mosip.vid.validity.hours", Long.class)));
+				vidEntityObj.setGeneratedOn(DateUtils.getUTCCurrentDateTime());
 				vidEntityObj.setDeleted(false);
 				try {
 					vidRepository.save(vidEntityObj);
@@ -177,7 +177,7 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 
 			else {
 				vidEntityObj = vidEntityList.get(0);
-				if (vidEntityObj.isActive() && vidEntityObj.getExpiryDate().isAfter(LocalDateTime.now())) {
+				if (vidEntityObj.isActive() && vidEntityObj.getExpiryDate().isAfter(DateUtils.getUTCCurrentDateTime())) {
 					throw new IDDataValidationException(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED, vidEntityObj.getId());
 				}
 
@@ -209,6 +209,11 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 		auditHelper.audit(AuditModules.VID_GENERATION_REQUEST, AuditEvents.VID_GENERATE_REQUEST_RESPONSE,
 				IdType.UIN.getType(),IdType.UIN, desc);
 		return vidResponseDTO;
+	}
+	
+	
+	public void generateVIDTest() {
+		
 	}
 
 }
