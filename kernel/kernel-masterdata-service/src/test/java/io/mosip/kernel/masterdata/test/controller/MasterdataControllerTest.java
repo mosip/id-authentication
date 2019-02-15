@@ -265,7 +265,7 @@ public class MasterdataControllerTest {
 		registrationCenter.setHolidayLocationCode("KAR");
 		registrationCenter.setLocationCode("LOC");
 		registrationCenter.setId("REG_CR_001");
-		registrationCenter.setLanguageCode("eng");
+		registrationCenter.setLangCode("eng");
 		registrationCenter.setWorkingHours("9");
 		registrationCenter.setLatitude("12.87376");
 		registrationCenter.setLongitude("12.76372");

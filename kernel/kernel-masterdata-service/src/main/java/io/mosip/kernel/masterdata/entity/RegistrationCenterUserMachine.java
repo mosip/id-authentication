@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -54,14 +55,23 @@ public class RegistrationCenterUserMachine extends BaseEntity implements Seriali
 	private String machineId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "regcntr_id", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumns({
+		@JoinColumn(name = "regcntr_id", referencedColumnName = "id", insertable = false, updatable = false),
+		@JoinColumn(name = "lang_code", referencedColumnName = "langCode", insertable = false, updatable = false)
+		})
 	private RegistrationCenter registrationCenter;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "usr_id", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumns({
+		@JoinColumn(name = "usr_id", referencedColumnName = "id", insertable = false, updatable = false),
+		@JoinColumn(name = "lang_code", referencedColumnName = "langCode", insertable = false, updatable = false)
+	})
 	private UserDetails userDetails;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "machine_id", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumns({
+		@JoinColumn(name = "machine_id", referencedColumnName = "id", insertable = false, updatable = false),
+		@JoinColumn(name = "lang_code", referencedColumnName = "langCode", insertable = false, updatable = false)
+	})
 	private Machine machine;
 }

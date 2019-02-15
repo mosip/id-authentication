@@ -613,7 +613,7 @@ public class MasterDataServiceTest {
 		registrationCenter.setName("bangalore");
 		registrationCenter.setLatitude("12.9180722");
 		registrationCenter.setLongitude("77.5028792");
-		registrationCenter.setLanguageCode("ENG");
+		registrationCenter.setLangCode("ENG");
 	}
 
 	private void registrationCenterMachineDeviceHistorySetup() {

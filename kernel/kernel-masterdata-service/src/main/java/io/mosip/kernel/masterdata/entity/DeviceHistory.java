@@ -33,9 +33,12 @@ public class DeviceHistory extends BaseEntity implements Serializable {
 
 	@Id
 	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
-			@AttributeOverride(name = "effectDateTime", column = @Column(name = "eff_dtimes", nullable = false)) })
+			@AttributeOverride(name = "effectDateTime", column = @Column(name = "eff_dtimes", nullable = false)),
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length=3))
+	})
 	private String id;
 	private LocalDateTime effectDateTime;
+	private String langCode;
 
 	/**
 	 * Field for device name
@@ -67,11 +70,11 @@ public class DeviceHistory extends BaseEntity implements Serializable {
 	@Column(name = "dspec_id", nullable = false, length = 36)
 	private String deviceSpecId;
 
-	/**
+/*	*//**
 	 * Field for language code
-	 */
+	 *//*
 	@Column(name = "lang_code", nullable = false, length = 3)
-	private String langCode;
+	private String langCode;*/
 
 	@Column(name = "validity_end_dtimes")
 	private LocalDateTime validityDateTime;
