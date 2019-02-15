@@ -31,7 +31,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "user_detail", schema = "master")
-@IdClass(IdAndLanguageCodeID.class)
+//@IdClass(IdAndLanguageCodeID.class)
 public class UserDetails extends BaseEntity implements Serializable {
 
 	/**
@@ -39,21 +39,21 @@ public class UserDetails extends BaseEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = -8541947587557590379L;
 	
-	@Id
+	/*@Id
 	@AttributeOverrides({
 			@AttributeOverride(name="id", column = @Column(name="id", nullable = false, length = 10)),
 			@AttributeOverride(name="langCode", column = @Column(name="lang_code", nullable = false, length = 3)) })
 	private String id;
-	private String langCode;
+	private String langCode;*/
 
 
 	
-	/*@Id
+	@Id
 	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 	
 	@Column(name = "lang_code",nullable = false, length = 3)
-	private String langlangCode;*/
+	private String langCode;
 
 	
 	@Column(name = "uin", length = 28)

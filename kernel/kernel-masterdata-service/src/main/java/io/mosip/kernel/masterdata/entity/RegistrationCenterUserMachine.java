@@ -53,6 +53,9 @@ public class RegistrationCenterUserMachine extends BaseEntity implements Seriali
 	private String cntrId;
 	private String usrId;
 	private String machineId;
+	
+	@Column(name = "lang_code", nullable = false, length = 3)
+	private String langCode;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
@@ -63,8 +66,8 @@ public class RegistrationCenterUserMachine extends BaseEntity implements Seriali
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
-		@JoinColumn(name = "usr_id", referencedColumnName = "id", insertable = false, updatable = false),
-		@JoinColumn(name = "lang_code", referencedColumnName = "langCode", insertable = false, updatable = false)
+		@JoinColumn(name = "usr_id", referencedColumnName = "id", insertable = false, updatable = false)
+		//@JoinColumn(name = "lang_code", referencedColumnName = "langCode", insertable = false, updatable = false)
 	})
 	private UserDetails userDetails;
 
