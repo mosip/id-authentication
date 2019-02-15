@@ -60,21 +60,21 @@ public class RegistrationCenterUserMachine extends BaseEntity implements Seriali
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
 		@JoinColumn(name = "regcntr_id", referencedColumnName = "id", insertable = false, updatable = false),
-		@JoinColumn(name = "lang_code", referencedColumnName = "langCode", insertable = false, updatable = false)
+		@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false)
 		})
 	private RegistrationCenter registrationCenter;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
 		@JoinColumn(name = "usr_id", referencedColumnName = "id", insertable = false, updatable = false)
-		//@JoinColumn(name = "lang_code", referencedColumnName = "langCode", insertable = false, updatable = false)
+		//@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false)
 	})
 	private UserDetails userDetails;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
 		@JoinColumn(name = "machine_id", referencedColumnName = "id", insertable = false, updatable = false),
-		@JoinColumn(name = "lang_code", referencedColumnName = "langCode", insertable = false, updatable = false)
+		@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false)
 	})
 	private Machine machine;
 }
