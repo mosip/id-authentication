@@ -47,7 +47,6 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		//invalid data=any data returnes null
 	
 	@Test
-	@Ignore
 	public void masterSync_verify_getMasterSync_getErrorResponseDTOs() {
 //this test validates the message when sync is failed
 		// mastersyncservice.getMasterSync(masterSyncDetails);
