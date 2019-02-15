@@ -15,8 +15,8 @@ ENV active_profile_env=${active_profile}
 # environment variable to pass github branch to pickup configuration from, at docker runtime
 ENV spring_config_label_env=${spring_config_label}
 
-copy ./target/pre-registration-auth-service-*.jar pre-registration-auth-service.jar
+copy ./target/pre-registration-batchjob-*.jar pre-registration-batchjob.jar
 
-EXPOSE 9090
+EXPOSE 9097
 
-CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-jar","pre-registration-auth-service.jar"] 
+CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-jar","pre-registration-batchjob.jar"] 

@@ -34,7 +34,7 @@ public class SyncHandlerControllerAdvice {
 	
 	@ExceptionHandler(DataNotFoundException.class)
 	public ResponseEntity<ErrorResponse<Error>> controlDataNotFoundException(final DataNotFoundException e) {
-		return new ResponseEntity<>(getErrorResponse(e,HttpStatus.NOT_FOUND),HttpStatus.NOT_FOUND); 
+		return new ResponseEntity<>(getErrorResponse(e,HttpStatus.OK),HttpStatus.OK); 
 	}
 
 	private ErrorResponse<Error> getErrorResponse(BaseUncheckedException e,HttpStatus httpStatus) {
