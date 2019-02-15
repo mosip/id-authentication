@@ -104,7 +104,7 @@ public class Device extends BaseEntity implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({ 
 		@JoinColumn(name = "dspec_id", referencedColumnName = "id", insertable = false, updatable = false), 
-		@JoinColumn(name = "lang_code", referencedColumnName = "langCode", insertable = false, updatable = false)})
+		@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false)})
 	private DeviceSpecification deviceSpecification;
 
 }

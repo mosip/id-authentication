@@ -51,7 +51,7 @@ public class Machine extends BaseEntity implements Serializable {
 			@AttributeOverride(name="id", column = @Column(name="id", nullable = false, length = 10)),
 			@AttributeOverride(name="langCode", column = @Column(name="lang_code", nullable = false, length = 3)) })
 	private String id;
-	@Column(name= "lang_code", nullable = false, length = 3)
+	//@Column(name= "lang_code", nullable = false, length = 3)
 	private String langCode;
 
 	/**
@@ -107,7 +107,7 @@ public class Machine extends BaseEntity implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({ 
 		@JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false),
-		@JoinColumn(name = "lang_code", referencedColumnName = "langCode", insertable = false, updatable = false) })
+		@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	private MachineSpecification machineSpecification;
 	
 	
