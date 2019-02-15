@@ -34,7 +34,6 @@ import io.mosip.registration.service.device.impl.FingerPrintCaptureServiceImpl;
 
 public class FingerPrintServiceTest extends BaseIntegrationTest
 {	
-
 	@Autowired
 	private FingerPrintCaptureServiceImpl fingerprintservice;
 	@Autowired

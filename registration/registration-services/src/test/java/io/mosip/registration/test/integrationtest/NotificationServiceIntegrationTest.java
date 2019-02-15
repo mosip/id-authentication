@@ -26,7 +26,6 @@ public class NotificationServiceIntegrationTest extends BaseIntegrationTest{
 	 *
 	 *Validating whether Notification service is working as expected for invalid and valid inputs
 	 */
-	
 	@Autowired
 	NotificationService notifiserviceTest;
 	
