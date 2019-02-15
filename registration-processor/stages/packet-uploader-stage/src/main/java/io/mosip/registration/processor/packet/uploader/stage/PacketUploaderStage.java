@@ -25,7 +25,7 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
-import io.mosip.registration.processor.packet.uploader.exception.DFSNotAccessibleException;
+import io.mosip.registration.processor.packet.uploader.exception.FSAdapterException;
 import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -58,10 +58,6 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	/** The registration status service. */
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
-
-	/** The adapter. */
-	// @Autowired
-	// private FileSystemAdapter<InputStream, Boolean> adapter;
 
 	@Autowired
 	private FileSystemAdapter hdfsAdapter;
@@ -152,6 +148,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			packetArchiver.archivePacket(dto.getRegistrationId());
 			String filepath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_DEC.toString()) + File.separator
 					+ dto.getRegistrationId() + ".zip";
+
 			File file = new File(filepath);
 			InputStream decryptedData = new FileInputStream(file);
 			sendToDFS(dto, decryptedData);
@@ -180,11 +177,9 @@ public class PacketUploaderStage extends MosipVerticleManager {
 
 			hdfsAdapter.storePacket(registrationId, decryptedData);
 			hdfsAdapter.unpackPacket(registrationId);
-			// adapter.storePacket(registrationId, decryptedData);
-			// adapter.unpackPacket(registrationId);
 
 			if (hdfsAdapter.isPacketPresent(registrationId)) {
-				// if (adapter.isPacketPresent(registrationId)) {
+
 				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_DEC, registrationId);
 				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
 				fileManager.deleteFolder(DirectoryPathDto.VIRUS_SCAN_UNPACK, registrationId);
@@ -201,9 +196,9 @@ public class PacketUploaderStage extends MosipVerticleManager {
 						PlatformErrorMessages.RPR_PUM_PACKET_DELETION_INFO.getMessage());
 
 			}
-		} catch (DFSNotAccessibleException e) {
+		} catch (FSAdapterException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_DFS.name() + e.getMessage());
+					registrationId, PlatformErrorMessages.RPR_PUM_PACKET_STORE_NOT_ACCESSIBLE.name() + e.getMessage());
 
 			description = "FileSytem is not accessible for packet " + registrationId;
 		} catch (IOException e) {
