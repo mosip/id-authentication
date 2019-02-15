@@ -41,7 +41,9 @@ public class RegistrationCenterHistory extends BaseEntity implements Serializabl
 	@Id
 	@AttributeOverrides({
 			@AttributeOverride(name = "id", column = @Column(name = "id", nullable = false,length = 36)),
-			@AttributeOverride(name = "effectivetimes", column = @Column(name = "eff_dtimes", nullable = false))})
+			@AttributeOverride(name = "effectivetimes", column = @Column(name = "eff_dtimes", nullable = false)),
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length=3))
+			})
 	
 	private String id;
 	
