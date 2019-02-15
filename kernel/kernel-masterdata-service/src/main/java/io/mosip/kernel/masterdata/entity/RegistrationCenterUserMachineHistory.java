@@ -67,4 +67,7 @@ public class RegistrationCenterUserMachineHistory extends BaseEntity implements 
 	 * Effective TimeStamp
 	 */
 	private LocalDateTime effectivetimes;
+	
+	@Column(name = "lang_code", nullable = false, length = 3)
+	private String langCode;
 }
