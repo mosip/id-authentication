@@ -128,7 +128,7 @@ public class OSIValidator {
 	public boolean isValidOSI(String registrationId) throws IOException, ApisResourceAccessException {
 		boolean isValidOsi = false;
 		RegOsiDto regOsi = packetInfoManager.getOsi(registrationId);
-		if (((isValidOperator(regOsi, registrationId)) || (isValidSupervisor(regOsi, registrationId)))
+		if (((isValidOperator(regOsi, registrationId)) &&(isValidSupervisor(regOsi, registrationId)))
 				&& (isValidIntroducer(regOsi, registrationId)))
 			isValidOsi = true;
 		return isValidOsi;
@@ -174,7 +174,7 @@ public class OSIValidator {
 				return flag;
 			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
 					&& (validateIris(uin, iris, irisType, registrationId)) && (validateFace(uin, face, registrationId))
-					&& (validatePin(uin, pin))) {
+					&& (validatePin(uin, pin))&& validateOtpAndPwd(officerPassword, officerOTPAuthentication)) {
 				return true;
 			}
 		}
@@ -240,7 +240,7 @@ public class OSIValidator {
 				return flag;
 			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
 					&& (validateIris(uin, iris, irisType, registrationId)) && (validateFace(uin, face, registrationId))
-					&& (validatePin(uin, pin))) {
+					&& (validatePin(uin, pin))&& validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication)) {
 				return true;
 			}
 		}
@@ -501,7 +501,7 @@ public class OSIValidator {
 	}
 
 	boolean validateOtpAndPwd(String password, String otp) {
-		if (password.equals(TRUE) || otp.equals(TRUE)) {
+		if (password!=null && password.equals(TRUE) || otp!=null && otp.equals(TRUE)) {
 			return true;
 		} else {
 			return false;

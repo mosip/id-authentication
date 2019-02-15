@@ -84,6 +84,10 @@ public class UMCValidator {
 
 	/** The identity iterator util. */
 	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
+	
+	private static final String NO_DEVICE_HISTORY_FOUND= "no device history found for device : ";
+	
+	private static final String IS_DEVICE_MAPPED_WITH_CENTER = "no center found for device : ";
 
 	/** The identity. */
 	Identity identity;
@@ -446,7 +450,10 @@ public class UMCValidator {
 								RegistrationCenterDeviceHistoryResponseDto.class);
 				isDeviceMappedWithCenter = validateDeviceMappedWithCenterResponse(
 						registrationCenterDeviceHistoryResponseDto, deviceId, rcmDto.getRegcntrId(), rcmDto.getRegId());
-
+if(!isDeviceMappedWithCenter) {
+	registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE+IS_DEVICE_MAPPED_WITH_CENTER+deviceId);
+	break;
+}
 			} catch (ApisResourceAccessException e) {
 				if (e.getCause() instanceof HttpClientErrorException) {
 					HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
@@ -525,6 +532,11 @@ public class UMCValidator {
 						.getApi(ApiName.DEVICESHISTORIES, pathsegments, "", "", DeviceHistoryResponseDto.class);
 
 				isDeviceActive = validateDeviceResponse(deviceHistoryResponsedto, deviceId, rcmDto.getRegId());
+				if(!isDeviceActive) {
+					registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE+NO_DEVICE_HISTORY_FOUND+deviceId);
+					break;
+
+				}
 			} catch (ApisResourceAccessException e) {
 				if (e.getCause() instanceof HttpClientErrorException) {
 					HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
