@@ -1,6 +1,9 @@
 package io.mosip.kernel.syncdata.controller;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.ConfigDto;
 import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
@@ -63,19 +67,21 @@ public class SyncDataController {
 
 	@Autowired
 	SyncUserDetailsService syncUserDetailsService;
+	
+	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
 	/**
 	 * This API method would fetch all synced global config details from server
 	 * 
 	 * @return JSONObject - global config response
 	 */
-	
+
 	@ApiOperation(value = "API to sync global config details")
 	@GetMapping(value = "/configs")
 	public JSONObject getConfigDetails() {
 		return syncConfigDetailsService.getConfigDetails();
 	}
-	
+
 	/**
 	 * This API method would fetch all synced global config details from server
 	 * 
@@ -129,6 +135,8 @@ public class SyncDataController {
 			@RequestParam(value = "lastUpdated", required = false) String lastUpdated)
 			throws InterruptedException, ExecutionException {
 		LocalDateTime timestamp = null;
+		
+		LocalDateTime currentTimeStamp=LocalDateTime.now(ZoneOffset.UTC);
 		if (lastUpdated != null) {
 			try {
 				timestamp = MapperUtils.parseToLocalDateTime(lastUpdated);
@@ -137,11 +145,15 @@ public class SyncDataController {
 						e.getMessage());
 			}
 		}
-		return masterDataService.syncData(machineId, timestamp);
+		MasterDataResponseDto masterDataResponseDto = masterDataService.syncData(machineId, timestamp,
+				currentTimeStamp);
+        masterDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
+		return masterDataResponseDto;
 	}
 
 	/**
 	 * API will fetch all roles from Auth server
+	 * 
 	 * @return RolesResponseDto
 	 */
 	@GetMapping("/roles")
@@ -160,7 +172,7 @@ public class SyncDataController {
 	public SyncUserDetailDto getUserDetails(@PathVariable("regid") String regId) {
 		return syncUserDetailsService.getAllUserDetail(regId);
 	}
-	
+
 	/**
 	 * Request mapping to get Public Key
 	 * 
@@ -172,11 +184,12 @@ public class SyncDataController {
 	 *            Reference id of the application requesting publicKey
 	 * @return {@link PublicKeyResponse} instance
 	 */
-	@ApiOperation(value = "Get the public key of a particular application",response = PublicKeyResponse.class)
+	@ApiOperation(value = "Get the public key of a particular application", response = PublicKeyResponse.class)
 	@GetMapping(value = "/publickey/{applicationId}")
-	public ResponseEntity<PublicKeyResponse<String>> getPublicKey(@ApiParam("Id of application")@PathVariable("applicationId") String applicationId,
-			@ApiParam("Timestamp as metadata")	@RequestParam("timeStamp") String timeStamp,
-			@ApiParam("Refrence Id as metadata")@RequestParam("referenceId")  Optional<String>referenceId) {
+	public ResponseEntity<PublicKeyResponse<String>> getPublicKey(
+			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
+			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timeStamp,
+			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
 
 		return new ResponseEntity<>(syncConfigDetailsService.getPublicKey(applicationId, timeStamp, referenceId),
 				HttpStatus.OK);

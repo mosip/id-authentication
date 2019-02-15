@@ -24,6 +24,7 @@ import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 public class SyncHandlerControllerAdvice {
 	@ExceptionHandler(SyncDataServiceException.class)
 	public ResponseEntity<ErrorResponse<Error>> controlDataServiceException(final SyncDataServiceException e) {
+		e.printStackTrace();
 		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
@@ -56,6 +57,7 @@ public class SyncHandlerControllerAdvice {
 	
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ErrorResponse<ServiceError>> defaultErrorHandler(HttpServletRequest request, Exception e) {
+		e.printStackTrace();
 		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 		ServiceError error = new ServiceError(MasterDataErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), e.getMessage());
 		errorResponse.getErrors().add(error);

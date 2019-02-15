@@ -26,8 +26,8 @@ public interface RegistrationCenterDeviceRepository
 	@Query(value = "FROM RegistrationCenterDevice rd WHERE rd.registrationCenterDevicePk.regCenterId =?1 ")
 	List<RegistrationCenterDevice> findAllByRegistrationCenter(String registrationCenterId);
 
-	@Query(value = "FROM RegistrationCenterDevice rd WHERE rd.registrationCenterDevicePk.regCenterId =?1 AND (rd.createdDateTime > ?2 OR rd.updatedDateTime > ?2 OR rd.deletedDateTime > ?2)")
+	@Query(value = "FROM RegistrationCenterDevice rd WHERE rd.registrationCenterDevicePk.regCenterId =?1 AND (rd.createdDateTime > ?2 AND rd.createdDateTime<=?3) OR (rd.updatedDateTime > ?2 AND rd.updatedDateTime <=?3) OR (rd.deletedDateTime > ?2 AND rd.deletedDateTime<=?3)")
 	List<RegistrationCenterDevice> findAllLatestByRegistrationCenterCreatedUpdatedDeleted(String regId,
-			LocalDateTime lastUpdated);
+			LocalDateTime lastUpdated,LocalDateTime currentTimeStamp);
 
 }

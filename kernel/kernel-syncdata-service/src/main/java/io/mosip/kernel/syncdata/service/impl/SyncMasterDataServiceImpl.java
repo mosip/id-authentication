@@ -64,7 +64,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	 */
 
 	@Override
-	public MasterDataResponseDto syncData(String machineId, LocalDateTime lastUpdated)
+	public MasterDataResponseDto syncData(String machineId, LocalDateTime lastUpdated,LocalDateTime currentTimeStamp)
 			throws InterruptedException, ExecutionException {
 		MasterDataResponseDto response = new MasterDataResponseDto();
 		CompletableFuture<List<ApplicationDto>> applications = null;
@@ -100,41 +100,41 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		CompletableFuture<List<RegistrationCenterUserMachineMappingDto>> registrationCenterUserMachines = null;
 		CompletableFuture<List<RegistrationCenterUserDto>> registrationCenterUsers = null;
 
-		applications = serviceHelper.getApplications(lastUpdated);
-		machineDetails = serviceHelper.getMachines(machineId, lastUpdated);
-		registrationCenters = serviceHelper.getRegistrationCenter(machineId, lastUpdated);
-		registrationCenterTypes = serviceHelper.getRegistrationCenterType(machineId, lastUpdated);
-		templates = serviceHelper.getTemplates(lastUpdated);
-		templateFileFormats = serviceHelper.getTemplateFileFormats(lastUpdated);
-		reasonCategory = serviceHelper.getReasonCategory(lastUpdated);
-		holidays = serviceHelper.getHolidays(lastUpdated, machineId);
-		blacklistedWords = serviceHelper.getBlackListedWords(lastUpdated);
-		biometricTypes = serviceHelper.getBiometricTypes(lastUpdated);
-		biometricAttributes = serviceHelper.getBiometricAttributes(lastUpdated);
-		titles = serviceHelper.getTitles(lastUpdated);
-		languages = serviceHelper.getLanguages(lastUpdated);
-		genders = serviceHelper.getGenders(lastUpdated);
-		devices = serviceHelper.getDevices(machineId, lastUpdated);
-		documentCategories = serviceHelper.getDocumentCategories(lastUpdated);
-		documentTypes = serviceHelper.getDocumentTypes(lastUpdated);
-		idTypes = serviceHelper.getIdTypes(lastUpdated);
-		deviceSpecifications = serviceHelper.getDeviceSpecifications(machineId, lastUpdated);
-		locationHierarchy = serviceHelper.getLocationHierarchy(lastUpdated);
-		machineSpecification = serviceHelper.getMachineSpecification(machineId, lastUpdated);
-		machineType = serviceHelper.getMachineType(machineId, lastUpdated);
-		templateTypes = serviceHelper.getTemplateTypes(lastUpdated);
-		deviceTypes = serviceHelper.getDeviceType(machineId, lastUpdated);
-		validDocumentsMapping = serviceHelper.getValidDocuments(lastUpdated);
-		reasonList = serviceHelper.getReasonList(lastUpdated);
+		applications = serviceHelper.getApplications(lastUpdated,currentTimeStamp);
+		machineDetails = serviceHelper.getMachines(machineId, lastUpdated,currentTimeStamp);
+		registrationCenters = serviceHelper.getRegistrationCenter(machineId, lastUpdated,currentTimeStamp);
+		registrationCenterTypes = serviceHelper.getRegistrationCenterType(machineId, lastUpdated,currentTimeStamp);
+		templates = serviceHelper.getTemplates(lastUpdated,currentTimeStamp);
+		templateFileFormats = serviceHelper.getTemplateFileFormats(lastUpdated,currentTimeStamp);
+		reasonCategory = serviceHelper.getReasonCategory(lastUpdated,currentTimeStamp);
+		holidays = serviceHelper.getHolidays(lastUpdated, machineId,currentTimeStamp);
+		blacklistedWords = serviceHelper.getBlackListedWords(lastUpdated,currentTimeStamp);
+		biometricTypes = serviceHelper.getBiometricTypes(lastUpdated,currentTimeStamp);
+		biometricAttributes = serviceHelper.getBiometricAttributes(lastUpdated,currentTimeStamp);
+		titles = serviceHelper.getTitles(lastUpdated,currentTimeStamp);
+		languages = serviceHelper.getLanguages(lastUpdated,currentTimeStamp);
+		genders = serviceHelper.getGenders(lastUpdated,currentTimeStamp);
+		devices = serviceHelper.getDevices(machineId, lastUpdated,currentTimeStamp);
+		documentCategories = serviceHelper.getDocumentCategories(lastUpdated,currentTimeStamp);
+		documentTypes = serviceHelper.getDocumentTypes(lastUpdated,currentTimeStamp);
+		idTypes = serviceHelper.getIdTypes(lastUpdated,currentTimeStamp);
+		deviceSpecifications = serviceHelper.getDeviceSpecifications(machineId, lastUpdated,currentTimeStamp);
+		locationHierarchy = serviceHelper.getLocationHierarchy(lastUpdated,currentTimeStamp);
+		machineSpecification = serviceHelper.getMachineSpecification(machineId, lastUpdated,currentTimeStamp);
+		machineType = serviceHelper.getMachineType(machineId, lastUpdated,currentTimeStamp);
+		templateTypes = serviceHelper.getTemplateTypes(lastUpdated,currentTimeStamp);
+		deviceTypes = serviceHelper.getDeviceType(machineId, lastUpdated,currentTimeStamp);
+		validDocumentsMapping = serviceHelper.getValidDocuments(lastUpdated,currentTimeStamp);
+		reasonList = serviceHelper.getReasonList(lastUpdated,currentTimeStamp);
 
-		registrationCenterMachines = serviceHelper.getRegistrationCenterMachines(machineId, lastUpdated);
+		registrationCenterMachines = serviceHelper.getRegistrationCenterMachines(machineId, lastUpdated,currentTimeStamp);
 		List<RegistrationCenterMachineDto> registrationCenterMachineDto = registrationCenterMachines.get();
 
 		String regId = getRegistrationCenterId(registrationCenterMachineDto);
-		registrationCenterDevices = serviceHelper.getRegistrationCenterDevices(regId, lastUpdated);
-		registrationCenterMachineDevices = serviceHelper.getRegistrationCenterMachineDevices(regId, lastUpdated);
-		registrationCenterUserMachines = serviceHelper.getRegistrationCenterUserMachines(regId, lastUpdated);
-		registrationCenterUsers = serviceHelper.getRegistrationCenterUsers(regId, lastUpdated);
+		registrationCenterDevices = serviceHelper.getRegistrationCenterDevices(regId, lastUpdated,currentTimeStamp);
+		registrationCenterMachineDevices = serviceHelper.getRegistrationCenterMachineDevices(regId, lastUpdated,currentTimeStamp);
+		registrationCenterUserMachines = serviceHelper.getRegistrationCenterUserMachines(regId, lastUpdated,currentTimeStamp);
+		registrationCenterUsers = serviceHelper.getRegistrationCenterUsers(regId, lastUpdated,currentTimeStamp);
 
 		CompletableFuture
 				.allOf(applications, machineDetails, registrationCenterTypes, registrationCenters, templates,

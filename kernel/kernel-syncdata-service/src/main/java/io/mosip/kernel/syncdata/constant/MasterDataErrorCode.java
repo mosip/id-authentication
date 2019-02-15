@@ -37,6 +37,7 @@ public enum MasterDataErrorCode {
 	REG_CENTER_USER_MACHINE_DEVICE_FETCH_EXCEPTION("KER-SNC-132","Error occurred while fetching Registration Center Machine Device"), 
 	REG_CENTER_USER_FETCH_EXCEPTION("KER-SYNC-133","Error occurred while fetching Registration Center User"),
 	INTERNAL_SERVER_ERROR("KER-SYNC-500","Internal server error");
+	
 
 	private final String errorCode;
 	private final String errorMessage;

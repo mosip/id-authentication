@@ -21,9 +21,9 @@ import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineUserID;
 public interface RegistrationCenterUserMachineRepository
 		extends BaseRepository<RegistrationCenterUserMachine, RegistrationCenterMachineUserID> {
 
-	@Query("FROM RegistrationCenterUserMachine rcum WHERE rcum.cntrId=?1 AND (rcum.createdDateTime > ?2 OR rcum.updatedDateTime > ?2 OR rcum.deletedDateTime > ?2)")
+	@Query("FROM RegistrationCenterUserMachine rcum WHERE rcum.cntrId=?1 AND (rcum.createdDateTime > ?2 AND rcum.createdDateTime<=?3) OR (rcum.updatedDateTime > ?2 AND rcum.updatedDateTime <=?3) OR (rcum.deletedDateTime > ?2 AND rcum.deletedDateTime<=?3)")
 	List<RegistrationCenterUserMachine> findAllByRegistrationCenterIdCreatedUpdatedDeleted(String regId,
-			LocalDateTime lastUpdated);
+			LocalDateTime lastUpdated,LocalDateTime currentTimeStamp);
 
 	@Query("FROM RegistrationCenterUserMachine rcum WHERE rcum.cntrId=?1")
 	List<RegistrationCenterUserMachine> findAllByRegistrationCenterId(String regId);
