@@ -233,17 +233,24 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 *
 	 * @param idMapping the id mapping
 	 * @return the id mapping value
+	 * @throws IdAuthenticationBusinessException 
 	 */
-	public List<String> getIdMappingValue(IdMapping idMapping) {
+	public List<String> getIdMappingValue(IdMapping idMapping) throws IdAuthenticationBusinessException {
 		List<String> mappings = idMapping.getMappingFunction().apply(idMappingConfig);
 		List<String> fullMapping = new ArrayList<>();
 		for (String mappingStr : mappings) {
+			if(!Objects.isNull(mappingStr) && !mappingStr.isEmpty()) {
 			Optional<IdMapping> mappingInternal = IdMapping.getIdMapping(mappingStr, IdaIdMapping.values());
 			if (mappingInternal.isPresent() && idMapping != mappingInternal.get()) {
 				List<String> internalMapping = getIdMappingValue(mappingInternal.get());
 				fullMapping.addAll(internalMapping);
 			} else {
 				fullMapping.add(mappingStr);
+			}
+		}
+			else {
+				//TODO should add proper error
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING);
 			}
 		}
 		return fullMapping;

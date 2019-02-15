@@ -127,10 +127,10 @@ public class OTPFacadeImpl implements OTPFacade {
 			AutnTxn authTxn = createAuthTxn(idvId, idvIdType, uin, reqTime, txnId, status, comment,
 					RequestType.OTP_REQUEST);
 			idAuthService.saveAutnTxn(authTxn);
-			mosipLogger.error("SessionId", "NA", "NA", "OTP Generation failed");
+			mosipLogger.error(SESSION_ID, this.getClass().getName(), this.getClass().getName(), "OTP Generation failed");
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 		} else {
-			mosipLogger.info("NA", "NA", "NA", "generated OTP is: " + otp);
+			mosipLogger.error(SESSION_ID, this.getClass().getName(), this.getClass().getName(), "generated OTP is: " + otp);
 			otpResponseDTO.setStatus("Y");
 			otpResponseDTO.setErr(Collections.emptyList());
 			otpResponseDTO.setTxnID(txnId);

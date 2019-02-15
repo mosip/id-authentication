@@ -154,7 +154,7 @@ public class MasterDataManager {
 		RestRequestDTO buildRequest = null;
 		Map<String, List<Map<String, String>>> response = null;
 		try {
-			buildRequest = restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null,
+			buildRequest = restFactory.buildRequest(RestServicesConstants.GENDER_TYPE_SERVICE, null,
 					Map.class);
 			response = restHelper.requestSync(buildRequest);
 			List<Map<String, String>> value = response.get("titleList");
