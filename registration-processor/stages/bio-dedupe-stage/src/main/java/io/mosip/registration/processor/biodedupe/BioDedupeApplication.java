@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.biodedupe;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import io.mosip.registration.processor.biodedupe.stage.BioDedupeStage;

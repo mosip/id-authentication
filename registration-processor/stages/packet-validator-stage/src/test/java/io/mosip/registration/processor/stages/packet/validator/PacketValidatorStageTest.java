@@ -32,12 +32,14 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
@@ -47,11 +49,9 @@ import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ExceptionJSONInfoDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDatasyncReponseDTO;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
@@ -77,7 +77,7 @@ public class PacketValidatorStageTest {
 
 	/** The filesystem ceph adapter impl. */
 	@Mock
-	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
+	private FileSystemAdapter filesystemCephAdapterImpl;
 
 	/** The registration status service. */
 	@Mock
@@ -178,13 +178,12 @@ public class PacketValidatorStageTest {
 		FieldValue isVerified = new FieldValue();
 		isVerified.setLabel("isVerified");
 		isVerified.setValue("Verified");
-		
+
 		FieldValue preRegistrationId = new FieldValue();
 		preRegistrationId.setLabel("preRegistrationId");
 		preRegistrationId.setValue("2018701130000410092018110736");
-		
 
-		identity.setMetaData(Arrays.asList(registrationType, applicantType, isVerified,preRegistrationId));
+		identity.setMetaData(Arrays.asList(registrationType, applicantType, isVerified, preRegistrationId));
 
 		Document documentPob = new Document();
 		documentPob.setDocumentCategory("PROOFOFDATEOFBIRTH");
@@ -271,7 +270,7 @@ public class PacketValidatorStageTest {
 		List<String> preRegIds = new ArrayList<>();
 		preRegIds.add("12345678");
 		preRegIds.add("123456789");
-		//Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(preRegIds);
+		// Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(preRegIds);
 		Mockito.when(restClientService.postApi(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(),
 				Matchers.any())).thenReturn(mainResponseDTO);
 
@@ -353,7 +352,7 @@ public class PacketValidatorStageTest {
 		List<String> sequence2 = new ArrayList<>();
 		sequence2.add("audit");
 		identity.setHashSequence2(sequence2);
-		
+
 		packetMetaInfo.setIdentity(identity);
 
 		PowerMockito.mockStatic(JsonUtil.class);
@@ -438,7 +437,7 @@ public class PacketValidatorStageTest {
 		List<String> sequence2 = new ArrayList<>();
 		sequence2.add("audit");
 		identity.setHashSequence2(sequence2);
-		
+
 		packetMetaInfo.setIdentity(identity);
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
@@ -633,7 +632,7 @@ public class PacketValidatorStageTest {
 
 	@Test
 	public void testPreRegIdsAreNull() {
-		//Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(null);
+		// Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(null);
 		MessageDTO messageDto = packetValidatorStage.process(dto);
 		assertTrue(messageDto.getIsValid());
 
@@ -680,7 +679,7 @@ public class PacketValidatorStageTest {
 		List<String> preRegIds = new ArrayList<>();
 		preRegIds.add("12345678");
 		preRegIds.add("123456789");
-		//Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(preRegIds);
+		// Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(preRegIds);
 		Mockito.when(restClientService.postApi(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(),
 				Matchers.any())).thenReturn(mainResponseDTO);
 
