@@ -46,8 +46,11 @@ public class RegistrationCenterHistory extends BaseEntity implements Serializabl
 			})
 	
 	private String id;
-	
+	private String langCode;
 	private LocalDateTime effectivetimes;
+	
+/*	//@Column(name = "lang_code", nullable = false, length = 3)
+	private String languageCode;*/
 
 	@Column(name = "name", nullable = false, length = 128)
 	private String name;
@@ -94,8 +97,6 @@ public class RegistrationCenterHistory extends BaseEntity implements Serializabl
 	@Column(name = "center_end_time")
 	private LocalTime centerEndTime;
 
-	@Column(name = "lang_code", nullable = false, length = 3)
-	private String languageCode;
 
 	@Column(name = "time_zone", length = 64)
 	private String timeZone;
