@@ -13,6 +13,12 @@ import io.mosip.registration.processor.core.queue.factory.MosipActiveMq;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 
+/**
+ * This class is ActiveMQ implementation for Mosip Queue
+ * 
+ * @author Mukul Puspam
+ * @since 0.0.1
+ */
 public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> {
 
 	private Connection connection;
@@ -39,7 +45,7 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 		}
 		if (this.destination == null) {
 			try {
-				this.session.createQueue(address);
+				this.destination = this.session.createQueue(address);
 			} catch (JMSException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -52,22 +58,21 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 		boolean flag = false;
 		MosipActiveMq mosipActiveMq = (MosipActiveMq) mosipQueue;
 		ActiveMQConnectionFactory activeMQConnectionFactory = mosipActiveMq.getActiveMQConnectionFactory();
-		if(activeMQConnectionFactory==null) {
+		if (activeMQConnectionFactory == null) {
 			System.out.println("Problem");
 		}
 		if (destination == null) {
 			setup(mosipActiveMq, address);
-		} else {
-			try {
-				MessageProducer messageProducer = session.createProducer(destination);
-				BytesMessage byteMessage = session.createBytesMessage();
-				byteMessage.writeObject(message);
-				messageProducer.send(byteMessage);
-				flag = true;
-			} catch (JMSException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		}
+		try {
+			MessageProducer messageProducer = session.createProducer(destination);
+			BytesMessage byteMessage = session.createBytesMessage();
+			byteMessage.writeObject(message);
+			messageProducer.send(byteMessage);
+			flag = true;
+		} catch (JMSException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return flag;
 	}

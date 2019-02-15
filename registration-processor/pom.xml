@@ -96,7 +96,7 @@
 
 		<!-- local -->
 		<registration.status.service.version>0.8.3</registration.status.service.version>
-		<registration.processor.core.version>0.8.3</registration.processor.core.version>
+		<registration.processor.core.version>0.8.6</registration.processor.core.version>
 		<filesystem.adapter.ceph.version>0.8.3</filesystem.adapter.ceph.version>
 		<packet.manager.version>0.8.3</packet.manager.version>
 		<registration.processor.rest.client.version>0.8.3</registration.processor.rest.client.version>
