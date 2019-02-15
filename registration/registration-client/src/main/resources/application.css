@@ -125,31 +125,7 @@
 	-fx-border-color: black;
 }
 
-.heading {
-	-fx-font-size: 16.0px;
-	-fx-text-fill: #FF4081;
-	-fx-font-family: Roboto;
-}
-
 .ackBackButton{
-	-fx-border-width: 1 1 1 1;
-	-fx-border-radius: 3,3,3,3;
-	-fx-pref-height: 2px;
-	-fx-background-color:#FFFFFF;
-	-fx-border-color: #FF4081;
-	-fx-font-family: Roboto;	
-}
-
-.approveButton {
-	-fx-border-width: 1 1 1 1;
-	-fx-border-radius: 3,3,3,3;
-	-fx-pref-height: 2px;
-	-fx-background-color: #FF4081;
-	-fx-text-fill: white;
-	-fx-font-family: Roboto;
-}
-
-.rejectButton{
 	-fx-border-width: 1 1 1 1;
 	-fx-border-radius: 3,3,3,3;
 	-fx-pref-height: 2px;
@@ -677,10 +653,6 @@
 #userClientMachineMappingEditPane {
        -fx-background-color:#f2f2f2;
 }            
-#imageAnchorPane{
-	 -fx-border-width: 1.0;
-	-fx-border-color: black;
-}
 
 /* Device Onboarding */
 .inputFields {
@@ -697,9 +669,7 @@
   	-fx-border-width: 0.0 0.0 1.0 0.0;
 }
 .imageAnchorPaneStyle{
-	-fx-background-color:#ffffff;
-	 -fx-border-width: 1.0;
-	-fx-border-color: black;
+	-fx-background-color:#F4F4F4;
 }
 .rootPaneStyle{
 	-fx-border-width: 1.0 1.0 1.0 1.0;
@@ -708,10 +678,7 @@
 .labelAnchorPanebgColor{
 	-fx-background-color:#808080;
 }
-.anchorPanebgColor{
-	-fx-background-color: #F0F0F0;
-	-fx-alignment: center ;
-}
+
 .comboboxStyle{
 	-fx-background-color:#ffffff;
 	-fx-border-width: 0.0 0.0 1.0 0.0;
@@ -724,18 +691,7 @@
     -fx-text-fill: black;
     -fx-font-size: 14.0px;
 }
-.tableData .table-column {
-	-fx-font-size: 12.0px;
-	-fx-alignment: CENTER;
-}
 
-.tableData {
-	-fx-font-family: Roboto;
-}
-#table,#pendingActionTable{
-	-fx-text-fill: black;
-    -fx-font-size: 14.0px;
-}
 #approvalAccordion .title > .arrow-button .arrow{
     -fx-translate-x: 870.0;
 }
@@ -753,34 +709,6 @@
     -fx-padding: 0.0 0.0 0.5em 0.0;
 }
 
-#table .scroll-bar:vertical > .increment-button,
-#table .scroll-bar:vertical > .decrement-button {
-    -fx-background-color: null;
-    -fx-background-radius: 0.0;
-    -fx-background-insets: 0.0;
-    -fx-padding: 0.0;
-}
-#table .scroll-bar:horizontal > .increment-button,
-#table .scroll-bar:horizontal > .decrement-button {
-    -fx-background-color: null;
-    -fx-background-radius: 0.0;
-    -fx-background-insets: 0.0;
-    -fx-padding: 0.0;
-}
-#pendingActionTable .scroll-bar:vertical > .increment-button,
-#pendingActionTable .scroll-bar:vertical > .decrement-button {
-    -fx-background-color: null;
-    -fx-background-radius: 0.0;
-    -fx-background-insets: 0.0;
-    -fx-padding: 0.0;
-}
-#pendingActionTable .scroll-bar:horizontal > .increment-button,
-#pendingActionTable .scroll-bar:horizontal > .decrement-button {
-    -fx-background-color: null;
-    -fx-background-radius: 0.0;
-    -fx-background-insets: 0.0;
-    -fx-padding: 0.0;
-} 
 
 #applicantImageHBox, #exceptionImageHBox {
 	-fx-border-color: black;
@@ -1400,4 +1328,97 @@ Working on new Css by taleev
 	-fx-border-color: #C9C9C9;
 	-fx-pref-height: 344px;	
 	-fx-pref-width: 750px;
+}
+
+.table-view {
+    -fx-table-cell-border-color: #FFFFFF;
+    -fx-border-width : 0 0 0 0;
+}
+.table-row-cell {
+    -fx-background-color: #FFFFFF;
+    -fx-background-insets: 0, 0 0 1 0;
+	-fx-pref-height : 45;
+	-fx-padding: 10 10 10 10;
+	-fx-pref-width : 35;
+    -fx-text-fill: #000000;
+    -fx-border-width : 0 0 1 0;
+    -fx-border-color : #000000;
+}
+
+.table-row-cell:focused{
+	-fx-border-width : 0 0 1 0;
+    -fx-border-color : #FF4081;
+    -fx-pref-height : 45;
+	-fx-padding: 10 10 10 10;
+	-fx-pref-width : 35;
+}
+
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:selected > .table-cell{
+	-fx-text-fill: #000000;
+    -fx-background-color: #FFFFFF;
+    -fx-border-width : 0 0 1 0;
+}
+
+.table-view .column-header{
+	-fx-text-fill: #666666;
+    -fx-background-color: #FFFFFF;
+    -fx-border-width : 0 0 1 0;
+    -fx-border-color : #E457A0;
+    -fx-padding : 0 0 0 10;	
+}
+
+.table-view .column-header .label{
+	    -fx-alignment: null;
+	    -fx-text-fill :#666666;
+	    -fx-font: 15px Roboto;
+}
+
+.table-view > .virtual-flow > .scroll-bar{
+	-fx-background-color : white;
+	
+}
+
+.table-view > .virtual-flow > .scroll-bar:vertical > .thumb {
+    -fx-background-color: white;
+}
+
+.pendingApprovalFooter{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 40px;	
+	-fx-pref-width: 1290px;
+}
+
+.approveRegistrationRootSubPane{
+	-fx-background-color:#F4F4F4;
+}
+
+.pendingApprovalHeader{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 39px;
+	-fx-pref-width: 1290px;
+}
+
+.approveButton {
+	-fx-border-width: 1 1 1 1;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-width : 150;
+	-fx-background-color: #FF4081;
+	-fx-text-fill: #FFFFFF;
+	-fx-font-family: Roboto;
+}
+
+.rejectButton{
+	-fx-border-width: 1 1 1 1;
+	-fx-border-radius: 3,3,3,3;
+	-fx-background-color:#FFFFFF;
+	-fx-border-color: #FF4081;
+	-fx-font-family: Roboto;
+	-fx-pref-width : 100;
+		
+}
+
+.heading {
+	-fx-font-size: 26.0px;
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
 }

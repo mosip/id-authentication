@@ -42,14 +42,18 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -154,6 +158,24 @@ public class RegistrationApprovalController extends BaseController implements In
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		reloadTableView();
+		tableCellColorChangeListener();
+	}
+
+	private void tableCellColorChangeListener() {
+		statusComment.setCellFactory(column ->{
+			return new TableCell<RegistrationApprovalDTO, String>(){
+				@Override
+	            public void updateItem(String item, boolean empty) {
+	                super.updateItem(item, empty);
+	                 setText(item);
+	                 if(item!=null && item.equals(RegistrationConstants.APPROVED)) {
+	                	 setTextFill(Color.GREEN);
+	                 }else if(item!=null && item.equals(RegistrationConstants.REJECTED)) {
+	                	 setTextFill(Color.RED);
+	                 }
+	            }
+			};
+		});
 	}
 
 	/**
@@ -161,7 +183,6 @@ public class RegistrationApprovalController extends BaseController implements In
 	 */
 	private void reloadTableView() {
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
-
 		approvalmapList = new ArrayList<>(5);
 		authenticateBtn.setDisable(true);
 		approvalBtn.setVisible(false);
