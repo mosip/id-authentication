@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -27,6 +28,7 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -85,7 +87,7 @@ public class PreRegistrationDataSyncServiceTest {
 	static Map<String, Object> preRegData = new HashMap<>();
 
 	@BeforeClass
-	public static void initialize() throws IOException, java.io.IOException {
+	public static void initialize() throws IOException, UnsupportedEncodingException {
 
 		URL url = PreRegistrationDataSyncServiceImpl.class.getResource("/preRegSample.zip");
 		File packetZipFile = new File(URLDecoder.decode(url.getFile(), "UTF-8"));
@@ -136,6 +138,8 @@ public class PreRegistrationDataSyncServiceTest {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
+		ReflectionTestUtils.setField(preRegistrationDataSyncServiceImpl, "isStubEnabled", "no");
+
 		mockEncryptedPacket();
 
 		preRegistrationDataSyncServiceImpl.getPreRegistrationIds("System");
@@ -162,6 +166,7 @@ public class PreRegistrationDataSyncServiceTest {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
+		ReflectionTestUtils.setField(preRegistrationDataSyncServiceImpl, "isStubEnabled", "no");
 		// Mockito.when(preRegistrationDAO.get(Mockito.anyString())).thenReturn(new
 		// PreRegistrationList());
 
@@ -181,6 +186,8 @@ public class PreRegistrationDataSyncServiceTest {
 				.thenThrow(HttpClientErrorException.class);
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
+
+		ReflectionTestUtils.setField(preRegistrationDataSyncServiceImpl, "isStubEnabled", "no");
 
 		preRegistrationDataSyncServiceImpl.getPreRegistration("70694681371453");
 
