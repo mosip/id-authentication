@@ -51,13 +51,13 @@ public class RegistrationCenterMachine extends BaseEntity implements Serializabl
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({ 
 		@JoinColumn(name = "machine_id", referencedColumnName = "id", insertable = false, updatable = false),
-		@JoinColumn(name = "lang_code", referencedColumnName = "langCode", insertable = false, updatable = false) })
+		@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	private Machine machine;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({ 
 		@JoinColumn(name = "regcntr_id", referencedColumnName = "id", insertable = false, updatable = false),
-		@JoinColumn(name = "lang_code", referencedColumnName = "langCode", insertable = false, updatable = false) })
+		@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	private RegistrationCenter registrationCenter;
 	
 	
