@@ -87,9 +87,9 @@ public enum PlatformErrorMessages {
 	/** The rpr pis unable to insert data. */
 	RPR_PIS_UNABLE_TO_INSERT_DATA(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "003",
 			"Unable to insert data in db for registration Id :"),
-	/** The rpr pis file not found in dfs. */
-	RPR_PIS_FILE_NOT_FOUND_IN_DFS(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "004",
-			"File not found in DFS"),
+	/** The rpr pis file not found in Packet Store. */
+	RPR_PIS_FILE_NOT_FOUND_IN_PACKET_STORE(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "004",
+			"File not found in Packet Store"),
 
 	/** The rpr fac connection not available. */
 	// File adaptor ceph Exception error code and message
@@ -128,10 +128,11 @@ public enum PlatformErrorMessages {
 	/** The rpr cmb configuration server failure exception. */
 	RPR_CMB_CONFIGURATION_SERVER_FAILURE_EXCEPTION(PlatformErrorConstants.RPR_CAMEL_BRIDGE_MODULE + "003",
 			"Configuration Server Failure Exception"),
-	
+
 	/** The rpr cmb malformed cluster manager url exception. */
-	RPR_CMB_MALFORMED_URL_EXCEPTION(PlatformErrorConstants.RPR_CAMEL_BRIDGE_MODULE + "004", "Malformed Cluster Manager Url Exception"),
-	
+	RPR_CMB_MALFORMED_URL_EXCEPTION(PlatformErrorConstants.RPR_CAMEL_BRIDGE_MODULE + "004",
+			"Malformed Cluster Manager Url Exception"),
+
 	/** The rpr qcr registration table not accessible. */
 	// Quality Checker Exception error code and message
 	RPR_QCR_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_QUALITY_CHECKER_MODULE + "001",
@@ -171,9 +172,9 @@ public enum PlatformErrorMessages {
 	// Stages - Packet-Validator error message
 	REVERSE_DATA_SYNC_FAILED("", "Reverse data sync failed"),
 
-	/** The rpr psj dfs not accessible. */
+	/** The rpr psj Packet Store not accessible. */
 	// Packet scanner job Exception error code and message
-	RPR_PSJ_DFS_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "002",
+	RPR_PSJ_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "002",
 			"The Packet store set by the System is not accessible"),
 
 	/** The rpr psj retry folder not accessible. */
@@ -224,13 +225,14 @@ public enum PlatformErrorMessages {
 	RPR_MVS_INVALID_STATUS_UPDATE(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "003",
 			"Invalid status update"),
 
-	RPR_MVS_INVALID_FIELD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "005",
-			" fields can not be empty"),
+	RPR_MVS_INVALID_FIELD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "005", " fields can not be empty"),
 
-	
 	/** The rpr mvs no assigned record. */
 	RPR_MVS_NO_ASSIGNED_RECORD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "004",
 			"No Assigned Record Found"),
+
+	RPR_MVS_FILE_NOT_FOUND_IN_PACKET_STORE(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "005",
+			"Packet Not Found in Packet Store"),
 
 	/** The rpr tem not found. */
 	// Registration processor Message sender Exception error code
@@ -261,7 +263,10 @@ public enum PlatformErrorMessages {
 
 	/** The rpr pum packet deletion info. */
 	RPR_PUM_PACKET_DELETION_INFO(PlatformErrorConstants.RPR_PACKET_UPLOADER_MODULE + "002",
-			"File is Already exists in DFS location And its now Deleted from Virus scanner job"),
+			"File is Already exists in File Store And its now Deleted from Virus scanner job"),
+
+	RPR_PUM_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_UPLOADER_MODULE + "003",
+			"The Packet store set by the System is not accessible"),
 
 	/** The rpr bdd abis internal error. */
 	RPR_BDD_ABIS_INTERNAL_ERROR(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "001",
