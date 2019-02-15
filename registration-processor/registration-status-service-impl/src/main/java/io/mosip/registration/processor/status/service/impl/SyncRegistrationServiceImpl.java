@@ -70,6 +70,9 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 
 	/** The lancode length. */
 	private int LANCODE_LENGTH = 3;
+	
+	String description = "";
+	
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(SyncRegistrationServiceImpl.class);
 
@@ -98,26 +101,26 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 				synchResponseList = validateSync(registrationDto, synchResponseList);
 			}
 			isTransactionSuccessful = true;
+			description = "Registartion Id's are successfully synched in Sync Registration table";
+			
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", "");
 		} catch (DataAccessLayerException e) {
-
+			description = "DataAccessLayerException while syncing Registartion Id's" + "::" + e.getMessage();						
+			
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new TablenotAccessibleException(
 					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
-			String description = "";
 			if (isTransactionSuccessful) {
 				eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
 						: EventName.ADD.toString();
 				eventType = EventType.BUSINESS.toString();
-				description = "Registartion Id's are successfully synched in Sync Registration table";
 			} else {
 				eventId = EventId.RPR_405.toString();
 				eventName = EventName.EXCEPTION.toString();
 				eventType = EventType.SYSTEM.toString();
-				description = "Registartion Id's sync is unsuccessful";
 			}
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());

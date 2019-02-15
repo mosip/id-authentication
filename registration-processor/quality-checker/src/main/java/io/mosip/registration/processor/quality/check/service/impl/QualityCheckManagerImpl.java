@@ -111,17 +111,19 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 
 			});
 			isTransactionSuccessful = true;
+			description = "QC User status updated";
+			
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 					"", "QualityCheckManagerImpl::updateQCUserStatus()::exit");
 			return resultDtos;
 
 		} catch (DataAccessException | DataAccessLayerException e) {
+			
+			description = "DataAccessLayerException while updating QC User status" + "::" + e.getMessage();						
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_QCR_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
-			description = isTransactionSuccessful ? "description--QC User status update successful"
-					: "description--QC User status update failed";
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
 			eventName = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString()
 					: EventName.EXCEPTION.toString();
@@ -175,19 +177,20 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 			QcuserRegistrationIdEntity qcUserEntity = convertDtoToEntity(qcUserDto);
 			applicantInfoDao.save(qcUserEntity);
 			isTransactionSuccessful = true;
-
+			description =  "Demographic-data saved ";
+				
+		
 			return convertEntityToDto(qcUserEntity);
 		} catch (DataAccessException | DataAccessLayerException e) {
+			description = "DataAccessLayerException while saving Demographic-data" + "::" + e.getMessage();						
+			
 			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_QCR_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
-			description = isTransactionSuccessful ? "description--Demographic-data saved Success"
-					: "description--Demographic Failed to save";
-			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
+				eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
 			eventName = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString()
 					: EventName.EXCEPTION.toString();
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-
 			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 		}
