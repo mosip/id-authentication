@@ -57,7 +57,7 @@ public class DemoDedupeTest {
 	@Mock
 	private InputStream inputStream;
 
-	/** The filesystem ceph adapter impl. */
+	/** The filesystem adapter impl. */
 	@Mock
 	FileSystemAdapter filesystemAdapterImpl;
 

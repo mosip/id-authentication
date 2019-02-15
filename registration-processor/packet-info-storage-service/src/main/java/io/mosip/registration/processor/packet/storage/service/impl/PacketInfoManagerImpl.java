@@ -167,7 +167,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Autowired
 	private PacketInfoDao packetInfoDao;
 
-	/** The filesystem ceph adapter impl. */
+	/** The filesystem adapter impl. */
 	@Autowired
 	private FileSystemAdapter filesystemAdapterImpl;
 
@@ -655,7 +655,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		getRegistrationId(metaData);
 		boolean isTransactionSuccessful = false;
 		if (bytes == null)
-			throw new FileNotFoundInPacketStore(PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_PACKET_STORE.getMessage());
+			throw new FileNotFoundInPacketStore(
+					PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_PACKET_STORE.getMessage());
 
 		try {
 

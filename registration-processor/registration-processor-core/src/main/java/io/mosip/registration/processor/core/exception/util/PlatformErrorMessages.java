@@ -92,7 +92,7 @@ public enum PlatformErrorMessages {
 			"File not found in Packet Store"),
 
 	/** The rpr fac connection not available. */
-	// File adaptor ceph Exception error code and message
+	// File adaptor Exception error code and message
 	RPR_FAC_CONNECTION_NOT_AVAILABLE(PlatformErrorConstants.RPR_FILESYSTEM_ADAPTOR_CEPH_MODULE + "001",
 			"The connection Parameters to create a Packet Store connection are not Found"),
 

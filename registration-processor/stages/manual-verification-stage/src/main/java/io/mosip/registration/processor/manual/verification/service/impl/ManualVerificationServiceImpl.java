@@ -58,7 +58,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	@Autowired
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	/** The filesystem ceph adapter impl. */
+	/** The filesystem adapter impl. */
 	@Autowired
 	private FileSystemAdapter filesystemAdapterImpl;
 

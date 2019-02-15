@@ -75,7 +75,7 @@ public class PacketValidatorStageTest {
 	@Mock
 	private InputStream inputStream;
 
-	/** The filesystem ceph adapter impl. */
+	/** The filesystem adapter impl. */
 	@Mock
 	private FileSystemAdapter filesystemCephAdapterImpl;
 

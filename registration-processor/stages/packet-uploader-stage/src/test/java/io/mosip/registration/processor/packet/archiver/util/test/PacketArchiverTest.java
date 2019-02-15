@@ -38,7 +38,7 @@ import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 @RunWith(SpringRunner.class)
 public class PacketArchiverTest {
 
-	/** The filesystem ceph adapter impl. */
+	/** The filesystem adapter impl. */
 	@Mock
 	private FileSystemAdapter filesystemAdapterImpl;
 

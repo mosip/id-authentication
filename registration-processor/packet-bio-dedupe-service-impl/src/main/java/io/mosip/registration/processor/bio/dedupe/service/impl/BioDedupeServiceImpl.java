@@ -11,7 +11,6 @@ import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
@@ -84,7 +83,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	@Value("${registration.processor.abis.threshold}")
 	private Integer threshold;
 
-	/** The filesystem ceph adapter impl. */
+	/** The filesystem adapter impl. */
 	@Autowired
 	private FileSystemAdapter filesystemAdapterImpl;
 
