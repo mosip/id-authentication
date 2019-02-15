@@ -68,7 +68,7 @@ public final class DateUtils {
 		/**
 		 * 
 		 */
-    private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 1L;
 
 		{
 			put("^\\d{8}$", "yyyyMMdd");
@@ -209,7 +209,7 @@ public final class DateUtils {
 	public static String formatDate(final Date date, final String pattern) {
 		try {
 			return DateFormatUtils.format(date, pattern, null, null);
-		} catch (java.lang.IllegalArgumentException e) {
+		} catch (java.lang.IllegalArgumentException | NullPointerException e) {
 			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
@@ -234,7 +234,7 @@ public final class DateUtils {
 	public static String formatDate(final Date date, final String pattern, final TimeZone timeZone) {
 		try {
 			return DateFormatUtils.format(date, pattern, timeZone, null);
-		} catch (java.lang.IllegalArgumentException e) {
+		} catch (java.lang.IllegalArgumentException | NullPointerException e) {
 			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
@@ -262,7 +262,7 @@ public final class DateUtils {
 			final Locale locale) {
 		try {
 			return DateFormatUtils.format(date, pattern, timeZone, locale);
-		} catch (java.lang.IllegalArgumentException e) {
+		} catch (java.lang.IllegalArgumentException | NullPointerException e) {
 			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
@@ -283,7 +283,7 @@ public final class DateUtils {
 	public static String formatCalendar(final Calendar calendar, final String pattern) {
 		try {
 			return DateFormatUtils.format(calendar, pattern, null, null);
-		} catch (java.lang.IllegalArgumentException e) {
+		} catch (java.lang.IllegalArgumentException | NullPointerException e) {
 			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
@@ -306,7 +306,7 @@ public final class DateUtils {
 	public static String formatCalendar(final Calendar calendar, final String pattern, final TimeZone timeZone) {
 		try {
 			return DateFormatUtils.format(calendar, pattern, timeZone, null);
-		} catch (java.lang.IllegalArgumentException e) {
+		} catch (java.lang.IllegalArgumentException | NullPointerException e) {
 			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
@@ -329,7 +329,7 @@ public final class DateUtils {
 	public static String formatCalendar(final Calendar calendar, final String pattern, final Locale locale) {
 		try {
 			return DateFormatUtils.format(calendar, pattern, null, locale);
-		} catch (java.lang.IllegalArgumentException e) {
+		} catch (java.lang.IllegalArgumentException | NullPointerException e) {
 			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
@@ -355,7 +355,7 @@ public final class DateUtils {
 			final Locale locale) {
 		try {
 			return DateFormatUtils.format(calendar, pattern, timeZone, locale);
-		} catch (java.lang.IllegalArgumentException e) {
+		} catch (java.lang.IllegalArgumentException | NullPointerException e) {
 			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}

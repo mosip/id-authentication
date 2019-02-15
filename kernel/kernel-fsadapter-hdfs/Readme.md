@@ -15,16 +15,37 @@ mvn javadoc:javadoc
 # Name node url for HDFS
 mosip.kernel.fsadapter.hdfs.name-node-url=hdfs://104.211.240.243:51000
 
+# Key Distribution Center domain for Kerberos
+mosip.kernel.fsadapter.hdfs.kdc-domain=NODE-MASTER.SOUTHINDIA.CLOUDAPP.AZURE.COM
+
 # Username to access hdfs. Change this to application username (regprocessor,prereg or idrepo)
 mosip.kernel.fsadapter.hdfs.user-name=mosipuser
+
+# Password for hdfs user
+mosip.kernel.fsadapter.hdfs.user-pass=Mosip@dev123
 
 # HDFS log level. Change this to debug to see hdfs logs
 logging.level.org.apache.hadoop=warn
 
 ```
 
+#### To check files in hdfs, follow these steps:
 
-To use this api, add this to dependency list:
+1. Login to hdfs name-node (104.211.240.243)
+2. Get KDC ticket with this command. Replace ${username} with application username (regprocessor,prereg or idrepo). When prompted for password, provide the configured password (Mosip@dev123) 
+```
+> kinit ${username}
+```
+3. Use this command to check files in hdfs. Replace ${username} with application username.
+```
+> hdfs dfs -ls -R /user/${username}
+```
+4. Invalidate KDC ticket with this command.
+```
+> kdestory -A
+```
+
+- To use this api, add this to dependency list:
 
 ```
 <dependency>

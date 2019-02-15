@@ -189,6 +189,10 @@ Output: certificate
 
 ## Setup steps:
 
+### Linux
+
+1. Follow docker installation steps from https://github.com/mosip/mosip/blob/master/kernel/kernel-keymanager-service/README.md
+
 ### Windows
 
 1. Download softhsm portable zip archive from https://github.com/disig/SoftHSM2-for-Windows#download
@@ -257,8 +261,6 @@ Slot 1
 ```
 5. Put the newly conf filepath `D:\SoftHSM2\etc\softhsm2-application.conf` in `mosip.kernel.keymanager.softhsm.config-path` property. Softhsm is ready to be used. 
 
-### Linux
 
-1. Follow installation steps from https://github.com/opendnssec/SoftHSMv2#installation
 
 

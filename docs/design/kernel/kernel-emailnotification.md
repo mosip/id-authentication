@@ -13,6 +13,8 @@ This service can be used to send email through configured SMTP server. Service h
 
 - Create a project which provides REST service to send email.
 
+- Service can send email request to SMTP server asynchronously and responds immediately. 
+
 
 - REST service can be used by any MOSIP module to send email through HTTP client.
 

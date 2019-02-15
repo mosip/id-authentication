@@ -1,6 +1,6 @@
 ## kernel-pinvalidator
 
-[Background & Design -TBA-](../../design/kernel/kernel-pinvalidator.md)
+[Background & Design](../../docs/design/kernel/kernel-pinvalidator.md)
  
 
 

@@ -14,6 +14,9 @@ This service can be used to audit events and operations. Service has REST API ex
 - Create a project which provides REST service to send event/action details.
 
 
+- Service can persist audit in DB asynchronously and responds immediately. On error while saving in DB, audit can be logged in audit file and respective exception in error file.  
+
+
 - REST service can be used by any MOSIP module for auditing through HTTP client.
 
 

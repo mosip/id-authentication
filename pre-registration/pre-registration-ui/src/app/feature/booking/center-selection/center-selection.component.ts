@@ -10,7 +10,6 @@ import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
 import { SharedService } from '../booking.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { TranslateService } from '@ngx-translate/core';
-import { NameList } from 'src/app/shared/models/demographic-model/name-list.modal';
 
 let REGISTRATION_CENTRES: RegistrationCentre[] = [];
 
@@ -59,7 +58,9 @@ export class CenterSelectionComponent implements OnInit {
 
   ngOnInit() {
     REGISTRATION_CENTRES = [];
-    this.getLocation();
+    this.dataSource.data = REGISTRATION_CENTRES;
+    this.selectedCentre = null;
+  //  this.getLocation();
     this.dataService.getLocationTypeData().subscribe(response => {
       this.locationTypes = response['locations'];
       console.log(this.locationTypes);
@@ -116,7 +117,7 @@ async getUserDemographic(user) {
     console.log(this.locationType, this.searchText);
     if (this.locationType !== null && this.searchText !== null) {
       this.showMap = false;
-      this.dataService.getRegistrationCentersByName(this.locationType, this.searchText).subscribe(
+      this.dataService.getRegistrationCentersByName(this.locationType.locationHierarchylevel, this.searchText).subscribe(
         response => {
           console.log(response);
           if (response['registrationCenters'].length !== 0) {
@@ -157,7 +158,7 @@ async getUserDemographic(user) {
         this.dataService.getNearbyRegistrationCenters(position.coords).subscribe(
           response => {
             console.log(response);
-            if (response['registrationCenters'].length !== 0) {
+            if (response['errors'].length === 0 && response['registrationCenters'].length !== 0) {
               REGISTRATION_CENTRES = response['registrationCenters'];
               this.dataSource.data = REGISTRATION_CENTRES;
               console.log(this.dataSource.data);
