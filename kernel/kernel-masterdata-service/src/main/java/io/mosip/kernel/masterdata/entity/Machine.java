@@ -51,6 +51,7 @@ public class Machine extends BaseEntity implements Serializable {
 			@AttributeOverride(name="id", column = @Column(name="id", nullable = false, length = 10)),
 			@AttributeOverride(name="langCode", column = @Column(name="lang_code", nullable = false, length = 3)) })
 	private String id;
+	@Column(name= "lang_code", nullable = false, length = 3)
 	private String langCode;
 
 	/**
