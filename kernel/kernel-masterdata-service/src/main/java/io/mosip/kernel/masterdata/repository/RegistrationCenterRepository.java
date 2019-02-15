@@ -56,8 +56,8 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            the languageCode
 	 * @return the RegistrationCenter
 	 */
-	@Query("FROM RegistrationCenter WHERE id= ?1 and  languageCode =?2 and (isDeleted is null or isDeleted =false)")
-	RegistrationCenter findByIdAndLanguageCode(String id, String languageCode);
+	@Query("FROM RegistrationCenter WHERE id= ?1 and  langCode =?2 and (isDeleted is null or isDeleted =false)")
+	RegistrationCenter findByIdAndLangCode(String id, String langCode);
 
 	/**
 	 * This method triggers query to find registration center holiday location code
@@ -70,7 +70,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            be found.
 	 * @return the holiday location code fetched.
 	 */
-	String findRegistrationCenterHolidayLocationCodeByIdAndLanguageCode(String id, String languageCode);
+	String findRegistrationCenterHolidayLocationCodeByIdAndLangCode(String id, String langCode);
 
 	/**
 	 * This method trigger query to fetch registration centers based on locationCode
@@ -82,8 +82,8 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            languageCode provided by user
 	 * @return list of {@link RegistrationCenter} fetched from database
 	 */
-	@Query("FROM RegistrationCenter WHERE locationCode= ?1 and  languageCode =?2 and (isDeleted is null or isDeleted =false)")
-	List<RegistrationCenter> findByLocationCodeAndLanguageCode(String locationCode, String languageCode);
+	@Query("FROM RegistrationCenter WHERE locationCode= ?1 and  langCode =?2 and (isDeleted is null or isDeleted =false)")
+	List<RegistrationCenter> findByLocationCodeAndLangCode(String locationCode, String langCode);
 
 	/**
 	 * This method trigger query to fetch all registration centers based on deletion

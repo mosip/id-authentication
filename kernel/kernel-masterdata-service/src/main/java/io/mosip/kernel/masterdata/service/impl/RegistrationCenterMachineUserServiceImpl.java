@@ -191,9 +191,9 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 		registrationCenterMachineUserRepository.update(centerUserMachine);
 		registrationCenterUserMachineHistoryRepository.create(history);
 		registrationCenterMachineUserID = new RegistrationCenterMachineUserID();
-		registrationCenterMachineUserID.setCntrId(centerUserMachine.getCntrId());
-		registrationCenterMachineUserID.setMachineId(centerUserMachine.getMachineId());
-		registrationCenterMachineUserID.setUsrId(centerUserMachine.getUsrId());
+		registrationCenterMachineUserID.setCntrId(centerUserMachine.getRegistrationCenterMachineUserID().getCntrId());
+		registrationCenterMachineUserID.setMachineId(centerUserMachine.getRegistrationCenterMachineUserID().getMachineId());
+		registrationCenterMachineUserID.setUsrId(centerUserMachine.getRegistrationCenterMachineUserID().getUsrId());
 		return registrationCenterMachineUserID;
 	}
 

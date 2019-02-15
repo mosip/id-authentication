@@ -201,6 +201,12 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 	@Column(name = "lunch_end_time")
 	private LocalTime lunchEndTime;
 	
-    @OneToMany(mappedBy="cntrId",fetch = FetchType.LAZY)
-	private List<RegistrationCenterUserMachine> registrationCenterUserMachines;
+    /*//@OneToMany(mappedBy="cntrId",fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumns ({
+        @JoinColumn(name="id", referencedColumnName = "regcntr_id"),
+        @JoinColumn(name="lang_code", referencedColumnName = "lang_code"),
+   
+    })
+	private List<RegistrationCenterUserMachine> registrationCenterUserMachines;*/
 }

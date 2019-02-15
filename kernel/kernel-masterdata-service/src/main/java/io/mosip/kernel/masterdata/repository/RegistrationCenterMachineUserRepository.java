@@ -32,7 +32,7 @@ public interface RegistrationCenterMachineUserRepository
 	 *            input from user
 	 * @return {@link RegistrationCenterUserMachine}
 	 */
-	@Query("FROM RegistrationCenterUserMachine a WHERE a.cntrId=?1 AND a.machineId=?2 AND a.usrId=?3 and (a.isDeleted is null or a.isDeleted =false)")
+	@Query("FROM RegistrationCenterUserMachine a WHERE a.registrationCenterMachineUserID.cntrId=?1 AND a.registrationCenterMachineUserID.machineId=?2 AND a.registrationCenterMachineUserID.usrId=?3 and (a.isDeleted is null or a.isDeleted =false)")
 	Optional<RegistrationCenterUserMachine> findAllNondeletedMappings(String cntrId, String machineId, String usrId);
 
 }

@@ -110,7 +110,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		Objects.requireNonNull(year);
 		Objects.requireNonNull(langCode);
 		try {
-			registrationCenter = registrationCenterRepository.findByIdAndLanguageCode(registrationCenterId, langCode);
+			registrationCenter = registrationCenterRepository.findByIdAndLangCode(registrationCenterId, langCode);
 		} catch (DataAccessException | DataAccessLayerException dataAccessException) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
@@ -188,7 +188,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			String langCode) {
 		List<RegistrationCenter> registrationCentersList = null;
 		try {
-			registrationCentersList = registrationCenterRepository.findByLocationCodeAndLanguageCode(locationCode,
+			registrationCentersList = registrationCenterRepository.findByLocationCodeAndLangCode(locationCode,
 					langCode);
 
 		} catch (DataAccessLayerException | DataAccessException e) {
@@ -221,7 +221,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 		RegistrationCenter registrationCenter = null;
 		try {
-			registrationCenter = registrationCenterRepository.findByIdAndLanguageCode(registrationCenterId, langCode);
+			registrationCenter = registrationCenterRepository.findByIdAndLangCode(registrationCenterId, langCode);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
