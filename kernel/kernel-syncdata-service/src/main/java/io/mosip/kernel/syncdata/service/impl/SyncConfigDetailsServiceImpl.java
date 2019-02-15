@@ -2,7 +2,11 @@ package io.mosip.kernel.syncdata.service.impl;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -10,14 +14,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.syncdata.constant.SyncConfigDetailsErrorCode;
 import io.mosip.kernel.syncdata.dto.ConfigDto;
+import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
+import io.mosip.kernel.syncdata.exception.SyncInvalidArgumentException;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import net.minidev.json.JSONObject;
 
@@ -34,6 +46,9 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
 	@Autowired
 	private RestTemplate restTemplate;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	/**
 	 * Environment instance
@@ -52,6 +67,12 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	 */
 	@Value("${mosip.kernel.syncdata.global-config-file}")
 	private String globalConfigFileName;
+
+	/**
+	 * URL read from properties file
+	 */
+	@Value("${mosip.kernel.syncdata.public-key-url}")
+	private String publicKeyUrl;
 
 	/*
 	 * (non-Javadoc)
@@ -151,6 +172,61 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 		final Properties p = new Properties();
 		p.load(new StringReader(s));
 		return p;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.syncdata.service.SyncConfigDetailsService#getPublicKey(java.
+	 * lang.String, java.lang.String, java.util.Optional)
+	 */
+	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public PublicKeyResponse<String> getPublicKey(String applicationId, String timeStamp,
+			Optional<String> referenceId) {
+		ResponseEntity<String> publicKeyResponseEntity = null;
+		
+		PublicKeyResponse publicKeyResponseMapped = null;
+		Map<String, String> uriParams = new HashMap<>();
+		uriParams.put("applicationId", applicationId);
+		try {
+			// Query parameters
+			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(publicKeyUrl)
+					// Add query parameter
+					.queryParam("referenceId", referenceId).queryParam("timeStamp", timeStamp);
+
+			publicKeyResponseEntity = restTemplate.getForEntity(builder.buildAndExpand(uriParams).toUri(),
+					String.class);
+			List<ServiceError> validationErrorsList = null;
+			validationErrorsList = ExceptionUtils.getServiceErrorList(publicKeyResponseEntity.getBody());
+
+			if (!validationErrorsList.isEmpty()) {
+				throw new SyncInvalidArgumentException(validationErrorsList);
+			}
+
+		} catch (RestClientException ex) {
+			throw new SyncDataServiceException(
+					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),
+					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorMessage());
+
+		} catch (IOException e) {
+			throw new SyncDataServiceException(SyncConfigDetailsErrorCode.SYNC_IO_EXCEPTION.getErrorCode(),
+					SyncConfigDetailsErrorCode.SYNC_IO_EXCEPTION.getErrorMessage());
+		}
+
+		try {
+			objectMapper.registerModule(new JavaTimeModule());
+			publicKeyResponseMapped = objectMapper.readValue(publicKeyResponseEntity.getBody(),
+					PublicKeyResponse.class);
+			
+		} catch (IOException e) {
+			throw new SyncDataServiceException(SyncConfigDetailsErrorCode.SYNC_IO_EXCEPTION.getErrorCode(),
+					SyncConfigDetailsErrorCode.SYNC_IO_EXCEPTION.getErrorMessage());
+		}
+
+		return publicKeyResponseMapped;
+
 	}
 
 }

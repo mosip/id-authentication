@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.EventId;
@@ -43,6 +44,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  * The Class ManualVerificationServiceImpl.
  */
 @Component
+@Transactional
 public class ManualVerificationServiceImpl implements ManualVerificationService {
 
 	/** The logger. */

@@ -20,7 +20,7 @@ import io.mosip.kernel.core.transliteration.spi.Transliteration;
  * @author Ritesh Sinha
  * @since 1.0.0
  */
-@SpringBootTest(classes = { TransliterationBootApplication.class })
+@SpringBootTest
 @RunWith(SpringRunner.class)
 public class TransliterationImplTest {
 

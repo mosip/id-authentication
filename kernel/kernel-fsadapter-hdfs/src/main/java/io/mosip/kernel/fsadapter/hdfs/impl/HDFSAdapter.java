@@ -145,8 +145,8 @@ public class HDFSAdapter implements FileSystemAdapter {
 		try {
 			Path inFile = new Path(FilenameUtils.concat(id, id));
 			if (!fs.exists(inFile)) {
-				throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
-						HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage());
+				throw new FSAdapterException(HDFSAdapterErrorCode.FILE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						HDFSAdapterErrorCode.FILE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 			return fs.open(inFile);
 		} catch (IOException e) {
