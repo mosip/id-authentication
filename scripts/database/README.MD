@@ -20,6 +20,8 @@ The database objects related to MOSIP modules is stored under <mosip_home>/scrip
 
 * **mosip_prereg_dml_deploy.sql:** This is a wrapper script used to **deploy the DML scripts available in dml folder**. This will also used to prepare the script run sequence to manage all the needed dependency across DB objects.
 
+**Note : Not all Modules will have dml scripts, Run mosip_<schema>_dml_deploy.sql only for applicable modules.**
+
 ### The structure of the files and folder is as follows
 
 <database_folder>
