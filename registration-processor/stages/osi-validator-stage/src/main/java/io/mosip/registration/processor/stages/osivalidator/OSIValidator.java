@@ -152,7 +152,7 @@ public class OSIValidator {
 
 		String uin = regOsi.getOfficerId(); 
 		if (uin == null)
-			return false; 
+			return false;
 		else {
 			String fingerPrint = getOsiDataValue(registrationId, JsonConstant.OFFICERBIOMETRICFILENAME);
 			String fingerPrintType = regOsi.getOfficerfingerType();
@@ -163,13 +163,18 @@ public class OSIValidator {
 			// officer password and otp check
 			String officerPassword = getOsiDataValue(registrationId, JsonConstant.OFFICERPWR);
 			String officerOTPAuthentication = getOsiDataValue(registrationId, JsonConstant.OFFICEROTPAUTHENTICATION);
-			if (checkBiometricNull(fingerPrint, iris, face, pin,officerPassword,officerOTPAuthentication)) {
-				
+			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
+				boolean flag = validateOtpAndPwd(officerPassword, officerOTPAuthentication);
+				if (flag) {
+					registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + "Operator");
+				} else {
 					registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + "Operator");
-              return false;
+
+				}
+				return flag;
 			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
 					&& (validateIris(uin, iris, irisType, registrationId)) && (validateFace(uin, face, registrationId))
-					&& (validatePin(uin, pin)) && validatePassword(officerPassword) &&  validateOtp(officerOTPAuthentication)) {
+					&& (validatePin(uin, pin))) {
 				return true;
 			}
 		}
@@ -190,8 +195,8 @@ public class OSIValidator {
 	 *            the pin
 	 * @return true, if successful
 	 */
-	boolean checkBiometricNull(String fingerPrint, String iris, String face, String pin,String password,String otpAuthentication) {
-		return (fingerPrint == null) && (iris == null) && (face == null) && (pin == null) && (password==null) && (otpAuthentication==null);
+	boolean checkBiometricNull(String fingerPrint, String iris, String face, String pin) {
+		return (fingerPrint == null) && (iris == null) && (face == null) && (pin == null);
 	}
 
 	/**
@@ -224,13 +229,18 @@ public class OSIValidator {
 			String irisType = regOsi.getSupervisorIrisType();
 			String face = regOsi.getSupervisorPhotoName();
 			String pin = regOsi.getSupervisorHashedPin();
-			if (checkBiometricNull(fingerPrint, iris, face, pin,supervisiorPassword,supervisorOTPAuthentication)) {
-				
+			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
+				boolean flag = validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication);
+				if (flag) {
+					registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + "Supervisor");
+				} else {
 					registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + "Supervisor");
-               return false;
+
+				}
+				return flag;
 			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
 					&& (validateIris(uin, iris, irisType, registrationId)) && (validateFace(uin, face, registrationId))
-					&& (validatePin(uin, pin)) && validatePassword(supervisiorPassword) &&  validateOtp(supervisorOTPAuthentication)) {
+					&& (validatePin(uin, pin))) {
 				return true;
 			}
 		}
@@ -490,35 +500,13 @@ public class OSIValidator {
 		return isValidPin;
 	}
 
-	boolean validateOtp(String otp) {
-		if(otp==null) {
+	boolean validateOtpAndPwd(String password, String otp) {
+		if (password.equals(TRUE) || otp.equals(TRUE)) {
 			return true;
-		}else {
-			if(otp.equalsIgnoreCase("true")) {
-				return true;
-				
-			}
-			else {
-				return false;
-			}
-		}
-		
+		} else {
+			return false;
 
-	}
-
-	boolean validatePassword(String password) {
-		if(password==null) {
-			return true;
-		}else {
-			if(password.equalsIgnoreCase("true")) {
-				return true;
-				
-			}
-			else {
-				return false;
-			}
 		}
-		
 
 	}
 
