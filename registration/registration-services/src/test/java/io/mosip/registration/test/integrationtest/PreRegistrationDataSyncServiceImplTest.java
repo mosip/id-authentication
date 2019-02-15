@@ -84,14 +84,14 @@ public class PreRegistrationDataSyncServiceImplTest {
 		preRegEntity.setAppointmentDate(Date.from(c.toInstant()));
 		preRegistrationDataSyncRepository.save(preRegEntity);
 		assertEquals(preRegistrationDataSyncService.fetchAndDeleteRecords().getSuccessResponseDTO().getMessage(),"Pre-Registration Records deleted");
+		preRegistrationDataSyncRepository.saveAll(list);
 	}
 	
 	/**
 	 * Inavlid Registration_Center_Id Test Case
 	 * 
 	 */
-	@Test 
-	@Ignore
+	@Test
 	public void getPreRegistrationIds_InvalidRegistrationCenterId() {
 		System.setProperty("http.proxyHost", "172.22.218.218");
 		System.setProperty("http.proxyPort", "8085");
