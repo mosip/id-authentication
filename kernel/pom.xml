@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.8.6</version>
+		<version>0.8.7</version>
 	</parent>
 
 
@@ -29,7 +29,7 @@
 		<maven.sonar.plugin.version>3.2</maven.sonar.plugin.version>
 		<maven.javadoc.version>3.0.1</maven.javadoc.version>
 		<maven-shade-plugin.version>2.3</maven-shade-plugin.version>
-  	<javax.interceptor.version>1.2</javax.interceptor.version>
+		<javax.interceptor.version>1.2</javax.interceptor.version>
 
 		<!-- Core -->
 		<spring.version>5.0.4.RELEASE</spring.version>
@@ -100,7 +100,7 @@
 		<itextcore.version>7.1.0</itextcore.version>
 		<!-- itext html2pdf version -->
 		<itexthtml2pdf.version>2.0.0</itexthtml2pdf.version>
-		<!--  itext version-->
+		<!-- itext version -->
 		<itext.version>5.5.13</itext.version>
 
 		<!-- Freemarker -->
@@ -110,13 +110,13 @@
 		<velocity.tool.version>2.0</velocity.tool.version>
 		<!-- Orika -->
 		<datamapper.orika>1.5.2</datamapper.orika>
-		
+
 		<!-- HDFS -->
 		<log4j-over-slf4j>1.7.7</log4j-over-slf4j>
 		<hadoop-client>2.8.1</hadoop-client>
 		<htrace-core4>4.1.0-incubating</htrace-core4>
 
-      <!-- icu4j -->
+		<!-- icu4j -->
 		<icu4j.version>63.1</icu4j.version>
 
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**</sonar.coverage.exclusions>
@@ -172,8 +172,8 @@
 		<module>kernel-ldap-service</module>
 		<module>kernel-licensekeymanager-service</module>
 		<module>kernel-config-server</module>
-		
-		
+
+
 		<module>kernel-idvalidator</module>
 		<!-- <module>kernel-packetuploader-sftp-jsch</module> -->
 		<!-- <module>kernel-packetserver-http</module> -->
@@ -222,10 +222,10 @@
 					<version>${maven.sonar.plugin.version}</version>
 				</plugin>
 				<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${maven.javadoc.version}</version>
-			</plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${maven.javadoc.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
