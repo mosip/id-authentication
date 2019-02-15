@@ -108,7 +108,7 @@ public class IdRepoServiceTest {
 
 	/** The service. */
 	@InjectMocks
-	IdRepoServiceImpl service;
+	IdRepoProxyServiceImpl service;
 
 	@Mock
 	private UinBiometricHistoryRepo uinBioHRepo;
