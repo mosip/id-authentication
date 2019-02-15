@@ -51,18 +51,6 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	@Autowired
 	private ServiceDelegateUtil serviceDelegateUtil;
 
-	/** The url path. */
-	@Value("${PACKET_UPLOAD_URL}")
-	private String urlPath;
-
-	/** The read timeout. */
-	@Value("${UPLOAD_API_READ_TIMEOUT}")
-	private int readTimeout;
-
-	/** The connect timeout. */
-	@Value("${UPLOAD_API_WRITE_TIMEOUT}")
-	private int connectTimeout;
-
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = AppConfig.getLogger(PacketUploadServiceImpl.class);
 

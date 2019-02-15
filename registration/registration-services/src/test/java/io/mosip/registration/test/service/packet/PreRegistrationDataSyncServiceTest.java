@@ -26,7 +26,6 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -136,7 +135,6 @@ public class PreRegistrationDataSyncServiceTest {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		ReflectionTestUtils.setField(preRegistrationDataSyncServiceImpl, "isStubEnabled", "no");
 
 		mockEncryptedPacket();
 
@@ -164,7 +162,6 @@ public class PreRegistrationDataSyncServiceTest {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		ReflectionTestUtils.setField(preRegistrationDataSyncServiceImpl, "isStubEnabled", "no");
 		// Mockito.when(preRegistrationDAO.get(Mockito.anyString())).thenReturn(new
 		// PreRegistrationList());
 
@@ -185,7 +182,6 @@ public class PreRegistrationDataSyncServiceTest {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		ReflectionTestUtils.setField(preRegistrationDataSyncServiceImpl, "isStubEnabled", "no");
 
 		preRegistrationDataSyncServiceImpl.getPreRegistration("70694681371453");
 

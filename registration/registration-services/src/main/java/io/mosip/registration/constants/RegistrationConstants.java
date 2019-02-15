@@ -361,8 +361,8 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_AGE = "Age";
 	public static final String TEMPLATE_YEARS_USER_LANG = "YearsUserLang";
 	public static final String TEMPLATE_YEARS_LOCAL_LANG = "YearsLocalLang";
-	public static final String TEMPLATE_FOREIGNER_USER_LANG_LABEL = "ForeignerUserLangLabel";
-	public static final String TEMPLATE_FOREIGNER_LOCAL_LANG_LABEL = "ForeignerLocalLangLabel";
+	public static final String TEMPLATE_FOREIGNER_USER_LANG_LABEL = "ForiegnerUserLangLabel";
+	public static final String TEMPLATE_FOREIGNER_LOCAL_LANG_LABEL = "ForiegnerLocalLangLabel";
 	public static final String TEMPLATE_RESIDENCE_STATUS = "ResidenceStatus";
 	public static final String TEMPLATE_RESIDENCE_STATUS_LOCAL_LANG = "ResidenceStatusLocalLang";
 	public static final String TEMPLATE_ADDRESS_LINE1_USER_LANG_LABEL = "AddressLine1UserLangLabel";
@@ -1058,6 +1058,8 @@ public class RegistrationConstants {
 		fieldToExclude.add("docPageNumber");
 		fieldToExclude.add("cniOrPinNumber");
 		fieldToExclude.add("cniOrPinNumberLocalLanguage");
+		fieldToExclude.add("residence");
+		fieldToExclude.add("residenceLocalLanguage");
 		
 		return fieldToExclude;
 		

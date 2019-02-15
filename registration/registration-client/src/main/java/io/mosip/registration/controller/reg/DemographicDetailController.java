@@ -152,6 +152,8 @@ public class DemographicDetailController extends BaseController {
 
 	private SimpleBooleanProperty switchedOn;
 
+	private SimpleBooleanProperty toggleSwitchForResidence;
+
 	@FXML
 	private ComboBox<GenderDto> gender;
 
@@ -293,6 +295,10 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private AnchorPane dateAnchorPane;
 	@FXML
+	private AnchorPane residentStatusLocalLanguage;
+	@FXML
+	private AnchorPane residentStatus;
+	@FXML
 	private AnchorPane dateAnchorPaneLocalLanguage;
 	@FXML
 	private AnchorPane applicationLanguageAddressAnchorPane;
@@ -316,6 +322,19 @@ public class DemographicDetailController extends BaseController {
 	private AnchorPane localLanguagePane;
 	@FXML
 	private AnchorPane demoGraphicPane;
+	@FXML
+	private Button national;
+
+	@FXML
+	private Button foreigner;
+	@FXML
+	private TextField residence;
+	@FXML
+	private Button nationalLocalLanguage;
+	@FXML
+	private Button foreignerLocalLanguage;
+	@FXML
+	private TextField residenceLocalLanguage;
 	@Autowired
 	private DateValidation dateValidation;
 	@Autowired
@@ -328,6 +347,8 @@ public class DemographicDetailController extends BaseController {
 
 	private FXUtils fxUtils;
 	private Date dateOfBirth;
+	ResourceBundle applicationMessageBundle;
+	ResourceBundle localMessageBundle;
 
 	@FXML
 	private void initialize() {
@@ -337,6 +358,7 @@ public class DemographicDetailController extends BaseController {
 			fxUtils = FXUtils.getInstance();
 			SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 			switchedOn = new SimpleBooleanProperty(false);
+			toggleSwitchForResidence = new SimpleBooleanProperty(false);
 			isChild = false;
 			toggleFunction();
 			ageFieldValidations();
@@ -346,8 +368,13 @@ public class DemographicDetailController extends BaseController {
 			ageField.setDisable(true);
 			renderComboBoxes();
 			addRegions();
-			populateGender();
+			populateGender();	
 
+			toggleFunctionForResidence();
+			applicationMessageBundle = ApplicationContext.getInstance().getApplicationMessagesBundle();
+			localMessageBundle = ApplicationContext.getInstance().getLocalMessagesBundle();
+			residence.setText(applicationMessageBundle.getString("national"));
+			residenceLocalLanguage.setText(localMessageBundle.getString("national"));
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					runtimeException.getMessage());
@@ -428,6 +455,67 @@ public class DemographicDetailController extends BaseController {
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					"Exiting the toggle function for toggle label 1 and toggle level 2");
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - TOGGLING OF DOB AND AGE FAILED ", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+		}
+	}
+
+	/**
+	 * Toggle functionality for residence.
+	 */
+	private void toggleFunctionForResidence() {
+		try {
+			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					"Entering into toggle function for resident status");
+
+			toggleSwitchForResidence.addListener(new ChangeListener<Boolean>() {
+				@Override
+				public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
+					if (newValue) {
+						residence.setText(applicationMessageBundle.getString("foreigner"));
+						residenceLocalLanguage.setText(localMessageBundle.getString("foreigner"));
+						national.getStyleClass().clear();
+						foreigner.getStyleClass().clear();
+						nationalLocalLanguage.getStyleClass().clear();
+						foreignerLocalLanguage.getStyleClass().clear();
+						nationalLocalLanguage.getStyleClass().addAll("residence", "button");
+						foreignerLocalLanguage.getStyleClass().addAll("selectedResidence", "button");
+						foreigner.getStyleClass().addAll("selectedResidence", "button");
+						national.getStyleClass().addAll("residence", "button");
+					} else {
+						residence.setText(applicationMessageBundle.getString("national"));
+						residenceLocalLanguage.setText(localMessageBundle.getString("national"));
+						national.getStyleClass().clear();
+						foreigner.getStyleClass().clear();
+						nationalLocalLanguage.getStyleClass().clear();
+						foreignerLocalLanguage.getStyleClass().clear();
+						nationalLocalLanguage.getStyleClass().addAll("selectedResidence", "button");
+						foreignerLocalLanguage.getStyleClass().addAll("residence", "button");
+						national.getStyleClass().addAll("selectedResidence", "button");
+						foreigner.getStyleClass().addAll("residence", "button");
+					}
+				}
+			});
+
+			national.setOnMouseClicked((event) -> {
+				toggleSwitchForResidence.set(!toggleSwitchForResidence.get());
+			});
+			foreigner.setOnMouseClicked((event) -> {
+				toggleSwitchForResidence.set(!toggleSwitchForResidence.get());
+			});
+
+			nationalLocalLanguage.setOnMouseClicked((event) -> {
+				toggleSwitchForResidence.set(!toggleSwitchForResidence.get());
+			});
+			foreignerLocalLanguage.setOnMouseClicked((event) -> {
+				toggleSwitchForResidence.set(!toggleSwitchForResidence.get());
+			});
+
+			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					"Exiting the toggle function for resident status");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - TOGGLING OF DOB AND AGE FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
@@ -694,6 +782,15 @@ public class DemographicDetailController extends BaseController {
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value.setValue(genderLocalLanguage.getValue())).get()))
 										.get()))
+						.with(identity -> identity.setResidenceStatus(residence.isDisabled() ? null
+								: (List<ValuesDTO>) Builder.build(LinkedList.class)
+										.with(values -> values.add(Builder.build(ValuesDTO.class)
+												.with(value -> value.setLanguage(platformLanguageCode))
+												.with(value -> value.setValue(residence.getText())).get()))
+										.with(values -> values.add(Builder.build(ValuesDTO.class)
+												.with(value -> value.setLanguage(localLanguageCode))
+												.with(value -> value.setValue(residenceLocalLanguage.getText())).get()))
+										.get()))
 						.with(identity -> identity.setAddressLine1(addressLine1.isDisabled() ? null
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
@@ -755,8 +852,7 @@ public class DemographicDetailController extends BaseController {
 						.with(identity -> identity.setPhone(mobileNo.isDisabled() ? null : mobileNo.getText()))
 						.with(identity -> identity.setEmail(emailId.isDisabled() ? null : emailId.getText()))
 						.with(identity -> identity.setCnieNumber(cniOrPinNumber.isDisabled() ? null
-								: cniOrPinNumber.getText().equals(RegistrationConstants.EMPTY) ? null
-										: new BigInteger(cniOrPinNumber.getText())))
+								: cniOrPinNumber.getText()))
 						.with(identity -> identity.setLocalAdministrativeAuthority(localAdminAuthority.isDisabled()
 								? null
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
@@ -845,6 +941,9 @@ public class DemographicDetailController extends BaseController {
 			emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
 			emailIdLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
 			emailIdLocalLanguageLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+
+			residentStatus.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isForeigner());
+			residentStatusLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isForeigner());
 
 			cniOrPinNumber.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
 			cniOrPinNumberLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
@@ -1216,5 +1315,4 @@ public class DemographicDetailController extends BaseController {
 		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - POPULATE_GENDER", RegistrationConstants.APPLICATION_ID,
 				RegistrationConstants.APPLICATION_NAME, "Fetching Gender based on Application Language ended");
 	}
-
 }
