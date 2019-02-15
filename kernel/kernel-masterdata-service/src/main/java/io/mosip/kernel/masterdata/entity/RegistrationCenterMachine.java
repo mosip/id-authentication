@@ -39,4 +39,7 @@ public class RegistrationCenterMachine extends BaseEntity implements Serializabl
 			@AttributeOverride(name = "machineId", column = @Column(name = "machine_id")) })
 	private RegistrationCenterMachineID registrationCenterMachinePk;
 
+	@Column(name = "lang_code", nullable = false, length = 3)
+	private String langCode;
+
 }
