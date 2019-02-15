@@ -284,6 +284,10 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-transliteration-icu4j</artifactId>
+		</dependency>
 	</dependencies>
 
 	<repositories>

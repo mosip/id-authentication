@@ -9,8 +9,10 @@ import java.util.function.IntPredicate;
 import java.util.stream.IntStream;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.transliteration.spi.Transliteration;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.Validations;
@@ -40,6 +42,7 @@ public class FXUtils {
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationController.class);
 
+	private Transliteration<String> transliteration;
 	private static FXUtils fxUtils = null;
 
 	public static FXUtils getInstance() {
@@ -48,7 +51,7 @@ public class FXUtils {
 
 		return fxUtils;
 	}
-	
+
 	/**
 	 * Listener to change the style when field is selected for
 	 */
@@ -64,7 +67,18 @@ public class FXUtils {
 			}
 		});
 	}
-	
+
+	private FXUtils() {
+		
+	}
+
+	/**
+	 * @param transliteration
+	 *            the transliteration to set
+	 */
+	public void setTransliteration(Transliteration<String> transliteration) {
+		this.transliteration = transliteration;
+	}
 
 	/**
 	 * Validator method for field during onType
@@ -78,10 +92,9 @@ public class FXUtils {
 		});
 	}
 	
-	public void populateLocalComboBox(ComboBox<?> applicationField, ComboBox<String> localField) {
-		applicationField.getSelectionModel().selectedItemProperty()
-				.addListener((options, oldValue, newValue) -> localField
-						.setValue(getSelectedValue(applicationField.getSelectionModel().getSelectedItem())));
+	public void populateLocalComboBox(ComboBox<?> applicationField, ComboBox<?> localField) {
+		applicationField.getSelectionModel().selectedItemProperty().addListener(
+				(options, oldValue, newValue) -> selectComboBoxValueByCode(localField, applicationField.getValue()));
 	}
 
 	/**
@@ -93,8 +106,27 @@ public class FXUtils {
 					(String) SessionContext.map().get(RegistrationConstants.IS_CONSOLIDATED))) {
 				field.setText(oldValue);
 			} else {
-				if(localField!=null)
+				if(localField!=null) {
+					localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
+							ApplicationContext.localLanguage(), field.getText()));
+				}
+			}
+		});
+
+	}
+
+	/**
+	 * Populate the local field value based on the application field. Transliteration will not done for these fields
+	 */
+	public void populateLocalFieldOnType(TextField field, Validations validation, TextField localField) {
+		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
+			if (!validation.validateTextField(field, field.getId() + "_ontype",
+					(String) SessionContext.map().get(RegistrationConstants.IS_CONSOLIDATED))) {
+				field.setText(oldValue);
+			} else {
+				if(localField!=null) {
 					localField.setText(field.getText());
+				}
 			}
 		});
 
@@ -174,18 +206,29 @@ public class FXUtils {
 		}
 	}
 
-	private String getSelectedValue(Object selectedOption) {
-		String selectedValue = RegistrationConstants.EMPTY;
-		
-		if (selectedOption instanceof LocationDto) {
-			selectedValue = ((LocationDto) selectedOption).getName();
-		} else if(selectedOption instanceof GenderDto) {
-			selectedValue = ((GenderDto) selectedOption).getGenderName();
-		} if (selectedOption instanceof String) {
-			selectedValue = (String) selectedOption;
+	private void selectComboBoxValueByCode(ComboBox<?> comboBox, Object selectedOption) {
+		ObservableList<?> comboBoxValues = comboBox.getItems();
+
+		if (!comboBoxValues.isEmpty() && selectedOption != null) {
+			IntPredicate findIndexOfSelectedItem = null;
+			if (comboBoxValues.get(0) instanceof LocationDto && selectedOption instanceof LocationDto) {
+				findIndexOfSelectedItem = index -> ((LocationDto) comboBoxValues.get(index)).getCode()
+						.equals(((LocationDto) selectedOption).getCode());
+			} else if (comboBoxValues.get(0) instanceof GenderDto && selectedOption instanceof GenderDto) {
+				findIndexOfSelectedItem = index -> ((GenderDto) comboBoxValues.get(index)).getCode()
+						.equals(((GenderDto) selectedOption).getCode());
+			} else if (comboBoxValues.get(0) instanceof DocumentCategoryDto
+					&& selectedOption instanceof DocumentCategoryDto) {
+				findIndexOfSelectedItem = index -> ((DocumentCategoryDto) comboBoxValues.get(index)).getCode()
+						.equals(((DocumentCategoryDto) selectedOption).getCode());
+			}
+
+			OptionalInt indexOfSelectedLocation = getIndexOfSelectedItem(comboBoxValues, findIndexOfSelectedItem);
+
+			if (indexOfSelectedLocation.isPresent()) {
+				comboBox.getSelectionModel().select(indexOfSelectedLocation.getAsInt());
+			}
 		}
-		
-		return selectedValue;
 	}
 
 	/**
