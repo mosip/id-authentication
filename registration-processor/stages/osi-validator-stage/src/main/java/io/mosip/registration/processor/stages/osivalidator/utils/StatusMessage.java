@@ -35,7 +35,7 @@ public class StatusMessage {
 
 	/** The Constant VALIDATION_DETAILS. */
 	public static final String VALIDATION_DETAILS_SUCCESS = "Either iris/fingerprint/face/pin is null but password/OTP is verified for ";
-	public static final String VALIDATION_DETAILS_FAILURE = "Either iris/fingerprint/face/pin is null but password/OTP is not verified for ";
+	public static final String VALIDATION_DETAILS_FAILURE = "All iris/fingerprint/face/pin/password/OTP are null";
 	public static final String VALIDATION_DETAILS = "Either iris/fingerprint/photo is null for Introducer";
 
 
