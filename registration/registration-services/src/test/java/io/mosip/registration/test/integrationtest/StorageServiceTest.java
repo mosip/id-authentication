@@ -82,7 +82,7 @@ public class StorageServiceTest extends BaseIntegrationTest{
 		try {
 			byte[] inMemoryZipFile = packetCreationService.create(registrationDTO);
 			String filePath = storageService.storeToDisk(registrationDTO.getRegistrationId(), inMemoryZipFile);
-			assertEquals(environment.getProperty(RegistrationConstants.PACKET_STORE_LOCATION) + seperator
+			assertEquals(ApplicationContext.getInstance().getApplicationMap().get(RegistrationConstants.PACKET_STORE_LOCATION) + seperator
 					+ formatDate(new Date(), environment.getProperty(RegistrationConstants.PACKET_STORE_DATE_FORMAT))
 							.concat(seperator).concat(registrationDTO.getRegistrationId()),
 					filePath);

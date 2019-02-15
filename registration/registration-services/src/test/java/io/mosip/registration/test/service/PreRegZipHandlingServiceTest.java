@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -72,7 +73,7 @@ public class PreRegZipHandlingServiceTest {
 	public static void initialize() throws IOException, java.io.IOException {
 		createRegistrationDTOObject();
 		URL url = PreRegZipHandlingServiceTest.class.getResource("/preRegSample.zip");
-		File packetZipFile = new File(url.getFile());
+		File packetZipFile = new File(URLDecoder.decode(url.getFile(), "UTF-8"));
 		preRegPacket = FileUtils.readFileToByteArray(packetZipFile);
 
 		mosipSecurityMethod = MosipSecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING;
@@ -109,7 +110,6 @@ public class PreRegZipHandlingServiceTest {
 	private PreRegistrationDTO encryptPacket() throws RegBaseCheckedException {
 
 		ReflectionTestUtils.setField(preRegZipHandlingServiceImpl, "preRegPacketLocation", "..//PreRegPacketStore");
-		ReflectionTestUtils.setField(preRegZipHandlingServiceImpl, "preRegLocationDateFormat", "dd-MMM-yyyy");
 
 		mockSecretKey();
 

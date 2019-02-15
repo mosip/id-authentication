@@ -123,6 +123,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@Value("${SAVE_ACKNOWLEDGEMENT_INSIDE_PACKET}")
 	private String saveAck;
+	
+	@Value("${PACKET_STORE_LOCATION}")
+	private String packetStoreLocation;
 
 	@Autowired
 	private Environment environment;
@@ -431,7 +434,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				// Generate the file path for storing the Encrypted Packet and Acknowledgement
 				// Receipt
 				String seperator = "/";
-				String filePath = environment.getProperty(RegistrationConstants.PACKET_STORE_LOCATION) + seperator
+				String filePath = packetStoreLocation + seperator
 						+ formatDate(new Date(),
 								environment.getProperty(RegistrationConstants.PACKET_STORE_DATE_FORMAT))
 										.concat(seperator).concat(registrationDTO.getRegistrationId());
