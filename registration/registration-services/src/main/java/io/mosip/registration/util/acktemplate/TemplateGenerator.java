@@ -436,9 +436,9 @@ public class TemplateGenerator extends BaseService {
 			templateValues.put(RegistrationConstants.TEMPLATE_FOREIGNER_LOCAL_LANG_LABEL,
 					localProperties.getString("foreigner"));
 			templateValues.put(RegistrationConstants.TEMPLATE_RESIDENCE_STATUS,
-					applicationLanguageProperties.getString("national"));
+					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getResidenceStatus(),platformLanguageCode));
 			templateValues.put(RegistrationConstants.TEMPLATE_RESIDENCE_STATUS_LOCAL_LANG,
-					localProperties.getString("national"));
+					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getResidenceStatus(),localLanguageCode));
 			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("addressLine1"));
 			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_LOCAL_LANG_LABEL,
