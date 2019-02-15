@@ -10,7 +10,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
   registry:
-    build: ./registry
+    image: registry:2.5.1
     restart: always
     volumes: 
       - ./local_registry_backup:/var/lib/registry

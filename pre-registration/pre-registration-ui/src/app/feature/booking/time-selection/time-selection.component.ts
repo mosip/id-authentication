@@ -36,6 +36,7 @@ export class TimeSelectionComponent implements OnInit {
   activeTab = 'morning';
   bookingDataList = [];
   temp: NameList[];
+  registrationCenterLunchTime = [];
 
   constructor(
     private sharedService: SharedService,
@@ -53,6 +54,7 @@ export class TimeSelectionComponent implements OnInit {
     this.names = this.sharedService.getNameList();
     this.temp = this.sharedService.getNameList();
     console.log(this.temp);
+    this.registrationCenterLunchTime = this.temp[0].registrationCenter.lunchEndTime.split(':');
     this.sharedService.resetNameList();
     this.registrationCenter = this.registrationService.getRegCenterId();
     console.log(this.registrationCenter);
@@ -105,6 +107,11 @@ export class TimeSelectionComponent implements OnInit {
         slot.names = [];
         let fromTime = slot.fromTime.split(':');
         let toTime = slot.toTime.split(':');
+        if (fromTime[0] < this.registrationCenterLunchTime[0]) {
+          slot.tag = 'morning';
+        } else {
+          slot.tag = 'afternoon';
+        }
         slot.displayTime = Number(fromTime[0]) > 12 ? Number(fromTime[0]) - 12 : fromTime[0];
         slot.displayTime += ':' + fromTime[1] + ' - ';
         slot.displayTime += Number(toTime[0]) > 12 ? Number(toTime[0]) - 12 : toTime[0];
@@ -162,6 +169,7 @@ export class TimeSelectionComponent implements OnInit {
 
   tabSelected(selection) {
     this.activeTab = selection;
+    console.log(this.activeTab);
   }
 
   makeBooking(): void {

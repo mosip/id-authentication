@@ -8,7 +8,7 @@ import { FormControl, Validators } from '@angular/forms';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  languages: string[] = ['English', 'French', 'Arabic'];
+  languages: string[] = ['French', 'Arabic'];
 
   inputPlaceholderContact = 'Email ID or Phone Number';
   inputPlaceholderOTP = 'Enter OTP';
@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
   inputContactDetails = '';
   inputOTP: string;
   selectedLanguage = '';
-  langCode = 'eng';
+  langCode = 'ara';
   dir = 'ltr';
   showSendOTP = true;
   showResend = false;
@@ -39,11 +39,11 @@ export class LoginComponent implements OnInit {
 
   constructor(private router: Router, private translate: TranslateService) {
     translate.addLangs(['eng', 'fra', 'ara']);
-    translate.setDefaultLang('eng');
+    translate.setDefaultLang('ara');
 
-    const browserLang = translate.getBrowserLang();
-    translate.use(browserLang.match(/eng|fra|ara/) ? browserLang : 'eng');
-    localStorage.setItem('langCode', this.langCode);
+    // const browserLang = translate.getBrowserLang();
+    // translate.use(browserLang.match(/eng|fra|ara/) ? browserLang : 'ara');
+     localStorage.setItem('langCode', this.langCode);
   }
 
   ngOnInit() {

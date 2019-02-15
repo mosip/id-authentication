@@ -18,6 +18,15 @@
 			<version>${vertx.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-core</artifactId>
+			<version>5.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-activemq</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-camel-bridge</artifactId>
 			<version>${vertx.version}</version>
