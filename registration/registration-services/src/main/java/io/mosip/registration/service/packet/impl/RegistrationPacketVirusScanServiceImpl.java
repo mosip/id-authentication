@@ -16,6 +16,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.service.packet.RegistrationPacketVirusScanService;
 
 @Service
 public class RegistrationPacketVirusScanServiceImpl implements RegistrationPacketVirusScanService {
