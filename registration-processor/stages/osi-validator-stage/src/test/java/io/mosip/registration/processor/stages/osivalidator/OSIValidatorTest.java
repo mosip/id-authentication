@@ -185,7 +185,11 @@ public class OSIValidatorTest {
 		
 		FieldValue supervisorPassword= new FieldValue();
 		supervisorPassword.setLabel(JsonConstant.SUPERVISORPWR);
-		supervisorPassword.setValue("false");
+		supervisorPassword.setValue("true");
+		
+		FieldValue supervisorId= new FieldValue();
+		supervisorId.setLabel(JsonConstant.SUPERVISORID);
+		supervisorId.setValue("false");
 		
 		FieldValue supervisorOtp= new FieldValue();
 		supervisorOtp.setLabel(JsonConstant.SUPERVISOROTPAUTHENTICATION);
@@ -196,7 +200,7 @@ public class OSIValidatorTest {
 		officerBiofileName.setValue("supervisor_bio_CBEFF");
 	
 
-		identity.setOsiData((Arrays.asList(officerBiofileName, officerBiofileName,officerOtp,officerPassword,supervisorOtp,supervisorPassword)));
+		identity.setOsiData((Arrays.asList(officerBiofileName, officerBiofileName,officerOtp,officerPassword,supervisorOtp,supervisorPassword,supervisorId)));
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 		FieldValueArray introducerBiometric = new FieldValueArray();
 		introducerBiometric.setLabel(PacketFiles.INTRODUCERBIOMETRICSEQUENCE.name());
