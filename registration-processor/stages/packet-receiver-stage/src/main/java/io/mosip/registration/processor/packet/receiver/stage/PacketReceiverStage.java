@@ -85,6 +85,8 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 
 	}
+	
+	private static final String APPLICATION_JSON = "application/json";
 
 	/*
 	 * (non-Javadoc)
@@ -110,7 +112,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 		router.post("/packetreceiver/v0.1/registration-processor/packet-receiver/registrationpackets").handler(ctx -> {
 			processURL(ctx);
 		}).failureHandler(failureHandler -> {
-			this.setResponse(failureHandler, globalExceptionHandler.handler(failureHandler.failure()),"application/json");
+			this.setResponse(failureHandler, globalExceptionHandler.handler(failureHandler.failure()),APPLICATION_JSON);
 		});
 		
 		router.get("/packetreceiver/health").handler(ctx -> {
@@ -135,10 +137,10 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 			file = new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName());
 			MessageDTO messageDTO = packetReceiverService.storePacket(file);
 			if (messageDTO.getIsValid()) {
-				this.setResponse(ctx,buildPacketReceiverResponse(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString()));
+				this.setResponse(ctx,buildPacketReceiverResponse(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString()),APPLICATION_JSON);
 				this.sendMessage(messageDTO);
 			} else {
-				this.setResponse(ctx,buildPacketReceiverResponse(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString()));
+				this.setResponse(ctx,buildPacketReceiverResponse(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString()),APPLICATION_JSON);
 			}
 		} catch (IOException e) {
 			throw new UnexpectedException(e.getMessage());

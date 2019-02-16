@@ -14,7 +14,7 @@ public enum PlatformErrorMessages {
 
 	RPR_PKR_INVALID_PACKET_SIZE(PlatformErrorConstants.RPR_PACKET_RECEIVER_MODULE + "002",
 			"The Registration Packet Size is invalid"),
-
+	
 	/** The rpr pkr invalid packet format. */
 	RPR_PKR_INVALID_PACKET_FORMAT(PlatformErrorConstants.RPR_PACKET_RECEIVER_MODULE + "003", "Invalid packet format"),
 
@@ -77,7 +77,23 @@ public enum PlatformErrorMessages {
 	RPR_RGS_INVALID_PRID_LENGTH(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "012",
 			"Parent RegistrationId Length Must Be 29"),
 
-	/** The rpr pis registration table not accessible. */
+	
+	/** The missing input parameter. */
+	RPR_RGS_MISSING_INPUT_PARAMETER(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "013", "Missing Input Parameter - %s"),
+
+	/** The invalid input parameter. */
+	RPR_RGS_INVALID_INPUT_PARAMETER(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "014", "Invalid Input Parameter - %s"),
+
+	/** The data validation failed. */
+	RPR_RGS_DATA_VALIDATION_FAILED(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "015", "Input Data Validation Failed"),
+	
+	
+	RPR_RGS_JSON_MAPPING_EXCEPTION(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "016", "Json Data Mapping Exception"),
+	
+	RPR_RGS_JSON_PARSING_EXCEPTION(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "017", "Json Data Parsing Exception"),
+	
+	RPR_RGS_UNKNOWN_EXCEPTION(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "018", "Unknown Exception Occurs"),
+
 	// Packet Info Storage Exception error code and message
 	RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "001",
 			"The Registration Table is not accessible"),
@@ -231,6 +247,25 @@ public enum PlatformErrorMessages {
 	/** The rpr mvs no assigned record. */
 	RPR_MVS_NO_ASSIGNED_RECORD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "004",
 			"No Assigned Record Found"),
+
+	
+	
+
+	
+	RPR_MVS_MISSING_INPUT_PARAMETER_VERSION(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "005", "Missing Input Parameter - version"),
+
+
+	RPR_MVS_MISSING_INPUT_PARAMETER_TIMESTAMP(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "006", "Missing Input Parameter - timestamp"),
+
+
+	RPR_MVS_MISSING_INPUT_PARAMETER_ID(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "007", "Missing Input Parameter - id"),
+
+	
+	RPR_MVS_INVALID_INPUT_PARAMETER_VERSION(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "008", "Invalid Input Parameter - version"),
+
+	RPR_MVS_INVALID_INPUT_PARAMETER_TIMESTAMP(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "009", "Invalid Input Parameter - timestamp"),
+
+	RPR_MVS_INVALID_INPUT_PARAMETER_ID(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "010", "Invalid Input Parameter - id"),
 
 	/** The rpr tem not found. */
 	// Registration processor Message sender Exception error code

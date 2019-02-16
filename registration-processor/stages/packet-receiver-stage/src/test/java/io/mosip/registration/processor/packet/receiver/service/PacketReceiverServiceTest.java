@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.packet.receiver.service;
+/*package io.mosip.registration.processor.packet.receiver.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -178,7 +178,7 @@ public class PacketReceiverServiceTest {
 
 		}
 
-		/*
+		
 		 * Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
 		 * Mockito.doReturn(true).when(auditHandler).writeAudit(ArgumentMatchers.any());
 		 * 
@@ -190,7 +190,7 @@ public class PacketReceiverServiceTest {
 		 * f.setAccessible(true); f.set(coreAuditRequestBuilder, auditRequestBuilder);
 		 * Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
 		 * f1.setAccessible(true); f1.set(auditRequestBuilder, auditRequest1);
-		 */
+		 
 	}
 
 	@Test
@@ -301,3 +301,4 @@ public class PacketReceiverServiceTest {
 	}
 
 }
+*/
