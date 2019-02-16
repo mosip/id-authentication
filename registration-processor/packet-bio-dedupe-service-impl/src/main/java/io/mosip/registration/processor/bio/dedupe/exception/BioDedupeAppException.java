@@ -1,13 +1,14 @@
-package io.mosip.registration.processor.status.exception;
+package io.mosip.registration.processor.bio.dedupe.exception;
 
 import io.mosip.kernel.core.exception.BaseCheckedException;
+import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
- * The Class RegStatusAppException.
+ * The Class BioDedupeAppException.
  * @author Rishabh Keshari
  */
-public class RegStatusAppException extends BaseCheckedException {
+public class BioDedupeAppException extends BaseCheckedException {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6748760277721155095L;
@@ -27,7 +28,7 @@ public class RegStatusAppException extends BaseCheckedException {
 	/**
 	 * Instantiates a new id repo app exception.
 	 */
-	public RegStatusAppException() {
+	public BioDedupeAppException() {
 		super();
 	}
 
@@ -37,7 +38,7 @@ public class RegStatusAppException extends BaseCheckedException {
 	 * @param errorCode the error code
 	 * @param errorMessage the error message
 	 */
-	public RegStatusAppException(String errorCode, String errorMessage) {
+	public BioDedupeAppException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
 
@@ -48,7 +49,7 @@ public class RegStatusAppException extends BaseCheckedException {
 	 * @param errorMessage the error message
 	 * @param rootCause the root cause
 	 */
-	public RegStatusAppException(String errorCode, String errorMessage, Throwable rootCause) {
+	public BioDedupeAppException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}
 	
@@ -60,7 +61,7 @@ public class RegStatusAppException extends BaseCheckedException {
 	 * @param rootCause the root cause
 	 * @param id the id
 	 */
-	public RegStatusAppException(String errorCode, String errorMessage, Throwable rootCause, String id) {
+	public BioDedupeAppException(String errorCode, String errorMessage, Throwable rootCause, String id) {
 		super(errorCode, errorMessage, rootCause);
 		this.id = id;
 	}
@@ -70,7 +71,7 @@ public class RegStatusAppException extends BaseCheckedException {
 	 *
 	 * @param exceptionConstant the exception constant
 	 */
-	public RegStatusAppException(PlatformErrorMessages exceptionConstant) {
+	public BioDedupeAppException(PlatformErrorMessages exceptionConstant) {
 		this(exceptionConstant.getCode(), exceptionConstant.getMessage());
 	}
 
@@ -80,7 +81,7 @@ public class RegStatusAppException extends BaseCheckedException {
 	 * @param exceptionConstant the exception constant
 	 * @param rootCause the root cause
 	 */
-	public RegStatusAppException(PlatformErrorMessages exceptionConstant, Throwable rootCause) {
+	public BioDedupeAppException(PlatformErrorMessages exceptionConstant, Throwable rootCause) {
 		this(exceptionConstant.getCode(), exceptionConstant.getMessage(), rootCause);
 	}
 
@@ -90,7 +91,7 @@ public class RegStatusAppException extends BaseCheckedException {
 	 * @param exceptionConstant the exception constant
 	 * @param id the id
 	 */
-	public RegStatusAppException(PlatformErrorMessages exceptionConstant, String id) {
+	public BioDedupeAppException(PlatformErrorMessages exceptionConstant, String id) {
 		this(exceptionConstant.getCode(), exceptionConstant.getMessage());
 		this.id = id;
 	}
@@ -102,7 +103,7 @@ public class RegStatusAppException extends BaseCheckedException {
 	 * @param rootCause the root cause
 	 * @param id the id
 	 */
-	public RegStatusAppException(PlatformErrorMessages exceptionConstant, Throwable rootCause, String id) {
+	public BioDedupeAppException(PlatformErrorMessages exceptionConstant, Throwable rootCause, String id) {
 		this(exceptionConstant.getCode(), exceptionConstant.getMessage(), rootCause);
 		this.id = id;
 	}

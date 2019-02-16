@@ -27,16 +27,15 @@ import io.mosip.registration.processor.status.sync.response.dto.RegStatusReqResp
 import io.mosip.registration.processor.status.sync.response.dto.RegStatusResponseDTO;
 
 
-@RestControllerAdvice(assignableTypes=RegistrationStatusController.class)
-public class RegistrationStatusExceptionHandler {
+@RestControllerAdvice(assignableTypes=RegistrationSyncController.class)
+public class RegistrationSyncExceptionHandler {
 
-	private static final String REG_STATUS_SERVICE_ID = "mosip.registration.status";
-	private static final String REG_STATUS_APPLICATION_VERSION = "1.0";
+	private static final String REG_SYNC_SERVICE_ID = "mosip.registration.sync";
+	private static final String REG_SYNC_APPLICATION_VERSION = "1.0";
 	private static final String DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 
-
-	private static Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationStatusExceptionHandler.class);
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationSyncExceptionHandler.class);
 
 	@ExceptionHandler(TablenotAccessibleException.class)
 	public String duplicateentry(TablenotAccessibleException e, WebRequest request) {
@@ -85,7 +84,7 @@ public class RegistrationStatusExceptionHandler {
 		Throwable e = ex;
 
 		if (Objects.isNull(response.getId())) {
-			response.setId(REG_STATUS_SERVICE_ID);
+			response.setId(REG_SYNC_SERVICE_ID);
 		}
 		if (e instanceof BaseCheckedException)
 
@@ -109,7 +108,7 @@ public class RegistrationStatusExceptionHandler {
 		}
 
 		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(DATETIME_PATTERN));
-		response.setVersion(REG_STATUS_APPLICATION_VERSION);
+		response.setVersion(REG_SYNC_APPLICATION_VERSION);
 		response.setResponse(null);
 		Gson gson = new GsonBuilder().serializeNulls().registerTypeAdapter(RegStatusResponseDTO.class, new RegStatusReqRespJsonSerializer()).create();
 		return gson.toJson(response);

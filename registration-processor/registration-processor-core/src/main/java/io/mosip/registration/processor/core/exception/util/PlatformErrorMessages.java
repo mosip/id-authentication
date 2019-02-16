@@ -314,6 +314,26 @@ public enum PlatformErrorMessages {
 	RPR_BDD_UNABLE_TO_SERVE_REQUEST(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "004",
 			"ABIS for the Reference ID and Request ID was Unable to Execute the Request"),
 
+	/** The missing input parameter. */
+	RPR_BDD_MISSING_INPUT_PARAMETER(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "005", "Missing Input Parameter - %s"),
+
+	/** The invalid input parameter. */
+	RPR_BDD_INVALID_INPUT_PARAMETER(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "006", "Invalid Input Parameter - %s"),
+
+	/** The data validation failed. */
+	RPR_BDD_DATA_VALIDATION_FAILED(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "007", "Input Data Validation Failed"),
+	
+	
+	RPR_BDD_JSON_MAPPING_EXCEPTION(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "008", "Json Data Mapping Exception"),
+	
+	RPR_BDD_JSON_PARSING_EXCEPTION(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "009", "Json Data Parsing Exception"),
+	
+	RPR_BDD_UNKNOWN_EXCEPTION(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "010", "Unknown Exception Occurs"),
+
+	/** The rpr mvs file not present. */
+	RPR_BDD_FILE_NOT_PRESENT(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "011",
+			"Requested file is not present"),
+
 	/** *** System Exception ****. */
 
 	RPR_SYS_UNEXCEPTED_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "001", "Unexpected exception"),

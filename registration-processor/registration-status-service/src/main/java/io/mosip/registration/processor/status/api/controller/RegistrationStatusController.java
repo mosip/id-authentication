@@ -1,12 +1,7 @@
 package io.mosip.registration.processor.status.api.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
@@ -20,11 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
-import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
@@ -34,7 +27,6 @@ import io.mosip.registration.processor.status.exception.RegStatusValidationExcep
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 import io.mosip.registration.processor.status.sync.response.dto.RegStatusResponseDTO;
-import io.mosip.registration.processor.status.sync.response.dto.RegSyncResponseDTO;
 import io.mosip.registration.processor.status.utilities.RegStatusValidationUtil;
 import io.mosip.registration.processor.status.validator.RegistrationStatusRequestValidator;
 import io.swagger.annotations.Api;
@@ -43,7 +35,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import springfox.documentation.annotations.ApiIgnore;
 import io.mosip.registration.processor.status.dto.RegistrationStatusRequestDTO;
-import io.mosip.registration.processor.status.dto.RegistrationSyncRequestDTO;
 /**
  * The Class RegistrationStatusController.
  */
@@ -69,6 +60,10 @@ public class RegistrationStatusController {
 	public void initBinder(WebDataBinder binder) {
 		binder.addValidators(validator);
 	}
+	
+	private static final String REG_STATUS_SERVICE_ID = "mosip.registration.status";
+	private static final String REG_STATUS_APPLICATION_VERSION = "1.0";
+	private static final String DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 
 	/**
@@ -95,55 +90,17 @@ public class RegistrationStatusController {
 			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_UNKNOWN_EXCEPTION, e);
 		}
 	}
-	/**
-	 * Sync registration ids.
-	 *
-	 * @param syncRegistrationList
-	 *            the sync registration list
-	 * @return the response entity
-	 * @throws RegStatusAppException 
-	 */
-	@PostMapping(path = "/sync", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Get the synchronizing registration entity", response = RegistrationStatusCode.class)
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Synchronizing Registration Entity successfully fetched") })
-	public ResponseEntity<Object> syncRegistrationController(@Validated @RequestBody(required = true) RegistrationSyncRequestDTO registrationSyncRequestDTO,@ApiIgnore Errors errors) throws RegStatusAppException {
 
-		try {
-			RegStatusValidationUtil.validate(errors);
-			List<SyncResponseDto> syncResponseDtoList = syncRegistrationService.sync(registrationSyncRequestDTO.getRequest());
-			return ResponseEntity.ok().body(buildRegistrationSyncResponse(syncResponseDtoList));
-		}catch (RegStatusValidationException e) {
-			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
-		}
-	}
-
-
-
-	private RegStatusResponseDTO buildRegistrationStatusResponse(List<RegistrationStatusDto> registrations) {
+	public RegStatusResponseDTO buildRegistrationStatusResponse(List<RegistrationStatusDto> registrations) {
 
 		RegStatusResponseDTO response = new RegStatusResponseDTO();
 		if (Objects.isNull(response.getId())) {
-			response.setId("mosip.registration.status");
+			response.setId(REG_STATUS_SERVICE_ID);
 		}
 		response.setError(null);
-		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-		response.setVersion("1.0");
+		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(DATETIME_PATTERN));
+		response.setVersion(REG_STATUS_APPLICATION_VERSION);
 		response.setResponse(registrations);
-		response.setError(null);
-		return response;
-	}
-
-	private RegSyncResponseDTO buildRegistrationSyncResponse(List<SyncResponseDto> syncResponseDtoList) {
-
-		RegSyncResponseDTO response = new RegSyncResponseDTO();
-		if (Objects.isNull(response.getId())) {
-			response.setId("mosip.registration.sync");
-		}
-		response.setError(null);
-		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-		response.setVersion("1.0");
-		response.setResponse(syncResponseDtoList);
 		response.setError(null);
 		return response;
 	}

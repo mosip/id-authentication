@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.status.validator;
+package io.mosip.registration.processor.bio.dedupe.request.validator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,17 +15,16 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.bio.dedupe.abis.dto.BioDedupeRequestDTO;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.status.dto.RegistrationStatusRequestDTO;
-import io.mosip.registration.processor.status.dto.RegistrationSyncRequestDTO;
 
 /**
- * The Class RegistrationStatusRequestValidator.
+ * The Class BioDedupeRequestValidator.
  * @author Rishabh Keshari
  */
 @Component
-public class RegistrationStatusRequestValidator implements Validator {
+public class BioDedupeRequestValidator implements Validator {
 
 	/** The Constant VER. */
 	private static final String VER = "version";
@@ -40,10 +39,10 @@ public class RegistrationStatusRequestValidator implements Validator {
 	private static final String DATETIME_PATTERN = "mosip.kernel.idrepo.datetime.pattern";
 
 	/** The mosip logger. */
-	Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationStatusRequestValidator.class);
+	Logger regProcLogger = RegProcessorLogger.getLogger(BioDedupeRequestValidator.class);
 
 	/** The Constant ID_REPO_SERVICE. */
-	private static final String REGISTRATION_SERVICE = "RegistrationService";
+	private static final String BIO_DEDUPE_SERVICE = "BioDedupeService";
 
 	/** The Constant TIMESTAMP. */
 	private static final String TIMESTAMP = "timestamp";
@@ -56,11 +55,8 @@ public class RegistrationStatusRequestValidator implements Validator {
 	private Environment env;
 
 	/** The id. */
-//	@Resource
 	private Map<String, String> id=new HashMap<>();
 
-	/** The clazz type. */
-	private boolean clazzType=false;
 	
 
 	/* (non-Javadoc)
@@ -69,15 +65,9 @@ public class RegistrationStatusRequestValidator implements Validator {
 	@Override
 	public boolean supports(Class<?> clazz) {
 		
+			id.put("sync", "mosip.packet.bio.dedupe");
+			return clazz.isAssignableFrom(BioDedupeRequestDTO.class);
 		
-		if(clazz.isAssignableFrom(RegistrationStatusRequestDTO.class)) {
-			id.put("status", "mosip.registration.status");
-			clazzType=true;
-			return clazz.isAssignableFrom(RegistrationStatusRequestDTO.class);
-		}else {
-			id.put("sync", "mosip.registration.sync");
-			return clazz.isAssignableFrom(RegistrationSyncRequestDTO.class);
-		}
 		
 	}
 
@@ -87,24 +77,13 @@ public class RegistrationStatusRequestValidator implements Validator {
 	 */
 	@Override
 	public void validate(@NonNull Object target, Errors errors) {
-		if(clazzType) {
-		RegistrationStatusRequestDTO request = (RegistrationStatusRequestDTO) target;
+			BioDedupeRequestDTO request = (BioDedupeRequestDTO) target;
 		
 		validateReqTime(request.getTimestamp(), errors);
 
 		if (!errors.hasErrors()) {
 			validateId(request.getId(), errors);
 			validateVersion(request.getVersion(), errors);
-		}
-		}else {
-			RegistrationSyncRequestDTO request = (RegistrationSyncRequestDTO) target;
-			validateReqTime(request.getTimestamp(), errors);
-
-			if (!errors.hasErrors()) {
-				validateId(request.getId(), errors);
-				validateVersion(request.getVersion(), errors);
-			}
-			
 		}
 	}
 
@@ -118,11 +97,11 @@ public class RegistrationStatusRequestValidator implements Validator {
 	 */
 	private void validateId(String id, Errors errors) {
 		if (Objects.isNull(id)) {
-			errors.rejectValue(ID_FIELD, PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getCode(),
-					String.format(PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getMessage(), ID_FIELD));
+			errors.rejectValue(ID_FIELD, PlatformErrorMessages.RPR_BDD_MISSING_INPUT_PARAMETER.getCode(),
+					String.format(PlatformErrorMessages.RPR_BDD_MISSING_INPUT_PARAMETER.getMessage(), ID_FIELD));
 		} else if (!this.id.containsValue(id)) {
-			errors.rejectValue(ID_FIELD, PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getCode(),
-					String.format(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getMessage(), ID_FIELD));
+			errors.rejectValue(ID_FIELD, PlatformErrorMessages.RPR_BDD_INVALID_INPUT_PARAMETER.getCode(),
+					String.format(PlatformErrorMessages.RPR_BDD_INVALID_INPUT_PARAMETER.getMessage(), ID_FIELD));
 		}
 	}
 
@@ -136,11 +115,11 @@ public class RegistrationStatusRequestValidator implements Validator {
 	 */
 	private void validateVersion(String ver, Errors errors) {
 		if (Objects.isNull(ver)) {
-			errors.rejectValue(VER, PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getCode(),
-					String.format(PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getMessage(), VER));
+			errors.rejectValue(VER, PlatformErrorMessages.RPR_BDD_MISSING_INPUT_PARAMETER.getCode(),
+					String.format(PlatformErrorMessages.RPR_BDD_MISSING_INPUT_PARAMETER.getMessage(), VER));
 		} else if ((!verPattern.matcher(ver).matches())) {
-			errors.rejectValue(VER, PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getCode(),
-					String.format(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getMessage(), VER));
+			errors.rejectValue(VER, PlatformErrorMessages.RPR_BDD_INVALID_INPUT_PARAMETER.getCode(),
+					String.format(PlatformErrorMessages.RPR_BDD_INVALID_INPUT_PARAMETER.getMessage(), VER));
 		}
 	}
 
@@ -155,8 +134,8 @@ public class RegistrationStatusRequestValidator implements Validator {
 	 */
 	private void validateReqTime(String timestamp, Errors errors) {
 		if (Objects.isNull(timestamp)) {
-			errors.rejectValue(TIMESTAMP, PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getCode(),
-					String.format(PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getMessage(), TIMESTAMP));
+			errors.rejectValue(TIMESTAMP, PlatformErrorMessages.RPR_BDD_MISSING_INPUT_PARAMETER.getCode(),
+					String.format(PlatformErrorMessages.RPR_BDD_MISSING_INPUT_PARAMETER.getMessage(), TIMESTAMP));
 		} else {
 			try {
 				if (Objects.nonNull(env.getProperty(DATETIME_PATTERN))) {
@@ -164,17 +143,17 @@ public class RegistrationStatusRequestValidator implements Validator {
 							env.getProperty(DATETIME_PATTERN));
 					timestampFormat.setTimeZone(TimeZone.getTimeZone(env.getProperty(DATETIME_TIMEZONE)));
 					if (!DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter()).isBeforeNow()) {
-						errors.rejectValue(TIMESTAMP, PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getCode(),
-								String.format(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getMessage(),
+						errors.rejectValue(TIMESTAMP, PlatformErrorMessages.RPR_BDD_INVALID_INPUT_PARAMETER.getCode(),
+								String.format(PlatformErrorMessages.RPR_BDD_INVALID_INPUT_PARAMETER.getMessage(),
 										TIMESTAMP));
 					}
 
 				}
 			} catch (IllegalArgumentException e) {
-				regProcLogger.error(REGISTRATION_SERVICE, "RegistrationStatusRequestValidator", "validateReqTime",
+				regProcLogger.error(BIO_DEDUPE_SERVICE, "BioDedupeRequestValidator", "validateReqTime",
 						"\n" + ExceptionUtils.getStackTrace(e));
-				errors.rejectValue(TIMESTAMP, PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getCode(),
-						String.format(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getMessage(), TIMESTAMP));
+				errors.rejectValue(TIMESTAMP, PlatformErrorMessages.RPR_BDD_INVALID_INPUT_PARAMETER.getCode(),
+						String.format(PlatformErrorMessages.RPR_BDD_INVALID_INPUT_PARAMETER.getMessage(), TIMESTAMP));
 			}
 		}
 	}

@@ -1,14 +1,11 @@
 package io.mosip.registration.processor.status.utilities;
 
 import org.springframework.validation.Errors;
-
-import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
 import io.mosip.registration.processor.status.exception.RegStatusValidationException;
 
 /**
- * The Class DataValidationUtil.
- *
- * @author Manoj SP
+ * The Class RegStatusValidationUtil.
+ * @author Rishabh Keshari
  */
 public final class RegStatusValidationUtil {
 
@@ -19,12 +16,10 @@ public final class RegStatusValidationUtil {
 	}
 
 	/**
-	 * Get list of errors from error object
+	 * Get list of errors from error object.
 	 *
-	 * @param errors
-	 *            the errors
-	 * @throws IdRepoDataValidationException
-	 *             the IdRepoDataValidationException
+	 * @param errors            the errors
+	 * @throws RegStatusValidationException the reg status validation exception
 	 */
 	public static void validate(Errors errors) throws RegStatusValidationException {
 		if (errors.hasErrors()) {

@@ -1,12 +1,12 @@
-package io.mosip.registration.processor.status.exception;
+package io.mosip.registration.processor.bio.dedupe.exception;
 
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
- * The Class RegStatusValidationException.
+ * The Class BioDedupeValidationException.
  * @author Rishabh Keshari
  */
-public class RegStatusValidationException extends RegStatusAppException {
+public class BioDedupeValidationException extends BioDedupeAppException {
 
 
 	
@@ -16,7 +16,7 @@ public class RegStatusValidationException extends RegStatusAppException {
 	/**
 	 * Instantiates a new id repo data validation exception.
 	 */
-	public RegStatusValidationException() {
+	public BioDedupeValidationException() {
 		super();
 	}
 
@@ -26,7 +26,7 @@ public class RegStatusValidationException extends RegStatusAppException {
 	 * @param errorCode the error code
 	 * @param errorMessage the error message
 	 */
-	public RegStatusValidationException(String errorCode, String errorMessage) {
+	public BioDedupeValidationException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
 
@@ -37,7 +37,7 @@ public class RegStatusValidationException extends RegStatusAppException {
 	 * @param errorMessage the error message
 	 * @param rootCause the root cause
 	 */
-	public RegStatusValidationException(String errorCode, String errorMessage, Throwable rootCause) {
+	public BioDedupeValidationException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}
 
@@ -46,7 +46,7 @@ public class RegStatusValidationException extends RegStatusAppException {
 	 *
 	 * @param exceptionConstant the exception constant
 	 */
-	public RegStatusValidationException(PlatformErrorMessages exceptionConstant) {
+	public BioDedupeValidationException(PlatformErrorMessages exceptionConstant) {
 	super(exceptionConstant);
 	}
 
@@ -56,7 +56,7 @@ public class RegStatusValidationException extends RegStatusAppException {
 	 * @param exceptionConstant the exception constant
 	 * @param rootCause the root cause
 	 */
-	public RegStatusValidationException(PlatformErrorMessages  exceptionConstant, Throwable rootCause) {
+	public BioDedupeValidationException(PlatformErrorMessages  exceptionConstant, Throwable rootCause) {
 		super(exceptionConstant, rootCause);
 	}
 
