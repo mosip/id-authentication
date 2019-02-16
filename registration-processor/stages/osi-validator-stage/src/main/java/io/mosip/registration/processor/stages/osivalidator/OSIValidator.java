@@ -172,9 +172,11 @@ public class OSIValidator {
 			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
 				boolean flag = validateOtpAndPwd(officerPassword, officerOTPAuthentication);
 				if (flag) {
-					registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + "Operator");
+					registrationStatusDto
+							.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + StatusMessage.OPERATOR);
 				} else {
-					registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + "Operator");
+					registrationStatusDto
+							.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.OPERATOR);
 
 				}
 				return flag;
@@ -184,9 +186,11 @@ public class OSIValidator {
 					&& (validateFace(officerId, face, registrationId)) && (validatePin(officerId, pin))
 					&& validateOtpAndPwd(officerPassword, officerOTPAuthentication)) {
 				return true;
+			} else {
+				registrationStatusDto.setStatusComment(StatusMessage.OPERATOR + message);
+				return false;
 			}
 		}
-		registrationStatusDto.setStatusComment(StatusMessage.OPERATOR + message);
 		return true;
 	}
 
@@ -238,9 +242,11 @@ public class OSIValidator {
 			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
 				boolean flag = validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication);
 				if (flag) {
-					registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + "Supervisor");
+					registrationStatusDto
+							.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + StatusMessage.SUPERVISOR);
 				} else {
-					registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + "Supervisor");
+					registrationStatusDto
+							.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.SUPERVISOR);
 
 				}
 				return flag;
@@ -250,9 +256,11 @@ public class OSIValidator {
 					&& (validateFace(supervisorId, face, registrationId)) && (validatePin(supervisorId, pin))
 					&& validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication)) {
 				return true;
+			} else {
+				registrationStatusDto.setStatusComment(StatusMessage.SUPERVISOR + message);
+				return false;
 			}
 		}
-		registrationStatusDto.setStatusComment(StatusMessage.SUPERVISOR + message);
 		return true;
 	}
 
@@ -512,6 +520,7 @@ public class OSIValidator {
 		if (password != null && password.equals(TRUE) || otp != null && otp.equals(TRUE)) {
 			return true;
 		} else {
+			message = StatusMessage.VALIDATE_OTP_PASSWORD;
 			return false;
 
 		}

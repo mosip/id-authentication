@@ -29,6 +29,9 @@ public class StatusMessage {
 
 	/** The Constant FACE. */
 	public static final String FACE = "Face validation failed";
+	/** otp/pwd validation failed */
+	public static final String VALIDATE_OTP_PASSWORD = "OTP/Password validation failed";
+
 
 	/** The Constant PIN. */
 	public static final String PIN = "Pin validation failed";
