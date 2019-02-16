@@ -84,7 +84,9 @@ public class DemodedupeStage extends MosipVerticleManager {
 
 	/** The Constant MATCHED_REFERENCE_TYPE. */
 	private static final String MATCHED_REFERENCE_TYPE = "uin";
-	
+
+	private static final String INTERNAL_OCCURED = "Internal error occured in demo dedupe stage while processing registrationId ";
+
 	/**
 	 * Deploy verticle.
 	 */
@@ -109,7 +111,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 		boolean isTransactionSuccessful = false;
 
 		String registrationId = object.getRid();
-		
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "DemodedupeStage::process()::entry");
 		try {
@@ -142,14 +144,16 @@ public class DemodedupeStage extends MosipVerticleManager {
 
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_DEMO_DEDUPE_FAILED);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DEMO_DEDUPE_FAILED.toString());
-					description = "Packet Demo dedupe failed for registration id : " + registrationId;
+					description = "Packet Demo dedupe failed for registrationId " + registrationId + "::"
+							+ "as duplicate found in auth";
 					demographicDedupeRepository.updateIsActiveIfDuplicateFound(registrationId);
 
 				} else {
 					object.setIsValid(Boolean.FALSE);
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_DEMO_POTENTIAL_MATCH);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DEMO_POTENTIAL_MATCH.toString());
-					description = "Potential duplicate packet found for registration id : " + registrationId;
+					description = "Potential duplicate packet found for registrationId " + registrationId + "::"
+							+ "no duplicate found in auth and sent to manual verification";
 
 					// Saving potential duplicates in reg_manual_verification table
 					saveManualAdjudicationData(uniqueMatchedRefIds, registrationId);
@@ -159,9 +163,10 @@ public class DemodedupeStage extends MosipVerticleManager {
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_DEMO_DEDUPE_SUCCESS);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DEMO_DEDUPE_SUCCESS.toString());
-				description = "Packet Demo dedupe successful for registration id : " + registrationId;
+				description = "Packet Demo dedupe successful for registration id " + registrationId + "::"
+						+ RegistrationStatusCode.PACKET_DEMO_DEDUPE_SUCCESS.toString();
 			}
-			
+
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "DemodedupeStage::process()::exit");
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -175,13 +180,13 @@ public class DemodedupeStage extends MosipVerticleManager {
 					registrationId,
 					PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-			description = "Internal error occured while processing registration  id : " + registrationId;
+			description = INTERNAL_OCCURED + registrationId + "::" + e.getMessage();
 		} catch (Exception ex) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,
 					PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
-			description = "Internal error occured while processing registration  id : " + registrationId;
+			description = INTERNAL_OCCURED + registrationId + "::" + ex.getMessage();
 		} finally {
 
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();

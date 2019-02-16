@@ -361,15 +361,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 					description = "Reverse data sync in packet validator successful for " + preRegistrationIds.size()
 							+ " pre-registrationIds";
 
-				} else {
-					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
-							LoggerFileConstant.REGISTRATIONID.toString(), registrationIds.toString(),
-							PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage()
-									+ "as pre registartion Ids are not found");
-					isTransactionSuccessful = false;
-					description = "Reverse data sync in packet validator failed as there are no any pre-registrationIds";
-
-				}
+				} 
 
 				if (mainResponseDto != null && mainResponseDto.getErr() != null) {
 					regProcLogger.error(LoggerFileConstant.REGISTRATIONID.toString(), registrationIds.toString(),

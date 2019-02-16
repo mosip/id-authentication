@@ -46,7 +46,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  */
 @Service
 public class BioDedupeStage extends MosipVerticleManager {
-	
+
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(BioDedupeStage.class);
 
@@ -75,6 +75,9 @@ public class BioDedupeStage extends MosipVerticleManager {
 
 	String description = "";
 
+	/** The Constant INTERNAL_ERROR. */
+	private static final String INTERNAL_ERROR = "Internal error occured in bio-dedupe stage while processing for registrationId ";
+
 	/**
 	 * Deploy verticle.
 	 */
@@ -98,13 +101,13 @@ public class BioDedupeStage extends MosipVerticleManager {
 		boolean isTransactionSuccessful = false;
 
 		String registrationId = object.getRid();
-		
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "biodedupe::process()::entry");
 
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 				.getRegistrationStatus(registrationId);
-		
+
 		try {
 			String insertionResult = bioDedupeService.insertBiometrics(registrationId);
 			if (insertionResult.equalsIgnoreCase(ResponseStatusCode.SUCCESS.name())) {
@@ -114,15 +117,15 @@ public class BioDedupeStage extends MosipVerticleManager {
 				object.setIsValid(Boolean.FALSE);
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIOMETRIC_INSERTION_TO_ABIS);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED.toString());
-				description = registrationStatusDto.getStatusComment() + registrationId;
+				description = StatusMessage.PACKET_BIOMETRIC_INSERTION_TO_ABIS + registrationId;
 			}
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = true;
 
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId,description);
-			
+					registrationId, description);
+
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, regProcLogger.getClass().getName() + "process()::exit");
 
@@ -131,7 +134,8 @@ public class BioDedupeStage extends MosipVerticleManager {
 					registrationId,
 					PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-			description = "ABIS Internal error occured while processing registration  id  : " + registrationId;
+			description = "ABIS Internal error occured in bio-dedupe stage while processing registrationId "
+					+ registrationId + "::" + e.getMessage();
 
 		}
 
@@ -140,29 +144,32 @@ public class BioDedupeStage extends MosipVerticleManager {
 					registrationId,
 					PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-			description = "ABIS Abort Exception occured while processing registration  id : " + registrationId;
+			description = "ABIS Abort Exception occured in bio-dedupe stage while processing registrationId "
+					+ registrationId + "::" + e.getMessage();
 
 		} catch (UnexceptedError e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,
 					PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-			description = "Unexcepted Error occured while processing registration  id : " + registrationId;
+			description = "Unexcepted Error occured in bio-dedupe stage while processing registrationId "
+					+ registrationId + "::" + e.getMessage();
 
 		} catch (UnableToServeRequestABISException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,
 					PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-			description = "Unable To Serve Request ABIS Exception occured while processing registration  id : "
-					+ registrationId;
+			description = "Unable To Serve Request ABIS Exception occured while processing registrationId "
+					+ registrationId + "::" + e.getMessage();
 
 		} catch (DataAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,
 					PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-			description = "Data voilation in reg packet : " + registrationId;
+			description = "Data voilation in biodedupe stage for registrationId" + registrationId + "::"
+					+ e.getMessage();
 
 		}
 
@@ -171,14 +178,14 @@ public class BioDedupeStage extends MosipVerticleManager {
 					registrationId,
 					PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-			description = "Internal error occured while processing registration  id : " + registrationId;
+			description = INTERNAL_ERROR + registrationId + "::" + e.getMessage();
 
 		} catch (Exception ex) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,
 					PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
-			description = "Internal error occured while processing registration  id : " + registrationId;
+			description = INTERNAL_ERROR + registrationId + "::" + ex.getMessage();
 		} finally {
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
@@ -199,13 +206,13 @@ public class BioDedupeStage extends MosipVerticleManager {
 			object.setIsValid(Boolean.FALSE);
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIOMETRIC_POTENTIAL_MATCH);
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_POTENTIAL_MATCH.toString());
-			description = registrationStatusDto.getStatusComment() + registrationId;
+			description = StatusMessage.PACKET_BIOMETRIC_POTENTIAL_MATCH + registrationId;
 			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationId);
 		} else {
 			object.setIsValid(Boolean.TRUE);
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIODEDUPE_SUCCESS);
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_SUCCESS.toString());
-			description = registrationStatusDto.getStatusComment() + registrationId;
+			description = RegistrationStatusCode.PACKET_BIO_DEDUPE_SUCCESS.toString() + registrationId;
 		}
 	}
 
