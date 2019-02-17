@@ -324,7 +324,9 @@ public enum PlatformErrorMessages {
 	
 	RPR_PRT_UIN_NOT_FOUND_IN_DATABASE(PlatformErrorConstants.RPR_PRINTING_MODULE + "002", "UIN not found in database"),
 	
-	RPR_PRT_PDF_GENERATION_FAILED(PlatformErrorConstants.RPR_PRINTING_MODULE + "003", "PDF Generation Failed");
+	RPR_PRT_PDF_GENERATION_FAILED(PlatformErrorConstants.RPR_PRINTING_MODULE + "003", "PDF Generation Failed"),
+	
+	RPR_PRT_QUEUE_CONNECTION_NULL(PlatformErrorConstants.RPR_PRINTING_MODULE + "004", "Queue connection is null");
 	
 	/** The error message. */
 	private final String errorMessage;

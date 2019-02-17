@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
@@ -40,7 +41,10 @@ import io.mosip.registration.processor.core.notification.template.mapping.Notifi
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
+import io.mosip.registration.processor.core.queue.factory.MosipQueue;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
+import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerator;
 import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
@@ -52,6 +56,7 @@ import io.mosip.registration.processor.packet.storage.exception.InstantanceCreat
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.dto.IdResponseDTO;
 import io.mosip.registration.processor.print.exception.PrintGlobalExceptionHandler;
+import io.mosip.registration.processor.print.exception.QueueConnectionNotFound;
 import io.mosip.registration.processor.print.exception.UINNotFoundInDatabase;
 import io.mosip.registration.processor.print.util.UINCardConstant;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -148,11 +153,32 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The description. */
 	private String description;
 
+	@Autowired
+	private MosipQueueManager<MosipQueue, byte[]> mosipQueueManager;
+
+	@Autowired
+	private MosipQueueConnectionFactory<MosipQueue> mosipConnectionFactory;
+
+	@Value("${registration.processor.queue.username}")
+	private String username;
+
+	@Value("${registration.processor.queue.password}")
+	private String password;
+
+	@Value("${registration.processor.queue.url}")
+	private String url;
+
+	@Value("${registration.processor.queue.typeOfQueue}")
+	private String typeOfQueue;
+
+	@Value("${registration.processor.queue.address}")
+	private String address;
+
 	/**
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		mosipEventBus = this.getEventBus(this, clusterManagerUrl);
+		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consume(mosipEventBus, MessageBusAddress.PRINTING_BUS);
 	}
 
@@ -191,12 +217,28 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 			InputStream uinArtifact = templateGenerator.getTemplate(UIN_CARD_TEMPLATE, attributes, langCode);
 
-			ByteArrayOutputStream pdf = uinCardGenerator.generateUinCard(uinArtifact,
-					UinCardType.PDF);
+			ByteArrayOutputStream pdf = uinCardGenerator.generateUinCard(uinArtifact, UinCardType.PDF);
 
 			byte[] pdfBytes = pdf.toByteArray();
+
+			MosipQueue queue = mosipConnectionFactory.createConnection(typeOfQueue, username, password, url);
+
+			if (queue == null) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), regId,
+						PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.name());
+				throw new QueueConnectionNotFound(PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.getCode());
+			}
+			boolean isPdfAddedtoQueue = mosipQueueManager.send(queue, pdfBytes, address);
 			
-			object.setIsValid(Boolean.TRUE);
+			if (isPdfAddedtoQueue) {
+				object.setIsValid(Boolean.TRUE);
+				isTransactionSuccessful = true;
+				description = "Pdf added to the mosip queue for printing";
+			} else {
+				object.setIsValid(Boolean.FALSE);
+				isTransactionSuccessful = false;
+			}
 
 		} catch (UINNotFoundInDatabase e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -204,9 +246,20 @@ public class PrintStage extends MosipVerticleAPIManager {
 							+ ExceptionUtils.getStackTrace(e));
 			description = "Uin is not present for registration  id : " + regId;
 			object.setInternalError(Boolean.TRUE);
+		} catch(PDFGeneratorException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId, PlatformErrorMessages.RPR_PRT_PDF_NOT_GENERATED.name() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			description = "pdf is not generated for template card with registration id : " + regId;
+			object.setInternalError(Boolean.TRUE);
 		} catch (TemplateProcessingFailureException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			object.setInternalError(Boolean.TRUE);
+		} catch(QueueConnectionNotFound e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId, PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 		} catch (IOException | ApisResourceAccessException | ParseException e) {
