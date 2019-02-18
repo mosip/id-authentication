@@ -83,8 +83,7 @@ public class OTPFacadeImplTest {
 	@InjectMocks
 	private RestHelper restHelper;
 
-	@Mock
-	IdRepoService idInfoService;
+	
 	@Mock
 	private IdInfoHelper idInfoHelper;
 
@@ -147,7 +146,7 @@ public class OTPFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 
-		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
+		Mockito.when(idAuthService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn(name);
 
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn(emailId);
@@ -188,7 +187,7 @@ public class OTPFacadeImplTest {
 		idInfo.put("phone", list);
 
 		Mockito.when(idAuthService.processIdType("D", uin, false)).thenReturn(repoDetails);
-		Mockito.when(idInfoService.getIdInfo(repoDetails)).thenReturn(idInfo);
+		Mockito.when(idAuthService.getIdInfo(repoDetails)).thenReturn(idInfo);
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn(name);
 
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn(emailId);
@@ -217,7 +216,7 @@ public class OTPFacadeImplTest {
 
 		Mockito.when(otpManager.generateOTP(otpKey)).thenReturn("123456");
 		Mockito.when(otpService.generateOtp(otpKey)).thenReturn("123456");
-		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
+		Mockito.when(idAuthService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("abc@test.com");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("1234567890");
 

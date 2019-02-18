@@ -121,9 +121,6 @@ public class StaticPinFacadeImplTest {
 
 	private static final String DATETIME_PATTERN = "datetime.pattern";
 
-	/** The IdRepoService **/
-	@Mock
-	private IdRepoService idInfoService;
 
 	@Before
 	public void before() {
@@ -182,7 +179,7 @@ public class StaticPinFacadeImplTest {
 		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(repoDetails(uin));
 
-		Mockito.when(idInfoService.getIdInfo(repoDetails(uin))).thenReturn(idInfo);
+		Mockito.when(idAuthService.getIdInfo(repoDetails(uin))).thenReturn(idInfo);
 
 		Mockito.when(staticPinRepository.findById(uin)).thenReturn(entity);
 		Mockito.when(staticPinHistoryRepo.save(staticPinHistory)).thenReturn(staticPinHistory);
@@ -235,7 +232,7 @@ public class StaticPinFacadeImplTest {
 		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(repoDetails(vid));
 
-		Mockito.when(idInfoService.getIdInfo(repoDetails(vid))).thenReturn(idInfo);
+		Mockito.when(idAuthService.getIdInfo(repoDetails(vid))).thenReturn(idInfo);
 
 		Mockito.when(staticPinRepository.findById(vid)).thenReturn(entity);
 		Mockito.when(staticPinHistoryRepo.save(staticPinHistory)).thenReturn(staticPinHistory);
@@ -288,7 +285,7 @@ public class StaticPinFacadeImplTest {
 		Mockito.when(idAuthService.getIdRepoByUIN(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(repoDetails(vid));
 
-		Mockito.when(idInfoService.getIdInfo(repoDetails(vid))).thenReturn(idInfo);
+		Mockito.when(idAuthService.getIdInfo(repoDetails(vid))).thenReturn(idInfo);
 
 		Mockito.when(staticPinRepository.findById(vid)).thenReturn(entity);
 		Mockito.when(staticPinHistoryRepo.save(staticPinHistory)).thenReturn(staticPinHistory);

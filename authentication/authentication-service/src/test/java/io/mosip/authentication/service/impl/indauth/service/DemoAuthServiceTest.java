@@ -45,7 +45,7 @@ import io.mosip.authentication.core.dto.indauth.MatchInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.core.spi.id.service.IdRepoService;
+import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
@@ -75,7 +75,7 @@ public class DemoAuthServiceTest {
 	private IdInfoHelper actualidInfoHelper;
 
 	@Mock
-	private IdRepoService idInfoService;
+	private IdAuthService idInfoService;
 
 	@Before
 	public void before() {
