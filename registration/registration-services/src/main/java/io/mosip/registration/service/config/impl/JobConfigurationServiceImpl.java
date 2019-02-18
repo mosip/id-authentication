@@ -34,6 +34,7 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
@@ -166,13 +167,14 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 			/* Check and Execute missed triggers */
 			executeMissedTriggers(syncActiveJobMap);
-			
+
 			/* Start Scheduler */
 			startScheduler();
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
 		}
 
@@ -221,8 +223,9 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	private void loadScheduler(ResponseDTO responseDTO) {
 		syncActiveJobMap.forEach((jobId, syncJob) -> {
 			try {
-				if (syncJob.getParentSyncJobId() == null && syncJob.getApiName()!=null && responseDTO.getErrorResponseDTOs() == null
-						&& isSchedulerRunning && !schedulerFactoryBean.getScheduler().checkExists(new JobKey(jobId))) {
+				if (syncJob.getParentSyncJobId() == null && syncJob.getApiName() != null
+						&& responseDTO.getErrorResponseDTOs() == null && isSchedulerRunning
+						&& !schedulerFactoryBean.getScheduler().checkExists(new JobKey(jobId))) {
 
 					// Get Job instance through application context
 					baseJob = (BaseJob) applicationContext.getBean(syncJob.getApiName());
@@ -239,14 +242,16 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				}
 			} catch (SchedulerException | NoSuchBeanDefinitionException exception) {
 				LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, exception.getMessage());
+						RegistrationConstants.APPLICATION_ID, exception.getMessage()
+								+ ExceptionUtils.getStackTrace(exception));
 
 				/* Stop, Clear Scheduler and set Error response */
 				setStartExceptionError(responseDTO);
 
 			} catch (RuntimeException runtimeException) {
 				LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+						RegistrationConstants.APPLICATION_ID,
+						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 				setStartExceptionError(responseDTO);
 
 			}
@@ -268,7 +273,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 		} catch (SchedulerException schedulerException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
+					RegistrationConstants.APPLICATION_ID,
+					schedulerException.getMessage() + ExceptionUtils.getStackTrace(schedulerException));
 		}
 
 		/* Error Response */
@@ -302,12 +308,14 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			}
 		} catch (SchedulerException schedulerException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
+					RegistrationConstants.APPLICATION_ID,
+					schedulerException.getMessage() + ExceptionUtils.getStackTrace(schedulerException));
 			setErrorResponse(responseDTO, RegistrationConstants.STOP_SCHEDULER_ERROR_MESSAGE, null);
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			setErrorResponse(responseDTO, RegistrationConstants.STOP_SCHEDULER_ERROR_MESSAGE, null);
 
 		}
@@ -363,7 +371,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 		} catch (SchedulerException schedulerException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
+					RegistrationConstants.APPLICATION_ID,
+					schedulerException.getMessage() + ExceptionUtils.getStackTrace(schedulerException));
 
 			setErrorResponse(responseDTO, RegistrationConstants.CURRENT_JOB_DETAILS_ERROR_MESSAGE, null);
 
@@ -392,7 +401,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 			SyncJobDef syncJobDef = syncActiveJobMap.get(jobId);
 
-			if (syncJobDef != null && syncJobDef.getApiName()!=null) {
+			if (syncJobDef != null && syncJobDef.getApiName() != null) {
 				// Get Job using application context and api name
 				baseJob = (BaseJob) applicationContext.getBean(syncJobDef.getApiName());
 
@@ -408,13 +417,15 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 		} catch (NoSuchBeanDefinitionException | NullPointerException | IllegalArgumentException exception) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, exception.getMessage());
+					RegistrationConstants.APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
 			responseDTO = new ResponseDTO();
 			setErrorResponse(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE, null);
-		} catch(RuntimeException runtimeException) {
+		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
 			responseDTO = new ResponseDTO();
 			setErrorResponse(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE, null);

@@ -27,6 +27,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -177,7 +178,7 @@ public class ServiceDelegateUtil {
 				requestDto = preparePOSTRequest(serviceName, object, authHeader);
 			} catch (RegBaseCheckedException baseCheckedException) {
 				throw new RegBaseCheckedException(RegistrationConstants.SERVICE_DELEGATE_UTIL,
-						baseCheckedException.getMessage());
+						baseCheckedException.getMessage() + ExceptionUtils.getStackTrace(baseCheckedException));
 			}
 			responseMap = restClientUtil.invoke(requestDto);
 			if (null != responseMap && responseMap.size() > 0
@@ -429,7 +430,7 @@ public class ServiceDelegateUtil {
 			requestHTTPDTO.setUri(new URI(urlPath));
 		} catch (URISyntaxException uriSyntaxException) {
 			LOGGER.error("REGISTRATION - SERVICE_DELEGATE_UTIL - GET_AUTH_TOKEN", APPLICATION_NAME, APPLICATION_ID,
-					uriSyntaxException.getMessage());
+					uriSyntaxException.getMessage() + ExceptionUtils.getStackTrace(uriSyntaxException));
 			throw new RegBaseCheckedException(RegistrationConstants.REST_OAUTH_ERROR_CODE,
 					RegistrationConstants.REST_OAUTH_ERROR_MSG);
 		}
@@ -444,7 +445,7 @@ public class ServiceDelegateUtil {
 		} catch (HttpClientErrorException | HttpServerErrorException | ResourceAccessException
 				| SocketTimeoutException restException) {
 			LOGGER.error("REGISTRATION - SERVICE_DELEGATE_UTIL - GET_AUTH_TOKEN", APPLICATION_NAME, APPLICATION_ID,
-					restException.getMessage());
+					restException.getMessage() + ExceptionUtils.getStackTrace(restException));
 			throw new RegBaseCheckedException(RegistrationConstants.REST_OAUTH_ERROR_CODE,
 					RegistrationConstants.REST_OAUTH_ERROR_MSG);
 		}

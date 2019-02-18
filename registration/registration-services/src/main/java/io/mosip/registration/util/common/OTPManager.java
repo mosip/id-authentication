@@ -9,6 +9,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
@@ -68,14 +69,14 @@ public class OTPManager extends BaseService {
 					| SocketTimeoutException | ResourceAccessException exception) {
 
 				LOGGER.error(LoggerConstants.OTP_MANAGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, exception.getMessage());
+						RegistrationConstants.APPLICATION_ID, exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
 				// create Error Response
 				setErrorResponse(response, RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE, null);
 
 			} catch (IllegalStateException illegalStateException) {
 				LOGGER.error(LoggerConstants.OTP_MANAGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, illegalStateException.getMessage());
+						RegistrationConstants.APPLICATION_ID, illegalStateException.getMessage() + ExceptionUtils.getStackTrace(illegalStateException));
 
 				setErrorResponse(response, RegistrationConstants.CONNECTION_ERROR, null);
 
@@ -125,7 +126,7 @@ public class OTPManager extends BaseService {
 					| SocketTimeoutException | ResourceAccessException exception) {
 
 				LOGGER.error(LoggerConstants.OTP_MANAGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, exception.getMessage());
+						RegistrationConstants.APPLICATION_ID, exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
 				setErrorResponse(responseDTO, RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE, null);
 

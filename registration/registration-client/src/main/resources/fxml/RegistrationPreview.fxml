@@ -31,15 +31,20 @@
             </Button>
          </children>
       </AnchorPane>
-      <ScrollPane layoutX="203.0" layoutY="36.0" prefHeight="578.0" prefWidth="912.0">
-        <content>
+      <AnchorPane layoutX="203.0" layoutY="36.0" prefHeight="585.0" prefWidth="912.0">
+        <children>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="570.0" prefWidth="912.0">
                <children>
-                  <WebView fx:id="webView" layoutY="-1.0" prefHeight="567.0" prefWidth="911.0" />
+                  <WebView fx:id="webView" layoutY="-1.0" prefHeight="545.0" prefWidth="912.0" />
+                  <AnchorPane layoutY="543.0" prefHeight="27.0" prefWidth="911.0" styleClass="consent">
+                     <children>
+                        <CheckBox fx:id="consentOfApplicant" layoutX="47.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="595.0" text="I provide my consent for storage and utilization of my personal data." />
+                     </children>
+                  </AnchorPane>
                </children>
             </AnchorPane>
-        </content>
-      </ScrollPane>
+        </children>
+      </AnchorPane>
       <AnchorPane id="ackScreen-anchor-pane" fx:id="registrationPreviewHeader" layoutX="-4.0" layoutY="-2.0" prefHeight="39.0" prefWidth="1289.0">
          <children>
             <Text layoutX="55.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/newregistration" wrappingWidth="154.2451171875" />

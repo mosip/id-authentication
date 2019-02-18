@@ -5,6 +5,8 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.Writer;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,16 +25,21 @@ import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.CheckBox;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 
 @Controller
-public class RegistrationPreviewController extends BaseController {
+public class RegistrationPreviewController extends BaseController implements Initializable {
 
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationPreviewController.class);
 
 	@FXML
 	private WebView webView;
+	
+	@FXML
+	private CheckBox consentOfApplicant;
 
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
@@ -48,11 +55,21 @@ public class RegistrationPreviewController extends BaseController {
 
 	@Autowired
 	private RegistrationPreviewController previewController;
-
+	
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		consentOfApplicant.setSelected(true);
+	}
+		
 	@FXML
 	public void goToNextPage(ActionEvent event) {
+		if(consentOfApplicant.isSelected()) {
+			getRegistrationDtoContent().getRegistrationMetaDataDTO().setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_SELECTED);
+		}else {
+			getRegistrationDtoContent().getRegistrationMetaDataDTO().setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_UNSELECTED);
+		}
 		SessionContext.map().put("registrationPreview", false);
-		registrationController.goToAuthenticationPage();
+		registrationController.goToAuthenticationPage();		
 	}
 
 	private RegistrationDTO getRegistrationDTOFromSession() {
@@ -99,5 +116,10 @@ public class RegistrationPreviewController extends BaseController {
 		SessionContext.map().put("fingerPrintCapture", true);
 		SessionContext.map().put("registrationPreview", false);
 		registrationController.showCurrentPage();
+	}
+	
+	public RegistrationDTO getRegistrationDtoContent() {
+		return (RegistrationDTO) SessionContext.map()
+				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
 }

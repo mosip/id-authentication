@@ -659,6 +659,10 @@
   	-fx-background-radius: 4.0 4.0 4.0 4.0;
   	-fx-text-alignment: center;
 }
+.consent{
+	-fx-background-color: #ffffff;
+	-fx-font-size: 12px;
+}
 #mainBox{
 	-fx-border-width: 0.0;
 	-fx-border-color: black;
