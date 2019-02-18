@@ -191,7 +191,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
 					.collect(Collectors.toList());
 
-			response.setError(errors);
+			response.setErrors(errors);
 		}
 
 		if (e instanceof BaseUncheckedException) {
@@ -202,7 +202,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
 					.collect(Collectors.toList());
 
-			response.setError(errors);
+			response.setErrors(errors);
 		}
 
 		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));

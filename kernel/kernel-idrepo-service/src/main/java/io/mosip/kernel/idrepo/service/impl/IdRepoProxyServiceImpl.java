@@ -15,18 +15,15 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.jayway.jsonpath.InvalidJsonException;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.constant.AuditEvents;
@@ -63,7 +60,7 @@ import io.mosip.kernel.idrepo.repository.UinRepo;
  * @author Manoj SP
  */
 @Service
-public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdResponseDTO, Uin> {
+public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdResponseDTO> {
 
 	private static final String GET_FILES = "getFiles";
 
@@ -108,7 +105,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	private static final String ENTITY = "entity";
 
 	/** The Constant ERR. */
-	private static final String ERR = "error";
+	private static final String ERRORS = "errors";
 
 	/** The Constant RESPONSE_FILTER. */
 	private static final String RESPONSE_FILTER = "responseFilter";
@@ -187,7 +184,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	private AuditHelper auditHelper;
 	
 	@Autowired
-	private IdRepoServiceImpl service;
+	private IdRepoService<IdRequestDTO, Uin> service;
 	
 	/*
 	 * (non-Javadoc)
@@ -199,10 +196,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	public IdResponseDTO addIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
 		try {
 			ShardDataSourceResolver.setCurrentShard(shardResolver.getShard(uin));
-			return constructIdResponse(
-					this.id.get(CREATE), service.addIdentity(uin, request.getRegistrationId(),
-							convertToBytes(request.getRequest().getIdentity()), request.getRequest().getDocuments()),
-					null);	
+			return constructIdResponse(this.id.get(CREATE), service.addIdentity(request, uin), null);
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 					"\n" + ExceptionUtils.getStackTrace(e));
@@ -234,7 +228,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 			ShardDataSourceResolver.setCurrentShard(shardResolver.getShard(uin));
 			if (uinRepo.existsByUin(uin)) {
 				List<Documents> documents = new ArrayList<>();
-				Uin uinObject = retrieveIdentityByUin(uin);
+				Uin uinObject = service.retrieveIdentity(uin, type);
 				if (Objects.isNull(type)) {
 					mosipLogger.info(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "method - " + RETRIEVE_IDENTITY,
 							"filter - null");
@@ -362,19 +356,6 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	}
 
 	/**
-	 * Retrieve identity by uin from DB.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @return the uin
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
-	 */
-	public Uin retrieveIdentityByUin(String uin) throws IdRepoAppException {
-		return uinRepo.findByUin(uin);
-	}
-
-	/**
 	 * Construct id response.
 	 *
 	 * @param id
@@ -406,10 +387,10 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 					linkTo(methodOn(IdRepoController.class).retrieveIdentity(uin.getUin().trim(), null, null)).toUri()
 							.toString());
 			mapper.setFilterProvider(new SimpleFilterProvider().addFilter(RESPONSE_FILTER,
-					SimpleBeanPropertyFilter.serializeAllExcept(IDENTITY, ERR, DOCUMENTS)));
+					SimpleBeanPropertyFilter.serializeAllExcept(IDENTITY, ERRORS, DOCUMENTS)));
 		} else {
 			ignoredProperties.add(ENTITY);
-			ignoredProperties.add(ERR);
+			ignoredProperties.add(ERRORS);
 
 			if (Objects.isNull(documents)) {
 				ignoredProperties.add(DOCUMENTS);
@@ -426,25 +407,6 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 		idResponse.setResponse(response);
 
 		return idResponse;
-	}
-
-	/**
-	 * Convert to bytes.
-	 *
-	 * @param identity
-	 *            the identity
-	 * @return the byte[]
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
-	 */
-	private byte[] convertToBytes(Object identity) throws IdRepoAppException {
-		try {
-			return mapper.writeValueAsBytes(identity);
-		} catch (JsonProcessingException e) {
-			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "convertToBytes",
-					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.JSON_PROCESSING_FAILED, e);
-		}
 	}
 
 	/**
@@ -477,7 +439,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	 * @return the string
 	 */
 	private String hash(byte[] identityInfo) {
-		return CryptoUtil.encodeBase64(HMACUtils.generateHash(identityInfo));
+		return HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityInfo));
 	}
 
 	/*
@@ -494,17 +456,11 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 				if (uinRepo.existsByRegId(request.getRegistrationId())) {
 					throw new IdRepoAppException(IdRepoErrorConstants.RECORD_EXISTS);
 				}
-				Uin uinObject = uinRepo.findByUin(uin);
-				uinObject.setRegId(request.getRegistrationId());
-				service.updateIdentity(request, uin, uinObject);
-				return constructIdResponse(MOSIP_ID_UPDATE, retrieveIdentityByUin(uin), null);
+				service.updateIdentity(request, uin);
+				return constructIdResponse(MOSIP_ID_UPDATE, service.retrieveIdentity(uin, null), null);
 			} else {
 				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
 			}
-		} catch (JSONException | InvalidJsonException e) {
-			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, UPDATE_IDENTITY,
-					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.JSON_PROCESSING_FAILED, e);
 		} catch (DataAccessException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, UPDATE_IDENTITY,
 					"\n" + ExceptionUtils.getStackTrace(e));

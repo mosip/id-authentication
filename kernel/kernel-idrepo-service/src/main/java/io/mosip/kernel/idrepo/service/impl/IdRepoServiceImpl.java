@@ -13,8 +13,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.exception.JDBCConnectionException;
 import org.json.JSONArray;
@@ -36,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.InvalidJsonException;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.spi.json.JacksonJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
@@ -54,6 +53,7 @@ import io.mosip.kernel.core.idrepo.constant.RestServicesConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.idrepo.exception.RestServiceException;
+import io.mosip.kernel.core.idrepo.spi.IdRepoService;
 import io.mosip.kernel.core.idrepo.spi.MosipDFSProvider;
 import io.mosip.kernel.core.idrepo.spi.MosipFingerprintProvider;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -80,7 +80,7 @@ import io.mosip.kernel.idrepo.repository.UinHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinRepo;
 
 @Component
-public class IdRepoServiceImpl {
+public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	
 	private static final String GET_FILES = "getFiles";
 
@@ -89,6 +89,8 @@ public class IdRepoServiceImpl {
 	private static final String ENCRYPT = "encrypt";
 
 	private static final String DATETIME_TIMEZONE = "mosip.kernel.idrepo.datetime.timezone";
+	
+	private static final String UPDATE_IDENTITY = "updateIdentity";
 
 	/** The Constant ROOT. */
 	private static final String ROOT = "$";
@@ -167,14 +169,6 @@ public class IdRepoServiceImpl {
 	@Autowired
 	private ObjectMapper mapper;
 
-	/** The id. */
-	@Resource
-	private Map<String, String> id;
-
-	/** The allowed bio types. */
-	@Resource
-	private List<String> allowedBioTypes;
-
 	/** The uin repo. */
 	@Autowired
 	private UinRepo uinRepo;
@@ -219,31 +213,35 @@ public class IdRepoServiceImpl {
 	 *             the id repo app exception
 	 */
 	@Transactional
-	public Uin addIdentity(String uin, String regId, byte[] identityInfo, List<Documents> documents)
-			throws IdRepoAppException {
-		String uinRefId = UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uin + "_" + DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(env.getProperty(DATETIME_TIMEZONE))).toInstant().toEpochMilli()).toString();
+	public Uin addIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
+		String uinRefId = UUIDUtils
+				.getUUID(UUIDUtils.NAMESPACE_OID,
+						uin + "_" + DateUtils.getUTCCurrentDateTime()
+								.atZone(ZoneId.of(env.getProperty(DATETIME_TIMEZONE))).toInstant().toEpochMilli())
+				.toString();
+		byte[] identityInfo = convertToBytes(request.getRequest().getIdentity());
 
-		if (!uinRepo.existsByRegId(regId) && !uinRepo.existsByUin(uin)) {
+		if (!uinRepo.existsByRegId(request.getRegistrationId()) && !uinRepo.existsByUin(uin)) {
 			List<UinDocument> docList = new ArrayList<>();
 			List<UinBiometric> bioList = new ArrayList<>();
-			if (Objects.nonNull(documents) && !documents.isEmpty()) {
-				addDocuments(uin, identityInfo, documents, uinRefId, docList, bioList);
+			if (Objects.nonNull(request.getRequest().getDocuments())
+					&& !request.getRequest().getDocuments().isEmpty()) {
+				addDocuments(uin, identityInfo, request.getRequest().getDocuments(), uinRefId, docList, bioList);
 
-				uinRepo.save(new Uin(uinRefId, uin, identityInfo, hash(identityInfo), regId,
+				uinRepo.save(new Uin(uinRefId, uin, identityInfo, hash(identityInfo), request.getRegistrationId(),
 						env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
 						now(), false, now(), bioList, docList));
 			} else {
-				uinRepo.save(new Uin(uinRefId, uin, identityInfo, hash(identityInfo), regId,
+				uinRepo.save(new Uin(uinRefId, uin, identityInfo, hash(identityInfo), request.getRegistrationId(),
 						env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
 						now(), false, now(), null, null));
 			}
 
-			uinHistoryRepo.save(new UinHistory(uinRefId, null, uin, identityInfo, hash(identityInfo), regId,
-					env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(),
-					false, now()));
+			uinHistoryRepo.save(new UinHistory(uinRefId, now(), uin, identityInfo, hash(identityInfo),
+					request.getRegistrationId(), env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), LANG_CODE, CREATED_BY,
+					now(), UPDATED_BY, now(), false, now()));
 
-			return uinRepo.findByUin(uin);
+			return retrieveIdentity(uin, null);
 		} else {
 			throw new IdRepoAppException(IdRepoErrorConstants.RECORD_EXISTS);
 		}
@@ -348,42 +346,63 @@ public class IdRepoServiceImpl {
 					IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), DOCUMENTS + " - " + category));
 		}
 	}
+
+	/**
+	 * Retrieve identity by uin from DB.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @return the uin
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
+	 */
+	@Transactional
+	public Uin retrieveIdentity(String uin, String type) throws IdRepoAppException {
+		return uinRepo.findByUin(uin);
+	}
 	
 	@Transactional
-	public void updateIdentity(IdRequestDTO request, String uin, Uin uinObject) throws IdRepoAppException, JSONException {
-		if (Objects.nonNull(request.getStatus())
-				&& !StringUtils.equals(uinObject.getStatusCode(), request.getStatus())) {
-			uinObject.setStatusCode(request.getStatus());
-			uinObject.setUpdatedDateTime(now());
-		}
-		if (Objects.nonNull(request.getRequest()) && Objects.nonNull(request.getRequest().getIdentity())) {
-			RequestDTO requestDTO = request.getRequest();
-			Configuration configuration = Configuration.builder().jsonProvider(new JacksonJsonProvider())
-					.mappingProvider(new JacksonMappingProvider()).build();
-			DocumentContext inputData = JsonPath.using(configuration).parse(requestDTO.getIdentity());
-			DocumentContext dbData = JsonPath.using(configuration).parse(new String(uinObject.getUinData()));
-			JSONCompareResult comparisonResult = JSONCompare.compareJSON(inputData.jsonString(),
-					dbData.jsonString(), JSONCompareMode.LENIENT);
-
-			if (comparisonResult.failed()) {
-				updateIdentityObject(inputData, dbData, comparisonResult);
-				uinObject
-						.setUinData(convertToBytes(convertToObject(dbData.jsonString().getBytes(), Map.class)));
-				uinObject.setUinDataHash(hash(uinObject.getUinData()));
+	public Uin updateIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
+		try {
+			Uin uinObject = retrieveIdentity(uin, null);
+			uinObject.setRegId(request.getRegistrationId());
+			if (Objects.nonNull(request.getStatus())
+					&& !StringUtils.equals(uinObject.getStatusCode(), request.getStatus())) {
+				uinObject.setStatusCode(request.getStatus());
 				uinObject.setUpdatedDateTime(now());
 			}
+			if (Objects.nonNull(request.getRequest()) && Objects.nonNull(request.getRequest().getIdentity())) {
+				RequestDTO requestDTO = request.getRequest();
+				Configuration configuration = Configuration.builder().jsonProvider(new JacksonJsonProvider())
+						.mappingProvider(new JacksonMappingProvider()).build();
+				DocumentContext inputData = JsonPath.using(configuration).parse(requestDTO.getIdentity());
+				DocumentContext dbData = JsonPath.using(configuration).parse(new String(uinObject.getUinData()));
+				JSONCompareResult comparisonResult = JSONCompare.compareJSON(inputData.jsonString(),
+						dbData.jsonString(), JSONCompareMode.LENIENT);
 
-			if (Objects.nonNull(requestDTO.getDocuments()) && !requestDTO.getDocuments().isEmpty()) {
-				updateDocuments(uin, uinObject, requestDTO);
-				uinObject.setUpdatedDateTime(now());
+				if (comparisonResult.failed()) {
+					updateIdentityObject(inputData, dbData, comparisonResult);
+					uinObject.setUinData(convertToBytes(convertToObject(dbData.jsonString().getBytes(), Map.class)));
+					uinObject.setUinDataHash(hash(uinObject.getUinData()));
+					uinObject.setUpdatedDateTime(now());
+				}
+
+				if (Objects.nonNull(requestDTO.getDocuments()) && !requestDTO.getDocuments().isEmpty()) {
+					updateDocuments(uin, uinObject, requestDTO);
+					uinObject.setUpdatedDateTime(now());
+				}
+
 			}
+			uinHistoryRepo.save(new UinHistory(uinObject.getUinRefId(), now(), uin, uinObject.getUinData(),
+					uinObject.getUinDataHash(), uinObject.getRegId(), uinObject.getStatusCode(), LANG_CODE, CREATED_BY,
+					now(), UPDATED_BY, now(), false, now()));
 
+			return uinRepo.save(uinObject);
+		} catch (JSONException | InvalidJsonException e) {
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, UPDATE_IDENTITY,
+					"\n" + ExceptionUtils.getStackTrace(e));
+			throw new IdRepoAppException(IdRepoErrorConstants.JSON_PROCESSING_FAILED, e);
 		}
-		uinHistoryRepo.save(new UinHistory(uinObject.getUinRefId(), null, uin, uinObject.getUinData(),
-				uinObject.getUinDataHash(), uinObject.getRegId(), uinObject.getStatusCode(), LANG_CODE,
-				CREATED_BY, now(), UPDATED_BY, now(), false, now()));
-
-		uinRepo.save(uinObject);
 	}
 	
 	/**
@@ -709,7 +728,7 @@ public class IdRepoServiceImpl {
 	 * @return the string
 	 */
 	private String hash(byte[] identityInfo) {
-		return CryptoUtil.encodeBase64(HMACUtils.generateHash(identityInfo));
+		return HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityInfo));
 	}
 	
 	/**

@@ -204,6 +204,6 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 	 * @return the string
 	 */
 	private String hash(byte[] identityInfo) {
-		return CryptoUtil.encodeBase64(HMACUtils.generateHash(identityInfo));
+		return HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityInfo));
 	}
 }
