@@ -65,8 +65,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IdTemplateManager.class,
-		TemplateManagerBuilderImpl.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class StaticPinFacadeImplTest {
 
 	/** The Static Pin FacadeImpl */
@@ -327,7 +326,7 @@ public class StaticPinFacadeImplTest {
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
 				.thenReturn(uinMap);
 		Mockito.when(vidRepository.findByUIN(Mockito.anyString())).thenReturn(Collections.EMPTY_LIST);
-		VIDResponseDTO vidResponseDTO=pinFacadeImpl.generateVID("2342342344");
+		VIDResponseDTO vidResponseDTO = pinFacadeImpl.generateVID("2342342344");
 		assertEquals("mosip.identity.vid", vidResponseDTO.getId());
 	}
 
@@ -342,9 +341,10 @@ public class StaticPinFacadeImplTest {
 		vidEntity.setActive(true);
 		List<VIDEntity> vidEntityList = new ArrayList<>();
 		vidEntityList.add(vidEntity);
-		Mockito.when(vidRepository.findByUIN(Mockito.anyString(),Mockito.any())).thenReturn(vidEntityList);
+		Mockito.when(vidRepository.findByUIN(Mockito.anyString(), Mockito.any())).thenReturn(vidEntityList);
 		pinFacadeImpl.generateVID("2342342344");
 	}
+
 	@Test
 	public void generateVIDExpired() throws IdAuthenticationBusinessException {
 		Map<String, Object> uinMap = new HashMap<>();
@@ -352,12 +352,12 @@ public class StaticPinFacadeImplTest {
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
 				.thenReturn(uinMap);
 		VIDEntity vidEntity = new VIDEntity();
-		vidEntity.setExpiryDate(LocalDateTime.of(2019, 2, 12, 9, 54,54,567));
+		vidEntity.setExpiryDate(LocalDateTime.of(2019, 2, 12, 9, 54, 54, 567));
 		vidEntity.setActive(true);
 		List<VIDEntity> vidEntityList = new ArrayList<>();
 		vidEntityList.add(vidEntity);
-		Mockito.when(vidRepository.findByUIN(Mockito.anyString(),Mockito.any())).thenReturn(vidEntityList);
-		VIDResponseDTO vidResponseDTO=pinFacadeImpl.generateVID("2342342344");
+		Mockito.when(vidRepository.findByUIN(Mockito.anyString(), Mockito.any())).thenReturn(vidEntityList);
+		VIDResponseDTO vidResponseDTO = pinFacadeImpl.generateVID("2342342344");
 		assertEquals("mosip.identity.vid", vidResponseDTO.getId());
 	}
 

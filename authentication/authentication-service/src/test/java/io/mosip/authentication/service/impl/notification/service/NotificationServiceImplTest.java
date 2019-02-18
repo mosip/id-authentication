@@ -19,7 +19,6 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -29,19 +28,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.server.reactive.HttpHandler;
-import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.reactive.function.server.RequestPredicates;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-import org.springframework.web.reactive.function.server.ServerResponse;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
@@ -64,17 +56,15 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
-import reactor.core.publisher.Mono;
-import reactor.ipc.netty.http.server.HttpServer;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IdTemplateManager.class,
-		TemplateManagerBuilderImpl.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class NotificationServiceImplTest {
 
 	@InjectMocks
 	AuditRequestFactory auditFactory;
+
 	@InjectMocks
 	private RestRequestFactory restRequestFactory;
 
@@ -109,24 +99,7 @@ public class NotificationServiceImplTest {
 		ReflectionTestUtils.setField(notificationService, "env", environment);
 		ReflectionTestUtils.setField(notificationManager, "restRequestFactory", restRequestFactory);
 		ReflectionTestUtils.setField(notificationManager, "restHelper", restHelper);
-
 		ReflectionTestUtils.setField(notificationService, "notificationManager", notificationManager);
-	}
-
-	@BeforeClass
-	public static void beforeClass() {
-		RouterFunction<?> functionSuccessmail = RouterFunctions.route(RequestPredicates.POST("/notifier/email"),
-				request -> ServerResponse.status(HttpStatus.OK).body(Mono.just(new String("success")), String.class));
-		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccessmail);
-		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
-		HttpServer.create(8087).start(adapter);
-
-		RouterFunction<?> functionSuccessmsg = RouterFunctions.route(RequestPredicates.POST("/notifier/sms"),
-				request -> ServerResponse.status(HttpStatus.OK).body(Mono.just(new String("success")), String.class));
-		HttpHandler msgHttpHandler = RouterFunctions.toHttpHandler(functionSuccessmsg);
-		ReactorHttpHandlerAdapter msgAadapter = new ReactorHttpHandlerAdapter(msgHttpHandler);
-		HttpServer.create(8088).start(msgAadapter);
-		System.err.println("started server");
 	}
 
 	@Test
@@ -136,16 +109,15 @@ public class NotificationServiceImplTest {
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setPersonalIdentity(true);
 		authRequestDTO.setAuthType(authType);
-		
+
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ZoneOffset offset = ZoneOffset.MAX;
-		
 
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).toString());
-		
-		//authRequestDTO.setReqTime(Instant.now().atOffset(offset)
-		//		.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+
+		// authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		// .format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authResponseDTO.setStatus("N");
 		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
@@ -187,15 +159,12 @@ public class NotificationServiceImplTest {
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		
+
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).toString());
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setPersonalIdentity(true);
 		authRequestDTO.setAuthType(authType);
-		
-		//authRequestDTO.setReqTime(ZonedDateTime.now()
-		//		.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authResponseDTO.setStatus("y");
 		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
@@ -254,11 +223,11 @@ public class NotificationServiceImplTest {
 		String time = "";
 		String email = "abc@gmail.cpm";
 		String mobileNumber = "";
-		
+
 		otpRequestDto.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).toString());
-		//otpRequestDto.setReqTime(ZonedDateTime.now()
-		//		.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		// otpRequestDto.setReqTime(ZonedDateTime.now()
+		// .format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
@@ -275,7 +244,6 @@ public class NotificationServiceImplTest {
 				IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any()))
 				.thenThrow(idAuthenticationBusinessException.getCause());
-
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("otp.notification.type", "email,sms");

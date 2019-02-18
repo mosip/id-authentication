@@ -49,8 +49,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IdTemplateManager.class,
-		TemplateManagerBuilderImpl.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class StaticPinServiceImplTest {
 
 	/** The Static Pin Service */
@@ -87,7 +86,6 @@ public class StaticPinServiceImplTest {
 	private RestHelper restHelper;
 	/** The Constant for IDA */
 	private static final String IDA = "IDA";
-
 
 	/** The IdRepoService **/
 	@Mock
@@ -231,7 +229,7 @@ public class StaticPinServiceImplTest {
 	}
 
 	private LocalDateTime now() throws IdAuthenticationBusinessException {
-			return DateUtils.getUTCCurrentDateTime();
+		return DateUtils.getUTCCurrentDateTime();
 	}
 
 }

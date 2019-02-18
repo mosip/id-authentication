@@ -56,8 +56,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IdTemplateManager.class,
-		TemplateManagerBuilderImpl.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class OTPFacadeImplTest {
 
 	OtpRequestDTO otpRequestDto;
@@ -75,8 +74,9 @@ public class OTPFacadeImplTest {
 	AutnTxn autnTxn;
 	@Mock
 	IdAuthService<AutnTxn> idAuthService;
+
 	@InjectMocks
-	IdTemplateManager idTemplateManager;
+	IdTemplateManager idTemplateService;
 
 	@InjectMocks
 	private RestRequestFactory restRequestFactory;
@@ -106,7 +106,7 @@ public class OTPFacadeImplTest {
 		ReflectionTestUtils.setField(otpFacadeImpl, "env", env);
 		ReflectionTestUtils.setField(otpFacadeImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(notificationService, "env", env);
-		ReflectionTestUtils.setField(notificationService, "idTemplateManager", idTemplateManager);
+		ReflectionTestUtils.setField(notificationService, "idTemplateManager", idTemplateService);
 		ReflectionTestUtils.setField(restRequestFactory, "env", env);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
@@ -250,7 +250,6 @@ public class OTPFacadeImplTest {
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
 	}
 
-
 	@Test
 	public void testAddMinute() {
 		otpRequestDto.getReqTime();
@@ -286,7 +285,6 @@ public class OTPFacadeImplTest {
 		String uniqueID = otpRequestDto.getIdvId();
 		ReflectionTestUtils.invokeMethod(idAuthService, "getIdRepoByVID", uniqueID, false);
 	}
-
 
 	// =========================================================
 	// ************ Helping Method *****************************
