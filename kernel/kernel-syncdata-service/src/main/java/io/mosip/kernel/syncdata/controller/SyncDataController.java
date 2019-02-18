@@ -1,9 +1,7 @@
 package io.mosip.kernel.syncdata.controller;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -67,8 +65,6 @@ public class SyncDataController {
 
 	@Autowired
 	SyncUserDetailsService syncUserDetailsService;
-	
-	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
 	/**
 	 * This API method would fetch all synced global config details from server
@@ -78,8 +74,11 @@ public class SyncDataController {
 
 	@ApiOperation(value = "API to sync global config details")
 	@GetMapping(value = "/configs")
-	public JSONObject getConfigDetails() {
-		return syncConfigDetailsService.getConfigDetails();
+	public ConfigDto getConfigDetails() {
+		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
+		ConfigDto syncConfigResponse = syncConfigDetailsService.getConfigDetails();
+		syncConfigResponse.setLastSyncTime(currentTimeStamp);
+		return syncConfigResponse;
 	}
 
 	/**
@@ -135,8 +134,8 @@ public class SyncDataController {
 			@RequestParam(value = "lastUpdated", required = false) String lastUpdated)
 			throws InterruptedException, ExecutionException {
 		LocalDateTime timestamp = null;
-		
-		LocalDateTime currentTimeStamp=LocalDateTime.now(ZoneOffset.UTC);
+
+		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		if (lastUpdated != null) {
 			try {
 				timestamp = MapperUtils.parseToLocalDateTime(lastUpdated);
@@ -147,7 +146,8 @@ public class SyncDataController {
 		}
 		MasterDataResponseDto masterDataResponseDto = masterDataService.syncData(machineId, timestamp,
 				currentTimeStamp);
-        masterDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
+
+		masterDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
 		return masterDataResponseDto;
 	}
 
@@ -158,7 +158,10 @@ public class SyncDataController {
 	 */
 	@GetMapping("/roles")
 	public RolesResponseDto getAllRoles() {
-		return syncRolesService.getAllRoles();
+		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
+		RolesResponseDto rolesResponseDto = syncRolesService.getAllRoles();
+		rolesResponseDto.setLastSyncTime(currentTimeStamp);
+		return rolesResponseDto;
 	}
 
 	/**
@@ -170,7 +173,10 @@ public class SyncDataController {
 	 */
 	@GetMapping("/userdetails/{regid}")
 	public SyncUserDetailDto getUserDetails(@PathVariable("regid") String regId) {
-		return syncUserDetailsService.getAllUserDetail(regId);
+		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
+		SyncUserDetailDto syncUserDetailDto = syncUserDetailsService.getAllUserDetail(regId);
+		syncUserDetailDto.setLastSyncTime(currentTimeStamp);
+		return syncUserDetailDto;
 	}
 
 	/**
@@ -191,7 +197,10 @@ public class SyncDataController {
 			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timeStamp,
 			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
 
-		return new ResponseEntity<>(syncConfigDetailsService.getPublicKey(applicationId, timeStamp, referenceId),
-				HttpStatus.OK);
+		String currentTimeStamp = DateUtils.getUTCCurrentDateTimeString();
+		PublicKeyResponse<String> publicKeyResponse = syncConfigDetailsService.getPublicKey(applicationId, timeStamp,
+				referenceId);
+		publicKeyResponse.setLastSyncTime(currentTimeStamp);
+		return new ResponseEntity<>(publicKeyResponse, HttpStatus.OK);
 	}
 }

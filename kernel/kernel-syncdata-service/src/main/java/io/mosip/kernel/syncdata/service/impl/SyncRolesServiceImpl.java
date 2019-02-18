@@ -1,8 +1,5 @@
 package io.mosip.kernel.syncdata.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -61,7 +58,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorMessage());
 		}
-       rolesDtos.setLastSyncTime(LocalDateTime.now(ZoneOffset.UTC));
+       
 		return rolesDtos;
 
 	}
