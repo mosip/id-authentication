@@ -19,6 +19,7 @@ import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.RestServiceException;
@@ -42,8 +43,15 @@ import reactor.core.publisher.Mono;
 /**
  * Instantiates a new rest helper.
  */
+
+/**
+ * Instantiates a new rest helper.
+ */
 @NoArgsConstructor
 public class RestHelper {
+
+	/** The Constant ERRORS. */
+	private static final String ERRORS = "errors";
 
 	/** The mapper. */
 	@Autowired
@@ -70,8 +78,10 @@ public class RestHelper {
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
+	/** The Constant THROWING_REST_SERVICE_EXCEPTION. */
 	private static final String THROWING_REST_SERVICE_EXCEPTION = "Throwing RestServiceException";
 
+	/** The Constant REQUEST_SYNC_RUNTIME_EXCEPTION. */
 	private static final String REQUEST_SYNC_RUNTIME_EXCEPTION = "requestSync-RuntimeException";
 
 	/** The mosipLogger. */
@@ -95,12 +105,14 @@ public class RestHelper {
 				response = request(request, getSslContext()).timeout(Duration.ofSeconds(request.getTimeout())).block();
 				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
+				checkErrorResponse(response, request.getResponseType());
 				return (T) response;
 			} else {
 				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
 				response = request(request, getSslContext()).block();
 				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
+				checkErrorResponse(response, request.getResponseType());
 				return (T) response;
 			}
 		} catch (WebClientResponseException e) {
@@ -202,6 +214,29 @@ public class RestHelper {
 		monoResponse = exchange.bodyToMono(request.getResponseType());
 
 		return monoResponse;
+	}
+	
+	/**
+	 * Check error response.
+	 *
+	 * @param response the response
+	 * @param responseType the response type
+	 * @throws RestServiceException the rest service exception
+	 */
+	private void checkErrorResponse(Object response, Class<?> responseType) throws RestServiceException {
+		try {
+			ObjectNode responseNode = mapper.readValue(mapper.writeValueAsBytes(response), ObjectNode.class);
+			if (responseNode.has(ERRORS) && !responseNode.get(ERRORS).isNull() && responseNode.get(ERRORS).isArray()
+					&& responseNode.get(ERRORS).size() > 0) {
+				throw new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR,
+						responseNode.toString(),
+						mapper.readValue(responseNode.toString().getBytes(), responseType));
+			}
+		} catch (IOException e) {
+			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
+					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
+			throw new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
+		}
 	}
 
 	/**
