@@ -1,3 +1,4 @@
+
 package io.mosip.registration.controller.auth;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;

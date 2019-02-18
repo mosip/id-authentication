@@ -139,12 +139,12 @@ public class GPSFacade extends GPSBU343Connector {
 				}
 
 			}
-		} catch (RegBaseCheckedException exception) {
+		} catch (RegBaseCheckedException regBaseCheckedException) {
 
-			gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, exception.getMessage());
+			gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, regBaseCheckedException.getMessage());
 
-			LOGGER.info(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, exception.toString());
+			LOGGER.error(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, regBaseCheckedException.getMessage());
 		}
 
 		LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,

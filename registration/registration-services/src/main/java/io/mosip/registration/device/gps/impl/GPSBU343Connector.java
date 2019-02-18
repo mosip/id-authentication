@@ -62,7 +62,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 	@Override
 	public String getComPortGPSData(String portNo, int portReadWaitTime) throws RegBaseCheckedException {
 
-		String gpsResponse=null;
+		String gpsResponse = null;
 
 		LOGGER.info(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID,
@@ -130,10 +130,12 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 			deviceData = new StringBuilder();
 
 		} catch (IOException | PortInUseException | TooManyListenersException | UnsupportedCommOperationException
-				| InterruptedException exception) {
+				| InterruptedException regBaseCheckedException) {
 			Thread.currentThread().interrupt();
-
-			throw new RegBaseCheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION, exception.toString());
+			LOGGER.error(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, regBaseCheckedException.getMessage());
+			throw new RegBaseCheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION,
+					regBaseCheckedException.getMessage());
 
 		}
 
@@ -352,8 +354,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 			if (direction.startsWith("S")) {
 				latitudeDegrees = -latitudeDegrees;
 			}
-			LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
-					"Latitude conversion ends");
+			LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID, "Latitude conversion ends");
 		}
 		return latitudeDegrees;
 	}

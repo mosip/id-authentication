@@ -37,16 +37,16 @@ public class DocumentTypeDAOImplTest {
 		GenericId genericId = new GenericId();
 		genericId.setCode("code");
 		genericId.setActive(true);
-		documentType.setGenericId(genericId);
+		//documentType.setGenericId(genericId);
 
-		documentType.setCreatedBy("createdBy");
-		documentType.setCreatedTimesZone(new Timestamp(new Date().getTime()));
+		documentType.setCrBy("createdBy");
+		//documentType.setCreatedTimesZone(new Timestamp(new Date().getTime()));
 
-		documentType.setDeleted(true);
-		documentType.setDeletedTimesZone(new Timestamp(new Date().getTime()));
-		documentType.setUpdatedBy("updatedBy");
-		documentType.setUpdatedTimesZone(new Timestamp(new Date().getTime()));
-		documentType.setLanguageCode("languageCode");
+		//documentType.setDeleted(true);
+		//documentType.setDeletedTimesZone(new Timestamp(new Date().getTime()));
+		documentType.setUpdBy("updatedBy");
+		//documentType.setUpdatedTimesZone(new Timestamp(new Date().getTime()));
+		documentType.setLangCode("eng");
 
 		list.add(documentType);
 		Mockito.when(registrationDocumentTypeRepository.findAll()).thenReturn(list);

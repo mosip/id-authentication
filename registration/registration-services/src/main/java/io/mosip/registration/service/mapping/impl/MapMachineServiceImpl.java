@@ -253,7 +253,7 @@ public class MapMachineServiceImpl extends BaseService implements MapMachineServ
 
 		try {
 			machineMappingDAO.getAllDeviceTypes()
-					.forEach(deviceType -> list.add(deviceType.getRegDeviceTypeId().getCode()));
+					.forEach(deviceType -> list.add(deviceType.getCode()));
 
 			LOGGER.info(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 					"getAllDeviceTypes() method is ended");
@@ -288,12 +288,12 @@ public class MapMachineServiceImpl extends BaseService implements MapMachineServ
 
 			for (RegCentreMachineDevice regCenterMachineDevice : devicesMapped) {
 				DeviceDTO deviceDTO = new DeviceDTO();
-				deviceDTO.setSerialNo(regCenterMachineDevice.getRegDeviceMaster().getSerialNumber());
+				deviceDTO.setSerialNo(regCenterMachineDevice.getRegDeviceMaster().getSerialNum());
 				deviceDTO
 						.setManufacturerName(regCenterMachineDevice.getRegDeviceMaster().getRegDeviceSpec().getBrand());
 				deviceDTO.setModelName(regCenterMachineDevice.getRegDeviceMaster().getRegDeviceSpec().getModel());
 				deviceDTO.setDeviceType(regCenterMachineDevice.getRegDeviceMaster().getRegDeviceSpec()
-						.getRegDeviceType().getRegDeviceTypeId().getCode());
+						.getRegDeviceType().getCode());
 				deviceDTO.setRegCenterId(regCenterMachineDevice.getRegCentreMachineDeviceId().getRegCentreId());
 				deviceDTO.setDeviceId(regCenterMachineDevice.getRegCentreMachineDeviceId().getDeviceId());
 				deviceDTO.setMachineId(regCenterMachineDevice.getRegCentreMachineDeviceId().getMachineId());
@@ -306,11 +306,11 @@ public class MapMachineServiceImpl extends BaseService implements MapMachineServ
 			List<RegCenterDevice> availableDevices = machineMappingDAO.getAllValidDevicesByCenterId(centerId);
 			for (RegCenterDevice regCenterDevice : availableDevices) {
 				DeviceDTO deviceDTO = new DeviceDTO();
-				deviceDTO.setSerialNo(regCenterDevice.getRegDeviceMaster().getSerialNumber());
+				deviceDTO.setSerialNo(regCenterDevice.getRegDeviceMaster().getSerialNum());
 				deviceDTO.setManufacturerName(regCenterDevice.getRegDeviceMaster().getRegDeviceSpec().getBrand());
 				deviceDTO.setModelName(regCenterDevice.getRegDeviceMaster().getRegDeviceSpec().getModel());
 				deviceDTO.setDeviceType(regCenterDevice.getRegDeviceMaster().getRegDeviceSpec().getRegDeviceType()
-						.getRegDeviceTypeId().getCode());
+						.getCode());
 				deviceDTO.setRegCenterId(regCenterDevice.getRegCenterDeviceId().getRegCenterId());
 				deviceDTO.setDeviceId(regCenterDevice.getRegCenterDeviceId().getDeviceId());
 
