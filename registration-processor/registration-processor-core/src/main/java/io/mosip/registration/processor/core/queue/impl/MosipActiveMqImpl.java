@@ -9,15 +9,19 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.queue.factory.MosipActiveMq;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
+import io.mosip.registration.processor.core.queue.impl.exception.ConnectionUnavailableException;
+import io.mosip.registration.processor.core.queue.impl.exception.InvalidConnectionException;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 
 /**
  * This class is ActiveMQ implementation for Mosip Queue
  * 
  * @author Mukul Puspam
- * @since 0.0.1
+ * 
+ * @since 0.8.0
  */
 public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> {
 
@@ -29,38 +33,32 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 	 * The method to set up session and destination
 	 * 
 	 * @param mosipActiveMq The Mosip ActiveMq instance
-	 * @param address The address to set up
+	 * @param address       The address to set up
 	 */
 	private void setup(MosipActiveMq mosipActiveMq, String address) {
 		if (connection == null) {
 			try {
 				this.connection = mosipActiveMq.getActiveMQConnectionFactory().createConnection();
+				if (session == null) {
+					connection.start();
+					this.session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+				}
+				if (this.destination == null) {
+					this.destination = this.session.createQueue(address);
+				}
 			} catch (JMSException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		if (session == null) {
-			try {
-				connection.start();
-				this.session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			} catch (JMSException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
-		if (this.destination == null) {
-			try {
-				this.destination = this.session.createQueue(address);
-			} catch (JMSException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new ConnectionUnavailableException(
+						PlatformErrorMessages.RPR_MQI_CONNECTION_UNAVAILABLE.getMessage(), e);
 			}
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.queue.MosipQueueManager#send(java.lang.Object, java.lang.Object, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.core.spi.queue.MosipQueueManager#send(java.
+	 * lang.Object, java.lang.Object, java.lang.String)
 	 */
 	@Override
 	public Boolean send(MosipQueue mosipQueue, byte[] message, String address) {
@@ -68,7 +66,7 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 		MosipActiveMq mosipActiveMq = (MosipActiveMq) mosipQueue;
 		ActiveMQConnectionFactory activeMQConnectionFactory = mosipActiveMq.getActiveMQConnectionFactory();
 		if (activeMQConnectionFactory == null) {
-			System.out.println("Problem");
+			throw new InvalidConnectionException(PlatformErrorMessages.RPR_MQI_INVALID_CONNECTION.getMessage());
 		}
 		if (destination == null) {
 			setup(mosipActiveMq, address);
@@ -80,14 +78,18 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 			messageProducer.send(byteMessage);
 			flag = true;
 		} catch (JMSException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ConnectionUnavailableException(
+					PlatformErrorMessages.RPR_MQI_UNABLE_TO_SEND_TO_QUEUE.getMessage());
 		}
 		return flag;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.queue.MosipQueueManager#consume(java.lang.Object, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.core.spi.queue.MosipQueueManager#consume(java
+	 * .lang.Object, java.lang.String)
 	 */
 	@Override
 	public byte[] consume(MosipQueue mosipQueue, String address) {
@@ -107,8 +109,8 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 				System.out.println("no file");
 			}
 		} catch (JMSException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ConnectionUnavailableException(
+					PlatformErrorMessages.RPR_MQI_UNABLE_TO_CONSUME_FROM_QUEUE.getMessage());
 		}
 		return null;
 	}

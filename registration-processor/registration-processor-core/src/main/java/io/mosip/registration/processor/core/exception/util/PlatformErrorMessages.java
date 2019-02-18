@@ -12,6 +12,7 @@ public enum PlatformErrorMessages {
 	RPR_PKR_PACKET_NOT_YET_SYNC(PlatformErrorConstants.RPR_PACKET_RECEIVER_MODULE + "001",
 			"Registration packet is not in Sync with Sync table"),
 
+	/** The rpr pkr invalid packet size. */
 	RPR_PKR_INVALID_PACKET_SIZE(PlatformErrorConstants.RPR_PACKET_RECEIVER_MODULE + "002",
 			"The Registration Packet Size is invalid"),
 
@@ -147,12 +148,14 @@ public enum PlatformErrorMessages {
 	RPR_QCR_INVALID_REGISTRATION_ID(PlatformErrorConstants.RPR_QUALITY_CHECKER_MODULE + "004",
 			"Registration Id is null"),
 
+	/** The packet upload failed. */
 	PACKET_UPLOAD_FAILED("", "Packet Upload failed"),
 
 	/** The structural validation failed. */
 	// Stages - Packet validator Exception error code and message
 	STRUCTURAL_VALIDATION_FAILED("", "Structural Validation Failed"),
 
+	/** The unsupported encoding. */
 	// UIN check - JSON file encoding failed.
 	UNSUPPORTED_ENCODING("", "json object parsing failed"),
 
@@ -168,6 +171,7 @@ public enum PlatformErrorMessages {
 	// Stages - Bio-Dedupe error code and message
 	PACKET_BIO_DEDUPE_FAILED("", "Bio dedupe Failed"),
 
+	/** The reverse data sync failed. */
 	// Stages - Packet-Validator error message
 	REVERSE_DATA_SYNC_FAILED("", "Reverse data sync failed"),
 
@@ -224,6 +228,7 @@ public enum PlatformErrorMessages {
 	RPR_MVS_INVALID_STATUS_UPDATE(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "003",
 			"Invalid status update"),
 
+	/** The rpr mvs invalid field. */
 	RPR_MVS_INVALID_FIELD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "005",
 			" fields can not be empty"),
 
@@ -278,6 +283,21 @@ public enum PlatformErrorMessages {
 	/** The rpr bdd unable to serve request. */
 	RPR_BDD_UNABLE_TO_SERVE_REQUEST(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "004",
 			"ABIS for the Reference ID and Request ID was Unable to Execute the Request"),
+	
+	/** The connection to MOSIP underlying queue not available. */
+	RPR_MQI_CONNECTION_UNAVAILABLE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "001",
+			"The connection to underlying queue not available"),
+	
+	/** The rpr mqi unable to send to queue. */
+	RPR_MQI_UNABLE_TO_SEND_TO_QUEUE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "003",
+			"Unable to send message to to queue"),
+	
+	/** The rpr mqi unable to consume from queue. */
+	RPR_MQI_UNABLE_TO_CONSUME_FROM_QUEUE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "003",
+			"Unable to consume message from queue"),
+	
+	/** The rpr mqi invalid connection. */
+	RPR_MQI_INVALID_CONNECTION(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "002", "Connection not obtained from ConnectionFactory"),
 
 	/** *** System Exception ****. */
 
@@ -319,13 +339,17 @@ public enum PlatformErrorMessages {
 	/** The rpr sys io exception. */
 	RPR_SYS_IO_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "012", "IO EXCEPTION "),
 	
+	/** The rpr prt pdf not generated. */
 	//Printing stage exceptions
 	RPR_PRT_PDF_NOT_GENERATED(PlatformErrorConstants.RPR_PRINTING_MODULE + "001", "Error while generating PDF for UIN Card"),
 	
+	/** The rpr prt uin not found in database. */
 	RPR_PRT_UIN_NOT_FOUND_IN_DATABASE(PlatformErrorConstants.RPR_PRINTING_MODULE + "002", "UIN not found in database"),
 	
+	/** The rpr prt pdf generation failed. */
 	RPR_PRT_PDF_GENERATION_FAILED(PlatformErrorConstants.RPR_PRINTING_MODULE + "003", "PDF Generation Failed"),
 	
+	/** The rpr prt queue connection null. */
 	RPR_PRT_QUEUE_CONNECTION_NULL(PlatformErrorConstants.RPR_PRINTING_MODULE + "004", "Queue connection is null");
 	
 	/** The error message. */
