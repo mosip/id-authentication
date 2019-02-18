@@ -15,6 +15,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
+import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -148,7 +149,7 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@Override
 	@Transactional
-	public IdResponseDto createMachine(RequestDto<MachineDto> machine) {
+	public IdAndLanguageCodeID createMachine(RequestDto<MachineDto> machine) {
 		Machine crtMachine = null;
 		Machine entity = MetaDataUtils.setCreateMetaData(machine.getRequest(), Machine.class);
 		MachineHistory entityHistory = MetaDataUtils.setCreateMetaData(machine.getRequest(), MachineHistory.class);
@@ -161,10 +162,13 @@ public class MachineServiceImpl implements MachineService {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
-		IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.map(crtMachine, idResponseDto);
+		/*IdResponseDto idResponseDto = new IdResponseDto();
+		MapperUtils.map(crtMachine, idResponseDto);*/
+		
+		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
+		MapperUtils.map(crtMachine, idAndLanguageCodeID);
 
-		return idResponseDto;
+		return idAndLanguageCodeID;
 	}
 
 	/*
@@ -176,11 +180,11 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@Override
 	@Transactional
-	public IdResponseDto updateMachine(RequestDto<MachineDto> machine) {
+	public IdAndLanguageCodeID updateMachine(RequestDto<MachineDto> machine) {
 		Machine updMachine = null;
 		try {
 			Machine renmachine = machineRepository
-					.findMachineByIdAndIsDeletedFalseorIsDeletedIsNull(machine.getRequest().getId());
+					.findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(machine.getRequest().getId(), machine.getRequest().getLangCode());
 
 			if (renmachine != null) {
 				MetaDataUtils.setUpdateMetaData(machine.getRequest(), renmachine, false);
@@ -201,9 +205,12 @@ public class MachineServiceImpl implements MachineService {
 					MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 
-		IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.map(updMachine, idResponseDto);
-		return idResponseDto;
+		/*IdResponseDto idResponseDto = new IdResponseDto();
+		MapperUtils.map(updMachine, idResponseDto);*/
+		
+		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
+		MapperUtils.map(updMachine, idAndLanguageCodeID);
+		return idAndLanguageCodeID;
 	}
 
 	/*
