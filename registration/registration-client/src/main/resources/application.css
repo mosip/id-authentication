@@ -780,7 +780,7 @@
 	-fx-pref-width: 483.0px;
 }
 
-#submit, #rejectionSubmit,#submitBtn, #fetchBtn, #copyPrevious{
+#submit, #rejectionSubmit, #fetchBtn, #copyPrevious{
 	-fx-background-color:#ffffff; 
     -fx-background-radius: 6.0,5.0;
     -fx-background-insets: 0.0,1.0;
@@ -892,16 +892,6 @@
 .reRegToggle{
 	-fx-pref-height: 30.0px; 
 	-fx-pref-width: 86.0px;
-}
-
-.reRegTable{
-	-fx-pref-height: 278.0px; 
-	-fx-pref-width: 250.0px;
-}
-
-.reRegRoot{
-	-fx-pref-height: 316.0px; 
-	-fx-pref-width: 900.0px;
 }
 
 .operatorAuthenticationAnchorPaneStyle{
@@ -1415,16 +1405,29 @@ Working on new Css by taleev
 	-fx-background-color:#FFFFFF;
 	-fx-pref-height: 40px;	
 	-fx-pref-width: 1290px;
+	-fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,1.0), 10.0, 0.0, 0.0, 0.0);
 }
 
-.approveRegistrationRootSubPane{
-	-fx-background-color:#F4F4F4;
+.pendingApprovalTableId{
+		-fx-pref-width: 300px;
 }
+
+.pendingApprovalStatus{
+		-fx-pref-width: 300px;
+}
+
 
 .pendingApprovalHeader{
 	-fx-background-color:#FFFFFF;
 	-fx-pref-height: 39px;
 	-fx-pref-width: 1290px;
+	-fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,1.0), 10.0, 0.0, 0.0, 0.0);
+}
+
+.approvalTable{
+	-fx-pref-height: 520px;
+	-fx-pref-width: 430px;
+	
 }
 
 .approveButton {
@@ -1450,4 +1453,8 @@ Working on new Css by taleev
 	-fx-font-size: 26.0px;
 	-fx-text-fill: #FF4081;
 	-fx-font-family: Roboto;
+}
+
+.reRegTableId{
+	-fx-pref-width : 450;
 }
