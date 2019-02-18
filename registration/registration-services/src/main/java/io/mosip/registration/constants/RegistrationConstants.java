@@ -167,6 +167,7 @@ public class RegistrationConstants {
 	public static final String ADDRESS_LINE3 = "addressLine3";
 	public static final String FULL_NAME = "fullName";
 	public static final String PARENT_NAME = "parentName";
+	public static final String UIN_LENGTH = "mosip.kernel.uin.length";
 
 	public static final String CHILD = "Child";
 	public static final String ADULT = "Adult";
