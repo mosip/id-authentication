@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -169,7 +170,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 * 
 	 * To open camera for the type of image that is to be captured
 	 * 
-	 * @param imageType type of image that is to be captured
+	 * @param imageType
+	 *            type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -196,7 +198,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 				primaryStage.show();
 			} catch (IOException ioException) {
 				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
+						RegistrationConstants.APPLICATION_ID,
+						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			}
 		} else {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.WEBCAM_ALERT_CONTEXT);
@@ -232,7 +235,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 							popupStage.show();
 						} catch (IOException exception) {
 							LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-									exception.getMessage());
+									exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 							generateAlert(RegistrationConstants.ERROR,
 									RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
 						}
@@ -284,7 +287,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 			} catch (RuntimeException runtimeException) {
 				LOGGER.error("REGISTRATION - COULD NOT GO TO DEMOGRAPHIC TITLE PANE ", APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+						RegistrationConstants.APPLICATION_ID,
+						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			}
 		}
 	}
@@ -314,7 +318,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 				}
 			} catch (Exception ioException) {
 				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
+						RegistrationConstants.APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			}
 		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE)) {
 
@@ -413,7 +417,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 	/**
 	 * Method to load fxml page
 	 * 
-	 * @param fxml file name
+	 * @param fxml
+	 *            file name
 	 */
 	private void loadPage(String page) {
 		VBox mainBox = new VBox();
@@ -425,7 +430,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 			getScene(mainBox).setRoot(mainBox);
 		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage());
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
 		}
 	}

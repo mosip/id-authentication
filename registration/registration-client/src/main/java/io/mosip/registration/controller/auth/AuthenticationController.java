@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.ProcessNames;
@@ -449,9 +450,9 @@ public class AuthenticationController extends BaseController implements Initiali
 					}
 				}
 			}
-		} catch (RegBaseCheckedException e) {
+		} catch (RegBaseCheckedException exception) {
 			LOGGER.error("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
-					"No of Authentication modes is empty");
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 		}
 	}
 

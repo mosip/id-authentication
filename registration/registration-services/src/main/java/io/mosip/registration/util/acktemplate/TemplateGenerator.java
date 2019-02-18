@@ -33,6 +33,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
 import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
@@ -199,7 +200,7 @@ public class TemplateGenerator extends BaseService {
 							RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + qrCodeImageEncodedBytes);
 				} catch (IOException | QrcodeGenerationException exception) {
 					setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 				}
 
 				templateValues = countMissingIrises(templateValues, registration);
@@ -215,7 +216,7 @@ public class TemplateGenerator extends BaseService {
 							RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + eyeImageEncodedBytes);
 				} catch (IOException ioException) {
 					setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 				} finally {
 					if (byteArrayOutputStream != null) {
 						try {
@@ -224,7 +225,7 @@ public class TemplateGenerator extends BaseService {
 							setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
 									null);
 							LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
-									exception.getMessage());
+									exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 						}
 					}
 				}
@@ -241,7 +242,7 @@ public class TemplateGenerator extends BaseService {
 							RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + leftPalmImageEncodedBytes);
 				} catch (IOException ioException) {
 					setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 				} finally {
 					if (byteArrayOutputStream != null) {
 						try {
@@ -250,7 +251,7 @@ public class TemplateGenerator extends BaseService {
 							setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
 									null);
 							LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
-									exception.getMessage());
+									exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 						}
 					}
 				}
@@ -267,7 +268,7 @@ public class TemplateGenerator extends BaseService {
 							RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + rightPalmImageEncodedBytes);
 				} catch (IOException ioException) {
 					setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 				} finally {
 					if (byteArrayOutputStream != null) {
 						try {
@@ -276,7 +277,7 @@ public class TemplateGenerator extends BaseService {
 							setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
 									null);
 							LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
-									exception.getMessage());
+									exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 						}
 					}
 				}
@@ -293,7 +294,7 @@ public class TemplateGenerator extends BaseService {
 							RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + thumbsImageEncodedBytes);
 				} catch (IOException ioException) {
 					setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 				} finally {
 					if (byteArrayOutputStream != null) {
 						try {
@@ -302,7 +303,7 @@ public class TemplateGenerator extends BaseService {
 							setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
 									null);
 							LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
-									exception.getMessage());
+									exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 						}
 					}
 				}
@@ -335,7 +336,7 @@ public class TemplateGenerator extends BaseService {
 							RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + modifyImageEncodedBytes);
 				} catch (IOException ioException) {
 					setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 				} finally {
 					if (byteArrayOutputStream != null) {
 						try {
@@ -344,7 +345,7 @@ public class TemplateGenerator extends BaseService {
 							setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
 									null);
 							LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
-									exception.getMessage());
+									exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 						}
 					}
 				}
@@ -436,9 +437,13 @@ public class TemplateGenerator extends BaseService {
 			templateValues.put(RegistrationConstants.TEMPLATE_FOREIGNER_LOCAL_LANG_LABEL,
 					localProperties.getString("foreigner"));
 			templateValues.put(RegistrationConstants.TEMPLATE_RESIDENCE_STATUS,
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getResidenceStatus(),platformLanguageCode));
+					getValue(
+							registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getResidenceStatus(),
+							platformLanguageCode));
 			templateValues.put(RegistrationConstants.TEMPLATE_RESIDENCE_STATUS_LOCAL_LANG,
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getResidenceStatus(),localLanguageCode));
+					getValue(
+							registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getResidenceStatus(),
+							localLanguageCode));
 			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("addressLine1"));
 			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_LOCAL_LANG_LABEL,
@@ -669,6 +674,12 @@ public class TemplateGenerator extends BaseService {
 				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG,
 						getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 								.getParentOrGuardianName(), localLanguageCode));
+				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_USER_LANG_LABEL,
+						applicationLanguageProperties.getString("parentUIN"));
+				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN, getValue(registration.getDemographicDTO()
+						.getDemographicInfoDTO().getIdentity().getParentOrGuardianRIDOrUIN(), platformLanguageCode));
+				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
+						localProperties.getString("parentUIN"));
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_WITH_PARENT,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
@@ -687,7 +698,7 @@ public class TemplateGenerator extends BaseService {
 				IOUtils.copy(inputStream, writer, defaultEncoding);
 			} catch (IOException ioException) {
 				setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			}
 			LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
 					"generateTemplate method has been ended for preparing Acknowledgement Template.");
@@ -697,10 +708,10 @@ public class TemplateGenerator extends BaseService {
 			setSuccessResponse(response, RegistrationConstants.SUCCESS, responseMap);
 		} catch (ParseException parseException) {
 			setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-			LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, parseException.getMessage());
+			LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, parseException.getMessage() + ExceptionUtils.getStackTrace(parseException));
 		} catch (RuntimeException runtimeException) {
 			setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-			LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage());
+			LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 		return response;
 	}
