@@ -31,26 +31,15 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 	TestDataParseJSON testdataparsejson=new TestDataParseJSON("src/test/resources/testData/MasterSyncServiceData/testData.json");
 	
 	
-	//check if responsedto is not null
-	//valid data=get from synch_control-->"MDS_J00001" should return success or failure
-	//invalid data=any data returnes null
-	/*@Test
-	public void masterSync1()
-	{
-		
-		ResponseDTO result = mastersyncservice.getMasterSync("MDS_J00001");
-		System.out.println("**************"+result.getErrorResponseDTOs());
-}*/
-	
-	//check if responsedto is not null
-		//valid data=get from location table
-		//invalid data=any data returnes null
+
 	
 	@Test
 	public void masterSync_verify_getMasterSync_getErrorResponseDTOs() {
 //this test validates the message when sync is failed
 		// mastersyncservice.getMasterSync(masterSyncDetails);
 		ResponseDTO result = mastersyncservice.getMasterSync("MDS_J00001");
+		System.out.println(RegistrationConstants.MASTER_SYNC_OFFLINE_FAILURE_MSG);
+		System.out.println(result.getErrorResponseDTOs().get(0).getMessage());
 		assertEquals(RegistrationConstants.MASTER_SYNC_OFFLINE_FAILURE_MSG,
 				result.getErrorResponseDTOs().get(0).getMessage());
 
@@ -62,6 +51,8 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 //this test validates the message when sync is success
 		// mastersyncservice.getMasterSync(masterSyncDetails);
 		ResponseDTO result = mastersyncservice.getMasterSync("MDS_J00001");
+		System.out.println(RegistrationConstants.MASTER_SYNC_SUCCESS);
+		System.out.println(result.getSuccessResponseDTO().getMessage());
 		assertEquals(RegistrationConstants.MASTER_SYNC_SUCCESS,
 				result.getSuccessResponseDTO().getMessage());
 
