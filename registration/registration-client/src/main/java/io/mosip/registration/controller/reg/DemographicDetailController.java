@@ -1271,8 +1271,8 @@ public class DemographicDetailController extends BaseController {
 	public void clickMe() {
 		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.ENABLE);
 		validation.setValidationMessage();
-		fullName.setText("Taleev Aalam");
-		int age = 45;
+		fullName.setText("Ayoub Toufiq");
+		int age = 27;
 		switchedOn.set(true);
 		ageField.setText("" + age);
 		populateGender();
@@ -1280,9 +1280,8 @@ public class DemographicDetailController extends BaseController {
 			gender.getSelectionModel().select(0);
 			genderLocalLanguage.getSelectionModel().select(0);
 		}
-		addressLine1.setText("Mind Tree Ltd");
-		addressLine2.setText("RamanuJan It park");
-		addressLine3.setText("Taramani");
+		addressLine1.setText("30 Rue Oum Errabia");
+		addressLine2.setText("Errabia");
 		if (!region.getItems().isEmpty()) {
 			region.getSelectionModel().select(0);
 			retrieveAndPopulateLocationByHierarchy(region, province, provinceLocalLanguage);
@@ -1300,10 +1299,8 @@ public class DemographicDetailController extends BaseController {
 		}
 		postalCode.setText("600111");
 		mobileNo.setText("9965625706");
-		emailId.setText("taleevaalam@mindtree.com");
-		cniOrPinNumber.setText("0123456789");
-		parentName.setText("Mokhtar");
-		uinId.setText("93939939");
+		emailId.setText("ayoub.toufiq@gmail.com");
+		cniOrPinNumber.setText("454534312");
 		registrationController.displayValidationMessage(validation.getValidationMessage().toString());
 		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 	}
