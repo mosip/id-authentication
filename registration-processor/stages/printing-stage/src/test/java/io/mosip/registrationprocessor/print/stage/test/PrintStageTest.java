@@ -450,7 +450,7 @@ public class PrintStageTest {
 
 		HttpPost resend = getHttpPost("http://localhost:8099/v0.1/registration-processor/print-stage/resend");
 		CloseableHttpResponse response = HttpClients.createDefault().execute(resend);
-		assertEquals(00, response.getStatusLine().getStatusCode());
+		assertEquals(500, response.getStatusLine().getStatusCode());
 	}
 
 	/**
