@@ -6,10 +6,7 @@ package io.mosip.authentication.core.constant;
  * @author Manoj SP
  */
 public enum AuditModules {
-
 	
-	/** The internal auth request. */
-	INTERNAL_AUTH_REQUEST("IDA-MOD-111"),
 	/** The otp auth. */
 	OTP_AUTH("IDA-MOD-101","OTP Authentication requested"),
 	
@@ -35,7 +32,7 @@ public enum AuditModules {
 	STATIC_PIN_STORAGE("IDA-MOD-108","Static Pin Storage requested"),
 	
 	/** The vid generation request. */
-	VID_GENERATION_REQUEST("IDA-MOD-109"),
+	VID_GENERATION_REQUEST("IDA-MOD-109","VID Generation requested"),
 	
 	/** The otp request. */
 	OTP_REQUEST("IDA-MOD-110","OTP requested");
@@ -58,15 +55,7 @@ public enum AuditModules {
 		this.moduleId=moduleId;
 		this.desc=desc;
 	}
-	/**
-	 *  Instantiates a new audit contants. 
-	 *  
-	 * @param moduleId
-	 * @param desc
-	 */
-	private AuditModules(String moduleId) {
-		this.moduleId=moduleId;
-	}
+
 	
 	public String getDesc() {
 		return desc;
