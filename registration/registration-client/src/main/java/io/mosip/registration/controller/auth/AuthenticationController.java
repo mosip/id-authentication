@@ -897,11 +897,10 @@ public class AuthenticationController extends BaseController implements Initiali
 	private boolean isSupervisorAuthenticationRequired() {
 		
 		/* Get Value from global_param_config */
-		String val = (String) (ApplicationContext.getInstance().getApplicationMap().get("SUPERVISOR_AUTHENTICATION_CONFIGURATION"));
+		String val = (String) (ApplicationContext.getInstance().getApplicationMap().get(RegistrationUIConstants.SUPERVISOR_AUTHENTICATION_CONFIGURATION));
 
 		/* Whether supervisor authentication required or not */
-		return (val != null) ? (val.equalsIgnoreCase("Y")) : val!=null;
-
+		return "Y".equalsIgnoreCase(val);
 	}
 
 }
