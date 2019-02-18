@@ -47,33 +47,8 @@
                   <Label layoutX="376.0" layoutY="25.0" styleClass="onboardOperatorDetails" text="Label" />
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="irisPane" layoutX="66.0" layoutY="90.0" styleClass="exceptionIrisPaneParent">
+             <HBox layoutX="66.0" layoutY="90.0" styleClass="exceptionIrisPaneParent">
                <children>
-                  <AnchorPane layoutX="429.0" styleClass="exceptionPanes">
-                     <children>
-                        <Pane fx:id="rightEyePane" layoutX="4.0" layoutY="71.0" prefHeight="90.0" prefWidth="160.0" styleClass="biometricExceptionPaneIris">
-                           <children>
-                              <ImageView fx:id="rightEye" fitHeight="100.0" fitWidth="150.0" layoutX="5.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/Eye.png" />
-                                 </image>
-                              </ImageView>
-                           </children>
-                        </Pane>
-                        <Pane fx:id="leftEyePane" layoutX="173.0" layoutY="71.0" prefHeight="90.0" prefWidth="160.0" styleClass="biometricExceptionPaneIris">
-                           <children>
-                              <ImageView fx:id="leftEye" fitHeight="100.0" fitWidth="150.0" layoutX="5.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/Eye.png" />
-                                 </image>
-                              </ImageView>
-                           </children>
-                        </Pane>
-                        <Label styleClass="onboardPageBioTitle" text="Iris exception" />
-                        <Label layoutX="44.0" layoutY="202.0" styleClass="onboardBioDetailsHeader" text="Right Iris" />
-                        <Label layoutX="225.0" layoutY="202.0" styleClass="onboardBioDetailsHeader" text="Left Iris" />
-                     </children>
-                  </AnchorPane>
                   <AnchorPane fx:id="fingerPane" layoutX="40.0" styleClass="exceptionFingerPane">
                      <children>
                         <Label styleClass="onboardPageBioTitle" text="%exception" />
@@ -159,8 +134,33 @@
                         <Label layoutX="229.0" layoutY="202.0" styleClass="onboardBioDetailsHeader" text="Left Hand" />
                      </children>
                   </AnchorPane>
+                  <AnchorPane fx:id="irisPane" layoutX="429.0" styleClass="exceptionPanes">
+                     <children>
+                        <Pane fx:id="rightEyePane" layoutX="4.0" layoutY="71.0" prefHeight="90.0" prefWidth="160.0" styleClass="biometricExceptionPaneIris">
+                           <children>
+                              <ImageView fx:id="rightEye" fitHeight="100.0" fitWidth="150.0" layoutX="5.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Eye.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </Pane>
+                        <Pane fx:id="leftEyePane" layoutX="173.0" layoutY="71.0" prefHeight="90.0" prefWidth="160.0" styleClass="biometricExceptionPaneIris">
+                           <children>
+                              <ImageView fx:id="leftEye" fitHeight="100.0" fitWidth="150.0" layoutX="5.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Eye.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </Pane>
+                        <Label styleClass="onboardPageBioTitle" text="Iris exception" />
+                        <Label layoutX="44.0" layoutY="202.0" styleClass="onboardBioDetailsHeader" text="Right Iris" />
+                        <Label layoutX="225.0" layoutY="202.0" styleClass="onboardBioDetailsHeader" text="Left Iris" />
+                     </children>
+                  </AnchorPane>
                </children>
-            </AnchorPane>
+            </HBox>
             <AnchorPane layoutX="147.0" layoutY="410.0" prefHeight="157.0" prefWidth="322.0">
                <children>
                   <Label layoutX="7.0" layoutY="1.0" styleClass="onboardExceptionDetails" text="Marked as Exception" />

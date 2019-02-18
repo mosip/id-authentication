@@ -59,6 +59,11 @@ public class RegistrationPreviewController extends BaseController implements Ini
 	public void initialize(URL location, ResourceBundle resources) {
 		consentOfApplicant.setSelected(true);
 	}
+		
+	@FXML
+	public void goToPrevPage(ActionEvent event) {
+		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW,RegistrationConstants.PREVIOUS));
+	}
 
 	@FXML
 	public void goToNextPage(ActionEvent event) {
@@ -69,11 +74,12 @@ public class RegistrationPreviewController extends BaseController implements Ini
 			getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
 					.setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_UNSELECTED);
 		}
-		SessionContext.map().put("registrationPreview", false);
+		
+		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW,RegistrationConstants.NEXT));
 		registrationController.goToAuthenticationPage();
 	}
 
-	protected void setUpPreviewContent() {
+	public void setUpPreviewContent() {
 		try {
 			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
 			ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText,
@@ -97,20 +103,14 @@ public class RegistrationPreviewController extends BaseController implements Ini
 	}
 
 	public void modifyDemographicInfo() {
-		SessionContext.map().put("demographicDetail", true);
-		SessionContext.map().put("registrationPreview", false);
-		registrationController.showCurrentPage();
+		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.DEMOGRAPHIC_DETAIL);
 	}
 
 	public void modifyDocuments() {
-		SessionContext.map().put("documentScan", true);
-		SessionContext.map().put("registrationPreview", false);
-		registrationController.showCurrentPage();
+		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.DOCUMENT_SCAN);
 	}
 
 	public void modifyBiometrics() {
-		SessionContext.map().put("fingerPrintCapture", true);
-		SessionContext.map().put("registrationPreview", false);
-		registrationController.showCurrentPage();
+		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.FINGERPRINT_CAPTURE);
 	}
 }

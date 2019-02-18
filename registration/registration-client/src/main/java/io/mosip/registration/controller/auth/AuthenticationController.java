@@ -24,6 +24,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.PacketHandlerController;
+import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.Validations;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.device.fp.MosipFingerprintProvider;
@@ -130,6 +131,9 @@ public class AuthenticationController extends BaseController implements Initiali
 
 	@Autowired
 	private PacketHandlerController packetHandlerController;
+	
+	@Autowired
+	private RegistrationController registrationController;
 
 	@Autowired
 	private AuthenticationService authService;
@@ -861,7 +865,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	}
 	
 	public void goToPreviousPage() {
-		
+		registrationController.showCurrentPage(RegistrationConstants.OPERATOR_AUTHENTICATION, getPageDetails(RegistrationConstants.OPERATOR_AUTHENTICATION,RegistrationConstants.PREVIOUS));
 	}
 	
 	public void goToNextPage() {

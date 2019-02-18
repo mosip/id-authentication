@@ -37,7 +37,7 @@
             </Button>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="97.0" layoutY="32.0" styleClass="paneAtDisplayDocument">
+      <AnchorPane fx:id="documentPane" layoutX="97.0" layoutY="32.0" styleClass="paneAtDisplayDocument">
          <children>
             <AnchorPane fx:id="documentScanPane" layoutX="87.0" layoutY="37.0" styleClass="documentOnlypane">
                <children>
@@ -62,7 +62,7 @@
             </AnchorPane>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="199.0" layoutY="540.0">
+      <AnchorPane fx:id="exceptionPane" layoutX="199.0" layoutY="540.0">
          <children>
             <Label id="toggleLabel2" fx:id="bioExceptionToggleLabel1" layoutX="342.0" layoutY="10.0" styleClass="toggleButton" text="" />
             <Label id="toggleLabel1" fx:id="bioExceptionToggleLabel2" layoutX="350.0" layoutY="10.0" styleClass="toggleButton" text="" />

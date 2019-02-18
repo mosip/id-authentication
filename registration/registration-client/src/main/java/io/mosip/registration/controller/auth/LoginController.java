@@ -57,6 +57,7 @@ import io.mosip.registration.service.AuthenticationService;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.util.common.OTPManager;
+import io.mosip.registration.util.common.PageFlow;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -150,6 +151,15 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Value("${PROVIDER_NAME}")
 	private String deviceName;
+	
+	@Value("${FINGERPRINT_DISABLE_FLAG}")
+	private String fingerprintDisableFlag;
+	
+	@Value("${IRIS_DISABLE_FLAG}")
+	private String irisDisableFlag;
+	
+	@Value("${FACE_DISABLE_FLAG}")
+	private String faceDisableFlag;
 
 	@Autowired
 	private LoginService loginService;
@@ -179,6 +189,9 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Autowired
 	private Validations validations;
+	
+	@Autowired
+	private PageFlow pageFlow;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -216,6 +229,7 @@ public class LoginController extends BaseController implements Initializable {
 
 				/* Save Global Param Values in Application Context's application map */
 				getGlobalParams();
+				pageFlow.getInitialPageDetails();
 
 				primaryStage.setMaximized(true);
 				primaryStage.setResizable(false);
@@ -259,7 +273,7 @@ public class LoginController extends BaseController implements Initializable {
 
 				UserDetail userDetail = loginService.getUserDetail(userId.getText());
 
-				String regCenter = (String) applicationContext.getApplicationMap()
+				String regCenter = (String) ApplicationContext.map()
 						.get(RegistrationConstants.REGISTARTION_CENTER);
 
 				if (regCenter
@@ -267,7 +281,7 @@ public class LoginController extends BaseController implements Initializable {
 
 					String stationID = userOnboardService.getMachineCenterId()
 							.get(RegistrationConstants.USER_STATION_ID);
-					applicationContext.getApplicationMap().put(RegistrationConstants.MACHINE_ID, stationID);
+					ApplicationContext.map().put(RegistrationConstants.MACHINE_ID, stationID);
 
 					if (userDetail == null) {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_ONBOARDED);
@@ -308,10 +322,17 @@ public class LoginController extends BaseController implements Initializable {
 										RegistrationConstants.getRoles());
 							}
 
-							if (loginList.size() > 1 && applicationContext.getApplicationMap()
-									.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-									.equals(RegistrationConstants.ENABLE)) {
+							if (loginList.size() > 1 && fingerprintDisableFlag
+									.equals(RegistrationConstants.DISABLE)) {
 								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.BIO));
+							}
+							if (loginList.size() > 1 && irisDisableFlag
+									.equals(RegistrationConstants.DISABLE)) {
+								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.IRIS));
+							}
+							if (loginList.size() > 1 && faceDisableFlag
+									.equals(RegistrationConstants.DISABLE)) {
+								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.FACE));
 							}
 
 							String loginMode = !loginList.isEmpty() ? loginList.get(RegistrationConstants.PARAM_ZERO)
@@ -325,13 +346,18 @@ public class LoginController extends BaseController implements Initializable {
 								errorPane.setVisible(true);
 							} else {
 
-								if (applicationContext.getApplicationMap()
-										.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-										.equals(RegistrationConstants.ENABLE)
-										&& loginMode.equalsIgnoreCase(RegistrationConstants.BIO)) {
+								if ((fingerprintDisableFlag
+										.equals(RegistrationConstants.DISABLE)
+										&& loginMode.equalsIgnoreCase(RegistrationConstants.BIO))
+										|| (irisDisableFlag
+												.equals(RegistrationConstants.DISABLE)
+												&& loginMode.equalsIgnoreCase(RegistrationConstants.IRIS))
+										|| (faceDisableFlag
+												.equals(RegistrationConstants.DISABLE)
+												&& loginMode.equalsIgnoreCase(RegistrationConstants.FACE))) {
 
 									generateAlert(RegistrationConstants.ERROR,
-											RegistrationUIConstants.DISABLE_FINGERPRINT_SCREEN);
+											RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN);
 
 								} else {
 									userIdPane.setVisible(false);
@@ -747,7 +773,7 @@ public class LoginController extends BaseController implements Initializable {
 					LOGGER.info("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 							"Loading Home screen");
 					schedulerUtil.startSchedulerUtil();
-
+					loginList.clear();
 					BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 
 					userDetail.setLastLoginMethod(loginMode);
@@ -886,10 +912,10 @@ public class LoginController extends BaseController implements Initializable {
 		Timestamp loginTime = userDetail.getUserlockTillDtimes();
 
 		int invalidLoginCount = Integer.parseInt(
-				String.valueOf(applicationContext.getApplicationMap().get(RegistrationConstants.INVALID_LOGIN_COUNT)));
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.INVALID_LOGIN_COUNT)));
 
 		int invalidLoginTime = Integer.parseInt(
-				String.valueOf(applicationContext.getApplicationMap().get(RegistrationConstants.INVALID_LOGIN_TIME)));
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.INVALID_LOGIN_TIME)));
 
 		LOGGER.info("REGISTRATION - LOGIN - LOCKUSER", APPLICATION_NAME, APPLICATION_ID,
 				"validating invalid login params");

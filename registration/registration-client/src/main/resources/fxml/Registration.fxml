@@ -18,7 +18,7 @@
     	<fx:include fx:id="Header" source="Header.fxml" /> 
     </children>
    </AnchorPane>
-      <AnchorPane layoutX="-190.0" layoutY="35.0" prefHeight="749.0" prefWidth="1139.0">
+      <AnchorPane fx:id="registrationId" layoutX="-190.0" layoutY="35.0" prefHeight="749.0" prefWidth="1139.0">
          <children>
          	<fx:include fx:id="demographicDetail" source="DemographicDetail.fxml" visible="true" />
          	<fx:include fx:id="documentScan" source="DocumentScan.fxml" visible="false" />
@@ -27,7 +27,7 @@
             <fx:include fx:id="irisCapture" source="IrisCapture.fxml" visible="false" />
             <fx:include fx:id="faceCapture" source="FaceCapture.fxml" visible="false" />
             <fx:include fx:id="registrationPreview" source="RegistrationPreview.fxml" visible="false" />
-            <fx:include fx:id="operatorAuthentication" source="OperatorAuthentication.fxml" visible="false" />
+            <fx:include fx:id="operatorAuthenticationPane" source="OperatorAuthentication.fxml" visible="false" />
          </children>
       </AnchorPane>
         </children>

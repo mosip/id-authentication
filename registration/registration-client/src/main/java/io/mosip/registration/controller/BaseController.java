@@ -10,6 +10,8 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Timer;
 
@@ -29,6 +31,8 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
 import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.controller.reg.BiometricExceptionController;
+import io.mosip.registration.controller.reg.DemographicDetailController;
+import io.mosip.registration.controller.reg.RegistrationPreviewController;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -41,6 +45,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.LoginService;
+import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import io.mosip.registration.service.template.NotificationService;
@@ -89,6 +94,10 @@ public class BaseController {
 	private LoginService loginService;
 
 	@Autowired
+	private DemographicDetailController demographicDetailController;
+	@Autowired
+	private RegistrationPreviewController registrationPreviewController;
+	@Autowired
 	private FingerPrintCaptureController fingerPrintCaptureController;
 	@Autowired
 	private BiometricExceptionController biometricExceptionController;
@@ -106,13 +115,18 @@ public class BaseController {
 
 	@Autowired
 	private TemplateGenerator templateGenerator;
-
+	
+	@Autowired
+	private UserOnboardService userOnboardService;
+	
 	@Value("${USERNAME_PWD_LENGTH}")
 	private int usernamePwdLength;
 
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 
 	protected Scene scene;
+	
+	private List<String> pageDetails = new ArrayList<>();
 
 	/**
 	 * Instance of {@link MosipLogger}
@@ -533,8 +547,10 @@ public class BaseController {
 					.setOperatorBiometricDTO(createBiometricInfoDTO());
 			biometricExceptionController.clearSession();
 		} else {
-			((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
-					.setApplicantBiometricDTO(createBiometricInfoDTO());
+			if(SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA) != null) {
+				((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
+				.setApplicantBiometricDTO(createBiometricInfoDTO());
+			}
 			biometricExceptionController.clearSession();
 			fingerPrintCaptureController.clearFingerPrintDTO();
 			irisCaptureController.clearIrisData();
@@ -627,5 +643,56 @@ public class BaseController {
 
 	protected RegistrationDTO getRegistrationDTOFromSession() {
 		return (RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
+	}
+	
+	protected String getOnboardPageDetails(String currentPage, String action) { 
+		
+		return getReturnPage((List<String>)ApplicationContext.map().get("onboardPageList"), currentPage, action);
+	}
+
+	protected String getPageDetails(String currentPage, String action) {
+		
+		for(Map.Entry<String,Map<String,Boolean>> entry : ((Map<String, Map<String, Boolean>>) ApplicationContext.map().get("registrationMap")).entrySet()) {
+			if(entry.getValue().get(RegistrationConstants.VISIBILITY)) {
+				pageDetails.add(entry.getKey());
+			}
+		}
+		
+		return getReturnPage(pageDetails, currentPage, action);
+		
+	}
+	
+	private String getReturnPage(List<String> pageList, String currentPage, String action) {
+		
+		String returnPage = "";
+
+		if (action.equalsIgnoreCase(RegistrationConstants.NEXT)) {
+			returnPage = pageList.get((pageList.indexOf(currentPage))+1);
+		}
+
+		if (action.equalsIgnoreCase(RegistrationConstants.PREVIOUS)) {
+			returnPage = pageList.get((pageList.indexOf(currentPage))-1);
+		}
+		
+		if(returnPage.equalsIgnoreCase(RegistrationConstants.REGISTRATION_PREVIEW)) {
+			demographicDetailController.saveDetail();
+			registrationPreviewController.setUpPreviewContent();
+		}
+		
+		if(returnPage.equalsIgnoreCase(RegistrationConstants.ONBOARD_USER_SUCCESS)) {
+			ResponseDTO response = userOnboardService.validate((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA));
+			if (response != null && response.getErrorResponseDTOs() != null
+					&& response.getErrorResponseDTOs().get(0) != null) {
+				generateAlert(RegistrationConstants.ERROR, response.getErrorResponseDTOs().get(0).getMessage());
+			} else if (response != null && response.getSuccessResponseDTO() != null) {
+				generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.USER_ONBOARD_SUCCESS);
+				clearOnboardData();
+				goToHomePage();
+			}			
+			returnPage = "";
+		}
+		
+		pageDetails.clear();
+		return returnPage;
 	}
 }

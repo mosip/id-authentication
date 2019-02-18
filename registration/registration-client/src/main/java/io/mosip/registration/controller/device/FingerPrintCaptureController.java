@@ -28,6 +28,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.BiometricExceptionController;
 import io.mosip.registration.controller.reg.RegistrationController;
+import io.mosip.registration.controller.reg.UserOnboardParentController;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
@@ -143,6 +144,10 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	
 	@Autowired
 	private BiometricExceptionController biometricExceptionController;
+
+	@Autowired
+	private UserOnboardParentController userOnboardParentController;
+
 
 	/** The scan btn. */
 	@FXML
@@ -313,11 +318,11 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			iterator = getBiometricDTOFromSession().getOperatorBiometricDTO().getFingerprintDetailsDTO().iterator();
 		} else {
-			iterator = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
-					.getFingerprintDetailsDTO().iterator();
+			iterator = getRegistrationDTOFromSession() != null ? getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+					.getFingerprintDetailsDTO().iterator() : null;
 		}
 
-		while (iterator.hasNext()) {
+		while (iterator != null && iterator.hasNext()) {
 			FingerprintDetailsDTO value = iterator.next();
 			if (value.getFingerType().contains(handSlap)) {
 				iterator.remove();
@@ -627,8 +632,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			exceptionFingersCount();
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 				if (validateFingerPrints()) {
-					loadPage(RegistrationConstants.USER_ONBOARD_IRIS);
 					irisCaptureController.clearIrisBasedOnExceptions();
+					userOnboardParentController.showCurrentPage(RegistrationConstants.FINGERPRINT_CAPTURE, getOnboardPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE,RegistrationConstants.NEXT));
 				}
 			} else {
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
@@ -648,16 +653,14 @@ public class FingerPrintCaptureController extends BaseController implements Init
 							SessionContext.map().put("fingerPrintCapture", false);
 							SessionContext.map().put("faceCapture", true);
 						}
-						registrationController.showCurrentPage();
+						registrationController.showCurrentPage("fingerPrintCapture", "irisCapture");
 					}
 				} else {
 					if (validateFingerPrints()) {
 						SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
 						irisCaptureController.clearIrisBasedOnExceptions();
-
-						SessionContext.map().put("fingerPrintCapture", false);
-						SessionContext.map().put("irisCapture", true);
-						registrationController.showCurrentPage();
+						
+						registrationController.showCurrentPage(RegistrationConstants.FINGERPRINT_CAPTURE, getPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE,RegistrationConstants.NEXT));
 					}
 				}
 			}
@@ -686,21 +689,11 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			exceptionFingersCount();
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 				if (validateFingerPrints()) {
-					loadPage(RegistrationConstants.BIO_EXCEPTION_PAGE);
+					userOnboardParentController.showCurrentPage(RegistrationConstants.FINGERPRINT_CAPTURE, getOnboardPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE,RegistrationConstants.PREVIOUS));
 				}
 			} else {
 				if (validateFingerPrints()) {
-					SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
-					if ((boolean) SessionContext.userMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
-						SessionContext.map().put("fingerPrintCapture", false);
-						biometricExceptionController.setExceptionImage();
-						SessionContext.map().put("biometricException", true);
-						registrationController.showCurrentPage();
-					} else {
-						SessionContext.map().put("fingerPrintCapture", false);
-						SessionContext.map().put("documentScan", true);
-						registrationController.showCurrentPage();
-					}
+					registrationController.showCurrentPage(RegistrationConstants.FINGERPRINT_CAPTURE, getPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE,RegistrationConstants.PREVIOUS));
 				}
 			}
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,

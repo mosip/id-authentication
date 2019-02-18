@@ -78,6 +78,8 @@ public class RegistrationController extends BaseController {
 	private DocumentScanController documentScanController;
 	@FXML
 	private AnchorPane documentScan;
+	@FXML
+	private AnchorPane registrationId;
 
 	@Autowired
 	private Validations validation;
@@ -416,6 +418,12 @@ public class RegistrationController extends BaseController {
 			return (boolean) SessionContext.map().get(page);
 		}
 		return false;
+	}
+	
+	public void showCurrentPage(String notTosShow, String show) {
+		
+		((AnchorPane) registrationId.lookup("#"+notTosShow)).setVisible(false);
+		((AnchorPane) registrationId.lookup("#"+show)).setVisible(true);
 	}
 
 	/**

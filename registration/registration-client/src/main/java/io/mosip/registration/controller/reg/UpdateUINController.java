@@ -98,7 +98,19 @@ public class UpdateUINController extends BaseController implements Initializable
 				.equals(RegistrationConstants.ENABLE)) {
 
 			biometricBox.getChildren().forEach(bio -> {
-				if (bio.getId().equals("biometricFingerprint")) {
+				if (applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+						.equals(RegistrationConstants.DISABLE) && bio.getId().equals("biometricFingerprint")) {
+					bio.setVisible(false);
+					bio.setManaged(false);
+				}
+				if (applicationContext.getApplicationMap().get(RegistrationConstants.IRIS_DISABLE_FLAG)
+						.equals(RegistrationConstants.DISABLE) && bio.getId().equals("biometricIris")) {
+					bio.setVisible(false);
+					bio.setManaged(false);
+				}
+				if (applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+						.equals(RegistrationConstants.DISABLE) && applicationContext.getApplicationMap().get(RegistrationConstants.IRIS_DISABLE_FLAG)
+						.equals(RegistrationConstants.DISABLE) && bio.getId().equals("biometricException")) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}

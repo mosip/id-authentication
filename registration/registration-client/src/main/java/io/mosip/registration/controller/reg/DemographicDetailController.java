@@ -777,7 +777,7 @@ public class DemographicDetailController extends BaseController {
 	 * Saving the detail into concerned DTO'S
 	 * 
 	 */
-	private void saveDetail() {
+	public void saveDetail() {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Saving the fields to DTO");
 		try {
@@ -1318,8 +1318,7 @@ public class DemographicDetailController extends BaseController {
 			}
 			SessionContext.map().put("demographicDetail", false);
 			SessionContext.map().put("documentScan", true);
-			registrationController.showCurrentPage();
-
+			registrationController.showCurrentPage(RegistrationConstants.DEMOGRAPHIC_DETAIL,getPageDetails(RegistrationConstants.DEMOGRAPHIC_DETAIL,RegistrationConstants.NEXT));
 		}
 
 	}

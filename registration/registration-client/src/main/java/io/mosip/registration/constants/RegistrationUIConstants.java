@@ -12,7 +12,7 @@ public class RegistrationUIConstants {
 
 	// LOGIN
 	public static final String UNABLE_LOAD_LOGIN_SCREEN = bundle.getString("UNABLE_LOAD_LOGIN_SCREEN");
-	public static final String DISABLE_FINGERPRINT_SCREEN = bundle.getString("DISABLE_FINGERPRINT_SCREEN");
+	public static final String BIOMETRIC_DISABLE_SCREEN = bundle.getString("BIOMETRIC_DISABLE_SCREEN");
 	public static final String MISSING_MANDATOTY_FIELDS = bundle.getString("MISSING_MANDATOTY_FIELDS");
 	public static final String CREDENTIALS_FIELD_EMPTY = bundle.getString("CREDENTIALS_FIELD_EMPTY");
 	public static final String USERNAME_FIELD_EMPTY = bundle.getString("USERNAME_FIELD_EMPTY");
@@ -186,6 +186,7 @@ public class RegistrationUIConstants {
 
 	// User Onboard
 	public static final String UNABLE_LOAD_USERONBOARD_SCREEN = bundle.getString("UNABLE_LOAD_USERONBOARD_SCREEN");
+	public static final String USER_ONBOARD_SUCCESS = bundle.getString("USER_ONBOARD_SUCCESS");
 	
 	// Supervisor Authentication configuration from global_param
 	public static final String SUPERVISOR_AUTHENTICATION_CONFIGURATION = "SUPERVISOR_AUTHENTICATION_CONFIGURATION";

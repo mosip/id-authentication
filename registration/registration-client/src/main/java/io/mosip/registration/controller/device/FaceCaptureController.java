@@ -29,10 +29,9 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
-import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.controller.reg.UserOnboardParentController;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
-import io.mosip.registration.service.UserOnboardService;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -89,7 +88,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private WebCameraController webCameraController;
 
 	@Autowired
-	private UserOnboardService userOnboardService;
+	private UserOnboardParentController userOnboardParentController;
 
 	@Value("${capture_photo_using_device}")
 	public String capturePhotoUsingDevice;
@@ -107,7 +106,6 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private Image defaultExceptionImage;
 	private boolean applicantImageCaptured;
 	private boolean exceptionImageCaptured;
-	private Stage popupStage;
 
 	private Boolean toggleBiometricException = null;
 
@@ -215,32 +213,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 			if (validateOperatorPhoto()) {
 				registrationController.saveBiometricDetails(applicantBufferedImage, exceptionBufferedImage);
 				if (getBiometricDTOFromSession().getOperatorBiometricDTO().getFaceDetailsDTO().getFace() != null) {
-					ResponseDTO response = userOnboardService.validate(getBiometricDTOFromSession());
-					if (response != null && response.getErrorResponseDTOs() != null
-							&& response.getErrorResponseDTOs().get(0) != null) {
-						generateAlert(RegistrationConstants.ERROR, response.getErrorResponseDTOs().get(0).getMessage());
-					} else if (response != null && response.getSuccessResponseDTO() != null) {
-						try {
-							popupStage = new Stage();
-							popupStage.initStyle(StageStyle.DECORATED);
-							Parent scanPopup = BaseController
-									.load(getClass().getResource("/fxml/UserOnboardSuccess.fxml"));
-							popupStage.setResizable(false);
-							Scene scene = new Scene(scanPopup);
-							ClassLoader loader = Thread.currentThread().getContextClassLoader();
-							scene.getStylesheets()
-									.add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-							popupStage.setScene(scene);
-							popupStage.initModality(Modality.WINDOW_MODAL);
-							popupStage.initOwner(fXComponents.getStage());
-							popupStage.show();
-						} catch (IOException exception) {
-							LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-									exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-							generateAlert(RegistrationConstants.ERROR,
-									RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
-						}
-					}
+					userOnboardParentController.showCurrentPage(RegistrationConstants.FACE_CAPTURE, getOnboardPageDetails(RegistrationConstants.FACE_CAPTURE,RegistrationConstants.NEXT));
 				}
 			}
 		} else {
@@ -256,7 +229,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 			if (validateOperatorPhoto()) {
 				registrationController.saveBiometricDetails(applicantBufferedImage, exceptionBufferedImage);
 				if (getBiometricDTOFromSession().getOperatorBiometricDTO().getFaceDetailsDTO().getFace() != null) {
-					loadPage(RegistrationConstants.USER_ONBOARD_IRIS);
+					userOnboardParentController.showCurrentPage(RegistrationConstants.FACE_CAPTURE, getOnboardPageDetails(RegistrationConstants.FACE_CAPTURE,RegistrationConstants.PREVIOUS));
 				}
 			}
 
@@ -280,12 +253,9 @@ public class FaceCaptureController extends BaseController implements Initializab
 							&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()) {
 						SessionContext.map().put("documentScan", true);
 					}
-				} else {
-					SessionContext.map().put("faceCapture", false);
-					SessionContext.map().put("irisCapture", true);
-				}
-				registrationController.showCurrentPage();
-
+				} 
+				registrationController.showCurrentPage(RegistrationConstants.FACE_CAPTURE, getPageDetails(RegistrationConstants.FACE_CAPTURE,RegistrationConstants.PREVIOUS));
+				
 			} catch (RuntimeException runtimeException) {
 				LOGGER.error("REGISTRATION - COULD NOT GO TO DEMOGRAPHIC TITLE PANE ", APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID,
@@ -425,15 +395,6 @@ public class FaceCaptureController extends BaseController implements Initializab
 			LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
-		}
-	}
-
-	@FXML
-	private void loadLoginScreen() {
-		clearOnboardData();
-		if (popupStage.isShowing()) {
-			popupStage.close();
-			goToHomePage();
 		}
 	}
 

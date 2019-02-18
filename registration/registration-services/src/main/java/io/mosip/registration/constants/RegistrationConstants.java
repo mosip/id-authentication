@@ -54,12 +54,30 @@ public class RegistrationConstants {
 	public static final String SCAN_PAGE = "/fxml/Scan.fxml";
 	public static final String UIN_UPDATE = "/fxml/UpdateUIN.fxml";
 	public static final String SYNC_DATA = "/fxml/SyncDataProcess.fxml";
-	public static final String USER_ONBOARD = "/fxml/UserOnbord.fxml";
+	public static final String USER_ONBOARD = "/fxml/Onboard.fxml";
 	public static final String USER_ONBOARD_FP = "/fxml/UserOnboardFPCapture.fxml";
 	public static final String USER_ONBOARD_IRIS = "/fxml/UserOnboardIrisCapture.fxml";
 	public static final String USER_ONBOARD_WEBCAM = "/fxml/UserOnboardWebCamera.fxml";
 	public static final String BIO_EXCEPTION_PAGE = "/fxml/BiometricException.fxml";
 	public static final String SEND_NOTIFICATION_PAGE = "/fxml/SendNotification.fxml";
+	
+	
+	//FXML Id
+	public static final String DEMOGRAPHIC_DETAIL = "demographicDetail";
+	public static final String DOCUMENT_SCAN = "documentScan";
+	public static final String DOCUMENT_PANE = "documentPane";
+	public static final String EXCEPTION_PANE = "exceptionPane";
+	public static final String BIOMETRIC_EXCEPTION = "biometricException";
+	public static final String FINGER_PANE = "fingerPane";
+	public static final String IRIS_PANE = "irisPane";
+	public static final String FINGERPRINT_CAPTURE = "fingerPrintCapture";
+	public static final String IRIS_CAPTURE = "irisCapture";
+	public static final String FACE_CAPTURE = "faceCapture";
+	public static final String REGISTRATION_PREVIEW = "registrationPreview";
+	public static final String OPERATOR_AUTHENTICATION = "operatorAuthenticationPane";
+	public static final String ONBOARD_USER_PARENT = "onboardUser";
+	public static final String ONBOARD_USER_SUCCESS = "userOnboardSuccess";
+	public static final String VISIBILITY = "visibility";
 
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";
@@ -124,6 +142,8 @@ public class RegistrationConstants {
 	public static final String ERROR = "ERROR";
 	public static final int PARAM_ONE = 1;
 	public static final int PARAM_ZERO = 0;
+	public static final String PREVIOUS = "PREVIOUS";
+	public static final String NEXT = "NEXT";
 
 	// UI Registration Validations
 	public static final String ADDRESS_KEY = "PrevAddress";
@@ -653,6 +673,9 @@ public class RegistrationConstants {
 	public static final String REG_PAK_MAX_CNT_APPRV_LIMIT = "REG_PAK_MAX_CNT_APPRV_LIMIT";
 	public static final String REG_PAK_MAX_TIME_APPRV_LIMIT = "REG_PAK_MAX_TIME_APPRV_LIMIT";
 	public static final String FINGERPRINT_DISABLE_FLAG = "FINGERPRINT_DISABLE_FLAG";
+	public static final String IRIS_DISABLE_FLAG = "IRIS_DISABLE_FLAG";
+	public static final String FACE_DISABLE_FLAG = "FACE_DISABLE_FLAG";
+	public static final String DOCUMENT_DISABLE_FLAG = "DOCUMENT_DISABLE_FLAG";
 
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
@@ -1007,7 +1030,6 @@ public class RegistrationConstants {
 
 	// user on boarding
 	public static final String USER_ON_BOARDING_ERROR_RESPONSE = "failure";
-	public static final String success = "success";
 	public static final String USER_ON_BOARDING_EXCEPTION = "USER_ON_BOARDING_EXCEPTION";
 	public static final String USER_ON_BOARDING_EXCEPTION_MSG_CODE = "REG-URE‌-000";
 	public static final String USER_ON_BOARDING_SUCCESS_CODE = "REG-URE‌-002";

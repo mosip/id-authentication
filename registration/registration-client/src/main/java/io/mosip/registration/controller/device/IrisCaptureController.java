@@ -4,7 +4,6 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_CAPTU
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +21,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.BiometricExceptionController;
 import io.mosip.registration.controller.reg.RegistrationController;
+import io.mosip.registration.controller.reg.UserOnboardParentController;
 import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
@@ -29,15 +29,12 @@ import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -78,6 +75,9 @@ public class IrisCaptureController extends BaseController {
 	private IrisFacade irisFacade;
 	@Autowired
 	private BiometricExceptionController biometricExceptionController;
+	
+	@Autowired
+	private UserOnboardParentController userOnboardParentController;
 
 	private Pane selectedIris;
 
@@ -293,14 +293,11 @@ public class IrisCaptureController extends BaseController {
 					"Navigating to Photo capture page for user registration");
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 				if (validateIris()) {
-					loadPage(RegistrationConstants.USER_ONBOARD_WEBCAM);
+					userOnboardParentController.showCurrentPage(RegistrationConstants.IRIS_CAPTURE, getOnboardPageDetails(RegistrationConstants.IRIS_CAPTURE,RegistrationConstants.NEXT));
 				}
 			} else {
 				if (validateIris() && validateIrisLocalDedup()) {
-					SessionContext.map().put("irisCapture", false);
-					SessionContext.map().put("faceCapture", true);
-					registrationController.showCurrentPage();
-
+					registrationController.showCurrentPage(RegistrationConstants.IRIS_CAPTURE, getPageDetails(RegistrationConstants.IRIS_CAPTURE,RegistrationConstants.NEXT));				
 				}
 			}
 
@@ -328,7 +325,7 @@ public class IrisCaptureController extends BaseController {
 
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 				if (validateIris()) {
-					loadPage(RegistrationConstants.USER_ONBOARD_FP);
+					userOnboardParentController.showCurrentPage(RegistrationConstants.IRIS_CAPTURE, getOnboardPageDetails(RegistrationConstants.IRIS_CAPTURE,RegistrationConstants.PREVIOUS));
 				}
 			} else {
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
@@ -348,13 +345,11 @@ public class IrisCaptureController extends BaseController {
 							SessionContext.map().put("irisCapture", false);
 							SessionContext.map().put("biometricException", true);
 						}
-						registrationController.showCurrentPage();
+						//registrationController.showCurrentPage();
 					}
 				} else {
 					if (validateIris() && validateIrisLocalDedup()) {
-						SessionContext.map().put("irisCapture", false);
-						SessionContext.map().put("fingerPrintCapture", true);
-						registrationController.showCurrentPage();
+						registrationController.showCurrentPage(RegistrationConstants.IRIS_CAPTURE, getPageDetails(RegistrationConstants.IRIS_CAPTURE,RegistrationConstants.PREVIOUS));
 					}
 				}
 			}
@@ -495,8 +490,10 @@ public class IrisCaptureController extends BaseController {
 				new Image(getClass().getResource(RegistrationConstants.RIGHT_IRIS_IMG_PATH).toExternalForm()));
 		rightIrisQualityScore.setText(RegistrationConstants.EMPTY);
 
-		getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
-				.setIrisDetailsDTO(new ArrayList<>());
+		if(getRegistrationDTOFromSession() != null) {
+			getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+			.setIrisDetailsDTO(new ArrayList<>());
+		}
 	}
 
 	public void clearIrisBasedOnExceptions() {
@@ -519,21 +516,6 @@ public class IrisCaptureController extends BaseController {
 			rightIrisQualityScore.setText(RegistrationConstants.EMPTY);
 			getIrises().removeIf(iris -> iris.getIrisType()
 					.equalsIgnoreCase((RegistrationConstants.RIGHT).concat(RegistrationConstants.EYE)));
-		}
-	}
-
-	private void loadPage(String page) {
-		VBox mainBox = new VBox();
-		try {
-			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
-			mainBox.getChildren().add(headerRoot);
-			Parent createRoot = BaseController.load(getClass().getResource(page));
-			mainBox.getChildren().add(createRoot);
-			getScene(mainBox).setRoot(mainBox);
-		} catch (IOException exception) {
-			LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage());
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
 		}
 	}
 }
