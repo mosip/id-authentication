@@ -44,7 +44,7 @@ public interface MachineSpecificationService {
 	 *             if any error occurred while updating Machine Specification
 	 *
 	 */
-	public IdResponseDto updateMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification);
+	public IdAndLanguageCodeID updateMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification);
 	/**
 	 * Abstract method to delete Machine Specification Details to the Database
 	 * 

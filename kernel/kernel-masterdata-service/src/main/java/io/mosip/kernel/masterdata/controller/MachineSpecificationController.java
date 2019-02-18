@@ -75,7 +75,7 @@ public class MachineSpecificationController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine Specification found"),
 			@ApiResponse(code = 500, message = "While updating Machine Specification any error occured") })
-	public ResponseEntity<IdResponseDto> updateMachineSpecification(
+	public ResponseEntity<IdAndLanguageCodeID> updateMachineSpecification(
 			@Valid @RequestBody RequestDto<MachineSpecificationDto> machineSpecification) {
 
 		return new ResponseEntity<>(machineSpecificationService.updateMachineSpecification(machineSpecification),
