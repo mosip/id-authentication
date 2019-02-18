@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -36,6 +37,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Service
 public class IdRepoServiceImpl implements IdRepoService {
 
+	private static final String STATUS_KEY = "status";
+
 	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 
 	private static Logger logger = IdaLogger.getLogger(OTPManager.class);
@@ -51,6 +54,9 @@ public class IdRepoServiceImpl implements IdRepoService {
 
 	@Autowired
 	private RestRequestFactory restRequestFactory;
+	
+	@Autowired
+	private Environment environment;
 
 	/**
 	 * Fetch data from Id Repo based on Individual's UIN / VID value
@@ -71,7 +77,14 @@ public class IdRepoServiceImpl implements IdRepoService {
 			}
 			buildRequest.setPathVariables(params);
 			response = restHelper.requestSync(buildRequest);
-			response.put("uin", uin);
+			if(environment.getProperty("mosip.kernel.idrepo.status.registered")
+					.equalsIgnoreCase((String)response.get(STATUS_KEY))){		
+			  response.put("uin", uin);
+			}
+			else {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
+			}
+			
 		} catch (RestServiceException e) {
 			logger.error(SESSION_ID, ID_REPO_SERVICE, e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);

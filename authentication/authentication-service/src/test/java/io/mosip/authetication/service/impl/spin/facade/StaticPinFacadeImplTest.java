@@ -317,7 +317,7 @@ public class StaticPinFacadeImplTest {
 		uinMap.put("uin", "2342342344");
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
 				.thenReturn(uinMap);
-		Mockito.when(vidRepository.findByUIN(Mockito.anyString())).thenReturn(Collections.EMPTY_LIST);
+		Mockito.when(vidRepository.findByUIN(Mockito.anyString(),Mockito.any())).thenReturn(Collections.EMPTY_LIST);
 		VIDResponseDTO vidResponseDTO = staticPinServiceImpl.generateVID("2342342344");
 		assertEquals("mosip.identity.vid", vidResponseDTO.getId());
 	}

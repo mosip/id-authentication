@@ -1,11 +1,14 @@
 package io.mosip.authentication.service.impl.id.service;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -67,6 +70,7 @@ public class IdAuthServiceImplTest {
 
 	@Mock
 	IdAuthService idAuthService;
+	
 	@Mock
 	AutnTxnRepository autntxnrepository;
 	@Mock
@@ -109,10 +113,13 @@ public class IdAuthServiceImplTest {
 		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "auditData");
 	}
 
-	@Test
-	public void testGetIdRepoByVidNumber() throws IdAuthenticationBusinessException {
-
-		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVID", Mockito.anyString(), false);
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void testGetIdRepoByVidNumberVIDExpired() throws Throwable {
+		try {
+			ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVID", "232343234", false);
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
 	}
 
 	@Ignore
@@ -140,8 +147,13 @@ public class IdAuthServiceImplTest {
 	public void testProcessIdType_IdTypeIsV() throws IdAuthenticationBusinessException {
 		String idvIdType = "V";
 		String idvId = "875948796";
-
-		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "processIdType", idvIdType, idvId, false);
+		Map<String, Object> idRepo = new HashMap<>();
+		idRepo.put("uin", "476567");
+		Optional<String> optUIN=Optional.of("47657");
+		Mockito.when(vidRepository.findUinByVid(Mockito.any(), Mockito.any())).thenReturn(optUIN);
+		Mockito.when(idRepoService.getIdenity(Mockito.any(),Mockito.anyBoolean())).thenReturn(idRepo);
+		Map<String,Object> idResponseMap=	(Map<String,Object>)ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "processIdType", idvIdType, idvId, false);
+		assertEquals("476567", idResponseMap.get("uin"));
 	}
 
 	@Ignore
