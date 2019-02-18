@@ -19,6 +19,7 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
+import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
@@ -100,6 +101,8 @@ public class BiometricExceptionController extends BaseController implements Init
 	@Autowired
 	private RegistrationController registrationController;
 
+	@Autowired
+	private IrisCaptureController irisCaptureController;
 	private static final Logger LOGGER = AppConfig.getLogger(BiometricExceptionController.class);
 
 	@Autowired
@@ -284,9 +287,16 @@ public class BiometricExceptionController extends BaseController implements Init
 					}
 					registrationController.showCurrentPage();
 				} else {
+					fingerPrintCaptureController.clearImage();
 					SessionContext.map().put("biometricException", false);
-					SessionContext.map().put("fingerPrintCapture", true);
-					registrationController.showCurrentPage();
+					if (applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+							.equals(RegistrationConstants.ENABLE)) {
+						irisCaptureController.clearIrisBasedOnExceptions();
+						SessionContext.map().put("irisCapture", true);
+					} else {
+						SessionContext.map().put("fingerPrintCapture", true);
+						registrationController.showCurrentPage();
+					}
 				}
 			}
 		}

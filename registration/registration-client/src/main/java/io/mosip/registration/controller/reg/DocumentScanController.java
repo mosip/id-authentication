@@ -791,6 +791,7 @@ public class DocumentScanController extends BaseController {
 			switchedOnForBiometricException.addListener(new ChangeListener<Boolean>() {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
+					clearAllValues();
 					if (newValue) {
 						bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
@@ -826,8 +827,6 @@ public class DocumentScanController extends BaseController {
 			toggleBiometricException = true;
 			SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
 		} else {
-			bioExceptionToggleLabel1.setDisable(true);
-			bioExceptionToggleLabel2.setDisable(true);
 			bioExceptionToggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 			bioExceptionToggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 			toggleBiometricException = false;
@@ -846,10 +845,15 @@ public class DocumentScanController extends BaseController {
 	@FXML
 	private void skip() {
 		SessionContext.map().put("documentScan", false);
-		if (toggleBiometricException)
-			SessionContext.map().put("biometricException", true);
-		else
-			SessionContext.map().put("fingerPrintCapture", true);
+
+		if (getRegistrationDtoContent().getSelectionListDTO() != null) {
+			updateUINMethod();
+		} else {
+			if (toggleBiometricException)
+				SessionContext.map().put("biometricException", true);
+			else
+				SessionContext.map().put("fingerPrintCapture", true);
+		}
 		registrationController.showCurrentPage();
 	}
 
@@ -858,13 +862,43 @@ public class DocumentScanController extends BaseController {
 
 		if (registrationController.validateDemographicPane(documentScanPane)) {
 
-			SessionContext.map().put("documentScan", false);
-			if (toggleBiometricException) {
-				SessionContext.map().put("biometricException", true);
+			if (getRegistrationDtoContent().getSelectionListDTO() != null) {
+
+				updateUINMethod();
 			} else {
-				SessionContext.map().put("fingerPrintCapture", true);
+
+				SessionContext.map().put("documentScan", false);
+				if (toggleBiometricException) {
+					SessionContext.map().put("biometricException", true);
+				} else {
+					SessionContext.map().put("fingerPrintCapture", true);
+				}
 			}
 			registrationController.showCurrentPage();
+		}
+	}
+
+	private void updateUINMethod() {
+		if ((Boolean) SessionContext.userContext().getUserMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)
+				|| getRegistrationDtoContent().getSelectionListDTO().isBiometricException() && (Boolean) SessionContext
+						.userContext().getUserMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
+			SessionContext.map().put("biometricException", true);
+		} else if (getRegistrationDtoContent().getSelectionListDTO().isBiometricFingerprint()
+				&& !getRegistrationDtoContent().getSelectionListDTO().isBiometricException()
+				|| getRegistrationDtoContent().getSelectionListDTO().isBiometricFingerprint()
+						&& getRegistrationDtoContent().getSelectionListDTO().isBiometricException()
+						&& !(Boolean) SessionContext.userContext().getUserMap()
+								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
+			SessionContext.map().put("fingerPrintCapture", true);
+		} else if (getRegistrationDtoContent().getSelectionListDTO().isBiometricIris()
+				&& !getRegistrationDtoContent().getSelectionListDTO().isBiometricException()
+				|| getRegistrationDtoContent().getSelectionListDTO().isBiometricIris()
+						&& getRegistrationDtoContent().getSelectionListDTO().isBiometricException()
+						&& !(Boolean) SessionContext.userContext().getUserMap()
+								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
+			SessionContext.map().put("irisCapture", true);
+		} else {
+			SessionContext.map().put("faceCapture", true);
 		}
 	}
 

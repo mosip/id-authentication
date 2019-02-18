@@ -169,8 +169,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 * 
 	 * To open camera for the type of image that is to be captured
 	 * 
-	 * @param imageType
-	 *            type of image that is to be captured
+	 * @param imageType type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -258,9 +257,35 @@ public class FaceCaptureController extends BaseController implements Initializab
 			}
 
 		} else {
-			SessionContext.map().put("faceCapture", false);
-			SessionContext.map().put("irisCapture", true);
-			registrationController.showCurrentPage();
+
+			try {
+				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+					SessionContext.map().put("faceCapture", false);
+
+					if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()
+							&& getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
+							|| getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()
+							|| !getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+									.getIrisDetailsDTO().isEmpty()) {
+						SessionContext.map().put("irisCapture", true);
+					} else if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
+							|| !getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+									.getFingerprintDetailsDTO().isEmpty()) {
+						SessionContext.map().put("fingerPrintCapture", true);
+					} else if (!getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
+							&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()) {
+						SessionContext.map().put("documentScan", true);
+					}
+				} else {
+					SessionContext.map().put("faceCapture", false);
+					SessionContext.map().put("irisCapture", true);
+				}
+				registrationController.showCurrentPage();
+
+			} catch (RuntimeException runtimeException) {
+				LOGGER.error("REGISTRATION - COULD NOT GO TO DEMOGRAPHIC TITLE PANE ", APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+			}
 		}
 	}
 
@@ -388,8 +413,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	/**
 	 * Method to load fxml page
 	 * 
-	 * @param fxml
-	 *            file name
+	 * @param fxml file name
 	 */
 	private void loadPage(String page) {
 		VBox mainBox = new VBox();
