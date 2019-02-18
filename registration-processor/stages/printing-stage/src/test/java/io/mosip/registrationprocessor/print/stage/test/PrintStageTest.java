@@ -79,54 +79,71 @@ import io.vertx.ext.web.Route;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
 
+/**
+ * The Class PrintStageTest.
+ * 
+ * @author M1048358 Alok
+ */
+@SuppressWarnings("deprecation")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Utilities.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class PrintStageTest {
 
+	/** The rest client service. */
 	@Mock
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
+	/** The audit log request builder. */
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	/** The packet info manager. */
 	@Mock
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
+	/** The id response. */
 	private IdResponseDTO idResponse = new IdResponseDTO();
 
+	/** The response. */
 	private ResponseDTO response = new ResponseDTO();
 
+	/** The template generator. */
 	@Mock
 	private TemplateGenerator templateGenerator;
 
+	/** The uin card generator. */
 	@Mock
 	private UinCardGenerator<ByteArrayOutputStream> uinCardGenerator;
 
+	/** The utility. */
 	@Mock
 	private Utilities utility;
 
+	/** The mosip connection factory. */
 	@Mock
 	private MosipQueueConnectionFactory<MosipQueue> mosipConnectionFactory;
 
+	/** The mosip queue manager. */
 	@Mock
 	private MosipQueueManager<MosipQueue, byte[]> mosipQueueManager;
 
+	/** The queue. */
 	@Mock
 	private MosipQueue queue;
-	
+
+	/** The ctx. */
 	private RoutingContext ctx;
-	
+
+	/** The response object. */
 	private Boolean responseObject;
 
+	/** The stage. */
 	@InjectMocks
 	private PrintStage stage = new PrintStage() {
 		@Override
-		public MosipEventBus getEventBus(Class<?> verticleName, String url) {
-			vertx = Vertx.vertx();
-
-			return new MosipEventBus(vertx) {
-			};
+		public MosipEventBus getEventBus(Object verticleName, String clusterManagerUrl) {
+			return null;
 		}
 
 		@Override
@@ -143,11 +160,13 @@ public class PrintStageTest {
 		}
 	};
 
-	@Test
-	public void testDeployVerticle() {
-		stage.deployVerticle();
-	}
-	
+	/**
+	 * Setup.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() throws Exception {
 		System.setProperty("server.port", "8099");
@@ -161,7 +180,7 @@ public class PrintStageTest {
 		List<String> uinList = new ArrayList<>();
 		uinList.add("4238135072");
 		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
-		
+
 		LinkedHashMap<String, Object> identityMap = new LinkedHashMap<>();
 		Map<String, String> map = new HashMap<>();
 		map.put("language", "eng");
@@ -240,12 +259,45 @@ public class PrintStageTest {
 		Mockito.when(mosipConnectionFactory.createConnection(anyString(), anyString(), anyString(), anyString()))
 				.thenReturn(queue);
 		Mockito.when(mosipQueueManager.send(any(), any(), anyString())).thenReturn(true);
-		
+
 		ctx = setContext();
 		PrintStageApplication.main(null);
 	}
 
+	/**
+	 * Test all.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	@Test
+	public void testAll() throws ApisResourceAccessException, IOException {
+		testDeployVerticle();
+		testPrintStageSuccess();
+		testPrintStageFailure();
+		testUINNotFound();
+		testQueueConnectionNull();
+		testTemplateProcessingFailure();
+		testPDFGeneratorException();
+		testException();
+		testApiResourceException();
+		testSendMessage();
+		testResendPrintPdf();
+		testRoutes();
+	}
+
+	/**
+	 * Test deploy verticle.
+	 */
+	public void testDeployVerticle() {
+		stage.deployVerticle();
+	}
+
+	/**
+	 * Test print stage success.
+	 */
 	public void testPrintStageSuccess() {
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
@@ -254,7 +306,9 @@ public class PrintStageTest {
 		assertTrue(result.getIsValid());
 	}
 
-	@Test
+	/**
+	 * Test print stage failure.
+	 */
 	public void testPrintStageFailure() {
 		Mockito.when(mosipQueueManager.send(any(), any(), anyString())).thenReturn(false);
 
@@ -265,7 +319,9 @@ public class PrintStageTest {
 		assertFalse(result.getIsValid());
 	}
 
-	@Test
+	/**
+	 * Test UIN not found.
+	 */
 	public void testUINNotFound() {
 		List<String> uinList = new ArrayList<>();
 		uinList.add(null);
@@ -278,7 +334,9 @@ public class PrintStageTest {
 		assertTrue(result.getInternalError());
 	}
 
-	@Test
+	/**
+	 * Test queue connection null.
+	 */
 	public void testQueueConnectionNull() {
 		Mockito.when(mosipConnectionFactory.createConnection(anyString(), anyString(), anyString(), anyString()))
 				.thenReturn(null);
@@ -289,32 +347,46 @@ public class PrintStageTest {
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getInternalError());
 	}
-	
-	@Test
+
+	/**
+	 * Test template processing failure.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	public void testTemplateProcessingFailure() throws ApisResourceAccessException, IOException {
 		TemplateProcessingFailureException e = new TemplateProcessingFailureException();
 		Mockito.doThrow(e).when(templateGenerator).getTemplate(any(), any(), anyString());
-		
+
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
 
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getInternalError());
 	}
-	
-	@Test
+
+	/**
+	 * Test PDF generator exception.
+	 */
 	public void testPDFGeneratorException() {
 		PDFGeneratorException e = new PDFGeneratorException(null, null);
 		Mockito.doThrow(e).when(uinCardGenerator).generateUinCard(any(), any());
-		
+
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
 
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getInternalError());
 	}
-	
-	@Test
+
+	/**
+	 * Test exception.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	public void testException() throws ApisResourceAccessException {
 		LinkedHashMap<String, Object> identityMap = new LinkedHashMap<>();
 		Object identity = identityMap;
@@ -322,60 +394,89 @@ public class PrintStageTest {
 		idResponse.setResponse(response);
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(idResponse);
 		identityMap.put("fullName", "fullName=[{language=eng, value=RaviKant},{language=ara, value=RaviKant}]");
-		
+
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
 
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getInternalError());
 	}
-	
-	@Test
+
+	/**
+	 * Test api resource exception.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	public void testApiResourceException() throws ApisResourceAccessException {
 		ApisResourceAccessException e = new ApisResourceAccessException();
 		Mockito.doThrow(e).when(restClientService).getApi(any(), any(), any(), any(), any());
-		
+
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
 
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getInternalError());
 	}
-	
-	@Test
+
+	/**
+	 * Test send message.
+	 */
 	public void testSendMessage() {
 		stage.sendMessage(null);
 	}
-	
-	@Test
+
+	/**
+	 * Test resend print pdf.
+	 */
 	public void testResendPrintPdf() {
-		Mockito.doNothing().when(stage).process(any());
 		stage.reSendPrintPdf(ctx);
 		assertTrue(responseObject);
 	}
-	
-	@Test
+
+	/**
+	 * Test routes.
+	 *
+	 * @throws ClientProtocolException
+	 *             the client protocol exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	public void testRoutes() throws ClientProtocolException, IOException {
 		HttpGet health = new HttpGet("http://localhost:8099/print-stage/health");
 		HttpClient client = HttpClientBuilder.create().build();
 		HttpResponse getResponse = client.execute(health);
 		assertEquals(200, getResponse.getStatusLine().getStatusCode());
-		
-		HttpPost resend = getHttpPost("http://localhost:8099/v0.1/registration-processor/print-stage/resend");
-	    CloseableHttpResponse response = HttpClients.createDefault().execute(resend);
-	    assertEquals(200, response.getStatusLine().getStatusCode());
-	}
-	
-	private HttpPost getHttpPost(String url) throws UnsupportedEncodingException {
-	   	HttpPost httpPost = new HttpPost(url);
 
-	    String json = "{'regId':'51130282650000320190117144316'}";
-	    StringEntity entity = new StringEntity(json);
-	    httpPost.setEntity(entity);
-	    httpPost.setHeader("Content-type", "application/json");
+		HttpPost resend = getHttpPost("http://localhost:8099/v0.1/registration-processor/print-stage/resend");
+		CloseableHttpResponse response = HttpClients.createDefault().execute(resend);
+		assertEquals(00, response.getStatusLine().getStatusCode());
+	}
+
+	/**
+	 * Gets the http post.
+	 *
+	 * @param url
+	 *            the url
+	 * @return the http post
+	 * @throws UnsupportedEncodingException
+	 *             the unsupported encoding exception
+	 */
+	private HttpPost getHttpPost(String url) throws UnsupportedEncodingException {
+		HttpPost httpPost = new HttpPost(url);
+
+		String json = "{'regId':'51130282650000320190117144316'}";
+		StringEntity entity = new StringEntity(json);
+		httpPost.setEntity(entity);
+		httpPost.setHeader("Content-type", "application/json");
 		return httpPost;
-}
-	
+	}
+
+	/**
+	 * Sets the context.
+	 *
+	 * @return the routing context
+	 */
 	private RoutingContext setContext() {
 		return new RoutingContext() {
 
@@ -520,7 +621,7 @@ public class PrintStageTest {
 
 			@Override
 			public JsonObject getBodyAsJson() {
-				JsonObject obj= new JsonObject();
+				JsonObject obj = new JsonObject();
 				obj.put("regId", "51130282650000320190117144316");
 				return obj;
 			}
@@ -597,7 +698,6 @@ public class PrintStageTest {
 				return 0;
 			}
 
-			@SuppressWarnings("deprecation")
 			@Override
 			public List<Locale> acceptableLocales() {
 				return null;
