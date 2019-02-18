@@ -9,7 +9,6 @@ import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -31,7 +30,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.amazonaws.services.s3.AmazonS3;
@@ -108,7 +106,10 @@ public class IdRepoServiceTest {
 
 	/** The service. */
 	@InjectMocks
-	IdRepoProxyServiceImpl service;
+	IdRepoProxyServiceImpl proxyService;
+	
+	@InjectMocks
+	IdRepoServiceImpl service;
 
 	@Mock
 	private UinBiometricHistoryRepo uinBioHRepo;
@@ -189,16 +190,18 @@ public class IdRepoServiceTest {
 	 * @throws IdRepoDataValidationException 
 	 * @throws RestServiceException 
 	 */
-	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() throws FileNotFoundException, IOException, IdRepoDataValidationException, RestServiceException {
 		when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
 		when(restHelper.requestSync(Mockito.any()))
 				.thenReturn(mapper.readValue("{\"data\":\"1234\"}".getBytes(), ObjectNode.class));
+		ReflectionTestUtils.setField(proxyService, "mapper", mapper);
+		ReflectionTestUtils.setField(proxyService, "env", env);
+		ReflectionTestUtils.setField(proxyService, "id", id);
 		ReflectionTestUtils.setField(service, "mapper", mapper);
 		ReflectionTestUtils.setField(service, "env", env);
-		ReflectionTestUtils.setField(service, "id", id);
-		ReflectionTestUtils.setField(service, "allowedBioTypes", Collections.singletonList("individualBiometrics"));
+		ReflectionTestUtils.setField(proxyService, "service", service);
+		ReflectionTestUtils.setField(proxyService, "allowedBioTypes", Collections.singletonList("individualBiometrics"));
 		request.setRegistrationId("registrationId");
 		request.setRequest(null);
 		uin.setUin("1234");
@@ -231,7 +234,7 @@ public class IdRepoServiceTest {
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(false);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
-		service.addIdentity(request, "1234");
+		proxyService.addIdentity(request, "1234");
 	}
 
 	@Test
@@ -258,7 +261,7 @@ public class IdRepoServiceTest {
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinDocHRepo.save(Mockito.any())).thenThrow(new DataAccessResourceFailureException(null));
-		service.addIdentity(request, "1234");
+		proxyService.addIdentity(request, "1234");
 	}
 	
 	@Test(expected = IdRepoAppException.class)
@@ -279,7 +282,7 @@ public class IdRepoServiceTest {
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinDocHRepo.save(Mockito.any())).thenThrow(new JDBCConnectionException(null, null));
-		service.addIdentity(request, "1234");
+		proxyService.addIdentity(request, "1234");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -299,7 +302,7 @@ public class IdRepoServiceTest {
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(false);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
-		service.addIdentity(request, "1234");
+		proxyService.addIdentity(request, "1234");
 	}
 
 	@Test
@@ -319,7 +322,7 @@ public class IdRepoServiceTest {
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(false);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
-		service.addIdentity(request, "1234");
+		proxyService.addIdentity(request, "1234");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -337,7 +340,7 @@ public class IdRepoServiceTest {
 		request.setRequest(req);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(true);
-		service.addIdentity(request, "1234");
+		proxyService.addIdentity(request, "1234");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -354,7 +357,7 @@ public class IdRepoServiceTest {
 		req.setIdentity(obj);
 		request.setRequest(req);
 		when(uinRepo.save(Mockito.any())).thenThrow(new RecoverableDataAccessException(null));
-		service.addIdentity(request, "1234");
+		proxyService.addIdentity(request, "1234");
 	}
 
 	/**
@@ -376,7 +379,7 @@ public class IdRepoServiceTest {
 						.getBytes(),
 				Object.class));
 		request.setRequest(request2);
-		service.addIdentity(request, "1234");
+		proxyService.addIdentity(request, "1234");
 	}
 
 	/**
@@ -399,7 +402,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		service.retrieveIdentity("1234", null);
+		proxyService.retrieveIdentity("1234", null);
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -413,7 +416,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(false);
-		service.retrieveIdentity("1234", null);
+		proxyService.retrieveIdentity("1234", null);
 	}
 
 	@Test
@@ -425,7 +428,7 @@ public class IdRepoServiceTest {
 		uinObj.setUinRefId("1234");
 		UinBiometric biometrics = new UinBiometric();
 		biometrics.setBiometricFileType("individualBiometrics");
-		biometrics.setBiometricFileHash("W3LDtXpyxkl0YSifynsfhl7W-wWWtEb-ofkq-TGl1Lc");
+		biometrics.setBiometricFileHash("5B72C3B57A72C6497461289FCA7B1F865ED6FB0596B446FEA1F92AF931A5D4B7");
 		biometrics.setBioFileId("1234");
 		biometrics.setBiometricFileName("name");
 		uinObj.setBiometrics(Collections.singletonList(biometrics));
@@ -434,7 +437,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		service.retrieveIdentity("1234", "bio");
+		proxyService.retrieveIdentity("1234", "bio");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -456,7 +459,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		service.retrieveIdentity("1234", "bio");
+		proxyService.retrieveIdentity("1234", "bio");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -477,7 +480,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		service.retrieveIdentity("1234", "bio");
+		proxyService.retrieveIdentity("1234", "bio");
 	}
 
 	@Test
@@ -489,7 +492,7 @@ public class IdRepoServiceTest {
 		uinObj.setUinRefId("1234");
 		UinDocument document = new UinDocument();
 		document.setDoccatCode("ProofOfIdentity");
-		document.setDocHash("W3LDtXpyxkl0YSifynsfhl7W-wWWtEb-ofkq-TGl1Lc");
+		document.setDocHash("5B72C3B57A72C6497461289FCA7B1F865ED6FB0596B446FEA1F92AF931A5D4B7");
 		document.setDocId("1234");
 		document.setDocName("name");
 		uinObj.setDocuments(Collections.singletonList(document));
@@ -497,7 +500,7 @@ public class IdRepoServiceTest {
 				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"value\":\"fileReferenceID\"}}".getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		service.retrieveIdentity("1234", "demo");
+		proxyService.retrieveIdentity("1234", "demo");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -517,7 +520,7 @@ public class IdRepoServiceTest {
 				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"value\":\"fileReferenceID\"}}".getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		service.retrieveIdentity("1234", "demo");
+		proxyService.retrieveIdentity("1234", "demo");
 	}
 
 	@Test
@@ -529,13 +532,13 @@ public class IdRepoServiceTest {
 		uinObj.setUinRefId("1234");
 		UinBiometric biometrics = new UinBiometric();
 		biometrics.setBiometricFileType("individualBiometrics");
-		biometrics.setBiometricFileHash("W3LDtXpyxkl0YSifynsfhl7W-wWWtEb-ofkq-TGl1Lc");
+		biometrics.setBiometricFileHash("5B72C3B57A72C6497461289FCA7B1F865ED6FB0596B446FEA1F92AF931A5D4B7");
 		biometrics.setBioFileId("1234");
 		biometrics.setBiometricFileName("name");
 		uinObj.setBiometrics(Collections.singletonList(biometrics));
 		UinDocument document = new UinDocument();
 		document.setDoccatCode("ProofOfIdentity");
-		document.setDocHash("W3LDtXpyxkl0YSifynsfhl7W-wWWtEb-ofkq-TGl1Lc");
+		document.setDocHash("5B72C3B57A72C6497461289FCA7B1F865ED6FB0596B446FEA1F92AF931A5D4B7");
 		document.setDocId("1234");
 		document.setDocName("name");
 		uinObj.setDocuments(Collections.singletonList(document));
@@ -544,7 +547,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		service.retrieveIdentity("1234", "all");
+		proxyService.retrieveIdentity("1234", "all");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -576,7 +579,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		service.retrieveIdentity("1234", "a");
+		proxyService.retrieveIdentity("1234", "a");
 	}
 
 	@Test
@@ -600,7 +603,7 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(mapper.writeValueAsBytes(obj2));
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		service.updateIdentity(request, "234").getResponse().equals(obj2);
+		proxyService.updateIdentity(request, "234").getResponse().equals(obj2);
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -625,7 +628,7 @@ public class IdRepoServiceTest {
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.getStatusByUin(Mockito.any())).thenReturn("REGISTERED");
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		service.updateIdentity(request, "1234");
+		proxyService.updateIdentity(request, "1234");
 	}
 	
 	@Test
@@ -650,7 +653,7 @@ public class IdRepoServiceTest {
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.getStatusByUin(Mockito.any())).thenReturn("REGISTERED");
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		service.updateIdentity(request, "1234");
+		proxyService.updateIdentity(request, "1234");
 	}
 
 	@SuppressWarnings("deprecation")
@@ -670,10 +673,10 @@ public class IdRepoServiceTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testConvertToObject() throws Throwable {
 		ObjectMapper mockMapper = Mockito.mock(ObjectMapper.class);
-		ReflectionTestUtils.setField(service, "mapper", mockMapper);
+		ReflectionTestUtils.setField(proxyService, "mapper", mockMapper);
 		try {
 			when(mockMapper.readValue("1234".getBytes(), String.class)).thenThrow(new JsonMappingException(""));
-			ReflectionTestUtils.invokeMethod(service, "convertToObject", "1234".getBytes(), String.class);
+			ReflectionTestUtils.invokeMethod(proxyService, "convertToObject", "1234".getBytes(), String.class);
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
@@ -683,19 +686,19 @@ public class IdRepoServiceTest {
 	public void testUpdateIdentityInvalidRegId() throws IdRepoAppException {
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(true);
-		service.updateIdentity(new IdRequestDTO(), "12343");
+		proxyService.updateIdentity(new IdRequestDTO(), "12343");
 	}
 
 	@Test(expected = IdRepoAppException.class)
 	public void testUpdateIdentityUinNotExists() throws IdRepoAppException {
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(false);
-		service.updateIdentity(new IdRequestDTO(), "12343");
+		proxyService.updateIdentity(new IdRequestDTO(), "12343");
 	}
 
 	@Test(expected = IdRepoAppException.class)
 	public void testUpdateIdentityDataAccessError() throws IdRepoAppException {
 		when(uinRepo.existsByUin(Mockito.any())).thenThrow(new DataAccessResourceFailureException(""));
-		service.updateIdentity(new IdRequestDTO(), "12343");
+		proxyService.updateIdentity(new IdRequestDTO(), "12343");
 	}
 
 	@Test
@@ -712,7 +715,7 @@ public class IdRepoServiceTest {
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
 		IdRequestDTO request = new IdRequestDTO();
 		request.setStatus("status");
-		service.updateIdentity(request, "12343");
+		proxyService.updateIdentity(request, "12343");
 	}
 
 	@Test
@@ -736,7 +739,19 @@ public class IdRepoServiceTest {
 		ReflectionTestUtils.invokeMethod(service, "convertToBIR", Collections.singletonList(new BIRType()));
 	}
 
-	@SuppressWarnings("unchecked")
+	@Test(expected = IdRepoAppException.class)
+	public void testEncryptDecryptDocumentsExceptionProxy() throws Throwable {
+		try {
+			when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+			when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException());
+			Uin uin = new Uin();
+			uin.setUinData(new byte[] { 0 });
+			ReflectionTestUtils.invokeMethod(proxyService, "encryptDecryptDocuments", "document", "encrypt");
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+	
 	@Test(expected = IdRepoAppException.class)
 	public void testEncryptDecryptDocumentsException() throws Throwable {
 		try {
@@ -750,7 +765,6 @@ public class IdRepoServiceTest {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test(expected = IdRepoAppException.class)
 	public void testEncryptDecryptDocumentsNoData() throws Throwable {
 		try {
@@ -758,7 +772,7 @@ public class IdRepoServiceTest {
 			when(restHelper.requestSync(Mockito.any())).thenReturn(mapper.readValue("{}".getBytes(), ObjectNode.class));
 			Uin uin = new Uin();
 			uin.setUinData(new byte[] { 0 });
-			ReflectionTestUtils.invokeMethod(service, "encryptDecryptDocuments", "document", "encrypt");
+			ReflectionTestUtils.invokeMethod(proxyService, "encryptDecryptDocuments", "document", "encrypt");
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
@@ -801,7 +815,7 @@ public class IdRepoServiceTest {
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any())).thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
 		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("value".getBytes());
-		service.updateIdentity(request, "1234");
+		proxyService.updateIdentity(request, "1234");
 	}
 	
 	@Test
@@ -831,7 +845,7 @@ public class IdRepoServiceTest {
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any())).thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
 		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("value".getBytes());
-		service.updateIdentity(request, "1234");
+		proxyService.updateIdentity(request, "1234");
 	}
 	
 	@Test(expected = IdRepoAppUncheckedException.class)
@@ -862,7 +876,7 @@ public class IdRepoServiceTest {
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any())).thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
 		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("value".getBytes());
 		when(connection.getFile(Mockito.any(), Mockito.any())).thenThrow(new IdRepoAppException("", ""));
-		service.updateIdentity(request, "1234");
+		proxyService.updateIdentity(request, "1234");
 	}
 	
 	@Test(expected = IdRepoAppUncheckedException.class)
@@ -893,7 +907,7 @@ public class IdRepoServiceTest {
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any())).thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
 		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("value".getBytes());
 		when(connection.getFile(Mockito.any(), Mockito.any())).thenThrow(new NullPointerException());
-		service.updateIdentity(request, "1234");
+		proxyService.updateIdentity(request, "1234");
 	}
 	
 	@Test
@@ -922,7 +936,7 @@ public class IdRepoServiceTest {
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any())).thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
 		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("value".getBytes());
-		service.updateIdentity(request, "1234");
+		proxyService.updateIdentity(request, "1234");
 	}
 	
 	@Test
@@ -951,6 +965,6 @@ public class IdRepoServiceTest {
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any())).thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
 		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("value".getBytes());
-		service.updateIdentity(request, "1234");
+		proxyService.updateIdentity(request, "1234");
 	}
 }

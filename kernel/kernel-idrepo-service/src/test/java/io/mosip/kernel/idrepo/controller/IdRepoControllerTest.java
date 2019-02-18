@@ -35,7 +35,6 @@ import io.mosip.kernel.core.idrepo.spi.IdRepoService;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.dto.IdResponseDTO;
-import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.validator.IdRequestValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 
@@ -54,7 +53,7 @@ public class IdRepoControllerTest {
 	private Map<String, String> id;
 
 	@Mock
-	private IdRepoService<IdRequestDTO, IdResponseDTO, Uin> idRepoService;
+	private IdRepoService<IdRequestDTO, IdResponseDTO> idRepoService;
 
 	@Mock
 	private IdRequestValidator validator;
