@@ -231,10 +231,14 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 				uinRepo.save(new Uin(uinRefId, uin, identityInfo, hash(identityInfo), request.getRegistrationId(),
 						env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
 						now(), false, now(), bioList, docList));
+				mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
+						"Record successfully saved in db with documents");
 			} else {
 				uinRepo.save(new Uin(uinRefId, uin, identityInfo, hash(identityInfo), request.getRegistrationId(),
 						env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
 						now(), false, now(), null, null));
+				mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
+						"Record successfully saved in db without documents");
 			}
 
 			uinHistoryRepo.save(new UinHistory(uinRefId, now(), uin, identityInfo, hash(identityInfo),
@@ -243,6 +247,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 
 			return retrieveIdentity(uin, null);
 		} else {
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
+					IdRepoErrorConstants.RECORD_EXISTS.getErrorMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.RECORD_EXISTS);
 		}
 	}
@@ -764,7 +770,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	private Object convertToObject(byte[] identity, Class<?> clazz) throws IdRepoAppException {
 		try {
 			return mapper.readValue(identity, clazz);
-
 		} catch (IOException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "convertToObject",
 					"\n" + ExceptionUtils.getStackTrace(e));

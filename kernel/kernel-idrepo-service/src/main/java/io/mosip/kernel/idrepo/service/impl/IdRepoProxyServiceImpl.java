@@ -250,10 +250,14 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 							"docs documents  --> " + documents);
 					return constructIdResponse(this.id.get(READ), uinObject, documents);
 				} else {
+					mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY,
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
 					throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
 				}
 			} else {
+				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY,
+						IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage());
 				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
 			}
 		} catch (IdRepoAppException e) {
@@ -311,6 +315,8 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 				if (demo.getDocHash().equals(hash(CryptoUtil.decodeBase64(data)))) {
 					documents.add(new Documents(demo.getDoccatCode(), data));
 				} else {
+					mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
+							IdRepoErrorConstants.DOCUMENT_HASH_MISMATCH.getErrorMessage());
 					throw new IdRepoAppException(IdRepoErrorConstants.DOCUMENT_HASH_MISMATCH);
 				}
 			} catch (IdRepoAppException e) {
@@ -343,6 +349,8 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 						if (StringUtils.equals(bio.getBiometricFileHash(), hash(CryptoUtil.decodeBase64(data)))) {
 							documents.add(new Documents(bio.getBiometricFileType(), data));
 						} else {
+							mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
+									IdRepoErrorConstants.DOCUMENT_HASH_MISMATCH.getErrorMessage());
 							throw new IdRepoAppException(IdRepoErrorConstants.DOCUMENT_HASH_MISMATCH);
 						}
 					}
@@ -423,7 +431,6 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	private Object convertToObject(byte[] identity, Class<?> clazz) throws IdRepoAppException {
 		try {
 			return mapper.readValue(identity, clazz);
-
 		} catch (IOException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "convertToObject",
 					"\n" + ExceptionUtils.getStackTrace(e));
@@ -454,11 +461,15 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 			ShardDataSourceResolver.setCurrentShard(shardResolver.getShard(uin));
 			if (uinRepo.existsByUin(uin)) {
 				if (uinRepo.existsByRegId(request.getRegistrationId())) {
+					mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
+							IdRepoErrorConstants.RECORD_EXISTS.getErrorMessage());
 					throw new IdRepoAppException(IdRepoErrorConstants.RECORD_EXISTS);
 				}
 				service.updateIdentity(request, uin);
 				return constructIdResponse(MOSIP_ID_UPDATE, service.retrieveIdentity(uin, null), null);
 			} else {
+				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
+						IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage());
 				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
 			}
 		} catch (DataAccessException e) {
