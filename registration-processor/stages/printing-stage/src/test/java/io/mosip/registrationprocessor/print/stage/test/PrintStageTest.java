@@ -116,6 +116,8 @@ public class PrintStageTest {
 	private MosipQueue queue;
 	
 	private RoutingContext ctx;
+	
+	private Boolean responseObject;
 
 	@InjectMocks
 	private PrintStage stage = new PrintStage() {
@@ -133,6 +135,7 @@ public class PrintStageTest {
 
 		@Override
 		public void setResponse(RoutingContext ctx, Object object) {
+			responseObject = Boolean.TRUE;
 		}
 
 		@Override
@@ -346,7 +349,9 @@ public class PrintStageTest {
 	
 	@Test
 	public void testResendPrintPdf() {
+		Mockito.doNothing().when(stage).process(any());
 		stage.reSendPrintPdf(ctx);
+		assertTrue(responseObject);
 	}
 	
 	@Test

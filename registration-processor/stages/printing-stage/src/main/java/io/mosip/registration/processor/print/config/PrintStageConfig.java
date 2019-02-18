@@ -27,8 +27,6 @@ import io.mosip.registration.processor.print.util.UinCardGeneratorImpl;
  *
  */
 @Configuration
-@EnableAspectJAutoProxy
-@PropertySource("classpath:bootstrap.properties")
 public class PrintStageConfig {
 
 	/**
