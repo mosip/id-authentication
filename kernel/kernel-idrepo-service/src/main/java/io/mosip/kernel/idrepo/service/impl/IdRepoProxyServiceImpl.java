@@ -139,7 +139,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	private static final String IDENTITY = "identity";
 
 	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "mosip.kernel.idrepo.datetime.pattern";
+	private static final String DATETIME_PATTERN = "mosip.utc-datetime-pattern";
 
 	/** The Constant ALL. */
 	private static final String ALL = "all";

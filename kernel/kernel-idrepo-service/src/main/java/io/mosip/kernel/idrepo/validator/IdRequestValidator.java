@@ -72,7 +72,7 @@ public class IdRequestValidator implements Validator {
 	private static final String DATETIME_TIMEZONE = "mosip.kernel.idrepo.datetime.timezone";
 
 	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "mosip.kernel.idrepo.datetime.pattern";
+	private static final String DATETIME_PATTERN = "mosip.utc-datetime-pattern";
 
 	/** The Constant IDENTITY. */
 	private static final String IDENTITY = "identity";

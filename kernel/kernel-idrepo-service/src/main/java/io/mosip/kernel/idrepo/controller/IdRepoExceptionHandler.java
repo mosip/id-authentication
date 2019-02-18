@@ -56,7 +56,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	private static final String SESSION_ID = "sessionId";
 
 	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "mosip.kernel.idrepo.datetime.pattern";
+	private static final String DATETIME_PATTERN = "mosip.utc-datetime-pattern";
 
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoExceptionHandler.class);

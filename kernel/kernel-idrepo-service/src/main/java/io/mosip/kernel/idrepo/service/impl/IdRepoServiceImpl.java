@@ -147,7 +147,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	private static final String VALUE = "value";
 
 	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "mosip.kernel.idrepo.datetime.pattern";
+	private static final String DATETIME_PATTERN = "mosip.utc-datetime-pattern";
 
 	/** The Constant CREATED_BY. */
 	private static final String CREATED_BY = "createdBy";
