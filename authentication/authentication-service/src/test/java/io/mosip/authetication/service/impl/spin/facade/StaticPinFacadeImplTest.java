@@ -46,6 +46,7 @@ import io.mosip.authentication.service.entity.VIDEntity;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.helper.RestHelper;
+import io.mosip.authentication.service.impl.id.service.impl.VIDServiceImpl;
 import io.mosip.authentication.service.impl.spin.service.StaticPinServiceImpl;
 import io.mosip.authentication.service.repository.StaticPinHistoryRepository;
 import io.mosip.authentication.service.repository.StaticPinRepository;
@@ -111,6 +112,9 @@ public class StaticPinFacadeImplTest {
 
 	@Mock
 	private VidGeneratorImpl vidGenerator;
+	
+	@InjectMocks
+	private VIDServiceImpl vidService;
 
 	/** The Constant for IDA */
 	private static final String IDA = "IDA";
@@ -129,6 +133,7 @@ public class StaticPinFacadeImplTest {
 		ReflectionTestUtils.setField(staticPinServiceImpl, "staticPinHistoryRepo", staticPinHistoryRepo);
 		ReflectionTestUtils.setField(staticPinServiceImpl, "idAuthService", idAuthService);
 		ReflectionTestUtils.setField(restRequestFactory, "env", env);
+		ReflectionTestUtils.setField(vidService, "env", env);
 
 	}
 
@@ -318,7 +323,7 @@ public class StaticPinFacadeImplTest {
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
 				.thenReturn(uinMap);
 		Mockito.when(vidRepository.findByUIN(Mockito.anyString(),Mockito.any())).thenReturn(Collections.EMPTY_LIST);
-		VIDResponseDTO vidResponseDTO = staticPinServiceImpl.generateVID("2342342344");
+		VIDResponseDTO vidResponseDTO = vidService.generateVID("2342342344");
 		assertEquals("mosip.identity.vid", vidResponseDTO.getId());
 	}
 
@@ -334,7 +339,7 @@ public class StaticPinFacadeImplTest {
 		List<VIDEntity> vidEntityList = new ArrayList<>();
 		vidEntityList.add(vidEntity);
 		Mockito.when(vidRepository.findByUIN(Mockito.anyString(), Mockito.any())).thenReturn(vidEntityList);
-		staticPinServiceImpl.generateVID("2342342344");
+		vidService.generateVID("2342342344");
 	}
 
 	@Test
@@ -349,7 +354,7 @@ public class StaticPinFacadeImplTest {
 		List<VIDEntity> vidEntityList = new ArrayList<>();
 		vidEntityList.add(vidEntity);
 		Mockito.when(vidRepository.findByUIN(Mockito.anyString(), Mockito.any())).thenReturn(vidEntityList);
-		VIDResponseDTO vidResponseDTO = staticPinServiceImpl.generateVID("2342342344");
+		VIDResponseDTO vidResponseDTO = vidService.generateVID("2342342344");
 		assertEquals("mosip.identity.vid", vidResponseDTO.getId());
 	}
 

@@ -5,7 +5,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -16,7 +15,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.spin.facade.StaticPinFacade;
+import io.mosip.authentication.service.impl.id.service.impl.VIDServiceImpl;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 
 @RunWith(SpringRunner.class)
@@ -28,7 +27,7 @@ public class VIDControllerTest {
 	private VIDController vidController;
 	
 	@Mock
-	private StaticPinFacade staticFacadeImpl;
+	private VIDServiceImpl vidService;
 	
 	@Mock
 	private UinValidatorImpl uinValidator;
@@ -36,7 +35,7 @@ public class VIDControllerTest {
 	@Test
 	public void generateVIDTest() throws IdAuthenticationBusinessException, IdAuthenticationAppException {
 		VIDResponseDTO vidResponseDTO=new VIDResponseDTO();
-		Mockito.when(staticFacadeImpl.generateVID(Mockito.anyString())).thenReturn(vidResponseDTO);
+		Mockito.when(vidService.generateVID(Mockito.anyString())).thenReturn(vidResponseDTO);
 		Mockito.when(uinValidator.validateId(Mockito.any())).thenReturn(true);
 		vidController.generateVID(Mockito.anyString());
 		
@@ -44,8 +43,7 @@ public class VIDControllerTest {
 
 	@Test(expected=IdAuthenticationAppException.class)
 	public void generateVIDTestFail() throws IdAuthenticationBusinessException, IdAuthenticationAppException {
-		VIDResponseDTO vidResponseDTO=new VIDResponseDTO();
-		Mockito.when(staticFacadeImpl.generateVID(Mockito.anyString())).thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED));
+		Mockito.when(vidService.generateVID(Mockito.anyString())).thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED));
 		Mockito.when(uinValidator.validateId(Mockito.any())).thenReturn(true);
 		vidController.generateVID(Mockito.anyString());
 		

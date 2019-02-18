@@ -10,7 +10,7 @@ import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.spin.facade.StaticPinFacade;
+import io.mosip.authentication.service.impl.id.service.impl.VIDServiceImpl;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.swagger.annotations.ApiOperation;
@@ -38,9 +38,9 @@ public class VIDController {
 	private UinValidatorImpl uinValidator;
 	
 	
-	/** The static pin facade. */
+	/** The Static Pin Facade */
 	@Autowired
-	private StaticPinFacade staticPinFacade;
+	private VIDServiceImpl vidService;
 	
 	
 	/**
@@ -58,7 +58,7 @@ public class VIDController {
 		VIDResponseDTO vidResponse=null;
 		try {
 			uinValidator.validateId(uin);
-			vidResponse=staticPinFacade.generateVID(uin);
+			vidResponse=vidService.generateVID(uin);
 		} catch (IdAuthenticationBusinessException e) {
 				mosipLogger.error(SESSION_ID, "", "", e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 				throw new IdAuthenticationAppException(e.getErrorCode(), e.getMessage(), e);
