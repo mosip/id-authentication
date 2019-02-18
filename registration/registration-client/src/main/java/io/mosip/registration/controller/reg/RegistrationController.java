@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
-import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
@@ -37,8 +36,6 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.auth.AuthenticationController;
-import io.mosip.registration.controller.device.FaceCaptureController;
-import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -98,22 +95,18 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private AnchorPane biometricException;
 
-	@Autowired
-	private FaceCaptureController faceCaptureController;
 	@FXML
 	private AnchorPane faceCapture;
-	@Autowired
-	private IrisCaptureController irisCaptureController;
 	@FXML
 	private AnchorPane irisCapture;
 	@FXML
 	private AnchorPane operatorAuthentication;
 	@FXML
 	public ImageView biometricTracker;
-	
+
 	@FXML
 	private AnchorPane registrationPreview;
-	
+
 	@Autowired
 	private RegistrationPreviewController registrationPreviewController;
 
@@ -122,11 +115,9 @@ public class RegistrationController extends BaseController {
 
 	@Value("${capture_photo_using_device}")
 	public String capturePhotoUsingDevice;
-	
+
 	@Autowired
 	private RidGenerator<String> ridGeneratorImpl;
-	@Autowired
-	private JsonValidator jsonValidator;
 
 	@FXML
 	private void initialize() {
@@ -135,25 +126,23 @@ public class RegistrationController extends BaseController {
 		try {
 
 			auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, Components.REGISTRATION_CONTROLLER,
-					"initializing the registration controller",
-					SessionContext.userContext().getUserId(),
+					"initializing the registration controller", SessionContext.userContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			// Create RegistrationDTO Object
 			if (SessionContext.map().get("operatorAuthentication") != null) {
-				boolean isAuthentication = (boolean) SessionContext.map()
-						.get("operatorAuthentication");
+				boolean isAuthentication = (boolean) SessionContext.map().get("operatorAuthentication");
 				if (isAuthentication) {
 					SessionContext.map().put("demographicDetail", false);
 					showCurrentPage();
 				}
 			}
 
-			if (getRegistrationDtoContent() == null) {
+			if (getRegistrationDTOFromSession() == null) {
 				createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
 			}
 
-			if (isEditPage() && getRegistrationDtoContent() != null) {
+			if (isEditPage() && getRegistrationDTOFromSession() != null) {
 				prepareEditPageContent();
 			}
 			uinUpdate();
@@ -166,7 +155,7 @@ public class RegistrationController extends BaseController {
 	}
 
 	private void uinUpdate() {
-		if (getRegistrationDtoContent().getSelectionListDTO() != null) {
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			demographicDetailController.uinUpdate();
 			documentScanController.uinUpdate();
 		}
@@ -174,7 +163,7 @@ public class RegistrationController extends BaseController {
 
 	public void init(SelectionListDTO selectionListDTO) {
 		createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_UPDATE);
-		getRegistrationDtoContent().setSelectionListDTO(selectionListDTO);
+		getRegistrationDTOFromSession().setSelectionListDTO(selectionListDTO);
 	}
 
 	/**
@@ -195,13 +184,11 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * To detect the face part from the applicant photograph to use it for QR
-	 * Code generation
+	 * To detect the face part from the applicant photograph to use it for QR Code
+	 * generation
 	 * 
-	 * @param applicantImage
-	 *            the image that is captured as applicant photograph
-	 * @return BufferedImage the face that is detected from the applicant
-	 *         photograph
+	 * @param applicantImage the image that is captured as applicant photograph
+	 * @return BufferedImage the face that is detected from the applicant photograph
 	 */
 	private BufferedImage detectApplicantFace(BufferedImage applicantImage) {
 		BufferedImage detectedFace = null;
@@ -224,11 +211,10 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * To compress the detected face from the image of applicant and store it in
-	 * DTO to use it for QR Code generation
+	 * To compress the detected face from the image of applicant and store it in DTO
+	 * to use it for QR Code generation
 	 * 
-	 * @param applicantImage
-	 *            the image that is captured as applicant photograph
+	 * @param applicantImage the image that is captured as applicant photograph
 	 */
 	private void compressImageForQRCode(BufferedImage detectedFace) {
 		try {
@@ -249,11 +235,10 @@ public class RegistrationController extends BaseController {
 			writer.write(null, new IIOImage(detectedFace, null, null), param);
 			byte[] compressedPhoto = byteArrayOutputStream.toByteArray();
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-				((BiometricDTO) SessionContext.map()
-						.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO().getFaceDetailsDTO()
-								.setFace(compressedPhoto);
+				((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
+						.getOperatorBiometricDTO().getFaceDetailsDTO().setFace(compressedPhoto);
 			} else {
-				ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDtoContent().getDemographicDTO()
+				ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDTOFromSession().getDemographicDTO()
 						.getApplicantDocumentDTO();
 				applicantDocumentDTO.setCompressedFacePhoto(compressedPhoto);
 			}
@@ -270,12 +255,11 @@ public class RegistrationController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "saving the details of applicant biometrics");
 		boolean isValid = true;
-		if (!(boolean) SessionContext.map()
-				.get(RegistrationConstants.ONBOARD_USER)) {
-		isValid = demographicDetailController.validateThisPane();
-		if (isValid) {
-			isValid = validateDemographicPane(documentScanController.documentScanPane);
-		}
+		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+			isValid = demographicDetailController.validateThisPane();
+			if (isValid) {
+				isValid = validateDemographicPane(documentScanController.documentScanPane);
+			}
 		}
 		if (isValid) {
 			try {
@@ -286,9 +270,8 @@ public class RegistrationController extends BaseController {
 					ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
 							byteArrayOutputStream);
 					byte[] photoInBytes = byteArrayOutputStream.toByteArray();
-					if (!(boolean) SessionContext.map()
-							.get(RegistrationConstants.ONBOARD_USER)) {
-						ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDtoContent().getDemographicDTO()
+					if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+						ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDTOFromSession().getDemographicDTO()
 								.getApplicantDocumentDTO();
 						applicantDocumentDTO.setPhoto(photoInBytes);
 						applicantDocumentDTO.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
@@ -310,21 +293,19 @@ public class RegistrationController extends BaseController {
 								RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 								"showing demographic preview");
 
-						SessionContext.map().put("faceCapture",false);
+						SessionContext.map().put("faceCapture", false);
 						registrationPreviewController.setUpPreviewContent();
-						SessionContext.map().put("registrationPreview",true);
+						SessionContext.map().put("registrationPreview", true);
 						showCurrentPage();
 					} else {
-						((BiometricDTO) SessionContext.map()
-								.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO()
-										.getFaceDetailsDTO().setFace(photoInBytes);
+						((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
+								.getOperatorBiometricDTO().getFaceDetailsDTO().setFace(photoInBytes);
 						byteArrayOutputStream.close();
 					}
 				} else {
 					if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-						((BiometricDTO) SessionContext.map()
-								.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO()
-										.getFaceDetailsDTO().setFace(null);
+						((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
+								.getOperatorBiometricDTO().getFaceDetailsDTO().setFace(null);
 					}
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FACE_CAPTURE_ERROR);
 				}
@@ -346,11 +327,6 @@ public class RegistrationController extends BaseController {
 			LOGGER.error("REGISTRATION - REGSITRATION_OPERATOR_AUTHENTICATION_PAGE_LOADING_FAILED", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 		}
-	}
-
-	public RegistrationDTO getRegistrationDtoContent() {
-		return (RegistrationDTO) SessionContext.map()
-				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
 
 	private Boolean isEditPage() {
@@ -453,7 +429,7 @@ public class RegistrationController extends BaseController {
 
 		boolean gotoNext = true;
 		List<String> excludedIds = RegistrationConstants.fieldsToExclude();
-		if (getRegistrationDtoContent().getSelectionListDTO() != null) {
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			excludedIds.remove("cniOrPinNumber");
 			excludedIds.remove("cniOrPinNumberLocalLanguage");
 		}

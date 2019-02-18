@@ -429,10 +429,6 @@ public class BiometricExceptionController extends BaseController implements Init
 		setExceptionImage();
 	}
 
-	private RegistrationDTO getRegistrationDTOFromSession() {
-		return (RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
-	}
-
 	private void loadPage(String page) {
 		VBox mainBox = new VBox();
 		try {

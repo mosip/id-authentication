@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.core.util.FileUtils;
@@ -123,7 +124,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@Value("${SAVE_ACKNOWLEDGEMENT_INSIDE_PACKET}")
 	private String saveAck;
-	
+
 	@Value("${PACKET_STORE_LOCATION}")
 	private String packetStoreLocation;
 
@@ -197,7 +198,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage());
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
@@ -235,10 +236,10 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - CREATE PACKET", APPLICATION_NAME, APPLICATION_ID,
-					regBaseCheckedException.getMessage());
+					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage());
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Showing receipt ended.");
 	}
@@ -266,7 +267,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - APPROVE PACKET", APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage());
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_APPROVAL_PAGE);
 		}
@@ -297,7 +298,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- Officer Packet upload", APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage());
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Packet Upload screen ended.");
 	}
@@ -334,7 +335,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 				}
 			}
 		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - UI- UIN Update", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+			LOGGER.error("REGISTRATION - UI- UIN Update", APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen ended.");
 	}
@@ -357,7 +359,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			nodes.add(syncData);
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, ioException.getMessage());
+					APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Sync Data screen ended.");
 	}
@@ -410,7 +412,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			ackInBytes = stringWriter.toString().getBytes("UTF-8");
 		} catch (java.io.IOException ioException) {
 			LOGGER.error("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, ioException.getMessage());
+					APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		}
 
 		if (saveAck.equalsIgnoreCase("Y")) {
@@ -443,10 +445,11 @@ public class PacketHandlerController extends BaseController implements Initializ
 				FileUtils.copyToFile(new ByteArrayInputStream(ackInBytes),
 						new File(filePath.concat("_Ack.").concat(RegistrationConstants.ACKNOWLEDGEMENT_FORMAT)));
 
-				LOGGER.info(PACKET_HANDLER, APPLICATION_NAME,APPLICATION_ID, "Registration's Acknowledgement Receipt saved");
+				LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
+						"Registration's Acknowledgement Receipt saved");
 			} catch (io.mosip.kernel.core.exception.IOException ioException) {
 				LOGGER.error("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
-						APPLICATION_ID, ioException.getMessage());
+						APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			}
 
 			if (registrationDTO.getSelectionListDTO() == null) {
@@ -494,7 +497,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
-					APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+					APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_APPROVAL_PAGE);
 		}

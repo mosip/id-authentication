@@ -187,7 +187,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	}
 
 	@SuppressWarnings("unchecked")
-	synchronized public ResponseDTO packetSyncStatus() {
+	 public synchronized ResponseDTO packetSyncStatus() {
 
 		LOGGER.info("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"packet status sync called");

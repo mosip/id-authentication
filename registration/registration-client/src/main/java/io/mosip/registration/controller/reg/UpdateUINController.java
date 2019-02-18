@@ -306,9 +306,9 @@ public class UpdateUINController extends BaseController implements Initializable
 								applicationContext.getApplicationLanguageBundle());
 
 						getScene(createRoot).setRoot(createRoot);
+					} else {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UPDATE_UIN_SELECTION_ALERT);
 					}
-				} else {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UPDATE_UIN_SELECTION_ALERT);
 				}
 			}
 		} catch (InvalidIDException invalidIdException) {
