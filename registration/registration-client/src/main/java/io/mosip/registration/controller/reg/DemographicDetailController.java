@@ -1200,6 +1200,7 @@ public class DemographicDetailController extends BaseController {
 		populateGender();
 		if (!gender.getItems().isEmpty()) {
 			gender.getSelectionModel().select(0);
+			genderLocalLanguage.getSelectionModel().select(0);
 		}
 		addressLine1.setText("Mind Tree Ltd");
 		addressLine2.setText("RamanuJan It park");

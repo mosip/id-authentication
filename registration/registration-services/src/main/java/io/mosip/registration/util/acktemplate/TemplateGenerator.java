@@ -314,7 +314,7 @@ public class TemplateGenerator extends BaseService {
 						applicationLanguageProperties.getString("preRegistrationId"));
 				templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID_LOCAL_LANG_LABEL,
 						localProperties.getString("preRegistrationId"));
-				if (!registration.getPreRegistrationId().isEmpty()) {
+				if (registration.getPreRegistrationId() != null && !registration.getPreRegistrationId().isEmpty()) {
 					templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID, registration.getPreRegistrationId());
 				} else {
 					templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID, "-");
