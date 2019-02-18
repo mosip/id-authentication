@@ -674,12 +674,12 @@ public class TemplateGenerator extends BaseService {
 				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG,
 						getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 								.getParentOrGuardianName(), localLanguageCode));
-				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_USER_LANG_LABEL,
-						applicationLanguageProperties.getString("parentUIN"));
-				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN, getValue(registration.getDemographicDTO()
-						.getDemographicInfoDTO().getIdentity().getParentOrGuardianRIDOrUIN(), platformLanguageCode));
-				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
-						localProperties.getString("parentUIN"));
+//				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_USER_LANG_LABEL,
+//						applicationLanguageProperties.getString("parentUIN"));
+//				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN, getValue(registration.getDemographicDTO()
+//						.getDemographicInfoDTO().getIdentity().getParentOrGuardianRIDOrUIN(), platformLanguageCode));
+//				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
+//						localProperties.getString("parentUIN"));
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_WITH_PARENT,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
