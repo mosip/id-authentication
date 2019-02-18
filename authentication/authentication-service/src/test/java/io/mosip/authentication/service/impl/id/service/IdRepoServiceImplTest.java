@@ -12,7 +12,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -53,18 +55,22 @@ public class IdRepoServiceImplTest {
 	private IdRepoServiceImpl idReposerviceImpl;
 	@Mock
 	private IdRepoServiceImpl idReposerviceImplMock;
+	
+	@Autowired
+	private Environment environment;
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idReposerviceImpl, "restHelper", restHelper);
 		ReflectionTestUtils.setField(idReposerviceImpl, "restRequestFactory", restRequestFactory);
+		ReflectionTestUtils.setField(idReposerviceImpl, "environment", environment);
 	}
 
 	@Test
 	public void testGetIdRepo() throws IdAuthenticationBusinessException, RestServiceException {
 		RestRequestDTO restRequestDTO = new RestRequestDTO();
 		Map<String, Object> response = new HashMap<>();
-
+		response.put("status", "activated");
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
