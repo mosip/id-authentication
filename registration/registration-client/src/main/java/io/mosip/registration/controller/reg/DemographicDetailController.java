@@ -2,7 +2,6 @@ package io.mosip.registration.controller.reg;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -13,7 +12,7 @@ import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
+
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.PridValidator;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
@@ -22,6 +21,7 @@ import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
+import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.transliteration.spi.Transliteration;
 import io.mosip.kernel.core.util.DateUtils;
@@ -555,8 +555,8 @@ public class DemographicDetailController extends BaseController {
 				int age = 0;
 				if (newValue.matches("\\d{1,3}")) {
 					int maxAge = Integer.parseInt(AppConfig.getApplicationProperty("max_age"));
-					if (getRegistrationDtoContent().getSelectionListDTO() != null
-							&& getRegistrationDtoContent().getSelectionListDTO().isChild())
+					if (getRegistrationDTOFromSession().getSelectionListDTO() != null
+							&& getRegistrationDTOFromSession().getSelectionListDTO().isChild())
 						maxAge = 5;
 					if (Integer.parseInt(ageField.getText()) > maxAge) {
 						ageField.setText(oldValue);
@@ -787,7 +787,7 @@ public class DemographicDetailController extends BaseController {
 					"Saving the details to respected DTO", SessionContext.userContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
-			RegistrationDTO registrationDTO = getRegistrationDtoContent();
+			RegistrationDTO registrationDTO = getRegistrationDTOFromSession();
 			DemographicInfoDTO demographicInfoDTO;
 
 			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
@@ -841,7 +841,7 @@ public class DemographicDetailController extends BaseController {
 
 		String platformLanguageCode = applicationContext.getApplicationLanguage().toLowerCase();
 		String localLanguageCode = applicationContext.getLocalLanguage().toLowerCase();
-		Identity demographicIdentity = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
+		Identity demographicIdentity = getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO()
 				.getIdentity();
 
 		return Builder.build(DemographicInfoDTO.class)
@@ -971,20 +971,15 @@ public class DemographicDetailController extends BaseController {
 						.with(identity -> identity.setProofOfDateOfBirth(demographicIdentity.getProofOfDateOfBirth()))
 						.with(identity -> identity.setIdSchemaVersion(1.0))
 						.with(identity -> identity
-								.setUin(getRegistrationDtoContent().getRegistrationMetaDataDTO().getUin() == null ? null
+								.setUin(getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getUin() == null ? null
 										: new BigInteger(
-												getRegistrationDtoContent().getRegistrationMetaDataDTO().getUin())))
+												getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getUin())))
 						.get()))
 				.get();
 	}
 
-	private RegistrationDTO getRegistrationDtoContent() {
-
-		return registrationController.getRegistrationDtoContent();
-	}
-
 	public void uinUpdate() {
-		if (getRegistrationDtoContent().getSelectionListDTO() != null) {
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
 			ObservableList<Node> nodes = demoGraphicPane.getChildren();
 
@@ -998,49 +993,49 @@ public class DemographicDetailController extends BaseController {
 			fetchBtn.setVisible(false);
 			preRegistrationLabel.setText(RegistrationConstants.UIN_LABEL);
 
-			getRegistrationDtoContent().getRegistrationMetaDataDTO()
-					.setUin(getRegistrationDtoContent().getSelectionListDTO().getUinId());
-			preRegistrationId.setText(getRegistrationDtoContent().getSelectionListDTO().getUinId());
+			getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
+					.setUin(getRegistrationDTOFromSession().getSelectionListDTO().getUinId());
+			preRegistrationId.setText(getRegistrationDTOFromSession().getSelectionListDTO().getUinId());
 
 			fullName.setDisable(false);
 			fullNameLocalLanguage.setDisable(false);
 			fullNameLocalLanguageLabel.setDisable(false);
 			fullNameLabel.setDisable(false);
 
-			dateAnchorPane.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAge());
-			dateAnchorPaneLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAge());
+			dateAnchorPane.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAge());
+			dateAnchorPaneLocalLanguage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAge());
 
-			gender.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isGender());
-			genderLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isGender());
-			genderLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isGender());
-			genderLocalLanguageLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isGender());
+			gender.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isGender());
+			genderLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isGender());
+			genderLocalLanguage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isGender());
+			genderLocalLanguageLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isGender());
 
 			applicationLanguageAddressAnchorPane
-					.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAddress());
-			localLanguageAddressAnchorPane.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAddress());
+					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			localLanguageAddressAnchorPane.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
 
-			mobileNo.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
-			mobileNoLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
-			mobileNoLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+			mobileNo.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
+			mobileNoLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
+			mobileNoLocalLanguage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
 			mobileNoLocalLanguageLabel
-					.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
-			emailId.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
-			emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
-			emailIdLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
-			emailIdLocalLanguageLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
+			emailId.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
+			emailIdLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
+			emailIdLocalLanguage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
+			emailIdLocalLanguageLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
 
-			residentStatus.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isForeigner());
-			residentStatusLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isForeigner());
+			residentStatus.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isForeigner());
+			residentStatusLocalLanguage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isForeigner());
 
-			cniOrPinNumber.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
-			cniOrPinNumberLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
-			cniOrPinNumberLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
+			cniOrPinNumber.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isCnieNumber());
+			cniOrPinNumberLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isCnieNumber());
+			cniOrPinNumberLocalLanguage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isCnieNumber());
 			cniOrPinNumberLocalLanguageLabel
-					.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
+					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isCnieNumber());
 			switchedOn.set(true);
 			if (!isChild)
-				isChild = getRegistrationDtoContent().getSelectionListDTO().isChild()
-						|| getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails();
+				isChild = getRegistrationDTOFromSession().getSelectionListDTO().isChild()
+						|| getRegistrationDTOFromSession().getSelectionListDTO().isParentOrGuardianDetails();
 
 			childSpecificFields.setDisable(!isChild);
 			childSpecificFieldsLocal.setDisable(!isChild);
@@ -1066,7 +1061,7 @@ public class DemographicDetailController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Preparing the Edit page content");
 
-			DemographicInfoDTO demo = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO();
+			DemographicInfoDTO demo = getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO();
 
 			populateFieldValue(fullName, fullNameLocalLanguage, demo.getIdentity().getFullName());
 			populateFieldValue(gender, genderLocalLanguage, demo.getIdentity().getGender());
@@ -1111,7 +1106,7 @@ public class DemographicDetailController extends BaseController {
 				populateFieldValue(parentName, parentNameLocalLanguage, demo.getIdentity().getParentOrGuardianName());
 				uinId.setText(demo.getIdentity().getParentOrGuardianRIDOrUIN() + "");
 			}
-			preRegistrationId.setText(getRegistrationDtoContent().getPreRegistrationId());
+			preRegistrationId.setText(getRegistrationDTOFromSession().getPreRegistrationId());
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
