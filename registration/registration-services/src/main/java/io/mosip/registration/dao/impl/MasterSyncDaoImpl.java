@@ -65,6 +65,7 @@ import io.mosip.registration.entity.Holiday;
 import io.mosip.registration.entity.IdType;
 import io.mosip.registration.entity.Language;
 import io.mosip.registration.entity.Location;
+import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.MachineType;
 import io.mosip.registration.entity.ReasonCategory;
 import io.mosip.registration.entity.ReasonList;
@@ -402,11 +403,9 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 					RegMachineSpec.class);
 			machineSpecificationRepository.saveAll(masterMachineSpecDtoEntity);
 
-			/*
-			 * List<MachineMaster> masterMachineDtoEntity =
-			 * MetaDataUtils.setCreateMetaData(masterMachineDto, MachineMaster.class);
-			 * machineRepository.saveAll(masterMachineDtoEntity);
-			 */
+			List<MachineMaster> masterMachineDtoEntity = MetaDataUtils.setCreateMetaData(masterMachineDto,
+					MachineMaster.class);
+			machineRepository.saveAll(masterMachineDtoEntity);
 
 			List<ReasonCategory> masterReasonCategoryDtoEntity = MetaDataUtils
 					.setCreateMetaData(masterPostReasonCategoryDto, ReasonCategory.class);
