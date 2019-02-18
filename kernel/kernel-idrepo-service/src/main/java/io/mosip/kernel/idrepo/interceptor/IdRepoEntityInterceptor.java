@@ -40,6 +40,8 @@ import io.mosip.kernel.idrepo.helper.RestHelper;
 @Component
 public class IdRepoEntityInterceptor extends EmptyInterceptor {
 
+	private static final String DATETIME_PATTERN = "mosip.utc-datetime-pattern";
+
 	private static final String ID_REPO_ENTITY_INTERCEPTOR = "IdRepoEntityInterceptor";
 
 	private static final String ID_REPO_SERVICE = "IdRepoService";
@@ -171,7 +173,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 			RestRequestDTO restRequest = null;
 			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
 			request.put("applicationId", env.getProperty("mosip.kernel.idrepo.application.id"));
-			request.put("timeStamp", DateUtils.formatDate(new Date(), env.getProperty("mosip.kernel.idrepo.datetime.pattern")));
+			request.put("timeStamp", DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN)));
 			request.put("data", new String(identity));
 
 			if (method.equals("encrypt")) {
