@@ -1,7 +1,13 @@
 package io.mosip.authentication.service.impl.id.service.impl;
 
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -12,8 +18,10 @@ import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.indauth.IdType;
+import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
@@ -41,6 +49,9 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
+	
+	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
+
 
 	/** The env. */
 	@Autowired
@@ -211,6 +222,67 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 		}
 
 		restHelper.requestAsync(restRequest);
+	}
+
+	/**
+	 * Fetch data from Identity info value based on Identity response
+	 */
+	@SuppressWarnings("unchecked")
+	public Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO)
+			throws IdAuthenticationBusinessException {
+		return idResponseDTO.entrySet().stream()
+				.filter(entry -> entry.getKey().equals("response") && entry.getValue() instanceof Map)
+				.flatMap(entry -> ((Map<String, Object>) entry.getValue()).entrySet().stream()).flatMap(entry -> {
+					if (entry.getKey().equals("identity") && entry.getValue() instanceof Map) {
+						return ((Map<String, Object>) entry.getValue()).entrySet().stream();
+					} else if (entry.getKey().equals("documents") && entry.getValue() instanceof List) {
+						return (getDocumentValues((List<Map<String, Object>>) entry.getValue())).entrySet().stream();
+					}
+					return Stream.empty();
+				}).peek(entry -> System.out.println(entry)).collect(Collectors.toMap(t -> {
+					System.out.println(t.getKey());
+					return t.getKey();
+				}, entry -> {
+					Object val = entry.getValue();
+					if (val instanceof List) {
+						List<Map> arrayList = (List) val;
+						return arrayList.stream().filter(elem -> elem instanceof Map)
+								.map(elem -> (Map<String, Object>) elem).map(map1 -> {
+									String value = String.valueOf(map1.get("value"));
+									IdentityInfoDTO idInfo = new IdentityInfoDTO();
+									if (map1.containsKey("language")) {
+										idInfo.setLanguage(String.valueOf(map1.get("language")));
+									}
+									idInfo.setValue(value);
+									return idInfo;
+								}).collect(Collectors.toList());
+	
+					} else if (val instanceof Boolean || val instanceof String || val instanceof Long
+							|| val instanceof Integer || val instanceof Double) {
+						IdentityInfoDTO idInfo = new IdentityInfoDTO();
+						idInfo.setValue(String.valueOf(val));
+						return Stream.of(idInfo).collect(Collectors.toList());
+					}
+					return Collections.emptyList();
+				}));
+	
+	}
+
+	/**
+	 * Fetch document values for Individual's
+	 * 
+	 * @param value
+	 * @return
+	 * @throws IdAuthenticationDaoException
+	 */
+	private Map<String, Object> getDocumentValues(List<Map<String, Object>> value) {
+		Map<String, Object> docValues = value.stream().filter(map -> INDIVIDUAL_BIOMETRICS.equals(map.get("category")))
+				.flatMap(map -> map.entrySet().stream()).filter(entry -> entry.getKey().equalsIgnoreCase("value"))
+				.<Entry<String, String>>map(
+						entry -> new SimpleEntry<>("documents." + INDIVIDUAL_BIOMETRICS, (String) entry.getValue()))
+				.collect(Collectors.toMap(Entry<String, String>::getKey, Entry<String, String>::getValue));
+		return docValues;
+	
 	}
 
 }
