@@ -781,8 +781,6 @@ public class DemographicDetailController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Saving the fields to DTO");
 		try {
-			/* clear the doc preview section */
-			//documentScanController.initializePreviewSection();
 			auditFactory.audit(AuditEvent.SAVE_DETAIL_TO_DTO, Components.REGISTRATION_CONTROLLER,
 					"Saving the details to respected DTO", SessionContext.userContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
@@ -1295,7 +1293,7 @@ public class DemographicDetailController extends BaseController {
 		postalCode.setText("600111");
 		mobileNo.setText("9965625706");
 		emailId.setText("ayoub.toufiq@gmail.com");
-		cniOrPinNumber.setText("454534312");
+		cniOrPinNumber.setText("4545343123");
 		registrationController.displayValidationMessage(validation.getValidationMessage().toString());
 		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 	}
