@@ -1,9 +1,9 @@
 package io.mosip.registration.processor.manual.verification.stage;
 
-
-import static org.mockito.Matchers.any;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -31,7 +31,6 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
-import io.mosip.registration.processor.manual.verification.ManualVerificationApplication;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.verification.dto.UserDto;
 import io.mosip.registration.processor.manual.verification.service.ManualVerificationService;
@@ -54,39 +53,39 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
 
 @RunWith(SpringRunner.class)
-public class ManualVerificationStageTest{
+public class ManualVerificationStageTest {
 
 	private RoutingContext ctx;
 	private Boolean responseObject;
-	
+
 	@Mock
 	private ManualVerificationService manualAdjudicationService;
-	
+
 	@InjectMocks
 	ManualVerificationStage manualVerificationStage = new ManualVerificationStage() {
-	
+
 		@Override
 		public void setResponse(RoutingContext ctx, Object object) {
 			responseObject = Boolean.TRUE;
 		}
-		
+
 		@Override
 		public void send(MosipEventBus mosipEventBus, MessageBusAddress toAddress, MessageDTO message) {
 		}
-		
+
 		@Override
 		public MosipEventBus getEventBus(Object verticleName, String clusterManagerUrl) {
 			return null;
 		}
 	};
-	
+
 	@Before
 	public void setup() throws IOException {
 
 		ctx = setContext();
-		ManualVerificationApplication.main(null);
+
 	}
-	
+
 	@Test
 	public void testAllProcesses() throws ClientProtocolException, IOException {
 		processBiometricTest();
@@ -98,93 +97,92 @@ public class ManualVerificationStageTest{
 		testProcess();
 		packetUploaderTest();
 	}
-	
-	
-	public void processBiometricTest(){
+
+	public void processBiometricTest() {
 		byte[] packetInfo = "packetInfo".getBytes();
-		when(manualAdjudicationService.getApplicantFile(any(String.class),any(String.class))).thenReturn(packetInfo);
+		when(manualAdjudicationService.getApplicantFile(any(String.class), any(String.class))).thenReturn(packetInfo);
 		manualVerificationStage.processBiometric(ctx);
 		assertTrue(responseObject);
 	}
-	
-	
-	public void processDemographicTest(){
+
+	public void processDemographicTest() {
 		byte[] packetInfo = "packetInfo".getBytes();
-		when(manualAdjudicationService.getApplicantFile(any(String.class),any(String.class))).thenReturn(packetInfo);
+		when(manualAdjudicationService.getApplicantFile(any(String.class), any(String.class))).thenReturn(packetInfo);
 		manualVerificationStage.processDemographic(ctx);
 		assertTrue(responseObject);
 	}
-	
-	
-	public void processAssignmentTest(){
-		ManualVerificationDTO manualVerificationDTO= new ManualVerificationDTO();
+
+	public void processAssignmentTest() {
+		ManualVerificationDTO manualVerificationDTO = new ManualVerificationDTO();
 		when(manualAdjudicationService.assignApplicant(any(UserDto.class))).thenReturn(manualVerificationDTO);
 		manualVerificationStage.processAssignment(ctx);
 		assertTrue(responseObject);
 	}
-	
-	
-	public void processDecisionTest(){
+
+	public void processDecisionTest() {
 		manualVerificationStage.processDecision(ctx);
 		assertTrue(responseObject);
 	}
-	
-	
-	public void processPacketInfoTest(){
+
+	public void processPacketInfoTest() {
 		PacketMetaInfo packetInfo = new PacketMetaInfo();
 		when(manualAdjudicationService.getApplicantPacketInfo(any(String.class))).thenReturn(packetInfo);
 		manualVerificationStage.processPacketInfo(ctx);
 		assertTrue(responseObject);
 	}
-	
-	
+
 	public void testSendMessage() {
 		manualVerificationStage.sendMessage(null);
 	}
-	
+
 	public void testProcess() {
 		manualVerificationStage.process(null);
 	}
-	
+
 	public void packetUploaderTest() throws ClientProtocolException, IOException {
-	    
+
 		HttpGet httpGet = new HttpGet("http://localhost:8084/manualverification/health");
 		HttpClient client = HttpClientBuilder.create().build();
 		HttpResponse getResponse = client.execute(httpGet);
 		assertEquals(200, getResponse.getStatusLine().getStatusCode());
-		
-	    HttpPost applicantBiometric = getHttpPost("http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/applicantBiometric");
-	    CloseableHttpResponse response = HttpClients.createDefault().execute(applicantBiometric);
-	    assertEquals(response.getStatusLine().getStatusCode(), 200);
-	    
-	    HttpPost applicantDemographic = getHttpPost("http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/applicantDemographic");
-	    response = HttpClients.createDefault().execute(applicantDemographic);
-	    assertEquals(response.getStatusLine().getStatusCode(), 200);
-	    
-	    HttpPost assignment = getHttpPost("http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/assignment");
-	    response = HttpClients.createDefault().execute(assignment);
-	    assertEquals(response.getStatusLine().getStatusCode(), 200);
-	    
-	    HttpPost decision = getHttpPost("http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/decision");
-	    response = HttpClients.createDefault().execute(decision);
-	    assertEquals(response.getStatusLine().getStatusCode(), 200);
 
-	    HttpPost packetInfo = getHttpPost("http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/packetInfo");
-	    response = HttpClients.createDefault().execute(packetInfo);
-	    assertEquals(response.getStatusLine().getStatusCode(), 200);
-	    
+		HttpPost applicantBiometric = getHttpPost(
+				"http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/applicantBiometric");
+		CloseableHttpResponse response = HttpClients.createDefault().execute(applicantBiometric);
+		assertEquals(response.getStatusLine().getStatusCode(), 200);
+
+		HttpPost applicantDemographic = getHttpPost(
+				"http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/applicantDemographic");
+		response = HttpClients.createDefault().execute(applicantDemographic);
+		assertEquals(response.getStatusLine().getStatusCode(), 200);
+
+		HttpPost assignment = getHttpPost(
+				"http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/assignment");
+		response = HttpClients.createDefault().execute(assignment);
+		assertEquals(response.getStatusLine().getStatusCode(), 200);
+
+		HttpPost decision = getHttpPost(
+				"http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/decision");
+		response = HttpClients.createDefault().execute(decision);
+		assertEquals(response.getStatusLine().getStatusCode(), 200);
+
+		HttpPost packetInfo = getHttpPost(
+				"http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/packetInfo");
+		response = HttpClients.createDefault().execute(packetInfo);
+		assertEquals(response.getStatusLine().getStatusCode(), 200);
+
 	}
 
 	private HttpPost getHttpPost(String url) throws UnsupportedEncodingException {
-		   	HttpPost httpPost = new HttpPost(url);
+		HttpPost httpPost = new HttpPost(url);
 
-		    String json = "{'regId':'27847657360002520181208183004','fileName':'APPLICANTPHOTO'}";
-		    StringEntity entity = new StringEntity(json);
-		    httpPost.setEntity(entity);
-		    httpPost.setHeader("Content-type", "application/json");
-			return httpPost;
+		String json = "{'regId':'27847657360002520181208183004','fileName':'APPLICANTPHOTO'}";
+		StringEntity entity = new StringEntity(json);
+		httpPost.setEntity(entity);
+		httpPost.setHeader("Content-type", "application/json");
+		return httpPost;
 	}
-	
+
 	private RoutingContext setContext() {
 		return new RoutingContext() {
 
@@ -329,7 +327,7 @@ public class ManualVerificationStageTest{
 
 			@Override
 			public JsonObject getBodyAsJson() {
-				JsonObject obj= new JsonObject();
+				JsonObject obj = new JsonObject();
 				obj.put("regId", "51130282650000320190117144316");
 				obj.put("fileName", "APPLICANTPHOTO");
 				obj.put("userId", "51130282650000320190117");
