@@ -1,6 +1,6 @@
 ## kernel-fsadapter-hdfs
 
-[Background & Design -TBA-] 
+[Background & Design](../../docs/design/kernel/kernel-filesystemadapter.md)
 
 [Api Documentation]
 
@@ -31,7 +31,7 @@ logging.level.org.apache.hadoop=warn
 
 #### To check files in hdfs, follow these steps:
 
-1. Login to hdfs name-node (104.211.240.243)
+1. Login to hdfs name-node (104.211.240.243) using default username (madmin) & privatekey
 2. Get KDC ticket with this command. Replace ${username} with application username (regprocessor,prereg or idrepo). When prompted for password, provide the configured password (Mosip@dev123) 
 ```
 > kinit ${username}
