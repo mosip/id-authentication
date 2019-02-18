@@ -464,7 +464,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 	 * @param messageDTO
 	 *            the message DTO
 	 */
-	// Need clarify where to push the template
 	public void sendMessage(MessageDTO messageDTO) {
 		this.send(this.mosipEventBus, MessageBusAddress.PRINTING_BUS, messageDTO);
 	}
@@ -508,11 +507,10 @@ public class PrintStage extends MosipVerticleAPIManager {
 	 * @param ctx
 	 *            the ctx
 	 */
-	private void reSendPrintPdf(RoutingContext ctx) {
+	public void reSendPrintPdf(RoutingContext ctx) {
 		JsonObject object = ctx.getBodyAsJson();
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid(object.getString("regId"));
-		this.start();
 		this.process(messageDTO);
 		this.setResponse(ctx, "Re-sending to Queue");
 

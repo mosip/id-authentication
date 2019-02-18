@@ -70,8 +70,6 @@ public class PrintStageConfig {
 		return Stream.of(names.split(",")).collect(Collectors.toList());
 	}
 
-	
-	
 	@Bean 
 	public PrintStage getPrintStage() {
 		return new PrintStage();

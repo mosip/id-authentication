@@ -15,8 +15,6 @@ public class PrintStageApplication {
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
 		ctx.scan("io.mosip.registration.processor.print.config",
-				"io.mosip.registration.processor.stages.config",
-				"io.mosip.registration.processor.status.config",
 				"io.mosip.registration.processor.rest.client.config",
 				"io.mosip.registration.processor.filesystem.ceph.adapter.impl.config",
 				"io.mosip.registration.processor.packet.storage.config", 
@@ -28,8 +26,8 @@ public class PrintStageApplication {
 		PrintStage printStage = ctx.getBean(PrintStage.class);
 		printStage.deployVerticle();
 		
-		MessageDTO dto = new MessageDTO();
+		/*MessageDTO dto = new MessageDTO();
 		dto.setRid("90634869910001320190121154655");
-		printStage.process(dto);
+		printStage.process(dto);*/
 	}
 }
