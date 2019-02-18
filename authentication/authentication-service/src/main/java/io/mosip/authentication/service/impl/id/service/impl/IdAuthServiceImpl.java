@@ -28,6 +28,7 @@ import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The class validates the UIN and VID.
@@ -111,14 +112,20 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 	Map<String, Object> getIdRepoByVidAsRequest(String vid, boolean isBio) throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = null;
 
-		Optional<String> findUinByRefId = vidRepository.findUinByVid(vid);
+		Optional<String> findUinByRefId = vidRepository.findUinByVid(vid, DateUtils.getUTCCurrentDateTime());
 		if (findUinByRefId.isPresent()) {
 			String uin = findUinByRefId.get().trim();
 			try {
 				idRepo = idRepoService.getIdenity(uin, isBio);
 			} catch (IdAuthenticationBusinessException e) {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
+				if (e.getErrorCode().equals(IdAuthenticationErrorConstants.UIN_DEACTIVATED.getErrorCode())) {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VID_DEACTIVATED_UIN);
+				} else {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+				}
 			}
+		} else {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_VID);
 		}
 
 		return idRepo;
@@ -145,14 +152,14 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 			try {
 				idResDTO = getIdRepoByUIN(idvId, isBio);
 			} catch (IdAuthenticationBusinessException e) {
-				logger.error(null, null, e.getErrorCode(), e.getErrorText());
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
+				logger.error("", "", e.getErrorCode(), e.getErrorText());
+				throw new IdAuthenticationBusinessException(e.getErrorCode(), e.getErrorText());
 			}
 		} else {
 			try {
 				idResDTO = getIdRepoByVID(idvId, isBio);
 			} catch (IdAuthenticationBusinessException e) {
-				logger.error(null, null, null, e.getErrorText());
+				logger.error("", "", "", e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
 			}
 		}
