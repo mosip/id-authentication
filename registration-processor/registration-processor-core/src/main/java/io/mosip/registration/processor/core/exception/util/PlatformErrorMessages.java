@@ -128,10 +128,11 @@ public enum PlatformErrorMessages {
 	/** The rpr cmb configuration server failure exception. */
 	RPR_CMB_CONFIGURATION_SERVER_FAILURE_EXCEPTION(PlatformErrorConstants.RPR_CAMEL_BRIDGE_MODULE + "003",
 			"Configuration Server Failure Exception"),
-	
+
 	/** The rpr cmb malformed cluster manager url exception. */
-	RPR_CMB_MALFORMED_URL_EXCEPTION(PlatformErrorConstants.RPR_CAMEL_BRIDGE_MODULE + "004", "Malformed Cluster Manager Url Exception"),
-	
+	RPR_CMB_MALFORMED_URL_EXCEPTION(PlatformErrorConstants.RPR_CAMEL_BRIDGE_MODULE + "004",
+			"Malformed Cluster Manager Url Exception"),
+
 	/** The rpr qcr registration table not accessible. */
 	// Quality Checker Exception error code and message
 	RPR_QCR_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_QUALITY_CHECKER_MODULE + "001",
@@ -224,10 +225,8 @@ public enum PlatformErrorMessages {
 	RPR_MVS_INVALID_STATUS_UPDATE(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "003",
 			"Invalid status update"),
 
-	RPR_MVS_INVALID_FIELD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "005",
-			" fields can not be empty"),
+	RPR_MVS_INVALID_FIELD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "005", " fields can not be empty"),
 
-	
 	/** The rpr mvs no assigned record. */
 	RPR_MVS_NO_ASSIGNED_RECORD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "004",
 			"No Assigned Record Found"),
@@ -279,6 +278,20 @@ public enum PlatformErrorMessages {
 	RPR_BDD_UNABLE_TO_SERVE_REQUEST(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "004",
 			"ABIS for the Reference ID and Request ID was Unable to Execute the Request"),
 
+	/**
+	 * The connection to MOSIP underlying queue not available
+	 */
+	RPR_MQI_CONNECTION_UNAVAILABLE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "001",
+			"The connection to underlying queue not available"),
+	
+	RPR_MQI_UNABLE_TO_SEND_TO_QUEUE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "003",
+			"Unable to send message to to queue"),
+	
+	RPR_MQI_UNABLE_TO_CONSUME_FROM_QUEUE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "003",
+			"Unable to consume message from queue"),
+	
+	RPR_MQI_INVALID_CONNECTION(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "002", "Connection not obtained from ConnectionFactory"),
+
 	/** *** System Exception ****. */
 
 	RPR_SYS_UNEXCEPTED_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "001", "Unexpected exception"),
@@ -327,10 +340,8 @@ public enum PlatformErrorMessages {
 	/**
 	 * Instantiates a new platform error messages.
 	 *
-	 * @param errorCode
-	 *            the error code
-	 * @param errorMsg
-	 *            the error msg
+	 * @param errorCode the error code
+	 * @param errorMsg  the error msg
 	 */
 	private PlatformErrorMessages(String errorCode, String errorMsg) {
 		this.errorCode = errorCode;
