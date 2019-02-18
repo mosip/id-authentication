@@ -9,6 +9,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
 import io.mosip.registration.processor.abis.dto.AbisInsertResponseDto;
 import io.mosip.registration.processor.abis.dto.CandidateListDto;
@@ -26,6 +28,9 @@ import io.mosip.registration.processor.abis.dto.CandidatesDto;
 import io.mosip.registration.processor.abis.service.AbisService;
 import io.mosip.registration.processor.abis.dto.AbisIdentifyRequestDto;
 import io.mosip.registration.processor.abis.dto.AbisIdentifyResponseDto;
+import io.mosip.registration.processor.core.bio.dedupe.dto.BioDedupeRegIdDto;
+import io.mosip.registration.processor.core.bio.dedupe.dto.BioDedupeRequestDTO;
+import io.mosip.registration.processor.core.bio.dedupe.dto.BioDedupeResponseDTO;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -72,6 +77,10 @@ public class AbisServiceImpl implements AbisService {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(AbisServiceImpl.class);
+
+	private static final String BIO_DEDUPE_SERVICE_ID = "mosip.packet.bio.dedupe";
+	private static final String BIO_DEDUPE_APPLICATION_VERSION = "1.0";
+	private static final String DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	/**
 	 * Insert.
@@ -146,10 +155,18 @@ public class AbisServiceImpl implements AbisService {
 			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
 
 		String regId = packetInfoManager.getRidByReferenceId(referenceId).get(0);
-		List<String> pathSegments = new ArrayList<>();
-		pathSegments.add(regId);
-
-		byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "", byte[].class);
+		BioDedupeRequestDTO bioDedupeReuestObj=new BioDedupeRequestDTO();
+		BioDedupeRegIdDto requestObj=new BioDedupeRegIdDto();
+		
+		requestObj.setRegId(regId);
+		bioDedupeReuestObj.setRequest(requestObj);
+		bioDedupeReuestObj.setId(BIO_DEDUPE_SERVICE_ID);
+		bioDedupeReuestObj.setVersion(BIO_DEDUPE_APPLICATION_VERSION);
+		bioDedupeReuestObj.setTimestamp(DateUtils.getUTCCurrentDateTimeString(DATETIME_PATTERN));
+		
+		BioDedupeResponseDTO bioReponseDto=(BioDedupeResponseDTO)restClientService.postApi(ApiName.BIODEDUPE,null, "", "",bioDedupeReuestObj, BioDedupeResponseDTO.class);
+		byte[] bytefile=bioReponseDto.getFile().getBytes();
+		
 		if (bytefile == null) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					referenceId, "Byte file not found from BioDedupe api");

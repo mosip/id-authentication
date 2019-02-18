@@ -4,6 +4,8 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.packet.receiver.PacketReceiverApplication;
+import io.mosip.registration.processor.packet.receiver.dto.PacketReceiverResponseDTO;
+import io.mosip.registration.processor.packet.receiver.request.response.serializer.PacketReceiverReqRespJsonSerializer;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.vertx.core.Handler;
@@ -52,6 +54,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 
@@ -62,7 +68,9 @@ public class PacketReceiverStageTest {
 	private String id = "2018782130000113112018183001.zip";
 	private String newId = "2018782130000113112018183000.zip";
 	private File file;
+	private String jsonData;
 	private String registrationStatusCode;
+	Gson gson = new GsonBuilder().serializeNulls().registerTypeAdapter(PacketReceiverResponseDTO.class, new PacketReceiverReqRespJsonSerializer()).create();
 
 	@Mock
 	public PacketReceiverService<File, MessageDTO> packetReceiverService;
@@ -75,8 +83,10 @@ public class PacketReceiverStageTest {
 	PacketReceiverStage packetReceiverStage = new PacketReceiverStage() {
 	
 		@Override
-		public void setResponse(RoutingContext ctx, Object object) {
-			registrationStatusCode = object.toString();
+		public void setResponse(RoutingContext ctx, Object object,String jsonType) {
+			jsonData = object.toString();
+			PacketReceiverResponseDTO packetReceiverResponseDTO =gson.fromJson(jsonData, PacketReceiverResponseDTO.class);
+			registrationStatusCode=packetReceiverResponseDTO.getResponse().getStatus();
 		}
 		
 		@Override

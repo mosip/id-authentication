@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import io.mosip.registration.processor.bio.dedupe.abis.dto.BioDedupeResponseDTO;
+import io.mosip.registration.processor.core.bio.dedupe.dto.BioDedupeResponseDTO;
 
 /**
  * The Class BioDedupeReqRespJsonSerializer.

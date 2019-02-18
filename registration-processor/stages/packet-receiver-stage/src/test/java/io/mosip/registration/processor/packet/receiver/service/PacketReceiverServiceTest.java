@@ -1,4 +1,4 @@
-/*package io.mosip.registration.processor.packet.receiver.service;
+package io.mosip.registration.processor.packet.receiver.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -143,7 +143,7 @@ public class PacketReceiverServiceTest {
 		registrationStatusDto.setRetryCount(2);
 		registrationStatusDto.setRegistrationId("12345");
 		registrations.add(registrationStatusDto);
-		Mockito.when(registrationStatusService.getByIds(ArgumentMatchers.anyString())).thenReturn(registrations);
+		Mockito.when(registrationStatusService.getByIds(ArgumentMatchers.any())).thenReturn(registrations);
 		Mockito.when(registrationStatusMapUtil.getExternalStatus(ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenReturn(RegistrationExternalStatusCode.RESEND);
 
@@ -179,17 +179,16 @@ public class PacketReceiverServiceTest {
 		}
 
 		
-		 * Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
-		 * Mockito.doReturn(true).when(auditHandler).writeAudit(ArgumentMatchers.any());
-		 * 
-		 * AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
-		 * AuditRequestDto auditRequest1 = new AuditRequestDto();
-		 * 
-		 * Field f =
-		 * CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
-		 * f.setAccessible(true); f.set(coreAuditRequestBuilder, auditRequestBuilder);
-		 * Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
-		 * f1.setAccessible(true); f1.set(auditRequestBuilder, auditRequest1);
+		 /*Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
+		  Mockito.doReturn(true).when(auditHandler).writeAudit(ArgumentMatchers.any());
+		 
+		  AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
+		  AuditRequestDto auditRequest1 = new AuditRequestDto();
+		  
+		  Field f =CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
+		  f.setAccessible(true); f.set(coreAuditRequestBuilder, auditRequestBuilder);
+		  Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
+		  f1.setAccessible(true); f1.set(auditRequestBuilder, auditRequest1);*/
 		 
 	}
 
@@ -301,4 +300,3 @@ public class PacketReceiverServiceTest {
 	}
 
 }
-*/

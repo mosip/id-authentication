@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.registration.processor.bio.dedupe.abis.dto.BioDedupeRequestDTO;
-import io.mosip.registration.processor.bio.dedupe.abis.dto.BioDedupeResponseDTO;
 import io.mosip.registration.processor.bio.dedupe.exception.BioDedupeAppException;
 import io.mosip.registration.processor.bio.dedupe.exception.BioDedupeValidationException;
 import io.mosip.registration.processor.bio.dedupe.request.validator.BioDedupeRequestValidator;
 import io.mosip.registration.processor.bio.dedupe.request.validator.BioDedupeValidationUtil;
+import io.mosip.registration.processor.core.bio.dedupe.dto.BioDedupeRequestDTO;
+import io.mosip.registration.processor.core.bio.dedupe.dto.BioDedupeResponseDTO;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.swagger.annotations.Api;

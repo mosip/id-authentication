@@ -15,7 +15,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.processor.bio.dedupe.abis.dto.BioDedupeRequestDTO;
+import io.mosip.registration.processor.core.bio.dedupe.dto.BioDedupeRequestDTO;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 

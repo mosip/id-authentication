@@ -74,9 +74,6 @@ public class RegistrationStatusControllerTest {
 
 
 	/** The array to json. */
-	private String arrayToJson;
-	
-	/** The array to json. */
 	private String regStatusToJson;
 	
 	
