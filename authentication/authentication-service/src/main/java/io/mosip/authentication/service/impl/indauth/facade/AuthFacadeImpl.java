@@ -165,10 +165,10 @@ public class AuthFacadeImpl implements AuthFacade {
 			authResponseDTO = authResponseBuilder.build();
 			logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE,
 					"authenticateApplicant status : " + authResponseDTO.getStatus());
-			if (idInfo != null && uin != null) {
-				notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, isAuth);
-			}
-
+		}
+		
+		if (idInfo != null && uin != null) {
+			notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, isAuth);
 		}
 
 		return authResponseDTO;

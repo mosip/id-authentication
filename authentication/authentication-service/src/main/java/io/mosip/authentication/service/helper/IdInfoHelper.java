@@ -237,23 +237,27 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 */
 	public List<String> getIdMappingValue(IdMapping idMapping) throws IdAuthenticationBusinessException {
 		List<String> mappings = idMapping.getMappingFunction().apply(idMappingConfig);
-		List<String> fullMapping = new ArrayList<>();
-		for (String mappingStr : mappings) {
-			if(!Objects.isNull(mappingStr) && !mappingStr.isEmpty()) {
-			Optional<IdMapping> mappingInternal = IdMapping.getIdMapping(mappingStr, IdaIdMapping.values());
-			if (mappingInternal.isPresent() && idMapping != mappingInternal.get()) {
-				List<String> internalMapping = getIdMappingValue(mappingInternal.get());
-				fullMapping.addAll(internalMapping);
-			} else {
-				fullMapping.add(mappingStr);
+		if (mappings != null && !mappings.isEmpty()) {
+			List<String> fullMapping = new ArrayList<>();
+			for (String mappingStr : mappings) {
+				if (!Objects.isNull(mappingStr) && !mappingStr.isEmpty()) {
+					Optional<IdMapping> mappingInternal = IdMapping.getIdMapping(mappingStr, IdaIdMapping.values());
+					if (mappingInternal.isPresent() && idMapping != mappingInternal.get()) {
+						List<String> internalMapping = getIdMappingValue(mappingInternal.get());
+						fullMapping.addAll(internalMapping);
+					} else {
+						fullMapping.add(mappingStr);
+					}
+				} else {
+					// TODO should add proper error
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING);
+				}
 			}
+			return fullMapping;
+		} else {
+			// TODO should add proper error
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING);
 		}
-			else {
-				//TODO should add proper error
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING);
-			}
-		}
-		return fullMapping;
 	}
 
 	/**

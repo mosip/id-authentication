@@ -116,7 +116,7 @@ public class OTPFacadeImpl implements OTPFacade {
 			try {
 				otp = otpService.generateOtp(otpKey);
 			} catch (IdAuthenticationBusinessException e) {
-				mosipLogger.error("", idvIdType, e.getErrorCode(), "Error: " + e);
+				mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
 			}
 		}
 		mosipLogger.info(SESSION_ID, "NA", "generated OTP", otp);
