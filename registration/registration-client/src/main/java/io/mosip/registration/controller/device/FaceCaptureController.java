@@ -29,7 +29,6 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
-import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
@@ -105,6 +104,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private BufferedImage applicantBufferedImage;
 	private BufferedImage exceptionBufferedImage;
 	private Image defaultImage;
+	private Image defaultExceptionImage;
 	private boolean applicantImageCaptured;
 	private boolean exceptionImageCaptured;
 	private Stage popupStage;
@@ -117,8 +117,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 				"Loading of FaceCapture screen started");
 
 		takePhoto.setDisable(true);
-		applicantImage.setPreserveRatio(true);
-		exceptionImage.setPreserveRatio(true);
+		defaultExceptionImage = new Image(getClass().getResourceAsStream("/images/ExceptionPhoto.png"));
+		exceptionImage.setImage(defaultExceptionImage);
 		if (capturePhotoUsingDevice.equals(RegistrationConstants.ENABLE)
 				|| (boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			// for applicant biometrics
@@ -161,6 +161,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	private void initialize() {
 		defaultImage = applicantImage.getImage();
+		defaultExceptionImage = exceptionImage.getImage();
 		applicantImageCaptured = false;
 		exceptionImageCaptured = false;
 		exceptionBufferedImage = null;
@@ -341,7 +342,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 			applicantBufferedImage = null;
 			applicantImageCaptured = false;
 		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE) && exceptionBufferedImage != null) {
-			exceptionImage.setImage(defaultImage);
+			exceptionImage.setImage(defaultExceptionImage);
 			exceptionBufferedImage = null;
 			exceptionImageCaptured = false;
 		}
@@ -392,13 +393,9 @@ public class FaceCaptureController extends BaseController implements Initializab
 		}
 	}
 
-	private RegistrationDTO getRegistrationDTOFromSession() {
-		return (RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
-	}
-
 	public void clearExceptionImage() {
 		exceptionBufferedImage = null;
-		exceptionImage.setImage(defaultImage);
+		exceptionImage.setImage(defaultExceptionImage);
 		ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDTOFromSession().getDemographicDTO()
 				.getApplicantDocumentDTO();
 		if (applicantDocumentDTO != null && applicantDocumentDTO.getExceptionPhoto() != null) {
@@ -408,10 +405,6 @@ public class FaceCaptureController extends BaseController implements Initializab
 			}
 			applicantDocumentDTO.setHasExceptionPhoto(false);
 		}
-	}
-
-	private BiometricDTO getBiometricDTOFromSession() {
-		return (BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA);
 	}
 
 	/**
@@ -446,9 +439,14 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	@FXML
 	private void enableCapture(MouseEvent mouseEvent) {
-		boolean hasBiometricException = (Boolean) SessionContext.userContext().getUserMap()
-				.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
-
+		boolean hasBiometricException = false;
+		if (((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER))
+				&& !getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO().isEmpty()) {
+			hasBiometricException = true;
+		} else {
+			hasBiometricException = (Boolean) SessionContext.userContext().getUserMap()
+					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
+		}
 		Pane sourcePane = (Pane) mouseEvent.getSource();
 		sourcePane.requestFocus();
 		selectedPhoto = sourcePane;
@@ -517,6 +515,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 		});
 		timeline.play();
 
+	}
+
+	private BiometricDTO getBiometricDTOFromSession() {
+		return (BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA);
 	}
 
 	private Timestamp getCurrentTimestamp() {
