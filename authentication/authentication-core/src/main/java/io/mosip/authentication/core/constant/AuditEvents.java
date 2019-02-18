@@ -1,6 +1,5 @@
 package io.mosip.authentication.core.constant;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Enum AuditEvents - Contains all the events for auditing.
  *
