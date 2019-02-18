@@ -98,7 +98,7 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 
 			onBoardingResponse = userOnBoardDao.insert(biometricDTO);
 
-			if (onBoardingResponse.equals(RegistrationConstants.success)) {
+			if (onBoardingResponse.equalsIgnoreCase(RegistrationConstants.SUCCESS)) {
 
 				SuccessResponseDTO sucessResponse = new SuccessResponseDTO();
 				sucessResponse.setCode(RegistrationConstants.USER_ON_BOARDING_SUCCESS_CODE);

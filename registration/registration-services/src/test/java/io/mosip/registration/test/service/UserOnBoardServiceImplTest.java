@@ -158,7 +158,7 @@ public class UserOnBoardServiceImplTest {
 		info.setFaceDetailsDTO(face);
 		
 		biometricDTO.setOperatorBiometricDTO(info);
-		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.success);
+		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.SUCCESS);
 		userOnboardServiceImpl.validate(biometricDTO);
 		
 	}
@@ -260,7 +260,7 @@ public class UserOnBoardServiceImplTest {
 		info.setFaceDetailsDTO(face);
 		
 		biometricDTO.setOperatorBiometricDTO(info);
-		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.success);
+		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.SUCCESS);
 		userOnboardServiceImpl.validate(biometricDTO);
 		
 	}

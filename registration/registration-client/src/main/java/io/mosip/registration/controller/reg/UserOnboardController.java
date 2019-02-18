@@ -46,6 +46,9 @@ public class UserOnboardController extends BaseController implements Initializab
 	private Label operatorName;
 	
 	@Autowired
+	private UserOnboardParentController userOnboardParentController;
+	
+	@Autowired
 	private FingerPrintCaptureController fingerPrintCaptureController;
 
 	@Autowired
@@ -64,45 +67,7 @@ public class UserOnboardController extends BaseController implements Initializab
 		biometricDTO = new BiometricDTO();
 		biometricDTO.setOperatorBiometricDTO(createBiometricInfoDTO());
 		SessionContext.map().put(RegistrationConstants.USER_ONBOARD_DATA, biometricDTO);		
-		loadPage(RegistrationConstants.BIO_EXCEPTION_PAGE);
+		userOnboardParentController.showCurrentPage(RegistrationConstants.ONBOARD_USER_PARENT, getOnboardPageDetails(RegistrationConstants.ONBOARD_USER_PARENT,RegistrationConstants.NEXT));
 		clearAllValues();
 	}
-
-	/**
-	 * Method to load the biometric fingerprint page
-	 */
-	public void loadFingerPrint() {
-		
-		if (applicationContext.getApplicationMap()
-				.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-				.equals(RegistrationConstants.ENABLE)) {
-			
-			loadPage(RegistrationConstants.USER_ONBOARD_IRIS);
-			irisCaptureController.clearIrisBasedOnExceptions();
-		} else {
-			fingerPrintCaptureController.clearImage();
-			loadPage(RegistrationConstants.USER_ONBOARD_FP);
-		}
-	}
-
-	/**
-	 * Method to load fxml page
-	 * 
-	 * @param fxml file name
-	 */
-	private void loadPage(String page) {
-		VBox mainBox = new VBox();
-		try {
-			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
-			mainBox.getChildren().add(headerRoot);
-			Parent createRoot = BaseController.load(getClass().getResource(page));			
-			mainBox.getChildren().add(createRoot);
-			getScene(mainBox).setRoot(mainBox);
-		} catch (IOException exception) {
-			LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage());
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
-		}
-	}
-
 }
