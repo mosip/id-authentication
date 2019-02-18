@@ -161,13 +161,20 @@ public enum PlatformErrorMessages {
 	// Stages - OSI Exception error code and message
 	OSI_VALIDATION_FAILED("", "OSI Validation Failed"),
 
+	OSI_VALIDATION_PACKET_STORE_NOT_ACCESSIBLE("", "The Packet store set by the System is not accessible"),
+
 	/** The packet demo dedupe failed. */
 	// Stages - Demo-Dedupe error code and message
 	PACKET_DEMO_DEDUPE_FAILED("", "Demo dedupe Failed"),
 
+	PACKET_DEMO_PACKET_STORE_NOT_ACCESSIBLE("", "The Packet store set by the System is not accessible"),
+
 	/** The packet bio dedupe failed. */
 	// Stages - Bio-Dedupe error code and message
 	PACKET_BIO_DEDUPE_FAILED("", "Bio dedupe Failed"),
+
+	PACKET_BDD_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE,
+			"The Packet store set by the System is not accessible"),
 
 	// Stages - Packet-Validator error message
 	REVERSE_DATA_SYNC_FAILED("", "Reverse data sync failed"),
@@ -240,8 +247,9 @@ public enum PlatformErrorMessages {
 
 	/** The rpr tem processing failure. */
 	RPR_TEM_PROCESSING_FAILURE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "002",
-			"The Processing of Template Failed "),
-
+			"The Processing of Template Failed "), RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE(
+					PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "003",
+					"The Packet store set by the System is not accessible"),
 	/** The rpr sms template generation failure. */
 	RPR_SMS_TEMPLATE_GENERATION_FAILURE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001",
 			"Template Generation failed"),
@@ -322,7 +330,15 @@ public enum PlatformErrorMessages {
 	RPR_SYS_PARSING_DATE_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "011", "Error while parsing date "),
 
 	/** The rpr sys io exception. */
-	RPR_SYS_IO_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "012", "IO EXCEPTION ");
+	RPR_SYS_IO_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "012", "IO EXCEPTION "),
+
+	RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_VALIDATOR_MODULE + "001",
+			"The Packet store set by the System is not accessible"),
+
+	RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_UIN_GENERATOR_STAGE + "001",
+			"The Packet store set by the System is not accessible");
+	;
+
 	/** The error message. */
 	private final String errorMessage;
 
