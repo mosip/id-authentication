@@ -2,6 +2,7 @@ package io.mosip.registration.controller.reg;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -12,17 +13,26 @@ import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-
+import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.PridValidator;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
+import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.transliteration.spi.Transliteration;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.StringUtils;
+import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
+import io.mosip.registration.constants.IntroducerType;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
@@ -31,7 +41,9 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.VirtualKeyboard;
 import io.mosip.registration.dto.ErrorResponseDTO;
+import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
@@ -346,6 +358,8 @@ public class DemographicDetailController extends BaseController {
 	private DocumentScanController documentScanController;
 	@Autowired
 	private Transliteration<String> transliteration;
+	@Autowired
+	private JsonValidator jsonValidator;
 
 	private FXUtils fxUtils;
 	private Date dateOfBirth;
@@ -757,6 +771,70 @@ public class DemographicDetailController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
 	}
+	
+	/**
+	 * 
+	 * Saving the detail into concerned DTO'S
+	 * 
+	 */
+	private void saveDetail() {
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Saving the fields to DTO");
+		try {
+			/* clear the doc preview section */
+			//documentScanController.initializePreviewSection();
+			auditFactory.audit(AuditEvent.SAVE_DETAIL_TO_DTO, Components.REGISTRATION_CONTROLLER,
+					"Saving the details to respected DTO", SessionContext.userContext().getUserId(),
+					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
+
+			RegistrationDTO registrationDTO = getRegistrationDtoContent();
+			DemographicInfoDTO demographicInfoDTO;
+
+			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
+			RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
+			SessionContext.map().put(RegistrationConstants.IS_Child,
+					isChild);
+			demographicInfoDTO = buildDemographicInfo();
+			
+			try {
+				jsonValidator.validateJson(JsonUtils.javaObjectToJsonString(demographicInfoDTO),
+						"mosip-identity-json-schema.json");
+			} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException | FileIOException
+					| JsonProcessingException exception) {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
+				LOGGER.error("JASON VALIDATOIN FAILED ", APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, exception.getMessage());
+				return;
+			} catch ( RuntimeException runtimeException) {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
+				LOGGER.error("JASON VALIDATOIN FAILED ", APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+				return;
+			}
+
+			if (isChild) {
+
+				osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
+
+				registrationMetaDataDTO.setApplicationType(RegistrationConstants.CHILD);
+			} else {
+				registrationMetaDataDTO.setApplicationType(RegistrationConstants.ADULT);
+			}
+
+			osiDataDTO.setOperatorID(SessionContext.userContext().getUserId());
+
+			registrationDTO.setPreRegistrationId(preRegistrationId.getText());
+			registrationDTO.getDemographicDTO().setDemographicInfoDTO(demographicInfoDTO);
+
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Saved the demographic fields to DTO");
+
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - SAVING THE DETAILS FAILED ", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+		}
+	}
+
 
 	@SuppressWarnings("unchecked")
 	public DemographicInfoDTO buildDemographicInfo() {
@@ -1238,7 +1316,7 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private void next() {
 		if (validateThisPane()) {
-
+			saveDetail();
 			if (!switchedOn.get()) {
 				LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()),
 						Integer.parseInt(dd.getText()));

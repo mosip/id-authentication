@@ -25,18 +25,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
-import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
-import io.mosip.registration.constants.IntroducerType;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
@@ -202,69 +195,6 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * 
-	 * Saving the detail into concerned DTO'S
-	 * 
-	 */
-	private void saveDetail() {
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Saving the fields to DTO");
-		try {
-			/* clear the doc preview section */
-			//documentScanController.initializePreviewSection();
-			auditFactory.audit(AuditEvent.SAVE_DETAIL_TO_DTO, Components.REGISTRATION_CONTROLLER,
-					"Saving the details to respected DTO", SessionContext.userContext().getUserId(),
-					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
-
-			RegistrationDTO registrationDTO = getRegistrationDtoContent();
-			DemographicInfoDTO demographicInfoDTO;
-
-			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
-			RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
-			SessionContext.map().put(RegistrationConstants.IS_Child,
-					demographicDetailController.isChild);
-			demographicInfoDTO = demographicDetailController.buildDemographicInfo();
-			
-			try {
-				jsonValidator.validateJson(JsonUtils.javaObjectToJsonString(demographicInfoDTO),
-						"mosip-identity-json-schema.json");
-			} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException | FileIOException
-					| JsonProcessingException exception) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
-				LOGGER.error("JASON VALIDATOIN FAILED ", APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, exception.getMessage());
-				return;
-			} catch ( RuntimeException runtimeException) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
-				LOGGER.error("JASON VALIDATOIN FAILED ", APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-				return;
-			}
-
-			if (demographicDetailController.isChild) {
-
-				osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
-
-				registrationMetaDataDTO.setApplicationType(RegistrationConstants.CHILD);
-			} else {
-				registrationMetaDataDTO.setApplicationType(RegistrationConstants.ADULT);
-			}
-
-			osiDataDTO.setOperatorID(SessionContext.userContext().getUserId());
-
-			registrationDTO.setPreRegistrationId(demographicDetailController.preRegistrationId.getText());
-			registrationDTO.getDemographicDTO().setDemographicInfoDTO(demographicInfoDTO);
-
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Saved the demographic fields to DTO");
-
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - SAVING THE DETAILS FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-		}
-	}
-
-	/**
 	 * To detect the face part from the applicant photograph to use it for QR
 	 * Code generation
 	 * 
@@ -380,7 +310,6 @@ public class RegistrationController extends BaseController {
 								RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 								"showing demographic preview");
 
-						saveDetail();
 						SessionContext.map().put("faceCapture",false);
 						registrationPreviewController.setUpPreviewContent();
 						SessionContext.map().put("registrationPreview",true);
