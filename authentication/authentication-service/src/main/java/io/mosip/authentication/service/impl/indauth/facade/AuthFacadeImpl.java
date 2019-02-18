@@ -362,8 +362,8 @@ public class AuthFacadeImpl implements AuthFacade {
 				auditHelper.audit(AuditModules.OTP_AUTH, getAuditEvent(isAuth), idvIdType, idType,
 						AuditModules.OTP_AUTH.getDesc());
 
-				AutnTxn auth_txn = createAuthTxn(authRequestDTO, uin, RequestType.OTP_AUTH, staticTokenId, isStatus);
-				idAuthService.saveAutnTxn(auth_txn);
+				AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, RequestType.OTP_AUTH, staticTokenId, isStatus);
+				idAuthService.saveAutnTxn(authTxn);
 			}
 
 		}
@@ -388,22 +388,22 @@ public class AuthFacadeImpl implements AuthFacade {
 						|| bioInfo.getBioType().equals(BioType.FGRIMG.getType()))) {
 			auditHelper.audit(AuditModules.FINGERPRINT_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
 					AuditModules.FINGERPRINT_AUTH.getDesc());
-			AutnTxn auth_txn = createAuthTxn(authRequestDTO, uin, RequestType.FINGER_AUTH, staticTokenId, isStatus);
-			idAuthService.saveAutnTxn(auth_txn);
+			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, RequestType.FINGER_AUTH, staticTokenId, isStatus);
+			idAuthService.saveAutnTxn(authTxn);
 		}
 		if (authRequestDTO.getBioInfo().stream()
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.IRISIMG.getType()))) {
 			auditHelper.audit(AuditModules.IRIS_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
 					AuditModules.IRIS_AUTH.getDesc());
-			AutnTxn auth_txn = createAuthTxn(authRequestDTO, uin, RequestType.IRIS_AUTH, staticTokenId, isStatus);
-			idAuthService.saveAutnTxn(auth_txn);
+			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, RequestType.IRIS_AUTH, staticTokenId, isStatus);
+			idAuthService.saveAutnTxn(authTxn);
 		}
 		if (authRequestDTO.getBioInfo().stream()
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.FACEIMG.getType()))) {
 			auditHelper.audit(AuditModules.FACE_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
 					AuditModules.FACE_AUTH.getDesc());
-			AutnTxn auth_txn = createAuthTxn(authRequestDTO, uin, RequestType.FACE_AUTH, staticTokenId, isStatus);
-			idAuthService.saveAutnTxn(auth_txn);
+			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, RequestType.FACE_AUTH, staticTokenId, isStatus);
+			idAuthService.saveAutnTxn(authTxn);
 		}
 	}
 

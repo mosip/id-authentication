@@ -1,5 +1,6 @@
 package io.mosip.authentication.service.impl.id.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -8,13 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
-import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
@@ -33,6 +35,7 @@ import io.mosip.kernel.idgenerator.vid.impl.VidGeneratorImpl;
  * 
  * @author Arun Bose
  */
+@Service
 public class VIDServiceImpl implements VIDService {	
 
 	/** The Constant DATETIME_PATTERN. */
@@ -64,8 +67,6 @@ public class VIDServiceImpl implements VIDService {
 	@Autowired
 	Environment env;
 
-	// FIXME this method has to be in refactored facade as seperate facade should
-		// not be created.
 		/* (non-Javadoc)
 		 * @see io.mosip.authentication.core.spi.spin.service.StaticPinService#generateVID(java.lang.String)
 		 */
@@ -97,14 +98,20 @@ public class VIDServiceImpl implements VIDService {
 								ex);
 					}
 					vidResponseDTO.setVid(vidEntityObj.getId());
+					vidResponseDTO.setError(Collections.emptyList());
 				}
 
 				else {
 					vidEntityObj = vidEntityList.get(0);
 					if (vidEntityObj.isActive()
 							&& vidEntityObj.getExpiryDate().isAfter(DateUtils.getUTCCurrentDateTime())) {
-						throw new IDDataValidationException(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED,
-								vidEntityObj.getId());
+						vidResponseDTO.setVid(vidEntityObj.getId());
+						List<AuthError> listAuthError=new ArrayList<>();
+						AuthError authError=new AuthError();
+						authError.setErrorCode(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED.getErrorCode());
+						authError.setErrorMessage(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED.getErrorMessage());
+						listAuthError.add(authError);
+						vidResponseDTO.setError(listAuthError);
 					}
 
 					else if (!vidEntityObj.isActive()
@@ -127,11 +134,11 @@ public class VIDServiceImpl implements VIDService {
 									IdAuthenticationErrorConstants.VID_GENERATION_FAILED, ex);
 						}
 						vidResponseDTO.setVid(vidEntityObj.getId());
+						vidResponseDTO.setError(Collections.emptyList());
 					}
 				}
 			}
 			vidResponseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
-			vidResponseDTO.setError(Collections.emptyList());
 			String desc = "VID generation request";
 			auditHelper.audit(AuditModules.VID_GENERATION_REQUEST, AuditEvents.VID_GENERATE_REQUEST_RESPONSE,
 					IdType.UIN.getType(), IdType.UIN, desc);

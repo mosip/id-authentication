@@ -60,7 +60,7 @@ public class VIDController {
 			uinValidator.validateId(uin);
 			vidResponse=vidService.generateVID(uin);
 		} catch (IdAuthenticationBusinessException e) {
-				mosipLogger.error(SESSION_ID, "", "", e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "generateVID", e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 				throw new IdAuthenticationAppException(e.getErrorCode(), e.getMessage(), e);
 		}
 		return vidResponse;

@@ -124,7 +124,7 @@ public enum IdAuthenticationErrorConstants {
 	//VID Generator
 	VID_GENERATION_FAILED("IDA-MLC-010","Could not generate VID for the individual"),
 	
-	VID_REGENERATION_FAILED("IDA-MLC-011","VID regeneration not allowed.Use existing VID %s"),
+	VID_REGENERATION_FAILED("IDA-MLC-011","VID regeneration not allowed. Use existing VID"),
 	
 	// for No authentication type selected
 	NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST("IDA-MLC-008","No authentication type selected");
