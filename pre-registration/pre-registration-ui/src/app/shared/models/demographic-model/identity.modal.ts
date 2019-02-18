@@ -16,6 +16,6 @@ export class IdentityModel {
     public postalCode: string,
     public phone: string,
     public email: string,
-    public CNIENumber: number
+    public CNIENumber: BigInteger
   ) {}
 }

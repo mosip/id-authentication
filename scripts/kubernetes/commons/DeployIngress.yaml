@@ -46,6 +46,10 @@ spec:
         backend:
           serviceName: kernel-cryptomanager-service
           servicePort: 8087
+      - path: /keymanager
+        backend:
+          serviceName: kernel-keymanager-service
+          servicePort: 8088
       - path: /syncdata
         backend:
           serviceName: kernel-syncdata-service

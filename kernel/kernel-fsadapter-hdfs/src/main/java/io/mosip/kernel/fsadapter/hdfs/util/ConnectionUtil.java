@@ -1,7 +1,11 @@
 package io.mosip.kernel.fsadapter.hdfs.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.security.URIParameter;
 
@@ -12,6 +16,7 @@ import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocalFileSystem;
@@ -62,9 +67,10 @@ public class ConnectionUtil {
 	private FileSystem configuredFileSystem;
 
 	/**
-	 * Private constructor for ConnectionUtil
+	 * Instantiate a ConnectionUtil
 	 */
-	private ConnectionUtil() {
+	public ConnectionUtil() {
+		// Used when a new bean is created for ConnectionUtil
 	}
 
 	/**
@@ -74,8 +80,8 @@ public class ConnectionUtil {
 	 */
 	public FileSystem getConfiguredFileSystem() {
 		if (configuredFileSystem == null) {
-			Configuration configuration = prepareConfiguration();
 			try {
+				Configuration configuration = prepareConfiguration();
 				loginUser(userName + "@" + kdcDomain, userPass);
 				return FileSystem.get(configuration);
 			} catch (IOException e) {
@@ -90,8 +96,9 @@ public class ConnectionUtil {
 	 * Prepares hadoop configuration object with required properties
 	 * 
 	 * @return hadoop configuration
+	 * @throws IOException
 	 */
-	private Configuration prepareConfiguration() {
+	private Configuration prepareConfiguration() throws IOException {
 		Configuration configuration = new Configuration();
 		configuration.set("fs.defaultFS", nameNodeUrl);
 		configuration.set("hadoop.security.authentication", "kerberos");
@@ -99,7 +106,18 @@ public class ConnectionUtil {
 		configuration.set("fs.file.impl", LocalFileSystem.class.getName());
 		configuration.set("dfs.client.use.datanode.hostname", "true");
 		configuration.set("dfs.data.transfer.protection", "authentication");
-		System.setProperty("java.security.krb5.conf", getClass().getClassLoader().getResource("krb5.conf").getPath());
+		Path hadoopLibPath = Files.createTempDirectory("hadoop-lib");
+		InputStream krbStream = getClass().getClassLoader().getResourceAsStream("krb5.conf");
+		Path krbPath = Paths.get(hadoopLibPath.toString(), "krb5.conf");
+		Files.copy(krbStream, krbPath);
+		System.setProperty("java.security.krb5.conf", krbPath.toString());
+		if (SystemUtils.IS_OS_WINDOWS) {
+			Path binPath = Files.createDirectory(Paths.get(hadoopLibPath.toString(), "bin"));
+			InputStream winUtilsStream = getClass().getClassLoader().getResourceAsStream("winutils.exe");
+			Path winUtilsPath = Paths.get(binPath.toString(), "winutils.exe");
+			Files.copy(winUtilsStream, winUtilsPath);
+			System.setProperty("hadoop.home.dir", hadoopLibPath.toString());
+		}
 		UserGroupInformation.setConfiguration(configuration);
 		return configuration;
 	}

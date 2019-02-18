@@ -1,6 +1,6 @@
 ## kernel-fsadapter-hdfs
 
-[Background & Design -TBA-] 
+[Background & Design](../../docs/design/kernel/kernel-filesystemadapter.md)
 
 [Api Documentation]
 
@@ -29,8 +29,23 @@ logging.level.org.apache.hadoop=warn
 
 ```
 
+#### To check files in hdfs, follow these steps:
 
-To use this api, add this to dependency list:
+1. Login to hdfs name-node (104.211.240.243) using default username (madmin) & privatekey
+2. Get KDC ticket with this command. Replace ${username} with application username (regprocessor,prereg or idrepo). When prompted for password, provide the configured password (Mosip@dev123) 
+```
+> kinit ${username}
+```
+3. Use this command to check files in hdfs. Replace ${username} with application username.
+```
+> hdfs dfs -ls -R /user/${username}
+```
+4. Invalidate KDC ticket with this command.
+```
+> kdestory -A
+```
+
+- To use this api, add this to dependency list:
 
 ```
 <dependency>

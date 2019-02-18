@@ -17,4 +17,4 @@ ENV spring_config_label_env=${spring_config_label}
 
 COPY ./target/registration-processor-camel-bridge-*-jar-with-dependencies.jar registration-processor-camel-bridge.jar
 
-CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-jar","registration-processor-camel-bridge.jar"]
+CMD ["java","-jar","registration-processor-camel-bridge.jar"]

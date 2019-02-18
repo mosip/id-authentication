@@ -57,8 +57,11 @@
 				"email": {
 					"$ref": "#/definitions/emailType"
 				},
+				"residenceStatus": {
+					"$ref": "#/definitions/simpleType"
+				},
 				"CNIENumber": {
-					"type": "number"
+					"$ref": "#/definitions/CNIENumberType"
 				},
 				"localAdministrativeAuthority": {
 					"$ref": "#/definitions/simpleType"
@@ -128,6 +131,10 @@
 		"emailType": {
 			"type": "string",
 			"pattern": "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$"
+		},
+		"CNIENumberType": {
+			"type": "string",
+			"pattern": "^([0-9]{10,30})$"
 		},
 		"documentType": {
 			"type": "object",

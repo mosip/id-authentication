@@ -11,9 +11,10 @@ public enum RidGeneratorExceptionConstant {
 	EMPTY_INPUT_ERROR_CODE("KER-RIG-002", "Empty input entered"), 
 	INPUT_LENGTH_ERROR_CODE("KER-RIG-003","input length is not sufficient"),
 	NULL_VALUE_ERROR_CODE("KER-RIG-001", "Null value entered"),
-	CENTERIDLENGTH_AND_MACHINEIDLENGTH_VALUE_ERROR_CODE("KER-RIG-004", "Centre id length or machine id length should be greater than zero"),
+	INVALID_CENTERID_OR_MACHINEID_TIMESTAMP_LENGTH("KER-RIG-004", "Centre id length or machine id length or timestamp length should be greater than zero"),
 	RID_FETCH_EXCEPTION("KER-RIG-005","Error occured while fetching rid"),
-	RID_UPDATE_EXCEPTION("KER-RIG-006","Error occured while storing rid");
+	RID_UPDATE_EXCEPTION("KER-RIG-006","Error occured while storing rid"),
+	INVALID_SEQ_LENGTH_EXCEPTION("KER-RIG-007","Sequence length should be greater than zero");
 
 	/**
 	 * The errorCode.

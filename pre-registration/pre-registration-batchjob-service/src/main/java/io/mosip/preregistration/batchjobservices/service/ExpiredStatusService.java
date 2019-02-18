@@ -50,7 +50,6 @@ public class ExpiredStatusService {
 		LocalDate currentDate = LocalDate.now();
 		MainResponseDTO<String> response = new MainResponseDTO<>();
 		List<RegistrationBookingEntity> bookedPreIdList = new ArrayList<>();
-
 		try {
 			bookedPreIdList = batchServiceDAO.getAllOldDateBooking(currentDate);
 
@@ -59,19 +58,15 @@ public class ExpiredStatusService {
 				String preRegId = iterate.getBookingPK().getPreregistrationId();
 				if (status.equals(StatusCodes.BOOKED.getCode()) || status.equals(StatusCodes.CANCELED.getCode())) {
 
-					RegistrationBookingEntity entity = batchServiceDAO.getPreRegId(preRegId);
-					entity.setStatusCode(StatusCodes.EXPIRED.getCode());
-					batchServiceDAO.updateBooking(entity);
+					iterate.setStatusCode(StatusCodes.EXPIRED.getCode());
 					
 					ApplicantDemographic demographicEntity = batchServiceDAO.getApplicantDemographicDetails(preRegId);
 					demographicEntity.setStatusCode(StatusCodes.EXPIRED.getCode());
+					batchServiceDAO.updateBooking(iterate);
 					batchServiceDAO.updateApplicantDemographic(demographicEntity);
 
 					LOGGER.info(LOGDISPLAY,
 							"Update the status successfully into Registration Appointment table and Demographic table");
-
-				} else {
-					LOGGER.info("The status of the PreId is already expired");
 				}
 			});
 			

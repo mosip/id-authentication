@@ -25,7 +25,12 @@ public enum ErrorMessages {
 	 * ErrorMessage for PRG_ACK_005
 	 */
 	
-	INPUT_OUTPUT_EXCEPTION("INPUT_OUTPUT_EXCEPTION");
+	INPUT_OUTPUT_EXCEPTION("INPUT_OUTPUT_EXCEPTION"),
+	
+	/**
+	 * ErrorMessage for PRG_ACK_006
+	 */
+	QRCODE_FAILED_TO_GENERATE("QRCODE_FAILED_TO_GENERATE");
 	
 	private ErrorMessages(String code) {
 		this.code = code;

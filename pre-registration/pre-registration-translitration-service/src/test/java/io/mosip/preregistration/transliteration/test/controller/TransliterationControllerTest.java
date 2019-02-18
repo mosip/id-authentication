@@ -96,7 +96,7 @@ public class TransliterationControllerTest {
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
 		logger.info("Resonse " + response);
-
+		
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 

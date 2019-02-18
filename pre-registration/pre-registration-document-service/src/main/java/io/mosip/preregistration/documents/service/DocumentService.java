@@ -35,6 +35,7 @@ import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
@@ -368,11 +369,12 @@ public class DocumentService {
 				allDocDto.setDoc_id(doc.getDocumentId());
 				allDocDto.setDoc_typ_code(doc.getDocTypeCode());
 				String key = doc.getDocCatCode() + "_" + doc.getDocumentId();
-				byte[] cephBytes = IOUtils.toByteArray(ceph.getFile(doc.getPreregId(), key));
-				if (cephBytes == null) {
+				InputStream file=ceph.getFile(doc.getPreregId(), key);
+				if (file == null) {
 					throw new CephServerException(ErrorCodes.PRG_PAM_DOC_005.toString(),
 							ErrorMessages.DOCUMENT_FAILED_TO_FETCH.toString());
 				}
+				byte[] cephBytes = IOUtils.toByteArray(file);
 				LocalDateTime decryptionDateTime = DateUtils.getUTCCurrentDateTime();
 
 				allDocDto.setMultipartFile(cryptoUtil.decrypt(cephBytes, decryptionDateTime));
@@ -433,10 +435,11 @@ public class DocumentService {
 	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteAllByPreId(String preregId) {
 		log.info("sessionId", "idType", "id", "In deleteAllByPreId method of document service");
 		boolean isDeleteSuccess = false;
+		MainListResponseDTO<DocumentDeleteResponseDTO> deleteRes = null;
 		try {
 			if (ValidationUtil.isvalidPreRegId(preregId)) {
 				List<DocumentEntity> documentEntityList = documnetDAO.findBypreregId(preregId);
-				return deleteFile(documentEntityList, preregId);
+				deleteRes=deleteFile(documentEntityList, preregId);
 			}
 			isDeleteSuccess = true;
 		} catch (Exception ex) {
@@ -453,7 +456,7 @@ public class DocumentService {
 						"Document deletion failed", AuditLogVariables.NO_ID.toString());
 			}
 		}
-		return null;
+		return deleteRes;
 	}
 
 	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteFile(List<DocumentEntity> documentEntityList,
@@ -497,5 +500,4 @@ public class DocumentService {
 		auditRequestDto.setModuleName(AuditLogVariables.DOCUMENT_SERVICE.toString());
 		auditLogUtil.saveAuditDetails(auditRequestDto);
 	}
-
 }

@@ -72,9 +72,14 @@
                 }}
               </button>
               <!-- (click)="onSelectUser(user)" -->
-              <button mat-button class="footer-btn" (click)="onAcknowledgementView(user)">
+              <button
+                mat-button
+                class="footer-btn"
+                (click)="onAcknowledgementView(user)"
+                [disabled]="user.status === 'Pending_Appointment'"
+              >
                 <img src="assets\view.png" class="modifyapp-btn-img" />{{
-                  'uidStatus.card.action_modify_appointment' | translate
+                  'uidStatus.card.action_view_acknowledgement' | translate
                 }}
               </button>
               <!-- <button mat-icon-button class="footer-download-btn">

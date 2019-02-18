@@ -1,4 +1,5 @@
 export const NUMBER_PATTERN = '^[0-9]+[0-9]*$';
+export const MOBILE_PATTERN = '^([6-9]{1})([0-9]{9})$';
 export const TEXT_PATTERN = '^[a-zA-Z ]*$';
 export const COUNTRY_NAME = 'Morroco';
 export const COUNTRY_HIERARCHY = 'Country';

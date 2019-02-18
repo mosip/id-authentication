@@ -155,14 +155,12 @@ export class FileUploadComponent implements OnInit {
     // });
 
     const arr = this.router.url.split('/');
-    console.log(arr);
     this.loginId = arr[2];
 
     if (this.users[0].files[0].length != 0) {
       this.sortUserFiles();
       this.viewFirstFile();
     }
-    console.log('users on init', this.users);
   }
 
   sortUserFiles() {
@@ -285,8 +283,6 @@ export class FileUploadComponent implements OnInit {
     this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY, event.target.files.item(0));
     this.dataStroage.sendFile(this.formData).subscribe(
       response => {
-        console.log('response', response);
-
         this.updateUsers(response, event);
       },
       error => {
@@ -325,7 +321,6 @@ export class FileUploadComponent implements OnInit {
     this.registration.updateUser(this.step, this.users[this.step]);
     this.sortUserFiles();
     this.nextFile();
-    console.log('updated users array', this.users);
   }
 
   openFile() {

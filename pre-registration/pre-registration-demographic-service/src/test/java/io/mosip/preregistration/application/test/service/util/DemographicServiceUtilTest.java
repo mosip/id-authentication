@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
@@ -16,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.preregistration.application.code.RequestCodes;
@@ -28,6 +30,8 @@ import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.application.service.util.DemographicServiceUtil;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.util.AuditLogUtil;
+import io.mosip.preregistration.core.util.CryptoUtil;
 
 /**
  * Test class to test the PreRegistration Service util methods
@@ -45,8 +49,6 @@ public class DemographicServiceUtilTest {
 	 */
 	@Autowired
 	private DemographicServiceUtil demographicServiceUtil;
-	
-	
 
 	private DemographicRequestDTO saveDemographicRequest = null;
 	private DemographicRequestDTO updateDemographicRequest = null;
@@ -54,6 +56,13 @@ public class DemographicServiceUtilTest {
 	private String requestId = null;
 	private JSONObject jsonObject;
 	private JSONParser parser = null;
+	
+	
+	@MockBean
+	private AuditLogUtil auditLogUtil;
+	
+	@MockBean 
+	private CryptoUtil cryptoUtil;
 
 	/**
 	 * @throws Exception on Any Exception
@@ -90,29 +99,28 @@ public class DemographicServiceUtilTest {
 		demographicEntity.setApplicantDetailJson((jsonObject.toJSONString()+"623744").getBytes());
 	}
 
-	//@Test(expected = InvalidRequestParameterException.class)
+	@Test(expected = InvalidRequestParameterException.class)
 	public void prepareDemographicEntityFailureTest1() {
+		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
 		saveDemographicRequest.setCreatedBy(null);
-		Mockito.when(demographicServiceUtil.prepareDemographicEntity(saveDemographicRequest, requestId,"save","Pending_Appointment"))
-				.thenThrow(InvalidRequestParameterException.class);
+		demographicServiceUtil.prepareDemographicEntity(saveDemographicRequest, requestId,"save","Pending_Appointment");
 	}
 
-	//@Test(expected = MissingRequestParameterException.class)
+	@Test(expected = MissingRequestParameterException.class)
 	public void prepareDemographicEntityFailureTest2() {
 		String type = null;
+		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
 		Mockito.when(demographicServiceUtil.prepareDemographicEntity(saveDemographicRequest, requestId, type,"Pending_Appointment"))
 				.thenThrow(MissingRequestParameterException.class);
 	}
 
-	//@Test(expected = JsonParseException.class)
+	@Test(expected = JsonParseException.class)
 	public void setterForCreateDTOFailureTest() {
+		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn( Base64.decodeBase64(jsonObject.toString().getBytes()));
 		Mockito.when(demographicServiceUtil.setterForCreateDTO(demographicEntity)).thenThrow(JsonParseException.class);
 	}
 
-	/*@Test
-	public void isNullFailureTest() {
-		assertThat(demographicServiceUtil.isNull(Mockito.anyCollection()), is(true));
-	}*/
+
 
 	@Test(expected = OperationNotAllowedException.class)
 	public void checkStatusForDeletionFailureTest() {
@@ -120,15 +128,6 @@ public class DemographicServiceUtilTest {
 				.thenThrow(OperationNotAllowedException.class);
 	}
 
-//	@Test(expected = ParseException.class)
-//	public void dateSetterTest1() {
-//		Map<String, String> dateMap = new HashMap<>();
-//		dateMap.put(RequestCodes.fromDate.toString(), "2018-10-10");
-//		String format = "yyyy-MM-dd HH:mm:ss";
-//		Mockito.when(demographicServiceUtil.dateSetter(dateMap, format)).thenThrow(ParseException.class);
-//	}
-	
-	
 	@Test(expected = DateParseException.class)
 	public void dateSetterEncodingTest2() throws Exception{
 		Map<String, String> dateMap = new HashMap<>();

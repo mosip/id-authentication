@@ -84,7 +84,7 @@ public class DemographicServiceUtil {
 			createDto.setUpdatedDateTime(getLocalDateString(LocalDateTime.now()));
 		} catch (ParseException ex) {
 			log.error("sessionId", "idType", "id",
-					"In setterForCreateDTO method of pre-registration service- " + ex.getCause());
+					"In setterForCreateDTO method of pre-registration service- " + ex.getMessage());
 			throw new JsonParseException(ErrorCodes.PRG_PAM_APP_007.toString(),
 					ErrorMessages.JSON_PARSING_FAILED.toString(), ex.getCause());
 		}

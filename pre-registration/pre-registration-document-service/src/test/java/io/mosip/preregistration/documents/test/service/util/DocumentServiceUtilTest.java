@@ -121,12 +121,6 @@ public class DocumentServiceUtilTest {
 	public void virusscannerFailureTest() throws Exception{
 		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenThrow(java.io.IOException.class);
 		serviceUtil.isVirusScanSuccess(mockMultipartFile);
-	}
-	
-//	@Test(expected=DemographicGetDetailsException.class)
-//	public void callGetPreRegInfoRestServiceFailureTest() {
-//		
-//	}
-	
+	}	
 
 }

@@ -322,8 +322,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Override
 	public IdResponseDto createRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto) {
 		try {
-			Float.parseFloat(registrationCenterDto.getRequest().getLatitude());
-			Float.parseFloat(registrationCenterDto.getRequest().getLongitude());
+			if (!EmptyCheckUtils.isNullEmpty(registrationCenterDto.getRequest().getLatitude())
+					&& !EmptyCheckUtils.isNullEmpty(registrationCenterDto.getRequest().getLongitude())) {
+				Float.parseFloat(registrationCenterDto.getRequest().getLatitude());
+				Float.parseFloat(registrationCenterDto.getRequest().getLongitude());
+			}
 		} catch (NullPointerException | NumberFormatException latLongException) {
 			throw new RequestException(ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorMessage()
@@ -397,7 +400,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					 * below is the validation to check if the time that is sent is between start
 					 * and end time
 					 */
-					if ((localTime.equals(startTime) || isAfterStartTime) && ((localTime.equals(endTime.plusHours(1))) || isBeforeEndTime)) {
+					if ((localTime.equals(startTime) || isAfterStartTime)
+							&& ((localTime.equals(endTime.plusHours(1))) || isBeforeEndTime)) {
 						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_ACCEPTED);
 					} else {
 						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_REJECTED);

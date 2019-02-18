@@ -7,6 +7,7 @@ package io.mosip.preregistration.notification.exception.util;
 import org.springframework.web.client.HttpServerErrorException;
 
 import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
+import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.notification.error.ErrorCodes;
@@ -44,13 +45,22 @@ public class NotificationExceptionCatcher {
 			throw new IOException(ErrorCodes.PRG_ACK_005.getCode(), 
 					ErrorMessages.INPUT_OUTPUT_EXCEPTION.getCode());
 		}
+		if (ex instanceof java.io.IOException) {
+			throw new IOException(ErrorCodes.PRG_ACK_005.getCode(), 
+					ErrorMessages.INPUT_OUTPUT_EXCEPTION.getCode());
+		}
 		if (ex instanceof HttpRequestException) {
 			throw new JsonValidationException(ErrorCodes.PRG_ACK_003.getCode(),
 					ErrorMessages.JSON_HTTP_REQUEST_EXCEPTION.getCode(), ex.getCause());
 		} else if (ex instanceof NullPointerException) {
 			throw new IllegalParamException(ErrorCodes.PRG_ACK_002.getCode(),
 					ErrorMessages.INCORRECT_MANDATORY_FIELDS.getCode(), ex.getCause());
-		}else if (ex instanceof HttpServerErrorException) {
+		}
+		else if (ex instanceof QrcodeGenerationException) {
+			throw new IllegalParamException(ErrorCodes.PRG_ACK_002.getCode(),
+					ErrorMessages.INCORRECT_MANDATORY_FIELDS.getCode(), ex.getCause());
+		}
+		else if (ex instanceof HttpServerErrorException) {
 			throw new RestCallException();
 		}
 		else if (ex instanceof JsonParseException) {

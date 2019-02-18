@@ -23,6 +23,7 @@ import io.mosip.preregistration.batchjobservices.repository.DemographicRepositor
 import io.mosip.preregistration.batchjobservices.repository.RegAppointmentRepository;
 import io.mosip.preregistration.batchjobservices.repository.dao.BatchServiceDAO;
 import io.mosip.preregistration.batchjobservices.service.ExpiredStatusService;
+import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 
 @RunWith(SpringRunner.class)
@@ -58,16 +59,17 @@ public class ExpiredStatusServiceTest {
 
 		bookingPK.setPreregistrationId("12345678909876");
 		bookingEntity.setBookingPK(bookingPK);
+		bookingEntity.setStatusCode(StatusCodes.BOOKED.getCode());
 		bookedPreIdList.add(bookingEntity);
 		logger.info("demographicEntity " + demographicEntity);
 		logger.info("bookingEntity " + bookingEntity);
 		
 		Mockito.when(regAppointmentRepository.findByRegDateBefore(currentDate)).thenReturn(bookedPreIdList);
 		Mockito.when(regAppointmentRepository.getPreRegId(bookingEntity.getBookingPK().getPreregistrationId())).thenReturn(bookingEntity);
-		bookingEntity.setStatusCode("EXPIRED");
+		//bookingEntity.setStatusCode("EXPIRED");
 		Mockito.when(regAppointmentRepository.save(bookingEntity)).thenReturn(bookingEntity);
 		Mockito.when(demographicRepository.findBypreRegistrationId(demographicEntity.getPreRegistrationId())).thenReturn(demographicEntity);
-		demographicEntity.setStatusCode("EXPIRED");
+		//demographicEntity.setStatusCode("EXPIRED");
 		Mockito.when(demographicRepository.save(demographicEntity)).thenReturn(demographicEntity);
 		
 		response=service.expireAppointments();

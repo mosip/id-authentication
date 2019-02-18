@@ -37,7 +37,7 @@ export class DialougComponent implements OnInit {
 
   validNumberOfUsers() {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if ((!isNaN(this.applicantNumber) && this.applicantNumber.length === 9) || (re.test(String(this.applicantNumber).toLowerCase()))) {
+    if ((!isNaN(this.applicantNumber) && this.applicantNumber.length === 10) || (re.test(String(this.applicantNumber).toLowerCase()))) {
       this.invalidApplicantNumber = false;
     } else {
       this.invalidApplicantNumber = true;
