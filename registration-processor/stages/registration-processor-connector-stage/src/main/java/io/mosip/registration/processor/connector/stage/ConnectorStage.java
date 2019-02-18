@@ -67,13 +67,13 @@ public class ConnectorStage extends MosipVerticleAPIManager{
 	 * @param router
 	 */
 	private void routes(Router router) {
-		router.post("/registrationconnector/v0.1/registration-processor/connector").handler(ctx -> {
+		router.post("/registration-processor/connector/v1.0").handler(ctx -> {
 			processURL(ctx);
 		}).failureHandler(failureHandler -> {
 			this.setResponse(failureHandler, failureHandler.failure().getMessage());
 		});
 		
-		router.get("/registrationconnector/health").handler(ctx -> {
+		router.get("/health").handler(ctx -> {
 			this.setResponse(ctx, "Server is up and running");
 		}).failureHandler(context->{
 			this.setResponse(context, context.failure().getMessage());
@@ -103,7 +103,7 @@ public class ConnectorStage extends MosipVerticleAPIManager{
 	 * @param messageDTO
 	 */
 	public void sendMessage(MessageDTO messageDTO) {
-		this.send(this.mosipEventBus, MessageBusAddress.PACKET_VALIDATOR_BUS_IN, messageDTO);
+		this.send(this.mosipEventBus, MessageBusAddress.REGISTRATION_CONNECTOR_BUS_OUT, messageDTO);
 	}
 
 	

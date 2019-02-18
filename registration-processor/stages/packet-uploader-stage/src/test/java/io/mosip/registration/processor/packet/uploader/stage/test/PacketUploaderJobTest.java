@@ -64,7 +64,7 @@ public class PacketUploaderJobTest {
 		}
 
 		@Override
-		public void consume(MosipEventBus mosipEventBus, MessageBusAddress fromAddress) {
+		public void consumeAndSend(MosipEventBus mosipEventBus, MessageBusAddress fromAddress,MessageBusAddress toAddress) {
 		}
 	};
 	@Mock
@@ -246,24 +246,7 @@ public class PacketUploaderJobTest {
 						Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_SYS_IO_EXCEPTIONnull"));
 
 	}
-	@Test
-	public void ConnectorstageConnectionFailureTest() throws ApisResourceAccessException, IOException {
-	     listAppender.start();
-	     fooLogger.addAppender(listAppender);
-		ApisResourceAccessException exp = new ApisResourceAccessException("errorMessage");
-		Mockito.when(registrationProcessorRestService.postApi(any(), any(), any(), any(), any())).thenThrow(exp);
-		ClassLoader classLoader = getClass().getClassLoader();
-		File file = new File(classLoader.getResource("1001.zip").getFile());
-		Mockito.doNothing().when(registrationStatusService)
-				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
-		Mockito.when(adapter.storePacket("1001", file)).thenReturn(Boolean.TRUE);
-		Mockito.when(adapter.isPacketPresent("1001")).thenReturn(Boolean.TRUE);
-		Mockito.doNothing().when(adapter).unpackPacket("1001");
-		packetUploaderStage.process(dto);
-		Assertions.assertThat(listAppender.list)
-        .extracting( ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-		.contains(Tuple.tuple( Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLERPR-RCT-001 --> errorMessage")); 
-	}
+	
 	@Test
 	public void PacketNotFoundExceptionTest() throws Exception {
 
