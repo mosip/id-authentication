@@ -309,7 +309,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		List<Documents> applicantDocuments = new ArrayList<>();
 		Documents documentsInfoDto = null;
 		List<ApplicantDocument> applicantDocument = packetInfoManager.getDocumentsByRegId(regId);
-		applicantDocuments.add(addBiometricDetails(regId));
+		//mocked adding biometric files to idrepo 
+		//applicantDocuments.add(addBiometricDetails(regId));
 		for (ApplicantDocument entity : applicantDocument) {
 			documentsInfoDto = new Documents();
 			documentsInfoDto.setCategory(entity.getDocName());

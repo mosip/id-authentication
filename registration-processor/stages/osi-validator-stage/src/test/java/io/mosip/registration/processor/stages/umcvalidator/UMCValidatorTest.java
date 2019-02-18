@@ -53,7 +53,7 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
  */
 @RunWith(PowerMockRunner.class)
 public class UMCValidatorTest {
-
+	
 	/** The umc validator. */
 	@InjectMocks
 	UMCValidator umcValidator;
@@ -79,8 +79,7 @@ public class UMCValidatorTest {
 	/**
 	 * Sets the up.
 	 *
-	 * @throws FileNotFoundException
-	 *             the file not found exception
+	 * @throws FileNotFoundException the file not found exception
 	 */
 	@Before
 	public void setUp() throws FileNotFoundException {
@@ -113,16 +112,11 @@ public class UMCValidatorTest {
 	/**
 	 * Checks if is valid UMC success test.
 	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void isValidUMCSuccessTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
@@ -187,16 +181,11 @@ public class UMCValidatorTest {
 	/**
 	 * UMC mapping not active test.
 	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void UMCMappingNotActiveTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
@@ -242,16 +231,11 @@ public class UMCValidatorTest {
 	/**
 	 * Machine id not found test.
 	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void machineIdNotFoundTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
@@ -288,23 +272,18 @@ public class UMCValidatorTest {
 
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto);
-		// UMC validation Failure;
+        // UMC validation Failure;
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
 
 	/**
 	 * Machine not active test.
 	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void machineNotActiveTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
@@ -342,76 +321,19 @@ public class UMCValidatorTest {
 		offrepdto.setRegistrationCenters(officerucmdtos);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto);
-		// UMC validation Failure;
+        // UMC validation Failure;
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
 
-	/**
-	 * Gps datanot present in master test.
-	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 */
-	@Test
-	public void gpsDatanotPresentInMasterTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException {
-		RegistrationCenterDto rcdto = new RegistrationCenterDto();
-		rcdto.setIsActive(true);
-		rcdto.setId("12245");
-
-		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
-		rcdtos.add(rcdto);
-		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCentersHistory(rcdtos);
-
-		MachineHistoryDto mcdto = new MachineHistoryDto();
-		mcdto.setIsActive(true);
-		mcdto.setId("yyeqy26356");
-
-		List<MachineHistoryDto> mcdtos = new ArrayList<>();
-		mcdtos.add(mcdto);
-		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
-		mhrepdto.setMachineHistoryDetails(mcdtos);
-
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
-		officerucmdto.setIsActive(true);
-		officerucmdto.setCntrId("12245");
-		officerucmdto.setMachineId("yyeqy26356");
-		officerucmdto.setUsrId("O1234");
-
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
-		officerucmdtos.add(officerucmdto);
-
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
-		offrepdto.setRegistrationCenters(officerucmdtos);
-
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
-				.thenReturn(mhrepdto).thenReturn(offrepdto);
-		// UMC validation Failure;
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
-	}
 
 	/**
 	 * Wronggps data present in master test.
 	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void WronggpsDataPresentInMasterTest() throws ApisResourceAccessException, JsonParseException,
@@ -449,23 +371,18 @@ public class UMCValidatorTest {
 
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto);
-		// UMC validation Failure;
+        // UMC validation Failure;
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
 
 	/**
 	 * Gps datanot present in packet test.
 	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void gpsDatanotPresentInPacketTest() throws ApisResourceAccessException, JsonParseException,
@@ -478,7 +395,7 @@ public class UMCValidatorTest {
 		rcmDto.setPacketCreationDate("2018-11-28T15:34:20");
 		rcmDto.setRegcntrId("12245");
 		rcmDto.setRegId("2018782130000121112018103016");
-
+		
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setId("12245");
@@ -512,23 +429,18 @@ public class UMCValidatorTest {
 
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto);
-		// UMC validation Failure;
+        // UMC validation Failure;
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
 
 	/**
 	 * Registration centernot active test.
 	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void registrationCenternotActiveTest() throws ApisResourceAccessException, JsonParseException,
@@ -567,23 +479,18 @@ public class UMCValidatorTest {
 
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto);
-		// UMC validation Failure;
+        // UMC validation Failure;
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
 
 	/**
 	 * Checks if is valid UMC failure for timestamp test.
 	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void isValidUMCFailureForTimestampTest() throws ApisResourceAccessException, JsonParseException,
@@ -632,23 +539,18 @@ public class UMCValidatorTest {
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto).thenReturn(offrepdto)
 				.thenThrow(apisResourceAccessException);
-		// UMC validation Failure;
+        // UMC validation Failure;
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
 
 	/**
 	 * Checks if is valid UMC failure for registration center ID test.
 	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void isValidUMCFailureForRegistrationCenterIDTest() throws ApisResourceAccessException, JsonParseException,
@@ -704,16 +606,11 @@ public class UMCValidatorTest {
 	/**
 	 * Checks if is valid UMC center id validation rejected test.
 	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void isValidUMCCenterIdValidationRejectedTest() throws ApisResourceAccessException, JsonParseException,
@@ -778,16 +675,11 @@ public class UMCValidatorTest {
 	/**
 	 * Validate device mapped with center failure test.
 	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void validateDeviceMappedWithCenterFailureTest() throws ApisResourceAccessException, JsonParseException,
@@ -859,16 +751,11 @@ public class UMCValidatorTest {
 	/**
 	 * Validate device failure test.
 	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void validateDeviceFailureTest() throws ApisResourceAccessException, JsonParseException,
@@ -940,16 +827,11 @@ public class UMCValidatorTest {
 	/**
 	 * Validate registration center failure test.
 	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void validateRegistrationCenterFailureTest() throws ApisResourceAccessException, JsonParseException,
@@ -1022,16 +904,11 @@ public class UMCValidatorTest {
 	/**
 	 * Validate machine failure test.
 	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void validateMachineFailureTest() throws ApisResourceAccessException, JsonParseException,
@@ -1103,16 +980,11 @@ public class UMCValidatorTest {
 	/**
 	 * Validate UM cmapping failure test.
 	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void validateUMCmappingFailureTest() throws ApisResourceAccessException, JsonParseException,

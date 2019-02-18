@@ -30,8 +30,13 @@ public interface RidGenerator<T> {
 	 *            length of the given center id
 	 * @param machineIdLength
 	 *            length of the given machine id
-	 * @return  containing generated RID
+	 * @param sequenceLength
+	 *            length of the sequence
+	 * @param timestampLength
+	 *            length of the timeStamp
+	 * @return <T> containing generated RID
 	 */
-	public T generateId(String centreId, String machineId, int centerIdLength, int machineIdLength);
+	public T generateId(String centreId, String machineId, int centerIdLength, int machineIdLength, int sequenceLength,
+			int timestampLength);
 
 }
