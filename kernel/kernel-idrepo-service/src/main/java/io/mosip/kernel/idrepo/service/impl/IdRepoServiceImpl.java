@@ -84,6 +84,8 @@ import io.mosip.kernel.idrepo.repository.UinRepo;
 @Component
 public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	
+	private static final String MOSIP_PRIMARY_LANGUAGE = "mosip.primary-language";
+
 	/** The Constant GET_FILES. */
 	private static final String GET_FILES = "getFiles";
 
@@ -143,9 +145,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 
 	/** The Constant VALUE. */
 	private static final String VALUE = "value";
-
-	/** The Constant LANG_CODE. */
-	private static final String LANG_CODE = "AR";
 
 	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "mosip.kernel.idrepo.datetime.pattern";
@@ -231,21 +230,21 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 				addDocuments(uin, identityInfo, request.getRequest().getDocuments(), uinRefId, docList, bioList);
 
 				uinRepo.save(new Uin(uinRefId, uin, identityInfo, hash(identityInfo), request.getRegistrationId(),
-						env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
-						now(), false, now(), bioList, docList));
+						env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), env.getProperty(MOSIP_PRIMARY_LANGUAGE),
+						CREATED_BY, now(), UPDATED_BY, now(), false, now(), bioList, docList));
 				mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 						"Record successfully saved in db with documents");
 			} else {
 				uinRepo.save(new Uin(uinRefId, uin, identityInfo, hash(identityInfo), request.getRegistrationId(),
-						env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
-						now(), false, now(), null, null));
+						env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), env.getProperty(MOSIP_PRIMARY_LANGUAGE),
+						CREATED_BY, now(), UPDATED_BY, now(), false, now(), null, null));
 				mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 						"Record successfully saved in db without documents");
 			}
 
 			uinHistoryRepo.save(new UinHistory(uinRefId, now(), uin, identityInfo, hash(identityInfo),
-					request.getRegistrationId(), env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), LANG_CODE, CREATED_BY,
-					now(), UPDATED_BY, now(), false, now()));
+					request.getRegistrationId(), env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED),
+					env.getProperty(MOSIP_PRIMARY_LANGUAGE), CREATED_BY, now(), UPDATED_BY, now(), false, now()));
 
 			return retrieveIdentity(uin, null);
 		} else {
@@ -314,12 +313,13 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 		dfsProvider.storeFile(uin, BIOMETRICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(), CryptoUtil
 				.decodeBase64(new String(encryptDecryptDocuments(CryptoUtil.encodeBase64(cbeffDoc), ENCRYPT))));
 		
-		bioList.add(new UinBiometric(uinRefId, fileRefId, doc.getCategory(), docType.get(VALUE).asText(),
-				hash(cbeffDoc), LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now()));
-		
+		bioList.add(
+				new UinBiometric(uinRefId, fileRefId, doc.getCategory(), docType.get(VALUE).asText(), hash(cbeffDoc),
+						env.getProperty(MOSIP_PRIMARY_LANGUAGE), CREATED_BY, now(), UPDATED_BY, now(), false, now()));
+
 		uinBioHRepo.save(new UinBiometricHistory(uinRefId, now(), fileRefId, doc.getCategory(),
-				docType.get(VALUE).asText(), hash(CryptoUtil.decodeBase64(doc.getValue())), LANG_CODE, CREATED_BY,
-				now(), UPDATED_BY, now(), false, now()));
+				docType.get(VALUE).asText(), hash(CryptoUtil.decodeBase64(doc.getValue())),
+				env.getProperty(MOSIP_PRIMARY_LANGUAGE), CREATED_BY, now(), UPDATED_BY, now(), false, now()));
 	}
 	
 	/**
@@ -342,13 +342,13 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 
 		docList.add(new UinDocument(uinRefId, doc.getCategory(), docType.get(TYPE).asText(), fileRefId,
 				docType.get(VALUE).asText(), docType.get(FORMAT).asText(),
-				hash(CryptoUtil.decodeBase64(doc.getValue())), LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false,
-				now()));
+				hash(CryptoUtil.decodeBase64(doc.getValue())), env.getProperty(MOSIP_PRIMARY_LANGUAGE), CREATED_BY,
+				now(), UPDATED_BY, now(), false, now()));
 
 		uinDocHRepo.save(new UinDocumentHistory(uinRefId, now(), doc.getCategory(), docType.get(TYPE).asText(),
 				fileRefId, docType.get(VALUE).asText(), docType.get(FORMAT).asText(),
-				hash(CryptoUtil.decodeBase64(doc.getValue())), LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false,
-				now()));
+				hash(CryptoUtil.decodeBase64(doc.getValue())), env.getProperty(MOSIP_PRIMARY_LANGUAGE), CREATED_BY,
+				now(), UPDATED_BY, now(), false, now()));
 	}
 
 	/**
@@ -421,11 +421,11 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 					updateDocuments(uin, uinObject, requestDTO);
 					uinObject.setUpdatedDateTime(now());
 				}
-
 			}
+			
 			uinHistoryRepo.save(new UinHistory(uinObject.getUinRefId(), now(), uin, uinObject.getUinData(),
-					uinObject.getUinDataHash(), uinObject.getRegId(), uinObject.getStatusCode(), LANG_CODE, CREATED_BY,
-					now(), UPDATED_BY, now(), false, now()));
+					uinObject.getUinDataHash(), uinObject.getRegId(), uinObject.getStatusCode(),
+					env.getProperty(MOSIP_PRIMARY_LANGUAGE), CREATED_BY, now(), UPDATED_BY, now(), false, now()));
 
 			return uinRepo.save(uinObject);
 		} catch (JSONException | InvalidJsonException e) {
