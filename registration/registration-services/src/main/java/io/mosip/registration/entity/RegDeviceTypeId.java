@@ -5,8 +5,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import lombok.Data;
-
 /**
  * composite primary key of {@link RegDeviceTypeId}
  * 
@@ -15,7 +13,6 @@ import lombok.Data;
  */
 
 @Embeddable
-@Data
 public class RegDeviceTypeId implements Serializable {
 	private static final long serialVersionUID = -8748623866593150099L;
 
@@ -23,7 +20,7 @@ public class RegDeviceTypeId implements Serializable {
 	private String code;
 
 	@Column(name = "lang_code")
-	private String languageCode;
+	private String langCode;
 
 	/**
 	 * @return the code
@@ -33,26 +30,18 @@ public class RegDeviceTypeId implements Serializable {
 	}
 
 	/**
-	 * @param code
-	 *            the code to set
+	 * @param code the code to set
 	 */
 	public void setCode(String code) {
 		this.code = code;
 	}
 
-	/**
-	 * @return the languageCode
-	 */
-	public String getLanguageCode() {
-		return languageCode;
+	public String getLangCode() {
+		return langCode;
 	}
 
-	/**
-	 * @param languageCode
-	 *            the languageCode to set
-	 */
-	public void setLanguageCode(String languageCode) {
-		this.languageCode = languageCode;
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
 	}
 
 }

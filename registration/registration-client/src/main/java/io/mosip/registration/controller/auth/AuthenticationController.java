@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.ProcessNames;
@@ -449,9 +450,9 @@ public class AuthenticationController extends BaseController implements Initiali
 					}
 				}
 			}
-		} catch (RegBaseCheckedException e) {
+		} catch (RegBaseCheckedException exception) {
 			LOGGER.error("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
-					"No of Authentication modes is empty");
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 		}
 	}
 
@@ -897,11 +898,10 @@ public class AuthenticationController extends BaseController implements Initiali
 	private boolean isSupervisorAuthenticationRequired() {
 		
 		/* Get Value from global_param_config */
-		String val = (String) (ApplicationContext.getInstance().getApplicationMap().get("SUPERVISOR_AUTHENTICATION_CONFIGURATION"));
+		String val = (String) (ApplicationContext.getInstance().getApplicationMap().get(RegistrationUIConstants.SUPERVISOR_AUTHENTICATION_CONFIGURATION));
 
 		/* Whether supervisor authentication required or not */
-		return (val != null) ? (val.equalsIgnoreCase("Y")) : val!=null;
-
+		return "Y".equalsIgnoreCase(val);
 	}
 
 }

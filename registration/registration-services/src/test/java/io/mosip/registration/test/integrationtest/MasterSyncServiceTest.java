@@ -6,21 +6,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
-import io.mosip.registration.dto.mastersync.MasterReasonListDto;
+import io.mosip.registration.dto.mastersync.ReasonListDto;
 import io.mosip.registration.service.MasterSyncService;
-import io.mosip.registration.service.config.GlobalParamService;
 
 public class MasterSyncServiceTest extends BaseIntegrationTest {
 	
@@ -352,7 +349,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 	{
 		//this test validates if expected code is fetched from reason_list table
 		//mastersyncservice.getAllReasonsList(langCode);
-		List<MasterReasonListDto> result = mastersyncservice.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("langCode"));
+		List<ReasonListDto> result = mastersyncservice.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		List<String> list1=new ArrayList<>();
 		list1.addAll(Arrays.asList("1","2","APM", "GPM", "IAD", "DPG", "OTH","ADM","ADD", "OPM", "SDM"));
 		
@@ -372,7 +369,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 	public void masterSync_verifygetAllReasonsList_getName()
 	{
 		//this test validates if expected names are fetched from reason_list table
-		List<MasterReasonListDto> result = mastersyncservice.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("langCode"));
+		List<ReasonListDto> result = mastersyncservice.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		List<String> list1=new ArrayList<>();
 		list1.addAll(Arrays.asList("document","document","Age-Photo Mismatch","Gender-Photo Mismatch","Invalid Address","Duplicate Registration","Others","All the Details are matching","All the Demographic Details are Matching","Only the Photograph is Matching","Some of the Demographic Details are Matching"));
 		
@@ -392,7 +389,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 	public void masterSync_verifygetAllReasonsList_getRsnCatCode()
 	{
 		//this test validates if expected rsncatcode is fetched from reason_list table
-		List<MasterReasonListDto> result = mastersyncservice.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("langCode"));
+		List<ReasonListDto> result = mastersyncservice.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		List<String> list1=new ArrayList<>();
 		list1.addAll(Arrays.asList("1","1","CLR", "CLR", "CLR", "CLR", "CLR", "MNA", "MNA","MNA","MNA"));
 		
@@ -412,7 +409,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 	public void masterSync_verifygetAllReasonsList_getLangCode()
 	{
 		//this test validates if expected language code is fetched from reason_list table
-		List<MasterReasonListDto> result = mastersyncservice.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("langCode"));
+		List<ReasonListDto> result = mastersyncservice.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		List<String> list1=new ArrayList<>();
 		list1.addAll(Arrays.asList("eng", "eng", "eng", "eng", "eng", "eng", "eng","eng","eng","eng","eng"));
 		
@@ -434,7 +431,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		//this test validates that no data will be fetched from reason_list table when invalid language code is passed
 		//mastersyncservice.getAllReasonsList(langCode);
 	
-		List<MasterReasonListDto> result = mastersyncservice.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("invalidlangCode"));
+		List<ReasonListDto> result = mastersyncservice.getAllReasonsList(testdataparsejson.getDataFromJsonViaKey("invalidlangCode"));
 		System.out.println("*********"+result);
 		System.out.println("*********"+result.size());
 		assertEquals(0, result.size());
@@ -447,7 +444,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		//this test validates that no data will be fetched from reason_list table when language code is passed as null
 		//mastersyncservice.getAllReasonsList(langCode);
 	
-		List<MasterReasonListDto> result = mastersyncservice.getAllReasonsList(null);
+		List<ReasonListDto> result = mastersyncservice.getAllReasonsList(null);
 		System.out.println("*********"+result);
 		System.out.println("*********"+result.size());
 		assertEquals(0, result.size());

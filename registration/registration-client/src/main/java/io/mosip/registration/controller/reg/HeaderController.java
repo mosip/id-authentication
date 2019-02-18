@@ -211,8 +211,10 @@ public class HeaderController extends BaseController {
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, ioException.getMessage());
-			ioException.printStackTrace();
-
+			
+		} catch(RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, runtimeException.getMessage());
 		}
 
 	}

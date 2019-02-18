@@ -92,4 +92,13 @@ public class AuditLogControlDAOImpl implements AuditLogControlDAO {
 		return auditLogControlRepository.findByCrDtimeBefore(req);
 	}
 
+	@Override
+	public AuditLogControl get(String regId) {
+		LOGGER.debug("AUDIT - GET_AUDIT_LOG_CONTROL - AUDIT_LOG_CONTROL_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Started fetching audit log control  using registartion Id");
+
+
+		return auditLogControlRepository.findById(AuditLogControl.class , regId);
+	}
+
 }

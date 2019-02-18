@@ -11,25 +11,25 @@
 
 <AnchorPane fx:id="approveRegistrationRoot" styleClass="parentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.eodapproval.RegistrationApprovalController">
    <children>
-      <AnchorPane fx:id="approveRegistrationRootSubPane" layoutY="51.0" prefHeight="551.0" prefWidth="1272.0" styleClass="approveRegistrationRootSubPane">
+      <AnchorPane fx:id="approveRegistrationRootSubPane" layoutY="51.0" styleClass="approveRegistrationRootSubPane">
          <children>
-            <AnchorPane fx:id="imageAnchorPane" layoutX="497.0" layoutY="14.0" styleClass="imageAnchorPaneStyle">
+            <AnchorPane fx:id="imageAnchorPane" layoutX="450.0" layoutY="14.0" styleClass="imageAnchorPaneStyle">
                <children>
-                  <WebView fx:id="webView" layoutY="-3.0" prefHeight="539.0" prefWidth="770.0" />
+                  <WebView fx:id="webView" layoutY="-3.0"/>
                </children>
             </AnchorPane>
-            <TableView fx:id="table" layoutX="13.0" layoutY="14.0" prefHeight="539.0" prefWidth="466.0">
+            <TableView fx:id="table" layoutX="15.0" layoutY="14.0" styleClass="approvalTable">
                <columns>
-                  <TableColumn fx:id="id" prefWidth="300.0" text="%registrationid" />
-                  <TableColumn fx:id="acknowledgementFormPath" prefWidth="199.0" text="%registrtionid" visible="false" />
-                  <TableColumn fx:id="statusComment" prefWidth="220.0" text="%status" />
+                  <TableColumn fx:id="id" text="%registrationid" styleClass="pendingApprovalTableId" />
+                  <TableColumn fx:id="acknowledgementFormPath" text="%registrtionid" visible="false" />
+                  <TableColumn fx:id="statusComment" text="%status" styleClass="pendingApprovalStatus" />
                </columns>
             </TableView>
          </children>
       </AnchorPane>
       <AnchorPane layoutY="619.0" styleClass="pendingApprovalFooter">
          <children>
-            <Label layoutX="636.0" layoutY="12.0" prefHeight="20.0" prefWidth="466.0" text="%approved/rejected">
+            <Label layoutX="636.0" layoutY="12.0" text="%approved/rejected">
                <font>
                   <Font size="10.0" />
                </font>

@@ -23,6 +23,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
@@ -95,7 +96,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		} catch (RuntimeException runtimeException) {
 
 			LOGGER.error("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, runtimeException.getMessage());
+					APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
 			setErrorResponse(responseDTO, RegistrationConstants.REGISTRATION_DELETION_BATCH_JOBS_FAILURE, null);
 		}
@@ -177,7 +178,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 					APPLICATION_ID, "packets status sync from server has been ended");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, runtimeException.getMessage());
+					APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_UPDATE_STATUS,
 					runtimeException.toString());
 
@@ -186,11 +187,11 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	}
 
 	@SuppressWarnings("unchecked")
-	synchronized public ResponseDTO packetSyncStatus() {
+	 public synchronized ResponseDTO packetSyncStatus() {
 
 		LOGGER.info("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"packet status sync called");
-		 
+
 		List<String> packetIds = getPacketIds();
 		LOGGER.info("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"PacketIds for sync with server have been retrieved");
@@ -209,15 +210,16 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 		try {
 			/* Obtain RegistrationStatusDTO from service delegate util */
-			List<LinkedHashMap<String, String>> registrations = (List<LinkedHashMap<String, String>>) serviceDelegateUtil.get(SERVICE_NAME, requestParamMap,
-					false);
+			List<LinkedHashMap<String, String>> registrations = (List<LinkedHashMap<String, String>>) serviceDelegateUtil
+					.get(SERVICE_NAME, requestParamMap, false);
 			if (!registrations.isEmpty()) {
 				/* update the status of packets after sync with server */
 				try {
 					updatePacketIdsByServerStatus(registrations);
 				} catch (RegBaseUncheckedException regBaseUncheckedException) {
 					LOGGER.error("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
-							regBaseUncheckedException.getMessage());
+							regBaseUncheckedException.getMessage()
+									+ ExceptionUtils.getStackTrace(regBaseUncheckedException));
 
 					setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
 					return response;
@@ -241,7 +243,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		} catch (SocketTimeoutException | RegBaseCheckedException | IllegalArgumentException | HttpClientErrorException
 				| HttpServerErrorException | ResourceAccessException exception) {
 			LOGGER.error("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage());
+					exception.getMessage( )+ ExceptionUtils.getStackTrace(exception));
 
 			setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
 			return response;
@@ -361,11 +363,11 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER_END - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID, "Sync the packets to the server ending");
 
-		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException | URISyntaxException e) {
+		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException | URISyntaxException exception) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - REG_PACKET_STATUS_SYNC", APPLICATION_NAME,
-					APPLICATION_ID, "Error in Synching packets to the server");
+					APPLICATION_ID, exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-			errorResponseDTO.setMessage(e.getMessage());
+			errorResponseDTO.setMessage(exception.getMessage());
 			errorList.add(errorResponseDTO);
 			responseDTO.setErrorResponseDTOs(errorList);
 		}

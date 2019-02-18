@@ -77,7 +77,7 @@ public class RegistrationConstants {
 	public static final String LEFT_IRIS_IMG_PATH = "/images/Eye.png";
 	public static final String VIEW = "/images/View.png";
 	public static final String SELECTION_IMG_PATH = "/images/GreenRoundTick.png";
-	
+
 	// Authentication
 	public static final String SUPERVISOR_VERIFICATION = "Supervisor Login";
 	public static final String SUPERVISOR_NAME = "Supervisor";
@@ -92,21 +92,21 @@ public class RegistrationConstants {
 	public static final String IRIS_STUB = "leftIris";
 	public static final String FACE_STUB = "face";
 
-	//Authentication Methods
+	// Authentication Methods
 	public static final String PWORD = "PWD";
 	public static final String OTP = "OTP";
 	public static final String BIO = "BIO";
 	public static final String FACE = "FACE";
 	public static final String IRIS = "IRIS";
-	
+
 	public static final String LOGIN_OTP_PARAM = "otp";
-	
+
 	// Login
 	public static final String BLOCKED = "BLOCKED";
 	public static final String LOGIN_INITIAL_SCREEN = "initialMode";
 	public static final String LOGIN_SEQUENCE = "sequence";
 	public static final String ONBOARD_USER = "isOnboardUser";
-	public static final String ONBOARD_USER_UPDATE="updateOnboard";
+	public static final String ONBOARD_USER_UPDATE = "updateOnboard";
 	public static final String REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER";
 	public static final String REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER";
 
@@ -157,7 +157,7 @@ public class RegistrationConstants {
 	public static final String SECONDARY_LANGUAGE = "secondary";
 	public static final String LANGUAGE_ENGLISH = "english";
 	public static final String LANGUAGE_ARABIC = "arabic";
-	
+
 	public static final String APPLICATION_LANGUAGE = "application_language";
 	public static final String REGISTRATION_LOCAL_LANGUAGE = "local_language";
 	public static final String PACKET_TYPE_NEW = "New";
@@ -167,6 +167,7 @@ public class RegistrationConstants {
 	public static final String ADDRESS_LINE3 = "addressLine3";
 	public static final String FULL_NAME = "fullName";
 	public static final String PARENT_NAME = "parentName";
+	public static final String UIN_LENGTH = "mosip.kernel.uin.length";
 
 	public static final String CHILD = "Child";
 	public static final String ADULT = "Adult";
@@ -195,7 +196,6 @@ public class RegistrationConstants {
 	public static final String UIN_UPDATE_BIO_FP_ENABLE_FLG = "UIN_UPDATE.BIO_FP_ENABLE_FLG";
 	public static final String UIN_UPDATE_BIO_IRIS_ENABLE_FLG = "UIN_UPDATE.BIO_IRIS_ENABLE_FLG";
 	public static final String UIN_UPDATE_FOREIGNER_ENABLE_FLG = "UIN_UPDATE.FOREIGNER_ENABLE_FLG";
-	
 
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";
@@ -223,7 +223,7 @@ public class RegistrationConstants {
 	// Packet Store Location Constants
 	public static final String PACKET_STORE_LOCATION = "PACKET_STORE_LOCATION";
 	public static final String PACKET_STORE_DATE_FORMAT = "packet.location.dateFormat";
-	public static final String PRE_REG_PACKET_LOCATION="PRE_REG_PACKET_LOCATION";
+	public static final String PRE_REG_PACKET_LOCATION = "PRE_REG_PACKET_LOCATION";
 
 	// Packet Creation Constants
 	public static final String ZIP_FILE_EXTENSION = ".zip";
@@ -278,9 +278,9 @@ public class RegistrationConstants {
 	 * Specifies the format for storing the Registration Acknowledgement
 	 */
 	public static final String ACKNOWLEDGEMENT_FORMAT = "html";
-	
+
 	public static final String IMAGE_FORMAT = "png";
-	
+
 	// Constants for Registration ID Generator - will be removed after Kernel
 	// Integration
 	public static final String AGENCY_CODE = "2018";
@@ -332,7 +332,7 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_QRCODE_SOURCE = "QRCodeSource";
 	public static final String TEMPLATE_UIN_UPDATE = "UINUpdate";
 	public static final String TEMPLATE_HEADER_TABLE = "headerTable";
-	public static final String TEMPLATE_UIN_HEADER_TABLE = "uinHeaderTable";	
+	public static final String TEMPLATE_UIN_HEADER_TABLE = "uinHeaderTable";
 	public static final String TEMPLATE_UIN_USER_LANG_LABEL = "UINUserLangLabel";
 	public static final String TEMPLATE_UIN_LOCAL_LANG_LABEL = "UINLocalLangLabel";
 	public static final String TEMPLATE_UIN = "UIN";
@@ -402,9 +402,12 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_PARENT_NAME_USER_LANG_LABEL = "ParentNameUserLangLabel";
 	public static final String TEMPLATE_PARENT_NAME_LOCAL_LANG_LABEL = "ParentNameLocalLangLabel";
 	public static final String TEMPLATE_PARENT_NAME = "ParentName";
+	public static final String TEMPLATE_PARENT_UIN_USER_LANG_LABEL = "ParentUINUserLangLabel";
+	public static final String TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL = "ParentUINLocalLangLabel";
+	public static final String TEMPLATE_PARENT_UIN = "ParentUIN";
 	public static final String TEMPLATE_PARENT_NAME_LOCAL_LANG = "ParentNameLocalLang";
 	public static final String TEMPLATE_DOCUMENTS_USER_LANG_LABEL = "DocumentsUserLangLabel";
-	public static final String TEMPLATE_DOCUMENTS_LOCAL_LANG_LABEL = "DocumentsLocalLangLabel";	
+	public static final String TEMPLATE_DOCUMENTS_LOCAL_LANG_LABEL = "DocumentsLocalLangLabel";
 	public static final String TEMPLATE_DOCUMENTS = "Documents";
 	public static final String TEMPLATE_DOCUMENTS_LOCAL_LANG = "DocumentsLocalLang";
 	public static final String TEMPLATE_BIOMETRICS_USER_LANG_LABEL = "BiometricsUserLangLabel";
@@ -459,16 +462,16 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_THUMBS_EXCEPTION_LOCAL_LANG = "ThumbsExceptionLocalLang";
 	public static final String TEMPLATE_RO_IMAGE_SOURCE = "ROImageSource";
 	public static final String TEMPLATE_RO_NAME_USER_LANG_LABEL = "RONameUserLangLabel";
-	public static final String TEMPLATE_RO_NAME_LOCAL_LANG_LABEL = "RONameLocalLangLabel";	
+	public static final String TEMPLATE_RO_NAME_LOCAL_LANG_LABEL = "RONameLocalLangLabel";
 	public static final String TEMPLATE_RO_NAME = "ROName";
 	public static final String TEMPLATE_RO_NAME_LOCAL_LANG = "RONameLocalLang";
 	public static final String TEMPLATE_REG_CENTER_USER_LANG_LABEL = "RegCenterUserLangLabel";
-	public static final String TEMPLATE_REG_CENTER_LOCAL_LANG_LABEL = "RegCenterLocalLangLabel";	
+	public static final String TEMPLATE_REG_CENTER_LOCAL_LANG_LABEL = "RegCenterLocalLangLabel";
 	public static final String TEMPLATE_REG_CENTER = "RegCenter";
 	public static final String TEMPLATE_REG_CENTER_LOCAL_LANG = "RegCenterLocalLang";
 	public static final String TEMPLATE_PHOTO_USER_LANG = "PhotoUserLang";
 	public static final String TEMPLATE_PHOTO_LOCAL_LANG = "PhotoLocalLang";
-	public static final String TEMPLATE_APPLICANT_IMAGE_SOURCE = "ApplicantImageSource";	
+	public static final String TEMPLATE_APPLICANT_IMAGE_SOURCE = "ApplicantImageSource";
 	public static final String TEMPLATE_DATE_FORMAT = "dd/MM/yyyy";
 	public static final String TEMPLATE_JPG_IMAGE_ENCODING = "data:image/jpg;base64,";
 	public static final String TEMPLATE_PNG_IMAGE_ENCODING = "data:image/png;base64,";
@@ -533,8 +536,8 @@ public class RegistrationConstants {
 	public static final String MACHINE_MAPPING_UPDATED = "updated";
 	public static final String MACHINE_MAPPING_LOGGER_TITLE = "REGISTRATION - USER CLIENT MACHINE MAPPING";
 	public static final String DEVICE_MAPPING_LOGGER_TITLE = "REGISTRATION - CENTER MACHINE DEVICE MAPPING";
-	public static final String SYNC_TRANSACTION_DAO_LOGGER_TITLE ="REGISTRATION-SYNC-TRANSACTION DAO";
-	public static final String SYNC_JOB_CONTROL_DAO_LOGGER_TITLE ="REGISTRATION-SYNC-JOB_CONTROL DAO";
+	public static final String SYNC_TRANSACTION_DAO_LOGGER_TITLE = "REGISTRATION-SYNC-TRANSACTION DAO";
+	public static final String SYNC_JOB_CONTROL_DAO_LOGGER_TITLE = "REGISTRATION-SYNC-JOB_CONTROL DAO";
 
 	// CENTER MACHINE DEVICE MAPPING
 	public static final String DEVICE_MAPPING_SUCCESS_CODE = "REG-DVO‌-001";
@@ -553,10 +556,10 @@ public class RegistrationConstants {
 		String[] packetStatus = { "SYNCED", "EXPORTED", "resend", "E" };
 		return Arrays.asList(packetStatus);
 	}
-	
+
 	public static final String PACKET_UPLOAD = "packet_upload";
 	public static final String PACKET_DUPLICATE = "duplicate";
-	
+
 	public static final Set<String> getRoles() {
 		return new HashSet<>(Arrays.asList("*"));
 	}
@@ -591,11 +594,10 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_RDJ_J00011 = "RDJ_J00011";
 	public static final String OPT_TO_REG_ADJ_J00012 = "ADJ_J00012";
 	public static final String OPT_TO_REG_DEL_001 = "DEL_001";
-	public static final String OPT_TO_REG_UDM_J00012 = "UDM_J00012";	
+	public static final String OPT_TO_REG_UDM_J00012 = "UDM_J00012";
 	public static final String GEO_CAP_FREQ = "GEO_CAP_FREQ";
 	public static final String DIST_FRM_MACHN_TO_CENTER = "DIST_FRM_MACHN_TO_CENTER";
 	public static final String REG_PAK_MAX_CNT_OFFLINE_FREQ = "REG_PAK_MAX_CNT_OFFLINE_FREQ";
-
 
 	/** Packet Status Sync Constants */
 	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
@@ -645,7 +647,7 @@ public class RegistrationConstants {
 	// Global configuration parameters
 	public static final String INVALID_LOGIN_COUNT = "INVALID_LOGIN_COUNT";
 	public static final String INVALID_LOGIN_TIME = "INVALID_LOGIN_TIME";
-	public static final String REGISTARTION_CENTER="REGISTARTION_CENTER";
+	public static final String REGISTARTION_CENTER = "REGISTARTION_CENTER";
 	public static final String CBEFF_ONLY_UNIQUE_TAGS = "CBEFF_ONLY_UNIQUE_TAGS";
 	public static final String GLOBAL_CONFIG_TRUE_VALUE = "Y";
 	public static final String REG_PAK_MAX_CNT_APPRV_LIMIT = "REG_PAK_MAX_CNT_APPRV_LIMIT";
@@ -700,7 +702,7 @@ public class RegistrationConstants {
 	public static final String DOB_DOCUMENT = "POB";
 
 	public static final List<String> PACKET_STATUS = Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");
-	
+
 	public static final List<String> PACKET_EXPORT_STATUS = Arrays.asList("EXPORTED", "SYNCED");
 
 	// Pre Registration
@@ -722,13 +724,12 @@ public class RegistrationConstants {
 	// UI Date Format
 	public static final String DATE_FORMAT = "MM/dd/yyy hh:mm:ss";
 	public static final String HH_MM_SS = "HH:mm:ss";
-	
-	//Biometric Exception style
+
+	// Biometric Exception style
 	public static final String ADD_BORDER = "addBorderStyle";
 	public static final String REMOVE_BORDER = "removeBorderStyle";
 	public static final String OLD_BIOMETRIC_EXCEPTION = "oldBiometric";
 	public static final String NEW_BIOMETRIC_EXCEPTION = "newBiometric";
-	
 
 	// Iris & Fingerprint Capture for Individual Registration
 	public static final String IRIS_THRESHOLD = "IRIS_THRESHOLD";
@@ -771,14 +772,14 @@ public class RegistrationConstants {
 	public static final String THUMB = "Thumb";
 	public static final String LEFT_HAND = "Left hand ";
 	public static final String RIGHT_HAND = "Right hand ";
-	public static final String[] LEFTHAND_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] { "/fingerprints/UserOnboard/leftHand/leftIndex/",
-			"/fingerprints/UserOnboard/leftHand/leftLittle/", "/fingerprints/UserOnboard/leftHand/leftMiddle/",
-			"/fingerprints/UserOnboard/leftHand/leftRing/" };
-	public static final String[] RIGHTHAND_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] { "/fingerprints/UserOnboard/rightHand/rightIndex/",
-			"/fingerprints/UserOnboard/rightHand/rightLittle/", "/fingerprints/UserOnboard/rightHand/rightMiddle/",
-			"/fingerprints/UserOnboard/rightHand/rightRing/" };
-	public static final String[] THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] { "/fingerprints/UserOnboard/thumb/leftThumb/",
-	"/fingerprints/UserOnboard/thumb/rightThumb/" };
+	public static final String[] LEFTHAND_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] {
+			"/fingerprints/UserOnboard/leftHand/leftIndex/", "/fingerprints/UserOnboard/leftHand/leftLittle/",
+			"/fingerprints/UserOnboard/leftHand/leftMiddle/", "/fingerprints/UserOnboard/leftHand/leftRing/" };
+	public static final String[] RIGHTHAND_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] {
+			"/fingerprints/UserOnboard/rightHand/rightIndex/", "/fingerprints/UserOnboard/rightHand/rightLittle/",
+			"/fingerprints/UserOnboard/rightHand/rightMiddle/", "/fingerprints/UserOnboard/rightHand/rightRing/" };
+	public static final String[] THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] {
+			"/fingerprints/UserOnboard/thumb/leftThumb/", "/fingerprints/UserOnboard/thumb/rightThumb/" };
 
 	/** Exception codes **/
 	private static final String REG_SERVICE_CODE = "REG-SER-";
@@ -889,7 +890,6 @@ public class RegistrationConstants {
 	// Scan
 	public static final String USER_REG_SCAN_EXP = USER_REG_SCAN_EXP_CODE + "DOC-001";
 
-	
 	// Regex Constants
 	public static final String FULL_NAME_REGEX = "([A-z]+\\s?\\.?)+";
 	public static final int FULL_NAME_LENGTH = 50;
@@ -917,7 +917,7 @@ public class RegistrationConstants {
 	public static final String MASTER_SYNC_SUCCESS = "Sync successful";
 	public static final String MASTER_SYNC = "MASTER_SYNC";
 	public static final String MASTER_VALIDATOR_SERVICE_NAME = "master_sync";
-	public static final String MASTER_DATA_LASTUPDTAE="lastUpdated";
+	public static final String MASTER_DATA_LASTUPDTAE = "lastUpdated";
 	// POLICY SYNC
 	public static final String POLICY_SYNC_SUCCESS_CODE = "REG-MDS‌-001 ";
 	public static final String POLICY_SYNC_SUCCESS_MESSAGE = "Sync Successful";
@@ -926,10 +926,8 @@ public class RegistrationConstants {
 	public static final String POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_CODE = "REG-MDS‌-002";
 	public static final String POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE = "You must be connected to the internet to sync data";
 	public static final String POLICY_SYNC_THRESHOLD_VALUE = "name";
-	public static final String SYNCH_CONFIG_DATA_JOB_TITLE="synch config data job";
-	public static final String REG_USER_MAPPING_SYNC_JOB_TITLE="registration user mapping sync job";
-	
-	
+	public static final String SYNCH_CONFIG_DATA_JOB_TITLE = "synch config data job";
+	public static final String REG_USER_MAPPING_SYNC_JOB_TITLE = "registration user mapping sync job";
 
 	// PRE-REG DELETE JOB
 	public static final String PRE_REG_DELETE_SUCCESS = "Pre-Registration Records deleted";
@@ -957,8 +955,7 @@ public class RegistrationConstants {
 	public static final String NO_JOB_COMPLETED = "NO JOBS COMPLETED";
 	public static final String NO_JOBS_TRANSACTION = "No Transaction History Available";
 	public static final String NO_JOBS_RUNNING = "Currently No Jobs Running";
-	public static final String JOB_UNKNOWN= "UNKNOWN";
-	
+	public static final String JOB_UNKNOWN = "UNKNOWN";
 
 	// Machine Mapping
 	public static final String MACHINE_MAPPING_SUCCESS_MESSAGE = "User Mapped Successfully";
@@ -976,11 +973,10 @@ public class RegistrationConstants {
 	public static final String OTP_GENERATION_SUCCESS_MESSAGE = "Generated OTP is :";
 	public static final String OTP_GENERATION_ERROR_MESSAGE = "Unable Generate OTP for entered username";
 	public static final String OTP_VALIDATION_ERROR_MESSAGE = "Incorrect or expired OTP";
-	
-	//Packet Export
+
+	// Packet Export
 	public static final String FILE_EXPLORER_NAME = "File Explorer";
 	public static final String INFO = "INFO";
-	
 
 	// Sync Status
 	public static final String REG_PKT_APPRVL_CNT_EXCEED = "Maximum number of registration packets pending approval on client reached. Please approve or reject packets before proceeding with this registration";
@@ -1014,31 +1010,29 @@ public class RegistrationConstants {
 	public static final String success = "success";
 	public static final String USER_ON_BOARDING_EXCEPTION = "USER_ON_BOARDING_EXCEPTION";
 	public static final String USER_ON_BOARDING_EXCEPTION_MSG_CODE = "REG-URE‌-000";
-	public static final String USER_ON_BOARDING_SUCCESS_CODE="REG-URE‌-002";
-	public static final String USER_ON_BOARDING_SUCCESS_MSG="User on-boarded successfully.";
-	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_CODE="REG-URE‌-008";
-	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG="Threshold for number of successful authentications not met.";
-	public static final String USER_STATION_ID="stationId";
-	public static final String USER_CENTER_ID="centerId";
-	public static final String USER_MACHINE_VALIDATION_CODE="REG-URE‌-009";
-	public static final String USER_MACHINE_VALIDATION_MSG="This computer is not mapped to the same Registration Centre as the dongle plugged in.";
-	public static final String USER_ONBOARD_DATA="UserOnboardBiometricData";
-	
-	//Configuration Constants
-	public static final String AUDIT_LOG_DELETION_CONFIGURED_DAYS="AUDIT_LOG_DELETION_CONFIGURED_DAYS";
-	public static final String SYNC_TRANSACTION_NO_OF_DAYS_LIMIT="SYNC_TRANSACTION_NO_OF_DAYS_LIMIT";
-	public static final String REG_DELETION_CONFIGURED_DAYS="REG_DELETION_CONFIGURED_DAYS";
-	public static final String PRE_REG_DELETION_CONFIGURED_DAYS="PRE_REG_DELETION_CONFIGURED_DAYS";
-	
-	
-	
-	//Audit Constants
-	public static final String AUDIT_LOGS_DELETION_SUCESS_MSG="Audit Logs Deleted Successfully";
-	public static final String AUDIT_LOGS_DELETION_FLR_MSG="Audit Logs Deleted Failed";
-	public static final String AUDIT_LOGS_DELETION_EMPTY_MSG="No Audit Logs Found to be deleted";
-	
-	//Rest Authentication Constants
-	
+	public static final String USER_ON_BOARDING_SUCCESS_CODE = "REG-URE‌-002";
+	public static final String USER_ON_BOARDING_SUCCESS_MSG = "User on-boarded successfully.";
+	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_CODE = "REG-URE‌-008";
+	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG = "Threshold for number of successful authentications not met.";
+	public static final String USER_STATION_ID = "stationId";
+	public static final String USER_CENTER_ID = "centerId";
+	public static final String USER_MACHINE_VALIDATION_CODE = "REG-URE‌-009";
+	public static final String USER_MACHINE_VALIDATION_MSG = "This computer is not mapped to the same Registration Centre as the dongle plugged in.";
+	public static final String USER_ONBOARD_DATA = "UserOnboardBiometricData";
+
+	// Configuration Constants
+	public static final String AUDIT_LOG_DELETION_CONFIGURED_DAYS = "AUDIT_LOG_DELETION_CONFIGURED_DAYS";
+	public static final String SYNC_TRANSACTION_NO_OF_DAYS_LIMIT = "SYNC_TRANSACTION_NO_OF_DAYS_LIMIT";
+	public static final String REG_DELETION_CONFIGURED_DAYS = "REG_DELETION_CONFIGURED_DAYS";
+	public static final String PRE_REG_DELETION_CONFIGURED_DAYS = "PRE_REG_DELETION_CONFIGURED_DAYS";
+
+	// Audit Constants
+	public static final String AUDIT_LOGS_DELETION_SUCESS_MSG = "Audit Logs Deleted Successfully";
+	public static final String AUDIT_LOGS_DELETION_FLR_MSG = "Audit Logs Deleted Failed";
+	public static final String AUDIT_LOGS_DELETION_EMPTY_MSG = "No Audit Logs Found to be deleted";
+
+	// Rest Authentication Constants
+
 	public static final String USER_DTO = "userDTO";
 	public static final String REST_OAUTH = "oauth";
 	public static final String REST_OAUTH_USER_NAME = "userName";
@@ -1048,13 +1042,13 @@ public class RegistrationConstants {
 	public static final String REST_AUTHORIZATION = "authorization";
 	public static final String REST_RESPONSE_BODY = "responseBody";
 	public static final String REST_RESPONSE_HEADERS = "responseHeader";
-	
-	//Packet Sync
-	public static final String PACKET_SYNC="packet_sync";
-	
-	//Validations to ignore
 
-	public static List<String> fieldsToExclude(){
+	// Packet Sync
+	public static final String PACKET_SYNC = "packet_sync";
+
+	// Validations to ignore
+
+	public static List<String> fieldsToExclude() {
 		List<String> fieldToExclude = new ArrayList<String>();
 		fieldToExclude.add("preRegistrationId");
 		fieldToExclude.add("virtualKeyboard");
@@ -1063,15 +1057,18 @@ public class RegistrationConstants {
 		fieldToExclude.add("cniOrPinNumberLocalLanguage");
 		fieldToExclude.add("residence");
 		fieldToExclude.add("residenceLocalLanguage");
-		
+
 		return fieldToExclude;
-		
+
 	}
-	
-	//Virus Scan
+
+	// Virus Scan
 	public static final String VIRUS_SCAN_PACKET_NOT_FOUND = "FILE_NOT_PRESENT_FOR_SCAN";
 	public static final String VIRUS_SCAN_INFECTED_FILES = "Infected Files";
 	public static final String ANTIVIRUS_SERVICE_NOT_ACCESSIBLE = "Unable to access antivirus service";
 
+	// concent of applicant
+	public static final String CONCENT_OF_APPLICANT_SELECTED = "Yes";
+	public static final String CONCENT_OF_APPLICANT_UNSELECTED = "No";
 
 }

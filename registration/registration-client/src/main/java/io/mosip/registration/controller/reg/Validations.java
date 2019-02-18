@@ -13,7 +13,6 @@ import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -284,7 +283,7 @@ public class Validations extends BaseController {
 			RidValidator<String> ridValidator) {
 		if (!isChild)
 			return true;
-		if (field.getText().length() <= Integer.parseInt(AppConfig.getApplicationProperty("uin_length"))) {
+		if (field.getText().length() <= Integer.parseInt((String)ApplicationContext.map().get(RegistrationConstants.UIN_LENGTH))) {
 			try {
 				uinValidator.validateId(field.getText());
 			} catch (InvalidIDException invalidUinException) {

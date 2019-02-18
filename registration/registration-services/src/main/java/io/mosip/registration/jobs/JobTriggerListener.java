@@ -7,6 +7,7 @@ import org.quartz.listeners.TriggerListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
@@ -44,28 +45,26 @@ public class JobTriggerListener extends TriggerListenerSupport {
 	@Override
 	public synchronized void triggerMisfired(Trigger trigger) {
 
-		
 		LOGGER.info(LoggerConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger mis-fired started");
-		
+
 		/*
 		 * ------------------Trigger MisFired ---------------
 		 */
 		try {
-			//Insert SYNC Transaction
+			// Insert SYNC Transaction
 			syncTransactionManager.createSyncTransaction(RegistrationConstants.JOB_TRIGGER_MIS_FIRED,
 					RegistrationConstants.JOB_TRIGGER_MIS_FIRED, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
 					trigger.getKey().getName());
-		} catch (RegBaseUncheckedException  baseUncheckedException) {
+		} catch (RegBaseUncheckedException baseUncheckedException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, baseUncheckedException.getMessage());
+					RegistrationConstants.APPLICATION_ID,
+					baseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(baseUncheckedException));
 		}
 
 		LOGGER.info(LoggerConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger mis-fired ended");
 
-	
-		
 	}
 
 	@Override
@@ -76,43 +75,42 @@ public class JobTriggerListener extends TriggerListenerSupport {
 	@Override
 	public synchronized void triggerFired(Trigger trigger, JobExecutionContext context) {
 
-		
 		LOGGER.info(LoggerConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger fired started");
 
 		/* TRIGGER Fired */
 		try {
-			//Insert SYNC Transaction
+			// Insert SYNC Transaction
 			syncTransactionManager.createSyncTransaction(RegistrationConstants.JOB_TRIGGER_STARTED,
 					RegistrationConstants.JOB_TRIGGER_STARTED, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
 					jobManager.getJobId(context));
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
+					RegistrationConstants.APPLICATION_ID,
+					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
 		}
 		LOGGER.info(LoggerConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger fired ended");
 
-		
 	}
 
 	@Override
 	public synchronized void triggerComplete(Trigger trigger, JobExecutionContext context,
 			CompletedExecutionInstruction triggerInstructionCode) {
 
-		
 		LOGGER.info(LoggerConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger completed started");
 
 		try {
-			//Insert SYNC Transaction
+			// Insert SYNC Transaction
 			syncTransactionManager.createSyncTransaction(RegistrationConstants.JOB_TRIGGER_COMPLETED,
 					RegistrationConstants.JOB_TRIGGER_COMPLETED, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
 					jobManager.getJobId(context));
 
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
+					RegistrationConstants.APPLICATION_ID,
+					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
 		}
 
 		/*
@@ -121,7 +119,6 @@ public class JobTriggerListener extends TriggerListenerSupport {
 		LOGGER.info(LoggerConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger completed ended");
 
-		
 	}
 
 }

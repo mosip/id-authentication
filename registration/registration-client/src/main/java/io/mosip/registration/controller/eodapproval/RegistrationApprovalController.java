@@ -20,6 +20,7 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.ProcessNames;
@@ -42,10 +43,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -162,18 +161,18 @@ public class RegistrationApprovalController extends BaseController implements In
 	}
 
 	private void tableCellColorChangeListener() {
-		statusComment.setCellFactory(column ->{
-			return new TableCell<RegistrationApprovalDTO, String>(){
+		statusComment.setCellFactory(column -> {
+			return new TableCell<RegistrationApprovalDTO, String>() {
 				@Override
-	            public void updateItem(String item, boolean empty) {
-	                super.updateItem(item, empty);
-	                 setText(item);
-	                 if(item!=null && item.equals(RegistrationConstants.APPROVED)) {
-	                	 setTextFill(Color.GREEN);
-	                 }else if(item!=null && item.equals(RegistrationConstants.REJECTED)) {
-	                	 setTextFill(Color.RED);
-	                 }
-	            }
+				public void updateItem(String item, boolean empty) {
+					super.updateItem(item, empty);
+					setText(item);
+					if (item != null && item.equals(RegistrationConstants.APPROVED)) {
+						setTextFill(Color.GREEN);
+					} else if (item != null && item.equals(RegistrationConstants.REJECTED)) {
+						setTextFill(Color.RED);
+					}
+				}
 			};
 		});
 	}
@@ -250,7 +249,8 @@ public class RegistrationApprovalController extends BaseController implements In
 				webView.getEngine().loadContent(acknowledgementContent.toString());
 			} catch (IOException ioException) {
 				LOGGER.error("REGISTRATION_APPROVAL_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
-						APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+						APPLICATION_NAME, APPLICATION_ID,
+						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			}
 
 		}
@@ -365,7 +365,8 @@ public class RegistrationApprovalController extends BaseController implements In
 						"No of Authentication modes is empty");
 
 			} catch (RuntimeException runtimeException) {
-				LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage());
+				LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			}
 		}
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
@@ -397,13 +398,15 @@ public class RegistrationApprovalController extends BaseController implements In
 			this.primaryStage = primarystage;
 
 		} catch (IOException ioException) {
-			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
 					RegistrationExceptionConstants.REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
 		} catch (RuntimeException runtimeException) {
 
-			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage());
+			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
 			throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION, runtimeException.getMessage());
 		}
@@ -440,12 +443,14 @@ public class RegistrationApprovalController extends BaseController implements In
 			}
 		} catch (RegBaseCheckedException checkedException) {
 			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
-					"Error in sync and upload of packets" + checkedException.getMessage());
+					"Error in sync and upload of packets" + checkedException.getMessage()
+							+ ExceptionUtils.getStackTrace(checkedException));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.ERROR_IN_SYNC_AND_UPLOAD);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
-					"unable to sync and upload of packets" + runtimeException.getMessage());
+					"unable to sync and upload of packets" + runtimeException.getMessage()
+							+ ExceptionUtils.getStackTrace(runtimeException));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_SYNC_AND_UPLOAD);
 		}

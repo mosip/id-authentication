@@ -5,13 +5,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Objects;
+
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.registration.entity.mastersync.MasterSyncBaseEntity;
+import io.mosip.registration.entity.RegistrationCommonFields;
 
 /**
  * MapperUtils class provides methods to map or copy values from source object
@@ -258,7 +259,7 @@ public class MapperUtils {
 		String sourceSupername = source.getClass().getSuperclass().getName();// super class of source object
 		String destinationSupername = destination.getClass().getSuperclass().getName();// super class of destination
 																						// object
-		String baseEntityClassName = MasterSyncBaseEntity.class.getName();// base entity fully qualified name
+		String baseEntityClassName = RegistrationCommonFields.class.getName();// base entity fully qualified name
 
 		// if source is an entity
 		if (sourceSupername.equals(baseEntityClassName)) {

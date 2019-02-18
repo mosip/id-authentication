@@ -382,7 +382,9 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		metaData.add(buildFieldValue("previousRID", metaDataDTO.getPreviousRID()));
 		// Add Introducer Type
 		metaData.add(buildFieldValue("introducerType", registrationDTO.getOsiDataDTO().getIntroducerType()));
-
+		// Add consentOfApplicant 
+		metaData.add(buildFieldValue("consentOfApplicant", registrationDTO.getRegistrationMetaDataDTO().getConsentOfApplicant()));
+		
 		// Validate whether Introducer has provided UIN or RID
 		String introducerRID = null;
 		String introducerUIN = null;

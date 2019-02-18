@@ -12,7 +12,7 @@ import javax.persistence.Table;
  * @since 1.0.0
  */
 @Entity
-@Table(schema = "master", name = "TEMPLATE")
+@Table(schema = "reg", name = "TEMPLATE")
 public class Template extends TemplateCommonFields {
 
 	@Id
