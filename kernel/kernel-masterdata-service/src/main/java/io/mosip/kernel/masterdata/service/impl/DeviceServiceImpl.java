@@ -17,6 +17,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceHistory;
+import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -114,7 +115,7 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Override
 	@Transactional
-	public IdResponseDto createDevice(RequestDto<DeviceDto> deviceDto) {
+	public IdAndLanguageCodeID createDevice(RequestDto<DeviceDto> deviceDto) {
 		Device device = null;
 
 		Device entity = MetaDataUtils.setCreateMetaData(deviceDto.getRequest(), Device.class);
@@ -131,10 +132,13 @@ public class DeviceServiceImpl implements DeviceService {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
-		IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.map(device, idResponseDto);
+		/*IdResponseDto idResponseDto = new IdResponseDto();
+		MapperUtils.map(device, idResponseDto);*/
+		
+		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
+		MapperUtils.map(device, idAndLanguageCodeID);
 
-		return idResponseDto;
+		return idAndLanguageCodeID;
 
 	}
 
@@ -147,13 +151,12 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Override
 	@Transactional
-	public IdResponseDto updateDevice(RequestDto<DeviceDto> deviceRequestDto) {
-		Device oldDevice = null;
+	public IdAndLanguageCodeID updateDevice(RequestDto<DeviceDto> deviceRequestDto) {
 		Device entity = null;
 		Device updatedDevice = null;
 		try {
-			oldDevice = deviceRepository
-					.findByIdAndIsDeletedFalseOrIsDeletedIsNull(deviceRequestDto.getRequest().getId());
+			Device oldDevice = deviceRepository
+					.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(deviceRequestDto.getRequest().getId(), deviceRequestDto.getRequest().getLangCode());
 
 			if (oldDevice != null) {
 				entity = MetaDataUtils.setUpdateMetaData(deviceRequestDto.getRequest(), oldDevice, false);
@@ -175,9 +178,11 @@ public class DeviceServiceImpl implements DeviceService {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
-		IdResponseDto idResponseDto = new IdResponseDto();
-		idResponseDto.setId(entity.getId());
-		return idResponseDto;
+		
+		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
+		idAndLanguageCodeID.setId(entity.getId());
+		idAndLanguageCodeID.setLangCode(entity.getLangCode());
+		return idAndLanguageCodeID;
 	}
 
 	/*
