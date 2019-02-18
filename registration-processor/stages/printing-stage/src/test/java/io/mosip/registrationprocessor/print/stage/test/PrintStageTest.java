@@ -260,8 +260,6 @@ public class PrintStageTest {
 				.thenReturn(queue);
 		Mockito.when(mosipQueueManager.send(any(), any(), anyString())).thenReturn(true);
 
-		ctx = setContext();
-		PrintStageApplication.main(null);
 	}
 
 	/**
@@ -274,15 +272,9 @@ public class PrintStageTest {
 	 */
 	@Test
 	public void testAll() throws ApisResourceAccessException, IOException {
+		ctx = setContext();
+		PrintStageApplication.main(null);
 		testDeployVerticle();
-		testPrintStageSuccess();
-		testPrintStageFailure();
-		testUINNotFound();
-		testQueueConnectionNull();
-		testTemplateProcessingFailure();
-		testPDFGeneratorException();
-		testException();
-		testApiResourceException();
 		testSendMessage();
 		testResendPrintPdf();
 		testRoutes();
@@ -298,6 +290,7 @@ public class PrintStageTest {
 	/**
 	 * Test print stage success.
 	 */
+	@Test
 	public void testPrintStageSuccess() {
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
@@ -309,6 +302,7 @@ public class PrintStageTest {
 	/**
 	 * Test print stage failure.
 	 */
+	@Test
 	public void testPrintStageFailure() {
 		Mockito.when(mosipQueueManager.send(any(), any(), anyString())).thenReturn(false);
 
@@ -322,6 +316,7 @@ public class PrintStageTest {
 	/**
 	 * Test UIN not found.
 	 */
+	@Test
 	public void testUINNotFound() {
 		List<String> uinList = new ArrayList<>();
 		uinList.add(null);
@@ -337,6 +332,7 @@ public class PrintStageTest {
 	/**
 	 * Test queue connection null.
 	 */
+	@Test
 	public void testQueueConnectionNull() {
 		Mockito.when(mosipConnectionFactory.createConnection(anyString(), anyString(), anyString(), anyString()))
 				.thenReturn(null);
@@ -356,6 +352,7 @@ public class PrintStageTest {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
+	@Test
 	public void testTemplateProcessingFailure() throws ApisResourceAccessException, IOException {
 		TemplateProcessingFailureException e = new TemplateProcessingFailureException();
 		Mockito.doThrow(e).when(templateGenerator).getTemplate(any(), any(), anyString());
@@ -370,6 +367,7 @@ public class PrintStageTest {
 	/**
 	 * Test PDF generator exception.
 	 */
+	@Test
 	public void testPDFGeneratorException() {
 		PDFGeneratorException e = new PDFGeneratorException(null, null);
 		Mockito.doThrow(e).when(uinCardGenerator).generateUinCard(any(), any());
@@ -387,6 +385,7 @@ public class PrintStageTest {
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 */
+	@Test
 	public void testException() throws ApisResourceAccessException {
 		LinkedHashMap<String, Object> identityMap = new LinkedHashMap<>();
 		Object identity = identityMap;
@@ -408,6 +407,7 @@ public class PrintStageTest {
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 */
+	@Test
 	public void testApiResourceException() throws ApisResourceAccessException {
 		ApisResourceAccessException e = new ApisResourceAccessException();
 		Mockito.doThrow(e).when(restClientService).getApi(any(), any(), any(), any(), any());
@@ -464,7 +464,6 @@ public class PrintStageTest {
 	 */
 	private HttpPost getHttpPost(String url) throws UnsupportedEncodingException {
 		HttpPost httpPost = new HttpPost(url);
-
 		String json = "{'regId':'51130282650000320190117144316'}";
 		StringEntity entity = new StringEntity(json);
 		httpPost.setEntity(entity);
