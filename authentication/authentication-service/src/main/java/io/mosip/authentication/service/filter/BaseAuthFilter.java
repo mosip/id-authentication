@@ -328,7 +328,7 @@ public abstract class BaseAuthFilter implements Filter {
 				.toMillis();
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
 				"Time difference between request and response in millis:" + duration
-						+ ".  Time difference between request and response in Seconds: " + (duration / 1000));
+						+ ".  Time difference between request and response in Seconds: " + ((double) duration / 1000));
 	}
 
 	/**
