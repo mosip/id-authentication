@@ -13,6 +13,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
+import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
@@ -52,7 +53,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	 * createMachineSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdResponseDto createMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification) {
+	public IdAndLanguageCodeID createMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification) {
 
 		MachineSpecification renMachineSpecification = new MachineSpecification();
 
@@ -66,10 +67,13 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
-		IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.map(renMachineSpecification, idResponseDto);
+		/*IdResponseDto idResponseDto = new IdResponseDto();
+		MapperUtils.map(renMachineSpecification, idResponseDto);*/
+		
+		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
+		MapperUtils.map(renMachineSpecification, idAndLanguageCodeID);
 
-		return idResponseDto;
+		return idAndLanguageCodeID;
 
 	}
 
