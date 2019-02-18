@@ -585,4 +585,13 @@ public class RestHelperTest {
 		restHelper.requestSync(restRequest);
 	}
 	
+	@Test(expected = RestServiceException.class)
+	public void ztestRequestSyncCheckForErrorsUnknownError() throws Throwable {
+		try {
+			ReflectionTestUtils.invokeMethod(restHelper, "checkErrorResponse", "args", null);
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+	
 }
