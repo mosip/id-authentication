@@ -52,7 +52,7 @@ public class ManualVerificationRequestValidator{
 	Logger mosipLogger = RegProcessorLogger.getLogger(ManualVerificationRequestValidator.class);
 
 	/** The Constant ID_REPO_SERVICE. */
-	private static final String ID_REPO_SERVICE = "IdRepoService";
+	private static final String MAN_VERI_SERVICE = "ManualVerificationService";
 
 	/** The Constant TIMESTAMP. */
 	private static final String TIMESTAMP = "timestamp";
@@ -149,7 +149,7 @@ public class ManualVerificationRequestValidator{
 
 				}
 			} catch (IllegalArgumentException e) {
-				mosipLogger.error(ID_REPO_SERVICE, "IdRequestValidator", "validateReqTime",
+				mosipLogger.error(MAN_VERI_SERVICE, "ManReqRequestValidator", "validateReqTime",
 						"\n" + ExceptionUtils.getStackTrace(e));
 				throw new ManualVerificationAppException(PlatformErrorMessages.RPR_MVS_INVALID_INPUT_PARAMETER_TIMESTAMP,exception);
 				}

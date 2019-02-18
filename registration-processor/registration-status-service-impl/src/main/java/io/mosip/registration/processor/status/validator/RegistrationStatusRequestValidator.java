@@ -9,23 +9,22 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.format.datetime.joda.DateTimeFormatterFactory;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.status.dto.RegistrationStatusRequestDTO;
-import io.mosip.registration.processor.status.dto.RegistrationSyncRequestDTO;
+import io.mosip.registration.processor.status.exception.RegStatusAppException;
+import io.mosip.registration.processor.status.exception.RegStatusValidationException;
+import io.vertx.core.json.JsonObject;
 
 /**
  * The Class RegistrationStatusRequestValidator.
  * @author Rishabh Keshari
  */
 @Component
-public class RegistrationStatusRequestValidator implements Validator {
+public class RegistrationStatusRequestValidator{
 
 	/** The Constant VER. */
 	private static final String VER = "version";
@@ -40,10 +39,10 @@ public class RegistrationStatusRequestValidator implements Validator {
 	private static final String DATETIME_PATTERN = "mosip.kernel.idrepo.datetime.pattern";
 
 	/** The mosip logger. */
-	Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationStatusRequestValidator.class);
+	Logger mosipLogger = RegProcessorLogger.getLogger(RegistrationStatusRequestValidator.class);
 
-	/** The Constant ID_REPO_SERVICE. */
-	private static final String REGISTRATION_SERVICE = "RegistrationService";
+	/** The Constant REG_STATUS_SERVICE. */
+	private static final String REG_STATUS_SERVICE = "RegStatusService";
 
 	/** The Constant TIMESTAMP. */
 	private static final String TIMESTAMP = "timestamp";
@@ -56,126 +55,94 @@ public class RegistrationStatusRequestValidator implements Validator {
 	private Environment env;
 
 	/** The id. */
-//	@Resource
+	//	@Resource
 	private Map<String, String> id=new HashMap<>();
 
-	/** The clazz type. */
-	private boolean clazzType=false;
-	
 
-	/* (non-Javadoc)
-	 * @see org.springframework.validation.Validator#supports(java.lang.Class)
+	/**
+	 * Validate.
+	 *
+	 * @param obj the obj
+	 * @param serviceId the service id
+	 * @throws ManualVerificationAppException the manual verification app exception
 	 */
-	@Override
-	public boolean supports(Class<?> clazz) {
-		
-		
-		if(clazz.isAssignableFrom(RegistrationStatusRequestDTO.class)) {
-			id.put("status", "mosip.registration.status");
-			clazzType=true;
-			return clazz.isAssignableFrom(RegistrationStatusRequestDTO.class);
-		}else {
-			id.put("sync", "mosip.registration.sync");
-			return clazz.isAssignableFrom(RegistrationSyncRequestDTO.class);
-		}
-		
+	public void validate(RegistrationStatusRequestDTO registrationStatusRequestDTO,String serviceId) throws RegStatusAppException{
+		id.put("status", serviceId);
+		validateId(registrationStatusRequestDTO.getId());
+		validateVersion(registrationStatusRequestDTO.getVersion());
+		validateReqTime(registrationStatusRequestDTO.getTimestamp());
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
-	 */
-	@Override
-	public void validate(@NonNull Object target, Errors errors) {
-		if(clazzType) {
-		RegistrationStatusRequestDTO request = (RegistrationStatusRequestDTO) target;
-		
-		validateReqTime(request.getTimestamp(), errors);
 
-		if (!errors.hasErrors()) {
-			validateId(request.getId(), errors);
-			validateVersion(request.getVersion(), errors);
-		}
-		}else {
-			RegistrationSyncRequestDTO request = (RegistrationSyncRequestDTO) target;
-			validateReqTime(request.getTimestamp(), errors);
 
-			if (!errors.hasErrors()) {
-				validateId(request.getId(), errors);
-				validateVersion(request.getVersion(), errors);
-			}
-			
-		}
-	}
+
 
 	/**
 	 * Validate id.
 	 *
-	 * @param id
-	 *            the id
-	 * @param errors
-	 *            the errors
+	 * @param id            the id
+	 * @throws ManualVerificationAppException the manual verification app exception
 	 */
-	private void validateId(String id, Errors errors) {
+	private void validateId(String id) throws RegStatusAppException {
+		RegStatusValidationException exception = new RegStatusValidationException();
+		
 		if (Objects.isNull(id)) {
-			errors.rejectValue(ID_FIELD, PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getCode(),
-					String.format(PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getMessage(), ID_FIELD));
+			
+			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER_ID,exception);
 		} else if (!this.id.containsValue(id)) {
-			errors.rejectValue(ID_FIELD, PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getCode(),
-					String.format(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getMessage(), ID_FIELD));
+
+			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER_ID,exception);
+		
 		}
 	}
 
 	/**
 	 * Validate ver.
 	 *
-	 * @param ver
-	 *            the ver
-	 * @param errors
-	 *            the errors
+	 * @param ver            the ver
+	 * @throws ManualVerificationAppException the manual verification app exception
 	 */
-	private void validateVersion(String ver, Errors errors) {
+	private void validateVersion(String ver) throws RegStatusAppException {
+		RegStatusValidationException exception = new RegStatusValidationException();
+		
 		if (Objects.isNull(ver)) {
-			errors.rejectValue(VER, PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getCode(),
-					String.format(PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getMessage(), VER));
+			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER_VERSION,exception);
+			
 		} else if ((!verPattern.matcher(ver).matches())) {
-			errors.rejectValue(VER, PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getCode(),
-					String.format(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getMessage(), VER));
-		}
+			
+			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER_VERSION,exception);
+			}
 	}
 
-	
+
 	/**
 	 * Validate req time.
 	 *
-	 * @param timestamp
-	 *            the timestamp
-	 * @param errors
-	 *            the errors
+	 * @param timestamp            the timestamp
+	 * @throws ManualVerificationAppException the manual verification app exception
 	 */
-	private void validateReqTime(String timestamp, Errors errors) {
+	private void validateReqTime(String timestamp) throws RegStatusAppException {
+		RegStatusValidationException exception = new RegStatusValidationException();
+		
 		if (Objects.isNull(timestamp)) {
-			errors.rejectValue(TIMESTAMP, PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getCode(),
-					String.format(PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER.getMessage(), TIMESTAMP));
-		} else {
+			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER_TIMESTAMP,exception);
+			
+			} else {
 			try {
 				if (Objects.nonNull(env.getProperty(DATETIME_PATTERN))) {
 					DateTimeFormatterFactory timestampFormat = new DateTimeFormatterFactory(
 							env.getProperty(DATETIME_PATTERN));
 					timestampFormat.setTimeZone(TimeZone.getTimeZone(env.getProperty(DATETIME_TIMEZONE)));
 					if (!DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter()).isBeforeNow()) {
-						errors.rejectValue(TIMESTAMP, PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getCode(),
-								String.format(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getMessage(),
-										TIMESTAMP));
-					}
+						throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER_TIMESTAMP,exception);
+							}
 
 				}
 			} catch (IllegalArgumentException e) {
-				regProcLogger.error(REGISTRATION_SERVICE, "RegistrationStatusRequestValidator", "validateReqTime",
+				mosipLogger.error(REG_STATUS_SERVICE, "IdRequestValidator", "validateReqTime",
 						"\n" + ExceptionUtils.getStackTrace(e));
-				errors.rejectValue(TIMESTAMP, PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getCode(),
-						String.format(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getMessage(), TIMESTAMP));
-			}
+				throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER_TIMESTAMP,exception);
+				}
 		}
 	}
 

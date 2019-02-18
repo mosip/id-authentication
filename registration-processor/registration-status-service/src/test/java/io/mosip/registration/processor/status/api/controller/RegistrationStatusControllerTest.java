@@ -128,8 +128,8 @@ public class RegistrationStatusControllerTest {
 	@Test
 	public void searchSuccessTest() throws Exception {
 		this.mockMvc.perform(MockMvcRequestBuilders
-				.post("/v0.1/registration-processor/registration-status/registrationstatus")
-				.content(regStatusToJson).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
+				.get("/v0.1/registration-processor/registration-status/registrationstatus")
+				.param("request", regStatusToJson).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 	
@@ -141,7 +141,7 @@ public class RegistrationStatusControllerTest {
 	@Test
 	public void searchFailureTest() throws Exception {
 		this.mockMvc.perform(MockMvcRequestBuilders
-				.post("/v0.1/registration-processor/registration-status/registrationstatus").accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
+				.get("/v0.1/registration-processor/registration-status/registrationstatus").accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
 				.andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
 

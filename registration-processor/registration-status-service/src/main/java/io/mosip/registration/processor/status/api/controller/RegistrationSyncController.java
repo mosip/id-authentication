@@ -27,7 +27,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 import io.mosip.registration.processor.status.sync.response.dto.RegSyncResponseDTO;
 import io.mosip.registration.processor.status.utilities.RegStatusValidationUtil;
-import io.mosip.registration.processor.status.validator.RegistrationStatusRequestValidator;
+import io.mosip.registration.processor.status.validator.RegistrationSyncRequestValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -53,7 +53,7 @@ public class RegistrationSyncController {
 
 	/** The validator. */
 	@Autowired
-	private RegistrationStatusRequestValidator validator;
+	private RegistrationSyncRequestValidator validator;
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {

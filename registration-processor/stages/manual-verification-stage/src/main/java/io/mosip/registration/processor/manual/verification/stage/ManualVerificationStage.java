@@ -10,12 +10,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.verification.exception.ManualVerificationAppException;
@@ -59,6 +63,8 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 	 */
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(ManualVerificationStage.class);
 
 	private static final String ASSIGNMENT_SERVICE_ID = "mosip.manual.verification.assignment";
 	private static final String DECISION_SERVICE_ID = "mosip.manual.verification.decision";
@@ -158,7 +164,6 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 				this.setResponse(ctx, buildBioDemoSuccessResponse(byteAsString,BIOMETRIC_SERVICE_ID),APPLICATION_JSON);
 			}
 		} catch (ManualVerificationAppException e) {
-
 			this.setResponse(ctx,buildManualExceptionResponse(e,BIOMETRIC_SERVICE_ID),APPLICATION_JSON);
 		}
 	}
@@ -341,7 +346,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(DATETIME_PATTERN));
 		response.setVersion(MVS_APPLICATION_VERSION);
 		response.setResponse(packetMetaInfo);
-		Gson gson = new GsonBuilder().serializeNulls().registerTypeAdapter(ManualVerificationPacketResponseDTO.class, new ManualVerificationReqRespJsonSerializer()).create();
+		Gson gson = new GsonBuilder().serializeNulls().create();
 		return gson.toJson(response);
 	}
 }
