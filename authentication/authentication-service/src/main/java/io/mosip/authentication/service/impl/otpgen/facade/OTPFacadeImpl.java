@@ -75,8 +75,6 @@ public class OTPFacadeImpl implements OTPFacade {
 	@Autowired
 	private IdInfoHelper idInfoHelper;
 
-	@Autowired
-	IdRepoService idInfoService;
 
 	@Autowired
 	private NotificationService notificationService;
@@ -136,7 +134,7 @@ public class OTPFacadeImpl implements OTPFacade {
 			otpResponseDTO.setTxnID(txnId);
 			status = "Y";
 			comment = "OTP_GENERATED";
-			Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(idResDTO);
+			Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
 			mobileNumber = getMobileNumber(idInfo);
 			email = getEmail(idInfo);
 			String responseTime = formatDate(new Date(), env.getProperty(DATETIME_PATTERN));

@@ -104,7 +104,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	private Environment env;
 	/** The Id Info Service */
 	@Autowired
-	private IdRepoService idInfoService;
+	private IdAuthService idInfoService;
 	/** The Demo Auth Service */
 	@Autowired
 	private DemoAuthService demoAuthService;

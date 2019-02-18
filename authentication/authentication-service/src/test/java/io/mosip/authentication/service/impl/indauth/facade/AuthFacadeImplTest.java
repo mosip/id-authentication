@@ -118,7 +118,7 @@ public class AuthFacadeImplTest {
 	private IdInfoHelper demoHelper;
 	/** The IdRepoService **/
 	@Mock
-	private IdRepoService idInfoService;
+	private IdAuthService idInfoService;
 	/** The DemoAuthService **/
 	@Mock
 	private DemoAuthService demoAuthService;

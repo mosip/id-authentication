@@ -1,7 +1,9 @@
 package io.mosip.authentication.core.spi.id.service;
 
+import java.util.List;
 import java.util.Map;
 
+import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 /**
@@ -59,4 +61,16 @@ public interface IdAuthService<T> {
 	 *                                           exception
 	 */
 	public void saveAutnTxn(T t) throws IdAuthenticationBusinessException;
+	
+	
+	/**
+	 * Method to get Identity info.
+	 *
+	 * @param idResponseDTO the id response DTO
+	 * @return the id info
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
+	Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO)
+			throws IdAuthenticationBusinessException;
 }

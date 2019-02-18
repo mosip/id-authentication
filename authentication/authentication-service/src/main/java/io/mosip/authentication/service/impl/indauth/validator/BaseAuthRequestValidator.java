@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -32,18 +31,18 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.PinType;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
-import io.mosip.authentication.service.impl.indauth.service.demo.DOBMatchingStrategy;
 import io.mosip.authentication.service.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
-import io.mosip.authentication.service.impl.indauth.service.demo.GenderType;
 import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
+import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.authentication.service.validator.IdAuthValidator;
 import io.mosip.kernel.core.datavalidator.exception.InvalidPhoneNumberException;
 import io.mosip.kernel.core.datavalidator.exception.InvalideEmailException;
@@ -155,6 +154,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The id info helper. */
 	@Autowired
 	protected IdInfoHelper idInfoHelper;
+	
+	@Autowired
+	private MasterDataManager masterDataManager;
 
 	/*
 	 * (non-Javadoc)
@@ -1007,9 +1009,21 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	private void checkGender(AuthRequestDTO authRequest, Errors errors) {
 		List<IdentityInfoDTO> genderList = DemoMatchType.GENDER
 				.getIdentityInfoList(authRequest.getRequest().getIdentity());
-		if (genderList != null) {
+		Map<String, List<String>> fetchGenderType = null;
+		try {
+			fetchGenderType = masterDataManager.fetchGenderType();
+		} catch (IdAuthenticationBusinessException e) {
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
+					"Master Data util failed to load - Gender Type");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorCode(),
+					new Object[] { "gender" },
+					IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorMessage());
+		}
+		if (genderList != null && fetchGenderType != null) {
 			for (IdentityInfoDTO identityInfoDTO : genderList) {
-				if (!GenderType.isTypePresent(identityInfoDTO.getValue())) {
+				String language = identityInfoDTO.getLanguage() != null ? identityInfoDTO.getLanguage() : env.getProperty(PRIMARY_LANG_CODE);				
+				List<String> genderTypeList = fetchGenderType.get(language);
+				if (null != genderTypeList && !genderTypeList.contains(identityInfoDTO.getValue())) {
 					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
 							"Demographic data – Gender(pi) did not match");
 					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),

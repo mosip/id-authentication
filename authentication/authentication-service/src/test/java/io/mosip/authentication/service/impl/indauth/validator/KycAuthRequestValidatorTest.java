@@ -38,6 +38,7 @@ import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
@@ -78,6 +79,9 @@ public class KycAuthRequestValidatorTest {
 
 	@Autowired
 	Environment env;
+	
+	@Mock
+	private MasterDataManager masterDataManager;
 
 	@Before
 	public void before() {

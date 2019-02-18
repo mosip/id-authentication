@@ -46,7 +46,7 @@ import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.core.spi.id.service.IdRepoService;
+import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.IdInfoHelper;
@@ -81,7 +81,7 @@ public class NotificationServiceImplTest {
 	private IdTemplateManager idTemplateManager;
 
 	@Mock
-	private IdRepoService idInfoService;
+	private IdAuthService idInfoService;
 
 	@Mock
 	private IdInfoHelper demoHelper;

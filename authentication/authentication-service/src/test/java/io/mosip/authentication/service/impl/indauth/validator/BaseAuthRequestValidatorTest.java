@@ -47,6 +47,7 @@ import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.kernel.core.datavalidator.exception.InvalidPhoneNumberException;
 import io.mosip.kernel.core.datavalidator.exception.InvalideEmailException;
 import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
@@ -100,6 +101,9 @@ public class BaseAuthRequestValidatorTest {
 
 	/** The error. */
 	Errors error;
+	
+	@Mock
+	private MasterDataManager masterDataManager;
 
 	/**
 	 * Before.
@@ -113,6 +117,7 @@ public class BaseAuthRequestValidatorTest {
 		ReflectionTestUtils.setField(baseAuthRequestValidator, "env", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
+		ReflectionTestUtils.setField(baseAuthRequestValidator, "masterDataManager", masterDataManager);
 
 	}
 
