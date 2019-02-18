@@ -18,6 +18,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
@@ -28,7 +29,6 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.BiometricExceptionController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.device.fp.FingerprintFacade;
-import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -181,19 +181,19 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					if ((leftHandPalmPane.getId().equals(selectedPane.getId()) && leftSlapCount < 4)
 							&& (fpDetailsDTO == null || (fpDetailsDTO.getFingerType()
 									.equals(RegistrationConstants.LEFTPALM)
-									&& fpDetailsDTO.getQualityScore() < Double.parseDouble(getValueFromSessionMap(
+									&& fpDetailsDTO.getQualityScore() < Double.parseDouble(getValueFromApplicationContext(
 											RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD))))
 							|| (rightHandPalmPane.getId().equals(selectedPane.getId()) && rightSlapCount < 4)
 									&& (fpDetailsDTO == null || (fpDetailsDTO.getFingerType()
 											.equals(RegistrationConstants.RIGHTPALM)
 											&& fpDetailsDTO.getQualityScore() < Double
-													.parseDouble(getValueFromSessionMap(
+													.parseDouble(getValueFromApplicationContext(
 															RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD))))
 							|| (thumbPane.getId().equals(selectedPane.getId()) && thumbCount < 2)
 									&& (fpDetailsDTO == null || (fpDetailsDTO.getFingerType()
 											.equals(RegistrationConstants.THUMBS)
 											&& fpDetailsDTO.getQualityScore() < Double
-													.parseDouble(getValueFromSessionMap(
+													.parseDouble(getValueFromApplicationContext(
 															RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD))))) {
 						scanBtn.setDisable(false);
 					}
@@ -206,13 +206,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			thumbPane.setOnMouseClicked(mouseClick);
 
 			leftSlapThresholdScoreLbl.setText(getQualityScore(
-					Double.parseDouble(getValueFromSessionMap(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD))));
+					Double.parseDouble(getValueFromApplicationContext(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD))));
 
 			rightSlapThresholdScoreLbl.setText(getQualityScore(
-					Double.parseDouble(getValueFromSessionMap(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD))));
+					Double.parseDouble(getValueFromApplicationContext(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD))));
 
 			thumbsThresholdScoreLbl.setText(getQualityScore(
-					Double.parseDouble(getValueFromSessionMap(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD))));
+					Double.parseDouble(getValueFromApplicationContext(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD))));
 
 			loadingImageFromSessionContext();
 
@@ -224,11 +224,11 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format(
 							"%s -> Exception while initializing Fingerprint Capture page for user registration  %s",
-							RegistrationConstants.USER_REG_FINGERPRINT_PAGE_LOAD_EXP, runtimeException.getMessage()));
+							RegistrationConstants.USER_REG_FINGERPRINT_PAGE_LOAD_EXP, runtimeException.getMessage()+ ExceptionUtils.getStackTrace(runtimeException)));
 
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_FINGERPRINT_PAGE_LOAD_EXP,
 					String.format("Exception while initializing Fingerprint Capture page for user registration  %s",
-							runtimeException.getMessage()));
+							runtimeException.getMessage()+ ExceptionUtils.getStackTrace(runtimeException)));
 		}
 	}
 
@@ -412,7 +412,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			FingerprintDetailsDTO fpDetailsDTO = getFingerprintBySelectedPane().findFirst().orElse(null);
 
 			if ((fpDetailsDTO == null || fpDetailsDTO.getNumRetry() < Integer
-					.parseInt(getValueFromSessionMap(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)))
+					.parseInt(getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)))
 					|| ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER))) {
 
 				scanPopUpViewController.init(this, RegistrationConstants.FINGERPRINT);
@@ -426,7 +426,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
 					"%s -> Exception while Opening pop-up screen to capture fingerprint for user registration  %s",
-					RegistrationConstants.USER_REG_FINGERPRINT_CAPTURE_POPUP_LOAD_EXP, runtimeException.getMessage()));
+					RegistrationConstants.USER_REG_FINGERPRINT_CAPTURE_POPUP_LOAD_EXP, runtimeException.getMessage()+ ExceptionUtils.getStackTrace(runtimeException)));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_FINGERPRINT_SCAN_POPUP);
 		}
@@ -485,14 +485,14 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format(
 							"Exception while getting the scanned Finger details for user registration: %s caused by %s",
-							runtimeException.getMessage(), runtimeException.getCause()));
+							runtimeException.getMessage(), runtimeException.getCause()+ ExceptionUtils.getStackTrace(runtimeException)+ ExceptionUtils.getStackTrace(runtimeException)));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_SCANNING_ERROR);
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format(
 							"Exception while getting the scanned Finger details for user registration: %s caused by %s",
-							regBaseCheckedException.getMessage(), regBaseCheckedException.getCause()));
+							regBaseCheckedException.getMessage(), regBaseCheckedException.getCause()+ ExceptionUtils.getStackTrace(regBaseCheckedException)));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_SCANNING_ERROR);
 		}
@@ -552,14 +552,14 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format(
 							"Exception while getting the scanned Finger details for user registration: %s caused by %s",
-							runtimeException.getMessage(), runtimeException.getCause()));
+							runtimeException.getMessage(), runtimeException.getCause()+ ExceptionUtils.getStackTrace(runtimeException)));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_SCANNING_ERROR);
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format(
 							"Exception while getting the scanned Finger details for user registration: %s caused by %s",
-							regBaseCheckedException.getMessage(), regBaseCheckedException.getCause()));
+							regBaseCheckedException.getMessage(), regBaseCheckedException.getCause()+ ExceptionUtils.getStackTrace(regBaseCheckedException)));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_SCANNING_ERROR);
 		}
@@ -667,7 +667,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s -> Exception while navigating to Iris capture page for user registration  %s",
 							RegistrationConstants.USER_REG_FINGERPRINT_CAPTURE_NEXT_SECTION_LOAD_EXP,
-							runtimeException.getMessage()));
+							runtimeException.getMessage()+ ExceptionUtils.getStackTrace(runtimeException)));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_NAVIGATE_NEXT_SECTION_ERROR);
 		}
@@ -710,7 +710,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					String.format(
 							"%s -> Exception while navigating to Demographic capture page for user registration  %s",
 							RegistrationConstants.USER_REG_FINGERPRINT_CAPTURE_PREV_SECTION_LOAD_EXP,
-							runtimeException.getMessage()));
+							runtimeException.getMessage()+ ExceptionUtils.getStackTrace(runtimeException)));
 
 			generateAlert(RegistrationConstants.ERROR,
 					RegistrationUIConstants.FINGERPRINT_NAVIGATE_PREVIOUS_SECTION_ERROR);
@@ -816,7 +816,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			return isValid;
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					runtimeException.getMessage());
+					runtimeException.getMessage()+ ExceptionUtils.getStackTrace(runtimeException));
 
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_FINGERPRINT_VALIDATION_EXP,
 					String.format("Exception while validating the captured fingerprints of individual: %s caused by %s",
@@ -836,27 +836,27 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					"Validating quality score of captured fingerprints started");
 			if (fingerprintDetailsDTO.getFingerType().equals(RegistrationConstants.LEFTPALM)) {
 				return fingerprintDetailsDTO.getQualityScore() >= Double
-						.parseDouble(getValueFromSessionMap(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD))
+						.parseDouble(getValueFromApplicationContext(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD))
 						|| (fingerprintDetailsDTO.getQualityScore() < Double.parseDouble(
-								getValueFromSessionMap(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD))
+								getValueFromApplicationContext(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD))
 								&& fingerprintDetailsDTO.getNumRetry() == Integer.parseInt(
-										getValueFromSessionMap(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)))
+										getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)))
 						|| fingerprintDetailsDTO.isForceCaptured();
 			} else if (fingerprintDetailsDTO.getFingerType().equals(RegistrationConstants.RIGHTPALM)) {
 				return fingerprintDetailsDTO.getQualityScore() >= Double
-						.parseDouble(getValueFromSessionMap(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD))
+						.parseDouble(getValueFromApplicationContext(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD))
 						|| (fingerprintDetailsDTO.getQualityScore() < Double.parseDouble(
-								getValueFromSessionMap(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD))
+								getValueFromApplicationContext(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD))
 								&& fingerprintDetailsDTO.getNumRetry() == Integer.parseInt(
-										getValueFromSessionMap(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)))
+										getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)))
 						|| fingerprintDetailsDTO.isForceCaptured();
 			} else if (fingerprintDetailsDTO.getFingerType().equals(RegistrationConstants.THUMBS)) {
 				return fingerprintDetailsDTO.getQualityScore() >= Double
-						.parseDouble(getValueFromSessionMap(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD))
+						.parseDouble(getValueFromApplicationContext(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD))
 						|| (fingerprintDetailsDTO.getQualityScore() < Double
-								.parseDouble(getValueFromSessionMap(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD))
+								.parseDouble(getValueFromApplicationContext(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD))
 								&& fingerprintDetailsDTO.getNumRetry() == Integer.parseInt(
-										getValueFromSessionMap(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)))
+										getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)))
 						|| fingerprintDetailsDTO.isForceCaptured();
 			}
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -864,7 +864,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			return false;
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					runtimeException.getMessage());
+					runtimeException.getMessage()+ ExceptionUtils.getStackTrace(runtimeException));
 
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_FINGERPRINT_SCORE_VALIDATION_EXP,
 					String.format(
@@ -898,15 +898,11 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		});
 	}
 
-	private RegistrationDTO getRegistrationDTOFromSession() {
-		return (RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
-	}
-
 	private BiometricDTO getBiometricDTOFromSession() {
 		return (BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA);
 	}
 
-	private String getValueFromSessionMap(String key) {
+	private String getValueFromApplicationContext(String key) {
 		return (String) applicationContext.getApplicationMap().get(key);
 	}
 
@@ -923,13 +919,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			Parent createRoot = BaseController.load(getClass().getResource(page));
 			mainBox.getChildren().add(createRoot);
 			getScene(mainBox).setRoot(mainBox);
-		} catch (IOException exception) {
+		} catch (IOException ioException) {
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage());
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					runtimeException.getMessage());
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 }

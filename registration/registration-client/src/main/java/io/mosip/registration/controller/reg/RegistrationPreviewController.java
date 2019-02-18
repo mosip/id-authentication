@@ -18,7 +18,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.template.TemplateService;
@@ -37,7 +36,7 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 	@FXML
 	private WebView webView;
-	
+
 	@FXML
 	private CheckBox consentOfApplicant;
 
@@ -55,26 +54,23 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 	@Autowired
 	private RegistrationPreviewController previewController;
-	
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		consentOfApplicant.setSelected(true);
 	}
-		
+
 	@FXML
 	public void goToNextPage(ActionEvent event) {
-		if(consentOfApplicant.isSelected()) {
-			getRegistrationDtoContent().getRegistrationMetaDataDTO().setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_SELECTED);
-		}else {
-			getRegistrationDtoContent().getRegistrationMetaDataDTO().setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_UNSELECTED);
+		if (consentOfApplicant.isSelected()) {
+			getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
+					.setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_SELECTED);
+		} else {
+			getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
+					.setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_UNSELECTED);
 		}
 		SessionContext.map().put("registrationPreview", false);
-		registrationController.goToAuthenticationPage();		
-	}
-
-	private RegistrationDTO getRegistrationDTOFromSession() {
-		return (RegistrationDTO) SessionContext.map()
-				.get(RegistrationConstants.REGISTRATION_DATA);
+		registrationController.goToAuthenticationPage();
 	}
 
 	protected void setUpPreviewContent() {
@@ -116,10 +112,5 @@ public class RegistrationPreviewController extends BaseController implements Ini
 		SessionContext.map().put("fingerPrintCapture", true);
 		SessionContext.map().put("registrationPreview", false);
 		registrationController.showCurrentPage();
-	}
-	
-	public RegistrationDTO getRegistrationDtoContent() {
-		return (RegistrationDTO) SessionContext.map()
-				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
 }

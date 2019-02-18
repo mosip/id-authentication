@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -28,7 +29,6 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
-import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
@@ -104,6 +104,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private BufferedImage applicantBufferedImage;
 	private BufferedImage exceptionBufferedImage;
 	private Image defaultImage;
+	private Image defaultExceptionImage;
 	private boolean applicantImageCaptured;
 	private boolean exceptionImageCaptured;
 	private Stage popupStage;
@@ -116,8 +117,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 				"Loading of FaceCapture screen started");
 
 		takePhoto.setDisable(true);
-		applicantImage.setPreserveRatio(true);
-		exceptionImage.setPreserveRatio(true);
+		defaultExceptionImage = new Image(getClass().getResourceAsStream("/images/ExceptionPhoto.png"));
+		exceptionImage.setImage(defaultExceptionImage);
 		if (capturePhotoUsingDevice.equals(RegistrationConstants.ENABLE)
 				|| (boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			// for applicant biometrics
@@ -160,6 +161,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	private void initialize() {
 		defaultImage = applicantImage.getImage();
+		defaultExceptionImage = exceptionImage.getImage();
 		applicantImageCaptured = false;
 		exceptionImageCaptured = false;
 		exceptionBufferedImage = null;
@@ -169,7 +171,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 * 
 	 * To open camera for the type of image that is to be captured
 	 * 
-	 * @param imageType type of image that is to be captured
+	 * @param imageType
+	 *            type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -196,7 +199,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 				primaryStage.show();
 			} catch (IOException ioException) {
 				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
+						RegistrationConstants.APPLICATION_ID,
+						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			}
 		} else {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.WEBCAM_ALERT_CONTEXT);
@@ -232,7 +236,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 							popupStage.show();
 						} catch (IOException exception) {
 							LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-									exception.getMessage());
+									exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 							generateAlert(RegistrationConstants.ERROR,
 									RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
 						}
@@ -284,7 +288,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 			} catch (RuntimeException runtimeException) {
 				LOGGER.error("REGISTRATION - COULD NOT GO TO DEMOGRAPHIC TITLE PANE ", APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+						RegistrationConstants.APPLICATION_ID,
+						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			}
 		}
 	}
@@ -314,7 +319,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 				}
 			} catch (Exception ioException) {
 				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
+						RegistrationConstants.APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			}
 		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE)) {
 
@@ -337,7 +342,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 			applicantBufferedImage = null;
 			applicantImageCaptured = false;
 		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE) && exceptionBufferedImage != null) {
-			exceptionImage.setImage(defaultImage);
+			exceptionImage.setImage(defaultExceptionImage);
 			exceptionBufferedImage = null;
 			exceptionImageCaptured = false;
 		}
@@ -388,13 +393,9 @@ public class FaceCaptureController extends BaseController implements Initializab
 		}
 	}
 
-	private RegistrationDTO getRegistrationDTOFromSession() {
-		return (RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
-	}
-
 	public void clearExceptionImage() {
 		exceptionBufferedImage = null;
-		exceptionImage.setImage(defaultImage);
+		exceptionImage.setImage(defaultExceptionImage);
 		ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDTOFromSession().getDemographicDTO()
 				.getApplicantDocumentDTO();
 		if (applicantDocumentDTO != null && applicantDocumentDTO.getExceptionPhoto() != null) {
@@ -406,14 +407,11 @@ public class FaceCaptureController extends BaseController implements Initializab
 		}
 	}
 
-	private BiometricDTO getBiometricDTOFromSession() {
-		return (BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA);
-	}
-
 	/**
 	 * Method to load fxml page
 	 * 
-	 * @param fxml file name
+	 * @param fxml
+	 *            file name
 	 */
 	private void loadPage(String page) {
 		VBox mainBox = new VBox();
@@ -425,7 +423,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 			getScene(mainBox).setRoot(mainBox);
 		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage());
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
 		}
 	}
@@ -441,9 +439,14 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	@FXML
 	private void enableCapture(MouseEvent mouseEvent) {
-		boolean hasBiometricException = (Boolean) SessionContext.userContext().getUserMap()
-				.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
-
+		boolean hasBiometricException = false;
+		if (((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER))
+				&& !getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO().isEmpty()) {
+			hasBiometricException = true;
+		} else {
+			hasBiometricException = (Boolean) SessionContext.userContext().getUserMap()
+					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
+		}
 		Pane sourcePane = (Pane) mouseEvent.getSource();
 		sourcePane.requestFocus();
 		selectedPhoto = sourcePane;
@@ -512,6 +515,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 		});
 		timeline.play();
 
+	}
+
+	private BiometricDTO getBiometricDTOFromSession() {
+		return (BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA);
 	}
 
 	private Timestamp getCurrentTimestamp() {

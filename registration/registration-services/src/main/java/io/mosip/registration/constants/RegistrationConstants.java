@@ -167,6 +167,7 @@ public class RegistrationConstants {
 	public static final String ADDRESS_LINE3 = "addressLine3";
 	public static final String FULL_NAME = "fullName";
 	public static final String PARENT_NAME = "parentName";
+	public static final String UIN_LENGTH = "mosip.kernel.uin.length";
 
 	public static final String CHILD = "Child";
 	public static final String ADULT = "Adult";
@@ -401,6 +402,9 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_PARENT_NAME_USER_LANG_LABEL = "ParentNameUserLangLabel";
 	public static final String TEMPLATE_PARENT_NAME_LOCAL_LANG_LABEL = "ParentNameLocalLangLabel";
 	public static final String TEMPLATE_PARENT_NAME = "ParentName";
+	public static final String TEMPLATE_PARENT_UIN_USER_LANG_LABEL = "ParentUINUserLangLabel";
+	public static final String TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL = "ParentUINLocalLangLabel";
+	public static final String TEMPLATE_PARENT_UIN = "ParentUIN";
 	public static final String TEMPLATE_PARENT_NAME_LOCAL_LANG = "ParentNameLocalLang";
 	public static final String TEMPLATE_DOCUMENTS_USER_LANG_LABEL = "DocumentsUserLangLabel";
 	public static final String TEMPLATE_DOCUMENTS_LOCAL_LANG_LABEL = "DocumentsLocalLangLabel";

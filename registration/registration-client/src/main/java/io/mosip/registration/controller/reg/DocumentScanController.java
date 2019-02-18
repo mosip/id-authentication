@@ -25,7 +25,6 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.device.FaceCaptureController;
 import io.mosip.registration.controller.device.ScanPopUpViewController;
-import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
@@ -327,22 +326,22 @@ public class DocumentScanController extends BaseController {
 
 				switch (selectedDocument) {
 				case RegistrationConstants.POA_DOCUMENT:
-					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+					getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfAddress(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, poaDocuments.getValue(), poaBox, byteArray);
 					break;
 				case RegistrationConstants.POI_DOCUMENT:
-					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+					getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfIdentity(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, poiDocuments.getValue(), poiBox, byteArray);
 					break;
 				case RegistrationConstants.POR_DOCUMENT:
-					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+					getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfRelationship(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, porDocuments.getValue(), porBox, byteArray);
 					break;
 				case RegistrationConstants.DOB_DOCUMENT:
-					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+					getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfDateOfBirth(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, dobDocuments.getValue(), dobBox, byteArray);
 					break;
@@ -420,22 +419,22 @@ public class DocumentScanController extends BaseController {
 
 				switch (selectedDocument) {
 				case RegistrationConstants.POA_DOCUMENT:
-					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+					getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfAddress(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, poaDocuments.getValue(), poaBox, byteArray);
 					break;
 				case RegistrationConstants.POI_DOCUMENT:
-					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+					getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfIdentity(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, poiDocuments.getValue(), poiBox, byteArray);
 					break;
 				case RegistrationConstants.POR_DOCUMENT:
-					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+					getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfRelationship(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, porDocuments.getValue(), porBox, byteArray);
 					break;
 				case RegistrationConstants.DOB_DOCUMENT:
-					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+					getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfDateOfBirth(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, dobDocuments.getValue(), dobBox, byteArray);
 					break;
@@ -593,19 +592,19 @@ public class DocumentScanController extends BaseController {
 
 				switch (((VBox) gridpane.getParent()).getId()) {
 				case "poaBox":
-					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+					getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfAddress(null);
 					break;
 				case "poiBox":
-					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+					getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfIdentity(null);
 					break;
 				case "porBox":
-					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+					getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfRelationship(null);
 					break;
 				case "dobBox":
-					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+					getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfDateOfBirth(null);
 					break;
 				default:
@@ -647,19 +646,19 @@ public class DocumentScanController extends BaseController {
 
 				switch (((VBox) pane.getParent()).getId()) {
 				case "poaBox":
-					selectedDocumentToDisplay = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
+					selectedDocumentToDisplay = getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO()
 							.getIdentity().getProofOfAddress();
 					break;
 				case "poiBox":
-					selectedDocumentToDisplay = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
+					selectedDocumentToDisplay = getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO()
 							.getIdentity().getProofOfIdentity();
 					break;
 				case "porBox":
-					selectedDocumentToDisplay = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
+					selectedDocumentToDisplay = getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO()
 							.getIdentity().getProofOfRelationship();
 					break;
 				case "dobBox":
-					selectedDocumentToDisplay = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
+					selectedDocumentToDisplay = getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO()
 							.getIdentity().getProofOfDateOfBirth();
 					break;
 				default:
@@ -701,16 +700,12 @@ public class DocumentScanController extends BaseController {
 		}
 	}
 
-	public RegistrationDTO getRegistrationDtoContent() {
-		return (RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
-	}
-
 	protected void prepareEditPageContent() {
 		populateDocumentCategories();
 
-		if (getRegistrationDtoContent().getDemographicDTO() != null) {
+		if (getRegistrationDTOFromSession().getDemographicDTO() != null) {
 
-			Identity identity = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity();
+			Identity identity = getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO().getIdentity();
 			FXUtils fxUtils = FXUtils.getInstance();
 
 			if (identity.getProofOfAddress() != null) {
@@ -821,7 +816,7 @@ public class DocumentScanController extends BaseController {
 	}
 
 	public void uinUpdate() {
-		if (getRegistrationDtoContent().getSelectionListDTO().isBiometricException()) {
+		if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()) {
 			bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 			bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 			toggleBiometricException = true;
@@ -846,7 +841,7 @@ public class DocumentScanController extends BaseController {
 	private void skip() {
 		SessionContext.map().put("documentScan", false);
 
-		if (getRegistrationDtoContent().getSelectionListDTO() != null) {
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			updateUINMethod();
 		} else {
 			if (toggleBiometricException)
@@ -862,7 +857,7 @@ public class DocumentScanController extends BaseController {
 
 		if (registrationController.validateDemographicPane(documentScanPane)) {
 
-			if (getRegistrationDtoContent().getSelectionListDTO() != null) {
+			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
 				updateUINMethod();
 			} else {
@@ -880,20 +875,20 @@ public class DocumentScanController extends BaseController {
 
 	private void updateUINMethod() {
 		if ((Boolean) SessionContext.userContext().getUserMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)
-				|| getRegistrationDtoContent().getSelectionListDTO().isBiometricException() && (Boolean) SessionContext
+				|| getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException() && (Boolean) SessionContext
 						.userContext().getUserMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
 			SessionContext.map().put("biometricException", true);
-		} else if (getRegistrationDtoContent().getSelectionListDTO().isBiometricFingerprint()
-				&& !getRegistrationDtoContent().getSelectionListDTO().isBiometricException()
-				|| getRegistrationDtoContent().getSelectionListDTO().isBiometricFingerprint()
-						&& getRegistrationDtoContent().getSelectionListDTO().isBiometricException()
+		} else if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
+				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
+				|| getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
+						&& getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
 						&& !(Boolean) SessionContext.userContext().getUserMap()
 								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
 			SessionContext.map().put("fingerPrintCapture", true);
-		} else if (getRegistrationDtoContent().getSelectionListDTO().isBiometricIris()
-				&& !getRegistrationDtoContent().getSelectionListDTO().isBiometricException()
-				|| getRegistrationDtoContent().getSelectionListDTO().isBiometricIris()
-						&& getRegistrationDtoContent().getSelectionListDTO().isBiometricException()
+		} else if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()
+				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
+				|| getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()
+						&& getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
 						&& !(Boolean) SessionContext.userContext().getUserMap()
 								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
 			SessionContext.map().put("irisCapture", true);

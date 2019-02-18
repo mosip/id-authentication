@@ -1,5 +1,7 @@
 package io.mosip.registration.controller.reg;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,6 +9,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
@@ -21,6 +26,11 @@ public class DateValidation extends BaseController {
 	private Validations validation;
 
 	private Map<String, String> dateMapper;
+
+	/**
+	 * Instance of {@link Logger}
+	 */
+	private static final Logger LOGGER = AppConfig.getLogger(DateValidation.class);
 
 	public DateValidation() {
 		dateMapper = new HashMap<String, String>();
@@ -67,12 +77,17 @@ public class DateValidation extends BaseController {
 							generateAlert("Date", "Please enter the appropriate value");
 							date.setText(oldValue);
 						}
-					} catch (NumberFormatException e) {
+					} catch (RuntimeException runTimeException) {
+						LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+								runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
+
 					}
 				}
 				validateTheDate(date, month, year);
 			});
-		} catch (Exception e) {
+		} catch (RuntimeException runTimeException) {
+			LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
 
 		}
 	}
@@ -93,13 +108,18 @@ public class DateValidation extends BaseController {
 								generateAlert("Please enter the appropriate value");
 								date.clear();
 							}
-						} catch (NumberFormatException e) {
+						} catch (RuntimeException runTimeException) {
+							LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+									runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
+
 						}
 					}
 				}
 				validateTheDate(date, month, year);
 			});
-		} catch (Exception e) {
+		} catch (RuntimeException runTimeException) {
+			LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
 
 		}
 	}
@@ -136,7 +156,9 @@ public class DateValidation extends BaseController {
 				}
 
 			}
-		} catch (Exception e) {
+		} catch (RuntimeException runTimeException) {
+			LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
 
 		}
 	}
@@ -172,14 +194,19 @@ public class DateValidation extends BaseController {
 								date.clear();
 								generateAlert("Please enter the appropriate value");
 							}
-						} catch (NumberFormatException e) {
+						} catch (RuntimeException runTimeException) {
+							LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+									runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
+
 						}
 
 					}
 				}
 				validateTheDate(date, month, year);
 			});
-		} catch (Exception e) {
+		} catch (RuntimeException runTimeException) {
+			LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
 
 		}
 	}
