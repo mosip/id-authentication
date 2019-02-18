@@ -911,7 +911,7 @@ public class RegistrationConstants {
 
 	public static final String POLICY_SYNC_SERVICE = "policysync";
 	public static final String KEY_NAME = "KEY_POLICY_SYNC_THRESHOLD_VALUE";
-	public static final String REFERENCE_ID = "1001";
+	public static final String REFERENCE_ID = "10011";
 
 	// Reg Deletion
 	public static final String REGISTRATION_DELETION_BATCH_JOBS_SUCCESS = "Registartion Packets Deletion Successful ";

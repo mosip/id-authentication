@@ -18,7 +18,9 @@ The database objects related to MOSIP modules is stored under <mosip_home>/scrip
 
 * **mosip_prereg_ddl_deploy.sql:** This is a wrapper script used to **deploy the DDL scripts available in ddl folder**. This will also used to prepare the script run sequence to manage all the needed dependency across DB objects being created.
 
-* **mosip_prereg_ddl_deploy.sql:** This is a wrapper script used to **deploy the DML scripts available in dml folder**. This will also used to prepare the script run sequence to manage all the needed dependency across DB objects.
+* **mosip_prereg_dml_deploy.sql:** This is a wrapper script used to **deploy the DML scripts available in dml folder**. This will also used to prepare the script run sequence to manage all the needed dependency across DB objects.
+
+**Note : Not all Modules will not have dml scripts, Run mosip_<database_schema>_dml_deploy.sql only for applicable modules.**
 
 ### The structure of the files and folder is as follows
 
@@ -47,15 +49,15 @@ The database objects related to MOSIP modules is stored under <mosip_home>/scrip
 	
     -- dml
     
-		-- file01.sql
+		-- file01.csv
 		
-		-- file02.sql
-		
-		-- .
+		-- file02.csv
 		
 		-- .
 		
-		-- filenn.sql
+		-- .
+		
+		-- filenn.csv
 		
 	-- <database_name>_dml_deploy.sql
 
@@ -64,9 +66,11 @@ The database objects related to MOSIP modules is stored under <mosip_home>/scrip
 
 * Copy the scripts (entire folder) to the machine where postgresql client software is available.
 
-* Navigate to the database's main folder(mosip_prereg) and logon to postgresql client (psql) using postgres default credential (make sure the connected user has role creation privilege)
+* **Navigate to the database's main folder(mosip_prereg)** and logon to postgresql client (psql) using postgres default credential (make sure the connected user has role creation privilege)
 
-<em> $ psql --username=<user_name> --host=<host_name> --port=<port_number> --dbname=<database_name></em>
+<em> $ psql --username=<user_name> --host=<host_name/host_ip> --port=<port_number> --dbname=<database_name></em>
+
+Example: $ psql --username=postgres --host=10.320.23.92 --port=9001 --dbname=postgres
 
 * Run the role creation script,mosip_role_common.sql on the postgres command line as below
 

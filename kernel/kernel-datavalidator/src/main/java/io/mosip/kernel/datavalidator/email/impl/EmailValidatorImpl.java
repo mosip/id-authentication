@@ -116,7 +116,7 @@ public class EmailValidatorImpl implements EmailValidator<String> {
 		 * This variable holds the length of the domain extension of given email
 		 * 
 		 */
-		int domainLen = email.substring(email.indexOf('.') + 1, email.length()).length();
+		int domainLen = email.substring(email.lastIndexOf('.') + 1, email.length()).length();
 
 		/**
 		 * 

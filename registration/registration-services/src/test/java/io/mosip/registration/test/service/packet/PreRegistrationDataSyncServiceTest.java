@@ -4,8 +4,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -85,10 +87,10 @@ public class PreRegistrationDataSyncServiceTest {
 	static Map<String, Object> preRegData = new HashMap<>();
 
 	@BeforeClass
-	public static void initialize() throws IOException {
+	public static void initialize() throws IOException, UnsupportedEncodingException {
 
 		URL url = PreRegistrationDataSyncServiceImpl.class.getResource("/preRegSample.zip");
-		File packetZipFile = new File(url.getFile());
+		File packetZipFile = new File(URLDecoder.decode(url.getFile(), "UTF-8"));
 		preRegPacket = FileUtils.readFileToByteArray(packetZipFile);
 
 		preRegData.put(RegistrationConstants.PRE_REG_FILE_NAME, "filename_2018-12-12 09:39:08.272.zip");

@@ -2,6 +2,7 @@ export interface FormControlModal {
   fullName: string;
   gender: string;
   age: string;
+  residenceStatus: string;
   dateOfBirth: string;
   date: string;
   month: string;

@@ -89,7 +89,10 @@ public class DocumentExceptionCatcher {
 			throw new DocumentSizeExceedException(((DocumentSizeExceedException) ex).getErrorCode(),((DocumentSizeExceedException) ex).getErrorText());
 		} else if (ex instanceof VirusScannerException) {
 			throw new DocumentVirusScanException(((VirusScannerException) ex).getErrorCode(),((VirusScannerException) ex).getErrorText());
-		} else if (ex instanceof DocumentNotFoundException) {
+		}else if (ex instanceof DocumentVirusScanException) {
+			throw new DocumentVirusScanException(((DocumentVirusScanException) ex).getErrorCode(),((DocumentVirusScanException) ex).getErrorText());
+		}	
+		else if (ex instanceof DocumentNotFoundException) {
 			throw new DocumentNotFoundException(((DocumentNotFoundException) ex).getErrorCode(),((DocumentNotFoundException) ex).getErrorText());
 		} else if (ex instanceof DocumentFailedToCopyException) {
 			throw new DocumentFailedToCopyException(((DocumentFailedToCopyException) ex).getErrorCode(),((DocumentFailedToCopyException) ex).getErrorText());

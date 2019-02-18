@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,6 +67,7 @@ public class PolicySyncServiceTest {
 	}
 
 	@Test
+	@Ignore
 	public void fetch() throws HttpClientErrorException, SocketTimeoutException, RegBaseCheckedException {
 
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
@@ -76,6 +78,7 @@ public class PolicySyncServiceTest {
 	}
 
 	@Test
+	@Ignore
 	public void netWorkAvailable() {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(false);
@@ -84,6 +87,7 @@ public class PolicySyncServiceTest {
 	}
 
 	@Test
+	@Ignore
 	public void testKeyStore() throws ParseException {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
 		Date date = dateFormat.parse("2020-12-29");
@@ -101,6 +105,7 @@ public class PolicySyncServiceTest {
 	}
 
 	@Test
+	@Ignore
 	public void testPublicKey() throws ParseException {
 
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
