@@ -60,6 +60,7 @@ import io.mosip.registration.processor.print.exception.QueueConnectionNotFound;
 import io.mosip.registration.processor.print.exception.UINNotFoundInDatabase;
 import io.mosip.registration.processor.print.util.UINCardConstant;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -230,7 +231,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 				throw new QueueConnectionNotFound(PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.getCode());
 			}
 			boolean isPdfAddedtoQueue = mosipQueueManager.send(queue, pdfBytes, address);
-			
+
 			if (isPdfAddedtoQueue) {
 				object.setIsValid(Boolean.TRUE);
 				isTransactionSuccessful = true;
@@ -246,7 +247,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 							+ ExceptionUtils.getStackTrace(e));
 			description = "Uin is not present for registration  id : " + regId;
 			object.setInternalError(Boolean.TRUE);
-		} catch(PDFGeneratorException e) {
+		} catch (PDFGeneratorException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_PRT_PDF_NOT_GENERATED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
@@ -257,7 +258,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 					regId, PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-		} catch(QueueConnectionNotFound e) {
+		} catch (QueueConnectionNotFound e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
@@ -511,8 +512,12 @@ public class PrintStage extends MosipVerticleAPIManager {
 		JsonObject object = ctx.getBodyAsJson();
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid(object.getString("regId"));
-		this.process(messageDTO);
-		this.setResponse(ctx, "Re-sending to Queue");
+		MessageDTO responceMessageDto = this.process(messageDTO);
+		if (responceMessageDto.getIsValid()) {
+			this.setResponse(ctx, RegistrationStatusCode.DOCUMENT_RESENT_TO_CAMEL_QUEUE);
+		} else {
+			this.setResponse(ctx, "Cought internal error in messageDto");
+		}
 
 	}
 

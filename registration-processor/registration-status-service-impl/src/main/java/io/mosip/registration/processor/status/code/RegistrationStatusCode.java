@@ -95,6 +95,8 @@ public enum RegistrationStatusCode {
     PACKET_UIN_UPDATION_SUCCESS,
 
     /** The packet uin updation failure. */
-    PACKET_UIN_UPDATION_FAILURE
+    PACKET_UIN_UPDATION_FAILURE,
+    
+    DOCUMENT_RESENT_TO_CAMEL_QUEUE
 
 }

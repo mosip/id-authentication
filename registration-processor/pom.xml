@@ -96,16 +96,16 @@
 
 		<!-- local -->
 
-		<registration.status.service.version>0.8.7</registration.status.service.version>
-		<registration.processor.core.version>0.8.7</registration.processor.core.version>
-		<filesystem.adapter.ceph.version>0.8.7</filesystem.adapter.ceph.version>
-		<packet.manager.version>0.8.7</packet.manager.version>
-		<registration.processor.rest.client.version>0.8.7</registration.processor.rest.client.version>
-		<packet.info.storage.service.version>0.8.7</packet.info.storage.service.version>
-		<packet.bio.dedupe.service.impl.version>0.8.7</packet.bio.dedupe.service.impl.version>
-		<registration.processor.rest.client.version>0.8.7</registration.processor.rest.client.version>
-		<registration.processor.message.sender.version>0.8.7</registration.processor.message.sender.version>
-		<packet.bio.dedupe.api.version>0.8.7</packet.bio.dedupe.api.version>
+		<registration.status.service.version>0.8.8</registration.status.service.version>
+		<registration.processor.core.version>0.8.8</registration.processor.core.version>
+		<filesystem.adapter.ceph.version>0.8.8</filesystem.adapter.ceph.version>
+		<packet.manager.version>0.8.8</packet.manager.version>
+		<registration.processor.rest.client.version>0.8.8</registration.processor.rest.client.version>
+		<packet.info.storage.service.version>0.8.8</packet.info.storage.service.version>
+		<packet.bio.dedupe.service.impl.version>0.8.8</packet.bio.dedupe.service.impl.version>
+		<registration.processor.rest.client.version>0.8.8</registration.processor.rest.client.version>
+		<registration.processor.message.sender.version>0.8.8</registration.processor.message.sender.version>
+		<packet.bio.dedupe.api.version>0.8.8</packet.bio.dedupe.api.version>
 
 		<!-- Kernel -->
 		<kernel.core.version>0.7.0</kernel.core.version>
