@@ -9,6 +9,7 @@ import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -58,6 +59,8 @@ import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
 import io.mosip.kernel.core.idrepo.exception.RestServiceException;
+import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.idrepo.builder.RestRequestBuilder;
 import io.mosip.kernel.idrepo.dfsadapter.impl.AmazonS3DFSProvider;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.dto.RequestDTO;
@@ -65,7 +68,6 @@ import io.mosip.kernel.idrepo.dto.RestRequestDTO;
 import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.entity.UinBiometric;
 import io.mosip.kernel.idrepo.entity.UinDocument;
-import io.mosip.kernel.idrepo.factory.RestRequestFactory;
 import io.mosip.kernel.idrepo.helper.AuditHelper;
 import io.mosip.kernel.idrepo.helper.RestHelper;
 import io.mosip.kernel.idrepo.provider.impl.FingerprintProvider;
@@ -73,6 +75,7 @@ import io.mosip.kernel.idrepo.repository.UinBiometricHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinDocumentHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinRepo;
+import io.mosip.kernel.idrepo.security.IdRepoSecurityManager;
 
 /**
  * The Class IdRepoServiceTest.
@@ -110,6 +113,9 @@ public class IdRepoServiceTest {
 	
 	@InjectMocks
 	IdRepoServiceImpl service;
+	
+	@InjectMocks
+	IdRepoSecurityManager securityManager;
 
 	@Mock
 	private UinBiometricHistoryRepo uinBioHRepo;
@@ -163,7 +169,7 @@ public class IdRepoServiceTest {
 	private UinHistoryRepo uinHistoryRepo;
 	
 	@Mock
-	RestRequestFactory restFactory;
+	RestRequestBuilder restBuilder;
 
 	/** The id. */
 	private Map<String, String> id;
@@ -192,7 +198,12 @@ public class IdRepoServiceTest {
 	 */
 	@Before
 	public void setup() throws FileNotFoundException, IOException, IdRepoDataValidationException, RestServiceException {
-		when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+		ReflectionTestUtils.setField(securityManager, "env", env);
+		ReflectionTestUtils.setField(securityManager, "mapper", mapper);
+		ReflectionTestUtils.invokeMethod(securityManager, "buildRequest");
+		ReflectionTestUtils.setField(service, "securityManager", securityManager);
+		ReflectionTestUtils.setField(proxyService, "securityManager", securityManager);
+		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
 		when(restHelper.requestSync(Mockito.any()))
 				.thenReturn(mapper.readValue("{\"data\":\"1234\"}".getBytes(), ObjectNode.class));
 		ReflectionTestUtils.setField(proxyService, "mapper", mapper);
@@ -742,11 +753,12 @@ public class IdRepoServiceTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testEncryptDecryptDocumentsExceptionProxy() throws Throwable {
 		try {
-			when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+			RestRequestDTO restRequestDTO = new RestRequestDTO();
+			when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(restRequestDTO);
 			when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException());
 			Uin uin = new Uin();
 			uin.setUinData(new byte[] { 0 });
-			ReflectionTestUtils.invokeMethod(proxyService, "encryptDecryptDocuments", "document", "encrypt");
+			ReflectionTestUtils.invokeMethod(securityManager, "encryptDecryptData", restRequestDTO);
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
@@ -755,11 +767,12 @@ public class IdRepoServiceTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testEncryptDecryptDocumentsException() throws Throwable {
 		try {
-			when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+			RestRequestDTO restRequestDTO = new RestRequestDTO();
+			when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(restRequestDTO);
 			when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException());
 			Uin uin = new Uin();
 			uin.setUinData(new byte[] { 0 });
-			ReflectionTestUtils.invokeMethod(service, "encryptDecryptDocuments", "document", "encrypt");
+			ReflectionTestUtils.invokeMethod(securityManager, "encryptDecryptData", restRequestDTO);
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
@@ -768,11 +781,12 @@ public class IdRepoServiceTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testEncryptDecryptDocumentsNoData() throws Throwable {
 		try {
-			when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+			RestRequestDTO restRequestDTO = new RestRequestDTO();
+			when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(restRequestDTO);
 			when(restHelper.requestSync(Mockito.any())).thenReturn(mapper.readValue("{}".getBytes(), ObjectNode.class));
 			Uin uin = new Uin();
 			uin.setUinData(new byte[] { 0 });
-			ReflectionTestUtils.invokeMethod(proxyService, "encryptDecryptDocuments", "document", "encrypt");
+			ReflectionTestUtils.invokeMethod(securityManager, "encryptDecryptData", restRequestDTO);
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}

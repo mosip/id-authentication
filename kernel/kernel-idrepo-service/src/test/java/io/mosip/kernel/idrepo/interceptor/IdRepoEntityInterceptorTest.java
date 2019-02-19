@@ -3,6 +3,7 @@ package io.mosip.kernel.idrepo.interceptor;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,11 +30,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
 import io.mosip.kernel.core.idrepo.exception.RestServiceException;
+import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.idrepo.builder.RestRequestBuilder;
 import io.mosip.kernel.idrepo.dto.RestRequestDTO;
 import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.entity.UinHistory;
-import io.mosip.kernel.idrepo.factory.RestRequestFactory;
 import io.mosip.kernel.idrepo.helper.RestHelper;
+import io.mosip.kernel.idrepo.security.IdRepoSecurityManager;
 
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
@@ -46,25 +49,30 @@ public class IdRepoEntityInterceptorTest {
 
 	@InjectMocks
 	IdRepoEntityInterceptor interceptor;
+	
+	@InjectMocks
+	IdRepoSecurityManager securityManager;
 
 	@Mock
 	RestHelper restHelper;
 	
 	@Mock
-	RestRequestFactory restFactory;
+	RestRequestBuilder restBuilder;
 
 	@InjectMocks
 	ObjectMapper mapper;
 
 	@Before
 	public void setup() {
-		ReflectionTestUtils.setField(interceptor, "env", env);
-		ReflectionTestUtils.setField(interceptor, "mapper", mapper);
+		ReflectionTestUtils.setField(securityManager, "env", env);
+		ReflectionTestUtils.setField(securityManager, "mapper", mapper);
+		ReflectionTestUtils.invokeMethod(securityManager, "buildRequest");
+		ReflectionTestUtils.setField(interceptor, "securityManager", securityManager);
 	}
 	
 	@Test
 	public void testOnSaveUin() throws RestClientException, JsonParseException, JsonMappingException, IOException, RestServiceException, IdRepoDataValidationException {
-		when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
 		when(restHelper.requestSync(Mockito.any()))
 				.thenReturn(mapper.readValue("{\"data\":\"1234\"}".getBytes(), ObjectNode.class));
 		Uin uin = new Uin();
@@ -76,7 +84,7 @@ public class IdRepoEntityInterceptorTest {
 	
 	@Test
 	public void testOnSaveUinHistory() throws RestClientException, JsonParseException, JsonMappingException, IOException, RestServiceException, IdRepoDataValidationException {
-		when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
 		when(restHelper.requestSync(Mockito.any()))
 				.thenReturn(mapper.readValue("{\"data\":\"1234\"}".getBytes(), ObjectNode.class));
 		UinHistory uin = new UinHistory();
@@ -88,7 +96,7 @@ public class IdRepoEntityInterceptorTest {
 	
 	@Test(expected = IdRepoAppUncheckedException.class)
 	public void testOnSaveUinException() throws RestClientException, JsonParseException, JsonMappingException, IOException, RestServiceException, IdRepoDataValidationException {
-		when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
 		when(restHelper.requestSync(Mockito.any()))
 				.thenReturn(mapper.readValue("{\"value\":\"1234\"}".getBytes(), ObjectNode.class));
 		Uin uin = new Uin();
@@ -100,7 +108,7 @@ public class IdRepoEntityInterceptorTest {
 	
 	@Test
 	public void testOnLoadUin() throws RestClientException, JsonParseException, JsonMappingException, IOException, IdRepoDataValidationException, RestServiceException {
-		when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
 		when(restHelper.requestSync(Mockito.any()))
 				.thenReturn(mapper.readValue("{\"data\":\"1234\"}".getBytes(), ObjectNode.class));
 		Uin uin = new Uin();
@@ -112,7 +120,7 @@ public class IdRepoEntityInterceptorTest {
 	
 	@Test(expected = IdRepoAppUncheckedException.class)
 	public void testOnLoadUinFailedEncrption() throws RestClientException, JsonParseException, JsonMappingException, IOException, IdRepoDataValidationException, RestServiceException {
-		when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
 		when(restHelper.requestSync(Mockito.any()))
 				.thenThrow(new RestServiceException());
 		Uin uin = new Uin();
@@ -124,7 +132,7 @@ public class IdRepoEntityInterceptorTest {
 	
 	@Test(expected = IdRepoAppUncheckedException.class)
 	public void testOnLoadUinException() throws RestClientException, JsonParseException, JsonMappingException, IOException, IdRepoDataValidationException, RestServiceException {
-		when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
 		when(restHelper.requestSync(Mockito.any()))
 				.thenReturn(mapper.readValue("{\"value\":\"1234\"}".getBytes(), ObjectNode.class));
 		Uin uin = new Uin();
@@ -136,7 +144,7 @@ public class IdRepoEntityInterceptorTest {
 	
 	@Test(expected = IdRepoAppUncheckedException.class)
 	public void testOnLoadUinHashMismatch() throws RestClientException, JsonParseException, JsonMappingException, IOException, IdRepoDataValidationException, RestServiceException {
-		when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
 		when(restHelper.requestSync(Mockito.any()))
 				.thenReturn(mapper.readValue("{\"data\":\"1234\"}".getBytes(), ObjectNode.class));
 		Uin uin = new Uin();
@@ -148,7 +156,7 @@ public class IdRepoEntityInterceptorTest {
 	
 	@Test
 	public void testOnFlushDirtyUin() throws RestClientException, JsonParseException, JsonMappingException, IOException, IdRepoDataValidationException, RestServiceException {
-		when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
 		when(restHelper.requestSync(Mockito.any()))
 				.thenReturn(mapper.readValue("{\"data\":\"1234\"}".getBytes(), ObjectNode.class));
 		Uin uin = new Uin();
@@ -160,7 +168,7 @@ public class IdRepoEntityInterceptorTest {
 	
 	@Test
 	public void testOnFlushDirtyUinHistory() throws RestClientException, JsonParseException, JsonMappingException, IOException, IdRepoDataValidationException, RestServiceException {
-		when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
 		when(restHelper.requestSync(Mockito.any()))
 				.thenReturn(mapper.readValue("{\"data\":\"1234\"}".getBytes(), ObjectNode.class));
 		UinHistory uinH = new UinHistory();
@@ -172,7 +180,7 @@ public class IdRepoEntityInterceptorTest {
 	
 	@Test(expected = IdRepoAppUncheckedException.class)
 	public void testOnFlushDirtyException() throws RestClientException, JsonParseException, JsonMappingException, IOException, IdRepoDataValidationException, RestServiceException {
-		when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
 		when(restHelper.requestSync(Mockito.any()))
 		.thenThrow(new RestServiceException());
 		Uin uin = new Uin();

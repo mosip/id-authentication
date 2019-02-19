@@ -22,6 +22,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.kernel.core.idrepo.constant.AuditEvents;
 import io.mosip.kernel.core.idrepo.constant.AuditModules;
+import io.mosip.kernel.idrepo.builder.AuditRequestBuilder;
 import io.mosip.kernel.idrepo.dto.AuditRequestDto;
 
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -31,19 +32,19 @@ import io.mosip.kernel.idrepo.dto.AuditRequestDto;
 public class AuditRequestFactoryTest {
 
 	@InjectMocks
-	AuditRequestFactory auditFactory;
+	AuditRequestBuilder auditBuilder;
 
 	@Autowired
 	Environment env;
 
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(auditFactory, "env", env);
+		ReflectionTestUtils.setField(auditBuilder, "env", env);
 	}
 
 	@Test
 	public void testBuildRequest() {
-		AuditRequestDto actualRequest = auditFactory.buildRequest(AuditModules.CREATE_IDENTITY,
+		AuditRequestDto actualRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc");
 		actualRequest.setActionTimeStamp(null);
 
