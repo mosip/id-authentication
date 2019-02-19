@@ -103,7 +103,7 @@ public class MasterDataManager {
 			response = restHelper.requestSync(buildRequest);
 			List<Map<String, String>> templateList = response.get("templates");
 			for (Map<String, String> map : templateList) {
-				value = map.get("name");
+				value = map.get("fileText");
 			}
 		} catch (IDDataValidationException | RestServiceException e) {
 			logger.error(SESSION_ID, this.getClass().getName(), e.getErrorCode(), e.getErrorText());
