@@ -215,8 +215,6 @@ public class NotificationServiceImpl implements NotificationService {
 
 	private void sendNotification(Map<String, Object> values, String emailId, String phoneNumber, SenderType sender,
 			String notificationProperty) throws IdAuthenticationBusinessException {
-		String contentTemplate = null;
-		String subjectTemplate = null;
 		String notificationtypeconfig = notificationProperty;
 		String notificationMobileNo = phoneNumber;
 		Set<NotificationType> notificationtype = new HashSet<>();
@@ -237,12 +235,12 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 
 		if (notificationtype.contains(NotificationType.SMS)) {
-			invokeSmsNotification(values, sender, contentTemplate, notificationMobileNo);
+			invokeSmsNotification(values, sender, notificationMobileNo);
 
 		}
 		if (notificationtype.contains(NotificationType.EMAIL)) {
 
-			invokeEmailNotification(values, emailId, sender, contentTemplate, subjectTemplate);
+			invokeEmailNotification(values, emailId, sender);
 
 		}
 
@@ -313,15 +311,16 @@ public class NotificationServiceImpl implements NotificationService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	private void invokeSmsNotification(Map<String, Object> values, SenderType sender, String contentTemplate,
+	private void invokeSmsNotification(Map<String, Object> values, SenderType sender, 
 			String notificationMobileNo) throws IdAuthenticationBusinessException {
-		String authSmsTemplate = env.getProperty(AUTH_SMS_TEMPLATE);
-		String otpSmsTemplate = env.getProperty(OTP_SMS_TEMPLATE);
-		if (sender == SenderType.AUTH && authSmsTemplate != null) {
-			contentTemplate = authSmsTemplate;
-		} else if (sender == SenderType.OTP && otpSmsTemplate != null) {
-			contentTemplate = otpSmsTemplate;
-		}
+//		String authSmsTemplate = env.getProperty(AUTH_SMS_TEMPLATE);
+//		String otpSmsTemplate = env.getProperty(OTP_SMS_TEMPLATE);
+//		String contentTemplate = "";
+//		if (sender == SenderType.AUTH && authSmsTemplate != null) {
+//			contentTemplate = authSmsTemplate;
+//		} else if (sender == SenderType.OTP && otpSmsTemplate != null) {
+//			contentTemplate = otpSmsTemplate;
+//		}
 
 //		String smsTemplate = applyTemplate(values, contentTemplate);
 //		notificationManager.sendSmsNotification(notificationMobileNo, smsTemplate);
@@ -338,19 +337,21 @@ public class NotificationServiceImpl implements NotificationService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	private void invokeEmailNotification(Map<String, Object> values, String emailId, SenderType sender,
-			String contentTemplate, String subjectTemplate) throws IdAuthenticationBusinessException {
-		String otpContentTemaplate = env.getProperty(OTP_CONTENT_TEMPLATE);
-		String authEmailSubjectTemplate = env.getProperty(AUTH_EMAIL_SUBJECT_TEMPLATE);
-		String authEmailContentTemplate = env.getProperty(AUTH_EMAIL_CONTENT_TEMPLATE);
-		String otpSubjectTemplate = env.getProperty(OTP_SUBJECT_TEMPLATE);
-		if (sender == SenderType.AUTH && authEmailSubjectTemplate != null && authEmailContentTemplate != null) {
-			subjectTemplate = authEmailSubjectTemplate;
-			contentTemplate = authEmailContentTemplate;
-		} else if (sender == SenderType.OTP && otpSubjectTemplate != null && otpContentTemaplate != null) {
-			subjectTemplate = otpSubjectTemplate;
-			contentTemplate = otpContentTemaplate;
-		}
+	private void invokeEmailNotification(Map<String, Object> values, String emailId, SenderType sender) throws IdAuthenticationBusinessException {
+//		String otpContentTemaplate = env.getProperty(OTP_CONTENT_TEMPLATE);
+//		String authEmailSubjectTemplate = env.getProperty(AUTH_EMAIL_SUBJECT_TEMPLATE);
+//		String authEmailContentTemplate = env.getProperty(AUTH_EMAIL_CONTENT_TEMPLATE);
+//		String otpSubjectTemplate = env.getProperty(OTP_SUBJECT_TEMPLATE);
+//		
+//		String contentTemplate = "";
+//		String subjectTemplate = "";
+//		if (sender == SenderType.AUTH && authEmailSubjectTemplate != null && authEmailContentTemplate != null) {
+//			subjectTemplate = authEmailSubjectTemplate;
+//			contentTemplate = authEmailContentTemplate;
+//		} else if (sender == SenderType.OTP && otpSubjectTemplate != null && otpContentTemaplate != null) {
+//			subjectTemplate = otpSubjectTemplate;
+//			contentTemplate = otpContentTemaplate;
+//		}
 
 //		String mailSubject = applyTemplate(values, subjectTemplate);
 //		String mailContent = applyTemplate(values, contentTemplate);
