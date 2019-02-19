@@ -1349,6 +1349,7 @@ Working on new Css by taleev
 	-fx-pref-width: 750px;
 }
 
+
 .table-view {
     -fx-table-cell-border-color: #FFFFFF;
     -fx-border-width : 0 0 0 0;
@@ -1383,7 +1384,7 @@ Working on new Css by taleev
     -fx-background-color: #FFFFFF;
     -fx-border-width : 0 0 1 0;
     -fx-border-color : #E457A0;
-    -fx-padding : 0 0 0 10;	
+    -fx-padding : 0 0 0 15;	
 }
 
 .table-view .column-header .label{
@@ -1412,6 +1413,14 @@ Working on new Css by taleev
 		-fx-pref-width: 300px;
 }
 
+.fileNameColumn{
+		-fx-pref-width: 300px;
+}
+
+.uploadStatusColumn{
+		-fx-pref-width: 1000px;
+}
+
 .pendingApprovalStatus{
 		-fx-pref-width: 300px;
 }
@@ -1427,6 +1436,12 @@ Working on new Css by taleev
 .approvalTable{
 	-fx-pref-height: 520px;
 	-fx-pref-width: 430px;
+	
+}
+
+.packetUploadTable{
+	-fx-pref-height: 520px;
+	-fx-pref-width: 1200px;
 	
 }
 

@@ -24,6 +24,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.SyncRegistrationDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -32,16 +33,17 @@ import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
-import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 @Controller
 public class PacketUploadController extends BaseController {
@@ -49,12 +51,19 @@ public class PacketUploadController extends BaseController {
 	@FXML
 	private ProgressIndicator progressIndicator;
 
-	@FXML
-	private VBox uploadIds;
-
 	@Autowired
 	private PacketUploadService packetUploadService;
+	
+	@FXML
+	private TableColumn<PacketStatusDTO, String> fileNameColumn;
 
+	@FXML
+	private TableColumn<PacketStatusDTO, String> uploadStatusColumn;
+
+	@FXML
+	private TableView<PacketStatusDTO> table;
+
+	
 	@Autowired
 	private PacketSynchService packetSynchService;
 
@@ -71,8 +80,9 @@ public class PacketUploadController extends BaseController {
 
 		LOGGER.info("REGISTRATION - SYNCH_PACKETS_AND_PUSH_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Sync the packets and push it to the server");
+		table.getItems().clear();
+		table.refresh();
 		service.reset();
-		uploadIds.getChildren().clear();
 		try {
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 				String packetSyncStatus = packetSync();
@@ -200,7 +210,7 @@ public class PacketUploadController extends BaseController {
 					List<Registration> synchedPackets = packetUploadService.getSynchedPackets();
 					List<Registration> packetUploadList = new ArrayList<>();
 					String status = "";
-					addToDisplay("Packet ID", "Upload Status", "uploadPanesFirst");
+					Map<String, String> tableMap = new HashMap<String, String>();
 					if (!synchedPackets.isEmpty()) {
 						auditFactory.audit(AuditEvent.PACKET_UPLOAD, Components.PACKET_UPLOAD,
 								"Upload packets to the server", SessionContext.userContext().getUserId(),
@@ -232,11 +242,11 @@ public class PacketUploadController extends BaseController {
 											synchedPacket.setFileUploadStatus(
 													RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
 											packetUploadList.add(synchedPacket);
-											addToDisplay(synchedPacket.getId(),
+											tableMap.put(synchedPacket.getId(),
 													RegistrationConstants.PACKET_UPLOAD_SUCCESS);
 
 										} else if (responseCode.contains(RegistrationConstants.PACKET_DUPLICATE)) {
-											addToDisplay(synchedPacket.getId(), "Error(Duplicate Packet)");
+											tableMap.put(synchedPacket.getId(), "Error(Duplicate Packet)");
 											synchedPacket.setClientStatusCode(
 													RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
 											synchedPacket.setFileUploadStatus(
@@ -246,11 +256,11 @@ public class PacketUploadController extends BaseController {
 											synchedPacket.setFileUploadStatus(
 													RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
 											packetUploadList.add(synchedPacket);
-											addToDisplay(synchedPacket.getId(), "Error");
+											tableMap.put(synchedPacket.getId(), "Error");
 										}
 									}
 								} else {
-									addToDisplay(synchedPacket.getId(), "Error(Packet not available)");
+									tableMap.put(synchedPacket.getId(), "Error(Packet not available)");
 								}
 
 							} catch (URISyntaxException uriSyntaxException) {
@@ -266,7 +276,7 @@ public class PacketUploadController extends BaseController {
 
 								synchedPacket.setFileUploadStatus(
 										RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
-								addToDisplay(synchedPacket.getId(), "Error(Service Error)");
+								tableMap.put(synchedPacket.getId(), "Error(Service Error)");
 								packetUploadList.add(synchedPacket);
 								synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
 
@@ -287,7 +297,7 @@ public class PacketUploadController extends BaseController {
 											RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
 									synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
 									packetUploadList.add(synchedPacket);
-									addToDisplay(synchedPacket.getId(), "Error");
+									tableMap.put(synchedPacket.getId(), "Error");
 								}
 								break;
 							}
@@ -296,6 +306,7 @@ public class PacketUploadController extends BaseController {
 						}
 						packetUploadService.updateStatus(packetUploadList);
 						progressIndicator.setVisible(false);
+						displayData(populateTableData(tableMap));
 					} else {
 						status = "Info-No packets to upload.";
 					}
@@ -305,37 +316,6 @@ public class PacketUploadController extends BaseController {
 			};
 		}
 	};
-
-	public void addToDisplay(String id, String message) {
-		addToDisplay(id, message, "uploadPanes");
-	}
-
-	public void addToDisplay(String id, String message, String idForAnchorPane) {
-		try {
-
-			AnchorPane paneToDisplay = new AnchorPane();
-			paneToDisplay.setId(idForAnchorPane);
-			Label packetId = new Label(id);
-			packetId.setId("uploadPageText");
-			Label status = new Label(message);
-			packetId.setLayoutX(26.0);
-			status.setLayoutX(300.0);
-			packetId.setLayoutY(10);
-			status.setLayoutY(10);
-
-			paneToDisplay.getChildren().add(packetId);
-			paneToDisplay.getChildren().add(status);
-
-			Platform.runLater(() -> {
-				uploadIds.getChildren().add(paneToDisplay);
-			});
-
-		} catch (Exception exception) {
-			LOGGER.error("REGISTRATION - UPLOADED_PACKET_DISPLAY - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-		}
-
-	}
 
 	/**
 	 * Export the packets and show the exported packets in the table
@@ -350,5 +330,41 @@ public class PacketUploadController extends BaseController {
 		exportedPackets.forEach(regPacket -> {
 			exportedPacketMap.put(regPacket.getId(), RegistrationClientStatusCode.EXPORT.getCode());
 		});
+		displayData(populateTableData(exportedPacketMap));
+	}
+	
+	/**
+	 * To display the Uploaded packet details in UI
+	 * 
+	 * @param tableData
+	 */
+	private void displayData(List<PacketStatusDTO> tableData) {
+		LOGGER.info("REGISTRATION - DISPLAY_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"To display all the ui data");
+		fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("fileName"));
+		uploadStatusColumn.setCellValueFactory(new PropertyValueFactory<>("uploadStatus"));
+
+		ObservableList<PacketStatusDTO> list = FXCollections.observableArrayList(tableData);
+		table.setItems(list);
+	}
+	
+	/**
+	 * To populate the data for the UI table
+	 * 
+	 * @param verifiedPackets
+	 * @return
+	 */
+	private List<PacketStatusDTO> populateTableData(Map<String, String> packetStatus) {
+		LOGGER.info("REGISTRATION - POPULATE_UI_TABLE_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Populating the table data with the Updated details");
+		List<PacketStatusDTO> listUploadStatus = new ArrayList<>();
+		packetStatus.forEach((id, status) -> {
+			PacketStatusDTO packetUploadStatusDTO = new PacketStatusDTO();
+			packetUploadStatusDTO.setUploadStatus(status);
+			packetUploadStatusDTO.setFileName(id);
+			listUploadStatus.add(packetUploadStatusDTO);
+
+		});
+		return listUploadStatus;
 	}
 }
