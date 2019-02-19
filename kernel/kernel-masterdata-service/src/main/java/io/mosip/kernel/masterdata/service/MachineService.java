@@ -69,7 +69,7 @@ public interface MachineService {
 	 * Abstract method to save Machine Details to the Database
 	 * 
 	 * @param machine
-	 *            machine DTO 
+	 *            machine DTO
 	 * 
 	 * @return IdResponseDto returning machine id which is inserted successfully
 	 *         {@link IdResponseDto}
@@ -78,11 +78,12 @@ public interface MachineService {
 	 *             if any error occurred while saving Machine
 	 */
 	public IdAndLanguageCodeID createMachine(RequestDto<MachineDto> machine);
+
 	/**
 	 * Abstract method to update Machine Details to the Database
 	 * 
 	 * @param machine
-	 *            machine DTO 
+	 *            machine DTO
 	 * 
 	 * @return IdResponseDto returning machine id which is updated successfully
 	 *         {@link IdResponseDto}
@@ -94,11 +95,12 @@ public interface MachineService {
 	 * 
 	 */
 	public IdAndLanguageCodeID updateMachine(RequestDto<MachineDto> machine);
+
 	/**
 	 * Abstract method to delete Machine Details to the Database
 	 * 
 	 * @param id
-	 *            machine id 
+	 *            machine id
 	 * 
 	 * @return IdResponseDto returning machine id which is updated successfully
 	 *         {@link IdResponseDto}

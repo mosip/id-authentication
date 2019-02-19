@@ -125,9 +125,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
-		/*IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.map(renDeviceSpecification, idResponseDto);*/
-		
+
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		MapperUtils.map(renDeviceSpecification, idAndLanguageCodeID);
 
@@ -142,11 +140,11 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	 */
 	@Override
 	public IdAndLanguageCodeID updateDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecification) {
-		//IdResponseDto idResponseDto = new IdResponseDto();
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		try {
 			DeviceSpecification entity = deviceSpecificationRepository
-					.findByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getRequest().getId(), deviceSpecification.getRequest().getLangCode());
+					.findByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getRequest().getId(),
+							deviceSpecification.getRequest().getLangCode());
 			if (!EmptyCheckUtils.isNullEmpty(entity)) {
 				MetaDataUtils.setUpdateMetaData(deviceSpecification.getRequest(), entity, false);
 				deviceSpecificationRepository.update(entity);

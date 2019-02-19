@@ -162,9 +162,7 @@ public class MachineServiceImpl implements MachineService {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
-		/*IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.map(crtMachine, idResponseDto);*/
-		
+	
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		MapperUtils.map(crtMachine, idAndLanguageCodeID);
 
@@ -205,9 +203,6 @@ public class MachineServiceImpl implements MachineService {
 					MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 
-		/*IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.map(updMachine, idResponseDto);*/
-		
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		MapperUtils.map(updMachine, idAndLanguageCodeID);
 		return idAndLanguageCodeID;

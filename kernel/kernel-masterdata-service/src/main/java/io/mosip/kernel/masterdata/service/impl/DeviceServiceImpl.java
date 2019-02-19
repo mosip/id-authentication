@@ -122,19 +122,17 @@ public class DeviceServiceImpl implements DeviceService {
 		DeviceHistory entityHistory = MetaDataUtils.setCreateMetaData(deviceDto.getRequest(), DeviceHistory.class);
 		entityHistory.setEffectDateTime(entity.getCreatedDateTime());
 		entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
-		
+
 		try {
-			
+
 			device = deviceRepository.create(entity);
 			deviceHistoryService.createDeviceHistory(entityHistory);
-		
+
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
-		/*IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.map(device, idResponseDto);*/
-		
+
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		MapperUtils.map(device, idAndLanguageCodeID);
 
@@ -155,8 +153,8 @@ public class DeviceServiceImpl implements DeviceService {
 		Device entity = null;
 		Device updatedDevice = null;
 		try {
-			Device oldDevice = deviceRepository
-					.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(deviceRequestDto.getRequest().getId(), deviceRequestDto.getRequest().getLangCode());
+			Device oldDevice = deviceRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
+					deviceRequestDto.getRequest().getId(), deviceRequestDto.getRequest().getLangCode());
 
 			if (oldDevice != null) {
 				entity = MetaDataUtils.setUpdateMetaData(deviceRequestDto.getRequest(), oldDevice, false);
@@ -164,11 +162,10 @@ public class DeviceServiceImpl implements DeviceService {
 				DeviceHistory deviceHistory = new DeviceHistory();
 				MapperUtils.map(updatedDevice, deviceHistory);
 				MapperUtils.setBaseFieldValue(updatedDevice, deviceHistory);
-				
-				
+
 				deviceHistory.setEffectDateTime(updatedDevice.getUpdatedDateTime());
 				deviceHistory.setUpdatedDateTime(updatedDevice.getUpdatedDateTime());
-				
+
 				deviceHistoryService.createDeviceHistory(deviceHistory);
 			} else {
 				throw new RequestException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -178,10 +175,11 @@ public class DeviceServiceImpl implements DeviceService {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
-		
+
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		idAndLanguageCodeID.setId(entity.getId());
 		idAndLanguageCodeID.setLangCode(entity.getLangCode());
+
 		return idAndLanguageCodeID;
 	}
 
