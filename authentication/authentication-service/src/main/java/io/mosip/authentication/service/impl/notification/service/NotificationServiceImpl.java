@@ -323,8 +323,8 @@ public class NotificationServiceImpl implements NotificationService {
 			contentTemplate = otpSmsTemplate;
 		}
 
-		String smsTemplate = applyTemplate(values, contentTemplate);
-		notificationManager.sendSmsNotification(notificationMobileNo, smsTemplate);
+//		String smsTemplate = applyTemplate(values, contentTemplate);
+//		notificationManager.sendSmsNotification(notificationMobileNo, smsTemplate);
 	}
 
 	/**
@@ -352,9 +352,9 @@ public class NotificationServiceImpl implements NotificationService {
 			contentTemplate = otpContentTemaplate;
 		}
 
-		String mailSubject = applyTemplate(values, subjectTemplate);
-		String mailContent = applyTemplate(values, contentTemplate);
-		notificationManager.sendEmailNotification(emailId, mailSubject, mailContent);
+//		String mailSubject = applyTemplate(values, subjectTemplate);
+//		String mailContent = applyTemplate(values, contentTemplate);
+//		notificationManager.sendEmailNotification(emailId, mailSubject, mailContent);
 	}
 	
 	/**

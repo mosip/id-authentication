@@ -2,6 +2,7 @@ package io.mosip.authentication.service.impl.otpgen.facade;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -83,7 +84,9 @@ public class OTPFacadeImplTest {
 	@InjectMocks
 	private RestHelper restHelper;
 
-	
+	@Mock
+	private IdRepoService idInfoService;
+
 	@Mock
 	private IdInfoHelper idInfoHelper;
 
@@ -152,7 +155,12 @@ public class OTPFacadeImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn(emailId);
 
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn(mobileNumber);
-
+		try {
+			Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Optional<String> uinOpt = Optional.of("426789089018");
 		otpFacadeImpl.generateOtp(otpRequestDto);
 	}
@@ -193,7 +201,12 @@ public class OTPFacadeImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn(emailId);
 
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn(mobileNumber);
-
+		try {
+			Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Optional<String> uinOpt = Optional.of("426789089018");
 
 		otpFacadeImpl.generateOtp(otpRequestDto);
@@ -222,6 +235,12 @@ public class OTPFacadeImplTest {
 
 		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getEmail", idInfo);
 		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getMobileNumber", idInfo);
+		try {
+			Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		otpFacadeImpl.generateOtp(otpRequestDto);
 
 	}
@@ -244,6 +263,12 @@ public class OTPFacadeImplTest {
 
 		Mockito.when(idAuthService.getIdRepoByUIN(unqueId, false)).thenReturn(repoDetails());
 		String otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getTspID());
+		try {
+			Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Mockito.when(otpService.generateOtp(otpKey)).thenReturn(otp);
 		Mockito.when(otpFacadeImpl.generateOtp(otpRequestDto))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
@@ -297,6 +322,7 @@ public class OTPFacadeImplTest {
 		otpRequestDto.setReqTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 		otpRequestDto.setTxnID("2345678901234");
 		otpRequestDto.setIdvId("2345678901234");
+		otpRequestDto.setReqTime("2019-02-18T18:17:48.923+05:30");
 		// otpRequestDto.setVer("1.0");
 
 		return otpRequestDto;
