@@ -13,14 +13,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 
-//@RunWith(SpringRunner.class)
-//@SpringBootTest
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class RidValidatorTest {
 
 	@Autowired
 	RidValidator<String> ridValidatorImpl;
 
-	
 	@Value("${mosip.kernel.rid.test.center-id}")
 	private String centerId;
 
@@ -72,107 +71,107 @@ public class RidValidatorTest {
 	@Value("${mosip.kernel.rid.test.valid-custom-sequence-rid}")
 	private String validCustomSequenceRid;
 
-	//@Test
+	@Test
 	public void validRidTest() {
 		assertThat(ridValidatorImpl.validateId(validRid, centerId, machineId), is(true));
 	}
 
-	//@Test(expected = InvalidIDException.class)
+	@Test(expected = InvalidIDException.class)
 	public void invalidCenterIdInRidTest() {
 		ridValidatorImpl.validateId(invalidCenterIdRid, centerId, machineId);
 	}
 
-	//@Test(expected = InvalidIDException.class)
+	@Test(expected = InvalidIDException.class)
 	public void invalidMachineIdInRidTest() {
 		ridValidatorImpl.validateId(invalidMachineIdRid, centerId, machineId);
 	}
 
-	//@Test(expected = InvalidIDException.class)
+	@Test(expected = InvalidIDException.class)
 	public void invalidMonthInTimestampOfRidTest() {
 
 		ridValidatorImpl.validateId(invalidMonthRid, centerId, machineId);
 	}
 
-	//@Test(expected = InvalidIDException.class)
+	@Test(expected = InvalidIDException.class)
 	public void invalidDateInTimestampOfRidTest() {
 
 		ridValidatorImpl.validateId(invalidDateRid, centerId, machineId);
 	}
 
-	//@Test(expected = InvalidIDException.class)
+	@Test(expected = InvalidIDException.class)
 	public void invalidHourInTimestampOfRidTest() {
 
 		ridValidatorImpl.validateId(invalidHourRid, centerId, machineId);
 	}
 
-	//@Test(expected = InvalidIDException.class)
+	@Test(expected = InvalidIDException.class)
 	public void invalidMinuteInTimestampOfRidTest() {
 
 		ridValidatorImpl.validateId(invalidMinuteRid, centerId, machineId);
 	}
 
-	//@Test(expected = InvalidIDException.class)
+	@Test(expected = InvalidIDException.class)
 	public void invalidSecondIntimestampOfRidTest() {
 
 		ridValidatorImpl.validateId(invalidSecondRid, centerId, machineId);
 	}
 
-	//@Test(expected = InvalidIDException.class)
+	@Test(expected = InvalidIDException.class)
 	public void invalidRidTest() {
 
 		ridValidatorImpl.validateId(invalidAlphaNumericRid, centerId, machineId);
 	}
 
-	//@Test(expected = InvalidIDException.class)
+	@Test(expected = InvalidIDException.class)
 	public void lengthOfRidTest() {
 
 		ridValidatorImpl.validateId(invalidLengthRid, centerId, machineId);
 	}
 
-	//@Test(expected = InvalidIDException.class)
+	@Test(expected = InvalidIDException.class)
 	public void invalidRidLengthTest() {
 
 		ridValidatorImpl.validateId(invalidLengthRid);
 	}
 
-	//@Test
+	@Test
 	public void validRidIsNumericTest() {
 
 		assertThat(ridValidatorImpl.validateId(validRid), is(true));
 	}
 
-	//@Test(expected = InvalidIDException.class)
+	@Test(expected = InvalidIDException.class)
 	public void invalidRidTimestampTest() {
 
 		assertThat(ridValidatorImpl.validateId(invalidMonthRid), is(false));
 	}
 
-	//@Test(expected = InvalidIDException.class)
+	@Test(expected = InvalidIDException.class)
 	public void invalidRidDateTest() {
 
 		assertThat(ridValidatorImpl.validateId(invalidDateRid), is(false));
 	}
 
-	//@Test(expected = InvalidIDException.class)
+	@Test(expected = InvalidIDException.class)
 	public void invalidRidTimeTest() {
 
 		assertThat(ridValidatorImpl.validateId(invalidHourRid), is(false));
 	}
 
-	//@Test(expected = InvalidIDException.class)
+	@Test(expected = InvalidIDException.class)
 	public void nonNumericRidTest() {
 
 		assertThat(ridValidatorImpl.validateId(invalidAlphaNumericRid), is(false));
 	}
 
-	//@Test
+	@Test
 	public void validRidCenterIdMachineIdWithCustomLengthTest() {
 
 		assertThat(ridValidatorImpl.validateId(validRid, centerId, machineId, centerIdLength, machineIdLength, 5,
 				timeStampLength), is(true));
 	}
 
-	//@Test
+	@Test
 	public void validRidWithCustomLengthTest() {
 
 		assertThat(
@@ -180,28 +179,31 @@ public class RidValidatorTest {
 				is(true));
 	}
 
-	//@Test(expected = InvalidIDException.class)
+	@Test(expected = InvalidIDException.class)
 	public void validRidWithInvalidCustomLengthTest() {
 
 		assertThat(ridValidatorImpl.validateId(validRid, -1, machineIdLength, sequenceLength, timeStampLength),
 				is(false));
 	}
 
-	//@Test(expected = InvalidIDException.class)
+	@Test(expected = InvalidIDException.class)
 	public void validRidWithInvalidSequenceTest() {
 
-		ridValidatorImpl.validateId(validRid, centerId, machineId, centerIdLength, machineIdLength, sequenceLength, 13);
+		ridValidatorImpl.validateId(validRid, centerId, machineId, centerIdLength, machineIdLength, sequenceLength,
+				timeStampLength - 1);
 	}
 
-	//@Test
+	@Test
 	public void validRidWithCustomSequenceTest() {
 
-		ridValidatorImpl.validateId(validCustomSequenceRid, "278476", "573621", 6, 6, 3, timeStampLength);
+		ridValidatorImpl.validateId(validCustomSequenceRid, centerId, machineId, centerIdLength, machineIdLength,
+				sequenceLength, timeStampLength);
 	}
 
-	//@Test(expected = InvalidIDException.class)
+	@Test(expected = InvalidIDException.class)
 	public void validRidWithInvalidCustomSequenceTest() {
 
-		ridValidatorImpl.validateId(validCustomSequenceRid, "278476", "573621", 6, 6, 2, timeStampLength);
+		ridValidatorImpl.validateId(validCustomSequenceRid, centerId, machineId, centerIdLength, machineIdLength,
+				sequenceLength - 1, timeStampLength);
 	}
 }
