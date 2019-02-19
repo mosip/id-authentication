@@ -30,6 +30,8 @@ public class LoggerConstants {
 	private static final String SYNC = APP_NAME + "SYNC - ";
 	private static final String OTP = APP_NAME + "OTP";
 	private static final String PKT_HANDLER= APP_NAME + "PACKET_HANDLER - ";
+	private static final String HEADER= APP_NAME + "HEADER - ";
+	private static final String HOME= APP_NAME + "HOME - ";
 	
 	
 
@@ -70,6 +72,8 @@ public class LoggerConstants {
 	public static final String LOG_REG_FACE_FACADE = USER_REGISTRATION + "FACE_FACADE";
 	public static final String LOG_REG_USER_ONBOARD = USER_ONBOARD + "USER_ONBOARD_IMLP";
 	public static final String OPT_TO_REG_LOGGER_SESSION_ID = SYNC + "SYNC_STATUS_VALIDATOR_SERVICE_IMPL";
+	public static final String LOG_REG_HEADER = HEADER + "HEADER_CONTROLLER";
+	public static final String LOG_REG_HOME = HOME + "HOME_CONTROLLER";
 
 	// USER ONBOARD
 	public static final String LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD = USER_ONBOARD

@@ -9,6 +9,7 @@ import java.util.TimerTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
@@ -101,7 +102,7 @@ public class HeaderController extends BaseController {
 	 */
 	public void initialize() {
 
-		LOGGER.info("REGISTRATION - OFFICER_DETAILS - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
+		LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
 				APPLICATION_ID, "Displaying Registration Officer details");
 
 		registrationOfficerName.setText(SessionContext.userContext().getName());
@@ -136,7 +137,7 @@ public class HeaderController extends BaseController {
 	public void logout(ActionEvent event) {
 		try {
 
-			LOGGER.info("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
+			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
 					APPLICATION_ID, "Clearing Session context");
 
 			/** Stop Sync-Data Process */
@@ -150,8 +151,8 @@ public class HeaderController extends BaseController {
 			getScene(loginpage);
 
 		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, ioException.getMessage());
+			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
+					APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGOUT_PAGE);
 		}
@@ -163,17 +164,23 @@ public class HeaderController extends BaseController {
 	public void redirectHome(ActionEvent event) {
 		try {
 
-			LOGGER.info("REGISTRATION - REDIRECT_HOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
+			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
 					APPLICATION_ID, "Redirecting to Home page");
 
 			VBox homePage = BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 			getScene(homePage);
 			clearRegistrationData();
 
-		} catch (IOException | RuntimeException exception) {
+		} catch (IOException  ioException) {
 
-			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, exception.getMessage());
+			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
+					APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
+		}  catch (RuntimeException runtimeException) {
+
+			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
+					APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 		}
@@ -209,12 +216,12 @@ public class HeaderController extends BaseController {
 			pane.getChildren().add(syncData);
 
 		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, ioException.getMessage());
+			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
+					APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			
 		} catch(RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, runtimeException.getMessage());
+			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
+					APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 
 	}
@@ -238,7 +245,7 @@ public class HeaderController extends BaseController {
 
 			}
 		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - UI - Officer Sync Packet Status ", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage());
 		}
 	}
