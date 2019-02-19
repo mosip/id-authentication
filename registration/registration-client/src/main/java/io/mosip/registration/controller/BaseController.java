@@ -65,6 +65,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -694,5 +695,15 @@ public class BaseController {
 		
 		pageDetails.clear();
 		return returnPage;
+	}
+	
+	protected void getCurrentPage(AnchorPane pageId, String notTosShow, String show) {
+		
+		if(notTosShow != null) {
+			((AnchorPane) pageId.lookup("#"+notTosShow)).setVisible(false);
+		}
+		if(show != null) {
+			((AnchorPane) pageId.lookup("#"+show)).setVisible(true);
+		}
 	}
 }

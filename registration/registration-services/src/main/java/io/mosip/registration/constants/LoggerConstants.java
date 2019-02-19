@@ -75,6 +75,7 @@ public class LoggerConstants {
 	public static final String LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD = USER_ONBOARD
 			+ "FINGERPRINT_CAPTURE_CONTROLLER";
 	public static final String LOG_REG_IRIS_CAPTURE_USER_ONBOARD = USER_ONBOARD + "IRIS_CAPTURE_CONTROLLER";
+	public static final String LOG_REG_PARENT_USER_ONBOARD = USER_ONBOARD + "USER_ONBOARD_PARENT_CONTROLLER";
 
 	public static final String BASE_JOB_TITLE = SYNC + "Base_Job";
 	public static final String BATCH_JOBS_PROCESS_LOGGER_TITLE = SYNC + "Job_Process_Listener";

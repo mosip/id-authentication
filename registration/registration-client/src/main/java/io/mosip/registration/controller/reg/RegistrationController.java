@@ -131,15 +131,6 @@ public class RegistrationController extends BaseController {
 					"initializing the registration controller", SessionContext.userContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
-			// Create RegistrationDTO Object
-			if (SessionContext.map().get("operatorAuthentication") != null) {
-				boolean isAuthentication = (boolean) SessionContext.map().get("operatorAuthentication");
-				if (isAuthentication) {
-					SessionContext.map().put("demographicDetail", false);
-					showCurrentPage();
-				}
-			}
-
 			if (getRegistrationDTOFromSession() == null) {
 				createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
 			}
@@ -294,11 +285,9 @@ public class RegistrationController extends BaseController {
 						LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER,
 								RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 								"showing demographic preview");
+						
+						showCurrentPage(RegistrationConstants.FACE_CAPTURE, getPageDetails(RegistrationConstants.FACE_CAPTURE,RegistrationConstants.NEXT));
 
-						SessionContext.map().put("faceCapture", false);
-						registrationPreviewController.setUpPreviewContent();
-						SessionContext.map().put("registrationPreview", true);
-						showCurrentPage();
 					} else {
 						((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
 								.getOperatorBiometricDTO().getFaceDetailsDTO().setFace(photoInBytes);
@@ -321,11 +310,8 @@ public class RegistrationController extends BaseController {
 	// Operator Authentication
 	public void goToAuthenticationPage() {
 		try {
-			SessionContext.map().put("operatorAuthentication", true);
-			SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
-			loadScreen(RegistrationConstants.CREATE_PACKET_PAGE);
 			authenticationController.initData(ProcessNames.PACKET.getType());
-		} catch (IOException | RegBaseCheckedException ioException) {
+		} catch (RegBaseCheckedException ioException) {
 			LOGGER.error("REGISTRATION - REGSITRATION_OPERATOR_AUTHENTICATION_PAGE_LOADING_FAILED", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 		}
@@ -401,29 +387,16 @@ public class RegistrationController extends BaseController {
 		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
 		return biometricInfoDTO;
 	}
-
-	public void showCurrentPage() {
-		demographicDetail.setVisible(getVisiblity("demographicDetail"));
-		documentScan.setVisible(getVisiblity("documentScan"));
-		fingerPrintCapture.setVisible(getVisiblity("fingerPrintCapture"));
-		biometricException.setVisible(getVisiblity("biometricException"));
-		faceCapture.setVisible(getVisiblity("faceCapture"));
-		irisCapture.setVisible(getVisiblity("irisCapture"));
-		registrationPreview.setVisible(getVisiblity("registrationPreview"));
-		operatorAuthentication.setVisible(getVisiblity("operatorAuthentication"));
-	}
-
-	private boolean getVisiblity(String page) {
-		if (SessionContext.map().get(page) != null) {
-			return (boolean) SessionContext.map().get(page);
-		}
-		return false;
-	}
 	
 	public void showCurrentPage(String notTosShow, String show) {
 		
-		((AnchorPane) registrationId.lookup("#"+notTosShow)).setVisible(false);
-		((AnchorPane) registrationId.lookup("#"+show)).setVisible(true);
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Navigating to next page based on the current page");
+		
+		getCurrentPage(registrationId, notTosShow, show);
+		
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Navigated to next page based on the current page");
 	}
 
 	/**
