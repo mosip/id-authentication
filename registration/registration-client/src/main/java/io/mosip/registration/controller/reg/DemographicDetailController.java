@@ -13,6 +13,7 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.PridValidator;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
@@ -394,7 +395,7 @@ public class DemographicDetailController extends BaseController {
 			residenceLocalLanguage.setText(localLabelBundle.getString("national"));
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					runtimeException.getMessage());
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_DEMOGRAPHIC_PAGE);
 
 		}
@@ -474,7 +475,7 @@ public class DemographicDetailController extends BaseController {
 					"Exiting the toggle function for toggle label 1 and toggle level 2");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - TOGGLING OF DOB AND AGE FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -535,7 +536,7 @@ public class DemographicDetailController extends BaseController {
 					"Exiting the toggle function for resident status");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - TOGGLING OF DOB AND AGE FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -594,7 +595,7 @@ public class DemographicDetailController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - AGE FIELD VALIDATION FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -632,7 +633,7 @@ public class DemographicDetailController extends BaseController {
 			fxUtils.dobListener(yyyy, ageField, "\\d{4}");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - Listner method failed ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -670,9 +671,9 @@ public class DemographicDetailController extends BaseController {
 			ddLocalLanguage.setPromptText(localProperties.getString("dd"));
 			mmLocalLanguage.setPromptText(localProperties.getString("mm"));
 			yyyyLocalLanguage.setPromptText(localProperties.getString("yyyy"));
-		} catch (RuntimeException exception) {
+		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING LOCAL LANGUAGE FIELDS FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, exception.getMessage());
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -696,7 +697,7 @@ public class DemographicDetailController extends BaseController {
 			vk.focusListener(addressLine3LocalLanguage, 375.00, keyboardNode);
 		} catch (NullPointerException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					exception.getMessage());
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 		}
 	}
 
@@ -718,7 +719,7 @@ public class DemographicDetailController extends BaseController {
 							ApplicationContext.localLanguage()));
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING FAILED FOR REGION SELECTION LIST ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage()+ ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -736,7 +737,7 @@ public class DemographicDetailController extends BaseController {
 			localAdminAuthorityLocalLanguage.getItems().clear();
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING FAILED FOR PROVINCE SELECTION LIST ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
 		}
 
@@ -754,7 +755,7 @@ public class DemographicDetailController extends BaseController {
 			localAdminAuthorityLocalLanguage.getItems().clear();
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING FAILED FOR CITY SELECTION LIST ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
 		}
 	}
@@ -768,7 +769,7 @@ public class DemographicDetailController extends BaseController {
 			retrieveAndPopulateLocationByHierarchy(city, localAdminAuthority, localAdminAuthorityLocalLanguage);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING FAILED FOR LOCAL ADMIN AUTHORITY SELECTOIN LIST ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 	
@@ -801,12 +802,12 @@ public class DemographicDetailController extends BaseController {
 					| JsonProcessingException exception) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
 				LOGGER.error("JASON VALIDATOIN FAILED ", APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, exception.getMessage());
+						RegistrationConstants.APPLICATION_ID, exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 				return;
 			} catch ( RuntimeException runtimeException) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
 				LOGGER.error("JASON VALIDATOIN FAILED ", APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+						RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 				return;
 			}
 
@@ -829,7 +830,7 @@ public class DemographicDetailController extends BaseController {
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - SAVING THE DETAILS FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -1108,7 +1109,7 @@ public class DemographicDetailController extends BaseController {
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 
 	}
@@ -1158,7 +1159,7 @@ public class DemographicDetailController extends BaseController {
 			} catch (InvalidIDException invalidIDException) {
 				generateAlert(RegistrationConstants.ERROR, invalidIDException.getErrorText());
 				LOGGER.error("PRID VALIDATION FAILED", APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, invalidIDException.getMessage());
+						RegistrationConstants.APPLICATION_ID, invalidIDException.getMessage() + ExceptionUtils.getStackTrace(invalidIDException));
 				return;
 			}
 		}
@@ -1214,7 +1215,7 @@ public class DemographicDetailController extends BaseController {
 			}
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING ADDRESS FROM PREVIOUS ENTRY FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -1257,7 +1258,7 @@ public class DemographicDetailController extends BaseController {
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - SETTING FOCUS ON LOCAL FIELED FAILED", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -1353,7 +1354,7 @@ public class DemographicDetailController extends BaseController {
 			genderLocalLanguage.setConverter((StringConverter<GenderDto>) uiRenderForComboBox);
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.REGISTRATION_CONTROLLER,
-					runtimeException.getMessage(), runtimeException);
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException), runtimeException);
 		}
 		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - RENDER_COMBOBOXES", RegistrationConstants.APPLICATION_ID,
 				RegistrationConstants.APPLICATION_NAME, "Rendering of comboboxes ended");
@@ -1378,7 +1379,7 @@ public class DemographicDetailController extends BaseController {
 			}
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.REGISTRATION_CONTROLLER,
-					runtimeException.getMessage(), runtimeException);
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException), runtimeException);
 		}
 		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - RETRIEVE_AND_POPULATE_LOCATION_BY_HIERARCHY",
 				RegistrationConstants.APPLICATION_ID, RegistrationConstants.APPLICATION_NAME,
@@ -1396,7 +1397,7 @@ public class DemographicDetailController extends BaseController {
 			genderLocalLanguage.getItems().addAll(masterSync.getGenderDtls(ApplicationContext.localLanguage()));
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.REGISTRATION_CONTROLLER,
-					runtimeException.getMessage(), runtimeException);
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException), runtimeException);
 		}
 		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - POPULATE_GENDER", RegistrationConstants.APPLICATION_ID,
 				RegistrationConstants.APPLICATION_NAME, "Fetching Gender based on Application Language ended");
