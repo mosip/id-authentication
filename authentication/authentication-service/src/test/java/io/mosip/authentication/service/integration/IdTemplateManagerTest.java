@@ -14,7 +14,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -22,27 +25,35 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.service.factory.RestRequestFactory;
+import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
+@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PDFGeneratorImpl.class)
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class IdTemplateManagerTest {
 
 	private static final String OTP_SMS_TEMPLATE_TXT = "otp-sms-template.txt";
 
 	@InjectMocks
-	IdTemplateManager idTemplateManager;
+	private IdTemplateManager idTemplateManager;
+
+	@InjectMocks
+	private MasterDataManager masterDataManager;
 
 	@Mock
 	private TemplateManager templateManager;
@@ -53,16 +64,39 @@ public class IdTemplateManagerTest {
 	@Autowired
 	private PDFGenerator actpdfGenerator;
 
+	@Autowired
+	private Environment environment;
+
+	@InjectMocks
+	private IdInfoHelper idInfoHelper;
+
+	@InjectMocks
+	private RestRequestFactory restFactory;
+
+	@InjectMocks
+	private RestHelper restHelper;
+
 	private final String value = "OTP for UIN  $uin is $otp and is valid for $validTime minutes. (Generated at $datetimestamp)";
+
+	@Before
+	public void before() {
+		ReflectionTestUtils.setField(idTemplateManager, "masterDataManager", masterDataManager);
+		ReflectionTestUtils.setField(masterDataManager, "environment", environment);
+		ReflectionTestUtils.setField(masterDataManager, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(masterDataManager, "restFactory", restFactory);
+		ReflectionTestUtils.setField(masterDataManager, "restHelper", restHelper);
+		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
+		ReflectionTestUtils.setField(restFactory, "env", environment);
+	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestInvalidApplyTemplate() throws IOException, IdAuthenticationBusinessException {
 		Mockito.when(templateManager.merge(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(false);
 		Map<String, Object> valueMap = new HashMap<>();
-		idTemplateManager.applyTemplate("test", valueMap);
+		idTemplateManager.applyTemplate("otp-sms-template", valueMap);
 	}
 
-	@Test(expected = IOException.class)
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestTemplateResourceNotFoundException() throws IOException, IdAuthenticationBusinessException {
 		Mockito.when(templateManager.merge(Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(new IOException());
 		Map<String, Object> valueMap = new HashMap<>();
@@ -73,7 +107,7 @@ public class IdTemplateManagerTest {
 		idTemplateManager.applyTemplate("test", valueMap);
 	}
 
-	@Test
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestApplyTemplate() throws IOException, IdAuthenticationBusinessException {
 		Map<String, Object> valueMap = new HashMap<>();
 		valueMap.put("uin", "1234567890");
@@ -95,7 +129,7 @@ public class IdTemplateManagerTest {
 		idTemplateManager.generatePDF("test", valueMap);
 	}
 
-	@Test
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testPdfGenerationWithInputStream() throws IOException, IdAuthenticationBusinessException {
 		ClassLoader classLoader = getClass().getClassLoader();
 		Mockito.when(templateManager.merge(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);

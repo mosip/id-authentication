@@ -8,18 +8,17 @@ import java.util.Map;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
-import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -33,6 +32,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
 import io.mosip.authentication.service.factory.RestRequestFactory;
@@ -60,7 +60,7 @@ public class OtpMatchingStrategyTest {
 	@InjectMocks
 	private RestRequestFactory restRequestFactory;
 
-	@InjectMocks
+	@Mock
 	private RestHelper restHelper;
 
 	/** The mapper. */
@@ -70,42 +70,14 @@ public class OtpMatchingStrategyTest {
 	@Autowired
 	Environment environment;
 
-	/** The server. */
-	static BlockingNettyContext server;
-
-	/**
-	 * Before class.
-	 */
-	@BeforeClass
-	public static void beforeClass() {
-		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.GET("/otpmanager/otps"),
-				request -> ServerResponse.status(HttpStatus.OK).body(
-						Mono.just(new OTPValidateResponseDTO("success", "OTP Validation Successful")),
-						OTPValidateResponseDTO.class));
-		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
-		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
-		server = HttpServer.create(7895).start(adapter);
-		server.installShutdownHook();
-		System.err.println("started server");
-
-	}
-
-	@AfterClass
-	public static void afterClass() {
-		server.shutdown();
-		HttpResources.reset();
-	}
-
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idInfoHelper, "otpManager", otpManager);
 		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restRequestFactory);
 		ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
-		ReflectionTestUtils.setField(restHelper, "mapper", mapper);
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
 	}
 
-	
 	@Test
 	public void TestValidOtpwithInvalidOtp() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = OtpMatchingStrategy.EXACT.getMatchFunction();
@@ -116,17 +88,15 @@ public class OtpMatchingStrategyTest {
 		assertEquals(0, value);
 	}
 
-	
 	@Test
-	public void TestValidOtpMatchingStrategy() throws IdAuthenticationBusinessException {
-		MockEnvironment env = new MockEnvironment();
-		env.merge(((AbstractEnvironment) environment));
-		env.setProperty("otp-validate.rest.uri", "http://localhost:7895/otpmanager/otps");
-		ReflectionTestUtils.setField(restRequestFactory, "env", env);
+	public void TestValidOtpMatchingStrategy() throws IdAuthenticationBusinessException, RestServiceException {
 		MatchFunction matchFunction = OtpMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
 		ValidateOtpFunction func = idInfoHelper.getValidateOTPFunction();
 		matchProperties.put(ValidateOtpFunction.class.getSimpleName(), func);
+		OTPValidateResponseDTO otpResponseDTO = new OTPValidateResponseDTO();
+		otpResponseDTO.setStatus("success");
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpResponseDTO);
 		int value = matchFunction.match("123456", "IDA_asdEEFAER", matchProperties);
 		assertEquals(100, value);
 	}

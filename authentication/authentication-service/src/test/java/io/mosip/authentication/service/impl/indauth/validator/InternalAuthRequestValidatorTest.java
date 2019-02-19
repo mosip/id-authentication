@@ -40,6 +40,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
@@ -76,6 +77,9 @@ public class InternalAuthRequestValidatorTest {
 
 	@Autowired
 	Environment env;
+	
+	@Mock
+	private MasterDataManager masterDataManager;
 
 	@Before
 	public void before() {

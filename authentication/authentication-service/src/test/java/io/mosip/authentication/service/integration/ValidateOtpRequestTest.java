@@ -21,7 +21,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.indauth.PinDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -62,34 +61,12 @@ public class ValidateOtpRequestTest {
 	@InjectMocks
 	PinDTO pindto;
 
-	// static BlockingNettyContext server;
-
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(restfactory, "env", env);
 		ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
 		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restfactory);
 	}
-
-	// /**
-	// * To Configure the HTTP resources to Validate OTP
-	// *
-	// */
-	//
-	// @BeforeClass
-	// public static void beforeClass() {
-	// RouterFunction<?> functionSuccess =
-	// RouterFunctions.route(RequestPredicates.POST("/otpmanager/otps"),
-	// request -> ServerResponse.status(HttpStatus.OK).body(
-	// Mono.just(new OTPValidateResponseDTO("True", "OTP Validation Successful")),
-	// OTPValidateResponseDTO.class));
-	// HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
-	// ReactorHttpHandlerAdapter adapter = new
-	// ReactorHttpHandlerAdapter(httpHandler);
-	// server = HttpServer.create(8083).start(adapter);
-	// server.installShutdownHook();
-	// System.err.println("Server Started");
-	// }
 
 	/**
 	 * Test OTP Validation with key and OTP on Core-kernal

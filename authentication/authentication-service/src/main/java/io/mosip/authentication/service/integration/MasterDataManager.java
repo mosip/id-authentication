@@ -10,6 +10,8 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
@@ -126,6 +128,37 @@ public class MasterDataManager {
 		}
 		return stringBuilder.toString();
 	}
+
+	public Map<String, List<String>> fetchMasterData(RestServicesConstants type, Map<String, String> params)
+			throws IdAuthenticationBusinessException {
+		RestRequestDTO buildRequest = null;
+		Map<String, List<Map<String, String>>> response = null;
+		try {
+			buildRequest = restFactory.buildRequest(type, null, Map.class);
+
+			if (params == null) {
+				MultiValueMap<String, String> paramValue = new LinkedMultiValueMap<>();
+//				paramValue.add("langcode", langCode);
+//				paramValue.add("templatetypecode", templateName);
+				buildRequest.setParams(paramValue);
+			}
+
+			response = restHelper.requestSync(buildRequest);
+			List<Map<String, String>> value = response.get("titleList");
+			Map<String, List<String>> titleList = new HashMap<>();
+			for (Map<String, String> map : value) {
+				String langCode = map.get("langCode");
+				String genderName = map.get("titleName");
+				List<String> list = titleList.computeIfAbsent(langCode, key -> new ArrayList<>());
+				list.add(genderName);
+			}
+			return titleList;
+		} catch (IDDataValidationException | RestServiceException e) {
+			logger.error(SESSION_ID, this.getClass().getName(), e.getErrorCode(), e.getErrorText());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
+		}
+
+	}
 	
 	public Map<String, List<String>> fetchGenderType() throws IdAuthenticationBusinessException {
 		RestRequestDTO buildRequest = null;
@@ -154,7 +187,7 @@ public class MasterDataManager {
 		RestRequestDTO buildRequest = null;
 		Map<String, List<Map<String, String>>> response = null;
 		try {
-			buildRequest = restFactory.buildRequest(RestServicesConstants.GENDER_TYPE_SERVICE, null,
+			buildRequest = restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null,
 					Map.class);
 			response = restHelper.requestSync(buildRequest);
 			List<Map<String, String>> value = response.get("titleList");

@@ -29,7 +29,8 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_UIN("IDA-MLC-002", "Invalid UIN", "A0101"),
 	UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated", "A0102"),
 	INVALID_VID("IDA-MLC-004", "Invalid VID", "A0103"), 
-	EXPIRED_VID("IDA-MLC-005", "Expired VID", "A0104"), // Not
+	EXPIRED_VID("IDA-MLC-005", "Expired VID", "A0104"),
+	VID_DEACTIVATED_UIN("IDA-MLC-012","VID corresponding to a deactivated UIN"),// Not
 																											// referenced
 	INACTIVE_VID("IDA-IDV-005", "Inactive VID"), 
 	AUTHENTICATION_FAILED("IDA-AUT-501", "Authentication failed"),
@@ -123,7 +124,7 @@ public enum IdAuthenticationErrorConstants {
 	//VID Generator
 	VID_GENERATION_FAILED("IDA-MLC-010","Could not generate VID for the individual"),
 	
-	VID_REGENERATION_FAILED("IDA-MLC-011","VID regeneration not allowed.Use existing VID %s"),
+	VID_REGENERATION_FAILED("IDA-MLC-011","VID regeneration not allowed. Use existing VID"),
 	
 	// for No authentication type selected
 	NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST("IDA-MLC-008","No authentication type selected");

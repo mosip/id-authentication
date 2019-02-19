@@ -87,11 +87,10 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * Generate OTP, store the OTP request details for success/failure. And send OTP
 	 * notification by sms(on mobile)/mail(on email-id).
 	 *
-	 * @param otpRequestDto
-	 *            the otp request dto
+	 * @param otpRequestDto the otp request dto
 	 * @return otpResponseDTO
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	@Override
 	public OtpResponseDTO generateOtp(OtpRequestDTO otpRequestDto) throws IdAuthenticationBusinessException {
@@ -116,7 +115,7 @@ public class OTPFacadeImpl implements OTPFacade {
 			try {
 				otp = otpService.generateOtp(otpKey);
 			} catch (IdAuthenticationBusinessException e) {
-				mosipLogger.error("", idvIdType, e.getErrorCode(), "Error: " + e);
+				mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
 			}
 		}
 		mosipLogger.info(SESSION_ID, "NA", "generated OTP", otp);
@@ -127,16 +126,18 @@ public class OTPFacadeImpl implements OTPFacade {
 			AutnTxn authTxn = createAuthTxn(idvId, idvIdType, uin, reqTime, txnId, status, comment,
 					RequestType.OTP_REQUEST);
 			idAuthService.saveAutnTxn(authTxn);
-			mosipLogger.error(SESSION_ID, this.getClass().getName(), this.getClass().getName(), "OTP Generation failed");
+			mosipLogger.error(SESSION_ID, this.getClass().getName(), this.getClass().getName(),
+					"OTP Generation failed");
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 		} else {
-			mosipLogger.error(SESSION_ID, this.getClass().getName(), this.getClass().getName(), "generated OTP is: " + otp);
+			mosipLogger.error(SESSION_ID, this.getClass().getName(), this.getClass().getName(),
+					"generated OTP is: " + otp);
 			otpResponseDTO.setStatus("Y");
 			otpResponseDTO.setErr(Collections.emptyList());
 			otpResponseDTO.setTxnID(txnId);
 			status = "Y";
 			comment = "OTP_GENERATED";
-			Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(idResDTO);
+			Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
 			mobileNumber = getMobileNumber(idInfo);
 			email = getEmail(idInfo);
 			String responseTime = formatDate(new Date(), env.getProperty(DATETIME_PATTERN));
@@ -180,12 +181,7 @@ public class OTPFacadeImpl implements OTPFacade {
 			// TODO check
 			autnTxn.setCrBy(IDA);
 			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			Date reqDate = null;
-			reqDate = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
-			  SimpleDateFormat dateFormatter = new SimpleDateFormat(
-					  env.getProperty(DATETIME_PATTERN));
-			dateFormatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of(UTC)));
-			String strUTCDate = dateFormatter.format(reqDate);
+			String strUTCDate = idInfoHelper.getUTCTime(reqTime);
 			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
 			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime()); // TODO check this
 			autnTxn.setAuthTypeCode(otpRequest.getRequestType());
@@ -218,8 +214,7 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * Validate the number of request for OTP generation. Limit for the number of
 	 * request for OTP is should not exceed 3 in 60sec.
 	 *
-	 * @param otpRequestDto
-	 *            the otp request dto
+	 * @param otpRequestDto the otp request dto
 	 * @return true, if is otp flooded
 	 * @throws IdAuthenticationBusinessException
 	 */
@@ -230,14 +225,15 @@ public class OTPFacadeImpl implements OTPFacade {
 		LocalDateTime reqTime;
 		try {
 			requestTime = DateUtils.parseToDate(otpRequestDto.getReqTime(), env.getProperty(DATETIME_PATTERN));
-			reqTime=DateUtils.parseDateToLocalDateTime(requestTime);
+			reqTime = DateUtils.parseDateToLocalDateTime(requestTime);
 		} catch (java.text.ParseException e) {
 			mosipLogger.error(SESSION_ID, null, null, e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
 					e);
 		}
+		//TODO make minutes and value configurable
 		Date addMinutesInOtpRequestDTime = addMinutes(requestTime, -1);
-		LocalDateTime addMinutesInOtpRequestDTimes=DateUtils.parseDateToLocalDateTime(addMinutesInOtpRequestDTime);
+		LocalDateTime addMinutesInOtpRequestDTimes = DateUtils.parseDateToLocalDateTime(addMinutesInOtpRequestDTime);
 		if (autntxnrepository.countRequestDTime(reqTime, addMinutesInOtpRequestDTimes, uniqueID) > 3) {
 			isOtpFlooded = true;
 		}
@@ -250,10 +246,8 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * object. Add positive, date increase in minutes. Add negative, date reduce in
 	 * minutes.
 	 *
-	 * @param date
-	 *            the date
-	 * @param minute
-	 *            the minute
+	 * @param date   the date
+	 * @param minute the minute
 	 * @return the date
 	 */
 	private Date addMinutes(Date date, int minute) {
@@ -263,10 +257,8 @@ public class OTPFacadeImpl implements OTPFacade {
 	/**
 	 * Formate date.
 	 *
-	 * @param date
-	 *            the date
-	 * @param format
-	 *            the formate
+	 * @param date   the date
+	 * @param format the formate
 	 * @return the date
 	 */
 	private String formatDate(Date date, String format) {
@@ -276,8 +268,7 @@ public class OTPFacadeImpl implements OTPFacade {
 	/**
 	 * Get Mail.
 	 * 
-	 * @param idInfo
-	 *            List of IdentityInfoDTO
+	 * @param idInfo List of IdentityInfoDTO
 	 * @return mail
 	 * @throws IdAuthenticationBusinessException
 	 */
@@ -288,8 +279,7 @@ public class OTPFacadeImpl implements OTPFacade {
 	/**
 	 * Get Mobile number.
 	 * 
-	 * @param idInfo
-	 *            List of IdentityInfoDTO
+	 * @param idInfo List of IdentityInfoDTO
 	 * @return Mobile number
 	 * @throws IdAuthenticationBusinessException
 	 */

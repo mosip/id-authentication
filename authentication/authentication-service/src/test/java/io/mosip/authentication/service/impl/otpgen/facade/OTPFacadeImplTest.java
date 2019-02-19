@@ -2,6 +2,7 @@ package io.mosip.authentication.service.impl.otpgen.facade;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,8 +57,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IdTemplateManager.class,
-		TemplateManagerBuilderImpl.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class OTPFacadeImplTest {
 
 	OtpRequestDTO otpRequestDto;
@@ -75,8 +75,9 @@ public class OTPFacadeImplTest {
 	AutnTxn autnTxn;
 	@Mock
 	IdAuthService<AutnTxn> idAuthService;
+
 	@InjectMocks
-	IdTemplateManager idTemplateManager;
+	IdTemplateManager idTemplateService;
 
 	@InjectMocks
 	private RestRequestFactory restRequestFactory;
@@ -84,7 +85,8 @@ public class OTPFacadeImplTest {
 	private RestHelper restHelper;
 
 	@Mock
-	IdRepoService idInfoService;
+	private IdRepoService idInfoService;
+
 	@Mock
 	private IdInfoHelper idInfoHelper;
 
@@ -106,7 +108,7 @@ public class OTPFacadeImplTest {
 		ReflectionTestUtils.setField(otpFacadeImpl, "env", env);
 		ReflectionTestUtils.setField(otpFacadeImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(notificationService, "env", env);
-		ReflectionTestUtils.setField(notificationService, "idTemplateManager", idTemplateManager);
+		ReflectionTestUtils.setField(notificationService, "idTemplateManager", idTemplateService);
 		ReflectionTestUtils.setField(restRequestFactory, "env", env);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
@@ -147,13 +149,18 @@ public class OTPFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 
-		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
+		Mockito.when(idAuthService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn(name);
 
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn(emailId);
 
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn(mobileNumber);
-
+		try {
+			Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Optional<String> uinOpt = Optional.of("426789089018");
 		otpFacadeImpl.generateOtp(otpRequestDto);
 	}
@@ -188,13 +195,18 @@ public class OTPFacadeImplTest {
 		idInfo.put("phone", list);
 
 		Mockito.when(idAuthService.processIdType("D", uin, false)).thenReturn(repoDetails);
-		Mockito.when(idInfoService.getIdInfo(repoDetails)).thenReturn(idInfo);
+		Mockito.when(idAuthService.getIdInfo(repoDetails)).thenReturn(idInfo);
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn(name);
 
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn(emailId);
 
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn(mobileNumber);
-
+		try {
+			Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Optional<String> uinOpt = Optional.of("426789089018");
 
 		otpFacadeImpl.generateOtp(otpRequestDto);
@@ -217,12 +229,18 @@ public class OTPFacadeImplTest {
 
 		Mockito.when(otpManager.generateOTP(otpKey)).thenReturn("123456");
 		Mockito.when(otpService.generateOtp(otpKey)).thenReturn("123456");
-		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
+		Mockito.when(idAuthService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("abc@test.com");
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("1234567890");
 
 		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getEmail", idInfo);
 		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getMobileNumber", idInfo);
+		try {
+			Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		otpFacadeImpl.generateOtp(otpRequestDto);
 
 	}
@@ -245,11 +263,16 @@ public class OTPFacadeImplTest {
 
 		Mockito.when(idAuthService.getIdRepoByUIN(unqueId, false)).thenReturn(repoDetails());
 		String otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getTspID());
+		try {
+			Mockito.when(idInfoHelper.getUTCTime(Mockito.anyString())).thenReturn("2019-02-18T12:28:17.078");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Mockito.when(otpService.generateOtp(otpKey)).thenReturn(otp);
 		Mockito.when(otpFacadeImpl.generateOtp(otpRequestDto))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
 	}
-
 
 	@Test
 	public void testAddMinute() {
@@ -287,7 +310,6 @@ public class OTPFacadeImplTest {
 		ReflectionTestUtils.invokeMethod(idAuthService, "getIdRepoByVID", uniqueID, false);
 	}
 
-
 	// =========================================================
 	// ************ Helping Method *****************************
 	// =========================================================
@@ -300,6 +322,7 @@ public class OTPFacadeImplTest {
 		otpRequestDto.setReqTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 		otpRequestDto.setTxnID("2345678901234");
 		otpRequestDto.setIdvId("2345678901234");
+		otpRequestDto.setReqTime("2019-02-18T18:17:48.923+05:30");
 		// otpRequestDto.setVer("1.0");
 
 		return otpRequestDto;

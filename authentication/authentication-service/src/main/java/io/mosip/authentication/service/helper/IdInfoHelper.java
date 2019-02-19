@@ -3,11 +3,14 @@
  */
 package io.mosip.authentication.service.helper;
 
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,6 +19,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -55,8 +59,10 @@ import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
+import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The Class IdInfoHelper.
@@ -86,6 +92,12 @@ public class IdInfoHelper implements IdInfoFetcher {
 
 	/** The Constant DEFAULT_MATCH_VALUE. */
 	public static final String DEFAULT_MATCH_VALUE = "demo.min.match.value";
+
+	/** The Constant UTC. */
+	private static final String UTC = "UTC";
+
+	/** The Constant DATETIME_PATTERN. */
+	private static final String DATETIME_PATTERN = "datetime.pattern";
 
 	/** The id mapping config. */
 	@Autowired
@@ -233,27 +245,31 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 *
 	 * @param idMapping the id mapping
 	 * @return the id mapping value
-	 * @throws IdAuthenticationBusinessException 
+	 * @throws IdAuthenticationBusinessException
 	 */
 	public List<String> getIdMappingValue(IdMapping idMapping) throws IdAuthenticationBusinessException {
 		List<String> mappings = idMapping.getMappingFunction().apply(idMappingConfig);
-		List<String> fullMapping = new ArrayList<>();
-		for (String mappingStr : mappings) {
-			if(!Objects.isNull(mappingStr) && !mappingStr.isEmpty()) {
-			Optional<IdMapping> mappingInternal = IdMapping.getIdMapping(mappingStr, IdaIdMapping.values());
-			if (mappingInternal.isPresent() && idMapping != mappingInternal.get()) {
-				List<String> internalMapping = getIdMappingValue(mappingInternal.get());
-				fullMapping.addAll(internalMapping);
-			} else {
-				fullMapping.add(mappingStr);
+		if (mappings != null && !mappings.isEmpty()) {
+			List<String> fullMapping = new ArrayList<>();
+			for (String mappingStr : mappings) {
+				if (!Objects.isNull(mappingStr) && !mappingStr.isEmpty()) {
+					Optional<IdMapping> mappingInternal = IdMapping.getIdMapping(mappingStr, IdaIdMapping.values());
+					if (mappingInternal.isPresent() && idMapping != mappingInternal.get()) {
+						List<String> internalMapping = getIdMappingValue(mappingInternal.get());
+						fullMapping.addAll(internalMapping);
+					} else {
+						fullMapping.add(mappingStr);
+					}
+				} else {
+					// TODO should add proper error
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING);
+				}
 			}
+			return fullMapping;
+		} else {
+			// TODO should add proper error
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING);
 		}
-			else {
-				//TODO should add proper error
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING);
-			}
-		}
-		return fullMapping;
 	}
 
 	/**
@@ -849,6 +865,13 @@ public class IdInfoHelper implements IdInfoFetcher {
 				.map(cfg -> new SimpleEntry<>(cfg.getIdname(), cfg.getMappingFunction().apply(idMappingConfig)))
 				.filter(entry -> entry.getValue().stream().anyMatch(v -> v.equalsIgnoreCase(cbeffName)))
 				.map(Entry::getKey).findAny().orElse("");
+	}
+
+	public String getUTCTime(String reqTime) throws ParseException, java.text.ParseException {
+		Date reqDate = DateUtils.parseToDate(reqTime, environment.getProperty(DATETIME_PATTERN));
+		SimpleDateFormat dateFormatter = new SimpleDateFormat(environment.getProperty(DATETIME_PATTERN));
+		dateFormatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of(UTC)));
+		return dateFormatter.format(reqDate);
 	}
 
 	@Override

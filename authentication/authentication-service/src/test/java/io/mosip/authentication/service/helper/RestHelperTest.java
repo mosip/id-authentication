@@ -38,6 +38,8 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
@@ -468,6 +470,62 @@ public class RestHelperTest {
 
 		restHelper.requestSync(restRequest);
 	}
+	
+	@Test(expected = RestServiceException.class)
+	public void ztestRequestSyncCheckForErrorsWithoutTimeout() throws IDDataValidationException, RestServiceException {
+		server.shutdown();
+		HttpResources.reset();
+		ObjectNode node = mapper.createObjectNode();
+		ArrayNode array = mapper.createArrayNode();
+		array.add(mapper.createObjectNode().put("error", "error"));
+		node.set("errors", array);
+		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.POST("/auditmanager/audits"),
+				request -> ServerResponse.status(HttpStatus.OK)
+						.body(Mono.just(node), ObjectNode.class));
+
+		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
+
+		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
+
+		server = HttpServer.create(8082).start(adapter);
+		server.installShutdownHook();
+
+		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
+
+		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+				ObjectNode.class);
+		restRequest.setTimeout(null);
+		restHelper.requestSync(restRequest);
+	}
+	
+	@Test(expected = RestServiceException.class)
+	public void ztestRequestSyncCheckForErrorsWithTimeout() throws IDDataValidationException, RestServiceException {
+		server.shutdown();
+		HttpResources.reset();
+		ObjectNode node = mapper.createObjectNode();
+		ArrayNode array = mapper.createArrayNode();
+		array.add(mapper.createObjectNode().put("error", "error"));
+		node.set("errors", array);
+		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.POST("/auditmanager/audits"),
+				request -> ServerResponse.status(HttpStatus.OK)
+						.body(Mono.just(node), ObjectNode.class));
+
+		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
+
+		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
+
+		server = HttpServer.create(8082).start(adapter);
+		server.installShutdownHook();
+
+		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
+
+		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+				ObjectNode.class);
+		restRequest.setTimeout(10);
+		restHelper.requestSync(restRequest);
+	}
 
 	@Test
 	public void testGetSslContext() {
@@ -525,6 +583,15 @@ public class RestHelperTest {
 		restRequest.setTimeout(100);
 
 		restHelper.requestSync(restRequest);
+	}
+	
+	@Test(expected = RestServiceException.class)
+	public void ztestRequestSyncCheckForErrorsUnknownError() throws Throwable {
+		try {
+			ReflectionTestUtils.invokeMethod(restHelper, "checkErrorResponse", "args", null);
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
 	}
 	
 }

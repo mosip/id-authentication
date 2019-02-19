@@ -2,13 +2,14 @@ package io.mosip.authentication.service.integration;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.annotation.PostConstruct;
-
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,49 +19,28 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
-import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
-
 
 /**
- * The Class IdTemplateManager.
- *
+ * 
  * @author Dinesh Karuppiah.T
  */
 
 @Component
 public class IdTemplateManager {
 
-	/** PDF Generator */
-	private PDFGenerator pdfGenerator;
-
-	/**  Class path. */
-	private static final String CLASSPATH = "classpath";
-
-	/**  UTF type. */
-	private static final String ENCODE_TYPE = "UTF-8";
-
-	/**  Template path. */
-	private static final String TEMPLATES = "templates/";
-
-	/** The logger. */
-	private static Logger logger = IdaLogger.getLogger(IdTemplateManager.class);
-	
-	/** The template manager builder. */
-	@Autowired
-	private TemplateManagerBuilder templateManagerBuilder;
-	
 	/** The template manager. */
 	private TemplateManager templateManager;
 
-	
+	/** PDF Generator */
+	private PDFGenerator pdfGenerator;
+
+	@Autowired
+	private MasterDataManager masterDataManager;
+
 	/**
-	 * Id template manager post construct.
+	 * IdTemplate Manager Logger
 	 */
-	@PostConstruct
-	public void idTemplateManagerPostConstruct() {
-		templateManager = templateManagerBuilder.encodingType(ENCODE_TYPE)
-				.enableCache(false).resourceLoader(CLASSPATH).build();
-	}
+	private static Logger logger = IdaLogger.getLogger(IdTemplateManager.class);
 
 	/**
 	 * To apply Template for PDF Generation.
@@ -68,18 +48,22 @@ public class IdTemplateManager {
 	 * @param templateName - template name for pdf format
 	 * @param values       - list of contents
 	 * @return the string
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 * @throws IOException                       Signals that an I/O exception has
+	 *                                           occurred.
 	 */
 	public String applyTemplate(String templateName, Map<String, Object> values)
 			throws IdAuthenticationBusinessException, IOException {
 
 		Objects.requireNonNull(templateName);
 		Objects.requireNonNull(values);
+		InputStream isTemplateAvail;
 		StringWriter writer = new StringWriter();
-		boolean isTemplateAvail = false;
-		isTemplateAvail = templateManager.merge(TEMPLATES + templateName, writer, values);
-		if (isTemplateAvail) {
+		String templatevalue = masterDataManager.fetchLanguageCode(templateName);
+		isTemplateAvail = templateManager.merge(new ByteArrayInputStream(templatevalue.getBytes()), values);
+		if (isTemplateAvail != null) {
+			IOUtils.copy(isTemplateAvail, writer, StandardCharsets.UTF_8);
 			return writer.toString();
 		} else {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.MISSING_TEMPLATE_CONFIG);
@@ -90,9 +74,10 @@ public class IdTemplateManager {
 	 * Generate PDF for e-KYC.
 	 *
 	 * @param templateName the template name
-	 * @param values the values
+	 * @param values       the values
 	 * @return the output stream
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	public OutputStream generatePDF(String templateName, Map<String, Object> values)
 			throws IdAuthenticationBusinessException {
