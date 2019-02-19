@@ -1,7 +1,6 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
 import java.text.ParseException;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,6 @@ import io.mosip.authentication.service.impl.indauth.service.pin.PinMatchType;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 import lombok.NoArgsConstructor;
 
 /**
@@ -84,7 +82,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		String txnId = authRequestDTO.getTxnID();
 		Optional<String> otp = getOtpValue(authRequestDTO);
 		if (otp.isPresent()) {
-			String vid = null;
+			String vid = "";
 			if (IdType.VID.getType().equalsIgnoreCase(authRequestDTO.getIdvIdType())) {
 				vid = authRequestDTO.getIdvId();
 			} else {
@@ -183,17 +181,9 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 
 	public boolean validateTxnId(String txnId, String uin, String vid, String reqTime)
 			throws IdAuthenticationBusinessException {
-		try {
-			String utcTime = idInfoHelper.getUTCTime(reqTime);
-			LocalDateTime parseDateToLocalDateTime = DateUtils.parseToLocalDateTime(utcTime);
-			LocalDateTime addMinutesInOtpRequestDTimes = parseDateToLocalDateTime.minusMinutes(3);
-			Optional<String> value = autntxnrepository.findByUinorVid(txnId, uin, vid, parseDateToLocalDateTime,
-					addMinutesInOtpRequestDTimes, PageRequest.of(0, 1), RequestType.OTP_REQUEST.getType()).stream()
+			Optional<String> value = autntxnrepository.findByUinorVid(txnId, uin, vid, PageRequest.of(0, 1), RequestType.OTP_REQUEST.getType()).stream()
 					.findFirst();
 			return value.isPresent();
-		} catch (ParseException | io.mosip.kernel.core.exception.ParseException e) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
-		}
 	}
 
 	/**

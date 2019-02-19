@@ -137,7 +137,7 @@ public class OTPAuthServiceTest {
 		valueList.add("1234567890");
 		Mockito.when(vidrepository.findVIDByUIN(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(valueList);
+				 Mockito.any(), Mockito.any())).thenReturn(valueList);
 		AuthStatusInfo authStatusInfo = authserviceimpl.validateOtp(authreqdto, "1234567890");
 		assertNotNull(authStatusInfo);
 	}
@@ -172,7 +172,7 @@ public class OTPAuthServiceTest {
 		List<String> valueList = new ArrayList<>();
 		valueList.add("1234567890");
 		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(valueList);
+				 Mockito.any(), Mockito.any())).thenReturn(valueList);
 		assertTrue(authserviceimpl.validateTxnId("", "", "", "2019-02-18T18:17:48.923+05:30"));
 	}
 
@@ -191,7 +191,7 @@ public class OTPAuthServiceTest {
 		List<String> valueList = new ArrayList<>();
 		valueList.add("1234567890");
 		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(valueList);
+				Mockito.any(), Mockito.any())).thenReturn(valueList);
 		assertTrue(authserviceimpl.validateTxnId("232323", "1234567890", "1234567890", "2019-02-18T18:17:48.923+05:30"));
 	}
 
@@ -270,7 +270,7 @@ public class OTPAuthServiceTest {
 		authType.setOtp(true);
 		otpAuthRequestDTO.setAuthType(authType);
 		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(valueList);
+				 Mockito.any(), Mockito.any())).thenReturn(valueList);
 		Mockito.when(vidrepository.findVIDByUIN(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		AuthStatusInfo authStatus = authserviceimpl.validateOtp(otpAuthRequestDTO, "45345435345");
 		assertFalse(authStatus.isStatus());
