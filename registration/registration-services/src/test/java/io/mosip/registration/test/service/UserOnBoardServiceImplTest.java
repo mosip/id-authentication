@@ -57,7 +57,7 @@ public class UserOnBoardServiceImplTest {
 	public void init() {
 		PowerMockito.mockStatic(ApplicationContext.class);
 		Map<String, Object> globalParams = new HashMap<>();
-		globalParams.put("USER_ON_BOARD_THRESHOLD_LIMIT", 10);
+		globalParams.put("USER_ON_BOARD_THRESHOLD_LIMIT", "10");
 		PowerMockito.when(ApplicationContext.map().get("USER_ON_BOARD_THRESHOLD_LIMIT")).thenReturn(globalParams);
 	}
 	
@@ -158,7 +158,7 @@ public class UserOnBoardServiceImplTest {
 		info.setFaceDetailsDTO(face);
 		
 		biometricDTO.setOperatorBiometricDTO(info);
-		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.success);
+		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.SUCCESS);
 		userOnboardServiceImpl.validate(biometricDTO);
 		
 	}
@@ -260,7 +260,7 @@ public class UserOnBoardServiceImplTest {
 		info.setFaceDetailsDTO(face);
 		
 		biometricDTO.setOperatorBiometricDTO(info);
-		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.success);
+		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.SUCCESS);
 		userOnboardServiceImpl.validate(biometricDTO);
 		
 	}

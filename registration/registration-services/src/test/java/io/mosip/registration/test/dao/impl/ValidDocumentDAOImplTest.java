@@ -33,16 +33,16 @@ public class ValidDocumentDAOImplTest {
 	public void test() {
 
 		ValidDocument validDocument = new ValidDocument();
-		validDocument.setDescription("description");
-		validDocument.setName("name");
-		validDocument.setCreatedTimesZone(new Timestamp(new Date().getTime()));
-		validDocument.setCreatedBy("createdBy");
-		validDocument.setDeletedTimesZone(new Timestamp(new Date().getTime()));
-		validDocument.setLanguageCode("languageCode");
+		//validDocument.setDescription("description");
+		validDocument.setDocTypeCode("name");
+		//validDocument.setCreatedTimesZone(new Timestamp(new Date().getTime()));
+		validDocument.setCrBy("createdBy");
+		//validDocument.setDeletedTimesZone(new Timestamp(new Date().getTime()));
+		validDocument.setLangCode("languageCode");
 		GenericId genericId = new GenericId();
 		genericId.setActive(true);
 		genericId.setCode("code");
-		validDocument.setGenericId(genericId);
+		//validDocument.setGenericId(genericId);
 		List<ValidDocument> list = new ArrayList<>();
 		list.add(validDocument);
 

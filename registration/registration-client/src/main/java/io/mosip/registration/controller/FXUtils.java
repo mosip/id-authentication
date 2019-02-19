@@ -4,13 +4,24 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.OptionalInt;
+import java.util.function.IntPredicate;
+import java.util.stream.IntStream;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.transliteration.spi.Transliteration;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.Validations;
+import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
+import io.mosip.registration.dto.mastersync.GenderDto;
+import io.mosip.registration.dto.mastersync.LocationDto;
+
+import javafx.collections.ObservableList;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
@@ -31,6 +42,7 @@ public class FXUtils {
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationController.class);
 
+	private Transliteration<String> transliteration;
 	private static FXUtils fxUtils = null;
 
 	public static FXUtils getInstance() {
@@ -38,6 +50,34 @@ public class FXUtils {
 			fxUtils = new FXUtils();
 
 		return fxUtils;
+	}
+
+	/**
+	 * Listener to change the style when field is selected for
+	 */
+	public void listenOnSelectedCheckBox(CheckBox field) {
+	
+		field.selectedProperty().addListener((obsValue, oldValue, newValue)->{
+			if(newValue) {
+				field.getStyleClass().remove("updateUinCheckBox");
+				field.getStyleClass().add("updateUinCheckBoxSelected");
+			}else {
+				field.getStyleClass().remove("updateUinCheckBoxSelected");
+				field.getStyleClass().add("updateUinCheckBox");
+			}
+		});
+	}
+
+	private FXUtils() {
+		
+	}
+
+	/**
+	 * @param transliteration
+	 *            the transliteration to set
+	 */
+	public void setTransliteration(Transliteration<String> transliteration) {
+		this.transliteration = transliteration;
 	}
 
 	/**
@@ -52,10 +92,9 @@ public class FXUtils {
 		});
 	}
 	
-	public void populateLocalComboBox(ComboBox<String> applicationField, ComboBox<String> localField) {
-		applicationField.getSelectionModel().selectedItemProperty().addListener((options,oldValue,newValue)->{
-			localField.setValue(applicationField.getValue());
-		});
+	public void populateLocalComboBox(ComboBox<?> applicationField, ComboBox<?> localField) {
+		applicationField.getSelectionModel().selectedItemProperty().addListener(
+				(options, oldValue, newValue) -> selectComboBoxValueByCode(localField, applicationField.getValue()));
 	}
 
 	/**
@@ -67,8 +106,27 @@ public class FXUtils {
 					(String) SessionContext.map().get(RegistrationConstants.IS_CONSOLIDATED))) {
 				field.setText(oldValue);
 			} else {
-				if(localField!=null)
+				if(localField!=null) {
+					localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
+							ApplicationContext.localLanguage(), field.getText()));
+				}
+			}
+		});
+
+	}
+
+	/**
+	 * Populate the local field value based on the application field. Transliteration will not done for these fields
+	 */
+	public void populateLocalFieldOnType(TextField field, Validations validation, TextField localField) {
+		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
+			if (!validation.validateTextField(field, field.getId() + "_ontype",
+					(String) SessionContext.map().get(RegistrationConstants.IS_CONSOLIDATED))) {
+				field.setText(oldValue);
+			} else {
+				if(localField!=null) {
 					localField.setText(field.getText());
+				}
 			}
 		});
 
@@ -146,6 +204,95 @@ public class FXUtils {
 			LOGGER.error("REGISTRATION - DISABLE FUTURE DATE FAILED", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
+	}
+
+	private void selectComboBoxValueByCode(ComboBox<?> comboBox, Object selectedOption) {
+		ObservableList<?> comboBoxValues = comboBox.getItems();
+
+		if (!comboBoxValues.isEmpty() && selectedOption != null) {
+			IntPredicate findIndexOfSelectedItem = null;
+			if (comboBoxValues.get(0) instanceof LocationDto && selectedOption instanceof LocationDto) {
+				findIndexOfSelectedItem = index -> ((LocationDto) comboBoxValues.get(index)).getCode()
+						.equals(((LocationDto) selectedOption).getCode());
+			} else if (comboBoxValues.get(0) instanceof GenderDto && selectedOption instanceof GenderDto) {
+				findIndexOfSelectedItem = index -> ((GenderDto) comboBoxValues.get(index)).getCode()
+						.equals(((GenderDto) selectedOption).getCode());
+			} else if (comboBoxValues.get(0) instanceof DocumentCategoryDto
+					&& selectedOption instanceof DocumentCategoryDto) {
+				findIndexOfSelectedItem = index -> ((DocumentCategoryDto) comboBoxValues.get(index)).getCode()
+						.equals(((DocumentCategoryDto) selectedOption).getCode());
+			}
+
+			OptionalInt indexOfSelectedLocation = getIndexOfSelectedItem(comboBoxValues, findIndexOfSelectedItem);
+
+			if (indexOfSelectedLocation.isPresent()) {
+				comboBox.getSelectionModel().select(indexOfSelectedLocation.getAsInt());
+			}
+		}
+	}
+
+	/**
+	 * Shows the selected value in the combo-box
+	 * 
+	 * @param comboBox
+	 *            the combo-box from which selected value has to be shown
+	 * @param selectedValue
+	 *            the selected value from the combo-box
+	 */
+	public void selectComboBoxValue(ComboBox<?> comboBox, String selectedValue) {
+		ObservableList<?> comboBoxValues = comboBox.getItems();
+
+		if (!comboBoxValues.isEmpty()) {
+			IntPredicate findIndexOfSelectedItem = null;
+			if (comboBoxValues.get(0) instanceof LocationDto) {
+				findIndexOfSelectedItem = index -> ((LocationDto) comboBoxValues.get(index)).getName()
+						.equals(selectedValue);
+			} else if (comboBoxValues.get(0) instanceof GenderDto) {
+				findIndexOfSelectedItem = index -> ((GenderDto) comboBoxValues.get(index)).getGenderName()
+						.equals(selectedValue);
+			} else if (comboBoxValues.get(0) instanceof DocumentCategoryDto) {
+				findIndexOfSelectedItem = index -> ((DocumentCategoryDto) comboBoxValues.get(index)).getName()
+						.equals(selectedValue);
+			}
+
+			OptionalInt indexOfSelectedLocation = getIndexOfSelectedItem(comboBoxValues, findIndexOfSelectedItem);
+
+			if (indexOfSelectedLocation.isPresent()) {
+				comboBox.getSelectionModel().select(indexOfSelectedLocation.getAsInt());
+			}
+		}
+	}
+
+	private OptionalInt getIndexOfSelectedItem(ObservableList<?> comboBoxValues, IntPredicate lambdaExpression) {
+		return IntStream.range(0, comboBoxValues.size()).filter(lambdaExpression).findFirst();
+	}
+
+	/**
+	 * The custom {@link StringConverter} for displaying only the name in the
+	 * combo-box based on the combo-box type
+	 * 
+	 * @return the custom {@link StringConverter}
+	 */
+	public <T> StringConverter<T> getStringConverterForComboBox() {
+		return new StringConverter<T>() {
+			@Override
+			public String toString(T object) {
+				String value = null;
+				if (object instanceof LocationDto) {
+					value = ((LocationDto) object).getName();
+				} else if (object instanceof GenderDto) {
+					value = ((GenderDto) object).getGenderName();
+				} else if (object instanceof DocumentCategoryDto) {
+					value = ((DocumentCategoryDto) object).getName();
+				}
+				return value;
+			}
+
+			@Override
+			public T fromString(String string) {
+				return null;
+			}
+		};
 	}
 
 }

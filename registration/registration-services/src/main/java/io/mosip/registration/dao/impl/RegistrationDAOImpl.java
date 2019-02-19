@@ -68,7 +68,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registration.setStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 			registration.setLangCode("ENG");
 			registration.setStatusTimestamp(time);
-			registration.setAckFilename(zipFileName + "_Ack." + RegistrationConstants.IMAGE_FORMAT);
+			registration.setAckFilename(zipFileName + "_Ack." + RegistrationConstants.ACKNOWLEDGEMENT_FORMAT);
 			registration.setClientStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 			registration.setUploadCount((short) 1);
 			registration.setRegCntrId(SessionContext.userContext().getRegistrationCenterDetailDTO()
@@ -314,5 +314,18 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				"Get Registration based on reg Ids completed");
 
 		return registrationRepository.findAllById(iterableRegIds);
+	}
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.RegistrationDAO#get(java.sql.Timestamp, java.lang.String)
+	 */
+	@Override
+	public List<Registration> get(Timestamp crDtimes, String clientStatus) {
+		
+		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Retriving Registrations based on crDtime and status");
+
+		return registrationRepository.findByCrDtimeBeforeAndClientStatusCode(crDtimes, clientStatus);
+
 	}
 }

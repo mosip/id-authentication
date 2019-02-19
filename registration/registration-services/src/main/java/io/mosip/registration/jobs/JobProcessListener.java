@@ -6,6 +6,7 @@ import org.quartz.listeners.JobListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
@@ -22,7 +23,6 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 @Component
 public class JobProcessListener extends JobListenerSupport {
 
-	
 	/**
 	 * Autowires job manager for to get Job id functionality
 	 */
@@ -35,7 +35,7 @@ public class JobProcessListener extends JobListenerSupport {
 	 */
 	@Autowired
 	private SyncManager syncTransactionManager;
-	
+
 	/**
 	 * LOGGER for logging
 	 */
@@ -58,7 +58,7 @@ public class JobProcessListener extends JobListenerSupport {
 	 * JobExecutionContext)
 	 */
 	@Override
-	synchronized public void jobToBeExecuted(JobExecutionContext context) {
+	public synchronized void jobToBeExecuted(JobExecutionContext context) {
 
 		LOGGER.info(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job to be executed started");
@@ -75,46 +75,12 @@ public class JobProcessListener extends JobListenerSupport {
 					jobManager.getJobId(context));
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
+					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
 		}
 
 		LOGGER.info(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job to be executed ended");
 
-		
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.quartz.listeners.JobListenerSupport#jobExecutionVetoed(org.quartz.
-	 * JobExecutionContext)
-	 */
-	@Override
-	synchronized public void jobExecutionVetoed(JobExecutionContext context) {
-
-		
-		LOGGER.info(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Job to be rejected started");
-
-		/*
-		 * -------------------JOB REJECTED--------------
-		 */
-
-		try {
-
-			// Insert SYNC Transaction
-			syncTransactionManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_REJECTED,
-					RegistrationConstants.JOB_EXECUTION_REJECTED, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
-					jobManager.getJobId(context));
-		} catch (RegBaseUncheckedException regBaseUncheckedException) {
-			LOGGER.error(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
-		}
-		LOGGER.info(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Job to be rejected ended");
-
-		
 	}
 
 	/*
@@ -124,11 +90,10 @@ public class JobProcessListener extends JobListenerSupport {
 	 * JobExecutionContext, org.quartz.JobExecutionException)
 	 */
 	@Override
-	synchronized public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
+	public synchronized void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
 		LOGGER.info(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job was executed started");
 
-	
 		try {
 			// Insert SYNC Transaction
 			syncTransactionManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_COMPLETED,
@@ -137,7 +102,7 @@ public class JobProcessListener extends JobListenerSupport {
 
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
+					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
 		}
 
 		LOGGER.info(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -146,7 +111,7 @@ public class JobProcessListener extends JobListenerSupport {
 		/*
 		 * -------------------JOB EXECUTED--------------
 		 */
-		
+
 	}
 
 }
