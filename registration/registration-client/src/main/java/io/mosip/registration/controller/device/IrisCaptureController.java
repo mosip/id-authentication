@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
@@ -111,13 +112,10 @@ public class IrisCaptureController extends BaseController {
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Initializing Iris Capture page for user registration completed");
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					String.format("%s -> Exception while initializing Iris Capture page for user registration  %s",
-							RegistrationConstants.USER_REG_IRIS_CAPTURE_PAGE_LOAD_EXP, runtimeException.getMessage()));
 
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_IRIS_CAPTURE_PAGE_LOAD_EXP,
 					String.format("Exception while initializing Iris Capture page for user registration  %s",
-							runtimeException.getMessage()));
+							ExceptionUtils.getStackTrace(runtimeException)));
 		}
 
 	}
@@ -179,7 +177,7 @@ public class IrisCaptureController extends BaseController {
 			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s -> Exception while enabling scan button for user registration  %s %s",
 							RegistrationConstants.USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP, runtimeException.getMessage(),
-							runtimeException.getStackTrace()));
+							ExceptionUtils.getStackTrace(runtimeException)));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_IRIS_SCAN_POPUP);
 		}
@@ -215,7 +213,8 @@ public class IrisCaptureController extends BaseController {
 			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format(
 							"%s -> Exception while Opening pop-up screen to capture Iris for user registration  %s",
-							RegistrationConstants.USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP, runtimeException.getMessage()));
+							RegistrationConstants.USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP,
+							ExceptionUtils.getStackTrace(runtimeException)));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_IRIS_SCAN_POPUP);
 		}
@@ -269,7 +268,7 @@ public class IrisCaptureController extends BaseController {
 			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
 					"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
 					RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
-					runtimeException.getCause()));
+					ExceptionUtils.getStackTrace(runtimeException)));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_SCANNING_ERROR);
 		} finally {
@@ -307,7 +306,7 @@ public class IrisCaptureController extends BaseController {
 			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s -> Exception while navigating to Photo capture page for user registration  %s",
 							RegistrationConstants.USER_REG_IRIS_CAPTURE_NEXT_SECTION_LOAD_EXP,
-							runtimeException.getMessage()));
+							ExceptionUtils.getStackTrace(runtimeException)));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_NAVIGATE_NEXT_SECTION_ERROR);
 		}
@@ -357,9 +356,11 @@ public class IrisCaptureController extends BaseController {
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Fingerprint capture page for user registration completed");
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
-					"%s -> Exception while navigating to Fingerprint capture page for user registration  %s",
-					RegistrationConstants.USER_REG_IRIS_CAPTURE_PREV_SECTION_LOAD_EXP, runtimeException.getMessage()));
+			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					String.format(
+							"%s -> Exception while navigating to Fingerprint capture page for user registration  %s",
+							RegistrationConstants.USER_REG_IRIS_CAPTURE_PREV_SECTION_LOAD_EXP,
+							ExceptionUtils.getStackTrace(runtimeException)));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_NAVIGATE_PREVIOUS_SECTION_ERROR);
 		}
@@ -417,7 +418,7 @@ public class IrisCaptureController extends BaseController {
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_IRIS_VALIDATION_EXP,
 					String.format("Exception while validating the captured irises of individual: %s caused by %s",
-							runtimeException.getMessage(), runtimeException.getCause()));
+							runtimeException.getMessage(), ExceptionUtils.getStackTrace(runtimeException)));
 		}
 	}
 
@@ -440,7 +441,7 @@ public class IrisCaptureController extends BaseController {
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_IRIS_SCORE_VALIDATION_EXP,
 					String.format("Exception while validating the quality score of captured iris: %s caused by %s",
-							runtimeException.getMessage(), runtimeException.getCause()));
+							runtimeException.getMessage(), ExceptionUtils.getStackTrace(runtimeException)));
 		}
 	}
 
