@@ -155,7 +155,7 @@ public class IdRepoController {
 	 */
 	@GetMapping(path = "/identity/v1.0/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> retrieveIdentity(@PathVariable String uin,
-			@RequestParam(name = TYPE, required = false) @Nullable String type, @Nullable HttpServletRequest request)
+			@RequestParam(name = TYPE, required = false) @Nullable String type, HttpServletRequest request)
 			throws IdRepoAppException {
 		if (request.getParameterMap().size() > 1
 				|| (request.getParameterMap().size() == 1 && !request.getParameterMap().containsKey(TYPE))) {

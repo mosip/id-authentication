@@ -18,46 +18,43 @@ public enum IdRepoErrorConstants {
 	
 	DOCUMENT_HASH_MISMATCH("KER-IDR-004", "Biometric/Document hash does not match"),
 
-	/** The unsupported lang code. */
-	UNSUPPORTED_LANG_CODE("KER-IDR-005", "Unsupported Language Code"),
-
 	/** The invalid uin. */
-	INVALID_UIN("KER-IDR-006", "Invalid UIN"),
+	INVALID_UIN("KER-IDR-005", "Invalid UIN"),
 
 	/** The data validation failed. */
-	DATA_VALIDATION_FAILED("KER-IDR-007", "Input Data Validation Failed"),
+	DATA_VALIDATION_FAILED("KER-IDR-006", "Input Data Validation Failed"),
 
 	/** The invalid request. */
-	INVALID_REQUEST("KER-IDR-008", "Invalid Request"),
+	INVALID_REQUEST("KER-IDR-007", "Invalid Request"),
 
 	/** The unknown error. */
-	UNKNOWN_ERROR("KER-IDR-009", "Unknown error occured"),
+	UNKNOWN_ERROR("KER-IDR-008", "Unknown error occured"),
 
 	/** The database access error. */
-	DATABASE_ACCESS_ERROR("KER-IDR-010", "Error occured while performing DB operations"),
+	DATABASE_ACCESS_ERROR("KER-IDR-009", "Error occured while performing DB operations"),
 
 	/** The record exists. */
-	RECORD_EXISTS("KER-IDR-011", "Record already exists in DB"),
+	RECORD_EXISTS("KER-IDR-010", "Record already exists in DB"),
 
 	/** The internal server error. */
-	ENCRYPTION_DECRYPTION_FAILED("KER-IDR-012", "Failed to encrypt/decrypt message using Kernel Crypto Manager"),
+	ENCRYPTION_DECRYPTION_FAILED("KER-IDR-011", "Failed to encrypt/decrypt message using Kernel Crypto Manager"),
 
 	/** The no record found. */
-	NO_RECORD_FOUND("KER-IDR-013", "No Record(s) found"),
+	NO_RECORD_FOUND("KER-IDR-012", "No Record(s) found"),
 
-	FILE_STORAGE_ACCESS_ERROR("KER-IDR-014", "Failed to store/retrieve files in DFS"), 
+	FILE_STORAGE_ACCESS_ERROR("KER-IDR-013", "Failed to store/retrieve files in DFS"), 
 	
-	JSON_PROCESSING_FAILED("KER-IDR-015", "Failed to parse/process json"),
+	JSON_PROCESSING_FAILED("KER-IDR-014", "Failed to parse/process json"),
 	
-	JSON_SCHEMA_PROCESSING_FAILED("KER-IDR-016", "Unable to process id object json schema"),
+	JSON_SCHEMA_PROCESSING_FAILED("KER-IDR-015", "Unable to process id object json schema"),
 	
-	JSON_SCHEMA_RETRIEVAL_FAILED("KER-IDR-017", "Unable to retrieve id object schema from server"),
+	JSON_SCHEMA_RETRIEVAL_FAILED("KER-IDR-016", "Unable to retrieve id object schema from server"),
 	
-	CLIENT_ERROR("KER-IDR-018", "4XX - Client Error occured"),
+	CLIENT_ERROR("KER-IDR-017", "4XX - Client Error occured"),
 	
-	SERVER_ERROR("KER-IDR-019", "5XX - Server Error occured"),
+	SERVER_ERROR("KER-IDR-018", "5XX - Server Error occured"),
 	
-	CONNECTION_TIMED_OUT("KER-IDR-020", "Connection timed out");
+	CONNECTION_TIMED_OUT("KER-IDR-019", "Connection timed out");
 
 	/** The error code. */
 	private final String errorCode;
