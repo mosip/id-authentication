@@ -119,5 +119,6 @@ public class KernelCryptographicServiceIntegrationTest {
 				.readValue(result.getResponse().getContentAsString(), CryptomanagerResponseDto.class);
 		assertThat(cryptomanagerResponseDto.getData(), isA(String.class));
 	}
+	
 
 }
