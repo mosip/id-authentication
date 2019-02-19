@@ -30,9 +30,8 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	 * @param refId                       the ref id
 	 * @return the list
 	 */
-	@Query("Select requestTrnId from AutnTxn where requestTrnId=:txnId AND (refId = :uin OR refId= :vid) AND requestDTtimes <= :requestTime and requestDTtimes >= :expiryTime and authTypeCode=:authtypecode")
+	@Query("Select requestTrnId from AutnTxn where requestTrnId=:txnId AND (refId = :uin OR refId= :vid) AND authTypeCode=:authtypecode")
 	public List<String> findByUinorVid(@Param("txnId") String txnId, @Param("uin") String uin, @Param("vid") String vid,
-			@Param("requestTime") LocalDateTime requestTime, @Param("expiryTime") LocalDateTime expiryTime,
 			Pageable pagaeable, @Param("authtypecode")String authtypecode);
 
 	/**

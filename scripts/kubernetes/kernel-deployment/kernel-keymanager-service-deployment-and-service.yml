@@ -19,14 +19,26 @@ spec:
       containers:
       - name: kernel-keymanager-service
         image: docker-registry.mosip.io:5000/kernel-keymanager-service
+        volumeMounts:
+        - name: keymanager-softhsm
+          mountPath: /softhsm
         env:
         - name: active_profile_env
           value: dev
         ports:
         - containerPort: 8088
         imagePullPolicy: Always
+      volumes:
+      - name: keymanager-softhsm
+        flexVolume:
+          driver: "dims.io/docker-flexvol"
+          options:
+            image: "docker-registry.mosip.io:5000/kernel-keymanager-service"
+            name: "/softhsm"
       imagePullSecrets:
       - name: pvt-reg-cred
+      nodeSelector:
+        kubernetes.io/hostname: aks-agentpool-14603377-2
 ---
 apiVersion: v1
 kind: Service

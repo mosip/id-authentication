@@ -19,6 +19,9 @@ public class AuthResponseDTO extends BaseAuthResponseDTO {
 
 	private AuthResponseInfo info;
 	
+	/** The txnID value*/
+	private String txnID;
+	
 	/**
 	 * Version
 	 */

@@ -154,8 +154,8 @@ public class NotificationServiceImplTest {
 		notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, false);
 	}
 
-	//(expected = IdAuthenticationBusinessException.class)
-	@Test
+
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestInValidAuthSmsNotification()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -263,30 +263,26 @@ public class NotificationServiceImplTest {
 	@Test
 	public void testInvokeSmsTemplate() {
 		Map<String, Object> values = new HashMap<>();
-		String contentTemplate = "";
 		String notificationMobileNo = "1234567890";
 		ReflectionTestUtils.invokeMethod(notificationService, "invokeSmsNotification", values, SenderType.OTP,
-				contentTemplate, notificationMobileNo);
+				notificationMobileNo);
 	}
 
 	@Test
 	public void testInvokeSmsTemplateInvalid() {
 		Map<String, Object> values = new HashMap<>();
-		String contentTemplate = "";
 		String notificationMobileNo = "1234567890";
 		SenderType senderType = null;
 		ReflectionTestUtils.invokeMethod(notificationService, "invokeSmsNotification", values, senderType,
-				contentTemplate, notificationMobileNo);
+				notificationMobileNo);
 	}
 
 	@Test
 	public void testInvokeEmailTemplateInvalid() {
 		Map<String, Object> values = new HashMap<>();
-		String contentTemplate = "";
-		String notificationMobileNo = "1234567890";
 		SenderType senderType = null;
 		ReflectionTestUtils.invokeMethod(notificationService, "invokeEmailNotification", values, "abc@test.com",
-				senderType, contentTemplate, notificationMobileNo);
+				senderType);
 	}
 
 	@Test

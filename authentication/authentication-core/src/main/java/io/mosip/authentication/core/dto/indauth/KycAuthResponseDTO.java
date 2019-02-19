@@ -15,6 +15,9 @@ public class KycAuthResponseDTO extends BaseAuthResponseDTO {
 	/** The KycResponseDTO */
 	private KycResponseDTO response;
 	
+	/** The txnID value*/
+	private String txnID;
+	
 	/** The String value for ttl */
 	private String ttl;
 }

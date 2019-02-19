@@ -62,6 +62,8 @@ import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
  */
 public class BaseAuthRequestValidator extends IdAuthValidator {
 
+	private static final String BIO_TYPE = "biotype";
+
 	private static final String MAKE_FOR_0_BIO_TYPE  = "make for {0} bioType";
 
 	/** The Final Constant For PIN_VALUE */
@@ -341,9 +343,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		}
 		for (BioInfo bioInfos : bioInfo) {
 			if (!availableAuthTypeInfos.contains(bioInfos.getBioType())) {
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_BIOTYPE.getErrorCode(),
-						new Object[] { bioInfos.getBioType() },
-						IdAuthenticationErrorConstants.INVALID_BIOTYPE.getErrorMessage());
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+						new Object[] { BIO_TYPE},
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 			}
 		}
 

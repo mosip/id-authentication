@@ -83,66 +83,33 @@ public class MasterDataManager {
 				.build();
 	}
 
-	/**
-	 * To fetch the template from kernel based on template code and language
-	 * 
-	 * @return
-	 * @throws IdAuthenticationBusinessException
-	 */
-	private String fetchTemplate(String langCode, String templateName) throws IdAuthenticationBusinessException {
+	public Map<String, List<String>> fetchGenderType() throws IdAuthenticationBusinessException {
 		RestRequestDTO buildRequest = null;
 		Map<String, List<Map<String, String>>> response = null;
-		String value = null;
 		try {
-			buildRequest = restFactory.buildRequest(RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE, null,
-					Map.class);
-			Map<String, String> params = new HashMap();
-			params.put("langcode", langCode);
-			params.put("templatetypecode", templateName);
-			buildRequest.setPathVariables(params);
+			buildRequest = restFactory.buildRequest(RestServicesConstants.GENDER_TYPE_SERVICE, null, Map.class);
 			response = restHelper.requestSync(buildRequest);
-			List<Map<String, String>> templateList = response.get("templates");
-			for (Map<String, String> map : templateList) {
-				value = map.get("name");
+			List<Map<String, String>> value = response.get("genderType");
+			Map<String, List<String>> genderTypes = new HashMap<>();
+			for (Map<String, String> map : value) {
+				String langCode = map.get("langCode");
+				String genderName = map.get("genderName");
+				List<String> list = genderTypes.computeIfAbsent(langCode, key -> new ArrayList<>());
+				list.add(genderName);
 			}
+			return genderTypes;
 		} catch (IDDataValidationException | RestServiceException e) {
 			logger.error(SESSION_ID, this.getClass().getName(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 		}
-		return value;
+
 	}
 
-	public String fetchLanguageCode(String templateName) throws IdAuthenticationBusinessException {
-		String languageRequired = environment.getProperty("notification.language.support");
-		String langCode = null;
-		StringBuilder stringBuilder = new StringBuilder();
-		if (languageRequired.equalsIgnoreCase("secondary")) {
-			stringBuilder.append(
-					fetchTemplate(idInfoHelper.getLanguageCode(LanguageType.PRIMARY_LANG), templateName) + "\n\n");
-			stringBuilder
-					.append(fetchTemplate(idInfoHelper.getLanguageCode(LanguageType.SECONDARY_LANG), templateName));
-		} else if (languageRequired.equalsIgnoreCase("primary")) {
-			stringBuilder.append(fetchTemplate(idInfoHelper.getLanguageCode(LanguageType.PRIMARY_LANG), templateName));
-		} else {
-			// TODO throw exception
-		}
-		return stringBuilder.toString();
-	}
-
-	public Map<String, List<String>> fetchMasterData(RestServicesConstants type, Map<String, String> params)
-			throws IdAuthenticationBusinessException {
+	public Map<String, List<String>> fetchTitles() throws IdAuthenticationBusinessException {
 		RestRequestDTO buildRequest = null;
 		Map<String, List<Map<String, String>>> response = null;
 		try {
-			buildRequest = restFactory.buildRequest(type, null, Map.class);
-
-			if (params == null) {
-				MultiValueMap<String, String> paramValue = new LinkedMultiValueMap<>();
-//				paramValue.add("langcode", langCode);
-//				paramValue.add("templatetypecode", templateName);
-				buildRequest.setParams(paramValue);
-			}
-
+			buildRequest = restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null, Map.class);
 			response = restHelper.requestSync(buildRequest);
 			List<Map<String, String>> value = response.get("titleList");
 			Map<String, List<String>> titleList = new HashMap<>();
@@ -158,52 +125,6 @@ public class MasterDataManager {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 		}
 
-	}
-	
-	public Map<String, List<String>> fetchGenderType() throws IdAuthenticationBusinessException {
-		RestRequestDTO buildRequest = null;
-		Map<String, List<Map<String, String>>> response = null;
-		try {
-			buildRequest = restFactory.buildRequest(RestServicesConstants.GENDER_TYPE_SERVICE, null,
-					Map.class);
-			response = restHelper.requestSync(buildRequest);
-			List<Map<String, String>> value = response.get("genderType");
-			Map <String, List<String>> genderTypes = new HashMap<>();
-			for(Map<String, String> map : value) {
-				String langCode = map.get("langCode");
-				String genderName = map.get("genderName");
-				List<String> list = genderTypes.computeIfAbsent(langCode, key -> new ArrayList<>());
-				list.add(genderName);
-			}
-			return genderTypes;
-		} catch (IDDataValidationException | RestServiceException e) {
-			logger.error(SESSION_ID, this.getClass().getName(), e.getErrorCode(), e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
-		}
-		
-	}
-	
-	public Map<String, List<String>> fetchTitles() throws IdAuthenticationBusinessException {
-		RestRequestDTO buildRequest = null;
-		Map<String, List<Map<String, String>>> response = null;
-		try {
-			buildRequest = restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null,
-					Map.class);
-			response = restHelper.requestSync(buildRequest);
-			List<Map<String, String>> value = response.get("titleList");
-			Map <String, List<String>> titleList = new HashMap<>();
-			for(Map<String, String> map : value) {
-				String langCode = map.get("langCode");
-				String genderName = map.get("titleName");
-				List<String> list = titleList.computeIfAbsent(langCode, key -> new ArrayList<>());
-				list.add(genderName);
-			}
-			return titleList;
-		} catch (IDDataValidationException | RestServiceException e) {
-			logger.error(SESSION_ID, this.getClass().getName(), e.getErrorCode(), e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
-		}
-		
 	}
 
 }

@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
@@ -25,13 +24,11 @@ import lombok.Data;
 @Table(name = "static_pin_h", schema = "ida")
 public class StaticPinHistory {
 	/** The pin. */
-	@NotNull
 	@Column(name = "pin", nullable = false)
 	private String pin;
 
 	/** The uin */
 	@Id
-	@NotNull
 	@Column(name = "uin", unique = true, nullable = false)
 	private String uin;
 
@@ -57,7 +54,7 @@ public class StaticPinHistory {
 
 	/** The is deleted. */
 	@Column(name = "is_deleted")
-	private boolean isDeleted;	
+	private boolean isDeleted;
 
 	/** The deleted on. */
 	@Column(name = "del_dtimes")

@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
@@ -22,13 +21,11 @@ import lombok.Data;
 @Table(name = "static_pin", schema = "ida")
 public class StaticPin {
 	/** The pin. */
-	@NotNull
 	@Column(name = "pin", nullable = false)
 	private String pin;
 
 	/** The uin */
 	@Id
-	@NotNull
 	@Column(name = "uin", unique = true, nullable = false)
 	private String uin;
 
