@@ -120,6 +120,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	@Autowired
 	private CbeffUtil cbeffUtil;
 
+	@Autowired
 	private MasterDataManager masterDataManager;
 
 	/*

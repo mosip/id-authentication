@@ -193,6 +193,8 @@ public enum DemoAuthType implements AuthType {
 		Optional<String> languageNameOpt = idInfoFetcher.getLanguageName(language);
 		valuemap.put("language", languageNameOpt.orElse("english"));
 		valuemap.put("env", idInfoFetcher.getEnvironment());
+		valuemap.put("titlesFetcher", idInfoFetcher.getTitleFetcher());
+		valuemap.put("langCode", language);
 		return valuemap;
 	}
 

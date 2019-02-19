@@ -10,12 +10,9 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
-import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
