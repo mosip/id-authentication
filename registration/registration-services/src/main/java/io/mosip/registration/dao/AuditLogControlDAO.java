@@ -45,5 +45,12 @@ public interface AuditLogControlDAO {
 	 * @return list of Audit logs
 	 */
 	List<AuditLogControl> get(Timestamp req);
+	
+	/**
+	 * Get Audit Log Control using registartion Id
+	 * @param regId
+	 * @return audit control
+	 */
+	AuditLogControl get(String regId);
 
 }

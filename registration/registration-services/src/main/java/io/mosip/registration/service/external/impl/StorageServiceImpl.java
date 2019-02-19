@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +38,9 @@ import io.mosip.registration.service.external.StorageService;
 public class StorageServiceImpl implements StorageService {
 
 	private static final Logger LOGGER = AppConfig.getLogger(StorageServiceImpl.class);
+	
+	@Value("${PACKET_STORE_LOCATION}")
+	private String packetStoreLocation;
 
 	@Autowired
 	private Environment environment;
@@ -50,7 +54,7 @@ public class StorageServiceImpl implements StorageService {
 			// Generate the file path for storing the Encrypted Packet and Acknowledgement
 			// Receipt
 			String seperator="/";
-			String filePath = environment.getProperty(RegistrationConstants.PACKET_STORE_LOCATION) + seperator
+			String filePath = packetStoreLocation + seperator
 					+ formatDate(new Date(), environment.getProperty(RegistrationConstants.PACKET_STORE_DATE_FORMAT))
 							.concat(seperator).concat(registrationId);
 			// Storing the Encrypted Registration Packet as zip

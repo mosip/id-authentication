@@ -6,25 +6,23 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.IdValidator;
+import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
-import io.mosip.registration.dto.ErrorResponseDTO;
-import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SelectionListDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -69,42 +67,185 @@ public class UpdateUINController extends BaseController implements Initializable
 	@FXML
 	private CheckBox parentOrGuardianDetails;
 	@FXML
+	private CheckBox foreigner;
+	@FXML
 	private Label toggleLabel1;
 	@FXML
 	private Label toggleLabel2;
 	@FXML
 	private HBox biometricBox;
+	@FXML
+	private HBox demographicHBox;
 
 	private SimpleBooleanProperty switchedOn;
 	private boolean isChild;
 
 	@Autowired
-	@Qualifier(value = "uinValidator")
-	private IdValidator<String> uinValidatorImpl;
-	
-	private FXUtils fxUtils;
+	private UinValidator<String> uinValidatorImpl;
+
 	@Autowired
 	Validations validation;
+	
+	@Value("${FINGERPRINT_DISABLE_FLAG}")
+	private String fingerprintDisableFlag;
+	
+	@Value("${IRIS_DISABLE_FLAG}")
+	private String irisDisableFlag;
+	
+	@Value("${FACE_DISABLE_FLAG}")
+	private String faceDisableFlag;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		switchedOn = new SimpleBooleanProperty(false);
 		isChild = switchedOn.get();
 		toggleFunction();
-		fxUtils=FXUtils.getInstance();
-		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED,
-				RegistrationConstants.DISABLE);
+		FXUtils fxUtils = FXUtils.getInstance();
+		listenerOnFields(fxUtils);
+		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 		fxUtils.validateOnType(uinId, validation);
-		if (applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-				.equals(RegistrationConstants.ENABLE)) {
 
 			biometricBox.getChildren().forEach(bio -> {
-				if (bio.getId().equals("biometricFingerprint")) {
+				if (fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)
+						&& bio.getId().equals("biometricFingerprint")) {
+					bio.setVisible(false);
+					bio.setManaged(false);
+				}
+				if (irisDisableFlag.equals(RegistrationConstants.DISABLE) && bio.getId().equals("biometricIris")) {
+					bio.setVisible(false);
+					bio.setManaged(false);
+				}
+				if (fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)
+						&& irisDisableFlag.equals(RegistrationConstants.DISABLE)
+						&& bio.getId().equals("biometricException")) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}
 			});
+		configuringUpdateUINDemographicFields();
+		configuringUpdateUINBiometricFields();
+	}
+
+	/**
+	 * Configuring update UIN fields.
+	 */
+	private void configuringUpdateUINDemographicFields() {
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_NAME_ENABLE_FLAG)
+				.equals(RegistrationConstants.ENABLE)) {
+			demographicHBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("name")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
 		}
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_AGE_ENABLE_FLAG)
+				.equals(RegistrationConstants.ENABLE)) {
+			demographicHBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("age")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_GENDER_ENABLE_FLAG)
+				.equals(RegistrationConstants.ENABLE)) {
+			demographicHBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("gender")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_ADDRESS_ENABLE_FLAG)
+				.equals(RegistrationConstants.ENABLE)) {
+			demographicHBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("address")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONTACT_DTLS_ENABLE_FLG)
+				.equals(RegistrationConstants.ENABLE)) {
+			demographicHBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("contactDetails")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_PARENT_DTLS_ENABLE_FLG)
+				.equals(RegistrationConstants.ENABLE)) {
+			demographicHBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("parentOrGuardianDetails")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_FOREIGNER_ENABLE_FLG)
+				.equals(RegistrationConstants.ENABLE)) {
+			demographicHBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("foreigner")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CNIE_NUMBER_ENABLE_FLAG)
+				.equals(RegistrationConstants.ENABLE)) {
+			biometricBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("cnieNumber")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+	}
+
+	private void configuringUpdateUINBiometricFields() {
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION_ENABLE_FLG)
+				.equals(RegistrationConstants.ENABLE)) {
+			biometricBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("biometricException")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_BIO_FP_ENABLE_FLG)
+				.equals(RegistrationConstants.ENABLE)) {
+			biometricBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("biometricFingerprint")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_BIO_IRIS_ENABLE_FLG)
+				.equals(RegistrationConstants.ENABLE)) {
+			biometricBox.getChildren().forEach(demographicNode -> {
+				if (demographicNode.getId().equals("biometricIris")) {
+					demographicNode.setVisible(false);
+					demographicNode.setManaged(false);
+				}
+			});
+		}
+	}
+
+	private void listenerOnFields(FXUtils fxUtils) {
+		fxUtils.listenOnSelectedCheckBox(name);
+		fxUtils.listenOnSelectedCheckBox(age);
+		fxUtils.listenOnSelectedCheckBox(gender);
+		fxUtils.listenOnSelectedCheckBox(address);
+		fxUtils.listenOnSelectedCheckBox(contactDetails);
+		fxUtils.listenOnSelectedCheckBox(biometricException);
+		fxUtils.listenOnSelectedCheckBox(biometricIris);
+		fxUtils.listenOnSelectedCheckBox(biometricFingerprint);
+		fxUtils.listenOnSelectedCheckBox(cnieNumber);
+		fxUtils.listenOnSelectedCheckBox(parentOrGuardianDetails);
+		fxUtils.listenOnSelectedCheckBox(foreigner);
 	}
 
 	/**
@@ -156,43 +297,26 @@ public class UpdateUINController extends BaseController implements Initializable
 
 					SelectionListDTO selectionListDTO = new SelectionListDTO();
 
-					if (name.isSelected()) {
-						selectionListDTO.setName(true);
-					}
-					if (age.isSelected()) {
-						selectionListDTO.setAge(true);
-					}
-					if (gender.isSelected()) {
-						selectionListDTO.setGender(true);
-					}
-					if (address.isSelected()) {
-						selectionListDTO.setAddress(true);
-					}
-					if (contactDetails.isSelected()) {
-						selectionListDTO.setContactDetails(true);
-					}
-					if (biometricException.isSelected()) {
-						selectionListDTO.setBiometricException(true);
-					}
-					if (biometricIris.isSelected()) {
-						selectionListDTO.setBiometricIris(true);
-					}
-					if (biometricFingerprint.isSelected()) {
-						selectionListDTO.setBiometricFingerprint(true);
-					}
-					if (cnieNumber.isSelected()) {
-						selectionListDTO.setCnieNumber(true);
-					}
-					if (parentOrGuardianDetails.isSelected()) {
-						selectionListDTO.setParentOrGuardianDetails(true);
-					}
+					selectionListDTO.setName(name.isSelected());
+					selectionListDTO.setAge(age.isSelected());
+					selectionListDTO.setGender(gender.isSelected());
+					selectionListDTO.setAddress(address.isSelected());
+					selectionListDTO.setContactDetails(contactDetails.isSelected());
+					selectionListDTO.setBiometricException(biometricException.isSelected());
+					selectionListDTO.setBiometricIris(biometricIris.isSelected());
+					selectionListDTO.setBiometricFingerprint(biometricFingerprint.isSelected());
+					selectionListDTO.setCnieNumber(cnieNumber.isSelected());
+					selectionListDTO.setParentOrGuardianDetails(parentOrGuardianDetails.isSelected());
+					selectionListDTO.setForeigner(foreigner.isSelected());
+
 					selectionListDTO.setChild(isChild);
 					selectionListDTO.setUinId(uinId.getText());
 
 					if (name.isSelected() || age.isSelected() || gender.isSelected() || address.isSelected()
 							|| contactDetails.isSelected() || biometricException.isSelected()
 							|| biometricIris.isSelected() || biometricFingerprint.isSelected()
-							|| cnieNumber.isSelected() || parentOrGuardianDetails.isSelected()) {
+							|| cnieNumber.isSelected() || parentOrGuardianDetails.isSelected()
+							|| foreigner.isSelected()) {
 						registrationController.init(selectionListDTO);
 
 						Parent createRoot = BaseController.load(
@@ -200,9 +324,9 @@ public class UpdateUINController extends BaseController implements Initializable
 								applicationContext.getApplicationLanguageBundle());
 
 						getScene(createRoot).setRoot(createRoot);
+					} else {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UPDATE_UIN_SELECTION_ALERT);
 					}
-				} else {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UPDATE_UIN_SELECTION_ALERT);
 				}
 			}
 		} catch (InvalidIDException invalidIdException) {

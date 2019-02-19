@@ -110,7 +110,6 @@ public class PreRegZipHandlingServiceTest {
 	private PreRegistrationDTO encryptPacket() throws RegBaseCheckedException {
 
 		ReflectionTestUtils.setField(preRegZipHandlingServiceImpl, "preRegPacketLocation", "..//PreRegPacketStore");
-		ReflectionTestUtils.setField(preRegZipHandlingServiceImpl, "preRegLocationDateFormat", "dd-MMM-yyyy");
 
 		mockSecretKey();
 

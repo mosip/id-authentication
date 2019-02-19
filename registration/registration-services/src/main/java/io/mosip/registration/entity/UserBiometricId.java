@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.Data;
+
 /**
  * Composite key for UserBiometric entity
  * 
@@ -12,6 +14,7 @@ import javax.persistence.Embeddable;
  * @since 1.0.0
  */
 @Embeddable
+@Data
 public class UserBiometricId implements Serializable {
 
 	private static final long serialVersionUID = 4356301394048825993L;

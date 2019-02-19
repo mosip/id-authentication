@@ -46,9 +46,6 @@ public class RegPacketStatusDAOImpl implements RegPacketStatusDAO {
 
 	@Autowired
 	private AuditLogControlDAO auditLogControlDAO;
-	
-	@Autowired
-	private AuditLogControlRepository  auditLogControlRepository;
 
 	/**
 	 * Object for Logger
@@ -104,15 +101,15 @@ public class RegPacketStatusDAOImpl implements RegPacketStatusDAO {
 		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Delete registration has been started");
 
-		AuditLogControl auditLogControl = auditLogControlRepository.findById(AuditLogControl.class , registration.getId());
-		
+		AuditLogControl auditLogControl = auditLogControlDAO.get(registration.getId());
+
 		/* Delete Audit Logs */
 		auditLogControlDAO.delete(auditLogControl);
-		
+
 		/* Delete Registartion Transaction */
 		Iterable<RegistrationTransaction> iterableTransaction = registration.getRegistrationTransaction();
 		regTransactionRepository.deleteInBatch(iterableTransaction);
-		
+
 		/* Delete Registartion */
 		registrationRepository.deleteById(registration.getId());
 

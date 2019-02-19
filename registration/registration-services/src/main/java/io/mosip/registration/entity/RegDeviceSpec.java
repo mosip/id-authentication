@@ -32,22 +32,36 @@ public class RegDeviceSpec extends RegistrationCommonFields {
 	@Column(name = "model")
 	private String model;
 	@Column(name = "min_driver_ver")
-	private String minDriverVersion;
+	private String minDriverversion;
 	@Column(name = "descr")
 	private String description;
 	@Column(name = "lang_code")
-	private String languageCode;
+	private String langCode;
+	@Column(name = "dtyp_code")
+	private String deviceTypeCode;
 	@Column(name = "is_deleted")
 	@Type(type = "true_false")
 	private Boolean isDeleted;
 	@Column(name = "del_dtimes")
 	private Timestamp deletedTime;
 	@ManyToOne
-	@JoinColumns({
-		@JoinColumn(name = "dtyp_code",insertable = false, updatable = false),
-		@JoinColumn(name = "lang_code", insertable = false, updatable = false)
-	})
+	@JoinColumns({ @JoinColumn(name = "dtyp_code", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", insertable = false, updatable = false) })
 	private RegDeviceType regDeviceType;
+
+	/**
+	 * @return the deviceTypeCode
+	 */
+	public String getDeviceTypeCode() {
+		return deviceTypeCode;
+	}
+
+	/**
+	 * @param deviceTypeCode the deviceTypeCode to set
+	 */
+	public void setDeviceTypeCode(String deviceTypeCode) {
+		this.deviceTypeCode = deviceTypeCode;
+	}
 
 	/**
 	 * @return the id
@@ -57,8 +71,7 @@ public class RegDeviceSpec extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param id
-	 *            the id to set
+	 * @param id the id to set
 	 */
 	public void setId(String id) {
 		this.id = id;
@@ -72,8 +85,7 @@ public class RegDeviceSpec extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param name
-	 *            the name to set
+	 * @param name the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -87,8 +99,7 @@ public class RegDeviceSpec extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param brand
-	 *            the brand to set
+	 * @param brand the brand to set
 	 */
 	public void setBrand(String brand) {
 		this.brand = brand;
@@ -102,26 +113,24 @@ public class RegDeviceSpec extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param model
-	 *            the model to set
+	 * @param model the model to set
 	 */
 	public void setModel(String model) {
 		this.model = model;
 	}
 
 	/**
-	 * @return the minDriverVersion
+	 * @return the minDriverversion
 	 */
-	public String getMinDriverVersion() {
-		return minDriverVersion;
+	public String getMinDriverversion() {
+		return minDriverversion;
 	}
 
 	/**
-	 * @param minDriverVersion
-	 *            the minDriverVersion to set
+	 * @param minDriverversion the minDriverversion to set
 	 */
-	public void setMinDriverVersion(String minDriverVersion) {
-		this.minDriverVersion = minDriverVersion;
+	public void setMinDriverversion(String minDriverversion) {
+		this.minDriverversion = minDriverversion;
 	}
 
 	/**
@@ -132,26 +141,24 @@ public class RegDeviceSpec extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param description
-	 *            the description to set
+	 * @param description the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	/**
-	 * @return the languageCode
+	 * @return the langCode
 	 */
-	public String getLanguageCode() {
-		return languageCode;
+	public String getLangCode() {
+		return langCode;
 	}
 
 	/**
-	 * @param languageCode
-	 *            the languageCode to set
+	 * @param langCode the langCode to set
 	 */
-	public void setLanguageCode(String languageCode) {
-		this.languageCode = languageCode;
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
 	}
 
 	/**
@@ -162,8 +169,7 @@ public class RegDeviceSpec extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param isDeleted
-	 *            the isDeleted to set
+	 * @param isDeleted the isDeleted to set
 	 */
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
@@ -177,8 +183,7 @@ public class RegDeviceSpec extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param deletedTime
-	 *            the deletedTime to set
+	 * @param deletedTime the deletedTime to set
 	 */
 	public void setDeletedTime(Timestamp deletedTime) {
 		this.deletedTime = deletedTime;
@@ -192,8 +197,7 @@ public class RegDeviceSpec extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param regDeviceType
-	 *            the regDeviceType to set
+	 * @param regDeviceType the regDeviceType to set
 	 */
 	public void setRegDeviceType(RegDeviceType regDeviceType) {
 		this.regDeviceType = regDeviceType;

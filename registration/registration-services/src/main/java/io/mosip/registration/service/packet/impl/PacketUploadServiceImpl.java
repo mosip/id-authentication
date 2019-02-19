@@ -31,7 +31,6 @@ import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
-// TODO: Auto-generated Javadoc
 /**
  * 
  * This class will update the packet status in the table and also push the
@@ -51,18 +50,6 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	/** The service delegate util. */
 	@Autowired
 	private ServiceDelegateUtil serviceDelegateUtil;
-
-	/** The url path. */
-	@Value("${PACKET_UPLOAD_URL}")
-	private String urlPath;
-
-	/** The read timeout. */
-	@Value("${UPLOAD_API_READ_TIMEOUT}")
-	private int readTimeout;
-
-	/** The connect timeout. */
-	@Value("${UPLOAD_API_WRITE_TIMEOUT}")
-	private int connectTimeout;
 
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = AppConfig.getLogger(PacketUploadServiceImpl.class);

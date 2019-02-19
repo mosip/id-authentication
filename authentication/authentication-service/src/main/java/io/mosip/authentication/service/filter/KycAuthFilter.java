@@ -162,10 +162,14 @@ public class KycAuthFilter extends BaseAuthFilter {
 					if (Objects.nonNull(authReq) && Objects.nonNull(authReq.get(REQ_TIME))
 							&& isDate((String) authReq.get(REQ_TIME))) {
 						convertZoneDate(responseBody, authReq);
-						Map<String, Object> authResponse = (Map<String, Object>) responseBody.get(RESPONSE);
-						authResponse.replace(AUTH, setAuthResponseParam((Map<String, Object>) requestBody.get(AUTH_REQUEST),
-								(Map<String, Object>) ((Map<String, Object>) responseBody.get(RESPONSE)).get(AUTH)));
-						responseBody.replace(RESPONSE, authResponse);
+						if (null != responseBody.get(RESPONSE)) {
+							Map<String, Object> authResponse = (Map<String, Object>) responseBody.get(RESPONSE);
+							authResponse.replace(AUTH,
+									setAuthResponseParam((Map<String, Object>) requestBody.get(AUTH_REQUEST),
+											(Map<String, Object>) ((Map<String, Object>) responseBody.get(RESPONSE))
+													.get(AUTH)));
+							responseBody.replace(RESPONSE, authResponse);
+						}
 						return responseBody;
 					}
 				}

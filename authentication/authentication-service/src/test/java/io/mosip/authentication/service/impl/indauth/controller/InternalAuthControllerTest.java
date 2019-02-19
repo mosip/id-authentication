@@ -28,7 +28,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
-import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.indauth.facade.AuthFacadeImpl;
 import io.mosip.authentication.service.impl.indauth.validator.InternalAuthRequestValidator;
@@ -64,9 +63,6 @@ public class InternalAuthControllerTest {
 	
 	@InjectMocks
 	private InternalAuthRequestValidator internalAuthRequestValidator;
-
-	@InjectMocks
-	private DateHelper datehelper;
 	
 	Errors error = new BindException(AuthRequestDTO.class, "authReqDTO");
 

@@ -4,12 +4,15 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 
+import lombok.Data;
+
 
 /**
  * EmbeddedId for {@link CenterMachine}
  * @author Dinesh Ashokan
  *
  */
+@Data
 public class CenterMachineId implements Serializable{
 	
 	

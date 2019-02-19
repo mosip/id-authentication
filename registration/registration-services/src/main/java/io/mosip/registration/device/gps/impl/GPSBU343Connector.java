@@ -19,6 +19,8 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
+
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -62,7 +64,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 	@Override
 	public String getComPortGPSData(String portNo, int portReadWaitTime) throws RegBaseCheckedException {
 
-		String gpsResponse=null;
+		String gpsResponse = null;
 
 		LOGGER.info(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID,
@@ -130,10 +132,12 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 			deviceData = new StringBuilder();
 
 		} catch (IOException | PortInUseException | TooManyListenersException | UnsupportedCommOperationException
-				| InterruptedException exception) {
+				| InterruptedException regBaseCheckedException) {
 			Thread.currentThread().interrupt();
-
-			throw new RegBaseCheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION, exception.toString());
+			LOGGER.error(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, ExceptionUtils.getStackTrace(regBaseCheckedException));
+			throw new RegBaseCheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION,
+					regBaseCheckedException.getMessage(), regBaseCheckedException);
 
 		}
 
@@ -215,7 +219,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 			} catch (IOException exception) {
 
 				throw new RegBaseUncheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION,
-						exception.toString());
+						exception.toString(), exception);
 			}
 			break;
 
@@ -260,7 +264,8 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 				}
 
 			} catch (Exception exception) {
-				throw new RegBaseCheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION, exception.toString());
+				throw new RegBaseCheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION, exception.toString(),
+						exception);
 			}
 		}
 
@@ -352,8 +357,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 			if (direction.startsWith("S")) {
 				latitudeDegrees = -latitudeDegrees;
 			}
-			LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
-					"Latitude conversion ends");
+			LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID, "Latitude conversion ends");
 		}
 		return latitudeDegrees;
 	}

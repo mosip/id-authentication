@@ -3,10 +3,10 @@ package io.mosip.registration.dao;
 import java.util.List;
 
 import io.mosip.registration.constants.DeviceTypes;
-import io.mosip.registration.entity.DeviceType;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.RegCenterDevice;
 import io.mosip.registration.entity.RegCentreMachineDevice;
+import io.mosip.registration.entity.RegDeviceType;
 import io.mosip.registration.entity.RegistrationCenter;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
@@ -84,7 +84,7 @@ public interface MachineMappingDAO {
 	 * 
 	 * @return list of DeviceType
 	 */
-	List<DeviceType> getAllDeviceTypes();
+	List<RegDeviceType> getAllDeviceTypes();
 
 	/**
 	 * Get all the devices associated with the given centerId

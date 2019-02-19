@@ -20,9 +20,6 @@ public class BaseAuthResponseDTO {
 	/** The error List */
 	private List<AuthError> err;
 	
-	/** The txnID value*/
-	private String txnID;
-	
 	/** The resTime value */
 	private String resTime;
 }

@@ -113,6 +113,15 @@ public class AuthResponseBuilder {
 		responseDTO.getInfo().setReqTime(reqTime);
 		return this;
 	}
+	/**
+	 * Sets the Static Token Id
+	 * @param staticTokenId
+	 * @return
+	 */
+	public AuthResponseBuilder setStaticTokenId(String staticTokenId) {
+		responseDTO.setStaticToken(staticTokenId);
+		return this;
+	}
 
 	/**
 	 * Sets the version.
