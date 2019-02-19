@@ -16,6 +16,7 @@ import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.IdType;
+import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.PinType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -77,7 +78,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 *                                           exception
 	 */
 	@Override
-	public AuthStatusInfo validateOtp(AuthRequestDTO authRequestDTO, String uin)
+	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin,Map<String,List<IdentityInfoDTO>> idInfo)
 			throws IdAuthenticationBusinessException {
 		String txnId = authRequestDTO.getTxnID();
 		Optional<String> otp = getOtpValue(authRequestDTO);
