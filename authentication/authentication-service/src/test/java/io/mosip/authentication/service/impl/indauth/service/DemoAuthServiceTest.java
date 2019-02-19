@@ -52,6 +52,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
+import io.mosip.authentication.service.integration.MasterDataManager;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -75,7 +76,10 @@ public class DemoAuthServiceTest {
 	private IdInfoHelper actualidInfoHelper;
 
 	@Mock
-	private IdAuthService idInfoService;
+	private IdAuthService<?> idInfoService;
+	
+	@Mock
+	private MasterDataManager masterDataManager;
 
 	@Before
 	public void before() {
@@ -599,6 +603,7 @@ public class DemoAuthServiceTest {
 		mockenv.setProperty("mosip.secondary.lang-code", "ara");
 		mockenv.setProperty("mosip.supported-languages", "eng,ara,fre");
 		ReflectionTestUtils.setField(actualidInfoHelper, "environment", mockenv);
+		Mockito.when(masterDataManager.fetchTitles()).thenReturn(createFetcher());
 		AuthStatusInfo validateBioDetails = demoAuthServiceImpl.getDemoStatus(authRequestDTO, uin, demoIdentity);
 		assertFalse(validateBioDetails.isStatus());
 	}
@@ -671,6 +676,16 @@ public class DemoAuthServiceTest {
 		demoEntity.put("name", nameList);
 		AuthStatusInfo demoStatus = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "274390482564", demoEntity);
 
+	}
+	
+	private Map<String, List<String>> createFetcher() {
+		List<String> l = new ArrayList<>();
+		l.add("Mr");
+		l.add("Dr");
+		l.add("Mrs");
+		Map<String, List<String>> map = new HashMap<>();
+		map.put("fra", l);
+		return map;
 	}
 
 }
