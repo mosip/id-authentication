@@ -1,6 +1,6 @@
 package io.mosip.kernel.otpmanager.dto;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
@@ -18,7 +18,7 @@ public class OtpGeneratorRequestDto {
 	/**
 	 * The key against which OTP needs to be generated.
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 3, max = 64)
 	private String key;
 }
