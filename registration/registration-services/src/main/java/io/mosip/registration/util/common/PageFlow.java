@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -27,6 +28,15 @@ public class PageFlow {
 	 * Instance of LOGGER
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(PageFlow.class);
+	
+	@Value("${FINGERPRINT_DISABLE_FLAG}")
+	private String fingerprintDisableFlag;
+	
+	@Value("${IRIS_DISABLE_FLAG}")
+	private String irisDisableFlag;
+	
+	@Value("${FACE_DISABLE_FLAG}")
+	private String faceDisableFlag;
 	
 	public void getInitialPageDetails() {
 		
@@ -101,9 +111,9 @@ public class PageFlow {
 		LOGGER.info(LoggerConstants.LOG_REG_PAGE_FLOW, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Updating Map values based on Configuration ");
 		
-		updateDetailMap(registrationMap, RegistrationConstants.FINGERPRINT_DISABLE_FLAG, RegistrationConstants.FINGERPRINT_CAPTURE, RegistrationConstants.BIOMETRIC_EXCEPTION,RegistrationConstants.FINGER_PANE, page);
-		updateDetailMap(registrationMap, RegistrationConstants.IRIS_DISABLE_FLAG, RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.BIOMETRIC_EXCEPTION,RegistrationConstants.IRIS_PANE, page);
-		updateDetailMap(registrationMap, RegistrationConstants.FACE_DISABLE_FLAG, RegistrationConstants.FACE_CAPTURE,"","", page);
+		updateDetailMap(registrationMap, fingerprintDisableFlag, RegistrationConstants.FINGERPRINT_CAPTURE, RegistrationConstants.BIOMETRIC_EXCEPTION,RegistrationConstants.FINGER_PANE, page);
+		updateDetailMap(registrationMap, irisDisableFlag, RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.BIOMETRIC_EXCEPTION,RegistrationConstants.IRIS_PANE, page);
+		updateDetailMap(registrationMap, faceDisableFlag, RegistrationConstants.FACE_CAPTURE,"","", page);
 		
 		LOGGER.info(LoggerConstants.LOG_REG_PAGE_FLOW, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Updating Child values of Map based on Configuration");
@@ -130,9 +140,7 @@ public class PageFlow {
 		LOGGER.info(LoggerConstants.LOG_REG_PAGE_FLOW, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Updating Visibility values based on Configuration");
 		
-		if (ApplicationContext.map().containsKey(flagVal)
-				&& ApplicationContext.map().get(flagVal)
-						.equals(RegistrationConstants.DISABLE)) {
+		if (RegistrationConstants.DISABLE.equalsIgnoreCase(flagVal)) {
 				
 				if(pageId.equals(RegistrationConstants.DOCUMENT_PANE)) {
 					detailMap.get(subPane).put(pageId, false);
