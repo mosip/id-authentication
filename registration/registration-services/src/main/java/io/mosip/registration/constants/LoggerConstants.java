@@ -32,6 +32,9 @@ public class LoggerConstants {
 	private static final String PKT_HANDLER= APP_NAME + "PACKET_HANDLER - ";
 	private static final String HEADER= APP_NAME + "HEADER - ";
 	private static final String HOME= APP_NAME + "HOME - ";
+	private static final String BASE= APP_NAME + "BASE - ";
+	private static final String LOGIN= APP_NAME + "LOGIN - ";
+	private static final String PGE_FLW= APP_NAME + "PAGE_FLOW - ";
 	
 	
 
@@ -74,6 +77,9 @@ public class LoggerConstants {
 	public static final String OPT_TO_REG_LOGGER_SESSION_ID = SYNC + "SYNC_STATUS_VALIDATOR_SERVICE_IMPL";
 	public static final String LOG_REG_HEADER = HEADER + "HEADER_CONTROLLER";
 	public static final String LOG_REG_HOME = HOME + "HOME_CONTROLLER";
+	public static final String LOG_REG_BASE = BASE + "BASE_CONTROLLER";
+	public static final String LOG_REG_LOGIN = LOGIN + "LOGIN_CONTROLLER";
+	public static final String LOG_REG_PAGE_FLOW = PGE_FLW + "PAGE_FLOW";
 
 	// USER ONBOARD
 	public static final String LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD = USER_ONBOARD

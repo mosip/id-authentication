@@ -77,7 +77,13 @@ public class RegistrationConstants {
 	public static final String OPERATOR_AUTHENTICATION = "operatorAuthenticationPane";
 	public static final String ONBOARD_USER_PARENT = "onboardUser";
 	public static final String ONBOARD_USER_SUCCESS = "userOnboardSuccess";
+	
+	//Page Flow
 	public static final String VISIBILITY = "visibility";
+	public static final String ONBOARD_LIST = "onboardPageList";
+	public static final String ONBOARD_MAP = "onboardMap";
+	public static final String REGISTRATION_MAP = "registrationMap";
+	public static final String ONBOARD = "onboard";
 
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";
@@ -125,8 +131,6 @@ public class RegistrationConstants {
 	public static final String LOGIN_SEQUENCE = "sequence";
 	public static final String ONBOARD_USER = "isOnboardUser";
 	public static final String ONBOARD_USER_UPDATE = "updateOnboard";
-	public static final String REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER";
-	public static final String REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER";
 
 	// FingerPrint
 	public static final String FINGER_PRINT_CAPTURE = "Please place your finger on device.";

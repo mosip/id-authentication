@@ -10,24 +10,25 @@ import io.mosip.registration.controller.BaseController;
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
 
+
+/**
+ * {@code UserOnboardParentController} is to load FXML of
+ * fingerprints,Iris and face.
+ * 
+ * @author Sravya Surampalli
+ * @version 1.0
+ *
+ */
 @Controller
 public class UserOnboardParentController extends BaseController{
 	
 	/**
 	 * Instance of {@link Logger}
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(UserOnboardController.class);
+	private static final Logger LOGGER = AppConfig.getLogger(UserOnboardParentController.class);
 	
 	@FXML
 	private AnchorPane userOnboardId;
-	
-	@FXML
-	private AnchorPane onBoardRoot;
-	
-	@FXML
-	private AnchorPane onboardUser;
-	@FXML
-	private AnchorPane biometricException;
 	
 	
 	public void showCurrentPage(String notTosShow, String show) {

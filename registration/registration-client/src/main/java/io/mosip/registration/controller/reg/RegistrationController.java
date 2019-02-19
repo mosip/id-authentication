@@ -110,9 +110,6 @@ public class RegistrationController extends BaseController {
 	private AnchorPane registrationPreview;
 
 	@Autowired
-	private RegistrationPreviewController registrationPreviewController;
-
-	@Autowired
 	private AuthenticationController authenticationController;
 
 	@Value("${capture_photo_using_device}")

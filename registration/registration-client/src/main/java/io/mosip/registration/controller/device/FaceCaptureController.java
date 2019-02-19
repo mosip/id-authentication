@@ -49,9 +49,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -404,34 +402,6 @@ public class FaceCaptureController extends BaseController implements Initializab
 		}
 	}
 
-	/**
-	 * Method to load fxml page
-	 * 
-	 * @param fxml
-	 *            file name
-	 */
-	private void loadPage(String page) {
-		VBox mainBox = new VBox();
-		try {
-			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
-			mainBox.getChildren().add(headerRoot);
-			Parent createRoot = BaseController.load(getClass().getResource(page));
-			mainBox.getChildren().add(createRoot);
-			getScene(mainBox).setRoot(mainBox);
-		} catch (IOException exception) {
-			LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
-		}
-	}
-
-	/**
-	 * To enable the user to capture the image upon selecting the pane for the type
-	 * of image to be captured
-	 * 
-	 * @param mouseEvent
-	 *            the event that happens on mouse click
-	 */
 	@FXML
 	private void enableCapture(MouseEvent mouseEvent) {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
