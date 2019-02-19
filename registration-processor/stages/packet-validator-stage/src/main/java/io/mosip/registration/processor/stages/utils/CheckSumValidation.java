@@ -85,7 +85,7 @@ public class CheckSumValidation {
 		/* 
 		 * TODO ::  This has been mocked for Testing once uncomment after test
 		 * */
-		return Boolean.TRUE;
+		return isValid;
 	}
 
 }

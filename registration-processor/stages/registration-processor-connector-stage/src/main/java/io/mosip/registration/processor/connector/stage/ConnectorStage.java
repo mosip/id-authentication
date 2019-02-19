@@ -21,8 +21,6 @@ import io.vertx.ext.web.RoutingContext;
  */
 @Component("connectorStage")
 public class ConnectorStage extends MosipVerticleAPIManager{
-	/** The reg proc logger. */
-	private static Logger regProcLogger = RegProcessorLogger.getLogger(ConnectorStage.class);
 	
 	/**
 	 * vertx Cluster Manager Url
