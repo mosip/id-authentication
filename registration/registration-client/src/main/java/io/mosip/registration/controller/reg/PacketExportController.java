@@ -55,32 +55,37 @@ public class PacketExportController extends BaseController {
 			File defaultDirectory = new File(currentRelativePath.toAbsolutePath().toString());
 			destinationSelector.setInitialDirectory(defaultDirectory);
 			File destinationPath = destinationSelector.showDialog(primaryStage);
-
+			Long packetSize = 0L;
 			if (destinationPath != null) {
+				Long freeSpace = destinationPath.getUsableSpace();
 				// Iterate through the synched packets and copy to the Destination folder
-				synchedRecords.forEach(packetToCopy -> {
+				for (Registration packetToCopy : synchedRecords) {
 					String ackFileName = packetToCopy.getAckFilename();
 					int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
 					String packetPath = ackFileName.substring(0, lastIndex);
 					File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
-					try {
-						FileUtils.copyFileToDirectory(packet, destinationPath);
-						packetToCopy.setClientStatusCode(RegistrationClientStatusCode.EXPORT.getCode());
-						exportedPackets.add(packetToCopy);
-					} catch (IOException ioException) {
-						LOGGER.error("REGISTRATION - HANDLE_PACKET_EXPORT_ERROR - PACKET_EXPORT_CONTROLLER",
-								APPLICATION_NAME, APPLICATION_ID,
-								"Error while exporting packets. packet id : " + packetToCopy.getId());
+					packetSize = packetSize + packet.length();
+					if (packet.length() < freeSpace) {
+						try {
+							FileUtils.copyFileToDirectory(packet, destinationPath);
+							packetToCopy.setClientStatusCode(RegistrationClientStatusCode.EXPORT.getCode());
+							exportedPackets.add(packetToCopy);
+						} catch (IOException ioException) {
+							LOGGER.error("REGISTRATION - HANDLE_PACKET_EXPORT_ERROR - PACKET_EXPORT_CONTROLLER",
+									APPLICATION_NAME, APPLICATION_ID,
+									"Error while exporting packets. packet id : " + packetToCopy.getId());
+						}
+					} else {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PACKET_EXPORT_FAILURE);
+						break;
 					}
-				});
+				}
 				if (!exportedPackets.isEmpty()) {
 					ResponseDTO responseDTO = packetExportServiceImpl.updateRegistrationStatus(exportedPackets);
 					if (responseDTO.getSuccessResponseDTO() != null
 							&& responseDTO.getSuccessResponseDTO().getMessage().equals(RegistrationConstants.SUCCESS)) {
 						generateAlert(RegistrationConstants.INFO,
 								exportedPackets.size() + " " + RegistrationUIConstants.PACKET_EXPORT_SUCCESS_MESSAGE);
-					} else {
-						generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.PACKET_EXPORT_MESSAGE);
 					}
 				} else {
 					generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.PACKET_EXPORT_MESSAGE);
