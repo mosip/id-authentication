@@ -257,10 +257,11 @@ public class FaceCaptureController extends BaseController implements Initializab
 							&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()) {
 						SessionContext.map().put("documentScan", true);
 					}
+					registrationController.showUINUpdateCurrentPage();
+				} else {
+					registrationController.showCurrentPage(RegistrationConstants.FACE_CAPTURE,
+							getPageDetails(RegistrationConstants.FACE_CAPTURE, RegistrationConstants.PREVIOUS));
 				}
-				registrationController.showCurrentPage(RegistrationConstants.FACE_CAPTURE,
-						getPageDetails(RegistrationConstants.FACE_CAPTURE, RegistrationConstants.PREVIOUS));
-
 			} catch (RuntimeException runtimeException) {
 				LOGGER.error("REGISTRATION - COULD NOT GO TO DEMOGRAPHIC TITLE PANE ", APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID,
@@ -422,10 +423,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 				RegistrationConstants.APPLICATION_ID, "Enabling the capture button based on selected pane");
 
 		boolean hasBiometricException = false;
-		if (((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER))
-				&& !getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO().isEmpty()) {
-			hasBiometricException = true;
-		} else {
+		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			hasBiometricException = (Boolean) SessionContext.userContext().getUserMap()
 					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 		}

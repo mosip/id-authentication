@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
@@ -84,6 +85,15 @@ public class UpdateUINController extends BaseController implements Initializable
 
 	@Autowired
 	Validations validation;
+	
+	@Value("${FINGERPRINT_DISABLE_FLAG}")
+	private String fingerprintDisableFlag;
+	
+	@Value("${IRIS_DISABLE_FLAG}")
+	private String irisDisableFlag;
+	
+	@Value("${FACE_DISABLE_FLAG}")
+	private String faceDisableFlag;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -94,28 +104,24 @@ public class UpdateUINController extends BaseController implements Initializable
 		listenerOnFields(fxUtils);
 		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 		fxUtils.validateOnType(uinId, validation);
-		if (applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-				.equals(RegistrationConstants.ENABLE)) {
 
 			biometricBox.getChildren().forEach(bio -> {
-				if (applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-						.equals(RegistrationConstants.DISABLE) && bio.getId().equals("biometricFingerprint")) {
+				if (fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)
+						&& bio.getId().equals("biometricFingerprint")) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}
-				if (applicationContext.getApplicationMap().get(RegistrationConstants.IRIS_DISABLE_FLAG)
-						.equals(RegistrationConstants.DISABLE) && bio.getId().equals("biometricIris")) {
+				if (irisDisableFlag.equals(RegistrationConstants.DISABLE) && bio.getId().equals("biometricIris")) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}
-				if (applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-						.equals(RegistrationConstants.DISABLE) && applicationContext.getApplicationMap().get(RegistrationConstants.IRIS_DISABLE_FLAG)
-						.equals(RegistrationConstants.DISABLE) && bio.getId().equals("biometricException")) {
+				if (fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)
+						&& irisDisableFlag.equals(RegistrationConstants.DISABLE)
+						&& bio.getId().equals("biometricException")) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}
 			});
-		}
 		configuringUpdateUINDemographicFields();
 		configuringUpdateUINBiometricFields();
 	}

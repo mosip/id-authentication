@@ -16,6 +16,7 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -74,7 +75,13 @@ public class RegistrationPreviewController extends BaseController implements Ini
 					.setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_UNSELECTED);
 		}
 		
-		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW,RegistrationConstants.NEXT));
+		if(getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			SessionContext.map().put("registrationPreview", false);
+			SessionContext.map().put("operatorAuthenticationPane", true);
+			registrationController.showUINUpdateCurrentPage();
+		} else {
+			registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW,RegistrationConstants.NEXT));
+		}
 		registrationController.goToAuthenticationPage();
 	}
 

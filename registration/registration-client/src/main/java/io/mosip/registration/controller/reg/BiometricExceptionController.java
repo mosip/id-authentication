@@ -376,7 +376,13 @@ public class BiometricExceptionController extends BaseController implements Init
 				generateAlert(RegistrationConstants.ALERT_INFORMATION,
 						RegistrationUIConstants.BIOMETRIC_EXCEPTION_ALERT);
 			} else {
-				registrationController.showCurrentPage(RegistrationConstants.BIOMETRIC_EXCEPTION,getPageDetails(RegistrationConstants.BIOMETRIC_EXCEPTION,RegistrationConstants.PREVIOUS));
+				if(getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+					SessionContext.getInstance().getMapObject().put("biometricException",false);
+					SessionContext.getInstance().getMapObject().put("documentScan",true);
+					registrationController.showUINUpdateCurrentPage();
+				} else {
+					registrationController.showCurrentPage(RegistrationConstants.BIOMETRIC_EXCEPTION,getPageDetails(RegistrationConstants.BIOMETRIC_EXCEPTION,RegistrationConstants.PREVIOUS));
+				}
 			}
 		}
 	}

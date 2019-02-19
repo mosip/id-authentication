@@ -645,7 +645,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 							SessionContext.map().put("fingerPrintCapture", false);
 							SessionContext.map().put("faceCapture", true);
 						}
-						registrationController.showCurrentPage("fingerPrintCapture", "irisCapture");
+						registrationController.showUINUpdateCurrentPage();
 					}
 				} else {
 					if (validateFingerPrints()) {
@@ -685,7 +685,21 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				}
 			} else {
 				if (validateFingerPrints()) {
-					registrationController.showCurrentPage(RegistrationConstants.FINGERPRINT_CAPTURE, getPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE,RegistrationConstants.PREVIOUS));
+					SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
+					if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+						if ((boolean) SessionContext.getInstance().getUserContext().getUserMap()
+								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
+							SessionContext.getInstance().getMapObject().put("fingerPrintCapture",false);
+							SessionContext.getInstance().getMapObject().put("biometricException",true);
+							registrationController.showUINUpdateCurrentPage();
+						}else {
+							SessionContext.getInstance().getMapObject().put("fingerPrintCapture",false);
+							SessionContext.getInstance().getMapObject().put("documentScan",true);
+							registrationController.showUINUpdateCurrentPage();
+						}
+					} else {
+						registrationController.showCurrentPage(RegistrationConstants.FINGERPRINT_CAPTURE, getPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE,RegistrationConstants.PREVIOUS));
+					}
 				}
 			}
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,

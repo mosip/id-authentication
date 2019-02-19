@@ -103,7 +103,7 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private AnchorPane irisCapture;
 	@FXML
-	private AnchorPane operatorAuthentication;
+	private AnchorPane operatorAuthenticationPane;
 	@FXML
 	public ImageView biometricTracker;
 
@@ -384,6 +384,24 @@ public class RegistrationController extends BaseController {
 		biometricInfoDTO.setFingerprintDetailsDTO(new ArrayList<>());
 		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
 		return biometricInfoDTO;
+	}
+	
+	public void showUINUpdateCurrentPage() {
+		demographicDetail.setVisible(getVisiblity("demographicDetail"));
+		documentScan.setVisible(getVisiblity("documentScan"));
+		fingerPrintCapture.setVisible(getVisiblity("fingerPrintCapture"));
+		biometricException.setVisible(getVisiblity("biometricException"));
+		faceCapture.setVisible(getVisiblity("faceCapture"));
+		irisCapture.setVisible(getVisiblity("irisCapture"));
+		registrationPreview.setVisible(getVisiblity("registrationPreview"));
+		operatorAuthenticationPane.setVisible(getVisiblity("operatorAuthenticationPane"));
+	}
+
+	private boolean getVisiblity(String page) {
+		if (SessionContext.map().get(page) != null) {
+			return (boolean) SessionContext.map().get(page);
+		}
+		return false;
 	}
 	
 	public void showCurrentPage(String notTosShow, String show) {

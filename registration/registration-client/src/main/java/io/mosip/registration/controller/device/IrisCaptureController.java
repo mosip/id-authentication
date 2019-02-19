@@ -296,7 +296,13 @@ public class IrisCaptureController extends BaseController {
 				}
 			} else {
 				if (validateIris() && validateIrisLocalDedup()) {
-					registrationController.showCurrentPage(RegistrationConstants.IRIS_CAPTURE, getPageDetails(RegistrationConstants.IRIS_CAPTURE,RegistrationConstants.NEXT));				
+					if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+						SessionContext.getInstance().getMapObject().put("irisCapture",false);
+						SessionContext.getInstance().getMapObject().put("faceCapture",true);
+						registrationController.showUINUpdateCurrentPage();
+					} else {
+						registrationController.showCurrentPage(RegistrationConstants.IRIS_CAPTURE, getPageDetails(RegistrationConstants.IRIS_CAPTURE,RegistrationConstants.NEXT));
+					}				
 				}
 			}
 
@@ -344,7 +350,7 @@ public class IrisCaptureController extends BaseController {
 							SessionContext.map().put("irisCapture", false);
 							SessionContext.map().put("biometricException", true);
 						}
-						//registrationController.showCurrentPage();
+						registrationController.showUINUpdateCurrentPage();
 					}
 				} else {
 					if (validateIris() && validateIrisLocalDedup()) {
