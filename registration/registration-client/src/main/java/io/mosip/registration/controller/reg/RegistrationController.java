@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
@@ -137,9 +138,9 @@ public class RegistrationController extends BaseController {
 			}
 			uinUpdate();
 
-		} catch (RuntimeException exception) {
+		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					exception.getMessage());
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
 	}
@@ -168,7 +169,7 @@ public class RegistrationController extends BaseController {
 			SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, false);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage()+ ExceptionUtils.getStackTrace(runtimeException));
 		}
 
 	}
@@ -237,7 +238,7 @@ public class RegistrationController extends BaseController {
 			writer.dispose();
 		} catch (IOException ioException) {
 			LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
+					RegistrationConstants.APPLICATION_ID, ioException.getMessage()+ ExceptionUtils.getStackTrace(ioException));
 		}
 	}
 
@@ -299,7 +300,7 @@ public class RegistrationController extends BaseController {
 				}
 			} catch (IOException ioException) {
 				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
+						RegistrationConstants.APPLICATION_ID, ioException.getMessage()+ ExceptionUtils.getStackTrace(ioException));
 			}
 		}
 	}
@@ -310,7 +311,7 @@ public class RegistrationController extends BaseController {
 			authenticationController.initData(ProcessNames.PACKET.getType());
 		} catch (RegBaseCheckedException ioException) {
 			LOGGER.error("REGISTRATION - REGSITRATION_OPERATOR_AUTHENTICATION_PAGE_LOADING_FAILED", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
+					RegistrationConstants.APPLICATION_ID, ioException.getMessage()+ ExceptionUtils.getStackTrace(ioException));
 		}
 	}
 
