@@ -62,7 +62,7 @@ publishHTML (target: [
       alwaysLinkToLastBuild: false,
       keepAll: true,
       reportDir: testRepoBranch+'/mosip-test/automation/mosip-qa/target/surefire-reports',
-      reportFiles: 'index.html',
+      reportFiles: 'emailable-report.html',
       reportName: "Tests Report"
   ])
 }
