@@ -24,7 +24,7 @@ public class FileNotFoundInPacketStore extends BaseUncheckedException {
 	 * @param errorMessage the error message
 	 */
 	public FileNotFoundInPacketStore(String errorMessage) {
-		super(PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_DFS.getCode()+ EMPTY_SPACE, errorMessage);
+		super(PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_PACKET_STORE.getCode()+ EMPTY_SPACE, errorMessage);
 	}
 
 	/**
@@ -34,7 +34,7 @@ public class FileNotFoundInPacketStore extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public FileNotFoundInPacketStore(String message, Throwable cause) {
-		super(PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_DFS.getCode() + EMPTY_SPACE, message, cause);
+		super(PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_PACKET_STORE.getCode() + EMPTY_SPACE, message, cause);
 	}
 	
 

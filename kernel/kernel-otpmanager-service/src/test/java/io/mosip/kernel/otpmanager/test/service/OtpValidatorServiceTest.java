@@ -98,7 +98,7 @@ public class OtpValidatorServiceTest {
 		OtpEntity entity = new OtpEntity();
 		entity.setOtp("1234");
 		entity.setId("testKey");
-		entity.setValidationRetryCount(0);
+		entity.setValidationRetryCount(3);
 		entity.setStatusCode("KEY_FREEZED");
 		entity.setUpdatedDtimes(LocalDateTime.now(ZoneId.of("UTC")).minus(1, ChronoUnit.MINUTES));
 		when(repository.findById(OtpEntity.class, "testKey")).thenReturn(entity);

@@ -37,7 +37,6 @@ import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.dto.IdResponseDTO;
-import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.util.DataValidationUtil;
 import io.mosip.kernel.idrepo.validator.IdRequestValidator;
 import springfox.documentation.annotations.ApiIgnore;
@@ -93,7 +92,7 @@ public class IdRepoController {
 
 	/** The id repo service. */
 	@Autowired
-	private IdRepoService<IdRequestDTO, IdResponseDTO, Uin> idRepoService;
+	private IdRepoService<IdRequestDTO, IdResponseDTO> idRepoService;
 
 	/** The validator. */
 	@Autowired

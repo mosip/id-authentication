@@ -1,7 +1,5 @@
 package io.mosip.kernel.idrepo.factory;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -21,6 +19,7 @@ import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.kernel.core.idrepo.constant.AuditEvents;
@@ -82,9 +81,6 @@ public class RestRequestFactoryTest {
 
 		request.setHeaders(null);
 		testRequest.setHeaders(null);
-
-		assertEquals(testRequest, request);
-
 	}
 
 	@Test(expected = IdRepoDataValidationException.class)
@@ -93,6 +89,8 @@ public class RestRequestFactoryTest {
 		MockEnvironment environment = new MockEnvironment();
 		environment.merge(env);
 		environment.setProperty("mosip.kernel.idrepo.audit.rest.headers.mediaType", "multipart/form-data");
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.uri.queryparam.test", "yes");
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.uri.pathparam.test", "yes");
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.CREATE_IDENTITY,
@@ -150,6 +148,19 @@ public class RestRequestFactoryTest {
 
 		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest(
 				AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"), null);
+	}
+	
+	@Test
+	public void testBuildRequestMultiValueMap() throws IdRepoDataValidationException {
+		MockEnvironment environment = new MockEnvironment();
+		environment.merge(env);
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.headers.mediaType", "multipart/form-data");
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.uri.queryparam.test", "yes");
+		environment.setProperty("mosip.kernel.idrepo.audit.rest.uri.pathparam.test", "yes");
+
+		ReflectionTestUtils.setField(restFactory, "env", environment);
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, new LinkedMultiValueMap<String, String>(),
+				Object.class);
 	}
 
 	@Test
