@@ -1,5 +1,7 @@
 package io.mosip.authentication.service.impl.indauth.validator;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,6 +35,10 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 	
 	/** The Constant AUTH_TYPE. */
 	private static final String AUTH_TYPE = "authType";
+	
+	/** The Constant REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS. */
+	private static final String REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS = "authrequest.received-time-allowed.in-hours";
+
 
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.service.impl.indauth.validator.BaseAuthRequestValidator#supports(java.lang.Class)
@@ -167,9 +173,12 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 		if (null != authRequestDTO.getReqTime() && !authRequestDTO.getReqTime().isEmpty()) {
 			try {
 				Date reqDate = DateUtils.parseToDate(authRequestDTO.getReqTime(),env.getProperty("datetime.pattern"));
-				if (reqDate.after(new Date())) {
-					errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-							new Object[] {REQ_TIME},IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+				Instant reqTimeInstance =reqDate.toInstant();
+				Instant now = Instant.now();
+				Integer reqDateMaxTimeInt = env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Integer.class);
+				if (reqDate.after(new Date())|| Duration.between(reqTimeInstance, now).toHours() > reqDateMaxTimeInt) {
+					errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorCode(),
+							new Object[] {env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Integer.class)},IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorMessage());
 				}
 
 			} catch (ParseException | java.text.ParseException e) {
