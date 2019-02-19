@@ -9,21 +9,19 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 /**
- * 
- * This interface is used to authenticate Individual based on Demo attributes.
- * 
- * @author Gurpreet Bagga
+ * This interface is extended by all the all the Auth Type  for authentication.
+ *
+ * @author Arun Bose S
  */
-public interface DemoAuthService extends AuthService {
+public interface AuthService {
 	
 	/**
-	 * Gets the demo status.
+	 *  This method is used to authenticate the indvidual based on the auth type.
 	 *
 	 * @param authRequestDTO the auth request DTO
 	 * @param uin the uin
 	 * @param idInfo the id info
-	 * @return the demo status
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 *//*
-	AuthStatusInfo getDemoStatus(AuthRequestDTO authRequestDTO,String uin, Map<String, List<IdentityInfoDTO>> idInfo) throws IdAuthenticationBusinessException;*/
+	 * @return the auth status info
+	 */
+	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO,String uin,Map<String,List<IdentityInfoDTO>> idInfo)throws IdAuthenticationBusinessException;
 }

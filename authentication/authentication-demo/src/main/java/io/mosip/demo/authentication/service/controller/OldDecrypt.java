@@ -1,4 +1,4 @@
-package io.mosip.demo.authentication.service.impl.indauth.controller;
+package io.mosip.demo.authentication.service.controller;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -17,37 +17,23 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.demo.authentication.service.EncryptHelper.CryptoUtility;
-import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;;
+import io.mosip.demo.authentication.service.helper.CryptoUtility;
 
 
 /**
- * 
+ * The Class OldDecrypt is used to decrypt the KYCResponse.
  * @author Arun Bose S
- * @author Sanjay Murali
- * The Class Decrypt.
  */
 @RestController
-public class Decrypt {
-
-	/** The environment. */
-	@Autowired
-	Environment environment;
-
-	/** The decryptor impl. */
-	@Autowired
-	DecryptorImpl decryptorImpl;
+public class OldDecrypt {
 
 	/**
-	 * Decrypt.
+	 * This method decrypts the KYC Response.
 	 *
 	 * @param data the data
 	 * @return the string
@@ -55,20 +41,18 @@ public class Decrypt {
 	 * @throws InvalidKeySpecException the invalid key spec exception
 	 * @throws NoSuchAlgorithmException the no such algorithm exception
 	 */
-	@PostMapping(path = "/authRequest/decrypt")
+	@PostMapping(path = "/authRequest/oldDecrypt")
 	public String decrypt(@RequestBody String data)
 			throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
 		byte[] finalvalue=null;
 		PrivateKey privateKey = fileReader();
 		String encodedKey = data.substring(0, 343);
 		String encodeData = data.substring(344, data.length()-1);
-		
-		return kernelDecrypt(finalvalue, privateKey, encodedKey, encodeData);
+		return oldDecrypt(finalvalue, privateKey, encodedKey, encodeData);
 	}
 
-	
 	/**
-	 * Kernel decrypt.
+	 * this method is used to decrypt the KYC Response where encrypted Key and encrypted data got splitted.
 	 *
 	 * @param finalvalue the finalvalue
 	 * @param privateKey the private key
@@ -77,25 +61,23 @@ public class Decrypt {
 	 * @return the string
 	 * @throws NoSuchAlgorithmException the no such algorithm exception
 	 */
-	private String kernelDecrypt(byte[] finalvalue, PrivateKey privateKey, String encodedKey, String encodeData)
+	private String oldDecrypt(byte[] finalvalue, PrivateKey privateKey, String encodedKey, String encodeData)
 			throws NoSuchAlgorithmException {
-		byte[] key = decryptorImpl.asymmetricPrivateDecrypt(privateKey, org.apache.commons.codec.binary.Base64.decodeBase64(encodedKey));
-			 finalvalue = decryptorImpl.symmetricDecrypt(new SecretKeySpec(key, 0, key.length, "AES"), org.apache.commons.codec.binary.Base64.decodeBase64(encodeData));
-				return new String(finalvalue);
+		CryptoUtility cryptoUtil=new CryptoUtility();
+		SecretKey secKey=null;;
+		try {
+			secKey = cryptoUtil.asymmetricDecrypt(privateKey, org.apache.commons.codec.binary.Base64.decodeBase64(encodedKey));
+			 finalvalue = cryptoUtil.symmetricDecrypt(secKey, org.apache.commons.codec.binary.Base64.decodeBase64(encodeData));
+		} catch (InvalidKeyException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
+			// TODO Auto-generated catch block
+			return new String(e.getMessage());
+		}
+		
+		return new String(finalvalue);
 	}
 	
-
-
-
-
-	
-	
-	
-	
-	
-
 	/**
-	 * File reader.
+	 * This method gets the private key stored in the file.
 	 *
 	 * @return the private key
 	 * @throws IOException Signals that an I/O exception has occurred.
@@ -112,8 +94,9 @@ public class Decrypt {
 		return kf.generatePrivate(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(pKey)));
 	}
 	
+	
 	/**
-	 * Gets the file content.
+	 *  Gets the file content of PrivateKey and returns it in String.
 	 *
 	 * @param fis the fis
 	 * @param encoding the encoding
@@ -134,5 +117,4 @@ public class Decrypt {
 			return sb.toString();
 		}
 	}
-
 }

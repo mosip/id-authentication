@@ -1,4 +1,4 @@
-package io.mosip.demo.authentication.service.impl.indauth.controller;
+package io.mosip.demo.authentication.service.controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -34,12 +34,22 @@ import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingExce
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.util.CryptoUtil;
 
+/**
+ * The Class IdRepo.
+ * @author Manoj S.P
+ */
 @RestController
 public class IdRepo {
 
+	/** The json validator. */
 	@Autowired
 	private JsonValidator jsonValidator;
 
+	/**
+	 * Multipart resolver.
+	 *
+	 * @return the commons multipart resolver
+	 */
 	@Bean(name = "multipartResolver")
 	public CommonsMultipartResolver multipartResolver() {
 		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
@@ -47,6 +57,11 @@ public class IdRepo {
 		return multipartResolver;
 	}
 
+	/**
+	 * This method is used to validate the IdRepo Json format.
+	 * @param object the object
+	 * @return the string
+	 */
 	@PostMapping(path = "/validateJson", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
 	public String jsonSchemaValidator(@RequestBody ObjectNode object) {
 		try {
@@ -61,11 +76,25 @@ public class IdRepo {
 		} 
 	}
 
+	/**
+	 * Encodes the contents of cpeff file.
+	 *
+	 * @param file the file
+	 * @return the string
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	@PostMapping(value = "/encodeFile", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public String encodeFile(@RequestPart MultipartFile file) throws IOException {
 		return CryptoUtil.encodeBase64(file.getBytes());
 	}
 
+	/**
+	 *Encodes the contents of cpeff file.
+	 *
+	 * @param stringToDecode the string to decode
+	 * @param fileName the file name
+	 * @return the response entity
+	 */
 	@PostMapping(path = "/decodeFile", consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	public ResponseEntity<InputStreamResource> decodeToFile(@RequestBody String stringToDecode,
 			@RequestParam String fileName) {

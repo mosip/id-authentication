@@ -1,4 +1,4 @@
-package io.mosip.demo.authentication.service.impl.indauth.controller;
+package io.mosip.demo.authentication.service.controller;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author M1046368
- * The Class Decode.
+ * 
+ * The Class Decode is used to decode the String.
+ * @author Arun Bose S
  */
 @RestController
 public class Decode {

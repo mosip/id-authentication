@@ -1,4 +1,4 @@
-package io.mosip.demo.authentication.service.impl.indauth.controller;
+package io.mosip.demo.authentication.service.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,12 +25,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.demo.authentication.service.EncryptHelper.CryptoUtility;
 import io.mosip.demo.authentication.service.dto.EncryptionRequestDto;
 import io.mosip.demo.authentication.service.dto.EncryptionResponseDto;
+import io.mosip.demo.authentication.service.helper.CryptoUtility;
 import io.mosip.kernel.core.util.FileUtils;
 import io.swagger.annotations.ApiOperation;
 
+/**
+ * The Class OldEncrypt is used to encrypt the identity block.
+ * @author ArunBose S
+ */
 @RestController
 public class OldEncrypt {
 
@@ -44,6 +48,16 @@ public class OldEncrypt {
 	/** The Constant fileInfoPath. */
 	private static final String fileInfoPath ="lib\\Keystore\\PublicKey";
 	
+	/**
+	 * this method is used to encrypt the identity block
+	 *
+	 * @param encryptionRequestDto the encryption request dto
+	 * @return the encryption response dto
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws JsonProcessingException the json processing exception
+	 * @throws InvalidKeySpecException the invalid key spec exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	@PostMapping(path = "/identity/oldEncrypt")
 	@ApiOperation(value = "Encrypt Identity with sessionKey and Encrypt Session Key with Public Key", response = EncryptionResponseDto.class)
 	public EncryptionResponseDto oldEncrypt(@RequestBody EncryptionRequestDto encryptionRequestDto)
@@ -66,12 +80,11 @@ public class OldEncrypt {
 			encryptionResponseDto.setEncryptedSessionKey(e.getMessage());
 		}
 		encryptionResponseDto.setEncryptedSessionKey(Base64.encodeBase64URLSafeString(encryptedSessionKeyArr));
-		System.out.println(Base64.encodeBase64URLSafeString(encryptedSessionKeyArr).length());
 		return encryptionResponseDto;
 	}
 	
 	/**
-	 * Gets the public key.
+	 * Gets the public key from the file.
 	 *
 	 * @return the public key
 	 * @throws IOException Signals that an I/O exception has occurred.
@@ -89,7 +102,7 @@ public class OldEncrypt {
 	}
 	
 	/**
-	 * Load public key.
+	 * Loads the PublicKey from the publicKey file.
 	 *
 	 * @return the public key
 	 * @throws InvalidKeySpecException the invalid key spec exception

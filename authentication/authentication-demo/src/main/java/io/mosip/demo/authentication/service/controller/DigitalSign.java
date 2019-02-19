@@ -1,4 +1,4 @@
-package io.mosip.demo.authentication.service.impl.indauth.controller;
+package io.mosip.demo.authentication.service.controller;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -32,7 +32,7 @@ import io.mosip.kernel.core.util.HMACUtils;
 // 
 /**
  * @author Sanjay Murali
- * The Class DigitalSign.
+ * The Class DigitalSign is used to digitally sign the request.
  */
 @RestController
 public class DigitalSign {
@@ -58,7 +58,6 @@ public class DigitalSign {
 	CertificateException, IOException, UnrecoverableEntryException, JoseException, InvalidKeySpecException {
 		FileInputStream pkeyfis = new FileInputStream("lib/Keystore/privkey1.pem");
 		String pKey = getFileContent(pkeyfis, "UTF-8");
-
 		FileInputStream certfis = new FileInputStream("lib/Keystore/cert1.pem");
 		String cert =  getFileContent(certfis, "UTF-8");
 		pKey = pKey.replaceAll("-----BEGIN (.*)-----\n", "");
