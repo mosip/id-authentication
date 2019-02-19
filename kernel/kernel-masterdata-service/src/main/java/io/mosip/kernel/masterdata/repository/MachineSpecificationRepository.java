@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +24,6 @@ public interface MachineSpecificationRepository extends BaseRepository<MachineSp
 	MachineSpecification findByIdAndLangCodeIsDeletedFalseorIsDeletedIsNull(String id, String langCode);
 	
 	@Query("FROM MachineSpecification m where m.id = ?1 and (m.isDeleted is null or m.isDeleted = false)")
-	MachineSpecification findByIdAndIsDeletedFalseorIsDeletedIsNull(String id);
+	List<MachineSpecification> findByIdAndIsDeletedFalseorIsDeletedIsNull(String id);
 
 }

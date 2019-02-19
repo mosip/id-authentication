@@ -120,9 +120,10 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	public IdResponseDto deleteMachineSpecification(String id) {
 		MachineSpecification delMachineSpecification = null;
 		try {
-			MachineSpecification renMachineSpecification = machineSpecificationRepository
+			List<MachineSpecification> renMachineSpecifications = machineSpecificationRepository
 					.findByIdAndIsDeletedFalseorIsDeletedIsNull(id);
-			if (renMachineSpecification != null) {
+			if (renMachineSpecifications != null && !renMachineSpecifications.isEmpty()) {
+				for(MachineSpecification renMachineSpecification : renMachineSpecifications ) {
 				List<Machine> renmachineList = machineRepository
 						.findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(renMachineSpecification.getId());
 				if (renmachineList.isEmpty()) {
@@ -133,7 +134,8 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 							MachineSpecificationErrorCode.MACHINE_DELETE_DEPENDENCY_EXCEPTION.getErrorCode(),
 							MachineSpecificationErrorCode.MACHINE_DELETE_DEPENDENCY_EXCEPTION.getErrorMessage());
 				}
-			} else {
+				}
+				} else {
 				throw new RequestException(
 						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
