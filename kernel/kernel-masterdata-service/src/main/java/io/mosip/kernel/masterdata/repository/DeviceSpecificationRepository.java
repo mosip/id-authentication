@@ -56,7 +56,7 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	 */
 
 	@Query("FROM DeviceSpecification d where d.id = ?1 and (d.isDeleted is null or d.isDeleted = false)")
-	DeviceSpecification findByIdAndIsDeletedFalseorIsDeletedIsNull(String id);
+	List<DeviceSpecification> findByIdAndIsDeletedFalseorIsDeletedIsNull(String id);
 
 	/**
 	 * This method trigger query to fetch the Device Specification detail for the

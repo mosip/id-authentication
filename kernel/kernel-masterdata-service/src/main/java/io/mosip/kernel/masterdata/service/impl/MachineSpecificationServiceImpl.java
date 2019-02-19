@@ -122,7 +122,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		try {
 			List<MachineSpecification> renMachineSpecifications = machineSpecificationRepository
 					.findByIdAndIsDeletedFalseorIsDeletedIsNull(id);
-			if (renMachineSpecifications != null && !renMachineSpecifications.isEmpty()) {
+			if (!renMachineSpecifications.isEmpty()) {
 				for(MachineSpecification renMachineSpecification : renMachineSpecifications ) {
 				List<Machine> renmachineList = machineRepository
 						.findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(renMachineSpecification.getId());
