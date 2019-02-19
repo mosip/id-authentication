@@ -1009,29 +1009,36 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	private void checkGender(AuthRequestDTO authRequest, Errors errors) {
 		List<IdentityInfoDTO> genderList = DemoMatchType.GENDER
 				.getIdentityInfoList(authRequest.getRequest().getIdentity());
-		Map<String, List<String>> fetchGenderType = null;
-		try {
-			fetchGenderType = masterDataManager.fetchGenderType();
-		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
-					"Master Data util failed to load - Gender Type");
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorCode(),
-					new Object[] { "gender" },
-					IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorMessage());
-		}
-		if (genderList != null && fetchGenderType != null) {
-			for (IdentityInfoDTO identityInfoDTO : genderList) {
-				String language = identityInfoDTO.getLanguage() != null ? identityInfoDTO.getLanguage() : env.getProperty(PRIMARY_LANG_CODE);				
-				List<String> genderTypeList = fetchGenderType.get(language);
-				if (null != genderTypeList && !genderTypeList.contains(identityInfoDTO.getValue())) {
-					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
-							"Demographic data – Gender(pi) did not match");
-					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							new Object[] { "gender" },
-							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-				}
-
+		if (genderList != null && !genderList.isEmpty()) {
+			Map<String, List<String>> fetchGenderType = null;
+			try {
+				fetchGenderType = masterDataManager.fetchGenderType();
+			} catch (IdAuthenticationBusinessException e) {
+				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
+						"Master Data util failed to load - Gender Type");
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorCode(),
+						new Object[] { "gender" }, IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorMessage());
 			}
+			if (null != fetchGenderType) {
+				checkGender(errors, genderList, fetchGenderType); 
+			}
+		}
+	}
+
+	private void checkGender(Errors errors, List<IdentityInfoDTO> genderList, Map<String, List<String>> fetchGenderType) {
+		for (IdentityInfoDTO identityInfoDTO : genderList) {
+			String language = identityInfoDTO.getLanguage() != null ? identityInfoDTO.getLanguage()
+					: env.getProperty(PRIMARY_LANG_CODE);
+			List<String> genderTypeList = fetchGenderType.get(language);
+			if (null != genderTypeList && !genderTypeList.contains(identityInfoDTO.getValue())) {
+				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
+						"Demographic data – Gender(pi) did not match");
+				errors.rejectValue(REQUEST,
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						new Object[] { "gender" },
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+			}
+
 		}
 	}
 
