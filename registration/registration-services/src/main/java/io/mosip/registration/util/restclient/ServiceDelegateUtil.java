@@ -14,7 +14,6 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -44,7 +43,6 @@ import io.mosip.registration.exception.RegistrationExceptionConstants;
  *
  */
 @Component("serviceDelegateUtil")
-@PropertySource(value = "classpath:spring.properties")
 public class ServiceDelegateUtil {
 
 	@Autowired
