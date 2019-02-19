@@ -30,12 +30,12 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.google.common.collect.Lists;
 
+import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.spi.IdRepoService;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.dto.IdResponseDTO;
-import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.validator.IdRequestValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 
@@ -54,7 +54,7 @@ public class IdRepoControllerTest {
 	private Map<String, String> id;
 
 	@Mock
-	private IdRepoService<IdRequestDTO, IdResponseDTO, Uin> idRepoService;
+	private IdRepoService<IdRequestDTO, IdResponseDTO> idRepoService;
 
 	@Mock
 	private IdRequestValidator validator;
@@ -79,6 +79,18 @@ public class IdRepoControllerTest {
 		IdResponseDTO response = new IdResponseDTO();
 		IdRequestDTO request = new IdRequestDTO();
 		when(idRepoService.addIdentity(any(), any())).thenReturn(response);
+		ResponseEntity<IdResponseDTO> responseEntity = controller.addIdentity("1234", request,
+				new BeanPropertyBindingResult(request, "IdRequestDTO"));
+		assertEquals(response, responseEntity.getBody());
+		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+	}
+	
+	@Test(expected = IdRepoAppException.class)
+	public void testAddIdentityFailed() throws IdRepoAppException {
+		IdResponseDTO response = new IdResponseDTO();
+		IdRequestDTO request = new IdRequestDTO();
+		when(idRepoService.addIdentity(any(), any()))
+				.thenThrow(new IdRepoAppException(IdRepoErrorConstants.UNKNOWN_ERROR));
 		ResponseEntity<IdResponseDTO> responseEntity = controller.addIdentity("1234", request,
 				new BeanPropertyBindingResult(request, "IdRequestDTO"));
 		assertEquals(response, responseEntity.getBody());
@@ -247,6 +259,18 @@ public class IdRepoControllerTest {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "IdRequestDTO");
 		errors.reject("");
 		controller.updateIdentity("1234", request, errors);
+	}
+	
+	@Test(expected = IdRepoAppException.class)
+	public void testUpdateIdentityFailed() throws IdRepoAppException {
+		IdResponseDTO response = new IdResponseDTO();
+		IdRequestDTO request = new IdRequestDTO();
+		when(idRepoService.updateIdentity(any(), any()))
+				.thenThrow(new IdRepoAppException(IdRepoErrorConstants.UNKNOWN_ERROR));
+		ResponseEntity<IdResponseDTO> responseEntity = controller.updateIdentity("1234", request,
+				new BeanPropertyBindingResult(request, "IdRequestDTO"));
+		assertEquals(response, responseEntity.getBody());
+		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
 	}
 
 	public Map<String, String> getId() {

@@ -171,7 +171,6 @@ public class KeymanagerIntegrationTest {
 		MvcResult result = mockMvc.perform(get("/v1.0/publickey/1?timeStamp=2010-05-01T10:00:00.000Z"))
 				.andExpect(status().is(200)).andReturn();
 
-		//System.out.println(result.getResponse().getContentAsString());
 	}
 
 	@Test
