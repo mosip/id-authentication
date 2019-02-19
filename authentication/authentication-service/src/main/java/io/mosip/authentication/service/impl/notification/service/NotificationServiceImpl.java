@@ -38,7 +38,6 @@ import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
-import io.mosip.authentication.service.impl.otpgen.facade.OTPFacadeImpl;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.kernel.core.exception.BaseCheckedException;
@@ -111,7 +110,7 @@ public class NotificationServiceImpl implements NotificationService {
 	private NotificationManager notificationManager;
 
 	/** The mosip logger. */
-	private static Logger mosipLogger = IdaLogger.getLogger(OTPFacadeImpl.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(NotificationServiceImpl.class);
 
 	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String uin, AuthResponseDTO authResponseDTO,
 			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
