@@ -112,7 +112,7 @@
 		<kernel.templatemanager.velocity.version>0.8.7</kernel.templatemanager.velocity.version>
 		<kernel.emailnotification.service.version>0.8.7</kernel.emailnotification.service.version>
 		<kernel.smsnotification.service.version>0.8.7</kernel.smsnotification.service.version>
-		<kernel.idvalidator.version>0.8.7</kernel.idvalidator.version>
+		<kernel.idvalidator.version>0.8.8</kernel.idvalidator.version>
 		<kernel.clamav.version>0.8.0</kernel.clamav.version>
 		
 		<sonar.coverage.exclusions>**/dto/**,
