@@ -25,10 +25,10 @@ public class RidValidatorImpl implements RidValidator<String> {
 	@Value("${mosip.kernel.rid.length:-1}")
 	private int ridLength;
 
-	@Value("${mosip.kernel.rid.centerid-length:-1}")
+	@Value("${mosip.kernel.registrationcenterid.length:-1}")
 	private int centerIdLength;
 
-	@Value("${mosip.kernel.rid.machineid-length:-1}")
+	@Value("${mosip.kernel.machineid.length:-1}")
 	private int machineIdLength;
 
 	@Value("${mosip.kernel.rid.timestamp-length:-1}")
