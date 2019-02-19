@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -15,10 +16,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -28,10 +31,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.idrepo.controller.IdRepoController;
-import io.mosip.kernel.idrepo.filter.CharResponseWrapper;
-import io.mosip.kernel.idrepo.filter.IdRepoFilter;
-import io.mosip.kernel.idrepo.filter.ResettableStreamHttpServletRequest;
 
 /**
  * @author Manoj SP
@@ -40,15 +42,23 @@ import io.mosip.kernel.idrepo.filter.ResettableStreamHttpServletRequest;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@Import(IdRepoFilter.class)
+//@Import(IdRepoFilter.class)
 @ActiveProfiles("test")
+@ConfigurationProperties("mosip.kernel.idrepo")
 public class IdRepoFilterTest {
 
 	@Autowired
 	MockMvc mockMvc;
 
-	@Autowired
+	@InjectMocks
 	IdRepoFilter filter;
+	
+	@Autowired
+	private ObjectMapper mapper;
+	
+	/** The env. */
+	@Autowired
+	private Environment env;
 	
 	@Mock
 	HttpServletResponse response;
@@ -58,17 +68,30 @@ public class IdRepoFilterTest {
 	
 	@Mock
 	InputStream inputStream;
+	
+	private Map<String, String> id;
+	
+	public Map<String, String> getId() {
+		return id;
+	}
 
+	public void setId(Map<String, String> id) {
+		this.id = id;
+	}
+	
 	@Before
 	public void setup() {
+		ReflectionTestUtils.setField(filter, "mapper", mapper);
+		ReflectionTestUtils.setField(filter, "env", env);
+		ReflectionTestUtils.setField(filter, "id", id);
 		mockMvc = MockMvcBuilders.standaloneSetup(IdRepoController.class).addFilters(filter).build();
 	}
 
 	@Test
-	public void test() throws Exception {
-		mockMvc.perform(get("/v1.0/identity").param("uin", "1234")).andExpect(status().is4xxClientError());
+	public void testWithPathVariable() throws Exception {
+		mockMvc.perform(get("/v1.0/identity").param("uin", "1234")).andExpect(status().isOk());
 	}
-
+	
 	@Test
 	public void testCharResponseWrapper() throws IOException {
 		CharResponseWrapper responseWrapper = new CharResponseWrapper(response);

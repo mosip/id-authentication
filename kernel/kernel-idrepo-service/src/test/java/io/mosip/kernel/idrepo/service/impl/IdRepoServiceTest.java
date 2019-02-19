@@ -9,7 +9,6 @@ import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -59,7 +58,6 @@ import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
 import io.mosip.kernel.core.idrepo.exception.RestServiceException;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.idrepo.builder.RestRequestBuilder;
 import io.mosip.kernel.idrepo.dfsadapter.impl.AmazonS3DFSProvider;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
