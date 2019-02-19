@@ -12,9 +12,10 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
+import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -74,8 +75,8 @@ public class Validations extends BaseController {
 			validationBundle = ApplicationContext.applicationLanguageValidationBundle();
 			messageBundle = ApplicationContext.applicationMessagesBundle();
 			labelBundle = ApplicationContext.applicationLanguageBundle();
-		} catch (RuntimeException exception) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -156,8 +157,8 @@ public class Validations extends BaseController {
 				return true;
 			generateAlert(messageBundle.getString(id), isConsolidated, validationMessage);
 			node.requestFocus();
-		} catch (RuntimeException exception) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage()+ ExceptionUtils.getStackTrace(runtimeException));
 			return false;
 		}
 		return false;
@@ -232,9 +233,8 @@ public class Validations extends BaseController {
 						isConsolidated, validationMessage);
 			node.requestFocus();
 			return false;
-		} catch (RuntimeException exception) {
-			exception.printStackTrace();
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			return false;
 		}
 	}
@@ -251,8 +251,8 @@ public class Validations extends BaseController {
 				node.requestFocus();
 				return false;
 			}
-		} catch (RuntimeException exception) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage()+ ExceptionUtils.getStackTrace(runtimeException));
 			return false;
 		}
 		return true;
@@ -272,22 +272,24 @@ public class Validations extends BaseController {
 				node.requestFocus();
 				return false;
 			}
-		} catch (RuntimeException exception) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage()+ ExceptionUtils.getStackTrace(runtimeException));
 			return false;
 		}
 		return true;
 	}
 
-	public boolean validateUinOrRid(TextField field, boolean isChild, IdValidator<String> uinValidator,
+	public boolean validateUinOrRid(TextField field, boolean isChild, UinValidator<String> uinValidator,
 			RidValidator<String> ridValidator) {
 		if (!isChild)
 			return true;
-		if (field.getText().length() <= Integer.parseInt(AppConfig.getApplicationProperty("uin_length"))) {
+		if (field.getText().length() <= Integer.parseInt((String)ApplicationContext.map().get(RegistrationConstants.UIN_LENGTH))) {
 			try {
 				uinValidator.validateId(field.getText());
 			} catch (InvalidIDException invalidUinException) {
 				generateAlert(RegistrationConstants.ERROR, invalidUinException.getErrorText());
+				LOGGER.error("UIN VALIDATOIN FAILED", APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, invalidUinException.getMessage()+ ExceptionUtils.getStackTrace(invalidUinException));
 				field.requestFocus();
 				return false;
 			}
@@ -296,6 +298,8 @@ public class Validations extends BaseController {
 				ridValidator.validateId(field.getText());
 			} catch (InvalidIDException invalidRidException) {
 				generateAlert(RegistrationConstants.ERROR, invalidRidException.getErrorText());
+				LOGGER.error("RID VALIDATOIN FAILED", APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, invalidRidException.getMessage() + ExceptionUtils.getStackTrace(invalidRidException));
 				field.requestFocus();
 				return false;
 			}

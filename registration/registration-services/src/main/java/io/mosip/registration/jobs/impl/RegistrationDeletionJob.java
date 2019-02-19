@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
@@ -44,9 +45,8 @@ public class RegistrationDeletionJob extends BaseJob {
 	@Async
 	@Override
 	public void executeInternal(JobExecutionContext context) {
-		LOGGER.info(LoggerConstants.REGISTRATION_DELETION_JOB_LOGGER_TITLE,
-				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-				"job execute internal started");
+		LOGGER.info(LoggerConstants.REGISTRATION_DELETION_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "job execute internal started");
 		this.responseDTO = new ResponseDTO();
 
 		try {
@@ -64,15 +64,14 @@ public class RegistrationDeletionJob extends BaseJob {
 			syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		} catch (RegBaseUncheckedException baseUncheckedException) {
-			LOGGER.error(LoggerConstants.REGISTRATION_DELETION_JOB_LOGGER_TITLE,
-					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					baseUncheckedException.getMessage());
+			LOGGER.error(LoggerConstants.REGISTRATION_DELETION_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					baseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(baseUncheckedException));
 			throw baseUncheckedException;
 		}
 
-		LOGGER.info(LoggerConstants.REGISTRATION_DELETION_JOB_LOGGER_TITLE,
-				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-				"job execute internal Ended");
+		LOGGER.info(LoggerConstants.REGISTRATION_DELETION_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "job execute internal Ended");
 
 	}
 
@@ -85,15 +84,15 @@ public class RegistrationDeletionJob extends BaseJob {
 	@Override
 	public ResponseDTO executeJob(String triggerPoint, String jobId) {
 
-		LOGGER.info(LoggerConstants.REGISTRATION_DELETION_JOB_LOGGER_TITLE,
-				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID, "execute Job started");
+		LOGGER.info(LoggerConstants.REGISTRATION_DELETION_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "execute Job started");
 
 		this.responseDTO = packetStatusService.deleteRegistrationPackets();
 
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
-		LOGGER.info(LoggerConstants.REGISTRATION_DELETION_JOB_LOGGER_TITLE,
-				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID, "execute job ended");
+		LOGGER.info(LoggerConstants.REGISTRATION_DELETION_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "execute job ended");
 
 		return responseDTO;
 

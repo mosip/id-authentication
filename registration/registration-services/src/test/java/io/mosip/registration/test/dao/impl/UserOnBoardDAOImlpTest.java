@@ -14,7 +14,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -92,9 +91,9 @@ public class UserOnBoardDAOImlpTest {
 		List<FingerprintDetailsDTO> listOfFingerSegmets = new ArrayList<>();
 		
 		
-		File file = new File(URLDecoder.decode(ClassLoader.getSystemResource("ISOTemplate.iso").getFile(), "UTF-8"));
+		File file = new File(
+				URLDecoder.decode(ClassLoader.getSystemResource("ISOTemplate.iso").getFile(), "UTF-8"));
 		byte[] data = FileUtils.readFileToByteArray(file);
-		
 
 		FingerprintDetailsDTO fingerDto = new FingerprintDetailsDTO();
 		fingerDto.setFingerPrint(data);

@@ -67,7 +67,7 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 			auditFactory.audit(AuditEvent.PACKET_RETRIVE, Components.PACKET_RETRIVE,
 					"Packets which are in given state are retrived", "refId", "refIdType");
 			details.forEach(detail -> list.add(new RegistrationApprovalDTO(detail.getId(), detail.getAckFilename(),
-					detail.getClientStatusComments())));
+					RegistrationConstants.PENDING)));
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_RETRIVE_STATUS,
 					runtimeException.toString());
