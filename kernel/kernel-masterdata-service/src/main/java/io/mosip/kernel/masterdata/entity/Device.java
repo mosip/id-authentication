@@ -46,26 +46,12 @@ public class Device extends BaseEntity implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -5585825705521742941L;
-	
+
 	@Id
-	@AttributeOverrides({
-			@AttributeOverride(name="id", column = @Column(name="id", nullable = false, length = 36)),
-			@AttributeOverride(name="langCode", column = @Column(name="lang_code", nullable = false, length = 3)) })
+	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 	private String id;
 	private String langCode;
-
-	/**
-	 * Field for device ID
-	 *//*
-	@Id
-	@Column(name = "id", unique = true, nullable = false, length = 36)
-	private String id;
-	
-	*//**
-	 * Field for language code
-	 *//*
-	@Column(name = "lang_code", nullable = false, length = 3)
-	private String langCode;*/
 
 	/**
 	 * Field for device name
@@ -97,14 +83,12 @@ public class Device extends BaseEntity implements Serializable {
 	@Column(name = "dspec_id", nullable = false, length = 36)
 	private String deviceSpecId;
 
-
 	@Column(name = "validity_end_dtimes")
 	private LocalDateTime validityDateTime;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumns({ 
-		@JoinColumn(name = "dspec_id", referencedColumnName = "id", insertable = false, updatable = false), 
-		@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false)})
+	@JoinColumns({ @JoinColumn(name = "dspec_id", referencedColumnName = "id", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	private DeviceSpecification deviceSpecification;
 
 }

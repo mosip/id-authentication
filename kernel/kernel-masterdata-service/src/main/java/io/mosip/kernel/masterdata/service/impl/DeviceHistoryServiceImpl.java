@@ -72,16 +72,19 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
 		deviceHistoryResponseDto.setDeviceHistoryDetails(deviceHistoryDtoList);
 		return deviceHistoryResponseDto;
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.DeviceHistoryService#createDeviceHistory(io.mosip.kernel.masterdata.entity.DeviceHistory)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.DeviceHistoryService#createDeviceHistory(
+	 * io.mosip.kernel.masterdata.entity.DeviceHistory)
 	 */
 	@Override
-	@Transactional(propagation=Propagation.MANDATORY)
+	@Transactional(propagation = Propagation.MANDATORY)
 	public IdResponseDto createDeviceHistory(DeviceHistory entityHistory) {
 		DeviceHistory createdHistory;
-			createdHistory = deviceHistoryRepository.create(entityHistory);
+		createdHistory = deviceHistoryRepository.create(entityHistory);
 
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(createdHistory, idResponseDto);

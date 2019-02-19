@@ -41,20 +41,12 @@ public class DeviceSpecification extends BaseEntity implements Serializable {
 	* 
 	*/
 	private static final long serialVersionUID = 1L;
-	
-	@Id
-	@AttributeOverrides({
-			@AttributeOverride(name="id", column = @Column(name="id", nullable = false, length = 36)),
-			@AttributeOverride(name="langCode", column = @Column(name="lang_code", nullable = false, length = 3)) })
-	private String id;
-	private String langCode;
-	
-	/*@Column(name = "lang_code", nullable = false, length = 3)
-	private String langCode;
 
 	@Id
-	@Column(name = "id", nullable = false, length = 36)
-	private String id;*/
+	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
+	private String id;
+	private String langCode;
 
 	@Column(name = "name", nullable = false, length = 64)
 	private String name;
@@ -73,8 +65,6 @@ public class DeviceSpecification extends BaseEntity implements Serializable {
 
 	@Column(name = "descr", length = 256)
 	private String description;
-
-	
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({

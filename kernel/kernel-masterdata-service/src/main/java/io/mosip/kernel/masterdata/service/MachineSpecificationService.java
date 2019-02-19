@@ -28,7 +28,7 @@ public interface MachineSpecificationService {
 	 *             if any error occurred while saving Machine Specification
 	 */
 	public IdAndLanguageCodeID createMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification);
-	
+
 	/**
 	 * Abstract method to update Machine Specification Details to the Database
 	 * 
@@ -37,7 +37,7 @@ public interface MachineSpecificationService {
 	 * 
 	 * @return IdResponseDto Machine Specification ID which is successfully updated
 	 *         {@link IdResponseDto}
-	 *         
+	 * 
 	 * @throws RequestException
 	 *             if Machine Specification not Found
 	 * @throws MasterDataServiceException
@@ -45,6 +45,7 @@ public interface MachineSpecificationService {
 	 *
 	 */
 	public IdAndLanguageCodeID updateMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification);
+
 	/**
 	 * Abstract method to delete Machine Specification Details to the Database
 	 * 
@@ -53,12 +54,12 @@ public interface MachineSpecificationService {
 	 * 
 	 * @return IdResponseDto Machine Specification ID which is successfully deleted
 	 *         {@link IdResponseDto}
-	 *         
+	 * 
 	 * @throws RequestException
 	 *             if Machine Specification not Found
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while deleting Machine Specification
-	 *  
+	 * 
 	 */
 	public IdResponseDto deleteMachineSpecification(String id);
 

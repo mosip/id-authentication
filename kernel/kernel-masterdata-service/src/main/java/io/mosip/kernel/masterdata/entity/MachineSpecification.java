@@ -40,26 +40,12 @@ public class MachineSpecification extends BaseEntity implements Serializable {
 	* 
 	*/
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-	@AttributeOverrides({
-			@AttributeOverride(name="id", column = @Column(name="id", nullable = false, length = 36)),
-			@AttributeOverride(name="langCode", column = @Column(name="lang_code", nullable = false, length = 3)) })
+	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 	private String id;
 	private String langCode;
-
-	/**
-	 * Field for machine Specification id
-	 *//*
-	@Id
-	@Column(name = "id", nullable = false, length = 36)
-	private String id;
-	
-	*//**
-	 * Field for machine Specification langCode
-	 *//*
-	@Column(name = "lang_code", nullable = false, length = 3)
-	private String langCode;*/
 
 	/**
 	 * Field for machine Specification name
@@ -96,7 +82,6 @@ public class MachineSpecification extends BaseEntity implements Serializable {
 	 */
 	@Column(name = "descr", length = 256)
 	private String description;
-
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
