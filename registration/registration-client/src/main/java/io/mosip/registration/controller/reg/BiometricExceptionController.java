@@ -13,6 +13,7 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -120,6 +121,7 @@ public class BiometricExceptionController extends BaseController implements Init
 	private List<String> fingerList = new ArrayList<>();
 	private List<String> irisList = new ArrayList<>();
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		setExceptionImage();
@@ -182,7 +184,7 @@ public class BiometricExceptionController extends BaseController implements Init
 	 */
 	private void fingerExceptionListener(Label fingerLabel) {
 
-		LOGGER.debug("REGISTRATION - FINGER_LABEL_LISTENER - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - FINGER_LABEL_LISTENER - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
 				APPLICATION_ID, "It will listen the finger click funtionality");
 
 		SimpleBooleanProperty toggleFunctionForFinger = new SimpleBooleanProperty(false);
@@ -231,7 +233,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			toggleFunctionForFinger.set(!toggleFunctionForFinger.get());
 		});
 
-		LOGGER.debug("REGISTRATION - FINGER_LABEL_LISTENER_END - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - FINGER_LABEL_LISTENER_END - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
 				APPLICATION_ID, "End of Functionality");
 
 	}
@@ -453,7 +455,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			getScene(mainBox).setRoot(mainBox);
 		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage());
+					exception.getMessage()+ExceptionUtils.getStackTrace(exception));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
 		}
 	}

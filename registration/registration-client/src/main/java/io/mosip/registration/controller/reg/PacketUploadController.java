@@ -13,6 +13,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
@@ -23,7 +24,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.SyncRegistrationDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -101,6 +101,8 @@ public class PacketUploadController extends BaseController {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NETWORK_ERROR);
 			}
 		} catch (RegBaseCheckedException checkedException) {
+			LOGGER.info("REGISTRATION - UPLOAD_ERROR - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+					checkedException.getMessage() + ExceptionUtils.getStackTrace(checkedException));
 			generateAlert(RegistrationConstants.ERROR, checkedException.getErrorText());
 		}
 
@@ -170,26 +172,6 @@ public class PacketUploadController extends BaseController {
 			}
 		}
 		return syncErrorStatus;
-	}
-
-	/**
-	 * To populate the data for the UI table
-	 * 
-	 * @param verifiedPackets
-	 * @return
-	 */
-	private List<PacketStatusDTO> populateTableData(Map<String, String> packetStatus) {
-		LOGGER.info("REGISTRATION - POPULATE_UI_TABLE_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
-				APPLICATION_ID, "Populating the table data with the Updated details");
-		List<PacketStatusDTO> listUploadStatus = new ArrayList<>();
-		packetStatus.forEach((id, status) -> {
-			PacketStatusDTO packetUploadStatusDTO = new PacketStatusDTO();
-			packetUploadStatusDTO.setUploadStatus(status);
-			packetUploadStatusDTO.setFileName(id);
-			listUploadStatus.add(packetUploadStatusDTO);
-
-		});
-		return listUploadStatus;
 	}
 
 	/**
@@ -271,14 +253,16 @@ public class PacketUploadController extends BaseController {
 									addToDisplay(synchedPacket.getId(), "Error(Packet not available)");
 								}
 
-							} catch (URISyntaxException e) {
+							} catch (URISyntaxException uriSyntaxException) {
 
 								LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_URI_ERROR - PACKET_UPLOAD_CONTROLLER",
-										APPLICATION_NAME, APPLICATION_ID, "Error in uri syntax");
+										APPLICATION_NAME, APPLICATION_ID,
+										"Error in uri syntax" + ExceptionUtils.getStackTrace(uriSyntaxException));
 								status = "Error-Unable to push packets to the server.";
-							} catch (RegBaseCheckedException e) {
+							} catch (RegBaseCheckedException regBaseCheckedException) {
 								LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_ERROR - PACKET_UPLOAD_CONTROLLER",
-										APPLICATION_NAME, APPLICATION_ID, "Error while pushing packets to the server");
+										APPLICATION_NAME, APPLICATION_ID, "Error while pushing packets to the server"
+												+ ExceptionUtils.getStackTrace(regBaseCheckedException));
 
 								synchedPacket.setFileUploadStatus(
 										RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
@@ -286,11 +270,12 @@ public class PacketUploadController extends BaseController {
 								packetUploadList.add(synchedPacket);
 								synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
 
-							} catch (RuntimeException e) {
+							} catch (RuntimeException runtimeException) {
 								LOGGER.error(
 										"REGISTRATION - HANDLE_PACKET_UPLOAD_RUNTIME_ERROR - PACKET_UPLOAD_CONTROLLER",
 										APPLICATION_NAME, APPLICATION_ID,
-										"Run time error while connecting to the server");
+										"Run time error while connecting to the server"
+												+ ExceptionUtils.getStackTrace(runtimeException));
 								if (i == 0) {
 									status = "Error-Unable to push packets to the server.";
 								} else if (i > 0) {
@@ -345,8 +330,9 @@ public class PacketUploadController extends BaseController {
 				uploadIds.getChildren().add(paneToDisplay);
 			});
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			LOGGER.error("REGISTRATION - UPLOADED_PACKET_DISPLAY - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 		}
 
 	}

@@ -14,6 +14,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
@@ -72,8 +73,8 @@ public class PacketExportController extends BaseController {
 							exportedPackets.add(packetToCopy);
 						} catch (IOException ioException) {
 							LOGGER.error("REGISTRATION - HANDLE_PACKET_EXPORT_ERROR - PACKET_EXPORT_CONTROLLER",
-									APPLICATION_NAME, APPLICATION_ID,
-									"Error while exporting packets. packet id : " + packetToCopy.getId());
+									APPLICATION_NAME, APPLICATION_ID, "Error while exporting packets. packet id : "
+											+ packetToCopy.getId() + ExceptionUtils.getStackTrace(ioException));
 						}
 					} else {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PACKET_EXPORT_FAILURE);
