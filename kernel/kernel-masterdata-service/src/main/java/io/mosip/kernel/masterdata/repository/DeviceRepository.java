@@ -69,5 +69,17 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 
 	@Query("FROM Device d where d.deviceSpecId = ?1 and (d.isDeleted is null or d.isDeleted = false)")
 	List<Device> findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(String deviceSpecId);
+	
+	/**
+	 * This method trigger query to fetch the Device detail for the given id and language code.
+	 * 
+	 * @param id
+	 *            the id of device
+	 * @param langCode
+	 *            language code from user
+	 * @return the device detail
+	 */
+	@Query("FROM Device d where d.id = ?1 and d.langCode = ?2 AND (d.isDeleted is null or d.isDeleted = false)")
+	Device findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String id, String langCode);
 
 }

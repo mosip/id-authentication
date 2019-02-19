@@ -67,8 +67,6 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
-		/*IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.map(renMachineSpecification, idResponseDto);*/
 		
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		MapperUtils.map(renMachineSpecification, idAndLanguageCodeID);
@@ -105,8 +103,6 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
-		/*IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.map(updMachineSpecification, idResponseDto);*/
 		
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		MapperUtils.map(updMachineSpecification, idAndLanguageCodeID);

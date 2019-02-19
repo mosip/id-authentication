@@ -43,27 +43,12 @@ public class Machine extends BaseEntity implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -5585825705521742941L;
-	
-	@Id
-	@AttributeOverrides({
-			@AttributeOverride(name="id", column = @Column(name="id", nullable = false, length = 10)),
-			@AttributeOverride(name="langCode", column = @Column(name="lang_code", nullable = false, length = 3)) })
-	private String id;
-	//@Column(name= "lang_code", nullable = false, length = 3)
-	private String langCode;
 
-	/**
-	 * Field for machine ID
-	 *//*
 	@Id
-	@Column(name = "id", unique = true, nullable = false, length = 10)
+	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 10)),
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 	private String id;
-	
-	*//**
-	 * Field for language code
-	 *//*
-	@Column(name = "lang_code", nullable = false, length = 3)
-	private String langCode;*/
+	private String langCode;
 
 	/**
 	 * Field for machine name
@@ -94,8 +79,6 @@ public class Machine extends BaseEntity implements Serializable {
 	@Column(name = "mspec_id", nullable = false, length = 36)
 	private String machineSpecId;
 
-	
-
 	/**
 	 * Field for validity end Date and Time for machine
 	 */
@@ -103,19 +86,23 @@ public class Machine extends BaseEntity implements Serializable {
 	private LocalDateTime validityDateTime;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumns({ 
-		@JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false),
-		@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	@JoinColumns({ @JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	private MachineSpecification machineSpecification;
-	
-	
-/*    //@OneToMany(mappedBy="machineId",fetch = FetchType.LAZY)
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumns ({
-        @JoinColumn(name="id", referencedColumnName = "machine_id"),
-        @JoinColumn(name="lang_code", referencedColumnName = "lang_code"),
-   
-    })
-	private List<RegistrationCenterUserMachine> registrationCenterUserMachines;*/
+
+	/*
+	 * //@OneToMany(mappedBy="machineId",fetch = FetchType.LAZY)
+	 * 
+	 * @OneToMany(fetch = FetchType.LAZY)
+	 * 
+	 * @JoinColumns ({
+	 * 
+	 * @JoinColumn(name="id", referencedColumnName = "machine_id"),
+	 * 
+	 * @JoinColumn(name="lang_code", referencedColumnName = "lang_code"),
+	 * 
+	 * }) private List<RegistrationCenterUserMachine>
+	 * registrationCenterUserMachines;
+	 */
 
 }

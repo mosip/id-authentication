@@ -37,9 +37,9 @@ public class MachineHistory extends BaseEntity implements Serializable {
 	 * 
 	 */
 	@Id
-	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
+	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 10)),
 			@AttributeOverride(name = "effectDateTime", column = @Column(name = "eff_dtimes", nullable = false)),
-			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length=3))})
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 	private String id;
 	private LocalDateTime effectDateTime;
 	private String langCode;
@@ -78,11 +78,6 @@ public class MachineHistory extends BaseEntity implements Serializable {
 	@Column(name = "mspec_id", nullable = false, length = 36)
 	private String machineSpecId;
 
-/*	*//**
-	 * Field for language code
-	 *//*
-	@Column(name = "lang_code", nullable = false, length = 3)
-	private String langCode;*/
 	/**
 	 * Field to hold effected date and time
 	 */
