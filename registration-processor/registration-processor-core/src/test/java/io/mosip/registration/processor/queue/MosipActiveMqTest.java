@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.queue;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.io.Serializable;
@@ -31,7 +30,6 @@ import javax.jms.Topic;
 import javax.jms.TopicSubscriber;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -40,11 +38,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.registration.processor.core.queue.factory.MosipActiveMq;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
-import io.mosip.registration.processor.core.queue.factory.MosipQueueConnectionFactoryImpl;
 import io.mosip.registration.processor.core.queue.impl.MosipActiveMqImpl;
 import io.mosip.registration.processor.core.queue.impl.exception.ConnectionUnavailableException;
 import io.mosip.registration.processor.core.queue.impl.exception.InvalidConnectionException;
-import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 
 @RunWith(SpringRunner.class)
 public class MosipActiveMqTest {
@@ -62,7 +58,6 @@ public class MosipActiveMqTest {
 	
 	@Test
 	public void testSendSuccess() throws JMSException {
-
 		mosipQueue = new MosipActiveMq("admin", "admin","vm://localhost?broker.persistent=false");
 		byte[] bytes = "message".getBytes();
 		when(mosipActiveMq.getActiveMQConnectionFactory()).thenReturn(factory);
@@ -82,15 +77,6 @@ public class MosipActiveMqTest {
 		mosipActiveMqImpl.send(mosipQueue, bytes, "address");
 	}
 	
-//	@Test
-//	public void testConsumeSuccess() throws JMSException {
-//
-//		mosipQueue = new MosipActiveMq("admin", "admin","vm://localhost?broker.persistent=false");
-//		when(mosipActiveMq.getActiveMQConnectionFactory()).thenReturn(factory);
-//		byte[] bytes= mosipActiveMqImpl.consume(mosipQueue, "address");
-//		assertNotNull(bytes);
-//	}
-	
 	@Test(expected = ConnectionUnavailableException.class)
 	public void testConsumeFailure() throws JMSException {
 
@@ -105,7 +91,7 @@ public class MosipActiveMqTest {
 	}
 	
 	@Test(expected = InvalidConnectionException.class)
-	public void invalidConnectionExceptionTest() {
+	public void invalidConnectionSendExceptionTest() {
 		mosipQueue = new MosipActiveMq("admin", "admin","vm://localhost?broker.persistent=false") {
 			@Override
 			public ActiveMQConnectionFactory getActiveMQConnectionFactory() {
@@ -114,21 +100,29 @@ public class MosipActiveMqTest {
 		};
 		byte[] bytes = "message".getBytes();
 		when(mosipActiveMq.getActiveMQConnectionFactory()).thenReturn(factory);
-		mosipActiveMqImpl.send(mosipQueue, bytes, "address");
+		assertTrue(mosipActiveMqImpl.send(mosipQueue, bytes, "address"));
 	}
-//	@Test(expected = ConnectionUnavailableException.class)
-//	public void testSetupFailure() {
-//		mosipQueue = new MosipActiveMq("admin", "admin","vm://localhost?broker.persistent=false") {
-//			@Override
-//			public ActiveMQConnectionFactory getActiveMQConnectionFactory(){
-//				return getFailureActiveMQConnectionFactory();
-//			}
-//		};
-//		byte[] bytes = "message".getBytes();
-//		when(mosipActiveMq.getActiveMQConnectionFactory()).thenReturn(factory);
-//		mosipActiveMqImpl.send(mosipQueue, bytes, "address");
-//	}
 	
+	@Test(expected = InvalidConnectionException.class)
+	public void invalidConnectionConsumeExceptionTest() {
+		mosipQueue = new MosipActiveMq("admin", "admin","vm://localhost?broker.persistent=false") {
+			@Override
+			public ActiveMQConnectionFactory getActiveMQConnectionFactory() {
+				return null;
+			}
+		};
+		when(mosipActiveMq.getActiveMQConnectionFactory()).thenReturn(factory);
+		assertNotNull(mosipActiveMqImpl.consume(mosipQueue,"address"));
+	}
+	
+	@Test
+	public void testConsumeSuccess() {
+		mosipQueue = new MosipActiveMq("admin", "admin","vm://localhost?broker.persistent=false");
+		byte[] bytes = "message".getBytes();
+		when(mosipActiveMq.getActiveMQConnectionFactory()).thenReturn(factory);
+		mosipActiveMqImpl.send(mosipQueue, bytes, "address");
+		assertNotNull(mosipActiveMqImpl.consume(mosipQueue, "address"));
+	}
 	
 	private Session getSession() {
 		
@@ -388,7 +382,7 @@ public class MosipActiveMqTest {
 			
 		};
 	}
-	
+
 	private ActiveMQConnectionFactory getCustomActiveMQConnectionFactory() {
 		return new ActiveMQConnectionFactory() {
 			@Override
@@ -398,17 +392,4 @@ public class MosipActiveMqTest {
 		};
 	};
 
-	private ActiveMQConnectionFactory getFailureActiveMQConnectionFactory() {
-		return new ActiveMQConnectionFactory() {
-			@Override
-			public Connection createConnection() {
-				try {
-					throw new JMSException(null);
-				} catch (JMSException e) {
-					e.printStackTrace();
-				}
-				return null;
-			}
-		};
-	}
 }
