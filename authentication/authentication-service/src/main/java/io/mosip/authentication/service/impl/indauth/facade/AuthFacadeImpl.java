@@ -275,7 +275,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
 
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "BioMetric Authentication status :" + statusInfo);
-				saveAndAuditBioAuthTxn(authRequestDTO, isAuth, uin, idType, isStatus, staticTokenId);
+				saveAndAuditBioAuthTxn(authRequestDTO, isAuth, authRequestDTO.getIdvId(), idType, isStatus, staticTokenId);
 
 			}
 		}
@@ -346,7 +346,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			} finally {
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "OTP Authentication status : " + statusInfo);
-				auditHelper.audit(AuditModules.OTP_AUTH, getAuditEvent(isAuth), idvIdType, idType,
+				auditHelper.audit(AuditModules.OTP_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
 						AuditModules.OTP_AUTH.getDesc());
 
 				AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, RequestType.OTP_AUTH, staticTokenId, isStatus);
