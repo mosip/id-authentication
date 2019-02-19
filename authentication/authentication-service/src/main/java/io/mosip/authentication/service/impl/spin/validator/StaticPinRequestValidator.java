@@ -104,9 +104,9 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 		String uin = staticPinRequestDTO.getRequest().getIdentity().getUin();
 		String vid = staticPinRequestDTO.getRequest().getIdentity().getVid();
 		if (uin != null) {
-			validateIdvId(uin, IdType.UIN.getType(), errors);
+			validateIdvId(uin, IdType.UIN.getType(), errors, REQUEST);
 		} else if (vid != null) {
-			validateIdvId(vid, IdType.VID.getType(), errors);
+			validateIdvId(vid, IdType.VID.getType(), errors, REQUEST);
 		} else {
 			mosipLogger.error(SESSION_ID, SPIN_VALIDATE, ID_AUTH_VALIDATOR2, MISSING_INPUT_PARAMETER + UIN_VID);
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),

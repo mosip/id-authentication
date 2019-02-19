@@ -6,7 +6,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -100,22 +99,19 @@ public class StaticPinServiceImpl implements StaticPinService {
 			throws IdAuthenticationBusinessException {
 		try {
 			StaticPinIdentityDTO requestdto = staticPinRequestDTO.getRequest().getIdentity();
-			IdType uinidtype = IdType.UIN;
-			IdType vididtype = IdType.VID;
 			IdType idtype = IdType.UIN;
 			String uin = requestdto.getUin();
 			String vid = requestdto.getVid();
-			Map<String, Object> idResDTO = new HashMap<>();
 			String idvId = "";
 			if (uin != null) {
-				idResDTO = idAuthService.processIdType(uinidtype.getType(), uin, false);
 				idvId = uin;
-				idtype = uinidtype;
+				idtype =  IdType.UIN;
 			} else if (vid != null) {
-				idResDTO = idAuthService.processIdType(vididtype.getType(), vid, false);
 				idvId = vid;
-				idtype = vididtype;
+				idtype =  IdType.VID;
 			}
+			Map<String, Object> idResDTO = idAuthService.processIdType(idtype.getType(), idvId, false);
+			
 			String uinValue = null;
 			if (idResDTO != null && idResDTO.containsKey(UIN_KEY)) {
 				uinValue = (String) idResDTO.get(UIN_KEY);
