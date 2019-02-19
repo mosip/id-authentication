@@ -27,6 +27,7 @@ import org.springframework.web.client.ResourceAccessException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -141,7 +142,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 			LOGGER.error("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					exception.getMessage());
+					exception.getMessage()+ExceptionUtils.getStackTrace(exception));
 
 			setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_ID_ERROR, null);
 		}
@@ -274,7 +275,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 				LOGGER.error("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-						exception.getMessage());
+						exception.getMessage()+ExceptionUtils.getStackTrace(exception));
 
 				/* set Error response */
 				setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
@@ -301,13 +302,13 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 			} catch (IOException exception) {
 				LOGGER.error("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - Manual Trigger",
 						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-						exception.getMessage());
+						exception.getMessage()+ExceptionUtils.getStackTrace(exception));
 				setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
 				return;
 			} catch (RegBaseUncheckedException exception) {
 				LOGGER.error("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - Manual Trigger",
 						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-						exception.getMessage());
+						exception.getMessage()+ExceptionUtils.getStackTrace(exception));
 				setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
 				return;
 			}

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
@@ -186,7 +187,7 @@ public class DocumentScanController extends BaseController {
 			populateDocumentCategories();
 		} catch (RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					exception.getMessage());
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
 	}
@@ -304,13 +305,13 @@ public class DocumentScanController extends BaseController {
 			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s -> Exception while scanning documents for registration  %s -> %s",
 							RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, ioException.getMessage(),
-							ioException.getCause()));
+							ExceptionUtils.getStackTrace(ioException)));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s -> Exception while scanning documents for registration  %s",
-							RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, runtimeException.getMessage()));
+							RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, runtimeException.getMessage()) + ExceptionUtils.getStackTrace(runtimeException));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
 		}
@@ -527,9 +528,9 @@ public class DocumentScanController extends BaseController {
 						docPreviewNext.setDisable(false);
 					}
 				}
-			} catch (IOException e) {
+			} catch (IOException ioException) {
 				LOGGER.error("DOCUMENT_SCAN_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-						e.getMessage());
+						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 				generateAlert(RegistrationConstants.ERROR, "Unable to preview the document");
 				return;
 			}
@@ -707,7 +708,7 @@ public class DocumentScanController extends BaseController {
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING LIST OF DOCUMENTS FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -843,7 +844,8 @@ public class DocumentScanController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, "Exiting the toggle function for Biometric exception");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - TOGGLING FOR BIOMETRIC EXCEPTION SWITCH FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
