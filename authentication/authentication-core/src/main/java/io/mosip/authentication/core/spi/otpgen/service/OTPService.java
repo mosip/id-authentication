@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.spi.otpgen.service;
 
+import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
+import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 /**
@@ -12,12 +14,12 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 public interface OTPService {
 
 	/**
-	 * Method to generate Otp.
-	 *
-	 * @param otpKey the otp key
-	 * @return the string
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * 
+	 * @param otpRequest OtpRequestDTO request.
+	 * @return OtpResponseDTO object return.
+	 * @throws IdAuthenticationBusinessException exception
 	 */
-	public String generateOtp(String otpKey) throws IdAuthenticationBusinessException;
+	
+	public OtpResponseDTO generateOtp(OtpRequestDTO otpRequest) throws IdAuthenticationBusinessException;
 
 }

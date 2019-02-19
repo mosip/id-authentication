@@ -16,7 +16,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
  * @author Dinesh Karuppiah.T
  */
 
-public interface BioAuthService {
+public interface BioAuthService extends AuthService {
 	
 	/**
 	 * Method to validate Bio Auth details.
@@ -25,9 +25,9 @@ public interface BioAuthService {
 	 * @param idInfo the id info
 	 * @return the auth status info
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
+	 *//*
 
 	AuthStatusInfo validateBioDetails(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo)
-			throws IdAuthenticationBusinessException;
+			throws IdAuthenticationBusinessException;*/
 
 }

@@ -1,16 +1,7 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
-import static org.junit.Assert.assertEquals;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDateTime;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -128,7 +119,7 @@ public class IdAuthServiceTest {
 		String vid = "1234567890";
 		VIDEntity vidEntity = new VIDEntity();
 		vidEntity.setActive(true);
-		vidEntity.setExpiryDate(new Date(2018, 9, 24));
+		vidEntity.setExpiryDate(LocalDateTime.of(2018, 9, 24, 0, 0));
 		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
 		idAuthServiceImpl.getIdRepoByVID(vid, false);
 	}

@@ -1,5 +1,6 @@
 package io.mosip.authentication.service.entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -32,7 +33,7 @@ public class VIDEntity {
 
 	/** The generated on. */
 	@Column(name = "generated_dtimes")
-	private Date generatedOn;
+	private LocalDateTime generatedOn;
 
 	/** The retry count. */
 	@Column(name = "validation_retry_count")
@@ -40,7 +41,7 @@ public class VIDEntity {
 	
 	/** The expiry date. */
 	@Column(name = "expiry_dtimes")
-	private Date expiryDate;
+	private LocalDateTime expiryDate;
 
 	/** The is active. */
 	@Column(name = "is_active")
@@ -52,15 +53,15 @@ public class VIDEntity {
 
 	/** The corrected date. */
 	@Column(name = "cr_dtimes")
-	private Date createdDTimes;
+	private LocalDateTime createdDTimes;
 
 	/** The updated by. */
 	@Column(name = "upd_by")
-	private char updatedBy;
+	private String updatedBy;
 
 	/** The updated on. */
 	@Column(name = "upd_dtimes")
-	private Date updatedOn;
+	private LocalDateTime updatedOn;
 
 	/** The is deleted. */
 	@Column(name = "is_deleted")
@@ -68,5 +69,5 @@ public class VIDEntity {
 	
 	/** The deleted on. */
 	@Column(name = "del_dtimes")
-	private Date deletedOn;
+	private LocalDateTime deletedOn;
 }

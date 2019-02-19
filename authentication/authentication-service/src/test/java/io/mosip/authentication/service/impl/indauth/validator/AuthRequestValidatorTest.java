@@ -8,7 +8,9 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,9 +37,10 @@ import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
-import io.mosip.authentication.service.helper.DateHelper;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
+import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
 import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
@@ -66,9 +69,6 @@ public class AuthRequestValidatorTest {
 	@Autowired
 	Environment env;
 
-	@InjectMocks
-	DateHelper dateHelper;
-
 	@Mock
 	UinValidatorImpl uinValidator;
 
@@ -89,12 +89,13 @@ public class AuthRequestValidatorTest {
 
 	@InjectMocks
 	IdInfoHelper idinfoHelper;
+	
+	@Mock
+	private MasterDataManager masterDataManager;
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
-		ReflectionTestUtils.setField(dateHelper, "env", env);
-		ReflectionTestUtils.setField(authRequestValidator, "dateHelper", dateHelper);
 		ReflectionTestUtils.setField(authRequestValidator, "emailValidatorImpl", emailValidatorImpl);
 		ReflectionTestUtils.setField(authRequestValidator, "phoneValidatorImpl", phoneValidatorImpl);
 		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idinfoHelper);
@@ -258,15 +259,6 @@ public class AuthRequestValidatorTest {
 	}
 
 	@Test
-	public void testInvalidTimestamp4() {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateRequestTimedOut",
-				"2001-07-04T12:08:56.235-0700", errors);
-		assertTrue(errors.hasErrors());
-	}
-
-	@Test
 	public void testInvalidVer() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
@@ -368,7 +360,8 @@ public class AuthRequestValidatorTest {
 	}
 
 	@Test
-	public void testValidRequest() {
+	public void testValidRequest() throws IdAuthenticationBusinessException {
+		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(fetchGenderType());
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
@@ -397,7 +390,7 @@ public class AuthRequestValidatorTest {
 		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
 		idInfoDTO2.setLanguage(null);
 		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("date.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(env.getProperty("dob.req.date.pattern"))).toString());
 		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
 		idInfoList1.add(idInfoDTO2);
 		// dobtype
@@ -434,7 +427,8 @@ public class AuthRequestValidatorTest {
 	}
 
 	@Test
-	public void testInValidRequest2() {
+	public void testInValidRequest2() throws IdAuthenticationBusinessException {
+		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(fetchGenderType());
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
@@ -467,7 +461,7 @@ public class AuthRequestValidatorTest {
 		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
 		idInfoDTO2.setLanguage(null);
 		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("date.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(env.getProperty("dob.req.date.pattern"))).toString());
 		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
 		idInfoList1.add(idInfoDTO2);
 		// dobtype
@@ -503,6 +497,14 @@ public class AuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
+	private Map<String, List<String>> fetchGenderType() {
+		Map<String, List<String>> map = new HashMap<>();
+		List<String> list = new ArrayList<>();
+		list.add("M");
+		map.put(env.getProperty("mosip.primary.lang-code"), list);
+		return map;
+	}
+
 	@Test
 	public void testInValidRequest3() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -512,7 +514,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("date.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(env.getProperty("dob.req.date.pattern"))).toString());
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestDTO.setIdvIdType(IdType.VID.getType());
 		authRequestDTO.setIdvId("5371843613598206");
@@ -652,7 +654,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("date.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(env.getProperty("dob.req.date.pattern"))).toString());
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestDTO.setIdvIdType(IdType.VID.getType());
 		authRequestDTO.setIdvId("5371843613598206");
