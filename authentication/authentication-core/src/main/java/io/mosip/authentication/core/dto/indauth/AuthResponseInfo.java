@@ -37,10 +37,6 @@ public class AuthResponseInfo {
 	 */
 	private String usageData;
 	
-//	/**
-//	 * Static token
-//	 */
-//	//TODO
-//	private String staticToken;
+
 
 }

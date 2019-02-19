@@ -3,6 +3,9 @@ package io.mosip.authentication.service.integration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -21,7 +24,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.indauth.PinDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -62,34 +64,12 @@ public class ValidateOtpRequestTest {
 	@InjectMocks
 	PinDTO pindto;
 
-	// static BlockingNettyContext server;
-
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(restfactory, "env", env);
 		ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
 		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restfactory);
 	}
-
-	// /**
-	// * To Configure the HTTP resources to Validate OTP
-	// *
-	// */
-	//
-	// @BeforeClass
-	// public static void beforeClass() {
-	// RouterFunction<?> functionSuccess =
-	// RouterFunctions.route(RequestPredicates.POST("/otpmanager/otps"),
-	// request -> ServerResponse.status(HttpStatus.OK).body(
-	// Mono.just(new OTPValidateResponseDTO("True", "OTP Validation Successful")),
-	// OTPValidateResponseDTO.class));
-	// HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
-	// ReactorHttpHandlerAdapter adapter = new
-	// ReactorHttpHandlerAdapter(httpHandler);
-	// server = HttpServer.create(8083).start(adapter);
-	// server.installShutdownHook();
-	// System.err.println("Server Started");
-	// }
 
 	/**
 	 * Test OTP Validation with key and OTP on Core-kernal
@@ -100,11 +80,10 @@ public class ValidateOtpRequestTest {
 
 	@Test
 	public void Test() throws IdAuthenticationBusinessException, RestServiceException {
-		OTPValidateResponseDTO otpValidateResponseDTO = new OTPValidateResponseDTO();
-		otpValidateResponseDTO.setStatus("true");
-		otpValidateResponseDTO.setMessage("OTP Validated Successfully");
+		Map<String,Object> valuemap=new HashMap<>();
+		valuemap.put("status", "failure");
 		RestHelper helper = Mockito.mock(RestHelper.class);
-		Mockito.when(helper.requestSync(Mockito.any(RestRequestDTO.class))).thenReturn(otpValidateResponseDTO);
+		Mockito.when(helper.requestSync(Mockito.any(RestRequestDTO.class))).thenReturn(valuemap);
 		RestRequestDTO requestDTO = new RestRequestDTO();
 		RestRequestFactory restreqfactory = Mockito.mock(RestRequestFactory.class);
 		Mockito.when(
@@ -112,7 +91,7 @@ public class ValidateOtpRequestTest {
 				.thenReturn(requestDTO);
 		ReflectionTestUtils.setField(otpManager, "restHelper", helper);
 		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restreqfactory);
-		ReflectionTestUtils.setField(otpManager, "otpvalidateresponsedto", otpvalidateresponsedto);
+//		ReflectionTestUtils.setField(otpManager, "otpvalidateresponsedto", otpvalidateresponsedto);
 
 		// TODO: for validate OTP as true
 		assertEquals(false, otpManager.validateOtp("12345", "23232"));
@@ -121,10 +100,9 @@ public class ValidateOtpRequestTest {
 	@Test
 	public void zTest_InvalidvalidateOTP() throws RestServiceException, IdAuthenticationBusinessException {
 		RestHelper helper = Mockito.mock(RestHelper.class);
-		OTPValidateResponseDTO otpvalidateresponsedto = new OTPValidateResponseDTO();
-		otpvalidateresponsedto.setStatus("failure");
-		otpvalidateresponsedto.setStatus("OTP_EXPIRED");
-		Mockito.when(helper.requestSync(Mockito.any(RestRequestDTO.class))).thenReturn(otpvalidateresponsedto);
+		Map<String,Object> valuemap=new HashMap<>();
+		valuemap.put("status", "failure");
+		Mockito.when(helper.requestSync(Mockito.any(RestRequestDTO.class))).thenReturn(valuemap);
 		ReflectionTestUtils.setField(otpManager, "restHelper", helper);
 
 		assertFalse(otpManager.validateOtp("2323", "2323"));

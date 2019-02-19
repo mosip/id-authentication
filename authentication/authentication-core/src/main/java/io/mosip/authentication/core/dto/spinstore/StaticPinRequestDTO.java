@@ -19,9 +19,6 @@ public class StaticPinRequestDTO {
 	/** Variable to hold Request time */
 	private String reqTime;
 	
-	/** The value tspID */
-	private String tspID;
-	
 	/** The value PinRequestDTO */
 	private PinRequestDTO request;
 }

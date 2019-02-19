@@ -27,23 +27,39 @@ public class RegDeviceMaster extends RegistrationCommonFields {
 	@Column(name = "name")
 	private String name;
 	@Column(name = "mac_address")
-	private String macAdress;
+	private String macAddress;
 	@Column(name = "serial_num")
-	private String serialNumber;
+	private String serialNum;
 	@Column(name = "ip_address")
 	private String ipAddress;
 	@Column(name = "lang_code")
-	private String languageCode;
+	private String langCode;
+	@Column(name = "dspec_id")
+	private String deviceSpecId;
 	@Column(name = "is_deleted")
 	@Type(type = "true_false")
 	private Boolean isDeleted;
 	@Column(name = "del_dtimes")
 	private Timestamp deletedTime;
 	@ManyToOne
-	@JoinColumn(name = "dspec_id")
+	@JoinColumn(name = "dspec_id",insertable=false,updatable=false)
 	private RegDeviceSpec regDeviceSpec;
 	@Column(name = " validity_end_dtimes")
 	private Timestamp validityEndDtimes;
+
+	/**
+	 * @return the deviceSpecId
+	 */
+	public String getDeviceSpecId() {
+		return deviceSpecId;
+	}
+
+	/**
+	 * @param deviceSpecId the deviceSpecId to set
+	 */
+	public void setDeviceSpecId(String deviceSpecId) {
+		this.deviceSpecId = deviceSpecId;
+	}
 
 	/**
 	 * @return the validityEndDtimes
@@ -53,8 +69,7 @@ public class RegDeviceMaster extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param validityEndDtimes
-	 *            the validityEndDtimes to set
+	 * @param validityEndDtimes the validityEndDtimes to set
 	 */
 	public void setValidityEndDtimes(Timestamp validityEndDtimes) {
 		this.validityEndDtimes = validityEndDtimes;
@@ -68,8 +83,7 @@ public class RegDeviceMaster extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param regDeviceSpec
-	 *            the regDeviceSpec to set
+	 * @param regDeviceSpec the regDeviceSpec to set
 	 */
 	public void setRegDeviceSpec(RegDeviceSpec regDeviceSpec) {
 		this.regDeviceSpec = regDeviceSpec;
@@ -83,8 +97,7 @@ public class RegDeviceMaster extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param id
-	 *            the id to set
+	 * @param id the id to set
 	 */
 	public void setId(String id) {
 		this.id = id;
@@ -98,41 +111,38 @@ public class RegDeviceMaster extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param name
-	 *            the name to set
+	 * @param name the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * @return the macAdress
+	 * @return the macAddress
 	 */
-	public String getMacAdress() {
-		return macAdress;
+	public String getMacAddress() {
+		return macAddress;
 	}
 
 	/**
-	 * @param macAdress
-	 *            the macAdress to set
+	 * @param macAddress the macAddress to set
 	 */
-	public void setMacAdress(String macAdress) {
-		this.macAdress = macAdress;
+	public void setMacAddress(String macAddress) {
+		this.macAddress = macAddress;
 	}
 
 	/**
-	 * @return the serialNumber
+	 * @return the serialNum
 	 */
-	public String getSerialNumber() {
-		return serialNumber;
+	public String getSerialNum() {
+		return serialNum;
 	}
 
 	/**
-	 * @param serialNumber
-	 *            the serialNumber to set
+	 * @param serialNum the serialNum to set
 	 */
-	public void setSerialNumber(String serialNumber) {
-		this.serialNumber = serialNumber;
+	public void setSerialNum(String serialNum) {
+		this.serialNum = serialNum;
 	}
 
 	/**
@@ -143,26 +153,24 @@ public class RegDeviceMaster extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param ipAddress
-	 *            the ipAddress to set
+	 * @param ipAddress the ipAddress to set
 	 */
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
 	}
 
 	/**
-	 * @return the languageCode
+	 * @return the langCode
 	 */
-	public String getLanguageCode() {
-		return languageCode;
+	public String getLangCode() {
+		return langCode;
 	}
 
 	/**
-	 * @param languageCode
-	 *            the languageCode to set
+	 * @param langCode the langCode to set
 	 */
-	public void setLanguageCode(String languageCode) {
-		this.languageCode = languageCode;
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
 	}
 
 	/**
@@ -173,8 +181,7 @@ public class RegDeviceMaster extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param isDeleted
-	 *            the isDeleted to set
+	 * @param isDeleted the isDeleted to set
 	 */
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
@@ -188,8 +195,7 @@ public class RegDeviceMaster extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param deletedTime
-	 *            the deletedTime to set
+	 * @param deletedTime the deletedTime to set
 	 */
 	public void setDeletedTime(Timestamp deletedTime) {
 		this.deletedTime = deletedTime;

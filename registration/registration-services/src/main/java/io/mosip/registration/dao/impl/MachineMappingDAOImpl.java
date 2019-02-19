@@ -21,10 +21,10 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.entity.CenterMachine;
-import io.mosip.registration.entity.DeviceType;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.RegCenterDevice;
 import io.mosip.registration.entity.RegCentreMachineDevice;
+import io.mosip.registration.entity.RegDeviceType;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.entity.UserMachineMappingID;
@@ -256,7 +256,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 * @see io.mosip.registration.dao.MachineMappingDAO#getAllDeviceTypes()
 	 */
 	@Override
-	public List<DeviceType> getAllDeviceTypes() {
+	public List<RegDeviceType> getAllDeviceTypes() {
 		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				" getAllDeviceTypes() method is started");
 
@@ -339,7 +339,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 		LOGGER.info("REGISTRATION - COMMON REPOSITORY ", APPLICATION_NAME, APPLICATION_ID,
 				" isValidDevice DAO Method called");
 
-		return deviceMasterRepository.countBySerialNumberAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(serialNo,
+		return deviceMasterRepository.countBySerialNumAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(serialNo,
 				deviceType.getDeviceType(), new Timestamp(System.currentTimeMillis())) > 0 ? true : false;
 	}
 	@Override

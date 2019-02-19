@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
@@ -62,9 +63,12 @@ public class PreRegistrationDataSyncJob extends BaseJob {
 		} catch (RegBaseUncheckedException baseUncheckedException) {
 			LOGGER.error(LoggerConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE,
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					baseUncheckedException.getMessage());
+					baseUncheckedException.getMessage()+ ExceptionUtils.getStackTrace(baseUncheckedException));
 			throw baseUncheckedException;
 		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LoggerConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE,
+					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage()+ ExceptionUtils.getStackTrace(runtimeException));
 			this.responseDTO = new ResponseDTO();
 			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 			LinkedList<ErrorResponseDTO> errorResponsesList = new LinkedList<>();

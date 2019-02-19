@@ -28,7 +28,7 @@ public class MasterDataResponseDto {
 	private List<TemplateTypeDto> templatesTypes;
 	private List<TemplateFileFormatDto> templateFileFormat;
 	private List<PostReasonCategoryDto> reasonCategory;
-	private List<MasterReasonListDto> reasonList;
+	private List<ReasonListDto> reasonList;
 	private List<BlacklistedWordsDto> blackListedWords;
 	private List<LocationDto> locationHierarchy;
 	private List<BiometricAttributeDto> biometricattributes;
@@ -38,6 +38,84 @@ public class MasterDataResponseDto {
 	private List<TitleDto> titles;
 	private List<GenderDto> genders;
 	private List<LanguageDto> languages;
+	private List<RegistrationCenterMachineDto> registrationCenterMachines;
+	private List<RegistrationCenterDeviceDto> registrationCenterDevices;
+	private List<RegistrationCenterMachineDeviceDto> registrationCenterMachineDevices;
+	private List<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachines;
+	private List<RegistrationCenterUserDto> registrationCenterUsers;
+	
+
+	/**
+	 * @return the registrationCenterMachines
+	 */
+	public List<RegistrationCenterMachineDto> getRegistrationCenterMachines() {
+		return registrationCenterMachines;
+	}
+
+	/**
+	 * @param registrationCenterMachines the registrationCenterMachines to set
+	 */
+	public void setRegistrationCenterMachines(List<RegistrationCenterMachineDto> registrationCenterMachines) {
+		this.registrationCenterMachines = registrationCenterMachines;
+	}
+
+	/**
+	 * @return the registrationCenterDevices
+	 */
+	public List<RegistrationCenterDeviceDto> getRegistrationCenterDevices() {
+		return registrationCenterDevices;
+	}
+
+	/**
+	 * @param registrationCenterDevices the registrationCenterDevices to set
+	 */
+	public void setRegistrationCenterDevices(List<RegistrationCenterDeviceDto> registrationCenterDevices) {
+		this.registrationCenterDevices = registrationCenterDevices;
+	}
+
+	/**
+	 * @return the registrationCenterMachineDevices
+	 */
+	public List<RegistrationCenterMachineDeviceDto> getRegistrationCenterMachineDevices() {
+		return registrationCenterMachineDevices;
+	}
+
+	/**
+	 * @param registrationCenterMachineDevices the registrationCenterMachineDevices to set
+	 */
+	public void setRegistrationCenterMachineDevices(
+			List<RegistrationCenterMachineDeviceDto> registrationCenterMachineDevices) {
+		this.registrationCenterMachineDevices = registrationCenterMachineDevices;
+	}
+
+	/**
+	 * @return the registrationCenterUserMachines
+	 */
+	public List<RegistrationCenterUserMachineMappingDto> getRegistrationCenterUserMachines() {
+		return registrationCenterUserMachines;
+	}
+
+	/**
+	 * @param registrationCenterUserMachines the registrationCenterUserMachines to set
+	 */
+	public void setRegistrationCenterUserMachines(
+			List<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachines) {
+		this.registrationCenterUserMachines = registrationCenterUserMachines;
+	}
+
+	/**
+	 * @return the registrationCenterUsers
+	 */
+	public List<RegistrationCenterUserDto> getRegistrationCenterUsers() {
+		return registrationCenterUsers;
+	}
+
+	/**
+	 * @param registrationCenterUsers the registrationCenterUsers to set
+	 */
+	public void setRegistrationCenterUsers(List<RegistrationCenterUserDto> registrationCenterUsers) {
+		this.registrationCenterUsers = registrationCenterUsers;
+	}
 
 	/**
 	 * @return the registrationCenter
@@ -266,14 +344,14 @@ public class MasterDataResponseDto {
 	/**
 	 * @return the reasonList
 	 */
-	public List<MasterReasonListDto> getReasonList() {
+	public List<ReasonListDto> getReasonList() {
 		return reasonList;
 	}
 
 	/**
 	 * @param reasonList the reasonList to set
 	 */
-	public void setReasonList(List<MasterReasonListDto> reasonList) {
+	public void setReasonList(List<ReasonListDto> reasonList) {
 		this.reasonList = reasonList;
 	}
 

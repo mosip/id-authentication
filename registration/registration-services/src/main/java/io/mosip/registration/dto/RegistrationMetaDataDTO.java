@@ -18,7 +18,21 @@ public class RegistrationMetaDataDTO extends BaseDTO {
 	private String centerId;
 	private String previousRID;
 	private String uin;
+	private String consentOfApplicant;
 
+	/**
+	 * @return the consentOfApplicant
+	 */
+	public String getConsentOfApplicant() {
+		return consentOfApplicant;
+	}
+
+	/**
+	 * @param consentOfApplicant the consentOfApplicant to set
+	 */
+	public void setConsentOfApplicant(String consentOfApplicant) {
+		this.consentOfApplicant = consentOfApplicant;
+	}
 	/**
 	 * @return the geoLatitudeLoc
 	 */
