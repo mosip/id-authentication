@@ -1,4 +1,4 @@
-package io.mosip.demo.authentication.service.impl.indauth.controller;
+package io.mosip.demo.authentication.service.controller;
 
 import java.nio.charset.StandardCharsets;
 
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author ArunBose S
  * @author DineshKaruppiah
- * The Class Encode.
+ * The Class Encode is used to encode the String.
  */
 @RestController
 public class Encode {

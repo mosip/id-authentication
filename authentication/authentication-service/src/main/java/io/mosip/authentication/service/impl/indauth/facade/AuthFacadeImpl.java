@@ -9,6 +9,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -233,7 +234,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			AuthStatusInfo pinValidationStatus;
 			try {
 
-				pinValidationStatus = pinAuthService.validatePin(authRequestDTO, uin);
+				pinValidationStatus = pinAuthService.authenticate(authRequestDTO, uin,Collections.emptyMap());
 				authStatusList.add(pinValidationStatus);
 				statusInfo = pinValidationStatus;
 			} finally {
@@ -267,7 +268,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			AuthStatusInfo bioValidationStatus;
 			try {
 
-				bioValidationStatus = bioAuthService.validateBioDetails(authRequestDTO, idInfo);
+				bioValidationStatus = bioAuthService.authenticate(authRequestDTO, uin,idInfo);
 				authStatusList.add(bioValidationStatus);
 				statusInfo = bioValidationStatus;
 			} finally {
@@ -301,7 +302,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				|| authRequestDTO.getAuthType().isFullAddress()) {
 			AuthStatusInfo demoValidationStatus;
 			try {
-				demoValidationStatus = demoAuthService.getDemoStatus(authRequestDTO, uin, idInfo);
+				demoValidationStatus = demoAuthService.authenticate(authRequestDTO, uin, idInfo);
 				authStatusList.add(demoValidationStatus);
 				statusInfo = demoValidationStatus;
 			} finally {
@@ -340,7 +341,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			AuthStatusInfo otpValidationStatus;
 			try {
 
-				otpValidationStatus = otpService.validateOtp(authRequestDTO, uin);
+				otpValidationStatus = otpService.authenticate(authRequestDTO, uin,Collections.emptyMap());
 				authStatusList.add(otpValidationStatus);
 				statusInfo = otpValidationStatus;
 			} finally {

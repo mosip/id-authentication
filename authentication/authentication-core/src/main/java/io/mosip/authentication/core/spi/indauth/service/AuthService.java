@@ -9,25 +9,19 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 /**
- * 
- * This interface is used to authenticate Individual based on Biometric
- * attributes.
- * 
- * @author Dinesh Karuppiah.T
+ * This interface is extended by all the all the Auth Type  for authentication.
+ *
+ * @author Arun Bose S
  */
-
-public interface BioAuthService extends AuthService {
+public interface AuthService {
 	
 	/**
-	 * Method to validate Bio Auth details.
+	 *  This method is used to authenticate the indvidual based on the auth type.
 	 *
 	 * @param authRequestDTO the auth request DTO
+	 * @param uin the uin
 	 * @param idInfo the id info
 	 * @return the auth status info
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 *//*
-
-	AuthStatusInfo validateBioDetails(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo)
-			throws IdAuthenticationBusinessException;*/
-
+	 */
+	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO,String uin,Map<String,List<IdentityInfoDTO>> idInfo)throws IdAuthenticationBusinessException;
 }

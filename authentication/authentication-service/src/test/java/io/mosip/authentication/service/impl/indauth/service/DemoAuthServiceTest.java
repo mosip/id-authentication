@@ -435,11 +435,11 @@ public class DemoAuthServiceTest {
 		idInfo.put("phone", list);
 		DemoAuthServiceImpl demoAuthService = Mockito.mock(DemoAuthServiceImpl.class);
 		Mockito.when(
-				demoAuthService.getDemoStatus(Mockito.any(AuthRequestDTO.class), Mockito.anyString(), Mockito.any()))
+				demoAuthService.authenticate(Mockito.any(AuthRequestDTO.class), Mockito.anyString(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException());
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 
-		demoAuthService.getDemoStatus(authRequestDTO, "", idInfo);
+		demoAuthService.authenticate(authRequestDTO, "", idInfo);
 	}
 
 	@Test
@@ -466,7 +466,7 @@ public class DemoAuthServiceTest {
 		authStatusInfovalue.setStatus(false);
 		Mockito.when(idInfoHelper.buildStatusInfo(Mockito.anyBoolean(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(authStatusInfovalue);
-		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "121212", idInfo);
+		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.authenticate(authRequestDTO, "121212", idInfo);
 		assertTrue(!authStatusInfo.isStatus());
 	}
 
@@ -522,7 +522,7 @@ public class DemoAuthServiceTest {
 	public void TestInValidgetDemoStatus() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = generateData();
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
-		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "121212", idInfo);
+		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.authenticate(authRequestDTO, "121212", idInfo);
 	}
 
 //	@Test()
@@ -538,7 +538,7 @@ public class DemoAuthServiceTest {
 		AuthRequestDTO authRequestDTO = null;
 		String uin = "";
 		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
-		demoAuthServiceImpl.getDemoStatus(authRequestDTO, uin, demoEntity);
+		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoEntity);
 	}
 
 	@Test
@@ -604,7 +604,7 @@ public class DemoAuthServiceTest {
 		mockenv.setProperty("mosip.supported-languages", "eng,ara,fre");
 		ReflectionTestUtils.setField(actualidInfoHelper, "environment", mockenv);
 		Mockito.when(masterDataManager.fetchTitles()).thenReturn(createFetcher());
-		AuthStatusInfo validateBioDetails = demoAuthServiceImpl.getDemoStatus(authRequestDTO, uin, demoIdentity);
+		AuthStatusInfo validateBioDetails = demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoIdentity);
 		assertFalse(validateBioDetails.isStatus());
 	}
 
@@ -613,7 +613,7 @@ public class DemoAuthServiceTest {
 		AuthRequestDTO authRequestDTO = null;
 		String uin = null;
 		Map<String, List<IdentityInfoDTO>> demoEntity = null;
-		demoAuthServiceImpl.getDemoStatus(authRequestDTO, uin, demoEntity);
+		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoEntity);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -621,7 +621,7 @@ public class DemoAuthServiceTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		String uin = null;
 		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
-		demoAuthServiceImpl.getDemoStatus(authRequestDTO, uin, demoEntity);
+		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoEntity);
 	}
 
 	@Test
@@ -674,7 +674,7 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setRequest(requestDTO);
 		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
 		demoEntity.put("name", nameList);
-		AuthStatusInfo demoStatus = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "274390482564", demoEntity);
+		AuthStatusInfo demoStatus = demoAuthServiceImpl.authenticate(authRequestDTO, "274390482564", demoEntity);
 
 	}
 	

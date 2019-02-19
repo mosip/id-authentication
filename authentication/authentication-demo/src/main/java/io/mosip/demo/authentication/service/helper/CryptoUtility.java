@@ -1,4 +1,4 @@
-package io.mosip.demo.authentication.service.EncryptHelper;
+package io.mosip.demo.authentication.service.helper;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -22,9 +22,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class EncryptUtil.
+ * The Class CryptoUtility is used for encryption and decryption.
  *
  * @author Arun Bose S
  * The Class CryptoUtil.

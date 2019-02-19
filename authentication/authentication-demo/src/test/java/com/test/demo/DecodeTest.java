@@ -9,7 +9,7 @@ import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.demo.authentication.service.impl.indauth.controller.Decode;
+import io.mosip.demo.authentication.service.controller.Decode;
 
 /**
  * 
