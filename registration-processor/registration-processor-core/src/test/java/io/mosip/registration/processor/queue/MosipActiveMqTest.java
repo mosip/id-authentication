@@ -39,7 +39,6 @@ public class MosipActiveMqTest {
 	
 	@Test
 	public void testSendSuccess() throws JMSException {
-
 		mosipQueue = new MosipActiveMq("admin", "admin","vm://localhost?broker.persistent=false");
 		byte[] bytes = "message".getBytes();
 		when(mosipActiveMq.getActiveMQConnectionFactory()).thenReturn(factory);
@@ -57,6 +56,16 @@ public class MosipActiveMqTest {
 		byte[] bytes = "message".getBytes();
 		when(mosipActiveMq.getActiveMQConnectionFactory()).thenReturn(factory);
 		assertTrue(mosipActiveMqImpl.send(mosipQueue, bytes, "address"));
+		assertNotNull(mosipActiveMqImpl.consume(mosipQueue,"address"));
+	}
+	
+	@Test
+	public void testConsumeSuccess() {
+		mosipQueue = new MosipActiveMq("admin", "admin","vm://localhost?broker.persistent=false");
+		byte[] bytes = "message".getBytes();
+		when(mosipActiveMq.getActiveMQConnectionFactory()).thenReturn(factory);
+		mosipActiveMqImpl.send(mosipQueue, bytes, "address");
+		assertNotNull(mosipActiveMqImpl.consume(mosipQueue, "address"));
 	}
 	
 }

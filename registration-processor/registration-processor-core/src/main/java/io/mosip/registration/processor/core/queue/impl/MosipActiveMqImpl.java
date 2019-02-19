@@ -94,6 +94,10 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 	@Override
 	public byte[] consume(MosipQueue mosipQueue, String address) {
 		MosipActiveMq mosipActiveMq = (MosipActiveMq) mosipQueue;
+		ActiveMQConnectionFactory activeMQConnectionFactory = mosipActiveMq.getActiveMQConnectionFactory();
+		if (activeMQConnectionFactory == null) {
+			throw new InvalidConnectionException(PlatformErrorMessages.RPR_MQI_INVALID_CONNECTION.getMessage());
+		}
 		if (destination == null) {
 			setup(mosipActiveMq, address);
 		}
