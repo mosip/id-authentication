@@ -1,5 +1,8 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
+import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,12 +10,15 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
+import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.PinType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -23,14 +29,15 @@ import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.util.OTPUtil;
-import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
 import io.mosip.authentication.service.impl.indauth.service.pin.PinMatchType;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
+import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import lombok.NoArgsConstructor;
 
 /**
@@ -49,6 +56,8 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	/** The Constant DEAFULT_SESSSION_ID. */
 	private static final String DEAFULT_SESSSION_ID = "sessionID";
 
+	private static final String DATETIME_PATTERN = "datetime.pattern";
+
 	/** The otp manager. */
 	@Autowired
 	private OTPManager otpManager;
@@ -66,6 +75,9 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 
 	@Autowired
 	private IdInfoHelper idInfoHelper;
+
+	@Autowired
+	private VIDRepository vidrepository;
 
 	/**
 	 * Validates generated OTP via OTP Manager.
@@ -90,7 +102,18 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		String txnId = authRequestDTO.getTxnID();
 		Optional<String> otp = getOtpValue(authRequestDTO);
 		if (otp.isPresent()) {
-			boolean isValidRequest = validateTxnId(txnId, uin);
+			String vid = null;
+			if (authRequestDTO.getIdvIdType() == IdType.VID.getType()) {
+				vid = authRequestDTO.getIdvId();
+			} else {
+				Optional<String> findVidByUin = vidrepository.findVIDByUIN(uin, PageRequest.of(0, 1)).stream()
+						.findFirst();
+				if (findVidByUin.isPresent()) {
+					vid = findVidByUin.get().trim();
+				}
+			}
+
+			boolean isValidRequest = validateTxnId(txnId, uin, vid, authRequestDTO.getReqTime());
 			if (isValidRequest) {
 				mosipLogger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
 				List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
@@ -185,22 +208,28 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	/**
 	 * Validates Transaction ID and Unique ID.
 	 *
-	 * @param txnId the txn id
-	 * @param uin   the uin
+	 * @param txnId   the txn id
+	 * @param uin     the uin
+	 * @param reqTime
 	 * @return true, if successful
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
+	 * @throws ParseException
 	 */
 
-	public boolean validateTxnId(String txnId, String uin) throws IdAuthenticationBusinessException {
-		boolean isValidTxn = false;
-		List<AutnTxn> authtxns = autntxnrepository.findAllByRequestTrnIdAndRefId(txnId, uin);
-		if (authtxns != null && !authtxns.isEmpty() && authtxns.get(0) != null) {
-			isValidTxn = true;
-		} else {
-			isValidTxn = false;
+	public boolean validateTxnId(String txnId, String uin, String vid, String reqTime)
+			throws IdAuthenticationBusinessException {
+		try {
+			String utcTime = idInfoHelper.getUTCTime(reqTime);
+			LocalDateTime parseDateToLocalDateTime = DateUtils.parseToLocalDateTime(utcTime);
+			LocalDateTime addMinutesInOtpRequestDTimes = parseDateToLocalDateTime.minusMinutes(3);
+			Optional<String> value = autntxnrepository.findByUinorVid(txnId, uin, vid, parseDateToLocalDateTime,
+					addMinutesInOtpRequestDTimes, PageRequest.of(0, 1), RequestType.OTP_REQUEST.getType()).stream()
+					.findFirst();
+			return value.isPresent();
+		} catch (ParseException | io.mosip.kernel.core.exception.ParseException e) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
 		}
-		return isValidTxn;
 	}
 
 	/**
@@ -218,6 +247,19 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 			isnullorempty = false;
 		}
 		return isnullorempty;
+	}
+
+	/**
+	 * Adds a number of minutes(positive/negative) to a date returning a new Date
+	 * object. Add positive, date increase in minutes. Add negative, date reduce in
+	 * minutes.
+	 *
+	 * @param date   the date
+	 * @param minute the minute
+	 * @return the date
+	 */
+	private Date addMinutes(Date date, int minute) {
+		return DateUtils.addMinutes(date, minute);
 	}
 
 }

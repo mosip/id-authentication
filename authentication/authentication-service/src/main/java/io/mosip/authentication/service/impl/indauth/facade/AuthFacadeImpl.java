@@ -46,6 +46,7 @@ import io.mosip.authentication.core.spi.indauth.service.PinAuthService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.helper.AuditHelper;
+import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
 import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -129,16 +130,17 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Autowired
 	private TokenIdGenerator<String, String> tokenIdGenerator;
 
+	@Autowired
+	private IdInfoHelper idInfoHelper;
+
 	/**
 	 * Process the authorization type and authorization response is returned.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
-	 * @param isAuth
-	 *            boolean i.e is auth type request.
+	 * @param authRequestDTO the auth request DTO
+	 * @param isAuth         boolean i.e is auth type request.
 	 * @return AuthResponseDTO the auth response DTO
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception.
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception.
 	 */
 	@Override
 	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO, boolean isAuth)
@@ -166,7 +168,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE,
 					"authenticateApplicant status : " + authResponseDTO.getStatus());
 		}
-		
+
 		if (idInfo != null && uin != null) {
 			notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, isAuth);
 		}
@@ -180,17 +182,13 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * called according to authorisation type. reference Id is returned in
 	 * AuthRequestDTO.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
-	 * @param idInfo
-	 *            list of identityInfoDto request
-	 * @param uin
-	 *            the uin
-	 * @param isAuth
-	 *            the is auth
+	 * @param authRequestDTO the auth request DTO
+	 * @param idInfo         list of identityInfoDto request
+	 * @param uin            the uin
+	 * @param isAuth         the is auth
 	 * @return the list
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	private List<AuthStatusInfo> processAuthType(AuthRequestDTO authRequestDTO,
 			Map<String, List<IdentityInfoDTO>> idInfo, String uin, boolean isAuth, String staticTokenId)
@@ -286,20 +284,14 @@ public class AuthFacadeImpl implements AuthFacade {
 	/**
 	 * Process demo auth.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
-	 * @param idInfo
-	 *            the id info
-	 * @param uin
-	 *            the uin
-	 * @param isAuth
-	 *            the is auth
-	 * @param authStatusList
-	 *            the auth status list
-	 * @param idType
-	 *            the id type
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @param authRequestDTO the auth request DTO
+	 * @param idInfo         the id info
+	 * @param uin            the uin
+	 * @param isAuth         the is auth
+	 * @param authStatusList the auth status list
+	 * @param idType         the id type
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	private void processDemoAuth(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo, String uin,
 			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId)
@@ -330,18 +322,13 @@ public class AuthFacadeImpl implements AuthFacade {
 	/**
 	 * Process OTP auth.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
-	 * @param uin
-	 *            the uin
-	 * @param isAuth
-	 *            the is auth
-	 * @param authStatusList
-	 *            the auth status list
-	 * @param idType
-	 *            the id type
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @param authRequestDTO the auth request DTO
+	 * @param uin            the uin
+	 * @param isAuth         the is auth
+	 * @param authStatusList the auth status list
+	 * @param idType         the id type
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	private void processOTPAuth(AuthRequestDTO authRequestDTO, String uin, boolean isAuth,
 			List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId)
@@ -372,12 +359,9 @@ public class AuthFacadeImpl implements AuthFacade {
 	/**
 	 * Processed to authentic bio type request.
 	 * 
-	 * @param authRequestDTO
-	 *            authRequestDTO
-	 * @param isAuth
-	 *            boolean value for verify is auth type request or not.
-	 * @param idType
-	 *            idtype
+	 * @param authRequestDTO authRequestDTO
+	 * @param isAuth         boolean value for verify is auth type request or not.
+	 * @param idType         idtype
 	 * @param isStatus
 	 * @throws IdAuthenticationBusinessException
 	 */
@@ -435,12 +419,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			autnTxn.setCrBy(IDA);
 			autnTxn.setStaticTknId(staticTokenId);
 			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			Date reqDate = null;
-			reqDate = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
-			  SimpleDateFormat dateFormatter = new SimpleDateFormat(
-					  env.getProperty(DATETIME_PATTERN));
-			dateFormatter.setTimeZone(TimeZone.getTimeZone(ZoneId.of(UTC)));
-			String strUTCDate = dateFormatter.format(reqDate);
+			String strUTCDate = idInfoHelper.getUTCTime(reqTime);
 			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
 			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime()); // TODO check this
 			autnTxn.setAuthTypeCode(requestType.getRequestType());
@@ -450,7 +429,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			// FIXME
 			autnTxn.setLangCode(env.getProperty(MOSIP_PRIMARY_LANG_CODE));
 			return autnTxn;
-		} catch (ParseException e) {
+		} catch (ParseException | io.mosip.kernel.core.exception.ParseException e) {
 			logger.error(DEFAULT_SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
 					e);
@@ -472,8 +451,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	/**
 	 * Gets the audit event.
 	 *
-	 * @param isAuth
-	 *            the is auth
+	 * @param isAuth the is auth
 	 * @return the audit event
 	 */
 	private AuditEvents getAuditEvent(boolean isAuth) {
@@ -483,13 +461,11 @@ public class AuthFacadeImpl implements AuthFacade {
 	/**
 	 * Process the KycAuthRequestDTO to integrate with KycService.
 	 *
-	 * @param kycAuthRequestDTO
-	 *            is DTO of KycAuthRequestDTO
-	 * @param authResponseDTO
-	 *            the auth response DTO
+	 * @param kycAuthRequestDTO is DTO of KycAuthRequestDTO
+	 * @param authResponseDTO   the auth response DTO
 	 * @return the kyc auth response DTO
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	@Override
 	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO)

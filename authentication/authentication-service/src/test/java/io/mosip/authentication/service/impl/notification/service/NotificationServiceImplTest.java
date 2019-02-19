@@ -154,7 +154,8 @@ public class NotificationServiceImplTest {
 		notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, false);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	//(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInValidAuthSmsNotification()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
