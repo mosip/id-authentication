@@ -324,7 +324,8 @@ public class StaticPinFacadeImplTest {
 		assertEquals("mosip.identity.vid", vidResponseDTO.getId());
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+//	(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void generateVIDAlreadyexists() throws IdAuthenticationBusinessException {
 		Map<String, Object> uinMap = new HashMap<>();
 		uinMap.put("uin", "2342342344");
