@@ -124,6 +124,7 @@ public class WebCameraController extends BaseController implements Initializable
 				"closing the webcam window");
 
 		photoProvider.close();
+		parentController.calculateRecaptureTime(imageType);
 		Stage stage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
 		stage.close();
 	}

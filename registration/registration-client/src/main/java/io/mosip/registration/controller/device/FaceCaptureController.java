@@ -26,7 +26,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
@@ -91,6 +90,9 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	@Value("${capture_photo_using_device}")
 	public String capturePhotoUsingDevice;
+	
+	@Value("${RECAPTURE_TIME}")
+	private String configuredSecondsForRecapture;
 
 	private Timestamp lastPhotoCaptured;
 
@@ -282,10 +284,6 @@ public class FaceCaptureController extends BaseController implements Initializab
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
 
 		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE)) {
-
-			/* Set Time which last photo was captured */
-			lastPhotoCaptured = getCurrentTimestamp();
-
 			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
 			applicantImage.setImage(capture);
 			applicantBufferedImage = capturedImage;
@@ -305,13 +303,29 @@ public class FaceCaptureController extends BaseController implements Initializab
 						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			}
 		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE)) {
-
-			/* Set Time which last Exception photo was captured */
-			lastExceptionPhotoCaptured = getCurrentTimestamp();
 			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
 			exceptionImage.setImage(capture);
 			exceptionBufferedImage = capturedImage;
 			exceptionImageCaptured = true;
+		}
+	}
+	
+	@Override
+	public void calculateRecaptureTime(String photoType) {
+		int configuredSeconds = Integer.parseInt(configuredSecondsForRecapture);
+
+		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE)) {
+			/* Set Time which last photo was captured */
+			lastPhotoCaptured = getCurrentTimestamp();
+			if (!validatePhotoTimer(lastPhotoCaptured, configuredSeconds, photoAlert)) {
+				takePhoto.setDisable(true);
+			}
+		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE)) {
+			/* Set Time which last Exception photo was captured */
+			lastExceptionPhotoCaptured = getCurrentTimestamp();
+			if (!validatePhotoTimer(lastExceptionPhotoCaptured, configuredSeconds, photoAlert)) {
+				takePhoto.setDisable(true);
+			}
 		}
 	}
 
@@ -419,10 +433,16 @@ public class FaceCaptureController extends BaseController implements Initializab
 		sourcePane.requestFocus();
 		selectedPhoto = sourcePane;
 		takePhoto.setDisable(true);
-		if (selectedPhoto.getId().equals(RegistrationConstants.APPLICANT_PHOTO_PANE)
-				|| (selectedPhoto.getId().equals(RegistrationConstants.EXCEPTION_PHOTO_PANE)
-						&& hasBiometricException)) {
+		if (selectedPhoto.getId().equals(RegistrationConstants.APPLICANT_PHOTO_PANE)) {
+			if (validatePhotoTimer(lastPhotoCaptured, Integer.parseInt(configuredSecondsForRecapture), photoAlert)) {
+				takePhoto.setDisable(false);
+				photoAlert.setVisible(false);
+			}
+		} else if (selectedPhoto.getId().equals(RegistrationConstants.EXCEPTION_PHOTO_PANE) && hasBiometricException
+				&& validatePhotoTimer(lastExceptionPhotoCaptured, Integer.parseInt(configuredSecondsForRecapture),
+						photoAlert)) {
 			takePhoto.setDisable(false);
+			photoAlert.setVisible(false);
 		}
 	}
 
@@ -434,27 +454,15 @@ public class FaceCaptureController extends BaseController implements Initializab
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Opening Webcam Window to capture Image");
 
-		int configuredSecondsForRecapture = Integer
-				.parseInt((String) ApplicationContext.map().get(RegistrationConstants.RECAPTURE_TIME));
-
 		if (selectedPhoto.getId().equals(RegistrationConstants.APPLICANT_PHOTO_PANE)) {
 			if (webCameraController.webCameraPane == null
 					|| !(webCameraController.webCameraPane.getScene().getWindow().isShowing())) {
-				if (validatePhotoTimer(lastPhotoCaptured, configuredSecondsForRecapture, photoAlert)) {
-					openWebCamWindow(RegistrationConstants.APPLICANT_IMAGE);
-				} else {
-					takePhoto.setDisable(true);
-				}
+				openWebCamWindow(RegistrationConstants.APPLICANT_IMAGE);
 			}
 		} else if (selectedPhoto.getId().equals(RegistrationConstants.EXCEPTION_PHOTO_PANE)) {
 			if (webCameraController.webCameraPane == null
 					|| !(webCameraController.webCameraPane.getScene().getWindow().isShowing())) {
-
-				if (validatePhotoTimer(lastExceptionPhotoCaptured, configuredSecondsForRecapture, photoAlert)) {
-					openWebCamWindow(RegistrationConstants.EXCEPTION_IMAGE);
-				} else {
-					takePhoto.setDisable(true);
-				}
+				openWebCamWindow(RegistrationConstants.EXCEPTION_IMAGE);
 			}
 		}
 	}
