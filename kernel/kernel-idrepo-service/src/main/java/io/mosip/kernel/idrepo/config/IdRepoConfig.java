@@ -47,6 +47,12 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @EnableTransactionManagement
 public class IdRepoConfig implements WebMvcConfigurer {
 
+	private static final String MOSIP_KERNEL_IDREPO_DATETIME_TIMEZONE = "mosip.kernel.idrepo.datetime.timezone";
+
+	private static final String MOSIP_KERNEL_IDREPO_STATUS_REGISTERED = "mosip.kernel.idrepo.status.registered";
+
+	private static final String MOSIP_KERNEL_IDREPO_DATETIME_PATTERN = "mosip.utc-datetime-pattern";
+
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoConfig.class);
 
@@ -165,9 +171,9 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	 */
 	@PostConstruct
 	public void setup() {
-		status.add(env.getProperty("mosip.kernel.idrepo.status.registered"));
-		mapper.setDateFormat(new SimpleDateFormat(env.getProperty("mosip.kernel.idrepo.datetime.pattern")));
-		mapper.setTimeZone(TimeZone.getTimeZone(env.getProperty("mosip.kernel.idrepo.datetime.timezone")));
+		status.add(env.getProperty(MOSIP_KERNEL_IDREPO_STATUS_REGISTERED));
+		mapper.setDateFormat(new SimpleDateFormat(env.getProperty(MOSIP_KERNEL_IDREPO_DATETIME_PATTERN)));
+		mapper.setTimeZone(TimeZone.getTimeZone(env.getProperty(MOSIP_KERNEL_IDREPO_DATETIME_TIMEZONE)));
 	}
 
 	/**

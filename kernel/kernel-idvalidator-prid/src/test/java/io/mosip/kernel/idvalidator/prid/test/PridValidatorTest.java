@@ -48,6 +48,10 @@ public class PridValidatorTest {
 
 	@Value("${mosip.kernel.prid.test.invalid-sequential-number-prid}")
 	private String invalidSequentialNumberPrid;
+	
+	@Value("${mosip.kernel.prid.test.invalid-restricted-admin-digit-prid}")
+	private String invalidRestrictedAdminDigitsPrid;
+	
 
 	@Autowired
 	private PridValidator<String> pridValidatorImpl;
@@ -136,6 +140,12 @@ public class PridValidatorTest {
 	public void ChecksumTestF() {
 
 		pridValidatorImpl.validateId(invalidChecksumPrid);
+	}
+	
+	@Test(expected = InvalidIDException.class)
+	public void restrictedAdminDigitsiTest() {
+
+		pridValidatorImpl.validateId(invalidRestrictedAdminDigitsPrid);
 	}
 
 }
