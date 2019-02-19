@@ -265,6 +265,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					manualVerificationDTO.getRegId(), "ManualVerificationServiceImpl::updatePacketStatus()::exit");
 		} catch (TablenotAccessibleException e) {
+			description = "TablenotAccessibleException in Manual verification for registrationId: "+registrationId + "::" + e.getMessage();
+
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					manualVerificationDTO.getRegId(), e.getMessage() + ExceptionUtils.getStackTrace(e));
 		}
