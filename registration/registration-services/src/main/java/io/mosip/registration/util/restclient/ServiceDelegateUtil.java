@@ -65,15 +65,21 @@ public class ServiceDelegateUtil {
 	/**
 	 * Prepare GET request.
 	 *
-	 * @param serviceName   service to be invoked
-	 * @param requestParams parameters along with url
-	 * @param hasPathParams the has path params
+	 * @param serviceName
+	 *            service to be invoked
+	 * @param requestParams
+	 *            parameters along with url
+	 * @param hasPathParams
+	 *            the has path params
 	 * @return Object requiredType of object response Body
-	 * @throws RegBaseCheckedException  generalised exception with errorCode and
-	 *                                  errorMessage
-	 * @throws HttpClientErrorException when client error exception from server
-	 * @throws SocketTimeoutException   the socket timeout exception
-	 * @throws HttpServerErrorException when server exception from server
+	 * @throws RegBaseCheckedException
+	 *             generalised exception with errorCode and errorMessage
+	 * @throws HttpClientErrorException
+	 *             when client error exception from server
+	 * @throws SocketTimeoutException
+	 *             the socket timeout exception
+	 * @throws HttpServerErrorException
+	 *             when server exception from server
 	 */
 	public Object get(String serviceName, Map<String, String> requestParams, boolean hasPathParams)
 			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
@@ -90,8 +96,7 @@ public class ServiceDelegateUtil {
 
 		if (authRequired) {
 			// TODO - if batch get secrete key , normal login get user from session context
-			LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.map()
-					.get(RegistrationConstants.USER_DTO);
+			LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
 			authHeader = getAuthTokenId(userDTO);
 
 		}
@@ -118,6 +123,8 @@ public class ServiceDelegateUtil {
 						"set uri method called");
 
 			} catch (RegBaseCheckedException baseCheckedException) {
+				LOGGER.error("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
+						baseCheckedException.getMessage() + ExceptionUtils.getStackTrace(baseCheckedException));
 				throw new RegBaseCheckedException(
 						RegistrationExceptionConstants.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorCode(),
 						RegistrationExceptionConstants.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorMessage());
@@ -139,15 +146,21 @@ public class ServiceDelegateUtil {
 	/**
 	 * prepare POST request.
 	 *
-	 * @param serviceName service to be invoked
-	 * @param object      request type
+	 * @param serviceName
+	 *            service to be invoked
+	 * @param object
+	 *            request type
 	 * @return Object requiredType of object response Body
-	 * @throws RegBaseCheckedException  generalised exception with errorCode and
-	 *                                  errorMessage
-	 * @throws HttpClientErrorException when client error exception from server
-	 * @throws SocketTimeoutException   the socket timeout exception
-	 * @throws ResourceAccessException  the resource access exception
-	 * @throws HttpServerErrorException when server exception from server
+	 * @throws RegBaseCheckedException
+	 *             generalised exception with errorCode and errorMessage
+	 * @throws HttpClientErrorException
+	 *             when client error exception from server
+	 * @throws SocketTimeoutException
+	 *             the socket timeout exception
+	 * @throws ResourceAccessException
+	 *             the resource access exception
+	 * @throws HttpServerErrorException
+	 *             when server exception from server
 	 */
 	public Object post(String serviceName, Object object)
 			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException, ResourceAccessException {
@@ -164,8 +177,7 @@ public class ServiceDelegateUtil {
 
 		if (authRequired) {
 			// TODO - if batch get secrete key , normal login get user from session context
-			LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.map()
-					.get(RegistrationConstants.USER_DTO);
+			LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
 			authHeader = getAuthTokenId(userDTO);
 
 		}
@@ -175,6 +187,9 @@ public class ServiceDelegateUtil {
 			try {
 				requestDto = preparePOSTRequest(serviceName, object, authHeader);
 			} catch (RegBaseCheckedException baseCheckedException) {
+				LOGGER.error("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME, APPLICATION_ID,
+						baseCheckedException.getMessage() + ExceptionUtils.getStackTrace(baseCheckedException));
+				
 				throw new RegBaseCheckedException(RegistrationConstants.SERVICE_DELEGATE_UTIL,
 						baseCheckedException.getMessage() + ExceptionUtils.getStackTrace(baseCheckedException));
 			}
@@ -192,12 +207,17 @@ public class ServiceDelegateUtil {
 	/**
 	 * Prepare GET request.
 	 *
-	 * @param requestHTTPDTO the request HTTPDTO
-	 * @param serviceName    service to be invoked
-	 * @param requestParams  params need to add along with url
-	 * @param authHeader     the auth header
+	 * @param requestHTTPDTO
+	 *            the request HTTPDTO
+	 * @param serviceName
+	 *            service to be invoked
+	 * @param requestParams
+	 *            params need to add along with url
+	 * @param authHeader
+	 *            the auth header
 	 * @return RequestHTTPDTO requestHTTPDTO with required data
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private RequestHTTPDTO prepareGETRequest(RequestHTTPDTO requestHTTPDTO, final String serviceName,
 			final Map<String, String> requestParams, String authHeader) throws RegBaseCheckedException {
@@ -212,6 +232,9 @@ public class ServiceDelegateUtil {
 		try {
 			responseClass = Class.forName(responseClassName);
 		} catch (ClassNotFoundException classNotFoundException) {
+			LOGGER.error("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
+					classNotFoundException.getMessage() + ExceptionUtils.getStackTrace(classNotFoundException));
+		
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorCode(),
 					RegistrationExceptionConstants.REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorMessage());
@@ -227,11 +250,15 @@ public class ServiceDelegateUtil {
 	/**
 	 * Prepare POST request.
 	 *
-	 * @param serviceName service to be invoked
-	 * @param object      request type
-	 * @param authHeader  the auth header
+	 * @param serviceName
+	 *            service to be invoked
+	 * @param object
+	 *            request type
+	 * @param authHeader
+	 *            the auth header
 	 * @return RequestHTTPDTO requestHTTPDTO with required data
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private RequestHTTPDTO preparePOSTRequest(final String serviceName, final Object object, String authHeader)
 			throws RegBaseCheckedException {
@@ -263,9 +290,12 @@ public class ServiceDelegateUtil {
 	/**
 	 * Sets the URI.
 	 *
-	 * @param requestHTTPDTO the request HTTPDTO
-	 * @param requestParams  the request params
-	 * @param url            the url
+	 * @param requestHTTPDTO
+	 *            the request HTTPDTO
+	 * @param requestParams
+	 *            the request params
+	 * @param url
+	 *            the url
 	 */
 	private void setURI(RequestHTTPDTO requestHTTPDTO, Map<String, String> requestParams, String url) {
 		// BuildURIComponent
@@ -287,11 +317,16 @@ public class ServiceDelegateUtil {
 	/**
 	 * Setup of Auth Headers.
 	 *
-	 * @param httpHeaders  http headers
-	 * @param authRequired whether auth required or not
-	 * @param authHeader   auth header
-	 * @param authDetails  auth details
-	 * @param oauthHeader  the oauth header
+	 * @param httpHeaders
+	 *            http headers
+	 * @param authRequired
+	 *            whether auth required or not
+	 * @param authHeader
+	 *            auth header
+	 * @param authDetails
+	 *            auth details
+	 * @param oauthHeader
+	 *            the oauth header
 	 */
 	private void setAuthHeaders(HttpHeaders httpHeaders, boolean authRequired, String authHeader, String authDetails,
 			String oauthHeader) {
@@ -313,8 +348,10 @@ public class ServiceDelegateUtil {
 	/**
 	 * Setup of headers
 	 * 
-	 * @param httpHeaders http headers
-	 * @param headers     headers
+	 * @param httpHeaders
+	 *            http headers
+	 * @param headers
+	 *            headers
 	 */
 	private void setHeaders(HttpHeaders httpHeaders, String headers) {
 
@@ -331,9 +368,12 @@ public class ServiceDelegateUtil {
 	}
 
 	/**
-	 * @param requestHTTPDTO create requestedHTTPDTO
-	 * @param serviceName    service name to be called
-	 * @param object         object to be included in HTTP entities
+	 * @param requestHTTPDTO
+	 *            create requestedHTTPDTO
+	 * @param serviceName
+	 *            service name to be called
+	 * @param object
+	 *            object to be included in HTTP entities
 	 * @return
 	 */
 	private RequestHTTPDTO prepareRequest(RequestHTTPDTO requestHTTPDTO, String serviceName, Object object,
@@ -397,9 +437,11 @@ public class ServiceDelegateUtil {
 	/**
 	 * Gets the auth token id.
 	 *
-	 * @param loginUserDTO the login user DTO
+	 * @param loginUserDTO
+	 *            the login user DTO
 	 * @return the auth token id
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private String getAuthTokenId(LoginUserDTO loginUserDTO) throws RegBaseCheckedException {
 
