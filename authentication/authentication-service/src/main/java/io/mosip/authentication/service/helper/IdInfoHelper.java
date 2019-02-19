@@ -40,6 +40,7 @@ import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.EntityValueFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
+import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
@@ -53,6 +54,7 @@ import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilde
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
+import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -105,6 +107,8 @@ public class IdInfoHelper implements IdInfoFetcher {
 
 	@Autowired
 	private CbeffUtil cbeffUtil;
+
+	private MasterDataManager masterDataManager;
 
 	/*
 	 * Fetch language Name based on language code
@@ -858,5 +862,10 @@ public class IdInfoHelper implements IdInfoFetcher {
 	@Override
 	public Environment getEnvironment() {
 		return environment;
+	}
+	
+	@Override
+	public MasterDataFetcher getTitleFetcher() {
+		return masterDataManager::fetchTitles;
 	}
 }
