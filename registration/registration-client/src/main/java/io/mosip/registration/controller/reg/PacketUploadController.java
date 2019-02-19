@@ -169,16 +169,16 @@ public class PacketUploadController extends BaseController {
 				});
 				packetSynchService.updateSyncStatus(packetsToBeSynched);
 			}
-		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException | URISyntaxException e) {
+		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException | URISyntaxException exception) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, "Error while Synching packets to the server");
-			if (e instanceof RegBaseUncheckedException) {
+					APPLICATION_ID, "Error while Synching packets to the server" + ExceptionUtils.getStackTrace(exception));
+			if (exception instanceof RegBaseUncheckedException) {
 
 				throw new RegBaseCheckedException(
 						RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
 						RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorMessage());
 			} else {
-				syncErrorStatus = e.getMessage();
+				syncErrorStatus = exception.getMessage();
 			}
 		}
 		return syncErrorStatus;

@@ -160,10 +160,10 @@ public class ReRegistrationController extends BaseController implements Initiali
 				imageView.setImage(new Image(file));
 			} catch (FileNotFoundException fileNotFoundException) {
 				LOGGER.error("RE_REGISTRATION_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
-						APPLICATION_NAME, APPLICATION_ID, fileNotFoundException.getMessage());
+						APPLICATION_NAME, APPLICATION_ID, ExceptionUtils.getStackTrace(fileNotFoundException));
 			} catch (IOException ioException) {
 				LOGGER.error("RE_REGISTRATION_CONTROLLER - FAILED_WHILE_READING_ACKNOWLEDGEMENT", APPLICATION_NAME,
-						APPLICATION_ID, ioException.getMessage());
+						APPLICATION_ID, ExceptionUtils.getStackTrace(ioException));
 			}
 
 		}

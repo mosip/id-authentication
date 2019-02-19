@@ -12,6 +12,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import oshi.SystemInfo;
@@ -68,11 +69,9 @@ public class RegistrationAppHealthCheckUtil {
 			}
 			LOGGER.info("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
 					APPLICATION_ID, "Internet Access Available.");
-		} catch (IOException ioException) {
-			LOGGER.info("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
-					APPLICATION_ID, "No Internet Access.");
-		} catch (URISyntaxException e) {
-
+		} catch (IOException | URISyntaxException ioException) {
+			LOGGER.error("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
+					APPLICATION_ID, "No Internet Access." + ExceptionUtils.getStackTrace(ioException));
 		}
 		return isNWAvailable;
 	}
