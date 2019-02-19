@@ -94,7 +94,7 @@ public class IdTemplateManagerTest {
 		idTemplateManager.applyTemplate("otp-sms-template", valueMap);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test(expected = IOException.class)
 	public void TestTemplateResourceNotFoundException() throws IOException, IdAuthenticationBusinessException {
 		Mockito.when(templateManager.merge(Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(new IOException());
 		Map<String, Object> valueMap = new HashMap<>();
@@ -105,7 +105,7 @@ public class IdTemplateManagerTest {
 		idTemplateManager.applyTemplate("test", valueMap);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestApplyTemplate() throws IOException, IdAuthenticationBusinessException {
 		Map<String, Object> valueMap = new HashMap<>();
 		valueMap.put("uin", "1234567890");
@@ -127,7 +127,7 @@ public class IdTemplateManagerTest {
 		idTemplateManager.generatePDF("test", valueMap);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void testPdfGenerationWithInputStream() throws IOException, IdAuthenticationBusinessException {
 		ClassLoader classLoader = getClass().getClassLoader();
 		Mockito.when(templateManager.merge(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);

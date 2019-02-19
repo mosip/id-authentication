@@ -58,12 +58,19 @@ public class IdTemplateManager {
 
 		Objects.requireNonNull(templateName);
 		Objects.requireNonNull(values);
-		InputStream isTemplateAvail;
 		StringWriter writer = new StringWriter();
-		String templatevalue = masterDataManager.fetchLanguageCode(templateName);
-		isTemplateAvail = templateManager.merge(new ByteArrayInputStream(templatevalue.getBytes()), values);
-		if (isTemplateAvail != null) {
-			IOUtils.copy(isTemplateAvail, writer, StandardCharsets.UTF_8);
+//		InputStream isTemplateAvail;
+		//String templatevalue = masterDataManager.fetchLanguageCode(templateName);
+//		isTemplateAvail = templateManager.merge(new ByteArrayInputStream(templatevalue.getBytes()), values);
+//		if (isTemplateAvail != null) {
+//			IOUtils.copy(isTemplateAvail, writer, StandardCharsets.UTF_8);
+//			return writer.toString();
+//		} else {
+//			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.MISSING_TEMPLATE_CONFIG);
+//		}
+		boolean isTemplateAvail = templateManager.merge(templateName, writer, values);
+		
+		if (isTemplateAvail) {
 			return writer.toString();
 		} else {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.MISSING_TEMPLATE_CONFIG);

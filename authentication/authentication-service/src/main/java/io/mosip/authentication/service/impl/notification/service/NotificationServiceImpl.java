@@ -141,17 +141,12 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 		values.put(UIN2, maskedUin);
 
-		//TODO add for all auth types
-		String authTypeStr = Stream.of(
-								Stream.<AuthType>of(DemoAuthType.values()), 
-								Stream.<AuthType>of(BioAuthType.values()),
-								Stream.<AuthType>of(PinAuthType.values())
-								)
-							.flatMap(Function.identity())
-								.filter(authType -> authType.isAuthTypeEnabled(authRequestDTO, infoHelper))
-							.map(AuthType::getDisplayName)
-							.distinct()
-							.collect(Collectors.joining(","));
+		// TODO add for all auth types
+		String authTypeStr = Stream
+				.of(Stream.<AuthType>of(DemoAuthType.values()), Stream.<AuthType>of(BioAuthType.values()),
+						Stream.<AuthType>of(PinAuthType.values()))
+				.flatMap(Function.identity()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO, infoHelper))
+				.map(AuthType::getDisplayName).distinct().collect(Collectors.joining(","));
 		values.put(AUTH_TYPE, authTypeStr);
 		if (authResponseDTO.getStatus().equalsIgnoreCase(STATUS_SUCCESS)) {
 			values.put(STATUS, "Passed");
@@ -176,7 +171,8 @@ public class NotificationServiceImpl implements NotificationService {
 	public void sendOtpNotification(OtpRequestDTO otpRequestDto, String otp, String uin, String email,
 			String mobileNumber, Map<String, List<IdentityInfoDTO>> idInfo) {
 
-		Entry<String, String> dateAndTime = getDateAndTime(otpRequestDto.getReqTime(), env.getProperty(DATETIME_PATTERN));
+		Entry<String, String> dateAndTime = getDateAndTime(otpRequestDto.getReqTime(),
+				env.getProperty(DATETIME_PATTERN));
 		String date = dateAndTime.getKey();
 		String time = dateAndTime.getValue();
 
@@ -311,19 +307,19 @@ public class NotificationServiceImpl implements NotificationService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	private void invokeSmsNotification(Map<String, Object> values, SenderType sender, 
-			String notificationMobileNo) throws IdAuthenticationBusinessException {
-//		String authSmsTemplate = env.getProperty(AUTH_SMS_TEMPLATE);
-//		String otpSmsTemplate = env.getProperty(OTP_SMS_TEMPLATE);
-//		String contentTemplate = "";
-//		if (sender == SenderType.AUTH && authSmsTemplate != null) {
-//			contentTemplate = authSmsTemplate;
-//		} else if (sender == SenderType.OTP && otpSmsTemplate != null) {
-//			contentTemplate = otpSmsTemplate;
-//		}
+	private void invokeSmsNotification(Map<String, Object> values, SenderType sender, String notificationMobileNo)
+			throws IdAuthenticationBusinessException {
+		String authSmsTemplate = env.getProperty(AUTH_SMS_TEMPLATE);
+		String otpSmsTemplate = env.getProperty(OTP_SMS_TEMPLATE);
+		String contentTemplate = "";
+		if (sender == SenderType.AUTH && authSmsTemplate != null) {
+			contentTemplate = authSmsTemplate;
+		} else if (sender == SenderType.OTP && otpSmsTemplate != null) {
+			contentTemplate = otpSmsTemplate;
+		}
 
-//		String smsTemplate = applyTemplate(values, contentTemplate);
-//		notificationManager.sendSmsNotification(notificationMobileNo, smsTemplate);
+		String smsTemplate = applyTemplate(values, contentTemplate);
+		notificationManager.sendSmsNotification(notificationMobileNo, smsTemplate);
 	}
 
 	/**
@@ -337,32 +333,33 @@ public class NotificationServiceImpl implements NotificationService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	private void invokeEmailNotification(Map<String, Object> values, String emailId, SenderType sender) throws IdAuthenticationBusinessException {
-//		String otpContentTemaplate = env.getProperty(OTP_CONTENT_TEMPLATE);
-//		String authEmailSubjectTemplate = env.getProperty(AUTH_EMAIL_SUBJECT_TEMPLATE);
-//		String authEmailContentTemplate = env.getProperty(AUTH_EMAIL_CONTENT_TEMPLATE);
-//		String otpSubjectTemplate = env.getProperty(OTP_SUBJECT_TEMPLATE);
-//		
-//		String contentTemplate = "";
-//		String subjectTemplate = "";
-//		if (sender == SenderType.AUTH && authEmailSubjectTemplate != null && authEmailContentTemplate != null) {
-//			subjectTemplate = authEmailSubjectTemplate;
-//			contentTemplate = authEmailContentTemplate;
-//		} else if (sender == SenderType.OTP && otpSubjectTemplate != null && otpContentTemaplate != null) {
-//			subjectTemplate = otpSubjectTemplate;
-//			contentTemplate = otpContentTemaplate;
-//		}
+	private void invokeEmailNotification(Map<String, Object> values, String emailId, SenderType sender)
+			throws IdAuthenticationBusinessException {
+		String otpContentTemaplate = env.getProperty(OTP_CONTENT_TEMPLATE);
+		String authEmailSubjectTemplate = env.getProperty(AUTH_EMAIL_SUBJECT_TEMPLATE);
+		String authEmailContentTemplate = env.getProperty(AUTH_EMAIL_CONTENT_TEMPLATE);
+		String otpSubjectTemplate = env.getProperty(OTP_SUBJECT_TEMPLATE);
+		
+		String contentTemplate = "";
+		String subjectTemplate = "";
+		if (sender == SenderType.AUTH && authEmailSubjectTemplate != null && authEmailContentTemplate != null) {
+			subjectTemplate = authEmailSubjectTemplate;
+			contentTemplate = authEmailContentTemplate;
+		} else if (sender == SenderType.OTP && otpSubjectTemplate != null && otpContentTemaplate != null) {
+			subjectTemplate = otpSubjectTemplate;
+			contentTemplate = otpContentTemaplate;
+		}
 
-//		String mailSubject = applyTemplate(values, subjectTemplate);
-//		String mailContent = applyTemplate(values, contentTemplate);
-//		notificationManager.sendEmailNotification(emailId, mailSubject, mailContent);
+		String mailSubject = applyTemplate(values, subjectTemplate);
+		String mailContent = applyTemplate(values, contentTemplate);
+		notificationManager.sendEmailNotification(emailId, mailSubject, mailContent);
 	}
-	
+
 	/**
 	 * Gets the date and time.
 	 *
 	 * @param requestTime the request time
-	 * @param pattern the pattern
+	 * @param pattern     the pattern
 	 * @return the date and time
 	 */
 	private static Entry<String, String> getDateAndTime(String requestTime, String pattern) {
