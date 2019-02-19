@@ -106,7 +106,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 					IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage());
 
 			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.OK);
-			} else {
+		} else {
 			return handleAllExceptions(ex, request);
 		}
 	}
@@ -181,9 +181,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 			response.setId("mosip.id.error");
 		}
 
-		if (e instanceof BaseCheckedException)
-
-		{
+		if (e instanceof BaseCheckedException) {
 			List<String> errorCodes = ((BaseCheckedException) e).getCodes();
 			List<String> errorTexts = ((BaseCheckedException) e).getErrorTexts();
 

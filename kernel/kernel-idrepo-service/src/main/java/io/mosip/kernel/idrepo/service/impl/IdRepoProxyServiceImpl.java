@@ -384,7 +384,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 
 		if (id.equals(this.id.get(CREATE)) || id.equals(this.id.get(UPDATE))) {
 			response.setEntity(
-					linkTo(methodOn(IdRepoController.class).retrieveIdentity(uin.getUin().trim(), null, null)).toUri()
+					linkTo(methodOn(IdRepoController.class).retrieveIdentity(uin.getUin().trim(), null)).toUri()
 							.toString());
 			mapper.setFilterProvider(new SimpleFilterProvider().addFilter(RESPONSE_FILTER,
 					SimpleBeanPropertyFilter.serializeAllExcept(IDENTITY, ERRORS, DOCUMENTS)));
