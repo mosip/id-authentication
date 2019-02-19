@@ -25,7 +25,7 @@
                </graphic></Button>
             <Text layoutX="14.0" layoutY="31.0" onMouseClicked="#goToHomePageFromRegistration" strokeType="OUTSIDE" strokeWidth="0.0" text="%home" />
             <Text layoutX="172.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/acknowledgement" />
-            <Button layoutX="824.0" layoutY="3.0" mnemonicParsing="false" onAction="#sendNotification" prefHeight="39.0" prefWidth="167.0" styleClass="ackBackButton" text="%sendEmail">
+            <Button fx:id="sendNotification" layoutX="824.0" layoutY="3.0" mnemonicParsing="false" onAction="#sendNotification" prefHeight="39.0" prefWidth="167.0" styleClass="ackBackButton" text="%sendEmail" visible="false">
                <graphic>
                   <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                      <image>
