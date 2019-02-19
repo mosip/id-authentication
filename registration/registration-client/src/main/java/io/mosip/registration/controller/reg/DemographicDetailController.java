@@ -363,8 +363,8 @@ public class DemographicDetailController extends BaseController {
 
 	private FXUtils fxUtils;
 	private Date dateOfBirth;
-	ResourceBundle applicationMessageBundle;
-	ResourceBundle localMessageBundle;
+	ResourceBundle applicationLabelBundle;
+	ResourceBundle localLabelBundle;
 
 	@FXML
 	private void initialize() {
@@ -388,10 +388,10 @@ public class DemographicDetailController extends BaseController {
 			populateGender();	
 
 			toggleFunctionForResidence();
-			applicationMessageBundle = ApplicationContext.getInstance().getApplicationMessagesBundle();
-			localMessageBundle = ApplicationContext.getInstance().getLocalMessagesBundle();
-			residence.setText(applicationMessageBundle.getString("national"));
-			residenceLocalLanguage.setText(localMessageBundle.getString("national"));
+			applicationLabelBundle = ApplicationContext.getInstance().getApplicationLanguageBundle();
+			localLabelBundle = ApplicationContext.getInstance().getLocalLanguageProperty();
+			residence.setText(applicationLabelBundle.getString("national"));
+			residenceLocalLanguage.setText(localLabelBundle.getString("national"));
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					runtimeException.getMessage());
@@ -491,8 +491,8 @@ public class DemographicDetailController extends BaseController {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
 					if (newValue) {
-						residence.setText(applicationMessageBundle.getString("foreigner"));
-						residenceLocalLanguage.setText(localMessageBundle.getString("foreigner"));
+						residence.setText(applicationLabelBundle.getString("foreigner"));
+						residenceLocalLanguage.setText(localLabelBundle.getString("foreigner"));
 						national.getStyleClass().clear();
 						foreigner.getStyleClass().clear();
 						nationalLocalLanguage.getStyleClass().clear();
@@ -502,8 +502,8 @@ public class DemographicDetailController extends BaseController {
 						foreigner.getStyleClass().addAll("selectedResidence", "button");
 						national.getStyleClass().addAll("residence", "button");
 					} else {
-						residence.setText(applicationMessageBundle.getString("national"));
-						residenceLocalLanguage.setText(localMessageBundle.getString("national"));
+						residence.setText(applicationLabelBundle.getString("national"));
+						residenceLocalLanguage.setText(localLabelBundle.getString("national"));
 						national.getStyleClass().clear();
 						foreigner.getStyleClass().clear();
 						nationalLocalLanguage.getStyleClass().clear();
