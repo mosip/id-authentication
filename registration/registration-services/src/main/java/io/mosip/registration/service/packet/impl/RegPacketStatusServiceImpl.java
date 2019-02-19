@@ -75,7 +75,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	 * deleteRegistrationPackets()
 	 */
 	@Override
-	synchronized public ResponseDTO deleteRegistrationPackets() {
+	 public synchronized ResponseDTO deleteRegistrationPackets() {
 
 		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Delete  Reg-packets started");
@@ -87,7 +87,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		try {
 			/* Get Registrations to be deleted */
 			List<Registration> registrations = registrationDAO
-					.getRegistrationsToBeDeleted(getPacketDeletionLastDate(reqTime));
+					.get(getPacketDeletionLastDate(reqTime),RegistrationConstants.PACKET_STATUS_CODE_PROCESSED);
 
 			deleteRegistrations(registrations);
 
