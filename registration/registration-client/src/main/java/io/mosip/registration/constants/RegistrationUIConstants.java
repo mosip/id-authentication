@@ -119,6 +119,7 @@ public class RegistrationUIConstants {
 	//PACKET EXPORT
 	public static final String PACKET_EXPORT_SUCCESS_MESSAGE = bundle.getString("PACKET_EXPORT_SUCCESS_MESSAGE");
 	public static final String PACKET_EXPORT_MESSAGE = bundle.getString("PACKET_EXPORT_MESSAGE");
+	public static final String PACKET_EXPORT_FAILURE = bundle.getString("PACKET_EXPORT_FAILURE");
 
 	// JOBS
 	public static final String EXECUTE_JOB_ERROR_MESSAGE = bundle.getString("EXECUTE_JOB_ERROR_MESSAGE");
@@ -194,6 +195,7 @@ public class RegistrationUIConstants {
 	//Registration Approval - EOD Process
 	public static final String ERROR_IN_SYNC_AND_UPLOAD = bundle.getString("ERROR_IN_SYNC_AND_UPLOAD");
 	public static final String UNABLE_TO_SYNC_AND_UPLOAD = bundle.getString("UNABLE_TO_SYNC_AND_UPLOAD");
+	public static final String NETWORK_ERROR = bundle.getString("NETWORK_ERROR");
 
 	
 	//Virus Scan

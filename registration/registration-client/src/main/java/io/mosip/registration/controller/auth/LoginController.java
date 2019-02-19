@@ -28,6 +28,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.ProcessNames;
@@ -239,13 +240,13 @@ public class LoginController extends BaseController implements Initializable {
 			} catch (IOException ioException) {
 
 				LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
-						APPLICATION_ID, ioException.getMessage());
+						APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
 			} catch (RuntimeException runtimeException) {
 
 				LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
-						APPLICATION_ID, runtimeException.getMessage());
+						APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
 			}
@@ -373,7 +374,7 @@ public class LoginController extends BaseController implements Initializable {
 			} catch (RegBaseUncheckedException regBaseUncheckedException) {
 
 				LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
-						APPLICATION_ID, regBaseUncheckedException.getMessage());
+						APPLICATION_ID, regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
 
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
 			}
@@ -602,7 +603,7 @@ public class LoginController extends BaseController implements Initializable {
 		} catch (RestClientException resourceAccessException) {
 
 			LOGGER.error("REGISTRATION - SERVER_CONNECTION_CHECK", APPLICATION_NAME, APPLICATION_ID,
-					resourceAccessException.getMessage());
+					resourceAccessException.getMessage() + ExceptionUtils.getStackTrace(resourceAccessException));
 		}
 		return serverStatus;
 	}
@@ -781,12 +782,19 @@ public class LoginController extends BaseController implements Initializable {
 					userDetail.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ZERO);
 
 					loginService.updateLoginParams(userDetail);
-				} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
+				} catch (IOException ioException) {
 
 					LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER, APPLICATION_NAME,
-							APPLICATION_ID, exception.getMessage());
+							APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
+				} catch (RegBaseCheckedException regBaseCheckedException) {
+					
+					LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER, APPLICATION_NAME,
+							APPLICATION_ID, regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
+
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
+					
 				}
 			}
 		}

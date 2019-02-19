@@ -20,6 +20,7 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.PacketStatusDTO;
@@ -30,6 +31,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.sync.PacketSynchService;
+import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -44,10 +46,9 @@ import javafx.scene.layout.VBox;
 @Controller
 public class PacketUploadController extends BaseController {
 
-
 	@FXML
 	private ProgressIndicator progressIndicator;
-	
+
 	@FXML
 	private VBox uploadIds;
 
@@ -67,34 +68,38 @@ public class PacketUploadController extends BaseController {
 	 * 
 	 */
 	public void syncAndUploadPacket() {
-		
+
 		LOGGER.info("REGISTRATION - SYNCH_PACKETS_AND_PUSH_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Sync the packets and push it to the server");
 		service.reset();
 		uploadIds.getChildren().clear();
 		try {
-			String packetSyncStatus = packetSync();
-			progressIndicator.progressProperty().bind(service.progressProperty());
-			service.start();
-			service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-				@Override
-				public void handle(WorkerStateEvent t) {
-					String status = service.getValue();
-					if (!status.equals(RegistrationConstants.EMPTY)) {
-						String[] displayStatus = status.split("-");
-						if (RegistrationConstants.PACKET_SYNC_ERROR.equals(displayStatus[0])) {
-							if (!RegistrationConstants.EMPTY.equals(packetSyncStatus)) {
-								generateAlert(displayStatus[0], displayStatus[1] + " " + packetSyncStatus);
+			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				String packetSyncStatus = packetSync();
+				progressIndicator.progressProperty().bind(service.progressProperty());
+				service.start();
+				service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+					@Override
+					public void handle(WorkerStateEvent t) {
+						String status = service.getValue();
+						if (!status.equals(RegistrationConstants.EMPTY)) {
+							String[] displayStatus = status.split("-");
+							if (RegistrationConstants.PACKET_SYNC_ERROR.equals(displayStatus[0])) {
+								if (!RegistrationConstants.EMPTY.equals(packetSyncStatus)) {
+									generateAlert(displayStatus[0], displayStatus[1] + " " + packetSyncStatus);
+								} else {
+									generateAlert(displayStatus[0], displayStatus[1]);
+								}
 							} else {
 								generateAlert(displayStatus[0], displayStatus[1]);
 							}
-						} else {
-							generateAlert(displayStatus[0], displayStatus[1]);
-						}
 
+						}
 					}
-				}
-			});
+				});
+			} else {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NETWORK_ERROR);
+			}
 		} catch (RegBaseCheckedException checkedException) {
 			generateAlert(RegistrationConstants.ERROR, checkedException.getErrorText());
 		}
@@ -113,8 +118,7 @@ public class PacketUploadController extends BaseController {
 		String syncErrorStatus = "";
 		try {
 			auditFactory.audit(AuditEvent.SYNC_SERVER, Components.PACKET_SYNC, "Sync the packets status to the server",
-					SessionContext.userContext().getUserId(),
-					RegistrationConstants.PACKET_SYNC_REF_ID);
+					SessionContext.userContext().getUserId(), RegistrationConstants.PACKET_SYNC_REF_ID);
 			List<Registration> packetsToBeSynched = packetSynchService.fetchPacketsToBeSynched();
 			List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
 			Object response = null;
@@ -214,11 +218,10 @@ public class PacketUploadController extends BaseController {
 					List<Registration> synchedPackets = packetUploadService.getSynchedPackets();
 					List<Registration> packetUploadList = new ArrayList<>();
 					String status = "";
-					addToDisplay("Packet ID","Upload Status","uploadPanesFirst");
+					addToDisplay("Packet ID", "Upload Status", "uploadPanesFirst");
 					if (!synchedPackets.isEmpty()) {
 						auditFactory.audit(AuditEvent.PACKET_UPLOAD, Components.PACKET_UPLOAD,
-								"Upload packets to the server",
-								SessionContext.userContext().getUserId(),
+								"Upload packets to the server", SessionContext.userContext().getUserId(),
 								RegistrationConstants.PACKET_UPLOAD_REF_ID);
 						progressIndicator.setVisible(true);
 						for (int i = 0; i < synchedPackets.size(); i++) {
@@ -250,6 +253,13 @@ public class PacketUploadController extends BaseController {
 											addToDisplay(synchedPacket.getId(),
 													RegistrationConstants.PACKET_UPLOAD_SUCCESS);
 
+										} else if (responseCode.contains(RegistrationConstants.PACKET_DUPLICATE)) {
+											addToDisplay(synchedPacket.getId(), "Error(Duplicate Packet)");
+											synchedPacket.setClientStatusCode(
+													RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
+											synchedPacket.setFileUploadStatus(
+													RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
+											packetUploadList.add(synchedPacket);
 										} else {
 											synchedPacket.setFileUploadStatus(
 													RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
@@ -269,22 +279,14 @@ public class PacketUploadController extends BaseController {
 							} catch (RegBaseCheckedException e) {
 								LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_ERROR - PACKET_UPLOAD_CONTROLLER",
 										APPLICATION_NAME, APPLICATION_ID, "Error while pushing packets to the server");
-								if(e.getMessage().contains(RegistrationConstants.PACKET_DUPLICATE)) {
-									addToDisplay(synchedPacket.getId(), "Error(Duplicate Packets)");
-									synchedPacket.setClientStatusCode(RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
-									synchedPacket.setFileUploadStatus(
-											RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
-								} else {
-									synchedPacket.setFileUploadStatus(
-											RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
-									addToDisplay(synchedPacket.getId(), "Error(" + e.getErrorTexts().toString() + ")");
-								}
+
+								synchedPacket.setFileUploadStatus(
+										RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+								addToDisplay(synchedPacket.getId(), "Error(Service Error)");
 								packetUploadList.add(synchedPacket);
 								synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
-								
 
 							} catch (RuntimeException e) {
-								e.printStackTrace();
 								LOGGER.error(
 										"REGISTRATION - HANDLE_PACKET_UPLOAD_RUNTIME_ERROR - PACKET_UPLOAD_CONTROLLER",
 										APPLICATION_NAME, APPLICATION_ID,
@@ -318,40 +320,36 @@ public class PacketUploadController extends BaseController {
 			};
 		}
 	};
-	
+
 	public void addToDisplay(String id, String message) {
 		addToDisplay(id, message, "uploadPanes");
 	}
-	
+
 	public void addToDisplay(String id, String message, String idForAnchorPane) {
 		try {
-			
-		AnchorPane paneToDisplay = new AnchorPane();
-		paneToDisplay.setId(idForAnchorPane);
-		Label packetId = new Label(id);
-		packetId.setId("uploadPageText");
-		Label status = new Label(message);
-		packetId.setLayoutX(26.0);
-		status.setLayoutX(300.0);
-		packetId.setLayoutY(10);
-		status.setLayoutY(10);
 
-		
-		paneToDisplay.getChildren().add(packetId);
-		paneToDisplay.getChildren().add(status);
-		
-		Platform.runLater(()->{
-			uploadIds.getChildren().add(paneToDisplay);
-		});
-		
-		}catch(Exception e) {
+			AnchorPane paneToDisplay = new AnchorPane();
+			paneToDisplay.setId(idForAnchorPane);
+			Label packetId = new Label(id);
+			packetId.setId("uploadPageText");
+			Label status = new Label(message);
+			packetId.setLayoutX(26.0);
+			status.setLayoutX(300.0);
+			packetId.setLayoutY(10);
+			status.setLayoutY(10);
+
+			paneToDisplay.getChildren().add(packetId);
+			paneToDisplay.getChildren().add(status);
+
+			Platform.runLater(() -> {
+				uploadIds.getChildren().add(paneToDisplay);
+			});
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
-		
+
 	}
-	
 
 	/**
 	 * Export the packets and show the exported packets in the table

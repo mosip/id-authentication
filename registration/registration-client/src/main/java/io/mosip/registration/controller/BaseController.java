@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -327,11 +328,11 @@ public class BaseController {
 			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REDIRECTHOME - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage());
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 		} catch (RuntimeException runtimException) {
 			LOGGER.error("REGISTRATION - REDIRECTHOME - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-					runtimException.getMessage());
+					runtimException.getMessage() + ExceptionUtils.getStackTrace(runtimException));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 		}
 	}
@@ -365,15 +366,6 @@ public class BaseController {
 		SessionContext.map().remove("toggleAgeOrDob");
 		SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
 		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
-
-		SessionContext.map().remove("demographicDetail");
-		SessionContext.map().remove("documentScan");
-		SessionContext.map().remove("fingerPrintCapture");
-		SessionContext.map().remove("biometricException");
-		SessionContext.map().remove("faceCapture");
-		SessionContext.map().remove("irisCapture");
-		SessionContext.map().remove("operatorAuthentication");
-		SessionContext.map().remove("registrationPreview");
 
 		SessionContext.userMap().remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 		SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
@@ -455,9 +447,9 @@ public class BaseController {
 			} else {
 				try {
 					Thread.sleep(2000);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException interruptedException) {
 					LOGGER.error("FINGERPRINT_AUTHENTICATION_CONTROLLER - ERROR_SCANNING_FINGER", APPLICATION_NAME,
-							APPLICATION_ID, e.getMessage());
+							APPLICATION_ID, interruptedException.getMessage() + ExceptionUtils.getStackTrace(interruptedException));
 				}
 			}
 			counter++;
@@ -591,10 +583,10 @@ public class BaseController {
 			}
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
-					regBaseCheckedException.getMessage());
+					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
-					regBaseUncheckedException.getMessage());
+					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
 		}
 		return writeNotificationTemplate;
 	}
@@ -616,7 +608,7 @@ public class BaseController {
 			}
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
-					regBaseUncheckedException.getMessage());
+					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
 		}
 		return smsNotificationResponse;
 	}
@@ -637,7 +629,7 @@ public class BaseController {
 			}
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
-					regBaseUncheckedException.getMessage());
+					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
 		}
 		return emailNotificationResponse;
 	}
