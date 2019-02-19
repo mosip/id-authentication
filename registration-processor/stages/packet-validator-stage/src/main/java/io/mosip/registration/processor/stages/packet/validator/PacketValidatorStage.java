@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -30,6 +32,7 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -40,12 +43,10 @@ import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainReque
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDataSyncRequestDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDatasyncReponseDTO;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.stages.utils.ApplicantDocumentValidation;
@@ -78,7 +79,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 	/** The adapter. */
 	@Autowired
-	private FileSystemAdapter<InputStream, Boolean> adapter;
+	private FileSystemAdapter adapter;
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
@@ -159,8 +160,8 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		List<InternalRegistrationStatusDto> dtolist = null;
 		List<String> registrationIds = new ArrayList<>();
 		List<String> preRegistrationIds = new ArrayList<>();
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				"", "PacketValidatorStage::process()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"PacketValidatorStage::process()::entry");
 		try {
 
 			object.setMessageBusAddress(MessageBusAddress.PACKET_VALIDATOR_BUS_IN);
@@ -236,10 +237,11 @@ public class PacketValidatorStage extends MosipVerticleManager {
 							object.setRid(dto.getRegistrationId());
 							isTransactionSuccessful = true;
 							description = "Structural validation success for registrationId " + registrationId;
-							regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-									registrationId, "PacketValidatorStage::process()::exit");
-							regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-									registrationId,description);
+							regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+									LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+									"PacketValidatorStage::process()::exit");
+							regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+									LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
 						} else {
 							object.setIsValid(Boolean.FALSE);
 							object.setRid(dto.getRegistrationId());
@@ -262,6 +264,16 @@ public class PacketValidatorStage extends MosipVerticleManager {
 						setApplicant(packetMetaInfo.getIdentity(), registrationStatusDto);
 
 						registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+					} catch (FSAdapterException e) {
+						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+								PlatformErrorMessages.RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE.getMessage()
+										+ e.getMessage());
+						object.setInternalError(Boolean.TRUE);
+						isTransactionSuccessful = false;
+						description = "FileSytem is not accessible for registration id " + registrationId;
+						object.setIsValid(Boolean.FALSE);
+						object.setRid(dto.getRegistrationId());
 					} catch (DataAccessException e) {
 						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
@@ -361,7 +373,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 					description = "Reverse data sync in packet validator successful for " + preRegistrationIds.size()
 							+ " pre-registrationIds";
 
-				} 
+				}
 
 				if (mainResponseDto != null && mainResponseDto.getErr() != null) {
 					regProcLogger.error(LoggerFileConstant.REGISTRATIONID.toString(), registrationIds.toString(),

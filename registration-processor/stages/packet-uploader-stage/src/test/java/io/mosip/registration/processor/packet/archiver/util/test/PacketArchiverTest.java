@@ -17,16 +17,16 @@ import org.mockito.Mockito;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.ServerUtil;
-import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
+import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditRequestDto;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
@@ -38,9 +38,9 @@ import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 @RunWith(SpringRunner.class)
 public class PacketArchiverTest {
 
-	/** The filesystem ceph adapter impl. */
+	/** The filesystem adapter impl. */
 	@Mock
-	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
+	private FileSystemAdapter filesystemAdapterImpl;
 
 	/** The filemanager. */
 	@Mock
@@ -138,7 +138,7 @@ public class PacketArchiverTest {
 		InputStream in = IOUtils.toInputStream(source, "UTF-8");
 		Mockito.when(auditLogRequestBuilder.createAuditRequestBuilder("description", "eventId", "eventName",
 				"eventType", registrationId)).thenReturn(auditResponseDto);
-		// Mockito.when(filesystemCephAdapterImpl.getPacket(registrationId)).thenReturn(in);
+		// Mockito.when(filesystemAdapterImpl.getPacket(registrationId)).thenReturn(in);
 		Mockito.doNothing().when(filemanager).put(any(), any(), any());
 
 		packetArchiver.archivePacket(registrationId);
@@ -156,8 +156,7 @@ public class PacketArchiverTest {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	@Test(expected = PacketNotFoundException.class)
-	public void archivePacketAdaptedFailureCheck()
-			throws PacketNotFoundException, IOException {
+	public void archivePacketAdaptedFailureCheck() throws PacketNotFoundException, IOException {
 		registrationId = "1000";
 		packetArchiver.archivePacket(registrationId);
 
