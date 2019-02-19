@@ -24,6 +24,12 @@ import io.mosip.kernel.idvalidator.prid.constant.PridExceptionConstant;
  */
 @Component
 public class PridValidatorImpl implements PridValidator<String> {
+	
+	/**
+	 * List of restricted numbers
+	 */
+	@Value("#{'${mosip.kernel.prid.restricted-numbers}'.split(',')}")
+	private List<String> restrictedAdminDigits;
 
 	/**
 	 * This Field to hold the length of PRID Reading length of PRID from property
@@ -311,7 +317,7 @@ public class PridValidatorImpl implements PridValidator<String> {
 	private boolean isValidId(String id, int sequenceLimit, int repeatingLimit, int repeatingBlockLimit) {
 		initializeRegEx(repeatingLimit, repeatingBlockLimit);
 		return !(sequenceFilter(id, sequenceLimit) || regexFilter(id, repeatingPattern)
-				|| regexFilter(id, repeatingBlockpattern) || validateNotStartWith(id));
+				|| regexFilter(id, repeatingBlockpattern) || validateNotStartWith(id)) ||restrictedAdminFilter(id);
 	}
 
 	/**
@@ -373,6 +379,17 @@ public class PridValidatorImpl implements PridValidator<String> {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Checks the input id for {@link #restrictedNumbers} filter
+	 * 
+	 * @param id
+	 *            The input id to validate
+	 * @return true if the id matches the filter
+	 */
+	private boolean restrictedAdminFilter(String id) {
+		return restrictedAdminDigits.parallelStream().anyMatch(id::contains);
 	}
 
 }

@@ -48,8 +48,7 @@ public class VidGeneratorImpl implements VidGenerator<String> {
 	@PostConstruct
 	public void vidGeneratorPostConstruct() {
 		generatedIdLength = vidLength - 1;
-		lowerBound = Long.parseLong(
-				VidGeneratorConstant.ZERO + StringUtils.repeat(VidGeneratorConstant.ZERO, generatedIdLength - 1));
+		lowerBound = Long.parseLong(StringUtils.repeat(VidGeneratorConstant.ZERO, generatedIdLength));
 		upperBound = Long.parseLong(StringUtils.repeat(VidGeneratorConstant.NINE, generatedIdLength));
 	}
 

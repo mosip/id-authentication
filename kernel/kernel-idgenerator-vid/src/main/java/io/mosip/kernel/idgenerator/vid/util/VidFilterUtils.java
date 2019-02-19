@@ -20,6 +20,12 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class VidFilterUtils {
+	
+	/**
+	 * List of restricted numbers
+	 */
+	@Value("#{'${mosip.kernel.vid.restricted-numbers}'.split(',')}")
+	private List<String> restrictedAdminDigits;
 
 	/**
 	 * Upper bound of number of digits in sequence allowed in id. For example if
@@ -123,9 +129,18 @@ public class VidFilterUtils {
 	 */
 	public boolean isValidId(String id) {
 		return !(sequenceFilter(id) || regexFilter(id, repeatingPattern) || regexFilter(id, repeatingBlockPattern)
-				|| validateNotStartWith(id) || validateIdLength(id));
+				|| validateNotStartWith(id) || validateIdLength(id) || restrictedAdminFilter(id));
 	}
-
+	/**
+	 * Checks the input id for {@link #restrictedNumbers} filter
+	 * 
+	 * @param id
+	 *            The input id to validate
+	 * @return true if the id matches the filter
+	 */
+	private boolean restrictedAdminFilter(String id) {
+		return restrictedAdminDigits.parallelStream().anyMatch(id::contains);
+	}
 	/**
 	 * Checks the input id for {@link #SEQUENCE_LIMIT} filter
 	 * 
