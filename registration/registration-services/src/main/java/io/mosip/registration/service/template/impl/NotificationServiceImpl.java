@@ -10,7 +10,6 @@ import static io.mosip.registration.constants.RegistrationConstants.SMS_SERVICE;
 
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,6 +21,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
@@ -129,7 +129,7 @@ public class NotificationServiceImpl implements NotificationService {
 			sb.append("Exception in sending ").append(service.toUpperCase()).append(" Notification - ")
 					.append(exception.getMessage());
 
-			LOGGER.info(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, sb.toString());
+			LOGGER.error(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			auditFactory.audit(AuditEvent.NOTIFICATION_STATUS, Components.NOTIFICATION_SERVICE, sb.toString(),
 					REGISTRATION_ID, regId);
 			
