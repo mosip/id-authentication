@@ -15,7 +15,6 @@ import { Applicant } from 'src/app/shared/models/dashboard-model/dashboard.modal
 import AttributeModel from 'src/app/shared/models/demographic-model';
 import { IdentityModel } from 'src/app/shared/models/demographic-model/identity.modal';
 import { RequestModel } from 'src/app/shared/models/demographic-model/request.modal';
-import { DemoIdentityModel } from 'src/app/shared/models/demographic-model/demo.identity.modal';
 import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
 import * as appConstants from '../../../app.constants';
 
@@ -28,15 +27,17 @@ export class DashBoardComponent implements OnInit {
   userFile: FileModel;
   userFiles: any[] = [];
   tempFiles;
+  loginId = '';
+
   disableModifyDataButton = false;
   disableModifyAppointmentButton = true;
   fetchedDetails = true;
   modify = false;
+  isNewApplication = false;
+  isFetched = false;
+
   users: Applicant[] = [];
   selectedUsers: Applicant[] = [];
-  isNewApplication = false;
-  loginId = '';
-  isFetched = false;
 
   constructor(
     private router: Router,
@@ -60,9 +61,12 @@ export class DashBoardComponent implements OnInit {
   initUsers() {
     this.regService.flushUsers();
     this.sharedService.flushNameList();
+    this.getUsers();
+  }
+
+  private getUsers() {
     this.dataStorageService.getUsers(this.loginId).subscribe(
       (applicants: Applicant[]) => {
-        console.log(applicants);
         if (
           applicants[appConstants.NESTED_ERROR] &&
           applicants[appConstants.NESTED_ERROR][appConstants.ERROR_CODE] ===
@@ -116,20 +120,7 @@ export class DashBoardComponent implements OnInit {
       },
       error => {
         console.log(error);
-        // if (error.status < 400) {
-        //   console.log('error');
-        //   return this.router.navigate(['error']);
-        // } else
-        // if (
-        //   error[appConstants.ERROR][appConstants.NESTED_ERROR] &&
-        //   error[appConstants.ERROR][appConstants.NESTED_ERROR][appConstants.ERROR_CODE] ===
-        //     appConstants.ERROR_CODES.noApplicantEnrolled
-        // ) {
-        //   sessionStorage.setItem('newApplicant', 'true');
-        //   this.onNewApplication();
-        // } else {
         this.router.navigate(['error']);
-        // }
         this.isFetched = true;
       },
       () => {
@@ -281,7 +272,8 @@ export class DashBoardComponent implements OnInit {
       () => {
         this.dataStorageService.getUser(preId).subscribe(
           response => {
-            const request = this.createRequestJSON(response[appConstants.RESPONSE][0]);
+            // const request = this.createRequestJSON(response[appConstants.RESPONSE][0]);
+            const request = response[appConstants.RESPONSE][0];
             this.disableModifyDataButton = true;
             this.regService.addUser(new UserModel(preId, request, this.userFiles));
           },
@@ -330,7 +322,6 @@ export class DashBoardComponent implements OnInit {
         status: status
       });
     }
-    console.log(this.sharedService.getNameList());
     const arr = this.router.url.split('/');
     const url = `/pre-registration/${arr.pop()}/booking/pick-center`;
     this.router.navigateByUrl(url);
@@ -396,17 +387,18 @@ export class DashBoardComponent implements OnInit {
   }
 
   private createRequestJSON(requestModal: RequestModel) {
-    const identity = this.createIdentityJSON(requestModal.demographicDetails.identity);
-    const req: RequestModel = {
-      preRegistrationId: requestModal.preRegistrationId,
-      createdBy: requestModal.createdBy,
-      createdDateTime: requestModal.createdDateTime,
-      updatedBy: this.loginId,
-      updatedDateTime: '',
-      langCode: requestModal.langCode,
-      demographicDetails: new DemoIdentityModel(identity)
-    };
-    return req;
+    // const identity = this.createIdentityJSON(requestModal.demographicDetails.identity);
+    // const identity = requestModal.demographicDetails.identity;
+    // const req: RequestModel = {
+    //   preRegistrationId: requestModal.preRegistrationId,
+    //   createdBy: requestModal.createdBy,
+    //   createdDateTime: requestModal.createdDateTime,
+    //   updatedBy: this.loginId,
+    //   updatedDateTime: '',
+    //   langCode: requestModal.langCode,
+    //   demographicDetails: new DemoIdentityModel(identity)
+    // };
+    return requestModal;
   }
 
   setUserFiles(response) {
@@ -421,6 +413,7 @@ export class DashBoardComponent implements OnInit {
     if (value === appConstants.APPLICATION_STATUS_CODES.booked) return 'green';
     if (value === appConstants.APPLICATION_STATUS_CODES.expired) return 'red';
   }
+
   getMargin(name: string) {
     if (name.length > 25) return '0px';
     else return '27px';

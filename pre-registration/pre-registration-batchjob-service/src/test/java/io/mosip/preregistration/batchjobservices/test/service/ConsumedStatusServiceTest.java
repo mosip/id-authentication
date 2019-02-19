@@ -73,7 +73,7 @@ public class ConsumedStatusServiceTest {
 		logger.info("demographicEntity " + demographicEntity);
 		logger.info("bookingEntity " + bookingEntity);
 		Mockito.when(preIdRepository.findBystatusComments(STATUS_COMMENTS))
-	    		.thenReturn(preRegList);
+	    		.thenReturn(preRegList); 
 		Mockito.when(demographicRepository.findBypreRegistrationId(demographicEntity.getPreRegistrationId()))
 				.thenReturn(demographicEntity);
 		demographicEntity.setStatusCode("Consumed");
@@ -83,10 +83,6 @@ public class ConsumedStatusServiceTest {
 		Mockito.when(regAppointmentRepository.save(bookingEntity)).thenReturn(bookingEntity);
 
 		Mockito.when(preIdRepository.save(Mockito.any())).thenReturn(processedEntity);
-
-		// preRegList.get(0).setStatusCode("NEW_STATUS_COMMENT");
-
-		// Mockito.when(batchServiceDAO.updateProcessedList(preRegList.)).thenReturn(true);
 
 		response = service.demographicConsumedStatus();
 		assertEquals("Demographic status to consumed updated successfully", response.getResponse());

@@ -56,7 +56,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	private static final String SESSION_ID = "sessionId";
 
 	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "mosip.kernel.idrepo.datetime.pattern";
+	private static final String DATETIME_PATTERN = "mosip.utc-datetime-pattern";
 
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoExceptionHandler.class);
@@ -191,7 +191,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
 					.collect(Collectors.toList());
 
-			response.setError(errors);
+			response.setErrors(errors);
 		}
 
 		if (e instanceof BaseUncheckedException) {
@@ -202,7 +202,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
 					.collect(Collectors.toList());
 
-			response.setError(errors);
+			response.setErrors(errors);
 		}
 
 		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));

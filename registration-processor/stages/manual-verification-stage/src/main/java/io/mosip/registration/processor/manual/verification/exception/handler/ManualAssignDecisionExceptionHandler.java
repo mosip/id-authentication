@@ -23,6 +23,7 @@ import io.mosip.registration.processor.manual.verification.response.dto.ManualVe
 import io.mosip.registration.processor.manual.verification.response.dto.ManualVerificationBioDemoResponseDTO;
 import io.mosip.registration.processor.manual.verification.response.dto.ManualVerificationErrorDTO;
 import io.mosip.registration.processor.manual.verification.util.ManualVerificationBioDemoJsonSerializer;
+import io.vertx.core.json.DecodeException;
 
 /**
  * The Class ManualAssignDecisionExceptionHandler.
@@ -121,8 +122,8 @@ public class ManualAssignDecisionExceptionHandler {
 	 * @param e the e
 	 * @return the string
 	 */
-	public String dataExceptionHandler(DataIntegrityViolationException e) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"RPR-DBE-001 Data integrity violation exception",e.getMessage());
+	public String dataExceptionHandler(DecodeException e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"RPR-DBE-001 JSON DATA DECODE exception",e.getMessage());
 		return buildPacketReceiverExceptionResponse((Exception)e);
 	}
 
@@ -205,7 +206,7 @@ public class ManualAssignDecisionExceptionHandler {
 		if(exe instanceof InvalidFileNameException)
 			return invalidFileNameExceptionHandler((InvalidFileNameException)exe);
 		else 
-			return dataExceptionHandler((DataIntegrityViolationException) exe);
+			return dataExceptionHandler((DecodeException) exe);
 	}
 
 

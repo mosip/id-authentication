@@ -25,6 +25,12 @@ GRANT CREATE,USAGE
 -- ddl-end --
 
 -- object: grant_8e1a2559ed | type: PERMISSION --
+GRANT USAGE
+   ON SCHEMA prereg
+   TO prereguser;
+-- ddl-end --
+
+-- object: grant_8e1a2559ed | type: PERMISSION --
 GRANT SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES
    ON ALL TABLES IN SCHEMA prereg
    TO prereguser;

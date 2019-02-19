@@ -146,7 +146,7 @@ public class ManualVerificationStageTest{
 		processPacketInfoTest();
 		testSendMessage();
 		testProcess();
-	//	packetUploaderTest();
+		packetUploaderTest();
 	}
 
 
