@@ -287,8 +287,11 @@ public enum PlatformErrorMessages {
 	RPR_MQI_UNABLE_TO_SEND_TO_QUEUE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "003",
 			"Unable to send message to to queue"),
 	
-	RPR_MQI_UNABLE_TO_CONSUME_FROM_QUEUE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "003",
+	RPR_MQI_UNABLE_TO_CONSUME_FROM_QUEUE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "004",
 			"Unable to consume message from queue"),
+
+	RPR_MQI_NO_FILES_FOUND_IN_QUEUE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "004",
+			"There is noe file available in queue"),
 	
 	RPR_MQI_INVALID_CONNECTION(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "002", "Connection not obtained from ConnectionFactory"),
 

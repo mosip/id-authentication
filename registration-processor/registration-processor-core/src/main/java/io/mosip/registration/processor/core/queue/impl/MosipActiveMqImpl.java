@@ -9,7 +9,10 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.queue.factory.MosipActiveMq;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
 import io.mosip.registration.processor.core.queue.impl.exception.ConnectionUnavailableException;
@@ -25,6 +28,9 @@ import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
  */
 public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> {
 
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(MosipActiveMqImpl.class);
+	
 	private Connection connection;
 	private Session session;
 	private Destination destination;
@@ -106,7 +112,9 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 				message.readBytes(data);
 				return data;
 			} else {
-				System.out.println("no file");
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.APPLICATIONID.toString(), "failed : ", 
+						PlatformErrorMessages.RPR_MQI_NO_FILES_FOUND_IN_QUEUE.getMessage());
 			}
 		} catch (JMSException e) {
 			throw new ConnectionUnavailableException(
