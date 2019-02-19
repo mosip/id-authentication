@@ -666,7 +666,7 @@ public class RegistrationConstants {
 	public static final String EMAIL_SERVICE = "email";
 	public static final String SMS_SERVICE = "sms";
 	public static final String NOTIFICATION_SERVICE = "REGISTRATION - NOTIFICATION SERVICE ";
-	public static final String MODE_OF_COMMUNICATION = "MODE_OF_COMMUNICATION";
+	public static final String MODE_OF_COMMUNICATION = "mosip.registration.mode_of_communication";
 
 	// Global configuration parameters
 	public static final String INVALID_LOGIN_COUNT = "INVALID_LOGIN_COUNT";
