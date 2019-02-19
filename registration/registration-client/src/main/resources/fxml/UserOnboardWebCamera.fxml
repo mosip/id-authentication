@@ -28,30 +28,20 @@
             </ImageView>
 <AnchorPane layoutX="180.0" styleClass="onboardImgPane">
          <children>
-       <Button fx:id="captureExceptionImage" disable="true" layoutX="471.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForExceptionPhoto" styleClass="RegbuttonStyle" text="Capture" visible="false" />
+       <Button fx:id="captureExceptionImage" disable="true" layoutX="471.0" layoutY="440.0" mnemonicParsing="false" styleClass="RegbuttonStyle" text="Capture" visible="false" />
        <AnchorPane layoutX="357.0" layoutY="254.0" styleClass="onboardFaceDetails">
        <children>
-       <Label layoutX="106.0" layoutY="1.0" text="Photo" styleClass="onboardBioDetailsHeader"/>
-       <Label layoutY="35.0" text="Threshold" styleClass="onboardBioDetails"/>
-       <Label layoutX="150.0" layoutY="35.0" text="Quality" styleClass="onboardBioDetails"/>
-       <Label layoutY="70.0" text="80%" styleClass="onboardBioDetails"/>
-                        <Label layoutX="150.0" layoutY="70.0" text="-" styleClass="onboardBioDetails"/>
-                        <Label layoutY="100.0" text="Attempts" styleClass="onboardBioDetails"/>
-                        <Label layoutX="150.0" layoutY="100.0" text="Quality" styleClass="onboardBioDetails"/>
-                        <Label layoutX="150.0" layoutY="125.0" text="-" styleClass="onboardBioDetails"/>
-                        <Label layoutY="125.0" text="-" styleClass="onboardBioDetails"/>
+       <Label layoutX="106.0" layoutY="1.0" styleClass="onboardBioDetailsHeader" text="Photo" />
+       <Label layoutY="35.0" styleClass="onboardBioDetails" text="Threshold" />
+       <Label layoutX="150.0" layoutY="35.0" styleClass="onboardBioDetails" text="Quality" />
+       <Label layoutY="70.0" styleClass="onboardBioDetails" text="80%" />
+                        <Label layoutX="150.0" layoutY="70.0" styleClass="onboardBioDetails" text="-" />
+                        <Label layoutY="100.0" styleClass="onboardBioDetails" text="Attempts" />
+                        <Label layoutX="150.0" layoutY="100.0" styleClass="onboardBioDetails" text="Quality" />
+                        <Label layoutX="150.0" layoutY="125.0" styleClass="onboardBioDetails" text="-" />
+                        <Label layoutY="125.0" styleClass="onboardBioDetails" text="-" />
        </children>
-       </AnchorPane>       
-       
-       <HBox fx:id="applicantImageHBox" layoutX="357.0" layoutY="60.0" styleClass="onboardIrisPanes">
-          <children>
-             <ImageView fx:id="applicantImage" fitHeight="180.0" fitWidth="240.0" pickOnBounds="true" preserveRatio="true">
-                <image>
-                   <Image url="@../images/Photo.png" />
-                </image>
-             </ImageView>
-          </children>
-       </HBox>
+       </AnchorPane>
        
        <Label layoutX="506.0" layoutY="328.0" text="Exception Photo" visible="false" />        
        <Label layoutX="488.0" layoutY="390.0" text="Threshold Percentage :" visible="false" />      
@@ -69,7 +59,7 @@
        <Label layoutX="248.0" layoutY="30.0" styleClass="onboardPageBioTitle" text="Photo" />
        <AnchorPane layoutX="100.0" layoutY="415.0" styleClass="onboardProgressPane">
                      <children>
-                        <Button fx:id="captureImage" layoutX="620.0" layoutY="65.0" mnemonicParsing="false" onAction="#openCamForApplicantPhoto" styleClass="onboardScanBtn" text="Scan">
+                        <Button fx:id="takePhoto" layoutX="620.0" layoutY="65.0" mnemonicParsing="false" onAction="#takePhoto" styleClass="onboardScanBtn" text="Take Photo">
                         <graphic>
                         <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -81,7 +71,16 @@
                         <Label layoutX="151.0" layoutY="71.0" text="Quality" />
                         <Line endX="100.0" layoutX="372.0" layoutY="85.0" startX="-100.0" />
                      </children>
-                  </AnchorPane>       
+                  </AnchorPane>
+                  <Pane fx:id="applicantImagePane" layoutX="350.0" layoutY="66.0" onMouseClicked="#enableCapture" prefHeight="216.0" prefWidth="243.0">
+                     <children>
+             <ImageView fx:id="applicantImage" fitHeight="210.0" fitWidth="272.0" layoutX="2.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
+                <image>
+                   <Image url="@../images/Photo.png" />
+                </image>
+             </ImageView>
+                     </children>
+                  </Pane>       
    </children>
    </AnchorPane>
    </children>

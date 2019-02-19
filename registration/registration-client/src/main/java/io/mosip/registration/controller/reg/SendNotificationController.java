@@ -4,10 +4,8 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import org.springframework.stereotype.Controller;
 
@@ -19,12 +17,10 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.ResponseDTO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
@@ -32,7 +28,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 @Controller
-public class SendNotificationController extends BaseController implements Initializable {
+public class SendNotificationController extends BaseController {
 
 	private static final Logger LOGGER = AppConfig.getLogger(SendNotificationController.class);
 
@@ -44,21 +40,8 @@ public class SendNotificationController extends BaseController implements Initia
 	private ImageView emailImageView;
 	@FXML
 	private ImageView mobileImageView;
-
-	private Image deSelectImage;
-
-	private boolean selectedEmail = false;
-	private boolean selectedMobile = false;
-
-	private Image selectImage;
-
+	
 	private Stage popupStage;
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		deSelectImage = emailImageView.getImage();
-		selectImage = new Image(getClass().getResourceAsStream(RegistrationConstants.SELECTION_IMG_PATH));
-	}
 
 	public void init() {
 		try {
@@ -68,7 +51,7 @@ public class SendNotificationController extends BaseController implements Initia
 					.load(getClass().getResource(RegistrationConstants.SEND_NOTIFICATION_PAGE));
 			popupStage.setResizable(false);
 			Scene scene = new Scene(sendEmailPopup);
-			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			ClassLoader loader = ClassLoader.getSystemClassLoader();
 			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			popupStage.setScene(scene);
 			popupStage.initModality(Modality.WINDOW_MODAL);
@@ -93,7 +76,7 @@ public class SendNotificationController extends BaseController implements Initia
 		ResponseDTO emailNotificationResponse = new ResponseDTO();
 		ResponseDTO smsNotificationResponse = new ResponseDTO();
 
-		if (selectedEmail && !email.getText().isEmpty()) {
+		if (!email.getText().isEmpty()) {
 			String emails = email.getText();
 			List<String> emailList = Arrays.asList(emails.split(","));
 			for (String emailId : emailList) {
@@ -116,7 +99,7 @@ public class SendNotificationController extends BaseController implements Initia
 				}
 			}
 		}
-		if (selectedMobile && !mobile.getText().isEmpty()) {
+		if (!mobile.getText().isEmpty()) {
 			String mobileNos = mobile.getText();
 			List<String> mobileList = Arrays.asList(mobileNos.split(","));
 			for (String mobileNo : mobileList) {
@@ -138,32 +121,6 @@ public class SendNotificationController extends BaseController implements Initia
 					}
 				}
 			}
-		}
-	}
-
-	@FXML
-	public void selectMobile(MouseEvent event) {
-		if (selectedMobile) {
-			selectedMobile = false;
-			mobileImageView.setImage(deSelectImage);
-			mobile.setDisable(true);
-		} else {
-			selectedMobile = true;
-			mobileImageView.setImage(selectImage);
-			mobile.setDisable(false);
-		}
-	}
-
-	@FXML
-	public void selectEmail(MouseEvent event) {
-		if (selectedEmail) {
-			selectedEmail = false;
-			emailImageView.setImage(deSelectImage);
-			email.setDisable(true);
-		} else {
-			selectedEmail = true;
-			emailImageView.setImage(selectImage);
-			email.setDisable(false);
 		}
 	}
 
