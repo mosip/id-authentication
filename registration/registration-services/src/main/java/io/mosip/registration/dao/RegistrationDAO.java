@@ -113,5 +113,14 @@ public interface RegistrationDAO {
 	 * @return List of Registrations
 	 */
 	List<Registration> get(List<String> regIds);
+	
+	/**
+	 * Find by CrDtimes and client status code
+	 * @param crDtimes the date upto packets to be deleted
+	 * @param clientStatus status of resgistrationPacket
+	 * @return list of registrations
+	 */
+	List<Registration> get(Timestamp crDtimes, String clientStatus);
+
 
 }
