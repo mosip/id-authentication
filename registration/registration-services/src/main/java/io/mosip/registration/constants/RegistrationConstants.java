@@ -676,6 +676,8 @@ public class RegistrationConstants {
 	public static final String IRIS_DISABLE_FLAG = "IRIS_DISABLE_FLAG";
 	public static final String FACE_DISABLE_FLAG = "FACE_DISABLE_FLAG";
 	public static final String DOCUMENT_DISABLE_FLAG = "DOCUMENT_DISABLE_FLAG";
+	public static final String SEND_NOTIFICATION_DISABLE_FLAG = "SEND_NOTIFICATION_DISABLE_FLAG";
+	public static final String RECAPTURE_TIME = "RECAPTURE_TIME";
 
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
