@@ -1,13 +1,12 @@
 package io.mosip.kernel.cryptomanager.test;
 
-import static org.hamcrest.CoreMatchers.isA;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.IOException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -30,7 +29,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -39,26 +37,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.cryptomanager.KernelCryptomanagerBootApplication;
-import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
+import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyResponseDto;
+import io.mosip.kernel.cryptomanager.exception.ParseResponseException;
+import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
+import io.mosip.kernel.cryptomanager.utils.CryptomanagerUtil;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
 @SpringBootTest(classes = KernelCryptomanagerBootApplication.class)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-public class KernelCryptographicServiceIntegrationTest {
+public class KernelCryptographicUtilTest {
 
 	@Value("${mosip.kernel.keymanager-service-publickey-url}")
 	private String publicKeyUrl;
 
 	@Value("${mosip.kernel.keymanager-service-decrypt-url}")
 	private String symmetricKeyUrl;
-
+	
 	@Autowired
-	private MockMvc mockMvc;
+	private CryptomanagerUtil cryptomanagerUtil;
 
-	@Autowired
+	@MockBean
 	private ObjectMapper objectMapper;
 
 	@Autowired
@@ -78,8 +79,11 @@ public class KernelCryptographicServiceIntegrationTest {
 
 	private Map<String, String> uriParams;
 
+	private ObjectMapper map;
+
 	@Before
 	public void setUp() {
+		map = new ObjectMapper();
 		keyPair = generator.getAsymmetricKey();
 		server = MockRestServiceServer.bindTo(restTemplate).build();
 		uriParams = new HashMap<>();
@@ -88,37 +92,28 @@ public class KernelCryptographicServiceIntegrationTest {
 				.queryParam("referenceId", "ref123");
 	}
 
-	@Test
+	@Test(expected=ParseResponseException.class)
 	public void testEncrypt() throws Exception {
 		KeymanagerPublicKeyResponseDto keymanagerPublicKeyResponseDto = new KeymanagerPublicKeyResponseDto(
 				CryptoUtil.encodeBase64(keyPair.getPublic().getEncoded()), LocalDateTime.now(),
 				LocalDateTime.now().plusDays(100));
-		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString())).andRespond(withSuccess(
-				objectMapper.writeValueAsString(keymanagerPublicKeyResponseDto), MediaType.APPLICATION_JSON));
-		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
-		MvcResult result = mockMvc
-				.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isOk()).andReturn();
-		CryptomanagerResponseDto cryptomanagerResponseDto = objectMapper
-				.readValue(result.getResponse().getContentAsString(), CryptomanagerResponseDto.class);
-		assertThat(cryptomanagerResponseDto.getData(), isA(String.class));
+		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString())).andRespond(
+				withSuccess(map.writeValueAsString(keymanagerPublicKeyResponseDto), MediaType.APPLICATION_JSON));
+		when(objectMapper.readValue(Mockito.anyString(), Mockito.eq(KeymanagerPublicKeyResponseDto.class)))
+				.thenThrow(new IOException("IOEXCEPTION"));
+		cryptomanagerUtil.getPublicKey(new CryptomanagerRequestDto("REGISTRATION","ref123",LocalDateTime.parse("2018-12-06T12:07:44.403"),"dXJ2aWw"));
 	}
 
-	@Test
+	@Test(expected=ParseResponseException.class)
 	public void testDecrypt() throws Exception {
 		KeymanagerSymmetricKeyResponseDto keymanagerSymmetricKeyResponseDto = new KeymanagerSymmetricKeyResponseDto(
 				CryptoUtil.encodeBase64(generator.getSymmetricKey().getEncoded()));
-		server.expect(requestTo(symmetricKeyUrl)).andRespond(withSuccess(
-				objectMapper.writeValueAsString(keymanagerSymmetricKeyResponseDto), MediaType.APPLICATION_JSON));
+		server.expect(requestTo(symmetricKeyUrl)).andRespond(
+				withSuccess(map.writeValueAsString(keymanagerSymmetricKeyResponseDto), MediaType.APPLICATION_JSON));
+		when(objectMapper.readValue(Mockito.anyString(), Mockito.eq(KeymanagerSymmetricKeyResponseDto.class)))
+				.thenThrow(new IOException("IOEXCEPTION"));
 		when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("dXJ2aWw".getBytes());
-		String requestBody = "{\"applicationId\": \"uoiuoi\",\"data\": \"dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
-		MvcResult result = mockMvc
-				.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isOk()).andReturn();
-		CryptomanagerResponseDto cryptomanagerResponseDto = objectMapper
-				.readValue(result.getResponse().getContentAsString(), CryptomanagerResponseDto.class);
-		assertThat(cryptomanagerResponseDto.getData(), isA(String.class));
+		cryptomanagerUtil.getDecryptedSymmetricKey(new CryptomanagerRequestDto("REGISTRATION","ref123",LocalDateTime.parse("2018-12-06T12:07:44.403"),"dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls"));
 	}
-	
 
 }
