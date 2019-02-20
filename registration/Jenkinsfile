@@ -51,7 +51,7 @@ node {
 
  stage('---------- mvn-clean-install ---------------') {
   rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -Dspring.cloud.config.label='+branch, buildInfo: buildInfo
-  buildInfo1 = server.upload spec: uploadSpec
+  buildInfo1 = server.upload spec: uploadSpec, failNoOp: true
  }
 
  stage('---------- SonarQube Analysis --------------') {
