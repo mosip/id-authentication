@@ -12,7 +12,7 @@ import javax.persistence.Table;
  * @since 1.0.0
  */
 @Entity
-@Table(schema = "master", name = "TEMPLATE")
+@Table(schema = "reg", name = "TEMPLATE")
 public class Template extends TemplateCommonFields {
 
 	@Id
@@ -22,7 +22,7 @@ public class Template extends TemplateCommonFields {
 	private String fileFormatCode;
 	private String model;
 	@Column(name="file_txt")
-	private String fileTxt;
+	private byte[] fileTxt;
 	@Column(name="module_id")
 	private String moduleId;
 	@Column(name="module_name")
@@ -64,11 +64,11 @@ public class Template extends TemplateCommonFields {
 		this.model = model;
 	}
 
-	public String getFileTxt() {
+	public byte[] getFileTxt() {
 		return fileTxt;
 	}
 
-	public void setFileTxt(String fileTxt) {
+	public void setFileTxt(byte[] fileTxt) {
 		this.fileTxt = fileTxt;
 	}
 

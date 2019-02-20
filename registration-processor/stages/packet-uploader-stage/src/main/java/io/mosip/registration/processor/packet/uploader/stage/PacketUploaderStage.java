@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.packet.uploader.stage;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,25 +10,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
+import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
-import io.mosip.registration.processor.packet.uploader.exception.DFSNotAccessibleException;
+import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -59,9 +66,8 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	/** The adapter. */
 	@Autowired
-	private FileSystemAdapter<InputStream, Boolean> adapter;
+	private FileSystemAdapter hdfsAdapter;
 
 	/** The audit log request builder. */
 	@Autowired
@@ -88,6 +94,9 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	@Autowired
 	FileManager<DirectoryPathDto, InputStream> fileManager;
 
+	/** The registration processor rest service. */
+	@Autowired
+	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -101,7 +110,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 
 			this.registrationId = object.getRid();
 			InternalRegistrationStatusDto dto = registrationStatusService.getRegistrationStatus(registrationId);
-			uploadpacket(dto);
+			object=uploadpacket(dto,object);
 
 		} catch (TablenotAccessibleException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -135,7 +144,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 
 		}
 
-		return null;
+		return object;
 	}
 
 	/**
@@ -144,22 +153,25 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	 * @param dto
 	 *            the dto
 	 */
-	private void uploadpacket(InternalRegistrationStatusDto dto) {
+	private MessageDTO uploadpacket(InternalRegistrationStatusDto dto,MessageDTO object) {
 		try {
 			packetArchiver.archivePacket(dto.getRegistrationId());
 			String filepath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_DEC.toString()) + File.separator
 					+ dto.getRegistrationId() + ".zip";
 			File file = new File(filepath);
 			InputStream decryptedData = new FileInputStream(file);
-			sendToDFS(dto, decryptedData);
+			object=sendToDFS(dto, decryptedData,object);
 		} catch (PacketNotFoundException ex) {
+			object.setInternalError(true);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PUM_PACKET_NOT_FOUND_EXCEPTION.name() + ex.getMessage());
 		} catch (IOException e) {
+			object.setInternalError(true);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.name() + e.getMessage());
 
 		}
+		return object;
 	}
 
 	/**
@@ -170,46 +182,56 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	 * @param decryptedData
 	 *            the decrypted data
 	 */
-	private void sendToDFS(InternalRegistrationStatusDto entry, InputStream decryptedData) {
+	private MessageDTO sendToDFS(InternalRegistrationStatusDto entry, InputStream decryptedData,MessageDTO object) {
 
 		registrationId = entry.getRegistrationId();
 		try {
 
-			adapter.storePacket(registrationId, decryptedData);
-			adapter.unpackPacket(registrationId);
+			hdfsAdapter.storePacket(registrationId, decryptedData);
+			hdfsAdapter.unpackPacket(registrationId);
 
-			if (adapter.isPacketPresent(registrationId)) {
+			if (hdfsAdapter.isPacketPresent(registrationId)) {
+
 				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_DEC, registrationId);
 				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
 				fileManager.deleteFolder(DirectoryPathDto.VIRUS_SCAN_UNPACK, registrationId);
 
 				entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
 				entry.setStatusComment("Packet " + registrationId + " is uploaded in file system.");
-				entry.setUpdatedBy(USER);
 
+				entry.setUpdatedBy(USER);
 				registrationStatusService.updateRegistrationStatus(entry);
+
+				object.setInternalError(false);
+				object.setIsValid(true);
+				object.setRid(registrationId);
+
+
 				isTransactionSuccessful = true;
 				description = registrationId + " packet successfully has been send to DFS";
+
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						PlatformErrorMessages.RPR_PUM_PACKET_DELETION_INFO.getMessage());
 
 			}
-		} catch (DFSNotAccessibleException e) {
+		} catch (FSAdapterException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_DFS.name() + e.getMessage());
+					registrationId, PlatformErrorMessages.RPR_PUM_PACKET_STORE_NOT_ACCESSIBLE.name() + e.getMessage());
 
 			description = "FileSytem is not accessible for packet " + registrationId;
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.name() + e.getMessage());
+			object.setInternalError(true);
 			description = "Virus scan path is not accessible for packet " + registrationId;
 		} catch (TablenotAccessibleException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,
 					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.name() + e.getMessage());
+
 			description = "The Registration Status table is not accessible for packet " + registrationId;
-		} finally {
+		}  finally {
 
 			String eventId = "";
 			String eventName = "";
@@ -224,7 +246,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 					registrationId);
 
 		}
-
+		return object;
 	}
 
 	/**
@@ -233,7 +255,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	public void deployVerticle() {
 
 		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
-		this.consume(mosipEventBus, MessageBusAddress.PACKET_UPLOADER_IN);
+		this.consumeAndSend(mosipEventBus, MessageBusAddress.PACKET_UPLOADER_IN,MessageBusAddress.PACKET_UPLOADER_OUT);
 
 	}
 

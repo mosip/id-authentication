@@ -37,23 +37,15 @@ public class DeviceDto extends MasterSyncBaseDto {
 	 * Field for language code
 	 */
 	private String langCode;
-	
-	private Boolean active;
-	
 
+	private Boolean isActive;
 
-	/**
-	 * @return the active
-	 */
-	public Boolean getActive() {
-		return active;
+	public Boolean getIsActive() {
+		return isActive;
 	}
 
-	/**
-	 * @param active the active to set
-	 */
-	public void setActive(Boolean active) {
-		this.active = active;
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
 
 	/**

@@ -12,7 +12,7 @@ import javax.persistence.Table;
  * @since 1.0.0
  */
 @Entity
-@Table(schema="master", name = "TEMPLATE_TYPE")
+@Table(schema="reg", name = "TEMPLATE_TYPE")
 public class TemplateType extends TemplateCommonFields {
 	@EmbeddedId
 	@Column(name="pk_tmplt_code")

@@ -18,7 +18,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.spin.facade.StaticPinFacade;
+import io.mosip.authentication.core.spi.spin.service.StaticPinService;
 import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.service.impl.spin.validator.StaticPinRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -44,7 +44,7 @@ public class StaticPinController {
 
 	/** The Static Pin Facade */
 	@Autowired
-	private StaticPinFacade staticPinFacade;
+	private StaticPinService staticPinService;
 
 	/** The Static Pin Request Validator */
 	@Autowired
@@ -70,8 +70,7 @@ public class StaticPinController {
 			@ApiIgnore Errors errors) throws IdAuthenticationAppException {
 		try {
 			DataValidationUtil.validate(errors);
-			StaticPinResponseDTO staticPinResponseDTO = staticPinFacade.storeSpin(staticPinRequestDTO);
-			return staticPinResponseDTO;
+			return  staticPinService.storeSpin(staticPinRequestDTO);
 		} catch (IDDataValidationException e) {
 			logger.error(DEAFULT_SESSION_ID, "StaticPinController", e.getClass().getName(), e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);

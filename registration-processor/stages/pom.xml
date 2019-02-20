@@ -28,6 +28,7 @@
         <module>uin-generator-stage</module>
     	<module>message-sender-stage</module>
     	<module>printing-stage</module>
+    	<module>registration-processor-connector-stage</module>
   </modules>
 
 </project>

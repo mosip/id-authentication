@@ -2,12 +2,12 @@ package io.mosip.authentication.service.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
@@ -24,13 +24,11 @@ import lombok.Data;
 @Table(name = "static_pin_h", schema = "ida")
 public class StaticPinHistory {
 	/** The pin. */
-	@NotNull
 	@Column(name = "pin", nullable = false)
 	private String pin;
 
 	/** The uin */
 	@Id
-	@NotNull
 	@Column(name = "uin", unique = true, nullable = false)
 	private String uin;
 
@@ -44,7 +42,7 @@ public class StaticPinHistory {
 
 	/** The corrected date. */
 	@Column(name = "cr_dtimes")
-	private LocalDateTime createdDTimes;
+	private LocalDateTime createdOn;
 
 	/** The updated by. */
 	@Column(name = "upd_by")
@@ -69,6 +67,10 @@ public class StaticPinHistory {
 
 	@Data
 	static class IdClass implements Serializable {
+		/**
+		 * serial Version UID
+		 */
+		private static final long serialVersionUID = 2506101235122193393L;
 		private String uin;
 		private LocalDateTime effectiveDate;
 	}

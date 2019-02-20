@@ -88,12 +88,12 @@ public enum PlatformErrorMessages {
 	/** The rpr pis unable to insert data. */
 	RPR_PIS_UNABLE_TO_INSERT_DATA(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "003",
 			"Unable to insert data in db for registration Id :"),
-	/** The rpr pis file not found in dfs. */
-	RPR_PIS_FILE_NOT_FOUND_IN_DFS(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "004",
-			"File not found in DFS"),
+	/** The rpr pis file not found in Packet Store. */
+	RPR_PIS_FILE_NOT_FOUND_IN_PACKET_STORE(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "004",
+			"File not found in Packet Store"),
 
 	/** The rpr fac connection not available. */
-	// File adaptor ceph Exception error code and message
+	// File adaptor Exception error code and message
 	RPR_FAC_CONNECTION_NOT_AVAILABLE(PlatformErrorConstants.RPR_FILESYSTEM_ADAPTOR_CEPH_MODULE + "001",
 			"The connection Parameters to create a Packet Store connection are not Found"),
 
@@ -164,21 +164,28 @@ public enum PlatformErrorMessages {
 	// Stages - OSI Exception error code and message
 	OSI_VALIDATION_FAILED("", "OSI Validation Failed"),
 
+	OSI_VALIDATION_PACKET_STORE_NOT_ACCESSIBLE("", "The Packet store set by the System is not accessible"),
+
 	/** The packet demo dedupe failed. */
 	// Stages - Demo-Dedupe error code and message
 	PACKET_DEMO_DEDUPE_FAILED("", "Demo dedupe Failed"),
+
+	PACKET_DEMO_PACKET_STORE_NOT_ACCESSIBLE("", "The Packet store set by the System is not accessible"),
 
 	/** The packet bio dedupe failed. */
 	// Stages - Bio-Dedupe error code and message
 	PACKET_BIO_DEDUPE_FAILED("", "Bio dedupe Failed"),
 
 	/** The reverse data sync failed. */
+	PACKET_BDD_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE,
+			"The Packet store set by the System is not accessible"),
+
 	// Stages - Packet-Validator error message
 	REVERSE_DATA_SYNC_FAILED("", "Reverse data sync failed"),
 
-	/** The rpr psj dfs not accessible. */
+	/** The rpr psj Packet Store not accessible. */
 	// Packet scanner job Exception error code and message
-	RPR_PSJ_DFS_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "002",
+	RPR_PSJ_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "002",
 			"The Packet store set by the System is not accessible"),
 
 	/** The rpr psj retry folder not accessible. */
@@ -229,12 +236,14 @@ public enum PlatformErrorMessages {
 	RPR_MVS_INVALID_STATUS_UPDATE(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "003",
 			"Invalid status update"),
 
-	/** The rpr mvs invalid field. */
 	RPR_MVS_INVALID_FIELD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "005", " fields can not be empty"),
 
 	/** The rpr mvs no assigned record. */
 	RPR_MVS_NO_ASSIGNED_RECORD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "004",
 			"No Assigned Record Found"),
+
+	RPR_MVS_FILE_NOT_FOUND_IN_PACKET_STORE(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "005",
+			"Packet Not Found in Packet Store"),
 
 	/** The rpr tem not found. */
 	// Registration processor Message sender Exception error code
@@ -242,8 +251,9 @@ public enum PlatformErrorMessages {
 
 	/** The rpr tem processing failure. */
 	RPR_TEM_PROCESSING_FAILURE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "002",
-			"The Processing of Template Failed "),
-
+			"The Processing of Template Failed "), RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE(
+					PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "003",
+					"The Packet store set by the System is not accessible"),
 	/** The rpr sms template generation failure. */
 	RPR_SMS_TEMPLATE_GENERATION_FAILURE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001",
 			"Template Generation failed"),
@@ -265,7 +275,10 @@ public enum PlatformErrorMessages {
 
 	/** The rpr pum packet deletion info. */
 	RPR_PUM_PACKET_DELETION_INFO(PlatformErrorConstants.RPR_PACKET_UPLOADER_MODULE + "002",
-			"File is Already exists in DFS location And its now Deleted from Virus scanner job"),
+			"File is Already exists in File Store And its now Deleted from Virus scanner job"),
+
+	RPR_PUM_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_UPLOADER_MODULE + "003",
+			"The Packet store set by the System is not accessible"),
 
 	/** The rpr bdd abis internal error. */
 	RPR_BDD_ABIS_INTERNAL_ERROR(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "001",
@@ -352,6 +365,20 @@ public enum PlatformErrorMessages {
 
 	/** The rpr prt queue connection null. */
 	RPR_PRT_QUEUE_CONNECTION_NULL(PlatformErrorConstants.RPR_PRINTING_MODULE + "004", "Queue connection is null");
+
+	RPR_SYS_IO_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "012", "IO EXCEPTION "),
+
+	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),
+
+
+
+	RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_VALIDATOR_MODULE + "001",
+			"The Packet store set by the System is not accessible"),
+
+	RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_UIN_GENERATOR_STAGE + "001",
+			"The Packet store set by the System is not accessible");
+
+
 
 	/** The error message. */
 	private final String errorMessage;

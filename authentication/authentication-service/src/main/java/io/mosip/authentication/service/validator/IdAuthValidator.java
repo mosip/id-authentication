@@ -98,6 +98,10 @@ public abstract class IdAuthValidator implements Validator {
 					new Object[] { ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
+	
+	public void validateIdvId(String id, String idType, Errors errors) {
+		validateIdvId(id, idType, errors, IDV_ID);
+	}
 
 	/**
 	 * Validate individual's id - check whether id is null or not and if valid,
@@ -110,13 +114,13 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param errors
 	 *            the errors
 	 */
-	public void validateIdvId(String id, String idType, Errors errors) {
+	public void validateIdvId(String id, String idType, Errors errors, String idFieldName) {
 		if (Objects.isNull(id) || id.isEmpty()) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID);
 			errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { IDV_ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else {
-			validateIdtypeUinVid(id, idType, errors);
+			validateIdtypeUinVid(id, idType, errors, idFieldName);
 		}
 	}
 
@@ -190,7 +194,7 @@ public abstract class IdAuthValidator implements Validator {
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorMessage());
 		}
 	}
-
+	
 	/**
 	 * Validate UIN, VID.
 	 *
@@ -201,7 +205,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param errors
 	 *            the errors
 	 */
-	private void validateIdtypeUinVid(String id, String idType, Errors errors) {
+	private void validateIdtypeUinVid(String id, String idType, Errors errors, String idFieldName) {
 		if (Objects.isNull(idType)) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID_TYPE);
 			errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
@@ -212,7 +216,7 @@ public abstract class IdAuthValidator implements Validator {
 				uinValidator.validateId(id);
 			} catch (InvalidIDException e) {
 				mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "InvalidIDException - " + e);
-				errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(),
+				errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_UIN.getErrorMessage());
 
 			}
@@ -221,7 +225,7 @@ public abstract class IdAuthValidator implements Validator {
 				vidValidator.validateId(id);
 			} catch (InvalidIDException e) {
 				mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "InvalidIDException - " + e);
-				errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.INVALID_VID.getErrorCode(),
+				errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.INVALID_VID.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_VID.getErrorMessage());
 			}
 		} else {

@@ -23,6 +23,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class StaticPinRequestValidator extends IdAuthValidator {
 
+	private static final String UIN_VID = "UIN/VID";
+
 	/** The Constant ID_AUTH_VALIDATOR2. */
 	private static final String ID_AUTH_VALIDATOR2 = "IdAuthValidator";
 
@@ -102,9 +104,14 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 		String uin = staticPinRequestDTO.getRequest().getIdentity().getUin();
 		String vid = staticPinRequestDTO.getRequest().getIdentity().getVid();
 		if (uin != null) {
-			validateIdvId(uin, IdType.UIN.getType(), errors);
+			validateIdvId(uin, IdType.UIN.getType(), errors, REQUEST);
 		} else if (vid != null) {
-			validateIdvId(vid, IdType.VID.getType(), errors);
+			validateIdvId(vid, IdType.VID.getType(), errors, REQUEST);
+		} else {
+			mosipLogger.error(SESSION_ID, SPIN_VALIDATE, ID_AUTH_VALIDATOR2, MISSING_INPUT_PARAMETER + UIN_VID);
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { UIN_VID },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 }

@@ -50,8 +50,8 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 	 */
 	@Override
 	public ResponseDTO validate(BiometricDTO biometricDTO) {
-		
-		int UserOnBoardThresholdLimit = (int) ApplicationContext.map().get("USER_ON_BOARD_THRESHOLD_LIMIT");
+
+		int UserOnBoardThresholdLimit =  Integer.parseInt((String) ApplicationContext.map().get("USER_ON_BOARD_THRESHOLD_LIMIT"));
 
 		ResponseDTO responseDTO = null;
 
@@ -98,7 +98,7 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 
 			onBoardingResponse = userOnBoardDao.insert(biometricDTO);
 
-			if (onBoardingResponse.equals(RegistrationConstants.success)) {
+			if (onBoardingResponse.equalsIgnoreCase(RegistrationConstants.SUCCESS)) {
 
 				SuccessResponseDTO sucessResponse = new SuccessResponseDTO();
 				sucessResponse.setCode(RegistrationConstants.USER_ON_BOARDING_SUCCESS_CODE);
@@ -142,12 +142,12 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 	public Map<String, String> getMachineCenterId() {
 
 		Map<String, String> mapOfCenterId = new HashMap<>();
-		
+
 		String stationId = RegistrationConstants.EMPTY;
 		String centerId = RegistrationConstants.EMPTY;
 
 		LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "fetching mac Id....");
-		
+
 		try {
 
 			// to get mac Id

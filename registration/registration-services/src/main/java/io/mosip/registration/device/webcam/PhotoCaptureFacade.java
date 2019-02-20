@@ -10,10 +10,8 @@ import javax.imageio.ImageIO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.github.sarxos.webcam.Webcam;
-
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.device.webcam.impl.LogitechPhotoProvider;
+import io.mosip.registration.device.webcam.impl.WebcamSarxosServiceImpl;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
@@ -24,15 +22,15 @@ import io.mosip.registration.exception.RegBaseCheckedException;
  * @author Himaja Dhanyamraju
  */
 @Component
-public class PhotoCaptureFacade extends LogitechPhotoProvider {
+public class PhotoCaptureFacade extends WebcamSarxosServiceImpl {
 
 	@Autowired
-	private MosipWebcamProvider webcamProvider;
+	private IMosipWebcamService webcamProvider;
 	
-	private List<MosipWebcamProvider> webCamProviders;
+	private List<IMosipWebcamService> webCamProviders;
 	
-	public MosipWebcamProvider getPhotoProviderFactory(String make) {
-		for (MosipWebcamProvider mosipWebcamProvider : webCamProviders) {
+	public IMosipWebcamService getPhotoProviderFactory(String make) {
+		for (IMosipWebcamService mosipWebcamProvider : webCamProviders) {
 			if (mosipWebcamProvider.getClass().getName().toLowerCase().contains(make.toLowerCase())) {
 				webcamProvider = mosipWebcamProvider;
 			}
@@ -41,20 +39,8 @@ public class PhotoCaptureFacade extends LogitechPhotoProvider {
 	}
 
 	@Autowired
-	public void setWebCamProviders(List<MosipWebcamProvider> mosipWebcamProvider) {
+	public void setWebCamProviders(List<IMosipWebcamService> mosipWebcamProvider) {
 		this.webCamProviders = mosipWebcamProvider;
-	}
-
-	public Webcam connect(int width, int height) {
-		return webcamProvider.connect(width, height);
-	}
-
-	public BufferedImage captureImage(Webcam webcam) {
-		return webcamProvider.captureImage(webcam);
-	}
-
-	public void close(Webcam webcam) {
-		webcamProvider.close(webcam);
 	}
 
 	/**

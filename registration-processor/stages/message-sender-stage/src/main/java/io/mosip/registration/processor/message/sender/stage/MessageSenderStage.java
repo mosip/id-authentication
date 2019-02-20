@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -70,7 +71,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 	/** The transcation status service. */
 	@Autowired
 	private TransactionService<TransactionDto> transcationStatusService;
-	
+
 	/** The cluster manager url. */
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
@@ -178,13 +179,14 @@ public class MessageSenderStage extends MosipVerticleManager {
 			sendNotification(id, attributes, ccEMailList, allNotificationTypes);
 			isTransactionSuccessful = true;
 			description = "Notification sent successfully" + id;
-			
+
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.NOTIFICATION_SENT_TO_RESIDENT.toString());
 			registrationStatusDto.setStatusComment(description);
-			
-			TransactionDto transactionDto = new TransactionDto(UUID.randomUUID().toString(), registrationStatusDto.getRegistrationId(),
-					null, TransactionTypeCode.CREATE.toString(), "Added registration status record",
-					registrationStatusDto.getStatusCode(), registrationStatusDto.getStatusComment());
+
+			TransactionDto transactionDto = new TransactionDto(UUID.randomUUID().toString(),
+					registrationStatusDto.getRegistrationId(), null, TransactionTypeCode.CREATE.toString(),
+					"Added registration status record", registrationStatusDto.getStatusCode(),
+					registrationStatusDto.getStatusComment());
 			transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
 			transactionDto.setReferenceIdType("Added registration record");
 			transcationStatusService.addRegistrationTransaction(transactionDto);
@@ -201,6 +203,11 @@ public class MessageSenderStage extends MosipVerticleManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
 					tnf.getMessage() + ExceptionUtils.getStackTrace(tnf));
 			description = "template was not found for notification" + id;
+		} catch (FSAdapterException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
+					PlatformErrorMessages.RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + e.getMessage());
+			description = "The Packet store set by the System is not accessible" + id;
+
 		} catch (Exception ex) {
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,

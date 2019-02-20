@@ -18,15 +18,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
-import io.mosip.authentication.service.integration.IdTemplateManager;
-import io.mosip.kernel.core.exception.ParseException;
-import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -87,8 +83,9 @@ public class DOBMatchingStrategyTest {
 	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
 		int value = -1;
-
-		value = matchFunction.match("07/02/1993", "1993/02/07", null);
+		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("env", environment);
+		value = matchFunction.match("07/02/1993", "1993/02/07", matchProperties);
 
 		assertEquals(100, value);
 	}
@@ -102,22 +99,23 @@ public class DOBMatchingStrategyTest {
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
-        Map<String,Object> dobMap =null;
-        //dobMap.put(Environment.class.getSimpleName(), environment.getProperty("date.pattern"));
+        Map<String,Object> dobMap =new HashMap<>();
+        dobMap.put("env", environment);
 		int value = matchFunction.match("27/02/1993", "1993/02/07", dobMap);
 		assertEquals(0, value);
 
-		int value1 = matchFunction.match(2, "1993/02/07", null);
+		int value1 = matchFunction.match(2, "1993/02/07", dobMap);
 		assertEquals(0, value1);
 
-		int value3 = matchFunction.match(null, null, null);
+		int value3 = matchFunction.match(null, null, dobMap);
 		assertEquals(0, value3);
 
 	}
 
-	@Test(expected = ParseException.class)
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestInvalidDate() throws IdAuthenticationBusinessException {
 		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("env", environment);
 		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
 		int value = matchFunction.match("test", "test-02-27", matchProperties);
 		assertEquals(0, value);

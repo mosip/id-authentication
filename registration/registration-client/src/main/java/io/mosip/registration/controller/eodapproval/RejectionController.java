@@ -18,10 +18,9 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
-import io.mosip.registration.dto.mastersync.MasterReasonListDto;
+import io.mosip.registration.dto.mastersync.ReasonListDto;
 import io.mosip.registration.service.MasterSyncService;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -92,7 +91,7 @@ public class RejectionController extends BaseController implements Initializable
 		rejectionSubmit.disableProperty().set(true);
 		rejectionComboBox.getItems().clear();
 
-		List<MasterReasonListDto> reasonList = masterSyncService.getAllReasonsList(applicationContext.getApplicationLanguage());
+		List<ReasonListDto> reasonList = masterSyncService.getAllReasonsList(applicationContext.getApplicationLanguage());
 		
 		rejectionComboBox.setItems(FXCollections
 				.observableArrayList(reasonList.stream().map(list -> list.getName()).collect(Collectors.toList())));

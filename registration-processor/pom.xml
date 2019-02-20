@@ -95,7 +95,6 @@
 		<jsonsimple.version>1.1.1</jsonsimple.version>
 
 		<!-- local -->
-
 		<registration.status.service.version>0.8.8</registration.status.service.version>
 		<registration.processor.core.version>0.8.8</registration.processor.core.version>
 		<filesystem.adapter.ceph.version>0.8.8</filesystem.adapter.ceph.version>
@@ -108,12 +107,12 @@
 		<packet.bio.dedupe.api.version>0.8.8</packet.bio.dedupe.api.version>
 
 		<!-- Kernel -->
-		<kernel.core.version>0.7.0</kernel.core.version>
-		<kernel.dataaccess.hibernate.version>0.7.0</kernel.dataaccess.hibernate.version>
-		<kernel.templatemanager.velocity.version>0.7.0</kernel.templatemanager.velocity.version>
-		<kernel.emailnotification.service.version>0.7.0</kernel.emailnotification.service.version>
-		<kernel.smsnotification.service.version>0.7.0</kernel.smsnotification.service.version>
-		<kernel.idvalidator.version>0.7.0</kernel.idvalidator.version>
+		<kernel.core.version>0.8.8</kernel.core.version>
+		<kernel.dataaccess.hibernate.version>0.8.7</kernel.dataaccess.hibernate.version>
+		<kernel.templatemanager.velocity.version>0.8.7</kernel.templatemanager.velocity.version>
+		<kernel.emailnotification.service.version>0.8.7</kernel.emailnotification.service.version>
+		<kernel.smsnotification.service.version>0.8.7</kernel.smsnotification.service.version>
+		<kernel.idvalidator.version>0.8.8</kernel.idvalidator.version>
 		<kernel.clamav.version>0.8.0</kernel.clamav.version>
 		
 		<sonar.coverage.exclusions>**/dto/**,
@@ -124,8 +123,6 @@
 		**/registration/processor/rest/client/*.java,
 **/registration/processor/rest/client/audit/builder/*.java,
 **/registration/processor/rest/client/utils/*.java,
-**/registration/processor/filesystem/ceph/adapter/impl/exception/*.java,
-**/registration/processor/filesystem/ceph/adapter/impl/exception/systemexception/*.java,
 **/registration/processor/packet/receiver/config/*.java,
 **/registration/processor/packet/receiver/*.java,
 **/registration/processor/packet/receiver/exception/systemexception/*.java,
@@ -146,7 +143,6 @@
 **/registration/processor/core/packet/dto/demographicinfo/identify/*.java,
 **/registration/processor/core/packet/dto/regcentermachine/*.java,
 **/registration/processor/core/util/*.java,
-**/registration/processor/filesystem/ceph/adapter/impl/exception/handler/*.java,
 
 **/registration/processor/quality/check/client/*.java,
 **/registration/processor/quality/check/code/*.java,
