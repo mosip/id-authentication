@@ -485,7 +485,7 @@
 	-fx-background-color:#FFFFFF;
 	-fx-effect: dropshadow( three-pass-box , #000000 , 1.0, 0.0 , 0.0 , 0.0 );
 	-fx-pref-height: 32.0px;
-	-fx-pref-width: 1278.0px;
+	-fx-pref-width: 1300.0px;
 }
 .userOnboardBackPane{
 	-fx-background-color: #F7F8F9;
@@ -550,7 +550,7 @@
 }
 .onboardImgPane{
 	-fx-background-color:#ffffff;
-	-fx-pref-height: 590.0px;
+	-fx-pref-height: 650.0px;
 	-fx-pref-width: 938.0px;
 }
 .onboardFingerDetails{
@@ -646,8 +646,8 @@
 }
 .exceptionBackPane{
 	-fx-background-color: #F7F8F9;
-	-fx-pref-height: 660.0px;
-	-fx-pref-width: 1280.0px;
+	-fx-pref-height: 970.0px;
+	-fx-pref-width: 1400.0px;
 }
 .operatorExceptionLayout{
 	-fx-pref-height: 59.0px;

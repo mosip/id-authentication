@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="userOnboardIris" styleClass="onboardParenPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.IrisCaptureController">
+<AnchorPane fx:id="irisCapture" styleClass="onboardParenPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.IrisCaptureController">
    <children>
    <AnchorPane layoutX="1.0" styleClass="userOnboardHeader">
          <children>
@@ -54,7 +54,7 @@
                   </Pane>
                </children>
             </AnchorPane>
-                  <AnchorPane layoutX="160.0" layoutY="250.0" stylesheets="onboardIrisDetails">
+                  <AnchorPane layoutX="160.0" layoutY="250.0">
                      <children>
                      	<Label layoutX="85.0" text="Left Iris" styleClass="onboardBioDetailsHeader"/>
                         <Label fx:id="leftIrisThreshold" layoutY="55.0" styleClass="onboardBioDetails"/>
@@ -67,7 +67,7 @@
                         <Label layoutX="120.0" layoutY="115.0" text="-" styleClass="onboardBioDetails"/>
                      </children>
                   </AnchorPane>
-                  <AnchorPane layoutX="560.0" layoutY="250.0" styleClass="onboardIrisDetails">
+                  <AnchorPane layoutX="560.0" layoutY="250.0">
                      <children>
                      	<Label layoutX="85.0" layoutY="1.0" text="Right Iris" styleClass="onboardBioDetailsHeader"/>
                         <Label fx:id="rightIrisThreshold" layoutY="55.0" styleClass="onboardBioDetails"/>

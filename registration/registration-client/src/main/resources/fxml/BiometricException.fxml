@@ -195,7 +195,7 @@
             </AnchorPane>
  	</children>
 	</AnchorPane>
-	<AnchorPane fx:id="userOnboardFooter" layoutX="1.0" layoutY="605.0" styleClass="userOnboardFooter">
+	<AnchorPane fx:id="userOnboardFooter" layoutX="31.0" layoutY="625.0" styleClass="userOnboardFooter">
                <children>
                 <Button fx:id="previousBtn" layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="Back">
              <graphic>
@@ -217,7 +217,7 @@
             </Button>
                </children>
             </AnchorPane>
-      <AnchorPane fx:id="registrationFooter" layoutY="624.0" styleClass="registrationFooter">
+      <AnchorPane fx:id="registrationFooter" layoutY="554.0" styleClass="registrationFooter">
          <children>
             <Button layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="Back">
              <graphic>
@@ -251,7 +251,7 @@
                   </AnchorPane>
                </children>
             </AnchorPane>
-            <AnchorPane layoutX="200.0" layoutY="9.0" styleClass="registrationHeaderBorder">
+            <AnchorPane layoutX="210.0" layoutY="9.0" styleClass="registrationHeaderBorder">
                <children>
                   <AnchorPane>
                      <children>
