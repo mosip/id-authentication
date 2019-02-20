@@ -2,6 +2,7 @@ package io.mosip.registration.test.util.common;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -137,9 +138,8 @@ public class OTPManagerTest {
 		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(OtpGeneratorRequestDTO.class)))
 				.thenThrow(HttpClientErrorException.class);
 
-		otpManager.getOTP(otpGeneratorRequestDTO.getKey());
 
-		
+		assertSame(RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE,otpManager.getOTP(otpGeneratorRequestDTO.getKey()).getErrorResponseDTOs().get(0).getMessage());
 	} 
 	
 	@Test
@@ -156,7 +156,7 @@ public class OTPManagerTest {
 		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(OtpGeneratorRequestDTO.class)))
 				.thenThrow(IllegalStateException.class);
 		
-		otpManager.getOTP(otpGeneratorRequestDTO.getKey());
+		assertSame(RegistrationConstants.CONNECTION_ERROR,otpManager.getOTP(otpGeneratorRequestDTO.getKey()).getErrorResponseDTOs().get(0).getMessage());
 
 	}
 	
