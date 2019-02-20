@@ -2,11 +2,14 @@ package io.mosip.kernel.idrepo.filter;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
@@ -18,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,8 +35,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
+import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.idrepo.controller.IdRepoController;
 
 /**
@@ -42,7 +49,6 @@ import io.mosip.kernel.idrepo.controller.IdRepoController;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
-//@Import(IdRepoFilter.class)
 @ActiveProfiles("test")
 @ConfigurationProperties("mosip.kernel.idrepo")
 public class IdRepoFilterTest {
@@ -88,15 +94,30 @@ public class IdRepoFilterTest {
 	}
 
 	@Test
-	public void testWithPathVariable() throws Exception {
+	public void testWithInvalidPathVariable() throws Exception {
 		mockMvc.perform(get("/v1.0/identity").param("uin", "1234")).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void testWithValidPathVariable() throws Exception {
+		when(response.getStatus()).thenReturn(200);
+		mockMvc.perform(get("/v1.0/identity").param("type", "1234")).andExpect(status().is4xxClientError());
+	}
+	
+	@Test
+	public void testWithUrlShouldNotFilter() throws Exception {
+		when(response.getStatus()).thenReturn(200);
+		mockMvc.perform(get("").param("type", "1234")).andExpect(status().is4xxClientError());
 	}
 	
 	@Test
 	public void testCharResponseWrapper() throws IOException {
 		CharResponseWrapper responseWrapper = new CharResponseWrapper(response);
-		responseWrapper.getWriter();
+		responseWrapper.getOutputStream().write(0);
+		responseWrapper.getWriter().write(0);
+		responseWrapper.getOutputStream().setWriteListener(null);
 		ServletOutputStream outputStream = responseWrapper.getOutputStream();
+		outputStream.toString();
 		assertTrue(outputStream.isReady());
 		outputStream.close();
 		assertFalse(outputStream.isReady());
@@ -106,6 +127,24 @@ public class IdRepoFilterTest {
 	public void testResettableStreamHttpServletRequest() throws IOException {
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(request);
 		requestWrapper.getReader();
+		requestWrapper.getInputStream().isFinished();
+		requestWrapper.getInputStream().isReady();
+		requestWrapper.getInputStream().setReadListener(null);
+		requestWrapper.replaceData(new byte[] { 0 });
+		requestWrapper.getInputStream().close();
+		requestWrapper.getInputStream().isReady();
 	}
 	
+	@Test(expected = IdRepoAppUncheckedException.class)
+	public void buildErrorResponseError() throws Throwable {
+		try {
+			ObjectMapper mockMapper = mock(ObjectMapper.class);
+			when(mockMapper.writeValueAsString(Mockito.any())).thenThrow(new UnrecognizedPropertyException("", null, getClass(), "", null));
+			ReflectionTestUtils.setField(filter, "mapper", mockMapper);
+			ReflectionTestUtils.invokeMethod(filter, "buildErrorResponse");
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
 }
+

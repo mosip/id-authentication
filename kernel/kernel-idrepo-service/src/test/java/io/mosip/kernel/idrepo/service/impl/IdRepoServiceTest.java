@@ -1,5 +1,6 @@
 package io.mosip.kernel.idrepo.service.impl;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.FileNotFoundException;
@@ -22,9 +23,12 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.RecoverableDataAccessException;
+import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -427,6 +431,19 @@ public class IdRepoServiceTest {
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(false);
 		proxyService.retrieveIdentity("1234", null);
 	}
+	
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityDataAccessException()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+		Uin uinObj = new Uin();
+		uinObj.setUin("1234");
+		uinObj.setUinRefId("1234");
+		uinObj.setUinData(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+						.getBytes());
+		when(uinRepo.existsByUin(Mockito.any())).thenThrow(new JDBCConnectionException("", null));
+		proxyService.retrieveIdentity("1234", null);
+	}
 
 	@Test
 	public void testRetrieveIdentityWithBioDocuments()
@@ -680,12 +697,25 @@ public class IdRepoServiceTest {
 
 	@SuppressWarnings("deprecation")
 	@Test(expected = IdRepoAppException.class)
-	public void testConvertToObject() throws Throwable {
+	public void testConvertToObjectProxy() throws Throwable {
 		ObjectMapper mockMapper = Mockito.mock(ObjectMapper.class);
 		ReflectionTestUtils.setField(proxyService, "mapper", mockMapper);
 		try {
 			when(mockMapper.readValue("1234".getBytes(), String.class)).thenThrow(new JsonMappingException(""));
 			ReflectionTestUtils.invokeMethod(proxyService, "convertToObject", "1234".getBytes(), String.class);
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Test(expected = IdRepoAppException.class)
+	public void testConvertToObject() throws Throwable {
+		ObjectMapper mockMapper = Mockito.mock(ObjectMapper.class);
+		ReflectionTestUtils.setField(service, "mapper", mockMapper);
+		try {
+			when(mockMapper.readValue("1234".getBytes(), String.class)).thenThrow(new JsonMappingException(""));
+			ReflectionTestUtils.invokeMethod(service, "convertToObject", "1234".getBytes(), String.class);
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
@@ -978,5 +1008,18 @@ public class IdRepoServiceTest {
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any())).thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
 		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("value".getBytes());
 		proxyService.updateIdentity(request, "1234");
+	}
+	
+	@Test(expected = IdRepoAppException.class)
+	public void testNowParseException() throws Throwable {
+		try {
+			MockEnvironment mockEnv = new MockEnvironment();
+			mockEnv.merge((ConfigurableEnvironment) env);
+			mockEnv.setProperty("mosip.utc-datetime-pattern", "abcd");
+			ReflectionTestUtils.setField(service, "env", mockEnv);
+			ReflectionTestUtils.invokeMethod(service, "now");
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
 	}
 }

@@ -34,6 +34,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.idrepo.builder.RestRequestBuilder;
 import io.mosip.kernel.idrepo.dto.RestRequestDTO;
 import io.mosip.kernel.idrepo.entity.Uin;
+import io.mosip.kernel.idrepo.entity.UinDocument;
 import io.mosip.kernel.idrepo.entity.UinHistory;
 import io.mosip.kernel.idrepo.helper.RestHelper;
 import io.mosip.kernel.idrepo.security.IdRepoSecurityManager;
@@ -104,6 +105,15 @@ public class IdRepoEntityInterceptorTest {
 		Object[] state = new Object[] { new byte[] { 0 } };
 		String[] propertyNames = new String[] { "uinData" };
 		interceptor.onSave(uin, null, state, propertyNames, null);
+	}
+	
+	@Test
+	public void testOnSaveUinUinDocEntity() throws RestClientException, JsonParseException, JsonMappingException, IOException, RestServiceException, IdRepoDataValidationException {
+		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
+		when(restHelper.requestSync(Mockito.any()))
+				.thenReturn(mapper.readValue("{\"value\":\"1234\"}".getBytes(), ObjectNode.class));
+		UinDocument uin = new UinDocument();
+		interceptor.onSave(uin, null, null, null, null);
 	}
 	
 	@Test
