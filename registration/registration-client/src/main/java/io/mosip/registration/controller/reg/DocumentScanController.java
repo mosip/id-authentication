@@ -130,10 +130,10 @@ public class DocumentScanController extends BaseController {
 
 	@FXML
 	private AnchorPane documentPane;
-	
+
 	@FXML
 	private AnchorPane exceptionPane;
-	
+
 	@FXML
 	protected ImageView docPreviewImgView;
 
@@ -164,7 +164,7 @@ public class DocumentScanController extends BaseController {
 
 	@Value("${DOCUMENT_SCANNER_DOCTYPE}")
 	private String scannerDocType;
-	
+
 	@Value("${DOCUMENT_DISABLE_FLAG}")
 	private String documentDisableFlag;
 
@@ -311,7 +311,8 @@ public class DocumentScanController extends BaseController {
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s -> Exception while scanning documents for registration  %s",
-							RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, runtimeException.getMessage()) + ExceptionUtils.getStackTrace(runtimeException));
+							RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, runtimeException.getMessage())
+							+ ExceptionUtils.getStackTrace(runtimeException));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
 		}
@@ -658,20 +659,20 @@ public class DocumentScanController extends BaseController {
 
 				switch (((VBox) pane.getParent()).getId()) {
 				case "poaBox":
-					selectedDocumentToDisplay = getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO()
-							.getIdentity().getProofOfAddress();
+					selectedDocumentToDisplay = getRegistrationDTOFromSession().getDemographicDTO()
+							.getDemographicInfoDTO().getIdentity().getProofOfAddress();
 					break;
 				case "poiBox":
-					selectedDocumentToDisplay = getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO()
-							.getIdentity().getProofOfIdentity();
+					selectedDocumentToDisplay = getRegistrationDTOFromSession().getDemographicDTO()
+							.getDemographicInfoDTO().getIdentity().getProofOfIdentity();
 					break;
 				case "porBox":
-					selectedDocumentToDisplay = getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO()
-							.getIdentity().getProofOfRelationship();
+					selectedDocumentToDisplay = getRegistrationDTOFromSession().getDemographicDTO()
+							.getDemographicInfoDTO().getIdentity().getProofOfRelationship();
 					break;
 				case "dobBox":
-					selectedDocumentToDisplay = getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO()
-							.getIdentity().getProofOfDateOfBirth();
+					selectedDocumentToDisplay = getRegistrationDTOFromSession().getDemographicDTO()
+							.getDemographicInfoDTO().getIdentity().getProofOfDateOfBirth();
 					break;
 				default:
 				}
@@ -708,7 +709,8 @@ public class DocumentScanController extends BaseController {
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING LIST OF DOCUMENTS FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -717,7 +719,8 @@ public class DocumentScanController extends BaseController {
 
 		if (getRegistrationDTOFromSession().getDemographicDTO() != null) {
 
-			Identity identity = getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO().getIdentity();
+			Identity identity = getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO()
+					.getIdentity();
 			FXUtils fxUtils = FXUtils.getInstance();
 
 			if (identity.getProofOfAddress() != null) {
@@ -778,9 +781,10 @@ public class DocumentScanController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Entering into toggle function for Biometric exception");
 
-			Map<String,Map<String,Boolean>> detailMap = (Map<String, Map<String, Boolean>>) applicationContext.getApplicationMap().get(RegistrationConstants.REGISTRATION_MAP);
-			
-			if(!detailMap.get(RegistrationConstants.DOCUMENT_SCAN).get(RegistrationConstants.DOCUMENT_PANE)) {
+			Map<String, Map<String, Boolean>> detailMap = (Map<String, Map<String, Boolean>>) applicationContext
+					.getApplicationMap().get(RegistrationConstants.REGISTRATION_MAP);
+
+			if (!detailMap.get(RegistrationConstants.DOCUMENT_SCAN).get(RegistrationConstants.DOCUMENT_PANE)) {
 				documentPane.setVisible(false);
 			} else {
 				loadListOfDocuments(poaDocuments, "POA");
@@ -788,14 +792,13 @@ public class DocumentScanController extends BaseController {
 				loadListOfDocuments(porDocuments, "POR");
 				loadListOfDocuments(dobDocuments, "POB");
 			}
-			
-			if(!detailMap.get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.VISIBILITY)) {
+
+			if (!detailMap.get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.VISIBILITY)) {
 				exceptionPane.setVisible(false);
 			}
 
-			if (SessionContext.userMap()
-					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION) == null) {
-				
+			if (SessionContext.userMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION) == null) {
+
 				toggleBiometricException = false;
 				SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION,
 						toggleBiometricException);
@@ -806,11 +809,15 @@ public class DocumentScanController extends BaseController {
 			}
 
 			if (toggleBiometricException) {
-				((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY, true);
+				((Map<String, Map<String, Boolean>>) ApplicationContext.map()
+						.get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION)
+								.put(RegistrationConstants.VISIBILITY, true);
 				bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 				bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 			} else {
-				((Map<String, Map<String, Boolean>>)ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY, false);
+				((Map<String, Map<String, Boolean>>) ApplicationContext.map()
+						.get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION)
+								.put(RegistrationConstants.VISIBILITY, false);
 				bioExceptionToggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 				bioExceptionToggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 			}
@@ -823,13 +830,19 @@ public class DocumentScanController extends BaseController {
 						bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						toggleBiometricException = true;
-						((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY, true);
+						((Map<String, Map<String, Boolean>>) ApplicationContext.map()
+								.get(RegistrationConstants.REGISTRATION_MAP))
+										.get(RegistrationConstants.BIOMETRIC_EXCEPTION)
+										.put(RegistrationConstants.VISIBILITY, true);
 					} else {
 						bioExceptionToggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						bioExceptionToggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						toggleBiometricException = false;
 						faceCaptureController.clearExceptionImage();
-						((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY, false);
+						((Map<String, Map<String, Boolean>>) ApplicationContext.map()
+								.get(RegistrationConstants.REGISTRATION_MAP))
+										.get(RegistrationConstants.BIOMETRIC_EXCEPTION)
+										.put(RegistrationConstants.VISIBILITY, false);
 					}
 					SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION,
 							toggleBiometricException);
@@ -851,6 +864,11 @@ public class DocumentScanController extends BaseController {
 	}
 
 	public void uinUpdate() {
+		if (getRegistrationDTOFromSession().getSelectionListDTO().isChild()) {
+			bioExceptionToggleLabel1.setDisable(true);
+			bioExceptionToggleLabel2.setDisable(true);
+		}
+
 		if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()) {
 			bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 			bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
@@ -867,51 +885,51 @@ public class DocumentScanController extends BaseController {
 
 	@FXML
 	private void back() {
-		registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN, getPageDetails(RegistrationConstants.DOCUMENT_SCAN,RegistrationConstants.PREVIOUS));
+		registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN,
+				getPageDetails(RegistrationConstants.DOCUMENT_SCAN, RegistrationConstants.PREVIOUS));
 	}
 
 	@FXML
 	private void skip() {
-		
+
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			SessionContext.map().put("documentScan", false);
-			if (toggleBiometricException)
-				SessionContext.map().put("biometricException", true);
-			else
-				SessionContext.map().put("fingerPrintCapture", true);
 			updateUINMethod();
 			registrationController.showUINUpdateCurrentPage();
 		} else {
-			registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN,getPageDetails(RegistrationConstants.DOCUMENT_SCAN,RegistrationConstants.NEXT));
-		}		
+			registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN,
+					getPageDetails(RegistrationConstants.DOCUMENT_SCAN, RegistrationConstants.NEXT));
+		}
 
 	}
-	
+
 	@FXML
 	private void next() {
-		
+
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-			SessionContext.map().put("documentScan", false);
-			if (toggleBiometricException) {
-				SessionContext.map().put("biometricException", true);
+			if (registrationController.validateDemographicPane(documentScanPane)) {
+				SessionContext.map().put("documentScan", false);
 				updateUINMethod();
-				registrationController.showUINUpdateCurrentPage();
 			}
+			registrationController.showUINUpdateCurrentPage();
 		} else {
-			if(documentDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
-				if(registrationController.validateDemographicPane(documentScanPane)) {
-					registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN, getPageDetails(RegistrationConstants.DOCUMENT_SCAN,RegistrationConstants.NEXT));
+			if (documentDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+				if (registrationController.validateDemographicPane(documentScanPane)) {
+					registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN,
+							getPageDetails(RegistrationConstants.DOCUMENT_SCAN, RegistrationConstants.NEXT));
 				}
 			} else {
-				registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN, getPageDetails(RegistrationConstants.DOCUMENT_SCAN,RegistrationConstants.NEXT));
+				registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN,
+						getPageDetails(RegistrationConstants.DOCUMENT_SCAN, RegistrationConstants.NEXT));
 			}
 		}
 	}
 
 	private void updateUINMethod() {
 		if ((Boolean) SessionContext.userContext().getUserMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)
-				|| getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException() && (Boolean) SessionContext
-						.userContext().getUserMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
+				|| (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
+						&& (Boolean) SessionContext.userContext().getUserMap()
+								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION))) {
 			SessionContext.map().put("biometricException", true);
 		} else if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
 				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException()
