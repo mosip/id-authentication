@@ -5,7 +5,9 @@
 package io.mosip.preregistration.booking.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,6 +48,7 @@ import io.mosip.preregistration.booking.exception.AvailablityNotFoundException;
 import io.mosip.preregistration.booking.exception.BookingDataNotFoundException;
 import io.mosip.preregistration.booking.exception.BookingTimeSlotAlreadyBooked;
 import io.mosip.preregistration.booking.exception.CancelAppointmentFailedException;
+import io.mosip.preregistration.booking.exception.TimeSpanException;
 import io.mosip.preregistration.booking.exception.util.BookingExceptionCatcher;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
 import io.mosip.preregistration.booking.service.util.BookingLock;
@@ -94,6 +97,9 @@ public class BookingService {
 
 	@Value("${id}")
 	String idUrl;
+	
+	@Value("${timeSpanCheck}")
+	private long timeSpanCheck;
 
 	Map<String, String> requiredRequestMap = new HashMap<>();
 
@@ -201,6 +207,8 @@ public class BookingService {
 							cancel(preRegistrationId, oldBookingRegistrationDTO, newBookingRegistrationDTO,
 									preRegStatusCode);
 						}
+						preRegStatusCode = serviceUtil
+								.callGetStatusRestService(bookingRequestDTO.getPreRegistrationId());
 						respList.add(book(preRegistrationId, newBookingRegistrationDTO, preRegStatusCode));
 					}
 				}
@@ -219,7 +227,7 @@ public class BookingService {
 			BookingRegistrationDTO newBookingRegistrationDTO, String status) {
 		log.info("sessionId", "idType", "id", "In cancel method of Booking Service");
 		if (serviceUtil.isNotDuplicate(oldBookingRegistrationDTO, newBookingRegistrationDTO)
-				&& StateManager.checkIsValidStatus(status, "cancel")) {
+				&& StateManager.checkIsValidStatus(status, "rebook")) {
 			cancelBooking(serviceUtil.cancelBookingDtoSetter(preRegistrationId, oldBookingRegistrationDTO));
 		}
 		return true;
@@ -343,6 +351,7 @@ public class BookingService {
 				BookingLock bookingLock = new BookingLock(bookingRegistrationDTO.getRegistrationCenterId(),
 						bookingRegistrationDTO.getRegDate(), bookingRegistrationDTO.getSlotFromTime());
 				AvailibityEntity availableEntity;
+				
 				synchronized (bookingLock) {
 					availableEntity = bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
 							LocalTime.parse(bookingRegistrationDTO.getSlotFromTime()),
@@ -391,6 +400,16 @@ public class BookingService {
 
 					RegistrationBookingEntity bookingEntity = bookingDAO.findPreIdAndStatusCode(
 							cancelBookingDTO.getPreRegistrationId(), StatusCodes.CANCELED.getCode());
+					
+					String str = bookingEntity.getRegDate()+" "+bookingEntity.getSlotFromTime();
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+					LocalDateTime bookedDateTime = LocalDateTime.parse(str, formatter);
+					
+					if(!serviceUtil.timeSpanCheck(bookedDateTime)) {
+						throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
+								ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED_BEFORE.getMessage()+" "+timeSpanCheck+" hours");
+					}
+					
 					bookingEntity.setStatusCode(StatusCodes.CANCELED.getCode());
 					bookingEntity.setUpdDate(DateUtils.parseDateToLocalDateTime(new Date()));
 

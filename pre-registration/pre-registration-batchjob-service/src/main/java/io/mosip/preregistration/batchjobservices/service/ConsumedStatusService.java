@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.preregistration.batchjobservices.entity.ApplicantDemographic;
+import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
 import io.mosip.preregistration.batchjobservices.entity.ProcessedPreRegEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.batchjobservices.exceptions.util.BatchServiceExceptionCatcher;
@@ -63,7 +63,7 @@ public class ConsumedStatusService {
 				String status = iterate.getStatusCode();
 				String preRegId = iterate.getPreRegistrationId();
 
-				ApplicantDemographic demographicEntity = batchServiceDAO.getApplicantDemographicDetails(preRegId);
+				DemographicEntity demographicEntity = batchServiceDAO.getApplicantDemographicDetails(preRegId);
 				demographicEntity.setStatusCode(status);
 				batchServiceDAO.updateApplicantDemographic(demographicEntity);
 				LOGGER.info(LOGDISPLAY, "Update the status successfully into Applicant demographic table");

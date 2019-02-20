@@ -45,7 +45,7 @@ public class DataSyncExceptionCatcher {
 			throw new DataSyncRecordNotFoundException(((DataSyncRecordNotFoundException) ex).getErrorCode(),
 					((DataSyncRecordNotFoundException) ex).getErrorText());
 		} else if (ex instanceof TableNotAccessibleException) {
-			throw new TableNotAccessibleException(ErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.toString());
+			throw new TableNotAccessibleException(((TableNotAccessibleException) ex).getErrorCode(),((TableNotAccessibleException) ex).getErrorText());
 		} else if (ex instanceof ZipFileCreationException) {
 			throw new ZipFileCreationException(((ZipFileCreationException) ex).getErrorCode(),
 					((ZipFileCreationException) ex).getErrorText(), ex.getCause());
