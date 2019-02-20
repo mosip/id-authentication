@@ -391,28 +391,34 @@ public void getPreIdsByRegCenterIdFailureTest2() {
 		assertEquals(1, response.getResponse().size());
 	}
 	
-	/*@Test
+	@Test
 	public void successRebookAppointment() {
-		
 		preRegistartionStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
-		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
-		requestValidatorFlag = ValidationUtil.requestValidator(requestMap1, requiredRequestMap);
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		ResponseEntity<MainListResponseDTO> respEntity = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+                            preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
+                             requestValidatorFlag = ValidationUtil.requestValidator(requestMap1, requiredRequestMap);
+                             RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+                           Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+                             ResponseEntity<MainListResponseDTO> respEntity = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
 
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(MainListResponseDTO.class))).thenReturn(respEntity);
-		
-		Mockito.when(mapper.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class))
-				.thenReturn(preRegistartionStatusDTO);
-		//preRegistartionStatusDTO.setStatusCode(StatusCodes.PENDING_APPOINTMENT.getCode());
-		p
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(MainListResponseDTO.class))).thenReturn(respEntity);
-		MainResponseDTO<List<BookingStatusDTO>> response = service.bookAppointment(reBookingDto);
-		assertEquals(1, response.getResponse().size());
-	}*/
+                             Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+                                                         Mockito.eq(MainListResponseDTO.class))).thenReturn(respEntity);
+                             
+              Mockito.when(mapper.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class))
+                                                          .thenReturn(preRegistartionStatusDTO);
+                             //RegistrationBookingEntity preRegistartionStatusDTO2;
+              preRegistartionStatusDTO.setStatusCode(StatusCodes.PENDING_APPOINTMENT.getCode());
+                            preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
+                             requestValidatorFlag = ValidationUtil.requestValidator(requestMap1, requiredRequestMap);
+                             RestTemplate restTemplate2 = Mockito.mock(RestTemplate.class);
+                         Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate2);
+                             ResponseEntity<MainListResponseDTO> respEntity2 = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+
+                             Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+                                                         Mockito.eq(MainListResponseDTO.class))).thenReturn(respEntity2);
+                             MainResponseDTO<List<BookingStatusDTO>> response = service.bookAppointment(reBookingDto);
+                             assertEquals(0, response.getResponse().size());
+
+	}
 
 	@Test
 	public void addAvailabilityServiceTest() {
