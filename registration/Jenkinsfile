@@ -16,7 +16,7 @@ node {
   "files": [
     {
       "pattern": "0.8.0/registration/registration-client/target/registration-client-encrypted.jar",
-      "target": "libs-release-local/io/mosip/registration/registration-client/0.8.8/"
+      "target": "libs-release-local/io/mosip/registration/registration-client/0.8.8"
     }
  ]
  }"""
