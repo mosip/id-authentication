@@ -90,6 +90,7 @@ public class RegistrationUIConstants {
 
 	// REGISTRATION
 	public static final String MAX_AGE_WARNING = bundle.getString("MAX_AGE_WARNING");
+	public static final String MIN_AGE_WARNING = bundle.getString("MIN_AGE_WARNING");
 	public static final String POA_DOCUMENT_EMPTY = bundle.getString("poaDocuments");
 	public static final String POI_DOCUMENT_EMPTY = bundle.getString("poiDocuments");
 	public static final String POR_DOCUMENT_EMPTY = bundle.getString("porDocuments");

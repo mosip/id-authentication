@@ -80,7 +80,7 @@ public class LoggerConstants {
 	public static final String LOG_REG_BASE = BASE + "BASE_CONTROLLER";
 	public static final String LOG_REG_LOGIN = LOGIN + "LOGIN_CONTROLLER";
 	public static final String LOG_REG_PAGE_FLOW = PGE_FLW + "PAGE_FLOW";
-
+	public static final String LOG_REG_USER_DETAIL = SYNC + "USER_DETAIL_SERVICE_IMPL";
 	// USER ONBOARD
 	public static final String LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD = USER_ONBOARD
 			+ "FINGERPRINT_CAPTURE_CONTROLLER";
