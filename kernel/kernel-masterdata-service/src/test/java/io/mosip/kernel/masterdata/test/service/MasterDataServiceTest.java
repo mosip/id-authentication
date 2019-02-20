@@ -1542,7 +1542,7 @@ public class MasterDataServiceTest {
 	public void getStatusOfWorkingHoursTest() throws Exception {
 		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
 				.thenReturn(false);
-		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
+		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.any(), Mockito.anyString()))
 				.thenReturn(registrationCenter);
 		LocalTime startTime = LocalTime.of(10, 00, 000);
 		LocalTime endTime = LocalTime.of(18, 00, 000);
@@ -1598,7 +1598,7 @@ public class MasterDataServiceTest {
 	public void getStatusOfWorkingHoursRejectedWorkingHourTest() throws Exception {
 		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
 				.thenReturn(false);
-		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
+		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.any(), Mockito.anyString()))
 				.thenReturn(registrationCenter);
 		LocalTime startTime = LocalTime.of(10, 00, 000);
 		LocalTime endTime = LocalTime.of(15, 00, 000);
