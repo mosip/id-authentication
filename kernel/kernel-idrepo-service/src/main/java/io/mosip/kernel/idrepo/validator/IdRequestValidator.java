@@ -1,18 +1,16 @@
 package io.mosip.kernel.idrepo.validator;
 
 import java.io.IOException;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.format.datetime.joda.DateTimeFormatterFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -37,6 +35,7 @@ import io.mosip.kernel.core.jsonvalidator.exception.NullJsonSchemaException;
 import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
@@ -67,12 +66,6 @@ public class IdRequestValidator implements Validator {
 
 	/** The Constant CREATE. */
 	private static final String UPDATE = "update";
-
-	/** The Constant DATETIME_TIMEZONE. */
-	private static final String DATETIME_TIMEZONE = "mosip.kernel.idrepo.datetime.timezone";
-
-	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "mosip.utc-datetime-pattern";
 
 	/** The Constant IDENTITY. */
 	private static final String IDENTITY = "identity";
@@ -370,18 +363,11 @@ public class IdRequestValidator implements Validator {
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), TIMESTAMP));
 		} else {
 			try {
-				if (Objects.nonNull(env.getProperty(DATETIME_PATTERN))) {
-					DateTimeFormatterFactory timestampFormat = new DateTimeFormatterFactory(
-							env.getProperty(DATETIME_PATTERN));
-					timestampFormat.setTimeZone(TimeZone.getTimeZone(env.getProperty(DATETIME_TIMEZONE)));
-					if (!DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter()).isBeforeNow()) {
-						errors.rejectValue(TIMESTAMP, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-								String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-										TIMESTAMP));
-					}
-
+				if (DateUtils.after(DateUtils.parseToLocalDateTime(timestamp), DateUtils.getUTCCurrentDateTime())) {
+					errors.rejectValue(TIMESTAMP, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TIMESTAMP));
 				}
-			} catch (IllegalArgumentException e) {
+			} catch (DateTimeParseException | io.mosip.kernel.core.exception.IllegalArgumentException e) {
 				mosipLogger.error(ID_REPO_SERVICE, "IdRequestValidator", "validateReqTime",
 						"\n" + ExceptionUtils.getStackTrace(e));
 				errors.rejectValue(TIMESTAMP, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),

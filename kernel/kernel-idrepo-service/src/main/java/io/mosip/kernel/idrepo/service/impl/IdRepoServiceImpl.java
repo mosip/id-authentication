@@ -748,7 +748,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 			return DateUtils.parseUTCToLocalDateTime(
 					DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN)),
 					env.getProperty(DATETIME_PATTERN));
-		} catch (ParseException e) {
+		} catch (ParseException | io.mosip.kernel.core.exception.IllegalArgumentException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "now()", "\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), "DATETIME_PATTERN"), e);
