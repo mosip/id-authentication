@@ -639,7 +639,7 @@ public class OSIValidator {
 				.getRegistrationStatus(introducerRid);
 		if (introducerRegistrationStatusDto != null) {
 			TransactionDto transactionDto = transcationStatusService.getTransactionByRegIdAndStatusCode(introducerRid,
-					RegistrationStatusCode.UIN_GENERATED.toString());
+					RegistrationStatusCode.PACKET_UIN_GENERATION_SUCCESS.toString());
 			if (transactionDto != null) {
 				return true;
 			} else {

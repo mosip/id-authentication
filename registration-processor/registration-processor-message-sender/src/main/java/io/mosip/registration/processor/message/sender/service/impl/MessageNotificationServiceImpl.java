@@ -51,13 +51,13 @@ import io.mosip.registration.processor.message.sender.exception.TemplateGenerati
 import io.mosip.registration.processor.message.sender.exception.TemplateNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
-import io.mosip.registration.processor.message.sender.utility.MessageSenderUtil;
 import io.mosip.registration.processor.message.sender.utility.TemplateConstant;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 
 /**
@@ -108,7 +108,7 @@ public class MessageNotificationServiceImpl
 
 	/** The utility. */
 	@Autowired
-	private MessageSenderUtil utility;
+	private Utilities utility;
 
 	/** The reg processor template json. */
 	@Autowired
@@ -356,7 +356,7 @@ public class MessageNotificationServiceImpl
 
 		try {
 			// Get Identity Json from config server and map keys to Java Object
-			String templateJsonString = MessageSenderUtil.getJson(utility.getConfigServerFileStorageURL(),
+			String templateJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
 					utility.getGetRegProcessorIdentityJson());
 
 			ObjectMapper mapTemplateJsonStringToObject = new ObjectMapper();

@@ -78,7 +78,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>registration-status-service</artifactId>
+			<artifactId>registration-status-service-impl</artifactId>
 			<version>${registration.status.service.version}</version>
 		</dependency>
 		<dependency>
@@ -99,6 +99,11 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-pdfgenerator-itext</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-qrcodegenerator-zxing</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
 		<dependency>

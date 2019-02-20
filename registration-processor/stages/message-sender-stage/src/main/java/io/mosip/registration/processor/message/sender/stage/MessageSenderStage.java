@@ -1,10 +1,10 @@
 package io.mosip.registration.processor.message.sender.stage;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -28,7 +24,6 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
-import io.mosip.registration.processor.core.dto.config.GlobalConfig;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -44,13 +39,16 @@ import io.mosip.registration.processor.message.sender.exception.TemplateGenerati
 import io.mosip.registration.processor.message.sender.exception.TemplateNotFoundException;
 import io.mosip.registration.processor.message.sender.util.StatusNotificationTypeMapUtil;
 import io.mosip.registration.processor.message.sender.utility.MessageSenderStatusMessage;
-import io.mosip.registration.processor.message.sender.utility.MessageSenderUtil;
 import io.mosip.registration.processor.message.sender.utility.NotificationTemplateCode;
 import io.mosip.registration.processor.message.sender.utility.NotificationTemplateType;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.status.code.TransactionTypeCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
+import io.mosip.registration.processor.status.service.TransactionService;
 
 /**
  * The Class MessageSenderStage.
@@ -69,6 +67,10 @@ public class MessageSenderStage extends MosipVerticleManager {
 	@Autowired
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	/** The transcation status service. */
+	@Autowired
+	private TransactionService<TransactionDto> transcationStatusService;
+	
 	/** The cluster manager url. */
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
@@ -93,6 +95,9 @@ public class MessageSenderStage extends MosipVerticleManager {
 	@Value("${registration.processor.reregister.subject}")
 	private String reregisterSubject;
 
+	@Value("${mosip.registration.processor.notification.types}")
+	private String notificationTypes;
+
 	/** The Constant TEMPLATES. */
 	private static final String TEMPLATES = "templates";
 
@@ -103,10 +108,6 @@ public class MessageSenderStage extends MosipVerticleManager {
 	/** The service. */
 	@Autowired
 	private MessageNotificationService<SmsResponseDto, ResponseDto, MultipartFile[]> service;
-
-	/** The utility. */
-	@Autowired
-	private MessageSenderUtil utility;
 
 	/** The Constant SMS_TYPE. */
 	private static final String SMS_TYPE = "SMS";
@@ -150,25 +151,21 @@ public class MessageSenderStage extends MosipVerticleManager {
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		object.setMessageBusAddress(MessageBusAddress.MESSAGE_SENDER_BUS);
-		
 		boolean isTransactionSuccessful = false;
-
 		String id = object.getRid();
-
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(id);
 
 		try {
 			StatusNotificationTypeMapUtil map = new StatusNotificationTypeMapUtil();
 			NotificationTemplateType type = map.getTemplateType(registrationStatusDto.getStatusCode());
-			if(type != null) {
+			if (type != null) {
 				setTemplateAndSubject(type);
 			}
 
 			Map<String, Object> attributes = new HashMap<>();
 			String[] ccEMailList = null;
 
-			String notificationTypes = getNotificationType();
-			if (notificationTypes.isEmpty()) {
+			if (notificationTypes == null || notificationTypes.isEmpty()) {
 				throw new ConfigurationNotFoundException(
 						PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getCode());
 			}
@@ -181,6 +178,16 @@ public class MessageSenderStage extends MosipVerticleManager {
 			sendNotification(id, attributes, ccEMailList, allNotificationTypes);
 			isTransactionSuccessful = true;
 			description = "Notification sent successfully" + id;
+			
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.NOTIFICATION_SENT_TO_RESIDENT.toString());
+			registrationStatusDto.setStatusComment(description);
+			
+			TransactionDto transactionDto = new TransactionDto(UUID.randomUUID().toString(), registrationStatusDto.getRegistrationId(),
+					null, TransactionTypeCode.CREATE.toString(), "Added registration status record",
+					registrationStatusDto.getStatusCode(), registrationStatusDto.getStatusComment());
+			transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
+			transactionDto.setReferenceIdType("Added registration record");
+			transcationStatusService.addRegistrationTransaction(transactionDto);
 
 		} catch (EmailIdNotFoundException | PhoneNumberNotFoundException | TemplateGenerationFailedException
 				| ConfigurationNotFoundException e) {
@@ -189,11 +196,6 @@ public class MessageSenderStage extends MosipVerticleManager {
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
 			description = "Email, phone, template or notification type is missing" + id;
 			throw new TemplateGenerationFailedException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
-		} catch (JsonParseException | JsonMappingException jp) {
-
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
-					jp.getMessage() + ExceptionUtils.getStackTrace(jp));
-			description = "Json parsing exception" + id;
 		} catch (TemplateNotFoundException tnf) {
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
@@ -290,21 +292,6 @@ public class MessageSenderStage extends MosipVerticleManager {
 		default:
 			break;
 		}
-	}
-
-	/**
-	 * Gets the notification type.
-	 *
-	 * @return the notification type
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 */
-	private String getNotificationType() throws IOException {
-		String getIdentityJsonString = MessageSenderUtil.getJson(utility.getConfigServerFileStorageURL(),
-				utility.getGetGlobalConfigJson());
-		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
-		GlobalConfig jsonObject = mapIdentityJsonStringToObject.readValue(getIdentityJsonString, GlobalConfig.class);
-		return jsonObject.getNotificationtype();
 	}
 
 	/**

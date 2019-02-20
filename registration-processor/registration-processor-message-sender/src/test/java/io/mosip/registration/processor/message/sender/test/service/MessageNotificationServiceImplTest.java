@@ -47,15 +47,15 @@ import io.mosip.registration.processor.message.sender.exception.TemplateGenerati
 import io.mosip.registration.processor.message.sender.exception.TemplateNotFoundException;
 import io.mosip.registration.processor.message.sender.service.impl.MessageNotificationServiceImpl;
 import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
-import io.mosip.registration.processor.message.sender.utility.MessageSenderUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 
 /**
  * The Class MessageNotificationServiceImplTest.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ MessageSenderUtil.class, JsonUtils.class, IOUtils.class })
+@PrepareForTest({ Utilities.class, JsonUtils.class, IOUtils.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class MessageNotificationServiceImplTest {
 
@@ -77,7 +77,7 @@ public class MessageNotificationServiceImplTest {
 
 	/** The utility. */
 	@Mock
-	private MessageSenderUtil utility;
+	private Utilities utility;
 
 	/** The rest client service. */
 	@Mock
@@ -173,8 +173,8 @@ public class MessageNotificationServiceImplTest {
 				+ "		\"cnienumber\": {\r\n" + "			\"value\" : \"CNIENumber\"\r\n" + "		},\r\n"
 				+ "		\"city\": {\r\n" + "			\"value\" : \"city\"\r\n" + "		}\r\n" + "	}\r\n" + "} ";
 
-		PowerMockito.mockStatic(MessageSenderUtil.class);
-		PowerMockito.when(MessageSenderUtil.class, "getJson", anyString(), anyString()).thenReturn(value);
+		PowerMockito.mockStatic(Utilities.class);
+		PowerMockito.when(Utilities.class, "getJson", anyString(), anyString()).thenReturn(value);
 
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
 		

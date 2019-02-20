@@ -54,6 +54,7 @@ public class PrintGlobalExceptionHandler {
 	
 	private String hamdleUINNotFoundInDatabase(UINNotFoundInDatabase e) {
 		ExceptionJSONInfo exe = new ExceptionJSONInfo( "RPR-DBE-002","The Registration Packet Size is invalid");
+		
 		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"RPR-DBE-001 Data integrity violation exception",e.getMessage());
 		return exe.getMessage();
 	}

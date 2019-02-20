@@ -61,6 +61,9 @@ import io.mosip.registration.processor.print.exception.UINNotFoundInDatabase;
 import io.mosip.registration.processor.print.util.UINCardConstant;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -76,6 +79,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
+	
+	/** The Constant USER. */
+	private static final String USER = "MOSIP_SYSTEM";
 
 	/** The Constant LANGUAGE. */
 	private static final String LANGUAGE = "language";
@@ -153,6 +159,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 	/** The description. */
 	private String description;
+	
+	@Autowired
+	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	@Autowired
 	private MosipQueueManager<MosipQueue, byte[]> mosipQueueManager;
@@ -198,6 +207,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 		String regId = object.getRid();
 
 		try {
+			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(regId);
+			
 			String uin = packetInfoManager.getUINByRid(regId).get(0);
 			if (uin == null) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -236,11 +247,19 @@ public class PrintStage extends MosipVerticleAPIManager {
 				object.setIsValid(Boolean.TRUE);
 				isTransactionSuccessful = true;
 				description = "Pdf added to the mosip queue for printing";
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_SENT_FOR_PRINTING.toString());
+				registrationStatusDto.setStatusComment(description);
 			} else {
 				object.setIsValid(Boolean.FALSE);
 				isTransactionSuccessful = false;
+				description = "Pdf was not added to queue due to queue failure";
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.UNABLE_TO_SENT_FOR_PRINTING.toString());
+				registrationStatusDto.setStatusComment(description);
 			}
-
+			
+			registrationStatusDto.setUpdatedBy(USER);
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			
 		} catch (UINNotFoundInDatabase e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.name() + e.getMessage()
@@ -279,13 +298,13 @@ public class PrintStage extends MosipVerticleAPIManager {
 			String eventName = "";
 			String eventType = "";
 			if (isTransactionSuccessful) {
-				description = "Reverse data sync of Pre-RegistrationIds sucessful";
+				description = "Pdf generated and sent to mosip queue";
 				eventId = EventId.RPR_402.toString();
 				eventName = EventName.UPDATE.toString();
 				eventType = EventType.BUSINESS.toString();
 			} else {
 
-				description = "Reverse data sync of Pre-RegistrationIds failed";
+				description = "Either pdf not generated or not sent to mosip queue";
 				eventId = EventId.RPR_405.toString();
 				eventName = EventName.EXCEPTION.toString();
 				eventType = EventType.SYSTEM.toString();
