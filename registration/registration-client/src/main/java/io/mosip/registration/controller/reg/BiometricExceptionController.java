@@ -13,6 +13,7 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -21,7 +22,6 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
-import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
@@ -107,8 +107,6 @@ public class BiometricExceptionController extends BaseController implements Init
 	@Autowired
 	private RegistrationController registrationController;
 
-	@Autowired
-	private IrisCaptureController irisCaptureController;
 	private static final Logger LOGGER = AppConfig.getLogger(BiometricExceptionController.class);
 
 	@Autowired
@@ -120,6 +118,7 @@ public class BiometricExceptionController extends BaseController implements Init
 	private List<String> fingerList = new ArrayList<>();
 	private List<String> irisList = new ArrayList<>();
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		setExceptionImage();
@@ -137,11 +136,11 @@ public class BiometricExceptionController extends BaseController implements Init
 		irisExceptionListener(rightEye);
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			
-			if(!((Map<String, Map<String, Boolean>>) ApplicationContext.map().get("onboardMap")).get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.FINGER_PANE)) {
+			if(!((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.ONBOARD_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.FINGER_PANE)) {
 				fingerPane.setManaged(false);
 				fingerPane.setVisible(false);
 			}
-			if(!((Map<String, Map<String, Boolean>>) ApplicationContext.map().get("onboardMap")).get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.IRIS_PANE)) {
+			if(!((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.ONBOARD_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.IRIS_PANE)) {
 				irisPane.setManaged(false);
 				irisPane.setVisible(false);
 			}
@@ -156,11 +155,11 @@ public class BiometricExceptionController extends BaseController implements Init
 			operatorExceptionLayout.setVisible(true);
 			operatorExceptionHeader.setVisible(true);
 		} else {
-			if(!((Map<String, Map<String, Boolean>>) ApplicationContext.map().get("registrationMap")).get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.FINGER_PANE)) {
+			if(!((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.FINGER_PANE)) {
 				fingerPane.setManaged(false);
 				fingerPane.setVisible(false);
 			}
-			if(!((Map<String, Map<String, Boolean>>) ApplicationContext.map().get("registrationMap")).get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.IRIS_PANE)) {
+			if(!((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.IRIS_PANE)) {
 				irisPane.setManaged(false);
 				irisPane.setVisible(false);
 			}
@@ -182,7 +181,7 @@ public class BiometricExceptionController extends BaseController implements Init
 	 */
 	private void fingerExceptionListener(Label fingerLabel) {
 
-		LOGGER.debug("REGISTRATION - FINGER_LABEL_LISTENER - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - FINGER_LABEL_LISTENER - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
 				APPLICATION_ID, "It will listen the finger click funtionality");
 
 		SimpleBooleanProperty toggleFunctionForFinger = new SimpleBooleanProperty(false);
@@ -231,7 +230,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			toggleFunctionForFinger.set(!toggleFunctionForFinger.get());
 		});
 
-		LOGGER.debug("REGISTRATION - FINGER_LABEL_LISTENER_END - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - FINGER_LABEL_LISTENER_END - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
 				APPLICATION_ID, "End of Functionality");
 
 	}
@@ -377,7 +376,13 @@ public class BiometricExceptionController extends BaseController implements Init
 				generateAlert(RegistrationConstants.ALERT_INFORMATION,
 						RegistrationUIConstants.BIOMETRIC_EXCEPTION_ALERT);
 			} else {
-				registrationController.showCurrentPage(RegistrationConstants.BIOMETRIC_EXCEPTION,getPageDetails(RegistrationConstants.BIOMETRIC_EXCEPTION,RegistrationConstants.PREVIOUS));
+				if(getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+					SessionContext.getInstance().getMapObject().put("biometricException",false);
+					SessionContext.getInstance().getMapObject().put("documentScan",true);
+					registrationController.showUINUpdateCurrentPage();
+				} else {
+					registrationController.showCurrentPage(RegistrationConstants.BIOMETRIC_EXCEPTION,getPageDetails(RegistrationConstants.BIOMETRIC_EXCEPTION,RegistrationConstants.PREVIOUS));
+				}
 			}
 		}
 	}
@@ -453,7 +458,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			getScene(mainBox).setRoot(mainBox);
 		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage());
+					exception.getMessage()+ExceptionUtils.getStackTrace(exception));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
 		}
 	}

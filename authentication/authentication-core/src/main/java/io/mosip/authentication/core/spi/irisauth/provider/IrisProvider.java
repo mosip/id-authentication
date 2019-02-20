@@ -8,7 +8,7 @@ import org.springframework.core.env.Environment;
 /**
  * The Class IrisProvider.
  *
- * @author Prem Kumar 
+ * @author Prem Kumar
  * 
  * 
  */
@@ -20,6 +20,7 @@ public abstract class IrisProvider implements MosipIrisProvider {
 
 	/** The environment. */
 	private Environment environment;
+
 	/**
 	 * Constructor for IrisProvider
 	 * 
@@ -75,13 +76,15 @@ public abstract class IrisProvider implements MosipIrisProvider {
 	 * io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider#
 	 * matchImage(java.lang.Object, java.lang.Object)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public double matchImage(Object reqInfo, Object entityInfo) {
 
 		if (reqInfo instanceof Map) {
 			Map<String, String> reqInfoMap = (Map<String, String>) reqInfo;
-			String uin = (String) reqInfoMap.get(IDVID);
+			String uin = reqInfoMap.get(IDVID);
 			String uinType = checkEvenOrOddUIN(uin);
+
 			if (reqInfoMap.containsKey(IrisProvider.RIGHTEYE)) {
 				return environment.getProperty(uinType + IRISIMG_RIGHT_MATCH_VALUE, Double.class);
 			} else if (reqInfoMap.containsKey(IrisProvider.LEFTTEYE)) {
@@ -94,13 +97,11 @@ public abstract class IrisProvider implements MosipIrisProvider {
 
 	/**
 	 * Temporary mocking for iris score calculation un-till integration with SDK.
-	 * Even UIN - LeftEye   - Positive
-	 * 			- RighetEye - Negative
-	 *          - Composite - Positive
-	 * Odd UIN - LeftEye   - Negative
-	 * 		   - RighetEye - Positive
-	 *         - Composite - Negative
-	 * @param uin the UIN
+	 * Even UIN - LeftEye - Positive - RighetEye - Negative - Composite - Positive
+	 * Odd UIN - LeftEye - Negative - RighetEye - Positive - Composite - Negative
+	 * 
+	 * @param uin
+	 *            the UIN
 	 * @return the uin is even or odd.
 	 */
 	private String checkEvenOrOddUIN(String uin) {
@@ -115,18 +116,21 @@ public abstract class IrisProvider implements MosipIrisProvider {
 	 * io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider#
 	 * matchMultiImage(java.lang.Object, java.lang.Object)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public double matchMultiImage(Object reqInfo, Object entityInfo) {
 		double match = 0;
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {
 			Map<String, String> reqInfoMap = (Map<String, String>) reqInfo;
 			String uin = reqInfoMap.get(IDVID);
+
 			if (reqInfoMap.containsKey(LEFTTEYE)) {
 				Map<String, String> requestInfo = new HashMap<>();
 				requestInfo.put(LEFTTEYE, reqInfoMap.get(LEFTTEYE));
 				requestInfo.put(IDVID, uin);
 				match += matchImage(requestInfo, entityInfo);
 			}
+
 			if (reqInfoMap.containsKey(RIGHTEYE)) {
 				Map<String, String> requestInfo = new HashMap<>();
 				requestInfo.put(RIGHTEYE, reqInfoMap.get(RIGHTEYE));

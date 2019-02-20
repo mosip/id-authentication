@@ -12,12 +12,12 @@ import javax.imageio.ImageIO;
 
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.device.scanner.wia.ClassFactory;
 import io.mosip.registration.device.scanner.wia.ICommonDialog;
 import io.mosip.registration.device.scanner.wia.IImageFile;
-import io.mosip.registration.device.scanner.wia.IVector;
 import io.mosip.registration.device.scanner.wia.WiaDeviceType;
 import io.mosip.registration.device.scanner.wia.WiaImageBias;
 import io.mosip.registration.device.scanner.wia.WiaImageIntent;
@@ -60,8 +60,12 @@ public class DocumentScannerWiaServiceImpl extends DocumentScannerService {
 			bufferedImage = ImageIO.read(new File(tempFilePath));
 			new File(tempFilePath).delete();
 
-		} catch (IOException | RuntimeException e) {
-			LOGGER.error(LOG_REG_DOC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, e.getMessage());
+		} catch (IOException ioException) {
+			LOGGER.error(LOG_REG_DOC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					ExceptionUtils.getStackTrace(ioException));
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LOG_REG_DOC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					ExceptionUtils.getStackTrace(runtimeException));
 		}
 		return bufferedImage;
 	}

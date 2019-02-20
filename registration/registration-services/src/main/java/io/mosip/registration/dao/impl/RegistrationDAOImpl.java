@@ -315,4 +315,17 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 		return registrationRepository.findAllById(iterableRegIds);
 	}
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.RegistrationDAO#get(java.sql.Timestamp, java.lang.String)
+	 */
+	@Override
+	public List<Registration> get(Timestamp crDtimes, String clientStatus) {
+		
+		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Retriving Registrations based on crDtime and status");
+
+		return registrationRepository.findByCrDtimeBeforeAndClientStatusCode(crDtimes, clientStatus);
+
+	}
 }

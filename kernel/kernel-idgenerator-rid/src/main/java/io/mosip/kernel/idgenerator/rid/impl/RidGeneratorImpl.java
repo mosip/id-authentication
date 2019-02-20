@@ -32,10 +32,10 @@ import io.mosip.kernel.idgenerator.rid.repository.RidRepository;
 @Component
 public class RidGeneratorImpl implements RidGenerator<String> {
 
-	@Value("${mosip.kernel.rid.centerid-length:-1}")
+	@Value("${mosip.kernel.registrationcenterid.length:-1}")
 	private int centerIdLength;
 
-	@Value("${mosip.kernel.rid.machineid-length:-1}")
+	@Value("${mosip.kernel.machineid.length:-1}")
 	private int machineIdLength;
 
 	@Value("${mosip.kernel.rid.sequence-length:-1}")

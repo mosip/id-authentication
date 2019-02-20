@@ -77,7 +77,13 @@ public class RegistrationConstants {
 	public static final String OPERATOR_AUTHENTICATION = "operatorAuthenticationPane";
 	public static final String ONBOARD_USER_PARENT = "onboardUser";
 	public static final String ONBOARD_USER_SUCCESS = "userOnboardSuccess";
+	
+	//Page Flow
 	public static final String VISIBILITY = "visibility";
+	public static final String ONBOARD_LIST = "onboardPageList";
+	public static final String ONBOARD_MAP = "onboardMap";
+	public static final String REGISTRATION_MAP = "registrationMap";
+	public static final String ONBOARD = "onboard";
 
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";
@@ -125,8 +131,6 @@ public class RegistrationConstants {
 	public static final String LOGIN_SEQUENCE = "sequence";
 	public static final String ONBOARD_USER = "isOnboardUser";
 	public static final String ONBOARD_USER_UPDATE = "updateOnboard";
-	public static final String REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER";
-	public static final String REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER";
 
 	// FingerPrint
 	public static final String FINGER_PRINT_CAPTURE = "Please place your finger on device.";
@@ -662,7 +666,7 @@ public class RegistrationConstants {
 	public static final String EMAIL_SERVICE = "email";
 	public static final String SMS_SERVICE = "sms";
 	public static final String NOTIFICATION_SERVICE = "REGISTRATION - NOTIFICATION SERVICE ";
-	public static final String MODE_OF_COMMUNICATION = "MODE_OF_COMMUNICATION";
+	public static final String MODE_OF_COMMUNICATION = "mosip.registration.mode_of_communication";
 
 	// Global configuration parameters
 	public static final String INVALID_LOGIN_COUNT = "INVALID_LOGIN_COUNT";
@@ -676,6 +680,8 @@ public class RegistrationConstants {
 	public static final String IRIS_DISABLE_FLAG = "IRIS_DISABLE_FLAG";
 	public static final String FACE_DISABLE_FLAG = "FACE_DISABLE_FLAG";
 	public static final String DOCUMENT_DISABLE_FLAG = "DOCUMENT_DISABLE_FLAG";
+	public static final String SEND_NOTIFICATION_DISABLE_FLAG = "SEND_NOTIFICATION_DISABLE_FLAG";
+	public static final String RECAPTURE_TIME = "RECAPTURE_TIME";
 
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
@@ -863,9 +869,8 @@ public class RegistrationConstants {
 	public static final String REG_UI_LOGIN_LOADER_EXCEPTION = REG_UI_CODE + "RAI-001";
 	public static final String REG_UI_LOGIN_SCREEN_LOADER_EXCEPTION = REG_UI_CODE + "LC-002";
 	public static final String REG_UI_HOMEPAGE_LOADER_EXCEPTION = REG_UI_CODE + "ROC-003";
-	public static final String REG_UI_SHEDULER_RUNTIME_EXCEPTION = REG_UI_CODE + "SHE-004";
-	public static final String REG_UI_BASE_CNTRLR_IO_EXCEPTION = REG_UI_CODE + "BAS-005";
-	public static final String REG_UI_VIEW_ACK_FORM_IO_EXCEPTION = REG_UI_CODE + "VAF-006";
+	public static final String REG_UI_BASE_CNTRLR_IO_EXCEPTION = REG_UI_CODE + "BAS-004";
+	public static final String REG_UI_VIEW_ACK_FORM_IO_EXCEPTION = REG_UI_CODE + "VAF-005";
 
 	// Exceptions for Device Onboarding
 	public static final String DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "ROD-001";
@@ -1041,6 +1046,7 @@ public class RegistrationConstants {
 	public static final String USER_MACHINE_VALIDATION_CODE = "REG-URE‌-009";
 	public static final String USER_MACHINE_VALIDATION_MSG = "This computer is not mapped to the same Registration Centre as the dongle plugged in.";
 	public static final String USER_ONBOARD_DATA = "UserOnboardBiometricData";
+	public static final String USER_ON_BOARD_THRESHOLD_LIMIT = "USER_ON_BOARD_THRESHOLD_LIMIT";
 
 	// Configuration Constants
 	public static final String AUDIT_LOG_DELETION_CONFIGURED_DAYS = "AUDIT_LOG_DELETION_CONFIGURED_DAYS";
@@ -1093,4 +1099,8 @@ public class RegistrationConstants {
 	public static final String CONCENT_OF_APPLICANT_SELECTED = "Yes";
 	public static final String CONCENT_OF_APPLICANT_UNSELECTED = "No";
 
+	// User Details
+	public static final String USER_DETAILS_SERVICE_NAME = "user_details";
+	public static final String MAPPER_UTILL = "MAPPER_UTILL";
+	public static final String REG_ID = "regid";
 }

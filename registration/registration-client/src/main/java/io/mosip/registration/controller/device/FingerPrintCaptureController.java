@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,7 +25,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.reg.BiometricExceptionController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.UserOnboardParentController;
 import io.mosip.registration.device.fp.FingerprintFacade;
@@ -40,14 +38,11 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -141,9 +136,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	@Autowired
 	private IrisCaptureController irisCaptureController;
-	
-	@Autowired
-	private BiometricExceptionController biometricExceptionController;
 
 	@Autowired
 	private UserOnboardParentController userOnboardParentController;
@@ -653,7 +645,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 							SessionContext.map().put("fingerPrintCapture", false);
 							SessionContext.map().put("faceCapture", true);
 						}
-						registrationController.showCurrentPage("fingerPrintCapture", "irisCapture");
+						registrationController.showUINUpdateCurrentPage();
 					}
 				} else {
 					if (validateFingerPrints()) {
@@ -693,7 +685,21 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				}
 			} else {
 				if (validateFingerPrints()) {
-					registrationController.showCurrentPage(RegistrationConstants.FINGERPRINT_CAPTURE, getPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE,RegistrationConstants.PREVIOUS));
+					SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
+					if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+						if ((boolean) SessionContext.getInstance().getUserContext().getUserMap()
+								.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
+							SessionContext.getInstance().getMapObject().put("fingerPrintCapture",false);
+							SessionContext.getInstance().getMapObject().put("biometricException",true);
+							registrationController.showUINUpdateCurrentPage();
+						}else {
+							SessionContext.getInstance().getMapObject().put("fingerPrintCapture",false);
+							SessionContext.getInstance().getMapObject().put("documentScan",true);
+							registrationController.showUINUpdateCurrentPage();
+						}
+					} else {
+						registrationController.showCurrentPage(RegistrationConstants.FINGERPRINT_CAPTURE, getPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE,RegistrationConstants.PREVIOUS));
+					}
 				}
 			}
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -897,28 +903,5 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	private String getValueFromApplicationContext(String key) {
 		return (String) applicationContext.getApplicationMap().get(key);
-	}
-
-	/**
-	 * Method to load fxml page
-	 * 
-	 * @param fxml file name
-	 */
-	private void loadPage(String page) {
-		VBox mainBox = new VBox();
-		try {
-			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
-			mainBox.getChildren().add(headerRoot);
-			Parent createRoot = BaseController.load(getClass().getResource(page));
-			mainBox.getChildren().add(createRoot);
-			getScene(mainBox).setRoot(mainBox);
-		} catch (IOException ioException) {
-			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
-		}
 	}
 }

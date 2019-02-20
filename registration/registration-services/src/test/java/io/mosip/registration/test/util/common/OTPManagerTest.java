@@ -1,6 +1,7 @@
 package io.mosip.registration.test.util.common;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -30,7 +31,6 @@ import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 import io.mosip.registration.validator.OTPValidatorImpl;
-import junit.framework.Assert;
 
 
 @RunWith(PowerMockRunner.class)
@@ -96,7 +96,7 @@ public class OTPManagerTest {
 
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean())).thenReturn(otpValidatorResponseDTO);
 		
-		assertNotNull(otpManager.validateOTP("mosip", "12345").getSuccessResponseDTO());
+		assertNull(otpManager.validateOTP("mosip", "12345").getSuccessResponseDTO());
 	}
 	
 	@Test

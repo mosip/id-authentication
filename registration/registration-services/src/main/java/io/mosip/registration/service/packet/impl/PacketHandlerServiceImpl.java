@@ -13,6 +13,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
@@ -97,6 +98,9 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 						REGISTRATION_ID, rid);
 			}
 		} catch (RegBaseCheckedException exception) {
+			LOGGER.info(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
+					ExceptionUtils.getStackTrace(exception));
+
 			auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, Components.PACKET_HANDLER, INTERNAL_SERVER_ERROR,
 					REGISTRATION_ID, rid);
 
@@ -107,6 +111,9 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 			errorResponseDTOs.add(errorResponseDTO);
 			responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 		} catch (RegBaseUncheckedException uncheckedException) {
+			LOGGER.info(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
+					ExceptionUtils.getStackTrace(uncheckedException));
+	
 			auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, Components.PACKET_HANDLER, INTERNAL_SERVER_ERROR,
 					REGISTRATION_ID, rid);
 

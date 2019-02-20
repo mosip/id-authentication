@@ -19,6 +19,8 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
+
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -133,9 +135,9 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 				| InterruptedException regBaseCheckedException) {
 			Thread.currentThread().interrupt();
 			LOGGER.error(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, regBaseCheckedException.getMessage());
+					RegistrationConstants.APPLICATION_ID, ExceptionUtils.getStackTrace(regBaseCheckedException));
 			throw new RegBaseCheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION,
-					regBaseCheckedException.getMessage());
+					regBaseCheckedException.getMessage(), regBaseCheckedException);
 
 		}
 
@@ -217,7 +219,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 			} catch (IOException exception) {
 
 				throw new RegBaseUncheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION,
-						exception.toString());
+						exception.toString(), exception);
 			}
 			break;
 
@@ -262,7 +264,8 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 				}
 
 			} catch (Exception exception) {
-				throw new RegBaseCheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION, exception.toString());
+				throw new RegBaseCheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION, exception.toString(),
+						exception);
 			}
 		}
 

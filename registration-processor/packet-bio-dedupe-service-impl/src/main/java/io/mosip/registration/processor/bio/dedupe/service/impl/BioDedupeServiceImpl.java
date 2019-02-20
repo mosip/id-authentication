@@ -11,9 +11,9 @@ import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.bio.dedupe.abis.dto.AbisInsertRequestDto;
 import io.mosip.registration.processor.bio.dedupe.abis.dto.AbisInsertResponceDto;
@@ -38,7 +38,6 @@ import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
@@ -84,9 +83,9 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	@Value("${registration.processor.abis.threshold}")
 	private Integer threshold;
 
-	/** The filesystem ceph adapter impl. */
+	/** The filesystem adapter impl. */
 	@Autowired
-	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
+	private FileSystemAdapter filesystemAdapterImpl;
 
 	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 
@@ -255,7 +254,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	@Override
 	public byte[] getFile(String registrationId) {
 		byte[] file = null;
-		InputStream packetMetaInfoStream = filesystemCephAdapterImpl.getFile(registrationId,
+		InputStream packetMetaInfoStream = filesystemAdapterImpl.getFile(registrationId,
 				PacketFiles.PACKET_META_INFO.name());
 		PacketMetaInfo packetMetaInfo = null;
 		String applicantBiometricFileName = "";
@@ -268,7 +267,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 					JsonConstant.APPLICANTBIOMETRICSEQUENCE);
 			if (hashList != null)
 				applicantBiometricFileName = hashList.get(0);
-			InputStream fileInStream = filesystemCephAdapterImpl.getFile(registrationId,
+			InputStream fileInStream = filesystemAdapterImpl.getFile(registrationId,
 					PacketStructure.BIOMETRIC + applicantBiometricFileName.toUpperCase());
 
 			file = IOUtils.toByteArray(fileInStream);

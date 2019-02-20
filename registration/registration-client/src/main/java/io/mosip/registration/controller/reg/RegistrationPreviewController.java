@@ -75,7 +75,13 @@ public class RegistrationPreviewController extends BaseController implements Ini
 					.setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_UNSELECTED);
 		}
 		
-		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW,RegistrationConstants.NEXT));
+		if(getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			SessionContext.map().put("registrationPreview", false);
+			SessionContext.map().put("operatorAuthenticationPane", true);
+			registrationController.showUINUpdateCurrentPage();
+		} else {
+			registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW,RegistrationConstants.NEXT));
+		}
 		registrationController.goToAuthenticationPage();
 	}
 

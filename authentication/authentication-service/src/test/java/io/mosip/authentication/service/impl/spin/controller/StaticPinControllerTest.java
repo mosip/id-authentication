@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -21,7 +22,7 @@ import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.spin.facade.StaticPinFacade;
+import io.mosip.authentication.core.spi.spin.service.StaticPinService;
 import io.mosip.authentication.service.impl.spin.validator.StaticPinRequestValidator;
 /**
  * 
@@ -37,7 +38,7 @@ public class StaticPinControllerTest {
 	
 	/** The Static Pin Facade */
 	@Mock
-	private StaticPinFacade staticPinFacade;
+	private StaticPinService staticPinService;
 	
 	/** The Static Pin Request Validator  */
 	@InjectMocks
@@ -55,7 +56,7 @@ public class StaticPinControllerTest {
 	
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(staticPinController, "staticPinFacade", staticPinFacade);
+		ReflectionTestUtils.setField(staticPinController, "staticPinService", staticPinService);
 		ReflectionTestUtils.invokeMethod(staticPinController, "initBinder", binder);
 	}
 	/*
@@ -74,7 +75,7 @@ public class StaticPinControllerTest {
 	@Test
 	public void testController_Succes() throws  IdAuthenticationAppException, IdAuthenticationBusinessException{
 		StaticPinRequestDTO dto=new StaticPinRequestDTO();
-		Mockito.when(staticPinFacade.storeSpin(dto)).thenReturn(new StaticPinResponseDTO());
+		Mockito.when(staticPinService.storeSpin(dto)).thenReturn(new StaticPinResponseDTO());
 		staticPinController.storeSpin(dto, error);
 	}
 	
@@ -82,7 +83,7 @@ public class StaticPinControllerTest {
 	public void testController_Failure_DataValidation() throws IdAuthenticationBusinessException, IdAuthenticationAppException
 	{
 		StaticPinRequestDTO dto=new StaticPinRequestDTO();
-		Mockito.when(staticPinFacade.storeSpin(dto)).thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.STATICPIN_NOT_STORED_PINVAUE));
+		Mockito.when(staticPinService.storeSpin(dto)).thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.STATICPIN_NOT_STORED_PINVAUE));
 		staticPinController.storeSpin(dto, error);
 	}
 }

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
@@ -186,7 +187,7 @@ public class DocumentScanController extends BaseController {
 			populateDocumentCategories();
 		} catch (RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					exception.getMessage());
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
 	}
@@ -304,13 +305,13 @@ public class DocumentScanController extends BaseController {
 			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s -> Exception while scanning documents for registration  %s -> %s",
 							RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, ioException.getMessage(),
-							ioException.getCause()));
+							ExceptionUtils.getStackTrace(ioException)));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s -> Exception while scanning documents for registration  %s",
-							RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, runtimeException.getMessage()));
+							RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, runtimeException.getMessage()) + ExceptionUtils.getStackTrace(runtimeException));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
 		}
@@ -527,9 +528,9 @@ public class DocumentScanController extends BaseController {
 						docPreviewNext.setDisable(false);
 					}
 				}
-			} catch (IOException e) {
+			} catch (IOException ioException) {
 				LOGGER.error("DOCUMENT_SCAN_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-						e.getMessage());
+						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 				generateAlert(RegistrationConstants.ERROR, "Unable to preview the document");
 				return;
 			}
@@ -707,7 +708,7 @@ public class DocumentScanController extends BaseController {
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING LIST OF DOCUMENTS FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -776,7 +777,7 @@ public class DocumentScanController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Entering into toggle function for Biometric exception");
 
-			Map<String,Map<String,Boolean>> detailMap = (Map<String, Map<String, Boolean>>) applicationContext.getApplicationMap().get("registrationMap");
+			Map<String,Map<String,Boolean>> detailMap = (Map<String, Map<String, Boolean>>) applicationContext.getApplicationMap().get(RegistrationConstants.REGISTRATION_MAP);
 			
 			if(!detailMap.get(RegistrationConstants.DOCUMENT_SCAN).get(RegistrationConstants.DOCUMENT_PANE)) {
 				documentPane.setVisible(false);
@@ -804,11 +805,11 @@ public class DocumentScanController extends BaseController {
 			}
 
 			if (toggleBiometricException) {
-				((Map<String, Map<String, Boolean>>) ApplicationContext.map().get("registrationMap")).get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY, true);
+				((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY, true);
 				bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 				bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 			} else {
-				((Map<String, Map<String, Boolean>>)ApplicationContext.map().get("registrationMap")).get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY, false);
+				//((Map<String, Map<String, Boolean>>)ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY, false);
 				bioExceptionToggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 				bioExceptionToggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 			}
@@ -821,13 +822,13 @@ public class DocumentScanController extends BaseController {
 						bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						toggleBiometricException = true;
-						((Map<String, Map<String, Boolean>>) ApplicationContext.map().get("registrationMap")).get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY, true);
+						((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY, true);
 					} else {
 						bioExceptionToggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						bioExceptionToggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						toggleBiometricException = false;
 						faceCaptureController.clearExceptionImage();
-						((Map<String, Map<String, Boolean>>) ApplicationContext.map().get("registrationMap")).get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY, false);
+						((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY, false);
 					}
 					SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION,
 							toggleBiometricException);
@@ -843,7 +844,8 @@ public class DocumentScanController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, "Exiting the toggle function for Biometric exception");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - TOGGLING FOR BIOMETRIC EXCEPTION SWITCH FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -871,22 +873,35 @@ public class DocumentScanController extends BaseController {
 	private void skip() {
 		
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			SessionContext.map().put("documentScan", false);
+			if (toggleBiometricException)
+				SessionContext.map().put("biometricException", true);
+			else
+				SessionContext.map().put("fingerPrintCapture", true);
 			updateUINMethod();
+			registrationController.showUINUpdateCurrentPage();
+		} else {
+			registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN,getPageDetails(RegistrationConstants.DOCUMENT_SCAN,RegistrationConstants.NEXT));
 		}		
-		registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN,getPageDetails(RegistrationConstants.DOCUMENT_SCAN,RegistrationConstants.NEXT));
 
 	}
 	
 	@FXML
 	private void next() {
 		
-		if(documentDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
-			
-			if (registrationController.validateDemographicPane(documentScanPane)) {
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			SessionContext.map().put("documentScan", false);
+			if (toggleBiometricException) {
+				SessionContext.map().put("biometricException", true);
 				updateUINMethod();
+				registrationController.showUINUpdateCurrentPage();
 			}
+		} else {
+			if(documentDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+				registrationController.validateDemographicPane(documentScanPane);
+			}
+			registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN, getPageDetails(RegistrationConstants.DOCUMENT_SCAN,RegistrationConstants.NEXT));
 		}
-		registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN, getPageDetails(RegistrationConstants.DOCUMENT_SCAN,RegistrationConstants.NEXT));
 	}
 
 	private void updateUINMethod() {

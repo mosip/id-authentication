@@ -15,18 +15,19 @@
             <Button fx:id="formValidationButton" layoutX="1130.0" layoutY="5.0" mnemonicParsing="false" onAction="#syncAndUploadPacket" text="%upload" />
             <AnchorPane layoutX="2.0" layoutY="-5.0">
                <children>
-                  <Button layoutY="14.0" mnemonicParsing="false" styleClass="homeButton" text="%home" onAction="#goToHomePageFromRegistration"/>
-                  <Label layoutX="60.0" layoutY="16.0" text="%/uploadpacket" styleClass="headerLabel"/>
+                  <Button layoutY="14.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+                  <Label layoutX="60.0" layoutY="16.0" styleClass="headerLabel" text="%/uploadpacket" />
                </children>
             </AnchorPane>
-            <Label styleClass="mainHeader" layoutX="530.0" layoutY="2.0" text="%uploadpacket" />
+            <Label layoutX="530.0" layoutY="2.0" styleClass="mainHeader" text="%uploadpacket" />
          </children>
       </AnchorPane>
-      <ProgressIndicator fx:id="progressIndicator" layoutX="400.0" layoutY="20.0" prefHeight="109.0" prefWidth="90.0" progress="0.0" visible="false" />
-      <AnchorPane layoutX="27.0" layoutY="86.0">
-         <children>
-            <VBox fx:id="uploadIds" layoutY="10.0" spacing="1" styleClass="uploadIds" />
-         </children>
-      </AnchorPane>	
+      <TableView fx:id="table" layoutX="52.0" layoutY="66.0" styleClass="packetUploadTable">
+        <columns>
+          <TableColumn fx:id="fileNameColumn" styleClass="fileNameColumn" text="%files" />
+          <TableColumn fx:id="uploadStatusColumn" styleClass="uploadStatusColumn" text="%status" />
+        </columns>
+      </TableView>
+      <ProgressIndicator fx:id="progressIndicator" layoutX="400.0" layoutY="20.0" prefHeight="109.0" prefWidth="90.0" progress="0.0" visible="false" />	
    </children>
 </AnchorPane>

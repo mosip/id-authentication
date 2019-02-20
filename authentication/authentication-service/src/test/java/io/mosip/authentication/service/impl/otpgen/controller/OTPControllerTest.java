@@ -38,7 +38,7 @@ import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.otpgen.facade.OTPFacade;
+import io.mosip.authentication.core.spi.otpgen.service.OTPService;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -63,7 +63,7 @@ public class OTPControllerTest {
 	@Mock
 	BindingResult result;
 	@Mock
-	OTPFacade otpFacade;
+	private OTPService otpService;
 	@Mock
 	Date date;
 	@Mock
@@ -102,7 +102,7 @@ public class OTPControllerTest {
 		assertTrue(violations.isEmpty());
 
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
-		Mockito.when(otpFacade.generateOtp(otpRequestDto)).thenReturn(otpResponseDTO);
+		Mockito.when(otpService.generateOtp(otpRequestDto)).thenReturn(otpResponseDTO);
 		OtpResponseDTO expactedresponse = otpController.generateOTP(otpRequestDto, result);
 
 		assertEquals(otpResponseDTO.getStatus(), expactedresponse.getStatus());
@@ -156,7 +156,7 @@ public class OTPControllerTest {
 		assertTrue(violations.isEmpty());
 
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
-		Mockito.when(otpFacade.generateOtp(otpRequestDto)).thenThrow(idAuthenticationBusinessException);
+		Mockito.when(otpService.generateOtp(otpRequestDto)).thenThrow(idAuthenticationBusinessException);
 		Mockito.when(otpController.generateOTP(otpRequestDto, result)).thenThrow(idAuthenticationAppException);
 		otpController.generateOTP(otpRequestDto, result);
 	}
@@ -179,7 +179,7 @@ public class OTPControllerTest {
 		assertTrue(violations.isEmpty());
 
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
-		Mockito.when(otpFacade.generateOtp(otpRequestDto)).thenThrow(idAuthenticationBusinessException);
+		Mockito.when(otpService.generateOtp(otpRequestDto)).thenThrow(idAuthenticationBusinessException);
 		Mockito.when(otpController.generateOTP(otpRequestDto, result)).thenThrow(idAuthenticationAppException);
 
 	}

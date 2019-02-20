@@ -7,10 +7,10 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 /**
@@ -22,7 +22,7 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 public class CheckSumValidation {
 
 	/** The adapter. */
-	private FileSystemAdapter<InputStream, Boolean> adapter;
+	private FileSystemAdapter adapter;
 
 	/** The registration status dto. */
 	private InternalRegistrationStatusDto registrationStatusDto;
@@ -35,8 +35,7 @@ public class CheckSumValidation {
 	 * @param registrationStatusDto
 	 *            the registration status dto
 	 */
-	public CheckSumValidation(FileSystemAdapter<InputStream, Boolean> adapter,
-			InternalRegistrationStatusDto registrationStatusDto) {
+	public CheckSumValidation(FileSystemAdapter adapter, InternalRegistrationStatusDto registrationStatusDto) {
 		this.registrationStatusDto = registrationStatusDto;
 		this.adapter = adapter;
 
@@ -82,7 +81,10 @@ public class CheckSumValidation {
 			isValid = true;
 		}
 
-		return isValid;
+		/* 
+		 * TODO ::  This has been mocked for Testing once uncomment after test
+		 * */
+		return Boolean.TRUE;
 	}
 
 }

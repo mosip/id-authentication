@@ -29,7 +29,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.packet.dto.Applicant;
 import io.mosip.registration.processor.core.packet.dto.Biometric;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
@@ -42,11 +44,8 @@ import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
-import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
@@ -133,9 +132,9 @@ public class PacketInfoManagerImplTest {
 	@Mock
 	private PacketInfoDao packetInfoDao;
 
-	/** The filesystem ceph adapter impl. */
+	/** The filesystem adapter impl. */
 	@Mock
-	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
+	private FileSystemAdapter filesystemAdapterImpl;
 
 	/** The reg abis ref repository. */
 	@Mock
@@ -295,10 +294,10 @@ public class PacketInfoManagerImplTest {
 
 		Applicant applicant = new Applicant();
 		applicant.setLeftEye(lefteye);
-		//applicant.setLeftSlap(leftPalm);
+		// applicant.setLeftSlap(leftPalm);
 		applicant.setRightEye(rightEye);
-		//applicant.setRightSlap(rightPalm);
-		//applicant.setThumbs(bothThumbs);
+		// applicant.setRightSlap(rightPalm);
+		// applicant.setThumbs(bothThumbs);
 		Introducer introducer = new Introducer();
 		introducer.setIntroducerFingerprint(rightThumb);
 		introducer.setIntroducerImage(face);
@@ -536,7 +535,7 @@ public class PacketInfoManagerImplTest {
 		String inputString = "test";
 		InputStream inputStream = new ByteArrayInputStream(inputString.getBytes(StandardCharsets.UTF_8));
 
-		Mockito.when(filesystemCephAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
+		Mockito.when(filesystemAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenReturn(inputStream);
 		exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.toString(), "errorMessage", new Exception());
 		classLoader = getClass().getClassLoader();
@@ -562,14 +561,14 @@ public class PacketInfoManagerImplTest {
 		// test to cover IoException
 		InputStream inputStream = Mockito.mock(InputStream.class);
 
-		Mockito.when(filesystemCephAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
+		Mockito.when(filesystemAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenReturn(inputStream);
 
 		// Mockito.when(inputStream.read(ArgumentMatchers.any())).thenThrow(new
 		// IOException());
 
 		packetInfoManagerImpl.savePacketData(identity);
-		assertEquals(inputStream, filesystemCephAdapterImpl.getFile("1234", PacketFiles.DEMOGRAPHIC.name()));
+		assertEquals(inputStream, filesystemAdapterImpl.getFile("1234", PacketFiles.DEMOGRAPHIC.name()));
 
 	}
 
@@ -654,8 +653,7 @@ public class PacketInfoManagerImplTest {
 		photographDto.setPreRegId("PEN1345T");
 		photographDto.setNoOfRetry(4);
 		photographDto.setHasExcpPhotograph(false);
-		
-		
+
 		DemographicInfoDto demoDto = new DemographicInfoDto();
 		List<DemographicInfoDto> demoDedupeList = new ArrayList<>();
 		demoDto.setRegId("2018782130000224092018121229");
@@ -755,7 +753,6 @@ public class PacketInfoManagerImplTest {
 
 	}
 
-	
 	/**
 	 * Gets the applicant finger print image name by id test.
 	 *
@@ -852,7 +849,7 @@ public class PacketInfoManagerImplTest {
 		document.setDocumentName("ResidenceCopy");
 		document.setDocumentType("Passport");
 		documents.add(document);
-		Mockito.when(filesystemCephAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
+		Mockito.when(filesystemAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenReturn(demographicJsonStream);
 
 		packetInfoManagerImpl.savePacketData(identity);
@@ -873,7 +870,7 @@ public class PacketInfoManagerImplTest {
 		document.setDocumentName("ResidenceCopy");
 		document.setDocumentType("Passport");
 		documents.add(document);
-		Mockito.when(filesystemCephAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
+		Mockito.when(filesystemAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenReturn(demographicJsonStream);
 
 		packetInfoManagerImpl.savePacketData(identity);

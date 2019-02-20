@@ -19,11 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
@@ -65,6 +67,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -326,11 +329,11 @@ public class BaseController {
 			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REDIRECTHOME - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage());
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 		} catch (RuntimeException runtimException) {
 			LOGGER.error("REGISTRATION - REDIRECTHOME - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-					runtimException.getMessage());
+					runtimException.getMessage() + ExceptionUtils.getStackTrace(runtimException));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 		}
 	}
@@ -364,15 +367,6 @@ public class BaseController {
 		SessionContext.map().remove("toggleAgeOrDob");
 		SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
 		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
-
-		SessionContext.map().remove("demographicDetail");
-		SessionContext.map().remove("documentScan");
-		SessionContext.map().remove("fingerPrintCapture");
-		SessionContext.map().remove("biometricException");
-		SessionContext.map().remove("faceCapture");
-		SessionContext.map().remove("irisCapture");
-		SessionContext.map().remove("operatorAuthentication");
-		SessionContext.map().remove("registrationPreview");
 
 		SessionContext.userMap().remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 		SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
@@ -454,9 +448,9 @@ public class BaseController {
 			} else {
 				try {
 					Thread.sleep(2000);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException interruptedException) {
 					LOGGER.error("FINGERPRINT_AUTHENTICATION_CONTROLLER - ERROR_SCANNING_FINGER", APPLICATION_NAME,
-							APPLICATION_ID, e.getMessage());
+							APPLICATION_ID, interruptedException.getMessage() + ExceptionUtils.getStackTrace(interruptedException));
 				}
 			}
 			counter++;
@@ -590,10 +584,10 @@ public class BaseController {
 			}
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
-					regBaseCheckedException.getMessage());
+					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
-					regBaseUncheckedException.getMessage());
+					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
 		}
 		return writeNotificationTemplate;
 	}
@@ -615,7 +609,7 @@ public class BaseController {
 			}
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
-					regBaseUncheckedException.getMessage());
+					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
 		}
 		return smsNotificationResponse;
 	}
@@ -636,7 +630,7 @@ public class BaseController {
 			}
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
-					regBaseUncheckedException.getMessage());
+					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
 		}
 		return emailNotificationResponse;
 	}
@@ -645,54 +639,155 @@ public class BaseController {
 		return (RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
 	}
 	
+	/**
+	 * to return to the next page based on the current page and action for User Onboarding
+	 * 
+	 * @param currentPage - Id of current Anchorpane
+	 * @param action - action to be performed previous/next
+	 * 
+	 * @return id of next Anchorpane
+	 */
 	protected String getOnboardPageDetails(String currentPage, String action) { 
 		
-		return getReturnPage((List<String>)ApplicationContext.map().get("onboardPageList"), currentPage, action);
+		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
+				"Updating OnBoard based on visibility and returning next page details");
+		
+		return getReturnPage((List<String>)ApplicationContext.map().get(RegistrationConstants.ONBOARD_LIST), currentPage, action);
 	}
 
+	/**
+	 * to return to the next page based on the current page and action for New Registration
+	 * 
+	 * @param currentPage - Id of current Anchorpane
+	 * @param action - action to be performed previous/next
+	 * 
+	 * @return id of next Anchorpane
+	 */
 	protected String getPageDetails(String currentPage, String action) {
 		
-		for(Map.Entry<String,Map<String,Boolean>> entry : ((Map<String, Map<String, Boolean>>) ApplicationContext.map().get("registrationMap")).entrySet()) {
+		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
+				"Updating RegistrationMap based on visibility");
+		
+		for(Map.Entry<String,Map<String,Boolean>> entry : ((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP)).entrySet()) {
 			if(entry.getValue().get(RegistrationConstants.VISIBILITY)) {
 				pageDetails.add(entry.getKey());
 			}
 		}
 		
+		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
+				"Returning Next page details");
+		
 		return getReturnPage(pageDetails, currentPage, action);
 		
 	}
 	
+
+	/**
+	 * to return to the next page based on the current page and action
+	 * 
+	 * @param pageList - List of Anchorpane Ids
+	 * @param currentPage - Id of current Anchorpane
+	 * @param action - action to be performed previous/next
+	 * 
+	 * @return id of next Anchorpane
+	 */
 	private String getReturnPage(List<String> pageList, String currentPage, String action) {
+		
+		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
+				"Fetching the next page based on action");
 		
 		String returnPage = "";
 
 		if (action.equalsIgnoreCase(RegistrationConstants.NEXT)) {
+			
+			LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
+					"Fetching the next page based from list of ids for Next action");
+			
 			returnPage = pageList.get((pageList.indexOf(currentPage))+1);
-		}
-
-		if (action.equalsIgnoreCase(RegistrationConstants.PREVIOUS)) {
+		} else if (action.equalsIgnoreCase(RegistrationConstants.PREVIOUS)) {
+			
+			LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
+					"Fetching the next page based from list of ids for Previous action");
+			
 			returnPage = pageList.get((pageList.indexOf(currentPage))-1);
 		}
 		
 		if(returnPage.equalsIgnoreCase(RegistrationConstants.REGISTRATION_PREVIEW)) {
+			
+			LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
+					"Invoking Save Detail before redirecting to Preview");
+			
 			demographicDetailController.saveDetail();
 			registrationPreviewController.setUpPreviewContent();
-		}
-		
-		if(returnPage.equalsIgnoreCase(RegistrationConstants.ONBOARD_USER_SUCCESS)) {
+			
+			LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
+					"Details saved and content of preview is set");
+		} else if(returnPage.equalsIgnoreCase(RegistrationConstants.ONBOARD_USER_SUCCESS)) {
+			
+			LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
+					"Validating User Onboard data");
+			
 			ResponseDTO response = userOnboardService.validate((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA));
 			if (response != null && response.getErrorResponseDTOs() != null
 					&& response.getErrorResponseDTOs().get(0) != null) {
+				
+				LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
+						"Displaying Alert if validation is not success");
+				
 				generateAlert(RegistrationConstants.ERROR, response.getErrorResponseDTOs().get(0).getMessage());
 			} else if (response != null && response.getSuccessResponseDTO() != null) {
+				
+				LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
+						"User Onboard is success and clearing Onboard data");
+				
 				generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.USER_ONBOARD_SUCCESS);
 				clearOnboardData();
 				goToHomePage();
+				
+				LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
+						"Redirecting to Home page after success onboarding");
 			}			
 			returnPage = "";
 		}
 		
+		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
+				"Returning the corresponding next page based on given action");
+		
 		pageDetails.clear();
 		return returnPage;
+	}
+	
+	/**
+	 * to navigate to the next page based on the current page
+	 * 
+	 * @param pageId - Parent Anchorpane where other panes are included
+	 * @param notTosShow - Id of Anchorpane which has to be hidden
+	 * @param show - Id of Anchorpane which has to be shown
+	 * 
+	 */
+	protected void getCurrentPage(AnchorPane pageId, String notTosShow, String show) {
+		
+		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
+				"Navigating to next page");
+		
+		if(notTosShow != null) {
+			((AnchorPane) pageId.lookup("#"+notTosShow)).setVisible(false);
+		}
+		if(show != null) {
+			((AnchorPane) pageId.lookup("#"+show)).setVisible(true);
+		}
+		
+		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
+				"Navigated to next page");
+	}
+	
+	/**
+	 * to calculate the time for re-capture since last capture time
+	 * 
+	 * @param imageType
+	 * 				the type of image that is selected to capture
+	 */
+	public void calculateRecaptureTime(String imageType) {
+		// will be implemented in the derived class.
 	}
 }

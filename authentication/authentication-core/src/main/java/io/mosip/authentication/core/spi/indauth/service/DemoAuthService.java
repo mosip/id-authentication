@@ -14,8 +14,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
  * 
  * @author Gurpreet Bagga
  */
-@FunctionalInterface
-public interface DemoAuthService {
+public interface DemoAuthService extends AuthService {
 	
 	/**
 	 * Gets the demo status.
@@ -25,6 +24,6 @@ public interface DemoAuthService {
 	 * @param idInfo the id info
 	 * @return the demo status
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	AuthStatusInfo getDemoStatus(AuthRequestDTO authRequestDTO,String uin, Map<String, List<IdentityInfoDTO>> idInfo) throws IdAuthenticationBusinessException;
+	 *//*
+	AuthStatusInfo getDemoStatus(AuthRequestDTO authRequestDTO,String uin, Map<String, List<IdentityInfoDTO>> idInfo) throws IdAuthenticationBusinessException;*/
 }

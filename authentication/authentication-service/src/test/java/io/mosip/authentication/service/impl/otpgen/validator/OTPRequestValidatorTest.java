@@ -23,12 +23,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
-import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
-import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.impl.indauth.service.OTPAuthServiceImpl;
 import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
@@ -44,12 +42,6 @@ import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class OTPRequestValidatorTest {
-
-	@Mock
-	private SpringValidatorAdapter validator;
-
-	@InjectMocks
-	DateHelper dateHelper;
 
 	@Mock
 	Errors error;
@@ -75,8 +67,6 @@ public class OTPRequestValidatorTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(otpRequestValidator, "env", env);
-		ReflectionTestUtils.setField(dateHelper, "env", env);
-		ReflectionTestUtils.setField(otpRequestValidator, "dateHelper", dateHelper);
 	}
 
 	@Test

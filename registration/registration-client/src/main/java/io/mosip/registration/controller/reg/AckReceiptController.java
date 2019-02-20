@@ -8,12 +8,14 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.RegistrationDTO;
 import javafx.event.ActionEvent;
@@ -61,6 +63,9 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 	@FXML
 	private Text registrationNavLabel;
+	
+	@FXML
+	private Button sendNotification;
 
 	@Autowired
 	private SendNotificationController sendNotificationController;
@@ -81,6 +86,12 @@ public class AckReceiptController extends BaseController implements Initializabl
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been started");
+		
+		if(ApplicationContext.map().get(RegistrationConstants.SEND_NOTIFICATION_DISABLE_FLAG).equals(RegistrationConstants.ENABLE)) {
+			sendNotification.setVisible(true);
+		} else {
+			sendNotification.setVisible(false);
+		}
 
 		if (getRegistrationData().getSelectionListDTO() != null) {
 			registrationNavLabel.setText(RegistrationConstants.UIN_NAV_LABEL);

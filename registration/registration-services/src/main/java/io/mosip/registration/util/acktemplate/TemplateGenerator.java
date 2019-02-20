@@ -97,11 +97,6 @@ public class TemplateGenerator extends BaseService {
 			ResourceBundle localProperties = ApplicationContext.localLanguageProperty();
 			ResourceBundle applicationLanguageProperties = ApplicationContext.applicationLanguageBundle();
 
-			// Reader templateReader = new BufferedReader(
-			// new InputStreamReader(new ByteArrayInputStream(templateText.getBytes())));
-			//
-			// VelocityContext templateValues = new VelocityContext();
-
 			InputStream is = new ByteArrayInputStream(templateText.getBytes());
 			Map<String, Object> templateValues = new HashMap<>();
 			ByteArrayOutputStream byteArrayOutputStream = null;
@@ -190,7 +185,7 @@ public class TemplateGenerator extends BaseService {
 						qrCodeString.append(applicationLanguageProperties.getString("image")).append(" : ")
 								.append(CryptoUtil.encodeBase64(applicantPhoto));
 
-						qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V30);
+						qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V40);
 					} else {
 						qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V25);
 					}
@@ -200,42 +195,48 @@ public class TemplateGenerator extends BaseService {
 							RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + qrCodeImageEncodedBytes);
 				} catch (IOException | QrcodeGenerationException exception) {
 					setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+							exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 				}
 
 				templateValues = countMissingIrises(templateValues, registration);
-				
-				if(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG).equals(RegistrationConstants.ENABLE)) {
+
+				if (ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)
+						.equals(RegistrationConstants.ENABLE)) {
 					try {
-						BufferedImage eyeImage = ImageIO
-								.read(this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_EYE_IMAGE_PATH));
+						BufferedImage eyeImage = ImageIO.read(
+								this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_EYE_IMAGE_PATH));
 						byteArrayOutputStream = new ByteArrayOutputStream();
 						ImageIO.write(eyeImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
 						byte[] eyeImageBytes = byteArrayOutputStream.toByteArray();
-						String eyeImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(eyeImageBytes, false));
+						String eyeImageEncodedBytes = StringUtils
+								.newStringUtf8(Base64.encodeBase64(eyeImageBytes, false));
 						templateValues.put(RegistrationConstants.TEMPLATE_EYE_IMAGE_SOURCE,
 								RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + eyeImageEncodedBytes);
 					} catch (IOException ioException) {
-						setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-						LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+						setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
+								null);
+						LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+								ioException.getMessage());
 					} finally {
 						if (byteArrayOutputStream != null) {
 							try {
 								byteArrayOutputStream.close();
 							} catch (IOException exception) {
-								setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
-										null);
+								setErrorResponse(response,
+										RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
 								LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
-										exception.getMessage()+ ExceptionUtils.getStackTrace(exception));
+										exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 							}
 						}
 					}
-				} 
-				
-				if(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG).equals(RegistrationConstants.ENABLE)) {
+				}
+
+				if (ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+						.equals(RegistrationConstants.ENABLE)) {
 					try {
-						BufferedImage leftPalmImage = ImageIO.read(
-								this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_LEFT_SLAP_IMAGE_PATH));
+						BufferedImage leftPalmImage = ImageIO.read(this.getClass()
+								.getResourceAsStream(RegistrationConstants.TEMPLATE_LEFT_SLAP_IMAGE_PATH));
 						byteArrayOutputStream = new ByteArrayOutputStream();
 						ImageIO.write(leftPalmImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
 						byte[] leftPalmImageBytes = byteArrayOutputStream.toByteArray();
@@ -244,24 +245,26 @@ public class TemplateGenerator extends BaseService {
 						templateValues.put(RegistrationConstants.TEMPLATE_LEFT_PALM_IMAGE_SOURCE,
 								RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + leftPalmImageEncodedBytes);
 					} catch (IOException ioException) {
-						setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-						LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+						setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
+								null);
+						LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+								ioException.getMessage());
 					} finally {
 						if (byteArrayOutputStream != null) {
 							try {
 								byteArrayOutputStream.close();
 							} catch (IOException exception) {
-								setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
-										null);
+								setErrorResponse(response,
+										RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
 								LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
-										exception.getMessage()+ ExceptionUtils.getStackTrace(exception));
+										exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 							}
 						}
 					}
 
 					try {
-						BufferedImage rightPalmImage = ImageIO.read(
-								this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_RIGHT_SLAP_IMAGE_PATH));
+						BufferedImage rightPalmImage = ImageIO.read(this.getClass()
+								.getResourceAsStream(RegistrationConstants.TEMPLATE_RIGHT_SLAP_IMAGE_PATH));
 						byteArrayOutputStream = new ByteArrayOutputStream();
 						ImageIO.write(rightPalmImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
 						byte[] rightPalmImageBytes = byteArrayOutputStream.toByteArray();
@@ -270,17 +273,19 @@ public class TemplateGenerator extends BaseService {
 						templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_PALM_IMAGE_SOURCE,
 								RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + rightPalmImageEncodedBytes);
 					} catch (IOException ioException) {
-						setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-						LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage()+ ExceptionUtils.getStackTrace(ioException));
+						setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
+								null);
+						LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+								ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 					} finally {
 						if (byteArrayOutputStream != null) {
 							try {
 								byteArrayOutputStream.close();
 							} catch (IOException exception) {
-								setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
-										null);
+								setErrorResponse(response,
+										RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
 								LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
-										exception.getMessage()+ ExceptionUtils.getStackTrace(exception));
+										exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 							}
 						}
 					}
@@ -296,17 +301,19 @@ public class TemplateGenerator extends BaseService {
 						templateValues.put(RegistrationConstants.TEMPLATE_THUMBS_IMAGE_SOURCE,
 								RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + thumbsImageEncodedBytes);
 					} catch (IOException ioException) {
-						setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-						LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage()+ ExceptionUtils.getStackTrace(ioException));
+						setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
+								null);
+						LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+								ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 					} finally {
 						if (byteArrayOutputStream != null) {
 							try {
 								byteArrayOutputStream.close();
 							} catch (IOException exception) {
-								setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
-										null);
+								setErrorResponse(response,
+										RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
 								LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
-										exception.getMessage()+ ExceptionUtils.getStackTrace(exception));
+										exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 							}
 						}
 					}
@@ -340,7 +347,8 @@ public class TemplateGenerator extends BaseService {
 							RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + modifyImageEncodedBytes);
 				} catch (IOException ioException) {
 					setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+					LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+							ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 				} finally {
 					if (byteArrayOutputStream != null) {
 						try {
@@ -353,7 +361,8 @@ public class TemplateGenerator extends BaseService {
 						}
 					}
 				}
-				if(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG).equals(RegistrationConstants.ENABLE)) {
+				if (ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+						.equals(RegistrationConstants.ENABLE)) {
 					for (FingerprintDetailsDTO fpDetailsDTO : registration.getBiometricDTO().getApplicantBiometricDTO()
 							.getFingerprintDetailsDTO()) {
 						if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.LEFTPALM)) {
@@ -370,14 +379,16 @@ public class TemplateGenerator extends BaseService {
 									RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + rightPalmEncodedBytes);
 						} else if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.THUMBS)) {
 							byte[] thumbsBytes = fpDetailsDTO.getFingerPrint();
-							String thumbsEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(thumbsBytes, false));
+							String thumbsEncodedBytes = StringUtils
+									.newStringUtf8(Base64.encodeBase64(thumbsBytes, false));
 							templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_THUMBS,
 									RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + thumbsEncodedBytes);
 						}
 					}
 				}
-			
-				if(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG).equals(RegistrationConstants.ENABLE)) {
+
+				if (ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)
+						.equals(RegistrationConstants.ENABLE)) {
 					for (IrisDetailsDTO capturedIris : registration.getBiometricDTO().getApplicantBiometricDTO()
 							.getIrisDetailsDTO()) {
 						if (capturedIris.getIrisType().contains(RegistrationConstants.LEFT)) {
@@ -529,18 +540,21 @@ public class TemplateGenerator extends BaseService {
 					localProperties.getString("cniOrPinNumber"));
 			templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER, getValue(
 					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getCnieNumber(), null));
-			
-			if(ApplicationContext.map().get(RegistrationConstants.DOCUMENT_DISABLE_FLAG).equals(RegistrationConstants.ENABLE)) {
+
+			if (ApplicationContext.map().get(RegistrationConstants.DOCUMENT_DISABLE_FLAG)
+					.equals(RegistrationConstants.ENABLE)) {
 				templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_USER_LANG_LABEL,
 						applicationLanguageProperties.getString("documents"));
 				templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG_LABEL,
 						localProperties.getString("documents"));
 				StringBuilder documentsList = new StringBuilder();
-				if (registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getProofOfIdentity() != null) {
+				if (registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+						.getProofOfIdentity() != null) {
 					documentsList.append(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.getProofOfIdentity().getValue()).append(", ");
 				}
-				if (registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getProofOfAddress() != null) {
+				if (registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+						.getProofOfAddress() != null) {
 					documentsList.append(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.getProofOfAddress().getValue()).append(", ");
 				}
@@ -560,7 +574,7 @@ public class TemplateGenerator extends BaseService {
 				templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_ENABLED,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			}
-			
+
 			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("biometricsHeading"));
 			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED_USER_LANG_LABEL,
@@ -579,40 +593,46 @@ public class TemplateGenerator extends BaseService {
 					capturedFingers.stream()
 							.mapToInt(capturedFinger -> capturedFinger.getSegmentedFingerprints().size()).sum(),
 					capturedIris.size() };
-			
+
 			StringBuilder biometricsCaptured = new StringBuilder();
-			
-			if(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG).equals(RegistrationConstants.ENABLE)) {
-				biometricsCaptured.append(MessageFormat.format((String) applicationLanguageProperties.getString("fingersCount"),
-						String.valueOf(fingersAndIrises[0])));
+
+			if (ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+					.equals(RegistrationConstants.ENABLE)) {
+				biometricsCaptured
+						.append(MessageFormat.format((String) applicationLanguageProperties.getString("fingersCount"),
+								String.valueOf(fingersAndIrises[0])));
 			}
-			if(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG).equals(RegistrationConstants.ENABLE)) {
-				if(biometricsCaptured.length() > 0) {
+			if (ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)
+					.equals(RegistrationConstants.ENABLE)) {
+				if (biometricsCaptured.length() > 0) {
 					biometricsCaptured.append(",");
 				}
-				biometricsCaptured.append(MessageFormat.format((String) applicationLanguageProperties.getString("irisCount"),
-						String.valueOf(fingersAndIrises[1])));
+				biometricsCaptured
+						.append(MessageFormat.format((String) applicationLanguageProperties.getString("irisCount"),
+								String.valueOf(fingersAndIrises[1])));
 			}
-			if(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG).equals(RegistrationConstants.ENABLE)) {
-				if(biometricsCaptured.length() > 0) {
+			if (ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)
+					.equals(RegistrationConstants.ENABLE)) {
+				if (biometricsCaptured.length() > 0) {
 					biometricsCaptured.append(",");
 				}
 				biometricsCaptured.append(applicationLanguageProperties.getString("faceCount"));
 			}
 
-			if(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG).equals(RegistrationConstants.ENABLE) ||
-					ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG).equals(RegistrationConstants.ENABLE) || 
-					ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG).equals(RegistrationConstants.ENABLE)) {
-				
-				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED,
-						biometricsCaptured);
-				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED_LOCAL_LANG,
-						biometricsCaptured);
+			if (ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+					.equals(RegistrationConstants.ENABLE)
+					|| ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)
+							.equals(RegistrationConstants.ENABLE)
+					|| ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)
+							.equals(RegistrationConstants.ENABLE)) {
+
+				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED, biometricsCaptured);
+				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED_LOCAL_LANG, biometricsCaptured);
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_ENABLED,
-						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);				
+						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			}
-			
+
 			if (registration.getDemographicDTO().getApplicantDocumentDTO().isHasExceptionPhoto()) {
 				templateValues.put(RegistrationConstants.TEMPLATE_WITHOUT_EXCEPTION,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
@@ -631,8 +651,9 @@ public class TemplateGenerator extends BaseService {
 				templateValues.put(RegistrationConstants.TEMPLATE_WITH_EXCEPTION,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			}
-			
-			if(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG).equals(RegistrationConstants.ENABLE)) {
+
+			if (ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)
+					.equals(RegistrationConstants.ENABLE)) {
 				templateValues.put(RegistrationConstants.TEMPLATE_PHOTO_USER_LANG,
 						applicationLanguageProperties.getString("individualphoto"));
 				templateValues.put(RegistrationConstants.TEMPLATE_PHOTO_LOCAL_LANG,
@@ -646,9 +667,10 @@ public class TemplateGenerator extends BaseService {
 				templateValues.put(RegistrationConstants.TEMPLATE_FACE_CAPTURE_ENABLED,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			}
-			
+
 			// iris is configured
-			if(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG).equals(RegistrationConstants.ENABLE)) {
+			if (ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)
+					.equals(RegistrationConstants.ENABLE)) {
 				templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE_USER_LANG_LABEL,
 						applicationLanguageProperties.getString("lefteye"));
 				templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE_LOCAL_LANG_LABEL,
@@ -661,7 +683,7 @@ public class TemplateGenerator extends BaseService {
 				templateValues.put(RegistrationConstants.TEMPLATE_IRIS_ENABLED,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			}
-			
+
 			if (registration.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO().isEmpty()) {
 				templateValues.put(RegistrationConstants.TEMPLATE_FINGERPRINTS_CAPTURED,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
@@ -727,20 +749,18 @@ public class TemplateGenerator extends BaseService {
 				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG,
 						getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 								.getParentOrGuardianName(), localLanguageCode));
-//				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_USER_LANG_LABEL,
-//						applicationLanguageProperties.getString("parentUIN"));
-//				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN, getValue(registration.getDemographicDTO()
-//						.getDemographicInfoDTO().getIdentity().getParentOrGuardianRIDOrUIN(), platformLanguageCode));
-//				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
-//						localProperties.getString("parentUIN"));
+				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_USER_LANG_LABEL,
+						applicationLanguageProperties.getString("parentUIN"));
+				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN, getValue(registration.getDemographicDTO()
+						.getDemographicInfoDTO().getIdentity().getParentOrGuardianRIDOrUIN(), platformLanguageCode));
+				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
+						localProperties.getString("parentUIN"));
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_WITH_PARENT,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			}
 
 			Writer writer = new StringWriter();
-			// Velocity.evaluate(templateValues, writer, "Acknowledgement Template",
-			// templateReader);
 			try {
 				LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
 						"merge method of TemplateManager had been called for preparing Acknowledgement Template.");
@@ -751,7 +771,8 @@ public class TemplateGenerator extends BaseService {
 				IOUtils.copy(inputStream, writer, defaultEncoding);
 			} catch (IOException ioException) {
 				setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			}
 			LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
 					"generateTemplate method has been ended for preparing Acknowledgement Template.");
@@ -761,10 +782,12 @@ public class TemplateGenerator extends BaseService {
 			setSuccessResponse(response, RegistrationConstants.SUCCESS, responseMap);
 		} catch (ParseException parseException) {
 			setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-			LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, parseException.getMessage() + ExceptionUtils.getStackTrace(parseException));
+			LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+					parseException.getMessage() + ExceptionUtils.getStackTrace(parseException));
 		} catch (RuntimeException runtimeException) {
 			setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-			LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+			LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 		return response;
 	}
