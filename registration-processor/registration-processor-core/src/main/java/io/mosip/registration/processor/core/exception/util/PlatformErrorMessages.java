@@ -129,10 +129,11 @@ public enum PlatformErrorMessages {
 	/** The rpr cmb configuration server failure exception. */
 	RPR_CMB_CONFIGURATION_SERVER_FAILURE_EXCEPTION(PlatformErrorConstants.RPR_CAMEL_BRIDGE_MODULE + "003",
 			"Configuration Server Failure Exception"),
-	
+
 	/** The rpr cmb malformed cluster manager url exception. */
-	RPR_CMB_MALFORMED_URL_EXCEPTION(PlatformErrorConstants.RPR_CAMEL_BRIDGE_MODULE + "004", "Malformed Cluster Manager Url Exception"),
-	
+	RPR_CMB_MALFORMED_URL_EXCEPTION(PlatformErrorConstants.RPR_CAMEL_BRIDGE_MODULE + "004",
+			"Malformed Cluster Manager Url Exception"),
+
 	/** The rpr qcr registration table not accessible. */
 	// Quality Checker Exception error code and message
 	RPR_QCR_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_QUALITY_CHECKER_MODULE + "001",
@@ -229,10 +230,8 @@ public enum PlatformErrorMessages {
 			"Invalid status update"),
 
 	/** The rpr mvs invalid field. */
-	RPR_MVS_INVALID_FIELD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "005",
-			" fields can not be empty"),
+	RPR_MVS_INVALID_FIELD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "005", " fields can not be empty"),
 
-	
 	/** The rpr mvs no assigned record. */
 	RPR_MVS_NO_ASSIGNED_RECORD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "004",
 			"No Assigned Record Found"),
@@ -283,22 +282,23 @@ public enum PlatformErrorMessages {
 	/** The rpr bdd unable to serve request. */
 	RPR_BDD_UNABLE_TO_SERVE_REQUEST(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "004",
 			"ABIS for the Reference ID and Request ID was Unable to Execute the Request"),
-	
-	/** The connection to MOSIP underlying queue not available. */
+	/**
+	 * The connection to MOSIP underlying queue not available
+	 */
 	RPR_MQI_CONNECTION_UNAVAILABLE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "001",
 			"The connection to underlying queue not available"),
-	
-	/** The rpr mqi unable to send to queue. */
+
 	RPR_MQI_UNABLE_TO_SEND_TO_QUEUE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "003",
 			"Unable to send message to to queue"),
-	
-	/** The rpr mqi unable to consume from queue. */
-	RPR_MQI_UNABLE_TO_CONSUME_FROM_QUEUE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "003",
-			"Unable to consume message from queue"),
-	
-	/** The rpr mqi invalid connection. */
-	RPR_MQI_INVALID_CONNECTION(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "002", "Connection not obtained from ConnectionFactory"),
 
+	RPR_MQI_UNABLE_TO_CONSUME_FROM_QUEUE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "004",
+			"Unable to consume message from queue"),
+
+	RPR_MQI_NO_FILES_FOUND_IN_QUEUE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "005",
+			"There is no file available in queue"),
+
+	RPR_MQI_INVALID_CONNECTION(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "002",
+			"Connection not obtained from ConnectionFactory"),
 	/** *** System Exception ****. */
 
 	RPR_SYS_UNEXCEPTED_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "001", "Unexpected exception"),
@@ -338,20 +338,21 @@ public enum PlatformErrorMessages {
 
 	/** The rpr sys io exception. */
 	RPR_SYS_IO_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "012", "IO EXCEPTION "),
-	
+
 	/** The rpr prt pdf not generated. */
-	//Printing stage exceptions
-	RPR_PRT_PDF_NOT_GENERATED(PlatformErrorConstants.RPR_PRINTING_MODULE + "001", "Error while generating PDF for UIN Card"),
-	
+	// Printing stage exceptions
+	RPR_PRT_PDF_NOT_GENERATED(PlatformErrorConstants.RPR_PRINTING_MODULE + "001",
+			"Error while generating PDF for UIN Card"),
+
 	/** The rpr prt uin not found in database. */
 	RPR_PRT_UIN_NOT_FOUND_IN_DATABASE(PlatformErrorConstants.RPR_PRINTING_MODULE + "002", "UIN not found in database"),
-	
+
 	/** The rpr prt pdf generation failed. */
 	RPR_PRT_PDF_GENERATION_FAILED(PlatformErrorConstants.RPR_PRINTING_MODULE + "003", "PDF Generation Failed"),
-	
+
 	/** The rpr prt queue connection null. */
 	RPR_PRT_QUEUE_CONNECTION_NULL(PlatformErrorConstants.RPR_PRINTING_MODULE + "004", "Queue connection is null");
-	
+
 	/** The error message. */
 	private final String errorMessage;
 
