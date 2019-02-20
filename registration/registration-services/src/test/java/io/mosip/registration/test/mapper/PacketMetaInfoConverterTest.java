@@ -1,9 +1,12 @@
 package io.mosip.registration.test.mapper;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.ibm.icu.impl.UResource.Array;
 
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -11,6 +14,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.RegistrationMetaDataDTO;
+import io.mosip.registration.dto.SelectionListDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
@@ -37,6 +41,10 @@ public class PacketMetaInfoConverterTest {
 		SessionContext.getInstance().setMapObject(new HashMap<>());
 		SessionContext.getInstance().getMapObject().put(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME, hashMap);
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
+		SelectionListDTO selectionListDTO=new SelectionListDTO();
+		selectionListDTO.setAge(true);
+		selectionListDTO.setGender(true);
+		registrationDTO.setSelectionListDTO(selectionListDTO);
 		PacketMetaInfo packetMetaInfo = mapperFacade.convert(registrationDTO, PacketMetaInfo.class, "packetMetaInfo");
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getBiometric().getApplicant().getLeftEye());
 		Assert.assertNull(packetMetaInfo.getIdentity().getBiometric().getApplicant().getRightEye());
@@ -52,7 +60,9 @@ public class PacketMetaInfoConverterTest {
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getMetaData());
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getOsiData());
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getCheckSum());
-		
+		Assert.assertEquals("age", packetMetaInfo.getIdentity().getUinUpdatedFields().get(0));
+		Assert.assertEquals("gender", packetMetaInfo.getIdentity().getUinUpdatedFields().get(1));
+
 		SessionContext.destroySession();
 	}
 
@@ -82,6 +92,8 @@ public class PacketMetaInfoConverterTest {
 		registrationDTO.setOsiDataDTO(new OSIDataDTO());
 		registrationDTO.setRegistrationMetaDataDTO(new RegistrationMetaDataDTO());
 		registrationDTO.setRegistrationId("2018782130000128122018103836");
+		SelectionListDTO selectionListDTO=new SelectionListDTO();
+		registrationDTO.setSelectionListDTO(selectionListDTO);
 
 		PacketMetaInfo packetMetaInfo = mapperFacade.convert(registrationDTO, PacketMetaInfo.class, "packetMetaInfo");
 

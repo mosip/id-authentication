@@ -16,6 +16,7 @@ import io.mosip.registration.dto.AuditDTO;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.RegistrationMetaDataDTO;
+import io.mosip.registration.dto.SelectionListDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
@@ -66,6 +67,9 @@ public class DataProvider {
 
 		registrationDTO.setDemographicDTO(DataProvider.getDemographicDTO());
 		registrationDTO.setBiometricDTO(DataProvider.getBiometricDTO());
+		SelectionListDTO selectionListDTO=new SelectionListDTO();
+		selectionListDTO.setAge(true);
+		registrationDTO.setSelectionListDTO(selectionListDTO);
 		return registrationDTO;
 
 	}
