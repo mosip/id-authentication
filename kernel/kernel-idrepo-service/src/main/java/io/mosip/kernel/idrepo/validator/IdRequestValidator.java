@@ -266,10 +266,8 @@ public class IdRequestValidator implements Validator {
 				} else {
 					validateDocuments(requestMap, errors);
 					requestMap.remove(DOCUMENTS);
-					if (!errors.hasErrors()) {
-						jsonValidator.validateJson(mapper.writeValueAsString(requestMap),
-								env.getProperty(JSON_SCHEMA_FILE_NAME));
-					}
+					jsonValidator.validateJson(mapper.writeValueAsString(requestMap),
+							env.getProperty(JSON_SCHEMA_FILE_NAME));
 				}
 			} else if (method.equals(CREATE)) {
 				errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
