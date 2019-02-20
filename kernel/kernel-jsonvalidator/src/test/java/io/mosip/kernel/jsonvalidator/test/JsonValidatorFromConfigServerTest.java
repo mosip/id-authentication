@@ -8,7 +8,7 @@ import java.net.URL;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -22,9 +22,6 @@ import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.core.jsonvalidator.exception.NullJsonNodeException;
-import io.mosip.kernel.core.jsonvalidator.exception.NullJsonSchemaException;
-import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
 import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 
@@ -35,13 +32,14 @@ import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
  *
  */
 
-//@RunWith(SpringRunner.class)
-//@SpringBootTest
-public class JsonValidatorConfigServerExceptionTest {
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class JsonValidatorFromConfigServerTest {
 
 	String propertySourceString = "propertySource";
 	String configServerFileStorageURLString = "configServerFileStorageURL";
-	@InjectMocks
+	
+	@Autowired
 	JsonValidatorImpl jsonValidator;
 
 	@Value("${mosip.kernel.jsonvalidator.valid-json-file-name}")
@@ -120,11 +118,11 @@ public class JsonValidatorConfigServerExceptionTest {
 		jsonValidator.validateJson(jsonString, nullSchemaName);
 	}
 
-	//@Test(expected = JsonSchemaIOException.class)
+	@Test(expected = JsonSchemaIOException.class)
 	public void testForInvalidJsonSchemaSyntax() throws HttpRequestException, JsonValidationProcessingException,
 			JsonIOException, JsonSchemaIOException, FileIOException, IOException {
-		// JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
-		JsonNode jsonSchemaNode = JsonLoader.fromURL(new URL(configServerFileStorageURL + validJson));
+		 JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
+		//JsonNode jsonSchemaNode = JsonLoader.fromURL(new URL(configServerFileStorageURL + validJson));
 		String jsonString = jsonSchemaNode.toString();
 		jsonValidator.validateJson(jsonString, invalidSchemaName);
 	}

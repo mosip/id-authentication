@@ -32,7 +32,7 @@ import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
  */
 
 @RunWith(MockitoJUnitRunner.class)
-public class JsonValidatorLocalPropertySourceExceptionTest {
+public class JsonValidatorLocalTest {
 	
 	String propertySourceString= "propertySource";
 	
@@ -97,4 +97,5 @@ public class JsonValidatorLocalPropertySourceExceptionTest {
 		String schemaName = "some-random-schema.json";
 		jsonValidator.validateJson(jsonString, schemaName);
 	}
+	
 }
