@@ -356,7 +356,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * validateTimestampWithRegistrationCenter(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String timestamp) {
+	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String langCode, String timestamp) {
 		LocalDateTime localDateTime = null;
 		try {
 			localDateTime = MapperUtils.parseToLocalDateTime(timestamp);
@@ -379,8 +379,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			if (isTrue) {
 				resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_REJECTED);
 			} else {
-				RegistrationCenter registrationCenter = registrationCenterRepository.findById(RegistrationCenter.class,
-						id);
+				RegistrationCenter registrationCenter = registrationCenterRepository.findByIdAndLangCode(id, langCode);
 				if (registrationCenter == null) {
 					throw new DataNotFoundException(
 							RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
@@ -432,7 +431,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		MapperUtils.mapFieldValues(registrationCenter, idResponseDto);
 		try {
 			RegistrationCenter registrationCenterEntity = registrationCenterRepository
-					.findByIdAndIsDeletedFalseOrNull(registrationCenterDto.getRequest().getId());
+					.findByIdAndLangCode(registrationCenterDto.getRequest().getId(), registrationCenterDto.getRequest().getLangCode());
 			if (registrationCenterEntity != null) {
 				MetaDataUtils.setUpdateMetaData(registrationCenter, registrationCenterEntity, false);
 				registrationCenterRepository.update(registrationCenterEntity);

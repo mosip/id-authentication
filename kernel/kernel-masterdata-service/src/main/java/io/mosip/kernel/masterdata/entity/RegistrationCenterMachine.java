@@ -39,31 +39,20 @@ public class RegistrationCenterMachine extends BaseEntity implements Serializabl
 	private static final long serialVersionUID = -8541947587557590379L;
 
 	@EmbeddedId
-	@AttributeOverrides({ 
-			@AttributeOverride(name = "regCenterId", column = @Column(name = "regcntr_id")),
-			@AttributeOverride(name = "machineId", column = @Column(name = "machine_id"))  })
+	@AttributeOverrides({ @AttributeOverride(name = "regCenterId", column = @Column(name = "regcntr_id")),
+			@AttributeOverride(name = "machineId", column = @Column(name = "machine_id")) })
 	private RegistrationCenterMachineID registrationCenterMachinePk;
-	
+
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
-	
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumns({ 
-		@JoinColumn(name = "machine_id", referencedColumnName = "id", insertable = false, updatable = false),
-		@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
-	private Machine machine;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumns({ 
-		@JoinColumn(name = "regcntr_id", referencedColumnName = "id", insertable = false, updatable = false),
-		@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
-	private RegistrationCenter registrationCenter;
-	
-	
-	
-	
-	
-	
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumns({ @JoinColumn(name = "machine_id", referencedColumnName = "id", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	private Machine machine;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumns({ @JoinColumn(name = "regcntr_id", referencedColumnName = "id", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	private RegistrationCenter registrationCenter;
 }
