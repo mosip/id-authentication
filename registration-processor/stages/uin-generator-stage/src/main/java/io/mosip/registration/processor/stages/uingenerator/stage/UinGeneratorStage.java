@@ -18,6 +18,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import io.mosip.kernel.core.exception.ParseException;
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
@@ -31,6 +33,7 @@ import io.mosip.registration.processor.core.constant.EventName;
 import io.mosip.registration.processor.core.constant.EventType;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -40,7 +43,6 @@ import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
@@ -236,6 +238,15 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+		} catch (FSAdapterException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId,
+					PlatformErrorMessages.RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + e.getMessage());
+			object.setInternalError(Boolean.TRUE);
+			isTransactionSuccessful = false;
+			description = "FileSytem is not accessible for packet " + registrationId;
+			object.setIsValid(Boolean.FALSE);
+			object.setRid(registrationId);
 		}
 
 		catch (IOException | ParseException | ApisResourceAccessException e) {
@@ -316,7 +327,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		List<Documents> applicantDocuments = new ArrayList<>();
 		Documents documentsInfoDto = null;
 		List<ApplicantDocument> applicantDocument = packetInfoManager.getDocumentsByRegId(regId);
-		applicantDocuments.add(addBiometricDetails(regId));
+		// mocked adding biometric files to idrepo
+		// applicantDocuments.add(addBiometricDetails(regId));
 		for (ApplicantDocument entity : applicantDocument) {
 			documentsInfoDto = new Documents();
 			documentsInfoDto.setCategory(entity.getDocName());

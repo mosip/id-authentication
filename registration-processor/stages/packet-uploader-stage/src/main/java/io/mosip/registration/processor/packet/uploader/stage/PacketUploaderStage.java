@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -22,11 +24,11 @@ import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.uploader.exception.DFSNotAccessibleException;
+import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -77,10 +79,10 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	private Environment env;
 
 	/** The description. */
-	// private String description = "";
+	private String description = "";
 
 	/** The is transaction successful. */
-	// private boolean isTransactionSuccessful = false;
+	private boolean isTransactionSuccessful = false;
 
 	/** The registration id. */
 	private String registrationId = "";
@@ -127,7 +129,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			description = "Internal error occured while processing for registrationId " + registrationId + "::"
 					+ e.getMessage();
 		} finally {
-			
+
 			String eventId = "";
 			String eventName = "";
 			String eventType = "";
@@ -224,9 +226,9 @@ public class PacketUploaderStage extends MosipVerticleManager {
 						PlatformErrorMessages.RPR_PUM_PACKET_DELETION_INFO.getMessage());
 
 			}
-		} catch (DFSNotAccessibleException e) {
+		} catch (FSAdapterException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_DFS.name() + e.getMessage());
+					registrationId, PlatformErrorMessages.RPR_PUM_PACKET_STORE_NOT_ACCESSIBLE.name() + e.getMessage());
 
 			description = "DFS not accessible for registrationId " + registrationId + "::" + e.getMessage();
 		} catch (IOException e) {

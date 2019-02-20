@@ -10,7 +10,7 @@ import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
  * @param <RESPONSE> the Response Object
  * @param <UIN> the Uin Object
  */
-public interface IdRepoService<REQUEST, RESPONSE, UIN> {
+public interface IdRepoService<REQUEST, RESPONSE> {
 
 	/**
 	 * Adds the identity.

@@ -1,8 +1,10 @@
 ## kernel-masterdata-service
 
 
- [Refer wiki for spec](https://github.com/mosip/mosip/wiki/Master-data-APIs) 
- https://github.com/mosip/mosip/wiki/Master-data-APIs
+[Background & Design](../../docs/design/kernel/kernel-masterdata.md)
+
+
+[Api Documentation](https://github.com/mosip/mosip/wiki/Master-data-APIs)
  
 Default Port and Context Path
 

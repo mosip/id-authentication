@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -150,6 +151,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		object.setMessageBusAddress(MessageBusAddress.MESSAGE_SENDER_BUS);
+
 		boolean isTransactionSuccessful = false;
 		String id = object.getRid();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id,
@@ -202,9 +204,14 @@ public class MessageSenderStage extends MosipVerticleManager {
 					+ jp.getMessage();
 		} catch (TemplateNotFoundException tnf) {
 
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					id, tnf.getMessage() + ExceptionUtils.getStackTrace(tnf));
-			description = "template not found for notification with registrationId " + id + "::" + tnf.getMessage();
+            regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+                    id, tnf.getMessage() + ExceptionUtils.getStackTrace(tnf));
+            description = "template not found for notification with registrationId " + id + "::" + tnf.getMessage();
+        } catch (FSAdapterException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
+					PlatformErrorMessages.RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + e.getMessage());
+			description = "The Packet store set by the System is not accessible" + id;
+
 		} catch (Exception ex) {
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

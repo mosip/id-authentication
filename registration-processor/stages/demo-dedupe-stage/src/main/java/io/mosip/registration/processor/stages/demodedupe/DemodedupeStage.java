@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -147,6 +148,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 					description = "Packet Demo dedupe failed for registrationId " + registrationId + "::"
 							+ "as duplicate found in auth";
 					demographicDedupeRepository.updateIsActiveIfDuplicateFound(registrationId);
+					object.setIsValid(Boolean.TRUE);
 
 				} else {
 					object.setIsValid(Boolean.FALSE);
@@ -181,6 +183,14 @@ public class DemodedupeStage extends MosipVerticleManager {
 					PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 			description = INTERNAL_OCCURED + registrationId + "::" + e.getMessage();
+			description = "Internal error occured while processing registration  id : " + registrationId;
+
+		} catch (FSAdapterException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.PACKET_DEMO_PACKET_STORE_NOT_ACCESSIBLE.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			object.setInternalError(Boolean.TRUE);
+			description = " registration  id : " + registrationId;
 		} catch (Exception ex) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,

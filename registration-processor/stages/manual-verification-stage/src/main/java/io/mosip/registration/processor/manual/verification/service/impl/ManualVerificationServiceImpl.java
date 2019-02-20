@@ -6,23 +6,26 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.util.JsonUtil;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationStatus;
 import io.mosip.registration.processor.manual.verification.dto.UserDto;
@@ -49,7 +52,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 
 	/** The logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(ManualVerificationServiceImpl.class);
-	
+
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 	/** The audit log request builder. */
@@ -118,7 +121,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			}
 
 		}
-		
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				dto.getUserId(), "ManualVerificationServiceImpl::assignApplicant()::exit");
 		return manualVerificationDTO;
@@ -308,7 +311,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	@Override
 	public PacketMetaInfo getApplicantPacketInfo(String regId) {
 		PacketMetaInfo packetMetaInfo = new PacketMetaInfo();
-		
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				regId, "ManualVerificationServiceImpl::getApplicantPacketInfo()::entry");
 		InputStream fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.PACKETMETAINFO);

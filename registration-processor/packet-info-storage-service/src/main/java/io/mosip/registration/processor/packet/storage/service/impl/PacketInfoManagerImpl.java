@@ -7,7 +7,6 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
-import io.mosip.kernel.core.logger.spi.Logger;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONArray;
@@ -21,11 +20,14 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Applicant;
@@ -45,9 +47,7 @@ import io.mosip.registration.processor.core.packet.dto.demographicinfo.Demograph
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicInfoJsonEntity;
@@ -87,6 +87,7 @@ import lombok.Cleanup;
 @RefreshScope
 @Service
 public class PacketInfoManagerImpl implements PacketInfoManager<Identity, ApplicantInfoDto> {
+
 
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
@@ -167,7 +168,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	/** The filesystem ceph adapter impl. */
 	@Autowired
-	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
+	private FileSystemAdapter filesystemCephAdapterImpl;
 
 	/** The utility. */
 	@Autowired
@@ -698,7 +699,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		getRegistrationId(metaData);
 		boolean isTransactionSuccessful = false;
 		if (bytes == null)
-			throw new FileNotFoundInPacketStore(PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_DFS.getMessage());
+			throw new FileNotFoundInPacketStore(
+					PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_PACKET_STORE.getMessage());
 
 		try {
 

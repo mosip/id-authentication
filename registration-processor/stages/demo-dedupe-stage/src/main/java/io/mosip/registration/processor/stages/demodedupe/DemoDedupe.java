@@ -18,11 +18,13 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.auth.dto.AuthRequestDTO;
 import io.mosip.registration.processor.core.auth.dto.AuthTypeDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityInfoDTO;
 import io.mosip.registration.processor.core.auth.dto.RequestDTO;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -43,7 +45,7 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
  */
 @Component
 public class DemoDedupe {
-	
+
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(DemoDedupe.class);
 
@@ -102,7 +104,7 @@ public class DemoDedupe {
 	public List<DemographicInfoDto> performDedupe(String refId) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
 				refId, "DemoDedupe::performDedupe()::entry");
-		
+
 		List<DemographicInfoDto> applicantDemoDto = packetInfoDao.findDemoById(refId);
 		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();
 		for (DemographicInfoDto demoDto : applicantDemoDto) {
@@ -129,10 +131,10 @@ public class DemoDedupe {
 	 */
 	public boolean authenticateDuplicates(String regId, List<String> duplicateUins)
 			throws ApisResourceAccessException, IOException {
-		
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				regId, "DemoDedupe::authenticateDuplicates()::entry");
-		
+
 		List<String> applicantfingerprintImageNames = packetInfoManager.getApplicantFingerPrintImageNameById(regId);
 		List<String> applicantIrisImageNames = packetInfoManager.getApplicantIrisImageNameById(regId);
 		boolean isDuplicate = false;
