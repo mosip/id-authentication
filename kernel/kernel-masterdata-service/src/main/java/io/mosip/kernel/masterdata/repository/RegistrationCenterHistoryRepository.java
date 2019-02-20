@@ -24,14 +24,14 @@ public interface RegistrationCenterHistoryRepository extends BaseRepository<Regi
 	 * 
 	 * @param id
 	 *            The registration center id
-	 * @param languageCode
+	 * @param langCode
 	 *            The language code
 	 * @param effectivetimes
 	 *            The effective time
 	 * @return Registration center history
 	 */
-	@Query("FROM RegistrationCenterHistory WHERE id =?1 and languageCode =?2 and effectivetimes <=?3 and (isDeleted is null or isDeleted =false)")
-	List<RegistrationCenterHistory> findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
-			String id, String languageCode, LocalDateTime effectivetimes);
+	@Query("FROM RegistrationCenterHistory WHERE id =?1 and langCode =?2 and effectivetimes <=?3 and (isDeleted is null or isDeleted =false)")
+	List<RegistrationCenterHistory> findByIdAndLangCodeAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+			String id, String langCode, LocalDateTime effectivetimes);
 
 }
