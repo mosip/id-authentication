@@ -44,6 +44,7 @@ import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 @RestControllerAdvice
 public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
+	/** The Constant APPLICATION_VERSION. */
 	private static final String APPLICATION_VERSION = "mosip.kernel.idrepo.application.version";
 
 	/** The Constant ID_REPO_EXCEPTION_HANDLER. */
@@ -196,6 +197,13 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 		return response;
 	}
 
+	/**
+	 * Gets the root cause.
+	 *
+	 * @param ex the ex
+	 * @param response the response
+	 * @return the root cause
+	 */
 	private Throwable getRootCause(Exception ex, IdResponseDTO response) {
 		Throwable e = ex;
 		while (e != null) {
