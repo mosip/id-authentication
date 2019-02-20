@@ -49,7 +49,6 @@ import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
-import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
@@ -545,8 +544,7 @@ public class PacketInfoManagerImplTest {
 		String inputString = "test";
 		InputStream inputStream = new ByteArrayInputStream(inputString.getBytes(StandardCharsets.UTF_8));
 
-		Mockito.when(filesystemAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
-				.thenReturn(inputStream);
+		Mockito.when(filesystemAdapterImpl.getFile(any(), any())).thenReturn(inputStream);
 		exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.toString(), "errorMessage", new Exception());
 		classLoader = getClass().getClassLoader();
 		demographicJsonFile = new File(classLoader.getResource("ID.json").getFile());
@@ -571,8 +569,7 @@ public class PacketInfoManagerImplTest {
 		// test to cover IoException
 		InputStream inputStream = Mockito.mock(InputStream.class);
 
-		Mockito.when(filesystemAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
-				.thenReturn(inputStream);
+		Mockito.when(filesystemAdapterImpl.getFile(any(), any())).thenReturn(inputStream);
 
 		// Mockito.when(inputStream.read(ArgumentMatchers.any())).thenThrow(new
 		// IOException());
@@ -687,7 +684,7 @@ public class PacketInfoManagerImplTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void getPacketsForQcUserTablenotAccessibleExceptionTest() {
 
-		Mockito.when(packetInfoDao.getPacketsforQCUser(ArgumentMatchers.any())).thenThrow(exp);
+		Mockito.when(packetInfoDao.getPacketsforQCUser(any())).thenThrow(exp);
 		packetInfoManagerImpl.getPacketsforQCUser("1234");
 
 	}
@@ -858,7 +855,6 @@ public class PacketInfoManagerImplTest {
 		documents.add(document);
 		Mockito.when(filesystemAdapterImpl.getFile(any(), any())).thenReturn(demographicJsonStream);
 
-
 		packetInfoManagerImpl.savePacketData(identity);
 		packetInfoManagerImpl.saveDocuments(documents);
 	}
@@ -877,8 +873,7 @@ public class PacketInfoManagerImplTest {
 		document.setDocumentName("ResidenceCopy");
 		document.setDocumentType("Passport");
 		documents.add(document);
-		Mockito.when(filesystemAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
-				.thenReturn(demographicJsonStream);
+		Mockito.when(filesystemAdapterImpl.getFile(any(), any())).thenReturn(demographicJsonStream);
 
 		packetInfoManagerImpl.savePacketData(identity);
 		packetInfoManagerImpl.saveDocuments(documents);
