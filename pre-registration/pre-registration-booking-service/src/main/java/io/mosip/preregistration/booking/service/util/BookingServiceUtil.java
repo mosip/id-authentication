@@ -71,6 +71,7 @@ import io.mosip.preregistration.booking.exception.BookingTimeSlotNotSeletectedEx
 import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.exception.DemographicStatusUpdationException;
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
+import io.mosip.preregistration.booking.exception.OperationNotAllowedException;
 import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.booking.exception.TimeSpanException;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
@@ -708,6 +709,23 @@ public class BookingServiceUtil {
 		entity.setSlotFromTime(LocalTime.parse(bookingRegistrationDTO.getSlotFromTime()));
 		entity.setSlotToTime(LocalTime.parse(bookingRegistrationDTO.getSlotToTime()));
 		return entity;
+	}
+	/**
+	 * This method is used to validate Pending_Appointment and Booked status codes.
+	 * 
+	 * @param statusCode
+	 *            pass statusCode
+	 * @return true or false
+	 */
+	public boolean checkStatusForDeletion(String statusCode) {
+		log.info("sessionId", "idType", "id", "In checkStatusForDeletion method of pre-registration service util ");
+		if (statusCode.equals(StatusCodes.PENDING_APPOINTMENT.getCode())
+				|| statusCode.equals(StatusCodes.BOOKED.getCode())) {
+			return true;
+		} else {
+			throw new OperationNotAllowedException(ErrorCodes.PRG_BOOK_RCI_027.getCode(),
+					ErrorMessages.DELETE_BOOKING_NOT_ALLOWED.getMessage());
+		}
 	}
 	
 }

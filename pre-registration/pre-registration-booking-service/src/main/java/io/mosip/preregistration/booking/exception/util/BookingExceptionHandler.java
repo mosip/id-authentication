@@ -34,6 +34,8 @@ import io.mosip.preregistration.booking.exception.DemographicStatusUpdationExcep
 import io.mosip.preregistration.booking.exception.DocumentNotFoundException;
 import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException;
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
+import io.mosip.preregistration.booking.exception.OperationNotAllowedException;
+import io.mosip.preregistration.booking.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.booking.exception.TimeSpanException;
@@ -466,6 +468,34 @@ public class BookingExceptionHandler {
 	}
 	@ExceptionHandler(TimeSpanException.class)
 	public ResponseEntity<MainResponseDTO<?>> timeSpanException(final TimeSpanException e,
+			WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText());
+
+		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
+
+		responseDto.setStatus(false);
+		responseDto.setErr(errorDetails);
+		responseDto.setResTime(getCurrentResponseTime());
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+
+	}
+	@ExceptionHandler(RecordFailedToDeleteException.class)
+	public ResponseEntity<MainResponseDTO<?>> recordFailedToDeleteException(final RecordFailedToDeleteException e,
+			WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText());
+
+		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
+
+		responseDto.setStatus(false);
+		responseDto.setErr(errorDetails);
+		responseDto.setResTime(getCurrentResponseTime());
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+
+	}
+	@ExceptionHandler(OperationNotAllowedException.class)
+	public ResponseEntity<MainResponseDTO<?>> operationNotAllowedException(final OperationNotAllowedException e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
 				e.getErrorText());
