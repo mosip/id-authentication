@@ -26,7 +26,7 @@ public interface RegistrationCenterMachineRepository
 	@Query("From RegistrationCenterMachine rcm WHERE rcm.registrationCenterMachinePk.machineId =?1")
 	List<RegistrationCenterMachine> findAllByMachineId(String machineId);
 
-	@Query("From RegistrationCenterMachine rcm WHERE rcm.registrationCenterMachinePk.machineId =?1 AND (rcm.createdDateTime > ?2 AND rcm.createdDateTime<=?3) OR (rcm.updatedDateTime > ?2 AND rcm.updatedDateTime<=?3) OR (rcm.deletedDateTime > ?2 AND rcm.deletedDateTime<=?3)")
+	@Query("From RegistrationCenterMachine rcm WHERE rcm.registrationCenterMachinePk.machineId =?1 AND ((rcm.createdDateTime > ?2 AND rcm.createdDateTime<=?3) OR (rcm.updatedDateTime > ?2 AND rcm.updatedDateTime<=?3) OR (rcm.deletedDateTime > ?2 AND rcm.deletedDateTime<=?3))")
 	List<RegistrationCenterMachine> findAllLatestByMachineIdCreatedUpdatedDeleted(String machineId, LocalDateTime lastUpdated,LocalDateTime currentTimeStamp);
 
 }
