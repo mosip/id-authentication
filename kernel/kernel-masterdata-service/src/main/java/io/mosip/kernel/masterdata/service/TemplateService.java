@@ -4,6 +4,7 @@ import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Template;
+import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 
 /**
  * @author Uday Kumar
@@ -47,18 +48,18 @@ public interface TemplateService {
 	 * 
 	 * @param template
 	 *            the Template Dto.
-	 * @return {@linkplain IdResponseDto}
+	 * @return {@linkplain IdAndLanguageCodeID}
 	 */
-	public IdResponseDto createTemplate(TemplateDto template);
+	public IdAndLanguageCodeID createTemplate(TemplateDto template);
 
 	/**
 	 * Method to update template based on provided details
 	 * 
 	 * @param template
 	 *            the Template Dto.
-	 * @return {@linkplain IdResponseDto}
+	 * @return {@linkplain IdAndLanguageCodeID}
 	 */
-	public IdResponseDto updateTemplates(TemplateDto template);
+	public IdAndLanguageCodeID updateTemplates(TemplateDto template);
 
 	/**
 	 * Method to delete template based on provided template id

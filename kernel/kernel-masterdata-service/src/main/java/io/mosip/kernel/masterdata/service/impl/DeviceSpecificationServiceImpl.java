@@ -174,10 +174,11 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	public IdResponseDto deleteDeviceSpecification(String id) {
 		IdResponseDto idResponseDto = new IdResponseDto();
 		try {
-			DeviceSpecification deviceSpecification = deviceSpecificationRepository
+			List<DeviceSpecification> deviceSpecifications = deviceSpecificationRepository
 					.findByIdAndIsDeletedFalseorIsDeletedIsNull(id);
 
-			if (deviceSpecification != null) {
+			if (!deviceSpecifications.isEmpty()) {
+				for(DeviceSpecification deviceSpecification : deviceSpecifications) {
 				List<Device> renDeviceList = deviceRepository
 						.findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getId());
 				if (renDeviceList.isEmpty()) {
@@ -189,6 +190,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 							DeviceSpecificationErrorCode.DEVICE_DELETE_DEPENDENCY_EXCEPTION.getErrorCode(),
 							DeviceSpecificationErrorCode.DEVICE_DELETE_DEPENDENCY_EXCEPTION.getErrorMessage());
 				}
+			}
 
 			} else {
 				throw new RequestException(

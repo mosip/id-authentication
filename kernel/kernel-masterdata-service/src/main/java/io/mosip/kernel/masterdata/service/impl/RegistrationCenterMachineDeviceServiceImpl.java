@@ -64,7 +64,7 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 			MapperUtils.setBaseFieldValue(savedRegistrationCenterMachineDevice, registrationCenterMachineDeviceHistory);
 			MapperUtils.mapFieldValues(savedRegistrationCenterMachineDevice.getRegistrationCenterMachineDevicePk(),
 					registrationCenterMachineDeviceHistory.getRegistrationCenterMachineDeviceHistoryPk());
-
+			registrationCenterMachineDeviceHistory.setLangCode(savedRegistrationCenterMachineDevice.getLangCode());
 			registrationCenterMachineDeviceHistory.getRegistrationCenterMachineDeviceHistoryPk()
 					.setEffectivetimes(savedRegistrationCenterMachineDevice.getCreatedDateTime());
 
@@ -121,6 +121,7 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 				MapperUtils.setBaseFieldValue(registrationCenterMachineDevice, registrationCenterMachineDeviceHistory);
 				MapperUtils.mapFieldValues(registrationCenterMachineDevice.getRegistrationCenterMachineDevicePk(),
 						registrationCenterMachineDeviceHistory.getRegistrationCenterMachineDeviceHistoryPk());
+				registrationCenterMachineDeviceHistory.setLangCode(registrationCenterMachineDevice.getLangCode());
 
 				registrationCenterMachineDeviceHistory.getRegistrationCenterMachineDeviceHistoryPk()
 						.setEffectivetimes(registrationCenterMachineDevice.getDeletedDateTime());

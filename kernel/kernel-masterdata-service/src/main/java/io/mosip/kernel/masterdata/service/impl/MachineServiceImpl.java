@@ -220,8 +220,9 @@ public class MachineServiceImpl implements MachineService {
 	public IdResponseDto deleteMachine(String id) {
 		Machine delMachine = null;
 		try {
-			Machine renMachine = machineRepository.findMachineByIdAndIsDeletedFalseorIsDeletedIsNull(id);
-			if (renMachine != null) {
+			List<Machine> renMachineList = machineRepository.findMachineByIdAndIsDeletedFalseorIsDeletedIsNull(id);
+			if (!renMachineList.isEmpty()) {
+				for(Machine renMachine : renMachineList) {
 
 				MetaDataUtils.setDeleteMetaData(renMachine);
 				delMachine = machineRepository.update(renMachine);
@@ -233,6 +234,7 @@ public class MachineServiceImpl implements MachineService {
 				machineHistory.setEffectDateTime(delMachine.getDeletedDateTime());
 				machineHistory.setDeletedDateTime(delMachine.getDeletedDateTime());
 				machineHistoryService.createMachineHistory(machineHistory);
+				}
 			} else {
 				throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -244,9 +246,10 @@ public class MachineServiceImpl implements MachineService {
 		}
 
 		IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.map(delMachine, idResponseDto);
+		idResponseDto.setId(id);
 		return idResponseDto;
 
 	}
-
 }
+
+

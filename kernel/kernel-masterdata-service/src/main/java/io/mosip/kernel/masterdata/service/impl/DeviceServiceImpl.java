@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -192,14 +193,16 @@ public class DeviceServiceImpl implements DeviceService {
 	@Override
 	@Transactional
 	public IdResponseDto deleteDevice(String id) {
-		Device foundDevice = null;
-		Device entity = null;
+		List<Device> foundDeviceList = new ArrayList<>();
 		Device deletedDevice = null;
 		try {
-			foundDevice = deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(id);
-			if (foundDevice != null) {
-				entity = MetaDataUtils.setDeleteMetaData(foundDevice);
-				deletedDevice = deviceRepository.update(entity);
+			foundDeviceList = deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(id);
+			
+			if (!foundDeviceList.isEmpty()) {
+				for(Device foundDevice : foundDeviceList) {
+				MetaDataUtils.setDeleteMetaData(foundDevice);
+				deletedDevice = deviceRepository.update(foundDevice);
+				
 				DeviceHistory deviceHistory = new DeviceHistory();
 				MapperUtils.map(deletedDevice, deviceHistory);
 				MapperUtils.setBaseFieldValue(deletedDevice, deviceHistory);
@@ -207,17 +210,21 @@ public class DeviceServiceImpl implements DeviceService {
 				deviceHistory.setEffectDateTime(deletedDevice.getDeletedDateTime());
 				deviceHistory.setDeletedDateTime(deletedDevice.getDeletedDateTime());
 				deviceHistoryService.createDeviceHistory(deviceHistory);
+				}
 			} else {
 				throw new RequestException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
+			
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
-		idResponseDto.setId(entity.getId());
+		idResponseDto.setId(id);
 		return idResponseDto;
 	}
+	
+	
 
 }
