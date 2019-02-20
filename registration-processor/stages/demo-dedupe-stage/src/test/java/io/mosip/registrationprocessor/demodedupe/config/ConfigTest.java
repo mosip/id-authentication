@@ -15,8 +15,6 @@ import org.springframework.core.env.Environment;
 
 import io.mosip.registration.processor.stages.config.DemoDedupeConfig;
 
-
-
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigTest {
 
@@ -47,10 +45,15 @@ public class ConfigTest {
 	public void getdemoDedupeStage() {
 		assertNotNull(config.getDemoDedupeStage());
 	}
-	
+
 	@Test
 	public void getdemoDedupeTest() {
 		assertNotNull(config.getDemoDedupe());
+	}
+
+	@Test
+	public void getDemodedupeProcessorTest() {
+		assertNotNull(config.getDemodedupeProcessor());
 	}
 
 }
