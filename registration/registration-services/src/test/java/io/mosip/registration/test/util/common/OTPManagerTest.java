@@ -90,13 +90,13 @@ public class OTPManagerTest {
 		
 		OtpValidatorResponseDTO otpValidatorResponseDTO=new OtpValidatorResponseDTO();
 		
-		otpValidatorResponseDTO.setstatus("success");
+		otpValidatorResponseDTO.setstatus("Success");
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean())).thenReturn(otpValidatorResponseDTO);
 		
-		assertNull(otpManager.validateOTP("mosip", "12345").getSuccessResponseDTO());
+		assertNotNull(otpManager.validateOTP("mosip", "12345").getSuccessResponseDTO());
 	}
 	
 	@Test
