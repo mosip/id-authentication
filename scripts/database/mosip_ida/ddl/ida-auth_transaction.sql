@@ -21,7 +21,7 @@ create table ida.auth_transaction (
 	auth_type_code character varying(36) not null,    	-- master.authentication_type.code
 	status_code character varying(36) not null,		   	-- ida.status_list.code 
 	status_comment character varying(1024),
-		lang_code character varying(3) not null, 		-- master.language.code
+	lang_code character varying(3) not null, 		-- master.language.code
 														-- authtyp_code, status_code and ref_id_type must be from same lang_code.
 
 	ref_id_type character varying(36),					-- master.id_type.code
@@ -54,4 +54,4 @@ alter table ida.auth_transaction add constraint pk_authtrn_id primary key (id)
 comment on table ida.auth_transaction is 'auth_transaction table is used to store all authentication request transaction details'
 ;
 
-
+create index idx1_authtrn_authtyp_refid on ida.auth_transaction (auth_type_code, ref_id_type, ref_id, request_dtimes) ;

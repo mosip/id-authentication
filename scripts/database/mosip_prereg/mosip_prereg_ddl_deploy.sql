@@ -15,6 +15,7 @@
 \ir ddl/prereg-reg_available_slot.sql
 \ir ddl/prereg-transaction_type.sql
 \ir ddl/prereg-user_login.sql
+\ir ddl/prereg-language_transliteration.sql
 
 \ir ddl/AlterFK_prereg_schema.sql
 \ir ddl/AlterFK_batch_prereg_schema.sql

@@ -67,6 +67,6 @@
 \ir ddl/master-user_pwd.sql
 \ir ddl/master-user_role.sql
 \ir ddl/master-valid_document.sql
-\
+
 \ir ddl/AlterFK_master_schema.sql
 \ir ddl/AlterFK_master_dropLang.sql
