@@ -62,7 +62,7 @@
 			<artifactId>kernel-logger-logback</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-fsadapter-hdfs</artifactId>

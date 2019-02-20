@@ -50,7 +50,7 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-virusscanner-clamav</artifactId>
 			<version>${kernel.clamav.version}</version>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>packet-manager</artifactId>

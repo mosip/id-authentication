@@ -22,9 +22,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.web.client.ResourceAccessException;
 
-import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
-import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -39,7 +37,7 @@ import io.mosip.registration.processor.packet.storage.repository.BasePacketRepos
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.stages.demodedupe.DemoDedupe;
-import io.mosip.registration.processor.stages.demodedupe.DemodedupeStage;
+import io.mosip.registration.processor.stages.demodedupe.DemodedupeProcessor;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -49,7 +47,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
-public class DemodedupeStageTest {
+public class DemodedupeProcessorTest {
 
 	/** The registration status service. */
 	@Mock
@@ -80,31 +78,12 @@ public class DemodedupeStageTest {
 	/** The duplicate dtos. */
 	private List<DemographicInfoDto> duplicateDtos = new ArrayList<>();
 
-	/** The demodedupe stage. */
-	@InjectMocks
-	private DemodedupeStage demodedupeStage = new DemodedupeStage() {
-		@Override
-		public MosipEventBus getEventBus(Class<?> clazz, String abc) {
-			return null;
-		}
-
-		@Override
-		public void consumeAndSend(MosipEventBus mosipEventBus, MessageBusAddress fromAddress,
-				MessageBusAddress toAddress) {
-		}
-	};
-
-	/**
-	 * Test deploy verticle.
-	 */
-	@Test
-	public void testDeployVerticle() {
-		demodedupeStage.deployVerticle();
-	}
-
 	/** The audit log request builder. */
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
+
+	@InjectMocks
+	DemodedupeProcessor demodedupeProcessor;
 
 	/**
 	 * Sets the up.
@@ -145,7 +124,7 @@ public class DemodedupeStageTest {
 		List<DemographicInfoDto> emptyDuplicateDtoSet = new ArrayList<>();
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(emptyDuplicateDtoSet);
 
-		MessageDTO messageDto = demodedupeStage.process(dto);
+		MessageDTO messageDto = demodedupeProcessor.process(dto);
 		assertTrue(messageDto.getIsValid());
 
 	}
@@ -166,7 +145,7 @@ public class DemodedupeStageTest {
 
 		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
 
-		MessageDTO messageDto = demodedupeStage.process(dto);
+		MessageDTO messageDto = demodedupeProcessor.process(dto);
 		assertFalse(messageDto.getIsValid());
 	}
 
@@ -186,7 +165,7 @@ public class DemodedupeStageTest {
 
 		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(true);
 
-		demodedupeStage.process(dto);
+		demodedupeProcessor.process(dto);
 	}
 
 	/**
@@ -205,7 +184,7 @@ public class DemodedupeStageTest {
 		ApisResourceAccessException exp = new ApisResourceAccessException("errorMessage");
 		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
 
-		MessageDTO messageDto = demodedupeStage.process(dto);
+		MessageDTO messageDto = demodedupeProcessor.process(dto);
 		assertEquals(true, messageDto.getInternalError());
 	}
 
@@ -225,7 +204,7 @@ public class DemodedupeStageTest {
 		ResourceAccessException exp = new ResourceAccessException("errorMessage");
 		Mockito.doThrow(exp).when(demoDedupe).authenticateDuplicates(anyString(), anyList());
 
-		MessageDTO messageDto = demodedupeStage.process(dto);
+		MessageDTO messageDto = demodedupeProcessor.process(dto);
 		assertEquals(true, messageDto.getInternalError());
 	}
 
