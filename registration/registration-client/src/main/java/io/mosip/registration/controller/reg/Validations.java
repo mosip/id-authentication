@@ -254,14 +254,18 @@ public class Validations extends BaseController {
 	 * Validate for the single string
 	 */
 	public boolean validateSingleString(String value, String id) {
-		String validationProperty[] = validationBundle.getString(id).split(RegistrationConstants.VALIDATION_SPLITTER);
-
+		String[] validationProperty = validationBundle.getString(id).split(RegistrationConstants.VALIDATION_SPLITTER);
 		String regex = validationProperty[0];
-
-		if (value.matches(regex)) {
-			return true;
+		int length = Integer.parseInt(validationProperty[1]);
+		if (id.toLowerCase().contains(RegistrationConstants.CONTENT_TYPE_MOBILE.toLowerCase())) {
+			if (value.length() == length) {
+				return value.matches(regex);
+			} else {
+				return false;
+			}
+		} else {
+			return value.matches(regex);
 		}
-		return false;
 	}
 
 	/**

@@ -1509,6 +1509,12 @@ Working on new Css by taleev
 	-fx-font-family: Roboto;
 }
 
+.templateHeading {
+	-fx-font-size: 18.0px;
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+}
+
 .reRegTableId{
 	-fx-pref-width : 450;
 }
