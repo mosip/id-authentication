@@ -809,7 +809,7 @@ public class DocumentScanController extends BaseController {
 				bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 				bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 			} else {
-				//((Map<String, Map<String, Boolean>>)ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY, false);
+				((Map<String, Map<String, Boolean>>)ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY, false);
 				bioExceptionToggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 				bioExceptionToggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 			}
@@ -898,9 +898,12 @@ public class DocumentScanController extends BaseController {
 			}
 		} else {
 			if(documentDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
-				registrationController.validateDemographicPane(documentScanPane);
+				if(registrationController.validateDemographicPane(documentScanPane)) {
+					registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN, getPageDetails(RegistrationConstants.DOCUMENT_SCAN,RegistrationConstants.NEXT));
+				}
+			} else {
+				registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN, getPageDetails(RegistrationConstants.DOCUMENT_SCAN,RegistrationConstants.NEXT));
 			}
-			registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN, getPageDetails(RegistrationConstants.DOCUMENT_SCAN,RegistrationConstants.NEXT));
 		}
 	}
 
