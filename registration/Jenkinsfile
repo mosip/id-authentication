@@ -41,6 +41,9 @@ node {
     ],
    ])
   }
+   pom = readMavenPom file: branch + '/' + projectToBuild + '/pom.xml'
+   version = pom.version 
+   print version
  }
 
  stage('--------- Artifactory configuration ----------------') {
