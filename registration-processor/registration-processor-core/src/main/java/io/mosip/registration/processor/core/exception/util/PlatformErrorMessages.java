@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.core.exception.util;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Enum RPRPlatformErrorMessages.
  *
@@ -164,12 +165,14 @@ public enum PlatformErrorMessages {
 	// Stages - OSI Exception error code and message
 	OSI_VALIDATION_FAILED("", "OSI Validation Failed"),
 
+	/** The osi validation packet store not accessible. */
 	OSI_VALIDATION_PACKET_STORE_NOT_ACCESSIBLE("", "The Packet store set by the System is not accessible"),
 
 	/** The packet demo dedupe failed. */
 	// Stages - Demo-Dedupe error code and message
 	PACKET_DEMO_DEDUPE_FAILED("", "Demo dedupe Failed"),
 
+	/** The packet demo packet store not accessible. */
 	PACKET_DEMO_PACKET_STORE_NOT_ACCESSIBLE("", "The Packet store set by the System is not accessible"),
 
 	/** The packet bio dedupe failed. */
@@ -180,6 +183,7 @@ public enum PlatformErrorMessages {
 	PACKET_BDD_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE,
 			"The Packet store set by the System is not accessible"),
 
+	/** The reverse data sync failed. */
 	// Stages - Packet-Validator error message
 	REVERSE_DATA_SYNC_FAILED("", "Reverse data sync failed"),
 
@@ -236,12 +240,14 @@ public enum PlatformErrorMessages {
 	RPR_MVS_INVALID_STATUS_UPDATE(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "003",
 			"Invalid status update"),
 
+	/** The rpr mvs invalid field. */
 	RPR_MVS_INVALID_FIELD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "005", " fields can not be empty"),
 
 	/** The rpr mvs no assigned record. */
 	RPR_MVS_NO_ASSIGNED_RECORD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "004",
 			"No Assigned Record Found"),
 
+	/** The rpr mvs file not found in packet store. */
 	RPR_MVS_FILE_NOT_FOUND_IN_PACKET_STORE(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "005",
 			"Packet Not Found in Packet Store"),
 
@@ -251,7 +257,9 @@ public enum PlatformErrorMessages {
 
 	/** The rpr tem processing failure. */
 	RPR_TEM_PROCESSING_FAILURE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "002",
-			"The Processing of Template Failed "), RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE(
+			"The Processing of Template Failed "), 
+ /** The rpr tem packet store not accessible. */
+ RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE(
 					PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "003",
 					"The Packet store set by the System is not accessible"),
 	/** The rpr sms template generation failure. */
@@ -277,6 +285,7 @@ public enum PlatformErrorMessages {
 	RPR_PUM_PACKET_DELETION_INFO(PlatformErrorConstants.RPR_PACKET_UPLOADER_MODULE + "002",
 			"File is Already exists in File Store And its now Deleted from Virus scanner job"),
 
+	/** The rpr pum packet store not accessible. */
 	RPR_PUM_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_UPLOADER_MODULE + "003",
 			"The Packet store set by the System is not accessible"),
 
@@ -295,21 +304,24 @@ public enum PlatformErrorMessages {
 	/** The rpr bdd unable to serve request. */
 	RPR_BDD_UNABLE_TO_SERVE_REQUEST(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "004",
 			"ABIS for the Reference ID and Request ID was Unable to Execute the Request"),
-	/**
-	 * The connection to MOSIP underlying queue not available
-	 */
+	
+	/** The connection to MOSIP underlying queue not available. */
 	RPR_MQI_CONNECTION_UNAVAILABLE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "001",
 			"The connection to underlying queue not available"),
 
+	/** The rpr mqi unable to send to queue. */
 	RPR_MQI_UNABLE_TO_SEND_TO_QUEUE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "003",
 			"Unable to send message to to queue"),
 
+	/** The rpr mqi unable to consume from queue. */
 	RPR_MQI_UNABLE_TO_CONSUME_FROM_QUEUE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "004",
 			"Unable to consume message from queue"),
 
+	/** The rpr mqi no files found in queue. */
 	RPR_MQI_NO_FILES_FOUND_IN_QUEUE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "005",
 			"There is no file available in queue"),
 
+	/** The rpr mqi invalid connection. */
 	RPR_MQI_INVALID_CONNECTION(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "002",
 			"Connection not obtained from ConnectionFactory"),
 	/** *** System Exception ****. */
@@ -364,22 +376,19 @@ public enum PlatformErrorMessages {
 	RPR_PRT_PDF_GENERATION_FAILED(PlatformErrorConstants.RPR_PRINTING_MODULE + "003", "PDF Generation Failed"),
 
 	/** The rpr prt queue connection null. */
-	RPR_PRT_QUEUE_CONNECTION_NULL(PlatformErrorConstants.RPR_PRINTING_MODULE + "004", "Queue connection is null");
+	RPR_PRT_QUEUE_CONNECTION_NULL(PlatformErrorConstants.RPR_PRINTING_MODULE + "004", "Queue connection is null"),
 
-	RPR_SYS_IO_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "012", "IO EXCEPTION "),
-
+	/** The rpr rgs registration connector not accessible. */
 	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),
 
-
-
+	/** The rpr pvm packet store not accessible. */
 	RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_VALIDATOR_MODULE + "001",
 			"The Packet store set by the System is not accessible"),
 
+	/** The rpr ugs packet store not accessible. */
 	RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_UIN_GENERATOR_STAGE + "001",
 			"The Packet store set by the System is not accessible");
-
-
-
+	
 	/** The error message. */
 	private final String errorMessage;
 
