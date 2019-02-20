@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
@@ -67,7 +68,7 @@ public class DeleteAuditLogsJob extends BaseJob {
 
 		} catch (RegBaseUncheckedException baseUncheckedException) {
 			LOGGER.error(LoggerConstants.DELETE_AUDIT_LOGS_JOB, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, baseUncheckedException.getMessage());
+					RegistrationConstants.APPLICATION_ID, baseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(baseUncheckedException));
 			throw baseUncheckedException;
 		}
 

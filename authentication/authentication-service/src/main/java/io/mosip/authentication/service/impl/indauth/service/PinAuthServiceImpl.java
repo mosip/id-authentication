@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
+import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
-import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.service.PinAuthService;
 import io.mosip.authentication.service.entity.StaticPin;
 import io.mosip.authentication.service.helper.IdInfoHelper;
@@ -45,7 +45,7 @@ public class PinAuthServiceImpl implements PinAuthService {
 	 * io.mosip.authentication.core.dto.indauth.AuthRequestDTO, java.lang.String)
 	 */
 	@Override
-	public AuthStatusInfo validatePin(AuthRequestDTO authRequestDTO, String uin)
+	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin, Map<String, List<IdentityInfoDTO>> idInfo)
 			throws IdAuthenticationBusinessException {
 		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
 		List<MatchOutput> listMatchOutputs = constructMatchOutput(authRequestDTO, listMatchInputs, uin);

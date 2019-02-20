@@ -34,7 +34,7 @@ public class BioAuthServiceImpl implements BioAuthService {
 	 * values
 	 */
 	@Override
-	public AuthStatusInfo validateBioDetails(AuthRequestDTO authRequestDTO,
+	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO,String uin,
 			Map<String, List<IdentityInfoDTO>> bioIdentity) throws IdAuthenticationBusinessException {
 		if (bioIdentity == null || bioIdentity.isEmpty()) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);

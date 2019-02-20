@@ -210,9 +210,6 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorMessage());
 
-		} catch (IOException e) {
-			throw new SyncDataServiceException(SyncConfigDetailsErrorCode.SYNC_IO_EXCEPTION.getErrorCode(),
-					SyncConfigDetailsErrorCode.SYNC_IO_EXCEPTION.getErrorMessage());
 		}
 
 		try {

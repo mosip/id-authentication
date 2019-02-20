@@ -55,17 +55,18 @@
 .time-selection__time-slots-container {
     border-top: 1px solid #ff4081;
     margin-right: 20px;
-    width: 74%;
+    padding: 0;
 }
 
 .time-selection__names-container {
-    width: 25%;
+    min-width: 24.5%;
     padding: 0;
 }
 
 .time-selection__time-slots-container div {
     display: flex;
     flex-wrap: wrap;
+    max-width: 100%;
 }
 
 .time-selection__name-list-header {
@@ -156,13 +157,13 @@
 .card {
     display: flex;
     flex-wrap: wrap;
-    height: 100px;
-    width:150px;
-    margin: 20px;
-    padding: 10px;
-    border: none;
+    height: 110px;
+    width: 300px;
+    margin: 0;
+    border: 1px solid #eee;
     box-shadow: none;
     cursor: pointer;
+    border-radius: 0;
 }
 
 .card-content {
@@ -182,7 +183,7 @@
 
 .card-slot-text-span-number {
     font-size: 30px !important;
-    margin-left: 40px;
+    margin-left: 171px;
     font-weight: 300;
 }
 
@@ -215,7 +216,7 @@
   .middle {
     float: left;
     overflow: hidden;
-    width: 75%;
+    width: 67.5%;
     white-space: nowrap;
     margin: 0 15px 0 0;
   }

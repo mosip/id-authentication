@@ -16,6 +16,7 @@ import io.mosip.kernel.core.idvalidator.spi.VidValidator;
  * Test class for vidValidatorImpl class
  * 
  * @author M1037462 since 1.0.0
+ * @author Megha Tanga
  * 
  */
 @RunWith(SpringRunner.class)
@@ -52,6 +53,9 @@ public class VidValidatorTest {
 	@Value("${mosip.kernel.vid.test.invalid-start-with}")
 	private String invalidVidStartWith;
 
+	@Value("${mosip.kernel.vid.test.invalid-admin-risticted-digits-vid}")
+	private String invalidAdminRestrictedDigitsVid;
+	
 	@Autowired
 	private VidValidator<String> vidValidatorImpl;
 
@@ -122,6 +126,11 @@ public class VidValidatorTest {
 	@Test(expected = InvalidIDException.class)
 	public void idStartWithZeroTest() {
 		vidValidatorImpl.validateId(invalidVidStartWith);
+	}
+	
+	@Test(expected = InvalidIDException.class)
+	public void restrictedAdminFilterTest() {
+		vidValidatorImpl.validateId(invalidAdminRestrictedDigitsVid);
 	}
 
 }

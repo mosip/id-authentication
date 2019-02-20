@@ -28,10 +28,8 @@ public final class ExceptionUtils {
 	 * Returns an String object that can be used after building the exception stack
 	 * trace.
 	 * 
-	 * @param message
-	 *            the exception message
-	 * @param cause
-	 *            the cause
+	 * @param message the exception message
+	 * @param cause   the cause
 	 * @return the exception stack
 	 */
 	public static String buildMessage(String message, Throwable cause) {
@@ -51,8 +49,7 @@ public final class ExceptionUtils {
 	/**
 	 * This method returns the stack trace
 	 * 
-	 * @param throwable
-	 *            the exception to be added to the list of exception
+	 * @param throwable the exception to be added to the list of exception
 	 * @return the stack trace
 	 */
 	public static String getStackTrace(Throwable throwable) {
@@ -65,30 +62,33 @@ public final class ExceptionUtils {
 	/**
 	 * This method gives service error list for response receive from service.
 	 * 
-	 * @param responseBody
-	 *            the service response body.
+	 * @param responseBody the service response body.
 	 * @return the list of {@link ServiceError}
 	 * @throws IOException
 	 */
-	public static List<ServiceError> getServiceErrorList(String responseBody) throws IOException {
+	public static List<ServiceError> getServiceErrorList(String responseBody) {
 		ObjectMapper mapper = new ObjectMapper();
 
 		List<ServiceError> validationErrorsList = new ArrayList<>();
 
-		JsonNode errorResponse = mapper.readTree(responseBody);
+		try {
+			JsonNode errorResponse = mapper.readTree(responseBody);
 
-		if (errorResponse.has("errors")) {
+			if (errorResponse.has("errors")) {
 
-			JsonNode errors = errorResponse.get("errors");
+				JsonNode errors = errorResponse.get("errors");
 
-			Iterator<JsonNode> iter = errors.iterator();
+				Iterator<JsonNode> iter = errors.iterator();
 
-			while (iter.hasNext()) {
-				JsonNode parameterNode = iter.next();
-				ServiceError serviceError = new ServiceError(getJsonValue(parameterNode, "errorCode"),
-						getJsonValue(parameterNode, "errorMessage"));
-				validationErrorsList.add(serviceError);
+				while (iter.hasNext()) {
+					JsonNode parameterNode = iter.next();
+					ServiceError serviceError = new ServiceError(getJsonValue(parameterNode, "errorCode"),
+							getJsonValue(parameterNode, "errorMessage"));
+					validationErrorsList.add(serviceError);
+				}
 			}
+		} catch (IOException e) {
+          // There is no Service error
 		}
 
 		return validationErrorsList;
@@ -98,10 +98,8 @@ public final class ExceptionUtils {
 	/**
 	 * This method provide jsonvalue based on propname mention.
 	 * 
-	 * @param node
-	 *            the jsonnode.
-	 * @param propName
-	 *            the property name.
+	 * @param node     the jsonnode.
+	 * @param propName the property name.
 	 * @return the property value.
 	 */
 	private static String getJsonValue(JsonNode node, String propName) {

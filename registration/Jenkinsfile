@@ -9,6 +9,14 @@ node {
  projectToBuild = 'registration'
  def registryUrl = 'http://mosip-dev-admin.southindia.cloudapp.azure.com:5000'
  def registryName = 'mosip-dev-admin.southindia.cloudapp.azure.com:5000'
+ def uploadSpec = """{
+  "files": [
+    {
+      "pattern": "registration-client/target/*.jar",
+      "target": " libs-release-local/io/mosip/registration/registration-client/"
+    }
+ ]
+ }"""
 
  stage('------- Checkout --------') {
   // Checkout only registration Module
@@ -42,6 +50,7 @@ node {
 
  stage('---------- mvn-clean-install ---------------') {
   rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -Dspring.cloud.config.label='+branch, buildInfo: buildInfo
+  def buildInfo1 = server.upload spec: uploadSpec
  }
 
  stage('---------- SonarQube Analysis --------------') {
@@ -52,6 +61,7 @@ node {
  }
 
  stage('----------- Publish build info -------------') {
+  buildInfo.append buildInfo1
   server.publishBuildInfo buildInfo
  }
 

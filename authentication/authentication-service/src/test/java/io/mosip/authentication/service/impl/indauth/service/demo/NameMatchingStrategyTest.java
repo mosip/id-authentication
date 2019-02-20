@@ -5,13 +5,18 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
@@ -20,6 +25,9 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
  * @author Dinesh Karuppiah
  */
 public class NameMatchingStrategyTest {
+	
+	@Autowired
+	private Environment env;
 
 	/**
 	 * Check for Exact type matched with Enum value of Name Matching Strategy
@@ -65,8 +73,27 @@ public class NameMatchingStrategyTest {
 	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
 
-		int value = matchFunction.match("dinesh karuppiah", "dinesh karuppiah", null);
+		int value = matchFunction.match("dinesh karuppiah", "dinesh karuppiah", getFetcher());
 		assertEquals(100, value);
+	}
+	
+	private Map<String, Object> getFetcher(){
+		HashMap<String, Object> valuemap = new HashMap<>();
+		valuemap.put("language", "english");
+		valuemap.put("env", env);
+		MasterDataFetcher f = () ->  createFetcher();
+		valuemap.put("titlesFetcher", f);
+		valuemap.put("langCode", "fra");
+		return valuemap;
+	}
+	private Map<String, List<String>> createFetcher() {
+		List<String> l = new ArrayList<>();
+		l.add("Mr");
+		l.add("Dr");
+		l.add("Mrs");
+		Map<String, List<String>> map = new HashMap<>();
+		map.put("fra", l);
+		return map;
 	}
 
 	/**
@@ -128,7 +155,7 @@ public class NameMatchingStrategyTest {
 	@Test
 	public void TestValidPartialMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
-		int value = matchFunction.match("dinesh thiagarajan", "dinesh karuppiah", null);
+		int value = matchFunction.match("dinesh thiagarajan", "dinesh karuppiah", getFetcher());
 		assertEquals(33, value);
 	}
 
@@ -292,8 +319,8 @@ public class NameMatchingStrategyTest {
 		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
 		Map<String, Object> valueMap = new HashMap<>();
 		valueMap.put("language", "arabic");
-		int value = matchFunction.match("mos", "arabic", valueMap);
-		assertEquals(20, value);
+		int value = matchFunction.match("mos", "arabic", getFetcher());
+		assertEquals(40, value);
 	}
 
 	/**

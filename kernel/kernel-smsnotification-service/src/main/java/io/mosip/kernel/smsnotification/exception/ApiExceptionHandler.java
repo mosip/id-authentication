@@ -71,6 +71,7 @@ public class ApiExceptionHandler {
 		Error error = new Error(e.getErrorCode(), e.getErrorText());
 		ErrorResponse<Error> errorResponse = new ErrorResponse<>();
 		errorResponse.getErrors().add(error);
+		errorResponse.setStatus(HttpStatus.OK.value());
 		return errorResponse;
 	}
 
@@ -90,6 +91,7 @@ public class ApiExceptionHandler {
 		ServiceError error = new ServiceError(SmsExceptionConstant.INTERNAL_SERVER_ERROR.getErrorCode(),
 				e.getMessage());
 		errorResponse.getErrors().add(error);
+
 		errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}

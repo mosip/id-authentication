@@ -29,6 +29,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -43,7 +44,6 @@ import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
@@ -84,7 +84,7 @@ public class UinGeneratorStageTest {
 
 	/** The adapter. */
 	@Mock
-	private FileSystemAdapter<InputStream, Boolean> adapter;
+	private FileSystemAdapter adapter;
 
 	/** The input stream. */
 	@Mock
@@ -177,7 +177,7 @@ public class UinGeneratorStageTest {
 		Mockito.when(utility.getConfigServerFileStorageURL()).thenReturn(CONFIG_SERVER_URL);
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
 		Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentity.json");
-
+		
 		Mockito.when(identityJson.get(anyString())).thenReturn(demographicIdentity);
 		List<ApplicantDocument> applicantDocument = new ArrayList<>();
 		ApplicantDocument appDocument = new ApplicantDocument();
@@ -185,7 +185,7 @@ public class UinGeneratorStageTest {
 		appDocument.setDocName("POA");
 		appDocument.setDocStore("ProofOfAddress".getBytes());
 		applicantDocument.add(appDocument);
-
+		
 		Mockito.when(packetInfoManager.getDocumentsByRegId(Matchers.anyString())).thenReturn(applicantDocument);
 
 	}

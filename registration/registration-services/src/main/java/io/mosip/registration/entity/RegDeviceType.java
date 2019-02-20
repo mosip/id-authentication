@@ -2,9 +2,12 @@ package io.mosip.registration.entity;
 
 import java.sql.Timestamp;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 /**
@@ -16,9 +19,15 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "device_type", schema = "reg")
+@IdClass(RegDeviceTypeId.class)
 public class RegDeviceType extends RegistrationCommonFields {
-	@EmbeddedId
-	RegDeviceTypeId regDeviceTypeId;
+	@Id
+	@AttributeOverrides({ @AttributeOverride(name = "code", column = @Column(name = "code")),
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code")) })
+
+	private String code;
+	private String langCode;
+
 	@Column(name = "name")
 	private String name;
 	@Column(name = "descr")
@@ -28,19 +37,20 @@ public class RegDeviceType extends RegistrationCommonFields {
 	@Column(name = "del_dtimes")
 	private Timestamp deletedTime;
 
-	/**
-	 * @return the regDeviceTypeId
-	 */
-	public RegDeviceTypeId getRegDeviceTypeId() {
-		return regDeviceTypeId;
+	public String getCode() {
+		return code;
 	}
 
-	/**
-	 * @param regDeviceTypeId
-	 *            the regDeviceTypeId to set
-	 */
-	public void setRegDeviceTypeId(RegDeviceTypeId regDeviceTypeId) {
-		this.regDeviceTypeId = regDeviceTypeId;
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getLangCode() {
+		return langCode;
+	}
+
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
 	}
 
 	/**
@@ -51,8 +61,7 @@ public class RegDeviceType extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param name
-	 *            the name to set
+	 * @param name the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -66,8 +75,7 @@ public class RegDeviceType extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param description
-	 *            the description to set
+	 * @param description the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -81,8 +89,7 @@ public class RegDeviceType extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param isDeleted
-	 *            the isDeleted to set
+	 * @param isDeleted the isDeleted to set
 	 */
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
@@ -96,8 +103,7 @@ public class RegDeviceType extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param deletedTime
-	 *            the deletedTime to set
+	 * @param deletedTime the deletedTime to set
 	 */
 	public void setDeletedTime(Timestamp deletedTime) {
 		this.deletedTime = deletedTime;

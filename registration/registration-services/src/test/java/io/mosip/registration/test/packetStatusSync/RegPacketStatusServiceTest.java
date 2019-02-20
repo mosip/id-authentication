@@ -135,7 +135,7 @@ public class RegPacketStatusServiceTest {
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 		successResponseDTO.setMessage(RegistrationConstants.REGISTRATION_DELETION_BATCH_JOBS_SUCCESS);
 
-		when(registrationDAO.getRegistrationsToBeDeleted(Mockito.any())).thenReturn(list);
+		when(registrationDAO.get(Mockito.any(),Mockito.anyString())).thenReturn(list);
 
 		Mockito.doNothing().when(packetStatusDao).delete(Mockito.any());
 
@@ -154,7 +154,7 @@ public class RegPacketStatusServiceTest {
 		regis.setStatusCode(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED);
 		list.add(regis);
 
-		when(registrationDAO.getRegistrationsToBeDeleted(Mockito.any()))
+		when(registrationDAO.get(Mockito.any(),Mockito.anyString()))
 				.thenThrow(RuntimeException.class);
 
 		assertSame( RegistrationConstants.REGISTRATION_DELETION_BATCH_JOBS_FAILURE, packetStatusService.deleteRegistrationPackets().getErrorResponseDTOs().get(0).getMessage());

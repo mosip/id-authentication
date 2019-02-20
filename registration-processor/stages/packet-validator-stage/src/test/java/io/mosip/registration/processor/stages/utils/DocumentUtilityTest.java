@@ -22,11 +22,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.IdentityJsonValues;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
+
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 
 /**
@@ -44,9 +45,9 @@ public class DocumentUtilityTest {
 	@Mock
 	private InputStream inputStream;
 
-	/** The filesystem ceph adapter impl. */
+	/** The filesystem adapter impl. */
 	@Mock
-	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
+	private FileSystemAdapter filesystemAdapterImpl;
 
 	/** The utility. */
 	@Mock
@@ -113,6 +114,7 @@ public class DocumentUtilityTest {
 		regProcessorIdentityJson.setIdentity(identitydemoinfo);
 		FileInputStream fstream = new FileInputStream("src/test/resources/ID.json");
 		byte[] bytes = IOUtils.toByteArray(fstream);
+		Mockito.when(filesystemAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
 
 		File identityMappingjson = new File(classLoader.getResource("RegistrationProcessorIdentity.json").getFile());
 		InputStream identityMappingjsonStream = new FileInputStream(identityMappingjson);

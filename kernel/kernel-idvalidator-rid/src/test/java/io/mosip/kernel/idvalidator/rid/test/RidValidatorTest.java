@@ -189,18 +189,21 @@ public class RidValidatorTest {
 	@Test(expected = InvalidIDException.class)
 	public void validRidWithInvalidSequenceTest() {
 
-		ridValidatorImpl.validateId(validRid, centerId, machineId, centerIdLength, machineIdLength, sequenceLength, 13);
+		ridValidatorImpl.validateId(validRid, centerId, machineId, centerIdLength, machineIdLength, sequenceLength,
+				timeStampLength - 1);
 	}
 
 	@Test
 	public void validRidWithCustomSequenceTest() {
 
-		ridValidatorImpl.validateId(validCustomSequenceRid, "278476", "573621", 6, 6, 3, timeStampLength);
+		ridValidatorImpl.validateId(validCustomSequenceRid, centerId, machineId, centerIdLength, machineIdLength,
+				sequenceLength, timeStampLength);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void validRidWithInvalidCustomSequenceTest() {
 
-		ridValidatorImpl.validateId(validCustomSequenceRid, "278476", "573621", 6, 6, 2, timeStampLength);
+		ridValidatorImpl.validateId(validCustomSequenceRid, centerId, machineId, centerIdLength, machineIdLength,
+				sequenceLength - 1, timeStampLength);
 	}
 }

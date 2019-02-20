@@ -2,6 +2,8 @@ package io.mosip.kernel.auditmanager.exception;
 
 import java.lang.reflect.Method;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,16 +26,6 @@ public class AuditAsyncExceptionHandler implements AsyncUncaughtExceptionHandler
 	 */
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 
-	/**
-	 * Field for Logger
-	 */
-	private static final Logger ERROR_LOGGER = AuditManagerLogger.getConsoleLogger(AuditAsyncExceptionHandler.class);
-
-	/**
-	 * Field for AUDIT_LOGGER
-	 */
-	private static final Logger AUDIT_LOGGER = AuditManagerLogger.getFileLogger(AuditAsyncExceptionHandler.class);
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -43,13 +35,14 @@ public class AuditAsyncExceptionHandler implements AsyncUncaughtExceptionHandler
 	 */
 	@Override
 	public void handleUncaughtException(final Throwable throwable, final Method method, final Object... obj) {
-		ERROR_LOGGER.error("", "", "", "Exception message - " + throwable.getMessage());
-		ERROR_LOGGER.error("", "", "", "Method name - " + method.getName());
+
+		AuditManagerLogger.consoleLoggerError("", "", "", "Exception message - " + throwable.getMessage());
+		AuditManagerLogger.consoleLoggerError("", "", "", "Method name - " + method.getName());
 		for (final Object param : obj) {
 			try {
-				AUDIT_LOGGER.error("", "", "", MAPPER.writeValueAsString(param));
+				AuditManagerLogger.fileLoggerError("", "", "", MAPPER.writeValueAsString(param));
 			} catch (JsonProcessingException e) {
-				ERROR_LOGGER.error("", "", "", e.getMessage());
+				AuditManagerLogger.consoleLoggerError("", "", "", e.getMessage());
 			}
 		}
 	}

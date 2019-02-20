@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.PacketNotFoundException;
 import io.mosip.registration.processor.manual.verification.exception.FileNotPresentException;
 import io.mosip.registration.processor.manual.verification.exception.InvalidFieldsException;
 import io.mosip.registration.processor.manual.verification.exception.InvalidFileNameException;
 import io.mosip.registration.processor.manual.verification.exception.InvalidUpdateException;
 import io.mosip.registration.processor.manual.verification.exception.NoRecordAssignedException;
+import io.mosip.registration.processor.manual.verification.exception.PacketNotFoundException;
 import io.mosip.registration.processor.status.dto.ExceptionJSONInfo;
-	
+
 /**
  * The Exception Handler class for Manual Verification.
  *
@@ -27,8 +27,10 @@ public class ManualVerificationExceptionHandler {
 	/**
 	 * Method to handle Invalid File Name request Exception.
 	 *
-	 * @param e            {@link InvalidFileNameException}
-	 * @param request            WebRequest
+	 * @param e
+	 *            {@link InvalidFileNameException}
+	 * @param request
+	 *            WebRequest
 	 * @return The built ResponseEntity with error code and error message
 	 */
 	@ExceptionHandler(InvalidFileNameException.class)
@@ -41,8 +43,10 @@ public class ManualVerificationExceptionHandler {
 	/**
 	 * Method to handle PacketNotFoundException.
 	 *
-	 * @param e            {@link PacketNotFoundException}
-	 * @param request            WebRequest
+	 * @param e
+	 *            {@link PacketNotFoundException}
+	 * @param request
+	 *            WebRequest
 	 * @return The built ResponseEntity with error code and error message
 	 */
 	@ExceptionHandler(PacketNotFoundException.class)
@@ -55,27 +59,30 @@ public class ManualVerificationExceptionHandler {
 				fileNotPresentException.getLocalizedMessage());
 		return new ResponseEntity<>(exceptionJSONInfo, HttpStatus.NOT_FOUND);
 	}
-	
+
 	/**
 	 * No record assigned exception handler.
 	 *
-	 * @param e the e
-	 * @param request the request
+	 * @param e
+	 *            the e
+	 * @param request
+	 *            the request
 	 * @return the response entity
 	 */
 	@ExceptionHandler(NoRecordAssignedException.class)
 	public ResponseEntity<ExceptionJSONInfo> noRecordAssignedExceptionHandler(final NoRecordAssignedException e,
 			WebRequest request) {
-		ExceptionJSONInfo exceptionJSONInfo = new ExceptionJSONInfo(e.getErrorCode(),
-				e.getLocalizedMessage());
+		ExceptionJSONInfo exceptionJSONInfo = new ExceptionJSONInfo(e.getErrorCode(), e.getLocalizedMessage());
 		return new ResponseEntity<>(exceptionJSONInfo, HttpStatus.NOT_FOUND);
 	}
-	
+
 	/**
 	 * Invalid update exception.
 	 *
-	 * @param e the e
-	 * @param request the request
+	 * @param e
+	 *            the e
+	 * @param request
+	 *            the request
 	 * @return the response entity
 	 */
 	@ExceptionHandler(InvalidUpdateException.class)
@@ -84,10 +91,9 @@ public class ManualVerificationExceptionHandler {
 		ExceptionJSONInfo exceptionJSONInfo = new ExceptionJSONInfo(e.getErrorCode(), e.getLocalizedMessage());
 		return new ResponseEntity<>(exceptionJSONInfo, HttpStatus.FORBIDDEN);
 	}
-	
+
 	@ExceptionHandler
-	public ResponseEntity<ExceptionJSONInfo> invalidFiledException(final InvalidFieldsException e,
-			WebRequest request) {
+	public ResponseEntity<ExceptionJSONInfo> invalidFiledException(final InvalidFieldsException e, WebRequest request) {
 		ExceptionJSONInfo exceptionJSONInfo = new ExceptionJSONInfo(e.getErrorCode(), e.getLocalizedMessage());
 		return new ResponseEntity<>(exceptionJSONInfo, HttpStatus.FORBIDDEN);
 	}

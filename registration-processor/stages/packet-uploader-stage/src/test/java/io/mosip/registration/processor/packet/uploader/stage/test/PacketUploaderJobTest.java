@@ -4,9 +4,11 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
 import org.junit.Before;
@@ -18,22 +20,24 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.constant.EventId;
 import io.mosip.registration.processor.core.constant.EventName;
 import io.mosip.registration.processor.core.constant.EventType;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
-import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
+import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
-import io.mosip.registration.processor.packet.uploader.exception.DFSNotAccessibleException;
+import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.uploader.stage.PacketUploaderStage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
@@ -62,10 +66,11 @@ public class PacketUploaderJobTest {
 		}
 
 		@Override
-		public void consume(MosipEventBus mosipEventBus, MessageBusAddress fromAddress) {
+		public void consumeAndSend(MosipEventBus mosipEventBus, MessageBusAddress fromAddress,MessageBusAddress toAddress) {
 		}
 	};
-
+	@Mock
+	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 	/** The audit log request builder. */
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
@@ -88,7 +93,7 @@ public class PacketUploaderJobTest {
 
 	/** The adapter. */
 	@Mock
-	private FileSystemAdapter<InputStream, Boolean> adapter;
+	private FileSystemAdapter adapter;
 
 	/** The dto. */
 	MessageDTO dto = new MessageDTO();
@@ -165,7 +170,7 @@ public class PacketUploaderJobTest {
 		packetUploaderStage.process(dto);
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
 				.contains(Tuple.tuple(Level.INFO,
-						"SESSIONID - REGISTRATIONID - 1001 - File is Already exists in DFS location And its now Deleted from Virus scanner job"));
+						"SESSIONID - REGISTRATIONID - 1001 - File is Already exists in File Store And its now Deleted from Virus scanner job"));
 
 	}
 
@@ -206,24 +211,23 @@ public class PacketUploaderJobTest {
 		Mockito.when(adapter.storePacket("1001", file)).thenReturn(Boolean.TRUE);
 		Mockito.when(adapter.isPacketPresent("1001")).thenReturn(Boolean.TRUE);
 		Mockito.doNothing().when(adapter).unpackPacket("1001");
-		
+
 		packetUploaderStage.process(dto);
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-		.contains(
-				Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLEnull"));
+				.contains(Tuple.tuple(Level.ERROR,
+						"SESSIONID - REGISTRATIONID - 1001 - RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLEnull"));
 	}
-	
+
 	@Test
 	public void SystemExceptionTest() throws Exception {
 
 		listAppender.start();
 		fooLogger.addAppender(listAppender);
 		Mockito.doThrow(Exception.class).when(packetArchiver).archivePacket("1001");
-		
+
 		packetUploaderStage.process(dto);
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-		.contains(
-				Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - PACKET_UPLOAD_FAILEDnull"));
+				.contains(Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - PACKET_UPLOAD_FAILEDnull"));
 	}
 
 	@Test
@@ -239,8 +243,7 @@ public class PacketUploaderJobTest {
 		packetUploaderStage.process(dto);
 
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.contains(
-						Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_SYS_IO_EXCEPTIONnull"));
+				.contains(Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_SYS_IO_EXCEPTIONnull"));
 
 	}
 
@@ -266,11 +269,11 @@ public class PacketUploaderJobTest {
 		fooLogger.addAppender(listAppender);
 		Mockito.doNothing().when(packetArchiver).archivePacket(any());
 		Mockito.when(adapter.isPacketPresent("1001")).thenReturn(Boolean.FALSE);
-		Mockito.doThrow(DFSNotAccessibleException.class).when(adapter).storePacket(anyString(), any(InputStream.class));
+		Mockito.doThrow(FSAdapterException.class).when(adapter).storePacket(anyString(), any(InputStream.class));
 		packetUploaderStage.process(dto);
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
 				.contains(Tuple.tuple(Level.ERROR,
-						"SESSIONID - REGISTRATIONID - 1001 - RPR_PIS_FILE_NOT_FOUND_IN_DFSnull"));
+						"SESSIONID - REGISTRATIONID - 1001 - RPR_PUM_PACKET_STORE_NOT_ACCESSIBLEnull"));
 	}
 
 	@Test
@@ -280,8 +283,7 @@ public class PacketUploaderJobTest {
 		Mockito.doThrow(IOException.class).when(packetArchiver).archivePacket(anyString());
 		packetUploaderStage.process(dto);
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.contains(
-						Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_SYS_IO_EXCEPTIONnull"));
+				.contains(Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_SYS_IO_EXCEPTIONnull"));
 	}
 
 }

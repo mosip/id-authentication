@@ -5,6 +5,7 @@ import java.util.Map;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
@@ -19,8 +20,8 @@ public enum NameMatchingStrategy implements TextMatchingStrategy {
 
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
-			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo);
-			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo);
+			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo, (String) props.get("langCode"), (MasterDataFetcher) props.get("titlesFetcher"));
+			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo, (String) props.get("langCode"), (MasterDataFetcher) props.get("titlesFetcher"));
 			return DemoMatcherUtil.doExactMatch(refInfoName, entityInfoName);
 		} else {
 			return throwError(props);
@@ -28,16 +29,16 @@ public enum NameMatchingStrategy implements TextMatchingStrategy {
 
 	}), PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
-			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo);
-			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo);
+			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo, (String) props.get("langCode"), (MasterDataFetcher) props.get("titlesFetcher"));
+			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo, (String) props.get("langCode"), (MasterDataFetcher) props.get("titlesFetcher"));
 			return DemoMatcherUtil.doPartialMatch(refInfoName, entityInfoName);
 		} else {
 			return throwError(props);
 		}
 	}), PHONETICS(MatchingStrategyType.PHONETICS, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
-			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo);
-			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo);
+			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo, (String) props.get("langCode"), (MasterDataFetcher) props.get("titlesFetcher"));
+			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo, (String) props.get("langCode"), (MasterDataFetcher) props.get("titlesFetcher"));
 			String language = (String) props.get("language");
 			return DemoMatcherUtil.doPhoneticsMatch(refInfoName, entityInfoName, language);
 		} else {

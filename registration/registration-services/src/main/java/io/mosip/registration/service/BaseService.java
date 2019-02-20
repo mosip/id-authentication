@@ -12,6 +12,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.DeviceTypes;
@@ -188,7 +189,7 @@ public class BaseService {
 			stationId = userOnboardDAO.getStationID(macAddress);
 		} catch (RegBaseCheckedException baseCheckedException) {
 			LOGGER.error("REGISTRATION_BASE_SERVICE", APPLICATION_NAME, APPLICATION_ID,
-					baseCheckedException.getMessage());
+					baseCheckedException.getMessage() + ExceptionUtils.getStackTrace(baseCheckedException));
 
 		}
 		return stationId;
@@ -217,7 +218,7 @@ public class BaseService {
 				centerId = userOnboardDAO.getCenterID(stationId);
 			} catch (RegBaseCheckedException baseCheckedException) {
 				LOGGER.error("REGISTRATION_BASE_SERVICE", APPLICATION_NAME, APPLICATION_ID,
-						baseCheckedException.getMessage());
+						baseCheckedException.getMessage() + ExceptionUtils.getStackTrace(baseCheckedException));
 
 			}
 		}
