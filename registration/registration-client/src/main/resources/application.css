@@ -239,14 +239,56 @@
   -fx-padding: 0em 0em 0em 0em;
   -fx-page-information-alignment: 10;
 }
-.menu-item .label{
+.menu-item .label {
     -fx-text-fill: #000000;
     -fx-font-size: 14.0px;
+     -fx-background-image: url(images/MenuItems.png);
+     -fx-background-repeat: no-repeat;
+     -fx-background-position: left;
+     -fx-background-size: 20px 20px;
+     -fx-padding: 0.0em 0.0em 0.0em 2.0em;
 }
 
 .separator .line { 
 	-fx-background-color: #C9C9C9;
-	-fx-border-width: 0.1px;
+	-fx-border-width: 0.001px;
+}
+
+.menu-item:focused .label{
+	-fx-background-color: #FF4081;
+    -fx-padding: 0.0em 0.0em 0.0em 2.0em;
+    -fx-background-image: url(images/MenuItemsFocus.png); 
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: left;
+    -fx-background-size: 20px 20px;
+    -fx-text-fill: white;    
+}
+.menu-item:focused {
+     -fx-background: -fx-accent;
+     -fx-background-color: #FF4081;
+}
+.menu-item {
+    -fx-background-color: transparent;
+    -fx-padding: 1.0em 1.0em 1.0em 1.0em;
+}
+#logout .label{
+	-fx-text-fill: #000000;
+    -fx-font-size: 14.0px;
+     -fx-background-image: url(images/logout.png);
+     -fx-background-repeat: no-repeat;
+     -fx-background-position: left;
+     -fx-background-size: 20px 20px;
+     -fx-padding: 0.0em 0.0em 0.0em 2.0em;    
+}
+
+#logout:focused .label{
+	-fx-text-fill: #000000;
+    -fx-font-size: 14.0px;
+     -fx-background-image: url(images/logoutFocus.png);
+     -fx-background-repeat: no-repeat;
+     -fx-background-position: left;
+     -fx-background-size: 20px 20px;
+     -fx-padding: 0.0em 0.0em 0.0em 2.0em;    
 }
 #registrationOfficeLocation{
 	-fx-pref-height: 21.0px;
@@ -289,9 +331,6 @@
 	-fx-border-color: #F4F4F4;
 	-fx-border-width: 1.0 1.0 0.0 1.0;
 	
-}
-#logout{
-	-fx-background-color: #FF4081;
 }
 /* Header Page design Ends Here */
 
