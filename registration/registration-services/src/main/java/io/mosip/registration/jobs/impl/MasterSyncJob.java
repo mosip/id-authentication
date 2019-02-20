@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
@@ -36,8 +37,7 @@ public class MasterSyncJob extends BaseJob {
 	/**
 	 * Execute internal.
 	 *
-	 * @param context
-	 *            the context
+	 * @param context the context
 	 */
 	/*
 	 * (non-Javadoc)
@@ -68,7 +68,8 @@ public class MasterSyncJob extends BaseJob {
 
 		} catch (RegBaseUncheckedException baseUncheckedException) {
 			LOGGER.error(LoggerConstants.MASTER_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, baseUncheckedException.getMessage());
+					RegistrationConstants.APPLICATION_ID,
+					baseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(baseUncheckedException));
 			throw baseUncheckedException;
 		}
 
