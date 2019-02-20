@@ -9,6 +9,7 @@ node {
  projectToBuild = 'registration'
  def registryUrl = 'http://mosip-dev-admin.southindia.cloudapp.azure.com:5000'
  def registryName = 'mosip-dev-admin.southindia.cloudapp.azure.com:5000'
+ def buildInfo1
  def uploadSpec = """{
   "files": [
     {
@@ -50,7 +51,7 @@ node {
 
  stage('---------- mvn-clean-install ---------------') {
   rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -Dspring.cloud.config.label='+branch, buildInfo: buildInfo
-  def buildInfo1 = server.upload spec: uploadSpec
+  buildInfo1 = server.upload spec: uploadSpec
  }
 
  stage('---------- SonarQube Analysis --------------') {
