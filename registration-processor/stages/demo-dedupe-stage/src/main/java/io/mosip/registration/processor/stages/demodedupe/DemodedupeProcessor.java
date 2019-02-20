@@ -37,7 +37,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 @Transactional
 public class DemodedupeProcessor {
 
-	private static Logger regProcLogger = RegProcessorLogger.getLogger(DemodedupeStage.class);
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(DemodedupeProcessor.class);
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";

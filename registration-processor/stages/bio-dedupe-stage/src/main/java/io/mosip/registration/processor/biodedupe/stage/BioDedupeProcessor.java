@@ -46,7 +46,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 public class BioDedupeProcessor {
 
 	/** The reg proc logger. */
-	private static Logger regProcLogger = RegProcessorLogger.getLogger(BioDedupeStage.class);
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(BioDedupeProcessor.class);
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";

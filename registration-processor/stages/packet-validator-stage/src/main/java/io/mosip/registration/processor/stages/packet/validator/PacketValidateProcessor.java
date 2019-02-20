@@ -61,7 +61,7 @@ public class PacketValidateProcessor {
 	public static final String FILE_SEPARATOR = "\\";
 
 	/** The reg proc logger. */
-	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketValidatorStage.class);
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketValidateProcessor.class);
 
 	/** The adapter. */
 	@Autowired
