@@ -255,23 +255,18 @@ public class IdRequestValidator implements Validator {
 		try {
 			if (Objects.nonNull(request)) {
 				Map<String, Object> requestMap = convertToMap(request);
-				if (requestMap.containsKey(DOCUMENTS)) {
-					if (requestMap.containsKey(IDENTITY) && Objects.nonNull(requestMap.get(IDENTITY))) {
-						validateDocuments(requestMap.get(DOCUMENTS), requestMap.get(IDENTITY), errors);
+				if (!(requestMap.containsKey(IDENTITY) && Objects.nonNull(requestMap.get(IDENTITY)))) {
+					if (method.equals(CREATE)) {
+						errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), String
+								.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), IDENTITY));
 					}
+				} else if (((Map) requestMap.get(IDENTITY)).isEmpty()) {
+					errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), IDENTITY));
+				} else {
+					validateDocuments(requestMap, errors);
 					requestMap.remove(DOCUMENTS);
-				}
-				if (!errors.hasErrors()) {
-					if (!(requestMap.containsKey(IDENTITY) && Objects.nonNull(requestMap.get(IDENTITY)))) {
-						if (method.equals(CREATE)) {
-							errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-									String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
-											IDENTITY));
-						}
-					} else if (((Map) requestMap.get(IDENTITY)).isEmpty()) {
-						errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String
-								.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), IDENTITY));
-					} else {
+					if (!errors.hasErrors()) {
 						jsonValidator.validateJson(mapper.writeValueAsString(requestMap),
 								env.getProperty(JSON_SCHEMA_FILE_NAME));
 					}
@@ -317,29 +312,36 @@ public class IdRequestValidator implements Validator {
 	 *            the errors
 	 */
 	@SuppressWarnings("unchecked")
-	private void validateDocuments(Object documents, Object identity, Errors errors) {
-		Map<String, Object> identityMap;
+	private void validateDocuments(Map<String, Object> requestMap, Errors errors) {
 		try {
-			identityMap = convertToMap(identity);
-			if (Objects.nonNull(documents) && documents instanceof List
-					&& !((List<Map<String, String>>) documents).isEmpty()) {
-				((List<Map<String, String>>) documents).parallelStream()
-						.filter(doc -> doc.containsKey(DOC_CAT) && Objects.nonNull(doc.get(DOC_CAT))).forEach(doc -> {
-							if (!identityMap.containsKey(doc.get(DOC_CAT))) {
-								mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
-										(VALIDATE_REQUEST + "- validateDocuments failed for " + doc.get(DOC_CAT)));
-								errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-										String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-												"Documents - " + doc.get(DOC_CAT)));
-							}
-							if (StringUtils.isEmpty(doc.get("value"))) {
-								mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
-										(VALIDATE_REQUEST + "- empty doc value failed for " + doc.get(DOC_CAT)));
-								errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-										String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-												"Documents - " + doc.get(DOC_CAT)));
-							}
-						});
+			if (requestMap.containsKey(DOCUMENTS) && requestMap.containsKey(IDENTITY)
+					&& Objects.nonNull(requestMap.get(IDENTITY))) {
+				Map<String, Object> identityMap = convertToMap(requestMap.get(IDENTITY));
+				if (Objects.nonNull(requestMap.get(DOCUMENTS)) && requestMap.get(DOCUMENTS) instanceof List
+						&& !((List<Map<String, String>>) requestMap.get(DOCUMENTS)).isEmpty()) {
+					((List<Map<String, String>>) requestMap.get(DOCUMENTS)).parallelStream()
+							.filter(doc -> doc.containsKey(DOC_CAT) && Objects.nonNull(doc.get(DOC_CAT)))
+							.forEach(doc -> {
+								if (!identityMap.containsKey(doc.get(DOC_CAT))) {
+									mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
+											(VALIDATE_REQUEST + "- validateDocuments failed for " + doc.get(DOC_CAT)));
+									errors.rejectValue(REQUEST,
+											IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+											String.format(
+													IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+													"Documents - " + doc.get(DOC_CAT)));
+								}
+								if (StringUtils.isEmpty(doc.get("value"))) {
+									mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
+											(VALIDATE_REQUEST + "- empty doc value failed for " + doc.get(DOC_CAT)));
+									errors.rejectValue(REQUEST,
+											IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+											String.format(
+													IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+													"Documents - " + doc.get(DOC_CAT)));
+								}
+							});
+				}
 			}
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,

@@ -158,24 +158,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
 		IdResponseDTO response = new IdResponseDTO();
 
-		Throwable e = ex;
-		while (e != null) {
-			if (e instanceof IdRepoAppException && Objects.nonNull(((IdRepoAppException) e).getId())) {
-				response.setId(((IdRepoAppException) e).getId());
-			} else if (e instanceof IdRepoAppUncheckedException
-					&& Objects.nonNull(((IdRepoAppUncheckedException) e).getId())) {
-				response.setId(((IdRepoAppUncheckedException) e).getId());
-			} else {
-				break;
-			}
-
-			if (Objects.nonNull(e.getCause()) && (e.getCause() instanceof IdRepoAppException
-					|| e.getCause() instanceof IdRepoAppUncheckedException)) {
-				e = e.getCause();
-			} else {
-				break;
-			}
-		}
+		Throwable e = getRootCause(ex, response);
 
 		if (Objects.isNull(response.getId())) {
 			response.setId("mosip.id.error");
@@ -211,5 +194,27 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 				SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response")));
 
 		return response;
+	}
+
+	private Throwable getRootCause(Exception ex, IdResponseDTO response) {
+		Throwable e = ex;
+		while (e != null) {
+			if (e instanceof IdRepoAppException && Objects.nonNull(((IdRepoAppException) e).getId())) {
+				response.setId(((IdRepoAppException) e).getId());
+			} else if (e instanceof IdRepoAppUncheckedException
+					&& Objects.nonNull(((IdRepoAppUncheckedException) e).getId())) {
+				response.setId(((IdRepoAppUncheckedException) e).getId());
+			} else {
+				break;
+			}
+
+			if (Objects.nonNull(e.getCause()) && (e.getCause() instanceof IdRepoAppException
+					|| e.getCause() instanceof IdRepoAppUncheckedException)) {
+				e = e.getCause();
+			} else {
+				break;
+			}
+		}
+		return e;
 	}
 }
