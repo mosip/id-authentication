@@ -56,7 +56,7 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 		}
 		try {
 			registrationCenters = registrationCenterHistoryRepository
-					.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+					.findByIdAndLangCodeAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 							registrationCenterId, langCode, localDateTime);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(

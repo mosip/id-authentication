@@ -165,8 +165,8 @@ public class RegistrationCenterController {
 	 */
 	@GetMapping("/v1.0/registrationcenters/validate/{id}/{langCode}/{timestamp}")
 	public ResgistrationCenterStatusResponseDto validateTimestamp(@PathVariable("id") String regId,
-			@PathVariable("timestamp") String timeStamp) {
-		return registrationCenterService.validateTimeStampWithRegistrationCenter(regId, timeStamp);
+			@PathVariable("langCode") String langCode, @PathVariable("timestamp") String timeStamp) {
+		return registrationCenterService.validateTimeStampWithRegistrationCenter(regId, langCode, timeStamp);
 
 	}
 

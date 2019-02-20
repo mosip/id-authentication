@@ -131,7 +131,7 @@ public interface RegistrationCenterService {
 	 *            - Time stamp based on the format YYYY-MM-ddTHH:mm:ss.SSSZ
 	 * @return ResgistrationCenterStatusResponseDto
 	 */
-	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String timeStamp);
+	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String langCode, String timeStamp);
 
 	/**
 	 * This method deletes the registration center.
