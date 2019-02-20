@@ -279,7 +279,7 @@ public class DataProvider {
 						.with(identity -> identity.setPostalCode("605110"))
 						.with(identity -> identity.setPhone("8889992233"))
 						.with(identity -> identity.setEmail("john.lawerence@gmail.com"))
-						.with(identity -> identity.setCnieNumber(new BigInteger("123456789012")))
+						.with(identity -> identity.setCnieNumber("123456789012"))
 						.with(identity -> identity.setLocalAdministrativeAuthority((List<ValuesDTO>)Builder.build(LinkedList.class)
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(platformLanguageCode))

@@ -77,6 +77,9 @@ public enum ApiName {
 	REGISTRATIONCENTERDEVICEHISTORY,
 
     /** The registration center timestamp **/
-	REGISTRATIONCENTERTIMESTAMP
+	REGISTRATIONCENTERTIMESTAMP,
+	
+	 /** The registration connector**/
+	REGISTRATIONCONNECTOR
 
 }

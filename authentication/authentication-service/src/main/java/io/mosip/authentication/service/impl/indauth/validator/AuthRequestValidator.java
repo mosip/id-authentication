@@ -7,17 +7,16 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.service.helper.DateHelper;
+import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * 
@@ -66,10 +65,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(AuthRequestValidator.class);
-
-	/** The date helper. */
-	@Autowired
-	private DateHelper dateHelper;
 
 	/*
 	 * (non-Javadoc)
@@ -148,7 +143,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 */
 	private void validateRequestTimedOut(String reqTime, Errors errors) {
 		try {
-			Instant reqTimeInstance = dateHelper.convertStringToDate(reqTime).toInstant();
+			Instant reqTimeInstance = DateUtils.parseToDate(reqTime,env.getProperty("datetime.pattern")).toInstant();
 			Instant now = Instant.now();
 			mosipLogger.debug(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
@@ -167,7 +162,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 						new Object[] { env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Integer.class) },
 						IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorMessage());
 			}
-		} catch (DateTimeParseException | IDDataValidationException e) {
+		} catch (DateTimeParseException | ParseException | java.text.ParseException e) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 					INVALID_INPUT_PARAMETER + REQ_TIME);
 			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),

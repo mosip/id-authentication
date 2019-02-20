@@ -1,6 +1,7 @@
 package io.mosip.authentication.service.integration;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -53,15 +54,14 @@ public class OTPManager {
 
 	private static Logger logger = IdaLogger.getLogger(OTPManager.class);
 
-	private OTPValidateResponseDTO otpvalidateresponsedto;
-
 	/**
-	 * Generate OTP with information of
-	 * {@link MediaType } and OTP generation time-out
+	 * Generate OTP with information of {@link MediaType } and OTP generation
+	 * time-out
 	 *
 	 * @param otpKey the otp key
 	 * @return String(otp)
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	public String generateOTP(String otpKey) throws IdAuthenticationBusinessException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
@@ -107,33 +107,36 @@ public class OTPManager {
 	 * Validate method for OTP Validation.
 	 *
 	 * @param pinValue the pin value
-	 * @param otpKey the otp key
+	 * @param otpKey   the otp key
 	 * @return true, if successful
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	public boolean validateOtp(String pinValue, String otpKey) throws IdAuthenticationBusinessException {
 		boolean isValidOtp = false;
 		try {
 			RestRequestDTO restreqdto = restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE,
-					null, OTPValidateResponseDTO.class);
+					null, Map.class);
 			MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 			params.add("key", otpKey);
 			params.add("otp", pinValue);
 			restreqdto.setParams(params);
-			otpvalidateresponsedto = restHelper.requestSync(restreqdto);
-			isValidOtp = Optional.ofNullable(otpvalidateresponsedto).map(OTPValidateResponseDTO::getStatus)
+			Map<String,Object> otpvalidateresponsedto = restHelper.requestSync(restreqdto);
+			isValidOtp = Optional.ofNullable(otpvalidateresponsedto)
+					.filter(res -> res.containsKey("status"))
+					.map(res -> String.valueOf(res.get("status")))
 					.filter(status -> status.equalsIgnoreCase(STATUS_SUCCESS)).isPresent();
 		} catch (RestServiceException e) {
 			logger.error("NA", "NA", e.getErrorCode() + e.getErrorText(), e.getResponseBodyAsString().orElse(""));
 
 			Optional<Object> responseBody = e.getResponseBody();
 			if (responseBody.isPresent()) {
-				otpvalidateresponsedto = (OTPValidateResponseDTO) responseBody.get();
-				String status = otpvalidateresponsedto.getStatus();
-				String message = otpvalidateresponsedto.getMessage();
-				if (status != null) {
-					if (status.equalsIgnoreCase(STATUS_FAILURE)) {
-						throwOtpException(message);
+				Map<String,Object> res = (Map<String,Object>) responseBody.get();
+				Object status = res.get("status");
+				Object message =(String) res.get("message");
+				if (status instanceof String && message instanceof String) {
+					if (((String)status).equalsIgnoreCase(STATUS_FAILURE)) {
+						throwOtpException((String) message);
 					}
 				} else {
 					throwKeyNotFound(e);
@@ -151,9 +154,8 @@ public class OTPManager {
 		Optional<String> errorCode = e.getResponseBodyAsString().flatMap(this::getErrorCode);
 		// Do not throw server error for OTP not generated, throw invalid OTP error
 		// instead
-		if (errorCode
-				.filter(code -> code.equals(
-						IdAuthenticationErrorConstants.VAL_KEY_NOT_FOUND_OTP_NOT_GENERATED.getErrorCode()))
+		if (errorCode.filter(
+				code -> code.equals(IdAuthenticationErrorConstants.VAL_KEY_NOT_FOUND_OTP_NOT_GENERATED.getErrorCode()))
 				.isPresent()) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
 		}
@@ -162,8 +164,7 @@ public class OTPManager {
 
 	private void throwOtpException(String message) throws IdAuthenticationBusinessException {
 		if (message.equalsIgnoreCase(USER_BLOCKED)) {
-			throw new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.BLOCKED_OTP_TO_VALIDATE);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BLOCKED_OTP_TO_VALIDATE);
 		} else if (message.equalsIgnoreCase(OTP_EXPIRED)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
 		} else if (message.equalsIgnoreCase(VALIDATION_UNSUCCESSFUL)) {

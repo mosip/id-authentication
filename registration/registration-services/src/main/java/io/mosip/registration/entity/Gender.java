@@ -1,87 +1,68 @@
 package io.mosip.registration.entity;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 @Entity
-@Table(schema = "master", name = "gender")
-public class Gender extends MasterCommonFields {
-	@EmbeddedId
-	private GenericId genericId;
+@Table(schema = "reg", name = "gender")
+@IdClass(CodeAndLanguageCodeID.class)
+public class Gender extends RegistrationCommonFields {
+	private static final long serialVersionUID = 1323022736883315822L;
+
+	@Id
+	@Column(name = "code")
+	private String code;
+
 	@Column(name = "name")
-	private String name;
+	private String genderName;
+
+	@Id
+	@Column(name = "lang_code")
+	private String langCode;
 
 	/**
-	 * @return the genericId
+	 * @return the code
 	 */
-	public GenericId getGenericId() {
-		return genericId;
-	}
-
-	/**
-	 * @param genericId
-	 *            the genericId to set
-	 */
-	public void setGenericId(GenericId genericId) {
-		this.genericId = genericId;
+	public String getCode() {
+		return code;
 	}
 
 	/**
-	 * @return the name
+	 * @param code the code to set
 	 */
-	public String getName() {
-		return name;
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	/**
-	 * @param name
-	 *            the name to set
+	 * @return the genderName
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public String getGenderName() {
+		return genderName;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
+	/**
+	 * @param genderName the genderName to set
 	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((genericId == null) ? 0 : genericId.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
+	public void setGenderName(String genderName) {
+		this.genderName = genderName;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/**
+	 * @return the langCode
 	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Gender other = (Gender) obj;
-		if (genericId == null) {
-			if (other.genericId != null)
-				return false;
-		} else if (!genericId.equals(other.genericId))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		return true;
+	public String getLangCode() {
+		return langCode;
+	}
+
+	/**
+	 * @param langCode the langCode to set
+	 */
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
 	}
 
 }

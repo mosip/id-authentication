@@ -1,0 +1,14 @@
+{
+	"roles": [
+		"SUPERVISOR",
+		"OFFICER"
+	],
+	"userIds" : [
+		"mosip",
+		"sravya",
+		"karthik"
+	],
+	"regCenterIds":[
+		"20916"
+	]
+}
