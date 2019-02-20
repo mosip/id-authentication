@@ -77,7 +77,6 @@ public class MasterDataManagerTest {
 	public void before() {
 		ReflectionTestUtils.setField(masterDataManager, "environment", environment);
 		ReflectionTestUtils.setField(masterDataManager, "restHelper", restHelper);
-		ReflectionTestUtils.setField(masterDataManager, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(masterDataManager, "restFactory", restFactory);
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.setField(restHelper, "mapper", mapper);
@@ -146,8 +145,8 @@ public class MasterDataManagerTest {
 		masterDataManager.fetchTitles();
 	}
 	
-	private Map<String, List<Map<String, String>>> getGender() throws JsonParseException, JsonMappingException, IOException{
-		Map<String, List<Map<String, String>>> readValue = mapper.readValue("{\r\n" + 
+	private Map<String, List<Map<String, Object>>> getGender() throws JsonParseException, JsonMappingException, IOException{
+		Map<String, List<Map<String, Object>>> readValue = mapper.readValue("{\r\n" + 
 				"  \"genderType\": [\r\n" + 
 				"    {\r\n" + 
 				"      \"code\": \"MLE\",\r\n" + 
@@ -186,7 +185,7 @@ public class MasterDataManagerTest {
 				"      \"isActive\": true\r\n" + 
 				"    }\r\n" + 
 				"  ]\r\n" + 
-				"}", new TypeReference<Map<String, List<Map<String, String>>>>() {
+				"}", new TypeReference<Map<String, List<Map<String, Object>>>>() {
 				});
 		
 		return readValue;
