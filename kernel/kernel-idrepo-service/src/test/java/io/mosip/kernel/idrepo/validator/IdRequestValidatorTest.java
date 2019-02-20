@@ -3,6 +3,7 @@ package io.mosip.kernel.idrepo.validator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -32,8 +33,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
@@ -301,8 +304,12 @@ public class IdRequestValidatorTest {
 	@Test
 	public void testValidateRequestWithDocumentsInvalidIdentity() throws JsonParseException, JsonMappingException,
 			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
-		ReflectionTestUtils.invokeMethod(validator, "validateDocuments", null,
-				"{\"identity\":{},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}",
+		ObjectMapper mockMapper = mock(ObjectMapper.class);
+		when(mockMapper.writeValueAsBytes(Mockito.any())).thenThrow(new UnrecognizedPropertyException(null, "", null, null, "", null));
+		ReflectionTestUtils.setField(validator, "mapper", mockMapper);
+		ReflectionTestUtils.invokeMethod(validator, "validateDocuments",
+				mapper.readValue("{\"identity\":{},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}".getBytes(),
+						Map.class),
 				errors);
 		assertTrue(errors.hasErrors());
 	}
