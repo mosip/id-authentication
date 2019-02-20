@@ -62,7 +62,7 @@ node {
  }
 
  stage('----------- Publish build info -------------') {
-  buildInfo.append buildInfo1
+  //buildInfo.append buildInfo1
   server.publishBuildInfo buildInfo
  }
 
