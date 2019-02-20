@@ -111,6 +111,9 @@ public class TemplateGeneratorTest {
 		
 		Map<String,Object> applicationMap =new HashMap<>();
 		applicationMap.put(RegistrationConstants.FINGERPRINT_DISABLE_FLAG, RegistrationConstants.ENABLE);
+		applicationMap.put(RegistrationConstants.IRIS_DISABLE_FLAG, RegistrationConstants.ENABLE);
+		applicationMap.put(RegistrationConstants.DOCUMENT_DISABLE_FLAG, RegistrationConstants.ENABLE);
+		applicationMap.put(RegistrationConstants.FACE_DISABLE_FLAG, RegistrationConstants.ENABLE);
 		
 		when(ApplicationContext.applicationLanguage()).thenReturn("eng");
 		when(ApplicationContext.localLanguage()).thenReturn("ar");
@@ -119,7 +122,7 @@ public class TemplateGeneratorTest {
 		when(ApplicationContext.map()).thenReturn(applicationMap);
 
 		ResponseDTO response = templateGenerator.generateTemplate("sample text", registrationDTO, template, RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
-		assertNull(response.getSuccessResponseDTO());
+		assertNotNull(response.getSuccessResponseDTO());
 	}
 
 	@Test
