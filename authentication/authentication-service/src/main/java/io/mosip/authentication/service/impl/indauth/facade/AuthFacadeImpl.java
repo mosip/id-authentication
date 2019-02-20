@@ -234,7 +234,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			AuthStatusInfo pinValidationStatus;
 			try {
 
-				pinValidationStatus = pinAuthService.authenticate(authRequestDTO, uin,Collections.emptyMap());
+				pinValidationStatus = pinAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap());
 				authStatusList.add(pinValidationStatus);
 				statusInfo = pinValidationStatus;
 			} finally {
@@ -268,7 +268,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			AuthStatusInfo bioValidationStatus;
 			try {
 
-				bioValidationStatus = bioAuthService.authenticate(authRequestDTO, uin,idInfo);
+				bioValidationStatus = bioAuthService.authenticate(authRequestDTO, uin, idInfo);
 				authStatusList.add(bioValidationStatus);
 				statusInfo = bioValidationStatus;
 			} finally {
@@ -276,7 +276,8 @@ public class AuthFacadeImpl implements AuthFacade {
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
 
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "BioMetric Authentication status :" + statusInfo);
-				saveAndAuditBioAuthTxn(authRequestDTO, isAuth, authRequestDTO.getIdvId(), idType, isStatus, staticTokenId);
+				saveAndAuditBioAuthTxn(authRequestDTO, isAuth, authRequestDTO.getIdvId(), idType, isStatus,
+						staticTokenId);
 
 			}
 		}
@@ -334,14 +335,11 @@ public class AuthFacadeImpl implements AuthFacade {
 	private void processOTPAuth(AuthRequestDTO authRequestDTO, String uin, boolean isAuth,
 			List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId)
 			throws IdAuthenticationBusinessException {
-
-		String idvIdType = authRequestDTO.getIdvIdType();
 		AuthStatusInfo statusInfo = null;
 		if (authRequestDTO.getAuthType().isOtp()) {
 			AuthStatusInfo otpValidationStatus;
 			try {
-
-				otpValidationStatus = otpService.authenticate(authRequestDTO, uin,Collections.emptyMap());
+				otpValidationStatus = otpService.authenticate(authRequestDTO, uin, Collections.emptyMap());
 				authStatusList.add(otpValidationStatus);
 				statusInfo = otpValidationStatus;
 			} finally {
