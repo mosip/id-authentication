@@ -1,21 +1,19 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>io.mosip.kernel</groupId>
-    <artifactId>kernel-parent</artifactId>
-    <version>0.8.8</version>
-  </parent>
-
-  <artifactId>kernel-fsadapter-ceph</artifactId>
-
-  <name>kernel-fsadapter-ceph</name>
-  <url>http://maven.apache.org</url>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-  	<dependencyManagement>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>io.mosip.kernel</groupId>
+		<artifactId>kernel-parent</artifactId>
+		<version>0.8.8</version>
+	</parent>
+	<artifactId>kernel-fsadapter-ceph</artifactId>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>org.mockito</groupId>
@@ -25,9 +23,9 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-  <dependencies>
+	<dependencies>
 
-    <dependency>
+		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk</artifactId>
 			<version>${aws.javasdk.version}</version>
@@ -52,10 +50,10 @@
 		<dependency>
 			<groupId>io.findify</groupId>
 			<artifactId>s3mock_2.12</artifactId>
-			<version>0.2.4</version>
+			<version>${s3mock.version}</version>
 			<scope>test</scope>
 		</dependency>
-			<dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 			<version>${spring.boot.version}</version>
@@ -77,13 +75,13 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-				<groupId>com.h2database</groupId>
-				<artifactId>h2</artifactId>
-				<version>1.4.195</version>
-			</dependency>
-  </dependencies>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>${h2.version}</version>
+		</dependency>
+	</dependencies>
 
-  <build>
+	<build>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
