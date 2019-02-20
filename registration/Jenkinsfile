@@ -11,7 +11,7 @@ node {
  def registryName = 'mosip-dev-admin.southindia.cloudapp.azure.com:5000'
  def buildInfo1
  def pom
- def version	 
+ def version = '0.8.0'	 
  def uploadSpec = """{
   "files": [
     {
