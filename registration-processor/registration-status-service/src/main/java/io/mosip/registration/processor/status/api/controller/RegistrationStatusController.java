@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -65,10 +66,14 @@ public class RegistrationStatusController {
 	RegistrationStatusRequestValidator registrationStatusRequestValidator;
 
 	
-	private static final String REG_STATUS_SERVICE_ID = "mosip.registration.status";
-	private static final String REG_STATUS_APPLICATION_VERSION = "1.0";
-	private static final String DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-	Gson gson = new GsonBuilder().serializeNulls().create();
+
+	private static final String REG_STATUS_SERVICE_ID = "mosip.registration.processor.registration.status.id";
+	private static final String REG_STATUS_APPLICATION_VERSION = "mosip.registration.processor.application.version";
+	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
+	@Autowired
+	private Environment env;
+	
+Gson gson = new GsonBuilder().serializeNulls().create();
 
 	/**
 	 * Search.
@@ -85,7 +90,7 @@ public class RegistrationStatusController {
 	public ResponseEntity<RegStatusResponseDTO> search(@RequestParam(name = "request", required = true) String jsonRequest) throws RegStatusAppException {
 		try {
 			RegistrationStatusRequestDTO registrationStatusRequestDTO =gson.fromJson(jsonRequest, RegistrationStatusRequestDTO.class);
-			registrationStatusRequestValidator.validate(registrationStatusRequestDTO,REG_STATUS_SERVICE_ID);
+			registrationStatusRequestValidator.validate(registrationStatusRequestDTO,env.getProperty(REG_STATUS_SERVICE_ID));
 			List<RegistrationStatusDto> registrations = registrationStatusService.getByIds(registrationStatusRequestDTO.getRequest());
 			return ResponseEntity.status(HttpStatus.OK).body(buildRegistrationStatusResponse(registrations));
 		} catch (RegStatusValidationException e) {
@@ -99,11 +104,11 @@ public class RegistrationStatusController {
 
 		RegStatusResponseDTO response = new RegStatusResponseDTO();
 		if (Objects.isNull(response.getId())) {
-			response.setId(REG_STATUS_SERVICE_ID);
+			response.setId(env.getProperty(REG_STATUS_SERVICE_ID));
 		}
 		response.setError(null);
-		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(DATETIME_PATTERN));
-		response.setVersion(REG_STATUS_APPLICATION_VERSION);
+		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		response.setVersion(env.getProperty(REG_STATUS_APPLICATION_VERSION));
 		response.setResponse(registrations);
 		response.setError(null);
 		return response;

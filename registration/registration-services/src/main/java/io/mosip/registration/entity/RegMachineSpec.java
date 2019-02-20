@@ -1,98 +1,178 @@
 package io.mosip.registration.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * 
- * @author Brahmananda Reddy
- *
+ * @author Sreekar chukka
+ * @since 1.0.0
  */
 @Entity
 @Table(name = "machine_spec", schema = "reg")
-public class RegMachineSpec extends RegistrationCommonFields {
+public class RegMachineSpec extends RegistrationCommonFields implements Serializable {
+
+	/**
+	* 
+	*/
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@Column(name = "id")
 	private String id;
+
 	@Column(name = "name")
 	private String name;
+
 	@Column(name = "brand")
 	private String brand;
+
 	@Column(name = "model")
 	private String model;
+
 	@Column(name = "mtyp_code")
-	private String mtypeCode;
+	private String machineTypeCode;
+
 	@Column(name = "min_driver_ver")
-	private String minDriverVersion;
+	private String minDriverversion;
+
 	@Column(name = "descr")
 	private String description;
-	@Column(name = "lang_code")
-	private String languageCode;
 
+	@Column(name = "lang_code")
+	private String langCode;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumns({
+			@JoinColumn(name = "mtyp_code", referencedColumnName = "code", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	private MachineType machineType;
+
+	/**
+	 * @return the id
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * @param id the id to set
+	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
+	/**
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @param name the name to set
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * @return the brand
+	 */
 	public String getBrand() {
 		return brand;
 	}
 
+	/**
+	 * @param brand the brand to set
+	 */
 	public void setBrand(String brand) {
 		this.brand = brand;
 	}
 
+	/**
+	 * @return the model
+	 */
 	public String getModel() {
 		return model;
 	}
 
+	/**
+	 * @param model the model to set
+	 */
 	public void setModel(String model) {
 		this.model = model;
 	}
 
-	public String getMtypeCode() {
-		return mtypeCode;
+	/**
+	 * @return the machineTypeCode
+	 */
+	public String getMachineTypeCode() {
+		return machineTypeCode;
 	}
 
-	public void setMtypeCode(String mtypeCode) {
-		this.mtypeCode = mtypeCode;
+	/**
+	 * @param machineTypeCode the machineTypeCode to set
+	 */
+	public void setMachineTypeCode(String machineTypeCode) {
+		this.machineTypeCode = machineTypeCode;
 	}
 
-	public String getMinDriverVersion() {
-		return minDriverVersion;
+	/**
+	 * @return the minDriverversion
+	 */
+	public String getMinDriverversion() {
+		return minDriverversion;
 	}
 
-	public void setMinDriverVersion(String minDriverVersion) {
-		this.minDriverVersion = minDriverVersion;
+	/**
+	 * @param minDriverversion the minDriverversion to set
+	 */
+	public void setMinDriverversion(String minDriverversion) {
+		this.minDriverversion = minDriverversion;
 	}
 
+	/**
+	 * @return the description
+	 */
 	public String getDescription() {
 		return description;
 	}
 
+	/**
+	 * @param description the description to set
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
-	public String getLanguageCode() {
-		return languageCode;
+	/**
+	 * @return the langCode
+	 */
+	public String getLangCode() {
+		return langCode;
 	}
 
-	public void setLanguageCode(String languageCode) {
-		this.languageCode = languageCode;
+	/**
+	 * @param langCode the langCode to set
+	 */
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
+	}
+
+	public MachineType getMachineType() {
+		return machineType;
+	}
+
+	public void setMachineType(MachineType machineType) {
+		this.machineType = machineType;
 	}
 
 }

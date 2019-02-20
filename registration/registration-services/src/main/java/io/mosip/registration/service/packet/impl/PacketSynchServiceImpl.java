@@ -40,12 +40,6 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 	@Value("${PACKET_SYNC_URL}")
 	private String syncUrlPath;
 
-	@Value("${UPLOAD_API_READ_TIMEOUT}")
-	private int syncReadTimeout;
-
-	@Value("${UPLOAD_API_WRITE_TIMEOUT}")
-	private int syncConnectTimeout;
-
 	private static final Logger LOGGER = AppConfig.getLogger(PacketSynchServiceImpl.class);
 
 	/*

@@ -9,25 +9,14 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.format.datetime.joda.DateTimeFormatterFactory;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.packet.dto.BaseRequestResponseDTO;
 import io.mosip.registration.processor.manual.verification.exception.ManualVerificationAppException;
 import io.mosip.registration.processor.manual.verification.exception.ManualVerificationValidationException;
-import io.mosip.registration.processor.manual.verification.request.dto.ManualAppBiometricRequestDTO;
-import io.mosip.registration.processor.manual.verification.request.dto.ManualAppDemographicRequestDTO;
-import io.mosip.registration.processor.manual.verification.request.dto.ManualVerificationAssignmentRequestDTO;
-import io.mosip.registration.processor.manual.verification.request.dto.ManualVerificationDecisionRequestDTO;
-import io.mosip.registration.processor.status.dto.RegistrationStatusRequestDTO;
-import io.mosip.registration.processor.status.dto.RegistrationSyncRequestDTO;
 import io.vertx.core.json.JsonObject;
-import scala.util.control.Exception;
 
 /**
  * The Class ManualVerificationRequestValidator.
@@ -43,22 +32,16 @@ public class ManualVerificationRequestValidator{
 	private static final Pattern verPattern = Pattern.compile("^[0-9](\\.\\d{1,1})?$");
 
 	/** The Constant DATETIME_TIMEZONE. */
-	private static final String DATETIME_TIMEZONE = "mosip.kernel.idrepo.datetime.timezone";
+	private static final String DATETIME_TIMEZONE = "mosip.registration.processor.timezone";
 
 	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "mosip.kernel.idrepo.datetime.pattern";
+	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 
 	/** The mosip logger. */
 	Logger mosipLogger = RegProcessorLogger.getLogger(ManualVerificationRequestValidator.class);
 
 	/** The Constant ID_REPO_SERVICE. */
 	private static final String MAN_VERI_SERVICE = "ManualVerificationService";
-
-	/** The Constant TIMESTAMP. */
-	private static final String TIMESTAMP = "timestamp";
-
-	/** The Constant ID_FIELD. */
-	private static final String ID_FIELD = "id";
 
 	/** The env. */
 	@Autowired
@@ -76,7 +59,7 @@ public class ManualVerificationRequestValidator{
 	 * @param serviceId the service id
 	 * @throws ManualVerificationAppException the manual verification app exception
 	 */
-	public void validate(JsonObject obj,String serviceId) throws ManualVerificationAppException{
+	public void validate(JsonObject obj,String serviceId){
 		id.put("manual", serviceId);
 		validateId(obj.getString("id"));
 		validateVersion(obj.getString("version"));
@@ -93,7 +76,7 @@ public class ManualVerificationRequestValidator{
 	 * @param id            the id
 	 * @throws ManualVerificationAppException the manual verification app exception
 	 */
-	private void validateId(String id) throws ManualVerificationAppException {
+	private void validateId(String id) {
 		ManualVerificationValidationException exception = new ManualVerificationValidationException();
 		
 		if (Objects.isNull(id)) {
@@ -112,7 +95,7 @@ public class ManualVerificationRequestValidator{
 	 * @param ver            the ver
 	 * @throws ManualVerificationAppException the manual verification app exception
 	 */
-	private void validateVersion(String ver) throws ManualVerificationAppException {
+	private void validateVersion(String ver){
 		ManualVerificationValidationException exception = new ManualVerificationValidationException();
 		
 		if (Objects.isNull(ver)) {
@@ -131,7 +114,7 @@ public class ManualVerificationRequestValidator{
 	 * @param timestamp            the timestamp
 	 * @throws ManualVerificationAppException the manual verification app exception
 	 */
-	private void validateReqTime(String timestamp) throws ManualVerificationAppException {
+	private void validateReqTime(String timestamp){
 		ManualVerificationValidationException exception = new ManualVerificationValidationException();
 		
 		if (Objects.isNull(timestamp)) {

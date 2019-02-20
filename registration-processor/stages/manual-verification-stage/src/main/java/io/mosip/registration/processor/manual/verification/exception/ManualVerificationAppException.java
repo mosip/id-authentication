@@ -1,13 +1,13 @@
 package io.mosip.registration.processor.manual.verification.exception;
 
-import io.mosip.kernel.core.exception.BaseCheckedException;
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
  * The Class ManualVerificationAppException.
  * @author Rishabh Keshari
  */
-public class ManualVerificationAppException extends BaseCheckedException {
+public class ManualVerificationAppException extends BaseUncheckedException {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6748760277721155095L;

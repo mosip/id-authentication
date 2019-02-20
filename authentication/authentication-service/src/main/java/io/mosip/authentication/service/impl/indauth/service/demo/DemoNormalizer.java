@@ -1,5 +1,13 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
+
 /**
  * Generic class to normalize individual name, address.
  *
@@ -26,13 +34,27 @@ public final class DemoNormalizer {
 
 	}
 
-	public static String normalizeName(String name) {
-
-		name = name.replaceAll(REGEX_SALUTATION, "")
-					.replaceAll(REGEX_SPECIAL_CHARACTERS, "")
-					.replaceAll(REGEX_WHITE_SPACE, " ")
-					.trim();
-
+	public static String normalizeName(String nameInfo, String language, MasterDataFetcher titleFetcher) throws IdAuthenticationBusinessException {
+		Map<String, List<String>> fetchTitles = titleFetcher.get();
+		
+		String name = nameInfo;
+		List<String> titlesList = fetchTitles.get(language);
+		if (null != titlesList) {
+			Collections.sort(titlesList, Comparator.comparing(String::length).reversed());
+			for (String title : titlesList) {
+				String title1 = title + ".";
+				if (name.toLowerCase().contains(title1.toLowerCase())) {
+					name = name.replace(title1, "").replace(title1.toLowerCase(), "").replace(title1.toUpperCase(), "");
+				}
+				
+				if (name.toLowerCase().contains(title.toLowerCase())) {
+					name = name.replace(title, "").replace(title.toLowerCase(), "").replace(title.toUpperCase(), "");
+				}
+			} 
+		}
+		name = name.replaceAll(REGEX_SPECIAL_CHARACTERS, "")
+				.replaceAll(REGEX_WHITE_SPACE, " ")
+				.trim();
 		return name;
 	}
 

@@ -108,26 +108,27 @@ public class DemographicServiceUtil {
 		log.info("sessionId", "idType", "id", "In prepareDemographicEntity method of pre-registration service util");
 		DemographicEntity demographicEntity = new DemographicEntity();
 		demographicEntity.setPreRegistrationId(demographicRequest.getPreRegistrationId());
-		demographicEntity.setGroupId("1234567890");
 		LocalDateTime encryptionDateTime = DateUtils.getUTCCurrentDateTime();
 		byte[] encryptedDemographicDetails = cryptoUtil
 				.encrypt(demographicRequest.getDemographicDetails().toJSONString().getBytes(), encryptionDateTime);
 		demographicEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		demographicEntity.setLangCode(demographicRequest.getLangCode());
 		demographicEntity.setCrAppuserId(requestId);
+		demographicEntity.setCreatedBy(demographicRequest.getCreatedBy());
+		demographicEntity.setCreateDateTime(DateUtils
+				.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
+		demographicEntity.setStatusCode(statuscode);
+		demographicEntity.setDemogDetailHash("");
 		try {
 			if (entityType.equals(RequestCodes.SAVE.getCode())) {
 				if (!isNull(demographicRequest.getCreatedBy()) && !isNull(demographicRequest.getCreatedDateTime())
 						&& isNull(demographicRequest.getUpdatedBy()) && isNull(demographicEntity.getUpdateDateTime())) {
-					demographicEntity.setCreatedBy(demographicRequest.getCreatedBy());
-					demographicEntity.setCreateDateTime(DateUtils
-							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
-					demographicEntity.setStatusCode(statuscode);
+					
 					demographicEntity.setUpdatedBy(null);
 					demographicEntity.setUpdateDateTime(DateUtils
 							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
 					demographicEntity.setEncryptedDateTime(encryptionDateTime);
-					demographicEntity.setConsumed(Boolean.FALSE);
+					
 				} else {
 					throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_APP_012.toString(),
 							ErrorMessages.MISSING_REQUEST_PARAMETER.toString());
@@ -136,15 +137,12 @@ public class DemographicServiceUtil {
 				if (!isNull(demographicRequest.getCreatedBy()) && !isNull(demographicRequest.getCreatedDateTime())
 						&& !isNull(demographicRequest.getUpdatedBy())
 						&& !isNull(demographicRequest.getUpdatedDateTime())) {
-					demographicEntity.setCreatedBy(demographicRequest.getCreatedBy());
-					demographicEntity.setCreateDateTime(DateUtils
-							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
-					demographicEntity.setStatusCode(statuscode);
 					demographicEntity.setUpdatedBy(demographicRequest.getUpdatedBy());
 					demographicEntity.setUpdateDateTime(DateUtils
 							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getUpdatedDateTime())));
 					demographicEntity.setEncryptedDateTime(encryptionDateTime);
-					demographicEntity.setConsumed(Boolean.FALSE);
+					
+					
 				} else {
 					throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_APP_012.toString(),
 							ErrorMessages.MISSING_REQUEST_PARAMETER.toString());
@@ -255,10 +253,10 @@ public class DemographicServiceUtil {
 		log.info("sessionId", "idType", "id", "In dateSetter method of pre-registration service util ");
 		Map<String, LocalDateTime> localDateTimeMap = new HashMap<>();
 		try {
-
+			  
 			Date fromDate = DateUtils
 					.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.FROM_DATE.getCode()), "UTF-8"), format);
-
+          
 			Date toDate;
 			if (dateMap.get(RequestCodes.TO_DATE.getCode()) == null
 					|| isNull(dateMap.get(RequestCodes.TO_DATE.getCode()))) {

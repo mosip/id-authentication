@@ -1,20 +1,17 @@
 package io.mosip.registration.processor.packet.receiver.global.handler;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
-import org.mockito.Mockito;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.Mock;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
@@ -22,16 +19,11 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import io.mosip.kernel.core.exception.BaseCheckedException;
-import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.core.idvalidator.spi.RidValidator;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
-import io.mosip.registration.processor.packet.receiver.dto.ErrorDTO;
 import io.mosip.registration.processor.packet.receiver.dto.PacketReceiverResponseDTO;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
 import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedException;
@@ -41,10 +33,6 @@ import io.mosip.registration.processor.packet.receiver.exception.ValidationExcep
 import io.mosip.registration.processor.packet.receiver.exception.handler.PacketReceiverExceptionHandler;
 import io.mosip.registration.processor.packet.receiver.exception.systemexception.TimeoutException;
 import io.mosip.registration.processor.packet.receiver.exception.systemexception.UnexpectedException;
-import io.mosip.registration.processor.packet.receiver.request.response.serializer.PacketReceiverReqRespJsonSerializer;
-import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
-import io.mosip.registration.processor.status.dto.RegistrationStatusRequestDTO;
-import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 
 
@@ -55,17 +43,16 @@ public class ExceptionHandlerTest {
 	@InjectMocks
 	PacketReceiverExceptionHandler packetReceiverExceptionHandler;
 
+	@Mock
+	private Environment env;
 
 
 
-
-	/** The array to json. */
-	private String arrayToJson;
 
 	PacketReceiverResponseDTO packetReceiverResponseDTO = new PacketReceiverResponseDTO();
 
 	ErrorDTO errorDTO=new ErrorDTO("","");
-	Gson gson = new GsonBuilder().serializeNulls().registerTypeAdapter(PacketReceiverResponseDTO.class, new PacketReceiverReqRespJsonSerializer()).create();
+	Gson gson = new GsonBuilder().serializeNulls().create();
 
 	/**
 	 * Sets the up.
@@ -73,7 +60,12 @@ public class ExceptionHandlerTest {
 	 */
 	@Before
 	public void setUp() throws JsonProcessingException {
-
+		when(env.getProperty("mosip.registration.processor.packet.id")).thenReturn("mosip.registration.packet");
+		when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		when(env.getProperty("mosip.registration.processor.application.version")).thenReturn("1.0");
+		
+		
+		
 		packetReceiverResponseDTO = new PacketReceiverResponseDTO();
 		if (Objects.isNull(packetReceiverResponseDTO.getId())) {
 			packetReceiverResponseDTO.setId("mosip.registration.packet");

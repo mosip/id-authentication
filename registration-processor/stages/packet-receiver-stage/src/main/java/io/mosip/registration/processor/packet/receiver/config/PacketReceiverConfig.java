@@ -18,6 +18,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.packet.receiver.builder.PacketReceiverResponseBuilder;
 import io.mosip.registration.processor.packet.receiver.exception.handler.PacketReceiverExceptionHandler;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiverServiceImpl;
@@ -104,5 +105,9 @@ public class PacketReceiverConfig {
 	public PacketReceiverExceptionHandler getGlobalExceptionHandler() {
 		return new PacketReceiverExceptionHandler();
 	}
-
+	
+	@Bean
+	public PacketReceiverResponseBuilder getPacketReceiverResponseBuilder() {
+		return new PacketReceiverResponseBuilder();
+	}
 }

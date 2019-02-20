@@ -7,6 +7,7 @@ export class IdentityModel {
     public dateOfBirth: string,
     public gender: AttributeModel[],
     public addressLine1: AttributeModel[],
+    public residenceStatus: AttributeModel[],
     public addressLine2: AttributeModel[],
     public addressLine3: AttributeModel[],
     public region: AttributeModel[],
@@ -16,6 +17,6 @@ export class IdentityModel {
     public postalCode: string,
     public phone: string,
     public email: string,
-    public CNIENumber: BigInteger
+    public CNIENumber: string
   ) {}
 }

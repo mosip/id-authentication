@@ -52,4 +52,34 @@ public class RegCenterDeviceId implements Serializable {
 		this.deviceId = deviceId;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((deviceId == null) ? 0 : deviceId.hashCode());
+		result = prime * result + ((regCenterId == null) ? 0 : regCenterId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RegCenterDeviceId other = (RegCenterDeviceId) obj;
+		if (deviceId == null) {
+			if (other.deviceId != null)
+				return false;
+		} else if (!deviceId.equals(other.deviceId))
+			return false;
+		if (regCenterId == null) {
+			if (other.regCenterId != null)
+				return false;
+		} else if (!regCenterId.equals(other.regCenterId))
+			return false;
+		return true;
+	}
 }

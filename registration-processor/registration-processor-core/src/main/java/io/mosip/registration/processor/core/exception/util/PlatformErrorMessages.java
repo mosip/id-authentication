@@ -300,6 +300,12 @@ public enum PlatformErrorMessages {
 
 	RPR_MVS_INVALID_INPUT_PARAMETER_ID(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "010", "Invalid Input Parameter - id"),
 
+	RPR_MVS_INVALID_ARGUMENT_EXCEPTION(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "011", "Invalid Argument Exception"),
+
+	RPR_MVS_UNKNOWN_EXCEPTION(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "012", "Unknown Exception"),
+
+	RPR_MVS_DECODE_EXCEPTION(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "013", "Request Decoding Exception"),
+
 	/** The rpr tem not found. */
 	// Registration processor Message sender Exception error code
 	RPR_TEM_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001", "Template was Not Found"),
@@ -411,12 +417,17 @@ public enum PlatformErrorMessages {
 	/** The rpr sys io exception. */
 	RPR_SYS_IO_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "012", "IO EXCEPTION "),
 
+	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),
+
+
+
 	RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_VALIDATOR_MODULE + "001",
 			"The Packet store set by the System is not accessible"),
 
 	RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_UIN_GENERATOR_STAGE + "001",
 			"The Packet store set by the System is not accessible");
-	;
+
+
 
 	/** The error message. */
 	private final String errorMessage;

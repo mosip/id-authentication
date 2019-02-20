@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
@@ -59,11 +60,14 @@ public class RegistrationSyncController {
 	public void initBinder(WebDataBinder binder) {
 		binder.addValidators(validator);
 	}
+	@Autowired
+	private Environment env;
+	
 
-	private static final String REG_SYNC_SERVICE_ID = "mosip.registration.sync";
-	private static final String REG_SYNC_APPLICATION_VERSION = "1.0";
-	private static final String DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-
+	private static final String REG_SYNC_SERVICE_ID = "mosip.registration.processor.registration.sync.id";
+	private static final String REG_SYNC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
+	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
+	
 	
 	/**
 	 * Sync registration ids.
@@ -93,11 +97,11 @@ public class RegistrationSyncController {
 
 		RegSyncResponseDTO response = new RegSyncResponseDTO();
 		if (Objects.isNull(response.getId())) {
-			response.setId(REG_SYNC_SERVICE_ID);
+			response.setId(env.getProperty(REG_SYNC_SERVICE_ID));
 		}
 		response.setError(null);
-		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(DATETIME_PATTERN));
-		response.setVersion(REG_SYNC_APPLICATION_VERSION);
+		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		response.setVersion(env.getProperty(REG_SYNC_APPLICATION_VERSION));
 		response.setResponse(syncResponseDtoList);
 		response.setError(null);
 		return response;

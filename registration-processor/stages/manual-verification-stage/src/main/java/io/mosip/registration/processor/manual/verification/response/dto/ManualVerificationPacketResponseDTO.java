@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.manual.verification.response.dto;
 
-import io.mosip.registration.processor.core.packet.dto.BaseRequestResponseDTO;
+import io.mosip.registration.processor.core.common.rest.dto.BaseRestResponseDTO;
+import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,12 +17,14 @@ import lombok.EqualsAndHashCode;
  * @see io.mosip.registration.processor.core.packet.dto.BaseRequestResponseDTO#hashCode()
  */
 @EqualsAndHashCode(callSuper = true)
-public class ManualVerificationPacketResponseDTO extends BaseRequestResponseDTO {
-	
+public class ManualVerificationPacketResponseDTO extends BaseRestResponseDTO {
+
+	private static final long serialVersionUID = -1848465072707393124L;
+
 	/** The response. */
 	private PacketMetaInfo response;
 	
 	/** The error. */
-	private ManualVerificationErrorDTO error;
+	private ErrorDTO error;
 	
 }

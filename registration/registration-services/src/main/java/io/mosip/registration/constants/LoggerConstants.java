@@ -26,7 +26,17 @@ public class LoggerConstants {
 	private static final String MASTER_SYNC = APP_NAME + "MASTER_SYNC - ";
 	private static final String UIN_UPDATE = APP_NAME + "UIN_UPDATE - ";
 	private static final String USER_ONBOARD = APP_NAME + "USER_ONBOARD - ";
+	private static final String PKT_SCAN = APP_NAME + "PACKET_SCAN - ";
 	private static final String SYNC = APP_NAME + "SYNC - ";
+	private static final String OTP = APP_NAME + "OTP";
+	private static final String PKT_HANDLER= APP_NAME + "PACKET_HANDLER - ";
+	private static final String HEADER= APP_NAME + "HEADER - ";
+	private static final String HOME= APP_NAME + "HOME - ";
+	private static final String BASE= APP_NAME + "BASE - ";
+	private static final String LOGIN= APP_NAME + "LOGIN - ";
+	private static final String PGE_FLW= APP_NAME + "PAGE_FLOW - ";
+	
+	
 
 	// Session IDs' for logging
 	public static final String LOG_PKT_HANLDER = PKT_CREATION + "PACKET_HANDLER";
@@ -65,11 +75,17 @@ public class LoggerConstants {
 	public static final String LOG_REG_FACE_FACADE = USER_REGISTRATION + "FACE_FACADE";
 	public static final String LOG_REG_USER_ONBOARD = USER_ONBOARD + "USER_ONBOARD_IMLP";
 	public static final String OPT_TO_REG_LOGGER_SESSION_ID = SYNC + "SYNC_STATUS_VALIDATOR_SERVICE_IMPL";
+	public static final String LOG_REG_HEADER = HEADER + "HEADER_CONTROLLER";
+	public static final String LOG_REG_HOME = HOME + "HOME_CONTROLLER";
+	public static final String LOG_REG_BASE = BASE + "BASE_CONTROLLER";
+	public static final String LOG_REG_LOGIN = LOGIN + "LOGIN_CONTROLLER";
+	public static final String LOG_REG_PAGE_FLOW = PGE_FLW + "PAGE_FLOW";
 
 	// USER ONBOARD
 	public static final String LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD = USER_ONBOARD
 			+ "FINGERPRINT_CAPTURE_CONTROLLER";
 	public static final String LOG_REG_IRIS_CAPTURE_USER_ONBOARD = USER_ONBOARD + "IRIS_CAPTURE_CONTROLLER";
+	public static final String LOG_REG_PARENT_USER_ONBOARD = USER_ONBOARD + "USER_ONBOARD_PARENT_CONTROLLER";
 
 	public static final String BASE_JOB_TITLE = SYNC + "Base_Job";
 	public static final String BATCH_JOBS_PROCESS_LOGGER_TITLE = SYNC + "Job_Process_Listener";
@@ -88,6 +104,9 @@ public class LoggerConstants {
 	public static final String DELETE_AUDIT_LOGS_JOB = SYNC + "Delete_Audit_Logs_Job";
 	public static final String KEY_POLICY_SYNC_JOB_TITLE =SYNC+"key_policy_synch_Job";
 	public static final String REG_PACKET_SYNC_STATUS_JOB = SYNC + "Packet_Sync Status_Job";
+	public static final String PACKET_HANDLER = PKT_HANDLER + "Packet_Handler_Controller";
+	public static final String OTP_MANAGER_LOGGER_TITLE = OTP + "OTP_MANAGER";
+	public static final String REG_PACKET_VIRUS_SCAN = PKT_SCAN + "Registration_packet virus_scan_job";
 
 
 }

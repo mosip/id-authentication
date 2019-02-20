@@ -25,7 +25,6 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.core.dto.spinstore.PinRequestDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinIdentityDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
-import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
@@ -49,10 +48,6 @@ public class StaticPinRequestValidatorTest {
 	
 	@InjectMocks
 	IdInfoHelper idinfoHelper;
-	
-	@InjectMocks
-	DateHelper dateHelper;
-
 	@Mock
 	UinValidatorImpl uinValidator;
 

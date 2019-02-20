@@ -14,9 +14,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
-
-import io.mosip.registration.processor.manual.verification.exception.handler.ManualAssignDecisionExceptionHandler;
-import io.mosip.registration.processor.manual.verification.exception.handler.ManualBioDemoExceptionHandler;
+import io.mosip.registration.processor.manual.verification.exception.handler.ManualVerificationExceptionHandler;
+import io.mosip.registration.processor.manual.verification.response.builder.ManualVerificationResponseBuilder;
 import io.mosip.registration.processor.manual.verification.service.ManualVerificationService;
 import io.mosip.registration.processor.manual.verification.service.impl.ManualVerificationServiceImpl;
 import io.mosip.registration.processor.manual.verification.stage.ManualVerificationStage;
@@ -39,13 +38,15 @@ public class ManualVerificationConfigBean {
 	ManualVerificationRequestValidator getManualVerificationRequestValidator() {
 		return new ManualVerificationRequestValidator();
 	}
+	
 	@Bean
-	ManualBioDemoExceptionHandler getManualBioDemoExceptionHandler() {
-		return new ManualBioDemoExceptionHandler();
+	ManualVerificationExceptionHandler getManualVerificationExceptionHandler() {
+		return new ManualVerificationExceptionHandler();
 	}
+	
 	@Bean
-	ManualAssignDecisionExceptionHandler getManualAssignDecisionExceptionHandler() {
-		return new ManualAssignDecisionExceptionHandler();
+	ManualVerificationResponseBuilder getManualVerificationResponseBuilder() {
+		return new ManualVerificationResponseBuilder();
 	}
 	
 	

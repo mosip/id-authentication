@@ -137,7 +137,7 @@ public class RegistrationStatusRequestValidator{
 						throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER_TIMESTAMP,exception);
 							}
 
-				}
+				} 
 			} catch (IllegalArgumentException e) {
 				mosipLogger.error(REG_STATUS_SERVICE, "IdRequestValidator", "validateReqTime",
 						"\n" + ExceptionUtils.getStackTrace(e));

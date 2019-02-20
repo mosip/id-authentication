@@ -3,14 +3,14 @@ package io.mosip.registration.dao;
 import java.util.List;
 
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
+import io.mosip.registration.entity.BlacklistedWords;
+import io.mosip.registration.entity.DocumentType;
+import io.mosip.registration.entity.Gender;
+import io.mosip.registration.entity.Location;
+import io.mosip.registration.entity.ReasonCategory;
+import io.mosip.registration.entity.ReasonList;
 import io.mosip.registration.entity.SyncControl;
-import io.mosip.registration.entity.mastersync.MasterBlacklistedWords;
-import io.mosip.registration.entity.mastersync.MasterDocumentType;
-import io.mosip.registration.entity.mastersync.MasterGender;
-import io.mosip.registration.entity.mastersync.MasterLocation;
-import io.mosip.registration.entity.mastersync.MasterReasonCategory;
-import io.mosip.registration.entity.mastersync.MasterReasonList;
-import io.mosip.registration.entity.mastersync.MasterValidDocument;
+import io.mosip.registration.entity.ValidDocument;
 
 /**
  * The Interface MasterSyncDao.
@@ -43,7 +43,7 @@ public interface MasterSyncDao {
 	 * @param langCode      the lang code
 	 * @return the list
 	 */
-	List<MasterLocation> findLocationByLangCode(String hierarchyCode, String langCode);
+	List<Location> findLocationByLangCode(String hierarchyCode, String langCode);
 
 	/**
 	 * Find location by parent loc code.
@@ -52,14 +52,14 @@ public interface MasterSyncDao {
 	 * @param langCode the lang code
 	 * @return the list
 	 */
-	List<MasterLocation> findLocationByParentLocCode(String parentLocCode,String langCode);
+	List<Location> findLocationByParentLocCode(String parentLocCode,String langCode);
 
 	/**
 	 * Gets the all reason catogery.
 	 *
 	 * @return the all reason catogery
 	 */
-	List<MasterReasonCategory> getAllReasonCatogery();
+	List<ReasonCategory> getAllReasonCatogery(String langCode);
 
 	/**
 	 * Gets the reason list.
@@ -67,7 +67,7 @@ public interface MasterSyncDao {
 	 * @param reasonCat the reason cat
 	 * @return the reason list
 	 */
-	List<MasterReasonList> getReasonList(String langCode, List<String> reasonCat);
+	List<ReasonList> getReasonList(String langCode, List<String> reasonCat);
 	
 	/**
 	 * Gets the black listed words.
@@ -75,7 +75,7 @@ public interface MasterSyncDao {
 	 * @param langCode the lang code
 	 * @return the black listed words
 	 */
-	List<MasterBlacklistedWords> getBlackListedWords(String langCode);
+	List<BlacklistedWords> getBlackListedWords(String langCode);
 	
 	/**
 	 * Gets the Document Categories.
@@ -84,7 +84,7 @@ public interface MasterSyncDao {
 	 * @param langCode the lang code
 	 * @return the document categories
 	 */
-	List<MasterDocumentType> getDocumentTypes(List<String> docCode,String langCode);
+	List<DocumentType> getDocumentTypes(List<String> docCode,String langCode);
 	
 	/**
 	 * Gets the gender dtls.
@@ -92,7 +92,7 @@ public interface MasterSyncDao {
 	 * @param langCode the lang code
 	 * @return the gender dtls
 	 */
-	List<MasterGender> getGenderDtls(String langCode);
+	List<Gender> getGenderDtls(String langCode);
 	
 	/**
 	 * Gets the valid documets.
@@ -100,6 +100,6 @@ public interface MasterSyncDao {
 	 * @param langCode the lang code
 	 * @return the valid documets
 	 */
-	List<MasterValidDocument> getValidDocumets(String docCategoryCode,String langCode);
+	List<ValidDocument> getValidDocumets(String docCategoryCode,String langCode);
 
 }

@@ -7,8 +7,7 @@ import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
-import io.mosip.registration.dto.mastersync.MasterReasonListDto;
-import io.mosip.registration.entity.mastersync.MasterDocumentType;
+import io.mosip.registration.dto.mastersync.ReasonListDto;
 
 /**
  * Interface to sync master data from server to client
@@ -51,7 +50,7 @@ public interface MasterSyncService {
 	 * @param langCode the lang code
 	 * @return the all reasons
 	 */
-	List<MasterReasonListDto> getAllReasonsList(String langCode);
+	List<ReasonListDto> getAllReasonsList(String langCode);
 	
 	/**
 	 * Gets the all black listed words.

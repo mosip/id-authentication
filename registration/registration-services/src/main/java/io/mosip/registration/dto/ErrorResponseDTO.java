@@ -2,6 +2,8 @@ package io.mosip.registration.dto;
 
 import java.util.Map;
 
+import lombok.Data;
+@Data
 public class ErrorResponseDTO{
 
 	private String code;

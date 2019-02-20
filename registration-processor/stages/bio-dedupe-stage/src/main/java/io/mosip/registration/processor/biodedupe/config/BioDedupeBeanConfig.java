@@ -16,6 +16,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
 import io.mosip.registration.processor.bio.dedupe.service.impl.BioDedupeServiceImpl;
+import io.mosip.registration.processor.biodedupe.stage.BioDedupeProcessor;
 import io.mosip.registration.processor.biodedupe.stage.BioDedupeStage;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 
@@ -23,7 +24,8 @@ import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 @Configuration
 public class BioDedupeBeanConfig {
 	@Bean
-	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env) throws IOException {
+	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env)
+			throws IOException {
 
 		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 		PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
@@ -36,7 +38,7 @@ public class BioDedupeBeanConfig {
 					+ "/" + applicationNames.get(i) + "-" + env.getProperty("spring.profiles.active") + ".properties";
 			appResources[i] = resolver.getResources(loc)[0];
 			((AbstractEnvironment) env).getPropertySources()
-            .addLast(new ResourcePropertySource(applicationNames.get(i), loc));
+					.addLast(new ResourcePropertySource(applicationNames.get(i), loc));
 		}
 		pspc.setLocations(appResources);
 		return pspc;
@@ -47,15 +49,20 @@ public class BioDedupeBeanConfig {
 		String names = env.getProperty("spring.application.name");
 		return Stream.of(names.split(",")).collect(Collectors.toList());
 	}
-	
+
 	@Bean
 	public BioDedupeService getBioDedupeService() {
 		return new BioDedupeServiceImpl();
 	}
-	
-	@Bean 
+
+	@Bean
 	public BioDedupeStage getBioDedupeStage() {
 		return new BioDedupeStage();
+	}
+
+	@Bean
+	public BioDedupeProcessor getBioDedupeProcessor() {
+		return new BioDedupeProcessor();
 	}
 
 }

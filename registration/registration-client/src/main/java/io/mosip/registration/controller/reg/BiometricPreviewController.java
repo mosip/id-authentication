@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -26,7 +27,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import javafx.stage.Screen;
 
 /**
  * This controller class is to handle the preview screen of the Biometric
@@ -140,7 +140,6 @@ public class BiometricPreviewController extends BaseController {
 	private void initialize() {
 		LOGGER.info("BIOMETRIC_PREVIEW_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Entering the BIOMETRIC_PREVIEW_CONTROLLER");
-		bioScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight());
 		RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.map()
 				.get(RegistrationConstants.REGISTRATION_DATA);
 
@@ -315,6 +314,6 @@ public class BiometricPreviewController extends BaseController {
 	}
 
 	private String getValueFromSessionMap(String key) {
-		return (String) applicationContext.getApplicationMap().get(key);
+		return (String) ApplicationContext.map().get(key);
 	}
 }

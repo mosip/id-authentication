@@ -69,5 +69,7 @@ public interface IdInfoFetcher {
 			String string) throws IdAuthenticationBusinessException;
 
 	public Environment getEnvironment();
+	
+	public MasterDataFetcher getTitleFetcher();
 
 }

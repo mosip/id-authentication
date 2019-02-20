@@ -103,10 +103,7 @@ public class JsonValidatorImpl implements JsonValidator {
 		}
 		// getting a JsonSchema node from json schema Name provided.
 		jsonSchemaNode = getJsonSchemaNode(schemaName);
-		if (jsonSchemaNode == null) {
-			throw new NullJsonSchemaException(JsonValidatorErrorConstant.NULL_JSON_SCHEMA_EXCEPTION.getErrorCode(),
-					JsonValidatorErrorConstant.NULL_JSON_SCHEMA_EXCEPTION.getMessage());
-		}
+
 		final JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
 		try {
 			final JsonSchema jsonSchema = factory.getJsonSchema(jsonSchemaNode);
@@ -160,7 +157,7 @@ public class JsonValidatorImpl implements JsonValidator {
 			try {
 				// creating a JsonSchema node against which the JSON object will be validated.
 				jsonSchemaNode = JsonLoader.fromURL(new URL(configServerFileStorageURL + schemaName));
-			} catch (IOException e) {
+			} catch (Exception e) {
 				throw new JsonSchemaIOException(JsonValidatorErrorConstant.JSON_SCHEMA_IO_EXCEPTION.getErrorCode(),
 						JsonValidatorErrorConstant.JSON_SCHEMA_IO_EXCEPTION.getMessage(), e.getCause());
 			}

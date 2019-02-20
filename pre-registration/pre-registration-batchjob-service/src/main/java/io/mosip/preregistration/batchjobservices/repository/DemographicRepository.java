@@ -5,14 +5,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.preregistration.batchjobservices.entity.ApplicantDemographic;
+import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
 
 /**
  * @author M1043008
  *
  */
 @Repository("demographicRepository")
-public interface DemographicRepository extends BaseRepository<ApplicantDemographic, String> {
+public interface DemographicRepository extends BaseRepository<DemographicEntity, String> {
 
-	ApplicantDemographic findBypreRegistrationId(@Param(value = "preRegId") String preRegId);
+	DemographicEntity findBypreRegistrationId(@Param(value = "preRegId") String preRegId);
 }

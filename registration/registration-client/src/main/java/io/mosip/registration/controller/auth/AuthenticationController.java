@@ -5,21 +5,26 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.PacketHandlerController;
+import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.Validations;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.device.fp.MosipFingerprintProvider;
@@ -73,12 +78,12 @@ public class AuthenticationController extends BaseController implements Initiali
 	private AnchorPane irisBasedLogin;
 	@FXML
 	private AnchorPane faceBasedLogin;
-	@FXML
+	/*@FXML
 	private AnchorPane errorPane;
 	@FXML
 	private Label errorLabel;
 	@FXML
-	private Label errorText;
+	private Label errorText;*/
 	@FXML
 	private Label otpValidity;
 	@FXML
@@ -126,6 +131,9 @@ public class AuthenticationController extends BaseController implements Initiali
 
 	@Autowired
 	private PacketHandlerController packetHandlerController;
+	
+	@Autowired
+	private RegistrationController registrationController;
 
 	@Autowired
 	private AuthenticationService authService;
@@ -147,6 +155,11 @@ public class AuthenticationController extends BaseController implements Initiali
 	private boolean isEODAuthentication = false;
 
 	private List<String> userAuthenticationTypeList;
+	
+	private List<String> userAuthenticationTypeListValidation;
+
+	private List<String> userAuthenticationTypeListSupervisorValidation;
+
 
 	private int authCount = 0;
 
@@ -372,7 +385,12 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading configured modes of authentication");
 
-		userAuthenticationTypeList = loginService.getModesOfLogin(authType, RegistrationConstants.getRoles());
+		Set<String> roleSet = new HashSet<>();
+		roleSet.add("*");
+
+		userAuthenticationTypeList = loginService.getModesOfLogin(authType, roleSet);
+		userAuthenticationTypeListValidation =  loginService.getModesOfLogin(authType, roleSet);
+		userAuthenticationTypeListSupervisorValidation=loginService.getModesOfLogin(authType, roleSet);
 
 		if (userAuthenticationTypeList.isEmpty()) {
 			isSupervisor = false;
@@ -418,7 +436,9 @@ public class AuthenticationController extends BaseController implements Initiali
 				}
 			} else {
 				if (!isSupervisor) {
-					if (toogleBioException != null && toogleBioException.booleanValue()) {
+					
+					/* Check whether the biometric exceptions are enabled and supervisor authentication is required */
+					if ((toogleBioException != null && toogleBioException.booleanValue()) && isSupervisorAuthenticationRequired()) {
 						authCount = 0;
 						isSupervisor = true;
 						getAuthenticationModes(ProcessNames.EXCEPTION.getType());
@@ -434,9 +454,9 @@ public class AuthenticationController extends BaseController implements Initiali
 					}
 				}
 			}
-		} catch (RegBaseCheckedException e) {
+		} catch (RegBaseCheckedException exception) {
 			LOGGER.error("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
-					"No of Authentication modes is empty");
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 		}
 	}
 
@@ -485,12 +505,12 @@ public class AuthenticationController extends BaseController implements Initiali
 		fingerprintBasedLogin.setVisible(false);
 		faceBasedLogin.setVisible(false);
 		irisBasedLogin.setVisible(false);
-		errorPane.setVisible(true);
+		/*errorPane.setVisible(true);
 		errorText.setText(RegistrationUIConstants.DISABLE_FINGERPRINT_SCREEN);
 		errorText.setWrapText(true);
 		if (isSupervisor) {
 			errorLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
-		}
+		}*/
 	}
 
 	/**
@@ -500,7 +520,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling OTP based Authentication Screen in UI");
 
-		errorPane.setVisible(false);
+		//errorPane.setVisible(false);
 		pwdBasedLogin.setVisible(false);
 		otpBasedLogin.setVisible(true);
 		fingerprintBasedLogin.setVisible(false);
@@ -530,7 +550,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Password based Authentication Screen in UI");
 
-		errorPane.setVisible(false);
+		//errorPane.setVisible(false);
 		pwdBasedLogin.setVisible(true);
 		otpBasedLogin.setVisible(false);
 		fingerprintBasedLogin.setVisible(false);
@@ -558,7 +578,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Fingerprint based Authentication Screen in UI");
 
-		errorPane.setVisible(false);
+		//errorPane.setVisible(false);
 		fingerprintBasedLogin.setVisible(true);
 		faceBasedLogin.setVisible(false);
 		irisBasedLogin.setVisible(false);
@@ -585,7 +605,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Iris based Authentication Screen in UI");
 
-		errorPane.setVisible(false);
+		//errorPane.setVisible(false);
 		irisBasedLogin.setVisible(true);
 		fingerprintBasedLogin.setVisible(false);
 		otpBasedLogin.setVisible(false);
@@ -611,7 +631,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Face based Authentication Screen in UI");
 
-		errorPane.setVisible(false);
+		//errorPane.setVisible(false);
 		faceBasedLogin.setVisible(true);
 		irisBasedLogin.setVisible(false);
 		fingerprintBasedLogin.setVisible(false);
@@ -842,6 +862,50 @@ public class AuthenticationController extends BaseController implements Initiali
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		otpValidity.setText("Valid for " + otpValidityInMins + " minutes");
+	}
+	
+	public void goToPreviousPage() {
+		registrationController.showCurrentPage(RegistrationConstants.OPERATOR_AUTHENTICATION, getPageDetails(RegistrationConstants.OPERATOR_AUTHENTICATION,RegistrationConstants.PREVIOUS));
+	}
+	
+	public void goToNextPage() {
+		if(userAuthenticationTypeListValidation.isEmpty()) {
+			userAuthenticationTypeListValidation=userAuthenticationTypeListSupervisorValidation;
+		}
+	
+		switch (userAuthenticationTypeListValidation.get(0)) {
+		case RegistrationConstants.OTP:
+			validateOTP();
+			userAuthenticationTypeListValidation.remove(0);
+			break;
+		case RegistrationConstants.PWORD:
+			validatePwd();
+			userAuthenticationTypeListValidation.remove(0);
+			break;
+		case RegistrationConstants.BIO:
+			validateFingerprint();
+			break;
+		case RegistrationConstants.IRIS:
+			validateIris();
+			userAuthenticationTypeListValidation.remove(0);
+			break;
+		case RegistrationConstants.FACE:
+			validateFace();
+			userAuthenticationTypeListValidation.remove(0);
+			break;
+		default:
+			
+		}
+
+	}
+	
+	private boolean isSupervisorAuthenticationRequired() {
+		
+		/* Get Value from global_param_config */
+		String val = (String) (ApplicationContext.getInstance().getApplicationMap().get(RegistrationUIConstants.SUPERVISOR_AUTHENTICATION_CONFIGURATION));
+
+		/* Whether supervisor authentication required or not */
+		return "Y".equalsIgnoreCase(val);
 	}
 
 }

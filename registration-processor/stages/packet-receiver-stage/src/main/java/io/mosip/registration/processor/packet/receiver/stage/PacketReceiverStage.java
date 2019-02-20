@@ -2,36 +2,20 @@ package io.mosip.registration.processor.packet.receiver.stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import io.mosip.kernel.core.exception.BaseCheckedException;
-import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.registration.processor.packet.receiver.builder.PacketReceiverResponseBuilder;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
-import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.packet.manager.exception.systemexception.UnexpectedException;
-import io.mosip.registration.processor.packet.receiver.dto.ErrorDTO;
-import io.mosip.registration.processor.packet.receiver.dto.PacketReceiverResponseDTO;
-import io.mosip.registration.processor.packet.receiver.dto.ResponseDTO;
 import io.mosip.registration.processor.packet.receiver.exception.handler.PacketReceiverExceptionHandler;
-import io.mosip.registration.processor.packet.receiver.request.response.serializer.PacketReceiverReqRespJsonSerializer;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.vertx.ext.web.FileUpload;
@@ -49,43 +33,39 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketReceiverStage.class);
 	
-	/**
-	 * vertx Cluster Manager Url
-	 */
+	/** vertx Cluster Manager Url. */
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
 
-	/**
-	 * server port number
-	 */
+	/** server port number. */
 	@Value("${server.port}")
 	private String port;
 
-	/**
-	 * The Packet Receiver Service
-	 */
+	/** The Packet Receiver Service. */
 	@Autowired
 	public PacketReceiverService<File, MessageDTO> packetReceiverService;
 
-	/**
-	 * Exception handler
-	 */
+	/** Exception handler. */
 	@Autowired
 	public PacketReceiverExceptionHandler globalExceptionHandler;
 	
+	/** The packet receiver response builder. */
+	@Autowired
+	PacketReceiverResponseBuilder packetReceiverResponseBuilder;
 	/**
 	 * The mosip event bus.
 	 */
 	private MosipEventBus mosipEventBus;
 
 	/**
-	 * deploys this verticle
+	 * deploys this verticle.
 	 */
 	public void deployVerticle() {
 		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 
 	}
 	
+	/** The Constant APPLICATION_JSON. */
 	private static final String APPLICATION_JSON = "application/json";
 
 	/*
@@ -103,9 +83,9 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	}
 
 	/**
-	 * contains all the routes in the stage
-	 * 
-	 * @param router
+	 * contains all the routes in the stage.
+	 *
+	 * @param router the router
 	 */
 	private void routes(Router router) {
 		
@@ -123,9 +103,9 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	}
 
 	/**
-	 * contains process logic for the context passed
-	 * 
-	 * @param ctx
+	 * contains process logic for the context passed.
+	 *
+	 * @param ctx the ctx
 	 */
 	public void processURL(RoutingContext ctx) {
 		FileUpload fileUpload = ctx.fileUploads().iterator().next();
@@ -137,10 +117,10 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 			file = new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName());
 			MessageDTO messageDTO = packetReceiverService.storePacket(file);
 			if (messageDTO.getIsValid()) {
-				this.setResponse(ctx,buildPacketReceiverResponse(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString()),APPLICATION_JSON);
+				this.setResponse(ctx,PacketReceiverResponseBuilder.buildPacketReceiverResponse(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString()),APPLICATION_JSON);
 				this.sendMessage(messageDTO);
 			} else {
-				this.setResponse(ctx,buildPacketReceiverResponse(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString()),APPLICATION_JSON);
+				this.setResponse(ctx,PacketReceiverResponseBuilder.buildPacketReceiverResponse(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString()),APPLICATION_JSON);
 			}
 		} catch (IOException e) {
 			throw new UnexpectedException(e.getMessage());
@@ -149,32 +129,11 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 				deleteFile(file);
 		}
 	}
+	
 	/**
-	 * Builds the packet receiver exception response.
+	 * deletes a file.
 	 *
-	 * @param ex the ex
-	 * @return the string
-	 */
-	private String buildPacketReceiverResponse(String statusCode) {
-
-		PacketReceiverResponseDTO response = new PacketReceiverResponseDTO();
-		if (Objects.isNull(response.getId())) {
-			response.setId("mosip.registration.packet");
-		}
-		response.setError(null);
-		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-		response.setVersion("1.0");
-		ResponseDTO responseDTO=new ResponseDTO();
-		responseDTO.setStatus(statusCode);
-		response.setResponse(responseDTO);
-		Gson gson = new GsonBuilder().serializeNulls().registerTypeAdapter(PacketReceiverResponseDTO.class, new PacketReceiverReqRespJsonSerializer()).create();
-		return gson.toJson(response);
-	}
-
-	/**
-	 * deletes a file
-	 * 
-	 * @param file
+	 * @param file the file
 	 */
 	private void deleteFile(File file) {
 		try {
@@ -185,9 +144,9 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	}
 
 	/**
-	 * sends messageDTO to camel bridge
-	 * 
-	 * @param messageDTO
+	 * sends messageDTO to camel bridge.
+	 *
+	 * @param messageDTO the message DTO
 	 */
 	public void sendMessage(MessageDTO messageDTO) {
 		this.send(this.mosipEventBus, MessageBusAddress.VIRUS_SCAN_BUS_IN, messageDTO);

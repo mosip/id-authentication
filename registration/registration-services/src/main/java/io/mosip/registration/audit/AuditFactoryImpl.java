@@ -11,10 +11,16 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
+
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 /**
  * Class to Audit the events of Registration.
@@ -30,6 +36,7 @@ import io.mosip.registration.context.SessionContext;
 @Service
 public class AuditFactoryImpl implements AuditFactory {
 
+	private static final Logger LOGGER = AppConfig.getLogger(AuditFactoryImpl.class);
 	@Autowired
 	private AuditHandler<AuditRequestDto> auditHandler;
 	@Autowired
@@ -50,6 +57,8 @@ public class AuditFactoryImpl implements AuditFactory {
 			hostIP = hostInetAddress.getHostAddress();
 			hostName = hostInetAddress.getHostName();
 		} catch (UnknownHostException unknownHostException) {
+			LOGGER.info("REGISTRATION-AUDIT_FACTORY-AUDIT", APPLICATION_NAME, APPLICATION_ID,
+					ExceptionUtils.getStackTrace(unknownHostException));
 			hostIP = environment.getProperty(RegistrationConstants.HOST_IP);
 			hostName = environment.getProperty(RegistrationConstants.HOST_NAME);
 		}

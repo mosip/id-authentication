@@ -3,7 +3,11 @@ package io.mosip.registration.processor.packet.receiver.exception.handler;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -11,10 +15,10 @@ import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.packet.receiver.dto.ErrorDTO;
 import io.mosip.registration.processor.packet.receiver.dto.PacketReceiverResponseDTO;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
 import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedException;
@@ -24,7 +28,6 @@ import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidE
 import io.mosip.registration.processor.packet.receiver.exception.ValidationException;
 import io.mosip.registration.processor.packet.receiver.exception.systemexception.TimeoutException;
 import io.mosip.registration.processor.packet.receiver.exception.systemexception.UnexpectedException;
-import io.mosip.registration.processor.packet.receiver.request.response.serializer.PacketReceiverReqRespJsonSerializer;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 
 
@@ -32,6 +35,7 @@ import io.mosip.registration.processor.status.exception.TablenotAccessibleExcept
  * The Class PacketReceiverExceptionHandler.
  * @author Rishabh Keshari
  */
+@Component
 public class PacketReceiverExceptionHandler {
 
 	/** The reg proc logger. */
@@ -45,7 +49,8 @@ public class PacketReceiverExceptionHandler {
 
 	private static final String MODULE_ID = "mosip.registration.processor.packet.id";
 
-
+	@Autowired
+	private Environment env;
 	/**
 	 * Duplicateentry.
 	 *
@@ -177,7 +182,7 @@ public class PacketReceiverExceptionHandler {
 		PacketReceiverResponseDTO response = new PacketReceiverResponseDTO();
 		Throwable e = ex;
 		if (Objects.isNull(response.getId())) {
-			response.setId("mosip.registration.packet");
+			response.setId(env.getProperty(MODULE_ID));
 		}
 		if (e instanceof BaseCheckedException)
 
@@ -199,11 +204,12 @@ public class PacketReceiverExceptionHandler {
 
 			response.setError(errors.get(0));
 		}
-
-		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-		response.setVersion("1.0");
+		System.out.println("hdcdscdsch   "+env.getProperty(DATETIME_PATTERN));
+		
+		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		response.setVersion(env.getProperty(APPLICATION_VERSION));
 		response.setResponse(null);
-		Gson gson = new GsonBuilder().serializeNulls().registerTypeAdapter(PacketReceiverResponseDTO.class, new PacketReceiverReqRespJsonSerializer()).create();
+		Gson gson = new GsonBuilder().serializeNulls().create();
 		return gson.toJson(response);
 	}
 

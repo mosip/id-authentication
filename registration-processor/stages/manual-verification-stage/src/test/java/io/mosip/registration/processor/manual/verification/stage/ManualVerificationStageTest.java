@@ -2,16 +2,15 @@ package io.mosip.registration.processor.manual.verification.stage;
 
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -26,30 +25,27 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringRunner;
-
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.core.env.Environment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.manual.verification.ManualVerificationApplication;
-import io.mosip.registration.processor.manual.verification.dto.FileRequestDto;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
-import io.mosip.registration.processor.manual.verification.dto.PacketInfoRequestDto;
 import io.mosip.registration.processor.manual.verification.dto.UserDto;
 import io.mosip.registration.processor.manual.verification.exception.ManualVerificationAppException;
-import io.mosip.registration.processor.manual.verification.request.dto.ManualVerificationDecisionRequestDTO;
+import io.mosip.registration.processor.manual.verification.response.builder.ManualVerificationResponseBuilder;
 import io.mosip.registration.processor.manual.verification.response.dto.ManualVerificationAssignResponseDTO;
 import io.mosip.registration.processor.manual.verification.response.dto.ManualVerificationBioDemoResponseDTO;
-import io.mosip.registration.processor.manual.verification.response.dto.ManualVerificationErrorDTO;
 import io.mosip.registration.processor.manual.verification.response.dto.ManualVerificationPacketResponseDTO;
 import io.mosip.registration.processor.manual.verification.service.ManualVerificationService;
-import io.mosip.registration.processor.manual.verification.util.ManualVerificationReqRespJsonSerializer;
 import io.mosip.registration.processor.manual.verification.util.ManualVerificationRequestValidator;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
@@ -58,7 +54,6 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
-import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.User;
@@ -70,50 +65,53 @@ import io.vertx.ext.web.Route;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
 
-@RunWith(SpringRunner.class)
+@RunWith(PowerMockRunner.class)
+@PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
+@PrepareForTest(ManualVerificationResponseBuilder.class)
 public class ManualVerificationStageTest{
 
 	private RoutingContext ctx;
 
 	@Mock
 	private ManualVerificationService manualAdjudicationService;
+	@Mock
+	ManualVerificationResponseBuilder manualVerificationResponseBuilder;
 
 	private String jsonData;
-
+	
+	@Mock
+	private Environment env;
 	@Mock
 	ManualVerificationRequestValidator manualVerificationRequestValidator;
 	Gson gson = new GsonBuilder().serializeNulls().create();
-	String serviceID=""; ManualVerificationErrorDTO errorCode;
+	String serviceID=""; ErrorDTO errorCode;
 
 	@InjectMocks
 	ManualVerificationStage manualVerificationStage = new ManualVerificationStage() {
-		ManualVerificationBioDemoResponseDTO response1 = new ManualVerificationBioDemoResponseDTO();
-		ManualVerificationAssignResponseDTO response2 = new ManualVerificationAssignResponseDTO();
-		ManualVerificationPacketResponseDTO response3 = new ManualVerificationPacketResponseDTO();
-		
+
 		@Override
 		public void setResponse(RoutingContext ctx, Object object,String jsonType) {
 			jsonData = object.toString();
-			
-			
+
+
 			if(serviceID=="bio") {
 				ManualVerificationBioDemoResponseDTO manualVerificationBioDemoResponseDTO =gson.fromJson(jsonData, ManualVerificationBioDemoResponseDTO.class);
 				errorCode=manualVerificationBioDemoResponseDTO.getError();
 			}else if(serviceID=="demo") {
-					ManualVerificationBioDemoResponseDTO manualVerificationBioDemoResponseDTO =gson.fromJson(jsonData, ManualVerificationBioDemoResponseDTO.class);
-					errorCode=manualVerificationBioDemoResponseDTO.getError();	
+				ManualVerificationBioDemoResponseDTO manualVerificationBioDemoResponseDTO =gson.fromJson(jsonData, ManualVerificationBioDemoResponseDTO.class);
+				errorCode=manualVerificationBioDemoResponseDTO.getError();	
 			}else if(serviceID=="assign") {
 				ManualVerificationAssignResponseDTO manualVerificationAssignResponseDTO =gson.fromJson(jsonData, ManualVerificationAssignResponseDTO.class);
 				errorCode=manualVerificationAssignResponseDTO.getError();	
-				
+
 			}else if(serviceID=="decision") {
 				ManualVerificationAssignResponseDTO manualVerificationAssignResponseDTO =gson.fromJson(jsonData, ManualVerificationAssignResponseDTO.class);
 				errorCode=manualVerificationAssignResponseDTO.getError();	
-				
+
 			}else if(serviceID=="packetinfo") {
 				ManualVerificationPacketResponseDTO manualVerificationPacketResponseDTO =gson.fromJson(jsonData, 		ManualVerificationPacketResponseDTO.class);
 				errorCode=manualVerificationPacketResponseDTO.getError();	
-				
+
 			}
 
 		}
@@ -127,13 +125,45 @@ public class ManualVerificationStageTest{
 			return null;
 		}
 	};
-
 	@Before
-	public void setup() throws IOException {
+	public void setup() throws Exception {
 
 		ctx = setContext();
-		ManualVerificationApplication.main(null);
+		ManualVerificationApplication.main(null);	
+		PowerMockito.mockStatic(ManualVerificationResponseBuilder.class);
+		when(env.getProperty(anyString())).thenReturn("mosip.manual.verification.biometric");
+		PowerMockito.when(ManualVerificationResponseBuilder.class, "buildManualVerificationSuccessResponse",any(ManualVerificationDTO.class), anyString()).thenReturn(getDataAsJson("2"));
+		PowerMockito.when(ManualVerificationResponseBuilder.class, "buildManualVerificationSuccessResponse",any(PacketMetaInfo.class), anyString()).thenReturn(getDataAsJson("2"));
+		PowerMockito.when(ManualVerificationResponseBuilder.class, "buildManualVerificationSuccessResponse",any(String.class), anyString()).thenReturn(getDataAsJson("1"));
+		
 	}
+
+
+
+	public String getDataAsJson(String dataNumber) {
+		JsonObject obj= new JsonObject();
+		obj.put("id", "mosip.manual.verification.biometric");
+		obj.put("version", "1.0");
+		obj.put("timestamp", "2019-02-04T13:46:39.919+0000");
+		JsonObject obj1= new JsonObject();
+		obj1.put("regId", "27847657360002520181208123456");
+		  
+		if(dataNumber=="1") {
+			obj.put("file", "MOSIPE@34whfh34");
+		}else {
+			obj.put("response",obj1);
+		}
+		errorCode=null;
+		obj.put("error",errorCode);
+		
+
+
+		return obj.toString();
+	}
+
+
+
+
 
 	@Test
 	public void testAllProcesses() throws ClientProtocolException, IOException, ManualVerificationAppException {
@@ -155,9 +185,9 @@ public class ManualVerificationStageTest{
 		byte[] packetInfo = "packetInfo".getBytes();
 		when(manualAdjudicationService.getApplicantFile(any(String.class),any(String.class))).thenReturn(packetInfo);
 		manualVerificationStage.processBiometric(ctx);
-		
+
 		assertEquals(errorCode, null);
-	
+
 
 	}
 
@@ -168,7 +198,7 @@ public class ManualVerificationStageTest{
 		when(manualAdjudicationService.getApplicantFile(any(String.class),any(String.class))).thenReturn(packetInfo);
 		manualVerificationStage.processDemographic(ctx);
 		assertEquals(errorCode, null);
-		
+
 	}
 
 
@@ -179,7 +209,7 @@ public class ManualVerificationStageTest{
 		when(manualAdjudicationService.assignApplicant(any(UserDto.class))).thenReturn(manualVerificationDTO);
 		manualVerificationStage.processAssignment(ctx);
 		assertEquals(errorCode, null);
-		
+
 	}
 
 
@@ -187,7 +217,7 @@ public class ManualVerificationStageTest{
 		serviceID="decision";
 		manualVerificationStage.processDecision(ctx);
 		assertEquals(errorCode, null);
-		
+
 	}
 
 
@@ -197,7 +227,7 @@ public class ManualVerificationStageTest{
 		when(manualAdjudicationService.getApplicantPacketInfo(any(String.class))).thenReturn(packetInfo);
 		manualVerificationStage.processPacketInfo(ctx);
 		assertEquals(errorCode, null);
-		
+
 	}
 
 
