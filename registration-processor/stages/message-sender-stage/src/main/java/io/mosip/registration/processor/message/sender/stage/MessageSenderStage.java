@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -150,7 +151,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		object.setMessageBusAddress(MessageBusAddress.MESSAGE_SENDER_BUS);
-		
+
 		boolean isTransactionSuccessful = false;
 
 		String id = object.getRid();
@@ -160,7 +161,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 		try {
 			StatusNotificationTypeMapUtil map = new StatusNotificationTypeMapUtil();
 			NotificationTemplateType type = map.getTemplateType(registrationStatusDto.getStatusCode());
-			if(type != null) {
+			if (type != null) {
 				setTemplateAndSubject(type);
 			}
 
@@ -199,6 +200,11 @@ public class MessageSenderStage extends MosipVerticleManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
 					tnf.getMessage() + ExceptionUtils.getStackTrace(tnf));
 			description = "template was not found for notification" + id;
+		} catch (FSAdapterException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
+					PlatformErrorMessages.RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + e.getMessage());
+			description = "The Packet store set by the System is not accessible" + id;
+
 		} catch (Exception ex) {
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,

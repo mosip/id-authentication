@@ -14,12 +14,21 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
+
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 /**
  * @author M1049825
  *
  */
 public class CbeffXSDValidator {
-	
+
+	private static final Logger LOGGER = AppConfig.getLogger(CbeffXSDValidator.class);
+
 	public static boolean validateXMLSchema(String xsdPath, byte[] xmlByte) throws IOException {
 		FileOutputStream fos = null;
 		try {
@@ -30,28 +39,26 @@ public class CbeffXSDValidator {
 			Schema schema = factory.newSchema(new File(xsdPath));
 			Validator validator = schema.newValidator();
 			validator.validate(new StreamSource(tempFile));
-		} catch (Exception e) {
-			//System.out.println("Exception: " + e);
+		} catch (Exception exception) {
+			LOGGER.error("CBEFF-XSD-VALIDATOR-SCHEMA", APPLICATION_NAME, APPLICATION_ID,
+					ExceptionUtils.getStackTrace(exception));
 			return false;
-		}
-		finally
-		{
+		} finally {
 			fos.close();
 		}
 		return true;
 	}
-	
+
 	public static boolean validateXML(byte[] xsdBytes, byte[] xmlBytes) throws Exception {
-		try
-		{
+		try {
 			SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			Schema schema = factory.newSchema(new StreamSource(new ByteArrayInputStream(xsdBytes)));
 			Validator validator = schema.newValidator();
 			validator.validate(new StreamSource(new ByteArrayInputStream(xmlBytes)));
 			return true;
-		}catch(Exception ex)
-		{
-			//System.out.println(ex);
+		} catch (Exception exception) {
+			LOGGER.error("CBEFF-XSD-VALIDATOR-SCHEMA", APPLICATION_NAME, APPLICATION_ID,
+					ExceptionUtils.getStackTrace(exception));
 			return false;
 		}
 	}

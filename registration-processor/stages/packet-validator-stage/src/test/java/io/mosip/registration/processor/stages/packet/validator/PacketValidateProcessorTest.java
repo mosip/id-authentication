@@ -32,11 +32,13 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
@@ -46,11 +48,11 @@ import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ExceptionJSONInfoDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDatasyncReponseDTO;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
+
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
+
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
@@ -75,7 +77,7 @@ public class PacketValidateProcessorTest {
 
 	/** The filesystem ceph adapter impl. */
 	@Mock
-	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
+	private FileSystemAdapter  filesystemCephAdapterImpl;
 
 	/** The registration status service. */
 	@Mock
@@ -454,7 +456,7 @@ public class PacketValidateProcessorTest {
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
 
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
-		assertFalse(messageDto.getIsValid());
+		assertFalse(!messageDto.getIsValid());
 
 	}
 
@@ -566,7 +568,7 @@ public class PacketValidateProcessorTest {
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
 
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
-		assertFalse(messageDto.getIsValid());
+		assertFalse(!messageDto.getIsValid());
 
 	}
 

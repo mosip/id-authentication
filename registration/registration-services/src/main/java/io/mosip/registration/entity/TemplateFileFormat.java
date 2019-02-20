@@ -12,7 +12,7 @@ import javax.persistence.Table;
  * @since 1.0.0
  */
 @Entity
-@Table(schema="master", name = "TEMPLATE_FILE_FORMAT")
+@Table(schema="reg", name = "TEMPLATE_FILE_FORMAT")
 public class TemplateFileFormat extends TemplateCommonFields {
 	@EmbeddedId
 	@Column(name="pk_tfft_code")

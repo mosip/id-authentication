@@ -1,5 +1,6 @@
 package io.mosip.registration.context;
 
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -22,7 +23,7 @@ public class ApplicationContext {
 	private ResourceBundle localLanguageBundle;
 	private ResourceBundle applicationMessagesBundle;
 	private ResourceBundle localMessagesBundle;
-	private Map<String, Object> applicationMap;
+	private Map<String, Object> applicationMap = new HashMap<>();
 	private ResourceBundle applicationLanguagevalidationBundle;
 	private String localLanguage;
 	private String applicationLanguge;

@@ -11,6 +11,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.bio.dedupe.exception.ABISAbortException;
 import io.mosip.registration.processor.bio.dedupe.exception.ABISInternalError;
@@ -127,7 +128,14 @@ public class BioDedupeProcessor {
 			description = "Unable To Serve Request ABIS Exception occured while processing registration  id : "
 					+ registrationId;
 
-		} catch (DataAccessException e) {
+		} catch (FSAdapterException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.PACKET_BDD_PACKET_STORE_NOT_ACCESSIBLE.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			object.setInternalError(Boolean.TRUE);
+			description = "The Packet store set by the System is not accessible for registration  id : "
+					+ registrationId;
+		}catch (DataAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,
 					PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(e));

@@ -5,6 +5,7 @@ import static io.mosip.registration.util.mastersync.MetaDataUtils.setCreateMetaD
 import static io.mosip.registration.util.mastersync.MetaDataUtils.setUpdateMetaData;
 import static org.junit.Assert.assertTrue;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +20,9 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.mastersync.LanguageDto;
 import io.mosip.registration.dto.mastersync.TitleDto;
-import io.mosip.registration.entity.mastersync.MasterLanguage;
-import io.mosip.registration.entity.mastersync.MasterRegistrationCenter;
-import io.mosip.registration.entity.mastersync.MasterTitle;
+import io.mosip.registration.entity.Language;
+import io.mosip.registration.entity.RegistrationCenter;
+import io.mosip.registration.entity.Title;
 import io.mosip.registration.util.mastersync.EmptyCheckUtils;
 
 /**
@@ -51,7 +52,7 @@ public class MapperTest {
 
 	@Test(expected = NullPointerException.class)
 	public void testMapSourceNull() {
-		map(null, new MasterLanguage());
+		map(null, new Language());
 	}
 
 
@@ -62,9 +63,9 @@ public class MapperTest {
 
 	@Test
 	public void testMapWithDestinationObject() {
-		MasterTitle rcd = null;
+		Title rcd = null;
 
-		rcd = setCreateMetaData(rcdDto, MasterTitle.class);
+		rcd = setCreateMetaData(rcdDto, Title.class);
 		assertTrue(rcd != null);
 
 		TitleDto newRcdDto = map(rcd, TitleDto.class);
@@ -76,7 +77,7 @@ public class MapperTest {
 	@Test
 	public void testSetUpdateMetaData() {
 		LanguageDto dto = new LanguageDto();
-		MasterLanguage entity = new MasterLanguage();
+		Language entity = new Language();
 
 		dto.setCode("ENG");
 		dto.setFamily("English");
@@ -86,9 +87,9 @@ public class MapperTest {
 		entity.setName("english");
 		entity.setNativeName("english");
 		entity.setIsActive(true);
-		entity.setCreatedDateTime(LocalDateTime.now());
-		entity.setCreatedBy("admin");
-		entity.setUpdatedBy("admin");
+		entity.setCrDtime(Timestamp.valueOf(LocalDateTime.now()));
+		entity.setCrBy("admin");
+		entity.setUpdBy("admin");
 
 		setUpdateMetaData(dto, entity, false);
 
@@ -97,12 +98,12 @@ public class MapperTest {
 		assertTrue(entity.getName().equals("english"));
 		assertTrue(entity.getNativeName().equals("english"));
 		//assertTrue(entity.getUpdatedBy() != null);
-		assertTrue(entity.getUpdatedDateTime() != null);
+		assertTrue(entity.getUpdDtimes() != null);
 	}
 
 	@Test
 	public void testSetCreateMetaDataList() {
-		List<MasterRegistrationCenter> rcds = setCreateMetaData(rcdDtos, MasterTitle.class);
+		List<RegistrationCenter> rcds = setCreateMetaData(rcdDtos, Title.class);
 		assertTrue(!EmptyCheckUtils.isNullEmpty(rcds));
 	}
 	

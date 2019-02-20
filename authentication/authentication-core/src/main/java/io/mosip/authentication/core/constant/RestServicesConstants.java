@@ -25,8 +25,12 @@ public enum RestServicesConstants {
 	ID_REPO_SERVICE("id-repo-service"),
 
 	ID_MASTERDATA_TEMPLATE_SERVICE("id-masterdata-template-service"),
+	
+	GENDER_TYPE_SERVICE("id-masterdata-gender-service"),
 
-	DECRYPTION_SERVICE("decrypt-service");
+	DECRYPTION_SERVICE("decrypt-service"),
+	
+	TITLE_SERVICE("id-masterdata-title-service");
 
 	/** The service name. */
 	private final String serviceName;

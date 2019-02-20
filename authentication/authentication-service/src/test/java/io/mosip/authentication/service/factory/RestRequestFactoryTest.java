@@ -1,6 +1,6 @@
 package io.mosip.authentication.service.factory;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;	
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -21,6 +21,7 @@ import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.AuditEvents;
@@ -100,7 +101,7 @@ public class RestRequestFactoryTest {
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 		auditRequest.setActionTimeStamp(null);
 
-		RestRequestDTO request = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
 
 
@@ -182,6 +183,19 @@ public class RestRequestFactoryTest {
 		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE,
 				auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc"),
 				AuditResponseDto.class);
+	}
+	
+	@Test
+	public void testBuildRequestMultiValueMap() throws IDDataValidationException {
+		MockEnvironment environment = new MockEnvironment();
+		environment.merge(env);
+		environment.setProperty("audit.rest.headers.mediaType", "multipart/form-data");
+		environment.setProperty("audit.rest.uri.queryparam.test", "yes");
+		environment.setProperty("audit.rest.uri.pathparam.test", "yes");
+
+		ReflectionTestUtils.setField(restFactory, "env", environment);
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, new LinkedMultiValueMap<String, String>(),
+				Object.class);
 	}
 
 }

@@ -74,7 +74,7 @@ public class IdRepoExceptionHandlerTest {
 		ResponseEntity<Object> handleAllExceptions = ReflectionTestUtils.invokeMethod(handler, "handleAllExceptions",
 				new RuntimeException("Runtime Exception"), null);
 		IdResponseDTO response = (IdResponseDTO) handleAllExceptions.getBody();
-		List<ErrorDTO> errorCode = response.getError();
+		List<ErrorDTO> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
 			assertEquals(IdRepoErrorConstants.UNKNOWN_ERROR.getErrorCode(), e.getErrCode());
 			assertEquals(IdRepoErrorConstants.UNKNOWN_ERROR.getErrorMessage(), e.getErrMessage());
@@ -91,7 +91,7 @@ public class IdRepoExceptionHandlerTest {
 				new HttpMediaTypeNotSupportedException("Http Media Type Not Supported Exception"), null, null,
 				HttpStatus.EXPECTATION_FAILED, null);
 		IdResponseDTO response = (IdResponseDTO) handleExceptionInternal.getBody();
-		List<ErrorDTO> errorCode = response.getError();
+		List<ErrorDTO> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
 			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(), e.getErrCode());
 			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage(), e.getErrMessage());
@@ -106,7 +106,7 @@ public class IdRepoExceptionHandlerTest {
 		ResponseEntity<Object> handleIdAppException = ReflectionTestUtils.invokeMethod(handler, "handleIdAppException",
 				new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN), null);
 		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
-		List<ErrorDTO> errorCode = response.getError();
+		List<ErrorDTO> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
 			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrCode());
 			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrMessage());
@@ -123,7 +123,7 @@ public class IdRepoExceptionHandlerTest {
 		ResponseEntity<Object> handleIdAppException = ReflectionTestUtils.invokeMethod(handler, "handleIdAppException",
 				ex, null);
 		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
-		List<ErrorDTO> errorCode = response.getError();
+		List<ErrorDTO> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
 			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrCode());
 			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrMessage());
@@ -138,7 +138,7 @@ public class IdRepoExceptionHandlerTest {
 		ResponseEntity<Object> handleIdAppException = ReflectionTestUtils.invokeMethod(handler, "handleIdAppUncheckedException",
 				ex, null);
 		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
-		List<ErrorDTO> errorCode = response.getError();
+		List<ErrorDTO> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
 			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrCode());
 			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrMessage());
@@ -152,7 +152,7 @@ public class IdRepoExceptionHandlerTest {
 		ResponseEntity<Object> handleIdAppUncheckedException = ReflectionTestUtils.invokeMethod(handler,
 				"handleIdAppUncheckedException", ex, null);
 		IdResponseDTO response = (IdResponseDTO) handleIdAppUncheckedException.getBody();
-		List<ErrorDTO> errorCode = response.getError();
+		List<ErrorDTO> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
 			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrCode());
 			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrMessage());
@@ -169,7 +169,7 @@ public class IdRepoExceptionHandlerTest {
 				new HttpMediaTypeNotSupportedException("Http Media Type Not Supported Exception"), null, null, null,
 				null);
 		IdResponseDTO response = (IdResponseDTO) handleExceptionInternal.getBody();
-		response.getError();
+		response.getErrors();
 	}
 
 	@Test
@@ -177,6 +177,6 @@ public class IdRepoExceptionHandlerTest {
 		ResponseEntity<Object> handleExceptionInternal = ReflectionTestUtils.invokeMethod(handler,
 				"handleExceptionInternal", new IdRepoAppException(), null, null, null, null);
 		IdResponseDTO response = (IdResponseDTO) handleExceptionInternal.getBody();
-		response.getError();
+		response.getErrors();
 	}
 }

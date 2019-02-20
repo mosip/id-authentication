@@ -12,16 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.util.JsonUtil;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationStatus;
 import io.mosip.registration.processor.manual.verification.dto.UserDto;
@@ -60,9 +60,9 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	@Autowired
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	/** The filesystem ceph adapter impl. */
+	/** The filesystem adapter impl. */
 	@Autowired
-	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
+	private FileSystemAdapter filesystemAdapterImpl;
 
 	/** The base packet repository. */
 	@Autowired
@@ -72,7 +72,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	@Autowired
 	private ManualVerificationStage manualVerificationStage;
 
-	/*	 * (non-Javadoc)
+	/*
+	 * * (non-Javadoc)
 	 * 
 	 * @see io.mosip.registration.processor.manual.adjudication.service.
 	 * ManualAdjudicationService#assignStatus(io.mosip.registration.processor.manual
@@ -109,7 +110,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 					manualVerificationDTO.setRegId(updatedManualVerificationEntity.getId().getRegId());
 					manualVerificationDTO.setMatchedRefId(updatedManualVerificationEntity.getId().getMatchedRefId());
 					manualVerificationDTO
-					.setMatchedRefType(updatedManualVerificationEntity.getId().getMatchedRefType());
+							.setMatchedRefType(updatedManualVerificationEntity.getId().getMatchedRefType());
 					manualVerificationDTO.setMvUsrId(updatedManualVerificationEntity.getMvUsrId());
 					manualVerificationDTO.setStatusCode(updatedManualVerificationEntity.getStatusCode());
 				}
@@ -132,12 +133,11 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		byte[] file = null;
 		InputStream fileInStream = null;
 
-		if(checkBiometric(fileName)) {
-			fileInStream = getApplicantBiometricFile(regId,fileName);
+		if (checkBiometric(fileName)) {
+			fileInStream = getApplicantBiometricFile(regId, fileName);
 		} else if (checkDemographic(fileName)) {
-			fileInStream =	getApplicantDemographicFile(regId,fileName);
-		}
-		else {
+			fileInStream = getApplicantDemographicFile(regId, fileName);
+		} else {
 			throw new InvalidFileNameException(PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getCode(),
 					PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getMessage());
 		}
@@ -152,29 +152,34 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	/**
 	 * Gets the applicant biometric file.
 	 *
-	 * @param regId the reg id
-	 * @param fileName the file name
+	 * @param regId
+	 *            the reg id
+	 * @param fileName
+	 *            the file name
 	 * @return the applicant biometric file
 	 */
-	private InputStream getApplicantBiometricFile(String regId,String fileName){
-		return filesystemCephAdapterImpl.getFile(regId, PacketStructure.BIOMETRIC + fileName);
+	private InputStream getApplicantBiometricFile(String regId, String fileName) {
+		return filesystemAdapterImpl.getFile(regId, PacketStructure.BIOMETRIC + fileName);
 	}
 
 	/**
 	 * Gets the applicant demographic file.
 	 *
-	 * @param regId the reg id
-	 * @param fileName the file name
+	 * @param regId
+	 *            the reg id
+	 * @param fileName
+	 *            the file name
 	 * @return the applicant demographic file
 	 */
-	private InputStream getApplicantDemographicFile(String regId,String fileName){
-		return filesystemCephAdapterImpl.getFile(regId, PacketStructure.APPLICANTDEMOGRAPHIC + fileName);
+	private InputStream getApplicantDemographicFile(String regId, String fileName) {
+		return filesystemAdapterImpl.getFile(regId, PacketStructure.APPLICANTDEMOGRAPHIC + fileName);
 	}
 
 	/**
 	 * Check biometric.
 	 *
-	 * @param fileName the file name
+	 * @param fileName
+	 *            the file name
 	 * @return true, if successful
 	 */
 	private boolean checkBiometric(String fileName) {
@@ -186,7 +191,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	/**
 	 * Check demographic.
 	 *
-	 * @param fileName the file name
+	 * @param fileName
+	 *            the file name
 	 * @return true, if successful
 	 */
 	private boolean checkDemographic(String fileName) {
@@ -289,7 +295,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	@Override
 	public PacketMetaInfo getApplicantPacketInfo(String regId) {
 		PacketMetaInfo packetMetaInfo = new PacketMetaInfo();
-		InputStream fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.PACKETMETAINFO);
+		InputStream fileInStream = filesystemAdapterImpl.getFile(regId, PacketStructure.PACKETMETAINFO);
 		try {
 			packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(fileInStream, PacketMetaInfo.class);
 		} catch (UnsupportedEncodingException e) {

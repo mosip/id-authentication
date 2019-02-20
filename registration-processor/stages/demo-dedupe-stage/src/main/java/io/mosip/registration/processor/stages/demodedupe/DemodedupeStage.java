@@ -42,7 +42,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(),clusterManagerUrl);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.DEMO_DEDUPE_BUS_IN,MessageBusAddress.DEMO_DEDUPE_BUS_OUT);
-	}	
+	}
 
 	/*
 	 * (non-Javadoc)

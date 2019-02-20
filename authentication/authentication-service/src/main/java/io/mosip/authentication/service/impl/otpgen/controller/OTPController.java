@@ -18,7 +18,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.otpgen.facade.OTPFacade;
+import io.mosip.authentication.core.spi.otpgen.service.OTPService;
 import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -37,7 +37,7 @@ public class OTPController {
 	private static Logger logger = IdaLogger.getLogger(OTPController.class);
 
 	@Autowired
-	private OTPFacade otpFacade;
+	private OTPService otpService;
 
 	@Autowired
 	private OTPRequestValidator otpRequestValidator;
@@ -62,7 +62,7 @@ public class OTPController {
 
 		try {
 			DataValidationUtil.validate(errors);
-			OtpResponseDTO otpResponseDTO  = otpFacade.generateOtp(otpRequestDto);
+			OtpResponseDTO otpResponseDTO  = otpService.generateOtp(otpRequestDto);
 			logger.info(DEAFULT_SESSION_ID, "NA", "NA", "NA");
 			return otpResponseDTO;
 		} catch (IDDataValidationException e) {

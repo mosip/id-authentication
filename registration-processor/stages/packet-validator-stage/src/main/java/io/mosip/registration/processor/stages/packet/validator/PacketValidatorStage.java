@@ -32,7 +32,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
 	/** The secs. */
-	
+
 
 	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
@@ -46,7 +46,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		this.consumeAndSend(mosipEventBus ,MessageBusAddress.PACKET_VALIDATOR_BUS_IN,MessageBusAddress.PACKET_VALIDATOR_BUS_OUT);
 	}
 
-	
+
 
 	/*
 	 * (non-Javadoc)
@@ -55,7 +55,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	 * io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(
 	 * java.lang.Object)
 	 */
-	
+
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		return packetvalidateprocessor.process(object);
