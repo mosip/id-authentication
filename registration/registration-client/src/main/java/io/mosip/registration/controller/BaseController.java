@@ -353,6 +353,7 @@ public class BaseController {
 		goToHomePage();
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void clearRegistrationData() {
 
 		SessionContext.map().remove(RegistrationConstants.REGISTRATION_ISEDIT);
@@ -370,6 +371,8 @@ public class BaseController {
 
 		SessionContext.userMap().remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 		SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
+	
+		((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY, (boolean)ApplicationContext.map().get("biometricExceptionFlow"));
 	}
 
 	protected void clearOnboardData() {
@@ -647,6 +650,7 @@ public class BaseController {
 	 * 
 	 * @return id of next Anchorpane
 	 */
+	@SuppressWarnings("unchecked")
 	protected String getOnboardPageDetails(String currentPage, String action) { 
 		
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
@@ -663,6 +667,7 @@ public class BaseController {
 	 * 
 	 * @return id of next Anchorpane
 	 */
+	@SuppressWarnings("unchecked")
 	protected String getPageDetails(String currentPage, String action) {
 		
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,

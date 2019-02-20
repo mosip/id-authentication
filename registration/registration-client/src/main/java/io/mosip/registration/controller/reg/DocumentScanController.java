@@ -772,6 +772,7 @@ public class DocumentScanController extends BaseController {
 	/**
 	 * Toggle functionality for biometric exception
 	 */
+	@SuppressWarnings("unchecked")
 	private void toggleFunctionForBiometricException() {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
