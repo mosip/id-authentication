@@ -129,6 +129,7 @@ public class BookingService {
 				for (LocalDate sDate = LocalDate.now(); (sDate.isBefore(endDate)
 						|| sDate.isEqual(endDate)); sDate = sDate.plusDays(1)) {
 					serviceUtil.timeSlotCalculator(regDto, holidaylist, sDate, bookingDAO);
+					Thread.sleep(2000);
 				}
 			}
 		} catch (Exception ex) {
