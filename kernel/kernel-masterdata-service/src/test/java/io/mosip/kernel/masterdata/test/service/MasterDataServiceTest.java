@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.orm.hibernate5.HibernateObjectRetrievalFailureException;
@@ -1408,6 +1409,13 @@ public class MasterDataServiceTest {
 	public void addTemplateFileFormatInsertExceptionTest() {
 		Mockito.when(templateFileFormatRepository.create(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto);
+	}
+	
+	@Test(expected = MasterDataServiceException.class)
+	public void updateTemplateFileFormatDataAccessExceptionTest() {
+		Mockito.when(templateFileFormatRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(), Mockito.any())).thenReturn(templateFileFormat);
+		Mockito.when(templateFileFormatRepository.update(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		templateFileFormatService.updateTemplateFileFormat(templateFileFormatRequestDto);
 	}
 
 	// ----------------------------------DocumentTypeServiceTest-------------------------//
