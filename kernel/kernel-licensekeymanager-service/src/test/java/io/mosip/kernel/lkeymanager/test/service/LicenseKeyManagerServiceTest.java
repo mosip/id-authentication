@@ -117,7 +117,7 @@ public class LicenseKeyManagerServiceTest {
 	@Test
 	public void testLKMGenerationService() throws Exception {
 		LicenseKeyGenerationDto licenseKeyGenerationDto = new LicenseKeyGenerationDto();
-		licenseKeyGenerationDto.setLicenseExpiryTime(LocalDateTime.of(2019, Month.FEBRUARY, 6, 6, 23, 0));
+		licenseKeyGenerationDto.setLicenseExpiryTime(LocalDateTime.of(9999, Month.FEBRUARY, 6, 6, 23, 0));
 		licenseKeyGenerationDto.setTspId("TSP_ID_TEST");
 		String json = objectMapper.writeValueAsString(licenseKeyGenerationDto);
 		when(licenseKeyListRepository.save(Mockito.any())).thenReturn(licensekeyList);

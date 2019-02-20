@@ -15,6 +15,9 @@ ENV active_profile_env=${active_profile}
 # environment variable to pass github branch to pickup configuration from, at docker runtime
 ENV spring_config_label_env=${spring_config_label}
 
+# change volume to whichever storage directory you want to use for this container.
+VOLUME /home/logs
+
 COPY ./target/manual-verification-stage-*.jar manual-verification-stage.jar
 
 EXPOSE 8084

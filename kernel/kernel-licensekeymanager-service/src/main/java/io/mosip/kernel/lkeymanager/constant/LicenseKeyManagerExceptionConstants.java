@@ -15,7 +15,8 @@ public enum LicenseKeyManagerExceptionConstants {
 	LICENSEKEY_NOT_FOUND("KER-LKM-004","LicenseKey Not Found."), 
 	LICENSEKEY_EXPIRED("KER-LKM-005", "LicenseKey Expired."),
 	ILLEGAL_LICENSE_KEY("KER-LKM-006", "License Key entered is null or empty."),
-	ILLEGAL_PERMISSION("KER-LKM-007","Permission entered is an empty string.");
+	ILLEGAL_PERMISSION("KER-LKM-007","Permission entered is an empty string."),
+	DATE_EXPIRED("KER-LKM-008","Expiry DateTime should be ahead of current DateTime.");
 
 	/**
 	 * The error code.

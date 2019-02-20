@@ -1,5 +1,11 @@
 package io.mosip.kernel.auditmanager.logger;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import io.mosip.kernel.auditmanager.exception.AuditAsyncExceptionHandler;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.logger.logback.appender.ConsoleAppender;
 import io.mosip.kernel.logger.logback.appender.FileAppender;
@@ -12,55 +18,53 @@ import io.mosip.kernel.logger.logback.factory.Logfactory;
  * @since 1.0.0
  *
  */
-public final class AuditManagerLogger {
+@Component
+public class AuditManagerLogger {
 
-	/**
-	 * Field for file appender
-	 */
-	private static FileAppender auditManagerFileAppender;
+	private static final String CONSOLE_LOGGER_NAME = AuditAsyncExceptionHandler.class.getName()
+			.concat("_console_logger");
 
-	/**
-	 * Field for console appender
-	 */
-	private static ConsoleAppender auditManagerConsoleAppender;
+	private static final String FILE_LOGGER_NAME = AuditAsyncExceptionHandler.class.getName().concat("_file_logger");
 
-	static {
-		auditManagerFileAppender = new FileAppender();
+	private static Logger fileLogger;
+	
+	private static Logger consoleLogger;
+	
+	@Value("${mosip.kernel.auditmanager-service-logs-location}")
+	private String logFileLocation;
+
+
+	@PostConstruct
+	public void postConsAuditManagerLogger() {
+		final FileAppender auditManagerFileAppender = new FileAppender();
 		auditManagerFileAppender.setAppend(true);
 		auditManagerFileAppender.setAppenderName("fileappender");
-		auditManagerFileAppender.setFileName("logs/audit.log");
+		auditManagerFileAppender.setFileName(logFileLocation);
 		auditManagerFileAppender.setImmediateFlush(true);
 		auditManagerFileAppender.setPrudent(false);
-		auditManagerConsoleAppender = new ConsoleAppender();
-		auditManagerConsoleAppender.setAppenderName("fileappender");
+		fileLogger=Logfactory.getDefaultFileLogger(auditManagerFileAppender, FILE_LOGGER_NAME);
+		
+		ConsoleAppender auditManagerConsoleAppender = new ConsoleAppender();
+		auditManagerConsoleAppender.setAppenderName("consoleappender");
 		auditManagerConsoleAppender.setImmediateFlush(true);
+		consoleLogger=Logfactory.getDefaultConsoleLogger(auditManagerConsoleAppender, CONSOLE_LOGGER_NAME);
 	}
 
 	/**
-	 * Instantiates a new logger.
+	 * Method to get the file logger for the class provided.
 	 */
-	private AuditManagerLogger() {
-	}
-
-	/**
-	 * Method to get the rolling file logger for the class provided.
-	 *
-	 * @param clazz
-	 *            the clazz
-	 * @return the logger
-	 */
-	public static Logger getFileLogger(Class<?> clazz) {
-		return Logfactory.getDefaultFileLogger(auditManagerFileAppender, clazz);
+	public static void fileLoggerError(String sessionId, String idType, String id, String description) {
+	fileLogger.error(sessionId, idType, id, description);
 	}
 
 	/**
 	 * Method to get the console logger for the class provided.
 	 *
-	 * @param clazz
-	 *            the clazz
+	 * @param name the name of logger
 	 * @return the logger
 	 */
-	public static Logger getConsoleLogger(Class<?> clazz) {
-		return Logfactory.getDefaultConsoleLogger(auditManagerConsoleAppender, clazz);
+	public static void consoleLoggerError(String sessionId, String idType, String id, String description) {
+	consoleLogger.error(sessionId, idType, id, description);	
 	}
+
 }

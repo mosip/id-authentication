@@ -63,6 +63,12 @@
 			<version>${kernel.core.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-fsadapter-hdfs</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>

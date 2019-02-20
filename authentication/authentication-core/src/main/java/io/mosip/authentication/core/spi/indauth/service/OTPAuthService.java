@@ -12,8 +12,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
  * 
  * @author Dinesh Karuppiah.T
  */
-@FunctionalInterface
-public interface OTPAuthService {
+public interface OTPAuthService extends AuthService{
 
 	/**
 	 * Validate otp.
@@ -22,6 +21,6 @@ public interface OTPAuthService {
 	 * @param uin the uin
 	 * @return AuthStatusInfo
 	 * @throws IdAuthenticationBusinessException exception
-	 */
-	AuthStatusInfo validateOtp(AuthRequestDTO authreqdto,String uin) throws IdAuthenticationBusinessException;
+	 *//*
+	AuthStatusInfo validateOtp(AuthRequestDTO authreqdto,String uin) throws IdAuthenticationBusinessException;*/
 }

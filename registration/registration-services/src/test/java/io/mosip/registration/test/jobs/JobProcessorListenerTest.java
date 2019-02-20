@@ -43,13 +43,14 @@ public class JobProcessorListenerTest {
 	@Before
 	public void initiateTest() {
 		Mockito.when(jobManager.getJobId(jobExecutionContext)).thenReturn("1");
+		Mockito.when(
+				transactionManager.createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(syncTransaction);
+
 	}
 
 	@Test
 	public void toBeExecutedTest() {
-		Mockito.when(
-				transactionManager.createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(syncTransaction);
 		processListener.jobToBeExecuted(jobExecutionContext);
 
 	}
@@ -57,9 +58,6 @@ public class JobProcessorListenerTest {
 	@Test
 	public void toBeVetoedTest() {
 
-		Mockito.when(
-				transactionManager.createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(syncTransaction);
 		processListener.jobExecutionVetoed(jobExecutionContext);
 
 	}
@@ -67,9 +65,6 @@ public class JobProcessorListenerTest {
 	@Test
 	public void wasExecutedTest() {
 
-		Mockito.when(
-				transactionManager.createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(syncTransaction);
 		processListener.jobWasExecuted(jobExecutionContext, jobExecutionException);
 
 	}
@@ -100,10 +95,10 @@ public class JobProcessorListenerTest {
 		processListener.jobWasExecuted(jobExecutionContext, jobExecutionException);
 
 	}
-	
+
 	@Test
 	public void getNameTest() {
-		
+
 		Assert.assertSame(JobProcessListener.class.getName(), processListener.getName());
 	}
 

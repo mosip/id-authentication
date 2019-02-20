@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
@@ -116,7 +117,7 @@ public abstract class BaseJob extends QuartzJobBean {
 		} catch (NoSuchBeanDefinitionException noSuchBeanDefinitionException) {
 			LOGGER.error(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					noSuchBeanDefinitionException.getMessage());
+					noSuchBeanDefinitionException.getMessage() + ExceptionUtils.getStackTrace(noSuchBeanDefinitionException));
 
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
 					noSuchBeanDefinitionException.getMessage());
@@ -158,7 +159,7 @@ public abstract class BaseJob extends QuartzJobBean {
 
 			LOGGER.error(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					regBaseUncheckedException.getMessage());
+					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
 			if(responseDTO==null) {
 				responseDTO = new ResponseDTO();
 			}
@@ -205,13 +206,13 @@ public abstract class BaseJob extends QuartzJobBean {
 		} catch (NoSuchBeanDefinitionException | RegBaseUncheckedException exception) {
 
 			LOGGER.error(LoggerConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, exception.getMessage());
+					RegistrationConstants.APPLICATION_ID, exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
-					exception.getMessage());
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 		} catch (NullPointerException nullPointerException) {
 
 			LOGGER.error(LoggerConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, nullPointerException.getMessage());
+					RegistrationConstants.APPLICATION_ID, nullPointerException.getMessage() + ExceptionUtils.getStackTrace(nullPointerException));
 
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NULL_POINTER_EXCEPTION,
 					nullPointerException.getMessage());

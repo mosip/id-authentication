@@ -22,11 +22,19 @@ import io.mosip.kernel.idvalidator.vid.constant.VidExceptionConstant;
  * Class to validate the VID
  * 
  * @author M1037462
+ * @author Megha Tanga
  * 
  * @since 1.0.0
  */
 @Component
 public class VidValidatorImpl implements VidValidator<String> {
+	
+	/**
+	 * List of restricted numbers
+	 */
+	@Value("#{'${mosip.kernel.vid.restricted-numbers}'.split(',')}")
+	private List<String> restrictedAdminDigits;
+
 
 	@Value("${mosip.kernel.vid.length}")
 	private int vidLength;
@@ -256,9 +264,18 @@ public class VidValidatorImpl implements VidValidator<String> {
 	private boolean isValidId(String id) {
 
 		return !(sequenceFilter(id) || regexFilter(id, repeatingPattern) || regexFilter(id, repeatingBlockPattern)
-				|| validateNotStartWith(id));
+				|| validateNotStartWith(id) || restrictedAdminFilter(id));
 	}
-
+	/**
+	 * Checks the input id for {@link #restrictedNumbers} filter
+	 * 
+	 * @param id
+	 *            The input id to validate
+	 * @return true if the id matches the filter
+	 */
+	private boolean restrictedAdminFilter(String id) {
+		return restrictedAdminDigits.parallelStream().anyMatch(id::contains);
+	}
 	/**
 	 * Checks the input id for {@link #SEQUENCE_LIMIT} filter
 	 * 
