@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.test.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -1416,6 +1417,26 @@ public class MasterDataServiceTest {
 		Mockito.when(templateFileFormatRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(), Mockito.any())).thenReturn(templateFileFormat);
 		Mockito.when(templateFileFormatRepository.update(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		templateFileFormatService.updateTemplateFileFormat(templateFileFormatRequestDto);
+	}
+	
+	@Test(expected = MasterDataServiceException.class)
+	public void deleteTemplateFileFormatDataAccessExceptionTest() {
+		Mockito.when(templateRepository.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any())).thenReturn(templateList);
+		Mockito.when(templateFileFormatRepository.deleteTemplateFileFormat(Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		templateFileFormatService.deleteTemplateFileFormat(templateFileFormatRequestDto.getRequest().getCode());
+	}
+	
+	@Test(expected = MasterDataServiceException.class)
+	public void deleteTemplateFileFormatDataAccessExceptionTest2() {
+		Mockito.when(templateRepository.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		templateFileFormatService.deleteTemplateFileFormat(templateFileFormatRequestDto.getRequest().getCode());
+	}
+	
+	@Test(expected = MasterDataServiceException.class)
+	public void deleteTemplateFileFormatDataAccessExceptionTest3() {
+		Mockito.when(templateRepository.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any())).thenReturn(templateList);
+		Mockito.when(templateFileFormatRepository.deleteTemplateFileFormat(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
+		templateFileFormatService.deleteTemplateFileFormat(templateFileFormatRequestDto.getRequest().getCode());
 	}
 
 	// ----------------------------------DocumentTypeServiceTest-------------------------//
