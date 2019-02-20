@@ -1,5 +1,7 @@
 package io.mosip.kernel.lkeymanager.service.impl;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +20,7 @@ import io.mosip.kernel.lkeymanager.dto.LicenseKeyMappingDto;
 import io.mosip.kernel.lkeymanager.entity.LicenseKeyList;
 import io.mosip.kernel.lkeymanager.entity.LicenseKeyPermission;
 import io.mosip.kernel.lkeymanager.entity.LicenseKeyTspMap;
+import io.mosip.kernel.lkeymanager.exception.InvalidArgumentsException;
 import io.mosip.kernel.lkeymanager.exception.LicenseKeyServiceException;
 import io.mosip.kernel.lkeymanager.repository.LicenseKeyListRepository;
 import io.mosip.kernel.lkeymanager.repository.LicenseKeyPermissionRepository;
@@ -67,6 +70,13 @@ public class LicenseKeyManagerServiceImpl
 	public String generateLicenseKey(LicenseKeyGenerationDto licenseKeyGenerationDto) {
 
 		licenseKeyManagerUtil.validateTSP(licenseKeyGenerationDto.getTspId());
+
+		if (licenseKeyGenerationDto.getLicenseExpiryTime().isBefore(LocalDateTime.now(ZoneId.of("UTC")))) {
+			List<ServiceError> errorList = new ArrayList<>();
+			errorList.add(new ServiceError(LicenseKeyManagerExceptionConstants.DATE_EXPIRED.getErrorCode(),
+					LicenseKeyManagerExceptionConstants.DATE_EXPIRED.getErrorMessage()));
+			throw new InvalidArgumentsException(errorList);
+		}
 
 		String generatedLicense = licenseKeyManagerUtil.generateLicense();
 
