@@ -3,7 +3,6 @@ package io.mosip.kernel.idrepo.interceptor;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +29,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
 import io.mosip.kernel.core.idrepo.exception.RestServiceException;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.idrepo.builder.RestRequestBuilder;
 import io.mosip.kernel.idrepo.dto.RestRequestDTO;
 import io.mosip.kernel.idrepo.entity.Uin;
