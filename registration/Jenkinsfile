@@ -11,7 +11,8 @@ node {
  def registryName = 'mosip-dev-admin.southindia.cloudapp.azure.com:5000'
  def buildInfo1
  def pom
- def version 	 
+ def version 
+ def uploadSpec
  
  stage('------- Checkout --------') {
   // Checkout only registration Module
@@ -36,7 +37,7 @@ node {
    pom = readMavenPom file: branch + '/' + projectToBuild + '/pom.xml'
    version = pom.version 
    print version
-   def uploadSpec = """{
+   uploadSpec = """{
   "files": [
     {
       "pattern": "${branch}/registration/registration-client/target/registration-client-encrypted.jar",
