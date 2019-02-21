@@ -115,9 +115,9 @@ public class BookingServiceUtil {
 	String holidayListUrl;
 
 	/**
-	 * Reference for ${preRegResourceUrl} from property file
+	 * Reference for ${demographic.resource.url} from property file
 	 */
-	@Value("${preRegResourceUrl}")
+	@Value("${demographic.resource.url}")
 	private String preRegResourceUrl;
 	
 	@Value("${timeSpanCheck}")

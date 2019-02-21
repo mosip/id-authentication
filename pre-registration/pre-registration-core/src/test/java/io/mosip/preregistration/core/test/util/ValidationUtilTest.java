@@ -24,13 +24,13 @@ public class ValidationUtilTest {
 		requestMap.put(RequestCodes.ID, "mosip.pre-registration");
 		requestMap.put(RequestCodes.VER, "1.0");
 		requestMap.put(RequestCodes.REQ_TIME, "2018-12-19T18:52:16.239Z");
-		requestMap.put(RequestCodes.REQUEST, Mockito.anyString());
+		requestMap.put(RequestCodes.REQUEST, "{request}");
 
 		requiredRequestMap = new HashMap<>();
 		requiredRequestMap.put(RequestCodes.ID, "mosip.pre-registration");
 		requiredRequestMap.put(RequestCodes.VER, "1.0");
 		requiredRequestMap.put(RequestCodes.REQ_TIME, "2018-12-19T18:52:16.239Z");
-		requiredRequestMap.put(RequestCodes.REQUEST, Mockito.anyString());
+		requiredRequestMap.put(RequestCodes.REQUEST, "{request}");
 	}
 
 	@Test

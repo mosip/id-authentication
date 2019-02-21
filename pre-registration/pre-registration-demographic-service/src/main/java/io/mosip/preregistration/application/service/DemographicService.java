@@ -121,9 +121,9 @@ public class DemographicService {
 	AuditLogUtil auditLogUtil;
 
 	/**
-	 * Reference for ${resource.url} from property file
+	 * Reference for ${document.resource.url} from property file
 	 */
-	@Value("${resource.url}")
+	@Value("${document.resource.url}")
 	private String resourceUrl;
 
 	/**
