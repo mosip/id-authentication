@@ -163,7 +163,7 @@ public class BookingServiceTest {
 	@Value("${id}")
 	String idUrl;
 
-	@Value("${preRegResourceUrl}")
+	@Value("${demographic.resource.url}")
 	private String preRegResourceUrl;
 
 	@Before

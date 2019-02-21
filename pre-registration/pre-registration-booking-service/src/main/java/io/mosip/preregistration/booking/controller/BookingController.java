@@ -53,7 +53,7 @@ import io.swagger.annotations.ApiResponses;
  *
  */
 @RestController
-@RequestMapping("/v0.1/pre-registration/booking/")
+@RequestMapping("/")
 @Api(tags = "Booking")
 @CrossOrigin("*")
 public class BookingController {

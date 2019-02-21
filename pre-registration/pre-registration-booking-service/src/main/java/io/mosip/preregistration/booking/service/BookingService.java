@@ -406,10 +406,15 @@ public class BookingService {
 					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 					LocalDateTime bookedDateTime = LocalDateTime.parse(str, formatter);
 					
-					if(!serviceUtil.timeSpanCheck(bookedDateTime)) {
-						throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
-								ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED_BEFORE.getMessage()+" "+timeSpanCheck+" hours");
+					String preRegStatusCode = serviceUtil
+							.callGetStatusRestService(cancelBookingDTO.getPreRegistrationId());
+					if(!preRegStatusCode.equals(StatusCodes.EXPIRED.getCode())) {
+						if(!serviceUtil.timeSpanCheck(bookedDateTime)) {
+							throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
+									ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED_BEFORE.getMessage()+" "+timeSpanCheck+" hours");
+						}
 					}
+					
 					
 					bookingEntity.setStatusCode(StatusCodes.CANCELED.getCode());
 					bookingEntity.setUpdDate(DateUtils.parseDateToLocalDateTime(new Date()));
