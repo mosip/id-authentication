@@ -76,8 +76,6 @@ public class RegistrationStatusServiceTest {
 		entities.add(registrationStatusEntity);
 
 		Mockito.when(registrationStatusDao.findById(ArgumentMatchers.any())).thenReturn(registrationStatusEntity);
-		Mockito.when(registrationStatusDao.findbyfilesByThreshold("PACKET_UPLOADED_TO_LANDING_ZONE", 48))
-				.thenReturn(entities);
 
 		TransactionEntity transactionEntity = new TransactionEntity();
 		transactionEntity.setStatusCode("PACKET_UPLOADED_TO_LANDING_ZONE");
@@ -87,26 +85,6 @@ public class RegistrationStatusServiceTest {
 
 		Mockito.when(registrationStatusMapUtil.getExternalStatus(ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenReturn(RegistrationExternalStatusCode.RESEND);
-
-		// AuditResponseDto auditResponseDto=new AuditResponseDto();
-		// auditResponseDto.setStatus(true);
-		// Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder("test
-		// case
-		// description",EventId.RPR_401.toString(),EventName.ADD.toString(),EventType.BUSINESS.toString(),
-		// "1234testcase");
-
-		// Mockito.when(auditHandler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
-		// AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
-		// AuditRequestDto auditRequest1 = new AuditRequestDto();
-
-		// Field f =
-		// CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
-		// f.setAccessible(true);
-		// f.set(auditLogRequestBuilder, auditRequestBuilder);
-		// Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
-		// f1.setAccessible(true);
-		// f1.set(auditRequestBuilder, auditRequest1);
-
 	}
 
 	@Test

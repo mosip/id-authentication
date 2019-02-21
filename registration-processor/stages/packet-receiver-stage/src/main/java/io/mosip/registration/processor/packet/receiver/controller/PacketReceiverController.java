@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import io.mosip.registration.processor.core.auth.dto.RegistrationProcessorSuccessResponse;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -15,7 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-	
+
 /**
  * The Class PacketReceiverController.
  */
@@ -27,7 +28,7 @@ public class PacketReceiverController {
 	/** The packet handler service. */
 	@Autowired
 	private PacketReceiverService<MultipartFile, Boolean> packetHandlerService;
-	private RegistrationProcessorSuccessResponse registrationProcessorSuccessResponse=new RegistrationProcessorSuccessResponse();
+	private RegistrationProcessorSuccessResponse registrationProcessorSuccessResponse = new RegistrationProcessorSuccessResponse();
 
 	/**
 	 * Packet.
@@ -37,14 +38,15 @@ public class PacketReceiverController {
 	 * @return the response entity
 	 */
 	@PostMapping(path = "/registrationpackets", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Upload a packet to landing zone", response = RegistrationStatusCode.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Packet successfully uploaded to landing zone"),
-			@ApiResponse(code = 400, message = "Packet already present in landing zone") })
+	@ApiOperation(value = "Upload a packet to virus scanner zone", response = RegistrationStatusCode.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Packet successfully uploaded to virus scanner zone"),
+			@ApiResponse(code = 400, message = "Packet already present in virus scanner zone") })
 	public ResponseEntity<RegistrationProcessorSuccessResponse> packet(
 			@RequestParam(value = "file", required = true) MultipartFile file) {
 
 		if (packetHandlerService.storePacket(file)) {
-			registrationProcessorSuccessResponse.setStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString());
+			registrationProcessorSuccessResponse
+					.setStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString());
 			return ResponseEntity.ok().body(registrationProcessorSuccessResponse);
 		} else {
 			registrationProcessorSuccessResponse.setStatus(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString());
