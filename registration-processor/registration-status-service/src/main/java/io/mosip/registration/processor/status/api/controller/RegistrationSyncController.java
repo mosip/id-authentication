@@ -100,7 +100,7 @@ public class RegistrationSyncController {
 			response.setId(env.getProperty(REG_SYNC_SERVICE_ID));
 		}
 		response.setError(null);
-		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		response.setVersion(env.getProperty(REG_SYNC_APPLICATION_VERSION));
 		response.setResponse(syncResponseDtoList);
 		response.setError(null);

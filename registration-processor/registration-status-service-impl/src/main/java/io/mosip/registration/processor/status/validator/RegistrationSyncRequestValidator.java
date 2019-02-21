@@ -90,7 +90,7 @@ public class RegistrationSyncRequestValidator implements Validator {
 		if(clazzType) {
 		RegistrationStatusRequestDTO request = (RegistrationStatusRequestDTO) target;
 		
-		validateReqTime(request.getTimestamp(), errors);
+		validateReqTime(request.getRequestTimestamp(), errors);
 
 		if (!errors.hasErrors()) {
 			validateId(request.getId(), errors);
@@ -98,7 +98,7 @@ public class RegistrationSyncRequestValidator implements Validator {
 		}
 		}else {
 			RegistrationSyncRequestDTO request = (RegistrationSyncRequestDTO) target;
-			validateReqTime(request.getTimestamp(), errors);
+			validateReqTime(request.getRequestTimestamp(), errors);
 
 			if (!errors.hasErrors()) {
 				validateId(request.getId(), errors);

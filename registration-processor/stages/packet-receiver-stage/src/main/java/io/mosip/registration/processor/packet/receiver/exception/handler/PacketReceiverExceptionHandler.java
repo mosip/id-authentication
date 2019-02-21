@@ -204,9 +204,7 @@ public class PacketReceiverExceptionHandler {
 
 			response.setError(errors.get(0));
 		}
-		System.out.println("hdcdscdsch   "+env.getProperty(DATETIME_PATTERN));
-		
-		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		response.setVersion(env.getProperty(APPLICATION_VERSION));
 		response.setResponse(null);
 		Gson gson = new GsonBuilder().serializeNulls().create();

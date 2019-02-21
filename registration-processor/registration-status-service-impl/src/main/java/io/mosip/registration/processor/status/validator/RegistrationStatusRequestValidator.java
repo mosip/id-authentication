@@ -70,7 +70,7 @@ public class RegistrationStatusRequestValidator{
 		id.put("status", serviceId);
 		validateId(registrationStatusRequestDTO.getId());
 		validateVersion(registrationStatusRequestDTO.getVersion());
-		validateReqTime(registrationStatusRequestDTO.getTimestamp());
+		validateReqTime(registrationStatusRequestDTO.getRequestTimestamp());
 	}
 
 
