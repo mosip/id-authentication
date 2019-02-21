@@ -28,6 +28,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
+import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
 import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
 import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.registration.processor.core.constant.IdType;
@@ -266,6 +267,19 @@ public class PrintServiceImplTest {
 		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
 		
 		printService.getPdf(IdType.UIN, uinList.get(0) );
+	}
+	
+	@Test(expected = PDFGeneratorException.class)
+	public void testQRCodeGenerationException() throws QrcodeGenerationException, IOException {
+		QrcodeGenerationException e = new QrcodeGenerationException(null,null,null);
+		Mockito.doThrow(e).when(qrCodeGenerator).generateQrCode(any(), any());
+		
+		List<String> uinList = new ArrayList<>();
+		uinList.add("2046958192");
+		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
+		
+		printService.getPdf(IdType.UIN, uinList.get(0) );
+		
 	}
 	
 }
