@@ -7,18 +7,18 @@ Windows 10 that will be used to integrate from Registration client application.
 There are three different set of services / libraries has been analyzed.
 1.	Twain - 
 2.	WIA
-3.	SANE – It works only in Linux version. Not in Windows. 
+3.	SANE â€“ It works only in Linux version. Not in Windows. 
 
 **Twain:**
 	- http://thorntonzone.com/manuals/Compression/Fax,%20IBM%20MMR/MMSC/mmsc/uk/co/mmscomputing/application/imageviewer/index.html  
 	- Downloaded the jar from this location and configured required Twain based Device manager and Data Source to capture the image.  
-	- Unable to integrate with scanner and didn’t get any output. Seems like Windows 10 doesn’t support Twain 64 bit libraries.  
+	- Unable to integrate with scanner and couldn't capture any output from scanner. It looks like Windows 10 doesnâ€™t support Twain 64 bit libraries.  
 
 
 
-**WIA – Windows Image Acquisition:** 
-	We couldn’t find any open source libraries to use this service to capture the image.  
-  But found the com4j open source library to communicate with dll files through the respective wrapper classes.  
+**WIA â€“ Windows Image Acquisition:** 
+	We couldnâ€™t find any open source libraries to use this service to capture the image.  
+  But found the **com4j open source library** to communicate with dll files through the respective wrapper classes.  
 	https://com4j.kohsuke.org/runtime-semantics.html  
   
 	As windows by default providing this [WIA] service to communicate with the scanner, we have chosen the respective wiaaut.dll libraries to create the Java libraries.  
