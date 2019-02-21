@@ -62,6 +62,7 @@ public class PridValidatorTest {
 		pridValidatorImpl.validateId(id);
 
 	}
+	
 
 	@Test(expected = InvalidIDException.class)
 	public void lengthTest() {
@@ -114,10 +115,11 @@ public class PridValidatorTest {
 
 	@Test
 	public void ValidIdTest() {
-
 		assertEquals(true, pridValidatorImpl.validateId(validPrid));
-	}
 
+	}
+	
+	
 	@Test
 	public void ValidIdWithParamsTest() {
 
