@@ -171,7 +171,6 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			File file = new File(filepath);
 			InputStream decryptedData = new FileInputStream(file);
 			object=sendToDFS(dto, decryptedData,object);
-			sendToDFS(dto, decryptedData);
 			isTransactionSuccessful = true;
 			description = "Packet sent to DFS with registrationId " + dto.getRegistrationId();
 		} catch (PacketNotFoundException ex) {
