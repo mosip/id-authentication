@@ -33,7 +33,6 @@ import io.mosip.preregistration.booking.dto.BookingStatusDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
-import io.mosip.preregistration.booking.dto.DeleteBookingDTO;
 import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.booking.dto.RegistrationCenterDto;
@@ -56,6 +55,7 @@ import io.mosip.preregistration.booking.service.util.BookingLock;
 import io.mosip.preregistration.booking.service.util.BookingServiceUtil;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
+import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
 import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
@@ -406,10 +406,15 @@ public class BookingService {
 					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 					LocalDateTime bookedDateTime = LocalDateTime.parse(str, formatter);
 					
-					if(!serviceUtil.timeSpanCheck(bookedDateTime)) {
-						throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
-								ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED_BEFORE.getMessage()+" "+timeSpanCheck+" hours");
+					String preRegStatusCode = serviceUtil
+							.callGetStatusRestService(cancelBookingDTO.getPreRegistrationId());
+					if(!preRegStatusCode.equals(StatusCodes.EXPIRED.getCode())) {
+						if(!serviceUtil.timeSpanCheck(bookedDateTime)) {
+							throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
+									ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED_BEFORE.getMessage()+" "+timeSpanCheck+" hours");
+						}
 					}
+					
 					
 					bookingEntity.setStatusCode(StatusCodes.CANCELED.getCode());
 					bookingEntity.setUpdDate(DateUtils.parseDateToLocalDateTime(new Date()));

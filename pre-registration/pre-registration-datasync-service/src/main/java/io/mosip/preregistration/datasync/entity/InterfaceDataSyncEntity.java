@@ -21,7 +21,7 @@ import lombok.Setter;
  */
 @Component
 @Entity
-@Table(name = "i_processed_prereg_list", schema = "prereg")
+@Table(name = "intf_processed_prereg_list", schema = "prereg")
 @Getter
 @Setter
 @NoArgsConstructor

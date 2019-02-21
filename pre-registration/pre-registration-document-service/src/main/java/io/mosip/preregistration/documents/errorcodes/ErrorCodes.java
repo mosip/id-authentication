@@ -95,6 +95,11 @@ public enum ErrorCodes {
 	/**
 	 * ErrorCode for INVALID_REQUEST_PARAMETER
 	 */
-	PRG_PAM_DOC_020;
+	PRG_PAM_DOC_020,
+	
+	/**
+	 * ErrorCode for DOCUMENT_ALREADY_PRESENT
+	 */
+	PRG_PAM_DOC_021;
 
 }

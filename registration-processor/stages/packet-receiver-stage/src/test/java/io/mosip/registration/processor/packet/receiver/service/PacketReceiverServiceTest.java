@@ -2,15 +2,15 @@ package io.mosip.registration.processor.packet.receiver.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,25 +18,19 @@ import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.multipart.MultipartFile;
-
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
@@ -143,8 +137,8 @@ public class PacketReceiverServiceTest {
 		registrationStatusDto.setRetryCount(2);
 		registrationStatusDto.setRegistrationId("12345");
 		registrations.add(registrationStatusDto);
-		Mockito.when(registrationStatusService.getByIds(ArgumentMatchers.anyString())).thenReturn(registrations);
-		Mockito.when(registrationStatusMapUtil.getExternalStatus(ArgumentMatchers.any(), ArgumentMatchers.any()))
+		Mockito.when(registrationStatusService.getByIds(anyList())).thenReturn(registrations);
+		Mockito.when(registrationStatusMapUtil.getExternalStatus(anyString(), anyInt()))
 				.thenReturn(RegistrationExternalStatusCode.RESEND);
 
 		try {
@@ -178,19 +172,18 @@ public class PacketReceiverServiceTest {
 
 		}
 
-		/*
-		 * Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
-		 * Mockito.doReturn(true).when(auditHandler).writeAudit(ArgumentMatchers.any());
-		 * 
-		 * AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
-		 * AuditRequestDto auditRequest1 = new AuditRequestDto();
-		 * 
-		 * Field f =
-		 * CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
-		 * f.setAccessible(true); f.set(coreAuditRequestBuilder, auditRequestBuilder);
-		 * Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
-		 * f1.setAccessible(true); f1.set(auditRequestBuilder, auditRequest1);
-		 */
+		
+		 /*Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
+		  Mockito.doReturn(true).when(auditHandler).writeAudit(ArgumentMatchers.any());
+		 
+		  AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
+		  AuditRequestDto auditRequest1 = new AuditRequestDto();
+		  
+		  Field f =CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
+		  f.setAccessible(true); f.set(coreAuditRequestBuilder, auditRequestBuilder);
+		  Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
+		  f1.setAccessible(true); f1.set(auditRequestBuilder, auditRequest1);*/
+		 
 	}
 
 	@Test
@@ -235,12 +228,15 @@ public class PacketReceiverServiceTest {
 		root.addAppender(mockAppender);
 
 		packetReceiverService.storePacket(invalidPacket);
-
+	
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
+			
 			@Override
-			public boolean matches(final ILoggingEvent argument) {
+			public boolean matches(Object argument) {
 				return ((LoggingEvent) argument).getFormattedMessage().contains("Packet format is different");
+				
 			}
+
 		}));
 	}
 
@@ -259,10 +255,12 @@ public class PacketReceiverServiceTest {
 		packetReceiverService.storePacket(largerFile);
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
+
 			@Override
-			public boolean matches(final ILoggingEvent argument) {
+			public boolean matches(Object argument) {
 				return ((LoggingEvent) argument).getFormattedMessage()
 						.contains("File size is greater than provided limit");
+			
 			}
 		}));
 	}
@@ -276,17 +274,18 @@ public class PacketReceiverServiceTest {
 		when(mockAppender.getName()).thenReturn("MOCK");
 		root.addAppender(mockAppender);
 
-		Mockito.when(syncRegistrationService.isPresent(ArgumentMatchers.any())).thenReturn(false);
+		Mockito.when(syncRegistrationService.isPresent(anyString())).thenReturn(false);
 
 		packetReceiverService.storePacket(mockMultipartFile);
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
+		
 			@Override
-			public boolean matches(final ILoggingEvent argument) {
+			public boolean matches(Object argument) {
 				return ((LoggingEvent) argument).getFormattedMessage()
 						.contains("Registration Packet is Not yet sync in Sync table");
 			}
-		}));
+			}));
 	}
 
 	@Test
