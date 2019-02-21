@@ -1104,4 +1104,9 @@ public class RegistrationConstants {
 	
 	public static final String CONTENT_TYPE_EMAIL = "EMAIL";
 	public static final String CONTENT_TYPE_MOBILE = "MOBILE";
+	
+	//Key-Policy Key validation
+	public static final String VALID_KEY = "VALID KEY";
+	public static final String INVALID_KEY = "Please sync to get latest key from the server before proceeding with this registration.";
+	
 }
