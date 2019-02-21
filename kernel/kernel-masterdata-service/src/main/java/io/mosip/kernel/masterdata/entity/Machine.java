@@ -90,19 +90,4 @@ public class Machine extends BaseEntity implements Serializable {
 			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	private MachineSpecification machineSpecification;
 
-	/*
-	 * //@OneToMany(mappedBy="machineId",fetch = FetchType.LAZY)
-	 * 
-	 * @OneToMany(fetch = FetchType.LAZY)
-	 * 
-	 * @JoinColumns ({
-	 * 
-	 * @JoinColumn(name="id", referencedColumnName = "machine_id"),
-	 * 
-	 * @JoinColumn(name="lang_code", referencedColumnName = "lang_code"),
-	 * 
-	 * }) private List<RegistrationCenterUserMachine>
-	 * registrationCenterUserMachines;
-	 */
-
 }
