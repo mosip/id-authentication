@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
@@ -34,5 +35,14 @@ public interface RegistrationCenterMachineUserRepository
 	 */
 	@Query("FROM RegistrationCenterUserMachine a WHERE a.registrationCenterMachineUserID.cntrId=?1 AND a.registrationCenterMachineUserID.machineId=?2 AND a.registrationCenterMachineUserID.usrId=?3 and (a.isDeleted is null or a.isDeleted =false)")
 	Optional<RegistrationCenterUserMachine> findAllNondeletedMappings(String cntrId, String machineId, String usrId);
+
+	@Query("FROM RegistrationCenterUserMachine rum where rum.registrationCenterMachineUserID.machineId = ?1 AND (rum.isDeleted is null or rum.isDeleted=false)")
+	List<RegistrationCenterUserMachine> findByMachineIdAndIsDeletedFalseOrIsDeletedIsNull(String machineId);
+
+	@Query("FROM RegistrationCenterUserMachine rum where rum.registrationCenterMachineUserID.usrId = ?1 AND (rum.isDeleted is null or rum.isDeleted=false)")
+	List<RegistrationCenterUserMachine> findByUsrIdAndIsDeletedFalseOrIsDeletedIsNull(String usrId);
+
+	@Query("FROM RegistrationCenterUserMachine rum where rum.registrationCenterMachineUserID.cntrId = ?1 AND (rum.isDeleted is null or rum.isDeleted=false)")
+	List<RegistrationCenterUserMachine> findByCntrIdAndIsDeletedFalseOrIsDeletedIsNull(String cntrId);
 
 }
