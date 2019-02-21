@@ -128,6 +128,7 @@ Registry Manager - It is a static instance, where we can cache the application l
    - This component holds the data of every device arrival information along with Modality into the static Map.  
    - This information is shared with the application whenever is required.  
 
+
 **Application : **  
  The Application must connect to the DM to discover the biometric devices.  
 Once discovered, the application must connect to the required devices. These connections   
