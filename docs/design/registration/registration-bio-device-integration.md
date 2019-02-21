@@ -129,9 +129,9 @@ Registry Manager - It is a static instance, where we can cache the application l
    - This information is shared with the application whenever is required.  
 
 **Application : **  
- The Application must connect to the DM to discover the biometric devices. 
-Once discovered, the application must connect to the required devices. These connections  
-are maintained for the **life of the application**, and the application must expect to receive  
+ The Application must connect to the DM to discover the biometric devices.  
+Once discovered, the application must connect to the required devices. These connections   
+are maintained for the **life of the application**, and the application must expect to receive   
 notifications and events about the device arrivals and removals during this time.  
 
    - Once the application started then load the DM running ports from property file.  
