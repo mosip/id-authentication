@@ -34,6 +34,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.documents.code.DocumentStatusMessages;
@@ -43,7 +44,7 @@ import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.service.DocumentService;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
+
 
 /**
  * Test class to test the DocumentUploader Controller methods
@@ -82,7 +83,7 @@ public class DocumentControllerTest {
 	 * Creating Mock Bean for FilesystemCephAdapterImpl
 	 */
 	@MockBean
-	private FilesystemCephAdapterImpl ceph;
+	private FileSystemAdapter fs;
 
 	List<DocumentEntity> DocumentList = new ArrayList<>();
 	Map<String, String> response = null;

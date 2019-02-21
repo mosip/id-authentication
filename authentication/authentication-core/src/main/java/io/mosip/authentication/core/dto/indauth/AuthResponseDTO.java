@@ -19,10 +19,19 @@ public class AuthResponseDTO extends BaseAuthResponseDTO {
 
 	private AuthResponseInfo info;
 	
+	/** The txnID value*/
+	private String txnID;
+	
 	/**
 	 * Version
 	 */
 	private String ver;
+	
+
+	/**
+	 * Static token
+	 */
+	private String staticToken;
 
 
 }

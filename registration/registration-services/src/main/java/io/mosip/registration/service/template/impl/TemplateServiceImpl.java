@@ -1,5 +1,6 @@
 package io.mosip.registration.service.template.impl;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * types from database and chooses the required template for creation of
 	 * acknowledgement
 	 * 
-	 * * @param templateName 
-	 *            to define the template name
+	 * * @param templateName to define the template name
 	 * 
 	 * @return single template
 	 */
@@ -48,22 +48,27 @@ public class TemplateServiceImpl implements TemplateService {
 		 */
 		for (Template template : templates) {
 			if (template.getName().equals(templateName)) {
-			for (TemplateType type : templateTypes) {
-				if (template.getLangCode().equals(type.getPkTmpltCode().getLangCode()) && template.getTemplateTypCode().equals(type.getPkTmpltCode().getCode())) {
-					for (TemplateFileFormat fileFormat : templateFileFormats) {
-						if (template.getLangCode().equals(fileFormat.getPkTfftCode().getLangCode()) && template.getFileFormatCode().equals(fileFormat.getPkTfftCode().getCode())) {
-							ackTemplate = template;
+				for (TemplateType type : templateTypes) {
+					if (template.getLangCode().equals(type.getPkTmpltCode().getLangCode())
+							&& template.getTemplateTypCode().equals(type.getPkTmpltCode().getCode())) {
+						for (TemplateFileFormat fileFormat : templateFileFormats) {
+							if (template.getLangCode().equals(fileFormat.getPkTfftCode().getLangCode())
+									&& template.getFileFormatCode().equals(fileFormat.getPkTfftCode().getCode())) {
+								ackTemplate = template;
+							}
 						}
 					}
 				}
 			}
 		}
-		}
 		return ackTemplate;
 	}
-	
 
 	public String getHtmlTemplate(String templateName) throws RegBaseCheckedException {
-		return getTemplate(templateName).getFileTxt();
+		byte[] templateInBytes = null;
+		if (getTemplate(templateName).getFileTxt() != null) {
+			templateInBytes = getTemplate(templateName).getFileTxt();
+		}
+		return new String(templateInBytes, StandardCharsets.UTF_8);
 	}
 }

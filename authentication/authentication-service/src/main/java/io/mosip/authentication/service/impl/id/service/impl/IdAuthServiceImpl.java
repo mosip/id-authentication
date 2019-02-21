@@ -1,19 +1,27 @@
 package io.mosip.authentication.service.impl.id.service.impl;
 
-import java.util.Date;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.indauth.IdType;
+import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
@@ -24,13 +32,11 @@ import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
-import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.UUIDUtils;
 
 /**
  * The class validates the UIN and VID.
@@ -39,10 +45,12 @@ import io.mosip.kernel.core.util.UUIDUtils;
  * @author Rakesh Roshan
  */
 @Service
-public class IdAuthServiceImpl implements IdAuthService {
+public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
+
+	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 
 	/** The env. */
 	@Autowired
@@ -69,9 +77,6 @@ public class IdAuthServiceImpl implements IdAuthService {
 
 	@Autowired
 	private IdRepoService idRepoService;
-
-	@Autowired
-	private DateHelper dateHelper;
 
 	/** The autntxnrepository. */
 	@Autowired
@@ -115,14 +120,20 @@ public class IdAuthServiceImpl implements IdAuthService {
 	Map<String, Object> getIdRepoByVidAsRequest(String vid, boolean isBio) throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = null;
 
-		Optional<String> findUinByRefId = vidRepository.findUinByVid(vid);
+		Optional<String> findUinByRefId = vidRepository.findUinByVid(vid, DateUtils.getUTCCurrentDateTime());
 		if (findUinByRefId.isPresent()) {
 			String uin = findUinByRefId.get().trim();
 			try {
 				idRepo = idRepoService.getIdenity(uin, isBio);
 			} catch (IdAuthenticationBusinessException e) {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
+				if (e.getErrorCode().equals(IdAuthenticationErrorConstants.UIN_DEACTIVATED.getErrorCode())) {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VID_DEACTIVATED_UIN);
+				} else {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+				}
 			}
+		} else {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_VID);
 		}
 
 		return idRepo;
@@ -147,14 +158,14 @@ public class IdAuthServiceImpl implements IdAuthService {
 			try {
 				idResDTO = getIdRepoByUIN(idvId, isBio);
 			} catch (IdAuthenticationBusinessException e) {
-				logger.error(null, null, e.getErrorCode(), e.getErrorText());
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
+				logger.error("", "", e.getErrorCode(), e.getErrorText());
+				throw new IdAuthenticationBusinessException(e.getErrorCode(), e.getErrorText());
 			}
 		} else {
 			try {
 				idResDTO = getIdRepoByVID(idvId, isBio);
 			} catch (IdAuthenticationBusinessException e) {
-				logger.error(null, null, null, e.getErrorText());
+				logger.error("", "", "", e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
 			}
 		}
@@ -175,41 +186,8 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public void saveAutnTxn(String idvId, String idvIdType, String uin, String reqTime, String txnId, String status,
-			String comment, RequestType requestType) throws IdAuthenticationBusinessException {
-
-		AutnTxn autnTxn = new AutnTxn();
-		autnTxn.setRefId(idvId);
-		autnTxn.setRefIdType(idvIdType);
-		String id = createId(uin);
-		autnTxn.setId(id); // FIXME
-		// TODO check
-		autnTxn.setCrBy("IDA");
-		autnTxn.setCrDTimes(new Date());
-		// FIXME utilize Instant
-		Date convertStringToDate = null;
-		try {
-			convertStringToDate = dateHelper.convertStringToDate(reqTime);
-		} catch (IDDataValidationException e) {
-			logger.error(DEFAULT_SESSION_ID, null, null, e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
-					e);
-		}
-		autnTxn.setRequestDTtimes(convertStringToDate);
-		autnTxn.setResponseDTimes(new Date()); // TODO check this
-		autnTxn.setAuthTypeCode(requestType.getRequestType());
-		autnTxn.setRequestTrnId(txnId);
-		autnTxn.setStatusCode(status);
-		autnTxn.setStatusComment(comment);
-		// FIXME
-		autnTxn.setLangCode(env.getProperty("mosip.primary.lang-code"));
-		autntxnrepository.saveAndFlush(autnTxn);
-	}
-
-	private String createId(String uin) {
-		String currentDate = DateUtils.formatDate(new Date(), env.getProperty("datetime.pattern"));
-		String uinAndDate = uin + "-" + currentDate;
-		return UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uinAndDate).toString();
+	public void saveAutnTxn(AutnTxn authTxn) throws IdAuthenticationBusinessException {
+		autntxnrepository.saveAndFlush(authTxn);
 	}
 
 	/**
@@ -232,6 +210,67 @@ public class IdAuthServiceImpl implements IdAuthService {
 		}
 
 		restHelper.requestAsync(restRequest);
+	}
+
+	/**
+	 * Fetch data from Identity info value based on Identity response
+	 */
+	@SuppressWarnings("unchecked")
+	public Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO)
+			throws IdAuthenticationBusinessException {
+		return idResponseDTO.entrySet().stream()
+				.filter(entry -> entry.getKey().equals("response") && entry.getValue() instanceof Map)
+				.flatMap(entry -> ((Map<String, Object>) entry.getValue()).entrySet().stream()).flatMap(entry -> {
+					if (entry.getKey().equals("identity") && entry.getValue() instanceof Map) {
+						return ((Map<String, Object>) entry.getValue()).entrySet().stream();
+					} else if (entry.getKey().equals("documents") && entry.getValue() instanceof List) {
+						return (getDocumentValues((List<Map<String, Object>>) entry.getValue())).entrySet().stream();
+					}
+					return Stream.empty();
+				}).peek(entry -> System.out.println(entry)).collect(Collectors.toMap(t -> {
+					System.out.println(t.getKey());
+					return t.getKey();
+				}, entry -> {
+					Object val = entry.getValue();
+					if (val instanceof List) {
+						List<Map> arrayList = (List) val;
+						return arrayList.stream().filter(elem -> elem instanceof Map)
+								.map(elem -> (Map<String, Object>) elem).map(map1 -> {
+									String value = String.valueOf(map1.get("value"));
+									IdentityInfoDTO idInfo = new IdentityInfoDTO();
+									if (map1.containsKey("language")) {
+										idInfo.setLanguage(String.valueOf(map1.get("language")));
+									}
+									idInfo.setValue(value);
+									return idInfo;
+								}).collect(Collectors.toList());
+
+					} else if (val instanceof Boolean || val instanceof String || val instanceof Long
+							|| val instanceof Integer || val instanceof Double) {
+						IdentityInfoDTO idInfo = new IdentityInfoDTO();
+						idInfo.setValue(String.valueOf(val));
+						return Stream.of(idInfo).collect(Collectors.toList());
+					}
+					return Collections.emptyList();
+				}));
+
+	}
+
+	/**
+	 * Fetch document values for Individual's
+	 * 
+	 * @param value
+	 * @return
+	 * @throws IdAuthenticationDaoException
+	 */
+	private Map<String, Object> getDocumentValues(List<Map<String, Object>> value) {
+		Map<String, Object> docValues = value.stream().filter(map -> INDIVIDUAL_BIOMETRICS.equals(map.get("category")))
+				.flatMap(map -> map.entrySet().stream()).filter(entry -> entry.getKey().equalsIgnoreCase("value"))
+				.<Entry<String, String>>map(
+						entry -> new SimpleEntry<>("documents." + INDIVIDUAL_BIOMETRICS, (String) entry.getValue()))
+				.collect(Collectors.toMap(Entry<String, String>::getKey, Entry<String, String>::getValue));
+		return docValues;
+
 	}
 
 }

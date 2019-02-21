@@ -4,6 +4,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,10 +94,10 @@ public class PinAuthServiceImplTest {
 	@Test
 	public void validPinTest() throws IdAuthenticationBusinessException {
 		StaticPin stat = new StaticPin();
-		stat.setPin(CryptoUtil.encodeBase64(HMACUtils.generateHash(("12345").getBytes())));
+		stat.setPin(HMACUtils.digestAsPlainText(HMACUtils.generateHash(("12345").getBytes())));
 		Optional<StaticPin> entityValue = Optional.of(stat);
 		Mockito.when(staticPinRepo.findById(Mockito.anyString())).thenReturn(entityValue);
-		AuthStatusInfo validatePin = pinAuthServiceImpl.validatePin(constructRequest(), "284169042058");
+		AuthStatusInfo validatePin = pinAuthServiceImpl.authenticate(constructRequest(), "284169042058",Collections.emptyMap());
 		assertTrue(validatePin.isStatus());
 	}
 
@@ -106,7 +107,7 @@ public class PinAuthServiceImplTest {
 		stat.setPin("123456");
 		Optional<StaticPin> entityValue = Optional.of(stat);
 		Mockito.when(staticPinRepo.findById(Mockito.anyString())).thenReturn(entityValue);
-		AuthStatusInfo validatePin = pinAuthServiceImpl.validatePin(constructRequest(), "284169042058");
+		AuthStatusInfo validatePin = pinAuthServiceImpl.authenticate(constructRequest(), "284169042058",Collections.emptyMap());
 		assertFalse(validatePin.isStatus());
 	}
 

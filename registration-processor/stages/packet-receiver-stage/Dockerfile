@@ -16,7 +16,7 @@ ENV active_profile_env=${active_profile}
 ENV spring_config_label_env=${spring_config_label}
 
 # change volume to whichever storage directory you want to use for this container.
-VOLUME /home/ftp1/VIRUS_SCAN/encrypted
+VOLUME /home/logs
 
 COPY ./target/packet-receiver-*.jar packet-receiver.jar
 

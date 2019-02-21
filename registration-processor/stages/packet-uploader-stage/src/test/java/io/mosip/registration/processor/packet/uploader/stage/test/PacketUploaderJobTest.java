@@ -34,6 +34,7 @@ import io.mosip.registration.processor.core.constant.EventId;
 import io.mosip.registration.processor.core.constant.EventName;
 import io.mosip.registration.processor.core.constant.EventType;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
+import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
@@ -65,10 +66,11 @@ public class PacketUploaderJobTest {
 		}
 
 		@Override
-		public void consume(MosipEventBus mosipEventBus, MessageBusAddress fromAddress) {
+		public void consumeAndSend(MosipEventBus mosipEventBus, MessageBusAddress fromAddress,MessageBusAddress toAddress) {
 		}
 	};
-
+	@Mock
+	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 	/** The audit log request builder. */
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();

@@ -41,6 +41,7 @@ import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
+import io.vertx.ext.web.RoutingContext;
 
 /**
  * The Class PacketReceiverServiceImpl.
@@ -196,7 +197,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 	/**
 	 * check if file exists or not
-	 * 
+	 *
 	 * @param file
 	 * @param fileOriginalName
 	 * @return
@@ -230,15 +231,15 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		return registrationStatusService.getRegistrationStatus(registrationId) != null;
 	}
 
-	public Boolean isExternalStatusResend(String registrationId) {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationId, "PacketReceiverServiceImpl::isExternalStatusResend()::entry");
-		List<RegistrationStatusDto> registrations = registrationStatusService.getByIds(registrationId);
-		RegistrationExternalStatusCode mappedValue = registrationStatusMapUtil
-				.getExternalStatus(registrations.get(0).getStatusCode(), registrations.get(0).getRetryCount());
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationId, "PacketReceiverServiceImpl::isExternalStatusResend()::exit");
-		return (mappedValue.toString().equals(RESEND));
-	}
+//	public Boolean isExternalStatusResend(String registrationId) {
+//		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+//				registrationId, "PacketReceiverServiceImpl::isExternalStatusResend()::entry");
+//		List<RegistrationStatusDto> registrations = registrationStatusService.getByIds(registrationId);
+//		RegistrationExternalStatusCode mappedValue = registrationStatusMapUtil
+//				.getExternalStatus(registrations.get(0).getStatusCode(), registrations.get(0).getRetryCount());
+//		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+//				registrationId, "PacketReceiverServiceImpl::isExternalStatusResend()::exit");
+//		return (mappedValue.toString().equals(RESEND));
+//	}
 
 }

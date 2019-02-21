@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
@@ -47,6 +48,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  * The Class ManualVerificationServiceImpl.
  */
 @Component
+@Transactional
 public class ManualVerificationServiceImpl implements ManualVerificationService {
 
 	/** The logger. */

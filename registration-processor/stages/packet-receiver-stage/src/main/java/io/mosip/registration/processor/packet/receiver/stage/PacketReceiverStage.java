@@ -2,14 +2,12 @@ package io.mosip.registration.processor.packet.receiver.stage;
 
 import java.io.File;
 import java.io.IOException;
-
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
-
+import io.mosip.registration.processor.packet.receiver.builder.PacketReceiverResponseBuilder;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -19,7 +17,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.packet.manager.exception.systemexception.UnexpectedException;
-import io.mosip.registration.processor.packet.receiver.exception.handler.GlobalExceptionHandler;
+import io.mosip.registration.processor.packet.receiver.exception.handler.PacketReceiverExceptionHandler;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.vertx.ext.web.FileUpload;
@@ -37,42 +35,40 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketReceiverStage.class);
 	
-	/**
-	 * vertx Cluster Manager Url
-	 */
+	/** vertx Cluster Manager Url. */
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
 
-	/**
-	 * server port number
-	 */
+	/** server port number. */
 	@Value("${server.port}")
 	private String port;
 
-	/**
-	 * The Packet Receiver Service
-	 */
+	/** The Packet Receiver Service. */
 	@Autowired
 	public PacketReceiverService<File, MessageDTO> packetReceiverService;
 
-	/**
-	 * Exception handler
-	 */
+	/** Exception handler. */
 	@Autowired
-	public GlobalExceptionHandler globalExceptionHandler;
+	public PacketReceiverExceptionHandler globalExceptionHandler;
 	
+	/** The packet receiver response builder. */
+	@Autowired
+	PacketReceiverResponseBuilder packetReceiverResponseBuilder;
 	/**
 	 * The mosip event bus.
 	 */
 	private MosipEventBus mosipEventBus;
 
 	/**
-	 * deploys this verticle
+	 * deploys this verticle.
 	 */
 	public void deployVerticle() {
 		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 
 	}
+
+	/** The Constant APPLICATION_JSON. */
+	private static final String APPLICATION_JSON = "application/json";
 
 	/*
 	 * (non-Javadoc)
@@ -89,16 +85,16 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	}
 
 	/**
-	 * contains all the routes in the stage
-	 * 
-	 * @param router
+	 * contains all the routes in the stage.
+	 *
+	 * @param router the router
 	 */
 	private void routes(Router router) {
 		
 		router.post("/packetreceiver/v0.1/registration-processor/packet-receiver/registrationpackets").handler(ctx -> {
 			processURL(ctx);
 		}).failureHandler(failureHandler -> {
-			this.setResponse(failureHandler, globalExceptionHandler.handler(failureHandler.failure()));
+			this.setResponse(failureHandler, globalExceptionHandler.handler(failureHandler.failure()),APPLICATION_JSON);
 		});
 		
 		router.get("/packetreceiver/health").handler(ctx -> {
@@ -109,9 +105,9 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	}
 
 	/**
-	 * contains process logic for the context passed
-	 * 
-	 * @param ctx
+	 * contains process logic for the context passed.
+	 *
+	 * @param ctx the ctx
 	 */
 	public void processURL(RoutingContext ctx) {
 		FileUpload fileUpload = ctx.fileUploads().iterator().next();
@@ -123,10 +119,10 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 			file = new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName());
 			MessageDTO messageDTO = packetReceiverService.storePacket(file);
 			if (messageDTO.getIsValid()) {
-				this.setResponse(ctx, RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN);
+				this.setResponse(ctx,PacketReceiverResponseBuilder.buildPacketReceiverResponse(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString()),APPLICATION_JSON);
 				this.sendMessage(messageDTO);
 			} else {
-				this.setResponse(ctx, RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED);
+				this.setResponse(ctx,PacketReceiverResponseBuilder.buildPacketReceiverResponse(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString()),APPLICATION_JSON);
 			}
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -139,9 +135,9 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	}
 
 	/**
-	 * deletes a file
-	 * 
-	 * @param file
+	 * deletes a file.
+	 *
+	 * @param file the file
 	 */
 	private void deleteFile(File file) {
 		try {
@@ -152,9 +148,9 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	}
 
 	/**
-	 * sends messageDTO to camel bridge
-	 * 
-	 * @param messageDTO
+	 * sends messageDTO to camel bridge.
+	 *
+	 * @param messageDTO the message DTO
 	 */
 	public void sendMessage(MessageDTO messageDTO) {
 		this.send(this.mosipEventBus, MessageBusAddress.VIRUS_SCAN_BUS_IN, messageDTO);

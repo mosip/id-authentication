@@ -38,6 +38,9 @@ public class Identity extends BaseDTO {
 
 	/** The gender. */
 	private List<ValuesDTO> gender;
+	
+	/** The full name. */
+	private List<ValuesDTO> residenceStatus;
 
 	/** The address line 1. */
 	private List<ValuesDTO> addressLine1;
@@ -68,7 +71,7 @@ public class Identity extends BaseDTO {
 
 	/** The CNIE number. */
 	@JsonProperty("CNIENumber")
-	private BigInteger cnieNumber;
+	private String cnieNumber;
 
 	/** The local administrative authority. */
 	private List<ValuesDTO> localAdministrativeAuthority;
@@ -140,6 +143,20 @@ public class Identity extends BaseDTO {
 	 */
 	public void setFullName(List<ValuesDTO> fullName) {
 		this.fullName = fullName;
+	}
+
+	/**
+	 * @return the residenceStatus
+	 */
+	public List<ValuesDTO> getResidenceStatus() {
+		return residenceStatus;
+	}
+
+	/**
+	 * @param residenceStatus the residenceStatus to set
+	 */
+	public void setResidenceStatus(List<ValuesDTO> residenceStatus) {
+		this.residenceStatus = residenceStatus;
 	}
 
 	/**
@@ -321,19 +338,18 @@ public class Identity extends BaseDTO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
+	
 	/**
 	 * @return the cnieNumber
 	 */
-	public BigInteger getCnieNumber() {
+	public String getCnieNumber() {
 		return cnieNumber;
 	}
 
 	/**
-	 * @param cnieNumber
-	 *            the cnieNumber to set
+	 * @param cnieNumber the cnieNumber to set
 	 */
-	public void setCnieNumber(BigInteger cnieNumber) {
+	public void setCnieNumber(String cnieNumber) {
 		this.cnieNumber = cnieNumber;
 	}
 

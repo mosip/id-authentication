@@ -16,8 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
-import javax.activation.UnsupportedDataTypeException;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -200,9 +198,9 @@ public class SyncDataServiceTest {
 
 	@Test(expected = SyncDataServiceException.class)
 	public void syncDataFailure() throws InterruptedException, ExecutionException {
-		when(masterDataServiceHelper.getMachines(Mockito.anyString(), Mockito.any()))
+		when(masterDataServiceHelper.getMachines(Mockito.anyString(),Mockito.any(), Mockito.any()))
 				.thenThrow(SyncDataServiceException.class);
-		masterDataService.syncData("1001", null);
+		masterDataService.syncData("1001",null, null);
 
 	}
 
@@ -261,7 +259,7 @@ public class SyncDataServiceTest {
 	// ------------------------------------------UserDetails--------------------------//
 	@Test
 	public void getAllUserDetail() {
-		String response = "{ \"userDetails\": [ { \"userName\": \"individual\", \"mail\": \"individual@mosip.io\", \"mobile\": \"8976394859\", \"langCode\": null, \"userPassword\": \"e1NTSEE1MTJ9TkhVb1c2WHpkZVJCa0drbU9tTk9ZcElvdUlNRGl5ODlJK3RhNm04d0FlTWhMSEoyTG4wSVJkNEJ2dkNqVFg4bTBuV2ZySStneXBTVittbVJKWnAxTkFwT3BWY3MxTVU5\", \"name\": \"individual\", \"roles\": [ \"REGISTRATION_ADMIN\", \"INDIVIDUAL\" ] } ] }";
+		String response = "{ \"mosipUserDtoList\": [ { \"userName\": \"individual\", \"mail\": \"individual@mosip.io\", \"mobile\": \"8976394859\", \"langCode\": null, \"userPassword\": \"e1NTSEE1MTJ9TkhVb1c2WHpkZVJCa0drbU9tTk9ZcElvdUlNRGl5ODlJK3RhNm04d0FlTWhMSEoyTG4wSVJkNEJ2dkNqVFg4bTBuV2ZySStneXBTVittbVJKWnAxTkFwT3BWY3MxTVU5\", \"name\": \"individual\", \"role\": \"REGISTRATION_ADMIN,INDIVIDUAL\"  } ] }";
 		String regId = "10044";
 		RegistrationCenterUserResponseDto registrationCenterUserResponseDto = new RegistrationCenterUserResponseDto();
 		List<RegistrationCenterUserDto> registrationCenterUserDtos = new ArrayList<>();
@@ -305,7 +303,7 @@ public class SyncDataServiceTest {
 
 	@Test
 	public void getAllUserDetailNoDetail() {
-		String response = "{ \"userDetails\": [] }";
+		//String response = "{ \"userDetails\": [] }";
 		String regId = "10044";
 		RegistrationCenterUserResponseDto registrationCenterUserResponseDto = new RegistrationCenterUserResponseDto();
 		List<RegistrationCenterUserDto> registrationCenterUserDtos = new ArrayList<>();
