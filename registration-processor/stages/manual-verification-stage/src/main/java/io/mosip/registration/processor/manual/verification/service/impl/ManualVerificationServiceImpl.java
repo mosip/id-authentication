@@ -6,7 +6,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -66,7 +65,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 
 	/** The filesystem ceph adapter impl. */
 	@Autowired
-	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
+	private FileSystemAdapter filesystemCephAdapterImpl;
 
 	/** The base packet repository. */
 	@Autowired

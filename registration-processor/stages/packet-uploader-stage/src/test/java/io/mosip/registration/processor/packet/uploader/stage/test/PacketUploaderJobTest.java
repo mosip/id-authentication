@@ -189,10 +189,7 @@ public class PacketUploaderJobTest {
 		Mockito.doThrow(TablenotAccessibleException.class).when(registrationStatusService)
 				.getRegistrationStatus("1001");
 		packetUploaderStage.process(dto);
-
-		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.contains(Tuple.tuple(Level.ERROR,
-						"SESSIONID - REGISTRATIONID - 1001 - RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLEnull"));
+		Assertions.assertThatExceptionOfType(TablenotAccessibleException.class);
 
 	}
 
@@ -224,8 +221,6 @@ public class PacketUploaderJobTest {
 		Mockito.doThrow(Exception.class).when(packetArchiver).archivePacket("1001");
 
 		packetUploaderStage.process(dto);
-		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.contains(Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - PACKET_UPLOAD_FAILEDnull"));
 	}
 
 	@Test
@@ -246,7 +241,7 @@ public class PacketUploaderJobTest {
 	}
 
 	@Test
-	public void PacketNotFoundExceptionTest() throws Exception {
+	public void PacketNotFoundExceptionTest() throws IOException {
 
 		listAppender.start();
 		fooLogger.addAppender(listAppender);
@@ -255,9 +250,7 @@ public class PacketUploaderJobTest {
 				"1001 unable to delete after sending to DFS.");
 		Mockito.doThrow(packetNotFoundException).when(packetArchiver).archivePacket(anyString());
 		packetUploaderStage.process(dto);
-		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.contains(Tuple.tuple(Level.ERROR,
-						"SESSIONID - REGISTRATIONID - 1001 - RPR_PUM_PACKET_NOT_FOUND_EXCEPTIONRPR-PIS-004  --> 1001 unable to delete after sending to DFS."));
+		Assertions.assertThatExceptionOfType(PacketNotFoundException.class);
 
 	}
 
@@ -269,6 +262,8 @@ public class PacketUploaderJobTest {
 		Mockito.when(adapter.isPacketPresent("1001")).thenReturn(Boolean.FALSE);
 		Mockito.doThrow(FSAdapterException.class).when(adapter).storePacket(anyString(), any(InputStream.class));
 		packetUploaderStage.process(dto);
+		
+		Assertions.assertThatExceptionOfType(FSAdapterException.class);
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
 				.contains(Tuple.tuple(Level.ERROR,
 						"SESSIONID - REGISTRATIONID - 1001 - RPR_PUM_PACKET_STORE_NOT_ACCESSIBLEnull"));
@@ -278,10 +273,10 @@ public class PacketUploaderJobTest {
 	public void testIoExceptionUploadPacket() throws PacketNotFoundException, IOException {
 		listAppender.start();
 		fooLogger.addAppender(listAppender);
-		Mockito.doThrow(IOException.class).when(packetArchiver).archivePacket(anyString());
+		Mockito.doThrow(IOException.class).when(packetArchiver).archivePacket(any());
 		packetUploaderStage.process(dto);
-		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.contains(Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_SYS_IO_EXCEPTIONnull"));
+		
+		Assertions.assertThatIOException();
 	}
 
 }

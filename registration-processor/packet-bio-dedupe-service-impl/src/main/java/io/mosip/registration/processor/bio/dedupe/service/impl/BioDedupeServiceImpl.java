@@ -86,7 +86,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 	/** The filesystem adapter impl. */
 	@Autowired
-	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
+	private FileSystemAdapter filesystemCephAdapterImpl;
 
 	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 
