@@ -224,7 +224,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 		String registrationId = entry.getRegistrationId();
 
 		entry.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_SUCCESSFUL.toString());
-		entry.setStatusComment(StatusMessage.PACKET_VIRUS_SCAN_SUCCESS);
+		entry.setStatusComment(StatusMessage.PACKET_VIRUS_SCAN_SUCCESSFUL);
 		entry.setUpdatedBy(USER);
 		isTransactionSuccessful = true;
 		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
