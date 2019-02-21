@@ -1,6 +1,7 @@
 export const NUMBER_PATTERN = '^[0-9]+[0-9]*$';
 export const MOBILE_PATTERN = '^([6-9]{1})([0-9]{9})$';
 export const TEXT_PATTERN = '^[a-zA-Z ]*$';
+export const CNIE_PATTERN = '^([0-9]{10,30})$';
 export const COUNTRY_NAME = 'Morroco';
 export const COUNTRY_HIERARCHY = 'Country';
 export const VERSION = '1.0';
@@ -9,6 +10,7 @@ export const ERROR = 'error';
 export const NESTED_ERROR = 'err';
 export const ERROR_CODE = 'errorCode';
 export const PRE_REGISTRATION_ID = 'pre_registration_id';
+export const ALLOWED_BOOKING_TIME = 48;
 
 export const IDS = {
   newUser: 'mosip.pre-registration.demographic.create',
