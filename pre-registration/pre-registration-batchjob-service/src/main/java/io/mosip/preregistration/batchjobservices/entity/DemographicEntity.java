@@ -44,7 +44,6 @@ public class DemographicEntity implements Serializable {
 	@Id
 	private String preRegistrationId;
 
-
 	/** The JSON */
 	@Column(name = "demog_detail")
 	private byte[] applicantDetailJson;
@@ -76,14 +75,13 @@ public class DemographicEntity implements Serializable {
 	/** The update date time. */
 	@Column(name = "upd_dtimes")
 	private LocalDateTime updateDateTime;
-	
-	
+
 	/**
 	 * Encrypted Date Time
 	 */
 	@Column(name = "encrypted_dtimes")
 	private LocalDateTime encryptedDateTime;
-	
-@Column(name="demog_detail_hash")
-private String demogDetailHash;
+
+	@Column(name = "demog_detail_hash")
+	private String demogDetailHash;
 }
