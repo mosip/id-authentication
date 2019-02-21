@@ -53,7 +53,7 @@ public class IdRequestValidator implements Validator {
 	/** The Constant VER. */
 	private static final String VER = "version";
 
-	private static final Pattern verPattern = Pattern.compile("^[0-9](\\.\\d{1,1})?$");
+	private static final Pattern verPattern = Pattern.compile("^\\d+(\\.\\d+)?$");
 
 	/** The Constant DOC_TYPE. */
 	private static final String DOC_CAT = "category";
