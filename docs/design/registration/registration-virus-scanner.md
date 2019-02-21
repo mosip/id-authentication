@@ -74,11 +74,8 @@ Create the proper alert success/error to intimate the user.
 Add the new Job Entry in the SYNC_JOB_DEF table for the frequency of Virus Scanner.
 
 
-Service:
-
-
-
-
 Class and Sequence Diagram:
 
-![VirusScannerClassDiagram and Sequence Diagram](_images/_class_diagram/registration-authorization-classDiagram.png)
+![VirusScanner ClassDiagram](_images/reg_virus_scanner_class.png)
+
+![VirusScanner Sequence Diagram](_images/reg_virus_scanner_seq.png)
