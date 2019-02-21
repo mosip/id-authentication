@@ -44,7 +44,6 @@ public class MachineServiceImpl implements MachineService {
 	@Autowired
 	MachineRepository machineRepository;
 
-
 	@Autowired
 	MachineSpecificationRepository machineSpecificationRepository;
 
@@ -162,7 +161,7 @@ public class MachineServiceImpl implements MachineService {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
-	
+
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		MapperUtils.map(crtMachine, idAndLanguageCodeID);
 
@@ -181,13 +180,13 @@ public class MachineServiceImpl implements MachineService {
 	public IdAndLanguageCodeID updateMachine(RequestDto<MachineDto> machine) {
 		Machine updMachine = null;
 		try {
-			Machine renmachine = machineRepository
-					.findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(machine.getRequest().getId(), machine.getRequest().getLangCode());
+			Machine renmachine = machineRepository.findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(
+					machine.getRequest().getId(), machine.getRequest().getLangCode());
 
 			if (renmachine != null) {
 				MetaDataUtils.setUpdateMetaData(machine.getRequest(), renmachine, false);
 				updMachine = machineRepository.update(renmachine);
-				
+
 				MachineHistory machineHistory = new MachineHistory();
 				MapperUtils.map(updMachine, machineHistory);
 				MapperUtils.setBaseFieldValue(updMachine, machineHistory);
@@ -222,18 +221,18 @@ public class MachineServiceImpl implements MachineService {
 		try {
 			List<Machine> renMachineList = machineRepository.findMachineByIdAndIsDeletedFalseorIsDeletedIsNull(id);
 			if (!renMachineList.isEmpty()) {
-				for(Machine renMachine : renMachineList) {
+				for (Machine renMachine : renMachineList) {
 
-				MetaDataUtils.setDeleteMetaData(renMachine);
-				delMachine = machineRepository.update(renMachine);
+					MetaDataUtils.setDeleteMetaData(renMachine);
+					delMachine = machineRepository.update(renMachine);
 
-				MachineHistory machineHistory = new MachineHistory();
-				MapperUtils.map(delMachine, machineHistory);
-				MapperUtils.setBaseFieldValue(delMachine, machineHistory);
+					MachineHistory machineHistory = new MachineHistory();
+					MapperUtils.map(delMachine, machineHistory);
+					MapperUtils.setBaseFieldValue(delMachine, machineHistory);
 
-				machineHistory.setEffectDateTime(delMachine.getDeletedDateTime());
-				machineHistory.setDeletedDateTime(delMachine.getDeletedDateTime());
-				machineHistoryService.createMachineHistory(machineHistory);
+					machineHistory.setEffectDateTime(delMachine.getDeletedDateTime());
+					machineHistory.setDeletedDateTime(delMachine.getDeletedDateTime());
+					machineHistoryService.createMachineHistory(machineHistory);
 				}
 			} else {
 				throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -251,5 +250,3 @@ public class MachineServiceImpl implements MachineService {
 
 	}
 }
-
-

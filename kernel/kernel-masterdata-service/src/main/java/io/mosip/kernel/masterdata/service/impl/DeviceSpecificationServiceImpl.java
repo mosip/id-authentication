@@ -178,19 +178,19 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 					.findByIdAndIsDeletedFalseorIsDeletedIsNull(id);
 
 			if (!deviceSpecifications.isEmpty()) {
-				for(DeviceSpecification deviceSpecification : deviceSpecifications) {
-				List<Device> renDeviceList = deviceRepository
-						.findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getId());
-				if (renDeviceList.isEmpty()) {
-					MetaDataUtils.setDeleteMetaData(deviceSpecification);
-					deviceSpecificationRepository.update(deviceSpecification);
-					idResponseDto.setId(deviceSpecification.getId());
-				} else {
-					throw new MasterDataServiceException(
-							DeviceSpecificationErrorCode.DEVICE_DELETE_DEPENDENCY_EXCEPTION.getErrorCode(),
-							DeviceSpecificationErrorCode.DEVICE_DELETE_DEPENDENCY_EXCEPTION.getErrorMessage());
+				for (DeviceSpecification deviceSpecification : deviceSpecifications) {
+					List<Device> renDeviceList = deviceRepository
+							.findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getId());
+					if (renDeviceList.isEmpty()) {
+						MetaDataUtils.setDeleteMetaData(deviceSpecification);
+						deviceSpecificationRepository.update(deviceSpecification);
+						idResponseDto.setId(deviceSpecification.getId());
+					} else {
+						throw new MasterDataServiceException(
+								DeviceSpecificationErrorCode.DEVICE_DELETE_DEPENDENCY_EXCEPTION.getErrorCode(),
+								DeviceSpecificationErrorCode.DEVICE_DELETE_DEPENDENCY_EXCEPTION.getErrorMessage());
+					}
 				}
-			}
 
 			} else {
 				throw new RequestException(

@@ -197,25 +197,25 @@ public class DeviceServiceImpl implements DeviceService {
 		Device deletedDevice = null;
 		try {
 			foundDeviceList = deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(id);
-			
-			if (!foundDeviceList.isEmpty()) {
-				for(Device foundDevice : foundDeviceList) {
-				MetaDataUtils.setDeleteMetaData(foundDevice);
-				deletedDevice = deviceRepository.update(foundDevice);
-				
-				DeviceHistory deviceHistory = new DeviceHistory();
-				MapperUtils.map(deletedDevice, deviceHistory);
-				MapperUtils.setBaseFieldValue(deletedDevice, deviceHistory);
 
-				deviceHistory.setEffectDateTime(deletedDevice.getDeletedDateTime());
-				deviceHistory.setDeletedDateTime(deletedDevice.getDeletedDateTime());
-				deviceHistoryService.createDeviceHistory(deviceHistory);
+			if (!foundDeviceList.isEmpty()) {
+				for (Device foundDevice : foundDeviceList) {
+					MetaDataUtils.setDeleteMetaData(foundDevice);
+					deletedDevice = deviceRepository.update(foundDevice);
+
+					DeviceHistory deviceHistory = new DeviceHistory();
+					MapperUtils.map(deletedDevice, deviceHistory);
+					MapperUtils.setBaseFieldValue(deletedDevice, deviceHistory);
+
+					deviceHistory.setEffectDateTime(deletedDevice.getDeletedDateTime());
+					deviceHistory.setDeletedDateTime(deletedDevice.getDeletedDateTime());
+					deviceHistoryService.createDeviceHistory(deviceHistory);
 				}
 			} else {
 				throw new RequestException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
-			
+
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
@@ -224,7 +224,5 @@ public class DeviceServiceImpl implements DeviceService {
 		idResponseDto.setId(id);
 		return idResponseDto;
 	}
-	
-	
 
 }

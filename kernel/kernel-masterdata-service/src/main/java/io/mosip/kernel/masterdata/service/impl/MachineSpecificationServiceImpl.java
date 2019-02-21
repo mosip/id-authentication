@@ -67,7 +67,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
-		
+
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		MapperUtils.map(renMachineSpecification, idAndLanguageCodeID);
 
@@ -87,7 +87,8 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 
 		try {
 			MachineSpecification renMachineSpecification = machineSpecificationRepository
-					.findByIdAndLangCodeIsDeletedFalseorIsDeletedIsNull(machineSpecification.getRequest().getId(), machineSpecification.getRequest().getLangCode());
+					.findByIdAndLangCodeIsDeletedFalseorIsDeletedIsNull(machineSpecification.getRequest().getId(),
+							machineSpecification.getRequest().getLangCode());
 			if (renMachineSpecification != null) {
 
 				MetaDataUtils.setUpdateMetaData(machineSpecification.getRequest(), renMachineSpecification, false);
@@ -103,10 +104,10 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
-		
+
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		MapperUtils.map(updMachineSpecification, idAndLanguageCodeID);
-		
+
 		return idAndLanguageCodeID;
 	}
 
@@ -123,19 +124,20 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 			List<MachineSpecification> renMachineSpecifications = machineSpecificationRepository
 					.findByIdAndIsDeletedFalseorIsDeletedIsNull(id);
 			if (!renMachineSpecifications.isEmpty()) {
-				for(MachineSpecification renMachineSpecification : renMachineSpecifications ) {
-				List<Machine> renmachineList = machineRepository
-						.findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(renMachineSpecification.getId());
-				if (renmachineList.isEmpty()) {
-					MetaDataUtils.setDeleteMetaData(renMachineSpecification);
-					delMachineSpecification = machineSpecificationRepository.update(renMachineSpecification);
-				} else {
-					throw new MasterDataServiceException(
-							MachineSpecificationErrorCode.MACHINE_DELETE_DEPENDENCY_EXCEPTION.getErrorCode(),
-							MachineSpecificationErrorCode.MACHINE_DELETE_DEPENDENCY_EXCEPTION.getErrorMessage());
+				for (MachineSpecification renMachineSpecification : renMachineSpecifications) {
+					List<Machine> renmachineList = machineRepository
+							.findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(
+									renMachineSpecification.getId());
+					if (renmachineList.isEmpty()) {
+						MetaDataUtils.setDeleteMetaData(renMachineSpecification);
+						delMachineSpecification = machineSpecificationRepository.update(renMachineSpecification);
+					} else {
+						throw new MasterDataServiceException(
+								MachineSpecificationErrorCode.MACHINE_DELETE_DEPENDENCY_EXCEPTION.getErrorCode(),
+								MachineSpecificationErrorCode.MACHINE_DELETE_DEPENDENCY_EXCEPTION.getErrorMessage());
+					}
 				}
-				}
-				} else {
+			} else {
 				throw new RequestException(
 						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
