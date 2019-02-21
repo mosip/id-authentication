@@ -481,6 +481,8 @@ public class DemographicService {
 
 		Map<String, String> reqDateRange = new HashMap<>();
 		Map<String, String> inputDateRange = new HashMap<>();
+		fromDate=fromDate.replace("%20", " ");
+		toDate=toDate.replace("%20", " ");
 		try {
 			reqDateRange.put(RequestCodes.FROM_DATE.getCode(), fromDate);
 			reqDateRange.put(RequestCodes.TO_DATE.getCode(), toDate);
