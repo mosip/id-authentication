@@ -202,11 +202,11 @@ export class TimeSelectionComponent implements OnInit {
         const data = {
           case: 'MESSAGE',
           title: 'Success',
-          message: 'Action was completed successfully'
+          message: 'Appointment Booking Successfully Completed'
         };
         const dialogRef = this.dialog
           .open(DialougComponent, {
-            width: '250px',
+            width: '350px',
             data: data
           })
           .afterClosed()
@@ -228,6 +228,7 @@ export class TimeSelectionComponent implements OnInit {
             const arr = this.router.url.split('/');
             arr.pop();
             arr.pop();
+            arr.push('summary');
             arr.push('acknowledgement');
             const url = arr.join('/');
             this.router.navigateByUrl(url);
@@ -239,10 +240,10 @@ export class TimeSelectionComponent implements OnInit {
         const data = {
           case: 'MESSAGE',
           title: 'Failure',
-          message: 'Action could not be completed'
+          message: 'Appointment Booking Failed'
         };
         const dialogRef = this.dialog.open(DialougComponent, {
-          width: '250px',
+          width: '350px',
           data: data
         });
       }

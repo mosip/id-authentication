@@ -1,10 +1,13 @@
 package io.mosip.registration.processor.manual.verification.dto;
-	
+
+import java.io.Serializable;
+
 /**
  * The Class PacketInfoRequestDto.
  */
-public class PacketInfoRequestDto {
-	
+public class PacketInfoRequestDto implements Serializable {
+
+	private static final long serialVersionUID = 5112224635778738335L;
 	/** The reg id. */
 	private String regId;
 

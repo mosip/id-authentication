@@ -113,7 +113,8 @@ public class PacketValidateProcessor {
 			object.setMessageBusAddress(MessageBusAddress.PACKET_VALIDATOR_BUS_IN);
 			object.setIsValid(Boolean.FALSE);
 			object.setInternalError(Boolean.FALSE);
-
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", "PacketValidatorStage::process()::entry");
 					this.registrationId = object.getRid();
 					description = "";
 					isTransactionSuccessful = false;
@@ -174,7 +175,13 @@ public class PacketValidateProcessor {
 							IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 							 preRegId = identityIteratorUtil.getFieldValue(
 									packetMetaInfo.getIdentity().getMetaData(), JsonConstant.PREREGISTRATIONID);
-							
+							 object.setRid(registrationStatusDto.getRegistrationId());
+								isTransactionSuccessful = true;
+								description = "Structural validation success for registrationId " + registrationId;
+								regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+										registrationId, "PacketValidatorStage::process()::exit");
+								regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+										registrationId,description);
 
 						} else {
 							object.setIsValid(Boolean.FALSE);
@@ -182,11 +189,15 @@ public class PacketValidateProcessor {
 							int retryCount = registrationStatusDto.getRetryCount() != null
 									? registrationStatusDto.getRetryCount() + 1
 									: 1;
-							description = registrationStatusDto.getStatusComment() + registrationId;
+							description = "File validation(" + isFilesValidated + ")/Checksum validation("
+									+ isCheckSumValidated + ")/Applicant Document Validation("
+									+ isApplicantDocumentValidation + ") failed for registrationId " + registrationId;
+							isTransactionSuccessful = false;
 							registrationStatusDto.setRetryCount(retryCount);
 
 							registrationStatusDto
 									.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
+							registrationStatusDto.setStatusComment(description);
 
 						}
 
@@ -205,17 +216,19 @@ public class PacketValidateProcessor {
 						object.setInternalError(Boolean.TRUE);
 						isTransactionSuccessful = false;
 						description = "FileSytem is not accessible for registration id " + registrationId;
-						object.setIsValid(Boolean.FALSE);
+						isTransactionSuccessful = false;
 						object.setRid(registrationStatusDto.getRegistrationId());
 					} catch (DataAccessException e) {
 						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 								PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + e.getMessage()
 										+ ExceptionUtils.getStackTrace(e));
+						isTransactionSuccessful = false;
 						object.setInternalError(Boolean.TRUE);
-						description = "Data voilation in reg packet : " + registrationId;
-						object.setIsValid(Boolean.FALSE);
-						
+						description = "Data access exception for the packet with registrationId " + registrationId
+								+ "::" + e.getMessage();
+						isTransactionSuccessful = false;
+						object.setRid(registrationStatusDto.getRegistrationId());
 
 					} catch (IOException exc) {
 						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -223,9 +236,10 @@ public class PacketValidateProcessor {
 								PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + exc.getMessage()
 										+ ExceptionUtils.getStackTrace(exc));
 						object.setInternalError(Boolean.TRUE);
-						description = "Internal error occured while processing registration  id : " + registrationId;
-						object.setIsValid(Boolean.FALSE);
-						
+						description = "Internal error occured while processing for the registrationId " + registrationId
+								+ "::" + exc.getMessage();
+						isTransactionSuccessful = false;
+						object.setRid(registrationStatusDto.getRegistrationId());
 
 					} catch (Exception ex) {
 						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -233,9 +247,10 @@ public class PacketValidateProcessor {
 								PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + ex.getMessage()
 										+ ExceptionUtils.getStackTrace(ex));
 						object.setInternalError(Boolean.TRUE);
-						description = "Internal error occured while processing registration  id : " + registrationId;
-						object.setIsValid(Boolean.FALSE);
-						
+						description = "Internal error occured while processing for the registrationId " + registrationId
+								+ "::" + ex.getMessage();
+
+						object.setRid(registrationStatusDto.getRegistrationId());
 
 					} finally {
 
@@ -246,9 +261,9 @@ public class PacketValidateProcessor {
 							int retryCount = registrationStatusDto.getRetryCount() != null
 									? registrationStatusDto.getRetryCount() + 1
 									: 1;
-							description = registrationStatusDto.getStatusComment() + registrationId;
+							
 							registrationStatusDto.setRetryCount(retryCount);
-
+							registrationStatusDto.setStatusComment(description);
 							registrationStatusDto
 									.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
 							registrationStatusService.updateRegistrationStatus(registrationStatusDto);
@@ -300,13 +315,7 @@ public class PacketValidateProcessor {
 							mainRequestDto, MainResponseDTO.class);
 					isTransactionSuccessful = true;
 
-				} else {
-					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
-							LoggerFileConstant.REGISTRATIONID.toString(), registrationId.toString(),
-							PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage()
-									+ "as pre registartion Ids are not found");
-				}
-
+				} 
 				if (mainResponseDto != null && mainResponseDto.getErr() != null) {
 					regProcLogger.error(LoggerFileConstant.REGISTRATIONID.toString(), registrationId.toString(),
 							PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage(),
