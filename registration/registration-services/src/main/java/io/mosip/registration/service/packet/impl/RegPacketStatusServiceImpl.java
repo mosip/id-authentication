@@ -23,6 +23,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
@@ -74,7 +75,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	 * deleteRegistrationPackets()
 	 */
 	@Override
-	synchronized public ResponseDTO deleteRegistrationPackets() {
+	public synchronized ResponseDTO deleteRegistrationPackets() {
 
 		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Delete  Reg-packets started");
@@ -85,17 +86,20 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 		try {
 			/* Get Registrations to be deleted */
-			List<Registration> registrations = registrationDAO
-					.getRegistrationsToBeDeleted(getPacketDeletionLastDate(reqTime));
+			List<Registration> registrations = registrationDAO.get(getPacketDeletionLastDate(reqTime),
+					RegistrationConstants.PACKET_STATUS_CODE_PROCESSED);
 
-			deleteRegistrations(registrations);
+			if (!isNull(registrations) && !isEmpty(registrations)) {
+				deleteRegistrations(registrations);
+
+			}
 
 			setSuccessResponse(responseDTO, RegistrationConstants.REGISTRATION_DELETION_BATCH_JOBS_SUCCESS, null);
 
 		} catch (RuntimeException runtimeException) {
 
 			LOGGER.error("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, runtimeException.getMessage());
+					APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
 			setErrorResponse(responseDTO, RegistrationConstants.REGISTRATION_DELETION_BATCH_JOBS_FAILURE, null);
 		}
@@ -170,14 +174,14 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 				registration.setServerStatusCode(regPacketStatusDTO.getStatus());
 				registration.setServerStatusTimestamp(new Timestamp(System.currentTimeMillis()));
 
-				delete(registration, regPacketStatusDTO.getStatus(), false);
+				updateRegistration(registration, regPacketStatusDTO.getStatus());
 
 			}
 			LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID, "packets status sync from server has been ended");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, runtimeException.getMessage());
+					APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_UPDATE_STATUS,
 					runtimeException.toString());
 
@@ -186,11 +190,11 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	}
 
 	@SuppressWarnings("unchecked")
-	synchronized public ResponseDTO packetSyncStatus() {
+	public synchronized ResponseDTO packetSyncStatus() {
 
 		LOGGER.info("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"packet status sync called");
-		 
+
 		List<String> packetIds = getPacketIds();
 		LOGGER.info("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"PacketIds for sync with server have been retrieved");
@@ -209,15 +213,16 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 		try {
 			/* Obtain RegistrationStatusDTO from service delegate util */
-			List<LinkedHashMap<String, String>> registrations = (List<LinkedHashMap<String, String>>) serviceDelegateUtil.get(SERVICE_NAME, requestParamMap,
-					false);
+			List<LinkedHashMap<String, String>> registrations = (List<LinkedHashMap<String, String>>) serviceDelegateUtil
+					.get(SERVICE_NAME, requestParamMap, false);
 			if (!registrations.isEmpty()) {
 				/* update the status of packets after sync with server */
 				try {
 					updatePacketIdsByServerStatus(registrations);
 				} catch (RegBaseUncheckedException regBaseUncheckedException) {
 					LOGGER.error("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
-							regBaseUncheckedException.getMessage());
+							regBaseUncheckedException.getMessage()
+									+ ExceptionUtils.getStackTrace(regBaseUncheckedException));
 
 					setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
 					return response;
@@ -241,7 +246,13 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		} catch (SocketTimeoutException | RegBaseCheckedException | IllegalArgumentException | HttpClientErrorException
 				| HttpServerErrorException | ResourceAccessException exception) {
 			LOGGER.error("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage());
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+
+			setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
+			return response;
+		} catch(RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
 			setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
 			return response;
@@ -252,59 +263,33 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		return response;
 	}
 
-	private Registration delete(final Registration registration, final String clientStatus, boolean isToBeDeleted) {
+	private Registration updateRegistration(final Registration registration, final String clientStatus) {
 
 		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Delete Registration Packet started");
-		Registration updatedRegistration = null;
 
-		isToBeDeleted = (clientStatus.equalsIgnoreCase(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED)
-				|| isToBeDeleted);
-
-		if (isToBeDeleted) {
-			File ackFile = null;
-			File zipFile = null;
-			String ackPath = registration.getAckFilename();
-			ackFile = new File(ackPath);
-			String zipPath = ackPath.replace("_Ack.png", RegistrationConstants.ZIP_FILE_EXTENSION);
-			zipFile = new File(zipPath);
-
-			if (ackFile != null) {
-
-				Files.delete(ackFile);
-				Files.delete(zipFile);
-
-				/* Delete row from DB */
-				regPacketStatusDAO.delete(registration);
-
-				return registration;
-
-			}
+		/* Get Registration Transaction List for each transaction */
+		List<RegistrationTransaction> transactionList = registration.getRegistrationTransaction();
+		if (isNull(transactionList)) {
+			transactionList = new LinkedList<>();
 		}
+		/* Prepare Registration Transaction */
+		RegistrationTransaction registrationTxn = new RegistrationTransaction();
 
-		else {
-			/* Get Registration Transaction List for each transaction */
-			List<RegistrationTransaction> transactionList = registration.getRegistrationTransaction();
-			if (isNull(transactionList)) {
-				transactionList = new LinkedList<>();
-			}
-			/* Prepare Registration Transaction */
-			RegistrationTransaction registrationTxn = new RegistrationTransaction();
+		registrationTxn.setRegId(registration.getId());
+		registrationTxn.setTrnTypeCode(RegistrationTransactionType.CREATED.getCode());
+		registrationTxn.setLangCode("ENG");
+		registrationTxn.setCrBy(SessionContext.userContext().getUserId());
+		registrationTxn.setCrDtime(new Timestamp(System.currentTimeMillis()));
 
-			registrationTxn.setRegId(registration.getId());
-			registrationTxn.setTrnTypeCode(RegistrationTransactionType.CREATED.getCode());
-			registrationTxn.setLangCode("ENG");
-			registrationTxn.setCrBy(SessionContext.userContext().getUserId());
-			registrationTxn.setCrDtime(new Timestamp(System.currentTimeMillis()));
+		registrationTxn.setStatusCode(registration.getClientStatusCode());
 
-			registrationTxn.setStatusCode(registration.getClientStatusCode());
+		transactionList.add(registrationTxn);
+		registration.setRegistrationTransaction(transactionList);
 
-			transactionList.add(registrationTxn);
-			registration.setRegistrationTransaction(transactionList);
+		registration.setClientStatusCode(clientStatus);
 
-			updatedRegistration = regPacketStatusDAO.update(registration);
-
-		}
+		Registration updatedRegistration = regPacketStatusDAO.update(registration);
 		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Delete Registration Packet ended");
 
@@ -312,13 +297,35 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.packet.RegPacketStatusService#deleteRegistrations(java.util.List)
+	 */
 	@Override
-	public void deleteRegistrations(List<Registration> registrations) {
+	public void deleteRegistrations(final List<Registration> registrations) {
 		for (Registration registration : registrations) {
-			/* Delete each registration */
-			delete(registration, registration.getStatusCode(), true);
+
+			/* Delete Registration */
+			delete(registration);
 		}
 
+	}
+
+	private void delete(Registration registration) {
+		File ackFile = null;
+		File zipFile = null;
+		String ackPath = registration.getAckFilename();
+		ackFile = new File(ackPath);
+		String zipPath = ackPath.replace("_Ack.html", RegistrationConstants.ZIP_FILE_EXTENSION);
+		zipFile = new File(zipPath);
+
+		if (zipFile.exists()) {
+
+			Files.delete(ackFile);
+			Files.delete(zipFile);
+
+			/* Delete row from DB */
+			regPacketStatusDAO.delete(registration);
+		}
 	}
 
 	public ResponseDTO syncPacket() {
@@ -358,12 +365,15 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 				successResponseDTO.setMessage(RegistrationConstants.SUCCESS);
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
 			}
+			LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER_END - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
+					APPLICATION_ID, "Sync the packets to the server ending");
 
-		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException | URISyntaxException e) {
+		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException
+				| URISyntaxException exception) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - REG_PACKET_STATUS_SYNC", APPLICATION_NAME,
-					APPLICATION_ID, "Error in Synching packets to the server");
+					APPLICATION_ID, exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-			errorResponseDTO.setMessage(e.getMessage());
+			errorResponseDTO.setMessage(exception.getMessage());
 			errorList.add(errorResponseDTO);
 			responseDTO.setErrorResponseDTOs(errorList);
 		}

@@ -36,18 +36,19 @@ import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
-import io.mosip.registration.dto.mastersync.MasterReasonListDto;
+import io.mosip.registration.dto.mastersync.ReasonListDto;
+import io.mosip.registration.entity.BlacklistedWords;
+import io.mosip.registration.entity.DocumentType;
+import io.mosip.registration.entity.Gender;
+import io.mosip.registration.entity.Location;
+import io.mosip.registration.entity.ReasonCategory;
+import io.mosip.registration.entity.ReasonList;
 import io.mosip.registration.entity.SyncControl;
-import io.mosip.registration.entity.mastersync.MasterBlacklistedWords;
-import io.mosip.registration.entity.mastersync.MasterDocumentType;
-import io.mosip.registration.entity.mastersync.MasterGender;
-import io.mosip.registration.entity.mastersync.MasterLocation;
-import io.mosip.registration.entity.mastersync.MasterReasonCategory;
-import io.mosip.registration.entity.mastersync.MasterReasonList;
-import io.mosip.registration.entity.mastersync.MasterValidDocument;
+import io.mosip.registration.entity.ValidDocument;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.MasterSyncService;
+import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
@@ -68,6 +69,9 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	@Autowired
 	ServiceDelegateUtil serviceDelegateUtil;
 
+	@Autowired
+	private UserOnboardService UserOnboardService;
+
 	/** Object for Logger. */
 	private static final Logger LOGGER = AppConfig.getLogger(MasterSyncServiceImpl.class);
 
@@ -82,6 +86,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 
 		ResponseDTO responseDTO = null;
 		String resoponse = null;
+		String machineId = "";
 
 		SuccessResponseDTO sucessResponse = new SuccessResponseDTO();
 
@@ -112,13 +117,16 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 			LocalDateTime masterLastSyncTime = LocalDateTime.ofInstant(lastSyncTime.toInstant(), ZoneOffset.ofHours(0));
 
 			// Getting machineID from data base
-			String machineId = masterSyncDetails.getMachineId();
+			Map<String, String> machineIdMap = UserOnboardService.getMachineCenterId();
+
+			if (null != machineIdMap && !machineIdMap.isEmpty()) {
+				machineId = machineIdMap.get(RegistrationConstants.USER_STATION_ID);
+			}
 
 			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, "registrationCenterId" + "===>" + machineId,
 					"lastSyncTime" + "===>" + lastSyncTime);
 
 			Object masterSyncJson = getMasterSyncJson(machineId, masterLastSyncTime);
-
 			if (null != masterSyncJson) {
 
 				LOGGER.info(RegistrationConstants.MASTER_SYNC, APPLICATION_NAME, "MASTER-SYNC-RESTFUL_SERVICE-ENDS",
@@ -142,13 +150,11 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 				responseDTO.setSuccessResponseDTO(sucessResponse);
 
 			} else {
-
 				responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
 						RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 			}
 
 		} catch (RegBaseUncheckedException | RegBaseCheckedException regBaseUncheckedException) {
-
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					regBaseUncheckedException.getMessage() + resoponse);
 
@@ -156,7 +162,6 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 
 		} catch (RuntimeException | IOException runtimeException) {
-
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + resoponse);
 
@@ -164,7 +169,6 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 
 		}
-
 		return responseDTO;
 	}
 
@@ -183,7 +187,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		// Setting uri Variables
 
 		Map<String, String> requestParamMap = new LinkedHashMap<>();
-		requestParamMap.put(RegistrationConstants.MACHINE_ID, machineId);
+		requestParamMap.put(RegistrationConstants.MACHINE_ID, "10011");
 		if (null != lastSyncTime) {
 			String time = DateUtils.formatToISOString(lastSyncTime);
 			requestParamMap.put(RegistrationConstants.MASTER_DATA_LASTUPDTAE, time);
@@ -191,7 +195,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 
 		try {
 			response = serviceDelegateUtil.get(RegistrationConstants.MASTER_VALIDATOR_SERVICE_NAME, requestParamMap,
-					false);
+					true);
 		} catch (HttpClientErrorException httpClientErrorException) {
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					httpClientErrorException.getRawStatusCode() + "Http error while pulling json from server");
@@ -246,9 +250,9 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 
 		List<LocationDto> locationDto = new ArrayList<>();
 
-		List<MasterLocation> masterLocation = masterSyncDao.findLocationByLangCode(hierarchyCode, langCode);
+		List<Location> masterLocation = masterSyncDao.findLocationByLangCode(hierarchyCode, langCode);
 
-		for (MasterLocation masLocation : masterLocation) {
+		for (Location masLocation : masterLocation) {
 			LocationDto location = new LocationDto();
 			location.setCode(masLocation.getCode());
 			location.setHierarchyName(masLocation.getHierarchyName());
@@ -272,9 +276,9 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 
 		List<LocationDto> locationDto = new ArrayList<>();
 
-		List<MasterLocation> masterLocation = masterSyncDao.findLocationByParentLocCode(code, langCode);
+		List<Location> masterLocation = masterSyncDao.findLocationByParentLocCode(code, langCode);
 
-		for (MasterLocation masLocation : masterLocation) {
+		for (Location masLocation : masterLocation) {
 			LocationDto location = new LocationDto();
 			location.setCode(masLocation.getCode());
 			location.setHierarchyName(masLocation.getHierarchyName());
@@ -293,12 +297,12 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	 * String)
 	 */
 	@Override
-	public List<MasterReasonListDto> getAllReasonsList(String langCode) {
+	public List<ReasonListDto> getAllReasonsList(String langCode) {
 
-		List<MasterReasonListDto> reasonListResponse = new ArrayList<>();
+		List<ReasonListDto> reasonListResponse = new ArrayList<>();
 		List<String> resonCantCode = new ArrayList<>();
 		// Fetting Reason Category
-		List<MasterReasonCategory> masterReasonCatogery = masterSyncDao.getAllReasonCatogery();
+		List<ReasonCategory> masterReasonCatogery = masterSyncDao.getAllReasonCatogery(langCode);
 		if (masterReasonCatogery != null && !masterReasonCatogery.isEmpty()) {
 
 			masterReasonCatogery.forEach(reason -> {
@@ -307,9 +311,9 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 
 		}
 		// Fetching reason list based on lang_Code and rsncat_code
-		List<MasterReasonList> masterReasonList = masterSyncDao.getReasonList(langCode, resonCantCode);
+		List<ReasonList> masterReasonList = masterSyncDao.getReasonList(langCode, resonCantCode);
 		masterReasonList.forEach(reasonList -> {
-			MasterReasonListDto reasonListDto = new MasterReasonListDto();
+			ReasonListDto reasonListDto = new ReasonListDto();
 			reasonListDto.setCode(reasonList.getCode());
 			reasonListDto.setName(reasonList.getName());
 			reasonListDto.setRsnCatCode(reasonList.getRsnCatCode());
@@ -332,7 +336,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	public List<BlacklistedWordsDto> getAllBlackListedWords(String langCode) {
 
 		List<BlacklistedWordsDto> blackWords = new ArrayList<>();
-		List<MasterBlacklistedWords> blackListedWords = masterSyncDao.getBlackListedWords(langCode);
+		List<BlacklistedWords> blackListedWords = masterSyncDao.getBlackListedWords(langCode);
 
 		blackListedWords.forEach(blackList -> {
 
@@ -357,7 +361,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	public List<GenderDto> getGenderDtls(String langCode) {
 
 		List<GenderDto> gendetDtoList = new ArrayList<>();
-		List<MasterGender> masterDocuments = masterSyncDao.getGenderDtls(langCode);
+		List<Gender> masterDocuments = masterSyncDao.getGenderDtls(langCode);
 
 		masterDocuments.forEach(gender -> {
 			GenderDto genders = new GenderDto();
@@ -381,7 +385,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	@Override
 	public List<DocumentCategoryDto> getDocumentCategories(String docCode, String langCode) {
 
-		List<MasterValidDocument> masterValidDocuments = masterSyncDao.getValidDocumets(docCode, langCode);
+		List<ValidDocument> masterValidDocuments = masterSyncDao.getValidDocumets(docCode, langCode);
 
 		List<String> validDocuments = new ArrayList<>();
 		masterValidDocuments.forEach(docs -> {
@@ -389,7 +393,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		});
 
 		List<DocumentCategoryDto> documentsDTO = new ArrayList<>();
-		List<MasterDocumentType> masterDocuments = masterSyncDao.getDocumentTypes(validDocuments, langCode);
+		List<DocumentType> masterDocuments = masterSyncDao.getDocumentTypes(validDocuments, langCode);
 
 		masterDocuments.forEach(document -> {
 

@@ -17,14 +17,16 @@ import org.springframework.core.io.support.ResourcePropertySource;
 
 import io.mosip.registration.processor.stages.demodedupe.BiometricValidation;
 import io.mosip.registration.processor.stages.demodedupe.DemoDedupe;
+import io.mosip.registration.processor.stages.demodedupe.DemodedupeProcessor;
 import io.mosip.registration.processor.stages.demodedupe.DemodedupeStage;
 
 @PropertySource("classpath:bootstrap.properties")
 @Configuration
-public class DemoDedupeConfig{
+public class DemoDedupeConfig {
 
 	@Bean
-	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env) throws IOException {
+	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env)
+			throws IOException {
 
 		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 		PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
@@ -37,7 +39,7 @@ public class DemoDedupeConfig{
 					+ "/" + applicationNames.get(i) + "-" + env.getProperty("spring.profiles.active") + ".properties";
 			appResources[i] = resolver.getResources(loc)[0];
 			((AbstractEnvironment) env).getPropertySources()
-            .addLast(new ResourcePropertySource(applicationNames.get(i), loc));
+					.addLast(new ResourcePropertySource(applicationNames.get(i), loc));
 		}
 		pspc.setLocations(appResources);
 		return pspc;
@@ -58,9 +60,14 @@ public class DemoDedupeConfig{
 	public DemoDedupe getDemoDedupe() {
 		return new DemoDedupe();
 	}
-	
-	@Bean 
+
+	@Bean
 	public BiometricValidation getBiometricValidation() {
 		return new BiometricValidation();
+	}
+
+	@Bean
+	public DemodedupeProcessor getDemodedupeProcessor() {
+		return new DemodedupeProcessor();
 	}
 }

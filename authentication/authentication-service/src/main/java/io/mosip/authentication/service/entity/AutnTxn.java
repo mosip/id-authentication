@@ -1,5 +1,6 @@
 package io.mosip.authentication.service.entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -29,11 +30,11 @@ public class AutnTxn {
 
 	@NotNull
 	@Column(name = "request_dtimes")
-	private Date requestDTtimes;
+	private LocalDateTime requestDTtimes;
 
 	@NotNull
 	@Column(name = "response_dtimes")
-	private Date responseDTimes;
+	private LocalDateTime responseDTimes;
 
 	@NotNull
 	@Column(name = "request_trn_id")
@@ -75,17 +76,17 @@ public class AutnTxn {
 
 	@NotNull
 	@Column(name = "cr_dtimes")
-	private Date crDTimes;
+	private LocalDateTime crDTimes;
 
 	@Column(name = "upd_by")
 	private String updBy;
 
 	@Column(name = "upd_dtimes")
-	private Date updDTimes;
+	private LocalDateTime updDTimes;
 
 	@Column(name = "is_deleted")
 	private boolean isDeleted;
 	
 	@Column(name = "del_dtimes")
-	private Date delDTimes;
+	private LocalDateTime delDTimes;
 }

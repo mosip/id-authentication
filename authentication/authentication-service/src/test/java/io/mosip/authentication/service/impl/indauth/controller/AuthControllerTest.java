@@ -46,7 +46,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
-import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.indauth.facade.AuthFacadeImpl;
 import io.mosip.authentication.service.impl.indauth.service.KycServiceImpl;
@@ -88,9 +87,6 @@ public class AuthControllerTest {
 	WebDataBinder binder;
 
 	@InjectMocks
-	private DateHelper dateHelper;
-
-	@InjectMocks
 	private KycAuthRequestValidator KycAuthRequestValidator;
 
 	@InjectMocks
@@ -114,7 +110,6 @@ public class AuthControllerTest {
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", env);
 		ReflectionTestUtils.setField(authFacade, "kycService", kycService);
 		ReflectionTestUtils.setField(authFacade, "env", env);
-		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "authRequestValidator", authRequestValidator);
 	}
 
@@ -180,7 +175,7 @@ public class AuthControllerTest {
 		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setTxnID("1234567890");
-//		authRequestDTO.setReqHmac("zdskfkdsnj");
+		// authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
 		authTypeDTO.setOtp(true);
@@ -277,16 +272,6 @@ public class AuthControllerTest {
 		Errors error = new BindException(authReqestsDTO, "authReqDTO");
 		error.rejectValue("id", "errorCode", "defaultMessage");
 		// authController.authenticateTsp(authReqestsDTO, error);
-	}
-
-	@Ignore
-	@Test
-	public void auhtenticationTspSuccess()
-			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
-		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
-		Mockito.when(authFacade.authenticateTsp(authReqestDTO)).thenReturn(new AuthResponseDTO());
-		// authController.authenticateTsp(authReqestDTO, error);
-
 	}
 
 }

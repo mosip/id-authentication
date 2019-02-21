@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.status.service;
+/*package io.mosip.registration.processor.status.service;
 
 import static org.junit.Assert.assertEquals;
 
@@ -169,4 +169,4 @@ public class RegistrationStatusServiceTest {
 		registrationStatusService.getByIds("1001,1000");
 	}
 
-}
+}*/

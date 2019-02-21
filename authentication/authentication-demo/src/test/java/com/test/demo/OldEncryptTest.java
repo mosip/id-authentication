@@ -20,8 +20,8 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.demo.authentication.service.controller.OldEncrypt;
 import io.mosip.demo.authentication.service.dto.EncryptionRequestDto;
-import io.mosip.demo.authentication.service.impl.indauth.controller.OldEncrypt;
 
 
 /**

@@ -1,10 +1,6 @@
 package io.mosip.kernel.syncdata.test.integration;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,7 +21,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
@@ -66,7 +61,6 @@ import io.mosip.kernel.syncdata.entity.id.RegistrationCenterDeviceID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineDeviceID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterUserID;
-import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.repository.ApplicationRepository;
 import io.mosip.kernel.syncdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.syncdata.repository.BiometricTypeRepository;
@@ -220,8 +214,6 @@ public class SyncDataIntegrationTest {
 	@MockBean
 	private RegistrationCenterUserRepository registrationCenterUserRepository;
 
-	
-
 	StringBuilder builder;
 
 	@Value("${mosip.kernel.syncdata.auth-manager-base-uri}")
@@ -329,89 +321,98 @@ public class SyncDataIntegrationTest {
 
 	private void mockSuccess() {
 		when(applicationRepository.findAll()).thenReturn(applications);
-		when(applicationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any())).thenReturn(applications);
+		when(applicationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenReturn(applications);
 		when(machineRepository.findMachineById(Mockito.anyString())).thenReturn(machines);
-		when(machineRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any()))
+		when(machineRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(machines);
 		when(machineSpecificationRepository.findByMachineId(Mockito.anyString())).thenReturn(machineSpecification);
-		when(machineSpecificationRepository.findLatestByMachineId(Mockito.anyString(), Mockito.any()))
+		when(machineSpecificationRepository.findLatestByMachineId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(machineSpecification);
 		when(machineTypeRepository.findAllByMachineId(Mockito.anyString())).thenReturn(machineType);
-		when(machineTypeRepository.findLatestByMachineId(Mockito.anyString(), Mockito.any())).thenReturn(machineType);
+		when(machineTypeRepository.findLatestByMachineId(Mockito.anyString(), Mockito.any(), Mockito.any()))
+				.thenReturn(machineType);
 		when(templateRepository.findAll()).thenReturn(templates);
-		when(templateRepository.findAllLatestCreatedUpdateDeleted(Mockito.any())).thenReturn(templates);
+		when(templateRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any())).thenReturn(templates);
 		when(templateFileFormatRepository.findAllTemplateFormat()).thenReturn(templateFileFormats);
-		when(templateFileFormatRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(templateFileFormatRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenReturn(templateFileFormats);
 		when(templateTypeRepository.findAll()).thenReturn(templateTypes);
-		when(templateTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any())).thenReturn(templateTypes);
+		when(templateTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenReturn(templateTypes);
 		when(holidayRepository.findAllByMachineId(Mockito.anyString())).thenReturn(holidays);
-		when(holidayRepository.findAllLatestCreatedUpdateDeletedByMachineId(Mockito.anyString(), Mockito.any()))
-				.thenReturn(holidays);
+		when(holidayRepository.findAllLatestCreatedUpdateDeletedByMachineId(Mockito.anyString(), Mockito.any(),
+				Mockito.any())).thenReturn(holidays);
 		when(blacklistedWordsRepository.findAll()).thenReturn(blackListedWords);
-		when(blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any())).thenReturn(blackListedWords);
+		when(blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenReturn(blackListedWords);
 		when(registrationCenterRepository.findRegistrationCenterByMachineId(Mockito.anyString()))
 				.thenReturn(registrationCenters);
-		when(registrationCenterRepository.findLatestRegistrationCenterByMachineId(Mockito.anyString(), Mockito.any()))
-				.thenReturn(registrationCenters);
+		when(registrationCenterRepository.findLatestRegistrationCenterByMachineId(Mockito.anyString(), Mockito.any(),
+				Mockito.any())).thenReturn(registrationCenters);
 		when(registrationCenterTypeRepository.findRegistrationCenterTypeByMachineId(Mockito.anyString()))
 				.thenReturn(registrationCenterType);
 		when(registrationCenterTypeRepository.findLatestRegistrationCenterTypeByMachineId(Mockito.anyString(),
-				Mockito.any())).thenReturn(registrationCenterType);
+				Mockito.any(), Mockito.any())).thenReturn(registrationCenterType);
 		when(genderTypeRepository.findAll()).thenReturn(genders);
-		when(genderTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any())).thenReturn(genders);
+		when(genderTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any())).thenReturn(genders);
 		when(idTypeRepository.findAll()).thenReturn(idTypes);
-		when(idTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any())).thenReturn(idTypes);
+		when(idTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any())).thenReturn(idTypes);
 		when(deviceRepository.findDeviceByMachineId(Mockito.anyString())).thenReturn(devices);
-		when(deviceRepository.findLatestDevicesByMachineId(Mockito.anyString(), Mockito.any())).thenReturn(devices);
+		when(deviceRepository.findLatestDevicesByMachineId(Mockito.anyString(), Mockito.any(), Mockito.any()))
+				.thenReturn(devices);
 		when(deviceSpecificationRepository.findDeviceTypeByMachineId(Mockito.anyString()))
 				.thenReturn(deviceSpecification);
-		when(deviceSpecificationRepository.findLatestDeviceTypeByMachineId(Mockito.anyString(), Mockito.any()))
-				.thenReturn(deviceSpecification);
+		when(deviceSpecificationRepository.findLatestDeviceTypeByMachineId(Mockito.anyString(), Mockito.any(),
+				Mockito.any())).thenReturn(deviceSpecification);
 		when(deviceTypeRepository.findDeviceTypeByMachineId(Mockito.anyString())).thenReturn(deviceType);
-		when(deviceTypeRepository.findLatestDeviceTypeByMachineId(Mockito.anyString(), Mockito.any()))
+		when(deviceTypeRepository.findLatestDeviceTypeByMachineId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(deviceType);
 		when(languageRepository.findAll()).thenReturn(languages);
-		when(languageRepository.findAllLatestCreatedUpdateDeleted(Mockito.any())).thenReturn(languages);
+		when(languageRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any())).thenReturn(languages);
 		when(reasonCategoryRepository.findAllReasons()).thenReturn(reasonCategories);
-		when(reasonCategoryRepository.findAllLatestCreatedUpdateDeleted(Mockito.any())).thenReturn(reasonCategories);
+		when(reasonCategoryRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenReturn(reasonCategories);
 		when(reasonListRepository.findAll()).thenReturn(reasonLists);
-		when(reasonListRepository.findAllLatestCreatedUpdateDeleted(Mockito.any())).thenReturn(reasonLists);
+		when(reasonListRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenReturn(reasonLists);
 		when(documentCategoryRepository.findAll()).thenReturn(documentCategories);
-		when(documentCategoryRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(documentCategoryRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenReturn(documentCategories);
 		when(documentTypeRepository.findAll()).thenReturn(documentTypes).thenReturn(documentTypes);
-		when(documentTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any())).thenReturn(documentTypes);
+		when(documentTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenReturn(documentTypes);
 		when(validDocumentRepository.findAll()).thenReturn(validDocuments);
-		when(validDocumentRepository.findAllLatestCreatedUpdateDeleted(Mockito.any())).thenReturn(validDocuments);
+		when(validDocumentRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenReturn(validDocuments);
 		when(biometricAttributeRepository.findAll()).thenReturn(biometricAttributes);
-		when(biometricAttributeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(biometricAttributeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenReturn(biometricAttributes);
 		when(biometricTypeRepository.findAll()).thenReturn(biometricTypes);
 		when(titleRepository.findAll()).thenReturn(titles);
-		when(titleRepository.findAllLatestCreatedUpdateDeleted(Mockito.any())).thenReturn(titles);
-		when(locationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any())).thenReturn(locations);
+		when(titleRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any())).thenReturn(titles);
+		when(locationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any())).thenReturn(locations);
 		when(locationRepository.findAll()).thenReturn(locations);
 		when(registrationCenterMachineRepository.findAllByMachineId(Mockito.any()))
 				.thenReturn(registrationCenterMachines);
 		when(registrationCenterMachineRepository.findAllLatestByMachineIdCreatedUpdatedDeleted(Mockito.any(),
-				Mockito.any())).thenReturn(registrationCenterMachines);
+				Mockito.any(), Mockito.any())).thenReturn(registrationCenterMachines);
 		when(registrationCenterDeviceRepository.findAllByRegistrationCenter(Mockito.any()))
 				.thenReturn(registrationCenterDevices);
 		when(registrationCenterDeviceRepository.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(Mockito.any(),
-				Mockito.any())).thenReturn(registrationCenterDevices);
+				Mockito.any(), Mockito.any())).thenReturn(registrationCenterDevices);
 		when(registrationCenterMachineDeviceRepository.findAllByRegistrationCenterId(Mockito.any()))
 				.thenReturn(registrationCenterMachineDevices);
 		when(registrationCenterMachineDeviceRepository.findAllByRegistrationCenterIdCreatedUpdatedDeleted(Mockito.any(),
-				Mockito.any())).thenReturn(registrationCenterMachineDevices);
+				Mockito.any(), Mockito.any())).thenReturn(registrationCenterMachineDevices);
 		when(registrationCenterUserMachineRepository.findAllByRegistrationCenterId(Mockito.any()))
 				.thenReturn(registrationCenterUserMachines);
 		when(registrationCenterUserMachineRepository.findAllByRegistrationCenterIdCreatedUpdatedDeleted(Mockito.any(),
-				Mockito.any())).thenReturn(registrationCenterUserMachines);
+				Mockito.any(), Mockito.any())).thenReturn(registrationCenterUserMachines);
 		when(registrationCenterUserRepository.findAllByRegistrationCenterId(Mockito.any()))
 				.thenReturn(registrationCenterUsers);
 		when(registrationCenterUserRepository.findAllByRegistrationCenterIdCreatedUpdatedDeleted(Mockito.any(),
-				Mockito.any())).thenReturn(registrationCenterUsers);
+				Mockito.any(), Mockito.any())).thenReturn(registrationCenterUsers);
 	}
 
 	@Test
@@ -462,7 +463,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataApplicationFetchException() throws Exception {
 		mockSuccess();
-		when(applicationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(applicationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -471,7 +472,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataMachineFetchException() throws Exception {
 		mockSuccess();
-		when(machineRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any()))
+		when(machineRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -480,7 +481,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataMachineSpecFetchException() throws Exception {
 		mockSuccess();
-		when(machineSpecificationRepository.findLatestByMachineId(Mockito.anyString(), Mockito.any()))
+		when(machineSpecificationRepository.findLatestByMachineId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -489,7 +490,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataMachineTypeFetchException() throws Exception {
 		mockSuccess();
-		when(machineTypeRepository.findLatestByMachineId(Mockito.anyString(), Mockito.any()))
+		when(machineTypeRepository.findLatestByMachineId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -498,7 +499,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataDeviceFetchException() throws Exception {
 		mockSuccess();
-		when(deviceRepository.findLatestDevicesByMachineId(Mockito.anyString(), Mockito.any()))
+		when(deviceRepository.findLatestDevicesByMachineId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -507,8 +508,8 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataDeviceSpecFetchException() throws Exception {
 		mockSuccess();
-		when(deviceSpecificationRepository.findLatestDeviceTypeByMachineId(Mockito.anyString(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
+		when(deviceSpecificationRepository.findLatestDeviceTypeByMachineId(Mockito.anyString(), Mockito.any(),
+				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
@@ -516,7 +517,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataDeviceTypeFetchException() throws Exception {
 		mockSuccess();
-		when(deviceTypeRepository.findLatestDeviceTypeByMachineId(Mockito.anyString(), Mockito.any()))
+		when(deviceTypeRepository.findLatestDeviceTypeByMachineId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -525,7 +526,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataTemplateFetchException() throws Exception {
 		mockSuccess();
-		when(templateRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(templateRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -534,7 +535,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataTemplateFileFormatFetchException() throws Exception {
 		mockSuccess();
-		when(templateFileFormatRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(templateFileFormatRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -543,7 +544,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataTemplateTypeFetchException() throws Exception {
 		mockSuccess();
-		when(templateTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(templateTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -552,8 +553,8 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataHolidayFetchException() throws Exception {
 		mockSuccess();
-		when(holidayRepository.findAllLatestCreatedUpdateDeletedByMachineId(Mockito.anyString(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
+		when(holidayRepository.findAllLatestCreatedUpdateDeletedByMachineId(Mockito.anyString(), Mockito.any(),
+				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
@@ -561,7 +562,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataBiometricAttrFetchException() throws Exception {
 		mockSuccess();
-		when(biometricAttributeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(biometricAttributeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -570,7 +571,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataBiometricTypeFetchException() throws Exception {
 		mockSuccess();
-		when(biometricTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(biometricTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -579,7 +580,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataDocCategoryFetchException() throws Exception {
 		mockSuccess();
-		when(documentCategoryRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(documentCategoryRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -588,7 +589,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataDocTypeFetchException() throws Exception {
 		mockSuccess();
-		when(documentTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(documentTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -597,7 +598,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataLanguageFetchException() throws Exception {
 		mockSuccess();
-		when(languageRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(languageRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -606,7 +607,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataGenderFetchException() throws Exception {
 		mockSuccess();
-		when(genderTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(genderTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -615,7 +616,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataLocationFetchException() throws Exception {
 		mockSuccess();
-		when(locationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(locationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -624,7 +625,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataIdTypesFetchException() throws Exception {
 		mockSuccess();
-		when(idTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(idTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -633,8 +634,8 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataRegistrationCenterFetchException() throws Exception {
 		mockSuccess();
-		when(registrationCenterRepository.findLatestRegistrationCenterByMachineId(Mockito.anyString(), Mockito.any()))
-				.thenThrow(DataRetrievalFailureException.class);
+		when(registrationCenterRepository.findLatestRegistrationCenterByMachineId(Mockito.anyString(), Mockito.any(),
+				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
@@ -643,7 +644,7 @@ public class SyncDataIntegrationTest {
 	public void syncMasterDataRegistrationCenterTypeFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterTypeRepository.findLatestRegistrationCenterTypeByMachineId(Mockito.anyString(),
-				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
@@ -652,7 +653,7 @@ public class SyncDataIntegrationTest {
 	public void syncMasterDataValidFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterTypeRepository.findLatestRegistrationCenterTypeByMachineId(Mockito.anyString(),
-				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
@@ -660,7 +661,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataBlackListedWordFetchException() throws Exception {
 		mockSuccess();
-		when(blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -669,7 +670,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataReasonCatFetchException() throws Exception {
 		mockSuccess();
-		when(reasonCategoryRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(reasonCategoryRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -678,7 +679,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataReasonListFetchException() throws Exception {
 		mockSuccess();
-		when(reasonListRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(reasonListRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -687,7 +688,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataTitleFetchException() throws Exception {
 		mockSuccess();
-		when(titleRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(titleRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -696,7 +697,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDatavalidDocumentFetchException() throws Exception {
 		mockSuccess();
-		when(validDocumentRepository.findAllLatestCreatedUpdateDeleted(Mockito.any()))
+		when(validDocumentRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -706,7 +707,7 @@ public class SyncDataIntegrationTest {
 	public void syncMasterDataRegistrationCenterMachineFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterMachineRepository.findAllLatestByMachineIdCreatedUpdatedDeleted(Mockito.anyString(),
-				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
@@ -714,9 +715,8 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataRegistrationCenterDeviceFetchException() throws Exception {
 		mockSuccess();
-		when(registrationCenterDeviceRepository
-				.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(Mockito.anyString(), Mockito.any()))
-						.thenThrow(DataRetrievalFailureException.class);
+		when(registrationCenterDeviceRepository.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(
+				Mockito.anyString(), Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "111"))
 				.andExpect(status().isInternalServerError());
 	}
@@ -725,7 +725,7 @@ public class SyncDataIntegrationTest {
 	public void syncMasterDataRegistrationCenterMachineDeviceFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterMachineDeviceRepository
-				.findAllByRegistrationCenterIdCreatedUpdatedDeleted(Mockito.anyString(), Mockito.any()))
+				.findAllByRegistrationCenterIdCreatedUpdatedDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
 						.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -735,7 +735,7 @@ public class SyncDataIntegrationTest {
 	public void syncMasterDataRegistrationCenterUserMachineFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterUserMachineRepository
-				.findAllByRegistrationCenterIdCreatedUpdatedDeleted(Mockito.anyString(), Mockito.any()))
+				.findAllByRegistrationCenterIdCreatedUpdatedDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
 						.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -745,7 +745,7 @@ public class SyncDataIntegrationTest {
 	public void syncMasterDataRegistrationCenterUserFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterUserRepository.findAllByRegistrationCenterIdCreatedUpdatedDeleted(Mockito.anyString(),
-				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
@@ -757,7 +757,5 @@ public class SyncDataIntegrationTest {
 
 		mockMvc.perform(get("/v1.0/registrationcenteruser/1")).andExpect(status().isNotFound());
 	}
-
-	
 
 }

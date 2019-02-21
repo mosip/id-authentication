@@ -45,8 +45,6 @@ public class RegistrationBookingEntity implements Serializable {
 
 	/** Id. */
 	@Id
-	@GeneratedValue(generator="system-uuid" )
-	@GenericGenerator(name="system-uuid", strategy = "uuid" )
 	@Column(name = "id")
 	private String id;
 	
@@ -94,12 +92,5 @@ public class RegistrationBookingEntity implements Serializable {
 	@Column(name = "upd_dtimes")
 	private LocalDateTime updDate;
 
-	/** Is deleted. */
-	@Column(name = "is_deleted")
-	private boolean isDeleted;
-
-	/** delete date timee. */
-	@Column(name = "del_dtimes")
-	private LocalDateTime delTime;
 
 }

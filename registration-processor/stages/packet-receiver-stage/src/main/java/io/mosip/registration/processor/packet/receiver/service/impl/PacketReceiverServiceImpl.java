@@ -39,8 +39,8 @@ import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
-import io.vertx.ext.web.RoutingContext;
 import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
+import io.vertx.ext.web.RoutingContext;
 
 /**
  * The Class PacketReceiverServiceImpl.
@@ -208,10 +208,10 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	private Boolean isDuplicatePacket(String enrolmentId) {
 		return registrationStatusService.getRegistrationStatus(enrolmentId) != null;
 	}
-	public Boolean isExternalStatusResend(String enrolmentId) {
+	/*public Boolean isExternalStatusResend(String enrolmentId) {
 		List<RegistrationStatusDto> registrations = registrationStatusService.getByIds(enrolmentId);
 		 RegistrationExternalStatusCode mappedValue = registrationStatusMapUtil.getExternalStatus(registrations.get(0).getStatusCode(),registrations.get(0).getRetryCount());
 		return (mappedValue.toString().equals(RESEND));
-	}
+	}*/
 
 }

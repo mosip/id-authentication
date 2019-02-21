@@ -115,4 +115,11 @@ public class MessageBusAddress implements Serializable {
 	/** The Constant MESSAGE_SENDER_BUS_IN. */
 	public static final MessageBusAddress MESSAGE_SENDER_BUS = new MessageBusAddress("message-sender-bus");
 
+	/** The Constant PACKET_UPLOADER_OUT. */
+	public static final MessageBusAddress PACKET_UPLOADER_OUT = new MessageBusAddress("packet-uploader-bus-out");
+
+	/** The Constant REGISTRATION_CONNECTOR_BUS_OUT. */
+	public static final MessageBusAddress REGISTRATION_CONNECTOR_BUS_OUT = new MessageBusAddress("registration-connector-bus-out");
+
+
 }

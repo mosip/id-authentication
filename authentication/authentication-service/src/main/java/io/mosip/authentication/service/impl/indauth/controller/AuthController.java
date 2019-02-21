@@ -103,10 +103,10 @@ public class AuthController {
 
 			authResponsedto = authFacade.authenticateApplicant(authrequestdto, true);
 		} catch (IDDataValidationException e) {
-			mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			mosipLogger.error(SESSION_ID,this.getClass().getSimpleName(),"authenticateApplication", e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplication", e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e);
 		}
 
@@ -137,24 +137,20 @@ public class AuthController {
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		AuthResponseDTO authResponseDTO = null;
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-		
 		try {
-
 			DataValidationUtil.validate(errors);
-
 			authResponseDTO = authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest(), true);
 			if (authResponseDTO != null) {
 				kycAuthResponseDTO = authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO);
 			}
 		} catch (IDDataValidationException e) {
-			mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(),"processKyc", e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			mosipLogger.error(SESSION_ID,this.getClass().getSimpleName(),"processKyc", e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e);
 		}
-
-		return kycAuthResponseDTO;
+         return kycAuthResponseDTO;
 	}
 
 }

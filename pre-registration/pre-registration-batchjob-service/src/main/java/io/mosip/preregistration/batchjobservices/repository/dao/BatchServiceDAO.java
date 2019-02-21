@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.preregistration.batchjobservices.code.ErrorCodes;
 import io.mosip.preregistration.batchjobservices.code.ErrorMessages;
-import io.mosip.preregistration.batchjobservices.entity.ApplicantDemographic;
+import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
 import io.mosip.preregistration.batchjobservices.entity.ProcessedPreRegEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.batchjobservices.exceptions.NoPreIdAvailableException;
@@ -62,9 +62,9 @@ public class BatchServiceDAO {
 	@Qualifier("processedPreIdRepository")
 	private ProcessedPreIdRepository processedPreIdRepository;
 
-	public ApplicantDemographic getApplicantDemographicDetails(String preRegId) {
+	public DemographicEntity getApplicantDemographicDetails(String preRegId) {
 
-		ApplicantDemographic entity = null;
+		DemographicEntity entity = null;
 		try {
 			entity = demographicRepository.findBypreRegistrationId(preRegId);
 			if (entity == null) {
@@ -128,7 +128,7 @@ public class BatchServiceDAO {
 
 	}
 	
-	public boolean updateApplicantDemographic(ApplicantDemographic applicantDemographic) {
+	public boolean updateApplicantDemographic(DemographicEntity applicantDemographic) {
 		return demographicRepository.save(applicantDemographic)!=null;
 	}
 	

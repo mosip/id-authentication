@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDto;
+
 /**
  * This service is used to perform crud operations(get/add/update) on registration
  * status table.
@@ -63,5 +65,5 @@ public interface RegistrationStatusService<T, U, D> {
 	 *            the ids
 	 * @return the list of Registrations for the given ids.
 	 */
-	public List<D> getByIds(String ids);
+	public List<D> getByIds(List<RegistrationStatusSubRequestDto> requestIds);
 }
