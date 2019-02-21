@@ -336,6 +336,7 @@ public class RegistrationController extends BaseController {
 		// Create object for Demographic DTOS
 		DemographicDTO demographicDTO = new DemographicDTO();
 		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
+		applicantDocumentDTO.setDocuments(new HashMap<>());
 
 		demographicDTO.setApplicantDocumentDTO(applicantDocumentDTO);
 		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
@@ -366,6 +367,8 @@ public class RegistrationController extends BaseController {
 		registrationMetaDataDTO
 				.setCenterId((String) applicationContextMap.get(RegistrationConstants.REGISTARTION_CENTER));
 		registrationMetaDataDTO.setMachineId((String) applicationContextMap.get(RegistrationConstants.MACHINE_ID));
+		registrationMetaDataDTO
+				.setDeviceId((String) applicationContextMap.get(RegistrationConstants.DONGLE_SERIAL_NUMBER));
 
 		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
 

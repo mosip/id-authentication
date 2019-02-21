@@ -86,20 +86,11 @@ public class ZipCreationServiceTest {
 		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
 		documentDetailsResidenceDTO.setType("PoA");
-		documentDetailsResidenceDTO.setFormat("passport");
-		documentDetailsResidenceDTO.setValue("aaa");
+		documentDetailsResidenceDTO.setFormat("jpg");
+		documentDetailsResidenceDTO.setValue("ProofOfRelationship");
 		documentDetailsResidenceDTO.setOwner("hof");
-		registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
-				.setProofOfAddress(documentDetailsResidenceDTO);
-
-		documentDetailsResidenceDTO = new DocumentDetailsDTO();
-		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsResidenceDTO.setType("PoA");
-		documentDetailsResidenceDTO.setFormat("passport");
-		documentDetailsResidenceDTO.setValue("aaa");
-		documentDetailsResidenceDTO.setOwner("hof");
-		registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
-				.setProofOfIdentity(documentDetailsResidenceDTO);
+		registrationDTO.getDemographicDTO().getApplicantDocumentDTO().getDocuments()
+				.put("doc", documentDetailsResidenceDTO);
 
 		zipCreationService.createPacket(registrationDTO, filesGeneratedForPacket);
 	}

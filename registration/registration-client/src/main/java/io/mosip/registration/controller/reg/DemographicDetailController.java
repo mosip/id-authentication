@@ -48,7 +48,9 @@ import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
+import io.mosip.registration.dto.demographic.CBEFFFilePropertiesDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.Identity;
@@ -837,13 +839,13 @@ public class DemographicDetailController extends BaseController {
 			}
 
 			if (isChild) {
-
 				osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
-
 				registrationMetaDataDTO.setApplicationType(RegistrationConstants.CHILD);
 			} else {
 				registrationMetaDataDTO.setApplicationType(RegistrationConstants.ADULT);
 			}
+			
+			registrationMetaDataDTO.setParentOrGuardianUINOrRID(uinId.getText());
 
 			osiDataDTO.setOperatorID(SessionContext.userContext().getUserId());
 
@@ -863,11 +865,13 @@ public class DemographicDetailController extends BaseController {
 	@SuppressWarnings("unchecked")
 	public DemographicInfoDTO buildDemographicInfo() {
 
-		String platformLanguageCode = applicationContext.getApplicationLanguage().toLowerCase();
-		String localLanguageCode = applicationContext.getLocalLanguage().toLowerCase();
+		String platformLanguageCode = ApplicationContext.applicationLanguage();
+		String localLanguageCode = ApplicationContext.localLanguage();
 		
 		Map<String, DocumentDetailsDTO> documents = getRegistrationDTOFromSession().getDemographicDTO()
 				.getApplicantDocumentDTO().getDocuments();
+		BiometricInfoDTO applicantBiometric = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO();
+		BiometricInfoDTO introducerBiometric = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO();
 
 		return Builder.build(DemographicInfoDTO.class)
 				.with(demographicInfo -> demographicInfo.setIdentity((Identity) Builder.build(Identity.class)
@@ -999,6 +1003,30 @@ public class DemographicDetailController extends BaseController {
 								.setUin(getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getUin() == null ? null
 										: new BigInteger(
 												getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getUin())))
+						.with(identity -> identity.setIndividualBiometrics(!applicantBiometric
+								.getFingerprintDetailsDTO().isEmpty()
+								|| !applicantBiometric.getIrisDetailsDTO().isEmpty()
+										? null
+										: (CBEFFFilePropertiesDTO) Builder.build(CBEFFFilePropertiesDTO.class)
+												.with(cbeffProperties -> cbeffProperties
+														.setFormat(RegistrationConstants.CBEFF_FILE_FORMAT))
+												.with(cbeffProperty -> cbeffProperty
+														.setValue(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME
+																.replace(RegistrationConstants.XML_FILE_FORMAT,
+																		RegistrationConstants.EMPTY)))
+												.with(cbeffProperty -> cbeffProperty.setVersion(1.0)).get()))
+						.with(identity -> identity.setParentOrGuardianBiometrics(!introducerBiometric
+								.getFingerprintDetailsDTO().isEmpty()
+								|| !introducerBiometric.getIrisDetailsDTO().isEmpty()
+										? null
+										: (CBEFFFilePropertiesDTO) Builder.build(CBEFFFilePropertiesDTO.class)
+												.with(cbeffProperties -> cbeffProperties
+														.setFormat(RegistrationConstants.CBEFF_FILE_FORMAT))
+												.with(cbeffProperty -> cbeffProperty
+														.setValue(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME
+																.replace(RegistrationConstants.XML_FILE_FORMAT,
+																		RegistrationConstants.EMPTY)))
+												.with(cbeffProperty -> cbeffProperty.setVersion(1.0)).get()))
 						.get()))
 				.get();
 	}
