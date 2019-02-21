@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import io.mosip.preregistration.batchjob.model.ResponseDto;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 
 @Component
 public class BookingTasklet implements Tasklet {
@@ -36,12 +36,12 @@ public class BookingTasklet implements Tasklet {
 			UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(bookingAvailablityUrl);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<ResponseDto<String>> entity = new HttpEntity<>(headers);
+			HttpEntity<MainResponseDTO<String>> entity = new HttpEntity<>(headers);
 
 			String uriBuilder = regbuilder.build().encode().toUriString();
 
-			ResponseEntity<ResponseDto> responseEntity = restTemplate.exchange(uriBuilder,
-					HttpMethod.GET, entity, ResponseDto.class);
+			ResponseEntity<MainResponseDTO> responseEntity = restTemplate.exchange(uriBuilder,
+					HttpMethod.GET, entity, MainResponseDTO.class);
 			
 
 		return RepeatStatus.FINISHED;

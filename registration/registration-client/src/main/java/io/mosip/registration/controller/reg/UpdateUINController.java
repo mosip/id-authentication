@@ -85,43 +85,47 @@ public class UpdateUINController extends BaseController implements Initializable
 
 	@Autowired
 	Validations validation;
-	
+
 	@Value("${FINGERPRINT_DISABLE_FLAG}")
 	private String fingerprintDisableFlag;
-	
+
 	@Value("${IRIS_DISABLE_FLAG}")
 	private String irisDisableFlag;
-	
+
 	@Value("${FACE_DISABLE_FLAG}")
 	private String faceDisableFlag;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		switchedOn = new SimpleBooleanProperty(false);
+		switchedOn.set(false);
 		isChild = switchedOn.get();
+		if (!isChild) {
+			parentOrGuardianDetails.setDisable(true);
+		}
 		toggleFunction();
 		FXUtils fxUtils = FXUtils.getInstance();
 		listenerOnFields(fxUtils);
 		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 		fxUtils.validateOnType(uinId, validation);
 
-			biometricBox.getChildren().forEach(bio -> {
-				if (fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)
-						&& bio.getId().equals("biometricFingerprint")) {
-					bio.setVisible(false);
-					bio.setManaged(false);
-				}
-				if (irisDisableFlag.equals(RegistrationConstants.DISABLE) && bio.getId().equals("biometricIris")) {
-					bio.setVisible(false);
-					bio.setManaged(false);
-				}
-				if (fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)
-						&& irisDisableFlag.equals(RegistrationConstants.DISABLE)
-						&& bio.getId().equals("biometricException")) {
-					bio.setVisible(false);
-					bio.setManaged(false);
-				}
-			});
+		biometricBox.getChildren().forEach(bio -> {
+			if (fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)
+					&& bio.getId().equals("biometricFingerprint")) {
+				bio.setVisible(false);
+				bio.setManaged(false);
+			}
+			if (irisDisableFlag.equals(RegistrationConstants.DISABLE) && bio.getId().equals("biometricIris")) {
+				bio.setVisible(false);
+				bio.setManaged(false);
+			}
+			if (fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)
+					&& irisDisableFlag.equals(RegistrationConstants.DISABLE)
+					&& bio.getId().equals("biometricException")) {
+				bio.setVisible(false);
+				bio.setManaged(false);
+			}
+		});
 		configuringUpdateUINDemographicFields();
 		configuringUpdateUINBiometricFields();
 	}
@@ -265,12 +269,22 @@ public class UpdateUINController extends BaseController implements Initializable
 						toggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						toggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						isChild = newValue;
-
+						biometricException.setDisable(true);
+						biometricFingerprint.setDisable(true);
+						biometricIris.setDisable(true);
+						parentOrGuardianDetails.setDisable(false);
+						biometricException.selectedProperty().set(false);
+						biometricFingerprint.selectedProperty().set(false);
+						biometricIris.selectedProperty().set(false);
 					} else {
 						toggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						toggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						isChild = newValue;
-
+						parentOrGuardianDetails.setDisable(true);
+						biometricException.setDisable(false);
+						biometricFingerprint.setDisable(false);
+						biometricIris.setDisable(false);
+						parentOrGuardianDetails.selectedProperty().set(false);
 					}
 				}
 			});

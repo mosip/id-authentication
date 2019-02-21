@@ -81,6 +81,7 @@ public class LoggerConstants {
 	public static final String LOG_REG_LOGIN = LOGIN + "LOGIN_CONTROLLER";
 	public static final String LOG_REG_PAGE_FLOW = PGE_FLW + "PAGE_FLOW";
 	public static final String LOG_REG_USER_DETAIL = SYNC + "USER_DETAIL_SERVICE_IMPL";
+	public static final String LOG_REG_USER_DETAIL_DAO = SYNC + "USER_DETAIL_DAO_IMPL";
 	// USER ONBOARD
 	public static final String LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD = USER_ONBOARD
 			+ "FINGERPRINT_CAPTURE_CONTROLLER";
@@ -107,6 +108,6 @@ public class LoggerConstants {
 	public static final String PACKET_HANDLER = PKT_HANDLER + "Packet_Handler_Controller";
 	public static final String OTP_MANAGER_LOGGER_TITLE = OTP + "OTP_MANAGER";
 	public static final String REG_PACKET_VIRUS_SCAN = PKT_SCAN + "Registration_packet virus_scan_job";
-
+	public static final String USER_DETAIL_SERVICE_JOB_TITLE = SYNC + "user_detail_Service_Job";
 
 }

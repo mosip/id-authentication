@@ -29,6 +29,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.PolicySyncDAO;
+import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dto.PublicKeyResponse;
 import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -53,6 +54,8 @@ public class PolicySyncServiceTest {
 	private PolicySyncDAO policySyncDAO;
 	@Mock
 	private ServiceDelegateUtil serviceDelegateUtil;
+	@Mock
+	private UserOnboardDAO userOnboardDAO;
 
 	@InjectMocks
 	private PolicySyncServiceImpl policySyncServiceImpl;
@@ -75,7 +78,10 @@ public class PolicySyncServiceTest {
 		publicKeyResponse.setExpiryAt(LocalDateTime.now());
 		publicKeyResponse.setIssuedAt(LocalDateTime.now());
 		publicKeyResponse.setPublicKey("MY_PUBLIC_KEY");
-
+		String machineId = "machineId";
+		String centerId = "centerId";
+		Mockito.when(userOnboardDAO.getStationID(Mockito.anyString())).thenReturn(machineId);
+		Mockito.when(userOnboardDAO.getCenterID(Mockito.anyString())).thenReturn(centerId);
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean()))
 				.thenReturn(publicKeyResponse);
 		KeyStore keyStore = new KeyStore();

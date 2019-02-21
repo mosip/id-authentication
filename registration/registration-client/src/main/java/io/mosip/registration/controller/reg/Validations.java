@@ -76,11 +76,11 @@ public class Validations extends BaseController {
 			messageBundle = ApplicationContext.applicationMessagesBundle();
 			labelBundle = ApplicationContext.applicationLanguageBundle();
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
-	
 	@PostConstruct
 	public void setResourceBundle() {
 		getGlobalParams();
@@ -89,7 +89,7 @@ public class Validations extends BaseController {
 		messageBundle = ApplicationContext.applicationMessagesBundle();
 		labelBundle = ApplicationContext.applicationLanguageBundle();
 	}
-	
+
 	/**
 	 * Iterate the fields to and call the validate method on them
 	 */
@@ -129,8 +129,8 @@ public class Validations extends BaseController {
 	}
 
 	/**
-	 * Pass the node to check for the validation, specific validation method
-	 * will be called for each field
+	 * Pass the node to check for the validation, specific validation method will be
+	 * called for each field
 	 */
 	public boolean validateTheNode(Node node, String id) {
 
@@ -158,7 +158,8 @@ public class Validations extends BaseController {
 			generateAlert(messageBundle.getString(id), isConsolidated, validationMessage);
 			node.requestFocus();
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage()+ ExceptionUtils.getStackTrace(runtimeException));
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			return false;
 		}
 		return false;
@@ -183,31 +184,38 @@ public class Validations extends BaseController {
 			if (isMandetory.equals("false") && node.getText().isEmpty())
 				return true;
 			if (!id.contains(RegistrationConstants.ON_TYPE) && isMandetory.equals("true") && node.getText().isEmpty()) {
-				if(!showAlert)
-					generateAlert(labelBundle.getString(label).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)), isConsolidated, validationMessage);
+				if (!showAlert)
+					generateAlert(
+							labelBundle.getString(label).concat(" ")
+									.concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)),
+							isConsolidated, validationMessage);
 				node.requestFocus();
 				return false;
 			}
 			if (node.getText().matches(regex)) {
-				
-				if(blackListedWords!=null) {
-				if ( (!id.contains(RegistrationConstants.ON_TYPE)) && blackListedWords.contains(node.getText())) {
-					if(!showAlert)
-						generateAlert(
-								"For "+labelBundle.getString(label)+" "+node.getText().concat(" is ").concat(RegistrationConstants.BLOCKED).concat(" word"),
-								isConsolidated, validationMessage);
-					node.requestFocus();
-					return false;
+
+				if (blackListedWords != null) {
+					if ((!id.contains(RegistrationConstants.ON_TYPE)) && blackListedWords.contains(node.getText())) {
+						if (!showAlert)
+							generateAlert(
+									"For " + labelBundle.getString(label) + " " + node.getText().concat(" is ")
+											.concat(RegistrationConstants.BLOCKED).concat(" word"),
+									isConsolidated, validationMessage);
+						node.requestFocus();
+						return false;
+					}
 				}
-				}
-				
+
 				if (isFixed.equals("false")) {
 					if (node.getText().length() <= length) {
 						return true;
 					} else {
-						if(!showAlert)
+						if (!showAlert)
 							generateAlert(
-									labelBundle.getString(label).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_002_1)).concat(" "+length+" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_002_2)),
+									labelBundle.getString(label).concat(" ")
+											.concat(messageBundle.getString(RegistrationConstants.REG_DDC_002_1))
+											.concat(" " + length + " ")
+											.concat(messageBundle.getString(RegistrationConstants.REG_DDC_002_2)),
 									isConsolidated, validationMessage);
 						node.requestFocus();
 						return false;
@@ -217,9 +225,12 @@ public class Validations extends BaseController {
 					if (node.getText().length() == length) {
 						return true;
 					} else {
-						if(!showAlert)
+						if (!showAlert)
 							generateAlert(
-									labelBundle.getString(label).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_003_1)).concat(" "+length+" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_003_2)),
+									labelBundle.getString(label).concat(" ")
+											.concat(messageBundle.getString(RegistrationConstants.REG_DDC_003_1))
+											.concat(" " + length + " ")
+											.concat(messageBundle.getString(RegistrationConstants.REG_DDC_003_2)),
 									isConsolidated, validationMessage);
 						node.requestFocus();
 						return false;
@@ -227,15 +238,33 @@ public class Validations extends BaseController {
 				}
 
 			}
-			if(!showAlert)
-				generateAlert(
-						messageBundle.getString(label+"_"+RegistrationConstants.REG_DDC_004_1).concat(" "+labelBundle.getString(label)),
-						isConsolidated, validationMessage);
+			if (!showAlert)
+				generateAlert(messageBundle.getString(label + "_" + RegistrationConstants.REG_DDC_004_1)
+						.concat(" " + labelBundle.getString(label)), isConsolidated, validationMessage);
 			node.requestFocus();
 			return false;
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			return false;
+		}
+	}
+
+	/**
+	 * Validate for the single string
+	 */
+	public boolean validateSingleString(String value, String id) {
+		String[] validationProperty = validationBundle.getString(id).split(RegistrationConstants.VALIDATION_SPLITTER);
+		String regex = validationProperty[0];
+		int length = Integer.parseInt(validationProperty[1]);
+		if (id.toLowerCase().contains(RegistrationConstants.CONTENT_TYPE_MOBILE.toLowerCase())) {
+			if (value.length() == length) {
+				return value.matches(regex);
+			} else {
+				return false;
+			}
+		} else {
+			return value.matches(regex);
 		}
 	}
 
@@ -247,12 +276,16 @@ public class Validations extends BaseController {
 			if (node.isDisabled())
 				return true;
 			if (node.getValue() == null) {
-				generateAlert(labelBundle.getString(id).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)), isConsolidated, validationMessage);
+				generateAlert(
+						labelBundle.getString(id).concat(" ")
+								.concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)),
+						isConsolidated, validationMessage);
 				node.requestFocus();
 				return false;
 			}
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage()+ ExceptionUtils.getStackTrace(runtimeException));
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			return false;
 		}
 		return true;
@@ -268,12 +301,16 @@ public class Validations extends BaseController {
 			if (node.isDisabled())
 				return true;
 			if (node.getValue() == null) {
-				generateAlert(labelBundle.getString(id).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)), isConsolidated, validationMessage);
+				generateAlert(
+						labelBundle.getString(id).concat(" ")
+								.concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)),
+						isConsolidated, validationMessage);
 				node.requestFocus();
 				return false;
 			}
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage()+ ExceptionUtils.getStackTrace(runtimeException));
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			return false;
 		}
 		return true;
@@ -283,13 +320,14 @@ public class Validations extends BaseController {
 			RidValidator<String> ridValidator) {
 		if (!isChild)
 			return true;
-		if (field.getText().length() <= Integer.parseInt((String)ApplicationContext.map().get(RegistrationConstants.UIN_LENGTH))) {
+		if (field.getText().length() <= Integer
+				.parseInt((String) ApplicationContext.map().get(RegistrationConstants.UIN_LENGTH))) {
 			try {
 				uinValidator.validateId(field.getText());
 			} catch (InvalidIDException invalidUinException) {
 				generateAlert(RegistrationConstants.ERROR, invalidUinException.getErrorText());
-				LOGGER.error("UIN VALIDATOIN FAILED", APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, invalidUinException.getMessage()+ ExceptionUtils.getStackTrace(invalidUinException));
+				LOGGER.error("UIN VALIDATOIN FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+						invalidUinException.getMessage() + ExceptionUtils.getStackTrace(invalidUinException));
 				field.requestFocus();
 				return false;
 			}
@@ -298,8 +336,8 @@ public class Validations extends BaseController {
 				ridValidator.validateId(field.getText());
 			} catch (InvalidIDException invalidRidException) {
 				generateAlert(RegistrationConstants.ERROR, invalidRidException.getErrorText());
-				LOGGER.error("RID VALIDATOIN FAILED", APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, invalidRidException.getMessage() + ExceptionUtils.getStackTrace(invalidRidException));
+				LOGGER.error("RID VALIDATOIN FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+						invalidRidException.getMessage() + ExceptionUtils.getStackTrace(invalidRidException));
 				field.requestFocus();
 				return false;
 			}

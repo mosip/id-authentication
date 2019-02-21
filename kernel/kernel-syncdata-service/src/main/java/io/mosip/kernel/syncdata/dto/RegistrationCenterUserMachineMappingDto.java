@@ -7,6 +7,7 @@ import javax.validation.constraints.Size;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 /**
  * Dto for response to user for user machine mappings
  * 
@@ -14,8 +15,9 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @ApiModel(description = "Model representing a Registration-Center-User-Machine-Mapping Request")
-public class RegistrationCenterUserMachineMappingDto {
+public class RegistrationCenterUserMachineMappingDto extends BaseDto{
 
 	/**
 	 * Center Id for request

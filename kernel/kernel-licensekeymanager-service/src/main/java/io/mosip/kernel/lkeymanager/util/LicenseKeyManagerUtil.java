@@ -148,7 +148,7 @@ public class LicenseKeyManagerUtil {
 	 * @param tspID
 	 *            the TSP ID.
 	 * @param licenseKey
-	 *            the License Key.
+	 *            the license Key.
 	 * @param permissions
 	 *            the list of permissions.
 	 */

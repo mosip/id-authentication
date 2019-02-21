@@ -1,5 +1,6 @@
 package io.mosip.registration.mapper;
 
+import java.beans.PropertyDescriptor;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -7,6 +8,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -36,7 +40,6 @@ import io.mosip.registration.dto.json.metadata.Photograph;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.util.checksum.CheckSumUtil;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
-
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.metadata.Type;
 
@@ -190,6 +193,18 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			Map<String, String> checkSumMap = CheckSumUtil.getCheckSumMap();
 			checkSumMap.forEach((key, value) -> checkSums.add(buildFieldValue(key, value)));
 			identity.setCheckSum(checkSums);
+
+			// uinUpdatedFields
+			List<String> uinUpdateFields = new ArrayList<>();
+			BeanWrapper beanWrapper = new BeanWrapperImpl(source.getSelectionListDTO());
+			PropertyDescriptor[] pds = beanWrapper.getPropertyDescriptors();
+			for (PropertyDescriptor pd : pds) {
+				Object beanWrapperValue = beanWrapper.getPropertyValue(pd.getName());
+				if (beanWrapperValue instanceof Boolean && (Boolean) beanWrapperValue)
+					uinUpdateFields.add(pd.getName());
+			}
+			identity.setUinUpdatedFields(uinUpdateFields);
+
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_META_CONVERTOR,
 					runtimeException.toString());
@@ -240,29 +255,29 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 				.getProofOfIdentity();
 
 		if (documentDetailsDTO != null) {
-			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoI",
-					documentDetailsDTO.getType(), documentDetailsDTO.getOwner()));
+			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoI", documentDetailsDTO.getType(),
+					documentDetailsDTO.getOwner()));
 		}
 
 		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfAddress();
 
 		if (documentDetailsDTO != null) {
-			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoA",
-					documentDetailsDTO.getType(), documentDetailsDTO.getOwner()));
+			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoA", documentDetailsDTO.getType(),
+					documentDetailsDTO.getOwner()));
 		}
 
 		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfRelationship();
 
 		if (documentDetailsDTO != null) {
-			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoR",
-					documentDetailsDTO.getType(), documentDetailsDTO.getOwner()));
+			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoR", documentDetailsDTO.getType(),
+					documentDetailsDTO.getOwner()));
 		}
 
 		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfDateOfBirth();
 
 		if (documentDetailsDTO != null) {
-			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoB",
-					documentDetailsDTO.getType(), documentDetailsDTO.getOwner()));
+			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoB", documentDetailsDTO.getType(),
+					documentDetailsDTO.getOwner()));
 		}
 
 		if (demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceipt() != null) {
@@ -382,9 +397,10 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		metaData.add(buildFieldValue("previousRID", metaDataDTO.getPreviousRID()));
 		// Add Introducer Type
 		metaData.add(buildFieldValue("introducerType", registrationDTO.getOsiDataDTO().getIntroducerType()));
-		// Add consentOfApplicant 
-		metaData.add(buildFieldValue("consentOfApplicant", registrationDTO.getRegistrationMetaDataDTO().getConsentOfApplicant()));
-		
+		// Add consentOfApplicant
+		metaData.add(buildFieldValue("consentOfApplicant",
+				registrationDTO.getRegistrationMetaDataDTO().getConsentOfApplicant()));
+
 		// Validate whether Introducer has provided UIN or RID
 		String introducerRID = null;
 		String introducerUIN = null;
@@ -428,9 +444,8 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		// Add Operator ID
 		osiData.add(buildFieldValue("officerId", registrationDTO.getOsiDataDTO().getOperatorID()));
 		// Add Officer CBEFF File
-		if (((Map<String, String>) SessionContext.map()
-				.get(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME)).keySet().stream()
-						.anyMatch(key -> key.startsWith(RegistrationConstants.OFFICER.toLowerCase()))) {
+		if (((Map<String, String>) SessionContext.map().get(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME)).keySet()
+				.stream().anyMatch(key -> key.startsWith(RegistrationConstants.OFFICER.toLowerCase()))) {
 			osiData.add(buildFieldValue("officerBiometricFileName",
 					removeFileExt(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME)));
 		} else {
@@ -440,9 +455,8 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		// Add Supervisor ID
 		osiData.add(buildFieldValue("supervisorId", registrationDTO.getOsiDataDTO().getSupervisorID()));
 		// Add Officer CBEFF File
-		if (((Map<String, String>) SessionContext.map()
-				.get(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME)).keySet().stream()
-						.anyMatch(key -> key.startsWith(RegistrationConstants.SUPERVISOR.toLowerCase()))) {
+		if (((Map<String, String>) SessionContext.map().get(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME)).keySet()
+				.stream().anyMatch(key -> key.startsWith(RegistrationConstants.SUPERVISOR.toLowerCase()))) {
 			osiData.add(buildFieldValue("supervisorBiometricFileName",
 					removeFileExt(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME)));
 		} else {
@@ -577,9 +591,8 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 
 	@SuppressWarnings("unchecked")
 	private String getBIRUUID(String personType, String biometricType) {
-		return ((Map<String, String>) SessionContext.map()
-				.get(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME))
-						.get(personType.concat(biometricType).toLowerCase());
+		return ((Map<String, String>) SessionContext.map().get(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME))
+				.get(personType.concat(biometricType).toLowerCase());
 	}
 
 }

@@ -294,6 +294,26 @@ public class DataSyncServiceUtilTest {
 		assertEquals(list.size(), preRegIds.size());
 	}
 	
+	
+	@Test
+	public void callGetPreIdsRestServiceTest1() {
+		String fromDate="2018-01-17 00:00:00";
+		String toDate=null;
+		preRegIds.add("23587986034785");
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		MainListResponseDTO mainResponseDTO=new MainListResponseDTO();
+		mainResponseDTO.setStatus(true);
+		mainResponseDTO.setResTime(resTime);
+		mainResponseDTO.setErr(exceptionJSONInfo);
+		mainResponseDTO.setResponse(preRegIds);
+		ResponseEntity<MainListResponseDTO> respEntity=new ResponseEntity<>(mainResponseDTO, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(MainListResponseDTO.class))).thenReturn(respEntity);
+		List<String> list =serviceUtil.callGetPreIdsRestService(fromDate, toDate);
+		assertEquals(list.size(), preRegIds.size());
+	}
+	
 //	@Test(expected=DemographicGetDetailsException.class)
 //	public void demographicGetDetailsExceptionTest() {
 //		String fromDate="2018-01-17 00:00:00";

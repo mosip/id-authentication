@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.stage.Screen?>
 
-<AnchorPane fx:id="biometricsPane" layoutX="11.0" styleClass="onboardParenPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.FaceCaptureController">
+<AnchorPane fx:id="faceCapture" layoutX="11.0" styleClass="onboardParenPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.FaceCaptureController">
 <children>
 <AnchorPane layoutX="1.0" styleClass="userOnboardHeader">
          <children>
@@ -72,7 +72,7 @@
                         <Line endX="100.0" layoutX="372.0" layoutY="85.0" startX="-100.0" />
                      </children>
                   </AnchorPane>
-                  <Pane fx:id="applicantImagePane" layoutX="350.0" layoutY="66.0" onMouseClicked="#enableCapture" prefHeight="216.0" prefWidth="243.0">
+                  <Pane id="applicantPhoto" fx:id="applicantImagePane" layoutX="350.0" layoutY="66.0" onMouseClicked="#enableCapture" prefHeight="216.0" prefWidth="243.0">
                      <children>
              <ImageView fx:id="applicantImage" fitHeight="210.0" fitWidth="272.0" layoutX="2.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
                 <image>
@@ -106,6 +106,7 @@
                   </graphic>
             </Button>
                </children>
-            </AnchorPane> 
+            </AnchorPane>
+      <Label fx:id="photoAlert" layoutX="894.0" layoutY="540.0" prefHeight="27.0" prefWidth="194.0" />
     </children>
  </AnchorPane>

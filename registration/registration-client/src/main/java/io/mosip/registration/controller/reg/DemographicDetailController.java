@@ -423,8 +423,11 @@ public class DemographicDetailController extends BaseController {
 						toggleLabel1LocalLanguage.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						toggleLabel2LocalLanguage.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						ageField.clear();
-						childSpecificFields.setVisible(false);
-						childSpecificFieldsLocal.setVisible(false);
+						if (!(getRegistrationDTOFromSession().getSelectionListDTO() != null
+								&& getRegistrationDTOFromSession().getSelectionListDTO().isChild())) {
+							childSpecificFields.setVisible(false);
+							childSpecificFieldsLocal.setVisible(false);
+						}
 						ageField.setDisable(false);
 						ageFieldLocalLanguage.setDisable(false);
 						ageFieldLocalLanguage.clear();
@@ -438,8 +441,11 @@ public class DemographicDetailController extends BaseController {
 						toggleLabel2LocalLanguage.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						ageField.clear();
 						ageFieldLocalLanguage.clear();
-						childSpecificFields.setVisible(false);
-						childSpecificFieldsLocal.setVisible(false);
+						if (!(getRegistrationDTOFromSession().getSelectionListDTO() != null
+								&& getRegistrationDTOFromSession().getSelectionListDTO().isChild())) {
+							childSpecificFields.setVisible(false);
+							childSpecificFieldsLocal.setVisible(false);
+						}
 						ageField.setDisable(true);
 						ageFieldLocalLanguage.setDisable(true);
 						dob.setDisable(false);
@@ -556,6 +562,7 @@ public class DemographicDetailController extends BaseController {
 				int age = 0;
 				if (newValue.matches("\\d{1,3}")) {
 					int maxAge = Integer.parseInt(AppConfig.getApplicationProperty("max_age"));
+					int minAge = Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"));
 					if (getRegistrationDTOFromSession().getSelectionListDTO() != null
 							&& getRegistrationDTOFromSession().getSelectionListDTO().isChild())
 						maxAge = 5;
@@ -565,10 +572,20 @@ public class DemographicDetailController extends BaseController {
 								RegistrationUIConstants.MAX_AGE_WARNING + " " + maxAge);
 					} else {
 						age = Integer.parseInt(ageField.getText());
+						if (getRegistrationDTOFromSession().getSelectionListDTO() != null
+								&& !getRegistrationDTOFromSession().getSelectionListDTO().isChild()) {
+							if (age <= 5) {
+								ageField.setText(oldValue);
+								generateAlert(RegistrationConstants.ERROR,
+										RegistrationUIConstants.MIN_AGE_WARNING + " " + minAge);
+							}
+						}
 						LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
 						dateOfBirth = Date
 								.from(currentYear.minusYears(age).atStartOfDay(ZoneId.systemDefault()).toInstant());
-						if (age < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
+						if (age <= Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))
+								&& !(getRegistrationDTOFromSession().getSelectionListDTO() != null
+										&& !getRegistrationDTOFromSession().getSelectionListDTO().isChild())) {
 							childSpecificFields.setVisible(true);
 							childSpecificFieldsLocal.setVisible(true);
 							childSpecificFields.setDisable(false);

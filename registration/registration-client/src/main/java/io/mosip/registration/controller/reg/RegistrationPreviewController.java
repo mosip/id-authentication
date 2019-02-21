@@ -5,8 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.Writer;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,13 +22,12 @@ import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 
 @Controller
-public class RegistrationPreviewController extends BaseController implements Initializable {
+public class RegistrationPreviewController extends BaseController {
 
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationPreviewController.class);
 
@@ -54,12 +51,7 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 	@Autowired
 	private RegistrationPreviewController previewController;
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		consentOfApplicant.setSelected(true);
-	}
-		
+			
 	@FXML
 	public void goToPrevPage(ActionEvent event) {
 		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW,RegistrationConstants.PREVIOUS));

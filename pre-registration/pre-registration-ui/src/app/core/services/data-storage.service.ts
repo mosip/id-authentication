@@ -48,6 +48,10 @@ export class DataStorageService {
     return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.gender);
   }
 
+  getResidenceDetails() {
+    return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.resident);
+  }
+
   getTransliteration(request: any) {
     const obj = {
       id: appConstants.IDS.transliteration,
@@ -55,6 +59,8 @@ export class DataStorageService {
       ver: appConstants.VERSION,
       request: request
     };
+
+    console.log(obj);
 
     return this.httpClient.post(this.BASE_URL + appConstants.APPEND_URL.transliteration, obj);
   }
@@ -206,12 +212,11 @@ export class DataStorageService {
   }
 
   recommendedCenters(langCode: string, locationHierarchyCode: number, data: string[]) {
-    let url = this.MASTER_DATA_URL + 'registrationcenters/' + langCode + '/' +
-                  locationHierarchyCode + '/names?';
+    let url = this.MASTER_DATA_URL + 'registrationcenters/' + langCode + '/' + locationHierarchyCode + '/names?';
     data.forEach(name => {
       url += 'name=' + name;
       if (data.indexOf(name) !== data.length - 1) {
-        url += '&'
+        url += '&';
       }
     });
     console.log(url);

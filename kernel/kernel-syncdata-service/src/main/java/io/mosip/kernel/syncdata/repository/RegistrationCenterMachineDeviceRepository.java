@@ -40,7 +40,7 @@ public interface RegistrationCenterMachineDeviceRepository
 	 *            id of the registration center
 	 * @return  RegistrationCenterMachineDevice list
 	 */
-	@Query("FROM RegistrationCenterMachineDevice rcmd where rcmd.registrationCenterMachineDevicePk.regCenterId =?1 AND (rcmd.createdDateTime > ?2 OR rcmd.updatedDateTime > ?2 OR rcmd.deletedDateTime > ?2)")
-	List<RegistrationCenterMachineDevice> findAllByRegistrationCenterIdCreatedUpdatedDeleted(String registrationCenterId, LocalDateTime lastUpdated);
+	@Query("FROM RegistrationCenterMachineDevice rcmd where rcmd.registrationCenterMachineDevicePk.regCenterId =?1 AND ((rcmd.createdDateTime > ?2 AND rcmd.createdDateTime <=?3) OR (rcmd.updatedDateTime > ?2 AND rcmd.updatedDateTime <=?3) OR (rcmd.deletedDateTime > ?2 AND rcmd.deletedDateTime <=?3))")
+	List<RegistrationCenterMachineDevice> findAllByRegistrationCenterIdCreatedUpdatedDeleted(String registrationCenterId, LocalDateTime lastUpdated,LocalDateTime currentTimeStamp);
 
 }

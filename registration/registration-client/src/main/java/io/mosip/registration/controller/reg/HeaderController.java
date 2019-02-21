@@ -92,9 +92,6 @@ public class HeaderController extends BaseController {
 	PacketHandlerController packetHandlerController;
 
 	@Autowired
-	private UserOnboardController userOnboardController;
-
-	@Autowired
 	private RegistrationPacketVirusScanService registrationPacketVirusScanService;
 
 	/**
@@ -115,7 +112,7 @@ public class HeaderController extends BaseController {
 		menu.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)
 				&& !(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
-			homeSelectionMenu.setDisable(true);
+			homeSelectionMenu.getItems().remove(0, homeSelectionMenu.getItems().size()-2);
 		} else {
 			homeSelectionMenu.setDisable(false);
 		}
@@ -162,40 +159,7 @@ public class HeaderController extends BaseController {
 	 * Redirecting to Home page
 	 */
 	public void redirectHome(ActionEvent event) {
-		try {
-
-			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
-					APPLICATION_ID, "Redirecting to Home page");
-
-			VBox homePage = BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
-			getScene(homePage);
-			clearRegistrationData();
-
-		} catch (IOException  ioException) {
-
-			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
-					APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
-		}  catch (RuntimeException runtimeException) {
-
-			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
-					APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
-
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
-		}
-	}
-
-	/**
-	 * change On-Board user Perspective
-	 * 
-	 * @param event is an action event
-	 * @throws IOException
-	 */
-	public void onBoardUser(ActionEvent event) throws IOException {
-		SessionContext.map().put(RegistrationConstants.ONBOARD_USER, true);
-		SessionContext.map().put(RegistrationConstants.ONBOARD_USER_UPDATE, true);
-		userOnboardController.initUserOnboard();
+		goToHomePageFromRegistration();
 	}
 
 	/**

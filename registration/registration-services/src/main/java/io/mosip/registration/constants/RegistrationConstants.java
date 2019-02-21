@@ -100,7 +100,6 @@ public class RegistrationConstants {
 	public static final String RIGHT_IRIS_IMG_PATH = "/images/Eye.png";
 	public static final String LEFT_IRIS_IMG_PATH = "/images/Eye.png";
 	public static final String VIEW = "/images/View.png";
-	public static final String SELECTION_IMG_PATH = "/images/GreenRoundTick.png";
 
 	// Authentication
 	public static final String SUPERVISOR_VERIFICATION = "Supervisor Login";
@@ -680,8 +679,6 @@ public class RegistrationConstants {
 	public static final String IRIS_DISABLE_FLAG = "IRIS_DISABLE_FLAG";
 	public static final String FACE_DISABLE_FLAG = "FACE_DISABLE_FLAG";
 	public static final String DOCUMENT_DISABLE_FLAG = "DOCUMENT_DISABLE_FLAG";
-	public static final String SEND_NOTIFICATION_DISABLE_FLAG = "SEND_NOTIFICATION_DISABLE_FLAG";
-	public static final String RECAPTURE_TIME = "RECAPTURE_TIME";
 
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
@@ -1103,4 +1100,8 @@ public class RegistrationConstants {
 	public static final String USER_DETAILS_SERVICE_NAME = "user_details";
 	public static final String MAPPER_UTILL = "MAPPER_UTILL";
 	public static final String REG_ID = "regid";
+	
+	
+	public static final String CONTENT_TYPE_EMAIL = "EMAIL";
+	public static final String CONTENT_TYPE_MOBILE = "MOBILE";
 }
