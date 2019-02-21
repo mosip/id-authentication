@@ -5,9 +5,11 @@
 package io.mosip.preregistration.documents.exception.util;
 
 import org.json.JSONException;
+import org.postgresql.util.PSQLException;
 
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.exception.ParseException;
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
@@ -27,6 +29,7 @@ import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
 import io.mosip.preregistration.documents.exception.InvalidDocumnetIdExcepion;
 import io.mosip.preregistration.documents.exception.MandatoryFieldNotFoundException;
 import io.mosip.preregistration.documents.exception.ParsingException;
+import io.mosip.preregistration.documents.exception.PrimaryKeyValidationException;
 
 /**
  * This class is used to catch the exceptions that occur while uploading the
@@ -82,6 +85,11 @@ public class DocumentExceptionCatcher {
 					ex.getMessage());
 		}else if(ex instanceof TableNotAccessibleException) {
 			throw new TableNotAccessibleException(((TableNotAccessibleException) ex).getErrorCode(),((TableNotAccessibleException) ex).getErrorText());
+		}else if(ex instanceof PSQLException) {
+			throw new PrimaryKeyValidationException(ErrorCodes.PRG_PAM_DOC_021.toString(),ErrorMessages.DOCUMENT_ALREADY_PRESENT.toString());
+		}
+		else if(ex instanceof FSAdapterException) {
+			throw new FSAdapterException(((FSAdapterException) ex).getErrorCode(), ((FSAdapterException) ex).getErrorText());
 		}
 
 	}

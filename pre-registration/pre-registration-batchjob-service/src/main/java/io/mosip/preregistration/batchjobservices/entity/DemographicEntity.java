@@ -32,8 +32,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@NamedQuery(name = "DemographicEntity.findByCreatedBy", query = "SELECT e FROM DemographicEntity e  WHERE e.createdBy=:userId and e.statusCode <>:statusCode ")
-@NamedQuery(name = "DemographicEntity.findBypreRegistrationId", query = "SELECT r FROM DemographicEntity r  WHERE r.preRegistrationId=:preRegId")
 public class DemographicEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -43,7 +41,6 @@ public class DemographicEntity implements Serializable {
 	@Column(name = "prereg_id", nullable = false)
 	@Id
 	private String preRegistrationId;
-
 
 	/** The JSON */
 	@Column(name = "demog_detail")
@@ -76,14 +73,13 @@ public class DemographicEntity implements Serializable {
 	/** The update date time. */
 	@Column(name = "upd_dtimes")
 	private LocalDateTime updateDateTime;
-	
-	
+
 	/**
 	 * Encrypted Date Time
 	 */
 	@Column(name = "encrypted_dtimes")
 	private LocalDateTime encryptedDateTime;
-	
-@Column(name="demog_detail_hash")
-private String demogDetailHash;
+
+	@Column(name = "demog_detail_hash")
+	private String demogDetailHash;
 }

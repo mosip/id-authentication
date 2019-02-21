@@ -10,6 +10,7 @@
             placeholder="{{ document.document_name }}"
             (selectionChange)="selectChange($event, i)"
             (openedChange)="openedChange($event, i)"
+            [disabled]="document.document_name === 'POA' && sameAsselected ? true : false"
           >
             <mat-option *ngFor="let ValidDocument of document.valid_docs" value="{{ ValidDocument.value }}">
               {{ ValidDocument.name }}
@@ -32,14 +33,14 @@
             value="{{ 'documents.action_browse' | translate }}"
             type="button"
             onclick="document.getElementById('file').click();"
-            [disabled]="i != documentIndex"
+            [disabled]="i != documentIndex || (document.document_name === 'POA' && sameAsselected) ? true : false"
           />
         </span>
         <span *ngIf="document.document_name === 'POA'">
-          <span>OR</span>
-          <span>
+          <span *ngIf="allApplicants.length > 0">OR</span>
+          <span *ngIf="allApplicants.length > 0">
             <mat-form-field class="file-upload__or">
-              <mat-select placeholder="Same as" (selectionChange)="sameAsChange($event)">
+              <mat-select placeholder="Same as" (selectionChange)="sameAsChange($event)" value="sameAs">
                 <mat-option *ngFor="let applicant of allApplicants" value="{{ applicant.preRegistrationId }}">
                   {{ applicant.fullname }}
                 </mat-option>

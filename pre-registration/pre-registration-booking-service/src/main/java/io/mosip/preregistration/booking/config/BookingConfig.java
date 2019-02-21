@@ -93,7 +93,7 @@ public class BookingConfig {
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration-Booking").select()
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.booking.controller"))
-				.paths(PathSelectors.ant("/v0.1/pre-registration/booking/*")).build();
+				.paths(PathSelectors.ant("/*")).build();
 
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);

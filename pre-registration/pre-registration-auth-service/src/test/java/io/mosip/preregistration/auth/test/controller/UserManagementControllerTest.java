@@ -46,7 +46,7 @@ public class UserManagementControllerTest {
 
 		Mockito.when(userManagementService.userLogin(Mockito.anyString())).thenReturn(responseMap);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/login")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/login")
 				.param("userName", userName).accept(MediaType.ALL_VALUE);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
@@ -60,7 +60,7 @@ public class UserManagementControllerTest {
 
 		Mockito.when(userManagementService.userLogin(Mockito.anyString())).thenReturn(responseMap);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/login")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/login")
 				.param("userName", userName).accept(MediaType.ALL_VALUE);
 		mockMvc.perform(requestBuilder).andExpect(status().isNotAcceptable());
 	}
@@ -77,7 +77,7 @@ public class UserManagementControllerTest {
 		Mockito.when(userManagementService.userValidation(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(responseMap);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/login")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/login")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
 				.param("userName", userName).content(str);
 
@@ -96,7 +96,7 @@ public class UserManagementControllerTest {
 		Mockito.when(userManagementService.userValidation(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(responseMap);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/login")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/login")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
 				.param("userName", userName).content(str);
 
@@ -117,7 +117,7 @@ public class UserManagementControllerTest {
 		Mockito.when(userManagementService.userUpdation(Mockito.anyString(), Mockito.any(UserDto.class)))
 				.thenReturn(responseMap);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/v0.1/pre-registration/user/")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/v0.1/user/")
 				.contentType(MediaType.APPLICATION_JSON).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON)
 				.param("userName", userName).content(str);
 
@@ -138,7 +138,7 @@ public class UserManagementControllerTest {
 		Mockito.when(userManagementService.userUpdation(Mockito.anyString(), Mockito.any(UserDto.class)))
 				.thenReturn(responseMap);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/v0.1/pre-registration/user/")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/v0.1/user/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
 				.param("oldData", userName).content(str);
 

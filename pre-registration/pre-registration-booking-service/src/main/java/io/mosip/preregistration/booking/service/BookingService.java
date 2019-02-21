@@ -24,9 +24,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.preregistration.booking.codes.RequestCodes;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.BookingStatusDTO;
@@ -55,12 +55,12 @@ import io.mosip.preregistration.booking.service.util.BookingLock;
 import io.mosip.preregistration.booking.service.util.BookingServiceUtil;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
+import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
 import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
-import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.stateUtil.StateManager;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
@@ -129,7 +129,6 @@ public class BookingService {
 				for (LocalDate sDate = LocalDate.now(); (sDate.isBefore(endDate)
 						|| sDate.isEqual(endDate)); sDate = sDate.plusDays(1)) {
 					serviceUtil.timeSlotCalculator(regDto, holidaylist, sDate, bookingDAO);
-					Thread.sleep(2000);
 				}
 			}
 		} catch (Exception ex) {
@@ -216,6 +215,7 @@ public class BookingService {
 			}
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In bookAppointment method of Booking Service- " + ex.getMessage());
+			ex.printStackTrace();
 			new BookingExceptionCatcher().handle(ex);
 		}
 		responseDTO.setStatus(true);
@@ -406,10 +406,15 @@ public class BookingService {
 					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 					LocalDateTime bookedDateTime = LocalDateTime.parse(str, formatter);
 					
-					if(!serviceUtil.timeSpanCheck(bookedDateTime)) {
-						throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
-								ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED_BEFORE.getMessage()+" "+timeSpanCheck+" hours");
+					String preRegStatusCode = serviceUtil
+							.callGetStatusRestService(cancelBookingDTO.getPreRegistrationId());
+					if(!preRegStatusCode.equals(StatusCodes.EXPIRED.getCode())) {
+						if(!serviceUtil.timeSpanCheck(bookedDateTime)) {
+							throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
+									ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED_BEFORE.getMessage()+" "+timeSpanCheck+" hours");
+						}
 					}
+					
 					
 					bookingEntity.setStatusCode(StatusCodes.CANCELED.getCode());
 					bookingEntity.setUpdDate(DateUtils.parseDateToLocalDateTime(new Date()));
@@ -435,6 +440,46 @@ public class BookingService {
 			new BookingExceptionCatcher().handle(ex);
 		}
 		return cancelBookingResponseDTO;
+	}
+	
+	/**
+	 * This Method is used to delete the Individual Application and documents
+	 * associated with it
+	 * 
+	 * @param preregId
+	 *            pass the preregId of individual
+	 * @return response
+	 * 
+	 */
+	public MainListResponseDTO<DeleteBookingDTO> deleteBooking(String preregId) {
+		log.info("sessionId", "idType", "id", "In deleteIndividual method of pre-registration service ");
+		MainListResponseDTO<DeleteBookingDTO> response = new MainListResponseDTO<>();
+		List<DeleteBookingDTO> deleteList = new ArrayList<>();
+		DeleteBookingDTO deleteDto = new DeleteBookingDTO();
+		Map<String, String> requestParamMap = new HashMap<>();
+		try {
+			requestParamMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preregId);
+			if (ValidationUtil.requstParamValidator(requestParamMap)) {
+				List<RegistrationBookingEntity> registrationEntityList = bookingDAO.findByPreregistrationId(preregId);
+				registrationEntityList.forEach(iterate -> {
+					if (serviceUtil.checkStatusForDeletion(iterate.getStatusCode())) {
+						bookingDAO.deleteByPreRegistrationId(preregId);
+						deleteDto.setPreRegistrationId(iterate.getBookingPK().getPreregistrationId());
+						deleteDto.setDeletedBy(iterate.getCrBy());
+						deleteDto.setDeletedDateTime(new Date(System.currentTimeMillis()));
+						deleteList.add(deleteDto);
+					}
+
+				});
+			}
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id", "In deleteBooking method of Booking Service- " + ex.getMessage());
+			new BookingExceptionCatcher().handle(ex);
+		}
+		response.setResTime(serviceUtil.getCurrentResponseTime());
+		response.setStatus(Boolean.TRUE);
+		response.setResponse(deleteList);
+		return response;
 	}
 
 }
