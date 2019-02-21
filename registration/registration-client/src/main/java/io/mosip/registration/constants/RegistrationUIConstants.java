@@ -207,4 +207,6 @@ public class RegistrationUIConstants {
 	public static final String VIRUS_SCAN_ERROR_FIRST_PART = bundle.getString("VIRUS_SCAN_ERROR_FIRST_PART");
 	public static final String VIRUS_SCAN_ERROR_SECOND_PART = bundle.getString("VIRUS_SCAN_ERROR_SECOND_PART");
 	public static final String VIRUS_SCAN_SUCCESS = bundle.getString("VIRUS_SCAN_SUCCESS");
+	
+	public static final String INVALID_KEY = bundle.getString("INVALID_KEY");
 }

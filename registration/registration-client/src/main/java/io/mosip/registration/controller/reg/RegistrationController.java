@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -335,12 +336,15 @@ public class RegistrationController extends BaseController {
 		// Create object for Demographic DTOS
 		DemographicDTO demographicDTO = new DemographicDTO();
 		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
+		applicantDocumentDTO.setDocuments(new HashMap<>());
 
 		demographicDTO.setApplicantDocumentDTO(applicantDocumentDTO);
 		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
 		Identity identity = new Identity();
 		demographicInfoDTO.setIdentity(identity);
 		demographicDTO.setDemographicInfoDTO(demographicInfoDTO);
+		
+		applicantDocumentDTO.setDocuments(new HashMap<>());
 
 		registrationDTO.setDemographicDTO(demographicDTO);
 
@@ -363,6 +367,8 @@ public class RegistrationController extends BaseController {
 		registrationMetaDataDTO
 				.setCenterId((String) applicationContextMap.get(RegistrationConstants.REGISTARTION_CENTER));
 		registrationMetaDataDTO.setMachineId((String) applicationContextMap.get(RegistrationConstants.MACHINE_ID));
+		registrationMetaDataDTO
+				.setDeviceId((String) applicationContextMap.get(RegistrationConstants.DONGLE_SERIAL_NUMBER));
 
 		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
 

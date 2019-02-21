@@ -27,6 +27,9 @@ mosip.kernel.fsadapter.hdfs.user-pass=Mosip@dev123
 # HDFS log level. Change this to debug to see hdfs logs
 logging.level.org.apache.hadoop=warn
 
+# enable authentication for hdfs, dafault is false
+mosip.kernel.fsadapter.hdfs.authentication-enabled=true 
+
 ```
 
 #### To check files in hdfs, follow these steps:

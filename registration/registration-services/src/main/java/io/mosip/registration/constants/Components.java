@@ -43,7 +43,25 @@ public enum Components {
 	DEVICE_UN_MAPPING("REG-DVUM-23","device un mapping"),
 	
 	//Registration Controller
-	REGISTRATION_CONTROLLER("REG-DVM-24","Registration initialization");
+	REGISTRATION_CONTROLLER("REG-DVM-24","Registration initialization"),
+
+	LOGIN("REG-LOG", "Login"),
+	NAVIGATION("REG-NAV", "Navigation"),
+	REG_DEMO_DETAILS("REG-DEMO", "Registration: DemographicsDetails"),
+	REG_DOCUMENTS("REG-DOC", "Registration: Documents"),
+	REG_BIOMETRICS("REG-BIO", "Registration: Biometrics"),
+	REG_PREVIEW("REG-PVW", "Registration: Preview"),
+	REG_OS_AUTH("REG-OSA", "Registration: OS Authentication"),
+	REG_APPROVAL("REG-APP", "Approve Registration"),
+	SYNC_PACKET("REG-SYN", "Sync Packets"),
+	UPLOAD_PACKET("REG-UPL", "Upload Packets"),
+	VIRUS_SCAN("REG-VIR", "Virus Scan"),
+	GEO_LOCATION("REG-GEO", "Geo-Location"),
+	ON_BOARD_USER("REG-USR", "On-board user"),
+	SYNC_SERVER_TO_CLIENT("REG-SSC", "Server to Client Sync"),
+	SYNC_CLIENT_TO_SERVER("REG-SCS", "Client to Server Sync"),
+	EXPORT_REG_PACKETS("REG-SCS", "Client to Server Sync");
+
 	/**
 	 * The constructor
 	 */

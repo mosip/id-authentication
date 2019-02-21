@@ -101,14 +101,19 @@ public class RegistrationPreviewController extends BaseController {
 	}
 
 	public void modifyDemographicInfo() {
+		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.DEMOGRAPHIC_DETAIL);
+		
+
 	}
 
 	public void modifyDocuments() {
+		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.DOCUMENT_SCAN);
 	}
 
 	public void modifyBiometrics() {
+		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.FINGERPRINT_CAPTURE);
 	}
 }

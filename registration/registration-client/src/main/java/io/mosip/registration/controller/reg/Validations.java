@@ -30,6 +30,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
@@ -148,21 +149,35 @@ public class Validations extends BaseController {
 	 * Validate for the document upload
 	 */
 	private boolean validateDocument(VBox node, String id, String isConsolidated) {
+		boolean validated = false;
 		try {
-			if (id.matches(RegistrationConstants.POR_BOX) && !isChild)
-				return true;
-			if (node.isDisabled())
-				return true;
-			if (!(node.getChildren().isEmpty()))
-				return true;
-			generateAlert(messageBundle.getString(id), isConsolidated, validationMessage);
-			node.requestFocus();
+
+			outer: for (Node documentNode : node.getChildren()) {
+				if (documentNode instanceof HBox) {
+					for (Node innerNode : ((HBox) documentNode).getChildren()) {
+						if (innerNode instanceof VBox) {
+							validated = false;
+							if (innerNode.isDisabled()) {
+								validated = true;
+							} else if (!(((VBox) innerNode).getChildren().isEmpty())) {
+								validated = true;
+							} else {
+								generateAlert(messageBundle.getString("docMandateMsg").replace("{}",
+										((VBox) innerNode).getId()), isConsolidated, validationMessage);
+								node.requestFocus();
+								break outer;
+							}
+						}
+					}
+				}
+			}
+
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			return false;
 		}
-		return false;
+		return node.getChildren().size() > 0 ? validated : true;
 	}
 
 	/**

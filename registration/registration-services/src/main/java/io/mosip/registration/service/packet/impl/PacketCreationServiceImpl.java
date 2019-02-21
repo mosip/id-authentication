@@ -24,7 +24,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
@@ -46,7 +45,6 @@ import io.mosip.registration.dto.cbeff.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.registration.dto.cbeff.jaxbclasses.SingleType;
 import io.mosip.registration.dto.cbeff.jaxbclasses.TestBiometric;
 import io.mosip.registration.dto.cbeff.jaxbclasses.TestBiometricType;
-import io.mosip.registration.dto.demographic.CBEFFFilePropertiesDTO;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
 import io.mosip.registration.dto.json.metadata.DemographicSequence;
 import io.mosip.registration.dto.json.metadata.FieldValueArray;
@@ -119,14 +117,6 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 					RegistrationConstants.INDIVIDUAL, birUUIDs);
 			if (cbeffInBytes != null) {
 				filesGeneratedForPacket.put(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME, cbeffInBytes);
-
-				registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
-						.setIndividualBiometrics(Builder.build(CBEFFFilePropertiesDTO.class)
-								.with(cbeffProperty -> cbeffProperty.setFormat(RegistrationConstants.CBEFF_FILE_FORMAT))
-								.with(cbeffProperty -> cbeffProperty
-										.setValue(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME.replace(
-												RegistrationConstants.XML_FILE_FORMAT, RegistrationConstants.EMPTY)))
-								.with(cbeffProperty -> cbeffProperty.setVersion(1.0)).get());
 			}
 
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
@@ -141,16 +131,6 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 				if (cbeffInBytes != null) {
 					filesGeneratedForPacket.put(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME, cbeffInBytes);
-
-					registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
-							.setParentOrGuardianBiometrics(Builder.build(CBEFFFilePropertiesDTO.class)
-									.with(cbeffProperty -> cbeffProperty
-											.setFormat(RegistrationConstants.CBEFF_FILE_FORMAT))
-									.with(cbeffProperty -> cbeffProperty
-											.setValue(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME.replace(
-													RegistrationConstants.XML_FILE_FORMAT,
-													RegistrationConstants.EMPTY)))
-									.with(cbeffProperty -> cbeffProperty.setVersion(1.0)).get());
 
 					LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 							String.format(loggerMessageForCBEFF, RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME));

@@ -1,13 +1,17 @@
 package io.mosip.registration.processor.manual.verification.dto;
 
 import java.io.Serializable;
+
+import lombok.Data;
 	
 /**
  * The {@link UserDto} class.
  *
  * @author Shuchita
+ * @author Rishabh Keshari
  * @since 0.0.1
  */
+@Data
 public class UserDto implements Serializable {
 	
 	/** The Constant serialVersionUID. */
@@ -16,21 +20,4 @@ public class UserDto implements Serializable {
 	/** The user id. */
 	private String userId;
 
-	/**
-	 * Gets the user id.
-	 *
-	 * @return the userId
-	 */
-	public String getUserId() {
-		return userId;
-	}
-
-	/**
-	 * Sets the user id.
-	 *
-	 * @param userId            the userId to set
-	 */
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
 }

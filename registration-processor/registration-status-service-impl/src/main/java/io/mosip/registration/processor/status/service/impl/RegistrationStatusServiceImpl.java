@@ -24,6 +24,7 @@ import io.mosip.registration.processor.status.code.TransactionTypeCode;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
@@ -265,13 +266,14 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	 * getByIds(java.lang.String)
 	 */
 	@Override
-	public List<RegistrationStatusDto> getByIds(String ids) {
+	public List<RegistrationStatusDto> getByIds(List<RegistrationStatusSubRequestDto> requestIds) {
 		boolean isTransactionSuccessful = false;
 		try {
-			String[] registrationIdArray = ids.split(",");
-			List<String> registrationIds = Arrays.asList(registrationIdArray);
-			List<RegistrationStatusEntity> registrationStatusEntityList = registrationStatusDao
-					.getByIds(registrationIds);
+			List<String> registrationIds =new ArrayList<>();
+			for (RegistrationStatusSubRequestDto registrationStatusSubRequestDto : requestIds) {
+				registrationIds.add(registrationStatusSubRequestDto.getRegistrationId());
+			}
+			List<RegistrationStatusEntity> registrationStatusEntityList = registrationStatusDao.getByIds(registrationIds);
 			isTransactionSuccessful = true;
 			return convertEntityListToDtoListAndGetExternalStatus(registrationStatusEntityList);
 
