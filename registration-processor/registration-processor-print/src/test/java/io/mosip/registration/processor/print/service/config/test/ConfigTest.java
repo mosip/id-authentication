@@ -1,4 +1,4 @@
-package io.mosip.registrationprocessor.print.config.test;
+package io.mosip.registration.processor.print.service.config.test;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -13,13 +13,13 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
-import io.mosip.registration.processor.print.config.PrintStageConfig;
+import io.mosip.registration.processor.print.config.PrintServiceConfig;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigTest {
 
 	@InjectMocks
-	private PrintStageConfig config;
+	private PrintServiceConfig config;
 
 	private Environment env;
 
@@ -43,13 +43,13 @@ public class ConfigTest {
 	}
 
 	@Test
-	public void testgetPrintStage() {
-		assertNotNull(config.getPrintStage());
+	public void testgetPrintService() {
+		assertNotNull(config.getPrintService());
 	}
 
 	@Test
-	public void testgetPrintGlobalExceptionHandler() {
-		assertNotNull(config.getPrintGlobalExceptionHandler());
+	public void testgetUinCardGeneratorImpl() {
+		assertNotNull(config.getUinCardGeneratorImpl());
 	}
 
 }

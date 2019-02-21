@@ -1,41 +1,26 @@
 package io.mosip.registrationprocessor.print.stage.test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -47,18 +32,15 @@ import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
+import io.mosip.registration.processor.core.queue.impl.exception.ConnectionUnavailableException;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
-import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerator;
 import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
-import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.PrintStageApplication;
-import io.mosip.registration.processor.print.dto.IdResponseDTO;
-import io.mosip.registration.processor.print.dto.ResponseDTO;
 import io.mosip.registration.processor.print.stage.PrintStage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -93,10 +75,6 @@ import io.vertx.ext.web.Session;
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class PrintStageTest {
 
-	/** The rest client service. */
-	@Mock
-	private RegistrationProcessorRestClientService<Object> restClientService;
-
 	/** The audit log request builder. */
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
@@ -104,24 +82,6 @@ public class PrintStageTest {
 	/** The packet info manager. */
 	@Mock
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
-
-	/** The id response. */
-	private IdResponseDTO idResponse = new IdResponseDTO();
-
-	/** The response. */
-	private ResponseDTO response = new ResponseDTO();
-
-	/** The template generator. */
-	@Mock
-	private TemplateGenerator templateGenerator;
-
-	/** The uin card generator. */
-	@Mock
-	private UinCardGenerator<ByteArrayOutputStream> uinCardGenerator;
-
-	/** The utility. */
-	@Mock
-	private Utilities utility;
 
 	/** The mosip connection factory. */
 	@Mock
@@ -134,18 +94,21 @@ public class PrintStageTest {
 	/** The queue. */
 	@Mock
 	private MosipQueue queue;
-	
+
 	@Mock
 	private InternalRegistrationStatusDto registrationStatusDto;
-	
+
 	@Mock
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
-	
+
 	/** The ctx. */
 	private RoutingContext ctx;
 
 	/** The response object. */
 	private Boolean responseObject;
+
+	@Mock
+	private PrintService<byte[]> printService;
 
 	/** The stage. */
 	@InjectMocks
@@ -186,88 +149,15 @@ public class PrintStageTest {
 		System.setProperty("registration.processor.queue.typeOfQueue", "ACTIVEMQ");
 		System.setProperty("registration.processor.queue.address", "test");
 
-		List<String> uinList = new ArrayList<>();
-		uinList.add("4238135072");
-		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 
-		LinkedHashMap<String, Object> identityMap = new LinkedHashMap<>();
-		Map<String, String> map = new HashMap<>();
-		map.put("language", "eng");
-		map.put("value", "Alok");
-		JSONObject j1 = new JSONObject(map);
-
-		Map<String, String> map2 = new HashMap<>();
-		map2.put("language", "ara");
-		map2.put("value", "Alok");
-		JSONObject j2 = new JSONObject(map2);
-		JSONArray array = new JSONArray();
-		array.add(j1);
-		array.add(j2);
-		identityMap.put("fullName", array);
-		identityMap.put("gender", array);
-		identityMap.put("addressLine1", array);
-		identityMap.put("addressLine2", array);
-		identityMap.put("addressLine3", array);
-		identityMap.put("city", array);
-		identityMap.put("province", array);
-		identityMap.put("region", array);
-		identityMap.put("dateOfBirth", "1980/11/14");
-		identityMap.put("phone", "9967878787");
-		identityMap.put("email", "raghavdce@gmail.com");
-		identityMap.put("postalCode", "900900");
-
-		Object identity = identityMap;
-		response.setIdentity(identity);
-		idResponse.setResponse(response);
-		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(idResponse);
-
-		String artifact = "UIN Card Template";
-		InputStream artifactStream = new ByteArrayInputStream(artifact.getBytes());
-		Mockito.when(templateGenerator.getTemplate(any(), any(), anyString())).thenReturn(artifactStream);
-
-		byte[] buffer = new byte[8192];
-		int bytesRead;
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-		while ((bytesRead = artifactStream.read(buffer)) != -1) {
-			outputStream.write(buffer, 0, bytesRead);
-		}
-		Mockito.when(uinCardGenerator.generateUinCard(any(), any())).thenReturn(outputStream);
-
-		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
-
-		String value = "{\r\n" + "	\"identity\": {\r\n" + "		\"name\": {\r\n"
-				+ "			\"value\": \"fullName\",\r\n" + "			\"weight\": 20\r\n" + "		},\r\n"
-				+ "		\"gender\": {\r\n" + "			\"value\": \"gender\",\r\n" + "			\"weight\": 20\r\n"
-				+ "		},\r\n" + "		\"dob\": {\r\n" + "			\"value\": \"dateOfBirth\",\r\n"
-				+ "			\"weight\": 20\r\n" + "		},\r\n" + "		\"pheoniticName\": {\r\n"
-				+ "			\"weight\": 20\r\n" + "		},\r\n" + "		\"poa\": {\r\n"
-				+ "			\"value\" : \"proofOfAddress\"\r\n" + "		},\r\n" + "		\"poi\": {\r\n"
-				+ "			\"value\" : \"proofOfIdentity\"\r\n" + "		},\r\n" + "		\"por\": {\r\n"
-				+ "			\"value\" : \"proofOfRelationship\"\r\n" + "		},\r\n" + "		\"pob\": {\r\n"
-				+ "			\"value\" : \"proofOfDateOfBirth\"\r\n" + "		},\r\n"
-				+ "		\"individualBiometrics\": {\r\n" + "			\"value\" : \"individualBiometrics\"\r\n"
-				+ "		},\r\n" + "		\"age\": {\r\n" + "			\"value\" : \"age\"\r\n" + "		},\r\n"
-				+ "		\"addressLine1\": {\r\n" + "			\"value\" : \"addressLine1\"\r\n" + "		},\r\n"
-				+ "		\"addressLine2\": {\r\n" + "			\"value\" : \"addressLine2\"\r\n" + "		},\r\n"
-				+ "		\"addressLine3\": {\r\n" + "			\"value\" : \"addressLine3\"\r\n" + "		},\r\n"
-				+ "		\"region\": {\r\n" + "			\"value\" : \"region\"\r\n" + "		},\r\n"
-				+ "		\"province\": {\r\n" + "			\"value\" : \"province\"\r\n" + "		},\r\n"
-				+ "		\"postalCode\": {\r\n" + "			\"value\" : \"postalCode\"\r\n" + "		},\r\n"
-				+ "		\"phone\": {\r\n" + "			\"value\" : \"phone\"\r\n" + "		},\r\n"
-				+ "		\"email\": {\r\n" + "			\"value\" : \"email\"\r\n" + "		},\r\n"
-				+ "		\"localAdministrativeAuthority\": {\r\n"
-				+ "			\"value\" : \"localAdministrativeAuthority\"\r\n" + "		},\r\n"
-				+ "		\"idschemaversion\": {\r\n" + "			\"value\" : \"IDSchemaVersion\"\r\n" + "		},\r\n"
-				+ "		\"cnienumber\": {\r\n" + "			\"value\" : \"CNIENumber\"\r\n" + "		},\r\n"
-				+ "		\"city\": {\r\n" + "			\"value\" : \"city\"\r\n" + "		}\r\n" + "	}\r\n" + "} ";
-
-		PowerMockito.mockStatic(Utilities.class);
-		PowerMockito.when(Utilities.class, "getJson", anyString(), anyString()).thenReturn(value);
+		byte[] pdfbytes = "UIN Card Template pdf".getBytes();
+		Mockito.when(printService.getPdf(any(), anyString())).thenReturn(pdfbytes);
 
 		Mockito.when(mosipConnectionFactory.createConnection(anyString(), anyString(), anyString(), anyString()))
 				.thenReturn(queue);
 		Mockito.when(mosipQueueManager.send(any(), any(), anyString())).thenReturn(true);
+
 		Mockito.doNothing().when(registrationStatusDto).setStatusCode(any());
 		Mockito.doNothing().when(registrationStatusDto).setStatusComment(any());
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
@@ -282,6 +172,7 @@ public class PrintStageTest {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
+
 	@Test
 	public void testAll() throws ApisResourceAccessException, IOException {
 		ctx = setContext();
@@ -289,7 +180,7 @@ public class PrintStageTest {
 		testDeployVerticle();
 		testSendMessage();
 		testResendPrintPdf();
-		//testRoutes();
+		// testRoutes();
 	}
 
 	/**
@@ -326,22 +217,6 @@ public class PrintStageTest {
 	}
 
 	/**
-	 * Test UIN not found.
-	 */
-	@Test
-	public void testUINNotFound() {
-		List<String> uinList = new ArrayList<>();
-		uinList.add(null);
-		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
-
-		MessageDTO dto = new MessageDTO();
-		dto.setRid("1234567890987654321");
-
-		MessageDTO result = stage.process(dto);
-		assertTrue(result.getInternalError());
-	}
-
-	/**
 	 * Test queue connection null.
 	 */
 	@Test
@@ -356,18 +231,10 @@ public class PrintStageTest {
 		assertTrue(result.getInternalError());
 	}
 
-	/**
-	 * Test template processing failure.
-	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 */
 	@Test
-	public void testTemplateProcessingFailure() throws ApisResourceAccessException, IOException {
-		TemplateProcessingFailureException e = new TemplateProcessingFailureException();
-		Mockito.doThrow(e).when(templateGenerator).getTemplate(any(), any(), anyString());
+	public void testPdfGenerationException() {
+		PDFGeneratorException e = new PDFGeneratorException(null, null);
+		Mockito.doThrow(e).when(printService).getPdf(any(), anyString());
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
@@ -376,13 +243,22 @@ public class PrintStageTest {
 		assertTrue(result.getInternalError());
 	}
 
-	/**
-	 * Test PDF generator exception.
-	 */
 	@Test
-	public void testPDFGeneratorException() {
-		PDFGeneratorException e = new PDFGeneratorException(null, null);
-		Mockito.doThrow(e).when(uinCardGenerator).generateUinCard(any(), any());
+	public void testTemplateProcessingFailureException() {
+		TemplateProcessingFailureException e = new TemplateProcessingFailureException();
+		Mockito.doThrow(e).when(printService).getPdf(any(), anyString());
+
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("1234567890987654321");
+
+		MessageDTO result = stage.process(dto);
+		assertTrue(result.getInternalError());
+	}
+
+	@Test
+	public void testConnectionUnavailableException() {
+		ConnectionUnavailableException e = new ConnectionUnavailableException();
+		Mockito.doThrow(e).when(mosipQueueManager).send(any(), any(), anyString());
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
@@ -399,30 +275,8 @@ public class PrintStageTest {
 	 */
 	@Test
 	public void testException() throws ApisResourceAccessException {
-		LinkedHashMap<String, Object> identityMap = new LinkedHashMap<>();
-		Object identity = identityMap;
-		response.setIdentity(identity);
-		idResponse.setResponse(response);
-		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(idResponse);
-		identityMap.put("fullName", "fullName=[{language=eng, value=RaviKant},{language=ara, value=RaviKant}]");
-
-		MessageDTO dto = new MessageDTO();
-		dto.setRid("1234567890987654321");
-
-		MessageDTO result = stage.process(dto);
-		assertTrue(result.getInternalError());
-	}
-
-	/**
-	 * Test api resource exception.
-	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 */
-	@Test
-	public void testApiResourceException() throws ApisResourceAccessException {
-		ApisResourceAccessException e = new ApisResourceAccessException();
-		Mockito.doThrow(e).when(restClientService).getApi(any(), any(), any(), any(), any());
+		NullPointerException e = new NullPointerException();
+		Mockito.doThrow(e).when(registrationStatusService).getRegistrationStatus(anyString());
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
@@ -454,16 +308,18 @@ public class PrintStageTest {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	/*public void testRoutes() throws ClientProtocolException, IOException {
-		HttpGet health = new HttpGet("http://localhost:8099/print-stage/health");
-		HttpClient client = HttpClientBuilder.create().build();
-		HttpResponse getResponse = client.execute(health);
-		assertEquals(200, getResponse.getStatusLine().getStatusCode());
-
-		HttpPost resend = getHttpPost("http://localhost:8099/v0.1/registration-processor/print-stage/resend");
-		CloseableHttpResponse response = HttpClients.createDefault().execute(resend);
-		assertEquals(200, response.getStatusLine().getStatusCode());
-	}*/
+	/*
+	 * public void testRoutes() throws ClientProtocolException, IOException {
+	 * HttpGet health = new HttpGet("http://localhost:8099/print-stage/health");
+	 * HttpClient client = HttpClientBuilder.create().build(); HttpResponse
+	 * getResponse = client.execute(health); assertEquals(200,
+	 * getResponse.getStatusLine().getStatusCode());
+	 * 
+	 * HttpPost resend = getHttpPost(
+	 * "http://localhost:8099/v0.1/registration-processor/print-stage/resend");
+	 * CloseableHttpResponse response = HttpClients.createDefault().execute(resend);
+	 * assertEquals(200, response.getStatusLine().getStatusCode()); }
+	 */
 
 	/**
 	 * Gets the http post.
