@@ -147,5 +147,10 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	INVALID_UPLOAD_DATE_TIME;
+	INVALID_UPLOAD_DATE_TIME,
+	
+	/**
+	 * ErrorMessage for PRG_PAM_DOC_021
+	 */
+	DOCUMENT_ALREADY_PRESENT;
 }

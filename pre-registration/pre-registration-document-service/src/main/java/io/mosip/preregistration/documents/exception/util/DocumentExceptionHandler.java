@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartException;
 
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
@@ -33,6 +34,7 @@ import io.mosip.preregistration.documents.exception.FileNotFoundException;
 import io.mosip.preregistration.documents.exception.InvalidDocumnetIdExcepion;
 import io.mosip.preregistration.documents.exception.MandatoryFieldNotFoundException;
 import io.mosip.preregistration.documents.exception.ParsingException;
+import io.mosip.preregistration.documents.exception.PrimaryKeyValidationException;
 
 /**
  * This class is defines the Exception handler for Document service
@@ -338,6 +340,42 @@ public class DocumentExceptionHandler {
 	 */
 	@ExceptionHandler(FSServerException.class)
 	public ResponseEntity<MainListResponseDTO> cephServerException(final FSServerException e,
+			WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
+		errorRes.setErr(errorDetails);
+		errorRes.setStatus(responseStatus);
+		errorRes.setResTime(getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
+	
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for PrimaryKeyValidationException
+	 */
+	@ExceptionHandler(PrimaryKeyValidationException.class)
+	public ResponseEntity<MainListResponseDTO> primaryKeyValidationException(final PrimaryKeyValidationException e,
+			WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
+		errorRes.setErr(errorDetails);
+		errorRes.setStatus(responseStatus);
+		errorRes.setResTime(getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
+	
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for FSAdapterException
+	 */
+	@ExceptionHandler(FSAdapterException.class)
+	public ResponseEntity<MainListResponseDTO> fSAdapterException(final FSAdapterException e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();

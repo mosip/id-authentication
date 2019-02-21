@@ -157,7 +157,7 @@ public class BookingServiceTest {
 	MainListRequestDTO<BookingRequestDTO> bookingDto = new MainListRequestDTO<>();
 	MainListRequestDTO<BookingRequestDTO> reBookingDto = new MainListRequestDTO<>();
 
-	@Value("${version}")
+	@Value("${ver}")
 	String versionUrl;
 
 	@Value("${id}")

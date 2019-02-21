@@ -42,6 +42,7 @@ import io.mosip.preregistration.application.dto.UpdateResponseDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
+import io.mosip.preregistration.application.exception.BookingDeletionFailedException;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.InvalidDateFormatException;
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
@@ -57,6 +58,7 @@ import io.mosip.preregistration.core.code.EventType;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
+import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
@@ -144,6 +146,8 @@ public class DemographicService {
 	@Value("${appointmentResourse.url}")
 	private String appointmentResourseUrl;
 
+	@Value("${deleteAppointmentResourse.url}")
+	private String deleteAppointmentResourseUrl;
 	/**
 	 * Reference for ${schemaName} from property file
 	 */
@@ -336,6 +340,7 @@ public class DemographicService {
 				if (!serviceUtil.isNull(demographicEntity)) {
 					if (serviceUtil.checkStatusForDeletion(demographicEntity.getStatusCode())) {
 						callDocumentServiceToDeleteAllByPreId(preregId);
+						callBookingServiceToDeleteAllByPreId(preregId);
 						int isDeletedDemo = demographicRepository.deleteByPreRegistrationId(preregId);
 						if (isDeletedDemo > 0) {
 							deleteDto.setPreRegistrationId(demographicEntity.getPreRegistrationId());
@@ -674,5 +679,38 @@ public class DemographicService {
 		auditRequestDto.setModuleName(AuditLogVariables.DEMOGRAPHY_SERVICE.toString());
 		auditLogUtil.saveAuditDetails(auditRequestDto);
 	}
+	
+	
+	private void callBookingServiceToDeleteAllByPreId(String preregId) {
+		log.info("sessionId", "idType", "id",
+				"In callBookingServiceToDeleteAllByPreId method of pre-registration service ");
+		ResponseEntity<MainListResponseDTO> responseEntity = null;
+		try {
+			RestTemplate restTemplate = restTemplateBuilder.build();
+			UriComponentsBuilder uriBuilder = UriComponentsBuilder
+					.fromHttpUrl(deleteAppointmentResourseUrl + "/deleteBooking")
+					.queryParam("pre_registration_id", preregId);
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+			HttpEntity<MainListResponseDTO<DeleteBookingDTO>> httpEntity = new HttpEntity<>(headers);
+			String strUriBuilder = uriBuilder.build().encode().toUriString();
+			log.info("sessionId", "idType", "id",
+					"In callBookingServiceToDeleteAllByPreId method URL- " + strUriBuilder);
+			responseEntity = restTemplate.exchange(strUriBuilder, HttpMethod.DELETE, httpEntity,
+					MainListResponseDTO.class);
+
+			if (!responseEntity.getBody().isStatus()) {
+					throw new BookingDeletionFailedException(ErrorCodes.PRG_PAM_DOC_016.name(),
+							ErrorMessages.BOOKING_FAILED_TO_DELETE.name());
+				
+			}
+		} catch (RestClientException ex) {
+			log.error("sessionId", "idType", "id",
+					"In callBookingServiceToDeleteAllByPreId method of pre-registration service- " + ex.getMessage());
+			throw new BookingDeletionFailedException(ErrorCodes.PRG_PAM_DOC_016.name(),
+					ErrorMessages.BOOKING_FAILED_TO_DELETE.name());
+		}
+	}
+
 
 }
