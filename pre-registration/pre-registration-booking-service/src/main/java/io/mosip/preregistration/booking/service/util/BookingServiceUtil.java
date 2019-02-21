@@ -372,7 +372,7 @@ public class BookingServiceUtil {
 	public boolean timeSpanCheck(LocalDateTime bookedDateTime) {
 		LocalDateTime current = LocalDateTime.now();
         long hours=ChronoUnit.HOURS.between(current, bookedDateTime);
-		if(hours>timeSpanCheck) return true;
+		if(Math.abs(hours)>timeSpanCheck) return true;
 		else return false;
 	}
 
