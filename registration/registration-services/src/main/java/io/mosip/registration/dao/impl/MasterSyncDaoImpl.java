@@ -474,9 +474,9 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			List<Title> masterTitleDtoEntity = MetaDataUtils.setCreateMetaData(masterTitleDto, Title.class);
 			titleRepository.saveAll(masterTitleDtoEntity);
 
-			List<ValidDocument> masterValidDocumnetsDtoEntity = MetaDataUtils.setCreateMetaData(masterValidDocumnetsDto,
-					ValidDocument.class);
-			validDocumentRepository.saveAll(masterValidDocumnetsDtoEntity);
+//			List<ValidDocument> masterValidDocumnetsDtoEntity = MetaDataUtils.setCreateMetaData(masterValidDocumnetsDto,
+//					ValidDocument.class);
+//			validDocumentRepository.saveAll(masterValidDocumnetsDtoEntity);
 
 			List<RegistrationCenter> regCentr = new ArrayList<>();
 			registrationCenter.forEach(regCenter -> {

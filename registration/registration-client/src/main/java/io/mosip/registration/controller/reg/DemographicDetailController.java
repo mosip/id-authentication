@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
+import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.dto.demographic.ValuesDTO;
@@ -863,8 +865,9 @@ public class DemographicDetailController extends BaseController {
 
 		String platformLanguageCode = applicationContext.getApplicationLanguage().toLowerCase();
 		String localLanguageCode = applicationContext.getLocalLanguage().toLowerCase();
-		Identity demographicIdentity = getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO()
-				.getIdentity();
+		
+		Map<String, DocumentDetailsDTO> documents = getRegistrationDTOFromSession().getDemographicDTO()
+				.getApplicantDocumentDTO().getDocuments();
 
 		return Builder.build(DemographicInfoDTO.class)
 				.with(demographicInfo -> demographicInfo.setIdentity((Identity) Builder.build(Identity.class)
@@ -987,10 +990,10 @@ public class DemographicDetailController extends BaseController {
 												.with(value -> value.setValue(parentNameLocalLanguage.getText()))
 												.get()))
 										.get()))
-						.with(identity -> identity.setProofOfIdentity(demographicIdentity.getProofOfIdentity()))
-						.with(identity -> identity.setProofOfAddress(demographicIdentity.getProofOfAddress()))
-						.with(identity -> identity.setProofOfRelationship(demographicIdentity.getProofOfRelationship()))
-						.with(identity -> identity.setProofOfDateOfBirth(demographicIdentity.getProofOfDateOfBirth()))
+						.with(identity -> identity.setProofOfIdentity(documents.get("POI")))
+						.with(identity -> identity.setProofOfAddress(documents.get("POA")))
+						.with(identity -> identity.setProofOfRelationship(documents.get("POR")))
+						.with(identity -> identity.setProofOfDateOfBirth(documents.get("POB")))
 						.with(identity -> identity.setIdSchemaVersion(1.0))
 						.with(identity -> identity
 								.setUin(getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getUin() == null ? null
@@ -1342,11 +1345,19 @@ public class DemographicDetailController extends BaseController {
 			}
 			SessionContext.map().put("demographicDetail", false);
 			SessionContext.map().put("documentScan", true);
+			if (!isEditPage()) {
+				documentScanController.populateDocumentCategories();
+			}
 			registrationController.showCurrentPage(RegistrationConstants.DEMOGRAPHIC_DETAIL,getPageDetails(RegistrationConstants.DEMOGRAPHIC_DETAIL,RegistrationConstants.NEXT));
 		}
 
 	}
 
+	private Boolean isEditPage() {
+		if (SessionContext.map().get(RegistrationConstants.REGISTRATION_ISEDIT) != null)
+			return (Boolean) SessionContext.map().get(RegistrationConstants.REGISTRATION_ISEDIT);
+		return false;
+	}
 	public boolean validateThisPane() {
 		boolean isValid = true;
 		isValid = registrationController.validateDemographicPane(demoGraphicPane);

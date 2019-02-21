@@ -69,9 +69,6 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	@Autowired
 	private PreRegZipHandlingService preRegZipHandlingService;
 
-	@Value("${PRE_REG_STUB_ENABLED}")
-	private String isStubEnabled;
-
 	/**
 	 * Instance of LOGGER
 	 */
