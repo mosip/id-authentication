@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.print.dto;
+package io.mosip.registration.processor.print.kernel.dto;
 
 import java.util.List;
 

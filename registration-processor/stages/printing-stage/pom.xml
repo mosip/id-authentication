@@ -97,14 +97,9 @@
 			<version>${registration.processor.message.sender.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-pdfgenerator-itext</artifactId>
-			<version>${kernel.core.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-qrcodegenerator-zxing</artifactId>
-			<version>${kernel.core.version}</version>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>registration-processor-print-service</artifactId>
+			<version>${registration.processor.print.service.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.print.util;
+package io.mosip.registration.processor.print.utility;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

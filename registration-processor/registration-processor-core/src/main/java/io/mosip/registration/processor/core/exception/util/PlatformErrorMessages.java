@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.core.exception.util;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Enum RPRPlatformErrorMessages.
  *
@@ -257,11 +256,10 @@ public enum PlatformErrorMessages {
 
 	/** The rpr tem processing failure. */
 	RPR_TEM_PROCESSING_FAILURE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "002",
-			"The Processing of Template Failed "), 
- /** The rpr tem packet store not accessible. */
- RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE(
-					PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "003",
-					"The Packet store set by the System is not accessible"),
+			"The Processing of Template Failed "),
+	/** The rpr tem packet store not accessible. */
+	RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "003",
+			"The Packet store set by the System is not accessible"),
 	/** The rpr sms template generation failure. */
 	RPR_SMS_TEMPLATE_GENERATION_FAILURE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001",
 			"Template Generation failed"),
@@ -304,7 +302,7 @@ public enum PlatformErrorMessages {
 	/** The rpr bdd unable to serve request. */
 	RPR_BDD_UNABLE_TO_SERVE_REQUEST(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "004",
 			"ABIS for the Reference ID and Request ID was Unable to Execute the Request"),
-	
+
 	/** The connection to MOSIP underlying queue not available. */
 	RPR_MQI_CONNECTION_UNAVAILABLE(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "001",
 			"The connection to underlying queue not available"),
@@ -378,6 +376,9 @@ public enum PlatformErrorMessages {
 	/** The rpr prt queue connection null. */
 	RPR_PRT_QUEUE_CONNECTION_NULL(PlatformErrorConstants.RPR_PRINTING_MODULE + "004", "Queue connection is null"),
 
+	/** The rpr prt qrcode not generated. */
+	RPR_PRT_QRCODE_NOT_GENERATED(PlatformErrorConstants.RPR_PRINTING_MODULE + "005", "Error while generating QR Code"),
+
 	/** The rpr rgs registration connector not accessible. */
 	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),
 
@@ -388,7 +389,7 @@ public enum PlatformErrorMessages {
 	/** The rpr ugs packet store not accessible. */
 	RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_UIN_GENERATOR_STAGE + "001",
 			"The Packet store set by the System is not accessible");
-	
+
 	/** The error message. */
 	private final String errorMessage;
 
