@@ -98,7 +98,7 @@ public enum PlatformErrorMessages {
 	RPR_RGS_MISSING_INPUT_PARAMETER_VERSION(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "019", "Missing Input Parameter - version"),
 
 
-	RPR_RGS_MISSING_INPUT_PARAMETER_TIMESTAMP(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "020", "Missing Input Parameter - timestamp"),
+	RPR_RGS_MISSING_INPUT_PARAMETER_TIMESTAMP(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "020", "Missing Input Parameter - requestTimestamp"),
 
 
 	RPR_RGS_MISSING_INPUT_PARAMETER_ID(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "021", "Missing Input Parameter - id"),
@@ -106,7 +106,7 @@ public enum PlatformErrorMessages {
 
 	RPR_RGS_INVALID_INPUT_PARAMETER_VERSION(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "022", "Invalid Input Parameter - version"),
 
-	RPR_RGS_INVALID_INPUT_PARAMETER_TIMESTAMP(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "023", "Invalid Input Parameter - timestamp"),
+	RPR_RGS_INVALID_INPUT_PARAMETER_TIMESTAMP(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "023", "Invalid Input Parameter - requestTimestamp"),
 
 	RPR_RGS_INVALID_INPUT_PARAMETER_ID(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "024", "Invalid Input Parameter - id"),
 
@@ -288,7 +288,7 @@ public enum PlatformErrorMessages {
 	RPR_MVS_MISSING_INPUT_PARAMETER_VERSION(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "005", "Missing Input Parameter - version"),
 
 
-	RPR_MVS_MISSING_INPUT_PARAMETER_TIMESTAMP(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "006", "Missing Input Parameter - timestamp"),
+	RPR_MVS_MISSING_INPUT_PARAMETER_TIMESTAMP(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "006", "Missing Input Parameter - requestTimestamp"),
 
 
 	RPR_MVS_MISSING_INPUT_PARAMETER_ID(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "007", "Missing Input Parameter - id"),
@@ -296,7 +296,7 @@ public enum PlatformErrorMessages {
 
 	RPR_MVS_INVALID_INPUT_PARAMETER_VERSION(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "008", "Invalid Input Parameter - version"),
 
-	RPR_MVS_INVALID_INPUT_PARAMETER_TIMESTAMP(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "009", "Invalid Input Parameter - timestamp"),
+	RPR_MVS_INVALID_INPUT_PARAMETER_TIMESTAMP(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "009", "Invalid Input Parameter - requestTimestamp"),
 
 	RPR_MVS_INVALID_INPUT_PARAMETER_ID(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "010", "Invalid Input Parameter - id"),
 

@@ -34,10 +34,10 @@ public class RegistrationSyncRequestValidator implements Validator {
 	private static final Pattern verPattern = Pattern.compile("^[0-9](\\.\\d{1,1})?$");
 
 	/** The Constant DATETIME_TIMEZONE. */
-	private static final String DATETIME_TIMEZONE = "mosip.kernel.idrepo.datetime.timezone";
+	private static final String DATETIME_TIMEZONE = "mosip.registration.processor.timezone";
 
 	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "mosip.kernel.idrepo.datetime.pattern";
+	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 
 	/** The mosip logger. */
 	Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationSyncRequestValidator.class);
@@ -46,7 +46,7 @@ public class RegistrationSyncRequestValidator implements Validator {
 	private static final String REGISTRATION_SERVICE = "RegistrationService";
 
 	/** The Constant TIMESTAMP. */
-	private static final String TIMESTAMP = "timestamp";
+	private static final String TIMESTAMP = "requestTimestamp";
 
 	/** The Constant ID_FIELD. */
 	private static final String ID_FIELD = "id";
