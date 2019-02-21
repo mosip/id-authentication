@@ -298,7 +298,7 @@ public class PridValidatorImpl implements PridValidator<String> {
 	private boolean isValidId(String id, int sequenceLimit, int repeatingLimit, int repeatingBlockLimit) {
 		initializeRegEx(repeatingLimit, repeatingBlockLimit);
 		return !(sequenceFilter(id, sequenceLimit) || regexFilter(id, repeatingPattern)
-				|| regexFilter(id, repeatingBlockpattern) || validateNotStartWith(id)) ||restrictedAdminFilter(id);
+				|| regexFilter(id, repeatingBlockpattern) || validateNotStartWith(id) ||restrictedAdminFilter(id));
 	}
 
 	/**
@@ -312,7 +312,7 @@ public class PridValidatorImpl implements PridValidator<String> {
 		if (sequenceLimit > 0)
 			return IntStream.rangeClosed(0, id.length() - sequenceLimit).parallel()
 					.mapToObj(index -> id.subSequence(index, index + sequenceLimit))
-					.anyMatch(idSubSequence -> SEQ_ASC.contains(idSubSequence) || SEQ_DEC.contains(idSubSequence));
+					.anyMatch(idSubSequence -> SEQ_ASC.contains(idSubSequence)|| SEQ_DEC.contains(idSubSequence));
 		return false;
 	}
 

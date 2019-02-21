@@ -115,31 +115,11 @@ public class PridValidatorTest {
 
 	@Test
 	public void ValidIdTest() {
-
 		assertEquals(true, pridValidatorImpl.validateId(validPrid));
-		System.out.println(pridValidatorImpl.validateId("6660753721477"));
-		System.out.println(pridValidatorImpl.validateId("61956097254034"));
-		System.out.println(pridValidatorImpl.validateId("52612791864973"));
-		System.out.println(pridValidatorImpl.validateId("61509135703159"));
-		System.out.println(pridValidatorImpl.validateId("15414446668049"));
-		System.out.println(pridValidatorImpl.validateId("89029863205389"));
-		System.out.println(pridValidatorImpl.validateId("73057184370547"));
-		System.out.println(pridValidatorImpl.validateId("39836732860927"));
-		System.out.println(pridValidatorImpl.validateId("11666583712756"));
+
 	}
 	
 	
-	/*i=0=======pridGenerator.generateId()==6660753721477======true
-			i=1=======pridGenerator.generateId()==61956097254034======true
-			i=2=======pridGenerator.generateId()==52612791864973======true
-			i=3=======pridGenerator.generateId()==61509135703159======true
-			i=4=======pridGenerator.generateId()==15414446668049======true
-			i=5=======pridGenerator.generateId()==85320738173908======true
-			i=6=======pridGenerator.generateId()==89029863205389======true
-			i=7=======pridGenerator.generateId()==73057184370547======true
-			i=8=======pridGenerator.generateId()==39836732860927======true
-			i=9=======pridGenerator.generateId()==11666583712756======true
-*/
 	@Test
 	public void ValidIdWithParamsTest() {
 
