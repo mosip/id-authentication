@@ -239,7 +239,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
       [this.formControlNames.CNIENumber]: new FormControl(this.formControlValues.CNIENumber, [
         Validators.required,
         Validators.maxLength(30),
-        Validators.pattern(this.numberPattern)
+        Validators.pattern(appConstants.CNIE_PATTERN)
       ])
     });
 
@@ -332,8 +332,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
       this.formControlValues = {
         fullName: this.user.request.demographicDetails.identity.fullName[0].value,
         gender: this.user.request.demographicDetails.identity.gender[0].value,
-        // residenceStatus: this.user.request.demographicDetails.identity.residenceStatus[0].value,
-        residenceStatus: 'national',
+        residenceStatus: this.user.request.demographicDetails.identity.residenceStatus[0].value,
         date: this.user.request.demographicDetails.identity.dateOfBirth.split('/')[2],
         month: this.user.request.demographicDetails.identity.dateOfBirth.split('/')[1],
         year: this.user.request.demographicDetails.identity.dateOfBirth.split('/')[0],

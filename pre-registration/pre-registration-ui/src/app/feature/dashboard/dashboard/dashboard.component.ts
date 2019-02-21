@@ -14,7 +14,6 @@ import { FileModel } from 'src/app/shared/models/demographic-model/file.model';
 import { Applicant } from 'src/app/shared/models/dashboard-model/dashboard.modal';
 import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
 import * as appConstants from '../../../app.constants';
-import Utils from 'src/app/app.util';
 
 @Component({
   selector: 'app-registration',
@@ -67,7 +66,6 @@ export class DashBoardComponent implements OnInit {
     this.dataStorageService.getUsers(this.loginId).subscribe(
       (applicants: Applicant[]) => {
         console.log('applicants', applicants);
-
         if (
           applicants[appConstants.NESTED_ERROR] &&
           applicants[appConstants.NESTED_ERROR][appConstants.ERROR_CODE] ===
@@ -125,11 +123,6 @@ export class DashBoardComponent implements OnInit {
 
   onNewApplication() {
     if (this.loginId) {
-      console.log('inside');
-      // const url = Utils.getURL(this.router.url, 'pre-registration/' + this.loginId + '/demographic', 2);
-      // this.router.navigateByUrl(url);
-      // console.log(url);
-
       this.router.navigate(['pre-registration', this.loginId, 'demographic']);
       this.isNewApplication = true;
     } else {
@@ -339,5 +332,18 @@ export class DashBoardComponent implements OnInit {
   getMargin(name: string) {
     if (name.length > 25) return '0px';
     else return '27px';
+  }
+
+  isBookingAllowed(appointmentDateTime: string) {
+    const dateform = new Date(appointmentDateTime);
+    if (dateform.toDateString() !== 'Invalid Date') {
+      let date1: string = appointmentDateTime;
+      let date2: string = new Date(Date.now()).toString();
+      let diffInMs: number = Date.parse(date1) - Date.parse(date2);
+      let diffInHours: number = diffInMs / 1000 / 60 / 60;
+      if (diffInHours < appConstants.ALLOWED_BOOKING_TIME) return true;
+      else return false;
+    }
+    return false;
   }
 }
