@@ -28,7 +28,7 @@ public class UserOnboardParentController extends BaseController{
 	private static final Logger LOGGER = AppConfig.getLogger(UserOnboardParentController.class);
 	
 	@FXML
-	private AnchorPane userOnboardId;
+	protected AnchorPane userOnboardId;
 	
 	
 	public void showCurrentPage(String notTosShow, String show) {

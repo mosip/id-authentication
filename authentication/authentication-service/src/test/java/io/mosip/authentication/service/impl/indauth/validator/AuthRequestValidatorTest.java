@@ -3,6 +3,8 @@ package io.mosip.authentication.service.impl.indauth.validator;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -1186,5 +1188,40 @@ public class AuthRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
+	}
+	
+	@Test
+	public void testNullAuthType() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Method declaredMethod = AuthRequestValidator.class.getDeclaredMethod("checkAuthRequest", AuthRequestDTO.class, Errors.class);
+		declaredMethod.setAccessible(true);
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		declaredMethod.invoke(authRequestValidator, authRequestDTO, errors);
+	}
+	
+	@Test
+	public void testNullAuthType2() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Method declaredMethod = AuthRequestValidator.class.getDeclaredMethod("checkAuthRequest", AuthRequestDTO.class, Errors.class);
+		declaredMethod.setAccessible(true);
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setBio(false);
+		authType.setAddress(false);
+		authType.setFullAddress(false);
+		authType.setOtp(false);
+		authType.setPersonalIdentity(false);
+		authType.setPin(false);
+		authRequestDTO.setAuthType(authType);
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		declaredMethod.invoke(authRequestValidator, authRequestDTO, errors);
+	}
+	
+	@Test
+	public void testInvalidTimeStamp() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Method declaredMethod = AuthRequestValidator.class.getDeclaredMethod("validateRequestTimedOut", String.class, Errors.class);
+		declaredMethod.setAccessible(true);
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		declaredMethod.invoke(authRequestValidator, "2019-01-28", errors);
 	}
 }

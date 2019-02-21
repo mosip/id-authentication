@@ -239,14 +239,56 @@
   -fx-padding: 0em 0em 0em 0em;
   -fx-page-information-alignment: 10;
 }
-.menu-item .label{
+.menu-item .label {
     -fx-text-fill: #000000;
     -fx-font-size: 14.0px;
+     -fx-background-image: url(images/MenuItems.png);
+     -fx-background-repeat: no-repeat;
+     -fx-background-position: left;
+     -fx-background-size: 20px 20px;
+     -fx-padding: 0.0em 0.0em 0.0em 2.0em;
 }
 
 .separator .line { 
 	-fx-background-color: #C9C9C9;
-	-fx-border-width: 0.1px;
+	-fx-border-width: 0.001px;
+}
+
+.menu-item:focused .label{
+	-fx-background-color: #FF4081;
+    -fx-padding: 0.0em 0.0em 0.0em 2.0em;
+    -fx-background-image: url(images/MenuItemsFocus.png); 
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: left;
+    -fx-background-size: 20px 20px;
+    -fx-text-fill: white;    
+}
+.menu-item:focused {
+     -fx-background: -fx-accent;
+     -fx-background-color: #FF4081;
+}
+.menu-item {
+    -fx-background-color: transparent;
+    -fx-padding: 1.0em 1.0em 1.0em 1.0em;
+}
+#logout .label{
+	-fx-text-fill: #000000;
+    -fx-font-size: 14.0px;
+     -fx-background-image: url(images/logout.png);
+     -fx-background-repeat: no-repeat;
+     -fx-background-position: left;
+     -fx-background-size: 20px 20px;
+     -fx-padding: 0.0em 0.0em 0.0em 2.0em;    
+}
+
+#logout:focused .label{
+	-fx-text-fill: #000000;
+    -fx-font-size: 14.0px;
+     -fx-background-image: url(images/logoutFocus.png);
+     -fx-background-repeat: no-repeat;
+     -fx-background-position: left;
+     -fx-background-size: 20px 20px;
+     -fx-padding: 0.0em 0.0em 0.0em 2.0em;    
 }
 #registrationOfficeLocation{
 	-fx-pref-height: 21.0px;
@@ -289,9 +331,6 @@
 	-fx-border-color: #F4F4F4;
 	-fx-border-width: 1.0 1.0 0.0 1.0;
 	
-}
-#logout{
-	-fx-background-color: #FF4081;
 }
 /* Header Page design Ends Here */
 
@@ -446,7 +485,7 @@
 	-fx-background-color:#FFFFFF;
 	-fx-effect: dropshadow( three-pass-box , #000000 , 1.0, 0.0 , 0.0 , 0.0 );
 	-fx-pref-height: 32.0px;
-	-fx-pref-width: 1278.0px;
+	-fx-pref-width: 1300.0px;
 }
 .userOnboardBackPane{
 	-fx-background-color: #F7F8F9;
@@ -511,7 +550,7 @@
 }
 .onboardImgPane{
 	-fx-background-color:#ffffff;
-	-fx-pref-height: 590.0px;
+	-fx-pref-height: 650.0px;
 	-fx-pref-width: 938.0px;
 }
 .onboardFingerDetails{
@@ -607,8 +646,8 @@
 }
 .exceptionBackPane{
 	-fx-background-color: #F7F8F9;
-	-fx-pref-height: 660.0px;
-	-fx-pref-width: 1280.0px;
+	-fx-pref-height: 970.0px;
+	-fx-pref-width: 1400.0px;
 }
 .operatorExceptionLayout{
 	-fx-pref-height: 59.0px;
@@ -759,6 +798,7 @@
 .scanVBox {
 	-fx-background-color: white;
 	-fx-border-width:0.0 0.0 0.0 0.0;
+	-fx-pref-width: 100.0px;
 }
 
 .headerPane {
@@ -1466,6 +1506,12 @@ Working on new Css by taleev
 
 .heading {
 	-fx-font-size: 26.0px;
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+}
+
+.templateHeading {
+	-fx-font-size: 18.0px;
 	-fx-text-fill: #FF4081;
 	-fx-font-family: Roboto;
 }

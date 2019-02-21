@@ -57,6 +57,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 	synchronized public ResponseDTO fetchPolicy() {
 		LOGGER.info("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"synch the public key is started");
+
 		KeyStore keyStore = null;
 		ResponseDTO responseDTO = new ResponseDTO();
 		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
@@ -105,7 +106,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		ResponseDTO responseDTO = new ResponseDTO();
 		Map<String, String> requestParams = new HashMap<String, String>();
 		requestParams.put("timeStamp", Instant.now().toString());
-		requestParams.put("referenceId", RegistrationConstants.REFERENCE_ID);
+  		requestParams.put("referenceId", getCenterId(getStationId(getMacAddress())));
 		try {
 			PublicKeyResponse<String> publicKeyResponse = (PublicKeyResponse<String>) serviceDelegateUtil
 					.get("policysync", requestParams, false);

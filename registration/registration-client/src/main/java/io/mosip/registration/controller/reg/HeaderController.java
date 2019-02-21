@@ -112,7 +112,7 @@ public class HeaderController extends BaseController {
 		menu.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)
 				&& !(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
-			homeSelectionMenu.setDisable(true);
+			homeSelectionMenu.getItems().remove(0, homeSelectionMenu.getItems().size()-2);
 		} else {
 			homeSelectionMenu.setDisable(false);
 		}

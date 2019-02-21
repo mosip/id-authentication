@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>stages</artifactId>
-		<version>0.8.8</version>
+		<version>0.8.9</version>
 	</parent>
 	<artifactId>virus-scanner-stage</artifactId>
 	<properties>
@@ -50,7 +50,7 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-virusscanner-clamav</artifactId>
 			<version>${kernel.clamav.version}</version>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>packet-manager</artifactId>

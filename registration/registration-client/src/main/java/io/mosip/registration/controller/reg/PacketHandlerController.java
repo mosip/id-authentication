@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 
+import com.flickr4java.flickr.people.User;
+
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
@@ -136,6 +138,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@Autowired
 	private ReRegistrationService reRegistrationService;
+	
+	@Autowired
+	private UserOnboardParentController userOnboardParentController;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -398,7 +403,21 @@ public class PacketHandlerController extends BaseController implements Initializ
 	public void onBoardUser() {
 		SessionContext.map().put(RegistrationConstants.ONBOARD_USER, true);
 		SessionContext.map().put(RegistrationConstants.ONBOARD_USER_UPDATE, true);
+		
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading User Onboard Update page");
+		
+		try {
+			AnchorPane onboardRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_ONBOARD),
+					applicationContext.getApplicationLanguageBundle());
+			getScene(onboardRoot).setRoot(onboardRoot);;
+			userOnboardParentController.userOnboardId.lookup("#onboardUser").setVisible(false);
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - ONBOARD_USER_UPDATE - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+		}
 		userOnboardController.initUserOnboard();
+		
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "User Onboard Update page is loaded");
 	}
 
 	/**

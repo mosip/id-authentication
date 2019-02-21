@@ -209,6 +209,24 @@ public class LicenseKeyManagerExceptionTest {
 		assertThat(objectMapper.readValue(result.getResponse().getContentAsString(), ErrorResponse.class).getStatus(),
 				is(200));
 	}
+	
+	/**
+	 * 
+	 * TEST SCENARIO : When Expiry Time entered is a date before current DateTime.
+	 * 
+	 */
+	@Test
+	public void testLKMGenerationServiceExceptionWhenExpiredDateEntered() throws Exception {
+		LicenseKeyGenerationDto licenseKeyGenerationDto = new LicenseKeyGenerationDto();
+		licenseKeyGenerationDto.setLicenseExpiryTime(LocalDateTime.of(2010, Month.FEBRUARY, 6, 6, 23, 0));
+		licenseKeyGenerationDto.setTspId("TSP_ID_TEST");
+		String jsonString = objectMapper.writeValueAsString(licenseKeyGenerationDto);
+		MvcResult result = mockMvc
+				.perform(post("/v1.0/license/generate").contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.andExpect(status().isOk()).andReturn();
+		assertThat(objectMapper.readValue(result.getResponse().getContentAsString(), ErrorResponse.class).getStatus(),
+				is(200));
+	}
 
 	/**
 	 * 

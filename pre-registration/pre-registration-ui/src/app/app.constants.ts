@@ -29,6 +29,7 @@ export const APPEND_URL = {
   applicants: 'demographic/v0.1/pre-registration/applications',
   location: 'masterdata/',
   gender: 'masterdata/v1.0/gendertypes',
+  resident: 'masterdata/v1.0/residenttypes',
   transliteration: 'transliterate/v0.1/pre-registration/translitrate'
 };
 
@@ -60,7 +61,8 @@ export const DASHBOARD_RESPONSE_KEYS = {
 export const DEMOGRAPHIC_RESPONSE_KEYS = {
   locations: 'locations',
   preRegistrationId: 'preRegistrationId',
-  genderTypes: 'genderType'
+  genderTypes: 'genderType',
+  residentTypes: 'residentType'
 };
 
 export const APPLICATION_STATUS_CODES = {
