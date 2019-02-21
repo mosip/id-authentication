@@ -111,13 +111,13 @@
 		<packet.bio.dedupe.api.version>0.8.10</packet.bio.dedupe.api.version>
 
 		<!-- Kernel -->
-		<kernel.core.version>0.8.8</kernel.core.version>
-		<kernel.dataaccess.hibernate.version>0.8.7</kernel.dataaccess.hibernate.version>
-		<kernel.templatemanager.velocity.version>0.8.7</kernel.templatemanager.velocity.version>
-		<kernel.emailnotification.service.version>0.8.7</kernel.emailnotification.service.version>
-		<kernel.smsnotification.service.version>0.8.7</kernel.smsnotification.service.version>
-		<kernel.idvalidator.version>0.8.8</kernel.idvalidator.version>
-		<kernel.clamav.version>0.8.0</kernel.clamav.version>
+		<kernel.core.version>0.8.10</kernel.core.version>
+		<kernel.dataaccess.hibernate.version>0.8.10</kernel.dataaccess.hibernate.version>
+		<kernel.templatemanager.velocity.version>0.8.10</kernel.templatemanager.velocity.version>
+		<kernel.emailnotification.service.version>0.8.10</kernel.emailnotification.service.version>
+		<kernel.smsnotification.service.version>0.8.10</kernel.smsnotification.service.version>
+		<kernel.idvalidator.version>0.8.10</kernel.idvalidator.version>
+		<kernel.clamav.version>0.8.10</kernel.clamav.version>
 
 		<sonar.coverage.exclusions>**/dto/**,
 			**/exception/*Exception.java,
