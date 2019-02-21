@@ -64,15 +64,6 @@ public class PridValidatorImpl implements PridValidator<String> {
 	@Value("#{'${mosip.kernel.prid.not-start-with}'.split(',')}")
 	private List<String> notStartWith;
 
-	/**
-	 * Field for zero digit
-	 */
-	private static final char CHAR_ZERO = '0';
-
-	/**
-	 * Field for one digit
-	 */
-	private static final char CHAR_ONE = '1';
 
 	/**
 	 * Ascending digits which will be checked for sequence in id
@@ -207,16 +198,6 @@ public class PridValidatorImpl implements PridValidator<String> {
 		if (!Pattern.matches(numaricRegEx, id)) {
 			throw new InvalidIDException(PridExceptionConstant.PRID_VAL_INVALID_DIGITS.getErrorCode(),
 					PridExceptionConstant.PRID_VAL_INVALID_DIGITS.getErrorMessage());
-		}
-		/**
-		 * 
-		 * Validate the PRID, It should not contain '0' or '1' as the first digit.
-		 * 
-		 */
-
-		if (id.charAt(0) == CHAR_ZERO || id.charAt(0) == CHAR_ONE) {
-			throw new InvalidIDException(PridExceptionConstant.PRID_VAL_INVALID_ZERO_ONE.getErrorCode(),
-					PridExceptionConstant.PRID_VAL_INVALID_ZERO_ONE.getErrorMessage());
 		}
 
 		/**

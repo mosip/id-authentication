@@ -46,5 +46,5 @@ public class PridGeneratorTest {
 	@Test
 	public void pridValidationTest() {
 		assertTrue(pridValidator.validateId(pridGenerator.generateId()));
-	}
+	}	
 }

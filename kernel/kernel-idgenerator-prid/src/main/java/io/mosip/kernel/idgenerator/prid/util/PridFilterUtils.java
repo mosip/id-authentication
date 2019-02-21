@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class PridFilterUtils {
-	
+
 	/**
 	 * List of restricted numbers
 	 */
@@ -136,8 +136,9 @@ public class PridFilterUtils {
 	public boolean isValidId(String id) {
 
 		return !(sequenceFilter(id) || regexFilter(id, repeatingPattern) || regexFilter(id, repeatingBlockpattern)
-				|| validateNotStartWith(id) || validateIdLength(id)) || restrictedAdminFilter(id);
+				|| validateNotStartWith(id) || validateIdLength(id) || restrictedAdminFilter(id));
 	}
+
 	/**
 	 * Checks the input id for {@link #restrictedNumbers} filter
 	 * 
@@ -148,6 +149,7 @@ public class PridFilterUtils {
 	private boolean restrictedAdminFilter(String id) {
 		return restrictedAdminDigits.parallelStream().anyMatch(id::contains);
 	}
+
 	/**
 	 * Checks the input id for {@link #sequenceLimit} filter
 	 * 
@@ -156,10 +158,11 @@ public class PridFilterUtils {
 	 * @return true if the id matches the filter
 	 */
 	private boolean sequenceFilter(String id) {
-		if (sequenceLimit > 0)
+		if (sequenceLimit > 0) {
 			return IntStream.rangeClosed(0, id.length() - sequenceLimit).parallel()
 					.mapToObj(index -> id.subSequence(index, index + sequenceLimit))
 					.anyMatch(idSubSequence -> SEQ_ASC.contains(idSubSequence) || SEQ_DEC.contains(idSubSequence));
+		}
 		return false;
 	}
 
