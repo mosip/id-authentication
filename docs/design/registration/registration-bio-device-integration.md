@@ -19,6 +19,8 @@ The technical detail of the DM and Registration client application is briefly co
 5. All requests and responses carry a requestId, which is a numeric value (128 bit), represented as a 36 character UUID format string in XML.  
 6. 
 
+![Capture Block Flow](_images/bio-device-flow-block.png)  
+
 DM : 
 The Device Manager should open the connection with the configured port and listen for messages from clients [VDM and Application]  
 
@@ -34,7 +36,8 @@ The DM service provided by the UID, is responsible for the following:
    - The VDM uses the same Socket for all the underlying devices communication. 
    - The application uses the same Socket for all the communication with DM. 
 
-![Capture Sequence](_images/bio-device-flow-block.png)  
+![Device Arrival Sequence Flow](_images/bio-device-arrival-seq-flow.png)  
+
    
 **Supported functions in DM:** 
    1. Connect  
@@ -136,10 +139,9 @@ notifications and events about the device arrivals and removals during this time
 
 **On click of capture button in application UI:**  
 
-![Capture Sequence](_images/bio-device-capture-seq-block.png)  
+![BIO Capture Block](_images/bio-device-capture-seq-block.png)  
 
-
-
+![BIO Capture Sequence](_images/bio-device-capture-seq-flow.png)
 
 **Connect:**  
 	On establishing connection with the DM, the application must ensure that  
@@ -148,7 +150,6 @@ they are connecting with a DM, and exchange certain configuration information.
 DeviceArrival:  This message would be forwarded to the application through the already open socket, to communicate  
 	about the Device level information. The application uses the 'deviceURI' to communicate with VDM.  
 
-deviceURI :  
 
 **Device Available:**
 	A timer would be configured in the application to regularly call the DM to check for the availability of devices.  
