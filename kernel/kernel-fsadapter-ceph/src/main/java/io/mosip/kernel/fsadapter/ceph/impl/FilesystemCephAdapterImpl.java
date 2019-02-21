@@ -7,9 +7,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import io.mosip.kernel.core.logger.spi.Logger;
+
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
@@ -20,16 +22,9 @@ import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.fsadapter.ceph.exception.handler.ExceptionHandler;
 import io.mosip.kernel.fsadapter.ceph.utils.ConnectionUtil;
-import io.mosip.registration.processor.core.constant.LoggerFileConstant;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
-import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.PacketNotFoundException;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.handler.ExceptionHandler;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.ConnectionUtil;
 
 /**
- * This class is CEPH implementation for MOSIP Packet Store.
+ * This class is CEPH implementation for MOSIP Packet Store.	
  *
  * @author Pranav Kumar
  * @since 0.0.1
@@ -40,8 +35,8 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter {
 	/** The conn. */
 	private AmazonS3 conn;
 
-	/** The logger. */
-	private static Logger regProcLogger = RegProcessorLogger.getLogger(FilesystemCephAdapterImpl.class);
+	/** The Constant LOGGER. */
+	private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemCephAdapterImpl.class);
 
 	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {} - {} - {}";
@@ -68,24 +63,19 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter {
 	 * java.lang.String)
 	 */
 	@Override
-	public Boolean storePacket(String enrolmentId, File filePath) {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				enrolmentId, "FilesystemCephAdapterImpl::storePacket()::entry");
 	public boolean storePacket(String enrolmentId, File filePath) {
 		try {
 			if (!conn.doesBucketExistV2(enrolmentId)) {
 				conn.createBucket(enrolmentId);
 			}
 			this.conn.putObject(enrolmentId, enrolmentId, filePath);
+			LOGGER.debug(LOGDISPLAY, enrolmentId, SUCCESS_UPLOAD_MESSAGE);
 		} catch (AmazonS3Exception e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					enrolmentId,e.getMessage() + ExceptionUtils.getStackTrace(e));
+			LOGGER.error(LOGDISPLAY, e.getStatusCode(), e.getErrorCode(), e.getErrorMessage());
 			ExceptionHandler.exceptionHandler(e);
 		} catch (SdkClientException e) {
 			ExceptionHandler.exceptionHandler(e);
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				enrolmentId, "FilesystemCephAdapterImpl::storePacket()::exit");
 		return true;
 	}
 
@@ -99,25 +89,19 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter {
 	 * @return True if packet is stored
 	 */
 	@Override
-	public Boolean storePacket(String enrolmentId, InputStream file) {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				enrolmentId, "FilesystemCephAdapterImpl::storePacket()::entry");
 	public boolean storePacket(String enrolmentId, InputStream file) {
 		try {
 			if (!conn.doesBucketExistV2(enrolmentId)) {
 				conn.createBucket(enrolmentId);
 			}
 			this.conn.putObject(enrolmentId, enrolmentId, file, null);
+			LOGGER.debug(LOGDISPLAY, enrolmentId, SUCCESS_UPLOAD_MESSAGE);
 		} catch (AmazonS3Exception e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					enrolmentId,
-					e.getMessage()  + ExceptionUtils.getStackTrace(e));
+			LOGGER.error(LOGDISPLAY, e.getStatusCode(), e.getErrorCode(), e.getErrorMessage());
 			ExceptionHandler.exceptionHandler(e);
 		} catch (SdkClientException e) {
 			ExceptionHandler.exceptionHandler(e);
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				enrolmentId, "FilesystemCephAdapterImpl::storePacket()::exit");
 		return true;
 	}
 
@@ -159,26 +143,19 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter {
 	 */
 
 	@Override
-	public Boolean storeFile(String enrolmentId, String key, InputStream document) {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				enrolmentId, "FilesystemCephAdapterImpl::storeFile()::entry");
-
 	public boolean storeFile(String enrolmentId, String key, InputStream document) {
 		try {
 			if (!conn.doesBucketExistV2(enrolmentId)) {
 				conn.createBucket(enrolmentId);
 			}
 			this.conn.putObject(enrolmentId, key, document, null);
+			LOGGER.debug(LOGDISPLAY, enrolmentId, key, SUCCESS_UPLOAD_MESSAGE);
 		} catch (AmazonS3Exception e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					enrolmentId,
-					e.getMessage()  + ExceptionUtils.getStackTrace(e));
+			LOGGER.error(LOGDISPLAY, e.getStatusCode(), e.getErrorCode(), e.getErrorMessage());
 			ExceptionHandler.exceptionHandler(e);
 		} catch (SdkClientException e) {
 			ExceptionHandler.exceptionHandler(e);
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				enrolmentId, "FilesystemCephAdapterImpl::storeFile()::exit");
 		return true;
 	}
 
@@ -197,10 +174,6 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter {
 	 */
 
 	@Override
-	public Boolean copyFile(String sourceBucketName, String sourceKey,
-            String destinationBucketName, String destinationKey) {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				sourceBucketName, "FilesystemCephAdapterImpl::copyFile()::entry");
 	public boolean copyFile(String sourceBucketName, String sourceKey, String destinationBucketName,
 			String destinationKey) {
 		try {
@@ -208,22 +181,19 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter {
 				conn.createBucket(destinationBucketName);
 			}
 			this.conn.copyObject(sourceBucketName, sourceKey, destinationBucketName, destinationKey);
+			LOGGER.debug(LOGDISPLAY, SUCCESS_UPLOAD_MESSAGE);
 		} catch (AmazonS3Exception e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					sourceBucketName,
-					e.getMessage()  + ExceptionUtils.getStackTrace(e));
+			LOGGER.error(LOGDISPLAY, e.getStatusCode(), e.getErrorCode(), e.getErrorMessage());
 			ExceptionHandler.exceptionHandler(e);
 		} catch (SdkClientException e) {
 			ExceptionHandler.exceptionHandler(e);
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				sourceBucketName, "FilesystemCephAdapterImpl::copyFile()::exit");
 		return true;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter
 	 * #getPacket(java.lang.String)
@@ -240,20 +210,14 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter {
 	public InputStream getPacket(String enrolmentId) {
 		S3Object object = null;
 		try {
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					enrolmentId, "FilesystemCephAdapterImpl::getPacket()::entry");
 			object = this.conn.getObject(new GetObjectRequest(enrolmentId, enrolmentId));
-
+			LOGGER.debug(LOGDISPLAY, enrolmentId, "fetched from DFS");
 		} catch (AmazonS3Exception e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					enrolmentId,
-					e.getMessage()  + ExceptionUtils.getStackTrace(e));
+			LOGGER.error(LOGDISPLAY, e.getStatusCode(), e.getErrorCode(), e.getErrorMessage());
 			ExceptionHandler.exceptionHandler(e);
 		} catch (SdkClientException e) {
 			ExceptionHandler.exceptionHandler(e);
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				enrolmentId, "FilesystemCephAdapterImpl::getPacket()::exit");
 		return object != null ? object.getObjectContent() : null;
 	}
 
@@ -266,19 +230,15 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter {
 	@Override
 	public InputStream getFile(String enrolmentId, String fileName) {
 		S3Object object = null;
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				enrolmentId, "FilesystemCephAdapterImpl::getFile()::entry");
 		try {
 			object = this.conn.getObject(new GetObjectRequest(enrolmentId, fileName));
+			LOGGER.debug(LOGDISPLAY, enrolmentId, fileName, "fetched from DFS");
 		} catch (AmazonS3Exception e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					enrolmentId, e.getMessage() + ExceptionUtils.getStackTrace(e));
+			LOGGER.error(LOGDISPLAY, e.getStatusCode(), e.getErrorCode(), e.getErrorMessage());
 			ExceptionHandler.exceptionHandler(e);
 		} catch (SdkClientException e) {
 			ExceptionHandler.exceptionHandler(e);
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				enrolmentId, "FilesystemCephAdapterImpl::getFile()::exit");
 		return object != null ? object.getObjectContent() : null;
 	}
 
@@ -288,8 +248,6 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter {
 	 */
 	@Override
 	public void unpackPacket(String enrolmentId) throws IOException {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				enrolmentId, "FilesystemCephAdapterImpl::unpackPacket()::entry");
 		InputStream packetStream = getPacket(enrolmentId);
 		ZipInputStream zis = new ZipInputStream(packetStream);
 		byte[] buffer = new byte[2048];
@@ -309,8 +267,7 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter {
 			inputStream.close();
 			ze = zis.getNextEntry();
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				enrolmentId, "FilesystemCephAdapterImpl::unpackPacket()::exit");
+		LOGGER.debug(LOGDISPLAY, enrolmentId, "unpacked successfully into DFS");
 		zis.closeEntry();
 		zis.close();
 	}
@@ -323,19 +280,14 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter {
 	@Override
 	public boolean deletePacket(String enrolmentId) {
 		try {
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					enrolmentId, "FilesystemCephAdapterImpl::deletePacket()::entry");
 			this.conn.deleteObject(enrolmentId, enrolmentId);
+			LOGGER.debug(LOGDISPLAY, enrolmentId, "deleted from DFS successfully");
 		} catch (AmazonS3Exception e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					enrolmentId,
-					e.getMessage()  + ExceptionUtils.getStackTrace(e));
+			LOGGER.error(LOGDISPLAY, e.getStatusCode(), e.getErrorCode(), e.getErrorMessage());
 			ExceptionHandler.exceptionHandler(e);
 		} catch (SdkClientException e) {
 			ExceptionHandler.exceptionHandler(e);
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				enrolmentId, "FilesystemCephAdapterImpl::deletePacket()::exit");
 		return true;
 	}
 
@@ -348,20 +300,14 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter {
 	@Override
 	public boolean deleteFile(String enrolmentId, String fileName) {
 		try {
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					enrolmentId, "FilesystemCephAdapterImpl::deleteFile()::entry");
 			this.conn.deleteObject(enrolmentId, fileName);
-
+			LOGGER.debug(LOGDISPLAY, enrolmentId, fileName, "deleted from DFS successfully");
 		} catch (AmazonS3Exception e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					enrolmentId,
-					e.getMessage()  + ExceptionUtils.getStackTrace(e));
+			LOGGER.error(LOGDISPLAY, e.getStatusCode(), e.getErrorCode(), e.getErrorMessage());
 			ExceptionHandler.exceptionHandler(e);
 		} catch (SdkClientException e) {
-			ExceptionHandler.exceptionHandler(e);
+			ExceptionHandler.exceptionHandler(e); 
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				enrolmentId, "FilesystemCephAdapterImpl::deleteFile()::exit");
 		return true;
 	}
 
@@ -374,28 +320,20 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter {
 	@Override
 	public boolean checkFileExistence(String enrolmentId, String fileName) {
 		boolean result = false;
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				enrolmentId, "FilesystemCephAdapterImpl::checkFileExistence()::entry");
 		try {
 			if (getFile(enrolmentId, fileName) != null) {
 				result = true;
 			}
-		} catch (PacketNotFoundException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					enrolmentId,
-					PlatformErrorMessages.RPR_PDJ_PACKET_NOT_AVAILABLE.getMessage() + ExceptionUtils.getStackTrace(e));
 		} catch (FSAdapterException e) {
 			LOGGER.error(LOGDISPLAY, "INVALID_PACKET_FILE_NAME");
 			return false;
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				enrolmentId, "FilesystemCephAdapterImpl::checkFileExistence()::exit");
 		return result;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter
 	 * #isPacketPresent(java.lang.String)
@@ -404,7 +342,7 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter {
 	public boolean isPacketPresent(String registrationId) {
 		return this.getPacket(registrationId) != null;
 	}
-
+	
 
 
 }
