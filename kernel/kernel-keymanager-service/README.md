@@ -133,8 +133,7 @@ Response response = client.newCall(request).execute();
 
 ### Linux (Docker)
 
-1. (First time only) Build kernel-keymanager-softhsm docker image using kernel-keymanager-softhsm Dockerfile in softhsm directory with command:
-
+1. (First time only) Rename the  kernel-keymanager-softhsm Dockerfile in softhsm directory to `Dockerfile`. Build kernel-keymanager-softhsm docker image using this Dockerfile with command:
 ```
 docker build --build-arg softhsm_pin=1234 --tag kernel-keymanager-softhsm:0.1 .
 ```
