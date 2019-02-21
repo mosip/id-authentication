@@ -18,7 +18,7 @@
             </ImageView>
       <AnchorPane layoutY="70.0" styleClass="reggistrationPaneStyle">
          <children>
-         	<Label layoutX="60.0" styleClass="optionHeaderStyle" text="Registration Tasks" />
+         	<Label layoutX="60.0" styleClass="optionHeaderStyle" text="%registrationTasks" />
             <Button fx:id="uinUpdateBtn" layoutX="40.0" layoutY="147.0" mnemonicParsing="false" onAction="#updateUIN" styleClass="uinUpdateBtnStyle" text="%uinupdate" />            
             <Button fx:id="newRegistrationBtn" layoutX="40.0" layoutY="37.0" mnemonicParsing="false" onAction="#createPacket" styleClass="newRegBtnStyle" text="%newregistration" />
             <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="60.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true">
@@ -35,7 +35,7 @@
       </AnchorPane>
       <AnchorPane layoutX="449.0" layoutY="70.0">
          <children>
-            <Label layoutX="60.0" styleClass="optionHeaderStyle" text="Operational Tasks" />
+            <Label layoutX="60.0" styleClass="optionHeaderStyle" text="%operationalTasks" />
             <AnchorPane layoutX="16.0" layoutY="37.0" onMouseClicked="#syncData" styleClass="operationalPaneDetails,operationalPaneDetailsSync">
                <children>
                   <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
@@ -43,7 +43,7 @@
                         <Image url="@../images/sync.png" />
                      </image>
                   </ImageView>
-                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="Synchronize Data" />
+                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="%synchronizeData" />
                   <Label layoutX="80.0" layoutY="33.0" styleClass="operationalDetails" text="Last Sync - on Monday 10 Jan 2:300 PM" />
                </children>
             </AnchorPane>
@@ -55,7 +55,7 @@
                      </image>
                   </ImageView>
                   <Label layoutX="80.0" layoutY="33.0" styleClass="operationalDetails" text="Downloaded on Monday 10 Jan 8:00 AM; Size 564 MB" />
-                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="Download Pre-Registration Data" />
+                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="%downloadPreregistrationData" />
                </children>
             </AnchorPane>
             <AnchorPane layoutX="16.0" layoutY="175.0" onMouseClicked="#onBoardUser" styleClass="operationalPaneDetails,operationalPaneDetailsBioUpdate">
@@ -66,14 +66,14 @@
                      </image>
                   </ImageView>
                   <Label layoutX="80.0" layoutY="33.0" styleClass="operationalDetails" text="Not uploaded yet" />
-                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="Update Operator Biometrics" />
+                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="%updateOperatorBiometrics" />
                </children>
             </AnchorPane>
          </children>
       </AnchorPane>
       <AnchorPane fx:id="eodProcessAnchorPane" layoutX="449.0" layoutY="340.0" styleClass="operationalPaneStyle">
          <children>
-            <Label layoutX="60.0" styleClass="optionHeaderStyle" text="End of Day Processes" />
+            <Label layoutX="60.0" styleClass="optionHeaderStyle" text="%endofDayProcesses" />
             <AnchorPane layoutX="16.0" layoutY="37.0" onMouseClicked="#approvePacket" styleClass="operationalPaneDetails,operationalPaneDetailsSync">
                <children>
                   <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
@@ -81,7 +81,7 @@
                         <Image url="@../images/PendingApproval.png" />
                      </image>
                   </ImageView>
-                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="Pending Approval" />
+                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="%pendingapproval" />
                   <Label fx:id="pendingApprovalCountLbl" layoutX="80.0" layoutY="33.0" styleClass="operationalDetails" text="18 Applications" />
                </children>
             </AnchorPane>
@@ -93,7 +93,7 @@
                      </image>
                   </ImageView>
                   <Label fx:id="reRegistrationCountLbl" layoutX="80.0" layoutY="33.0" styleClass="operationalDetails" text="8 Applications" />
-                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="Re-Registration" />
+                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="%reRegistration" />
                </children>
             </AnchorPane>
             <AnchorPane layoutX="16.0" layoutY="175.0" styleClass="operationalPaneDetails,operationalPaneDetailsBioUpdate">
@@ -103,15 +103,15 @@
                         <Image url="@../images/ViewReports.png" />
                      </image>
                   </ImageView>
-                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="View Report" />
+                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="%viewReport" />
                </children>
             </AnchorPane>
          </children>
       </AnchorPane>
       <AnchorPane layoutX="925.0" layoutY="70.0" styleClass="newsupdatePaneStyle">
          <children>
-            <Label layoutX="60.0" styleClass="optionHeaderStyle" text="News and Updates" />
-            <Label fx:id="newsViewAll" layoutX="250.0" prefHeight="27.0" prefWidth="64.0" text="View all" />
+            <Label layoutX="60.0" styleClass="optionHeaderStyle" text="%newsandUpdates" />
+            <Label fx:id="newsViewAll" layoutX="250.0" prefHeight="27.0" prefWidth="64.0" text="%viewall" />
             <AnchorPane layoutY="37.0" styleClass="newsUpdates">
                <children>
                   <AnchorPane layoutX="6.0" layoutY="1.0" styleClass="newsUpdateDescPaneStyle">

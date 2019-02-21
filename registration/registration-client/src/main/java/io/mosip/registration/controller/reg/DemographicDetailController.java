@@ -293,6 +293,9 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private TextField yyyyLocalLanguage;
+	
+	@FXML
+	private Label residenceLblLocalLanguage;
 
 	@Autowired
 	private PridValidator<String> pridValidatorImpl;
@@ -680,6 +683,9 @@ public class DemographicDetailController extends BaseController {
 			emailIdLocalLanguageLabel.setText(localProperties.getString("emailId"));
 			parentNameLocalLanguageLabel.setText(localProperties.getString("parentName"));
 			uinIdLocalLanguageLabel.setText(localProperties.getString("uinId"));
+			residenceLblLocalLanguage.setText(localProperties.getString("residence"));
+			nationalLocalLanguage.setText(localProperties.getString("national"));
+			foreignerLocalLanguage.setText(localProperties.getString("foreigner"));
 			genderLocalLanguage.setPromptText(localProperties.getString("select"));
 			localAdminAuthorityLocalLanguage.setPromptText(localProperties.getString("select"));
 			cityLocalLanguage.setPromptText(localProperties.getString("select"));
