@@ -37,9 +37,5 @@ public class PreRegistartionStatusDTO implements Serializable {
 	 */
 	private String StatusCode;
 	
-	/**
-	 * Created Date Time
-	 */
-	private Date createdDateTime; 
 
 }

@@ -36,6 +36,7 @@ export class HeaderComponent implements OnInit {
 
   doLogout() {
     localStorage.setItem('loggedIn', 'false');
+    localStorage.setItem('loggedOut', 'true');
     this.router.navigate(['/']);
   }
 }

@@ -125,4 +125,18 @@ public class DocumentEntity implements Serializable {
 	 */
 	@Column(name = "encrypted_dtimes")
 	private LocalDateTime encryptedDateTime;
+	
+	/**
+	 * Document Id
+	 */
+	@Column(name = "doc_id")
+	private String docId;
+	
+	/**
+	 * Hash value of row
+	 */
+	@Column(name = "doc_hash")
+	private String DocHash;
+	
+	
 }

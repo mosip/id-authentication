@@ -45,7 +45,6 @@ import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
-import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
@@ -63,9 +62,6 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 	@Value("${PRE_REG_PACKET_LOCATION}")
 	private String preRegPacketLocation;
-
-	@Value("${packet.location.dateFormat}")
-	private String preRegLocationDateFormat;
 
 	@Autowired
 	private JsonValidator jsonValidator;
@@ -97,29 +93,10 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 					parseDemographicJson(bufferedReader, zipEntry);
 				} else if (fileName.contains("_")) {
 					documentDetailsDTO = new DocumentDetailsDTO();
-
-					switch (fileName.substring(0, fileName.indexOf("_")).toUpperCase()) {
-					case RegistrationConstants.POA_DOCUMENT:
-						getIdentityDto().setProofOfAddress(documentDetailsDTO);
-						attachDocument(documentDetailsDTO, zipInputStream, fileName,
-								RegistrationConstants.POA_DOCUMENT);
-						break;
-					case RegistrationConstants.POI_DOCUMENT:
-						getIdentityDto().setProofOfIdentity(documentDetailsDTO);
-						attachDocument(documentDetailsDTO, zipInputStream, fileName,
-								RegistrationConstants.POI_DOCUMENT);
-						break;
-					case RegistrationConstants.POR_DOCUMENT:
-						getIdentityDto().setProofOfRelationship(documentDetailsDTO);
-						attachDocument(documentDetailsDTO, zipInputStream, fileName,
-								RegistrationConstants.POR_DOCUMENT);
-						break;
-					case RegistrationConstants.DOB_DOCUMENT:
-						getIdentityDto().setProofOfDateOfBirth(documentDetailsDTO);
-						attachDocument(documentDetailsDTO, zipInputStream, fileName,
-								RegistrationConstants.DOB_DOCUMENT);
-						break;
-					}
+					String docCategoryCode = fileName.substring(0, fileName.indexOf("_"));
+					getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocuments()
+							.put(docCategoryCode, documentDetailsDTO);
+					attachDocument(documentDetailsDTO, zipInputStream, fileName, docCategoryCode);
 
 				}
 			}
@@ -271,10 +248,6 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	private RegistrationDTO getRegistrationDtoContent() {
 		return (RegistrationDTO) SessionContext.map()
 				.get(RegistrationConstants.REGISTRATION_DATA);
-	}
-
-	private Identity getIdentityDto() {
-		return getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity();
 	}
 
 }

@@ -24,9 +24,9 @@ public interface RegistrationCenterUserRepository extends BaseRepository<Registr
 	@Query("FROM RegistrationCenterUser WHERE registrationCenterUserID.regCenterId=?1 and (isDeleted=false or isDeleted is null) ")
 	List<RegistrationCenterUser> findByRegistrationCenterUserByRegCenterId(String regCenter);
 	
-	@Query("FROM RegistrationCenterUser rcu WHERE rcu.registrationCenterUserID.regCenterId = ?1 AND (rcu.createdDateTime > ?2 OR rcu.updatedDateTime > ?2 OR rcu.deletedDateTime > ?2)")
+	@Query("FROM RegistrationCenterUser rcu WHERE rcu.registrationCenterUserID.regCenterId = ?1 AND ((rcu.createdDateTime > ?2 AND rcu.createdDateTime<=?3) OR (rcu.updatedDateTime > ?2 AND rcu.updatedDateTime <=?3) OR (rcu.deletedDateTime > ?2 AND rcu.deletedDateTime <=?3))")
 	public List<RegistrationCenterUser> findAllByRegistrationCenterIdCreatedUpdatedDeleted(String regId,
-			LocalDateTime lastUpdated) ;
+			LocalDateTime lastUpdated,LocalDateTime currentTimeStamp) ;
 
 	@Query("FROM RegistrationCenterUser rcu WHERE rcu.registrationCenterUserID.regCenterId = ?1")
 	public List<RegistrationCenterUser> findAllByRegistrationCenterId(String regId);

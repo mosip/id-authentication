@@ -798,6 +798,7 @@
 .scanVBox {
 	-fx-background-color: white;
 	-fx-border-width:0.0 0.0 0.0 0.0;
+	-fx-pref-width: 100.0px;
 }
 
 .headerPane {

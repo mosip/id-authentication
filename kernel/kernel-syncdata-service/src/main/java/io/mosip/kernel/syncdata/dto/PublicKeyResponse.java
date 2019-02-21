@@ -24,6 +24,11 @@ import lombok.NoArgsConstructor;
 public class PublicKeyResponse<T> {
 
 	/**
+	 * Lastin sync Time;
+	 */
+	@ApiModelProperty(notes = "Last synced Time", required = true)
+	private String lastSyncTime;
+	/**
 	 * The string alias
 	 */
 	@JsonIgnore

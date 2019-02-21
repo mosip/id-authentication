@@ -67,6 +67,10 @@
 				<to uri="vertx:osi-validator-bus-in" />
 			</when>
 			<when>
+				<simple>${bodyAs(String)} contains '"isValid":false'</simple>
+				<to uri="vertx:message-sender-bus" />
+			</when>
+			<when>
 				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
 				<to uri="vertx:retry" />
 			</when>
@@ -83,6 +87,10 @@
 			<when>
 				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
 				<to uri="vertx:demo-dedupe-bus-in" />
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":false'</simple>
+				<to uri="vertx:message-sender-bus" />
 			</when>
 			<when>
 				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
@@ -137,6 +145,34 @@
 			<when>
 				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
 				<to uri="vertx:uin-generation-bus-in" />
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":false'</simple>
+				<to uri="vertx:message-sender-bus" />
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
+				<to uri="vertx:retry" />
+			</when>
+			<otherwise>
+				<to uri="vertx:error" />
+			</otherwise>
+		</choice>
+	</route>
+	<!-- UIN Generator to Printing and Message Sender Route -->
+	<route id="uin-generation route-->printing-stage-->message-sender-stage">
+		<from uri="vertx:uin-generation-bus-out" />
+		<log
+			message="uin-generation-->printing-stage and message-sender-stage route ${bodyAs(String)}" />
+		<choice>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
+				<to uri="vertx:message-sender-bus" />
+				<to uri="vertx:printing-bus" />
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":false'</simple>
+				<to uri="vertx:message-sender-bus" />
 			</when>
 			<when>
 				<simple>${bodyAs(String)} contains '"internalError":true'</simple>

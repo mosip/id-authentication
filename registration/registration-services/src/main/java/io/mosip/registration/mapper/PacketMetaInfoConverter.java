@@ -194,7 +194,23 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			checkSumMap.forEach((key, value) -> checkSums.add(buildFieldValue(key, value)));
 			identity.setCheckSum(checkSums);
 
-			// uinUpdatedFields
+			setuinUpdatedFields(source, identity);
+		} catch (RuntimeException runtimeException) {
+			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_META_CONVERTOR,
+					runtimeException.toString());
+		}
+		return packetMetaInfo;
+	}
+
+	/**
+	 * Set uin updated fields.
+	 *
+	 * @param source the source
+	 * @param identity the identity
+	 */
+	private void setuinUpdatedFields(RegistrationDTO source, Identity identity) {
+		// uinUpdatedFields
+		if (source.getSelectionListDTO() != null) {
 			List<String> uinUpdateFields = new ArrayList<>();
 			BeanWrapper beanWrapper = new BeanWrapperImpl(source.getSelectionListDTO());
 			PropertyDescriptor[] pds = beanWrapper.getPropertyDescriptors();
@@ -204,12 +220,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 					uinUpdateFields.add(pd.getName());
 			}
 			identity.setUinUpdatedFields(uinUpdateFields);
-
-		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_META_CONVERTOR,
-					runtimeException.toString());
 		}
-		return packetMetaInfo;
 	}
 
 	private void getIntroducerBiometrics(RegistrationDTO source, Introducer introducer, String language) {

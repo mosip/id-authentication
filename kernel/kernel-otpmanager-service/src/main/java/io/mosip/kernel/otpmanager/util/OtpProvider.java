@@ -1,6 +1,5 @@
 package io.mosip.kernel.otpmanager.util;
 
-import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
@@ -41,7 +40,7 @@ public class OtpProvider {
 			PasscodeGenerator pcg = new PasscodeGenerator(getSigning(key, macAlgorithm), otpLength);
 
 			return pcg.generateResponseCode(System.currentTimeMillis());
-		} catch (GeneralSecurityException e) {
+		} catch (Exception e) {
 			throw new CryptoFailureException(OtpErrorConstants.OTP_GEN_CRYPTO_FAILURE.getErrorCode(),
 					OtpErrorConstants.OTP_GEN_CRYPTO_FAILURE.getErrorMessage(), e);
 		}
@@ -62,12 +61,8 @@ public class OtpProvider {
 			final Mac mac = Mac.getInstance(macAlgo);
 			mac.init(new SecretKeySpec(secret.getBytes(), ""));
 
-			return new Signer() {
-				@Override
-				public byte[] sign(byte[] data) {
-					return mac.doFinal(data);
-				}
-			};
+			return (byte[] data) -> mac.doFinal(data);
+
 		} catch (NoSuchAlgorithmException | InvalidKeyException error) {
 			throw new OtpServiceException(OtpErrorConstants.OTP_GEN_ALGO_FAILURE.getErrorCode(),
 					OtpErrorConstants.OTP_GEN_ALGO_FAILURE.getErrorMessage(), error);

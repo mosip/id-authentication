@@ -25,6 +25,6 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	 *            timeStamp
 	 * @return list of {@link DocumentCategory}
 	 */
-	@Query("FROM DocumentCategory WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
-	List<DocumentCategory> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
+	@Query("FROM DocumentCategory WHERE (createdDateTime > ?1 AND createdDateTime <=?2) OR (updatedDateTime > ?1 AND updatedDateTime<=?2)  OR (deletedDateTime > ?1 AND deletedDateTime<=?2)")
+	List<DocumentCategory> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated,LocalDateTime currentTimeStamp);
 }

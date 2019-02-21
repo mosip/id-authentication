@@ -19,8 +19,8 @@ public interface TemplateFileFormatRepository extends BaseRepository<TemplateFil
 	 *            timeStamp
 	 * @return list of {@link TemplateFileFormat}
 	 */
-	@Query(value = "SELECT ff.code, ff.descr, ff.lang_code, ff.is_active, ff.cr_by, ff.cr_dtimes, ff.upd_by, ff.upd_dtimes, ff.is_deleted, ff.del_dtimes FROM master.template_file_format ff where ff.cr_dtimes >?1 or upd_dtimes >?1 or del_dtimes > ?1", nativeQuery = true)
-	List<TemplateFileFormat> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
+	@Query(value = "SELECT ff.code, ff.descr, ff.lang_code, ff.is_active, ff.cr_by, ff.cr_dtimes, ff.upd_by, ff.upd_dtimes, ff.is_deleted, ff.del_dtimes FROM master.template_file_format ff where (ff.cr_dtimes >?1 and ff.cr_dtimes<=?2) or (ff.upd_dtimes >?1 and ff.upd_dtimes <=?2) or (ff.del_dtimes > ?1 and ff.del_dtimes<=?2)", nativeQuery = true)
+	List<TemplateFileFormat> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated,LocalDateTime currentTimeStamp);
 
 	/**
 	 * Method to fetch all the TemplateFileFormats
