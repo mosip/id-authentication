@@ -36,7 +36,11 @@ The DM service provided by the UID, is responsible for the following:
    - The VDM uses the same Socket for all the underlying devices communication. 
    - The application uses the same Socket for all the communication with DM. 
 
-**Device Arrival Sequence:**  
+
+**Device Arrival Class Diagram:**  
+![Device Arrival Sequence Flow](_images/bio-device-arrival-class-flow.png)  
+
+**Device Arrival Sequence Diagram:**  
 ![Device Arrival Sequence Flow](_images/bio-device-arrival-seq-flow.png)  
 
    
