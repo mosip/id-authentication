@@ -146,7 +146,7 @@ public class DemographicService {
 	@Value("${appointmentResourse.url}")
 	private String appointmentResourseUrl;
 
-	@Value("${deleteAppointmentResourse.url}")
+	@Value("${booking.resource.url}")
 	private String deleteAppointmentResourseUrl;
 	/**
 	 * Reference for ${schemaName} from property file
