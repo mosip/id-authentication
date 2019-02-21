@@ -1,14 +1,17 @@
+**Design - Bio-Metric Device Manager**
 
-This document covers the technical design of Device Manager [DM], which will be used to Discover and Register the Bio-metric devices  
-and forward the subjective information to MOSIP Registration client application. The Registraction client application further uses the information to 
+This document covers the technical design of Device Manager [DM], which will be used to Discover and Register  
+the Bio-metric devices and forward the subjective information to MOSIP Registration client application.  
+The Registraction client application further uses the information to   
 communicate with the device and capture the required bio-metric detail.    
 
-![Capture Sequence](_images/bio-device-flow-block.png)  
-
 There are three major entities are being considered to interact with Bio-metric devices. 
-   1. VDM [Vendor Device Manager - Provided by MOSIP].  
+   1. VDM [Vendor Device Manager - Provided by External third party].  
    2. DM  [Device Manager - Provided by MOSIP].  
    3. MOSIP - Registration client application.  
+
+**Integrated Block Diagram:**  
+![Capture Sequence](_images/bio-device-flow-block.png)  
 
 The technical detail of the DM and Registration client application is briefly covered in this document. VDM technical spec is out of this document.  
 
@@ -17,9 +20,6 @@ The technical detail of the DM and Registration client application is briefly co
 3. VDM internally uses required driver to communicate with the Bio-metric devices. The VDM technical design is out of scope of this document.   
 4. Application opens the Socket communication with the defined port of DM and upon confirmation from DM, it makes the communication with VDM through Port.    
 5. All requests and responses carry a requestId, which is a numeric value (128 bit), represented as a 36 character UUID format string in XML.  
-6. 
-
-![Capture Block Flow](_images/bio-device-flow-block.png)  
 
 DM : 
 The Device Manager should open the connection with the configured port and listen for messages from clients [VDM and Application]  
@@ -36,6 +36,7 @@ The DM service provided by the UID, is responsible for the following:
    - The VDM uses the same Socket for all the underlying devices communication. 
    - The application uses the same Socket for all the communication with DM. 
 
+**Device Arrival Sequence:**  
 ![Device Arrival Sequence Flow](_images/bio-device-arrival-seq-flow.png)  
 
    
@@ -108,22 +109,24 @@ On arrival of each devices this message is triggered to the DM.
 	<Return value="1" failureReason="0" />  
 </DeviceManagerEventResponse>  
 
-**Device Removal :** 
+**Device Removal :**   
 <DeviceManagerEventRequest requestId="">  
-	<Removal deviceURI="" />  
-</DeviceManagerEventRequest>  
+	<Removal deviceURI="" />   
+</DeviceManagerEventRequest>   
 
-<DeviceManagerEventResponse requestId="">  
-	<Return value="" failureReason="0"/> 
-</DeviceManagerEventResponse> 
+<DeviceManagerEventResponse requestId="">    
+	<Return value="" failureReason="0"/>   
+</DeviceManagerEventResponse>   
 
 
 Registry Manager - It is a static instance, where we can cache the application level data.  
-	1. Data from property file.
-	2. Device Arrival/ Removal information along with VDM detail.
-	3. Registered Application information. 
+   1. Data from property file.  
+   2. Device Arrival/ Removal information along with VDM detail.  
+   3. Registered Application information.   
 	
-Registry - It holds the data of every 
+**Registry -**  
+   - This component holds the data of every device arrival information along with Modality into the static Map.  
+   - This information is shared with the application whenever is required.  
 
 **Application : **  
  The Application must connect to the DM to discover the biometric devices. 
@@ -175,7 +178,7 @@ Application uses 'DeviceCommandRequest' object to send the event to the VDM.
    On success response from VDM, the application can use the either one of the below provided URI to communicate with VDM and  
    capture the Sample or Video stream.
    
-   videoURI : will be provided in the response of this message.
+   **videoURI :** will be provided in the response of this message.
 
 
 Capture Complete - 
@@ -185,7 +188,7 @@ Capture Complete -
    Application uses the 'sampleURI' to read the capture the data and then send the 'Capture Complete' response to VDM.  
    'DeviceEventRequest' 
 
-   sampleURI : will be provided in the response of this message.
+   **sampleURI :** will be provided in the response of this message.
 
 Detection - 
    This is called by VDM to inform the application about the change of the state of the biometric whether it is placed or removed. 
@@ -194,8 +197,7 @@ Detection -
 User Feedback - 
    This is called by VDM to provide the feedback message to the application UI about the biometric placed over the device.     
    
-   <Sequence required ..> 
-  
+
 List of Events:
    Detection, UserFeedback  
    
@@ -204,9 +206,9 @@ List of Events:
 
   This service only supports the capturing of Bio-metric images from the devices. It doesn't provide the features to segment or match the bio-metric data.  
   	
-   deviceURI :The device should reject the connections on the deviceURI, until the existing socket is closed.  
-   sampleURI : will be provided in the Complete Capture event request message.  
-   videoURI : will be provided in the response of Start Capture message.    
+   - deviceURI :The device should reject the connections on the deviceURI, until the existing socket is closed.  
+   - sampleURI : will be provided in the Complete Capture event request message.  
+   - videoURI : will be provided in the response of Start Capture message.    
   
   
   
