@@ -499,7 +499,7 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_JPG_IMAGE_ENCODING = "data:image/jpg;base64,";
 	public static final String TEMPLATE_PNG_IMAGE_ENCODING = "data:image/png;base64,";
 	public static final String TEMPLATE_CROSS_MARK = "&#10008;";
-	public static final String TEMPLATE_EYE_IMAGE_PATH = "/images/Eye.PNG";
+	public static final String TEMPLATE_EYE_IMAGE_PATH = "/images/Eye.png";
 	public static final String TEMPLATE_LEFT_SLAP_IMAGE_PATH = "/images/leftHand.png";
 	public static final String TEMPLATE_RIGHT_SLAP_IMAGE_PATH = "/images/rightHand.png";
 	public static final String TEMPLATE_THUMBS_IMAGE_PATH = "/images/thumbs.png";

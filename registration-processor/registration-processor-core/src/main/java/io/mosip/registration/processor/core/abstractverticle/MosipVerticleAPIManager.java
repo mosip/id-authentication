@@ -25,4 +25,11 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager{
 					  .end(object.toString());
 	};
 	
+	public void setResponse(RoutingContext ctx, Object object, String contentType) {
+		ctx.response().putHeader("content-type", contentType)
+					  .putHeader("Access-Control-Allow-Origin", "*")
+					  .putHeader("Access-Control-Allow-Methods","GET, POST") 
+					  .setStatusCode(200)
+					  .end(object.toString());
+	};
 }

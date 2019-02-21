@@ -64,15 +64,6 @@ public class PridValidatorImpl implements PridValidator<String> {
 	@Value("#{'${mosip.kernel.prid.not-start-with}'.split(',')}")
 	private List<String> notStartWith;
 
-	/**
-	 * Field for zero digit
-	 */
-	private static final char CHAR_ZERO = '0';
-
-	/**
-	 * Field for one digit
-	 */
-	private static final char CHAR_ONE = '1';
 
 	/**
 	 * Ascending digits which will be checked for sequence in id
@@ -208,16 +199,6 @@ public class PridValidatorImpl implements PridValidator<String> {
 			throw new InvalidIDException(PridExceptionConstant.PRID_VAL_INVALID_DIGITS.getErrorCode(),
 					PridExceptionConstant.PRID_VAL_INVALID_DIGITS.getErrorMessage());
 		}
-		/**
-		 * 
-		 * Validate the PRID, It should not contain '0' or '1' as the first digit.
-		 * 
-		 */
-
-		if (id.charAt(0) == CHAR_ZERO || id.charAt(0) == CHAR_ONE) {
-			throw new InvalidIDException(PridExceptionConstant.PRID_VAL_INVALID_ZERO_ONE.getErrorCode(),
-					PridExceptionConstant.PRID_VAL_INVALID_ZERO_ONE.getErrorMessage());
-		}
 
 		/**
 		 *
@@ -317,7 +298,7 @@ public class PridValidatorImpl implements PridValidator<String> {
 	private boolean isValidId(String id, int sequenceLimit, int repeatingLimit, int repeatingBlockLimit) {
 		initializeRegEx(repeatingLimit, repeatingBlockLimit);
 		return !(sequenceFilter(id, sequenceLimit) || regexFilter(id, repeatingPattern)
-				|| regexFilter(id, repeatingBlockpattern) || validateNotStartWith(id)) ||restrictedAdminFilter(id);
+				|| regexFilter(id, repeatingBlockpattern) || validateNotStartWith(id) ||restrictedAdminFilter(id));
 	}
 
 	/**
@@ -331,7 +312,7 @@ public class PridValidatorImpl implements PridValidator<String> {
 		if (sequenceLimit > 0)
 			return IntStream.rangeClosed(0, id.length() - sequenceLimit).parallel()
 					.mapToObj(index -> id.subSequence(index, index + sequenceLimit))
-					.anyMatch(idSubSequence -> SEQ_ASC.contains(idSubSequence) || SEQ_DEC.contains(idSubSequence));
+					.anyMatch(idSubSequence -> SEQ_ASC.contains(idSubSequence)|| SEQ_DEC.contains(idSubSequence));
 		return false;
 	}
 

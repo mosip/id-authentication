@@ -1,15 +1,19 @@
 package io.mosip.registration.processor.manual.verification.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,14 +21,23 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.constant.PacketFiles;
+import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationStatus;
@@ -32,6 +45,7 @@ import io.mosip.registration.processor.manual.verification.dto.UserDto;
 import io.mosip.registration.processor.manual.verification.exception.InvalidFileNameException;
 import io.mosip.registration.processor.manual.verification.exception.InvalidUpdateException;
 import io.mosip.registration.processor.manual.verification.exception.NoRecordAssignedException;
+import io.mosip.registration.processor.manual.verification.service.ManualVerificationService;
 import io.mosip.registration.processor.manual.verification.service.impl.ManualVerificationServiceImpl;
 import io.mosip.registration.processor.manual.verification.stage.ManualVerificationStage;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
@@ -60,7 +74,7 @@ public class ManualVerificationServiceTest {
 	@Mock
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 	@Mock
-	FileSystemAdapter filesystemAdapterImpl;
+	FileSystemAdapter filesystemCephAdapterImpl;
 	@Mock
 	private BasePacketRepository<ManualVerificationEntity, String> basePacketRepository;
 	@Mock
@@ -89,7 +103,7 @@ public class ManualVerificationServiceTest {
 		manualVerificationEntity.setCrBy("regprc");
 		manualVerificationEntity.setMvUsrId("test");
 		manualVerificationEntity.setIsActive(true);
-		Date date = new Date();
+		 Date date = new Date();
 		manualVerificationEntity.setDelDtimes(new Timestamp(date.getTime()));
 		manualVerificationEntity.setIsDeleted(true);
 		manualVerificationEntity.setStatusComment("test");
@@ -108,13 +122,13 @@ public class ManualVerificationServiceTest {
 		entities.add(manualVerificationEntity);
 		Mockito.when(basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name()))
 				.thenReturn(entities);
-		Mockito.when(basePacketRepository.getAssignedApplicantDetails(ArgumentMatchers.any(), ArgumentMatchers.any()))
+		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString()))
 				.thenReturn(entities);
 	}
 
 	@Test
 	public void assignStatusMethodCheck() {
-		Mockito.when(basePacketRepository.getAssignedApplicantDetails(ArgumentMatchers.any(), ArgumentMatchers.any()))
+		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString()))
 				.thenReturn(entities);
 		ManualVerificationDTO manualVerificationDTO1 = manualAdjudicationService.assignApplicant(dto);
 		assertEquals(manualVerificationDTO, manualVerificationDTO1);
@@ -123,7 +137,7 @@ public class ManualVerificationServiceTest {
 
 	@Test
 	public void assignStatusMethodNullEntityCheck() {
-		Mockito.when(basePacketRepository.getAssignedApplicantDetails(ArgumentMatchers.any(), ArgumentMatchers.any()))
+		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString()))
 				.thenReturn(entitiesTemp);
 		Mockito.when(basePacketRepository.update(manualVerificationEntity)).thenReturn(manualVerificationEntity);
 		manualAdjudicationService.assignApplicant(dto);
@@ -131,7 +145,7 @@ public class ManualVerificationServiceTest {
 
 	@Test(expected = NoRecordAssignedException.class)
 	public void noRecordAssignedExceptionAssignStatus() {
-		Mockito.when(basePacketRepository.getAssignedApplicantDetails(ArgumentMatchers.any(), ArgumentMatchers.any()))
+		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString()))
 				.thenReturn(entitiesTemp);
 		Mockito.when(basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name()))
 				.thenReturn(entitiesTemp);
@@ -144,7 +158,7 @@ public class ManualVerificationServiceTest {
 		String fileName = PacketFiles.APPLICANTPHOTO.name();
 		byte[] file = "Str".getBytes();
 		InputStream fileInStream = new ByteArrayInputStream(file);
-		Mockito.when(filesystemAdapterImpl.getFile(any(), any())).thenReturn(fileInStream);
+		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(fileInStream);
 
 		file = manualAdjudicationService.getApplicantFile(regId, fileName);
 		fileName = PacketFiles.PROOFOFADDRESS.name();
@@ -190,20 +204,20 @@ public class ManualVerificationServiceTest {
 	@Test(expected = NoRecordAssignedException.class)
 	public void updatePacketStatusNoRecordAssignedExceptionCheck() {
 		manualVerificationDTO.setStatusCode("REJECTED");
-		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any(), any())).thenReturn(entitiesTemp);
+		Mockito.when(basePacketRepository.getSingleAssignedRecord(anyString(), anyString(), anyString(), anyString())).thenReturn(entitiesTemp);
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
 
 	}
 
 	@Test
 	public void updatePacketStatusApprovalMethodCheck() {
-		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any(), any())).thenReturn(entities);
-		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(basePacketRepository.getAssignedApplicantDetails(any(), any())).thenReturn(null);
-		Mockito.when(basePacketRepository.update(any())).thenReturn(manualVerificationEntity);
+		Mockito.when(basePacketRepository.getSingleAssignedRecord(anyString(), anyString(), anyString(), anyString())).thenReturn(entities);
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString())).thenReturn(null);
+		Mockito.when(basePacketRepository.update(any(ManualVerificationEntity.class))).thenReturn(manualVerificationEntity);
 		manualVerificationDTO.setStatusCode(ManualVerificationStatus.APPROVED.name());
 
-		Mockito.doNothing().when(manualVerificationStage).sendMessage(any());
+		Mockito.doNothing().when(manualVerificationStage).sendMessage(any(MessageDTO.class));
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
 	}
 
@@ -211,9 +225,9 @@ public class ManualVerificationServiceTest {
 	public void updatePacketStatusRejectionMethodCheck() {
 		manualVerificationDTO.setStatusCode(ManualVerificationStatus.REJECTED.name());
 		;
-		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any(), any())).thenReturn(entities);
-		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(basePacketRepository.getAssignedApplicantDetails(any(), any())).thenReturn(null);
+		Mockito.when(basePacketRepository.getSingleAssignedRecord(anyString(), anyString(), anyString(), anyString())).thenReturn(entities);
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString())).thenReturn(null);
 		Mockito.when(basePacketRepository.update(any())).thenReturn(manualVerificationEntity);
 
 		Mockito.doNothing().when(manualVerificationStage).sendMessage(any());
@@ -225,9 +239,9 @@ public class ManualVerificationServiceTest {
 		manualVerificationDTO.setStatusCode("ASSIGNED");
 		manualVerificationDTO.setMvUsrId("abcde");
 		manualVerificationDTO.setRegId("abcde");
-		Mockito.when(basePacketRepository.getSingleAssignedRecord(any(), any(), any(), any())).thenReturn(entities);
-		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(basePacketRepository.getAssignedApplicantDetails(any(), any())).thenReturn(null);
+		Mockito.when(basePacketRepository.getSingleAssignedRecord(anyString(), anyString(), anyString(), anyString())).thenReturn(entities);
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString())).thenReturn(null);
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
 	}
 
@@ -236,7 +250,7 @@ public class ManualVerificationServiceTest {
 		ClassLoader classLoader = getClass().getClassLoader();
 		File idJsonFile = new File(classLoader.getResource("ID.json").getFile());
 		InputStream idJsonStream = new FileInputStream(idJsonFile);
-		Mockito.when(filesystemAdapterImpl.getFile(any(), any())).thenReturn(idJsonStream);
+		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(idJsonStream);
 		manualAdjudicationService.getApplicantPacketInfo("Id");
 	}
 
