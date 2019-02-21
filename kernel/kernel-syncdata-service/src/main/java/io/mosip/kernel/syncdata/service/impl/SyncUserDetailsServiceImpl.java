@@ -68,7 +68,8 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 				data = response.getBody();
 			if(data != null && data.getMosipUserDtoList() != null) {
 			List<UserDetailMapDto> userDetails = MapperUtils.mapUserDetailsToUserDetailMap(data.getMosipUserDtoList());
-			syncUserDetailDto = new SyncUserDetailDto(userDetails);
+			syncUserDetailDto = new SyncUserDetailDto();
+			syncUserDetailDto.setUserDetails(userDetails);
 			}
 			return syncUserDetailDto;
 

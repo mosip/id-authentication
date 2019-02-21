@@ -16,6 +16,7 @@ import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.service.impl.id.service.impl.VIDServiceImpl;
+import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 
 @RunWith(SpringRunner.class)
@@ -45,6 +46,13 @@ public class VIDControllerTest {
 	public void generateVIDTestFail() throws IdAuthenticationBusinessException, IdAuthenticationAppException {
 		Mockito.when(vidService.generateVID(Mockito.anyString())).thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED));
 		Mockito.when(uinValidator.validateId(Mockito.any())).thenReturn(true);
+		vidController.generateVID(Mockito.anyString());
+		
+	}
+	
+	@Test(expected=IdAuthenticationAppException.class)
+	public void generateVIDTestFailUINValidate() throws IdAuthenticationBusinessException, IdAuthenticationAppException {
+		Mockito.when(uinValidator.validateId(Mockito.any())).thenThrow(InvalidIDException.class);
 		vidController.generateVID(Mockito.anyString());
 		
 	}

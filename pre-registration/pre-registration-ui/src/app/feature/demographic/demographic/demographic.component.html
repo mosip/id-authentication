@@ -57,7 +57,6 @@
             </div>
 
             <div class="user__pref">
-              <!-- {{ 'demographic.text_or' | translate }} -->
               <mat-slide-toggle (change)="onPreferenceChange($event)"></mat-slide-toggle>
             </div>
             <div class="user__age">
@@ -75,12 +74,7 @@
               <span>{{ 'demographic.text_years' | translate }}</span>
             </div>
           </div>
-          <!-- <div
-                class="mat-error ng-star-inserted user__dob__error"
-                *ngIf="userForm.get('age').touched && !userForm.get('age').valid"
-              >
-                Age should be less than 150 and greater than 0
-              </div> -->
+
           <div
             class="mat-error ng-star-inserted user__dob__error"
             *ngIf="!userForm.get(formControlNames.date).valid && userForm.get(formControlNames.date).touched"
@@ -102,19 +96,19 @@
           <div
             class="mat-error ng-star-inserted user__dob__error"
             *ngIf="
-                (userForm.get(formControlNames.dateOfBirth).touched &&
-                  userForm.get(formControlNames.dateOfBirth).hasError('incorrect')) ||
-                (userForm.get(formControlNames.age).touched && !userForm.get(formControlNames.age).valid)"
+              (userForm.get(formControlNames.dateOfBirth).touched &&
+                userForm.get(formControlNames.dateOfBirth).hasError('incorrect')) ||
+              (userForm.get(formControlNames.age).touched && !userForm.get(formControlNames.age).valid)
+            "
           >
             {{ 'demographic.validation.DOB_validation' | translate }}
           </div>
 
-          <!-- <div class="genderAndForeigner"> -->
           <div class="user__genderAndForeigner">
             <span class="user__genderAndForeigner--text">{{ 'demographic.text_gender' | translate }}</span>
             <mat-button-toggle-group
               [formControlName]="formControlNames.gender"
-              (change)="onGenderChange([primaryGender, secondaryGender], $event)"
+              (change)="onEntityChange([primaryGender, secondaryGender], $event)"
               appearance="legacy"
               name="fontStyle"
               aria-label="Font Style"
@@ -131,21 +125,33 @@
             {{ 'demographic.validation.gender_validation' | translate }}
           </div>
 
-          <!-- <div class="genderAndForeigner"> -->
           <div class="user__genderAndForeigner">
             <span class="user__genderAndForeigner--text">{{ 'demographic.text_residence_status' | translate }}</span>
             <mat-button-toggle-group
               [formControlName]="formControlNames.residenceStatus"
-              (change)="onGenderChange([primaryGender, secondaryGender], $event)"
+              (change)="onEntityChange([primaryResidenceStatus, secondaryResidenceStatus], $event)"
               appearance="legacy"
               name="fontStyle"
               aria-label="Font Style"
             >
               <mat-button-toggle value="national"> {{ 'demographic.button_national' | translate }} </mat-button-toggle>
-              <mat-button-toggle value="foreigner"> {{ 'demographic.button_foreigner' | translate }} </mat-button-toggle>
+              <mat-button-toggle value="foreigner">
+                {{ 'demographic.button_foreigner' | translate }}
+              </mat-button-toggle>
             </mat-button-toggle-group>
+                <!-- <mat-button-toggle *ngFor="let resident of primaryResidenceStatus" [value]="resident.code">{{
+                  resident.residentName
+                }}</mat-button-toggle> -->
           </div>
-          <!-- </div> -->
+          <div
+            class="mat-error ng-star-inserted user__gender__error"
+            *ngIf="
+              userForm.get(formControlNames.residenceStatus).touched &&
+              userForm.get(formControlNames.residenceStatus).invalid
+            "
+          >
+            Please select nationality
+          </div>
 
           <mat-form-field>
             <input
@@ -155,7 +161,6 @@
               maxlength="50"
               placeholder="{{ 'demographic.label_address1' | translate }}"
               [formControlName]="formControlNames.addressLine1"
-              (change)="onGenderChange()"
               (change)="onTransliteration(addressLine1, formControlNames.addressLine1Secondary)"
             />
             <mat-hint align="end">{{ addressLine1.value.length }} / 50</mat-hint>
@@ -396,18 +401,18 @@
           </div>
           <div
             class="mat-error ng-star-inserted user__dob__error"
-            *ngIf="userForm.get(formControlNames.dateOfBirth).touched &&
-            userForm.get(formControlNames.dateOfBirth).hasError('incorrect')"
+            *ngIf="
+              userForm.get(formControlNames.dateOfBirth).touched &&
+              userForm.get(formControlNames.dateOfBirth).hasError('incorrect')
+            "
           >
             <br />
           </div>
-          <!-- <div class="genderAndForeigner"> -->
           <div class="user__genderAndForeigner">
             <span class="user__genderAndForeigner--text">{{ secondaryLanguagelabels.text_gender }}</span>
-            <!-- (valueChange)="onGenderChange(secondaryGender, $event)" -->
             <mat-button-toggle-group
-              [disabled]="true"
               appearance="legacy"
+              [disabled]="true"
               aria-label="Font Style"
               [value]="userForm.get(formControlNames.gender).value"
             >
@@ -416,10 +421,6 @@
               }}</mat-button-toggle>
             </mat-button-toggle-group>
           </div>
-          <!-- <div class="genderAndForeigner--foreigner">
-                <mat-checkbox>{{ secondaryLanguagelabels.text_foreigner }}</mat-checkbox>
-              </div> -->
-          <!-- </div> -->
           <div
             class="mat-error ng-star-inserted user__gender__error"
             *ngIf="userForm.get(formControlNames.gender).touched && userForm.get(formControlNames.gender).invalid"
@@ -439,6 +440,19 @@
               <mat-button-toggle value="national"> {{ secondaryLanguagelabels.button_national }} </mat-button-toggle>
               <mat-button-toggle value="foreigner"> {{ secondaryLanguagelabels.button_foreigner }} </mat-button-toggle>
             </mat-button-toggle-group>
+<!--             
+            <mat-button-toggle *ngFor="let resident of secondaryResidenceStatus" [value]="resident.code">{{
+              resident.residentName
+            }}</mat-button-toggle> -->
+          </div>
+          <div
+            class="mat-error ng-star-inserted user__gender__error"
+            *ngIf="
+              userForm.get(formControlNames.residenceStatus).touched &&
+              userForm.get(formControlNames.residenceStatus).invalid
+            "
+          >
+            <br />
           </div>
 
           <mat-form-field>
@@ -595,10 +609,22 @@
     <button class="user__btn" type="button" (click)="onBack()" [disabled]="isNewApplicant">
       {{ 'demographic.action_back' | translate }}
     </button>
-    <button *ngIf="!showPreviewButton" class="user__btn" type="button" [disabled]="!dataUploadComplete" (click)="onSubmit()">
+    <button
+      *ngIf="!showPreviewButton"
+      class="user__btn"
+      type="button"
+      [disabled]="!dataUploadComplete"
+      (click)="onSubmit()"
+    >
       {{ 'demographic.action_continue' | translate }}
     </button>
-    <button *ngIf="showPreviewButton" class="user__btn" type="button" [disabled]="!dataUploadComplete" (click)="onSubmit()">
+    <button
+      *ngIf="showPreviewButton"
+      class="user__btn"
+      type="button"
+      [disabled]="!dataUploadComplete"
+      (click)="onSubmit()"
+    >
       {{ 'demographic.action_preview' | translate }}
     </button>
   </div>

@@ -20,8 +20,6 @@ import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.documents.code.DocumentStatusMessages;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
-import io.mosip.preregistration.documents.exception.CephConnectionUnavailableException;
-import io.mosip.preregistration.documents.exception.CephServerException;
 import io.mosip.preregistration.documents.exception.DTOMappigException;
 import io.mosip.preregistration.documents.exception.DemographicGetDetailsException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToCopyException;
@@ -30,12 +28,11 @@ import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
 import io.mosip.preregistration.documents.exception.DocumentNotValidException;
 import io.mosip.preregistration.documents.exception.DocumentSizeExceedException;
 import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
+import io.mosip.preregistration.documents.exception.FSServerException;
 import io.mosip.preregistration.documents.exception.FileNotFoundException;
-import io.mosip.preregistration.documents.exception.InvalidConnectionParameters;
 import io.mosip.preregistration.documents.exception.InvalidDocumnetIdExcepion;
 import io.mosip.preregistration.documents.exception.MandatoryFieldNotFoundException;
 import io.mosip.preregistration.documents.exception.ParsingException;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.PacketNotFoundException;
 
 /**
  * This class is defines the Exception handler for Document service
@@ -127,43 +124,7 @@ public class DocumentExceptionHandler {
 
 	}
 
-	/**
-	 * @param nv
-	 *            pass the exception
-	 * @param webRequest
-	 *            pass the request
-	 * @return response for InvalidConnectionParameters
-	 */
-	@ExceptionHandler(InvalidConnectionParameters.class)
-	public ResponseEntity<MainListResponseDTO> invalidConnectionParameters(final InvalidConnectionParameters e,
-			WebRequest webRequest) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErr(errorDetails);
-		errorRes.setStatus(responseStatus);
-		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 
-	}
-
-	/**
-	 * @param nv
-	 *            pass the exception
-	 * @param webRequest
-	 *            pass the request
-	 * @return response for CephConnectionUnavailableException
-	 */
-	@ExceptionHandler(CephConnectionUnavailableException.class)
-	public ResponseEntity<MainListResponseDTO> connectionUnavailableException(
-			final CephConnectionUnavailableException e, WebRequest webRequest) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErr(errorDetails);
-		errorRes.setStatus(responseStatus);
-		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
-
-	}
 
 	/**
 	 * @param nv
@@ -348,23 +309,7 @@ public class DocumentExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
-	/**
-	 * @param e
-	 *            pass the exception
-	 * @param request
-	 *            pass the request
-	 * @return response for PacketNotFoundException
-	 */
-	@ExceptionHandler(PacketNotFoundException.class)
-	public ResponseEntity<MainListResponseDTO> packetNotFoundException(final PacketNotFoundException e,
-			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
-		errorRes.setErr(errorDetails);
-		errorRes.setStatus(responseStatus);
-		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
-	}
+
 	
 	/**
 	 * @param e
@@ -391,8 +336,8 @@ public class DocumentExceptionHandler {
 	 *            pass the request
 	 * @return response for CephServerException
 	 */
-	@ExceptionHandler(CephServerException.class)
-	public ResponseEntity<MainListResponseDTO> cephServerException(final CephServerException e,
+	@ExceptionHandler(FSServerException.class)
+	public ResponseEntity<MainListResponseDTO> cephServerException(final FSServerException e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();

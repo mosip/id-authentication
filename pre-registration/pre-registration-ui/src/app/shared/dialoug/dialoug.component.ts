@@ -15,7 +15,10 @@ export class DialougComponent implements OnInit {
   selectedOption = null;
   confirm = true;
   applicantNumber;
+  applicantEmail;
+  inputList = [];
   invalidApplicantNumber = false;
+  invalidApplicantEmail = false;
   selectedName: any;
   addedList = [];
   disableAddButton = true;
@@ -35,12 +38,22 @@ export class DialougComponent implements OnInit {
     console.log('button clicked', this.selectedOption);
   }
 
-  validNumberOfUsers() {
-    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if ((!isNaN(this.applicantNumber) && this.applicantNumber.length === 10) || (re.test(String(this.applicantNumber).toLowerCase()))) {
+  validateMobile() {
+    if ((!isNaN(this.applicantNumber) && this.applicantNumber.length === 10)) {
+      this.inputList[1] = this.applicantNumber;
       this.invalidApplicantNumber = false;
     } else {
       this.invalidApplicantNumber = true;
+    }
+  }
+
+  validateEmail() {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (re.test(String(this.applicantEmail).toLowerCase())) {
+      this.inputList[0] = this.applicantEmail;
+      this.invalidApplicantEmail = false;
+    } else {
+      this.invalidApplicantEmail = true;
     }
   }
 

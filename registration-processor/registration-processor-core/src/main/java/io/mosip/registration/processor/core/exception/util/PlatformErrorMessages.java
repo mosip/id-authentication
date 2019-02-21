@@ -332,12 +332,17 @@ public enum PlatformErrorMessages {
 	/** The rpr sys io exception. */
 	RPR_SYS_IO_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "012", "IO EXCEPTION "),
 
+	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),
+	
+
+
 	RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_VALIDATOR_MODULE + "001",
 			"The Packet store set by the System is not accessible"),
 
 	RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_UIN_GENERATOR_STAGE + "001",
 			"The Packet store set by the System is not accessible");
-	;
+	
+	
 
 	/** The error message. */
 	private final String errorMessage;

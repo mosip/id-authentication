@@ -9,6 +9,7 @@ import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { TranslateService } from '@ngx-translate/core';
+import { SharedService } from '../../booking/booking.service';
 
 @Component({
   selector: 'app-file-upload',
@@ -21,9 +22,9 @@ export class FileUploadComponent implements OnInit {
 
   @ViewChild('docCatSelect')
   docCatSelect: ElementRef;
-
+  sameAsselected = false;
   sortedUserFiles: any[] = [];
-
+  isModify: any;
   fileName = '';
   fileByteArray;
   fileUrl;
@@ -125,21 +126,25 @@ export class FileUploadComponent implements OnInit {
 
   step = 0;
   multipleApplicants = false;
-  allApplicants: UserModel[] = [];
+  allApplicants: any[] = [];
   constructor(
     private registration: RegistrationService,
     private dataStroage: DataStorageService,
     private router: Router,
     private route: ActivatedRoute,
     private domSanitizer: DomSanitizer,
+    private sharedService: SharedService,
     private translate: TranslateService
   ) {
     this.translate.use(localStorage.getItem('langCode'));
+    this.isModify = localStorage.getItem('modifyDocument');
   }
 
   ngOnInit() {
-    this.allApplicants = this.registration.getUsers();
-    this.allApplicants.splice(-1, 1);
+    this.allApplicants = this.sharedService.getAllApplicants();
+    console.log('applicants', this.allApplicants);
+
+    // this.allApplicants.splice(-1, 1);
     if (this.registration.getUsers().length > 0) {
       this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
       if (!this.users[0].files[0]) {
@@ -156,6 +161,7 @@ export class FileUploadComponent implements OnInit {
 
     const arr = this.router.url.split('/');
     this.loginId = arr[2];
+    console.log('users', this.users);
 
     if (this.users[0].files[0].length != 0) {
       this.sortUserFiles();
@@ -188,6 +194,14 @@ export class FileUploadComponent implements OnInit {
   viewFile(file) {
     this.fileName = file.doc_name;
     this.fileByteArray = file.multipartFile;
+    let i = 0;
+    for (let x of this.users[0].files[0]) {
+      i++;
+      if (this.fileName === x.doc_name) {
+        break;
+      }
+    }
+    this.fileIndex = i - 1;
     if (this.fileByteArray) {
       this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
         'data:application/pdf;base64,' + this.fileByteArray
@@ -202,15 +216,19 @@ export class FileUploadComponent implements OnInit {
 
   handleFileInput(event) {
     if (event.target.files[0].type === 'application/pdf') {
-      if (event.target.files[0].size < 1000000) {
-        this.getBase64(event.target.files[0]).then(data => {
-          this.fileByteArray = data;
-          this.fileByteArray = this.fileByteArray.replace('data:application/pdf;base64,', '');
-        });
-        this.setJsonString(event);
-        this.sendFile(event);
+      if (event.target.files[0].name.length < 46) {
+        if (event.target.files[0].size < 1000000) {
+          this.getBase64(event.target.files[0]).then(data => {
+            this.fileByteArray = data;
+            this.fileByteArray = this.fileByteArray.replace('data:application/pdf;base64,', '');
+          });
+          this.setJsonString(event);
+          this.sendFile(event);
+        } else {
+          alert('file too big');
+        }
       } else {
-        alert('file too big');
+        alert('File name should not be mpre thaan 50 characters');
       }
     } else {
       alert('Wrong file type, please upload again');
@@ -248,15 +266,7 @@ export class FileUploadComponent implements OnInit {
     }
 
     this.dataStroage.deleteFile(this.users[applicantIndex].files[0][fileIndex].doc_id).subscribe(res => {
-      // this.users[applicantIndex].files[0][fileIndex] = '';
       this.users[applicantIndex].files[0].splice(fileIndex, 1);
-      // if (this.users[applicantIndex].files[0][fileIndex].doc_name === this.fileName) {
-      //   // this.fileName = '';
-      //   // this.fileByteArray = '';
-      // }
-      // this.users[applicantIndex].files[0][fileIndex] = new FileModel();
-      // this.sortUserFiles();
-      // this.documentIndex = fileIndex;
       if (this.users[0].files[0].length == 0) {
         this.removeFilePreview();
       } else {
@@ -264,7 +274,6 @@ export class FileUploadComponent implements OnInit {
       }
     });
     this.fileIndex--;
-    // this.applicants[applicantIndex].files[fileIndex] = '';
   }
 
   removeFilePreview() {
@@ -330,7 +339,9 @@ export class FileUploadComponent implements OnInit {
   }
 
   sameAsChange(event) {
-    this.dataStroage.copyDocument('POA', this.users[0].preRegId, event.value).subscribe(response => {});
+    this.dataStroage.copyDocument('POA', this.users[0].preRegId, event.value).subscribe(response => {
+      this.sameAsselected = true;
+    });
   }
 
   ifDisabled(category) {
@@ -349,21 +360,15 @@ export class FileUploadComponent implements OnInit {
     arr.push('demographic');
     const url = arr.join('/');
     this.router.navigateByUrl(url);
-    // this.router.navigate(['../demographic'], { relativeTo: this.route });
   }
   onNext() {
-    // this.router.navigate(['pre-registration', this.loginId, 'pick-center']);
-    if (this.LOD.length == this.users[0].files[0].length) {
-      const arr = this.router.url.split('/');
-      arr.pop();
-      arr.push('preview');
-      const url = arr.join('/');
-      this.router.navigateByUrl(url);
-    } else {
-      alert('please upload the files first');
-    }
-
-    // this.router.navigate(['../preview'], { relativeTo: this.route });
+    localStorage.setItem('modifyDocument', 'false');
+    const arr = this.router.url.split('/');
+    arr.pop();
+    arr.push('summary');
+    arr.push('preview');
+    const url = arr.join('/');
+    this.router.navigateByUrl(url);
   }
 
   nextFile() {
