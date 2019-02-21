@@ -635,7 +635,7 @@ public class DemographicService {
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder
-					.fromHttpUrl(resourceUrl + "pre-registration/deleteAllByPreRegId")
+					.fromHttpUrl(resourceUrl + "/deleteAllByPreRegId")
 					.queryParam("pre_registration_id", preregId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
