@@ -22,8 +22,12 @@ export class FileUploadComponent implements OnInit {
 
   @ViewChild('docCatSelect')
   docCatSelect: ElementRef;
+
+  noneApplicant = {
+    fullname: 'none',
+    preRegistrationId: ''
+  };
   sameAsselected = false;
-  sortedUserFiles: any[] = [];
   isModify: any;
   fileName = '';
   fileByteArray;
@@ -103,20 +107,8 @@ export class FileUploadComponent implements OnInit {
     }
   ];
   fileIndex = -1;
-  // JsonString = {
-  //   id: 'mosip.pre-registration.document.upload',
-  //   ver: '1.0',
-  //   reqTime: '2019-01-02T11:01:31.211Z',
-  //   request: {
-  //     prereg_id: '21398510941906',
-  //     doc_cat_code: 'POA',
-  //     doc_typ_code: 'address',
-  //     doc_file_format: 'pdf',
-  //     status_code: 'Pending-Appoinment',
-  //     upload_by: '9217148168',
-  //     upload_DateTime: '2019-01-02T11:01:31.211Z'
-  //   }
-  // };
+
+  sameAs;
 
   JsonString = appConstants.DOCUMENT_UPLOAD_REQUEST_DTO;
 
@@ -141,16 +133,30 @@ export class FileUploadComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('userrs', this.users);
+    this.sameAs = this.registration.getSameAs();
     this.allApplicants = this.sharedService.getAllApplicants();
     console.log('applicants', this.allApplicants);
+    let i = 0;
 
     // this.allApplicants.splice(-1, 1);
     if (this.registration.getUsers().length > 0) {
       this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
       if (!this.users[0].files[0]) {
         this.users[0].files[0] = [];
+      } else {
+        // this.sortUserFiles();
       }
     }
+
+    for (let applicant of this.allApplicants) {
+      if (applicant.fullname === this.users[0].request.demographicDetails.identity.fullName[0].value) {
+        this.allApplicants.splice(i, 1);
+      } else {
+        i++;
+      }
+    }
+    this.allApplicants.push(this.noneApplicant);
     if (this.registration.getUsers().length > 1) {
       this.multipleApplicants = true;
     }
@@ -164,21 +170,25 @@ export class FileUploadComponent implements OnInit {
     console.log('users', this.users);
 
     if (this.users[0].files[0].length != 0) {
-      this.sortUserFiles();
+      // this.sortUserFiles();
       this.viewFirstFile();
     }
   }
 
   sortUserFiles() {
+    let sortedUserFiles;
     for (let document of this.LOD) {
       for (let file of this.users[0].files[0]) {
         if (document.document_name === file.doc_cat_code) {
-          this.sortedUserFiles.push(file);
+          sortedUserFiles.push(file);
+          break;
         }
       }
     }
+    console.log('sorted file', sortedUserFiles);
+
     for (let i = 0; i <= this.users[0].files[0]; i++) {
-      this.users[0].files[0][i] = this.sortedUserFiles[i];
+      this.users[0].files[0][i] = sortedUserFiles[i];
     }
   }
 
@@ -228,7 +238,7 @@ export class FileUploadComponent implements OnInit {
           alert('file too big');
         }
       } else {
-        alert('File name should not be mpre thaan 50 characters');
+        alert('File name should not be more thaan 50 characters');
       }
     } else {
       alert('Wrong file type, please upload again');
@@ -292,6 +302,8 @@ export class FileUploadComponent implements OnInit {
     this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY, event.target.files.item(0));
     this.dataStroage.sendFile(this.formData).subscribe(
       response => {
+        console.log('document response', response);
+
         this.updateUsers(response, event);
       },
       error => {
@@ -328,7 +340,8 @@ export class FileUploadComponent implements OnInit {
     }
     this.userFiles = new FileModel();
     this.registration.updateUser(this.step, this.users[this.step]);
-    this.sortUserFiles();
+    console.log('userrs', this.users);
+    // this.sortUserFiles();
     this.nextFile();
   }
 
@@ -339,9 +352,16 @@ export class FileUploadComponent implements OnInit {
   }
 
   sameAsChange(event) {
-    this.dataStroage.copyDocument('POA', this.users[0].preRegId, event.value).subscribe(response => {
+    if (event.value == '') {
+      console.log('none selected');
+      this.sameAsselected = false;
+    } else {
+      this.registration.setSameAs(event.value);
+      this.dataStroage.copyDocument('POA', event.value, this.users[0].preRegId).subscribe(response => {
+        console.log('copy document', response);
+      });
       this.sameAsselected = true;
-    });
+    }
   }
 
   ifDisabled(category) {
