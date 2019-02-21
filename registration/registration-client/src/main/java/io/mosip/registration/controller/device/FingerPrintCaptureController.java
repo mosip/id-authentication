@@ -487,8 +487,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					String.format(
 							"Exception while getting the scanned Finger details for user registration: %s caused by %s",
 							runtimeException.getMessage(),
-							runtimeException.getCause() + ExceptionUtils.getStackTrace(runtimeException)
-									+ ExceptionUtils.getStackTrace(runtimeException)));
+							runtimeException.getCause() + ExceptionUtils.getStackTrace(runtimeException)));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_SCANNING_ERROR);
 		} catch (RegBaseCheckedException regBaseCheckedException) {
