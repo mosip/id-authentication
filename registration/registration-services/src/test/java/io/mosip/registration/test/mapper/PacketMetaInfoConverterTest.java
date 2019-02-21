@@ -78,7 +78,9 @@ public class PacketMetaInfoConverterTest {
 				new HashMap<>());
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 		DemographicDTO demographicDTO = new DemographicDTO();
-		demographicDTO.setApplicantDocumentDTO(new ApplicantDocumentDTO());
+		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
+		applicantDocumentDTO.setDocuments(new HashMap<>());
+		demographicDTO.setApplicantDocumentDTO(applicantDocumentDTO);
 		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
 		demographicInfoDTO.setIdentity(new Identity());
 		demographicDTO.setDemographicInfoDTO(demographicInfoDTO);

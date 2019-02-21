@@ -17,6 +17,9 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
@@ -172,6 +175,11 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * to generate OTP in case of OTP based authentication
 	 */
 	public void generateOtp() {
+
+		auditFactory.audit(isSupervisor ? AuditEvent.REG_SUPERVISOR_AUTH_GET_OTP : AuditEvent.REG_OPERATOR_AUTH_GET_OTP,
+				Components.REG_OS_AUTH, "Geting OTP for Operator/Supervisor authentication", otpUserId.getText(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Generate OTP for OTP based Authentication");
 
@@ -202,6 +210,12 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * to validate OTP in case of OTP based authentication
 	 */
 	public void validateOTP() {
+
+		auditFactory.audit(
+				isSupervisor ? AuditEvent.REG_SUPERVISOR_AUTH_SUBMIT_OTP : AuditEvent.REG_OPERATOR_AUTH_SUBMIT_OTP,
+				Components.REG_OS_AUTH, "Authenticating Operator/Supervisor by OTP", otpUserId.getText(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+		
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating OTP for OTP based Authentication");
 		if (validations.validateTextField(otp, otp.getId(), RegistrationConstants.DISABLE)) {
@@ -240,6 +254,12 @@ public class AuthenticationController extends BaseController implements Initiali
 	}
 
 	public void validatePwd() {
+
+		auditFactory.audit(
+				isSupervisor ? AuditEvent.REG_SUPERVISOR_AUTH_PASSWORD : AuditEvent.REG_OPERATOR_AUTH_PASSWORD,
+				Components.REG_OS_AUTH, "Authentication Operator/Supervisor by Password", username.getText(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		String status = "";
 		if (isSupervisor) {
 			if (!username.getText().isEmpty()) {
@@ -278,6 +298,12 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * to validate the fingerprint in case of fingerprint based authentication
 	 */
 	public void validateFingerprint() {
+
+		auditFactory.audit(
+				isSupervisor ? AuditEvent.REG_SUPERVISOR_AUTH_FINGERPRINT : AuditEvent.REG_OPERATOR_AUTH_FINGERPRINT,
+				Components.REG_OS_AUTH, "Authentication Operator/Supervisor by fingerprint", fpUserId.getText(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating Fingerprint for Fingerprint based Authentication");
 
@@ -312,6 +338,11 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * to validate the iris in case of iris based authentication
 	 */
 	public void validateIris() {
+
+		auditFactory.audit(isSupervisor ? AuditEvent.REG_SUPERVISOR_AUTH_IRIS : AuditEvent.REG_OPERATOR_AUTH_IRIS,
+				Components.REG_OS_AUTH, "Authenticating Operator/Supervisor by iris", irisUserId.getText(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating Iris for Iris based Authentication");
 
@@ -346,6 +377,11 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * to validate the face in case of face based authentication
 	 */
 	public void validateFace() {
+
+		auditFactory.audit(isSupervisor ? AuditEvent.REG_SUPERVISOR_AUTH_FACE : AuditEvent.REG_OPERATOR_AUTH_FACE,
+				Components.REG_OS_AUTH, "Authenticating Operator/Supervisor by face", faceUserId.getText(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating Face for Face based Authentication");
 

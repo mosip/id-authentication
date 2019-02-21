@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_USER_DETAIL;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_USER_DETAIL_DAO;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -124,7 +125,7 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				UserPassword usrPwd = new UserPassword();
 				// password details
 				usrPwd.setUsrId(userDtals.getUserName());
-				usrPwd.setPwd(userDtals.getUserPassword().toString());
+				usrPwd.setPwd(new String(userDtals.getUserPassword(), StandardCharsets.UTF_8));
 				usrPwd.setStatusCode("00");
 				usrPwd.setIsActive(true);
 				usrPwd.setLangCode("eng");

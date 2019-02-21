@@ -21,6 +21,7 @@ public class RegistrationMetaDataDTO extends BaseDTO {
 	private String uin;
 	private String consentOfApplicant;
 	private String parentOrGuardianUINOrRID;
+	private String deviceId;
 
 	/**
 	 * @return the consentOfApplicant
@@ -168,6 +169,21 @@ public class RegistrationMetaDataDTO extends BaseDTO {
 	 */
 	public void setParentOrGuardianUINOrRID(String parentOrGuardianUINOrRID) {
 		this.parentOrGuardianUINOrRID = parentOrGuardianUINOrRID;
+	}
+
+	/**
+	 * @return the deviceId
+	 */
+	public String getDeviceId() {
+		return deviceId;
+	}
+
+	/**
+	 * @param deviceId
+	 *            the deviceId to set
+	 */
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
 	}
 
 }

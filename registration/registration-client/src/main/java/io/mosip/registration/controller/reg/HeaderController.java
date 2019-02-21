@@ -12,6 +12,9 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
@@ -133,6 +136,8 @@ public class HeaderController extends BaseController {
 	 */
 	public void logout(ActionEvent event) {
 		try {
+			auditFactory.audit(AuditEvent.LOGOUT_USER, Components.NAVIGATION, "Logging out user",
+					APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
 					APPLICATION_ID, "Clearing Session context");
@@ -171,6 +176,10 @@ public class HeaderController extends BaseController {
 
 		AnchorPane syncData;
 		try {
+			auditFactory.audit(AuditEvent.NAV_SYNC_DATA, Components.NAVIGATION,
+					"Initiating Server to Client Sync process", APPLICATION_NAME,
+					AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 			syncData = BaseController.load(getClass().getResource(RegistrationConstants.SYNC_DATA));
 
 			VBox pane = (VBox) menu.getParent().getParent().getParent();
@@ -195,6 +204,10 @@ public class HeaderController extends BaseController {
 	 */
 	public void syncPacketStatus(ActionEvent event) {
 		try {
+			auditFactory.audit(AuditEvent.SYNC_REGISTRATION_PACKET_STATUS, Components.SYNC_SERVER_TO_CLIENT,
+					"Initiating registration packet status sync", APPLICATION_NAME,
+					AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 			AnchorPane syncServerClientRoot = BaseController
 					.load(getClass().getResource(RegistrationConstants.SYNC_STATUS));
 
@@ -224,6 +237,10 @@ public class HeaderController extends BaseController {
 				"Navigating to Device Onboarding Page");
 
 		try {
+			auditFactory.audit(AuditEvent.NAV_ON_BOARD_DEVICES, Components.NAVIGATION,
+					"Navigating to device onboarding screen", APPLICATION_NAME,
+					AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 			AnchorPane onBoardRoot = BaseController
 					.load(getClass().getResource(RegistrationConstants.DEVICE_ONBOARDING_PAGE));
 
@@ -255,6 +272,10 @@ public class HeaderController extends BaseController {
 	 */
 	@FXML
 	public void downloadPreRegData(ActionEvent event) {
+		auditFactory.audit(AuditEvent.SYNC_PRE_REGISTRATION_PACKET, Components.SYNC_SERVER_TO_CLIENT,
+				"Initiating pre-registration packet sync", APPLICATION_NAME,
+				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 		ResponseDTO responseDTO = preRegistrationDataSyncService
 				.getPreRegistrationIds(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
@@ -271,10 +292,18 @@ public class HeaderController extends BaseController {
 	}
 
 	public void uploadPacketToServer() {
+		auditFactory.audit(AuditEvent.SYNC_PRE_REGISTRATION_PACKET, Components.SYNC_SERVER_TO_CLIENT,
+				"Initiating pre-registration packet sync", APPLICATION_NAME,
+				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 		packetHandlerController.uploadPacket();
 	}
 
 	public void virusScan() {
+		auditFactory.audit(AuditEvent.VIRUS_SCAN_REG_PACKETS, Components.VIRUS_SCAN,
+				"Initiating registration packets virus scan", APPLICATION_NAME,
+				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 		ResponseDTO responseDTO = registrationPacketVirusScanService.scanPacket();
 
 		SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();

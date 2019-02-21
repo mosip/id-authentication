@@ -325,7 +325,7 @@
                               </AnchorPane>
                               <AnchorPane fx:id="residentStatusLocalLanguage" layoutX="113.0" layoutY="153.0" prefHeight="39.0" prefWidth="312.0">
                                  <children>
-                                    <Label layoutX="1.0" layoutY="2.0" text="%residence" />
+                                    <Label fx:id="residenceLblLocalLanguage" layoutX="1.0" layoutY="2.0" text="%residence" />
                                     <Button fx:id="nationalLocalLanguage" layoutX="124.0" layoutY="-3.0" mnemonicParsing="false" styleClass="selectedResidence" text="%national" />
                                     <Button fx:id="foreignerLocalLanguage" layoutX="206.0" layoutY="-3.0" mnemonicParsing="false" styleClass="residence" text="%foreigner" />
                                     <TextField fx:id="residenceLocalLanguage" layoutX="37.0" layoutY="10.0" prefHeight="39.0" prefWidth="8.0" visible="false" />

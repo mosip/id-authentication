@@ -31,6 +31,9 @@ import org.springframework.web.client.RestTemplate;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -52,6 +55,7 @@ import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.UserDetail;
+import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
@@ -262,6 +266,9 @@ public class LoginController extends BaseController implements Initializable {
 	 */
 	public void validateUserId(ActionEvent event) {
 
+		auditFactory.audit(AuditEvent.LOGIN_AUTHENTICATE_USER_ID, Components.LOGIN, "Authenticating User by UserId",
+				userId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"Validating Credentials entered through UI");
 
@@ -291,6 +298,12 @@ public class LoginController extends BaseController implements Initializable {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BLOCKED_USER_ERROR);
 					} else {
 
+						// Set Dongle Serial Number in ApplicationContext Map
+						for (UserMachineMapping userMachineMapping : userDetail.getUserMachineMapping()) {
+							ApplicationContext.map().put(RegistrationConstants.DONGLE_SERIAL_NUMBER,
+									userMachineMapping.getMachineMaster().getSerialNum());
+						}
+						
 						Set<String> roleList = new LinkedHashSet<>();
 
 						userDetail.getUserRole().forEach(roleCode -> {
@@ -402,6 +415,9 @@ public class LoginController extends BaseController implements Initializable {
 	 */
 	public void validateCredentials(ActionEvent event) {
 
+		auditFactory.audit(AuditEvent.LOGIN_WITH_PASSWORD, Components.LOGIN, "Authenticating User by Password",
+				userId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"Validating Credentials entered through UI");
 
@@ -450,6 +466,10 @@ public class LoginController extends BaseController implements Initializable {
 		if (userId.getText().isEmpty()) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 		} else {
+
+			auditFactory.audit(AuditEvent.LOGIN_GET_OTP, Components.LOGIN, "Get OTP for user login",
+					userId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 			// Response obtained from server
 			ResponseDTO responseDTO = otpGenerator.getOTP(userId.getText());
 
@@ -477,6 +497,9 @@ public class LoginController extends BaseController implements Initializable {
 	 */
 	@FXML
 	public void validateOTP(ActionEvent event) {
+
+		auditFactory.audit(AuditEvent.LOGIN_SUBMIT_OTP, Components.LOGIN, "Authenticating User by OTP",
+				userId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		
 		if (validations.validateTextField(otp, otp.getId(), RegistrationConstants.DISABLE)) {
@@ -506,6 +529,9 @@ public class LoginController extends BaseController implements Initializable {
 	 * @param event
 	 */
 	public void validateFingerPrint(ActionEvent event) {
+
+		auditFactory.audit(AuditEvent.LOGIN_WITH_FINGERPRINT, Components.LOGIN, "Authenticating User by Fingerprint",
+				userId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"Validating Credentials for Biometric login");
@@ -538,6 +564,10 @@ public class LoginController extends BaseController implements Initializable {
 	 * @param event
 	 */
 	public void validateIris(ActionEvent event) {
+
+		auditFactory.audit(AuditEvent.LOGIN_WITH_IRIS, Components.LOGIN, "Authenticating User by Iris",
+				userId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"Validating Biometric login with Iris");
 
@@ -569,6 +599,10 @@ public class LoginController extends BaseController implements Initializable {
 	 * @param event
 	 */
 	public void validateFace(ActionEvent event) {
+
+		auditFactory.audit(AuditEvent.LOGIN_WITH_FACE, Components.LOGIN, "Authenticating User by Face",
+				userId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"Validating Biometric login with Iris");
 

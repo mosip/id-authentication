@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
@@ -59,11 +62,18 @@ public class HomeController extends BaseController implements Initializable {
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)
 					&& !(boolean) SessionContext.map()
 							.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
+				auditFactory.audit(AuditEvent.NAV_ON_BOARD_USER, Components.NAVIGATION,
+						"Navigating to On-Board User Screen", APPLICATION_NAME,
+						AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 				optionRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_ONBOARD));
 				SessionContext.map().remove(RegistrationConstants.USER_ONBOARD_DATA);
 				SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
 				SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
 			} else {
+				auditFactory.audit(AuditEvent.NAV_HOME, Components.NAVIGATION, "Navigating to Home Screen",
+						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 				if ((boolean) SessionContext.map()
 						.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
 					clearOnboardData();
