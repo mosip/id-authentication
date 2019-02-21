@@ -37,6 +37,7 @@ node {
    pom = readMavenPom file: branch + '/' + projectToBuild + '/pom.xml'
    version = pom.version 
    print version
+   print "libs-release-local/io/mosip/registration/registration-client/${version}/"
    uploadSpec = """{
   "files": [
     {
