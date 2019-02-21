@@ -17,7 +17,7 @@ public enum MachineErrorCode {
 	MACHINE_DELETE_EXCEPTION("KER-MSD-088",
 			"Error occurred while deleting Machine details"),
 	DEPENDENCY_EXCEPTION("KER-MSD-xxxx",
-			"Error occurred while deleting Machine details bcz od dependency");
+			"Cannot delete dependency found");
 
 	private final String errorCode;
 	private final String errorMessage;

@@ -18,11 +18,15 @@ import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceHistory;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepository;
 import io.mosip.kernel.masterdata.service.DeviceHistoryService;
 import io.mosip.kernel.masterdata.service.DeviceService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
@@ -49,6 +53,12 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Autowired
 	DeviceHistoryService deviceHistoryService;
+
+	@Autowired
+	RegistrationCenterDeviceRepository registrationCenterDeviceRepository;
+
+	@Autowired
+	RegistrationCenterMachineDeviceRepository registrationCenterMachineDeviceRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -200,16 +210,27 @@ public class DeviceServiceImpl implements DeviceService {
 
 			if (!foundDeviceList.isEmpty()) {
 				for (Device foundDevice : foundDeviceList) {
-					MetaDataUtils.setDeleteMetaData(foundDevice);
-					deletedDevice = deviceRepository.update(foundDevice);
 
-					DeviceHistory deviceHistory = new DeviceHistory();
-					MapperUtils.map(deletedDevice, deviceHistory);
-					MapperUtils.setBaseFieldValue(deletedDevice, deviceHistory);
+					List<RegistrationCenterMachineDevice> registrationCenterMachineDeviceList = registrationCenterMachineDeviceRepository
+							.findByDeviceIdAndIsDeletedFalseOrIsDeletedIsNull(foundDevice.getId());
+					List<RegistrationCenterDevice> registrationCenterDeviceList = registrationCenterDeviceRepository
+							.findByDeviceIdAndIsDeletedFalseOrIsDeletedIsNull(foundDevice.getId());
+					if (registrationCenterMachineDeviceList.isEmpty() && registrationCenterDeviceList.isEmpty()) {
+						
+						MetaDataUtils.setDeleteMetaData(foundDevice);
+						deletedDevice = deviceRepository.update(foundDevice);
 
-					deviceHistory.setEffectDateTime(deletedDevice.getDeletedDateTime());
-					deviceHistory.setDeletedDateTime(deletedDevice.getDeletedDateTime());
-					deviceHistoryService.createDeviceHistory(deviceHistory);
+						DeviceHistory deviceHistory = new DeviceHistory();
+						MapperUtils.map(deletedDevice, deviceHistory);
+						MapperUtils.setBaseFieldValue(deletedDevice, deviceHistory);
+
+						deviceHistory.setEffectDateTime(deletedDevice.getDeletedDateTime());
+						deviceHistory.setDeletedDateTime(deletedDevice.getDeletedDateTime());
+						deviceHistoryService.createDeviceHistory(deviceHistory);
+					} else {
+						throw new RequestException(DeviceErrorCode.DEPENDENCY_EXCEPTION.getErrorCode(),
+								DeviceErrorCode.DEPENDENCY_EXCEPTION.getErrorMessage());
+					}
 				}
 			} else {
 				throw new RequestException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
