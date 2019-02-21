@@ -10,7 +10,7 @@ There are three major entities are being considered to interact with Bio-metric 
    2. DM  [Device Manager - Provided by MOSIP].  
    3. MOSIP - Registration client application.  
 
-**Integrated Block Diagram:**  
+**Device Integration Block Diagram:**  
 ![Capture Sequence](_images/bio-device-flow-block.png)  
 
 The technical detail of the DM and Registration client application is briefly covered in this document. VDM technical spec is out of this document.  
@@ -129,7 +129,7 @@ Registry Manager - It is a static instance, where we can cache the application l
    - This information is shared with the application whenever is required.  
 
 
-**Application : **  
+**Application :**  
  The Application must connect to the DM to discover the biometric devices.  
 Once discovered, the application must connect to the required devices. These connections   
 are maintained for the **life of the application**, and the application must expect to receive   
