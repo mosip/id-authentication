@@ -356,7 +356,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * validateTimestampWithRegistrationCenter(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String langCode, String timestamp) {
+	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String langCode,
+			String timestamp) {
 		LocalDateTime localDateTime = null;
 		try {
 			localDateTime = MapperUtils.parseToLocalDateTime(timestamp);
@@ -396,7 +397,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					 * below is the validation to check if the time that is sent is between start
 					 * and end time
 					 */
-					if ((localTime.equals(startTime) || isAfterStartTime) && ((localTime.equals(endTime.plusHours(1))) || isBeforeEndTime)) {
+					if ((localTime.equals(startTime) || isAfterStartTime)
+							&& ((localTime.equals(endTime.plusHours(1))) || isBeforeEndTime)) {
 						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_ACCEPTED);
 					} else {
 						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_REJECTED);
@@ -430,8 +432,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.mapFieldValues(registrationCenter, idResponseDto);
 		try {
-			RegistrationCenter registrationCenterEntity = registrationCenterRepository
-					.findByIdAndLangCode(registrationCenterDto.getRequest().getId(), registrationCenterDto.getRequest().getLangCode());
+			RegistrationCenter registrationCenterEntity = registrationCenterRepository.findByIdAndLangCode(
+					registrationCenterDto.getRequest().getId(), registrationCenterDto.getRequest().getLangCode());
 			if (registrationCenterEntity != null) {
 				MetaDataUtils.setUpdateMetaData(registrationCenter, registrationCenterEntity, false);
 				registrationCenterRepository.update(registrationCenterEntity);
