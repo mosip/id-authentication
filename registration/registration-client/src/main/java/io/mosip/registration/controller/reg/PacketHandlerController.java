@@ -64,6 +64,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 /**
  * Class for Registration Packet operations
@@ -448,11 +450,14 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading User Onboard Update page");
 
+		VBox mainBox = new VBox();
 		try {
+			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
+			mainBox.getChildren().add(headerRoot);
 			AnchorPane onboardRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_ONBOARD),
 					applicationContext.getApplicationLanguageBundle());
-			getScene(onboardRoot).setRoot(onboardRoot);
-			;
+			mainBox.getChildren().add(onboardRoot);
+			getScene(mainBox).setRoot(mainBox);
 			userOnboardParentController.userOnboardId.lookup("#onboardUser").setVisible(false);
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - ONBOARD_USER_UPDATE - REGISTRATION_OFFICER_DETAILS_CONTROLLER",

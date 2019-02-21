@@ -41,10 +41,10 @@
                   <Label layoutX="192.0" styleClass="onboardOperatorDetailsHeader" text="%employeeCode" />
                   <Label layoutX="589.0" styleClass="onboardOperatorDetailsHeader" text="%machineID" />
                   <Label layoutX="376.0" styleClass="onboardOperatorDetailsHeader" text="%registrationCentreID" />
-                  <Label layoutX="192.0" layoutY="25.0" styleClass="onboardOperatorDetails" text="Label" />
-                  <Label layoutY="25.0" styleClass="onboardOperatorDetails" text="Label" />
-                  <Label layoutX="589.0" layoutY="25.0" styleClass="onboardOperatorDetails" text="Label" />
-                  <Label layoutX="376.0" layoutY="25.0" styleClass="onboardOperatorDetails" text="Label" />
+                  <Label fx:id="employeeCode" layoutX="192.0" layoutY="25.0" styleClass="onboardOperatorDetails" />
+                  <Label fx:id="employeeName" layoutY="25.0" styleClass="onboardOperatorDetails" />
+                  <Label fx:id="machineID" layoutX="589.0" layoutY="25.0" styleClass="onboardOperatorDetails" text="machineID" />
+                  <Label fx:id="regCenterID" layoutX="376.0" layoutY="25.0" styleClass="onboardOperatorDetails" />
                </children>
             </AnchorPane>
              <HBox layoutX="66.0" layoutY="90.0" styleClass="exceptionIrisPaneParent">
@@ -195,7 +195,7 @@
             </AnchorPane>
  	</children>
 	</AnchorPane>
-	<AnchorPane fx:id="userOnboardFooter" layoutX="31.0" layoutY="625.0" styleClass="userOnboardFooter">
+	<AnchorPane fx:id="userOnboardFooter" layoutX="1.0" layoutY="620.0" styleClass="userOnboardFooter">
                <children>
                 <Button fx:id="previousBtn" layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back">
              <graphic>
@@ -239,7 +239,7 @@
             </Button>
          </children>
       </AnchorPane>
-      <AnchorPane>
+      <AnchorPane fx:id="registrationExceptionHeader">
          <children>
             <AnchorPane fx:id="RegistrationHeader" layoutY="0.0">
                <children>

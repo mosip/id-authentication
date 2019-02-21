@@ -85,7 +85,7 @@
    </AnchorPane>
    </children>
       </AnchorPane> 
-      <AnchorPane layoutX="1.0" layoutY="605.0" styleClass="userOnboardFooter">
+      <AnchorPane layoutX="1.0" layoutY="620.0" styleClass="userOnboardFooter">
                <children>
                 <Button fx:id="biometricPrevBtn" layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPane" styleClass="backButton" text="%back">
              <graphic>
