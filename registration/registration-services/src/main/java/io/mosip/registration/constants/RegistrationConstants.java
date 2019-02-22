@@ -437,6 +437,7 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_DOCUMENTS = "Documents";
 	public static final String TEMPLATE_DOCUMENTS_LOCAL_LANG = "DocumentsLocalLang";
 	public static final String TEMPLATE_BIOMETRICS_USER_LANG_LABEL = "BiometricsUserLangLabel";
+	public static final String TEMPLATE_BIOMETRICS_LOCAL_LANG_LABEL = "BiometricsLocalLangLabel";
 	public static final String TEMPLATE_BIOMETRICS_CAPTURED_USER_LANG_LABEL = "BiometricsCapturedUserLangLabel";
 	public static final String TEMPLATE_BIOMETRICS_CAPTURED_LOCAL_LANG_LABEL = "BiometricsCapturedLocalLangLabel";
 	public static final String TEMPLATE_BIOMETRICS_CAPTURED = "Biometrics";
@@ -523,6 +524,12 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_DOCUMENTS_ENABLED = "DocumentsEnabled";
 	public static final String TEMPLATE_BIOMETRICS_ENABLED = "BiometricsEnabled";
 	public static final String TEMPLATE_IRIS_ENABLED = "IrisEnabled";
+	public static final String TEMPLATE_IRIS_DISABLED = "IrisDisabled";
+	public static final String TEMPLATE_LEFT_EYE_CAPTURED = "leftEyeCaptured";
+	public static final String TEMPLATE_RIGHT_EYE_CAPTURED = "rightEyeCaptured";
+	public static final String TEMPLATE_LEFT_SLAP_CAPTURED = "leftSlapCaptured";
+	public static final String TEMPLATE_RIGHT_SLAP_CAPTURED = "rightSlapCaptured";
+	public static final String TEMPLATE_THUMBS_CAPTURED = "thumbsCaptured";
 
 	// Web Camera Constants
 	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";
@@ -1086,6 +1093,7 @@ public class RegistrationConstants {
 		fieldToExclude.add("cniOrPinNumberLocalLanguage");
 		fieldToExclude.add("residence");
 		fieldToExclude.add("residenceLocalLanguage");
+		fieldToExclude.add("updateUinId");
 
 		return fieldToExclude;
 

@@ -37,6 +37,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 
 /**
@@ -95,7 +96,8 @@ public class UpdateUINController extends BaseController implements Initializable
 	private HBox biometricBox;
 	@FXML
 	private HBox demographicHBox;
-
+	@FXML
+	private AnchorPane uinUpdateRoot;
 	private SimpleBooleanProperty switchedOn;
 	private boolean isChild;
 
@@ -105,15 +107,6 @@ public class UpdateUINController extends BaseController implements Initializable
 	@Autowired
 	Validations validation;
 
-	@Value("${FINGERPRINT_DISABLE_FLAG}")
-	private String fingerprintDisableFlag;
-
-	@Value("${IRIS_DISABLE_FLAG}")
-	private String irisDisableFlag;
-
-	@Value("${FACE_DISABLE_FLAG}")
-	private String faceDisableFlag;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -122,6 +115,7 @@ public class UpdateUINController extends BaseController implements Initializable
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+
 		try {
 			switchedOn = new SimpleBooleanProperty(false);
 			switchedOn.set(false);
@@ -133,8 +127,7 @@ public class UpdateUINController extends BaseController implements Initializable
 			FXUtils fxUtils = FXUtils.getInstance();
 			listenerOnFields(fxUtils);
 			SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
-			fxUtils.validateOnType(uinId, validation);
-
+			fxUtils.validateOnType(uinUpdateRoot,uinId, validation);
 			biometricBox.getChildren().forEach(bio -> {
 				if (fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)
 						&& bio.getId().equals(RegistrationConstants.UIN_UPDATE_BIO_FP)) {

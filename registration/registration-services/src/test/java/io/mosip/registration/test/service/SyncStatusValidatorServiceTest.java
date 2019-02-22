@@ -89,7 +89,7 @@ public class SyncStatusValidatorServiceTest {
 		SessionContext.getInstance().setMapObject(maplastTime);
 
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 
 		PowerMockito.mockStatic(ApplicationContext.class);
 	}

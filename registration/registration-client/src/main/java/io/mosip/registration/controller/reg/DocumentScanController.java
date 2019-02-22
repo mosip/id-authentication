@@ -19,6 +19,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -160,10 +161,6 @@ public class DocumentScanController extends BaseController {
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
-			auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, Components.REGISTRATION_CONTROLLER,
-					"initializing the registration controller", SessionContext.userContext().getUserId(),
-					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
-
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			toggleFunctionForBiometricException();
 
@@ -205,6 +202,7 @@ public class DocumentScanController extends BaseController {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private <T> void prepareDocumentScanSection(String applicantType, List<DocumentCategory> documentCategories) {
 		for (DocumentCategory documentCategory : documentCategories) {
 
@@ -251,6 +249,9 @@ public class DocumentScanController extends BaseController {
 
 					@Override
 					public void handle(ActionEvent event) {
+
+						auditFactory.audit(AuditEvent.REG_DOC_POA_SCAN, Components.REG_DOCUMENTS,
+								SessionContext.userId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 						Button clickedBtn = (Button) event.getSource();
 						clickedBtn.getId();
@@ -637,6 +638,9 @@ public class DocumentScanController extends BaseController {
 			@Override
 			public void handle(MouseEvent event) {
 
+				auditFactory.audit(AuditEvent.REG_DOC_POA_DELETE, Components.REG_DOCUMENTS,
+						SessionContext.userId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 				initializePreviewSection();
 
 				GridPane gridpane = (GridPane) ((ImageView) event.getSource()).getParent();
@@ -674,6 +678,10 @@ public class DocumentScanController extends BaseController {
 		hyperLink.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent actionEvent) {
+
+				auditFactory.audit(AuditEvent.REG_DOC_POA_VIEW, Components.REG_DOCUMENTS,
+						SessionContext.userId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 				GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
 
 				String documentKey = ((VBox) pane.getParent()).getId();
@@ -857,6 +865,9 @@ public class DocumentScanController extends BaseController {
 
 	@FXML
 	private void back() {
+		auditFactory.audit(AuditEvent.REG_DOC_BACK, Components.REG_DOCUMENTS,
+				SessionContext.userId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+		
 		registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN,
 				getPageDetails(RegistrationConstants.DOCUMENT_SCAN, RegistrationConstants.PREVIOUS));
 	}
@@ -877,6 +888,9 @@ public class DocumentScanController extends BaseController {
 
 	@FXML
 	private void next() {
+
+		auditFactory.audit(AuditEvent.REG_DOC_NEXT, Components.REG_DOCUMENTS,
+				SessionContext.userId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			if (registrationController.validateDemographicPane(documentScanPane)) {

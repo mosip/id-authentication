@@ -16,6 +16,9 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
@@ -94,7 +97,7 @@ public class BiometricExceptionController extends BaseController implements Init
 	@FXML
 	private Button previousBtn;
 	@FXML
-	private ImageView userOnboardImg;
+	private AnchorPane userOnboardTracker;
 	@FXML
 	private ImageView registrationImg;
 	@FXML
@@ -166,7 +169,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			registrationImg.setVisible(false);
 			registrationFooter.setVisible(false);
 			userOnboardFooter.setVisible(true);
-			userOnboardImg.setVisible(true);
+			userOnboardTracker.setVisible(true);
 			operatorExceptionLayout.setVisible(true);
 			operatorExceptionHeader.setVisible(true);
 		} else {
@@ -188,7 +191,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			registrationFooter.setVisible(true);
 			registrationExceptionHeader.setVisible(true);
 			userOnboardFooter.setVisible(false);
-			userOnboardImg.setVisible(false);
+			userOnboardTracker.setVisible(false);
 			operatorExceptionLayout.setVisible(false);
 			operatorExceptionHeader.setVisible(false);
 		}
@@ -246,7 +249,10 @@ public class BiometricExceptionController extends BaseController implements Init
 			}
 		});
 
-		fingerLabel.setOnMouseClicked((event) -> {
+		fingerLabel.setOnMouseClicked(event -> {
+			auditFactory.audit(AuditEvent.REG_BIO_EXCEPTION_MARKING, Components.REG_BIOMETRICS, SessionContext.userId(),
+					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 			toggleFunctionForFinger.set(!toggleFunctionForFinger.get());
 		});
 
@@ -281,7 +287,10 @@ public class BiometricExceptionController extends BaseController implements Init
 				}
 			}
 		});
-		irisImage.setOnMouseClicked((event) -> {
+		irisImage.setOnMouseClicked(event -> {
+			auditFactory.audit(AuditEvent.REG_BIO_EXCEPTION_MARKING, Components.REG_BIOMETRICS, SessionContext.userId(),
+					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 			toggleFunctionForIris.set(!toggleFunctionForIris.get());
 		});
 
@@ -294,6 +303,8 @@ public class BiometricExceptionController extends BaseController implements Init
 	 * This method will call when click on next button and toggle the visibility
 	 */
 	public void goToNextPage() {
+		auditFactory.audit(AuditEvent.REG_BIO_EXCEPTION_NEXT, Components.REG_BIOMETRICS, SessionContext.userId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info("REGISTRATION - NEXT_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME, APPLICATION_ID,
 				"Going to next page");
@@ -382,7 +393,8 @@ public class BiometricExceptionController extends BaseController implements Init
 	 * based
 	 */
 	public void goToPreviousPage() {
-
+		auditFactory.audit(AuditEvent.REG_BIO_EXCEPTION_BACK, Components.REG_BIOMETRICS, SessionContext.userId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 		LOGGER.info("REGISTRATION - PREVIOUS_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME, APPLICATION_ID,
 				"It will go to the previous page");
 

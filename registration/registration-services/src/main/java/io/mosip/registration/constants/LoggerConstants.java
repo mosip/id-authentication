@@ -35,6 +35,7 @@ public class LoggerConstants {
 	private static final String BASE= APP_NAME + "BASE - ";
 	private static final String LOGIN= APP_NAME + "LOGIN - ";
 	private static final String PGE_FLW= APP_NAME + "PAGE_FLOW - ";
+	private static final String AUTH= APP_NAME + "AUTHENTICATION - ";
 	
 	
 
@@ -82,6 +83,7 @@ public class LoggerConstants {
 	public static final String LOG_REG_PAGE_FLOW = PGE_FLW + "PAGE_FLOW";
 	public static final String LOG_REG_USER_DETAIL = SYNC + "USER_DETAIL_SERVICE_IMPL";
 	public static final String LOG_REG_USER_DETAIL_DAO = SYNC + "USER_DETAIL_DAO_IMPL";
+	public static final String LOG_REG_AUTH = AUTH + "AUTHENTICATION_CONTROLLER";
 	// USER ONBOARD
 	public static final String LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD = USER_ONBOARD
 			+ "FINGERPRINT_CAPTURE_CONTROLLER";

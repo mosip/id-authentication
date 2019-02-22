@@ -157,15 +157,6 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Value("${PROVIDER_NAME}")
 	private String deviceName;
-	
-	@Value("${FINGERPRINT_DISABLE_FLAG}")
-	private String fingerprintDisableFlag;
-	
-	@Value("${IRIS_DISABLE_FLAG}")
-	private String irisDisableFlag;
-	
-	@Value("${FACE_DISABLE_FLAG}")
-	private String faceDisableFlag;
 
 	@Autowired
 	private LoginService loginService;
@@ -266,8 +257,8 @@ public class LoginController extends BaseController implements Initializable {
 	 */
 	public void validateUserId(ActionEvent event) {
 
-		auditFactory.audit(AuditEvent.LOGIN_AUTHENTICATE_USER_ID, Components.LOGIN, "Authenticating User by UserId",
-				userId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+		auditFactory.audit(AuditEvent.LOGIN_AUTHENTICATE_USER_ID, Components.LOGIN, userId.getText(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"Validating Credentials entered through UI");
@@ -340,24 +331,21 @@ public class LoginController extends BaseController implements Initializable {
 							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 									"Ignoring FingerPrint login if the configuration is off");
 							
-							if (loginList.size() > 1 && fingerprintDisableFlag
-									.equals(RegistrationConstants.DISABLE)) {
+							if (loginList.size() > 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)) {
 								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.BIO));
 							}
 							
 							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-									"Ignoring FingerPrint login if the configuration is off");
+									"Ignoring Iris login if the configuration is off");
 							
-							if (loginList.size() > 1 && irisDisableFlag
-									.equals(RegistrationConstants.DISABLE)) {
+							if (loginList.size() > 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)) {
 								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.IRIS));
 							}
 							
 							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-									"Ignoring FingerPrint login if the configuration is off");
+									"Ignoring Face login if the configuration is off");
 							
-							if (loginList.size() > 1 && faceDisableFlag
-									.equals(RegistrationConstants.DISABLE)) {
+							if (loginList.size() > 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)) {
 								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.FACE));
 							}
 
@@ -372,18 +360,15 @@ public class LoginController extends BaseController implements Initializable {
 								errorPane.setVisible(true);
 							} else {
 
-								if ((fingerprintDisableFlag
-										.equals(RegistrationConstants.DISABLE)
+								if ((fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)
 										&& loginMode.equalsIgnoreCase(RegistrationConstants.BIO))
-										|| (irisDisableFlag
-												.equals(RegistrationConstants.DISABLE)
+										|| (irisDisableFlag.equals(RegistrationConstants.DISABLE)
 												&& loginMode.equalsIgnoreCase(RegistrationConstants.IRIS))
-										|| (faceDisableFlag
-												.equals(RegistrationConstants.DISABLE)
+										|| (faceDisableFlag.equals(RegistrationConstants.DISABLE)
 												&& loginMode.equalsIgnoreCase(RegistrationConstants.FACE))) {
 
 									generateAlert(RegistrationConstants.ERROR,
-											RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN);
+											RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1.concat(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2));
 
 								} else {
 									userIdPane.setVisible(false);
@@ -415,8 +400,8 @@ public class LoginController extends BaseController implements Initializable {
 	 */
 	public void validateCredentials(ActionEvent event) {
 
-		auditFactory.audit(AuditEvent.LOGIN_WITH_PASSWORD, Components.LOGIN, "Authenticating User by Password",
-				userId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+		auditFactory.audit(AuditEvent.LOGIN_WITH_PASSWORD, Components.LOGIN, userId.getText(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"Validating Credentials entered through UI");
@@ -467,8 +452,8 @@ public class LoginController extends BaseController implements Initializable {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 		} else {
 
-			auditFactory.audit(AuditEvent.LOGIN_GET_OTP, Components.LOGIN, "Get OTP for user login",
-					userId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+			auditFactory.audit(AuditEvent.LOGIN_GET_OTP, Components.LOGIN, userId.getText(),
+					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 			// Response obtained from server
 			ResponseDTO responseDTO = otpGenerator.getOTP(userId.getText());
@@ -498,11 +483,11 @@ public class LoginController extends BaseController implements Initializable {
 	@FXML
 	public void validateOTP(ActionEvent event) {
 
-		auditFactory.audit(AuditEvent.LOGIN_SUBMIT_OTP, Components.LOGIN, "Authenticating User by OTP",
-				userId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+		auditFactory.audit(AuditEvent.LOGIN_SUBMIT_OTP, Components.LOGIN, userId.getText(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		
-		if (validations.validateTextField(otp, otp.getId(), RegistrationConstants.DISABLE)) {
+		if (validations.validateTextField(otpPane ,otp, otp.getId(), RegistrationConstants.DISABLE)) {
 
 			UserDetail userDetail = loginService.getUserDetail(userId.getText());
 
@@ -530,8 +515,8 @@ public class LoginController extends BaseController implements Initializable {
 	 */
 	public void validateFingerPrint(ActionEvent event) {
 
-		auditFactory.audit(AuditEvent.LOGIN_WITH_FINGERPRINT, Components.LOGIN, "Authenticating User by Fingerprint",
-				userId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+		auditFactory.audit(AuditEvent.LOGIN_WITH_FINGERPRINT, Components.LOGIN, userId.getText(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"Validating Credentials for Biometric login");
@@ -565,8 +550,8 @@ public class LoginController extends BaseController implements Initializable {
 	 */
 	public void validateIris(ActionEvent event) {
 
-		auditFactory.audit(AuditEvent.LOGIN_WITH_IRIS, Components.LOGIN, "Authenticating User by Iris",
-				userId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+		auditFactory.audit(AuditEvent.LOGIN_WITH_IRIS, Components.LOGIN, userId.getText(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"Validating Biometric login with Iris");
@@ -600,8 +585,8 @@ public class LoginController extends BaseController implements Initializable {
 	 */
 	public void validateFace(ActionEvent event) {
 
-		auditFactory.audit(AuditEvent.LOGIN_WITH_FACE, Components.LOGIN, "Authenticating User by Face",
-				userId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+		auditFactory.audit(AuditEvent.LOGIN_WITH_FACE, Components.LOGIN, userId.getText(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"Validating Biometric login with Iris");
@@ -814,6 +799,9 @@ public class LoginController extends BaseController implements Initializable {
 
 		} else {
 			if (setInitialLoginInfo(userId.getText())) {
+
+				auditFactory.audit(AuditEvent.NAV_HOME, Components.LOGIN, userId.getText(),
+						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 				try {
 

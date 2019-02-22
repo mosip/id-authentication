@@ -19,13 +19,15 @@ import io.mosip.registration.controller.reg.Validations;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
-
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.util.StringConverter;
 
 /**
@@ -83,49 +85,107 @@ public class FXUtils {
 	/**
 	 * Validator method for field during onType
 	 */
-	public void validateOnType(TextField field, Validations validation) {
+	public void validateOnType(AnchorPane parentPane, TextField field, Validations validation) {
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
-			if (!validation.validateTextField(field, field.getId() + "_ontype",
+			if (!validation.validateTextField(parentPane, field, field.getId() + "_ontype",
 					(String) SessionContext.map().get(RegistrationConstants.IS_CONSOLIDATED))) {
 				field.setText(oldValue);
 			}
 		});
 	}
 	
-	public void populateLocalComboBox(ComboBox<?> applicationField, ComboBox<?> localField) {
+	public void populateLocalComboBox(AnchorPane parentPane, ComboBox<?> applicationField, ComboBox<?> localField) {
 		applicationField.getSelectionModel().selectedItemProperty().addListener(
-				(options, oldValue, newValue) -> selectComboBoxValueByCode(localField, applicationField.getValue()));
+				(options, oldValue, newValue) ->{
+					selectComboBoxValueByCode(localField, applicationField.getValue());
+					((Label)parentPane.lookup("#"+applicationField.getId()+"Label")).setVisible(true);
+					((Label)parentPane.lookup("#"+localField.getId()+"Label")).setVisible(true);
+					((Label)parentPane.lookup("#"+applicationField.getId()+"Message")).setVisible(false);
+					((Label)parentPane.lookup("#"+localField.getId()+"Message")).setVisible(false);
+				});
 	}
 
 	/**
 	 * Validator method for field during onType and the local field population
 	 */
-	public void validateOnType(TextField field, Validations validation, TextField localField) {
+	public void validateOnType(AnchorPane parentPane, TextField field, Validations validation, TextField localField) {
+		
+		focusUnfocusListener(parentPane, field, localField);
+		
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
-			if (!validation.validateTextField(field, field.getId() + "_ontype",
+			if (!validation.validateTextField(parentPane, field, field.getId() + "_ontype",
 					(String) SessionContext.map().get(RegistrationConstants.IS_CONSOLIDATED))) {
 				field.setText(oldValue);
 			} else {
 				if(localField!=null) {
 					localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
 							ApplicationContext.localLanguage(), field.getText()));
+					localField.requestFocus();
 				}
 			}
+			field.requestFocus();
 		});
 
+	}
+
+	public void focusUnfocusListener(AnchorPane parentPane, TextField field, TextField localField) {
+		field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
+			if(newValue) {
+				try {
+				((Label)parentPane.lookup("#"+field.getId()+"Label")).setVisible(true);
+				if(field.getId().matches("dd|mm|yyyy")) {
+					((Label)parentPane.lookup("#"+"dobMessage")).setVisible(false);
+
+				}else {
+					((Label)parentPane.lookup("#"+field.getId()+"Message")).setVisible(false);
+				}
+				}catch(NullPointerException exception) {
+				}
+			}else {
+					if(!(field.getText().length()>0)) {
+						try {
+							((Label)parentPane.lookup("#"+field.getId()+"Label")).setVisible(false);
+						}catch(NullPointerException exception) {
+						}
+					}
+			}
+			
+			
+		});
+		
+		localField.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
+			if(newValue) {
+				try {
+				((Label)parentPane.lookup("#"+localField.getId()+"Label")).setVisible(true);
+				((Label)parentPane.lookup("#"+localField.getId()+"Message")).setVisible(false);
+				}catch(NullPointerException exception) {
+				}
+			}else {
+					if(!(localField.getText().length()>0)) {
+						try {
+							((Label)parentPane.lookup("#"+localField.getId()+"Label")).setVisible(false);
+						}catch(NullPointerException exception) {
+						}
+					}
+			}
+		});
 	}
 
 	/**
 	 * Populate the local field value based on the application field. Transliteration will not done for these fields
 	 */
-	public void populateLocalFieldOnType(TextField field, Validations validation, TextField localField) {
+	public void populateLocalFieldOnType(AnchorPane parentPane,TextField field, Validations validation, TextField localField) {
+		focusUnfocusListener(parentPane, field, localField);
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
-			if (!validation.validateTextField(field, field.getId() + "_ontype",
+			field.requestFocus();
+			if (!validation.validateTextField(parentPane, field, field.getId() + "_ontype",
 					(String) SessionContext.map().get(RegistrationConstants.IS_CONSOLIDATED))) {
 				field.setText(oldValue);
 			} else {
 				if(localField!=null) {
 					localField.setText(field.getText());
+					localField.requestFocus();
+
 				}
 			}
 		});
@@ -137,8 +197,9 @@ public class FXUtils {
 			if (field.getText().matches(regex)) {
 				int year = Integer.parseInt(field.getText());
 				int age = LocalDate.now().getYear() - year;
-				if(age>=0&&age<=118)
+				if(age>=0&&age<=118) {
 					fieldToPopulate.setText("" + age);
+				}
 			}
 		});
 	}

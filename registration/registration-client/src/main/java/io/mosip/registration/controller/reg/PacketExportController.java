@@ -44,8 +44,7 @@ public class PacketExportController extends BaseController {
 	 */
 	public List<Registration> packetExport() {
 		auditFactory.audit(AuditEvent.EXPORT_REG_PACKETS, Components.EXPORT_REG_PACKETS,
-				"Initiating registration packets export to external device", SessionContext.userContext().getUserId(),
-				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.debug("REGISTRATION - HANDLE_PACKET_EXPORT - PACKET_EXPORT_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Export the packets to the External device");

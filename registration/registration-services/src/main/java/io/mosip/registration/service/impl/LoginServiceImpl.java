@@ -7,14 +7,15 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.AppAuthenticationDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.ScreenAuthorizationDAO;
@@ -81,8 +82,8 @@ public class LoginServiceImpl implements LoginService {
 		LOGGER.info("REGISTRATION - LOGINMODES - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching list of login modes");
 
-		auditFactory.audit(AuditEvent.LOGIN_MODES_FETCH, Components.LOGIN_MODES, "Fetching list of login modes",
-				"refId", "refIdType");
+		auditFactory.audit(AuditEvent.LOGIN_MODES_FETCH, Components.LOGIN_MODES, RegistrationConstants.APPLICATION_NAME,
+				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 		return appAuthenticationDAO.getModesOfLogin(authType, roleList);
 	}
@@ -100,8 +101,8 @@ public class LoginServiceImpl implements LoginService {
 		LOGGER.info("REGISTRATION - USERDETAIL - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching User details");
 
-		auditFactory.audit(AuditEvent.FETCH_USR_DET, Components.USER_DETAIL, "Fetching User details", "refId",
-				"refIdType");
+		auditFactory.audit(AuditEvent.FETCH_USR_DET, Components.USER_DETAIL, RegistrationConstants.APPLICATION_NAME,
+				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 		return userDetailDAO.getUserDetail(userId);
 	}
@@ -119,8 +120,8 @@ public class LoginServiceImpl implements LoginService {
 		LOGGER.info("REGISTRATION - CENTERDETAILS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching Center details");
 
-		auditFactory.audit(AuditEvent.FETCH_CNTR_DET, Components.CENTER_DETAIL, "Fetching Center details",
-				"refId", "refIdType");
+		auditFactory.audit(AuditEvent.FETCH_CNTR_DET, Components.CENTER_DETAIL, RegistrationConstants.APPLICATION_NAME,
+				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 		return registrationCenterDAO.getRegistrationCenterDetails(centerId);
 	}
@@ -138,8 +139,8 @@ public class LoginServiceImpl implements LoginService {
 		LOGGER.info("REGISTRATION - SCREENAUTHORIZATION - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching list of Screens to be Authorized");
 
-		auditFactory.audit(AuditEvent.FETCH_SCR_AUTH, Components.SCREEN_AUTH,
-				"Fetching list of Screens to be Authorized", "refId", "refIdType");
+		auditFactory.audit(AuditEvent.FETCH_SCR_AUTH, Components.SCREEN_AUTH, RegistrationConstants.APPLICATION_NAME,
+				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 		return screenAuthorizationDAO.getScreenAuthorizationDetails(roleCode);
 	}

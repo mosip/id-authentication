@@ -191,8 +191,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creating of Registration Starting.");
 		try {
-			auditFactory.audit(AuditEvent.NAV_NEW_REG, Components.NAVIGATION,
-					"Navigating to Registration Creation Screen", SessionContext.userContext().getUserId(),
+			auditFactory.audit(AuditEvent.NAV_NEW_REG, Components.NAVIGATION, SessionContext.userContext().getUserId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
@@ -274,8 +273,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Pending Approval screen started.");
 		try {
 			auditFactory.audit(AuditEvent.NAV_APPROVE_REG, Components.NAVIGATION,
-					"Navigating to Registration Approval Screen", SessionContext.userContext().getUserId(),
-					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.PENDING_APPROVAL_PAGE));
 
@@ -309,8 +307,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Packet Upload screen started.");
 		try {
 			auditFactory.audit(AuditEvent.NAV_UPLOAD_PACKETS, Components.NAVIGATION,
-					"Navigating to Registration Packet Upload Screen", SessionContext.userContext().getUserId(),
-					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 			uploadRoot = BaseController.load(getClass().getResource(RegistrationConstants.FTP_UPLOAD_PAGE));
 
@@ -339,7 +336,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen started.");
 		try {
-			auditFactory.audit(AuditEvent.NAV_UIN_UPDATE, Components.NAVIGATION, "Navigating to UIN Update Screen",
+			auditFactory.audit(AuditEvent.NAV_UIN_UPDATE, Components.NAVIGATION,
 					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
@@ -387,7 +384,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Sync Data screen started.");
 		AnchorPane syncData;
 		try {
-			auditFactory.audit(AuditEvent.NAV_SYNC_DATA, Components.NAVIGATION, "Navigating to Sync Data Screen",
+			auditFactory.audit(AuditEvent.NAV_SYNC_DATA, Components.NAVIGATION,
 					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 			syncData = BaseController.load(getClass().getResource(RegistrationConstants.SYNC_DATA));
@@ -413,8 +410,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	public void downloadPreRegData() {
 
 		auditFactory.audit(AuditEvent.NAV_DOWNLOAD_PRE_REG_DATA, Components.NAVIGATION,
-				"Navigating to Pre-Registration Data Download Screen", SessionContext.userContext().getUserId(),
-				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Downloading pre-registration data started.");
 		ResponseDTO responseDTO = preRegistrationDataSyncService
@@ -442,8 +438,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 */
 	public void onBoardUser() {
 
-		auditFactory.audit(AuditEvent.NAV_ON_BOARD_USER, Components.NAVIGATION, "Navigating to User On-Board Screen",
-				APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+		auditFactory.audit(AuditEvent.NAV_ON_BOARD_USER, Components.NAVIGATION, APPLICATION_NAME,
+				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 		SessionContext.map().put(RegistrationConstants.ONBOARD_USER, true);
 		SessionContext.map().put(RegistrationConstants.ONBOARD_USER_UPDATE, true);
@@ -560,8 +556,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading re-registration screen sarted.");
 		try {
 			auditFactory.audit(AuditEvent.NAV_RE_REGISTRATION, Components.NAVIGATION,
-					"Navigating to Re-Registration Screen", SessionContext.userContext().getUserId(),
-					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.REREGISTRATION_PAGE));
 

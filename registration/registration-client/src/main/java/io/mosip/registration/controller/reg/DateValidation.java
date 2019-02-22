@@ -16,6 +16,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 
 @Component
 public class DateValidation extends BaseController {
@@ -56,11 +57,11 @@ public class DateValidation extends BaseController {
 		dateMapper.put("12", "31");
 	}
 
-	public void validateDate(TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
+	public void validateDate(AnchorPane parentPane, TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
 			TextField localField) {
 
 		try {
-			fxUtils.validateOnType(date, validation, localField);
+			fxUtils.validateOnType(parentPane,date, validation, localField);
 			date.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				int dateVal = 1;
 				if (date.getText().matches("\\d+")) {
@@ -90,10 +91,10 @@ public class DateValidation extends BaseController {
 		}
 	}
 
-	public void validateMonth(TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
+	public void validateMonth(AnchorPane parentPane,TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
 			TextField localField) {
 		try {
-			fxUtils.validateOnType(month, validation, localField);
+			fxUtils.validateOnType(parentPane, month, validation, localField);
 			month.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				if (month.getText().matches("\\d+")) {
 					int monthVal = Integer.parseInt(month.getText());
@@ -161,10 +162,10 @@ public class DateValidation extends BaseController {
 		}
 	}
 
-	public void validateYear(TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
+	public void validateYear(AnchorPane parentPane, TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
 			TextField localField) {
 		try {
-			fxUtils.validateOnType(year, validation, localField);
+			fxUtils.validateOnType(parentPane, year, validation, localField);
 			year.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				if (year.getText().matches("\\d{4}")) {
 					int yearVal = Integer.parseInt(year.getText());
