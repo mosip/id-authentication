@@ -64,4 +64,14 @@ public interface GenderTypeRepository extends BaseRepository<Gender, CodeAndLang
 	@Query("UPDATE Gender g SET g.genderName=?3, g.isActive=?4 ,g.updatedDateTime=?5, g.updatedBy=?6 WHERE g.code =?1 and g.langCode=?2 and (g.isDeleted is null or g.isDeleted =false)")
 	int updateGenderType(String code, String langCode, String genderName, Boolean isActive,
 			LocalDateTime updatedDateTime, String updatedBy);
+	
+	/**
+	 * validate gender name
+	 * 
+	 * @param genderName
+	 *            gender name eg: male or female
+	 * @return boolean
+	 */
+	@Query(value="select EXISTS(select * from master.gender g where LOWER(g.name)=LOWER(?1) and (g.is_deleted is null or g.is_deleted =false))" , nativeQuery = true)
+	boolean isGenderNamePresent(String genderName);
 }

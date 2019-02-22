@@ -90,6 +90,8 @@ public class AbisServiceImpl implements AbisService {
 	 */
 	public AbisInsertResponseDto insert(AbisInsertRequestDto abisInsertRequestDto)
 			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "AbisServiceImpl::insert()::entry");
 
 		boolean isPresent = false;
 		AbisInsertResponseDto response = new AbisInsertResponseDto();
@@ -123,6 +125,8 @@ public class AbisServiceImpl implements AbisService {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					referenceId, "Test Tags are not present" + ExceptionUtils.getStackTrace(e));
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "AbisServiceImpl::insert()::exit");
 
 		return response;
 	}
@@ -144,6 +148,8 @@ public class AbisServiceImpl implements AbisService {
 	 */
 	private Document getCbeffDocument(String referenceId)
 			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "AbisServiceImpl::getCbeffDocument()::entry");
 
 		String regId = packetInfoManager.getRidByReferenceId(referenceId).get(0);
 		List<String> pathSegments = new ArrayList<>();
@@ -164,6 +170,9 @@ public class AbisServiceImpl implements AbisService {
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			return dBuilder.parse(is);
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "AbisServiceImpl::getCbeffDocument()::exit");
+
 		return null;
 	}
 
@@ -185,6 +194,8 @@ public class AbisServiceImpl implements AbisService {
 	public AbisIdentifyResponseDto performDedupe(AbisIdentifyRequestDto identifyRequest)
 			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
 		boolean duplicate = false;
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "AbisServiceImpl::performDedupe()::entry");
 
 		int count = 0;
 		AbisIdentifyResponseDto response = new AbisIdentifyResponseDto();
@@ -230,6 +241,8 @@ public class AbisServiceImpl implements AbisService {
 					referenceId, "Due to some internal error, abis failed" + ExceptionUtils.getStackTrace(e));
 		}
 
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "AbisServiceImpl::performDedupe()::exit");
 		return response;
 	}
 
