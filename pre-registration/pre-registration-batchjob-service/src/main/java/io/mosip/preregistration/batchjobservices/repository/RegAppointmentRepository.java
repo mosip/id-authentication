@@ -36,7 +36,5 @@ public interface RegAppointmentRepository extends BaseRepository<RegistrationBoo
 	 * @return RegistrationBookingEntity of the given Pre Id.
 	 */
 	@Query(preIdQuery)
-	@Transactional
-	@Modifying
 	RegistrationBookingEntity getPreRegId(@Param("preRegId") String preRegId);
 }
