@@ -62,7 +62,7 @@ public class TemplateUtil {
 
 		List<TemplateResponseDTO> response = respEntity.getBody().getTemplates();
 
-		return response.get(0).getFileText();
+		return response.get(0).getFileText().replaceAll("^\"|\"$", "");
 		
 	}
 	
