@@ -16,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.preregistration.batchjobservices.entity.ApplicantDemographic;
+import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingPK;
 import io.mosip.preregistration.batchjobservices.repository.DemographicRepository;
@@ -46,7 +46,7 @@ public class ExpiredStatusServiceTest {
 
 	LocalDate currentDate = LocalDate.now();
 	List<RegistrationBookingEntity> bookedPreIdList = new ArrayList<>();
-	ApplicantDemographic demographicEntity =new ApplicantDemographic();
+	DemographicEntity demographicEntity =new DemographicEntity();
 	RegistrationBookingEntity bookingEntity=new RegistrationBookingEntity();
 	RegistrationBookingPK bookingPK = new RegistrationBookingPK();
 	

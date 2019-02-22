@@ -157,6 +157,8 @@ public class DocumentServiceUtil {
 		log.info("sessionId", "idType", "id", "In dtoToEntity method of document service util");
 		DocumentEntity documentEntity = new DocumentEntity();
 		documentEntity.setDocumentId(UUIDGeneratorUtil.generateId());
+		documentEntity.setDocId("");
+		documentEntity.setDocHash("");
 		documentEntity.setPreregId(dto.getPreregId());
 		documentEntity.setDocCatCode(dto.getDocCatCode());
 		documentEntity.setDocTypeCode(dto.getDocTypeCode());
@@ -250,6 +252,8 @@ public class DocumentServiceUtil {
 		DocumentEntity copyDocumentEntity = new DocumentEntity();
 		copyDocumentEntity.setDocumentId(UUIDGeneratorUtil.generateId());
 		copyDocumentEntity.setPreregId(destinationPreId);
+		copyDocumentEntity.setDocId("");
+		copyDocumentEntity.setDocHash("");
 		copyDocumentEntity.setDocName(documentEntity.getDocName());
 		copyDocumentEntity.setDocTypeCode(documentEntity.getDocTypeCode());
 		copyDocumentEntity.setDocCatCode(documentEntity.getDocCatCode());

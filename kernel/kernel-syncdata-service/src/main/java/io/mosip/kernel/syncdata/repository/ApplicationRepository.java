@@ -26,6 +26,6 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 *            timeStamp
 	 * @return list of {@link Application}
 	 */
-	@Query("FROM Application WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
-	List<Application> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
+	@Query("FROM Application WHERE (createdDateTime > ?1 and createdDateTime <=?2) OR (updatedDateTime > ?1 and updatedDateTime <=?2)  OR (deletedDateTime > ?1 and deletedDateTime <=?2)")
+	List<Application> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated,LocalDateTime currentTimeStamp);
 }

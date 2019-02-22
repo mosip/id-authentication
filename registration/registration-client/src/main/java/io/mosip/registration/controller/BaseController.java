@@ -68,9 +68,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 /**
@@ -368,6 +372,7 @@ public class BaseController {
 		goToHomePage();
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void clearRegistrationData() {
 
 		SessionContext.map().remove(RegistrationConstants.REGISTRATION_ISEDIT);
@@ -385,6 +390,10 @@ public class BaseController {
 
 		SessionContext.userMap().remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 		SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
+
+		((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP))
+				.get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY,
+						(boolean) ApplicationContext.map().get("biometricExceptionFlow"));
 	}
 
 	protected void clearOnboardData() {
@@ -670,9 +679,13 @@ public class BaseController {
 	 *            - Id of current Anchorpane
 	 * @param action
 	 *            - action to be performed previous/next
+	 * @param currentPage - Id of current Anchorpane
+	 * @param action      - action to be performed previous/next
 	 * 
 	 * @return id of next Anchorpane
 	 */
+
+	@SuppressWarnings("unchecked")
 	protected String getOnboardPageDetails(String currentPage, String action) {
 
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
@@ -690,9 +703,12 @@ public class BaseController {
 	 *            - Id of current Anchorpane
 	 * @param action
 	 *            - action to be performed previous/next
+	 * @param currentPage - Id of current Anchorpane
+	 * @param action      - action to be performed previous/next
 	 * 
 	 * @return id of next Anchorpane
 	 */
+	@SuppressWarnings("unchecked")
 	protected String getPageDetails(String currentPage, String action) {
 
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
@@ -720,6 +736,9 @@ public class BaseController {
 	 *            - Id of current Anchorpane
 	 * @param action
 	 *            - action to be performed previous/next
+	 * @param pageList    - List of Anchorpane Ids
+	 * @param currentPage - Id of current Anchorpane
+	 * @param action      - action to be performed previous/next
 	 * 
 	 * @return id of next Anchorpane
 	 */
@@ -773,6 +792,9 @@ public class BaseController {
 						"User Onboard is success and clearing Onboard data");
 
 				generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.USER_ONBOARD_SUCCESS);
+				popupStatge("Onboarding Successful", "images/tick.png", "onboardAlertMsg");
+				// generateAlert(RegistrationConstants.SUCCESS,
+				// RegistrationUIConstants.USER_ONBOARD_SUCCESS);
 				clearOnboardData();
 				goToHomePage();
 
@@ -798,6 +820,9 @@ public class BaseController {
 	 *            - Id of Anchorpane which has to be hidden
 	 * @param show
 	 *            - Id of Anchorpane which has to be shown
+	 * @param pageId     - Parent Anchorpane where other panes are included
+	 * @param notTosShow - Id of Anchorpane which has to be hidden
+	 * @param show       - Id of Anchorpane which has to be shown
 	 * 
 	 */
 	protected void getCurrentPage(AnchorPane pageId, String notTosShow, String show) {
@@ -819,8 +844,51 @@ public class BaseController {
 	 * 
 	 * @param imageType
 	 *            the type of image that is selected to capture
+	 * @param imageType the type of image that is selected to capture
 	 */
 	public void calculateRecaptureTime(String imageType) {
 		// will be implemented in the derived class.
 	}
+
+	public void popupStatge(String messgae, String imageUrl, String styleClass) {
+		Stage primaryStage = new Stage();
+		primaryStage.initStyle(StageStyle.UNDECORATED);
+		primaryStage.setX(540);
+		primaryStage.setY(85);
+		AnchorPane anchorPane = new AnchorPane();
+		anchorPane.setPrefWidth(250);
+		anchorPane.setPrefHeight(40);
+		Label label = new Label();
+		label.setText(messgae);
+		label.setLayoutX(60);
+		label.setLayoutY(9);
+		label.getStyleClass().clear();
+		label.getStyleClass().addAll(styleClass, "label");
+		Image img = new Image(imageUrl);
+		ImageView imageView = new ImageView();
+		imageView.setImage(img);
+		imageView.setLayoutX(30);
+		imageView.setLayoutY(12);
+		imageView.setFitHeight(15);
+		imageView.setFitWidth(15);
+		imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (primaryStage.isShowing()) {
+					primaryStage.close();
+				}
+			}
+		});
+		anchorPane.getStyleClass().clear();
+		anchorPane.getChildren().add(imageView);
+		anchorPane.getChildren().add(label);
+		Scene scene = new Scene(anchorPane);
+		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+		scene.getStylesheets().add(classLoader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+		primaryStage.setScene(scene);
+		primaryStage.initModality(Modality.WINDOW_MODAL);
+		primaryStage.initOwner(fXComponents.getStage());
+		primaryStage.show();
+	}
+
 }

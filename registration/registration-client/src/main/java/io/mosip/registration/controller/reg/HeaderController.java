@@ -12,6 +12,9 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
@@ -92,9 +95,6 @@ public class HeaderController extends BaseController {
 	PacketHandlerController packetHandlerController;
 
 	@Autowired
-	private UserOnboardController userOnboardController;
-
-	@Autowired
 	private RegistrationPacketVirusScanService registrationPacketVirusScanService;
 
 	/**
@@ -115,7 +115,7 @@ public class HeaderController extends BaseController {
 		menu.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)
 				&& !(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
-			homeSelectionMenu.setDisable(true);
+			homeSelectionMenu.getItems().remove(0, homeSelectionMenu.getItems().size()-3);
 		} else {
 			homeSelectionMenu.setDisable(false);
 		}
@@ -136,6 +136,8 @@ public class HeaderController extends BaseController {
 	 */
 	public void logout(ActionEvent event) {
 		try {
+			auditFactory.audit(AuditEvent.LOGOUT_USER, Components.NAVIGATION, "Logging out user",
+					APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
 					APPLICATION_ID, "Clearing Session context");
@@ -162,40 +164,7 @@ public class HeaderController extends BaseController {
 	 * Redirecting to Home page
 	 */
 	public void redirectHome(ActionEvent event) {
-		try {
-
-			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
-					APPLICATION_ID, "Redirecting to Home page");
-
-			VBox homePage = BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
-			getScene(homePage);
-			clearRegistrationData();
-
-		} catch (IOException  ioException) {
-
-			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
-					APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
-		}  catch (RuntimeException runtimeException) {
-
-			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
-					APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
-
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
-		}
-	}
-
-	/**
-	 * change On-Board user Perspective
-	 * 
-	 * @param event is an action event
-	 * @throws IOException
-	 */
-	public void onBoardUser(ActionEvent event) throws IOException {
-		SessionContext.map().put(RegistrationConstants.ONBOARD_USER, true);
-		SessionContext.map().put(RegistrationConstants.ONBOARD_USER_UPDATE, true);
-		userOnboardController.initUserOnboard();
+		goToHomePageFromRegistration();
 	}
 
 	/**
@@ -207,6 +176,10 @@ public class HeaderController extends BaseController {
 
 		AnchorPane syncData;
 		try {
+			auditFactory.audit(AuditEvent.NAV_SYNC_DATA, Components.NAVIGATION,
+					"Initiating Server to Client Sync process", APPLICATION_NAME,
+					AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 			syncData = BaseController.load(getClass().getResource(RegistrationConstants.SYNC_DATA));
 
 			VBox pane = (VBox) menu.getParent().getParent().getParent();
@@ -231,6 +204,10 @@ public class HeaderController extends BaseController {
 	 */
 	public void syncPacketStatus(ActionEvent event) {
 		try {
+			auditFactory.audit(AuditEvent.SYNC_REGISTRATION_PACKET_STATUS, Components.SYNC_SERVER_TO_CLIENT,
+					"Initiating registration packet status sync", APPLICATION_NAME,
+					AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 			AnchorPane syncServerClientRoot = BaseController
 					.load(getClass().getResource(RegistrationConstants.SYNC_STATUS));
 
@@ -260,6 +237,10 @@ public class HeaderController extends BaseController {
 				"Navigating to Device Onboarding Page");
 
 		try {
+			auditFactory.audit(AuditEvent.NAV_ON_BOARD_DEVICES, Components.NAVIGATION,
+					"Navigating to device onboarding screen", APPLICATION_NAME,
+					AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 			AnchorPane onBoardRoot = BaseController
 					.load(getClass().getResource(RegistrationConstants.DEVICE_ONBOARDING_PAGE));
 
@@ -291,6 +272,10 @@ public class HeaderController extends BaseController {
 	 */
 	@FXML
 	public void downloadPreRegData(ActionEvent event) {
+		auditFactory.audit(AuditEvent.SYNC_PRE_REGISTRATION_PACKET, Components.SYNC_SERVER_TO_CLIENT,
+				"Initiating pre-registration packet sync", APPLICATION_NAME,
+				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 		ResponseDTO responseDTO = preRegistrationDataSyncService
 				.getPreRegistrationIds(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
@@ -307,10 +292,18 @@ public class HeaderController extends BaseController {
 	}
 
 	public void uploadPacketToServer() {
+		auditFactory.audit(AuditEvent.SYNC_PRE_REGISTRATION_PACKET, Components.SYNC_SERVER_TO_CLIENT,
+				"Initiating pre-registration packet sync", APPLICATION_NAME,
+				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 		packetHandlerController.uploadPacket();
 	}
 
 	public void virusScan() {
+		auditFactory.audit(AuditEvent.VIRUS_SCAN_REG_PACKETS, Components.VIRUS_SCAN,
+				"Initiating registration packets virus scan", APPLICATION_NAME,
+				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 		ResponseDTO responseDTO = registrationPacketVirusScanService.scanPacket();
 
 		SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();

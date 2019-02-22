@@ -2,7 +2,10 @@ package io.mosip.registration.dao.impl;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_USER_DETAIL;
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_USER_DETAIL_DAO;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.context.SessionContext;
@@ -23,6 +27,7 @@ import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserPassword;
 import io.mosip.registration.entity.UserRole;
 import io.mosip.registration.entity.UserRoleID;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.UserBiometricRepository;
 import io.mosip.registration.repositories.UserDetailRepository;
 import io.mosip.registration.repositories.UserPwdRepository;
@@ -106,60 +111,72 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				.findByUserBiometricIdUsrIdAndIsActiveTrueAndUserBiometricIdBioTypeCodeIgnoreCase(userId, bioType);
 	}
 
-	public void save(UserDetailResponseDto userDetailsResponse) {
+	public void save(UserDetailResponseDto userDetailsResponse) throws RegBaseUncheckedException {
+
+		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Entering user detail save method...");
 
 		List<UserDetail> userList = new ArrayList<>();
 		List<UserPassword> userPassword = new ArrayList<>();
-		userDetailsResponse.getUserDetails().forEach(userDtals -> {
+		try {
 
-			UserDetail userDtls = new UserDetail();
-			UserPassword usrPwd = new UserPassword();
-			// password details
-			usrPwd.setUsrId(userDtals.getUserName());
-			usrPwd.setPwd(userDtals.getUserPassword().toString());
-			usrPwd.setStatusCode("00");
-			usrPwd.setIsActive(true);
-			usrPwd.setLangCode("eng");
-			usrPwd.setCrBy(SessionContext.userContext().getUserId());
-			usrPwd.setCrDtime(Timestamp.valueOf(LocalDateTime.now()));
-			userPassword.add(usrPwd);
+			userDetailsResponse.getUserDetails().forEach(userDtals -> {
 
-			userDtls.setId(userDtals.getUserName());
-			userDtls.setUserPassword(usrPwd);
-			userDtls.setEmail(userDtals.getMail());
-			userDtls.setMobile(userDtals.getMobile());
-			userDtls.setName(userDtals.getName());
-			userDtls.setLangCode("eng");
-			userDtls.setCrBy(SessionContext.userContext().getUserId());
-			userDtls.setCrDtime(Timestamp.valueOf(LocalDateTime.now()));
-			userDtls.setIsActive(true);
-			userDtls.setStatusCode("00");
-			userList.add(userDtls);
+				UserDetail userDtls = new UserDetail();
+				UserPassword usrPwd = new UserPassword();
+				// password details
+				usrPwd.setUsrId(userDtals.getUserName());
+				usrPwd.setPwd(new String(userDtals.getUserPassword(), StandardCharsets.UTF_8));
+				usrPwd.setStatusCode("00");
+				usrPwd.setIsActive(true);
+				usrPwd.setLangCode("eng");
+				usrPwd.setCrBy(SessionContext.userContext().getUserId());
+				usrPwd.setCrDtime(Timestamp.valueOf(LocalDateTime.now()));
+				userPassword.add(usrPwd);
 
-		});
+				userDtls.setId(userDtals.getUserName());
+				userDtls.setUserPassword(usrPwd);
+				userDtls.setEmail(userDtals.getMail());
+				userDtls.setMobile(userDtals.getMobile());
+				userDtls.setName(userDtals.getName());
+				userDtls.setLangCode("eng");
+				userDtls.setCrBy(SessionContext.userContext().getUserId());
+				userDtls.setCrDtime(Timestamp.valueOf(LocalDateTime.now()));
+				userDtls.setIsActive(true);
+				userDtls.setStatusCode("00");
+				userList.add(userDtls);
 
-		List<UserRole> userRole = new ArrayList<>();
-		userDetailsResponse.getUserDetails().forEach(role -> {
-
-			UserRole roles = new UserRole();
-			roles.setIsActive(true);
-			roles.setLangCode("eng");
-			roles.setCrBy(SessionContext.userContext().getUserId());
-			roles.setCrDtime(Timestamp.valueOf(LocalDateTime.now()));
-			String uName = role.getUserName();
-			role.getRoles().forEach(rol -> {
-				UserRoleID roleId = new UserRoleID();
-				roleId.setRoleCode(rol);
-				roleId.setUsrId(uName);
-				roles.setUserRoleID(roleId);
-				userRole.add(roles);
 			});
 
-		});
+			List<UserRole> userRole = new ArrayList<>();
+			userDetailsResponse.getUserDetails().forEach(role -> {
 
-		userDetailRepository.saveAll(userList);
-		userPwdRepository.saveAll(userPassword);
-		userRoleRepository.saveAll(userRole);
+				UserRole roles = new UserRole();
+				roles.setIsActive(true);
+				roles.setLangCode("eng");
+				roles.setCrBy(SessionContext.userContext().getUserId());
+				roles.setCrDtime(Timestamp.valueOf(LocalDateTime.now()));
+				String uName = role.getUserName();
+				role.getRoles().forEach(rol -> {
+					UserRoleID roleId = new UserRoleID();
+					roleId.setRoleCode(rol);
+					roleId.setUsrId(uName);
+					roles.setUserRoleID(roleId);
+					userRole.add(roles);
+				});
+
+			});
+
+			userDetailRepository.saveAll(userList);
+			userPwdRepository.saveAll(userPassword);
+			userRoleRepository.saveAll(userRole);
+
+			LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Leaving user detail save method...");
+
+		} catch (RuntimeException exRuntimeException) {
+			LOGGER.error(LOG_REG_USER_DETAIL_DAO, APPLICATION_NAME, APPLICATION_ID,
+					exRuntimeException.getMessage() + ExceptionUtils.getStackTrace(exRuntimeException));
+			throw new RegBaseUncheckedException(LOG_REG_USER_DETAIL_DAO, exRuntimeException.getMessage());
+		}
 	}
 
 }

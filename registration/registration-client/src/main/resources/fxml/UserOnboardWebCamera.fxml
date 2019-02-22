@@ -10,13 +10,13 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.stage.Screen?>
 
-<AnchorPane fx:id="biometricsPane" layoutX="11.0" styleClass="onboardParenPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.FaceCaptureController">
+<AnchorPane fx:id="faceCapture" layoutX="11.0" styleClass="onboardParenPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.FaceCaptureController">
 <children>
 <AnchorPane layoutX="1.0" styleClass="userOnboardHeader">
          <children>
-            <Text fx:id="onboardHomeLink" layoutX="20.0" layoutY="20.0" onMouseClicked="#goToHomePage" text="Home /" />
-            <Text fx:id="onboardPageDesc" layoutX="68.0" layoutY="20.0" text=" Onboard Operator" />
-            <Label fx:id="onboardPageTitle" layoutX="559.0" layoutY="2.0" text="Onboard Operator" />
+            <Text fx:id="onboardHomeLink" layoutX="20.0" layoutY="20.0" onMouseClicked="#goToHomePage" text="%homeLink" />
+            <Text fx:id="onboardPageDesc" layoutX="68.0" layoutY="20.0" text="%onboardOperator" />
+            <Label fx:id="onboardPageTitle" layoutX="559.0" layoutY="2.0" text="%onboardOperator" />
          </children>
       </AnchorPane>  
       <AnchorPane layoutX="1.0" layoutY="33.0" styleClass="userOnboardBackPane">
@@ -28,22 +28,22 @@
             </ImageView>
 <AnchorPane layoutX="180.0" styleClass="onboardImgPane">
          <children>
-       <Button fx:id="captureExceptionImage" disable="true" layoutX="471.0" layoutY="440.0" mnemonicParsing="false" styleClass="RegbuttonStyle" text="Capture" visible="false" />
+       <Button fx:id="captureExceptionImage" disable="true" layoutX="471.0" layoutY="440.0" mnemonicParsing="false" styleClass="RegbuttonStyle" text="%capture" visible="false" />
        <AnchorPane layoutX="357.0" layoutY="254.0" styleClass="onboardFaceDetails">
        <children>
-       <Label layoutX="106.0" layoutY="1.0" styleClass="onboardBioDetailsHeader" text="Photo" />
-       <Label layoutY="35.0" styleClass="onboardBioDetails" text="Threshold" />
-       <Label layoutX="150.0" layoutY="35.0" styleClass="onboardBioDetails" text="Quality" />
+       <Label layoutX="106.0" layoutY="1.0" styleClass="onboardBioDetailsHeader" text="%image" />
+       <Label layoutY="35.0" styleClass="onboardBioDetails" text="%threshold" />
+       <Label layoutX="150.0" layoutY="35.0" styleClass="onboardBioDetails" text="%quality" />
        <Label layoutY="70.0" styleClass="onboardBioDetails" text="80%" />
                         <Label layoutX="150.0" layoutY="70.0" styleClass="onboardBioDetails" text="-" />
-                        <Label layoutY="100.0" styleClass="onboardBioDetails" text="Attempts" />
-                        <Label layoutX="150.0" layoutY="100.0" styleClass="onboardBioDetails" text="Quality" />
+                        <Label layoutY="100.0" styleClass="onboardBioDetails" text="%attempts" />
+                        <Label layoutX="150.0" layoutY="100.0" styleClass="onboardBioDetails" text="%quality" />
                         <Label layoutX="150.0" layoutY="125.0" styleClass="onboardBioDetails" text="-" />
                         <Label layoutY="125.0" styleClass="onboardBioDetails" text="-" />
        </children>
        </AnchorPane>
        
-       <Label layoutX="506.0" layoutY="328.0" text="Exception Photo" visible="false" />        
+       <Label layoutX="506.0" layoutY="328.0" text="%exceptionphoto" visible="false" />        
        <Label layoutX="488.0" layoutY="390.0" text="Threshold Percentage :" visible="false" />      
        <Label layoutX="488.0" layoutY="363.0" text="Quality Percentage     :" visible="false" />       
        <Label layoutX="656.0" layoutY="390.0" text="    85%" visible="false" />
@@ -56,10 +56,10 @@
              </ImageView>
           </children>
        </HBox>
-       <Label layoutX="248.0" layoutY="30.0" styleClass="onboardPageBioTitle" text="Photo" />
+       <Label layoutX="248.0" layoutY="30.0" styleClass="onboardPageBioTitle" text="%image" />
        <AnchorPane layoutX="100.0" layoutY="415.0" styleClass="onboardProgressPane">
                      <children>
-                        <Button fx:id="takePhoto" layoutX="620.0" layoutY="65.0" mnemonicParsing="false" onAction="#takePhoto" styleClass="onboardScanBtn" text="Take Photo">
+                        <Button fx:id="takePhoto" layoutX="620.0" layoutY="65.0" mnemonicParsing="false" onAction="#takePhoto" styleClass="onboardScanBtn" text="%takePhoto">
                         <graphic>
                         <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -68,11 +68,11 @@
                                     </ImageView>
                                     </graphic>
                         </Button>
-                        <Label layoutX="151.0" layoutY="71.0" text="Quality" />
+                        <Label layoutX="151.0" layoutY="71.0" text="%quality" />
                         <Line endX="100.0" layoutX="372.0" layoutY="85.0" startX="-100.0" />
                      </children>
                   </AnchorPane>
-                  <Pane fx:id="applicantImagePane" layoutX="350.0" layoutY="66.0" onMouseClicked="#enableCapture" prefHeight="216.0" prefWidth="243.0">
+                  <Pane id="applicantPhoto" fx:id="applicantImagePane" layoutX="350.0" layoutY="66.0" onMouseClicked="#enableCapture" prefHeight="216.0" prefWidth="243.0">
                      <children>
              <ImageView fx:id="applicantImage" fitHeight="210.0" fitWidth="272.0" layoutX="2.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
                 <image>
@@ -85,9 +85,9 @@
    </AnchorPane>
    </children>
       </AnchorPane> 
-      <AnchorPane layoutX="1.0" layoutY="605.0" styleClass="userOnboardFooter">
+      <AnchorPane layoutX="1.0" layoutY="620.0" styleClass="userOnboardFooter">
                <children>
-                <Button fx:id="biometricPrevBtn" layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPane" styleClass="backButton" text="Back">
+                <Button fx:id="biometricPrevBtn" layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPane" styleClass="backButton" text="%back">
              <graphic>
                   	<ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -96,7 +96,7 @@
                                     </ImageView>
                   </graphic>
             </Button>
-            <Button fx:id="saveBiometricDetailsBtn" layoutX="991.0" layoutY="4.0" mnemonicParsing="false" onAction="#saveBiometricDetails" styleClass="contiuneButton" text="Continue">
+            <Button fx:id="saveBiometricDetailsBtn" layoutX="991.0" layoutY="4.0" mnemonicParsing="false" onAction="#saveBiometricDetails" styleClass="contiuneButton" text="%continue">
             <graphic>
                   	<ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -106,6 +106,7 @@
                   </graphic>
             </Button>
                </children>
-            </AnchorPane> 
+            </AnchorPane>
+      <Label fx:id="photoAlert" layoutX="894.0" layoutY="540.0" prefHeight="27.0" prefWidth="194.0" />
     </children>
  </AnchorPane>

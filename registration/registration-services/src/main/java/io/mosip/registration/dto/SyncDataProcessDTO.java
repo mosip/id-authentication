@@ -4,6 +4,7 @@
 package io.mosip.registration.dto;
 
 import javafx.beans.property.SimpleStringProperty;
+import lombok.Data;
 
 /**
  * Sync Data Process DTO
@@ -11,6 +12,8 @@ import javafx.beans.property.SimpleStringProperty;
  * @author YASWANTH S
  * @since 1.0.0
  */
+
+@Data
 public class SyncDataProcessDTO {
 	
 	

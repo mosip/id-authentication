@@ -48,7 +48,7 @@
       <AnchorPane id="ackScreen-anchor-pane" fx:id="registrationPreviewHeader" layoutX="-4.0" layoutY="-2.0" prefHeight="39.0" prefWidth="1289.0">
          <children>
             <Text layoutX="55.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/newregistration" wrappingWidth="154.2451171875" />
-            <Label layoutX="526.0" layoutY="11.0" styleClass="heading" text="%registrationpreview" />
+            <Label layoutX="526.0" layoutY="11.0" styleClass="templateHeading" text="%registrationpreview" />
             <Text layoutX="14.0" layoutY="31.0" onMouseClicked="#goToHomePageFromRegistration" strokeType="OUTSIDE" strokeWidth="0.0" text="%home" />
          </children>
       </AnchorPane>

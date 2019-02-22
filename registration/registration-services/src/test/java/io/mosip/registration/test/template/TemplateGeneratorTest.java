@@ -1,7 +1,6 @@
 package io.mosip.registration.test.template;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 import java.awt.image.BufferedImage;
@@ -11,13 +10,12 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,6 +61,14 @@ public class TemplateGeneratorTest {
 	@Mock
 	QrCodeGenerator<QrVersion> qrCodeGenerator;
 	
+	@Before
+	public void initialize() {
+		ReflectionTestUtils.setField(templateGenerator, "documentDisableFlag","Y");
+		ReflectionTestUtils.setField(templateGenerator, "fingerprintDisableFlag","Y");
+		ReflectionTestUtils.setField(templateGenerator, "irisDisableFlag","Y");
+		ReflectionTestUtils.setField(templateGenerator, "faceDisableFlag","Y");
+	}
+	
 	ResourceBundle dummyResourceBundle = new ResourceBundle() {
 		@Override
 		protected Object handleGetObject(String key) {
@@ -107,19 +113,11 @@ public class TemplateGeneratorTest {
 		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
 
 		when(qrCodeGenerator.generateQrCode(Mockito.anyString(), Mockito.any())).thenReturn(new byte[1024]);
-
-		
-		Map<String,Object> applicationMap =new HashMap<>();
-		applicationMap.put(RegistrationConstants.FINGERPRINT_DISABLE_FLAG, RegistrationConstants.ENABLE);
-		applicationMap.put(RegistrationConstants.IRIS_DISABLE_FLAG, RegistrationConstants.ENABLE);
-		applicationMap.put(RegistrationConstants.DOCUMENT_DISABLE_FLAG, RegistrationConstants.ENABLE);
-		applicationMap.put(RegistrationConstants.FACE_DISABLE_FLAG, RegistrationConstants.ENABLE);
 		
 		when(ApplicationContext.applicationLanguage()).thenReturn("eng");
 		when(ApplicationContext.localLanguage()).thenReturn("ar");
 		when(ApplicationContext.localLanguageProperty()).thenReturn(dummyResourceBundle);
 		when(ApplicationContext.applicationLanguageBundle()).thenReturn(dummyResourceBundle);
-		when(ApplicationContext.map()).thenReturn(applicationMap);
 
 		ResponseDTO response = templateGenerator.generateTemplate("sample text", registrationDTO, template, RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
 		assertNotNull(response.getSuccessResponseDTO());

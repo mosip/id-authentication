@@ -1,5 +1,7 @@
 package io.mosip.registration.service;
 
+import io.mosip.registration.dto.ResponseDTO;
+
 /**
  * Interface to get user details data from server to client
  * 
@@ -12,9 +14,8 @@ public interface UserDetailService {
 	/**
 	 * Gets the user detail.
 	 *
-	 * @param regCentrId the reg centr id
 	 * @return the user detail
 	 */
-	public void save();
+	public ResponseDTO save();
 
 }

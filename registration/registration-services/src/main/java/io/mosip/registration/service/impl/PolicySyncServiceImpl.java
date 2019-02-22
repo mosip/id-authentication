@@ -57,6 +57,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 	synchronized public ResponseDTO fetchPolicy() {
 		LOGGER.info("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"synch the public key is started");
+
 		KeyStore keyStore = null;
 		ResponseDTO responseDTO = new ResponseDTO();
 		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
@@ -74,7 +75,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 				} else {
 
 					try {
-						getPublicKey(LocalDateTime.now(), RegistrationConstants.REFERENCE_ID);
+						getPublicKey();
 					} catch (KeyManagementException | IOException | java.security.NoSuchAlgorithmException e) {
 						LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 								"error response is created");
@@ -85,7 +86,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 				}
 			} else {
 				try {
-					getPublicKey(LocalDateTime.now(), RegistrationConstants.REFERENCE_ID);
+					getPublicKey();
 				} catch (KeyManagementException | IOException | java.security.NoSuchAlgorithmException exception) {
 					LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 							exception.getMessage());
@@ -98,14 +99,14 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		return responseDTO;
 	}
 
-	public synchronized void getPublicKey(LocalDateTime timeStamp, String referenceId)
+	public synchronized void getPublicKey()
 			throws KeyManagementException, IOException, java.security.NoSuchAlgorithmException {
 
 		KeyStore keyStore = new KeyStore();
 		ResponseDTO responseDTO = new ResponseDTO();
 		Map<String, String> requestParams = new HashMap<String, String>();
 		requestParams.put("timeStamp", Instant.now().toString());
-		requestParams.put("referenceId", RegistrationConstants.REFERENCE_ID);
+		requestParams.put("referenceId", getCenterId(getStationId(getMacAddress())));
 		try {
 			PublicKeyResponse<String> publicKeyResponse = (PublicKeyResponse<String>) serviceDelegateUtil
 					.get("policysync", requestParams, false);

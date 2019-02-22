@@ -18,4 +18,6 @@ public interface DocumentCategoryDAO {
 
 	List<DocumentCategory> getDocumentCategories();
 
+	List<DocumentCategory> getDocumentCategoriesByLangCode(String langCode);
+
 }

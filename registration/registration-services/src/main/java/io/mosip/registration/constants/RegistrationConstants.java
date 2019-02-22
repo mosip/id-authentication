@@ -208,17 +208,20 @@ public class RegistrationConstants {
 	public static final String PACKET_TYPE_UPDATE = "Update";
 	public static final String DOB_TOGGLE = "toggleAgeOrDob";
 	public static final String UIN_UPDATE_CONFIG_FLAG = "UIN_UPDATE_CONFIG_FLAG";
-	public static final String UIN_UPDATE_NAME_ENABLE_FLAG = "UIN_UPDATE.NAME_ENABLE_FLAG";
-	public static final String UIN_UPDATE_AGE_ENABLE_FLAG = "UIN_UPDATE.AGE_ENABLE_FLAG";
-	public static final String UIN_UPDATE_GENDER_ENABLE_FLAG = "UIN_UPDATE.GENDER_ENABLE_FLAG";
-	public static final String UIN_UPDATE_ADDRESS_ENABLE_FLAG = "UIN_UPDATE.ADDRESS_ENABLE_FLAG";
-	public static final String UIN_UPDATE_CONTACT_DTLS_ENABLE_FLG = "UIN_UPDATE.CONTACT_DTLS_ENABLE_FLG";
-	public static final String UIN_UPDATE_PARENT_DTLS_ENABLE_FLG = "UIN_UPDATE.PARENT_DTLS_ENABLE_FLG";
-	public static final String UIN_UPDATE_CNIE_NUMBER_ENABLE_FLAG = "UIN_UPDATE.CNIE_NUMBER_ENABLE_FLAG";
-	public static final String UIN_UPDATE_BIO_EXCEPTION_ENABLE_FLG = "UIN_UPDATE.BIO_EXCEPTION_ENABLE_FLG";
-	public static final String UIN_UPDATE_BIO_FP_ENABLE_FLG = "UIN_UPDATE.BIO_FP_ENABLE_FLG";
-	public static final String UIN_UPDATE_BIO_IRIS_ENABLE_FLG = "UIN_UPDATE.BIO_IRIS_ENABLE_FLG";
-	public static final String UIN_UPDATE_FOREIGNER_ENABLE_FLG = "UIN_UPDATE.FOREIGNER_ENABLE_FLG";
+	public static final String UIN_UPDATE_CONFIG_FIELDS_FROM_DB = "mosip.registration.uin.update.configured.fields";
+	public static final String UIN_UPDATE_NAME = "name";
+	public static final String UIN_UPDATE_AGE = "age";
+	public static final String UIN_UPDATE_ADDRESS = "address";
+	public static final String UIN_UPDATE_CONTACT_DETAILS = "contactDetails";
+	public static final String UIN_UPDATE_FOREIGNER = "foreigner";
+	public static final String UIN_UPDATE_GENDER = "gender";
+	public static final String UIN_UPDATE_PARENT_DETAILS = "parentOrGuardianDetails";
+	public static final String UIN_UPDATE_CNIE_NUMBER = "cnieNumber";
+	public static final String UIN_UPDATE_BIO_EXCEPTION = "biometricException";
+	public static final String UIN_UPDATE_BIO_FP = "biometricFingerprint";
+	public static final String UIN_UPDATE_BIO_IRIS = "biometricIris";
+	
+
 
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";
@@ -499,7 +502,7 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_JPG_IMAGE_ENCODING = "data:image/jpg;base64,";
 	public static final String TEMPLATE_PNG_IMAGE_ENCODING = "data:image/png;base64,";
 	public static final String TEMPLATE_CROSS_MARK = "&#10008;";
-	public static final String TEMPLATE_EYE_IMAGE_PATH = "/images/Eye.PNG";
+	public static final String TEMPLATE_EYE_IMAGE_PATH = "/images/Eye.png";
 	public static final String TEMPLATE_LEFT_SLAP_IMAGE_PATH = "/images/leftHand.png";
 	public static final String TEMPLATE_RIGHT_SLAP_IMAGE_PATH = "/images/rightHand.png";
 	public static final String TEMPLATE_THUMBS_IMAGE_PATH = "/images/thumbs.png";
@@ -655,6 +658,7 @@ public class RegistrationConstants {
 	public static final String ONBOARD_DEVICES_MAP_UPDATED = "updatedDevicesMap";
 	public static final String DEVICE_TYPES_ALL_OPTION = "All";
 	public static final String DEVICE_TYPE = "deviceType";
+	public static final String DONGLE_SERIAL_NUMBER = "dongleSerialNumber";
 
 	// Template Name
 	public static final String ACKNOWLEDGEMENT_TEMPLATE = "Ack Template";
@@ -1105,4 +1109,9 @@ public class RegistrationConstants {
 	
 	public static final String CONTENT_TYPE_EMAIL = "EMAIL";
 	public static final String CONTENT_TYPE_MOBILE = "MOBILE";
+	
+	//Key-Policy Key validation
+	public static final String VALID_KEY = "VALID KEY";
+	public static final String INVALID_KEY = "Please sync to get latest key from the server before proceeding with this registration.";
+	
 }

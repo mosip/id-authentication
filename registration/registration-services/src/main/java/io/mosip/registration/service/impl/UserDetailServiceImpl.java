@@ -1,6 +1,5 @@
 package io.mosip.registration.service.impl;
 
-import static io.mosip.registration.constants.LoggerConstants.LOG_REG_MASTER_SYNC;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_USER_DETAIL;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -18,23 +17,21 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.UserDetailDAO;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.UserDetailResponseDto;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.UserDetailService;
 import io.mosip.registration.service.UserOnboardService;
-import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @Service
-public class UserDetailServiceImpl implements UserDetailService {
+public class UserDetailServiceImpl extends BaseService implements UserDetailService {
 
 	@Autowired
 	private UserDetailDAO userDetailDAO;
 
 	@Autowired
 	private UserOnboardService userOnboardService;
-
-	@Autowired
-	ServiceDelegateUtil serviceDelegateUtil;
 
 	/** Object for Logger. */
 	private static final Logger LOGGER = AppConfig.getLogger(UserDetailServiceImpl.class);
@@ -44,32 +41,39 @@ public class UserDetailServiceImpl implements UserDetailService {
 	 * 
 	 * @see io.mosip.registration.service.UserDetailService#save()
 	 */
-	@Override
-	public void save() {
+	public ResponseDTO save() {
 
-		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, "Entering into user detail save method...");
+		ResponseDTO responseDTO = new ResponseDTO();
+
+		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Entering into user detail save method...");
 
 		String regCenterId = RegistrationConstants.EMPTY;
 		Map<String, String> mapOfcenterId = userOnboardService.getMachineCenterId();
 
-		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching registration center details......");
 
 		if (null != mapOfcenterId && mapOfcenterId.size() > 0) {
 			regCenterId = mapOfcenterId.get(RegistrationConstants.USER_CENTER_ID);
 		}
 
-		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, "Registration center id...." + regCenterId);
+		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Registration center id...." + regCenterId);
 
 		try {
+
 			UserDetailResponseDto userDetail = getUsrDetails(regCenterId);
 			userDetailDAO.save(userDetail);
-		} catch (RegBaseCheckedException e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
+			responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.SUCCESS, null);
+
+		} catch (RegBaseCheckedException exRegBaseCheckedException) {
+			LOGGER.error(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
+					exRegBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(exRegBaseCheckedException));
+			responseDTO = getErrorResponse(responseDTO, RegistrationConstants.ERROR);
 		}
 
-		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, "Leaving into user detail save method");
+		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Leaving into user detail save method");
+		
+		return responseDTO;
 
 	}
 
@@ -82,7 +86,7 @@ public class UserDetailServiceImpl implements UserDetailService {
 	 */
 	private UserDetailResponseDto getUsrDetails(String regCentrId) throws RegBaseCheckedException {
 
-		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
 				"Entering into user detail rest calling method");
 
 		UserDetailResponseDto response = null;
@@ -109,7 +113,7 @@ public class UserDetailServiceImpl implements UserDetailService {
 					socketTimeoutException.getLocalizedMessage());
 		}
 
-		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
 				"Leaving into user detail rest calling method");
 
 		return response;

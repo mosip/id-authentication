@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivilegedExceptionAction;
 import java.security.URIParameter;
 
 import javax.security.auth.Subject;
@@ -21,6 +22,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocalFileSystem;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
+import org.apache.hadoop.security.SaslRpcServer.AuthMethod;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -61,10 +63,21 @@ public class ConnectionUtil {
 	@Value("${mosip.kernel.fsadapter.hdfs.user-pass}")
 	private String userPass;
 
+	@Value("${mosip.kernel.fsadapter.hdfs.authentication-enabled:false}")
+	private boolean isAuthEnable;
+
 	/**
 	 * Field for hadoop FileSystem
 	 */
 	private FileSystem configuredFileSystem;
+
+	private static final String HADOOP_HOME = "hadoop-lib";
+	private static final String WIN_UTIL = "winutils.exe";
+
+	/**
+	 * hadoop lib path
+	 */
+	private Path hadoopLibPath;
 
 	/**
 	 * Instantiate a ConnectionUtil
@@ -82,8 +95,15 @@ public class ConnectionUtil {
 		if (configuredFileSystem == null) {
 			try {
 				Configuration configuration = prepareConfiguration();
-				loginUser(userName + "@" + kdcDomain, userPass);
-				return FileSystem.get(configuration);
+				if (isAuthEnable) {
+					configuration = initSecurityConfiguration(configuration);
+					loginUser(userName + "@" + kdcDomain, userPass);
+					configuredFileSystem = FileSystem.get(configuration);
+				} else {
+					configuredFileSystem = getDefaultConfiguredFileSystem(configuration);
+					return configuredFileSystem;
+				}
+
 			} catch (IOException e) {
 				throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
 						HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
@@ -98,26 +118,13 @@ public class ConnectionUtil {
 	 * @return hadoop configuration
 	 * @throws IOException
 	 */
-	private Configuration prepareConfiguration() throws IOException {
-		Configuration configuration = new Configuration();
-		configuration.set("fs.defaultFS", nameNodeUrl);
-		configuration.set("hadoop.security.authentication", "kerberos");
-		configuration.set("fs.hdfs.impl", DistributedFileSystem.class.getName());
-		configuration.set("fs.file.impl", LocalFileSystem.class.getName());
-		configuration.set("dfs.client.use.datanode.hostname", "true");
+	private Configuration initSecurityConfiguration(Configuration configuration) throws IOException {
 		configuration.set("dfs.data.transfer.protection", "authentication");
-		Path hadoopLibPath = Files.createTempDirectory("hadoop-lib");
+		configuration.set("hadoop.security.authentication", "kerberos");
 		InputStream krbStream = getClass().getClassLoader().getResourceAsStream("krb5.conf");
 		Path krbPath = Paths.get(hadoopLibPath.toString(), "krb5.conf");
 		Files.copy(krbStream, krbPath);
 		System.setProperty("java.security.krb5.conf", krbPath.toString());
-		if (SystemUtils.IS_OS_WINDOWS) {
-			Path binPath = Files.createDirectory(Paths.get(hadoopLibPath.toString(), "bin"));
-			InputStream winUtilsStream = getClass().getClassLoader().getResourceAsStream("winutils.exe");
-			Path winUtilsPath = Paths.get(binPath.toString(), "winutils.exe");
-			Files.copy(winUtilsStream, winUtilsPath);
-			System.setProperty("hadoop.home.dir", hadoopLibPath.toString());
-		}
 		UserGroupInformation.setConfiguration(configuration);
 		return configuration;
 	}
@@ -162,5 +169,53 @@ public class ConnectionUtil {
 			throw new FSAdapterException(HDFSAdapterErrorCode.NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
 					HDFSAdapterErrorCode.NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(), e);
 		}
+	}
+
+	/**
+	 * Function to get instance of the hadoop filesystem with its configuration set
+	 * 
+	 * @return configured filesystem
+	 */
+	private FileSystem getDefaultConfiguredFileSystem(Configuration configuration) {
+		if (configuredFileSystem == null) {
+			try {
+				configuredFileSystem = UserGroupInformation.createRemoteUser(userName, AuthMethod.TOKEN)
+						.doAs(new PrivilegedExceptionAction<FileSystem>() {
+							public FileSystem run() throws IOException {
+								return FileSystem.get(configuration);
+							}
+						});
+			} catch (IOException e) {
+				throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
+						HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
+						HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
+			}
+		}
+		return configuredFileSystem;
+	}
+
+	private Configuration prepareConfiguration() {
+		Configuration configuration = null;
+		try {
+			configuration = new Configuration();
+			configuration.set("fs.defaultFS", nameNodeUrl);
+			configuration.set("fs.hdfs.impl", DistributedFileSystem.class.getName());
+			configuration.set("fs.file.impl", LocalFileSystem.class.getName());
+			hadoopLibPath = Files.createTempDirectory(HADOOP_HOME);
+			if (SystemUtils.IS_OS_WINDOWS) {
+				Path binPath = Files.createDirectory(Paths.get(hadoopLibPath.toString(), "bin"));
+				InputStream winUtilsStream = getClass().getClassLoader().getResourceAsStream(WIN_UTIL);
+				Path winUtilsPath = Paths.get(binPath.toString(), WIN_UTIL);
+				Files.copy(winUtilsStream, winUtilsPath);
+				System.setProperty("hadoop.home.dir", hadoopLibPath.toString());
+			}
+		} catch (IOException e) {
+			throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
+					HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
+		}
+		return configuration;
 	}
 }

@@ -6,12 +6,15 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -37,8 +40,24 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 
+/**
+ * UpdateUINController Class.
+ * 
+ * @author Mahesh Kumar
+ *
+ */
 @Controller
 public class UpdateUINController extends BaseController implements Initializable {
+
+	private static final List<String> UIN_UPDATE_CONFIGURED_DEMOGRAPHIC_FIELDS_LIST = Arrays.asList(
+			RegistrationConstants.UIN_UPDATE_NAME, RegistrationConstants.UIN_UPDATE_AGE,
+			RegistrationConstants.UIN_UPDATE_GENDER, RegistrationConstants.UIN_UPDATE_ADDRESS,
+			RegistrationConstants.UIN_UPDATE_CONTACT_DETAILS, RegistrationConstants.UIN_UPDATE_PARENT_DETAILS,
+			RegistrationConstants.UIN_UPDATE_FOREIGNER);
+
+	private static final List<String> UIN_UPDATE_CONFIGURED_BIO_FIELDS_LIST = Arrays.asList(
+			RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION, RegistrationConstants.UIN_UPDATE_BIO_FP,
+			RegistrationConstants.UIN_UPDATE_BIO_IRIS, RegistrationConstants.UIN_UPDATE_CNIE_NUMBER);
 
 	private static final Logger LOGGER = AppConfig.getLogger(UpdateUINController.class);
 
@@ -87,152 +106,92 @@ public class UpdateUINController extends BaseController implements Initializable
 
 	@Autowired
 	Validations validation;
-	
+
 	@Value("${FINGERPRINT_DISABLE_FLAG}")
 	private String fingerprintDisableFlag;
-	
+
 	@Value("${IRIS_DISABLE_FLAG}")
 	private String irisDisableFlag;
-	
+
 	@Value("${FACE_DISABLE_FLAG}")
 	private String faceDisableFlag;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javafx.fxml.Initializable#initialize(java.net.URL,
+	 * java.util.ResourceBundle)
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		switchedOn = new SimpleBooleanProperty(false);
-		isChild = switchedOn.get();
-		toggleFunction();
-		FXUtils fxUtils = FXUtils.getInstance();
-		listenerOnFields(fxUtils);
-		SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
-		fxUtils.validateOnType(uinUpdateRoot,uinId, validation);
 
+		try {
+			switchedOn = new SimpleBooleanProperty(false);
+			switchedOn.set(false);
+			isChild = switchedOn.get();
+			if (!isChild) {
+				parentOrGuardianDetails.setDisable(true);
+			}
+			toggleFunction();
+			FXUtils fxUtils = FXUtils.getInstance();
+			listenerOnFields(fxUtils);
+			SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
+			fxUtils.validateOnType(uinUpdateRoot,uinId, validation);
 			biometricBox.getChildren().forEach(bio -> {
 				if (fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)
-						&& bio.getId().equals("biometricFingerprint")) {
+						&& bio.getId().equals(RegistrationConstants.UIN_UPDATE_BIO_FP)) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}
-				if (irisDisableFlag.equals(RegistrationConstants.DISABLE) && bio.getId().equals("biometricIris")) {
+				if (irisDisableFlag.equals(RegistrationConstants.DISABLE)
+						&& bio.getId().equals(RegistrationConstants.UIN_UPDATE_BIO_IRIS)) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}
 				if (fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)
 						&& irisDisableFlag.equals(RegistrationConstants.DISABLE)
-						&& bio.getId().equals("biometricException")) {
+						&& bio.getId().equals(RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION)) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}
 			});
-		configuringUpdateUINDemographicFields();
-		configuringUpdateUINBiometricFields();
+
+			updateUINFieldsConfiguration();
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+		}
 	}
 
 	/**
-	 * Configuring update UIN fields.
+	 * Update UIN fields configuration.
 	 */
-	private void configuringUpdateUINDemographicFields() {
-		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_NAME_ENABLE_FLAG)
-				.equals(RegistrationConstants.ENABLE)) {
-			demographicHBox.getChildren().forEach(demographicNode -> {
-				if (demographicNode.getId().equals("name")) {
-					demographicNode.setVisible(false);
-					demographicNode.setManaged(false);
-				}
-			});
-		}
-		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_AGE_ENABLE_FLAG)
-				.equals(RegistrationConstants.ENABLE)) {
-			demographicHBox.getChildren().forEach(demographicNode -> {
-				if (demographicNode.getId().equals("age")) {
-					demographicNode.setVisible(false);
-					demographicNode.setManaged(false);
-				}
-			});
-		}
-		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_GENDER_ENABLE_FLAG)
-				.equals(RegistrationConstants.ENABLE)) {
-			demographicHBox.getChildren().forEach(demographicNode -> {
-				if (demographicNode.getId().equals("gender")) {
-					demographicNode.setVisible(false);
-					demographicNode.setManaged(false);
-				}
-			});
-		}
-		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_ADDRESS_ENABLE_FLAG)
-				.equals(RegistrationConstants.ENABLE)) {
-			demographicHBox.getChildren().forEach(demographicNode -> {
-				if (demographicNode.getId().equals("address")) {
-					demographicNode.setVisible(false);
-					demographicNode.setManaged(false);
-				}
-			});
-		}
-		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONTACT_DTLS_ENABLE_FLG)
-				.equals(RegistrationConstants.ENABLE)) {
-			demographicHBox.getChildren().forEach(demographicNode -> {
-				if (demographicNode.getId().equals("contactDetails")) {
-					demographicNode.setVisible(false);
-					demographicNode.setManaged(false);
-				}
-			});
-		}
-		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_PARENT_DTLS_ENABLE_FLG)
-				.equals(RegistrationConstants.ENABLE)) {
-			demographicHBox.getChildren().forEach(demographicNode -> {
-				if (demographicNode.getId().equals("parentOrGuardianDetails")) {
-					demographicNode.setVisible(false);
-					demographicNode.setManaged(false);
-				}
-			});
-		}
-		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_FOREIGNER_ENABLE_FLG)
-				.equals(RegistrationConstants.ENABLE)) {
-			demographicHBox.getChildren().forEach(demographicNode -> {
-				if (demographicNode.getId().equals("foreigner")) {
-					demographicNode.setVisible(false);
-					demographicNode.setManaged(false);
-				}
-			});
-		}
-		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CNIE_NUMBER_ENABLE_FLAG)
-				.equals(RegistrationConstants.ENABLE)) {
-			biometricBox.getChildren().forEach(demographicNode -> {
-				if (demographicNode.getId().equals("cnieNumber")) {
-					demographicNode.setVisible(false);
-					demographicNode.setManaged(false);
-				}
-			});
-		}
-	}
+	private void updateUINFieldsConfiguration() {
+		List<String> configuredFieldsfromDB = Arrays.asList(
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FIELDS_FROM_DB))
+						.split(","));
 
-	private void configuringUpdateUINBiometricFields() {
-		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION_ENABLE_FLG)
-				.equals(RegistrationConstants.ENABLE)) {
-			biometricBox.getChildren().forEach(demographicNode -> {
-				if (demographicNode.getId().equals("biometricException")) {
-					demographicNode.setVisible(false);
-					demographicNode.setManaged(false);
-				}
-			});
+		for (String configureField : UIN_UPDATE_CONFIGURED_DEMOGRAPHIC_FIELDS_LIST) {
+			if (!configuredFieldsfromDB.contains(configureField)) {
+				demographicHBox.getChildren().forEach(demographicNode -> {
+					if (demographicNode.getId().equals(configureField)) {
+						demographicNode.setVisible(false);
+						demographicNode.setManaged(false);
+					}
+				});
+			}
+
 		}
-		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_BIO_FP_ENABLE_FLG)
-				.equals(RegistrationConstants.ENABLE)) {
-			biometricBox.getChildren().forEach(demographicNode -> {
-				if (demographicNode.getId().equals("biometricFingerprint")) {
-					demographicNode.setVisible(false);
-					demographicNode.setManaged(false);
-				}
-			});
-		}
-		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_BIO_IRIS_ENABLE_FLG)
-				.equals(RegistrationConstants.ENABLE)) {
-			biometricBox.getChildren().forEach(demographicNode -> {
-				if (demographicNode.getId().equals("biometricIris")) {
-					demographicNode.setVisible(false);
-					demographicNode.setManaged(false);
-				}
-			});
+
+		for (String configureField : UIN_UPDATE_CONFIGURED_BIO_FIELDS_LIST) {
+			if (!configuredFieldsfromDB.contains(configureField)) {
+				biometricBox.getChildren().forEach(demographicNode -> {
+					if (demographicNode.getId().equals(configureField)) {
+						demographicNode.setVisible(false);
+						demographicNode.setManaged(false);
+					}
+				});
+			}
 		}
 	}
 
@@ -267,12 +226,22 @@ public class UpdateUINController extends BaseController implements Initializable
 						toggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						toggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						isChild = newValue;
-
+						biometricException.setDisable(true);
+						biometricFingerprint.setDisable(true);
+						biometricIris.setDisable(true);
+						parentOrGuardianDetails.setDisable(false);
+						biometricException.selectedProperty().set(false);
+						biometricFingerprint.selectedProperty().set(false);
+						biometricIris.selectedProperty().set(false);
 					} else {
 						toggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						toggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						isChild = newValue;
-
+						parentOrGuardianDetails.setDisable(true);
+						biometricException.setDisable(false);
+						biometricFingerprint.setDisable(false);
+						biometricIris.setDisable(false);
+						parentOrGuardianDetails.selectedProperty().set(false);
 					}
 				}
 			});
@@ -282,10 +251,16 @@ public class UpdateUINController extends BaseController implements Initializable
 			LOGGER.info(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 					"Exiting the toggle function for toggle label 1 and toggle level 2");
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage());
+			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
+	/**
+	 * Submitting for UIN update after selecting the required fields.
+	 *
+	 * @param event the event
+	 */
 	@FXML
 	public void submitUINUpdate(ActionEvent event) {
 		LOGGER.info(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Updating UIN details");
@@ -332,11 +307,13 @@ public class UpdateUINController extends BaseController implements Initializable
 				}
 			}
 		} catch (InvalidIDException invalidIdException) {
-			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, invalidIdException.getMessage());
+			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					invalidIdException.getMessage() + ExceptionUtils.getStackTrace(invalidIdException));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UPDATE_UIN_VALIDATION_ALERT);
 		} catch (IOException ioException) {
-			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}

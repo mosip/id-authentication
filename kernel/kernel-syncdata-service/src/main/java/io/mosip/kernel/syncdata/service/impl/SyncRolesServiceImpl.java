@@ -59,7 +59,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 					RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorCode(),
 					RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorMessage());
 		}
-
+       
 		return rolesDtos;
 
 	}

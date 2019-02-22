@@ -23,6 +23,7 @@ public class Identity {
 	private List<FieldValue> capturedRegisteredDevices;
 	private List<FieldValue> capturedNonRegisteredDevices;
 	private List<FieldValue> checkSum;
+	private List<String> uinUpdatedFields;
 
 	/**
 	 * @return the biometric
@@ -199,6 +200,20 @@ public class Identity {
 	 */
 	public void setCheckSum(List<FieldValue> checkSum) {
 		this.checkSum = checkSum;
+	}
+
+	/**
+	 * @return the uinUpdatedFields
+	 */
+	public List<String> getUinUpdatedFields() {
+		return uinUpdatedFields;
+	}
+
+	/**
+	 * @param uinUpdatedFields the uinUpdatedFields to set
+	 */
+	public void setUinUpdatedFields(List<String> uinUpdatedFields) {
+		this.uinUpdatedFields = uinUpdatedFields;
 	}
 
 }

@@ -134,6 +134,6 @@ public interface FileSystemAdapter {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public void unpackPacket(String id);
+	public void unpackPacket(String id) throws IOException ;
 
 }

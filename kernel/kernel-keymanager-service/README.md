@@ -133,16 +133,25 @@ Response response = client.newCall(request).execute();
 
 ### Linux (Docker)
 
-1. (First time only) Build kernel-keymanager-softhsm docker image using kernel-keymanager-softhsm Dockerfile in softhsm directory with command:
-
+1. (First time only) Rename the  kernel-keymanager-softhsm Dockerfile in softhsm directory to `Dockerfile`. Build kernel-keymanager-softhsm docker image using this Dockerfile with command:
 ```
-docker build --build-arg softhsm_pin=1234 --tag kernel-keymanager-softhsm:1.0 .
+docker build --build-arg softhsm_pin=1234 --tag kernel-keymanager-softhsm:0.1 .
 ```
 
 The pin passed to the variable `softhsm_pin` in docker build command should be same as the value of property
 `mosip.kernel.keymanager.softhsm.keystore-pass` in properties file.
 
-2. (First time only) Push kernel-keymanager-softhsm docker image to private repository and modify kernel-keymanager-service Dockerfile with kernel-keymanager-softhsm docker image URI.
+2. (First time only) Modify the `FROM` in kernel-keymanager-service Dockerfile with kernel-keymanager-softhsm docker image name:
+```
+FROM kernel-keymanager-softhsm:0.1
+```
+
+OR
+
+2. (First time only) Push kernel-keymanager-softhsm docker image to private repository and modify the `FROM` in kernel-keymanager-service Dockerfile with kernel-keymanager-softhsm docker image URI:
+```
+FROM <your-repository>/kernel-keymanager-softhsm:0.1
+```
 
 3. Build kernel-keymanager-service docker image with command:
 
