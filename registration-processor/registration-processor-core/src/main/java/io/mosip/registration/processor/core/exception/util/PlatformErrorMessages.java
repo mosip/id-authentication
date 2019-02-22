@@ -28,6 +28,9 @@ public enum PlatformErrorMessages {
 	/** The rpr pkr packet not available. */
 	RPR_PKR_PACKET_NOT_AVAILABLE(PlatformErrorConstants.RPR_PACKET_RECEIVER_MODULE + "006", "Packet not avaialble"),
 
+	
+	RPR_PKR_UNKNOWN_EXCEPTION(PlatformErrorConstants.RPR_PACKET_RECEIVER_MODULE + "007", "Unknown Exception"),
+
 	/** The rpr rgs registration table not accessible. */
 	// Registration Status Exception error code and message
 	RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "001",

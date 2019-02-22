@@ -25,6 +25,7 @@ import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedE
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotAvailableException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
+import io.mosip.registration.processor.packet.receiver.exception.PacketReceiverAppException;
 import io.mosip.registration.processor.packet.receiver.exception.ValidationException;
 import io.mosip.registration.processor.packet.receiver.exception.systemexception.TimeoutException;
 import io.mosip.registration.processor.packet.receiver.exception.systemexception.UnexpectedException;
@@ -172,10 +173,9 @@ public class PacketReceiverExceptionHandler {
 	}
 
 	public String unknownExceptionHandler(Exception e) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"RPR-DBE-001 JSON DATA DECODE exception",e.getMessage());
-
-		PacketNotAvailableException packetNotAvailableException=new PacketNotAvailableException(PlatformErrorMessages.RPR_PKR_UNKNOWN_EXCEPTION.getMessage(),e);
-		return buildPacketReceiverExceptionResponse((Exception)packetNotAvailableException);
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"Unknow Exception",e.getMessage());
+		PacketReceiverAppException packetReceiverAppException=new PacketReceiverAppException(PlatformErrorMessages.RPR_PKR_UNKNOWN_EXCEPTION,e);
+		return buildPacketReceiverExceptionResponse((Exception)packetReceiverAppException);
 	}
 
 	/**
