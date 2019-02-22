@@ -54,7 +54,7 @@
                      </image>
                   </ImageView>
                   <Button layoutX="270.0" layoutY="224.0" mnemonicParsing="false" onAction="#validateIris" styleClass="RegbuttonStyle" text="Scan" />
-                  <TextField fx:id="irisUserId" layoutX="86.0" layoutY="89.0" styleClass="authenticationStyle" promptText="Username" />
+                  <TextField fx:id="fpUserId" layoutX="86.0" layoutY="89.0" styleClass="authenticationStyle" promptText="Username" />
                </children>
             </AnchorPane>
             <AnchorPane fx:id="faceBasedLogin" layoutY="1.0" styleClass="authenticationAnchorPaneStyle" visible="false">
@@ -66,13 +66,14 @@
                      </image>
                   </ImageView>
                   <Button layoutX="270.0" layoutY="224.0" mnemonicParsing="false" onAction="#validateFace" styleClass="RegbuttonStyle" text="Scan" />
-                  <TextField fx:id="faceUserId" layoutX="86.0" layoutY="89.0" promptText="Username" styleClass="authenticationStyle" />
+                  <TextField fx:id="fpUserId" layoutX="86.0" layoutY="89.0" promptText="Username" styleClass="authenticationStyle" />
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="errorPane" layoutY="1.0" styleClass="authenticationAnchorPaneStyle" visible="false">
+            <AnchorPane fx:id="errorPane" layoutY="1.0" prefHeight="137.0" prefWidth="500.0" visible="false">
                <children>
                	  <Label fx:id="errorLabel" layoutX="132.0" layoutY="38.0" />
-                  <Label fx:id="errorText" layoutX="50.0" layoutY="80.0" prefWidth="400" prefHeight="100.0" />
+                  <Label fx:id="errorText1" layoutX="10.0" layoutY="80.0" />
+                  <Label fx:id="errorText2" layoutX="150.0" layoutY="110.0" />
                </children>
             </AnchorPane>
          </children>

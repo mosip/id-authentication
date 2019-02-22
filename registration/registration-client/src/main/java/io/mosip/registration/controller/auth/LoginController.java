@@ -340,24 +340,21 @@ public class LoginController extends BaseController implements Initializable {
 							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 									"Ignoring FingerPrint login if the configuration is off");
 							
-							if (loginList.size() > 1 && fingerprintDisableFlag
-									.equals(RegistrationConstants.DISABLE)) {
+							if (loginList.size() > 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)) {
 								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.BIO));
 							}
 							
 							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-									"Ignoring FingerPrint login if the configuration is off");
+									"Ignoring Iris login if the configuration is off");
 							
-							if (loginList.size() > 1 && irisDisableFlag
-									.equals(RegistrationConstants.DISABLE)) {
+							if (loginList.size() > 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)) {
 								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.IRIS));
 							}
 							
 							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-									"Ignoring FingerPrint login if the configuration is off");
+									"Ignoring Face login if the configuration is off");
 							
-							if (loginList.size() > 1 && faceDisableFlag
-									.equals(RegistrationConstants.DISABLE)) {
+							if (loginList.size() > 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)) {
 								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.FACE));
 							}
 
@@ -372,18 +369,15 @@ public class LoginController extends BaseController implements Initializable {
 								errorPane.setVisible(true);
 							} else {
 
-								if ((fingerprintDisableFlag
-										.equals(RegistrationConstants.DISABLE)
+								if ((fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)
 										&& loginMode.equalsIgnoreCase(RegistrationConstants.BIO))
-										|| (irisDisableFlag
-												.equals(RegistrationConstants.DISABLE)
+										|| (irisDisableFlag.equals(RegistrationConstants.DISABLE)
 												&& loginMode.equalsIgnoreCase(RegistrationConstants.IRIS))
-										|| (faceDisableFlag
-												.equals(RegistrationConstants.DISABLE)
+										|| (faceDisableFlag.equals(RegistrationConstants.DISABLE)
 												&& loginMode.equalsIgnoreCase(RegistrationConstants.FACE))) {
 
 									generateAlert(RegistrationConstants.ERROR,
-											RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN);
+											RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1.concat(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2));
 
 								} else {
 									userIdPane.setVisible(false);
