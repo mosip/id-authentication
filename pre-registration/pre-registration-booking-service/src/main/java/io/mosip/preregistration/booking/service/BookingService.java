@@ -462,13 +462,11 @@ public class BookingService {
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				List<RegistrationBookingEntity> registrationEntityList = bookingDAO.findByPreregistrationId(preregId);
 				registrationEntityList.forEach(iterate -> {
-					if (serviceUtil.checkStatusForDeletion(iterate.getStatusCode())) {
 						bookingDAO.deleteByPreRegistrationId(preregId);
 						deleteDto.setPreRegistrationId(iterate.getBookingPK().getPreregistrationId());
 						deleteDto.setDeletedBy(iterate.getCrBy());
 						deleteDto.setDeletedDateTime(new Date(System.currentTimeMillis()));
 						deleteList.add(deleteDto);
-					}
 
 				});
 			}

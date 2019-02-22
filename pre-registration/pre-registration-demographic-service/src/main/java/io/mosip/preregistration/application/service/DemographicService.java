@@ -340,7 +340,9 @@ public class DemographicService {
 				if (!serviceUtil.isNull(demographicEntity)) {
 					if (serviceUtil.checkStatusForDeletion(demographicEntity.getStatusCode())) {
 						callDocumentServiceToDeleteAllByPreId(preregId);
-						callBookingServiceToDeleteAllByPreId(preregId);
+						if(!(demographicEntity.getStatusCode().equals(StatusCodes.PENDING_APPOINTMENT.getCode()))) {
+							callBookingServiceToDeleteAllByPreId(preregId);
+						}		
 						int isDeletedDemo = demographicRepository.deleteByPreRegistrationId(preregId);
 						if (isDeletedDemo > 0) {
 							deleteDto.setPreRegistrationId(demographicEntity.getPreRegistrationId());
@@ -635,7 +637,7 @@ public class DemographicService {
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder
-					.fromHttpUrl(resourceUrl + "pre-registration/deleteAllByPreRegId")
+					.fromHttpUrl(resourceUrl + "/deleteAllByPreRegId")
 					.queryParam("pre_registration_id", preregId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
