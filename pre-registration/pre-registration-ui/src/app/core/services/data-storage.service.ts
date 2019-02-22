@@ -199,10 +199,10 @@ export class DataStorageService {
     //   const options = new RequestOptions({
     //     params: params,
     //   });
-    this.COPY_DOCUMENT_URL =
+    const url =
       this.COPY_DOCUMENT_URL + '?catCode=POA&destinationPreId=' + destinationId + '&sourcePrId=' + sourceId;
-
-    return this.httpClient.post(this.COPY_DOCUMENT_URL, '');
+    console.log('copy document URL', url);
+    return this.httpClient.post(url, '');
   }
 
   generateQRCode(data: string) {
