@@ -37,7 +37,7 @@ public interface RegistrationCenterDeviceHistoryRepository
 	 * @return RegistrationCenterDeviceHistory fetched from database
 	 */
 
-	@Query(value = "Select rcdh.eff_dtimes, rcdh.regcntr_id,rcdh.cr_by, rcdh.cr_dtimes, rcdh.del_dtimes, rcdh.is_active, rcdh.is_deleted, rcdh.upd_by, rcdh.upd_dtimes, rcdh.device_id from master.reg_center_device_h rcdh where rcdh.regcntr_id = ?1 and rcdh.device_id = ?2 and rcdh.eff_dtimes <= ?3 and ( rcdh.is_deleted = false or rcdh.is_deleted is null) order by rcdh.eff_dtimes desc limit 1", nativeQuery = true)
+	@Query(value = "Select rcdh.eff_dtimes, rcdh.lang_code, rcdh.regcntr_id,rcdh.cr_by, rcdh.cr_dtimes, rcdh.del_dtimes, rcdh.is_active, rcdh.is_deleted, rcdh.upd_by, rcdh.upd_dtimes, rcdh.device_id from master.reg_center_device_h rcdh where rcdh.regcntr_id = ?1 and rcdh.device_id = ?2 and rcdh.eff_dtimes <= ?3 and ( rcdh.is_deleted = false or rcdh.is_deleted is null) order by rcdh.eff_dtimes desc limit 1", nativeQuery = true)
 	RegistrationCenterDeviceHistory findByFirstByRegCenterIdAndDeviceIdAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 			String regCenterId, String deviceId, LocalDateTime effectDtimes);
 }
