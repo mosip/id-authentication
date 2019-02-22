@@ -23,7 +23,7 @@ MOSIP system can use multiple file systems. For example, the files system can be
 
 
 
-![Module Diagram](_images/kernel-fsadapter-hdfs-cd.png)
+![Module Diagram](_images/kernel-fsadapter-cd.png)
 
 
 
