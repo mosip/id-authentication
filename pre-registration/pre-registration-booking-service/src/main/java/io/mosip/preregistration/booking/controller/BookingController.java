@@ -27,11 +27,11 @@ import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.BookingStatusDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
-import io.mosip.preregistration.booking.dto.DeleteBookingDTO;
 import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.booking.service.BookingService;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
+import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
 import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
@@ -53,7 +53,7 @@ import io.swagger.annotations.ApiResponses;
  *
  */
 @RestController
-@RequestMapping("/v0.1/pre-registration/booking/")
+@RequestMapping("/")
 @Api(tags = "Booking")
 @CrossOrigin("*")
 public class BookingController {

@@ -175,7 +175,7 @@ export class DashBoardComponent implements OnInit {
                 const message = {
                   case: 'MESSAGE',
                   title: 'Success',
-                  message: 'Action was completed successfully'
+                  message: 'The selected application has been successfully deleted'
                 };
                 dialogRef = this.openDialog(message, '250px');
                 const index = this.users.indexOf(element);
@@ -187,7 +187,7 @@ export class DashBoardComponent implements OnInit {
                 const message = {
                   case: 'MESSAGE',
                   title: 'Error',
-                  message: 'Action could not be completed'
+                  message: 'The selected application could not be deleted'
                 };
                 dialogRef = this.openDialog(message, '250px');
               }
@@ -196,7 +196,7 @@ export class DashBoardComponent implements OnInit {
             const message = {
               case: 'MESSAGE',
               title: 'Error',
-              message: 'Action could not be completed'
+              message: 'The selected application could not be deleted'
             };
             dialogRef = this.openDialog(message, '250px');
           }
@@ -218,7 +218,7 @@ export class DashBoardComponent implements OnInit {
                 const message = {
                   case: 'MESSAGE',
                   title: 'Success',
-                  message: 'Action was completed successfully'
+                  message: 'Appointment for the selected application has been successfully deleted'
                 };
                 dialogRef = this.openDialog(message, '250px');
                 const index = this.users.indexOf(element);
@@ -233,7 +233,7 @@ export class DashBoardComponent implements OnInit {
                 const message = {
                   case: 'MESSAGE',
                   title: 'Error',
-                  message: 'Action could not be completed'
+                  message: 'Appointment for the selected application could not be deleted'
                 };
                 dialogRef = this.openDialog(message, '250px');
               }
@@ -242,7 +242,7 @@ export class DashBoardComponent implements OnInit {
             const message = {
               case: 'MESSAGE',
               title: 'Error',
-              message: 'Action could not be completed'
+              message: 'Appointment for the selected application could not be deleted'
             };
             dialogRef = this.openDialog(message, '250px');
           }

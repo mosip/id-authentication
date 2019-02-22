@@ -482,7 +482,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
   onBack() {
     let url = '';
-    if (this.message['modifyUserFromPreview'] === 'true') {
+    if (this.message['modifyUser'] === 'false') {
       url = Utils.getURL(this.router.url, 'summary/preview');
     } else {
       url = Utils.getURL(this.router.url, 'dashboard/' + this.loginId, 3);
@@ -491,12 +491,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
   }
 
   onEntityChange(entity: any, event?: MatButtonToggleChange) {
-    // console.log(event);
-
     if (event) {
       entity.forEach(element => {
-        // console.log(element);
-
         element.filter((element: any) => {
           if (event.value === element.code) {
             const codeValue: CodeValueModal = {
@@ -665,15 +661,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
   private createAttributeArray(element: string, identity: IdentityModel) {
     let attr: any;
-
-    // if (element == 'residenceStatus') {
-    //   console.log('after return1');
-    //   return;
-    // }
-    //  else if (element === 'CNIENumber') {
-    //   attr = +this.userForm.controls[this.formControlNames[element]].value;
-    // }
-    // else
     if (typeof identity[element] === 'object') {
       let forms = [];
       let formControlNames = [];
@@ -695,10 +682,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
     } else if (typeof identity[element] === 'string' && this.userForm.controls[this.formControlNames[element]].value) {
       attr = this.userForm.controls[this.formControlNames[element]].value;
     }
-    //  else if (typeof identity[element] === 'number') {
-    //   // console.log(element, this.userForm.controls[this.formControlNames[element]].value);
-    //   attr = +this.userForm.controls[this.formControlNames[element]].value;
-    // }
     identity[element] = attr;
   }
 

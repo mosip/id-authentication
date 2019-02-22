@@ -201,6 +201,7 @@ public class ConnectionUtil {
 		Configuration configuration = null;
 		try {
 			configuration = new Configuration();
+			configuration.set("fs.defaultFS", nameNodeUrl);
 			configuration.set("fs.hdfs.impl", DistributedFileSystem.class.getName());
 			configuration.set("fs.file.impl", LocalFileSystem.class.getName());
 			hadoopLibPath = Files.createTempDirectory(HADOOP_HOME);

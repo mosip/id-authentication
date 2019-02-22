@@ -15,6 +15,7 @@ import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
+import io.mosip.preregistration.application.exception.BookingDeletionFailedException;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.InvalidDateFormatException;
 import io.mosip.preregistration.application.exception.MissingRequestParameterException;
@@ -86,8 +87,10 @@ public class DemographicExceptionCatcher {
 			throw new RecordFailedToDeleteException(((RecordFailedToDeleteException) ex).getErrorCode(),((RecordFailedToDeleteException) ex).getErrorText());
 		}
 		else if (ex instanceof InvalidDateFormatException) {
-			throw	new InvalidDateFormatException(((InvalidDateFormatException) ex).getErrorCode(),
+			throw new InvalidDateFormatException(((InvalidDateFormatException) ex).getErrorCode(),
 					((InvalidDateFormatException) ex).getErrorText());
+		}else if (ex instanceof BookingDeletionFailedException) {
+			throw new BookingDeletionFailedException(((BookingDeletionFailedException) ex).getErrorCode(),((BookingDeletionFailedException) ex).getErrorText());
 		}
 	}
 

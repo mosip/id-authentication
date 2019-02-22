@@ -115,9 +115,9 @@ public class BookingServiceUtil {
 	String holidayListUrl;
 
 	/**
-	 * Reference for ${preRegResourceUrl} from property file
+	 * Reference for ${demographic.resource.url} from property file
 	 */
-	@Value("${preRegResourceUrl}")
+	@Value("${demographic.resource.url}")
 	private String preRegResourceUrl;
 	
 	@Value("${timeSpanCheck}")
@@ -371,8 +371,8 @@ public class BookingServiceUtil {
 	}
 	public boolean timeSpanCheck(LocalDateTime bookedDateTime) {
 		LocalDateTime current = LocalDateTime.now();
-        long hours=ChronoUnit.HOURS.between(current, bookedDateTime);
-		if(Math.abs(hours)>timeSpanCheck) return true;
+        long hours=ChronoUnit.MINUTES.between(current, bookedDateTime);
+		if(Math.abs(hours)>=timeSpanCheck) return true;
 		else return false;
 	}
 

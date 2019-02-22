@@ -93,7 +93,7 @@ public class TranslitrationSwagConfig {
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration-translitrator").select()
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.transliteration.controller"))
-				.paths(PathSelectors.ant("/v0.1/pre-registration/*")).build();
+				.paths(PathSelectors.ant("/*")).build();
 		
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);
