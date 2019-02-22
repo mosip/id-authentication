@@ -3,6 +3,7 @@ package io.mosip.authentication.service.integration;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 //import java.util.Base64;
 import java.util.Map;
 import java.util.Objects;
@@ -13,6 +14,7 @@ import javax.crypto.SecretKey;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -71,9 +73,12 @@ public class KeyManager {
 	/** The rest request factory. */
 	@Autowired
 	private RestRequestFactory restRequestFactory;
-	
+
 	@Autowired
 	private KeyGenerator keyGenerator;
+
+	@Autowired
+	private Environment environment;
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(KeyManager.class);
@@ -81,13 +86,10 @@ public class KeyManager {
 	/**
 	 * Request data.
 	 *
-	 * @param requestBody
-	 *            the request body
-	 * @param mapper
-	 *            the mapper
+	 * @param requestBody the request body
+	 * @param mapper      the mapper
 	 * @return the map
-	 * @throws IdAuthenticationAppException
-	 *             the id authentication app exception
+	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	public Map<String, Object> requestData(Map<String, Object> requestBody, ObjectMapper mapper)
 			throws IdAuthenticationAppException {
@@ -116,14 +118,15 @@ public class KeyManager {
 				try {
 					cryptoManagerRequestDto.setApplicationId(appId);
 					cryptoManagerRequestDto.setReferenceId(tspId);
-					LocalDateTime utcTime = DateUtils.getUTCCurrentDateTime();
-					cryptoManagerRequestDto.setTimeStamp(utcTime);
+					cryptoManagerRequestDto.setTimeStamp(
+							DateUtils.getUTCCurrentDateTimeString(environment.getProperty("datetime.pattern")));
 					cryptoManagerRequestDto.setData(CryptoUtil.encodeBase64(
 							CryptoUtil.combineByteArray(encryptedRequest, encyptedSessionkey, keySplitter)));
 					restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.DECRYPTION_SERVICE,
 							cryptoManagerRequestDto, CryptomanagerResponseDto.class);
 					cryptomanagerResponseDto = restHelper.requestSync(restRequestDTO);
-					decryptedData = new String(Base64.decodeBase64(cryptomanagerResponseDto.getData()), StandardCharsets.UTF_8);
+					decryptedData = new String(Base64.decodeBase64(cryptomanagerResponseDto.getData()),
+							StandardCharsets.UTF_8);
 					logger.info("NA", "NA", "NA", "cryptomanagerResponseDto " + decryptedData);
 				} catch (RestServiceException e) {
 					logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
@@ -141,9 +144,9 @@ public class KeyManager {
 		}
 		return request;
 	}
-	
+
 	public SecretKey getSymmetricKey() {
-		return keyGenerator.getSymmetricKey();	
+		return keyGenerator.getSymmetricKey();
 	}
 
 }

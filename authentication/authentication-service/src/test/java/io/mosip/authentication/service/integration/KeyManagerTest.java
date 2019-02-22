@@ -83,6 +83,9 @@ public class KeyManagerTest {
 	@InjectMocks
 	private KeyManager keyManager;
 
+	@Autowired
+	private Environment environment;
+
 	/**
 	 * Before.
 	 */
@@ -90,6 +93,7 @@ public class KeyManagerTest {
 	public void before() {
 		// ReflectionTestUtils.setField(restRequestFactory, "env", environment);
 		ReflectionTestUtils.setField(keyManager, "keySplitter", "#KEY_SPLITTER#");
+		ReflectionTestUtils.setField(keyManager, "environment", environment);
 	}
 
 	/**

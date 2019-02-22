@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.junit.Test;
@@ -205,16 +206,17 @@ public class MatchTest {
 		MatchingStrategyType.getMatchStrategyType("E");
 		IdMapping idMapping = new IdMapping() {
 
-			@Override
-			public Function<MappingConfig, List<String>> getMappingFunction() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
+			
 			@Override
 			public String getIdname() {
 				// TODO Auto-generated method stub
 				return "name";
+			}
+
+			@Override
+			public BiFunction<MappingConfig, MatchType, List<String>> getMappingFunction() {
+				// TODO Auto-generated method stub
+				return null;
 			}
 		};
 		String name = "name";
