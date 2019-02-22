@@ -117,7 +117,6 @@ public class BookingService {
 	 * 
 	 * @return ResponseDto<String>
 	 */
-	@Transactional
 	public MainResponseDTO<String> addAvailability() {
 		log.info("sessionId", "idType", "id", "In addAvailability method of Booking Service");
 		MainResponseDTO<String> response = new MainResponseDTO<>();
@@ -129,6 +128,7 @@ public class BookingService {
 				for (LocalDate sDate = LocalDate.now(); (sDate.isBefore(endDate)
 						|| sDate.isEqual(endDate)); sDate = sDate.plusDays(1)) {
 					serviceUtil.timeSlotCalculator(regDto, holidaylist, sDate, bookingDAO);
+					Thread.sleep(1000);
 				}
 			}
 		} catch (Exception ex) {
