@@ -12,7 +12,6 @@ import io.mosip.registration.processor.rest.client.config.RestConfigBean;
 import io.mosip.registration.processor.status.config.RegistrationStatusBeanConfig;
 
 @SpringBootApplication
-
 @ComponentScan(basePackages = { "io.mosip.registration.processor.*" }, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
         RegistrationStatusBeanConfig.class, RestConfigBean.class, PacketStorageBeanConfig.class, RestConfigBean.class,CoreConfigBean.class }))
 public class RestAbisApplication {

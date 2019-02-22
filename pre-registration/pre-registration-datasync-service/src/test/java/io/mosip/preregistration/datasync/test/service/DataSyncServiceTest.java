@@ -34,12 +34,16 @@ import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.datasync.dto.DataSyncRequestDTO;
 import io.mosip.preregistration.datasync.dto.PreRegArchiveDTO;
 import io.mosip.preregistration.datasync.dto.PreRegistrationIdsDTO;
 import io.mosip.preregistration.datasync.dto.ReverseDataSyncRequestDTO;
 import io.mosip.preregistration.datasync.dto.ReverseDatasyncReponseDTO;
+import io.mosip.preregistration.datasync.errorcodes.ErrorCodes;
+import io.mosip.preregistration.datasync.errorcodes.ErrorMessages;
+import io.mosip.preregistration.datasync.exception.DemographicGetDetailsException;
 import io.mosip.preregistration.datasync.repository.InterfaceDataSyncRepo;
 import io.mosip.preregistration.datasync.repository.ProcessedDataSyncRepo;
 import io.mosip.preregistration.datasync.service.DataSyncService;
@@ -259,6 +263,16 @@ public class DataSyncServiceTest {
 
 		assertEquals(response.getResponse().getPreRegistrationId(), archiveDTO.getPreRegistrationId());
 	}
+	
+	
+	@Test(expected=DemographicGetDetailsException.class)
+	public void GetPreRegistrationTest1() throws Exception {
+		DemographicGetDetailsException ex= new DemographicGetDetailsException(ErrorCodes.PRG_DATA_SYNC_007.toString(),
+				ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString());
+		Mockito.when(serviceUtil.callGetPreRegInfoRestService(Mockito.anyString())).thenThrow(ex);
+	    dataSyncService.getPreRegistrationData(preId);
+	}
+	
 
 	@Test
 	public void successRetrieveAllPreRegIdTest() throws Exception {
@@ -273,6 +287,15 @@ public class DataSyncServiceTest {
 
 		assertEquals(preRegistrationIdsDTO.getCountOfPreRegIds(), response.getResponse().getCountOfPreRegIds());
 	}
+	
+	@Test(expected=InvalidRequestParameterException.class)
+	public void RetrieveAllPreRegIdTest1() throws Exception {
+		InvalidRequestParameterException ex= new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_009.toString(),
+					ErrorMessages.INVALID_REGISTRATION_CENTER_ID.toString());
+		Mockito.when(serviceUtil.prepareRequestParamMap(Mockito.any())).thenReturn(requestMap);
+		Mockito.when(serviceUtil.validateDataSyncRequest(Mockito.any())).thenThrow(ex);
+		dataSyncService.retrieveAllPreRegIds(datasyncReqDto);
+	}
 
 	@Test
 	public void successStoreConsumedPreRegistrationsTest() throws Exception {
@@ -283,6 +306,14 @@ public class DataSyncServiceTest {
 
 		assertEquals(reverseDatasyncReponse.getAlreadyStoredPreRegIds(),
 				reverseResponseDTO.getResponse().getAlreadyStoredPreRegIds());
+	}
+	
+	@Test(expected=InvalidRequestParameterException.class)
+	public void storeConsumedPreRegistrationsTest1() throws Exception {
+		InvalidRequestParameterException ex= new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_009.toString(),
+				ErrorMessages.INVALID_REGISTRATION_CENTER_ID.toString());
+		Mockito.when(serviceUtil.prepareRequestParamMap(Mockito.any())).thenThrow(ex);
+		dataSyncService.storeConsumedPreRegistrations(reverseRequestDTO);
 	}
 
 }

@@ -53,7 +53,7 @@ public class UserManagementConfig {
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration").select()
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.auth.controller"))
-				.paths(PathSelectors.ant("/v0.1/pre-registration/*")).build();
+				.paths(PathSelectors.ant("/v0.1/*")).build();
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);
 			System.out.println("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");

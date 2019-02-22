@@ -154,6 +154,8 @@ public class MessageSenderStage extends MosipVerticleManager {
 		object.setMessageBusAddress(MessageBusAddress.MESSAGE_SENDER_BUS);
 		boolean isTransactionSuccessful = false;
 		String id = object.getRid();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id,
+				"MessageSenderStage::process()::entry");
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(id);
 
 		try {
@@ -167,7 +169,9 @@ public class MessageSenderStage extends MosipVerticleManager {
 			String[] ccEMailList = null;
 
 			if (notificationTypes == null || notificationTypes.isEmpty()) {
-				throw new ConfigurationNotFoundException(
+                description = "Message sender failed for registrationId " + id + "::"
+                        + PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getCode();
+                throw new ConfigurationNotFoundException(
 						PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getCode());
 			}
 			String[] allNotificationTypes = notificationTypes.split("\\|");
@@ -178,8 +182,11 @@ public class MessageSenderStage extends MosipVerticleManager {
 
 			sendNotification(id, attributes, ccEMailList, allNotificationTypes);
 			isTransactionSuccessful = true;
-			description = "Notification sent successfully" + id;
-
+            description = "Notification sent successfully for registrationId " + id;
+            regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+                    id, "MessageSenderStage::process()::exit");
+            regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+                    id, description);
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.NOTIFICATION_SENT_TO_RESIDENT.toString());
 			registrationStatusDto.setStatusComment(description);
 
@@ -194,25 +201,26 @@ public class MessageSenderStage extends MosipVerticleManager {
 		} catch (EmailIdNotFoundException | PhoneNumberNotFoundException | TemplateGenerationFailedException
 				| ConfigurationNotFoundException e) {
 
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
-					e.getMessage() + ExceptionUtils.getStackTrace(e));
-			description = "Email, phone, template or notification type is missing" + id;
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					id, e.getMessage() + ExceptionUtils.getStackTrace(e));
+			description = "Email/phone/template/notification type is missing for registrationId " + id + "::"
+					+ e.getMessage();
 			throw new TemplateGenerationFailedException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
 		} catch (TemplateNotFoundException tnf) {
 
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
-					tnf.getMessage() + ExceptionUtils.getStackTrace(tnf));
-			description = "template was not found for notification" + id;
-		} catch (FSAdapterException e) {
+            regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+                    id, tnf.getMessage() + ExceptionUtils.getStackTrace(tnf));
+            description = "template not found for notification with registrationId " + id + "::" + tnf.getMessage();
+        } catch (FSAdapterException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
 					PlatformErrorMessages.RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + e.getMessage());
 			description = "The Packet store set by the System is not accessible" + id;
 
 		} catch (Exception ex) {
 
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
-					ex.getMessage() + ExceptionUtils.getStackTrace(ex));
-			description = "Internal error occured while processing registration  id : " + id;
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					id, ex.getMessage() + ExceptionUtils.getStackTrace(ex));
+			description = "Internal error occured while processing registrationId " + id + "::" + ex.getMessage();
 		} finally {
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()

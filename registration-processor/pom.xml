@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.8.8</version>
+		<version>0.8.10</version>
 	</parent>
 
 	<groupId>io.mosip.registrationprocessor</groupId>
@@ -28,7 +29,7 @@
 		<maven.javadoc.version>3.0.1</maven.javadoc.version>
 
 		<!-- Core -->
-        <spring-framework.version>5.0.6.RELEASE</spring-framework.version>
+		<spring-framework.version>5.0.6.RELEASE</spring-framework.version>
 		<spring.version>5.0.4.RELEASE</spring.version>
 		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
 		<spring.data.version>2.0.9.RELEASE</spring.data.version>
@@ -94,85 +95,88 @@
 		<!-- json-simple -->
 		<jsonsimple.version>1.1.1</jsonsimple.version>
 
+       <!-- joda-time -->
+		<jodatime.version>2.8.1</jodatime.version>
+
 		<!-- local -->
-		<registration.status.service.version>0.8.8</registration.status.service.version>
-		<registration.processor.core.version>0.8.8</registration.processor.core.version>
-		<filesystem.adapter.ceph.version>0.8.8</filesystem.adapter.ceph.version>
-		<packet.manager.version>0.8.8</packet.manager.version>
-		<registration.processor.rest.client.version>0.8.8</registration.processor.rest.client.version>
-		<packet.info.storage.service.version>0.8.8</packet.info.storage.service.version>
-		<packet.bio.dedupe.service.impl.version>0.8.8</packet.bio.dedupe.service.impl.version>
+		<registration.status.service.version>0.8.10</registration.status.service.version>
+		<registration.processor.core.version>0.8.10</registration.processor.core.version>
+		<filesystem.adapter.ceph.version>0.8.10</filesystem.adapter.ceph.version>
+		<packet.manager.version>0.8.10</packet.manager.version>
+		<registration.processor.rest.client.version>0.8.10</registration.processor.rest.client.version>
+		<packet.info.storage.service.version>0.8.10</packet.info.storage.service.version>
+		<packet.bio.dedupe.service.impl.version>0.8.10</packet.bio.dedupe.service.impl.version>
 		<registration.processor.print.service.version>0.8.8</registration.processor.print.service.version>
-		<registration.processor.message.sender.version>0.8.8</registration.processor.message.sender.version>
-		<packet.bio.dedupe.api.version>0.8.8</packet.bio.dedupe.api.version>
+		<registration.processor.message.sender.version>0.8.10</registration.processor.message.sender.version>
+		<packet.bio.dedupe.api.version>0.8.10</packet.bio.dedupe.api.version>
 
 		<!-- Kernel -->
-		<kernel.core.version>0.8.8</kernel.core.version>
-		<kernel.dataaccess.hibernate.version>0.8.7</kernel.dataaccess.hibernate.version>
-		<kernel.templatemanager.velocity.version>0.8.7</kernel.templatemanager.velocity.version>
-		<kernel.emailnotification.service.version>0.8.7</kernel.emailnotification.service.version>
-		<kernel.smsnotification.service.version>0.8.7</kernel.smsnotification.service.version>
-		<kernel.idvalidator.version>0.8.8</kernel.idvalidator.version>
-		<kernel.clamav.version>0.8.0</kernel.clamav.version>
-		
+		<kernel.core.version>0.8.10</kernel.core.version>
+		<kernel.dataaccess.hibernate.version>0.8.10</kernel.dataaccess.hibernate.version>
+		<kernel.templatemanager.velocity.version>0.8.10</kernel.templatemanager.velocity.version>
+		<kernel.emailnotification.service.version>0.8.10</kernel.emailnotification.service.version>
+		<kernel.smsnotification.service.version>0.8.10</kernel.smsnotification.service.version>
+		<kernel.idvalidator.version>0.8.10</kernel.idvalidator.version>
+		<kernel.clamav.version>0.8.10</kernel.clamav.version>
+
 		<sonar.coverage.exclusions>**/dto/**,
-		**/exception/*Exception.java,
-		**/core/code/*.java,
-		**/packet/storage/entity/*.java,
-		**/manager/exception/systemexception/*.java,
-		**/registration/processor/rest/client/*.java,
-**/registration/processor/rest/client/audit/builder/*.java,
-**/registration/processor/rest/client/utils/*.java,
-**/registration/processor/packet/receiver/config/*.java,
-**/registration/processor/packet/receiver/*.java,
-**/registration/processor/packet/receiver/exception/systemexception/*.java,
-**/registration/processor/failoverstage/*.java,
-**/registration/processor/stages/*.java,
-**/registration/processor/retry/verticle/*.java,
-**/registration/processor/retry/verticle/stages/*.java,
-**/registration/processor/packet/decrypter/job/stage/*.java,
-**/registration/processor/packet/decryptor/job/exception/constant/*.java,
-**/registration/processor/ftp/scanner/job/exception/utils/*.java,
-**/registration/processor/virus/scanner/job/exceptions/*.java,
-**/registration/processor/virus/scanner/job/exceptions/util/*.java,
-**/registration/processor/manual/verification/util/*.java,
-**/registration/processor/stages/app/*.java,
-**/registration/processor/camel/bridge/processor/*.java,
-**/registration/processor/core/constant/*.java,
-**/registration/processor/core/packet/dto/demographicinfo/*.java,
-**/registration/processor/core/packet/dto/demographicinfo/identify/*.java,
-**/registration/processor/core/packet/dto/regcentermachine/*.java,
-**/registration/processor/core/util/*.java,
+			**/exception/*Exception.java,
+			**/core/code/*.java,
+			**/packet/storage/entity/*.java,
+			**/manager/exception/systemexception/*.java,
+			**/registration/processor/rest/client/*.java,
+			**/registration/processor/rest/client/audit/builder/*.java,
+			**/registration/processor/rest/client/utils/*.java,
+			**/registration/processor/packet/receiver/config/*.java,
+			**/registration/processor/packet/receiver/*.java,
+			**/registration/processor/packet/receiver/exception/systemexception/*.java,
+			**/registration/processor/failoverstage/*.java,
+			**/registration/processor/stages/*.java,
+			**/registration/processor/retry/verticle/*.java,
+			**/registration/processor/retry/verticle/stages/*.java,
+			**/registration/processor/packet/decrypter/job/stage/*.java,
+			**/registration/processor/packet/decryptor/job/exception/constant/*.java,
+			**/registration/processor/ftp/scanner/job/exception/utils/*.java,
+			**/registration/processor/virus/scanner/job/exceptions/*.java,
+			**/registration/processor/virus/scanner/job/exceptions/util/*.java,
+			**/registration/processor/manual/verification/util/*.java,
+			**/registration/processor/stages/app/*.java,
+			**/registration/processor/camel/bridge/processor/*.java,
+			**/registration/processor/core/constant/*.java,
+			**/registration/processor/core/packet/dto/demographicinfo/*.java,
+			**/registration/processor/core/packet/dto/demographicinfo/identify/*.java,
+			**/registration/processor/core/packet/dto/regcentermachine/*.java,
+			**/registration/processor/core/util/*.java,
 
-**/registration/processor/quality/check/client/*.java,
-**/registration/processor/quality/check/code/*.java,
-**/registration/processor/quality/check/config/*.java,
-**/registration/processor/quality/check/entity/*.java,
-**/registration/processor/quality/check/exception/*.java,
-**/registration/processor/quality/check/*.java,
-**/registration/processor/status/service/RegistrationStatusApiApplication.java,
-**/registration/processor/camel/bridge/MosipCamelBridgeApplication.java,
-**/registration/processor/message/sender/*.java,
-**/registration/processor/message/sender/utility/*.java,
-**/registration/processor/core/logger/*.java,
-**/registration/processor/core/notification/template/mapping/*.java,
-**/registration/processor/bio/dedupe/service/*.java,
-**/registration/processor/bio/dedupe/exception/*.java,
-**/registration/processor/packet/storage/utils/*.java,
-**/registration/processor/packet/storage/handler/*.java,
-**/registration/processor/packet/storage/storage/*.java,
-**/registration/processor/packet/storage/exception/*.java,
-**/registration/processor/status/repositary/*.java,
-**/registration/processor/status/entity/*.java,
-**/registration/processor/stages/osivalidator/utils/*.java,
-**/registration/processor/virus/scanner/job/*.java,
-**/registration/processor/virus/scanner/job/util/*.java,
-**/registration/processor/packet/receiver/util/*.java,
-**/registration/processor/packet/uploader/*.java,
-**/registration/processor/biodedupe/*.java,
-**/registration/processor/biodedupe/stage/utils/*.java,
+			**/registration/processor/quality/check/client/*.java,
+			**/registration/processor/quality/check/code/*.java,
+			**/registration/processor/quality/check/config/*.java,
+			**/registration/processor/quality/check/entity/*.java,
+			**/registration/processor/quality/check/exception/*.java,
+			**/registration/processor/quality/check/*.java,
+			**/registration/processor/status/service/RegistrationStatusApiApplication.java,
+			**/registration/processor/camel/bridge/MosipCamelBridgeApplication.java,
+			**/registration/processor/message/sender/*.java,
+			**/registration/processor/message/sender/utility/*.java,
+			**/registration/processor/core/logger/*.java,
+			**/registration/processor/core/notification/template/mapping/*.java,
+			**/registration/processor/bio/dedupe/service/*.java,
+			**/registration/processor/bio/dedupe/exception/*.java,
+			**/registration/processor/packet/storage/utils/*.java,
+			**/registration/processor/packet/storage/handler/*.java,
+			**/registration/processor/packet/storage/storage/*.java,
+			**/registration/processor/packet/storage/exception/*.java,
+			**/registration/processor/status/repositary/*.java,
+			**/registration/processor/status/entity/*.java,
+			**/registration/processor/stages/osivalidator/utils/*.java,
+			**/registration/processor/virus/scanner/job/*.java,
+			**/registration/processor/virus/scanner/job/util/*.java,
+			**/registration/processor/packet/receiver/util/*.java,
+			**/registration/processor/packet/uploader/*.java,
+			**/registration/processor/biodedupe/*.java,
+			**/registration/processor/biodedupe/stage/utils/*.java,
 
-**/registration/processor/abis/**/*.java
+			**/registration/processor/abis/**/*.java
 
 		</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>

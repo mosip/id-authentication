@@ -95,7 +95,7 @@ public class DocumentConfig {
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration-Document").select()
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.documents.controller"))
-				.paths(PathSelectors.ant("/v0.1/pre-registration/*")).build();
+				.paths(PathSelectors.ant("/*")).build();
 
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);

@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.8.8</version>
+		<version>0.8.10</version>
 	</parent>
 
 
@@ -118,7 +118,10 @@
 
 		<!-- icu4j -->
 		<icu4j.version>63.1</icu4j.version>
-
+		
+		<!-- s3mock_2.12 -->
+		<s3mock.version>0.2.4</s3mock.version>
+		
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
@@ -172,9 +175,10 @@
 		<module>kernel-ldap-service</module>
 		<module>kernel-licensekeymanager-service</module>
 		<module>kernel-config-server</module>
-
+		<module>kernel-fsadapter-ceph</module>
 
 		<module>kernel-idvalidator</module>
+
 		<!-- <module>kernel-packetuploader-sftp-jsch</module> -->
 		<!-- <module>kernel-packetserver-http</module> -->
 		<!-- <module>kernel-packetserver-sftp</module> -->
@@ -183,7 +187,6 @@
 		<!-- <module>kernel-batch-framework</module> -->
 		<!-- <module>kernel-batch-server</module> -->
 		<!--<module>kernel-crypto-bouncycastle</module> -->
-    <module>kernel-fsadapter-ceph</module>
 	</modules>
 
 	<dependencies>

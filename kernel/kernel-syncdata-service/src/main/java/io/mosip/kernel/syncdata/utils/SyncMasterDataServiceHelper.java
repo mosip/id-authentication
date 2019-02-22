@@ -1,6 +1,7 @@
 package io.mosip.kernel.syncdata.utils;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -114,6 +115,7 @@ import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
  */
 @Component
 public class SyncMasterDataServiceHelper {
+
 	@Autowired
 	private MapperUtils mapper;
 	@Autowired
@@ -188,15 +190,17 @@ public class SyncMasterDataServiceHelper {
 	 *            lastUpdated time-stamp
 	 * @return list of {@link MachineDto}
 	 */
-	@Async
-	public CompletableFuture<List<MachineDto>> getMachines(String machineId, LocalDateTime lastUpdated) {
+	//@Async
+	public List<MachineDto> getMachines(String machineId, LocalDateTime lastUpdated,
+			LocalDateTime timeStampOfNow) {
 		List<Machine> machineDetailList = new ArrayList<>();
 		List<MachineDto> machineDetailDtoList = null;
 		try {
-			if (lastUpdated != null)
-				machineDetailList = machineRepository.findAllLatestCreatedUpdateDeleted(machineId, lastUpdated);
-			else
-				machineDetailList = machineRepository.findMachineById(machineId);
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			machineDetailList = machineRepository.findAllLatestCreatedUpdateDeleted(machineId,
+					lastUpdated, timeStampOfNow);
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
@@ -208,7 +212,7 @@ public class SyncMasterDataServiceHelper {
 
 		}
 
-		return CompletableFuture.completedFuture(machineDetailDtoList);
+		return machineDetailDtoList;
 	}
 
 	/**
@@ -221,14 +225,15 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link MachineType}
 	 */
 	@Async
-	public CompletableFuture<List<MachineTypeDto>> getMachineType(String machineId, LocalDateTime lastUpdated) {
+	public CompletableFuture<List<MachineTypeDto>> getMachineType(String machineId, LocalDateTime lastUpdated,
+			LocalDateTime currentTimeStamp) {
 		List<MachineTypeDto> machineTypeList = null;
 		List<MachineType> machineTypes = null;
 		try {
-			if (lastUpdated != null)
-				machineTypes = machineTypeRepository.findLatestByMachineId(machineId, lastUpdated);
-			else
-				machineTypes = machineTypeRepository.findAllByMachineId(machineId);
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			machineTypes = machineTypeRepository.findLatestByMachineId(machineId, lastUpdated, currentTimeStamp);
 
 		} catch (
 
@@ -255,16 +260,18 @@ public class SyncMasterDataServiceHelper {
 	 */
 	@Async
 	public CompletableFuture<List<MachineSpecificationDto>> getMachineSpecification(String machineId,
-			LocalDateTime lastUpdated) {
+			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
 		List<MachineSpecification> machineSpecification = null;
 		List<MachineSpecificationDto> machineSpecificationDto = null;
 
 		try {
 			if (machineId != null) {
-				if (lastUpdated != null)
-					machineSpecification = machineSpecificationRepository.findLatestByMachineId(machineId, lastUpdated);
-				else
-					machineSpecification = machineSpecificationRepository.findByMachineId(machineId);
+				if (lastUpdated == null) {
+					lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+				}
+				machineSpecification = machineSpecificationRepository.findLatestByMachineId(machineId, lastUpdated,
+						currentTimeStamp);
+
 			}
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
@@ -289,14 +296,15 @@ public class SyncMasterDataServiceHelper {
 	 */
 	@Async
 	public CompletableFuture<List<RegistrationCenterDto>> getRegistrationCenter(String machineId,
-			LocalDateTime lastUpdated) {
+			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
 		List<RegistrationCenterDto> registrationCenterList = null;
 		List<RegistrationCenter> list = null;
 		try {
-			if (lastUpdated != null)
-				list = registrationCenterRepository.findLatestRegistrationCenterByMachineId(machineId, lastUpdated);
-			else
-				list = registrationCenterRepository.findRegistrationCenterByMachineId(machineId);
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			list = registrationCenterRepository.findLatestRegistrationCenterByMachineId(machineId, lastUpdated,currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -319,16 +327,16 @@ public class SyncMasterDataServiceHelper {
 	 */
 	@Async
 	public CompletableFuture<List<RegistrationCenterTypeDto>> getRegistrationCenterType(String machineId,
-			LocalDateTime lastUpdated) {
+			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
 		List<RegistrationCenterTypeDto> registrationCenterTypes = null;
 		List<RegistrationCenterType> registrationCenterType = null;
 		try {
-			if (lastUpdated != null)
-				registrationCenterType = registrationCenterTypeRepository
-						.findLatestRegistrationCenterTypeByMachineId(machineId, lastUpdated);
-			else
-				registrationCenterType = registrationCenterTypeRepository
-						.findRegistrationCenterTypeByMachineId(machineId);
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			registrationCenterType = registrationCenterTypeRepository
+					.findLatestRegistrationCenterTypeByMachineId(machineId, lastUpdated, currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -348,14 +356,16 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link ApplicationDto}
 	 */
 	@Async
-	public CompletableFuture<List<ApplicationDto>> getApplications(LocalDateTime lastUpdated) {
+	public CompletableFuture<List<ApplicationDto>> getApplications(LocalDateTime lastUpdated,
+			LocalDateTime currentTimeStamp) {
 		List<ApplicationDto> applications = null;
 		List<Application> applicationList = null;
 		try {
-			if (lastUpdated != null)
-				applicationList = applicationRepository.findAllLatestCreatedUpdateDeleted(lastUpdated);
-			else
-				applicationList = applicationRepository.findAll();
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			applicationList = applicationRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -374,15 +384,17 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link TemplateDto}
 	 */
 	@Async
-	public CompletableFuture<List<TemplateDto>> getTemplates(LocalDateTime lastUpdated) {
+	public CompletableFuture<List<TemplateDto>> getTemplates(LocalDateTime lastUpdated,
+			LocalDateTime currentTimeStamp) {
 		List<TemplateDto> templates = null;
 		List<Template> templateList = null;
 		try {
-			if (lastUpdated != null) {
-				templateList = templateRepository.findAllLatestCreatedUpdateDeleted(lastUpdated);
-			} else {
-				templateList = templateRepository.findAll();
+
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
+			templateList = templateRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -401,15 +413,17 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link TemplateFileFormatDto}
 	 */
 	@Async
-	public CompletableFuture<List<TemplateFileFormatDto>> getTemplateFileFormats(LocalDateTime lastUpdated) {
+	public CompletableFuture<List<TemplateFileFormatDto>> getTemplateFileFormats(LocalDateTime lastUpdated,
+			LocalDateTime currentTimeStamp) {
 		List<TemplateFileFormatDto> templateFormats = null;
 		List<TemplateFileFormat> templateTypes = null;
 		try {
-			if (lastUpdated != null) {
-				templateTypes = templateFileFormatRepository.findAllLatestCreatedUpdateDeleted(lastUpdated);
-			} else {
-				templateTypes = templateFileFormatRepository.findAllTemplateFormat();
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
+			templateTypes = templateFileFormatRepository.findAllLatestCreatedUpdateDeleted(lastUpdated,
+					currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -426,15 +440,16 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link PostReasonCategoryDto}
 	 */
 	@Async
-	public CompletableFuture<List<PostReasonCategoryDto>> getReasonCategory(LocalDateTime lastUpdated) {
+	public CompletableFuture<List<PostReasonCategoryDto>> getReasonCategory(LocalDateTime lastUpdated,
+			LocalDateTime currentTimeStamp) {
 		List<PostReasonCategoryDto> reasonCategories = null;
 		List<ReasonCategory> reasons = null;
 		try {
-			if (lastUpdated != null) {
-				reasons = reasonCategoryRepository.findAllLatestCreatedUpdateDeleted(lastUpdated);
-			} else {
-				reasons = reasonCategoryRepository.findAllReasons();
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
+			reasons = reasonCategoryRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.REASON_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -453,14 +468,16 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link ReasonListDto}
 	 */
 	@Async
-	public CompletableFuture<List<ReasonListDto>> getReasonList(LocalDateTime lastUpdated) {
+	public CompletableFuture<List<ReasonListDto>> getReasonList(LocalDateTime lastUpdated,
+			LocalDateTime currentTimeStamp) {
 		List<ReasonListDto> reasonList = null;
 		List<ReasonList> reasons = null;
 		try {
-			if (lastUpdated != null)
-				reasons = reasonListRepository.findAllLatestCreatedUpdateDeleted(lastUpdated);
-			else
-				reasons = reasonListRepository.findAll();
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			reasons = reasonListRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.REASON_LIST_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -482,15 +499,17 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link HolidayDto}
 	 */
 	@Async
-	public CompletableFuture<List<HolidayDto>> getHolidays(LocalDateTime lastUpdated, String machineId) {
+	public CompletableFuture<List<HolidayDto>> getHolidays(LocalDateTime lastUpdated, String machineId,
+			LocalDateTime currentTimeStamp) {
 		List<HolidayDto> holidayList = null;
 		List<Holiday> holidays = null;
 		try {
-			if (lastUpdated != null) {
-				holidays = holidayRepository.findAllLatestCreatedUpdateDeletedByMachineId(machineId, lastUpdated);
-			} else {
-				holidays = holidayRepository.findAllByMachineId(machineId);
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
+			holidays = holidayRepository.findAllLatestCreatedUpdateDeletedByMachineId(machineId, lastUpdated,
+					currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -510,16 +529,17 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link BlacklistedWordsDto}
 	 */
 	@Async
-	public CompletableFuture<List<BlacklistedWordsDto>> getBlackListedWords(LocalDateTime lastUpdated) {
+	public CompletableFuture<List<BlacklistedWordsDto>> getBlackListedWords(LocalDateTime lastUpdated,
+			LocalDateTime currentTimeStamp) {
 		List<BlacklistedWordsDto> blacklistedWords = null;
 		List<BlacklistedWords> words = null;
 
 		try {
-			if (lastUpdated != null) {
-				words = blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(lastUpdated);
-			} else {
-				words = blacklistedWordsRepository.findAll();
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
+			words = blacklistedWordsRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -539,14 +559,17 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link BiometricTypeDto}
 	 */
 	@Async
-	public CompletableFuture<List<BiometricTypeDto>> getBiometricTypes(LocalDateTime lastUpdated) {
+	public CompletableFuture<List<BiometricTypeDto>> getBiometricTypes(LocalDateTime lastUpdated,
+			LocalDateTime currentTimeStamp) {
 		List<BiometricTypeDto> biometricTypeDtoList = null;
 		List<BiometricType> biometricTypesList = null;
 		try {
-			if (lastUpdated != null)
-				biometricTypesList = biometricTypeRepository.findAllLatestCreatedUpdateDeleted(lastUpdated);
-			else
-				biometricTypesList = biometricTypeRepository.findAll();
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			biometricTypesList = biometricTypeRepository.findAllLatestCreatedUpdateDeleted(lastUpdated,
+					currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -565,15 +588,18 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link BiometricAttributeDto}
 	 */
 	@Async
-	public CompletableFuture<List<BiometricAttributeDto>> getBiometricAttributes(LocalDateTime lastUpdated) {
+	public CompletableFuture<List<BiometricAttributeDto>> getBiometricAttributes(LocalDateTime lastUpdated,
+			LocalDateTime currentTimeStamp) {
 		List<BiometricAttributeDto> biometricAttrList = null;
 		List<BiometricAttribute> biometricAttrs = null;
 		try {
 
-			if (lastUpdated != null)
-				biometricAttrs = biometricAttributeRepository.findAllLatestCreatedUpdateDeleted(lastUpdated);
-			else
-				biometricAttrs = biometricAttributeRepository.findAll();
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			biometricAttrs = biometricAttributeRepository.findAllLatestCreatedUpdateDeleted(lastUpdated,
+					currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.BIOMETRIC_ATTR_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -592,14 +618,15 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link TitleDto}
 	 */
 	@Async
-	public CompletableFuture<List<TitleDto>> getTitles(LocalDateTime lastUpdated) {
+	public CompletableFuture<List<TitleDto>> getTitles(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
 		List<TitleDto> titleList = null;
 		List<Title> titles = null;
 		try {
-			if (lastUpdated != null)
-				titles = titleRepository.findAllLatestCreatedUpdateDeleted(lastUpdated);
-			else
-				titles = titleRepository.findAll();
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			titles = titleRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -620,14 +647,16 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link LanguageDto}
 	 */
 	@Async
-	public CompletableFuture<List<LanguageDto>> getLanguages(LocalDateTime lastUpdated) {
+	public CompletableFuture<List<LanguageDto>> getLanguages(LocalDateTime lastUpdated,
+			LocalDateTime currentTimeStamp) {
 		List<LanguageDto> languageList = null;
 		List<Language> languages = null;
 		try {
-			if (lastUpdated != null)
-				languages = languageRepository.findAllLatestCreatedUpdateDeleted(lastUpdated);
-			else
-				languages = languageRepository.findAll();
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			languages = languageRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -646,15 +675,16 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link GenderDto}
 	 */
 	@Async
-	public CompletableFuture<List<GenderDto>> getGenders(LocalDateTime lastUpdated) {
+	public CompletableFuture<List<GenderDto>> getGenders(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
 		List<GenderDto> genderDto = null;
 		List<Gender> genderType = null;
 
 		try {
-			if (lastUpdated != null)
-				genderType = genderTypeRepository.findAllLatestCreatedUpdateDeleted(lastUpdated);
-			else
-				genderType = genderTypeRepository.findAll();
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			genderType = genderTypeRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.GENDER_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -675,14 +705,16 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link DeviceDto}
 	 */
 	@Async
-	public CompletableFuture<List<DeviceDto>> getDevices(String machineId, LocalDateTime lastUpdated) {
+	public CompletableFuture<List<DeviceDto>> getDevices(String machineId, LocalDateTime lastUpdated,
+			LocalDateTime currentTimeStamp) {
 		List<Device> devices = null;
 		List<DeviceDto> deviceList = null;
 		try {
-			if (lastUpdated != null)
-				devices = deviceRepository.findLatestDevicesByMachineId(machineId, lastUpdated);
-			else
-				devices = deviceRepository.findDeviceByMachineId(machineId);
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			devices = deviceRepository.findLatestDevicesByMachineId(machineId, lastUpdated, currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.DEVICES_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -701,14 +733,16 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link DocumentCategoryDto}
 	 */
 	@Async
-	public CompletableFuture<List<DocumentCategoryDto>> getDocumentCategories(LocalDateTime lastUpdated) {
+	public CompletableFuture<List<DocumentCategoryDto>> getDocumentCategories(LocalDateTime lastUpdated,
+			LocalDateTime currentTimeStamp) {
 		List<DocumentCategoryDto> documentCategoryList = null;
 		List<DocumentCategory> documentCategories = null;
 		try {
-			if (lastUpdated != null)
-				documentCategories = documentCategoryRepository.findAllLatestCreatedUpdateDeleted(lastUpdated);
-			else
-				documentCategories = documentCategoryRepository.findAll();
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			documentCategories = documentCategoryRepository.findAllLatestCreatedUpdateDeleted(lastUpdated,currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -728,14 +762,16 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link DocumentTypeDto}
 	 */
 	@Async
-	public CompletableFuture<List<DocumentTypeDto>> getDocumentTypes(LocalDateTime lastUpdated) {
+	public CompletableFuture<List<DocumentTypeDto>> getDocumentTypes(LocalDateTime lastUpdated,
+			LocalDateTime currentTimeStamp) {
 		List<DocumentTypeDto> documentTypeList = null;
 		List<DocumentType> documentTypes = null;
 		try {
-			if (lastUpdated != null)
-				documentTypes = documentTypeRepository.findAllLatestCreatedUpdateDeleted(lastUpdated);
-			else
-				documentTypes = documentTypeRepository.findAll();
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			documentTypes = documentTypeRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.DOCUMENT_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -755,14 +791,15 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link IdTypeDto}
 	 */
 	@Async
-	public CompletableFuture<List<IdTypeDto>> getIdTypes(LocalDateTime lastUpdated) {
+	public CompletableFuture<List<IdTypeDto>> getIdTypes(LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
 		List<IdTypeDto> idTypeList = null;
 		List<IdType> idTypes = null;
 		try {
-			if (lastUpdated != null)
-				idTypes = idTypeRepository.findAllLatestCreatedUpdateDeleted(lastUpdated);
-			else
-				idTypes = idTypeRepository.findAll();
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			idTypes = idTypeRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.ID_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -783,15 +820,15 @@ public class SyncMasterDataServiceHelper {
 	 */
 	@Async
 	public CompletableFuture<List<DeviceSpecificationDto>> getDeviceSpecifications(String machineId,
-			LocalDateTime lastUpdated) {
+			LocalDateTime lastUpdated,LocalDateTime currentTimeStamp) {
 		List<DeviceSpecification> deviceSpecificationList = null;
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = null;
 		try {
-			if (lastUpdated != null)
-				deviceSpecificationList = deviceSpecificationRepository.findLatestDeviceTypeByMachineId(machineId,
-						lastUpdated);
-			else
-				deviceSpecificationList = deviceSpecificationRepository.findDeviceTypeByMachineId(machineId);
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			deviceSpecificationList = deviceSpecificationRepository.findLatestDeviceTypeByMachineId(machineId,
+					lastUpdated,currentTimeStamp);
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_SPECIFICATION_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -810,14 +847,17 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link LocationDto}
 	 */
 	@Async
-	public CompletableFuture<List<LocationDto>> getLocationHierarchy(LocalDateTime lastUpdated) {
+	public CompletableFuture<List<LocationDto>> getLocationHierarchy(LocalDateTime lastUpdated,
+			LocalDateTime localDateTimeOfnow) {
 		List<LocationDto> responseList = null;
 		List<Location> locations = null;
 		try {
-			if (lastUpdated != null)
-				locations = locationRepository.findAllLatestCreatedUpdateDeleted(lastUpdated);
-			else
-				locations = locationRepository.findAll();
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+
+			locations = locationRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, localDateTimeOfnow);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -836,14 +876,16 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link TemplateTypeDto}
 	 */
 	@Async
-	public CompletableFuture<List<TemplateTypeDto>> getTemplateTypes(LocalDateTime lastUpdated) {
+	public CompletableFuture<List<TemplateTypeDto>> getTemplateTypes(LocalDateTime lastUpdated,
+			LocalDateTime currentTimeStamp) {
 		List<TemplateTypeDto> templateTypeList = null;
 		List<TemplateType> templateTypes = null;
 		try {
-			if (lastUpdated != null)
-				templateTypes = templateTypeRepository.findAllLatestCreatedUpdateDeleted(lastUpdated);
-			else
-				templateTypes = templateTypeRepository.findAll();
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			templateTypes = templateTypeRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -865,14 +907,17 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link DeviceTypeDto}
 	 */
 	@Async
-	public CompletableFuture<List<DeviceTypeDto>> getDeviceType(String machineId, LocalDateTime lastUpdated) {
+	public CompletableFuture<List<DeviceTypeDto>> getDeviceType(String machineId, LocalDateTime lastUpdated,
+			LocalDateTime currentTimeStamp) {
 		List<DeviceTypeDto> deviceTypeList = null;
 		List<DeviceType> deviceTypes = null;
 		try {
-			if (lastUpdated != null)
-				deviceTypes = deviceTypeRepository.findLatestDeviceTypeByMachineId(machineId, lastUpdated);
-			else
-				deviceTypes = deviceTypeRepository.findDeviceTypeByMachineId(machineId);
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			deviceTypes = deviceTypeRepository.findLatestDeviceTypeByMachineId(machineId, lastUpdated,
+					currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -892,14 +937,16 @@ public class SyncMasterDataServiceHelper {
 	 * @return list of {@link ValidDocumentDto}
 	 */
 	@Async
-	public CompletableFuture<List<ValidDocumentDto>> getValidDocuments(LocalDateTime lastUpdated) {
+	public CompletableFuture<List<ValidDocumentDto>> getValidDocuments(LocalDateTime lastUpdated,
+			LocalDateTime currentTimeStamp) {
 		List<ValidDocumentDto> validDocumentList = null;
 		List<ValidDocument> validDocuments = null;
 		try {
-			if (lastUpdated != null)
-				validDocuments = validDocumentRepository.findAllLatestCreatedUpdateDeleted(lastUpdated);
-			else
-				validDocuments = validDocumentRepository.findAll();
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			validDocuments = validDocumentRepository.findAllLatestCreatedUpdateDeleted(lastUpdated, currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -913,16 +960,16 @@ public class SyncMasterDataServiceHelper {
 
 	@Async
 	public CompletableFuture<List<RegistrationCenterMachineDto>> getRegistrationCenterMachines(String machineId,
-			LocalDateTime lastUpdated) {
+			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
 		List<RegistrationCenterMachineDto> registrationCenterMachineDtos = null;
 		List<RegistrationCenterMachine> registrationCenterMachines = null;
 		try {
-			if (lastUpdated != null) {
-				registrationCenterMachines = registrationCenterMachineRepository
-						.findAllLatestByMachineIdCreatedUpdatedDeleted(machineId, lastUpdated);
-			} else {
-				registrationCenterMachines = registrationCenterMachineRepository.findAllByMachineId(machineId);
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
+			registrationCenterMachines = registrationCenterMachineRepository
+					.findAllLatestByMachineIdCreatedUpdatedDeleted(machineId, lastUpdated, currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -936,16 +983,16 @@ public class SyncMasterDataServiceHelper {
 
 	@Async
 	public CompletableFuture<List<RegistrationCenterDeviceDto>> getRegistrationCenterDevices(String regId,
-			LocalDateTime lastUpdated) {
+			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
 		List<RegistrationCenterDeviceDto> registrationCenterDeviceDtos = null;
 		List<RegistrationCenterDevice> registrationCenterDevices = null;
 		try {
-			if (lastUpdated != null) {
-				registrationCenterDevices = registrationCenterDeviceRepository
-						.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(regId, lastUpdated);
-			} else {
-				registrationCenterDevices = registrationCenterDeviceRepository.findAllByRegistrationCenter(regId);
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
+			registrationCenterDevices = registrationCenterDeviceRepository
+					.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(regId, lastUpdated, currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_DEVICE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -959,17 +1006,16 @@ public class SyncMasterDataServiceHelper {
 
 	@Async
 	public CompletableFuture<List<RegistrationCenterMachineDeviceDto>> getRegistrationCenterMachineDevices(String regId,
-			LocalDateTime lastUpdated) {
+			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
 		List<RegistrationCenterMachineDeviceDto> registrationCenterMachineDeviceDtos = null;
 		List<RegistrationCenterMachineDevice> registrationCenterMachineDevices = null;
 		try {
-			if (lastUpdated != null) {
-				registrationCenterMachineDevices = registrationCenterMachineDeviceRepository
-						.findAllByRegistrationCenterIdCreatedUpdatedDeleted(regId, lastUpdated);
-			} else {
-				registrationCenterMachineDevices = registrationCenterMachineDeviceRepository
-						.findAllByRegistrationCenterId(regId);
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
+			registrationCenterMachineDevices = registrationCenterMachineDeviceRepository
+					.findAllByRegistrationCenterIdCreatedUpdatedDeleted(regId, lastUpdated, currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(
 					MasterDataErrorCode.REG_CENTER_MACHINE_DEVICE_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
@@ -983,17 +1029,16 @@ public class SyncMasterDataServiceHelper {
 
 	@Async
 	public CompletableFuture<List<RegistrationCenterUserMachineMappingDto>> getRegistrationCenterUserMachines(
-			String regId, LocalDateTime lastUpdated) {
+			String regId, LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
 		List<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDtos = null;
 		List<RegistrationCenterUserMachine> registrationCenterUserMachines = null;
 		try {
-			if (lastUpdated != null) {
-				registrationCenterUserMachines = registrationCenterUserMachineRepository
-						.findAllByRegistrationCenterIdCreatedUpdatedDeleted(regId, lastUpdated);
-			} else {
-				registrationCenterUserMachines = registrationCenterUserMachineRepository
-						.findAllByRegistrationCenterId(regId);
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
+			registrationCenterUserMachines = registrationCenterUserMachineRepository
+					.findAllByRegistrationCenterIdCreatedUpdatedDeleted(regId, lastUpdated, currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(
 					MasterDataErrorCode.REG_CENTER_USER_MACHINE_DEVICE_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
@@ -1007,16 +1052,16 @@ public class SyncMasterDataServiceHelper {
 
 	@Async
 	public CompletableFuture<List<RegistrationCenterUserDto>> getRegistrationCenterUsers(String regId,
-			LocalDateTime lastUpdated) {
+			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
 		List<RegistrationCenterUserDto> registrationCenterUserDtos = null;
 		List<RegistrationCenterUser> registrationCenterUsers = null;
 		try {
-			if (lastUpdated != null) {
-				registrationCenterUsers = registrationCenterUserRepository
-						.findAllByRegistrationCenterIdCreatedUpdatedDeleted(regId, lastUpdated);
-			} else {
-				registrationCenterUsers = registrationCenterUserRepository.findAllByRegistrationCenterId(regId);
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
+			registrationCenterUsers = registrationCenterUserRepository
+					.findAllByRegistrationCenterIdCreatedUpdatedDeleted(regId, lastUpdated, currentTimeStamp);
+
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_USER_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());

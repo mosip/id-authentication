@@ -6,17 +6,21 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.registration.processor.core.constant.AuditLogConstant;
 import io.mosip.registration.processor.core.constant.EventId;
 import io.mosip.registration.processor.core.constant.EventName;
 import io.mosip.registration.processor.core.constant.EventType;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdPKEntity;
@@ -62,12 +66,17 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 	
 	/** The Constant LANG_CODE. */
 	private static final String LANG_CODE= "eng";
+	
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(QualityCheckManagerImpl.class);
 
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager#assignQCUser(java.lang.Object)
 	 */
 	@Override
 	public QCUserDto assignQCUser(String applicantRegistrationId) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				applicantRegistrationId, "QualityCheckManagerImpl::assignQCUser()::entry");
 		List<String> qcUsersList = Arrays.asList("qc001","qc002","qc003");
 		//qcUsersClient.getAllQcuserIds();
 
@@ -77,6 +86,8 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 		qcUserDto.setRegId(applicantRegistrationId);
 		qcUserDto.setDecisionStatus(DecisionStatus.PENDING);
 		qcUserDto = assignNewPacket(qcUserDto);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				applicantRegistrationId, "QualityCheckManagerImpl::assignQCUser()::exit");
 		return qcUserDto;
 	}
 
@@ -86,6 +97,8 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 	 */
 	@Override
 	public List<QCUserDto> updateQCUserStatus(List<QCUserDto> qcUserDtos) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "QualityCheckManagerImpl::updateQCUserStatus()::entry");
 		boolean isTransactionSuccessful = false;
 		try {
 			Map<QcuserRegistrationIdEntity, QCUserDto> map = validateUser(qcUserDtos);
@@ -98,13 +111,19 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 
 			});
 			isTransactionSuccessful = true;
+			description = "QC User status updated";
+			
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+					"", "QualityCheckManagerImpl::updateQCUserStatus()::exit");
 			return resultDtos;
 
 		} catch (DataAccessException | DataAccessLayerException e) {
+			
+			description = "DataAccessLayerException while updating QC User status" + "::" + e.getMessage();						
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_QCR_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
-			description = isTransactionSuccessful ? "description--QC User status update successful"
-					: "description--QC User status update failed";
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
 			eventName = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString()
 					: EventName.EXCEPTION.toString();
@@ -158,19 +177,20 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 			QcuserRegistrationIdEntity qcUserEntity = convertDtoToEntity(qcUserDto);
 			applicantInfoDao.save(qcUserEntity);
 			isTransactionSuccessful = true;
-
+			description =  "Demographic-data saved ";
+				
+		
 			return convertEntityToDto(qcUserEntity);
 		} catch (DataAccessException | DataAccessLayerException e) {
+			description = "DataAccessLayerException while saving Demographic-data" + "::" + e.getMessage();						
+			
 			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_QCR_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
-			description = isTransactionSuccessful ? "description--Demographic-data saved Success"
-					: "description--Demographic Failed to save";
-			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
+				eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
 			eventName = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString()
 					: EventName.EXCEPTION.toString();
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-
 			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 		}
@@ -204,10 +224,15 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 	 * @return the QC user dto
 	 */
 	public QCUserDto convertEntityToDto(QcuserRegistrationIdEntity entity) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "QualityCheckManagerImpl::convertEntityToDto()::entry");
 		QCUserDto dto = new QCUserDto();
 		dto.setQcUserId(entity.getId().getUsrId());
 		dto.setRegId(entity.getId().getRegId());
 		dto.setDecisionStatus(DecisionStatus.valueOf(entity.getStatus_code()));
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "QualityCheckManagerImpl::convertEntityToDto()::exit");
 		return dto;
 	}
 

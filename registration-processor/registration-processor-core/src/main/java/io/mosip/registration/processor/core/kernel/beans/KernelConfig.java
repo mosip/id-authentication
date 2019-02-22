@@ -35,17 +35,17 @@ public class KernelConfig {
 	public ConnectionUtil getConnectionUtil() {
 		return new ConnectionUtil();
 	}
-	
+
 	@Bean
 	@Primary
 	public PDFGenerator getPDFGenerator() {
 		return new PDFGeneratorImpl();
 	}
-	
+
 	@Bean
 	@Primary
 	public QrCodeGenerator<QrVersion> getQrCodeGenerator(){
 		return new QrcodeGeneratorImpl();
 	}
-	
+
 }

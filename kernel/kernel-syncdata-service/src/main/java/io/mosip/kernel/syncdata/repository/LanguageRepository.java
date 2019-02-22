@@ -29,6 +29,6 @@ public interface LanguageRepository extends BaseRepository<Language, String> {
 	 *            timeStamp
 	 * @return list of {@link Language}
 	 */
-	@Query("FROM Language WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
-	List<Language> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
+	@Query("FROM Language WHERE (createdDateTime > ?1 and createdDateTime <=?2) OR (updatedDateTime > ?1 and updatedDateTime<=?2)  OR (deletedDateTime > ?1 and deletedDateTime<=?2)")
+	List<Language> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdate,LocalDateTime currentTimeStamp);
 }

@@ -25,6 +25,8 @@ import io.mosip.preregistration.booking.exception.CancelAppointmentFailedExcepti
 import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.exception.DocumentNotFoundException;
 import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException;
+import io.mosip.preregistration.booking.exception.OperationNotAllowedException;
+import io.mosip.preregistration.booking.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.exception.TimeSpanException;
 import io.mosip.preregistration.core.exception.AppointmentBookException;
@@ -129,6 +131,14 @@ public class BookingExceptionCatcher {
 		else if (ex instanceof TimeSpanException) {
 			throw new AppointmentReBookException(((TimeSpanException) ex).getErrorCode(),
 					((TimeSpanException) ex).getErrorText());
+		}
+		else if (ex instanceof RecordFailedToDeleteException) {
+			throw new RecordFailedToDeleteException(((RecordFailedToDeleteException) ex).getErrorCode(),
+					((RecordFailedToDeleteException) ex).getErrorText());
+		}
+		else if (ex instanceof OperationNotAllowedException) {
+			throw new OperationNotAllowedException(((OperationNotAllowedException) ex).getErrorCode(),
+					((OperationNotAllowedException) ex).getErrorText());
 		}
 
 	}

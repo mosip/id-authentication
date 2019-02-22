@@ -384,8 +384,6 @@ public class BioDedupeServiceImplTest {
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenThrow(new IOException());
 
 		byte[] fileData = bioDedupeService.getFile(registrationId);
-		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.containsExactly(Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1000 - IO EXCEPTION null"));
-
+		Assertions.assertThatExceptionOfType(IOException.class);
 	}
 }

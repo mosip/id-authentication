@@ -4,6 +4,8 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.packet.receiver.PacketReceiverApplication;
+import io.mosip.registration.processor.packet.receiver.builder.PacketReceiverResponseBuilder;
+import io.mosip.registration.processor.packet.receiver.dto.PacketReceiverResponseDTO;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.vertx.core.Handler;
@@ -25,15 +27,14 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
-import static org.mockito.ArgumentMatchers.any;
-
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -50,33 +51,50 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.core.env.Environment;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 
-@RunWith(SpringRunner.class)
+@RunWith(PowerMockRunner.class)
+@PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
+@PrepareForTest(PacketReceiverResponseBuilder.class)
 public class PacketReceiverStageTest {
 
 	private Vertx vertx;
 	private String id = "2018782130000113112018183001.zip";
 	private String newId = "2018782130000113112018183000.zip";
 	private File file;
+	private String jsonData;
 	private String registrationStatusCode;
+	Gson gson = new GsonBuilder().serializeNulls().create();
 
 	@Mock
 	public PacketReceiverService<File, MessageDTO> packetReceiverService;
 
 	public RoutingContext ctx;
+	
+	@Mock
+	private Environment env;
 
 	public FileUpload fileUpload;
+	@Mock
+	PacketReceiverResponseBuilder packetReceiverResponseBuilder;
 
 	@InjectMocks
 	PacketReceiverStage packetReceiverStage = new PacketReceiverStage() {
 	
 		@Override
-		public void setResponse(RoutingContext ctx, Object object) {
-			registrationStatusCode = object.toString();
+		public void setResponse(RoutingContext ctx, Object object,String jsonType) {
+			jsonData = object.toString();
+			PacketReceiverResponseDTO packetReceiverResponseDTO =gson.fromJson(jsonData, PacketReceiverResponseDTO.class);
+			registrationStatusCode=packetReceiverResponseDTO.getResponse().getStatus();
 		}
 		
 		@Override
@@ -96,39 +114,49 @@ public class PacketReceiverStageTest {
 		file = new File(classLoader.getResource("0000.zip").getFile());
 		FileUtils.copyFile(file, new File(file.getParentFile().getPath() + "/" + id));
 		file = new File(classLoader.getResource(id).getFile());
-
 		fileUpload = setFileUpload();
 		ctx = setContext();
-
 		PacketReceiverApplication.main(null);
+		PowerMockito.mockStatic(PacketReceiverResponseBuilder.class);
+		
+	}
+	public String getDataAsJson(String Status) {
+		JsonObject obj= new JsonObject();
+		obj.put("id", "mosip.registration.packet");
+		obj.put("version", "1.0");
+		obj.put("timestamp", "2019-02-04T13:46:39.919+0000");
+		JsonObject obj1= new JsonObject();
+		obj1.put("status", Status);
+			obj.put("response",obj1);
+			obj1=null;
+		obj.put("error",obj1);
+		return obj.toString();
 	}
 
 	@Test
-	public void testAllProcess() throws ClientProtocolException, IOException {
+	public void testAllProcess() throws Exception {
 		testProcessURLSuccess();
 		healthCheckTest();
 		testDeployVerticle();
 		testSendMessage();
 	}
 	
-	public void testProcessURLSuccess() {
+	public void testProcessURLSuccess() throws Exception {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setIsValid(Boolean.TRUE);
+		PowerMockito.when(PacketReceiverResponseBuilder.class, "buildPacketReceiverResponse", anyString()).thenReturn(getDataAsJson(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString()));
 		when(packetReceiverService.storePacket(any(File.class))).thenReturn(messageDTO);
-		
 		packetReceiverStage.processURL(ctx);
-		
 		assertEquals(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString(), registrationStatusCode);
 	}
 	
 	@Test
-	public void testProcessURLFail() {
+	public void testProcessURLFail() throws Exception {
 		MessageDTO messageDTO = new MessageDTO();
+		PowerMockito.when(PacketReceiverResponseBuilder.class, "buildPacketReceiverResponse", anyString()).thenReturn(getDataAsJson(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString()));
 		messageDTO.setIsValid(Boolean.FALSE);
 		when(packetReceiverService.storePacket(any(File.class))).thenReturn(messageDTO);
-		
 		packetReceiverStage.processURL(ctx);
-		
 		assertEquals(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.name(), registrationStatusCode);
 	}
 

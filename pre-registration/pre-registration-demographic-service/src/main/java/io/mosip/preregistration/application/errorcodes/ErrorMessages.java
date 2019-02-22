@@ -100,6 +100,11 @@ public enum ErrorMessages {
 	DOCUMENT_FAILED_TO_DELETE,
 
 	/**
+	 * ErrorMessage for PRG_PAM_DOC_016
+	 */
+	BOOKING_FAILED_TO_DELETE,
+	
+	/**
 	 * ErrorMessage for PRG_PAM_APP_011
 	 */
 	UNSUPPORTED_DATE_FORMAT,

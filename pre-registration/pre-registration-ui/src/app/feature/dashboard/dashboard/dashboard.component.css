@@ -71,11 +71,10 @@ img {
   flex-wrap: wrap;
   margin-left: 20px;
   justify-content: flex-start;
-  
 }
 .card-component {
   margin-top: 20px;
-  padding-right:45px;
+  padding-right: 45px;
 }
 .card-header {
   font-family: Roboto;
@@ -91,7 +90,7 @@ img {
   padding: 0;
   box-shadow: 1px 1px 1px;
   opacity: 100%;
-  border-radius:0; 
+  border-radius: 0;
 }
 .mat-card-content {
   margin-top: 20px;
@@ -105,7 +104,6 @@ img {
   margin-left: 25px;
   width: 335px;
 }
-
 
 .mat-card table {
   max-width: 310px;
@@ -158,6 +156,7 @@ img {
 .checkbox {
   white-space: nowrap;
   margin-left: 10px;
+  /* vertical-align: center; */
 }
 .footer-download-btn {
   margin-left: 18px;

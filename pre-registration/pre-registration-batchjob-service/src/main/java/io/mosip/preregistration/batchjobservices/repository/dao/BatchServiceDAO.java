@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.preregistration.batchjobservices.code.ErrorCodes;
 import io.mosip.preregistration.batchjobservices.code.ErrorMessages;
-import io.mosip.preregistration.batchjobservices.entity.ApplicantDemographic;
+import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
 import io.mosip.preregistration.batchjobservices.entity.ProcessedPreRegEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.batchjobservices.exceptions.NoPreIdAvailableException;
@@ -62,14 +62,14 @@ public class BatchServiceDAO {
 	@Qualifier("processedPreIdRepository")
 	private ProcessedPreIdRepository processedPreIdRepository;
 
-	public ApplicantDemographic getApplicantDemographicDetails(String preRegId) {
+	public DemographicEntity getApplicantDemographicDetails(String preRegId) {
 
-		ApplicantDemographic entity = null;
+		DemographicEntity entity = null;
 		try {
 			entity = demographicRepository.findBypreRegistrationId(preRegId);
 			if (entity == null) {
 				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_001.getCode(),
-						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_CONSUMED_STATUS.getMessage());
+						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());
 			}
 
 		} catch (DataAccessLayerException e) {
@@ -86,7 +86,7 @@ public class BatchServiceDAO {
 			if (entityList.isEmpty() || entityList == null) {
 				LOGGER.info("There are currently no Pre-Registration-Ids to update status to consumed");
 				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_001.getCode(),
-						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_CONSUMED_STATUS.getMessage());
+						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());
 			}
 
 		} catch (DataAccessLayerException e) {
@@ -103,7 +103,7 @@ public class BatchServiceDAO {
 			if (entityList.isEmpty() || entityList == null) {
 				LOGGER.info("There are currently no Pre-Registration-Ids which is expired");
 				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_003.getCode(),
-						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_EXPIRED_STATUS.getMessage());
+						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());
 			}
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_005.getCode(),
@@ -118,7 +118,7 @@ public class BatchServiceDAO {
 			entity = regAppointmentRepository.getPreRegId(preRegId);
 			if (entity == null) {
 				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_003.getCode(),
-						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_EXPIRED_STATUS.getMessage());
+						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());
 			}
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_005.getCode(),
@@ -128,7 +128,7 @@ public class BatchServiceDAO {
 
 	}
 	
-	public boolean updateApplicantDemographic(ApplicantDemographic applicantDemographic) {
+	public boolean updateApplicantDemographic(DemographicEntity applicantDemographic) {
 		return demographicRepository.save(applicantDemographic)!=null;
 	}
 	
