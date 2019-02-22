@@ -11,64 +11,6 @@ import static io.mosip.registration.constants.AuditEventType.SYSTEM_EVENT;
  *
  */
 public enum AuditEvent {
-
-	// Registration Packet Creation
-	PACKET_CREATION_SUCCESS("REG-EVT-098", USER_EVENT.getCode(), "PACKET_CREATION_SUCCESS", "Packet Succesfully Created"),
-	PACKET_ENCRYPTED("REG-EVT-099", USER_EVENT.getCode(), "PACKET_ENCRYPTED", "Packet Encrypted Sucessfully"),
-	PACKET_UPLOADED("REG-EVT-100", USER_EVENT.getCode(), "PACKET_UPLOADED", "Packet Uploaded Successfully"),
-	PACKET_SYNCED_TO_SERVER("REG-EVT-101", USER_EVENT.getCode(), "PACKET_SYNCED_TO_SERVER", "Packet Synced to Server Sucesfully"),
-	PACKET_DELETED("REG-EVT-102", USER_EVENT.getCode(), "PACKET_DELETED", "Packet Deleted Successfully"),
-	PACKET_APPROVED("REG-EVT-103", USER_EVENT.getCode(), "PACKET_APPROVED", "Packet Approved Successfully"),
-	PACKET_REJECTED("REG-EVT-104", USER_EVENT.getCode(), "PACKET_REJECTED", "Packet Rejected Successfully"),
-	PACKET_HOLDED("REG-EVT-105", USER_EVENT.getCode(), "PACKET_HOLDED","Packet Holded for particular reason"),
-	PACKET_INTERNAL_ERROR("REG-EVT-106", USER_EVENT.getCode(), "PACKET_INTERNAL_ERROR", "Packet Creation Error"),
-	PACKET_INTERNAL_ZIP("REG-EVT-107", USER_EVENT.getCode(), "PACKET_INTERNAL_ZIP", "Packet internally zipped successfully"),
-	PACKET_DEMO_JSON_CREATED("REG-EVT-108", USER_EVENT.getCode(), "PACKET_DEMO_JSON_CREATED", "Packet Demographic JSON created successfully"),
-	PACKET_HMAC_FILE_CREATED("REG-EVT-109", USER_EVENT.getCode(), "PACKET_HMAC_FILE_CREATED", "Packet HMAC File created successfully"),
-	PACKET_META_JSON_CREATED("REG-EVT-110", USER_EVENT.getCode(), "PACKET_META_JSON_CREATED", "Packet Meta-Data JSON created successfully"),
-	PACKET_AUDIT_JSON_CREATED("REG-EVT-111", USER_EVENT.getCode(), "PACKET_AUDIT_JSON_CREATED", "Packet Audit JSON created successfully"),
-	PACKET_AES_ENCRYPTED("REG-EVT-112", USER_EVENT.getCode(), "PACKET_AES_ENCRYPTED","Packet Encrypted Sucessfully"),
-
-	// Scheduler
-	UI_SCHEDULER_STARTED("REG-EVT-113", USER_EVENT.getCode(), "UI_SCHEDULER_STARTED","Scheduler started Sucessfully"),
-
-	//Login and User related
-	LOGIN_MODES_FETCH("REG-EVT-114", USER_EVENT.getCode(), "LOGIN_MODES_FETCH", "Fetching Login Modes"),
-	USER_STATUS_FETCH("REG-EVT-115", USER_EVENT.getCode(), "USER_STATUS_FETCH", "Fetching User Status"),
-	VALIDATE_USER_CRED("REG-EVT-116", USER_EVENT.getCode(), "VALIDATE_USER_CREDENTIALS", "Validating User credentials"),
-	FETCH_USR_DET("REG-EVT-117", USER_EVENT.getCode(), "FETCH_USER_DETAILS", "Fetching User Details"),
-	FETCH_CNTR_NAME("REG-EVT-118", USER_EVENT.getCode(), "FETCH_CENTER_NAME", "Fetching Center Name"),
-	FETCH_CNTR_DET("REG-EVT-119", USER_EVENT.getCode(), "FETCH_CENTER_DETAILS", "Fetching Center Details"),
-	FETCH_USR_ROLE("REG-EVT-120", USER_EVENT.getCode(), "FETCH_USER_ROLE", "Fetching User Roles"),
-	FETCH_SCR_AUTH("REG-EVT-121", USER_EVENT.getCode(), "FETCH_SCREEN_AUTH", "Fetching screens to be authorized"),
-	SYNCJOB_INFO_FETCH("REG-EVT-122", USER_EVENT.getCode(), "SYNC_JOB_INFO_FETCH", "SyncJobInfo containing the sync control list and yet to export packet count fetched successfully"),
-	SYNC_INFO_VALIDATE("REG-EVT-123", USER_EVENT.getCode(), "SYNC_INFO_VALIDATION", "Validating the sync status ended successfully"),
-	SYNC_PKT_COUNT_VALIDATE("REG-EVT-124", USER_EVENT.getCode(), "SYNC_PKT_COUNT_VALIDATION", "Validating yet to export packets frequency with the configured limit count"),
-	PACKET_RETRIVE("REG-EVT-125", USER_EVENT.getCode(), "PACKET_RETRIVE", "Packets which are in created state for approval are retrived"),
-	PACKET_UPDATE("REG-EVT-126", USER_EVENT.getCode(), "PACKET_UPDATE", "Packets which are in created state are updated"),
-	SYNC_GEO_VALIDATE("REG-EVT-127", USER_EVENT.getCode(), "SYNC_GEO_VALIDATE", "Validating the geo information ended successfully"),
-	PENDING_PKT_CNT_VALIDATE("REG-EVT-128", USER_EVENT.getCode(), "PENDING_PKT_COUNT_VALIDATION", "Validating the Pending packets count"),
-	PENDING_PKT_DUR_VALIDATE("REG-EVT-129", USER_EVENT.getCode(), "PENDING_PKT_DURATION_VALIDATION", "Validating the Pending packets Duration"),
-	DEVICE_MAPPING_SUCCESS("REG-EVT-130", USER_EVENT.getCode(), "DEVICE_MAPPING_SUCCESS","device mapped successfully"),
-	DEVICE_UN_MAPPING("REG-EVT-131", USER_EVENT.getCode(), "DEVICE_UN_MAPPING", "Device is unmapped "),
-	
-	//Sync Packets
-	SYNC_SERVER("REG-EVT-132", USER_EVENT.getCode(), "SYNC_SERVER", "Synchronize the packet status to the server"),
-	
-	//Packet Upload
-	PACKET_UPLOAD("REG-EVT-133", USER_EVENT.getCode(), "PACKET_UPLOAD", "Upload the local packets to the server"),
-	
-	// Device Onboarding
-	GET_ONBOARDING_DEVICES_TYPES("REG-EVT-134", USER_EVENT.getCode(), "GET_ONBOARDING_DEVICES_TYPES", "Get the types of devices for device onboarding"),
-	GET_ONBOARDING_DEVICES("REG-EVT-135", USER_EVENT.getCode(), "GET_ONBOARDING_DEVICES", "Get the available and mapped devices for the requested device type"),
-	UPDATE_DEVICES_ONBOARDING("REG-EVT-136", USER_EVENT.getCode(), "UPDATE_DEVICES_ONBOARDING", "Devices onboarding updated for the registration client"),
-
-	// Notification Service
-	NOTIFICATION_STATUS("REG-EVT-137", USER_EVENT.getCode(), "NOTIFICATION_SERVICE", "Notification request status"),
-	
-	// Registration Audits
-	GET_REGISTRATION_CONTROLLER("REG-EVT-138", USER_EVENT.getCode(),"GET_REGISTRATION_CONTROLLER", "Initializing the registration controller"),
-	SAVE_DETAIL_TO_DTO("REG-EVT-139", USER_EVENT.getCode(), "SAVE_DETAIL_TO_DTO", "Saving the details to DTO"),
 	
 	// Login
 	LOGIN_AUTHENTICATE_USER_ID("REG-EVT-001", USER_EVENT.getCode(), "LOGIN_AUTHENTICATE_USER_ID", "Login authenticating user id: Click of Submit"),
@@ -138,6 +80,7 @@ public enum AuditEvent {
 	REG_PREVIEW_DOC_EDIT("REG-EVT-055", USER_EVENT.getCode(), "REG_PREVIEW_DOC_EDIT", "Click of Edit documents"),
 	REG_PREVIEW_BIO_EDIT("REG-EVT-056", USER_EVENT.getCode(), "REG_PREVIEW_BIO_EDIT", "Click of Biometrics Edit"),
 	REG_PREVIEW_SUBMIT("REG-EVT-057", USER_EVENT.getCode(), "REG_PREVIEW_SUBMIT", "Submit"),
+	REG_PREVIEW_BACK("REG-EVT-140", USER_EVENT.getCode(), "REG_PREVIEW_BACK", "Click of Back from registration preview screen"),
 
 	// Registration: Operator/Supervisor Authentication
 	REG_OPERATOR_AUTH_PASSWORD("REG-EVT-058", USER_EVENT.getCode(), "REG_OPERATOR_AUTH_PASSWORD", "Operator authentication with password: Click of Submit"),
@@ -197,7 +140,65 @@ public enum AuditEvent {
 	SYNC_CLIENT_STATE("REG-EVT-096", USER_EVENT.getCode(), "SYNC_CLIENT_STATE", "Sync client state"),
 
 	// Export Packets
-	EXPORT_REG_PACKETS("REG-EVT-097", USER_EVENT.getCode(), "EXPORT_REGISTRATION_PACKETS", "Export Packets: To external device");
+	EXPORT_REG_PACKETS("REG-EVT-097", USER_EVENT.getCode(), "EXPORT_REGISTRATION_PACKETS", "Export Packets: To external device"),
+
+	// Registration Packet Creation
+	PACKET_CREATION_SUCCESS("REG-EVT-098", USER_EVENT.getCode(), "PACKET_CREATION_SUCCESS", "Packet Succesfully Created"),
+	PACKET_ENCRYPTED("REG-EVT-099", USER_EVENT.getCode(), "PACKET_ENCRYPTED", "Packet Encrypted Sucessfully"),
+	PACKET_UPLOADED("REG-EVT-100", USER_EVENT.getCode(), "PACKET_UPLOADED", "Packet Uploaded Successfully"),
+	PACKET_SYNCED_TO_SERVER("REG-EVT-101", USER_EVENT.getCode(), "PACKET_SYNCED_TO_SERVER", "Packet Synced to Server Sucesfully"),
+	PACKET_DELETED("REG-EVT-102", USER_EVENT.getCode(), "PACKET_DELETED", "Packet Deleted Successfully"),
+	PACKET_APPROVED("REG-EVT-103", USER_EVENT.getCode(), "PACKET_APPROVED", "Packet Approved Successfully"),
+	PACKET_REJECTED("REG-EVT-104", USER_EVENT.getCode(), "PACKET_REJECTED", "Packet Rejected Successfully"),
+	PACKET_HOLDED("REG-EVT-105", USER_EVENT.getCode(), "PACKET_HOLDED","Packet Holded for particular reason"),
+	PACKET_INTERNAL_ERROR("REG-EVT-106", USER_EVENT.getCode(), "PACKET_INTERNAL_ERROR", "Packet Creation Error"),
+	PACKET_INTERNAL_ZIP("REG-EVT-107", USER_EVENT.getCode(), "PACKET_INTERNAL_ZIP", "Packet internally zipped successfully"),
+	PACKET_DEMO_JSON_CREATED("REG-EVT-108", USER_EVENT.getCode(), "PACKET_DEMO_JSON_CREATED", "Packet Demographic JSON created successfully"),
+	PACKET_HMAC_FILE_CREATED("REG-EVT-109", USER_EVENT.getCode(), "PACKET_HMAC_FILE_CREATED", "Packet HMAC File created successfully"),
+	PACKET_META_JSON_CREATED("REG-EVT-110", USER_EVENT.getCode(), "PACKET_META_JSON_CREATED", "Packet Meta-Data JSON created successfully"),
+	PACKET_AUDIT_JSON_CREATED("REG-EVT-111", USER_EVENT.getCode(), "PACKET_AUDIT_JSON_CREATED", "Packet Audit JSON created successfully"),
+	PACKET_AES_ENCRYPTED("REG-EVT-112", USER_EVENT.getCode(), "PACKET_AES_ENCRYPTED","Packet Encrypted Sucessfully"),
+
+	// Scheduler
+	UI_SCHEDULER_STARTED("REG-EVT-113", USER_EVENT.getCode(), "UI_SCHEDULER_STARTED","Scheduler started Sucessfully"),
+
+	//Login and User related
+	LOGIN_MODES_FETCH("REG-EVT-114", USER_EVENT.getCode(), "LOGIN_MODES_FETCH", "Fetching Login Modes"),
+	USER_STATUS_FETCH("REG-EVT-115", USER_EVENT.getCode(), "USER_STATUS_FETCH", "Fetching User Status"),
+	VALIDATE_USER_CRED("REG-EVT-116", USER_EVENT.getCode(), "VALIDATE_USER_CREDENTIALS", "Validating User credentials"),
+	FETCH_USR_DET("REG-EVT-117", USER_EVENT.getCode(), "FETCH_USER_DETAILS", "Fetching User Details"),
+	FETCH_CNTR_NAME("REG-EVT-118", USER_EVENT.getCode(), "FETCH_CENTER_NAME", "Fetching Center Name"),
+	FETCH_CNTR_DET("REG-EVT-119", USER_EVENT.getCode(), "FETCH_CENTER_DETAILS", "Fetching Center Details"),
+	FETCH_USR_ROLE("REG-EVT-120", USER_EVENT.getCode(), "FETCH_USER_ROLE", "Fetching User Roles"),
+	FETCH_SCR_AUTH("REG-EVT-121", USER_EVENT.getCode(), "FETCH_SCREEN_AUTH", "Fetching screens to be authorized"),
+	SYNCJOB_INFO_FETCH("REG-EVT-122", USER_EVENT.getCode(), "SYNC_JOB_INFO_FETCH", "SyncJobInfo containing the sync control list and yet to export packet count fetched successfully"),
+	SYNC_INFO_VALIDATE("REG-EVT-123", USER_EVENT.getCode(), "SYNC_INFO_VALIDATION", "Validating the sync status ended successfully"),
+	SYNC_PKT_COUNT_VALIDATE("REG-EVT-124", USER_EVENT.getCode(), "SYNC_PKT_COUNT_VALIDATION", "Validating yet to export packets frequency with the configured limit count"),
+	PACKET_RETRIVE("REG-EVT-125", USER_EVENT.getCode(), "PACKET_RETRIVE", "Packets which are in created state for approval are retrived"),
+	PACKET_UPDATE("REG-EVT-126", USER_EVENT.getCode(), "PACKET_UPDATE", "Packets which are in created state are updated"),
+	SYNC_GEO_VALIDATE("REG-EVT-127", USER_EVENT.getCode(), "SYNC_GEO_VALIDATE", "Validating the geo information ended successfully"),
+	PENDING_PKT_CNT_VALIDATE("REG-EVT-128", USER_EVENT.getCode(), "PENDING_PKT_COUNT_VALIDATION", "Validating the Pending packets count"),
+	PENDING_PKT_DUR_VALIDATE("REG-EVT-129", USER_EVENT.getCode(), "PENDING_PKT_DURATION_VALIDATION", "Validating the Pending packets Duration"),
+	DEVICE_MAPPING_SUCCESS("REG-EVT-130", USER_EVENT.getCode(), "DEVICE_MAPPING_SUCCESS","device mapped successfully"),
+	DEVICE_UN_MAPPING("REG-EVT-131", USER_EVENT.getCode(), "DEVICE_UN_MAPPING", "Device is unmapped "),
+	
+	//Sync Packets
+	SYNC_SERVER("REG-EVT-132", USER_EVENT.getCode(), "SYNC_SERVER", "Synchronize the packet status to the server"),
+	
+	//Packet Upload
+	PACKET_UPLOAD("REG-EVT-133", USER_EVENT.getCode(), "PACKET_UPLOAD", "Upload the local packets to the server"),
+	
+	// Device Onboarding
+	GET_ONBOARDING_DEVICES_TYPES("REG-EVT-134", USER_EVENT.getCode(), "GET_ONBOARDING_DEVICES_TYPES", "Get the types of devices for device onboarding"),
+	GET_ONBOARDING_DEVICES("REG-EVT-135", USER_EVENT.getCode(), "GET_ONBOARDING_DEVICES", "Get the available and mapped devices for the requested device type"),
+	UPDATE_DEVICES_ONBOARDING("REG-EVT-136", USER_EVENT.getCode(), "UPDATE_DEVICES_ONBOARDING", "Devices onboarding updated for the registration client"),
+
+	// Notification Service
+	NOTIFICATION_STATUS("REG-EVT-137", USER_EVENT.getCode(), "NOTIFICATION_SERVICE", "Notification request status"),
+	
+	// Registration Audits
+	GET_REGISTRATION_CONTROLLER("REG-EVT-138", USER_EVENT.getCode(),"GET_REGISTRATION_CONTROLLER", "Initializing the registration controller"),
+	SAVE_DETAIL_TO_DTO("REG-EVT-139", USER_EVENT.getCode(), "SAVE_DETAIL_TO_DTO", "Saving the details to DTO");
 	
 	/**
 	 * The constructor

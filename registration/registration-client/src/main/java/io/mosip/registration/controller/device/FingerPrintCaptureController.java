@@ -21,6 +21,9 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
@@ -415,6 +418,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					.parseInt(getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)))
 					|| ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER))) {
 
+				auditFactory.audit(AuditEvent.REG_BIO_THUMBS_SCAN, Components.REG_BIOMETRICS, SessionContext.userId(),
+						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 				scanPopUpViewController.init(this, RegistrationConstants.FINGERPRINT);
 			} else {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_MAX_RETRIES_ALERT);
@@ -624,6 +630,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	 */
 	public void goToNextPage() {
 		try {
+			auditFactory.audit(AuditEvent.REG_BIO_FINGERPRINT_NEXT, Components.REG_BIOMETRICS, SessionContext.userId(),
+					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+			
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Iris capture page for user registration started");
 
@@ -684,6 +693,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	 */
 	public void goToPreviousPage() {
 		try {
+			auditFactory.audit(AuditEvent.REG_BIO_FINGERPRINT_BACK, Components.REG_BIOMETRICS, SessionContext.userId(),
+					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+			
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Demographic capture page for user registration started");
 

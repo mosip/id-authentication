@@ -809,8 +809,6 @@ public class BaseController {
 
 				generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.USER_ONBOARD_SUCCESS);
 				popupStatge("Onboarding Successful", "images/tick.png", "onboardAlertMsg");
-				// generateAlert(RegistrationConstants.SUCCESS,
-				// RegistrationUIConstants.USER_ONBOARD_SUCCESS);
 				clearOnboardData();
 				goToHomePage();
 
@@ -883,11 +881,11 @@ public class BaseController {
 		Image img = new Image(imageUrl);
 		ImageView imageView = new ImageView();
 		imageView.setImage(img);
-		imageView.setLayoutX(30);
-		imageView.setLayoutY(12);
-		imageView.setFitHeight(15);
-		imageView.setFitWidth(15);
-		imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+		imageView.setLayoutX(25);
+		imageView.setLayoutY(8);
+		imageView.setFitHeight(25);
+		imageView.setFitWidth(25);
+		primaryStage.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				if (primaryStage.isShowing()) {
@@ -895,7 +893,6 @@ public class BaseController {
 				}
 			}
 		});
-		anchorPane.getStyleClass().clear();
 		anchorPane.getChildren().add(imageView);
 		anchorPane.getChildren().add(label);
 		Scene scene = new Scene(anchorPane);

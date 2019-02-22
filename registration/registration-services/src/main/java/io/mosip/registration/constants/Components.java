@@ -9,6 +9,23 @@ package io.mosip.registration.constants;
  */
 public enum Components {
 
+	LOGIN("REG-MOD-101", "Login"),
+	NAVIGATION("REG-MOD-102", "Navigation"),
+	REG_DEMO_DETAILS("REG-MOD-103", "Registration: DemographicsDetails"),
+	REG_DOCUMENTS("REG-MOD-104", "Registration: Documents"),
+	REG_BIOMETRICS("REG-MOD-105", "Registration: Biometrics"),
+	REG_PREVIEW("REG-MOD-106", "Registration: Preview"),
+	REG_OS_AUTH("REG-MOD-107", "Registration: OS Authentication"),
+	REG_APPROVAL("REG-MOD-108", "Approve Registration"),
+	SYNC_PACKET("REG-MOD-109", "Sync Packets"),
+	UPLOAD_PACKET("REG-MOD-110", "Upload Packets"),
+	VIRUS_SCAN("REG-MOD-111", "Virus Scan"),
+	GEO_LOCATION("REG-MOD-112", "Geo-Location"),
+	ON_BOARD_USER("REG-MOD-113", "On-board user"),
+	SYNC_SERVER_TO_CLIENT("REG-MOD-114", "Server to Client Sync"),
+	SYNC_CLIENT_TO_SERVER("REG-MOS-115", "Client to Server Sync"),
+	EXPORT_REG_PACKETS("REG-MOD-116", "Client to Server Sync"),
+
 	PACKET_HANDLER("REG-MOD-117", "Packet Handler"),
 	PACKET_VALIDATOR("REG-MOD-118", "Packet Validator"),
 	PACKET_CREATOR("REG-MOD-119", "Packet Creator"),
@@ -45,24 +62,7 @@ public enum Components {
 	DEVICE_UN_MAPPING("REG-MOD-139","device un mapping"),
 	
 	//Registration Controller
-	REGISTRATION_CONTROLLER("REG-MOD-140","Registration initialization"),
-
-	LOGIN("REG-MOD-101", "Login"),
-	NAVIGATION("REG-MOD-102", "Navigation"),
-	REG_DEMO_DETAILS("REG-MOD-103", "Registration: DemographicsDetails"),
-	REG_DOCUMENTS("REG-MOD-104", "Registration: Documents"),
-	REG_BIOMETRICS("REG-MOD-105", "Registration: Biometrics"),
-	REG_PREVIEW("REG-MOD-106", "Registration: Preview"),
-	REG_OS_AUTH("REG-MOD-107", "Registration: OS Authentication"),
-	REG_APPROVAL("REG-MOD-108", "Approve Registration"),
-	SYNC_PACKET("REG-MOD-109", "Sync Packets"),
-	UPLOAD_PACKET("REG-MOD-110", "Upload Packets"),
-	VIRUS_SCAN("REG-MOD-111", "Virus Scan"),
-	GEO_LOCATION("REG-MOD-112", "Geo-Location"),
-	ON_BOARD_USER("REG-MOD-113", "On-board user"),
-	SYNC_SERVER_TO_CLIENT("REG-MOD-114", "Server to Client Sync"),
-	SYNC_CLIENT_TO_SERVER("REG-MOS-115", "Client to Server Sync"),
-	EXPORT_REG_PACKETS("REG-MOD-116", "Client to Server Sync");
+	REGISTRATION_CONTROLLER("REG-MOD-140","Registration initialization");
 
 	/**
 	 * The constructor

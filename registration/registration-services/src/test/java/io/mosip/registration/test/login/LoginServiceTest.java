@@ -80,7 +80,7 @@ public class LoginServiceTest {
 	@Before
 	public void initialize() throws IOException, URISyntaxException {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 	}
 	
 	@Test
@@ -147,7 +147,7 @@ public class LoginServiceTest {
 	@Test
 	public void updateLoginParamsTest() {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 		doNothing().when(userDetailDAO).updateLoginParams(Mockito.any(UserDetail.class));
 		
 		UserDetail userDetail = new UserDetail();

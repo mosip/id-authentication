@@ -411,7 +411,7 @@
 .onboardAlertMsg{
 	-fx-font-family: Roboto;
 	-fx-font-size: 16.0px;
-	-fx-text-fill:  #39e600;	
+	-fx-text-fill:  #45A30A;	
 }
 /*Onoard User page Design Ends here*/
 
@@ -496,8 +496,8 @@
 /*user onboard Iris design starts */
 .onboardIrisPanes{
 	-fx-background-color : #efefef;
-	-fx-pref-height: 170.0px;
-	-fx-pref-width: 230.0px;
+	-fx-pref-height: 160px;	
+	-fx-pref-width: 180px;
 }
 .onboardBioDetails{
 	-fx-font-family: Roboto;
@@ -526,6 +526,17 @@
 }
 /*user onboard Face design ends*/
 /*user onboard exception design starts */
+.completedTracker{
+	-fx-text-fill: #E43391;
+	-fx-font-size: 12.0px;
+}
+.uncompleteTracker{
+	-fx-font-size: 12.0px;
+}
+.currentTracker{
+	-fx-text-fill: #E43391;
+	-fx-font-size: 14.0px;
+}
 .onboardOperatorDetailsHeader{
 	-fx-font-family: Roboto;
 	-fx-font-size: 10.0px;

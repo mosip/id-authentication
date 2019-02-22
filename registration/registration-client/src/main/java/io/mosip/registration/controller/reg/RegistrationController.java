@@ -29,8 +29,6 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.AuditEvent;
-import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
@@ -125,11 +123,6 @@ public class RegistrationController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
-
-			auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, Components.REGISTRATION_CONTROLLER,
-					"initializing the registration controller", SessionContext.userContext().getUserId(),
-					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
-
 			if (getRegistrationDTOFromSession() == null) {
 				createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
 			}

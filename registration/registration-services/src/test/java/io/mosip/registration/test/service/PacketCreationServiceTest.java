@@ -99,7 +99,7 @@ public class PacketCreationServiceTest {
 	@Test
 	public void testCreatePacket() throws Exception {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList())).thenReturn("cbeffXML".getBytes());
@@ -114,7 +114,7 @@ public class PacketCreationServiceTest {
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testException() throws RegBaseCheckedException {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
 
@@ -125,7 +125,7 @@ public class PacketCreationServiceTest {
 	@Test(expected = RegBaseCheckedException.class)
 	public void testCBEFFException() throws Exception {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList())).thenThrow(new Exception("Invalid BIR"));
@@ -139,7 +139,7 @@ public class PacketCreationServiceTest {
 	@Test(expected =  RegBaseCheckedException.class)
 	public void testJsonValidationException() throws Exception {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList())).thenReturn("cbeffXML".getBytes());
@@ -153,7 +153,7 @@ public class PacketCreationServiceTest {
 	@Test
 	public void testPacketCreationWithLatestRegistration() throws Exception {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList())).thenReturn("cbeffXML".getBytes());
@@ -185,7 +185,7 @@ public class PacketCreationServiceTest {
 			}
 		};
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList())).thenReturn("cbeffXML".getBytes());
