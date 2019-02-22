@@ -1,61 +1,11 @@
-.root {
-    -fx-font-size: 14.0px;
-    -fx-font-family: sans-serif;
-    -fx-background-color: #ffffff;
-}
-
-#anchor-pane {
-	-fx-background-color: #f8f9fa;
-}
-
-#demographicPane {
- 	-fx-padding: 10.0;
-	-fx-border-color: black;
-    -fx-background-color : white;
-    -fx-border-width: 0.0 0.0 0.0 0.0;
-	-fx-font-size : 12.0px;   
-    
-}
-
-
 #virtualKeyboard {
 	-fx-background-color: white;
 	-fx-border-width:1.0 1.0 1.0 1.0;
 	-fx-border-color: black;
 	-fx-background-radius: 6.0,5.0;
+	-fx-font-size : 15px;
 }
 
-#registrationAccordian.accordion .title > .arrow-button .arrow{
-    -fx-translate-x: 750.0;
-	-fx-shape: "M 10,150 L 70,10 L 130,150 z";    
-}
-
-#registrationAccordian.accordion > .titled-pane {
-    -fx-padding: 0.0 0.0 0.5em 0.0;
-}
-
-#registrationAccordian.accordion > .titled-pane > .title{
-    -fx-background-color : white;
-    -fx-font-size:15.0px;
-    -fx-font-weight:bold;
-    -fx-border-color: #D3D3D3;
-    -fx-border-width : 1.0 1.0 0.0 1.0;
-}
-
-#titleDemographicPaneApplicationLanguage, #titleDemographicPaneLocalLanguage, #documentTitlePaneApplicationLanguage{
-	 -fx-font-size:20.0px;
-    -fx-font-weight:bold;
-   
-}
-
-#registrationAccordian.accordion >.titled-pane:collapsed > .title {	
- 
- 
-    -fx-border-width : 1.0 1.0 1.0 1.0;
-    -fx-border-color: black;
-	
-
-}
 
 #doc_label{
 	-fx-font-size:10.0px;
@@ -82,16 +32,6 @@
 .biometricExceptionPane{
 	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: white;
-}
-#anchor-pane-registration .text-field {		
-	-fx-background-color: white;
-	-fx-border-color: black;
-	-fx-background-insets: 0.0,0.0 0.0 1.0 0.0;
-  	-fx-border-width: 0.0 0.0 1.0 0.0;	
-}
-
-#anchor-pane-registration{
-	-fx-background-color: white;
 }
 
 #registrationPreview {
@@ -145,16 +85,6 @@
 	-fx-background-color: #FF4081;
 	-fx-text-fill: white;
 	-fx-font-family: Roboto;
-}
-
-#anchor-pane-registration .text-field:focused{
-	-fx-border-color: red;
-	-fx-background-insets: 0.0,0.0 0.0 2.0 0.0;
-  	
-}
-
-#anchor-pane-registration .button {
-	-fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,1.0), 10.0, 0.0, 0.0, 0.0);
 }
 
 #homeReg{
@@ -825,7 +755,7 @@
 	-fx-pref-width: 483.0px;
 }
 
-#submit, #rejectionSubmit, #fetchBtn, #copyPrevious{
+#submit, #rejectionSubmit{
 	-fx-background-color:#ffffff; 
     -fx-background-radius: 6.0,5.0;
     -fx-background-insets: 0.0,1.0;
@@ -1051,7 +981,7 @@ Working on new Css by taleev
 	-fx-background-color:#FFFFFF;
 	-fx-pref-height: 39px;
 	-fx-pref-width: 1290px;
-	
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
 }
 
 .parentPane{
@@ -1062,7 +992,7 @@ Working on new Css by taleev
 
 .paneAtDisplayDemoGraphic{
 	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 1200px;	
+	-fx-pref-height: 1050px;	
 	-fx-pref-width: 1100px;
 	
 }
@@ -1077,6 +1007,13 @@ Working on new Css by taleev
 	-fx-background-color:#FFFFFF;
 	-fx-pref-height: 30px;	
 	-fx-pref-width: 1290px;
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+}
+
+
+.trackerHighlighter{
+	-fx-font-size : 18;
+	-fx-text-fill : #E43391;	
 }
 
 .demoGraphicPaneContentButton{
@@ -1084,8 +1021,9 @@ Working on new Css by taleev
 	-fx-border-color: #FF4081;
 	-fx-background-color : #FFFFFF;
 	-fx-border-radius: 3,3,3,3;
-	-fx-pref-height: 2px;	
+	-fx-pref-height: 4px;	
 	-fx-pref-width: 150px;
+	-fx-font-size : 15px;
 	 
 }
 
@@ -1097,11 +1035,6 @@ Working on new Css by taleev
 	-fx-pref-height: 2px;	
 	-fx-pref-width: 120px;
 	 
-}
-
-#demographicDetail .label{
-	-fx-font-size: 12px;
-	-fx-padding: 0 0 0 0;
 }
 
 .contiuneButton{
@@ -1127,37 +1060,52 @@ Working on new Css by taleev
 .demoGraphicTextField{
 	-fx-pref-height: 10px;	
 	-fx-pref-width: 395px;
-	-fx-border-color: black;
+	-fx-border-color: #C9C9C9;
 	-fx-background-insets: 0,0 0 0 0;
   	-fx-border-width: 0 0 1 0;	
-  	-fx-background-color: white;
-  	-fx-padding : 0 0 2 0;
-  		
-	
+  	-fx-background-color: #FFFFFF;
+  	-fx-padding : 5 0 5 0;
+	-fx-prompt-text-fill: #000000;	
+	-fx-font-size: 15px;
 }
 
 .demoGraphicTextFieldTypeSecond{
 	-fx-pref-height: 10px;	
 	-fx-pref-width: 190px;
-	-fx-border-color: black;
+	-fx-border-color: #C9C9C9;
 	-fx-background-insets: 0,0 0 0 0;
   	-fx-border-width: 0 0 1 0;	
-  	-fx-background-color: white;
-  	-fx-padding: 0 0 2 0;
-  		
+  	-fx-background-color: #FFFFFF;
+  	-fx-padding: 5 0 5 0;
+  	-fx-prompt-text-fill: #000000;	
+  	-fx-font-size: 15px;
+  	
+}
+
+.demographicLangHeader{
+	-fx-font-size : 20px;
+	-fx-text-fill : #2F3033;
+}
+
+.demographicMiscTexts{
+	-fx-font-size: 15px;
+	-fx-text-fill: #000000;	
 }
 
 .demoGraphicTextFieldTypThree{
 	-fx-pref-height: 10px;	
 	-fx-pref-width: 40px;
-	-fx-border-color: black;
+	-fx-border-color: #C9C9C9;
 	-fx-background-insets: 0,0 0 0 0;
   	-fx-border-width: 0 0 1 0;	
-  	-fx-background-color: white;
-  	-fx-padding: 0 0 2 0;	
+  	-fx-background-color: #FFFFFF;
+  	-fx-padding: 5 0 5 0;
+  	-fx-prompt-text-fill: #000000;	
+  	-fx-font-size: 15px;
+  	
 }
 .demographicScrollpane{
-		-fx-pref-height: 583px;	
+		-fx-pref-height: 590px;	
 		-fx-pref-width: 1100px;
 	
 }
@@ -1168,6 +1116,8 @@ Working on new Css by taleev
 		-fx-pref-height: 10px;	
 		-fx-pref-width: 300px;
 		-fx-text-fill : black;
+		-fx-font-size: 17px;
+		
 }
 
 .demoGraphicFieldMessageLabel{
@@ -1180,7 +1130,7 @@ Working on new Css by taleev
 .demographicCombobox{
 	-fx-background-color:#ffffff;
 	-fx-border-width: 0 0 1 0;
-	-fx-border-color: black;
+	-fx-border-color: #C9C9C9;
 	-fx-font-size: 14px;
 	-fx-pref-height: 10px;	
 	-fx-pref-width: 190px;

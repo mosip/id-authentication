@@ -566,6 +566,7 @@ public class DemographicDetailController extends BaseController {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
+			fxUtils.focusUnfocusListener(demoGraphicPane, ageField, ageFieldLocalLanguage);
 			ageField.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				ageFieldLocalLanguage.setText(newValue);
 				if (!validation.validateTextField(demoGraphicPane,ageField, ageField.getId() + "_ontype",
@@ -1289,22 +1290,22 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private void setFocusonLocalField(MouseEvent event) {
 		try {
-			keyboardNode.setLayoutX(400.00);
+			keyboardNode.setLayoutX(470.00);
 			Node node = (Node) event.getSource();
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE1)) {
 				addressLine1LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(310.00);
+				keyboardNode.setLayoutY(450.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE2)) {
 				addressLine2LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(360.00);
+				keyboardNode.setLayoutY(520.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE3)) {
 				addressLine3LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(415.00);
+				keyboardNode.setLayoutY(585.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.FULL_NAME)) {
@@ -1314,7 +1315,7 @@ public class DemographicDetailController extends BaseController {
 
 			if (node.getId().equals(RegistrationConstants.PARENT_NAME)) {
 				parentNameLocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(705.00);
+				keyboardNode.setLayoutY(920.00);
 			}
 			keyboardNode.setVisible(!keyboardNode.isVisible());
 

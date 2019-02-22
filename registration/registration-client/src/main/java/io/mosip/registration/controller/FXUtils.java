@@ -46,7 +46,7 @@ public class FXUtils {
 
 	private Transliteration<String> transliteration;
 	private static FXUtils fxUtils = null;
-
+	private static String promptText="";
 	public static FXUtils getInstance() {
 		if (fxUtils == null)
 			fxUtils = new FXUtils();
@@ -133,15 +133,17 @@ public class FXUtils {
 			if(newValue) {
 				try {
 				((Label)parentPane.lookup("#"+field.getId()+"Label")).setVisible(true);
+				promptText=((TextField)parentPane.lookup("#"+field.getId())).getPromptText();
+				((TextField)parentPane.lookup("#"+field.getId())).setPromptText(null);
 				if(field.getId().matches("dd|mm|yyyy")) {
 					((Label)parentPane.lookup("#"+"dobMessage")).setVisible(false);
-
 				}else {
 					((Label)parentPane.lookup("#"+field.getId()+"Message")).setVisible(false);
 				}
 				}catch(NullPointerException exception) {
 				}
 			}else {
+				((TextField)parentPane.lookup("#"+field.getId())).setPromptText(promptText);
 					if(!(field.getText().length()>0)) {
 						try {
 							((Label)parentPane.lookup("#"+field.getId()+"Label")).setVisible(false);
@@ -156,11 +158,14 @@ public class FXUtils {
 		localField.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
 			if(newValue) {
 				try {
+				promptText=((TextField)parentPane.lookup("#"+localField.getId())).getPromptText();
+				((TextField)parentPane.lookup("#"+localField.getId())).setPromptText(null);
 				((Label)parentPane.lookup("#"+localField.getId()+"Label")).setVisible(true);
 				((Label)parentPane.lookup("#"+localField.getId()+"Message")).setVisible(false);
 				}catch(NullPointerException exception) {
 				}
 			}else {
+				((TextField)parentPane.lookup("#"+localField.getId())).setPromptText(promptText);
 					if(!(localField.getText().length()>0)) {
 						try {
 							((Label)parentPane.lookup("#"+localField.getId()+"Label")).setVisible(false);
