@@ -8,7 +8,7 @@
 \ir ddl/prereg-batch_job_instance.sql
 \ir ddl/prereg-batch_step_execution.sql
 \ir ddl/prereg-batch_step_execution_context.sql
-\ir ddl/prereg-prereg-intf_processed_prereg_list.sql
+\ir ddl/prereg-intf_processed_prereg_list.sql
 \ir ddl/prereg-pre_registration_transaction.sql
 \ir ddl/prereg-processed_prereg_list.sql
 \ir ddl/prereg-reg_appointment.sql
