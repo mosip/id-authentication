@@ -7,23 +7,23 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="fingerPrintScanRoot" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.auth.AuthenticationController" styleClass="rootPaneStyle">
+<AnchorPane fx:id="fingerPrintScanRoot" styleClass="rootPaneStyle" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.auth.AuthenticationController">
    <children>
-      <AnchorPane fx:id="authenticateRootSubPane" layoutX="3.0" layoutY="53.0" styleClass="anchorPanebgColor">
+      <AnchorPane fx:id="authenticateRootSubPane" layoutX="3.0" prefHeight="317.0" prefWidth="513.0" styleClass="anchorPanebgColor">
          <children>
-            <AnchorPane fx:id="fingerprintBasedLogin" layoutY="1.0" styleClass="authenticationAnchorPaneStyle" visible="false">
+            <AnchorPane fx:id="fingerprintBasedLogin" layoutX="70.0" layoutY="41.0" styleClass="authenticationAnchorPaneStyle" visible="false">
                <children>
                   <Label fx:id="fingerPrintLabel" layoutX="132.0" layoutY="38.0" text="%rofingerprintauthentication" />
                   <ImageView fitHeight="128.0" fitWidth="111.0" layoutX="140.0" layoutY="152.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/fingerprint.jpg" />
+                        <Image url="@../images/rightHand.png" />
                      </image>
                   </ImageView>
                   <Button layoutX="270.0" layoutY="224.0" mnemonicParsing="false" onAction="#validateFingerprint" styleClass="RegbuttonStyle" text="%scan" />
-                  <TextField fx:id="fpUserId" layoutX="86.0" layoutY="89.0" styleClass="authenticationStyle" promptText="%username" />
+                  <TextField fx:id="fpUserId" layoutX="86.0" layoutY="89.0" promptText="%username" styleClass="authenticationStyle" />
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="otpBasedLogin" layoutY="1.0" styleClass="authenticationAnchorPaneStyle" visible="false">
+            <AnchorPane fx:id="otpBasedLogin" layoutX="70.0" layoutY="41.0" styleClass="authenticationAnchorPaneStyle" visible="false">
                <children>
                   <Button layoutX="106.0" layoutY="197.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="RegbuttonStyle" text="%getotp" />
                   <Label fx:id="otpLabel" layoutX="126.0" layoutY="38.0" text="%registrationofficerverification" />
@@ -37,55 +37,55 @@
                   <PasswordField fx:id="otp" layoutX="106.0" layoutY="130.0" promptText="%enterotp" styleClass="authenticationStyle" />
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="pwdBasedLogin" layoutY="1.0" styleClass="authenticationAnchorPaneStyle">
+            <AnchorPane fx:id="pwdBasedLogin" layoutX="70.0" layoutY="41.0" styleClass="authenticationAnchorPaneStyle" visible="true">
                <children>
                   <Button layoutX="200.0" layoutY="206.0" mnemonicParsing="false" onAction="#validatePwd" styleClass="RegbuttonStyle" text="%submit" />
-                  <TextField fx:id="username" layoutX="106.0" layoutY="95.0" styleClass="authenticationStyle" promptText="%username" />
+                  <TextField fx:id="username" layoutX="106.0" layoutY="95.0" promptText="%username" styleClass="authenticationStyle" />
                   <Label fx:id="passwdLabel" layoutX="126.0" layoutY="47.0" text="%registrationofficerverification" />
-                  <PasswordField fx:id="password" layoutX="106.0" layoutY="150.0" styleClass="authenticationStyle" promptText="%password" />
+                  <PasswordField fx:id="password" layoutX="106.0" layoutY="150.0" promptText="%password" styleClass="authenticationStyle" />
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="irisBasedLogin" layoutY="1.0" styleClass="authenticationAnchorPaneStyle" visible="false">
+            <AnchorPane fx:id="irisBasedLogin" layoutX="70.0" layoutY="41.0" styleClass="authenticationAnchorPaneStyle" visible="false">
                <children>
                   <Label fx:id="irisLabel" layoutX="132.0" layoutY="38.0" text="RO Iris Authentication" />
                   <ImageView fitHeight="128.0" fitWidth="111.0" layoutX="140.0" layoutY="152.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/iris.jpg" />
+                        <Image url="@../images/eye.png" />
                      </image>
                   </ImageView>
                   <Button layoutX="270.0" layoutY="224.0" mnemonicParsing="false" onAction="#validateIris" styleClass="RegbuttonStyle" text="Scan" />
-                  <TextField fx:id="fpUserId" layoutX="86.0" layoutY="89.0" styleClass="authenticationStyle" promptText="Username" />
+                  <TextField fx:id="fpUserId" layoutX="86.0" layoutY="89.0" promptText="Username" styleClass="authenticationStyle" />
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="faceBasedLogin" layoutY="1.0" styleClass="authenticationAnchorPaneStyle" visible="false">
+            <AnchorPane fx:id="faceBasedLogin" layoutX="70.0" layoutY="41.0" styleClass="authenticationAnchorPaneStyle" visible="false">
                <children>
-                  <Label fx:id="faceLabel" layoutX="132.0" layoutY="38.0" text="RO Face Authentication"/>
-                  <ImageView fitHeight="128.0" fitWidth="111.0" layoutX="140.0" layoutY="152.0" pickOnBounds="true" preserveRatio="true" >
+                  <Label fx:id="faceLabel" layoutX="132.0" layoutY="38.0" text="RO Face Authentication" />
+                  <ImageView fitHeight="128.0" fitWidth="111.0" layoutX="140.0" layoutY="152.0" pickOnBounds="true" preserveRatio="true">
                   <image>
-                        <Image url="@../images/face.jpg" />
+                        <Image url="@../images/Photo.png" />
                      </image>
                   </ImageView>
                   <Button layoutX="270.0" layoutY="224.0" mnemonicParsing="false" onAction="#validateFace" styleClass="RegbuttonStyle" text="Scan" />
                   <TextField fx:id="fpUserId" layoutX="86.0" layoutY="89.0" promptText="Username" styleClass="authenticationStyle" />
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="errorPane" layoutY="1.0" prefHeight="137.0" prefWidth="500.0" visible="false">
+            <AnchorPane fx:id="errorPane" layoutX="70.0" layoutY="41.0" prefHeight="137.0" prefWidth="500.0" visible="false">
                <children>
                	  <Label fx:id="errorLabel" layoutX="132.0" layoutY="38.0" />
                   <Label fx:id="errorText1" layoutX="10.0" layoutY="80.0" />
                   <Label fx:id="errorText2" layoutX="150.0" layoutY="110.0" />
                </children>
             </AnchorPane>
-         </children>
-      </AnchorPane>
-      <AnchorPane fx:id="authenticateRootPane" layoutY="-1.0" styleClass="labelAnchorPanebgColor">
-         <children>
-            <Label layoutX="131.0" layoutY="14.0" text="%supervisorauthentication">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Label>
-            <Hyperlink fx:id="authenticationExit" layoutX="458.0" layoutY="10.0" onAction="#exitWindow" text="%x" styleClass="exitButtonStyle"/>
+            <AnchorPane fx:id="authenticateRootPane" layoutX="40.0" layoutY="10.0" styleClass="labelAnchorPanebgColor">
+               <children>
+                  <Label layoutX="131.0" layoutY="14.0" text="%supervisorauthentication">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <Hyperlink fx:id="authenticationExit" layoutX="458.0" layoutY="10.0" onAction="#exitWindow" styleClass="exitButtonStyle" text="%x" />
+               </children>
+            </AnchorPane>
          </children>
       </AnchorPane>
    </children>
