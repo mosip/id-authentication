@@ -116,8 +116,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 				"Loading of FaceCapture screen started");
 
 		takePhoto.setDisable(true);
-		defaultExceptionImage = new Image(getClass().getResourceAsStream("/images/ExceptionPhoto.png"));
-		exceptionImage.setImage(defaultExceptionImage);
+		
 		if (capturePhotoUsingDevice.equals(RegistrationConstants.ENABLE)
 				|| (boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			// for applicant biometrics
@@ -128,9 +127,12 @@ public class FaceCaptureController extends BaseController implements Initializab
 					applicantImage.setImage(convertBytesToImage(
 							getBiometricDTOFromSession().getOperatorBiometricDTO().getFaceDetailsDTO().getFace()));
 				} else {
-					initialize();
+					defaultImage = applicantImage.getImage();
+					applicantImageCaptured = false;
 				}
 			} else {
+				defaultExceptionImage = new Image(getClass().getResourceAsStream("/images/ExceptionPhoto.png"));
+				exceptionImage.setImage(defaultExceptionImage);
 				if (getRegistrationDTOFromSession() != null
 						&& getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO() != null) {
 					if (getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO()
@@ -152,18 +154,14 @@ public class FaceCaptureController extends BaseController implements Initializab
 						}
 					}
 				} else {
-					initialize();
+					defaultImage = applicantImage.getImage();
+					defaultExceptionImage = exceptionImage.getImage();
+					applicantImageCaptured = false;
+					exceptionImageCaptured = false;
+					exceptionBufferedImage = null;
 				}
 			}
 		}
-	}
-
-	private void initialize() {
-		defaultImage = applicantImage.getImage();
-		defaultExceptionImage = exceptionImage.getImage();
-		applicantImageCaptured = false;
-		exceptionImageCaptured = false;
-		exceptionBufferedImage = null;
 	}
 
 	/**

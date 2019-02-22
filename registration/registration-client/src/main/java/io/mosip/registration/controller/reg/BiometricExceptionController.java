@@ -94,7 +94,7 @@ public class BiometricExceptionController extends BaseController implements Init
 	@FXML
 	private Button previousBtn;
 	@FXML
-	private ImageView userOnboardImg;
+	private AnchorPane userOnboardTracker;
 	@FXML
 	private ImageView registrationImg;
 	@FXML
@@ -166,7 +166,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			registrationImg.setVisible(false);
 			registrationFooter.setVisible(false);
 			userOnboardFooter.setVisible(true);
-			userOnboardImg.setVisible(true);
+			userOnboardTracker.setVisible(true);
 			operatorExceptionLayout.setVisible(true);
 			operatorExceptionHeader.setVisible(true);
 		} else {
@@ -188,7 +188,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			registrationFooter.setVisible(true);
 			registrationExceptionHeader.setVisible(true);
 			userOnboardFooter.setVisible(false);
-			userOnboardImg.setVisible(false);
+			userOnboardTracker.setVisible(false);
 			operatorExceptionLayout.setVisible(false);
 			operatorExceptionHeader.setVisible(false);
 		}
