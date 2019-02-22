@@ -107,15 +107,6 @@ public class UpdateUINController extends BaseController implements Initializable
 	@Autowired
 	Validations validation;
 
-	@Value("${FINGERPRINT_DISABLE_FLAG}")
-	private String fingerprintDisableFlag;
-
-	@Value("${IRIS_DISABLE_FLAG}")
-	private String irisDisableFlag;
-
-	@Value("${FACE_DISABLE_FLAG}")
-	private String faceDisableFlag;
-
 	/*
 	 * (non-Javadoc)
 	 * 

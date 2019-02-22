@@ -249,7 +249,7 @@ public class RegistrationController extends BaseController {
 		boolean isValid = true;
 		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			isValid = demographicDetailController.validateThisPane();
-			if (isValid) {
+			if (isValid && RegistrationConstants.ENABLE.equalsIgnoreCase(documentDisableFlag)) {
 				isValid = validateDemographicPane(documentScanController.documentScanPane);
 			}
 		}

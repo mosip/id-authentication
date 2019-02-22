@@ -115,6 +115,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	private TextField otp;
 	@FXML
 	private AnchorPane operatorAuthenticationPane;
+	@FXML
 	private Button operatorAuthContinue;
 	
 	@Autowired
@@ -134,15 +135,6 @@ public class AuthenticationController extends BaseController implements Initiali
 
 	@Value("${otp_validity_in_mins}")
 	private long otpValidityInMins;
-	
-	@Value("${FINGERPRINT_DISABLE_FLAG}")
-	private String fingerprintDisableFlag;
-	
-	@Value("${IRIS_DISABLE_FLAG}")
-	private String irisDisableFlag;
-	
-	@Value("${FACE_DISABLE_FLAG}")
-	private String faceDisableFlag;
 
 	@Autowired
 	private PacketHandlerController packetHandlerController;

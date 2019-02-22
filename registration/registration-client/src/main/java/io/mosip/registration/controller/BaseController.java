@@ -132,6 +132,18 @@ public class BaseController {
 
 	@Value("${USERNAME_PWD_LENGTH}")
 	private int usernamePwdLength;
+	
+	@Value("${DOCUMENT_DISABLE_FLAG}")
+	protected String documentDisableFlag;
+	
+	@Value("${FINGERPRINT_DISABLE_FLAG}")
+	protected String fingerprintDisableFlag;
+	
+	@Value("${IRIS_DISABLE_FLAG}")
+	protected String irisDisableFlag;
+	
+	@Value("${FACE_DISABLE_FLAG}")
+	protected String faceDisableFlag;
 
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 

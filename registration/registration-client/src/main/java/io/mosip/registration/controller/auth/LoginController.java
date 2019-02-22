@@ -157,15 +157,6 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Value("${PROVIDER_NAME}")
 	private String deviceName;
-	
-	@Value("${FINGERPRINT_DISABLE_FLAG}")
-	private String fingerprintDisableFlag;
-	
-	@Value("${IRIS_DISABLE_FLAG}")
-	private String irisDisableFlag;
-	
-	@Value("${FACE_DISABLE_FLAG}")
-	private String faceDisableFlag;
 
 	@Autowired
 	private LoginService loginService;
