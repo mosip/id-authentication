@@ -16,7 +16,7 @@ public enum RegistrationCenterErrorCode {
 							"KER-MSD-112",
 							"Error occurred while deleting Registration Center details"), REGISTRATION_CENTER_NOT_FOUND(
 									"KER-MSD-042", "Registration Center not found"), DEPENDENCY_EXCEPTION(
-											"KER-MSD-xxxx", "Cannot delete dependency found"),
+											"KER-MSD-149", "Cannot delete as dependency found"),
 
 	DATE_TIME_PARSE_EXCEPTION("KER-MSD-043", "Invalid date format"),
 
