@@ -46,12 +46,14 @@ export class LoginComponent implements OnInit {
     private translate: TranslateService,
     private dialog: MatDialog
   ) {
+    const loggedOut = localStorage.getItem('loggedOut');
     localStorage.clear();
     translate.addLangs(['eng', 'fra', 'ara']);
     translate.setDefaultLang('ara');
 
     // const browserLang = translate.getBrowserLang();
     // translate.use(browserLang.match(/eng|fra|ara/) ? browserLang : 'ara');
+    localStorage.setItem('loggedOut', loggedOut);
     localStorage.setItem('langCode', this.langCode);
   }
 
