@@ -203,10 +203,10 @@
     </button>
     <span
       matTooltip="Info about the action"
-      [matTooltipDisabled]="files.length === 4"
+      [matTooltipDisabled]="enableContinue()"
     >
       <button mat-button 
-            [disabled]="files.length !== 4" 
+            [disabled]="!enableContinue()" 
             (click)="navigateNext()" 
             class="user-continue-btn"
             matTooltip="Info about the action"
