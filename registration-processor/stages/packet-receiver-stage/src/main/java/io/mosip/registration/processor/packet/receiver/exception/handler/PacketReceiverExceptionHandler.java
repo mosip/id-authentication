@@ -25,6 +25,7 @@ import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedE
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotAvailableException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
+import io.mosip.registration.processor.packet.receiver.exception.PacketReceiverAppException;
 import io.mosip.registration.processor.packet.receiver.exception.ValidationException;
 import io.mosip.registration.processor.packet.receiver.exception.systemexception.TimeoutException;
 import io.mosip.registration.processor.packet.receiver.exception.systemexception.UnexpectedException;
@@ -171,6 +172,12 @@ public class PacketReceiverExceptionHandler {
 		return buildPacketReceiverExceptionResponse((Exception)e);
 	}
 
+	public String unknownExceptionHandler(Exception e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"Unknow Exception",e.getMessage());
+		PacketReceiverAppException packetReceiverAppException=new PacketReceiverAppException(PlatformErrorMessages.RPR_PKR_UNKNOWN_EXCEPTION,e);
+		return buildPacketReceiverExceptionResponse((Exception)packetReceiverAppException);
+	}
+
 	/**
 	 * Builds the packet receiver exception response.
 	 *
@@ -204,9 +211,7 @@ public class PacketReceiverExceptionHandler {
 
 			response.setError(errors.get(0));
 		}
-		System.out.println("hdcdscdsch   "+env.getProperty(DATETIME_PATTERN));
-		
-		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		response.setVersion(env.getProperty(APPLICATION_VERSION));
 		response.setResponse(null);
 		Gson gson = new GsonBuilder().serializeNulls().create();
@@ -238,7 +243,11 @@ public class PacketReceiverExceptionHandler {
 			return duplicateentry((DuplicateUploadRequestException)exe);
 		if(exe instanceof MissingServletRequestPartException)
 			return handlePacketNotAvailableException((MissingServletRequestPartException)exe);
-		else return dataExceptionHandler((DataIntegrityViolationException) exe);
+		if(exe instanceof DataIntegrityViolationException)
+			return dataExceptionHandler((DataIntegrityViolationException)exe);
+		else
+			return unknownExceptionHandler((Exception) exe);
+
 	}
 
 

@@ -207,7 +207,7 @@ public class ManualVerificationExceptionHandler {
 				response.setError(errors.get(0));
 			}
 
-			response.setTimestamp(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+			response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 			response.setVersion("1.0");
 			response.setResponse(null);
 			Gson gson = new GsonBuilder().serializeNulls().create();
@@ -237,16 +237,12 @@ public class ManualVerificationExceptionHandler {
 				response.setError(errors.get(0));
 			}
 
-			response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+			response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 			response.setVersion(env.getProperty(APPLICATION_VERSION));
 			response.setFile(null);
 			Gson gson = new GsonBuilder().serializeNulls().create();
 			return gson.toJson(response);
 		}
-
-
-
-
 
 	}
 

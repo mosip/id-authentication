@@ -1,5 +1,8 @@
 package io.mosip.registration.processor.manual.verification.stage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -62,10 +65,9 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 	private static final String BIOMETRIC_SERVICE_ID = "mosip.registration.processor.manual.verification.biometric.id";
 	private static final String DEMOGRAPHIC_SERVICE_ID = "mosip.registration.processor.manual.verification.demographic.id";
 	private static final String PACKETINFO_SERVICE_ID = "mosip.registration.processor.manual.verification.packetinfo.id";
-	
-	
-	
-	
+	private static final String MVS_APPLICATION_VERSION = "mosip.registration.processor.application.version";
+	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
+
 	@Autowired
 	ManualVerificationRequestValidator manualVerificationRequestValidator;
 	
@@ -74,6 +76,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 	
 	@Autowired
 	ManualVerificationResponseBuilder manualVerificationResponseBuilder;
+	
 	/**
 	 * server port number
 	 */
@@ -153,7 +156,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 			byte[] packetInfo = manualAdjudicationService.getApplicantFile(pojo.getRequest().getRegId(),pojo.getRequest().getFileName());
 			String byteAsString = new String(packetInfo);
 			if (packetInfo != null) {
-				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(byteAsString,env.getProperty(BIOMETRIC_SERVICE_ID)),APPLICATION_JSON);
+				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(byteAsString,env.getProperty(BIOMETRIC_SERVICE_ID),env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN)),APPLICATION_JSON);
 			}
 		
 	}
@@ -165,7 +168,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 			byte[] packetInfo = manualAdjudicationService.getApplicantFile(pojo.getRequest().getRegId(),PacketFiles.DEMOGRAPHIC.name());
 			String byteAsString = new String(packetInfo);
 			if (packetInfo != null) {
-				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(byteAsString,env.getProperty(DEMOGRAPHIC_SERVICE_ID)),APPLICATION_JSON);
+				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(byteAsString,env.getProperty(DEMOGRAPHIC_SERVICE_ID),env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN)),APPLICATION_JSON);
 			}
 		
 	}
@@ -176,7 +179,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 			manualVerificationRequestValidator.validate(obj,env.getProperty(ASSIGNMENT_SERVICE_ID));
 			ManualVerificationDTO manualVerificationDTO = manualAdjudicationService.assignApplicant(pojo.getRequest());
 			if (manualVerificationDTO != null) {
-				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(manualVerificationDTO,env.getProperty(ASSIGNMENT_SERVICE_ID)),APPLICATION_JSON);
+				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(manualVerificationDTO,env.getProperty(ASSIGNMENT_SERVICE_ID),env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN)),APPLICATION_JSON);
 
 			}
 
@@ -189,7 +192,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 			manualVerificationRequestValidator.validate(obj,env.getProperty(DECISION_SERVICE_ID));
 			ManualVerificationDTO updatedManualVerificationDTO = manualAdjudicationService.updatePacketStatus(pojo.getRequest());
 			if (updatedManualVerificationDTO != null) {
-				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(updatedManualVerificationDTO,env.getProperty(DECISION_SERVICE_ID)),APPLICATION_JSON);
+				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(updatedManualVerificationDTO,env.getProperty(DECISION_SERVICE_ID),env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN)),APPLICATION_JSON);
 			}
 		
 	}
@@ -200,7 +203,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 			manualVerificationRequestValidator.validate(obj,env.getProperty(PACKETINFO_SERVICE_ID));
 			PacketMetaInfo packetInfo = manualAdjudicationService.getApplicantPacketInfo(pojo.getRequest().getRegId());
 			if (packetInfo != null) {
-				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(packetInfo,env.getProperty(PACKETINFO_SERVICE_ID)),APPLICATION_JSON);
+				this.setResponse(ctx, ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(packetInfo,env.getProperty(PACKETINFO_SERVICE_ID),env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN)),APPLICATION_JSON);
 			}
 		
 	}

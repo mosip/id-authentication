@@ -85,7 +85,7 @@ public class Decryptor {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "Decryptor::decrypt()::entry");
 		try {
-			String centerId = registrationId.substring(machineIdLength, machineIdLength + centerIdLength);
+			String centerId = registrationId.substring(0,centerIdLength);
 			String encryptedPacketString = IOUtils.toString(encryptedPacket, "UTF-8");
 			CryptomanagerRequestDto cryptomanagerRequestDto = new CryptomanagerRequestDto();
 			cryptomanagerRequestDto.setApplicationId(applicationId);
