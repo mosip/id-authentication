@@ -478,6 +478,11 @@
 	-fx-font-size: 18.0px;
 	-fx-text-fill: #666666;	
 }
+.onboardAlertMsg{
+	-fx-font-family: Roboto;
+	-fx-font-size: 16.0px;
+	-fx-text-fill:  #39e600;	
+}
 /*Onoard User page Design Ends here*/
 
 /*user onboard FP design starts */
@@ -495,7 +500,7 @@
 .userOnboardFooter{
 	-fx-background-color: #FFFFFF;	
 	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
-	-fx-pref-height: 50.0px;
+	-fx-pref-height: 40.0px;
 	-fx-pref-width: 1278.0px;
 }
 .onboardProgressPane{
