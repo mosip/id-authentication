@@ -57,6 +57,7 @@ public class UinCardGeneratorImplTest {
 		if (op != null) {
 			op.close();
 		}
+		OutPutPdfFile.delete();
 	}
 	
 	@Test(expected = PDFGeneratorException.class)

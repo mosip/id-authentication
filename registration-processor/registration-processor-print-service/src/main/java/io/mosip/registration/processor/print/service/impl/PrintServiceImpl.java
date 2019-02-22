@@ -2,6 +2,7 @@ package io.mosip.registration.processor.print.service.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
@@ -189,16 +190,31 @@ public class PrintServiceImpl implements PrintService<byte[]> {
 
 			getArtifacts(jsonString);
 			attributes.put(UINCardConstant.UIN, uin);
-
+			
+			//generating qrcode to be attached in uin card
 			byte[] qrCodeBytes = qrCodeGenerator.generateQrCode(qrString.toString(), QrVersion.V30);
-			String filePath = "QrCode.png";
-			FileUtils.writeByteArrayToFile(new File(filePath), qrCodeBytes);
-
+			File qrCode = new File("QrCode.png");
+			FileUtils.writeByteArrayToFile( qrCode, qrCodeBytes);
+			
+			//generating template
 			InputStream uinArtifact = templateGenerator.getTemplate(UIN_CARD_TEMPLATE, attributes, langCode);
-
+			
+			//generating pdf
 			ByteArrayOutputStream pdf = uinCardGenerator.generateUinCard(uinArtifact, UinCardType.PDF);
+			
+			qrCode.delete();
 
 			pdfBytes = pdf.toByteArray();
+			
+			String outputPath = System.getProperty("user.dir");
+			String fileSepetator = System.getProperty("file.separator");
+			File OutPutPdfFile = new File(outputPath + fileSepetator + "html.pdf");
+			FileOutputStream op = new FileOutputStream(OutPutPdfFile);
+			op.write(pdf.toByteArray());
+			op.flush();
+			if (op != null) {
+				op.close();
+			}
 			
 			isTransactionSuccessful = true;
 
