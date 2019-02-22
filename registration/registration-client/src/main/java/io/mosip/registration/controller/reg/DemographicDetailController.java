@@ -135,6 +135,9 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private Label uinIdLocalLanguageLabel;
+	
+	@FXML
+	private Label languageLabelLocalLanguage;
 
 	@FXML
 	private TextField ageField;
@@ -180,7 +183,7 @@ public class DemographicDetailController extends BaseController {
 	private TextField addressLine1LocalLanguage;
 
 	@FXML
-	private Label addressLine1LocalLanguagelabel;
+	private Label addressLine1LocalLanguageLabel;
 
 	@FXML
 	private TextField addressLine2;
@@ -189,7 +192,7 @@ public class DemographicDetailController extends BaseController {
 	private TextField addressLine2LocalLanguage;
 
 	@FXML
-	private Label addressLine2LocalLanguagelabel;
+	private Label addressLine2LocalLanguageLabel;
 
 	@FXML
 	private TextField addressLine3;
@@ -198,7 +201,7 @@ public class DemographicDetailController extends BaseController {
 	private TextField addressLine3LocalLanguage;
 
 	@FXML
-	private Label addressLine3LocalLanguagelabel;
+	private Label addressLine3LocalLanguageLabel;
 
 	@FXML
 	private TextField emailId;
@@ -337,7 +340,10 @@ public class DemographicDetailController extends BaseController {
 	private AnchorPane demoGraphicPane;
 	@FXML
 	private Button national;
-
+	@FXML
+	private AnchorPane demographicDetail;
+	@FXML
+	private TextField updateUinId;
 	@FXML
 	private Button foreigner;
 	@FXML
@@ -426,7 +432,7 @@ public class DemographicDetailController extends BaseController {
 						childSpecificFields.setVisible(false);
 						childSpecificFieldsLocal.setVisible(false);
 						ageField.setDisable(false);
-						ageFieldLocalLanguage.setDisable(false);
+						ageFieldLocalLanguage.setDisable(true);
 						ageFieldLocalLanguage.clear();
 						dob.setDisable(true);
 						dobLocalLanguage.setDisable(true);
@@ -549,7 +555,7 @@ public class DemographicDetailController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
 			ageField.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				ageFieldLocalLanguage.setText(newValue);
-				if (!validation.validateTextField(ageField, ageField.getId() + "_ontype",
+				if (!validation.validateTextField(demoGraphicPane,ageField, ageField.getId() + "_ontype",
 						RegistrationConstants.DISABLE)) {
 					ageField.setText(oldValue);
 				}
@@ -607,29 +613,30 @@ public class DemographicDetailController extends BaseController {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Populating the local language fields");
-			fxUtils.validateOnType(fullName, validation, fullNameLocalLanguage);
-			fxUtils.validateOnType(addressLine1, validation, addressLine1LocalLanguage);
-			fxUtils.validateOnType(addressLine2, validation, addressLine2LocalLanguage);
-			fxUtils.validateOnType(addressLine3, validation, addressLine3LocalLanguage);
-			fxUtils.populateLocalFieldOnType(mobileNo, validation, mobileNoLocalLanguage);
-			fxUtils.populateLocalFieldOnType(postalCode, validation, postalCodeLocalLanguage);
-			fxUtils.populateLocalFieldOnType(emailId, validation, emailIdLocalLanguage);
-			fxUtils.populateLocalFieldOnType(cniOrPinNumber, validation, cniOrPinNumberLocalLanguage);
-			fxUtils.validateOnType(parentName, validation, parentNameLocalLanguage);
-			fxUtils.populateLocalFieldOnType(uinId, validation, uinIdLocalLanguage);
-			fxUtils.validateOnType(fullNameLocalLanguage, validation);
-			fxUtils.populateLocalComboBox(gender, genderLocalLanguage);
-			fxUtils.populateLocalComboBox(city, cityLocalLanguage);
-			fxUtils.populateLocalComboBox(region, regionLocalLanguage);
-			fxUtils.populateLocalComboBox(province, provinceLocalLanguage);
-			fxUtils.populateLocalComboBox(localAdminAuthority, localAdminAuthorityLocalLanguage);
-			dateValidation.validateDate(dd, mm, yyyy, validation, fxUtils, ddLocalLanguage);
-			dateValidation.validateDate(ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage, validation, fxUtils, null);
-			dateValidation.validateMonth(dd, mm, yyyy, validation, fxUtils, mmLocalLanguage);
-			dateValidation.validateMonth(ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage, validation, fxUtils,
+			fxUtils.validateOnType(demographicDetail, fullName, validation, fullNameLocalLanguage);
+			fxUtils.validateOnType(demographicDetail, addressLine1, validation, addressLine1LocalLanguage);
+			fxUtils.validateOnType(demographicDetail, addressLine2, validation, addressLine2LocalLanguage);
+			fxUtils.validateOnType(demographicDetail, addressLine3, validation, addressLine3LocalLanguage);
+			fxUtils.populateLocalFieldOnType(demographicDetail,mobileNo, validation, mobileNoLocalLanguage);
+			fxUtils.populateLocalFieldOnType(demographicDetail,postalCode, validation, postalCodeLocalLanguage);
+			fxUtils.populateLocalFieldOnType(demographicDetail,emailId, validation, emailIdLocalLanguage);
+			fxUtils.populateLocalFieldOnType(demographicDetail,cniOrPinNumber, validation, cniOrPinNumberLocalLanguage);
+			fxUtils.validateOnType(demographicDetail,parentName, validation, parentNameLocalLanguage);
+			fxUtils.populateLocalFieldOnType(demographicDetail,uinId, validation, uinIdLocalLanguage);
+			fxUtils.validateOnType(demographicDetail,fullNameLocalLanguage, validation);
+			fxUtils.populateLocalComboBox(demographicDetail, gender, genderLocalLanguage);
+			fxUtils.populateLocalComboBox(demographicDetail, city, cityLocalLanguage);
+			fxUtils.populateLocalComboBox(demographicDetail, region, regionLocalLanguage);
+			fxUtils.populateLocalComboBox(demographicDetail, province, provinceLocalLanguage);
+			
+			fxUtils.populateLocalComboBox(demographicDetail, localAdminAuthority, localAdminAuthorityLocalLanguage);
+			dateValidation.validateDate(demographicDetail,dd, mm, yyyy, validation, fxUtils, ddLocalLanguage);
+			dateValidation.validateDate(demographicDetail,ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage, validation, fxUtils, null);
+			dateValidation.validateMonth(demographicDetail,dd, mm, yyyy, validation, fxUtils, mmLocalLanguage);
+			dateValidation.validateMonth(demographicDetail,ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage, validation, fxUtils,
 					null);
-			dateValidation.validateYear(dd, mm, yyyy, validation, fxUtils, yyyyLocalLanguage);
-			dateValidation.validateYear(ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage, validation, fxUtils, null);
+			dateValidation.validateYear(demographicDetail,dd, mm, yyyy, validation, fxUtils, yyyyLocalLanguage);
+			dateValidation.validateYear(demographicDetail,ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage, validation, fxUtils, null);
 			fxUtils.dobListener(yyyy, ageField, "\\d{4}");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - Listner method failed ", APPLICATION_NAME,
@@ -648,10 +655,10 @@ public class DemographicDetailController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, "Loading label fields of local language");
 			ResourceBundle localProperties = applicationContext.getLocalLanguageProperty();
 			fullNameLocalLanguageLabel.setText(localProperties.getString("fullName"));
-			addressLine1LocalLanguagelabel.setText(localProperties.getString("addressLine1"));
-			addressLine2LocalLanguagelabel.setText(localProperties.getString("addressLine2"));
-			addressLine3LocalLanguagelabel.setText(localProperties.getString("addressLine3"));
-			//ageFieldLocalLanguageLabel.setText(localProperties.getString("ageField"));
+			addressLine1LocalLanguageLabel.setText(localProperties.getString("addressLine1"));
+			addressLine2LocalLanguageLabel.setText(localProperties.getString("addressLine2"));
+			addressLine3LocalLanguageLabel.setText(localProperties.getString("addressLine3"));
+			ageFieldLocalLanguageLabel.setText(localProperties.getString("ageField"));
 			genderLocalLanguageLabel.setText(localProperties.getString("gender"));
 			regionLocalLanguageLabel.setText(localProperties.getString("region"));
 			cityLocalLanguageLabel.setText(localProperties.getString("city"));
@@ -671,6 +678,7 @@ public class DemographicDetailController extends BaseController {
 			ddLocalLanguage.setPromptText(localProperties.getString("dd"));
 			mmLocalLanguage.setPromptText(localProperties.getString("mm"));
 			yyyyLocalLanguage.setPromptText(localProperties.getString("yyyy"));
+			languageLabelLocalLanguage.setText(localProperties.getString("language"));
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING LOCAL LANGUAGE FIELDS FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
@@ -991,11 +999,11 @@ public class DemographicDetailController extends BaseController {
 			localLanguagePane.setDisable(false);
 			fetchBtn.setVisible(false);
 			preRegistrationLabel.setText(RegistrationConstants.UIN_LABEL);
-
+			updateUinId.setVisible(true);
+			preRegistrationId.setVisible(false);
 			getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
 					.setUin(getRegistrationDTOFromSession().getSelectionListDTO().getUinId());
-			preRegistrationId.setText(getRegistrationDTOFromSession().getSelectionListDTO().getUinId());
-
+			updateUinId.setText(getRegistrationDTOFromSession().getSelectionListDTO().getUinId());
 			fullName.setDisable(false);
 			fullNameLocalLanguage.setDisable(false);
 			fullNameLocalLanguageLabel.setDisable(false);
@@ -1309,6 +1317,9 @@ public class DemographicDetailController extends BaseController {
 		if (validateThisPane()) {
 			saveDetail();
 			if (!switchedOn.get()) {
+				
+				if(dd.getText().matches("\\d+") && mm.getText().matches("\\d+") && yyyy.getText().matches("\\d+")) {
+				
 				LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()),
 						Integer.parseInt(dd.getText()));
 				dateOfBirth = Date.from(currentYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -1316,6 +1327,7 @@ public class DemographicDetailController extends BaseController {
 				SessionContext.map().put("dd", dd.getText());
 				SessionContext.map().put("mm", mm.getText());
 				SessionContext.map().put("yyyy", yyyy.getText());
+			}
 			}
 			SessionContext.map().put("demographicDetail", false);
 			SessionContext.map().put("documentScan", true);

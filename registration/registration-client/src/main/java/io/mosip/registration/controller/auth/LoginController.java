@@ -479,7 +479,7 @@ public class LoginController extends BaseController implements Initializable {
 	public void validateOTP(ActionEvent event) {
 
 		
-		if (validations.validateTextField(otp, otp.getId(), RegistrationConstants.DISABLE)) {
+		if (validations.validateTextField(otpPane ,otp, otp.getId(), RegistrationConstants.DISABLE)) {
 
 			UserDetail userDetail = loginService.getUserDetail(userId.getText());
 

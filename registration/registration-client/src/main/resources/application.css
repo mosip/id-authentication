@@ -1017,7 +1017,7 @@ Working on new Css by taleev
 
 .paneAtDisplayDemoGraphic{
 	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 800px;	
+	-fx-pref-height: 1200px;	
 	-fx-pref-width: 1100px;
 	
 }
@@ -1056,6 +1056,7 @@ Working on new Css by taleev
 
 #demographicDetail .label{
 	-fx-font-size: 12px;
+	-fx-padding: 0 0 0 0;
 }
 
 .contiuneButton{
@@ -1080,23 +1081,55 @@ Working on new Css by taleev
 
 .demoGraphicTextField{
 	-fx-pref-height: 10px;	
-	-fx-pref-width: 315px;
+	-fx-pref-width: 395px;
 	-fx-border-color: black;
 	-fx-background-insets: 0,0 0 0 0;
   	-fx-border-width: 0 0 1 0;	
   	-fx-background-color: white;
+  	-fx-padding : 0 0 2 0;
   		
 	
 }
 
 .demoGraphicTextFieldTypeSecond{
 	-fx-pref-height: 10px;	
-	-fx-pref-width: 150px;
+	-fx-pref-width: 190px;
 	-fx-border-color: black;
 	-fx-background-insets: 0,0 0 0 0;
   	-fx-border-width: 0 0 1 0;	
   	-fx-background-color: white;
+  	-fx-padding: 0 0 2 0;
   		
+}
+
+.demoGraphicTextFieldTypThree{
+	-fx-pref-height: 10px;	
+	-fx-pref-width: 40px;
+	-fx-border-color: black;
+	-fx-background-insets: 0,0 0 0 0;
+  	-fx-border-width: 0 0 1 0;	
+  	-fx-background-color: white;
+  	-fx-padding: 0 0 2 0;	
+}
+.demographicScrollpane{
+		-fx-pref-height: 583px;	
+		-fx-pref-width: 1100px;
+	
+}
+
+.demoGraphicFieldLabel{
+		-fx-background-color:#ffffff;
+		-fx-border-width: 0;
+		-fx-pref-height: 10px;	
+		-fx-pref-width: 300px;
+		-fx-text-fill : black;
+}
+
+.demoGraphicFieldMessageLabel{
+		-fx-background-color:#ffffff;
+		-fx-pref-height: 10px;	
+		-fx-pref-width: 300px;
+		-fx-text-fill : red;
 }
 
 .demographicCombobox{
@@ -1105,7 +1138,7 @@ Working on new Css by taleev
 	-fx-border-color: black;
 	-fx-font-size: 14px;
 	-fx-pref-height: 10px;	
-	-fx-pref-width: 150px;
+	-fx-pref-width: 190px;
 }
 
 .documentCombobox{

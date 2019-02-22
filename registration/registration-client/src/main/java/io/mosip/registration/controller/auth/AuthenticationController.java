@@ -110,6 +110,8 @@ public class AuthenticationController extends BaseController implements Initiali
 	private TextField otpUserId;
 	@FXML
 	private TextField otp;
+	@FXML
+	private AnchorPane operatorAuthenticationPane;
 
 	@Autowired
 	private FingerprintFacade fingerprintFacade;
@@ -204,7 +206,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	public void validateOTP() {
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating OTP for OTP based Authentication");
-		if (validations.validateTextField(otp, otp.getId(), RegistrationConstants.DISABLE)) {
+		if (validations.validateTextField(operatorAuthenticationPane, otp, otp.getId(), RegistrationConstants.DISABLE)) {
 			if (isSupervisor) {
 				if (!otpUserId.getText().isEmpty()) {
 					if (fetchUserRole(otpUserId.getText())) {

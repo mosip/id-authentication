@@ -1082,6 +1082,7 @@ public class RegistrationConstants {
 		fieldToExclude.add("cniOrPinNumberLocalLanguage");
 		fieldToExclude.add("residence");
 		fieldToExclude.add("residenceLocalLanguage");
+		fieldToExclude.add("updateUinId");
 
 		return fieldToExclude;
 
