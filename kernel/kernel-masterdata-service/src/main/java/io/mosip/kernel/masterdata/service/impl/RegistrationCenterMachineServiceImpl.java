@@ -86,6 +86,7 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 	/* (non-Javadoc)
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterMachineService#deleteRegistrationCenterMachineMapping(java.lang.String, java.lang.String)
 	 */
+	@Transactional
 	@Override
 	public RegistrationCenterMachineID deleteRegistrationCenterMachineMapping(String regCenterId, String machineId) {
 		RegistrationCenterMachineID registrationCenterMachineID = null;
