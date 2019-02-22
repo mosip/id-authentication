@@ -3,7 +3,6 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,14 +34,24 @@ import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachine;
+import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineUserRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
+import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
@@ -63,10 +72,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  * @since 1.0.0
  *
  */
-/**
- * @author M1046571
- *
- */
+
 @Service
 public class RegistrationCenterServiceImpl implements RegistrationCenterService {
 
@@ -78,6 +84,21 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	@Autowired
 	private RegistrationCenterHistoryRepository registrationCenterHistoryRepository;
+
+	@Autowired
+	RegistrationCenterMachineRepository registrationCenterMachineRepository;
+
+	@Autowired
+	RegistrationCenterMachineUserRepository registrationCenterMachineUserRepository;
+
+	@Autowired
+	RegistrationCenterMachineDeviceRepository registrationCenterMachineDeviceRepository;
+
+	@Autowired
+	RegistrationCenterHistoryService registrationCenterHistoryService;
+
+	@Autowired
+	RegistrationCenterDeviceRepository registrationCenterDeviceRepository;
 
 	/**
 	 * Reference to HolidayRepository.
@@ -356,7 +377,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * validateTimestampWithRegistrationCenter(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String langCode, String timestamp) {
+	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String langCode,
+			String timestamp) {
 		LocalDateTime localDateTime = null;
 		try {
 			localDateTime = MapperUtils.parseToLocalDateTime(timestamp);
@@ -396,7 +418,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					 * below is the validation to check if the time that is sent is between start
 					 * and end time
 					 */
-					if ((localTime.equals(startTime) || isAfterStartTime) && ((localTime.equals(endTime.plusHours(1))) || isBeforeEndTime)) {
+					if ((localTime.equals(startTime) || isAfterStartTime)
+							&& ((localTime.equals(endTime.plusHours(1))) || isBeforeEndTime)) {
 						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_ACCEPTED);
 					} else {
 						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_REJECTED);
@@ -424,17 +447,23 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
 	 * updateRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
+	@Transactional
 	@Override
-	public IdResponseDto updateRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto) {
-		RegistrationCenterDto registrationCenter = registrationCenterDto.getRequest();
-		IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.mapFieldValues(registrationCenter, idResponseDto);
+	public IdAndLanguageCodeID updateRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenter) {
+		RegistrationCenter updRegistrationCenter = null;
 		try {
-			RegistrationCenter registrationCenterEntity = registrationCenterRepository
-					.findByIdAndLangCode(registrationCenterDto.getRequest().getId(), registrationCenterDto.getRequest().getLangCode());
-			if (registrationCenterEntity != null) {
-				MetaDataUtils.setUpdateMetaData(registrationCenter, registrationCenterEntity, false);
-				registrationCenterRepository.update(registrationCenterEntity);
+			RegistrationCenter renRegistrationCenter = registrationCenterRepository.findByIdAndLangCode(
+					registrationCenter.getRequest().getId(), registrationCenter.getRequest().getLangCode());
+			if (renRegistrationCenter != null) {
+				MetaDataUtils.setUpdateMetaData(registrationCenter.getRequest(), renRegistrationCenter, false);
+				updRegistrationCenter = registrationCenterRepository.update(renRegistrationCenter);
+
+				RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
+				MapperUtils.map(updRegistrationCenter, registrationCenterHistory);
+				MapperUtils.setBaseFieldValue(updRegistrationCenter, registrationCenterHistory);
+				registrationCenterHistory.setEffectivetimes(updRegistrationCenter.getUpdatedDateTime());
+				registrationCenterHistory.setUpdatedDateTime(updRegistrationCenter.getUpdatedDateTime());
+				registrationCenterHistoryService.createRegistrationCenterHistory(registrationCenterHistory);
 			} else {
 				throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
@@ -445,7 +474,10 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(exception));
 		}
-		return idResponseDto;
+
+		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
+		MapperUtils.map(updRegistrationCenter, idAndLanguageCodeID);
+		return idAndLanguageCodeID;
 	}
 
 	/*
@@ -456,23 +488,56 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 */
 	@Override
 	@Transactional
-	public IdResponseDto deleteRegistrationCenter(String registrationCenterId) {
+	public IdResponseDto deleteRegistrationCenter(String id) {
+		RegistrationCenter delRegistrationCenter = null;
 		try {
-			int deletedRegistrationCenter = registrationCenterRepository.deleteRegistrationCenter(
-					LocalDateTime.now(ZoneId.of("UTC")), registrationCenterId, MetaDataUtils.getContextUser());
-			if (deletedRegistrationCenter < 1) {
+			List<RegistrationCenter> renRegistrationCenterList = registrationCenterRepository
+					.findByRegIdAndIsDeletedFalseOrNull(id);
+			if (!renRegistrationCenterList.isEmpty()) {
+				for (RegistrationCenter renRegistrationCenter : renRegistrationCenterList) {
+
+					List<RegistrationCenterMachine> registrationCenterMachineList = registrationCenterMachineRepository
+							.findByMachineIdAndIsDeletedFalseOrIsDeletedIsNull(renRegistrationCenter.getId());
+					List<RegistrationCenterUserMachine> registrationCenterMachineUser = registrationCenterMachineUserRepository
+							.findByMachineIdAndIsDeletedFalseOrIsDeletedIsNull(renRegistrationCenter.getId());
+					List<RegistrationCenterMachineDevice> registrationCenterMachineDevice = registrationCenterMachineDeviceRepository
+							.findByMachineIdAndIsDeletedFalseOrIsDeletedIsNull(renRegistrationCenter.getId());
+					List<RegistrationCenterDevice> registrationCenterDeviceList = registrationCenterDeviceRepository
+							.findByDeviceIdAndIsDeletedFalseOrIsDeletedIsNull(renRegistrationCenter.getId());
+
+					if (registrationCenterMachineList.isEmpty() && registrationCenterMachineUser.isEmpty()
+							&& registrationCenterMachineDevice.isEmpty() && registrationCenterDeviceList.isEmpty()) {
+						MetaDataUtils.setDeleteMetaData(renRegistrationCenter);
+						delRegistrationCenter = registrationCenterRepository.update(renRegistrationCenter);
+
+						RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
+						MapperUtils.map(delRegistrationCenter, registrationCenterHistory);
+						MapperUtils.setBaseFieldValue(delRegistrationCenter, registrationCenterHistory);
+
+						registrationCenterHistory.setEffectivetimes(delRegistrationCenter.getDeletedDateTime());
+						registrationCenterHistory.setDeletedDateTime(delRegistrationCenter.getDeletedDateTime());
+						registrationCenterHistoryService.createRegistrationCenterHistory(registrationCenterHistory);
+					} else {
+						throw new RequestException(RegistrationCenterErrorCode.DEPENDENCY_EXCEPTION.getErrorCode(),
+								RegistrationCenterErrorCode.DEPENDENCY_EXCEPTION.getErrorMessage());
+					}
+				}
+			} else {
 				throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 			}
-		} catch (DataAccessLayerException | DataAccessException exception) {
+
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_DELETE_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_DELETE_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(exception));
+							+ ExceptionUtils.parseException(e));
 		}
+
 		IdResponseDto idResponseDto = new IdResponseDto();
-		idResponseDto.setId(registrationCenterId);
+		idResponseDto.setId(id);
 		return idResponseDto;
+
 	}
 
 	/*
@@ -544,4 +609,5 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		return uniqueLocCode;
 	}
+
 }

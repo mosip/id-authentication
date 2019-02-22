@@ -8,6 +8,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -150,7 +151,7 @@ public interface RegistrationCenterService {
 	 * 
 	 * @return - the id response DTO.
 	 */
-	public IdResponseDto updateRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto);
+	public IdAndLanguageCodeID updateRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto);
 
 	/**
 	 * Function to fetch list of registration centers based on hierarchy level,text
