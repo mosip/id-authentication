@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.print.exception;
+package io.mosip.registration.processor.print.service.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;

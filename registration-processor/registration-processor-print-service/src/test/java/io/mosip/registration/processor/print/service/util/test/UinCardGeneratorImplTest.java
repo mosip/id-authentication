@@ -19,7 +19,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.registration.processor.core.constant.UinCardType;
-import io.mosip.registration.processor.print.utility.UinCardGeneratorImpl;
+import io.mosip.registration.processor.print.service.utility.UinCardGeneratorImpl;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UinCardGeneratorImplTest {

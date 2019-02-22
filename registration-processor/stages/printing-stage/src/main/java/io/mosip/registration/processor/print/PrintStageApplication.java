@@ -2,6 +2,7 @@ package io.mosip.registration.processor.print;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.print.stage.PrintStage;
 
 /**
@@ -19,10 +20,15 @@ public class PrintStageApplication {
 				"io.mosip.registration.processor.core.config",
 				"io.mosip.registration.processor.core.kernel.beans",
 				"io.mosip.registration.processor.message.sender.config",
-				"io.mosip.registration.processor.status.config");
+				"io.mosip.registration.processor.status.config",
+				"io.mosip.registration.processor.print.service.config");
 		ctx.refresh();
 		
 		PrintStage printStage = ctx.getBean(PrintStage.class);
 		printStage.deployVerticle();
+		
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("90634869910001320190121154655");
+		printStage.process(dto);
 	}
 }

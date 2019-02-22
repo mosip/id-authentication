@@ -42,9 +42,9 @@ import io.mosip.registration.processor.message.sender.exception.TemplateProcessi
 import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
-import io.mosip.registration.processor.print.kernel.dto.IdResponseDTO;
-import io.mosip.registration.processor.print.kernel.dto.ResponseDTO;
 import io.mosip.registration.processor.print.service.impl.PrintServiceImpl;
+import io.mosip.registration.processor.print.service.kernel.dto.IdResponseDTO;
+import io.mosip.registration.processor.print.service.kernel.dto.ResponseDTO;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 
 @RunWith(PowerMockRunner.class)

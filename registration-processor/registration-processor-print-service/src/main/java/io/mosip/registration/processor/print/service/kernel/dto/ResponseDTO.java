@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.print.kernel.dto;
+package io.mosip.registration.processor.print.service.kernel.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

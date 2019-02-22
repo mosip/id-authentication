@@ -10,8 +10,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.print.exception.PrintGlobalExceptionHandler;
 import io.mosip.registration.processor.print.exception.TimeoutException;
-import io.mosip.registration.processor.print.exception.UINNotFoundInDatabase;
 import io.mosip.registration.processor.print.exception.UnexpectedException;
+import io.mosip.registration.processor.print.service.exception.UINNotFoundInDatabase;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.vertx.core.json.DecodeException;
 

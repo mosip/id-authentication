@@ -55,9 +55,9 @@ import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundExc
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
-import io.mosip.registration.processor.print.exception.UINNotFoundInDatabase;
-import io.mosip.registration.processor.print.kernel.dto.IdResponseDTO;
-import io.mosip.registration.processor.print.utility.UINCardConstant;
+import io.mosip.registration.processor.print.service.exception.UINNotFoundInDatabase;
+import io.mosip.registration.processor.print.service.kernel.dto.IdResponseDTO;
+import io.mosip.registration.processor.print.service.utility.UINCardConstant;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;

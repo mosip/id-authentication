@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.print.config;
+package io.mosip.registration.processor.print.service.config;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import org.springframework.core.io.support.ResourcePropertySource;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerator;
 import io.mosip.registration.processor.print.service.impl.PrintServiceImpl;
-import io.mosip.registration.processor.print.utility.UinCardGeneratorImpl;
+import io.mosip.registration.processor.print.service.utility.UinCardGeneratorImpl;
 
 /**
  * The Class PrintServiceConfig.

@@ -13,7 +13,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
-import io.mosip.registration.processor.print.config.PrintServiceConfig;
+import io.mosip.registration.processor.print.service.config.PrintServiceConfig;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigTest {

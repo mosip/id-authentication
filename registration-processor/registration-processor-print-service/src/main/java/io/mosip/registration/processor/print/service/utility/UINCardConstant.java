@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.print.utility;
+package io.mosip.registration.processor.print.service.utility;
 
 /**
  * The Class UINCardConstant.
