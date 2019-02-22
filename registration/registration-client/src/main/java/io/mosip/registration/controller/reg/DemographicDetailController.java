@@ -818,8 +818,7 @@ public class DemographicDetailController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Saving the fields to DTO");
 		try {
 			auditFactory.audit(AuditEvent.SAVE_DETAIL_TO_DTO, Components.REGISTRATION_CONTROLLER,
-					"Saving the details to respected DTO", SessionContext.userContext().getUserId(),
-					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
+					SessionContext.userContext().getUserId(), RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			RegistrationDTO registrationDTO = getRegistrationDTOFromSession();
 			DemographicInfoDTO demographicInfoDTO;

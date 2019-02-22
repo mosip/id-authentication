@@ -20,6 +20,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -96,7 +97,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 					"Validating the sync status ended");
 
 			auditFactory.audit(AuditEvent.SYNC_INFO_VALIDATE, Components.SYNC_VALIDATE,
-					"Validating the sync status ended successfully", "refId", "refIdType");
+					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.SYNC_STATUS_VALIDATE,
@@ -180,7 +181,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 					"Checking the yet to export packets frequency with the configured limit count");
 
 			auditFactory.audit(AuditEvent.SYNC_PKT_COUNT_VALIDATE, Components.SYNC_VALIDATE,
-					"Validating yet to export packets frequency with the configured limit count", "refId", "refIdType");
+					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_003,
 					RegistrationConstants.OPT_TO_REG_REACH_MAX_LIMIT, RegistrationConstants.ERROR,
@@ -203,7 +204,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 				"Validating the count of packets of status Registered with configured value");
 
 		auditFactory.audit(AuditEvent.PENDING_PKT_CNT_VALIDATE, Components.SYNC_VALIDATE,
-				"Validating the count of packets of status Registered with configured value", "refId", "refIdType");
+				RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 		if (registrationDetails.size() >= Integer
 				.parseInt(String.valueOf(getGlobalConfigValueOf(RegistrationConstants.REG_PAK_MAX_CNT_APPRV_LIMIT)))) {
@@ -215,16 +216,14 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 					"Generating Error Response if count of packets of status Registered is greater than configured value");
 
 			auditFactory.audit(AuditEvent.PENDING_PKT_CNT_VALIDATE, Components.SYNC_VALIDATE,
-					"Generating Error Response if count of packets of status Registered is greater than configured value",
-					"refId", "refIdType");
+					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 		}
 
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Validating the Duration of oldest packet of status Registered with configured duration");
 
 		auditFactory.audit(AuditEvent.PENDING_PKT_DUR_VALIDATE, Components.SYNC_VALIDATE,
-				"Validating the Duration of oldest packet of status Registered with configured duration", "refId",
-				"refIdType");
+				RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 		if (getDifference(!registrationDetails.isEmpty() ? registrationDetails.get(RegistrationConstants.PARAM_ZERO)
 				: null) < 0) {
@@ -237,8 +236,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 					"Generating Error Response if Duration of oldest packet of status Registered is greater than configured value");
 
 			auditFactory.audit(AuditEvent.PENDING_PKT_DUR_VALIDATE, Components.SYNC_VALIDATE,
-					"Generating Error Response if Duration of oldest packet of status Registered is greater than configured value",
-					"refId", "refIdType");
+					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 		}
 	}
 
@@ -318,7 +316,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 				"Validating the geo location of machine w.r.t registration center ended");
 
 		auditFactory.audit(AuditEvent.SYNC_GEO_VALIDATE, Components.SYNC_VALIDATE,
-				"Validating the geo information ended successfully", "refId", "refIdType");
+				RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 	}
 

@@ -127,8 +127,7 @@ public class RegistrationController extends BaseController {
 		try {
 
 			auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, Components.REGISTRATION_CONTROLLER,
-					"initializing the registration controller", SessionContext.userContext().getUserId(),
-					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
+					SessionContext.userContext().getUserId(), RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			if (getRegistrationDTOFromSession() == null) {
 				createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);

@@ -89,8 +89,7 @@ public class PacketUploadController extends BaseController {
 				String packetSyncStatus = packetSync();
 
 				auditFactory.audit(AuditEvent.UPLOAD_PACKET, Components.UPLOAD_PACKET,
-						"Uploading registration packets to server", SessionContext.userContext().getUserId(),
-						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 				progressIndicator.progressProperty().bind(service.progressProperty());
 				service.start();
@@ -136,8 +135,7 @@ public class PacketUploadController extends BaseController {
 		String syncErrorStatus = "";
 		try {
 			auditFactory.audit(AuditEvent.UPLOAD_PACKET, Components.UPLOAD_PACKET,
-					"Sync'ing registration packets to server", SessionContext.userContext().getUserId(),
-					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 			List<Registration> packetsToBeSynched = packetSynchService.fetchPacketsToBeSynched();
 			List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
@@ -218,11 +216,11 @@ public class PacketUploadController extends BaseController {
 					List<Registration> synchedPackets = packetUploadService.getSynchedPackets();
 					List<Registration> packetUploadList = new ArrayList<>();
 					String status = "";
-					Map<String, String> tableMap = new HashMap<String, String>();
+					Map<String, String> tableMap = new HashMap<>();
 					if (!synchedPackets.isEmpty()) {
 						auditFactory.audit(AuditEvent.PACKET_UPLOAD, Components.PACKET_UPLOAD,
-								"Upload packets to the server", SessionContext.userContext().getUserId(),
-								RegistrationConstants.PACKET_UPLOAD_REF_ID);
+								SessionContext.userContext().getUserId(), RegistrationConstants.PACKET_UPLOAD_REF_ID);
+
 						progressIndicator.setVisible(true);
 						for (int i = 0; i < synchedPackets.size(); i++) {
 							Registration synchedPacket = synchedPackets.get(i);

@@ -62,8 +62,7 @@ public class HomeController extends BaseController implements Initializable {
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)
 					&& !(boolean) SessionContext.map()
 							.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
-				auditFactory.audit(AuditEvent.NAV_ON_BOARD_USER, Components.NAVIGATION,
-						"Navigating to On-Board User Screen", APPLICATION_NAME,
+				auditFactory.audit(AuditEvent.NAV_ON_BOARD_USER, Components.NAVIGATION, APPLICATION_NAME,
 						AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 				optionRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_ONBOARD));
@@ -71,8 +70,8 @@ public class HomeController extends BaseController implements Initializable {
 				SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
 				SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
 			} else {
-				auditFactory.audit(AuditEvent.NAV_HOME, Components.NAVIGATION, "Navigating to Home Screen",
-						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				auditFactory.audit(AuditEvent.NAV_HOME, Components.NAVIGATION, SessionContext.userContext().getUserId(),
+						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 				if ((boolean) SessionContext.map()
 						.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
