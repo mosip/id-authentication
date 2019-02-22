@@ -133,46 +133,59 @@ export class FileUploadComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('userrs', this.users);
-    this.sameAs = this.registration.getSameAs();
-    this.allApplicants = this.sharedService.getAllApplicants();
-    console.log('applicants', this.allApplicants);
-    let i = 0;
-
-    // this.allApplicants.splice(-1, 1);
-    if (this.registration.getUsers().length > 0) {
-      this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
-      if (!this.users[0].files[0]) {
-        this.users[0].files[0] = [];
-      } else {
-        // this.sortUserFiles();
-      }
-    }
-
-    for (let applicant of this.allApplicants) {
-      if (applicant.fullname === this.users[0].request.demographicDetails.identity.fullName[0].value) {
-        this.allApplicants.splice(i, 1);
-      } else {
-        i++;
-      }
-    }
-    this.allApplicants.push(this.noneApplicant);
-    if (this.registration.getUsers().length > 1) {
-      this.multipleApplicants = true;
-    }
-    // this.route.params.subscribe((params: Params) => {
-    //   this.loginId = params['id'];
-    //   console.log('id', this.loginId);
-    // });
-
     const arr = this.router.url.split('/');
     this.loginId = arr[2];
-    console.log('users', this.users);
 
-    if (this.users[0].files[0].length != 0) {
-      // this.sortUserFiles();
-      this.viewFirstFile();
-    }
+    this.dataStroage.getUsers(this.loginId).subscribe(
+      applicants => {
+        console.log('applicants check', applicants);
+
+        this.sharedService.addApplicants(applicants);
+      },
+      err => {},
+      () => {
+        this.allApplicants = [];
+        this.sameAs = this.registration.getSameAs();
+        this.allApplicants = this.sharedService.getAllApplicants();
+
+        console.log('applicants', this.allApplicants);
+
+        let i = 0;
+
+        // this.allApplicants.splice(-1, 1);
+        if (this.registration.getUsers().length > 0) {
+          this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
+          if (!this.users[0].files[0]) {
+            this.users[0].files[0] = [];
+          } else {
+            // this.sortUserFiles();
+          }
+        }
+
+        for (let applicant of this.allApplicants) {
+          if (applicant.preRegistrationId == this.users[0].preRegId) {
+            this.allApplicants.splice(i, 1);
+            this.allApplicants.push(this.noneApplicant);
+          } else {
+            i++;
+          }
+        }
+        if (this.registration.getUsers().length > 1) {
+          this.multipleApplicants = true;
+        }
+        // this.route.params.subscribe((params: Params) => {
+        //   this.loginId = params['id'];
+        //   console.log('id', this.loginId);
+        // });
+
+        console.log('users', this.users);
+
+        if (this.users[0].files[0].length != 0) {
+          // this.sortUserFiles();
+          this.viewFirstFile();
+        }
+      }
+    );
   }
 
   sortUserFiles() {

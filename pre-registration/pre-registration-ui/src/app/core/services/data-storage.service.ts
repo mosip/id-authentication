@@ -26,9 +26,8 @@ export class DataStorageService {
   COPY_DOCUMENT_URL = this.BASE_URL + this.PRE_REG_URL + 'document/copyDocuments';
   QR_CODE_URL = this.BASE_URL + this.PRE_REG_URL + 'notification/generateQRCode';
   NOTIFICATION_URL = this.BASE_URL + this.PRE_REG_URL + 'notification/notify';
-   LANGUAGE_CODE = localStorage.getItem('langCode');
-   DISTANCE = 2000;
-
+  LANGUAGE_CODE = localStorage.getItem('langCode');
+  DISTANCE = 2000;
 
   getUsers(value: string) {
     return this.httpClient.get<Applicant[]>(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants, {
@@ -68,7 +67,7 @@ export class DataStorageService {
   }
 
   getUserDocuments(preRegId) {
-    console.log('pre reg id', preRegId);
+    console.log('documents fetched for : ', preRegId);
 
     return this.httpClient.get(this.GET_FILE_URL, {
       observe: 'body',
