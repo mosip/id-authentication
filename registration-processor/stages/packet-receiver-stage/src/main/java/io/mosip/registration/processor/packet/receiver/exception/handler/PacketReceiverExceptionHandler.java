@@ -171,6 +171,13 @@ public class PacketReceiverExceptionHandler {
 		return buildPacketReceiverExceptionResponse((Exception)e);
 	}
 
+	public String unknownExceptionHandler(Exception e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"RPR-DBE-001 JSON DATA DECODE exception",e.getMessage());
+
+		PacketNotAvailableException packetNotAvailableException=new PacketNotAvailableException(PlatformErrorMessages.RPR_PKR_UNKNOWN_EXCEPTION.getMessage(),e);
+		return buildPacketReceiverExceptionResponse((Exception)packetNotAvailableException);
+	}
+
 	/**
 	 * Builds the packet receiver exception response.
 	 *
@@ -236,7 +243,11 @@ public class PacketReceiverExceptionHandler {
 			return duplicateentry((DuplicateUploadRequestException)exe);
 		if(exe instanceof MissingServletRequestPartException)
 			return handlePacketNotAvailableException((MissingServletRequestPartException)exe);
-		else return dataExceptionHandler((DataIntegrityViolationException) exe);
+		if(exe instanceof DataIntegrityViolationException)
+			return dataExceptionHandler((DataIntegrityViolationException)exe);
+		else
+			return unknownExceptionHandler((Exception) exe);
+
 	}
 
 
