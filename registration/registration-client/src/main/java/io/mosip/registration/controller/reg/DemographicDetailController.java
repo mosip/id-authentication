@@ -33,6 +33,7 @@ import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.IntroducerType;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -1225,6 +1226,9 @@ public class DemographicDetailController extends BaseController {
 			}
 		}
 
+		auditFactory.audit(AuditEvent.REG_DEMO_PRE_REG_DATA_FETCH, Components.REG_DEMO_DETAILS, SessionContext.userId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		registrationController.createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
 		documentScanController.clearDocSection();
 
@@ -1387,6 +1391,10 @@ public class DemographicDetailController extends BaseController {
 			if (!isEditPage()) {
 				documentScanController.populateDocumentCategories();
 			}
+
+			auditFactory.audit(AuditEvent.REG_DEMO_NEXT, Components.REG_DEMO_DETAILS, SessionContext.userId(),
+					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 			registrationController.showCurrentPage(RegistrationConstants.DEMOGRAPHIC_DETAIL,getPageDetails(RegistrationConstants.DEMOGRAPHIC_DETAIL,RegistrationConstants.NEXT));
 		}
 

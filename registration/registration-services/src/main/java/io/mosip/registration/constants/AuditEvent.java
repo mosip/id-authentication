@@ -80,6 +80,7 @@ public enum AuditEvent {
 	REG_PREVIEW_DOC_EDIT("REG-EVT-055", USER_EVENT.getCode(), "REG_PREVIEW_DOC_EDIT", "Click of Edit documents"),
 	REG_PREVIEW_BIO_EDIT("REG-EVT-056", USER_EVENT.getCode(), "REG_PREVIEW_BIO_EDIT", "Click of Biometrics Edit"),
 	REG_PREVIEW_SUBMIT("REG-EVT-057", USER_EVENT.getCode(), "REG_PREVIEW_SUBMIT", "Submit"),
+	REG_PREVIEW_BACK("REG-EVT-140", USER_EVENT.getCode(), "REG_PREVIEW_BACK", "Click of Back from registration preview screen"),
 
 	// Registration: Operator/Supervisor Authentication
 	REG_OPERATOR_AUTH_PASSWORD("REG-EVT-058", USER_EVENT.getCode(), "REG_OPERATOR_AUTH_PASSWORD", "Operator authentication with password: Click of Submit"),

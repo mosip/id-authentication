@@ -12,6 +12,9 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
@@ -54,11 +57,17 @@ public class RegistrationPreviewController extends BaseController {
 			
 	@FXML
 	public void goToPrevPage(ActionEvent event) {
+		auditFactory.audit(AuditEvent.REG_PREVIEW_BACK, Components.REG_PREVIEW, SessionContext.userId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW,RegistrationConstants.PREVIOUS));
 	}
 
 	@FXML
 	public void goToNextPage(ActionEvent event) {
+		auditFactory.audit(AuditEvent.REG_PREVIEW_SUBMIT, Components.REG_PREVIEW, SessionContext.userId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		if (consentOfApplicant.isSelected()) {
 			getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
 					.setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_SELECTED);
@@ -101,18 +110,25 @@ public class RegistrationPreviewController extends BaseController {
 	}
 
 	public void modifyDemographicInfo() {
+		auditFactory.audit(AuditEvent.REG_PREVIEW_DEMO_EDIT, Components.REG_PREVIEW, SessionContext.userId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.DEMOGRAPHIC_DETAIL);
-		
-
 	}
 
 	public void modifyDocuments() {
+		auditFactory.audit(AuditEvent.REG_PREVIEW_DOC_EDIT, Components.REG_PREVIEW, SessionContext.userId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.DOCUMENT_SCAN);
 	}
 
 	public void modifyBiometrics() {
+		auditFactory.audit(AuditEvent.REG_PREVIEW_BIO_EDIT, Components.REG_PREVIEW, SessionContext.userId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.FINGERPRINT_CAPTURE);
 	}
