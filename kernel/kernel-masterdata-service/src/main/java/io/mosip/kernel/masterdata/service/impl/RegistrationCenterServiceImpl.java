@@ -452,6 +452,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	public IdAndLanguageCodeID updateRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenter) {
 		RegistrationCenter updRegistrationCenter = null;
 		try {
+
 			RegistrationCenter renRegistrationCenter = registrationCenterRepository.findByIdAndLangCode(
 					registrationCenter.getRequest().getId(), registrationCenter.getRequest().getLangCode());
 			if (renRegistrationCenter != null) {
@@ -464,6 +465,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				registrationCenterHistory.setEffectivetimes(updRegistrationCenter.getUpdatedDateTime());
 				registrationCenterHistory.setUpdatedDateTime(updRegistrationCenter.getUpdatedDateTime());
 				registrationCenterHistoryService.createRegistrationCenterHistory(registrationCenterHistory);
+
 			} else {
 				throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
