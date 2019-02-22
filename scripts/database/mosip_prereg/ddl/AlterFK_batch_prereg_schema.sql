@@ -28,3 +28,8 @@ ALTER TABLE prereg.batch_step_execution_context ADD CONSTRAINT step_exec_ctx_fk 
 CREATE SEQUENCE prereg.batch_step_execution_seq;
 CREATE SEQUENCE prereg.batch_job_execution_seq;
 CREATE SEQUENCE prereg.batch_job_seq;
+
+-- grants to access all sequences
+GRANT usage, SELECT ON ALL SEQUENCES 
+   ON SCHEMA prereg
+   TO prereguser;
