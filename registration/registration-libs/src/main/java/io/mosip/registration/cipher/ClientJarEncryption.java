@@ -62,9 +62,9 @@ public class ClientJarEncryption {
 			System.out.println("Zip Creation started");
 			
 			if (file != null && file.exists()) {
-				String encryptedFileToSave = "mosip-application.jar";
-				String propertiesFile = "mosip-application.properties";
-				String runFileName = "mosip-exec.jar";
+				String encryptedFileToSave = "bin/mosip-client.jar";
+				String propertiesFile = "props/mosip-application.properties";
+				String runFileName = "bin/mosip-exec.jar";
 
 
 				String zipFilename = file.getParent() + SLASH + "mosip-sw-" + args[3] + ".zip";
@@ -80,6 +80,8 @@ public class ClientJarEncryption {
 				fileNameByBytes.put(encryptedFileToSave, encryptedFileBytes);
 				fileNameByBytes.put(propertiesFile, propertiesBytes);
 				fileNameByBytes.put(runFileName, runExecutbale);
+				fileNameByBytes.put("db/", new byte[] {});
+				fileNameByBytes.put("lib/", new byte[] {});
 
 				aes.writeFileToZip(fileNameByBytes, zipFilename);
 
