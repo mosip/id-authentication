@@ -30,6 +30,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.controller.device.FaceCaptureController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
 import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.controller.reg.BiometricExceptionController;
@@ -111,6 +112,8 @@ public class BaseController {
 	private BiometricExceptionController biometricExceptionController;
 	@Autowired
 	private IrisCaptureController irisCaptureController;
+	@Autowired
+	private FaceCaptureController faceCaptureController;
 
 	@Autowired
 	private NotificationService notificationService;
@@ -551,6 +554,7 @@ public class BaseController {
 			((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
 					.setOperatorBiometricDTO(createBiometricInfoDTO());
 			biometricExceptionController.clearSession();
+			faceCaptureController.clearPhoto(RegistrationConstants.APPLICANT_IMAGE);
 		} else {
 			if (SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA) != null) {
 				((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
