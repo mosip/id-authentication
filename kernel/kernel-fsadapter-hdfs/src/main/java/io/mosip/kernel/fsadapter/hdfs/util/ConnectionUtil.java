@@ -202,8 +202,9 @@ public class ConnectionUtil {
 		try {
 			configuration = new Configuration();
 			configuration.set("fs.defaultFS", nameNodeUrl);
+			configuration.set("dfs.client.use.datanode.hostname", "true");
 			configuration.set("fs.hdfs.impl", DistributedFileSystem.class.getName());
-			configuration.set("fs.file.impl", LocalFileSystem.class.getName());
+			//configuration.set("fs.file.impl", LocalFileSystem.class.getName());
 			hadoopLibPath = Files.createTempDirectory(HADOOP_HOME);
 			if (SystemUtils.IS_OS_WINDOWS) {
 				Path binPath = Files.createDirectory(Paths.get(hadoopLibPath.toString(), "bin"));

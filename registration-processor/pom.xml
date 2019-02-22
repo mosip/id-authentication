@@ -99,16 +99,16 @@
 		<jodatime.version>2.8.1</jodatime.version>
 
 		<!-- local -->
-		<registration.status.service.version>0.8.9</registration.status.service.version>
-		<registration.processor.core.version>0.8.9</registration.processor.core.version>
-		<filesystem.adapter.ceph.version>0.8.9</filesystem.adapter.ceph.version>
-		<packet.manager.version>0.8.9</packet.manager.version>
-		<registration.processor.rest.client.version>0.8.9</registration.processor.rest.client.version>
-		<packet.info.storage.service.version>0.8.9</packet.info.storage.service.version>
-		<packet.bio.dedupe.service.impl.version>0.8.9</packet.bio.dedupe.service.impl.version>
-		<registration.processor.rest.client.version>0.8.9</registration.processor.rest.client.version>
-		<registration.processor.message.sender.version>0.8.9</registration.processor.message.sender.version>
-		<packet.bio.dedupe.api.version>0.8.9</packet.bio.dedupe.api.version>
+		<registration.status.service.version>0.8.10</registration.status.service.version>
+		<registration.processor.core.version>0.8.10</registration.processor.core.version>
+		<filesystem.adapter.ceph.version>0.8.10</filesystem.adapter.ceph.version>
+		<packet.manager.version>0.8.10</packet.manager.version>
+		<registration.processor.rest.client.version>0.8.10</registration.processor.rest.client.version>
+		<packet.info.storage.service.version>0.8.10</packet.info.storage.service.version>
+		<packet.bio.dedupe.service.impl.version>0.8.10</packet.bio.dedupe.service.impl.version>
+		<registration.processor.rest.client.version>0.8.10</registration.processor.rest.client.version>
+		<registration.processor.message.sender.version>0.8.10</registration.processor.message.sender.version>
+		<packet.bio.dedupe.api.version>0.8.10</packet.bio.dedupe.api.version>
 
 		<!-- Kernel -->
 		<kernel.core.version>0.8.10</kernel.core.version>

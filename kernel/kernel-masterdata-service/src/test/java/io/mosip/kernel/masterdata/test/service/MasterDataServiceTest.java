@@ -27,6 +27,7 @@ import org.springframework.orm.hibernate5.HibernateObjectRetrievalFailureExcepti
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
@@ -1534,7 +1535,7 @@ public class MasterDataServiceTest {
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
 				.validateTimeStampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
 
-		Assert.assertEquals("Rejected", resgistrationCenterStatusResponseDto.getStatus());
+		Assert.assertEquals(MasterDataConstant.INVALID, resgistrationCenterStatusResponseDto.getStatus());
 
 	}
 
@@ -1558,7 +1559,7 @@ public class MasterDataServiceTest {
 		 * .andExpect(status().isOk());
 		 */
 
-		Assert.assertEquals("Accepted", resgistrationCenterStatusResponseDto.getStatus());
+		Assert.assertEquals(MasterDataConstant.VALID, resgistrationCenterStatusResponseDto.getStatus());
 
 	}
 
@@ -1608,7 +1609,7 @@ public class MasterDataServiceTest {
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
 				.validateTimeStampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
 
-		Assert.assertEquals("Rejected", resgistrationCenterStatusResponseDto.getStatus());
+		Assert.assertEquals(MasterDataConstant.INVALID, resgistrationCenterStatusResponseDto.getStatus());
 
 	}
 	

@@ -156,6 +156,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 	/** The identity iterator util. */
 	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
+	private static final String UIN_FAILURE = "UIN updation failure for registrationId ";
 
 	/*
 	 * (non-Javadoc)
@@ -173,6 +174,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		String description = "";
 		boolean isTransactionSuccessful = false;
 		this.registrationId = object.getRid();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "UinGeneratorStage::process()::entry");
 		UinResponseDto uinResponseDto = null;
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 				.getRegistrationStatus(registrationId);
@@ -214,15 +217,18 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				registrationStatusDto.setStatusComment(UinStatusMessage.PACKET_UIN_UPDATION_SUCCESS_MSG);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
 				isTransactionSuccessful = true;
-				description = "UIN updated succesfully for : " + registrationId;
-
+				description = "UIN updated succesfully for registrationId " + registrationId;
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+						registrationId, "UinGeneratorStage::process()::exit");
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+						registrationId, description);
 			} else {
 				String statusComment = idResponseDTO.getError().get(0).getErrMessage();
 				registrationStatusDto.setStatusComment(statusComment);
 				object.setInternalError(Boolean.TRUE);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
 				isTransactionSuccessful = false;
-				description = "UIN updation failure for : " + registrationId;
+				description = UIN_FAILURE + registrationId + "::" + idResponseDTO.getError().get(0).getErrMessage();
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						idResponseDTO.getError().get(0).getErrMessage() + "  :  " + idResponseDTO.toString());
@@ -245,13 +251,14 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		catch (IOException | ParseException | ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, e.getMessage());
-
+			description = UIN_FAILURE + registrationId + "::" + e.getMessage();
 		} catch (Exception ex) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString() + ex.getMessage()
 							+ ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
-			description = "Internal error occured while processing registration  id : " + registrationId;
+			description = "Internal error occured in UINGenerator stage while processing registrationId "
+					+ registrationId + ex.getMessage();
 		} finally {
 
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();

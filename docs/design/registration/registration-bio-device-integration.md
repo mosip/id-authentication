@@ -16,9 +16,14 @@ The technical detail of the DM and Registration client application is briefly co
 
 1. Mainly **TCP protocol** will be used to communicate between DM to VDM and Registration client Application to VDM services.  
 2. DM and VDM services having listener component, it uses 'ServerSocket' from net package to make the communication with its client component.    
-3. VDM internally uses required driver to communicate with the Bio-metric devices. The VDM technical design is out of scope of this document.   
+3. VDM internally uses required driver to communicate with the Bio-metric devices.    
 4. Application opens the Socket communication with the defined port of DM and upon confirmation from DM, it makes the communication with VDM through Port.    
 5. All requests and responses carry a requestId, which is a numeric value (128 bit), represented as a 36 character UUID format string in XML.  
+6. VDM only captures the bio-metric images in standard ISO format and provide the same through TCP.  
+
+**Out of Scope:** 
+   - The VDM technical design is out of scope of this document.  
+   - VDM doesn't provide the Segmentation, Matching, Extraction and quality of images. So it is not covered part of this Spec.  
 
 **DM - Device Manager :** 
 The Device Manager should open the connection with the configured port [from property file] and listen for messages from clients [VDM and Application]  
