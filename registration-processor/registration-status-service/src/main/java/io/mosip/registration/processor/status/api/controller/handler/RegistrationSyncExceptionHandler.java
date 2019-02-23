@@ -112,7 +112,7 @@ public class RegistrationSyncExceptionHandler {
 			response.setError(errors.get(0));
 		}
 
-		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		response.setVersion(env.getProperty(REG_SYNC_APPLICATION_VERSION));
 		response.setResponse(null);
 		Gson gson = new GsonBuilder().serializeNulls().create();
