@@ -1,0 +1,30 @@
+{
+  "authType": {
+    "address": true,
+    "bio": false,
+    "otp": false,
+    "personalIdentity": false,
+    "pin": false
+  },
+  "matchInfo": [
+    {
+      "authType": "address",
+      "language": "fre",
+      "matchingStrategy": "E",
+      "matchingThreshold": "100"
+    }
+  ],
+  "id": "mosip.identity.auth",
+  "idvId": "739041980174",
+  "idvIdType": "D",
+  "tspID": "REF01",
+  "key": {
+    "publicKeyCert": "String",
+    "sessionKey": "MeA4zfB3xP8k9vI5VRX1BT-GHdMcwGlQl0UTbehImQAD82jt3zEtwL9nWTxvVM4NSZXQ2nsPuzt8a3uNPgDM_bn5WwxwJcV_VXqU5By2A09YQ8dTyN1VxHrTHfDKl6fljKnwXBilT-AqWTAE-A6HeDcq21A7vgIxvwLG8r7x2tCoExygDhQ3grfWzn7z-VnApLEMDkmSR_OPCRtF-DfO3ehvV6FZ2bwtHKBZorZcFdwu6yFc98jnJc6XETnijkrOpng9WiyTbNJB5eAZcW39PjnM_edr1N_JSMHeOISleXvwXA2z7cbZfLk9b0qdLhB0md9IFZVHidGmDuABvspcfg"
+  },
+  "muaCode": "7404012866",
+  "reqHmac": "string",
+  "reqTime": "2019-02-01T14:12:01.001+05:30",
+  "request": "F4doqrY0srSLZLCxPtNZFoqfjOT-AFRfnese8pmts73ADJkXLhGPMRYKyY8gzGpCLEDpw8qTDC6h-B8-ce9Lyfj7TNajPzgrQJhXezQEz6RCjAWFEU_KwJNZMaZCaLBywbjfj2Zo2DmGKGvDBGwmSijXHBK8s_MobwlIW6vMZcYXrARh0r5D9yFczVC9jc6QBjvIW9ZUtu8zkNP0Djdx6vxc6rZFwpD-pRDWqBrKh5RfGK2y970Q2fHTyVsUb1DmIWGCCo6ZqrqohYTcdDaWsT2GF_n_T95ZH62TL6GrWSk",
+  "txnID": "7404012866"
+}

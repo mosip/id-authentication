@@ -1,0 +1,21 @@
+{
+  "id": "string",
+  "ver": "string",
+  "timestamp": "2019-02-05T12:00:00.000Z",
+  "request": [
+      {
+      "cntrId": "string",
+      "isActive": true,
+      "machineId": "string",
+      "usrId": "string"
+    }
+  ],
+  "invalid_cntrID_11":"string",
+  "invalid_empty_isActive":"string",
+  "invalid_empty_machineId":"string",
+  "invalid_empty_regCenId":"string",
+  "invalid_empty_userId":"string",
+  "invalid_machineId_11":"string",
+  "invalid_updateExisting":"string",
+  "invalid_userId_37":"string"
+}
