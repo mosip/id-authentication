@@ -10,7 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.h2.util.IOUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -82,7 +84,8 @@ public class TemplateGeneratorTest {
 		InputStream expected = IOUtils.getInputStreamFromString("Hi Alok, your UIN is generated");
 		InputStream result = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
 		
-		assertEquals(expected, result);
+		Assert.assertTrue(EqualsBuilder.reflectionEquals(expected,result));
+		//assertEquals(expected, result);
 	}
 
 }
