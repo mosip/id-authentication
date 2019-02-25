@@ -497,8 +497,8 @@ public void getPreIdsByRegCenterIdFailureTest2() {
 
 		Mockito.when(bookingDAO.findPreIdAndStatusCode(Mockito.any(), Mockito.any())).thenReturn(bookingEntity);
 
-		Mockito.when(bookingDAO.saveRegistrationEntityForCancel(Mockito.any())).thenReturn(bookingEntity);
-
+		//Mockito.when(bookingDAO.saveRegistrationEntityForCancel(Mockito.any())).thenReturn(bookingEntity);
+		Mockito.doNothing().when(bookingDAO).deleteRegistrationEntity(Mockito.any());
 		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
 		mainResponseDTO.setErr(null);
 		mainResponseDTO.setStatus(true);
