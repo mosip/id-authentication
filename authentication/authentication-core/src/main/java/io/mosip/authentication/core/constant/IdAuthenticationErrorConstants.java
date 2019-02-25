@@ -126,7 +126,10 @@ public enum IdAuthenticationErrorConstants {
 	VID_REGENERATION_FAILED("IDA-MLC-011","VID regeneration not allowed. Use existing VID"),
 	
 	// for No authentication type selected
-	NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST("IDA-MLC-008","No authentication type selected");
+	NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST("IDA-MLC-008","No authentication type selected"),
+	
+	//for Auth Type not supported for a country
+	AUTH_TYPE_NOT_SUPPORTED("IDA-MLC-013","Authentication Type not supported");
 
 	private final String errorCode;
 	private final String errorMessage;

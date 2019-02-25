@@ -268,14 +268,12 @@ public class IdInfoHelper implements IdInfoFetcher {
 						fullMapping.add(mappingStr);
 					}
 				} else {
-					// TODO should add proper error
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING);
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED);
 				}
 			}
 			return fullMapping;
 		} else {
-			// TODO should add proper error
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED);
 		}
 	}
 
