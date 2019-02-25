@@ -61,7 +61,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		KeyStore keyStore = null;
 		ResponseDTO responseDTO = new ResponseDTO();
 		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-
+			LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, "user is not in online");
 			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE, null);
 		} else {
 			keyStore = policySyncDAO.findByMaxExpireTime();
@@ -76,9 +76,9 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 
 					try {
 						getPublicKey();
-					} catch (KeyManagementException | IOException | java.security.NoSuchAlgorithmException e) {
+					} catch (KeyManagementException | IOException | java.security.NoSuchAlgorithmException exception) {
 						LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
-								"error response is created");
+								exception.getMessage());
 
 						setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
 
@@ -119,6 +119,8 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 			keyStore.setCreatedDtimes(Timestamp.valueOf(LocalDateTime.now()));
 			policySyncDAO.updatePolicy(keyStore);
 			setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
+			LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
+					"synch the public key is completed");
 
 		} catch (HttpClientErrorException | RegBaseCheckedException exception) {
 			LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
