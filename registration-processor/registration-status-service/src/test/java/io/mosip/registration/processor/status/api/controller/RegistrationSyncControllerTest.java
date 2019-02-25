@@ -112,7 +112,7 @@ public class RegistrationSyncControllerTest {
 		registrationSyncRequestDTO.setRequest(list);
 		registrationSyncRequestDTO.setId("mosip.registration.sync");
 		registrationSyncRequestDTO.setVersion("1.0");
-		registrationSyncRequestDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+		registrationSyncRequestDTO.setRequestTimestamp(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 		arrayToJson=gson.toJson(registrationSyncRequestDTO);
 		SyncResponseDto syncResponseDto = new SyncResponseDto();
 		

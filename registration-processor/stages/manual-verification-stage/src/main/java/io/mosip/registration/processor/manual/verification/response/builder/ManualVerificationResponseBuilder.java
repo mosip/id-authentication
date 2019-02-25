@@ -16,13 +16,9 @@ import io.mosip.registration.processor.manual.verification.response.dto.ManualVe
 @Component
 public class ManualVerificationResponseBuilder{
 	
-	@Autowired
-	private static Environment env;
-	private static final String MVS_APPLICATION_VERSION = "mosip.registration.processor.application.version";
-	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
+	
 
-
-	public static String buildManualVerificationSuccessResponse(Object classType,String id) {
+	public static String buildManualVerificationSuccessResponse(Object classType,String id,String version,String dateTimePattern) {
 
 		if(classType.getClass()==ManualVerificationDTO.class) {
 			ManualVerificationAssignResponseDTO response = new ManualVerificationAssignResponseDTO();
@@ -30,8 +26,8 @@ public class ManualVerificationResponseBuilder{
 				response.setId(id);
 			}
 			response.setError(null);
-			response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
-			response.setVersion(env.getProperty(MVS_APPLICATION_VERSION));
+			response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString(dateTimePattern));
+			response.setVersion(version);
 			response.setResponse((ManualVerificationDTO)classType);
 			Gson gson = new GsonBuilder().serializeNulls().create();
 			return gson.toJson(response);
@@ -42,8 +38,8 @@ public class ManualVerificationResponseBuilder{
 				response.setId(id);
 			} 
 			response.setError(null);
-			response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
-			response.setVersion(env.getProperty(MVS_APPLICATION_VERSION));
+			response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString(dateTimePattern));
+			response.setVersion(version);
 			response.setFile((String)classType);
 			Gson gson = new GsonBuilder().serializeNulls().create();
 			return gson.toJson(response);
@@ -54,8 +50,8 @@ public class ManualVerificationResponseBuilder{
 				response.setId(id);
 			}
 			response.setError(null);
-			response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
-			response.setVersion(env.getProperty(MVS_APPLICATION_VERSION));
+			response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString(dateTimePattern));
+			response.setVersion(version);
 			response.setResponse((PacketMetaInfo)classType);
 			Gson gson = new GsonBuilder().serializeNulls().create();
 			return gson.toJson(response);

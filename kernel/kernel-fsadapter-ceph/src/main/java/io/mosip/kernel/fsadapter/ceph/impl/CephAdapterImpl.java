@@ -21,7 +21,7 @@ import com.amazonaws.services.s3.model.S3Object;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.fsadapter.ceph.exception.handler.ExceptionHandler;
-import io.mosip.kernel.fsadapter.ceph.utils.ConnectionUtil;
+import io.mosip.kernel.fsadapter.ceph.util.ConnectionUtils;
 
 /**
  * This class is CEPH implementation for MOSIP Packet Store.	
@@ -30,13 +30,13 @@ import io.mosip.kernel.fsadapter.ceph.utils.ConnectionUtil;
  * @since 0.0.1
  */
 @Service
-public class FilesystemCephAdapterImpl implements FileSystemAdapter {
+public class CephAdapterImpl implements FileSystemAdapter {
 
 	/** The conn. */
 	private AmazonS3 conn;
 
 	/** The Constant LOGGER. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemCephAdapterImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CephAdapterImpl.class);
 
 	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {} - {} - {}";
@@ -50,7 +50,7 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter {
 	 * @param connectionUtil
 	 *            the connection util
 	 */
-	public FilesystemCephAdapterImpl(ConnectionUtil connectionUtil) {
+	public CephAdapterImpl(ConnectionUtils connectionUtil) {
 		if (conn == null) {
 			this.conn = connectionUtil.getConnection();
 		}

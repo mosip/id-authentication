@@ -2,10 +2,14 @@ package io.mosip.registration.processor.packet.receiver.stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import io.mosip.registration.processor.packet.receiver.builder.PacketReceiverResponseBuilder;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -44,6 +48,10 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	@Value("${server.port}")
 	private String port;
 
+	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
+	private static final String APPLICATION_VERSION = "mosip.registration.processor.application.version";
+	private static final String MODULE_ID = "mosip.registration.processor.packet.id";
+
 	/** The Packet Receiver Service. */
 	@Autowired
 	public PacketReceiverService<File, MessageDTO> packetReceiverService;
@@ -71,12 +79,10 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	/** The Constant APPLICATION_JSON. */
 	private static final String APPLICATION_JSON = "application/json";
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.vertx.core.AbstractVerticle#start()
-	 * 
-	 */
+	List<String> listObj=new ArrayList<>();
+	
+	@Autowired
+	private Environment env;
 	
 	@Override
 	public void start() {
@@ -114,16 +120,20 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 		FileUpload fileUpload = ctx.fileUploads().iterator().next();
 		File file = null;
 		try {
+			listObj.add(env.getProperty(MODULE_ID));
+			listObj.add(env.getProperty(DATETIME_PATTERN));
+			listObj.add(env.getProperty(APPLICATION_VERSION));
+			
 			FileUtils.copyFile(new File(fileUpload.uploadedFileName()),
 					new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName()));
 			FileUtils.forceDelete(new File(fileUpload.uploadedFileName()));
 			file = new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName());
 			MessageDTO messageDTO = packetReceiverService.storePacket(file);
 			if (messageDTO.getIsValid()) {
-				this.setResponse(ctx,PacketReceiverResponseBuilder.buildPacketReceiverResponse(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString()),APPLICATION_JSON);
+				this.setResponse(ctx,PacketReceiverResponseBuilder.buildPacketReceiverResponse(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString(),listObj),APPLICATION_JSON);
 				this.sendMessage(messageDTO);
 			} else {
-				this.setResponse(ctx,PacketReceiverResponseBuilder.buildPacketReceiverResponse(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString()),APPLICATION_JSON);
+				this.setResponse(ctx,PacketReceiverResponseBuilder.buildPacketReceiverResponse(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString(),listObj),APPLICATION_JSON);
 			}
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

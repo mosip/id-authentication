@@ -380,7 +380,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			 */
 			boolean isTrue = registrationCenterRepository.validateDateWithHoliday(localDate, id);
 			if (isTrue) {
-				resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_REJECTED);
+				resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.INVALID);
 			} else {
 				RegistrationCenter registrationCenter = registrationCenterRepository.findById(RegistrationCenter.class,
 						id);
@@ -402,9 +402,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					 */
 					if ((localTime.equals(startTime) || isAfterStartTime)
 							&& ((localTime.equals(endTime.plusHours(1))) || isBeforeEndTime)) {
-						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_ACCEPTED);
+						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.VALID);
 					} else {
-						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_REJECTED);
+						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.INVALID);
 					}
 
 				} else {

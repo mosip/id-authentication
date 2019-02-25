@@ -163,7 +163,7 @@
     }
   },
   "uidStatus": {
-    "title": "Mes applications",
+    "title": "Vos applications",
     "action_modify_information": "Modifier les informations",
     "action_modify_appointment": "Réserver / modifier un rendez-vous",
     "action_cre_application": "Créer une nouvelle application ",

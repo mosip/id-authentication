@@ -83,7 +83,7 @@ public class BatchServiceDAO {
 		List<ProcessedPreRegEntity> entityList = new ArrayList<>();
 		try {
 			entityList = processedPreIdRepository.findBystatusComments(statusComment);
-			if (entityList.isEmpty() || entityList == null) {
+			if (entityList == null || entityList.isEmpty() ) {
 				LOGGER.info("There are currently no Pre-Registration-Ids to update status to consumed");
 				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_001.getCode(),
 						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());
@@ -100,7 +100,7 @@ public class BatchServiceDAO {
 		List<RegistrationBookingEntity> entityList = new ArrayList<>();
 		try {
 			entityList = regAppointmentRepository.findByRegDateBefore(currentdate);
-			if (entityList.isEmpty() || entityList == null) {
+			if (entityList == null ||entityList.isEmpty() )  {
 				LOGGER.info("There are currently no Pre-Registration-Ids which is expired");
 				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_003.getCode(),
 						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());

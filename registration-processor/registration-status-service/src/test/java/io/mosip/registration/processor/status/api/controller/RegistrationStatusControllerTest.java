@@ -107,7 +107,7 @@ public class RegistrationStatusControllerTest {
 		registrationStatusRequestDTO.setRequest(request);
 		registrationStatusRequestDTO.setId("mosip.registration.status");
 		registrationStatusRequestDTO.setVersion("1.0");
-		registrationStatusRequestDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+		registrationStatusRequestDTO.setRequestTimestamp(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 		regStatusToJson=gson.toJson(registrationStatusRequestDTO);
 		registrationDtoList = new ArrayList<>();
 		InternalRegistrationStatusDto registrationStatusDto1 = new InternalRegistrationStatusDto();
