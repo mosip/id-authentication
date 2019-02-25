@@ -205,7 +205,7 @@ export class DashBoardComponent implements OnInit {
         const body = {
           case: 'CONFIRMATION',
           title: 'Confirm',
-          message: 'The selected application will be deleted. Please confirm.',
+          message: 'Appointment for the selected application will be cancelled. Please confirm.',
           yesButtonText: 'Confirm',
           noButtonText: 'Cancel'
         };
@@ -218,7 +218,7 @@ export class DashBoardComponent implements OnInit {
                 const message = {
                   case: 'MESSAGE',
                   title: 'Success',
-                  message: 'Appointment for the selected application has been successfully deleted'
+                  message: 'Appointment for the selected application has been successfully cancelled'
                 };
                 dialogRef = this.openDialog(message, '250px');
                 const index = this.users.indexOf(element);
@@ -233,7 +233,7 @@ export class DashBoardComponent implements OnInit {
                 const message = {
                   case: 'MESSAGE',
                   title: 'Error',
-                  message: 'Appointment for the selected application could not be deleted'
+                  message: 'Appointment for the selected application could not be cancelled'
                 };
                 dialogRef = this.openDialog(message, '250px');
               }
