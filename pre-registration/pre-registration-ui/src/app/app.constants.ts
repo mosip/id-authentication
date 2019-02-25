@@ -1,6 +1,7 @@
 export const NUMBER_PATTERN = '^[0-9]+[0-9]*$';
 export const MOBILE_PATTERN = '^([6-9]{1})([0-9]{9})$';
 export const TEXT_PATTERN = '^[a-zA-Z ]*$';
+export const CNIE_PATTERN = '^([0-9]{10,30})$';
 export const COUNTRY_NAME = 'Morroco';
 export const COUNTRY_HIERARCHY = 'Country';
 export const VERSION = '1.0';
@@ -9,6 +10,7 @@ export const ERROR = 'error';
 export const NESTED_ERROR = 'err';
 export const ERROR_CODE = 'errorCode';
 export const PRE_REGISTRATION_ID = 'pre_registration_id';
+export const ALLOWED_BOOKING_TIME = 24;
 
 export const IDS = {
   newUser: 'mosip.pre-registration.demographic.create',
@@ -25,12 +27,12 @@ export const LANGUAGE_CODE = {
 export const APPEND_URL = {
   location_metadata: 'v1.0/locations/locationhierarchy/',
   location_immediate_children: 'v1.0/locations/immediatechildren/',
-  get_applicant: 'demographic/v0.1/pre-registration/applicationData',
-  applicants: 'demographic/v0.1/pre-registration/applications',
+  get_applicant: 'demographic/applicationData',
+  applicants: 'demographic/applications',
   location: 'masterdata/',
   gender: 'masterdata/v1.0/gendertypes',
   resident: 'masterdata/v1.0/residenttypes',
-  transliteration: 'transliterate/v0.1/pre-registration/translitrate'
+  transliteration: 'translitration/translitrate'
 };
 
 export const PARAMS_KEYS = {
@@ -96,5 +98,5 @@ export const virtual_keyboard_languages = {
 export const DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY = 'file';
 export const DOCUMENT_UPLOAD_REQUEST_DTO_KEY = 'Document request';
 
-export const PREVIEW_DATA_APPEND_URL = 'demographic/v0.1/pre-registration/applicationData';
+export const PREVIEW_DATA_APPEND_URL = 'demographic/v0.1/applicationData';
 // "BASE_URL": "https://dev.mosip.io/"

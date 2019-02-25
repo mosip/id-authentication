@@ -1,0 +1,10 @@
+{
+  "timestamp": 1549365768005,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-NOT-006",
+      "errorMessage": "Number cannot be empty or null"
+    }
+  ]
+}

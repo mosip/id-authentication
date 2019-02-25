@@ -7,7 +7,8 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "stats": "webpack-bundle-analyzer dist/pre-registration/stats.json"
   },
   "private": true,
   "dependencies": {
@@ -56,6 +57,7 @@
     "protractor": "~5.4.0",
     "ts-node": "~5.0.1",
     "tslint": "~5.9.1",
-    "typescript": "3.2.2"
+    "typescript": "3.2.2",
+    "webpack-bundle-analyzer": "^3.0.4"
   }
 }

@@ -1,0 +1,8 @@
+{
+  "regcenterid":"string",
+  "deviceid":"string",
+  "effdatetimes":"string",
+  "invalid_effdatetimes2":"string",
+  "invalid_effdatetimes3":"string",
+  "invalid_updatedDate":"sring"
+}

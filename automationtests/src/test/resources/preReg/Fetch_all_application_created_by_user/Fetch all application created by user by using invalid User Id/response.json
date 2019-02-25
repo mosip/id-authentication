@@ -1,0 +1,9 @@
+{
+    "err": {
+        "errorCode": "PRG_PAM_APP_005",
+        "message": "NO_RECORD_FOUND_FOR_USER_ID"
+    },
+    "status": false,
+    "resTime": "2019-02-06T15:02:39.268Z",
+    "response": null
+}

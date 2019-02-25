@@ -69,7 +69,7 @@ public class BatchServiceDAO {
 			entity = demographicRepository.findBypreRegistrationId(preRegId);
 			if (entity == null) {
 				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_001.getCode(),
-						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_CONSUMED_STATUS.getMessage());
+						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());
 			}
 
 		} catch (DataAccessLayerException e) {
@@ -83,10 +83,10 @@ public class BatchServiceDAO {
 		List<ProcessedPreRegEntity> entityList = new ArrayList<>();
 		try {
 			entityList = processedPreIdRepository.findBystatusComments(statusComment);
-			if (entityList.isEmpty() || entityList == null) {
+			if (entityList == null || entityList.isEmpty() ) {
 				LOGGER.info("There are currently no Pre-Registration-Ids to update status to consumed");
 				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_001.getCode(),
-						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_CONSUMED_STATUS.getMessage());
+						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());
 			}
 
 		} catch (DataAccessLayerException e) {
@@ -100,10 +100,10 @@ public class BatchServiceDAO {
 		List<RegistrationBookingEntity> entityList = new ArrayList<>();
 		try {
 			entityList = regAppointmentRepository.findByRegDateBefore(currentdate);
-			if (entityList.isEmpty() || entityList == null) {
+			if (entityList == null ||entityList.isEmpty() )  {
 				LOGGER.info("There are currently no Pre-Registration-Ids which is expired");
 				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_003.getCode(),
-						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_EXPIRED_STATUS.getMessage());
+						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());
 			}
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_005.getCode(),
@@ -118,7 +118,7 @@ public class BatchServiceDAO {
 			entity = regAppointmentRepository.getPreRegId(preRegId);
 			if (entity == null) {
 				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_003.getCode(),
-						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_EXPIRED_STATUS.getMessage());
+						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());
 			}
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_005.getCode(),

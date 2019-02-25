@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -67,5 +68,12 @@ public interface GenderTypeService {
 	 * @return {@link CodeResponseDto}
 	 */
 	public CodeResponseDto deleteGenderType(String code);
+
+	/**
+	 *  Method to validate gender name
+	 * @param genderName
+	 * @return StatusResponseCode
+	 */
+	public StatusResponseDto validateGender(String genderName);
 
 }

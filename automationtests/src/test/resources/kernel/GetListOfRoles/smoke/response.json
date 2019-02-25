@@ -1,0 +1,44 @@
+{
+  "roles": [
+    {
+      "roleId": "REGISTRATION_ADMIN",
+      "roleName": "REGISTRATION_ADMIN",
+      "roleDescription": "Registration administrator"
+    },
+    {
+      "roleId": "TSP",
+      "roleName": "TSP",
+      "roleDescription": "Trusted Service Provider"
+    },
+    {
+      "roleId": "ADMIN1",
+      "roleName": "ADMIN1",
+      "roleDescription": "ADMIN1"
+    },
+    {
+      "roleId": "ADMIN",
+      "roleName": "ADMIN",
+      "roleDescription": "admin"
+    },
+    {
+      "roleId": "INDIVIDUAL",
+      "roleName": "INDIVIDUAL",
+      "roleDescription": "individual"
+    },
+    {
+      "roleId": "REGISTRATION_SUPERVISOR",
+      "roleName": "REGISTRATION_SUPERVISOR",
+      "roleDescription": "Registration supervisor"
+    },
+    {
+      "roleId": "SUPERADMIN",
+      "roleName": "SUPERADMIN",
+      "roleDescription": "Super administrator"
+    },
+    {
+      "roleId": "REGISTRATION_OFFICER",
+      "roleName": "REGISTRATION_OFFICER",
+      "roleDescription": "Registration officer"
+    }
+  ]
+}

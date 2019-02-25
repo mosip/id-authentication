@@ -32,8 +32,8 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import io.findify.s3mock.S3Mock;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.fsadapter.ceph.constant.PacketFiles;
-import io.mosip.kernel.fsadapter.ceph.impl.FilesystemCephAdapterImpl;
-import io.mosip.kernel.fsadapter.ceph.utils.ConnectionUtil;
+import io.mosip.kernel.fsadapter.ceph.impl.CephAdapterImpl;
+import io.mosip.kernel.fsadapter.ceph.util.ConnectionUtils;
 
 /**
  * This class tests the functionalities of DFSAdapterImpl.
@@ -59,7 +59,7 @@ public class FilesystemCephAdapterImplTest {
 
 	/** The dfs adapter. */
 
-	private FilesystemCephAdapterImpl dfsAdapter;
+	private CephAdapterImpl dfsAdapter;
 
 	@Autowired
 	private Environment env = mock(Environment.class);
@@ -68,7 +68,7 @@ public class FilesystemCephAdapterImplTest {
 	private static final String FAILURE_ENROLMENT_ID = "1234";
 
 	@Mock
-	private ConnectionUtil connectionUtil;
+	private ConnectionUtils connectionUtil;
 
 	/**
 	 * This method sets up the required configuration before execution of test
@@ -90,7 +90,7 @@ public class FilesystemCephAdapterImplTest {
 				.withCredentials(new AWSStaticCredentialsProvider(new AnonymousAWSCredentials())).build();
 
 		when(connectionUtil.getConnection()).thenReturn(client);
-		dfsAdapter = new FilesystemCephAdapterImpl(connectionUtil);
+		dfsAdapter = new CephAdapterImpl(connectionUtil);
 		// Putting a file to mocked ceph instance
 
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -217,7 +217,7 @@ public class FilesystemCephAdapterImplTest {
 				.withEndpointConfiguration(endpoint).withCredentials(null).build();
 
 		when(connectionUtil.getConnection()).thenReturn(client1);
-		dfsAdapter = new FilesystemCephAdapterImpl(connectionUtil);
+		dfsAdapter = new CephAdapterImpl(connectionUtil);
 		InputStream packet = new InputStream() {
 			@Override
 			public int read() throws IOException {
@@ -241,7 +241,7 @@ public class FilesystemCephAdapterImplTest {
 				return 0;
 			}
 		};
-		dfsAdapter = new FilesystemCephAdapterImpl(connectionUtil);
+		dfsAdapter = new CephAdapterImpl(connectionUtil);
 		this.dfsAdapter.storePacket(this.checkEnrolmentId, packet);
 	}
 
