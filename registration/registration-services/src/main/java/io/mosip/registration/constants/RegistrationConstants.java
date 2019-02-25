@@ -60,9 +60,8 @@ public class RegistrationConstants {
 	public static final String USER_ONBOARD_WEBCAM = "/fxml/UserOnboardWebCamera.fxml";
 	public static final String BIO_EXCEPTION_PAGE = "/fxml/BiometricException.fxml";
 	public static final String SEND_NOTIFICATION_PAGE = "/fxml/SendNotification.fxml";
-	
-	
-	//FXML Id
+
+	// FXML Id
 	public static final String DEMOGRAPHIC_DETAIL = "demographicDetail";
 	public static final String DOCUMENT_SCAN = "documentScan";
 	public static final String DOCUMENT_PANE = "documentPane";
@@ -77,8 +76,8 @@ public class RegistrationConstants {
 	public static final String OPERATOR_AUTHENTICATION = "operatorAuthenticationPane";
 	public static final String ONBOARD_USER_PARENT = "onboardUser";
 	public static final String ONBOARD_USER_SUCCESS = "userOnboardSuccess";
-	
-	//Page Flow
+
+	// Page Flow
 	public static final String VISIBILITY = "visibility";
 	public static final String ONBOARD_LIST = "onboardPageList";
 	public static final String ONBOARD_MAP = "onboardMap";
@@ -220,8 +219,6 @@ public class RegistrationConstants {
 	public static final String UIN_UPDATE_BIO_EXCEPTION = "biometricException";
 	public static final String UIN_UPDATE_BIO_FP = "biometricFingerprint";
 	public static final String UIN_UPDATE_BIO_IRIS = "biometricIris";
-	
-
 
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";
@@ -527,7 +524,7 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_RIGHT_EYE_CAPTURED = "rightEyeCaptured";
 	public static final String TEMPLATE_LEFT_SLAP_CAPTURED = "leftSlapCaptured";
 	public static final String TEMPLATE_RIGHT_SLAP_CAPTURED = "rightSlapCaptured";
-	public static final String TEMPLATE_THUMBS_CAPTURED = "thumbsCaptured";	
+	public static final String TEMPLATE_THUMBS_CAPTURED = "thumbsCaptured";
 
 	public static final String MODIFY_DEMO_INFO = "modifyDemographicInfo";
 	public static final String MODIFY_DOCUMENTS = "modifyDocuments";
@@ -1030,7 +1027,6 @@ public class RegistrationConstants {
 
 	public static final String POLICY_SYNC_SERVICE = "policysync";
 	public static final String KEY_NAME = "KEY_POLICY_SYNC_THRESHOLD_VALUE";
-	public static final String REFERENCE_ID = "10011";
 
 	// Reg Deletion
 	public static final String REGISTRATION_DELETION_BATCH_JOBS_SUCCESS = "Registartion Packets Deletion Successful ";
@@ -1115,13 +1111,12 @@ public class RegistrationConstants {
 	public static final String USER_DETAILS_SERVICE_NAME = "user_details";
 	public static final String MAPPER_UTILL = "MAPPER_UTILL";
 	public static final String REG_ID = "regid";
-	
-	
+
 	public static final String CONTENT_TYPE_EMAIL = "EMAIL";
 	public static final String CONTENT_TYPE_MOBILE = "MOBILE";
-	
-	//Key-Policy Key validation
+
+	// Key-Policy Key validation
 	public static final String VALID_KEY = "VALID KEY";
 	public static final String INVALID_KEY = "Please sync to get latest key from the server before proceeding with this registration.";
-	
+
 }
