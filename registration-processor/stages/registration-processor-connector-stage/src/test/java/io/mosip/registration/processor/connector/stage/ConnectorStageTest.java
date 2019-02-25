@@ -79,7 +79,7 @@ public class ConnectorStageTest {
 		healthCheckTest();
 	}
 	private void healthCheckTest() throws ClientProtocolException, IOException {
-		HttpGet httpGet = new HttpGet("http://localhost:8090/health");
+		HttpGet httpGet = new HttpGet("http://localhost:8090/registration-connector/health");
 		HttpClient client = HttpClientBuilder.create().build();
 		HttpResponse getResponse = client.execute(httpGet);
 		assertEquals(200, getResponse.getStatusLine().getStatusCode());
@@ -90,7 +90,7 @@ public class ConnectorStageTest {
 		assertTrue(responseObject);
 	}
 	public void connectorTest() throws ClientProtocolException, IOException{
-		HttpPost httpPost = new HttpPost("http://localhost:8090/registration-processor/connector/v1.0");
+		HttpPost httpPost = new HttpPost("http://localhost:8090/registration-connector/registration-processor/connector/v1.0");
 
 	    String json = "{'rid':'27847657360002520181208183004','isValid':'true','internalError':'false','messageBusAddress':null,'retryCount':0}";
 	    StringEntity entity = new StringEntity(json);
