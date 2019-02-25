@@ -1,5 +1,6 @@
 package io.mosip.registrationprocessor.print.stage.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -11,8 +12,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +36,9 @@ import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.constant.EventId;
+import io.mosip.registration.processor.core.constant.EventName;
+import io.mosip.registration.processor.core.constant.EventType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
@@ -42,6 +53,7 @@ import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.PrintStageApplication;
 import io.mosip.registration.processor.print.stage.PrintStage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -162,6 +174,11 @@ public class PrintStageTest {
 		Mockito.doNothing().when(registrationStatusDto).setStatusComment(any());
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
 
+		
+		AuditResponseDto auditResponseDto = new AuditResponseDto();
+		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
+				"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
+				EventType.BUSINESS.toString(), "1234testcase");
 	}
 
 	/**
@@ -180,7 +197,7 @@ public class PrintStageTest {
 		testDeployVerticle();
 		testSendMessage();
 		testResendPrintPdf();
-		// testRoutes();
+		testRoutes();
 	}
 
 	/**
@@ -308,18 +325,20 @@ public class PrintStageTest {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	/*
-	 * public void testRoutes() throws ClientProtocolException, IOException {
-	 * HttpGet health = new HttpGet("http://localhost:8099/print-stage/health");
-	 * HttpClient client = HttpClientBuilder.create().build(); HttpResponse
-	 * getResponse = client.execute(health); assertEquals(200,
-	 * getResponse.getStatusLine().getStatusCode());
-	 * 
-	 * HttpPost resend = getHttpPost(
-	 * "http://localhost:8099/v0.1/registration-processor/print-stage/resend");
-	 * CloseableHttpResponse response = HttpClients.createDefault().execute(resend);
-	 * assertEquals(200, response.getStatusLine().getStatusCode()); }
-	 */
+	public void testRoutes() throws ClientProtocolException, IOException {
+		HttpGet health = new HttpGet("http://localhost:8099/print-stage/health");
+		HttpClient client = HttpClientBuilder.create().build();
+		HttpResponse getResponse = client.execute(health);
+		assertEquals(200, getResponse.getStatusLine().getStatusCode());
+
+		HttpPost resend = getHttpPost("http://localhost:8099/v0.1/registration-processor/print-stage/resend");
+		CloseableHttpResponse response = HttpClients.createDefault().execute(resend);
+		assertEquals(200, response.getStatusLine().getStatusCode());
+		
+		HttpPost test_resend = getHttpPost("http://localhost:8099/print-stage/health");
+		CloseableHttpResponse test_response = HttpClients.createDefault().execute(test_resend);
+		assertEquals(404, test_response.getStatusLine().getStatusCode());
+	}
 
 	/**
 	 * Gets the http post.

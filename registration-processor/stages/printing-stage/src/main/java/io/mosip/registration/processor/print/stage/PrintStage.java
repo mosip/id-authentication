@@ -193,20 +193,14 @@ public class PrintStage extends MosipVerticleAPIManager {
 			String eventId = "";
 			String eventName = "";
 			String eventType = "";
-			if (isTransactionSuccessful) {
-				description = "Pdf generated and sent to mosip queue";
-				eventId = EventId.RPR_402.toString();
-				eventName = EventName.UPDATE.toString();
-				eventType = EventType.BUSINESS.toString();
-			} else {
+			description = isTransactionSuccessful ? "Pdf generated and sent to mosip queue" : "Either pdf not generated or not sent to mosip queue";
+			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
 
-				description = "Either pdf not generated or not sent to mosip queue";
-				eventId = EventId.RPR_405.toString();
-				eventName = EventName.EXCEPTION.toString();
-				eventType = EventType.SYSTEM.toString();
-			}
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					regId.isEmpty() ? null : regId);
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,regId);
 		}
 
 		return object;
@@ -250,8 +244,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 		router.get("/print-stage/health").handler(ctx -> {
 			this.setResponse(ctx, "Server is up and running");
-		}).failureHandler(context -> {
-			this.setResponse(context, context.failure().getMessage());
 		});
 	}
 
