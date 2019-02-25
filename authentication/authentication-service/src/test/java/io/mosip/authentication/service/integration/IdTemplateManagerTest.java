@@ -26,8 +26,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
+import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -44,7 +46,6 @@ import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
@@ -118,6 +119,16 @@ public class IdTemplateManagerTest {
 		valueMap.put("datetimestamp", "2018-11-20T12:02:57.086+0000");
 		valueMap.put("validTime", "3");
 		idTemplateManager.applyTemplate("test", valueMap);
+	}
+
+	@Test
+	public void TestfetchTemplate() throws IdAuthenticationBusinessException, RestServiceException {
+		MockEnvironment mockenv = new MockEnvironment();
+		mockenv.merge(((AbstractEnvironment) environment));
+		mockenv.setProperty("notification.language.support", "primary");
+		ReflectionTestUtils.setField(idTemplateManager, "environment", mockenv);
+		mockRestCalls();
+		idTemplateManager.fetchTemplate("test");
 	}
 
 	@Test
