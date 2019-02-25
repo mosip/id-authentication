@@ -29,29 +29,30 @@ public class ManualVerificationConfigBean {
 	public ManualVerificationStage getManualVerificationStage() {
 		return new ManualVerificationStage();
 	}
-	
-	@Bean ManualVerificationService getManualVerificationService() {
+
+	@Bean
+	public ManualVerificationService getManualVerificationService() {
 		return new ManualVerificationServiceImpl();
 	}
-	
+
 	@Bean
 	ManualVerificationRequestValidator getManualVerificationRequestValidator() {
 		return new ManualVerificationRequestValidator();
 	}
-	
+
 	@Bean
 	ManualVerificationExceptionHandler getManualVerificationExceptionHandler() {
 		return new ManualVerificationExceptionHandler();
 	}
-	
+
 	@Bean
 	ManualVerificationResponseBuilder getManualVerificationResponseBuilder() {
 		return new ManualVerificationResponseBuilder();
 	}
-	
-	
+
 	@Bean
-	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env) throws IOException {
+	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env)
+			throws IOException {
 
 		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 		PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
@@ -64,7 +65,7 @@ public class ManualVerificationConfigBean {
 					+ "/" + applicationNames.get(i) + "-" + env.getProperty("spring.profiles.active") + ".properties";
 			appResources[i] = resolver.getResources(loc)[0];
 			((AbstractEnvironment) env).getPropertySources()
-            .addLast(new ResourcePropertySource(applicationNames.get(i), loc));
+					.addLast(new ResourcePropertySource(applicationNames.get(i), loc));
 		}
 		pspc.setLocations(appResources);
 		return pspc;

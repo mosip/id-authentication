@@ -14,6 +14,8 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.registration.processor.manual.verification.config.ManualVerificationConfigBean;
+
 @RunWith(SpringRunner.class)
 public class ManualVerificationConfigTest {
 
