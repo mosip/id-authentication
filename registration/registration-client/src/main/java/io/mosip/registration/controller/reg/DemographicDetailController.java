@@ -140,7 +140,7 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private Label uinIdLocalLanguageLabel;
-	
+
 	@FXML
 	private Label languageLabelLocalLanguage;
 
@@ -301,7 +301,7 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private TextField yyyyLocalLanguage;
-	
+
 	@FXML
 	private Label residenceLblLocalLanguage;
 
@@ -389,7 +389,7 @@ public class DemographicDetailController extends BaseController {
 			fxUtils = FXUtils.getInstance();
 			fxUtils.setTransliteration(transliteration);
 			SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
-			switchedOn = new SimpleBooleanProperty(false);
+			switchedOn = new SimpleBooleanProperty(true);
 			toggleSwitchForResidence = new SimpleBooleanProperty(false);
 			isChild = false;
 			toggleFunction();
@@ -397,10 +397,10 @@ public class DemographicDetailController extends BaseController {
 			listenerOnFields();
 			loadLocalLanguageFields();
 			loadKeyboard();
-			ageField.setDisable(true);
+			dob.setDisable(true);
 			renderComboBoxes();
 			addRegions();
-			populateGender();	
+			populateGender();
 
 			toggleFunctionForResidence();
 			applicationLabelBundle = ApplicationContext.getInstance().getApplicationLanguageBundle();
@@ -447,7 +447,6 @@ public class DemographicDetailController extends BaseController {
 						ageFieldLocalLanguage.clear();
 						dob.setDisable(true);
 						dobLocalLanguage.setDisable(true);
-
 					} else {
 						toggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						toggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
@@ -464,7 +463,6 @@ public class DemographicDetailController extends BaseController {
 						ageFieldLocalLanguage.setDisable(true);
 						dob.setDisable(false);
 						dobLocalLanguage.setDisable(false);
-
 					}
 					dd.clear();
 					mm.clear();
@@ -495,7 +493,8 @@ public class DemographicDetailController extends BaseController {
 					"Exiting the toggle function for toggle label 1 and toggle level 2");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - TOGGLING OF DOB AND AGE FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -505,8 +504,7 @@ public class DemographicDetailController extends BaseController {
 	private void toggleFunctionForResidence() {
 		try {
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
-					"Entering into toggle function for resident status");
+					RegistrationConstants.APPLICATION_ID, "Entering into toggle function for resident status");
 
 			toggleSwitchForResidence.addListener(new ChangeListener<Boolean>() {
 				@Override
@@ -552,11 +550,11 @@ public class DemographicDetailController extends BaseController {
 			});
 
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
-					"Exiting the toggle function for resident status");
+					RegistrationConstants.APPLICATION_ID, "Exiting the toggle function for resident status");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - TOGGLING OF DOB AND AGE FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -570,7 +568,7 @@ public class DemographicDetailController extends BaseController {
 			fxUtils.focusUnfocusListener(demoGraphicPane, ageField, ageFieldLocalLanguage);
 			ageField.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				ageFieldLocalLanguage.setText(newValue);
-				if (!validation.validateTextField(demoGraphicPane,ageField, ageField.getId() + "_ontype",
+				if (!validation.validateTextField(demoGraphicPane, ageField, ageField.getId() + "_ontype",
 						RegistrationConstants.DISABLE)) {
 					ageField.setText(oldValue);
 				}
@@ -627,7 +625,8 @@ public class DemographicDetailController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - AGE FIELD VALIDATION FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -643,30 +642,34 @@ public class DemographicDetailController extends BaseController {
 			fxUtils.validateOnType(demographicDetail, addressLine1, validation, addressLine1LocalLanguage);
 			fxUtils.validateOnType(demographicDetail, addressLine2, validation, addressLine2LocalLanguage);
 			fxUtils.validateOnType(demographicDetail, addressLine3, validation, addressLine3LocalLanguage);
-			fxUtils.populateLocalFieldOnType(demographicDetail,mobileNo, validation, mobileNoLocalLanguage);
-			fxUtils.populateLocalFieldOnType(demographicDetail,postalCode, validation, postalCodeLocalLanguage);
-			fxUtils.populateLocalFieldOnType(demographicDetail,emailId, validation, emailIdLocalLanguage);
-			fxUtils.populateLocalFieldOnType(demographicDetail,cniOrPinNumber, validation, cniOrPinNumberLocalLanguage);
-			fxUtils.validateOnType(demographicDetail,parentName, validation, parentNameLocalLanguage);
-			fxUtils.populateLocalFieldOnType(demographicDetail,uinId, validation, uinIdLocalLanguage);
-			fxUtils.validateOnType(demographicDetail,fullNameLocalLanguage, validation);
+			fxUtils.populateLocalFieldOnType(demographicDetail, mobileNo, validation, mobileNoLocalLanguage);
+			fxUtils.populateLocalFieldOnType(demographicDetail, postalCode, validation, postalCodeLocalLanguage);
+			fxUtils.populateLocalFieldOnType(demographicDetail, emailId, validation, emailIdLocalLanguage);
+			fxUtils.populateLocalFieldOnType(demographicDetail, cniOrPinNumber, validation,
+					cniOrPinNumberLocalLanguage);
+			fxUtils.validateOnType(demographicDetail, parentName, validation, parentNameLocalLanguage);
+			fxUtils.populateLocalFieldOnType(demographicDetail, uinId, validation, uinIdLocalLanguage);
+			fxUtils.validateOnType(demographicDetail, fullNameLocalLanguage, validation);
 			fxUtils.populateLocalComboBox(demographicDetail, gender, genderLocalLanguage);
 			fxUtils.populateLocalComboBox(demographicDetail, city, cityLocalLanguage);
 			fxUtils.populateLocalComboBox(demographicDetail, region, regionLocalLanguage);
 			fxUtils.populateLocalComboBox(demographicDetail, province, provinceLocalLanguage);
-			
+
 			fxUtils.populateLocalComboBox(demographicDetail, localAdminAuthority, localAdminAuthorityLocalLanguage);
-			dateValidation.validateDate(demographicDetail,dd, mm, yyyy, validation, fxUtils, ddLocalLanguage);
-			dateValidation.validateDate(demographicDetail,ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage, validation, fxUtils, null);
-			dateValidation.validateMonth(demographicDetail,dd, mm, yyyy, validation, fxUtils, mmLocalLanguage);
-			dateValidation.validateMonth(demographicDetail,ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage, validation, fxUtils,
-					null);
-			dateValidation.validateYear(demographicDetail,dd, mm, yyyy, validation, fxUtils, yyyyLocalLanguage);
-			dateValidation.validateYear(demographicDetail,ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage, validation, fxUtils, null);
+			dateValidation.validateDate(demographicDetail, dd, mm, yyyy, validation, fxUtils, ddLocalLanguage);
+			dateValidation.validateDate(demographicDetail, ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage,
+					validation, fxUtils, null);
+			dateValidation.validateMonth(demographicDetail, dd, mm, yyyy, validation, fxUtils, mmLocalLanguage);
+			dateValidation.validateMonth(demographicDetail, ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage,
+					validation, fxUtils, null);
+			dateValidation.validateYear(demographicDetail, dd, mm, yyyy, validation, fxUtils, yyyyLocalLanguage);
+			dateValidation.validateYear(demographicDetail, ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage,
+					validation, fxUtils, null);
 			fxUtils.dobListener(yyyy, ageField, "\\d{4}");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - Listner method failed ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -710,7 +713,8 @@ public class DemographicDetailController extends BaseController {
 			languageLabelLocalLanguage.setText(localProperties.getString("language"));
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING LOCAL LANGUAGE FIELDS FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -756,7 +760,8 @@ public class DemographicDetailController extends BaseController {
 							ApplicationContext.localLanguage()));
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING FAILED FOR REGION SELECTION LIST ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage()+ ExceptionUtils.getStackTrace(runtimeException));
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -774,7 +779,8 @@ public class DemographicDetailController extends BaseController {
 			localAdminAuthorityLocalLanguage.getItems().clear();
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING FAILED FOR PROVINCE SELECTION LIST ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
 		}
 
@@ -792,13 +798,15 @@ public class DemographicDetailController extends BaseController {
 			localAdminAuthorityLocalLanguage.getItems().clear();
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING FAILED FOR CITY SELECTION LIST ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
 		}
 	}
 
 	/**
-	 * To load the localAdminAuthorities selection list based on the language code
+	 * To load the localAdminAuthorities selection list based on the language
+	 * code
 	 */
 	@FXML
 	private void addlocalAdminAuthority() {
@@ -806,10 +814,11 @@ public class DemographicDetailController extends BaseController {
 			retrieveAndPopulateLocationByHierarchy(city, localAdminAuthority, localAdminAuthorityLocalLanguage);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING FAILED FOR LOCAL ADMIN AUTHORITY SELECTOIN LIST ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
-	
+
 	/**
 	 * 
 	 * Saving the detail into concerned DTO'S
@@ -827,23 +836,22 @@ public class DemographicDetailController extends BaseController {
 
 			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
 			RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
-			SessionContext.map().put(RegistrationConstants.IS_Child,
-					isChild);
+			SessionContext.map().put(RegistrationConstants.IS_Child, isChild);
 			demographicInfoDTO = buildDemographicInfo();
-			
+
 			try {
 				jsonValidator.validateJson(JsonUtils.javaObjectToJsonString(demographicInfoDTO),
 						"mosip-identity-json-schema.json");
 			} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException | FileIOException
 					| JsonProcessingException exception) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
-				LOGGER.error("JASON VALIDATOIN FAILED ", APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+				LOGGER.error("JASON VALIDATOIN FAILED ", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 				return;
-			} catch ( RuntimeException runtimeException) {
+			} catch (RuntimeException runtimeException) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
-				LOGGER.error("JASON VALIDATOIN FAILED ", APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+				LOGGER.error("JASON VALIDATOIN FAILED ", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 				return;
 			}
 
@@ -853,7 +861,7 @@ public class DemographicDetailController extends BaseController {
 			} else {
 				registrationMetaDataDTO.setApplicationType(RegistrationConstants.ADULT);
 			}
-			
+
 			registrationMetaDataDTO.setParentOrGuardianUINOrRID(uinId.getText());
 
 			osiDataDTO.setOperatorID(SessionContext.userContext().getUserId());
@@ -866,21 +874,23 @@ public class DemographicDetailController extends BaseController {
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - SAVING THE DETAILS FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
-
 
 	@SuppressWarnings("unchecked")
 	public DemographicInfoDTO buildDemographicInfo() {
 
 		String platformLanguageCode = ApplicationContext.applicationLanguage();
 		String localLanguageCode = ApplicationContext.localLanguage();
-		
+
 		Map<String, DocumentDetailsDTO> documents = getRegistrationDTOFromSession().getDemographicDTO()
 				.getApplicantDocumentDTO().getDocuments();
-		BiometricInfoDTO applicantBiometric = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO();
-		BiometricInfoDTO introducerBiometric = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO();
+		BiometricInfoDTO applicantBiometric = getRegistrationDTOFromSession().getBiometricDTO()
+				.getApplicantBiometricDTO();
+		BiometricInfoDTO introducerBiometric = getRegistrationDTOFromSession().getBiometricDTO()
+				.getIntroducerBiometricDTO();
 
 		return Builder.build(DemographicInfoDTO.class)
 				.with(demographicInfo -> demographicInfo.setIdentity((Identity) Builder.build(Identity.class)
@@ -893,18 +903,17 @@ public class DemographicDetailController extends BaseController {
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value.setValue(fullNameLocalLanguage.getText())).get()))
 										.get()))
-						.with(identity -> identity.setDateOfBirth( DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
-						.with(identity -> identity
-								.setAge(Integer.parseInt(ageField.getText())))
+						.with(identity -> identity.setDateOfBirth(DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
+						.with(identity -> identity.setAge(Integer.parseInt(ageField.getText())))
 						.with(identity -> identity.setGender(gender.isDisabled() ? null
-								: (List<ValuesDTO>) Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(gender.getValue().getGenderName()))
-												.get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(genderLocalLanguage.getValue().getGenderName())).get()))
+								: (List<ValuesDTO>) Builder.build(LinkedList.class).with(values -> values.add(Builder
+										.build(ValuesDTO.class).with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(gender.getValue().getGenderName())).get())).with(
+												values -> values.add(Builder.build(ValuesDTO.class)
+														.with(value -> value.setLanguage(localLanguageCode))
+														.with(value -> value.setValue(
+																genderLocalLanguage.getValue().getGenderName()))
+														.get()))
 										.get()))
 						.with(identity -> identity.setResidenceStatus(residence.isDisabled() ? null
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
@@ -952,7 +961,8 @@ public class DemographicDetailController extends BaseController {
 												.with(value -> value.setValue(region.getValue().getName())).get()))
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(regionLocalLanguage.getValue().getName())).get()))
+												.with(value -> value.setValue(regionLocalLanguage.getValue().getName()))
+												.get()))
 										.get()))
 						.with(identity -> identity.setProvince(province.isDisabled() ? null
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
@@ -961,7 +971,9 @@ public class DemographicDetailController extends BaseController {
 												.with(value -> value.setValue(province.getValue().getName())).get()))
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(provinceLocalLanguage.getValue().getName())).get()))
+												.with(value -> value
+														.setValue(provinceLocalLanguage.getValue().getName()))
+												.get()))
 										.get()))
 						.with(identity -> identity.setCity(city.isDisabled() ? null
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
@@ -970,13 +982,14 @@ public class DemographicDetailController extends BaseController {
 												.with(value -> value.setValue(city.getValue().getName())).get()))
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(cityLocalLanguage.getValue().getName())).get()))
+												.with(value -> value.setValue(cityLocalLanguage.getValue().getName()))
+												.get()))
 										.get()))
 						.with(identity -> identity.setPostalCode(postalCode.isDisabled() ? null : postalCode.getText()))
 						.with(identity -> identity.setPhone(mobileNo.isDisabled() ? null : mobileNo.getText()))
 						.with(identity -> identity.setEmail(emailId.isDisabled() ? null : emailId.getText()))
-						.with(identity -> identity.setCnieNumber(cniOrPinNumber.isDisabled() ? null
-								: cniOrPinNumber.getText()))
+						.with(identity -> identity
+								.setCnieNumber(cniOrPinNumber.isDisabled() ? null : cniOrPinNumber.getText()))
 						.with(identity -> identity.setLocalAdministrativeAuthority(localAdminAuthority.isDisabled()
 								? null
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
@@ -986,8 +999,8 @@ public class DemographicDetailController extends BaseController {
 												.get()))
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value
-														.setValue(localAdminAuthorityLocalLanguage.getValue().getName()))
+												.with(value -> value.setValue(
+														localAdminAuthorityLocalLanguage.getValue().getName()))
 												.get()))
 										.get()))
 						.with(identity -> identity.setParentOrGuardianRIDOrUIN(
@@ -1007,8 +1020,8 @@ public class DemographicDetailController extends BaseController {
 						.with(identity -> identity.setProofOfRelationship(documents.get("POR")))
 						.with(identity -> identity.setProofOfDateOfBirth(documents.get("POB")))
 						.with(identity -> identity.setIdSchemaVersion(1.0))
-						.with(identity -> identity
-								.setUin(getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getUin() == null ? null
+						.with(identity -> identity.setUin(
+								getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getUin() == null ? null
 										: new BigInteger(
 												getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getUin())))
 						.with(identity -> identity.setIndividualBiometrics(!applicantBiometric
@@ -1073,7 +1086,8 @@ public class DemographicDetailController extends BaseController {
 
 			applicationLanguageAddressAnchorPane
 					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
-			localLanguageAddressAnchorPane.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			localLanguageAddressAnchorPane
+					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
 
 			mobileNo.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
 			mobileNoLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
@@ -1083,14 +1097,17 @@ public class DemographicDetailController extends BaseController {
 			emailId.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
 			emailIdLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
 			emailIdLocalLanguage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
-			emailIdLocalLanguageLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
+			emailIdLocalLanguageLabel
+					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
 
 			residentStatus.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isForeigner());
-			residentStatusLocalLanguage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isForeigner());
+			residentStatusLocalLanguage
+					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isForeigner());
 
 			cniOrPinNumber.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isCnieNumber());
 			cniOrPinNumberLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isCnieNumber());
-			cniOrPinNumberLocalLanguage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isCnieNumber());
+			cniOrPinNumberLocalLanguage
+					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isCnieNumber());
 			cniOrPinNumberLocalLanguageLabel
 					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isCnieNumber());
 			switchedOn.set(true);
@@ -1135,9 +1152,9 @@ public class DemographicDetailController extends BaseController {
 			populateFieldValue(gender, genderLocalLanguage, demo.getIdentity().getGender());
 			Boolean isSwitchedOn = (Boolean) SessionContext.map().get(RegistrationConstants.DOB_TOGGLE);
 			switchedOn.set(isSwitchedOn == null ? false : isSwitchedOn);
-			postalCode.setText(demo.getIdentity().getPostalCode()+"");
-			mobileNo.setText(demo.getIdentity().getPhone()+"");
-			emailId.setText(demo.getIdentity().getEmail()+"");
+			postalCode.setText(demo.getIdentity().getPostalCode() + "");
+			mobileNo.setText(demo.getIdentity().getPhone() + "");
+			emailId.setText(demo.getIdentity().getEmail() + "");
 			if (demo.getIdentity().getAge() != null)
 				ageField.setText(demo.getIdentity().getAge() + "");
 			cniOrPinNumber.setText(demo.getIdentity().getCnieNumber() + "");
@@ -1146,13 +1163,17 @@ public class DemographicDetailController extends BaseController {
 			emailIdLocalLanguage.setText(demo.getIdentity().getEmail());
 			cniOrPinNumberLocalLanguage.setText(demo.getIdentity().getCnieNumber() + "");
 
-			
-			if (switchedOn.get()) {
-				String[] date = demo.getIdentity().getDateOfBirth().split("/");
-				dd.setText(date[2]);
-				mm.setText(date[1]);
-				yyyy.setText(date[0]);
+			if (!switchedOn.get()) {
+				if (demo.getIdentity().getDateOfBirth() != null) {
+					String[] date = demo.getIdentity().getDateOfBirth().split("/");
+					if (date.length == 3) {
+						yyyy.setText(date[0]);
+						mm.setText(date[1]);
+						dd.setText(date[2]);
+					}
+				}
 			}
+
 			populateFieldValue(localAdminAuthority, localAdminAuthorityLocalLanguage,
 					demo.getIdentity().getLocalAdministrativeAuthority());
 
@@ -1172,7 +1193,8 @@ public class DemographicDetailController extends BaseController {
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 
 	}
@@ -1221,8 +1243,8 @@ public class DemographicDetailController extends BaseController {
 				pridValidatorImpl.validateId(preRegId);
 			} catch (InvalidIDException invalidIDException) {
 				generateAlert(RegistrationConstants.ERROR, invalidIDException.getErrorText());
-				LOGGER.error("PRID VALIDATION FAILED", APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, invalidIDException.getMessage() + ExceptionUtils.getStackTrace(invalidIDException));
+				LOGGER.error("PRID VALIDATION FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+						invalidIDException.getMessage() + ExceptionUtils.getStackTrace(invalidIDException));
 				return;
 			}
 		}
@@ -1281,7 +1303,8 @@ public class DemographicDetailController extends BaseController {
 			}
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING ADDRESS FROM PREVIOUS ENTRY FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -1324,7 +1347,8 @@ public class DemographicDetailController extends BaseController {
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - SETTING FOCUS ON LOCAL FIELED FAILED", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -1374,13 +1398,13 @@ public class DemographicDetailController extends BaseController {
 	private void next() {
 		if (validateThisPane()) {
 			if (!switchedOn.get()) {
-				
-				if(dd.getText().matches("\\d+") && mm.getText().matches("\\d+") && yyyy.getText().matches("\\d+")) {
-				
-				LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()),
-						Integer.parseInt(dd.getText()));
-				dateOfBirth = Date.from(currentYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
-			}
+
+				if (dd.getText().matches("\\d+") && mm.getText().matches("\\d+") && yyyy.getText().matches("\\d+")) {
+
+					LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()),
+							Integer.parseInt(mm.getText()), Integer.parseInt(dd.getText()));
+					dateOfBirth = Date.from(currentYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
+				}
 			}
 			saveDetail();
 			SessionContext.map().put("demographicDetail", false);
@@ -1392,7 +1416,8 @@ public class DemographicDetailController extends BaseController {
 			auditFactory.audit(AuditEvent.REG_DEMO_NEXT, Components.REG_DEMO_DETAILS, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-			registrationController.showCurrentPage(RegistrationConstants.DEMOGRAPHIC_DETAIL,getPageDetails(RegistrationConstants.DEMOGRAPHIC_DETAIL,RegistrationConstants.NEXT));
+			registrationController.showCurrentPage(RegistrationConstants.DEMOGRAPHIC_DETAIL,
+					getPageDetails(RegistrationConstants.DEMOGRAPHIC_DETAIL, RegistrationConstants.NEXT));
 		}
 
 	}
@@ -1402,6 +1427,7 @@ public class DemographicDetailController extends BaseController {
 			return (Boolean) SessionContext.map().get(RegistrationConstants.REGISTRATION_ISEDIT);
 		return false;
 	}
+
 	public boolean validateThisPane() {
 		boolean isValid = true;
 		isValid = registrationController.validateDemographicPane(demoGraphicPane);
