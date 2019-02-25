@@ -681,24 +681,12 @@
 .imageAnchorPaneStyle{
 	-fx-background-color:#F4F4F4;
 }
-.rootPaneStyle{
-	-fx-border-width: 1.0 1.0 1.0 1.0;
-	-fx-border-color: black;
-}
-.labelAnchorPanebgColor{
-	-fx-background-color:#808080;
-}
 
-.comboboxStyle{
-	-fx-background-color:#ffffff;
-	-fx-border-width: 0.0 0.0 1.0 0.0;
-	-fx-border-color: black;
-	-fx-font-size: 14.0px;
-}
 .exitButtonStyle{
 	-fx-border-color: transparent;
     -fx-padding: 4.0 0.0 4.0 0.0;
     -fx-text-fill: black;
+    -fx-background-image : url('/images/Close.png');
     -fx-font-size: 14.0px;
 }
 .webCamPane {
@@ -765,15 +753,6 @@
 	-fx-pref-height: 307.0px;
 	-fx-pref-width: 483.0px;
 }
-
-#submit, #rejectionSubmit{
-	-fx-background-color:#ffffff; 
-    -fx-background-radius: 6.0,5.0;
-    -fx-background-insets: 0.0,1.0;
-    -fx-text-fill: black;
-    -fx-font-size: 10.0px;
-    -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
-} 
 
 .RegbuttonStyle {
 	-fx-background-color:#ffffff; 
@@ -1156,6 +1135,11 @@ Working on new Css by taleev
 	-fx-pref-width: 170px;
 }
 
+.documentCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
+    -fx-background-color: #FF4081;
+    -fx-text-fill: #FFFFFF;
+}
+
 .toggleButton{
 	-fx-pref-height: 15px;	
 	-fx-pref-width: 9px;
@@ -1518,3 +1502,54 @@ Working on new Css by taleev
 .reRegTableId{
 	-fx-pref-width : 450;
 }
+
+/*
+ *	rejection page 
+ */
+
+.rejectionPageHeader{
+	-fx-background-color : #FFFFFF;
+	-fx-pref-width : 400;
+	-fx-pref-height : 50px;
+}
+
+.rejectionPageHeaderLabel{
+	-fx-text-fill : #000000;
+	-fx-font-family: Roboto;
+	-fx-font-size : 15px;
+	-fx-pref-heigth : 100;
+	 -fx-pref-width : 400;
+	
+}
+
+.rejectionPaneContent{
+  -fx-background-color : #FFFFFF;
+  -fx-pref-heigth : 150;
+  -fx-pref-width : 400;
+  
+}
+
+.rejectionParentPane{
+	  -fx-background-color : #FFFFFF;
+	  -fx-border-width : 1 1 1 1;
+	  -fx-border-color : black;
+	  -fx-pref-heigth : 100;
+	  -fx-pref-width : 400;	
+}
+
+#rejectionAnchorPane .comboboxStyle{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: black;
+	-fx-font-size: 14.0px;
+}
+
+#rejectionAnchorPane .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
+    -fx-background-color: #FF4081;
+    -fx-text-fill: #FFFFFF;
+}
+
+.rejectCommentCloseButton{
+	-fx-background-color:white;
+}
+

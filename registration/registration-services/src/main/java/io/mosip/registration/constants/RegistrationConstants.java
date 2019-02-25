@@ -89,7 +89,7 @@ public class RegistrationConstants {
 	public static final String CSS_FILE_PATH = "application.css";
 
 	// Images path
-	public static final String CLOSE_IMAGE_PATH = "/images/close.jpg";
+	public static final String CLOSE_IMAGE_PATH = "/images/Close.png";
 	public static final String DOC_STUB_PATH = "/images/PANStubbed.jpg";
 	public static final String FP_IMG_PATH = "/images/fingerprint.jpg";
 	public static final String IRIS_IMG_PATH = "/images/iris.jpg";
