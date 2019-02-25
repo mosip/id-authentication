@@ -5,9 +5,14 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.events.EventTarget;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
@@ -27,7 +32,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.web.WebView;
-import netscape.javascript.JSObject;
 
 @Controller
 public class RegistrationPreviewController extends BaseController {
@@ -52,15 +56,13 @@ public class RegistrationPreviewController extends BaseController {
 	@Autowired
 	private RegistrationController registrationController;
 
-	@Autowired
-	private RegistrationPreviewController previewController;
-			
 	@FXML
 	public void goToPrevPage(ActionEvent event) {
 		auditFactory.audit(AuditEvent.REG_PREVIEW_BACK, Components.REG_PREVIEW, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW,RegistrationConstants.PREVIOUS));
+		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+				getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.PREVIOUS));
 	}
 
 	@FXML
@@ -75,13 +77,14 @@ public class RegistrationPreviewController extends BaseController {
 			getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
 					.setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_UNSELECTED);
 		}
-		
-		if(getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			SessionContext.map().put("registrationPreview", false);
 			SessionContext.map().put("operatorAuthenticationPane", true);
 			registrationController.showUINUpdateCurrentPage();
 		} else {
-			registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW,RegistrationConstants.NEXT));
+			registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+					getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.NEXT));
 		}
 		registrationController.goToAuthenticationPage();
 	}
@@ -95,9 +98,8 @@ public class RegistrationPreviewController extends BaseController {
 				Writer stringWriter = (Writer) templateResponse.getSuccessResponseDTO().getOtherAttributes()
 						.get(RegistrationConstants.TEMPLATE_NAME);
 				webView.getEngine().loadContent(stringWriter.toString());
-				JSObject window = (JSObject) webView.getEngine()
-						.executeScript(RegistrationConstants.TEMPLATE_JS_OBJECT);
-				window.setMember(RegistrationConstants.TEMPLATE_REGISTRATION, previewController);
+				webView.getEngine().documentProperty()
+						.addListener((observableValue, oldValue, document) -> listenToButton(document));
 			} else {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_PREVIEW_PAGE);
 				clearRegistrationData();
@@ -109,12 +111,39 @@ public class RegistrationPreviewController extends BaseController {
 		}
 	}
 
+	private void listenToButton(Document document) {
+		if (document == null) {
+			return;
+		}
+
+		List<String> modifyElements = new ArrayList<>();
+		modifyElements.add(RegistrationConstants.MODIFY_DEMO_INFO);
+		modifyElements.add(RegistrationConstants.MODIFY_DOCUMENTS);
+		modifyElements.add(RegistrationConstants.MODIFY_BIOMETRICS);
+		for (String element : modifyElements) {
+			Element button = document.getElementById(element);
+			((EventTarget) button).addEventListener(RegistrationConstants.CLICK, event -> modifyElement(element),
+					false);
+		}
+	}
+
+	private void modifyElement(String element) {
+		if (element.equals(RegistrationConstants.MODIFY_DEMO_INFO)) {
+			modifyDemographicInfo();
+		} else if (element.equals(RegistrationConstants.MODIFY_DOCUMENTS)) {
+			modifyDocuments();
+		} else if (element.equals(RegistrationConstants.MODIFY_BIOMETRICS)) {
+			modifyBiometrics();
+		}
+	}
+
 	public void modifyDemographicInfo() {
 		auditFactory.audit(AuditEvent.REG_PREVIEW_DEMO_EDIT, Components.REG_PREVIEW, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
-		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.DEMOGRAPHIC_DETAIL);
+		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+				RegistrationConstants.DEMOGRAPHIC_DETAIL);
 	}
 
 	public void modifyDocuments() {
@@ -122,7 +151,8 @@ public class RegistrationPreviewController extends BaseController {
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
-		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.DOCUMENT_SCAN);
+		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+				RegistrationConstants.DOCUMENT_SCAN);
 	}
 
 	public void modifyBiometrics() {
@@ -130,6 +160,7 @@ public class RegistrationPreviewController extends BaseController {
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
-		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.FINGERPRINT_CAPTURE);
+		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+				RegistrationConstants.FINGERPRINT_CAPTURE);
 	}
 }

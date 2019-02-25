@@ -517,8 +517,6 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_MODIFY_IMAGE_PATH = "/images/Modify.png";
 	public static final String TEMPLATE_MODIFY_IMAGE_SOURCE = "ModifyImageSource";
 	public static final String TEMPLATE_MODIFY = "Modify";
-	public static final String TEMPLATE_REGISTRATION = "registration";
-	public static final String TEMPLATE_JS_OBJECT = "window";
 	public static final String TEMPLATE_ENCODING = "UTF-8";
 	public static final String TEMPLATE_FACE_CAPTURE_ENABLED = "FaceCaptureEnabled";
 	public static final String TEMPLATE_DOCUMENTS_ENABLED = "DocumentsEnabled";
@@ -529,7 +527,12 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_RIGHT_EYE_CAPTURED = "rightEyeCaptured";
 	public static final String TEMPLATE_LEFT_SLAP_CAPTURED = "leftSlapCaptured";
 	public static final String TEMPLATE_RIGHT_SLAP_CAPTURED = "rightSlapCaptured";
-	public static final String TEMPLATE_THUMBS_CAPTURED = "thumbsCaptured";
+	public static final String TEMPLATE_THUMBS_CAPTURED = "thumbsCaptured";	
+
+	public static final String MODIFY_DEMO_INFO = "modifyDemographicInfo";
+	public static final String MODIFY_DOCUMENTS = "modifyDocuments";
+	public static final String MODIFY_BIOMETRICS = "modifyBiometrics";
+	public static final String CLICK = "click";
 
 	// Web Camera Constants
 	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";
