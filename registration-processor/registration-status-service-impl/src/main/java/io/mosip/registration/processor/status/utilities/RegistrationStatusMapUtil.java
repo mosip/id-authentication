@@ -63,9 +63,8 @@ public class RegistrationStatusMapUtil {
 		statusMap.put(RegistrationStatusCode.PACKET_OSI_VALIDATION_SUCCESS, RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.PACKET_OSI_VALIDATION_FAILED, RegistrationExternalStatusCode.PROCESSING);
 
-		statusMap.put(RegistrationStatusCode.PACKET_DEMO_DEDUPE_SUCCESS, RegistrationExternalStatusCode.PROCESSING);
-		statusMap.put(RegistrationStatusCode.PACKET_DEMO_POTENTIAL_MATCH, RegistrationExternalStatusCode.PROCESSING);
-		statusMap.put(RegistrationStatusCode.PACKET_DEMO_DEDUPE_FAILED, RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.DEMO_DEDUPE_SUCCESS, RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.DEMO_DEDUPE_FAILED, RegistrationExternalStatusCode.PROCESSING);
 
 		statusMap.put(RegistrationStatusCode.PACKET_BIO_DEDUPE_SUCCESS, RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.PACKET_BIO_POTENTIAL_MATCH, RegistrationExternalStatusCode.PROCESSING);
