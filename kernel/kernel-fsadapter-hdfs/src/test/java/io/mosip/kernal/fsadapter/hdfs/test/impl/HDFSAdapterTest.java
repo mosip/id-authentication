@@ -27,8 +27,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernal.fsadapter.hdfs.test.util.SeekableByteArrayInputStream;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
-import io.mosip.kernel.fsadapter.hdfs.impl.HDFSAdapter;
-import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtil;
+import io.mosip.kernel.fsadapter.hdfs.impl.HDFSAdapterImpl;
+import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtils;
 
 @RunWith(SpringRunner.class)
 public class HDFSAdapterTest {
@@ -36,7 +36,7 @@ public class HDFSAdapterTest {
 	private FileSystem fs;
 	private FSDataInputStream inStream;
 	private FSDataOutputStream outStream;
-	private HDFSAdapter hdfsAdapterImpl;
+	private HDFSAdapterImpl hdfsAdapterImpl;
 	private String id;
 	private String filepath;
 
@@ -47,14 +47,14 @@ public class HDFSAdapterTest {
 	public void setUp() throws IOException {
 		id = "927479538402";
 		filepath = "DEMOGRAPHIC/POA_PASSPORT";
-		ConnectionUtil connectionUtil = Mockito.mock(ConnectionUtil.class);
+		ConnectionUtils connectionUtil = Mockito.mock(ConnectionUtils.class);
 		fs = Mockito.mock(FileSystem.class);
 		ClassLoader classLoader = getClass().getClassLoader();
 		String filePath = classLoader.getResource(id + ".zip").getFile();
 		inStream = new FSDataInputStream(
 				new SeekableByteArrayInputStream(FileUtils.readFileToByteArray(new File(filePath))));
 		outStream = new FSDataOutputStream(FileUtils.openOutputStream(folder.newFile()), new Statistics("new"));
-		hdfsAdapterImpl = new HDFSAdapter(connectionUtil);
+		hdfsAdapterImpl = new HDFSAdapterImpl(connectionUtil);
 
 		ReflectionTestUtils.setField(hdfsAdapterImpl, "fs", fs);
 	}

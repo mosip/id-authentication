@@ -1,4 +1,4 @@
-package io.mosip.kernel.fsadapter.ceph.utils;
+package io.mosip.kernel.fsadapter.ceph.util;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -20,7 +20,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
  */
 @RefreshScope
 @Component
-public class ConnectionUtil {
+public class ConnectionUtils {
 
 	/** The connection. */
 	private AmazonS3 connection;
@@ -40,7 +40,7 @@ public class ConnectionUtil {
 	/**
 	 * Instantiates a new connection util.
 	 */
-	public ConnectionUtil() {
+	public ConnectionUtils() {
 
 	}
 

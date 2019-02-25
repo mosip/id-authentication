@@ -11,14 +11,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtil;
+import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtils;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = ConnectionUtil.class, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = ConnectionUtils.class, loader = AnnotationConfigContextLoader.class)
 public class ConnectionUtilTest {
 
 	@Mock
-	private ConnectionUtil connectionUtil;
+	private ConnectionUtils connectionUtil;
 
 	@Before
 	public void setUp() throws IOException {
