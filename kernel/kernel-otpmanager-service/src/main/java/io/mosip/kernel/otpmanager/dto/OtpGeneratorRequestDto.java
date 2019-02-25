@@ -38,6 +38,11 @@ public class OtpGeneratorRequestDto {
 	 *            the key.
 	 */
 	public void setKey(String key) {
-		this.key = key.trim();
+		if (key != null) {
+			this.key = key.trim();
+		} else {
+			this.key = key;
+		}
 	}
+
 }
