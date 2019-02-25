@@ -52,9 +52,8 @@ public class AuditFactoryImpl implements AuditFactory {
 		String hostIP = null;
 		String hostName = null;
 		try {
-			InetAddress hostInetAddress = InetAddress.getLocalHost();
-			hostIP = hostInetAddress.getHostAddress();
-			hostName = hostInetAddress.getHostName();
+			hostIP = InetAddress.getLocalHost().getHostAddress();
+			hostName = InetAddress.getLocalHost().getHostName();
 		} catch (UnknownHostException unknownHostException) {
 			LOGGER.info("REGISTRATION-AUDIT_FACTORY-AUDIT", APPLICATION_NAME, APPLICATION_ID,
 					ExceptionUtils.getStackTrace(unknownHostException));

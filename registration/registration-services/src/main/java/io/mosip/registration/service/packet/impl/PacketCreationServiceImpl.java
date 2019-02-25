@@ -24,6 +24,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
@@ -98,6 +99,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	 * @see io.mosip.registration.service.PacketCreationService#create(io.mosip.
 	 * registration.dto.RegistrationDTO)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public byte[] create(final RegistrationDTO registrationDTO) throws RegBaseCheckedException {
 		LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Creation had been called");
@@ -217,7 +219,12 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			packetInfo.getIdentity().setHashSequence(buildHashSequence(hashSequence));
 
 			// Add HashSequence for packet_osi_data
-			packetInfo.getIdentity().setHashSequence2(hashSequence.getOsiDataHashSequence());
+			packetInfo.getIdentity()
+					.setHashSequence2((List<FieldValueArray>) Builder.build(ArrayList.class)
+							.with(values -> values.add(Builder.build(FieldValueArray.class)
+									.with(field -> field.setLabel("otherFiles"))
+									.with(field -> field.setValue(hashSequence.getOsiDataHashSequence())).get()))
+							.get());
 
 			filesGeneratedForPacket.put(RegistrationConstants.PACKET_META_JSON_NAME,
 					javaObjectToJsonString(packetInfo).getBytes());

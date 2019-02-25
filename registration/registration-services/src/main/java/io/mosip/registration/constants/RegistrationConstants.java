@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.RandomStringUtils;
-
 /**
  * Class contains the constants used in Registration application
  * 
@@ -16,9 +14,6 @@ import org.apache.commons.lang3.RandomStringUtils;
  *
  */
 public class RegistrationConstants {
-
-	public static final String CENTER_ID = RandomStringUtils.randomNumeric(5);
-	public static final String MACHINE_ID_GEN = RandomStringUtils.randomNumeric(5);
 
 	/**
 	 * private constructor
@@ -100,7 +95,6 @@ public class RegistrationConstants {
 	public static final String LEFT_IRIS_IMG_PATH = "/images/Eye.png";
 	public static final String VIEW = "/images/View.png";
 	public static final String SCAN = "/images/Scan.png";
-
 
 	// Authentication
 	public static final String SUPERVISOR_VERIFICATION = "Supervisor Login";
@@ -240,15 +234,11 @@ public class RegistrationConstants {
 	public static final String EOD_PROCESS_CONFIG_FLAG = "EOD_PROCESS_CONFIG_FLAG";
 
 	// AES Encryption Constants
-	public static final String AES_KEY_MANAGER_ALG = "aes.algorithm";
-	public static final String AES_KEY_SEED_LENGTH = "aes.keyLengthInBytes";
-	public static final String AES_SESSION_KEY_LENGTH = "aes.keyLengthInBits";
 	public static final String AES_KEY_CIPHER_SPLITTER = "aes.keySplitter";
 
 	// Packet Store Location Constants
 	public static final String PACKET_STORE_LOCATION = "PACKET_STORE_LOCATION";
 	public static final String PACKET_STORE_DATE_FORMAT = "packet.location.dateFormat";
-	public static final String PRE_REG_PACKET_LOCATION = "PRE_REG_PACKET_LOCATION";
 
 	// Packet Creation Constants
 	public static final String ZIP_FILE_EXTENSION = ".zip";
@@ -269,7 +259,6 @@ public class RegistrationConstants {
 	public static final String CBEFF_BIR_UUIDS_MAP_NAME = "CBEFF_BIR_UUIDS";
 	public static final String RSA = "mosip.kernel.keygenerator.asymmetric-algorithm-name";
 	public static final String XML_FILE_FORMAT = ".xml";
-	public static final String FILE_NAME_TYPE_SEPERATOR = ".";
 	public static final String CBEFF_FILE_FORMAT = "cbeff";
 
 	// Validation Types
@@ -283,21 +272,9 @@ public class RegistrationConstants {
 	public static final String PWD_MISMATCH = "Username and Password Not Match";
 
 	// RSA
-	public static final String RSA_ALG = "RSA";
-	public static final String RSA_PUBLIC_KEY_FILE = "../Key_Store/public.key";
-	public static final String RSA_PRIVATE_KEY_FILE = "../Key_Store/private.key";
 	public static final String LOCALHOST = "localhost";
 
 	// Constants for Registration Creation Zip
-	/**
-	 * Specifies the Image type for storing the images in zip file
-	 */
-	public static final String IMAGE_TYPE = ".jpg";
-
-	/**
-	 * Specifies the Document type for storing the documents in zip file
-	 */
-	public static final String DOC_TYPE = ".jpg";
 
 	/**
 	 * Specifies the format for storing the Registration Acknowledgement
@@ -732,8 +709,6 @@ public class RegistrationConstants {
 	public static final String GPS_CAPTURING_EXCEPTION = "GPS_EXCEPTION";
 	public static final String GPS_SIGNAL = "$GP";
 
-	public static final List<String> ONBOARD_DEVICE_TYPES = Arrays.asList("Fingerprint");
-
 	// Documents
 	public static final String POA_DOCUMENT = "POA";
 	public static final String POI_DOCUMENT = "POI";
@@ -866,14 +841,7 @@ public class RegistrationConstants {
 	public static final String FETCH_DEVICE_MAPPING_EXCEPTION = DEVICE_ONBOARDING_SERVICE + "MMS-231";
 	public static final String UPDATE_DEVICE_MAPPING_EXCEPTION = DEVICE_ONBOARDING_SERVICE + "MMS-232";
 
-	// ID JSON Conversion
-	private static final String ID_JSON_UTIL = REG_SERVICE_CODE + "IDJ-";
-	public static final String ID_JSON_CONVERSION_EXCEPTION = ID_JSON_UTIL + "JSC-233";
-	public static final String ID_JSON_PARSER_EXCEPTION = ID_JSON_UTIL + "JSC-234";
-	public static final String ID_JSON_FIELD_ACCESS_EXCEPTION = ID_JSON_UTIL + "JSC-235";
-
 	// Exceptions
-
 	private static final String REG_UI_CODE = "REG-UI";
 
 	public static final String REG_UI_LOGIN_LOADER_EXCEPTION = REG_UI_CODE + "RAI-001";
@@ -1086,7 +1054,7 @@ public class RegistrationConstants {
 	// Validations to ignore
 
 	public static List<String> fieldsToExclude() {
-		List<String> fieldToExclude = new ArrayList<String>();
+		List<String> fieldToExclude = new ArrayList<>();
 		fieldToExclude.add("preRegistrationId");
 		fieldToExclude.add("virtualKeyboard");
 		fieldToExclude.add("docPageNumber");

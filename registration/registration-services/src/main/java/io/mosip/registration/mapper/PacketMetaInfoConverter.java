@@ -13,7 +13,6 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
@@ -370,9 +369,6 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		metaData.add(buildFieldValue("preRegistrationId", registrationDTO.getPreRegistrationId()));
 		// Add Registration ID
 		metaData.add(buildFieldValue("registrationId", registrationDTO.getRegistrationId()));
-		// Add Hash of Registration ID
-		metaData.add(buildFieldValue("registrationIdHash",
-				HMACUtils.digestAsPlainText(HMACUtils.generateHash(registrationDTO.getRegistrationId().getBytes()))));
 		// Add Machine ID
 		metaData.add(buildFieldValue("machineId", metaDataDTO.getMachineId()));
 		// Add Dongle ID
@@ -406,12 +402,8 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 
 		// Add Introducer RID
 		metaData.add(buildFieldValue("introducerRID", introducerRID));
-		// Add Hash of Introducer RID
-		metaData.add(buildFieldValue("introducerRIDHash", getHash(introducerRID)));
 		// Add Introducer UIN
 		metaData.add(buildFieldValue("introducerUIN", introducerUIN));
-		// Add Hash of Introducer UIN
-		metaData.add(buildFieldValue("introducerUINHash", getHash(introducerUIN)));
 		// Add Officer Biometrics
 		metaData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getOperatorBiometricDTO(),
 				RegistrationConstants.OFFICER.toLowerCase(), RegistrationConstants.BIOMETRIC_TYPE));
@@ -530,15 +522,6 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			object = list.get(index);
 		}
 		return object;
-	}
-
-	private String getHash(String value) {
-		String hashedString = null;
-		if (value != null) {
-			hashedString = HMACUtils.digestAsPlainText(HMACUtils.generateHash(value.getBytes()));
-		}
-
-		return hashedString;
 	}
 
 	private String removeFileExt(String fileName) {
