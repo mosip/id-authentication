@@ -980,22 +980,20 @@ Working on new Css by taleev
 	-fx-pref-width: 700px;
 }
 
-.paneAtDisplayDemoGraphic{
-	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 1050px;	
-	-fx-pref-width: 1100px;
-	
-}
-
 .paneAtDisplayDocument{
 	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 580px;	
-	-fx-pref-width: 1050px;	
+	-fx-pref-height: 600px;	
+	-fx-pref-width: 1100px;	
+}
+
+.biometricEceptionLabel{
+	-fx-text-fill : #666666;
+	-fx-font-size : 20px;
 }
 
 .registrationFooter{
 	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 30px;	
+	-fx-pref-height: 40px;	
 	-fx-pref-width: 1290px;
 	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
 }
@@ -1017,6 +1015,13 @@ Working on new Css by taleev
 	 
 }
 
+.paneAtDisplayDemoGraphic{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 1050px;	
+	-fx-pref-width: 1100px;
+}
+
+
 .documentContentButton{
 	-fx-border-width: 1 1 1 1;
 	-fx-border-color: #FF4081;
@@ -1024,7 +1029,6 @@ Working on new Css by taleev
 	-fx-border-radius: 3,3,3,3;
 	-fx-pref-height: 2px;	
 	-fx-pref-width: 120px;
-	 
 }
 
 .contiuneButton{
@@ -1117,6 +1121,7 @@ Working on new Css by taleev
 		-fx-text-fill : red;
 }
 
+
 .demographicCombobox{
 	-fx-background-color:#ffffff;
 	-fx-border-width: 0 0 1 0;
@@ -1126,6 +1131,10 @@ Working on new Css by taleev
 	-fx-pref-width: 190px;
 }
 
+.demographicCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
+    -fx-background-color: #FF4081;
+    -fx-text-fill: #FFFFFF;
+}
 .documentCombobox{
 	-fx-background-color:#ffffff;
 	-fx-border-width: 0 0 1 0;
@@ -1145,9 +1154,23 @@ Working on new Css by taleev
 	-fx-pref-width: 9px;
 }
 
+.paneAtDisplayFinger{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 600px;	
+	-fx-pref-width: 1000px;	
+	
+}
+
 .fingerPrintPanes{
 	-fx-pref-height: 160px;	
 	-fx-pref-width: 180px;
+	-fx-background-color : #efefef;
+}
+
+.fingerPrintPanesSelected{
+	-fx-pref-height: 160px;	
+	-fx-pref-width: 180px;
+	-fx-background-color : #FFFFFF;
 }
 
 .IrisPanes{
@@ -1174,6 +1197,7 @@ Working on new Css by taleev
 	-fx-pref-height: 28px;	
 	-fx-pref-width: 200px;
 	-fx-text-fill: #E43391;
+	-fx-font-size : 15px;
 }
 
 .authenticationBiometricSubPane{
@@ -1215,7 +1239,7 @@ Working on new Css by taleev
 	-fx-border-width: 0 0 1 0;
 	-fx-border-color: #FF4081;
 	-fx-pref-height: 28px;	
-	-fx-pref-width: 40px;
+	-fx-pref-width: 940px;
 	
 }
 
@@ -1271,10 +1295,9 @@ Working on new Css by taleev
 
 .homeButton{
 		-fx-background-color : #FFFFFF;
-		-fx-pref-height : 10;
+		-fx-pref-height : 20;
 		-fx-pref-width : 70;
 		-fx-padding : 0 0 0 0;
-		
 }
 
 

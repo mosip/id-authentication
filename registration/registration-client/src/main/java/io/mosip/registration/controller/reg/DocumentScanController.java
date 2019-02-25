@@ -242,9 +242,10 @@ public class DocumentScanController extends BaseController {
 				documentVBoxes.put(docCategoryCode, documentVBox);
 
 				Button scanButton = new Button();
-				scanButton.setText("Scan");
+				scanButton.setText("  Scan");
 				scanButton.setId(docCategoryCode);
 				scanButton.getStyleClass().add("documentContentButton");
+				scanButton.setGraphic(new ImageView(new Image(this.getClass().getResourceAsStream(RegistrationConstants.SCAN), 12, 12, true, true)));
 				scanButton.setOnAction(new EventHandler<ActionEvent>() {
 
 					@Override
@@ -535,8 +536,10 @@ public class DocumentScanController extends BaseController {
 
 		GridPane gridPane = new GridPane();
 		gridPane.setId(document);
-		gridPane.add(createHyperLink(document.concat("." + documentFormat)), 0, vboxElement.getChildren().size());
-		gridPane.add(createImageView(vboxElement), 1, vboxElement.getChildren().size());
+		gridPane.add(new Label("     "),0,vboxElement.getChildren().size());
+		gridPane.add(createHyperLink(document.concat("." + documentFormat)), 1, vboxElement.getChildren().size());
+		gridPane.add(new Label("  "),2,vboxElement.getChildren().size());
+		gridPane.add(createImageView(vboxElement), 3, vboxElement.getChildren().size());
 
 		vboxElement.getChildren().add(gridPane);
 
@@ -626,7 +629,7 @@ public class DocumentScanController extends BaseController {
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Binding OnAction event Image to delete the attached document");
 
-		Image image = new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH));
+		Image image = new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH),15,15,true,true);
 		ImageView imageView = new ImageView(image);
 		imageView.setCursor(Cursor.HAND);
 

@@ -893,10 +893,9 @@ public class DemographicDetailController extends BaseController {
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value.setValue(fullNameLocalLanguage.getText())).get()))
 										.get()))
-						.with(identity -> identity.setDateOfBirth(dateAnchorPane.isDisabled() ? null
-								: (dateOfBirth != null ? DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd") : "")))
+						.with(identity -> identity.setDateOfBirth( DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
 						.with(identity -> identity
-								.setAge(ageField.isDisabled() ? null : Integer.parseInt(ageField.getText())))
+								.setAge(Integer.parseInt(ageField.getText())))
 						.with(identity -> identity.setGender(gender.isDisabled() ? null
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
@@ -1149,9 +1148,10 @@ public class DemographicDetailController extends BaseController {
 
 			
 			if (switchedOn.get()) {
-				dd.setText((String) SessionContext.map().get("dd"));
-				mm.setText((String) SessionContext.map().get("mm"));
-				yyyy.setText((String) SessionContext.map().get("yyyy"));
+				String[] date = demo.getIdentity().getDateOfBirth().split("/");
+				dd.setText(date[2]);
+				mm.setText(date[1]);
+				yyyy.setText(date[0]);
 			}
 			populateFieldValue(localAdminAuthority, localAdminAuthorityLocalLanguage,
 					demo.getIdentity().getLocalAdministrativeAuthority());
@@ -1373,7 +1373,6 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private void next() {
 		if (validateThisPane()) {
-			saveDetail();
 			if (!switchedOn.get()) {
 				
 				if(dd.getText().matches("\\d+") && mm.getText().matches("\\d+") && yyyy.getText().matches("\\d+")) {
@@ -1381,12 +1380,9 @@ public class DemographicDetailController extends BaseController {
 				LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()),
 						Integer.parseInt(dd.getText()));
 				dateOfBirth = Date.from(currentYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
-				SessionContext.map().put(RegistrationConstants.REGISTRATION_AGE_DATA, dateOfBirth);
-				SessionContext.map().put("dd", dd.getText());
-				SessionContext.map().put("mm", mm.getText());
-				SessionContext.map().put("yyyy", yyyy.getText());
 			}
 			}
+			saveDetail();
 			SessionContext.map().put("demographicDetail", false);
 			SessionContext.map().put("documentScan", true);
 			if (!isEditPage()) {

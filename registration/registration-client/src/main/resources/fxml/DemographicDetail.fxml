@@ -375,7 +375,7 @@
             </ScrollPane>
             <AnchorPane layoutY="626.0" styleClass="registrationFooter">
                <children>
-                  <Button layoutX="117.0" layoutY="2.0" mnemonicParsing="false" onAction="#back" styleClass="backButton" text="Back">
+                  <Button layoutX="123.0" layoutY="4.0" mnemonicParsing="false" onAction="#back" styleClass="backButton" text="Back">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -384,7 +384,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button layoutX="1015.0" layoutY="2.0" mnemonicParsing="false" onAction="#next" styleClass="contiuneButton" text="Continue">
+                  <Button layoutX="1034.0" layoutY="3.0" mnemonicParsing="false" onAction="#next" styleClass="contiuneButton" text="Continue">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -401,10 +401,10 @@
          <children>
             <AnchorPane layoutY="-3.0">
                <children>
-                  <AnchorPane>
+                  <AnchorPane layoutX="1.0" layoutY="6.0">
                      <children>
-                        <Button layoutY="2.0" mnemonicParsing="false" text="Home" />
-                        <Label layoutX="65.0" layoutY="7.0" text="/  Registration" />
+                        <Button layoutY="2.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+                        <Label layoutX="56.0" layoutY="5.0" text="%/registration" />
                      </children>
                   </AnchorPane>
                </children>
