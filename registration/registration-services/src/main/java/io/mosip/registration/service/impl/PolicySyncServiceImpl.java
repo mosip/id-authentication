@@ -55,7 +55,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 	 */
 	@Override
 	synchronized public ResponseDTO fetchPolicy() {
-		LOGGER.info("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"synch the public key is started");
 
 		KeyStore keyStore = null;
@@ -101,7 +101,8 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 
 	public synchronized void getPublicKey()
 			throws KeyManagementException, IOException, java.security.NoSuchAlgorithmException {
-
+		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
+				getCenterId(getStationId(getMacAddress())));
 		KeyStore keyStore = new KeyStore();
 		ResponseDTO responseDTO = new ResponseDTO();
 		Map<String, String> requestParams = new HashMap<String, String>();
