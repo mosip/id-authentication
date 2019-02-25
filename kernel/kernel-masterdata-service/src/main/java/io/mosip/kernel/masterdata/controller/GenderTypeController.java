@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.GenderTypeService;
@@ -101,5 +102,16 @@ public class GenderTypeController {
 	public ResponseEntity<CodeResponseDto> deleteGenderType(
 			@ApiParam("Gender type Code of gender to be deleted") @PathVariable("code") String code) {
 		return new ResponseEntity<>(genderTypeService.deleteGenderType(code), HttpStatus.OK);
+	}
+	
+	/**
+	 * Validate Gender name
+	 * @param genderName
+	 * @return StatusResponseDto
+	 */
+	@ApiOperation(value="validate gender name")
+	@GetMapping("/v1.0/gendertypes/validate/{gendername}")
+	public StatusResponseDto valdiateGenderName(@PathVariable("gendername") String genderName) {
+		return genderTypeService.validateGender(genderName);
 	}
 }

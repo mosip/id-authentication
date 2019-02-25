@@ -7,6 +7,7 @@ import { NameList } from 'src/app/shared/models/demographic-model/name-list.moda
 })
 export class SharedService {
   private nameList: NameList[] = [];
+  private allApplicants: NameList[] = [];
   private coordinatesSource = new BehaviorSubject(Array);
   currentCoordinates = this.coordinatesSource.asObservable();
 
@@ -29,6 +30,15 @@ export class SharedService {
 
   getNameList() {
     return [...this.nameList];
+  }
+
+  getAllApplicants() {
+    return this.allApplicants.slice();
+  }
+
+  addApplicants(applicants) {
+    this.allApplicants = applicants.response;
+    console.log('applicants from bopokking', applicants);
   }
 
   addNameList(nameList: NameList) {

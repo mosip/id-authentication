@@ -81,15 +81,17 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	 * io.mosip.kernel.syncdata.service.SyncConfigDetailsService#getConfigDetails()
 	 */
 	@Override
-	public JSONObject getConfigDetails() {
+	public ConfigDto getConfigDetails() {
 		LOGGER.info("getConfigDetails() started");
 		JSONObject config = new JSONObject();
 		JSONObject globalConfig = getConfigDetailsResponse(globalConfigFileName);
 		JSONObject regConfig = getConfigDetailsResponse(regCenterfileName);
 		config.put("globalConfiguration", globalConfig);
 		config.put("registrationConfiguration", regConfig);
+		ConfigDto configDto= new ConfigDto();
+		configDto.setConfigDetail(config);
 		LOGGER.info("getConfigDetails() completed");
-		return config;
+		return configDto;
 	}
 
 	/*

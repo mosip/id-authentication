@@ -18,12 +18,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.virus.scanner.job.decrypter.Decryptor;
 import io.mosip.registration.processor.virus.scanner.job.decrypter.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.virus.scanner.job.dto.CryptomanagerResponseDto;
@@ -37,7 +39,8 @@ public class DecryptorTest {
 
 	@Mock
 	private RegistrationProcessorRestClientService<Object> restClientService;
-
+	@Mock
+	private AuditLogRequestBuilder auditLogRequestBuilder;
 	private CryptomanagerResponseDto cryptomanagerResponseDto;
 	private String data;
 	private File encrypted;

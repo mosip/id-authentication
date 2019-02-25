@@ -45,6 +45,7 @@ import lombok.Data;
  */
 @Data
 public class MasterDataResponseDto {
+	private String lastSyncTime;
 	private List<RegistrationCenterDto> registrationCenter;
 	private List<RegistrationCenterTypeDto> registrationCenterTypes;
 	private List<MachineDto> machineDetails;
@@ -77,5 +78,6 @@ public class MasterDataResponseDto {
 	private List<RegistrationCenterMachineDeviceDto> registrationCenterMachineDevices;
 	private List<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachines;
 	private List<RegistrationCenterUserDto> registrationCenterUsers;
+	
 
 }

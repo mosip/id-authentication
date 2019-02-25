@@ -13,23 +13,20 @@ create schema if not exists prereg
 	create table prereg.applicant_demographic (
 			
 		prereg_id  			character varying(36) not null ,
-		group_id  			character varying(36) ,
 		
-		demog_detail   		bytea ,
+		demog_detail   		bytea not null,
+		demog_detail_hash   character varying(64) not null ,
 		encrypted_dtimes 	timestamp not null ,
 
 		status_code 		character varying(36) not null ,	-- master.status_list.code
 		lang_code  			character varying(3) not null ,		-- master.language.code
 		
-		consumed 			boolean not null, 
 		cr_appuser_id 		character varying (64) not null, 
 
 		cr_by 		character varying (32) not null,      
 		cr_dtimes 	timestamp not null ,
 		upd_by 		character varying (32) ,
-		upd_dtimes 	timestamp ,
-		is_deleted 	boolean ,
-		del_dtimes	timestamp
+		upd_dtimes 	timestamp
 	)
 ;
 

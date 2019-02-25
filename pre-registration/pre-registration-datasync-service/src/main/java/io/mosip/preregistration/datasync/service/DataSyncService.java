@@ -96,8 +96,8 @@ public class DataSyncService {
 		log.info("sessionId", "idType", "id", "In retrieveAllPreRegIds method of datasync service ");
 		boolean isRetrieveAllSuccess = false;
 		try {
-			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(dataSyncRequest), requiredRequestMap)
-					&& serviceUtil.validateDataSyncRequest(dataSyncRequest.getRequest())) {
+			    ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(dataSyncRequest), requiredRequestMap);
+			    serviceUtil.validateDataSyncRequest(dataSyncRequest.getRequest());
 				DataSyncRequestDTO dataSyncRequestDTO = dataSyncRequest.getRequest();
 				preregIds = serviceUtil.callGetPreIdsRestService(dataSyncRequestDTO.getFromDate(),
 						dataSyncRequestDTO.getToDate());
@@ -108,13 +108,8 @@ public class DataSyncService {
 				responseDto.setStatus(Boolean.TRUE);
 				responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 				responseDto.setResponse(preRegistrationIdsDTO);
-			}
+			
 			isRetrieveAllSuccess = true;
-		} catch (DataAccessLayerException ex) {
-			log.error("sessionId", "idType", "id",
-					"In retrieveAllPreRegIds method of datasync service - " + ex.getMessage());
-
-			throw new TableNotAccessibleException(ErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.toString());
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In retrieveAllPreRegIds method of datasync service - " + ex.getMessage());
