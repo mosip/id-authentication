@@ -22,6 +22,7 @@ import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
 import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
+import io.mosip.kernel.syncdata.exception.DataNotFoundException;
 import io.mosip.kernel.syncdata.exception.DateParsingException;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
@@ -136,9 +137,14 @@ public class SyncDataController {
 		LocalDateTime timestamp = null;
 
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
+
 		if (lastUpdated != null) {
 			try {
 				timestamp = MapperUtils.parseToLocalDateTime(lastUpdated);
+				if (timestamp.isAfter(currentTimeStamp)) {
+					throw new DataNotFoundException(MasterDataErrorCode.INVALID_TIMESTAMP_EXCEPTION.getErrorCode(),
+							MasterDataErrorCode.INVALID_TIMESTAMP_EXCEPTION.getErrorMessage());
+				}
 			} catch (DateTimeParseException e) {
 				throw new DateParsingException(MasterDataErrorCode.LAST_UPDATED_PARSE_EXCEPTION.getErrorCode(),
 						e.getMessage());
