@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.packet.receiver.builder;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,27 +15,22 @@ import io.mosip.registration.processor.packet.receiver.dto.ResponseDTO;
 @Component
 public class PacketReceiverResponseBuilder{
 	
-	@Autowired
-	private static Environment env;
-	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
-	private static final String APPLICATION_VERSION = "mosip.registration.processor.application.version";
-	private static final String MODULE_ID = "mosip.registration.processor.packet.id";
-
+	
 	/**
 	 * Builds the packet receiver exception response.
 	 *
 	 * @param ex the ex
 	 * @return the string
 	 */
-	public static String buildPacketReceiverResponse(String statusCode) {
+	public static String buildPacketReceiverResponse(String statusCode,List<String> l) {
 
 		PacketReceiverResponseDTO response = new PacketReceiverResponseDTO();
 		if (Objects.isNull(response.getId())) {
-			response.setId(env.getProperty(MODULE_ID));
+			response.setId(l.get(0));
 		}
 		response.setError(null);
-		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
-		response.setVersion(env.getProperty(APPLICATION_VERSION));
+		response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString(l.get(1)));
+		response.setVersion(l.get(2));
 		ResponseDTO responseDTO=new ResponseDTO();
 		responseDTO.setStatus(statusCode);
 		response.setResponse(responseDTO);

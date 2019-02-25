@@ -132,9 +132,9 @@ public class ManualVerificationStageTest{
 		ManualVerificationApplication.main(null);	
 		PowerMockito.mockStatic(ManualVerificationResponseBuilder.class);
 		when(env.getProperty(anyString())).thenReturn("mosip.manual.verification.biometric");
-		PowerMockito.when(ManualVerificationResponseBuilder.class, "buildManualVerificationSuccessResponse",any(ManualVerificationDTO.class), anyString()).thenReturn(getDataAsJson("2"));
-		PowerMockito.when(ManualVerificationResponseBuilder.class, "buildManualVerificationSuccessResponse",any(PacketMetaInfo.class), anyString()).thenReturn(getDataAsJson("2"));
-		PowerMockito.when(ManualVerificationResponseBuilder.class, "buildManualVerificationSuccessResponse",any(String.class), anyString()).thenReturn(getDataAsJson("1"));
+		PowerMockito.when(ManualVerificationResponseBuilder.class, "buildManualVerificationSuccessResponse",any(ManualVerificationDTO.class), anyString(), anyString(), anyString()).thenReturn(getDataAsJson("2"));
+		PowerMockito.when(ManualVerificationResponseBuilder.class, "buildManualVerificationSuccessResponse",any(PacketMetaInfo.class), anyString(), anyString(), anyString()).thenReturn(getDataAsJson("2"));
+		PowerMockito.when(ManualVerificationResponseBuilder.class, "buildManualVerificationSuccessResponse",any(String.class), anyString(), anyString(), anyString()).thenReturn(getDataAsJson("1"));
 		
 	}
 
@@ -144,7 +144,7 @@ public class ManualVerificationStageTest{
 		JsonObject obj= new JsonObject();
 		obj.put("id", "mosip.manual.verification.biometric");
 		obj.put("version", "1.0");
-		obj.put("timestamp", "2019-02-04T13:46:39.919+0000");
+		obj.put("responseTimestamp", "2019-02-04T13:46:39.919+0000");
 		JsonObject obj1= new JsonObject();
 		obj1.put("regId", "27847657360002520181208123456");
 		  
@@ -425,7 +425,7 @@ public class ManualVerificationStageTest{
 				JsonObject obj= new JsonObject();
 				obj.put("id", "51130282650000320190117144316");
 				obj.put("version", "1.0");
-				obj.put("timestamp", "51130282650000320190117");
+				obj.put("requestTimestamp", "51130282650000320190117");
 				JsonObject obj1= new JsonObject();
 
 				if(serviceID=="bio") {

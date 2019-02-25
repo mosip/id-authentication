@@ -33,11 +33,12 @@ export class SharedService {
   }
 
   getAllApplicants() {
-    return this.allApplicants;
+    return this.allApplicants.slice();
   }
 
   addApplicants(applicants) {
     this.allApplicants = applicants.response;
+    console.log('applicants from bopokking', applicants);
   }
 
   addNameList(nameList: NameList) {

@@ -128,6 +128,18 @@ export class PreviewComponent implements OnInit {
     return locationName[0].valueName;
   }
 
+  enableContinue(): boolean {
+    let flag = false;
+    if (this.files.length === 4) {
+      flag = true;
+    } else if (this.files.length === 3 && this.registrationService.getSameAs() !== '') {
+      flag = true;
+    } else {
+      flag = false;
+    }
+    return flag;
+  }
+
   navigateDashboard() {
     // const routeParams = this.router.url.split('/');
     // this.router.navigate(['dashboard', routeParams[2]]);

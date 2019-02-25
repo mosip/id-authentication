@@ -482,7 +482,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
   onBack() {
     let url = '';
-    if (this.message['modifyUserFromPreview'] === 'true' || this.message['modifyUser'] === 'false') {
+    if (this.message['modifyUser'] === 'false') {
       url = Utils.getURL(this.router.url, 'summary/preview');
     } else {
       url = Utils.getURL(this.router.url, 'dashboard/' + this.loginId, 3);
