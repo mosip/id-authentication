@@ -587,6 +587,8 @@ public class BaseController {
 			((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
 					.setOperatorBiometricDTO(createBiometricInfoDTO());
 			biometricExceptionController.clearSession();
+			fingerPrintCaptureController.clearFingerPrintDTO();
+			irisCaptureController.clearIrisData();
 			faceCaptureController.clearPhoto(RegistrationConstants.APPLICANT_IMAGE);
 		} else {
 			if (SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA) != null) {

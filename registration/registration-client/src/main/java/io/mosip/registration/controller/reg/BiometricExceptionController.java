@@ -25,6 +25,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
+import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
@@ -127,6 +128,9 @@ public class BiometricExceptionController extends BaseController implements Init
 
 	@Autowired
 	private FingerPrintCaptureController fingerPrintCaptureController;
+	
+	@Autowired
+	private IrisCaptureController irisCaptureController;
 
 	private List<String> fingerList = new ArrayList<>();
 	private List<String> irisList = new ArrayList<>();
@@ -314,6 +318,7 @@ public class BiometricExceptionController extends BaseController implements Init
 					getOnboardPageDetails(RegistrationConstants.BIOMETRIC_EXCEPTION, RegistrationConstants.NEXT));
 			exceptionDTOCreation();
 			fingerPrintCaptureController.clearImage();
+			irisCaptureController.clearIrisBasedOnExceptions();
 		} else {
 			exceptionDTOCreation();
 			if (fingerList.isEmpty() && irisList.isEmpty()) {
@@ -331,7 +336,6 @@ public class BiometricExceptionController extends BaseController implements Init
 
 					if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()
 							|| fingerPrintCount > 0) {
-						fingerPrintCaptureController.clearImage();
 
 						SessionContext.map().put("biometricException", false);
 						SessionContext.map().put("fingerPrintCapture", true);
@@ -342,10 +346,11 @@ public class BiometricExceptionController extends BaseController implements Init
 					}
 					registrationController.showCurrentPage("biometricException", "fingerPrintCapture");
 				} else {
-					fingerPrintCaptureController.clearImage();
 					registrationController.showCurrentPage(RegistrationConstants.BIOMETRIC_EXCEPTION,
 							getPageDetails("biometricException", RegistrationConstants.NEXT));
 				}
+				fingerPrintCaptureController.clearImage();
+				irisCaptureController.clearIrisBasedOnExceptions();
 			}
 		}
 	}

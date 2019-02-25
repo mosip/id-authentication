@@ -20,7 +20,7 @@
                      </image>
                   </ImageView>
                </graphic></Button>
-            <Button layoutX="153.0" layoutY="8.0" mnemonicParsing="false" styleClass="ackBackButton" text="%back">
+            <Button layoutX="153.0" layoutY="8.0" mnemonicParsing="false" onAction="#goToPrevPage" styleClass="ackBackButton" text="%back">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                      <image>
