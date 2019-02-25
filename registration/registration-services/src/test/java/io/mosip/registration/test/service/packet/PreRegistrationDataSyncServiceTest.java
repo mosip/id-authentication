@@ -28,7 +28,6 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -40,6 +39,7 @@ import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
 import io.mosip.registration.dto.MainResponseDTO;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.PreRegistrationResponseDTO;
+import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.PreRegistrationList;
@@ -97,6 +97,9 @@ public class PreRegistrationDataSyncServiceTest {
 		preRegData.put(RegistrationConstants.PRE_REG_FILE_CONTENT, preRegPacket);
 
 		SessionContext.getInstance();
+		RegistrationCenterDetailDTO registrationCenterDetailDTO=new RegistrationCenterDetailDTO();
+		registrationCenterDetailDTO.setRegistrationCenterId("10031");
+		SessionContext.userContext().setRegistrationCenterDetailDTO(registrationCenterDetailDTO);
 	}
 
 	@Before
@@ -137,7 +140,6 @@ public class PreRegistrationDataSyncServiceTest {
 		Mockito.when(preRegistrationDAO.save(preRegistrationList)).thenReturn(preRegistrationList);
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
-
 
 		mockEncryptedPacket();
 
@@ -184,7 +186,6 @@ public class PreRegistrationDataSyncServiceTest {
 				.thenThrow(HttpClientErrorException.class);
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
-
 
 		preRegistrationDataSyncServiceImpl.getPreRegistration("70694681371453");
 

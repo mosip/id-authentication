@@ -60,25 +60,25 @@ public class BiometricExceptionController extends BaseController implements Init
 	@FXML
 	private AnchorPane irisPane;
 	@FXML
-	private Label leftLittle;
+	private ImageView rightLittleFinger;
 	@FXML
-	private Label leftIndex;
+	private ImageView rightRingFinger;
 	@FXML
-	private Label leftMiddle;
+	private ImageView rightMiddleFinger;
 	@FXML
-	private Label leftRing;
+	private ImageView rightIndexFinger;
 	@FXML
-	private Label leftThumb;
+	private ImageView rightThumbFinger;
 	@FXML
-	private Label rightIndex;
+	private ImageView leftLittleFinger;
 	@FXML
-	private Label rightLittle;
+	private ImageView leftRingFinger;
 	@FXML
-	private Label rightMiddle;
+	private ImageView leftMiddleFinger;
 	@FXML
-	private Label rightRing;
+	private ImageView leftIndexFinger;
 	@FXML
-	private Label rightThumb;
+	private ImageView leftThumbFinger;
 	@FXML
 	private Label employeeCode;
 	@FXML
@@ -139,16 +139,16 @@ public class BiometricExceptionController extends BaseController implements Init
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		setExceptionImage();
-		fingerExceptionListener(leftLittle);
-		fingerExceptionListener(leftIndex);
-		fingerExceptionListener(leftMiddle);
-		fingerExceptionListener(leftRing);
-		fingerExceptionListener(leftThumb);
-		fingerExceptionListener(rightIndex);
-		fingerExceptionListener(rightLittle);
-		fingerExceptionListener(rightMiddle);
-		fingerExceptionListener(rightRing);
-		fingerExceptionListener(rightThumb);
+		fingerExceptionListener(rightLittleFinger);
+		fingerExceptionListener(rightRingFinger);
+		fingerExceptionListener(rightMiddleFinger);
+		fingerExceptionListener(rightIndexFinger);
+		fingerExceptionListener(rightThumbFinger);
+		fingerExceptionListener(leftLittleFinger);
+		fingerExceptionListener(leftRingFinger);
+		fingerExceptionListener(leftMiddleFinger);
+		fingerExceptionListener(leftIndexFinger);
+		fingerExceptionListener(leftThumbFinger);
 		irisExceptionListener(leftEye);
 		irisExceptionListener(rightEye);
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
@@ -206,7 +206,7 @@ public class BiometricExceptionController extends BaseController implements Init
 	 * 
 	 * @param fingerLabel
 	 */
-	private void fingerExceptionListener(Label fingerLabel) {
+	private void fingerExceptionListener(ImageView fingerImage) {
 
 		LOGGER.info("REGISTRATION - FINGER_LABEL_LISTENER - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
 				APPLICATION_ID, "It will listen the finger click funtionality");
@@ -221,20 +221,15 @@ public class BiometricExceptionController extends BaseController implements Init
 			 * java.lang.Object, java.lang.Object)
 			 */
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				ImageView image;
-				if (fingerLabel.getId().contains("left")) {
-					image = (ImageView) leftHandPane.lookup("#" + fingerLabel.getId() + "Img");
+			
+				if (newValue && !fingerList.contains(fingerImage.getId())) {
+					fingerList.add(fingerImage.getId());
+					fingerImage.setOpacity(1.0);
 				} else {
-					image = (ImageView) rightHandPane.lookup("#" + fingerLabel.getId() + "Img");
-				}
-				if (newValue && !fingerList.contains(fingerLabel.getId())) {
-					fingerList.add(fingerLabel.getId());
-					image.setVisible(true);
-				} else {
-					if (fingerList.indexOf(fingerLabel.getId()) >= 0) {
-						fingerList.remove(fingerLabel.getId());
+					if (fingerList.indexOf(fingerImage.getId()) >= 0) {
+						fingerList.remove(fingerImage.getId());
 					}
-					image.setVisible(false);
+					fingerImage.setOpacity(0.0);
 				}
 				if (fingerList.stream().anyMatch(fingerType -> fingerType.contains("left"))) {
 					leftHandPane.getStyleClass().clear();
@@ -253,7 +248,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			}
 		});
 
-		fingerLabel.setOnMouseClicked(event -> {
+		fingerImage.setOnMouseClicked(event -> {
 			auditFactory.audit(AuditEvent.REG_BIO_EXCEPTION_MARKING, Components.REG_BIOMETRICS, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
@@ -447,18 +442,17 @@ public class BiometricExceptionController extends BaseController implements Init
 					fingerList.add(bioException.getMissingBiometric());
 					leftHandPane.getStyleClass().clear();
 					leftHandPane.getStyleClass().add(RegistrationConstants.ADD_BORDER);
-					ImageView image = (ImageView) leftHandPane.lookup("#" + bioException.getMissingBiometric() + "Img");
-					image.setVisible(true);
+					ImageView fingerImage = (ImageView) leftHandPane.lookup("#" + bioException.getMissingBiometric());
+					fingerImage.setOpacity(1.0);
 
 				} else if (bioException.getMissingBiometric().contains("right")
 						&& !bioException.getMissingBiometric().contains("Eye")) {
 					fingerList.add(bioException.getMissingBiometric());
 					rightHandPane.getStyleClass().clear();
 					rightHandPane.getStyleClass().add(RegistrationConstants.ADD_BORDER);
-					ImageView image = (ImageView) rightHandPane
-							.lookup("#" + bioException.getMissingBiometric() + "Img");
-					image.setVisible(true);
-
+					ImageView fingerImage = (ImageView) rightHandPane.lookup("#" + bioException.getMissingBiometric());
+					fingerImage.setOpacity(1.0);
+				
 				} else if (bioException.getMissingBiometric().contains("Eye")) {
 					irisList.add(bioException.getMissingBiometric());
 					Pane irisPane = (Pane) biometricException.lookup("#" + bioException.getMissingBiometric() + "Pane");
@@ -467,16 +461,16 @@ public class BiometricExceptionController extends BaseController implements Init
 				}
 			});
 		} else {
-			((ImageView) leftHandPane.lookup("#leftIndexImg")).setVisible(false);
-			((ImageView) leftHandPane.lookup("#leftLittleImg")).setVisible(false);
-			((ImageView) leftHandPane.lookup("#leftMiddleImg")).setVisible(false);
-			((ImageView) leftHandPane.lookup("#leftRingImg")).setVisible(false);
-			((ImageView) leftHandPane.lookup("#leftThumbImg")).setVisible(false);
-			((ImageView) rightHandPane.lookup("#rightIndexImg")).setVisible(false);
-			((ImageView) rightHandPane.lookup("#rightLittleImg")).setVisible(false);
-			((ImageView) rightHandPane.lookup("#rightMiddleImg")).setVisible(false);
-			((ImageView) rightHandPane.lookup("#rightRingImg")).setVisible(false);
-			((ImageView) rightHandPane.lookup("#rightThumbImg")).setVisible(false);
+			rightLittleFinger.setOpacity(0.0);
+			rightRingFinger.setOpacity(0.0);
+			rightMiddleFinger.setOpacity(0.0);
+			rightIndexFinger.setOpacity(0.0);
+			rightThumbFinger.setOpacity(0.0);
+			leftLittleFinger.setOpacity(0.0);
+			leftRingFinger.setOpacity(0.0);
+			leftMiddleFinger.setOpacity(0.0);
+			leftIndexFinger.setOpacity(0.0);
+			leftThumbFinger.setOpacity(0.0);
 			leftHandPane.getStyleClass().clear();
 			rightHandPane.getStyleClass().clear();
 			leftEyePane.getStyleClass().clear();

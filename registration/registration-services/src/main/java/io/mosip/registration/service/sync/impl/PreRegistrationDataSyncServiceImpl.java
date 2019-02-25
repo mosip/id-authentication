@@ -34,6 +34,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
 import io.mosip.registration.dto.MainResponseDTO;
 import io.mosip.registration.dto.PreRegArchiveDTO;
@@ -139,7 +140,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 			LOGGER.error("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					exception.getMessage()+ExceptionUtils.getStackTrace(exception));
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
 			setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_ID_ERROR, null);
 		}
@@ -272,7 +273,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 				LOGGER.error("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-						exception.getMessage()+ExceptionUtils.getStackTrace(exception));
+						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
 				/* set Error response */
 				setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
@@ -299,13 +300,13 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 			} catch (IOException exception) {
 				LOGGER.error("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - Manual Trigger",
 						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-						exception.getMessage()+ExceptionUtils.getStackTrace(exception));
+						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 				setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
 				return;
 			} catch (RegBaseUncheckedException exception) {
 				LOGGER.error("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - Manual Trigger",
 						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-						exception.getMessage()+ExceptionUtils.getStackTrace(exception));
+						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 				setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
 				return;
 			}
@@ -380,7 +381,8 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 		PreRegistrationDataSyncRequestDTO preRegistrationDataSyncRequestDTO = new PreRegistrationDataSyncRequestDTO();
 		preRegistrationDataSyncRequestDTO.setFromDate(getFromDate(reqTime));
-		preRegistrationDataSyncRequestDTO.setRegClientId(RegistrationConstants.REGISTRATION_CLIENT_ID);
+		preRegistrationDataSyncRequestDTO.setRegClientId(
+				SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
 		preRegistrationDataSyncRequestDTO.setToDate(getToDate(reqTime));
 		preRegistrationDataSyncRequestDTO.setUserId(getUserIdFromSession());
 
