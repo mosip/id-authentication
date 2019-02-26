@@ -64,6 +64,7 @@ public class RegistrationUIConstants {
 	public static final String NOTIFICATION_FAIL = bundle.getString("NOTIFICATION_FAIL");
 	public static final String NOTIFICATION_SMS_FAIL = bundle.getString("NOTIFICATION_SMS_FAIL");
 	public static final String NOTIFICATION_EMAIL_FAIL = bundle.getString("NOTIFICATION_EMAIL_FAIL");
+	public static final String NOTIFICATION_LIMIT_EXCEEDED = bundle.getString("NOTIFICATION_LIMIT_EXCEEDED");
 	public static final String PACKET_CREATION_FAILURE = bundle.getString("PACKET_CREATION_FAILURE");
 
 	// SUCCESS

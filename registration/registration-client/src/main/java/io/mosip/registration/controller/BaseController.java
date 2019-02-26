@@ -611,7 +611,7 @@ public class BaseController {
 		return biometricInfoDTO;
 	}
 
-	private Writer getNotificationTemplate() {
+	protected Writer getNotificationTemplate() {
 		RegistrationDTO registrationDTO = getRegistrationDTOFromSession();
 		Writer writeNotificationTemplate = new StringWriter();
 		try {

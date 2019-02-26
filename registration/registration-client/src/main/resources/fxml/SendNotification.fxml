@@ -12,12 +12,12 @@
       <TextField id="emailId" fx:id="email" layoutX="124.0" layoutY="91.0" prefHeight="39.0" prefWidth="270.0" promptText="Enter email ID" styleClass="ackTextField" />
       <TextField id="mobileNo" fx:id="mobile" layoutX="124.0" layoutY="143.0" prefHeight="39.0" prefWidth="270.0" promptText="Enter mobile number" styleClass="ackTextField" />
       <Button fx:id="send" layoutX="212.0" layoutY="206.0" mnemonicParsing="false" onAction="#sendNotification" prefHeight="39.0" prefWidth="105.0" styleClass="ackPageButton" text="Send" />
-      <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="84.0" layoutY="98.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="emailIcon" fitHeight="25.0" fitWidth="25.0" layoutX="84.0" layoutY="98.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/Email.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="84.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="mobileIcon" fitHeight="25.0" fitWidth="25.0" layoutX="84.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/EnterMobile.png" />
          </image>
