@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -376,6 +377,11 @@ public class DemographicDetailController extends BaseController {
 	@Autowired
 	private JsonValidator jsonValidator;
 
+	@Value("${mosip.registration.age_limit_for_child}")
+	private int minAge;
+	
+	@Value("${mosip.registration.max_age}")
+	private int maxAge;
 	private FXUtils fxUtils;
 	private Date dateOfBirth;
 	ResourceBundle applicationLabelBundle;
@@ -596,7 +602,7 @@ public class DemographicDetailController extends BaseController {
 						LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
 						dateOfBirth = Date
 								.from(currentYear.minusYears(age).atStartOfDay(ZoneId.systemDefault()).toInstant());
-						if (age <= Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))
+						if (age <= minAge
 								&& !(getRegistrationDTOFromSession().getSelectionListDTO() != null
 										&& !getRegistrationDTOFromSession().getSelectionListDTO().isChild())) {
 							childSpecificFields.setVisible(true);
@@ -1405,9 +1411,9 @@ public class DemographicDetailController extends BaseController {
 			saveDetail();
 			SessionContext.map().put("demographicDetail", false);
 			SessionContext.map().put("documentScan", true);
-			if (!isEditPage()) {
+//			if (!isEditPage()) {
 				documentScanController.populateDocumentCategories();
-			}
+//			}
 
 			auditFactory.audit(AuditEvent.REG_DEMO_NEXT, Components.REG_DEMO_DETAILS, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());

@@ -564,10 +564,7 @@ public class RegistrationConstants {
 
 	// Upload Packet
 
-	public static List getStatus() {
-		String[] packetStatus = { "SYNCED", "EXPORTED", "resend", "E" };
-		return Arrays.asList(packetStatus);
-	}
+	public static final List<String> PACKET_UPLOAD_STATUS=Arrays.asList("SYNCED", "EXPORTED", "resend", "E" );
 
 	public static final String PACKET_UPLOAD = "packet_upload";
 	public static final String PACKET_DUPLICATE = "duplicate";
