@@ -203,6 +203,24 @@ public class DocumentScanController extends BaseController {
 			if (documentCategories != null && documentCategories.size() > 0)
 				prepareDocumentScanSection(applicantType, documentCategories);
 		}
+
+		/*
+		 * populate the documents for edit if its already present or fetched from pre
+		 * reg
+		 */
+		Map<String, DocumentDetailsDTO> documentsMap = getDocumentsMapFromSession();
+		if (documentsMap != null && !documentsMap.isEmpty() && !documentVBoxes.isEmpty()) {
+			for (String docCategoryKey : documentVBoxes.keySet()) {
+				DocumentDetailsDTO documentDetailsDTO = documentsMap.get(docCategoryKey);
+				if (documentDetailsDTO != null)
+					addDocumentsToScreen(documentDetailsDTO.getValue(), documentDetailsDTO.getFormat(),
+							documentVBoxes.get(docCategoryKey));
+			}
+		}
+	}
+
+	private Map<String, DocumentDetailsDTO> getDocumentsMapFromSession() {
+		return getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO().getDocuments();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -248,7 +266,8 @@ public class DocumentScanController extends BaseController {
 				scanButton.setText("  Scan");
 				scanButton.setId(docCategoryCode);
 				scanButton.getStyleClass().add("documentContentButton");
-				scanButton.setGraphic(new ImageView(new Image(this.getClass().getResourceAsStream(RegistrationConstants.SCAN), 12, 12, true, true)));
+				scanButton.setGraphic(new ImageView(new Image(
+						this.getClass().getResourceAsStream(RegistrationConstants.SCAN), 12, 12, true, true)));
 				scanButton.setOnAction(new EventHandler<ActionEvent>() {
 
 					@Override
@@ -286,9 +305,9 @@ public class DocumentScanController extends BaseController {
 
 			} else if ("Female".equalsIgnoreCase(gender)) {
 				if (isChild(age)) {
-					applicantType = "007";
-				} else {
 					applicantType = "008";
+				} else {
+					applicantType = "007";
 				}
 			}
 		} else {
@@ -313,7 +332,7 @@ public class DocumentScanController extends BaseController {
 	}
 
 	private boolean isChild(Integer age) {
-		return Integer.valueOf(minAge) <= age;
+		return age <= Integer.valueOf(minAge);
 	}
 
 	private Identity getIdentityDto() {
@@ -420,8 +439,7 @@ public class DocumentScanController extends BaseController {
 
 				DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 
-				getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO().getDocuments()
-						.put(selectedDocument, documentDetailsDTO);
+				getDocumentsMapFromSession().put(selectedDocument, documentDetailsDTO);
 				attachDocuments(documentDetailsDTO, selectedComboBox.getValue(), selectedDocVBox, byteArray);
 
 				popupStage.close();
@@ -493,8 +511,7 @@ public class DocumentScanController extends BaseController {
 
 				DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 
-				getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO().getDocuments()
-						.put(selectedDocument, documentDetailsDTO);
+				getDocumentsMapFromSession().put(selectedDocument, documentDetailsDTO);
 				attachDocuments(documentDetailsDTO, selectedComboBox.getValue(), selectedDocVBox, byteArray);
 
 				scannedPages.clear();
@@ -539,9 +556,9 @@ public class DocumentScanController extends BaseController {
 
 		GridPane gridPane = new GridPane();
 		gridPane.setId(document);
-		gridPane.add(new Label("     "),0,vboxElement.getChildren().size());
+		gridPane.add(new Label("     "), 0, vboxElement.getChildren().size());
 		gridPane.add(createHyperLink(document.concat("." + documentFormat)), 1, vboxElement.getChildren().size());
-		gridPane.add(new Label("  "),2,vboxElement.getChildren().size());
+		gridPane.add(new Label("  "), 2, vboxElement.getChildren().size());
 		gridPane.add(createImageView(vboxElement), 3, vboxElement.getChildren().size());
 
 		vboxElement.getChildren().add(gridPane);
@@ -556,6 +573,8 @@ public class DocumentScanController extends BaseController {
 	 */
 	private void displayDocument(byte[] document, String documentName) {
 
+		/*TODO - pdf to images to be replaced wit ketrnal and setscanner factory has to be removed here*/
+		documentScanFacade.setScannerFactory();
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Converting bytes to Image to display scanned document");
 		/* clearing the previously loaded pdf pages inorder to clear up the memory */
@@ -632,7 +651,8 @@ public class DocumentScanController extends BaseController {
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Binding OnAction event Image to delete the attached document");
 
-		Image image = new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH),15,15,true,true);
+		Image image = new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15,
+				true, true);
 		ImageView imageView = new ImageView(image);
 		imageView.setCursor(Cursor.HAND);
 
@@ -644,15 +664,14 @@ public class DocumentScanController extends BaseController {
 			@Override
 			public void handle(MouseEvent event) {
 
-				auditFactory.audit(AuditEvent.REG_DOC_POA_DELETE, Components.REG_DOCUMENTS,
-						SessionContext.userId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				auditFactory.audit(AuditEvent.REG_DOC_POA_DELETE, Components.REG_DOCUMENTS, SessionContext.userId(),
+						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 				initializePreviewSection();
 
 				GridPane gridpane = (GridPane) ((ImageView) event.getSource()).getParent();
 				String key = ((VBox) gridpane.getParent()).getId();
-				getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO().getDocuments()
-						.remove(key);
+				getDocumentsMapFromSession().remove(key);
 
 				vboxElement.getChildren().remove(gridpane);
 			}
@@ -685,14 +704,13 @@ public class DocumentScanController extends BaseController {
 			@Override
 			public void handle(ActionEvent actionEvent) {
 
-				auditFactory.audit(AuditEvent.REG_DOC_POA_VIEW, Components.REG_DOCUMENTS,
-						SessionContext.userId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				auditFactory.audit(AuditEvent.REG_DOC_POA_VIEW, Components.REG_DOCUMENTS, SessionContext.userId(),
+						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 				GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
 
 				String documentKey = ((VBox) pane.getParent()).getId();
-				DocumentDetailsDTO selectedDocumentToDisplay = getRegistrationDTOFromSession().getDemographicDTO()
-						.getApplicantDocumentDTO().getDocuments().get(documentKey);
+				DocumentDetailsDTO selectedDocumentToDisplay = getDocumentsMapFromSession().get(documentKey);
 
 				if (selectedDocumentToDisplay != null) {
 					displayDocument(selectedDocumentToDisplay.getDocument(),
@@ -716,8 +734,7 @@ public class DocumentScanController extends BaseController {
 
 			if (documentComboBoxes != null) {
 
-				Map<String, DocumentDetailsDTO> documentsMap = getRegistrationDTOFromSession().getDemographicDTO()
-						.getApplicantDocumentDTO().getDocuments();
+				Map<String, DocumentDetailsDTO> documentsMap = getDocumentsMapFromSession();
 				for (String docCategoryKey : documentsMap.keySet()) {
 
 					addDocumentsToScreen(documentsMap.get(docCategoryKey).getValue(),
@@ -871,9 +888,9 @@ public class DocumentScanController extends BaseController {
 
 	@FXML
 	private void back() {
-		auditFactory.audit(AuditEvent.REG_DOC_BACK, Components.REG_DOCUMENTS,
-				SessionContext.userId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-		
+		auditFactory.audit(AuditEvent.REG_DOC_BACK, Components.REG_DOCUMENTS, SessionContext.userId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN,
 				getPageDetails(RegistrationConstants.DOCUMENT_SCAN, RegistrationConstants.PREVIOUS));
 	}
@@ -895,8 +912,8 @@ public class DocumentScanController extends BaseController {
 	@FXML
 	private void next() {
 
-		auditFactory.audit(AuditEvent.REG_DOC_NEXT, Components.REG_DOCUMENTS,
-				SessionContext.userId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+		auditFactory.audit(AuditEvent.REG_DOC_NEXT, Components.REG_DOCUMENTS, SessionContext.userId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			if (registrationController.validateDemographicPane(documentScanPane)) {

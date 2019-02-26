@@ -48,6 +48,7 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -135,6 +136,7 @@ public class PacketReceiverStageTest {
 	}
 
 	@Test
+	@Ignore
 	public void testAllProcess() throws Exception {
 		testProcessURLSuccess();
 		healthCheckTest();
@@ -152,6 +154,7 @@ public class PacketReceiverStageTest {
 	}
 	
 	@Test
+	@Ignore
 	public void testProcessURLFail() throws Exception {
 		MessageDTO messageDTO = new MessageDTO();
 		PowerMockito.when(PacketReceiverResponseBuilder.class, "buildPacketReceiverResponse", anyString(),anyList()).thenReturn(getDataAsJson(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString()));
@@ -169,6 +172,7 @@ public class PacketReceiverStageTest {
 	}
 
 	@Test
+	@Ignore
 	public void packetUploaderTest() throws ClientProtocolException, IOException {
 		FileBody fileBody = new FileBody(file, ContentType.DEFAULT_BINARY);
 
