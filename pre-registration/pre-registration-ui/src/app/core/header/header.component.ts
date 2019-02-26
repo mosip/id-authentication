@@ -21,12 +21,12 @@ export class HeaderComponent implements OnInit {
 
   onHome() {
     let homeURL = '';
-    const route_parts = this.router.url.split('/');
-    if (route_parts[2]) {
-      homeURL = 'dashboard/' + route_parts[2];
-    } else {
-      homeURL = '/';
-    }
+    // const route_parts = this.router.url.split('/');
+    // if (route_parts[2]) {
+    homeURL = 'dashboard';
+    // } else {
+    // homeURL = '/';
+    // }
     this.router.navigate([homeURL]);
   }
 

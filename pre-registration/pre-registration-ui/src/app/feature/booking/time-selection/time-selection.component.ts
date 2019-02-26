@@ -11,6 +11,7 @@ import { NameList } from 'src/app/shared/models/demographic-model/name-list.moda
 import { SharedService } from '../booking.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { TranslateService } from '@ngx-translate/core';
+import Utils from 'src/app/app.util';
 
 @Component({
   selector: 'app-time-selection',
@@ -262,7 +263,9 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   navigateBack() {
-    const routeParams = this.router.url.split('/');
-    this.router.navigate([routeParams[1], routeParams[2], 'booking', 'pick-center']);
+    const url = Utils.getURL(this.router.url, 'pick-center');
+    // const routeParams = this.router.url.split('/');
+    // this.router.navigate([routeParams[1], routeParams[2], 'booking', 'pick-center']);
+    this.router.navigateByUrl(url);
   }
 }

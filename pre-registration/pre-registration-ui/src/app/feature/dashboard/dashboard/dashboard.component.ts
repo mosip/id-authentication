@@ -14,6 +14,7 @@ import { FileModel } from 'src/app/shared/models/demographic-model/file.model';
 import { Applicant } from 'src/app/shared/models/dashboard-model/dashboard.modal';
 import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
 import * as appConstants from '../../../app.constants';
+import Utils from 'src/app/app.util';
 
 @Component({
   selector: 'app-registration',
@@ -51,9 +52,10 @@ export class DashBoardComponent implements OnInit {
   }
   ngOnInit() {
     this.regService.changeMessage({ modifyUser: 'false' });
-    this.route.params.subscribe((params: Params) => {
-      this.loginId = params['id'];
-    });
+    this.loginId = this.regService.getLoginId();
+    // this.route.params.subscribe((params: Params) => {
+    //   this.loginId = params['id'];
+    // });
     this.initUsers();
     this.dataStorageService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
       this.secondaryLanguagelabels = response['dashboard'].discard;
@@ -128,7 +130,7 @@ export class DashBoardComponent implements OnInit {
 
   onNewApplication() {
     if (this.loginId) {
-      this.router.navigate(['pre-registration', this.loginId, 'demographic']);
+      this.router.navigate(['pre-registration', 'demographic']);
       this.isNewApplication = true;
     } else {
       this.router.navigate(['/']);
@@ -279,7 +281,7 @@ export class DashBoardComponent implements OnInit {
     this.disableModifyDataButton = true;
     this.regService.addUser(new UserModel(preId, request, this.userFiles));
     this.fetchedDetails = true;
-    this.router.navigate(['pre-registration', this.loginId, 'demographic']);
+    this.router.navigate(['pre-registration', 'demographic']);
   }
 
   onSelectUser(user: Applicant, event: MatCheckboxChange) {
@@ -312,8 +314,8 @@ export class DashBoardComponent implements OnInit {
         status: status
       });
     }
-    const arr = this.router.url.split('/');
-    const url = `/pre-registration/${arr.pop()}/booking/pick-center`;
+    let url = '';
+    url = Utils.getURL(this.router.url, 'pre-registration/booking/pick-center');
     this.router.navigateByUrl(url);
   }
 

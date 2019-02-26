@@ -6,6 +6,7 @@ import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 import { MatDialog } from '@angular/material';
 import { AuthService } from '../auth.service';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
+import { RegistrationService } from 'src/app/core/services/registration.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -30,7 +31,7 @@ export class LoginComponent implements OnInit {
   showVerify = false;
   showContactDetails = true;
   showOTP = false;
-  secondaryLanguagelabels:any
+  secondaryLanguagelabels: any;
   email = new FormControl('', [Validators.required, Validators.email]);
   loggedOutLang: string;
 
@@ -47,13 +48,14 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private translate: TranslateService,
     private dialog: MatDialog,
-    private dataService: DataStorageService
+    private dataService: DataStorageService,
+    private regService: RegistrationService
   ) {
     const loggedOut = localStorage.getItem('loggedOut');
     this.loggedOutLang = localStorage.getItem('loggedOutLang');
     localStorage.clear();
     translate.addLangs(['eng', 'fra', 'ara']);
-    
+
     // const browserLang = translate.getBrowserLang();
     // translate.use(browserLang.match(/eng|fra|ara/) ? browserLang : 'ara');
     localStorage.setItem('loggedOut', loggedOut);
@@ -80,14 +82,14 @@ export class LoginComponent implements OnInit {
         this.secondaryLanguagelabels = response['login']['logout_msg'];
         localStorage.removeItem('loggedOutLang');
         localStorage.removeItem('loggedOut');
-         const data = {
-            case: 'MESSAGE',
-            message: this.secondaryLanguagelabels
-          };
-          this.dialog.open(DialougComponent, {
-            width: '350px',
-            data: data
-          });
+        const data = {
+          case: 'MESSAGE',
+          message: this.secondaryLanguagelabels
+        };
+        this.dialog.open(DialougComponent, {
+          width: '350px',
+          data: data
+        });
       });
     }
   }
@@ -177,8 +179,9 @@ export class LoginComponent implements OnInit {
     } else if (this.showVerify) {
       clearInterval(this.timer);
       localStorage.setItem('loggedIn', 'true');
-      // this.authService.setToken();
-      this.router.navigate(['dashboard', this.inputContactDetails]);
+      this.authService.setToken();
+      this.regService.setLoginId(this.inputContactDetails);
+      this.router.navigate(['dashboard']);
     }
   }
 }

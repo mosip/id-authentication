@@ -128,13 +128,16 @@ export class FileUploadComponent implements OnInit {
     private sharedService: SharedService,
     private translate: TranslateService
   ) {
+    console.log('CALIING FILE UPLOAD');
+
     this.translate.use(localStorage.getItem('langCode'));
     this.isModify = localStorage.getItem('modifyDocument');
   }
 
   ngOnInit() {
-    const arr = this.router.url.split('/');
-    this.loginId = arr[2];
+    // const arr = this.router.url.split('/');
+    // this.loginId = arr[2];
+    this.loginId = this.registration.getLoginId();
 
     this.dataStroage.getUsers(this.loginId).subscribe(
       applicants => {
