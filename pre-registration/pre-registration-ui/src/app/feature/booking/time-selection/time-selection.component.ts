@@ -11,6 +11,7 @@ import { NameList } from 'src/app/shared/models/demographic-model/name-list.moda
 import { SharedService } from '../booking.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { TranslateService } from '@ngx-translate/core';
+import Utils from 'src/app/app.util';
 
 @Component({
   selector: 'app-time-selection',
@@ -37,6 +38,8 @@ export class TimeSelectionComponent implements OnInit {
   bookingDataList = [];
   temp: NameList[];
   registrationCenterLunchTime = [];
+  secondaryLang = localStorage.getItem('secondaryLangCode');
+  secondaryLanguagelabels: any;
 
   constructor(
     private sharedService: SharedService,
@@ -60,6 +63,10 @@ export class TimeSelectionComponent implements OnInit {
     console.log(this.registrationCenter);
     console.log('in onInit', this.names);
     this.getSlotsforCenter(this.registrationCenter);
+
+    this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+      this.secondaryLanguagelabels = response['timeSelection'].booking;
+    });
   }
 
   public scrollRight(): void {
@@ -201,8 +208,8 @@ export class TimeSelectionComponent implements OnInit {
         console.log(response);
         const data = {
           case: 'MESSAGE',
-          title: 'Success',
-          message: 'Appointment Booking Successfully Completed'
+          title: this.secondaryLanguagelabels.title_success,
+          message: this.secondaryLanguagelabels.msg_success
         };
         const dialogRef = this.dialog
           .open(DialougComponent, {
@@ -239,8 +246,8 @@ export class TimeSelectionComponent implements OnInit {
         console.log(error);
         const data = {
           case: 'MESSAGE',
-          title: 'Failure',
-          message: 'Appointment Booking Failed'
+          title: this.secondaryLanguagelabels.title_failure,
+          message: this.secondaryLanguagelabels.msg_failure
         };
         const dialogRef = this.dialog.open(DialougComponent, {
           width: '350px',
@@ -256,7 +263,9 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   navigateBack() {
-    const routeParams = this.router.url.split('/');
-    this.router.navigate([routeParams[1], routeParams[2], 'booking', 'pick-center']);
+    const url = Utils.getURL(this.router.url, 'pick-center');
+    // const routeParams = this.router.url.split('/');
+    // this.router.navigate([routeParams[1], routeParams[2], 'booking', 'pick-center']);
+    this.router.navigateByUrl(url);
   }
 }

@@ -10,12 +10,12 @@
     "text": "Quick & Easy steps",
     "sub_text": "Pre-register for",
     "sub_text_UID": "Unique Identification Number",
-
     "label_email_num": "Email ID or Phone Number",
     "label_otp": "Enter OTP",
     "action_send": "Send OTP",
     "action_resend": "Resend",
-    "action_verify": "Verify"
+    "action_verify": "Verify",
+    "logout_msg":"Applicant has to login with same Mobile/Email to access the created applications"
   },
 
   "stepper": {
@@ -58,6 +58,7 @@
       "name_required": "Please enter valid name",
       "age_validation": "Age should be less than 150",
       "gender_validation": "Please select gender",
+      "nationality_validation":"Please select nationality",
       "DOB_validation": "Enter Valid DOB or age (Age should be less than 150 and whole number)",
       "date_required": "Enter 2 numeric digits for date",
       "month_required": "Enter 2 numeric digits for month",
@@ -121,18 +122,6 @@
     "action_add_applicant": "ADD APPLICANT",
     "action_continue": "CONTINUE"
   },
-  "bookAppointment": {
-    "title_book": "Book Appointment",
-    "text_prev": "Previous",
-    "text_next": "Next",
-    "text_morning": "Morning",
-    "text_afternoon": "Afternoon",
-    "text_available": "Available Applicants",
-    "action_done": "DONE",
-    "action_back": "BACK",
-    "action_bookLater": "BOOK LATER",
-    "action_continue": "CONTINUE"
-  },
   "message": {
     "login": {
       "msg1": "Email ID is not valid",
@@ -161,7 +150,7 @@
       "msg2": "Appointment for the selected application has been successfully cancelled"
     }
   },
-  "uidStatus": {
+  "dashboard": {
     "title": "Your Applications",
     "action_modify_information": "Modify Information",
     "action_modify_appointment": "Book/Modify Appointment",
@@ -173,14 +162,44 @@
       "text_status": "Status",
       "action_modify_information": "Modify Information",
       "action_view_acknowledgement": "View Acknowledgement"
+    },
+    "discard": {
+      "title_confirm":"Confirm",
+      "title_success":"Success",
+      "title_error":"Error",
+      "msg_confirm": "The selected application will be deleted. Please confirm.",
+      "msg_deleted": "The selected application has been successfully deleted",
+      "msg_could_not_deleted": "The selected application could not be deleted",
+      "button_confirm": "Confirm",
+      "button_cancel": "Cancel"
+    }
+  },
+  "timeSelection": {
+    "title_book": "Book Appointment",
+    "text_prev": "Previous",
+    "text_next": "Next",
+    "text_morning": "Morning",
+    "text_afternoon": "Afternoon",
+    "text_available": "Available Applicants",
+    "text_availability":"Available Bookings",
+    "text_slots":"slots",
+    "action_done": "DONE",
+    "action_back": "Back",
+    "action_bookLater": "Book Later",
+    "action_continue": "Continue",
+    "booking": {
+      "title_success":"Success",
+      "msg_success":"Appointment Booking Successfully Completed",
+      "title_failure":"Failure",
+      "msg_failure":"Appointment Booking Failed"
     }
   },
   "appointmentCentreSearch": {
-    "title": " Book Appointment ",
+    "title": "Book Appointment",
     "text_recommended_centres": "Recommended Centres",
     "text_finding_result": "finding result for",
     "text_nearBy": "Nearby",
-    "acttion_back": "BACK",
+    "action_back": "BACK",
     "action_bookLater": "BOOK LATER",
     "action_continue": "CONTINUE"
   },
@@ -192,8 +211,11 @@
   },
   "dialog": {
     "title_applicant": "Send Appointment Confirmation",
-    "content_applicant": "Email/Phone Number",
-    "invalidApplicantNumber_msg": "Invalid Email/Phone Number",
+    "content_applicant": "Email / SMS Acknowledgement",
+    "text_email":"Enter email ID",
+    "text_mobile":"Enter mobile number",
+    "invalidApplicantNumber": "Invalid Mobile Number",
+    "invalidApplicantEmailId": "Invalid Email ID",
     "action_ok": "OK",
     "title_discard": "Discard",
     "action_discard_app": "Discard entire application",
@@ -212,6 +234,9 @@
     "text_centers": "centers",
     "text_timing": "Timing",
     "text_open": "Open",
+    "text_select":"Select Location Types",
+    "text_enter":"Enter",
+    "text_search":"Search....",
     "action_back": "Back",
     "action_book_later": "Book Later",
     "action_continue": "Continue"

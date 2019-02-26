@@ -128,6 +128,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     private location: Location,
     private translate: TranslateService
   ) {
+    console.log('CALIING  DEMOGRAPHIC');
     this.translate.use(localStorage.getItem('langCode'));
     this.initialization();
   }
@@ -482,11 +483,11 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
   onBack() {
     let url = '';
-    if (this.message['modifyUser'] === 'false') {
-      url = Utils.getURL(this.router.url, 'summary/preview');
-    } else {
-      url = Utils.getURL(this.router.url, 'dashboard/' + this.loginId, 3);
-    }
+    // if (this.message['modifyUser'] === 'false') {
+    //   url = Utils.getURL(this.router.url, 'summary/preview');
+    // } else {
+    url = Utils.getURL(this.router.url, 'dashboard', 2);
+    // }
     this.router.navigate([url]);
   }
 

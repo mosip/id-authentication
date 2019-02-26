@@ -200,15 +200,33 @@ public class DemographicServiceUtil {
 	 *             On json Parsing Failed
 	 * 
 	 */
-	public String getValueFromIdentity(byte[] demographicData, String identityKey) throws ParseException {
+	public JSONArray getValueFromIdentity(byte[] demographicData, String identityKey) throws ParseException {
 		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pre-registration service util ");
 		JSONParser jsonParser = new JSONParser();
-		byte[] decryptedString = cryptoUtil.decrypt(demographicData, DateUtils.getUTCCurrentDateTime());
-		JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(decryptedString));
+		JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(demographicData));
 		JSONObject identityObj = (JSONObject) jsonObj.get(RequestCodes.IDENTITY.getCode());
-		JSONArray keyArr = (JSONArray) identityObj.get(identityKey);
-		JSONObject valueObj = (JSONObject) keyArr.get(0);
-		return valueObj.get(RequestCodes.VALUE.getCode()).toString();
+		return (JSONArray) identityObj.get(identityKey);
+	}
+	
+	/**
+	 * This method is used to set the JSON values to RequestCodes constants.
+	 * 
+	 * @param demographicData
+	 *            pass demographicData
+	 * @param identityKey
+	 *            pass postalcode
+	 * @return values from JSON
+	 * 
+	 * @throws ParseException
+	 *             On json Parsing Failed
+	 * 
+	 */
+	public String getPostalCode(byte[] demographicData, String postalcode) throws ParseException {
+		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pre-registration service util ");
+		JSONParser jsonParser = new JSONParser();
+		JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(demographicData));
+		JSONObject identityObj = (JSONObject) jsonObj.get(RequestCodes.IDENTITY.getCode());
+		return  (String) identityObj.get(postalcode);
 	}
 
 	/**

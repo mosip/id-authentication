@@ -128,13 +128,16 @@ export class FileUploadComponent implements OnInit {
     private sharedService: SharedService,
     private translate: TranslateService
   ) {
+    console.log('CALIING FILE UPLOAD');
+
     this.translate.use(localStorage.getItem('langCode'));
     this.isModify = localStorage.getItem('modifyDocument');
   }
 
   ngOnInit() {
-    const arr = this.router.url.split('/');
-    this.loginId = arr[2];
+    // const arr = this.router.url.split('/');
+    // this.loginId = arr[2];
+    this.loginId = this.registration.getLoginId();
 
     this.dataStroage.getUsers(this.loginId).subscribe(
       applicants => {
@@ -372,8 +375,19 @@ export class FileUploadComponent implements OnInit {
       this.registration.setSameAs(event.value);
       this.dataStroage.copyDocument('POA', event.value, this.users[0].preRegId).subscribe(response => {
         console.log('copy document', response);
+        this.removePOADocument();
       });
       this.sameAsselected = true;
+    }
+  }
+  removePOADocument() {
+    this.userFiles = new FileModel();
+    for (let file of this.users[0].files[0]) {
+      let i = 0;
+      if (file.doc_cat_code == 'POA') {
+        this.users[0].files[0][i] = this.userFiles;
+        i++;
+      }
     }
   }
 

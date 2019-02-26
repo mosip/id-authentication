@@ -1,7 +1,7 @@
 <div class="dashboard-body">
   <div class="heading-row">
     <div class="heading">
-      <p>{{ 'uidStatus.title' | translate }}</p>
+      <p>{{ 'dashboard.title' | translate }}</p>
     </div>
     <span class="spacer"></span>
     <div class="buttons">
@@ -13,13 +13,13 @@
           (click)="onModifyMultipleAppointment()"
         >
           <img src="assets\Book_Modify Appointment.png" class="modify-app-img" />
-          {{ 'uidStatus.action_modify_appointment' | translate }}
+          {{ 'dashboard.action_modify_appointment' | translate }}
         </button></span
       >
       <span
         ><button mat-button class="create-app-btn" (click)="onNewApplication()">
           <img src="assets\Create new application.png" class="create-app-img" />
-          {{ 'uidStatus.action_cre_application' | translate }}
+          {{ 'dashboard.action_cre_application' | translate }}
         </button></span
       >
     </div>
@@ -34,7 +34,7 @@
               ><mat-checkbox
                 [disabled]="isBookingAllowed(user.appointmentDateTime)"
                 (change)="onSelectUser(user, $event)"
-                >{{ 'uidStatus.card.text_app_id' | translate }}
+                >{{ 'dashboard.card.text_app_id' | translate }}
               </mat-checkbox></span
             >
             <span class="checkbox"
@@ -55,15 +55,15 @@
             <div class="card-content">
               <table>
                 <tr>
-                  <td>{{ 'uidStatus.card.text_name' | translate }}</td>
+                  <td>{{ 'dashboard.card.text_name' | translate }}</td>
                   <td class="application-value">{{ user.name }}</td>
                 </tr>
                 <tr>
-                  <td>{{ 'uidStatus.card.text_appoinment_date' | translate }}</td>
+                  <td>{{ 'dashboard.card.text_appoinment_date' | translate }}</td>
                   <td class="application-value">{{ user.appointmentDateTime }}</td>
                 </tr>
                 <tr>
-                  <td>{{ 'uidStatus.card.text_status' | translate }}</td>
+                  <td>{{ 'dashboard.card.text_status' | translate }}</td>
                   <td id="status" [ngStyle]="{ color: getColor(user.status) }">
                     {{ user.status }}
                     <mat-icon class="icon" matTooltip="Info about the action" [inline]="true">help_outline</mat-icon>
@@ -81,7 +81,7 @@
                 (click)="onModifyInformation(user.applicationID)"
               >
                 <img src="assets\Modify information_grey.png" class="modifyinfo-btn-img" />{{
-                  'uidStatus.card.action_modify_information' | translate
+                  'dashboard.card.action_modify_information' | translate
                 }}
               </button>
               <!-- (click)="onSelectUser(user)" -->
@@ -92,7 +92,7 @@
                 [disabled]="user.status === 'Pending_Appointment'"
               >
                 <img src="assets\view.png" class="modifyapp-btn-img" />{{
-                  'uidStatus.card.action_view_acknowledgement' | translate
+                  'dashboard.card.action_view_acknowledgement' | translate
                 }}
               </button>
               <!-- <button mat-icon-button class="footer-download-btn">

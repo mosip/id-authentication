@@ -27,6 +27,7 @@ export class DialougComponent implements OnInit {
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
     this.input = this.data;
+    console.log('input', this.input);
   }
 
   onNoClick(): void {
