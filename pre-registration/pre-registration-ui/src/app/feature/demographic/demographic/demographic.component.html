@@ -16,7 +16,7 @@
                 50"
               placeholder="{{ 'demographic.label_name' | translate }}"
               [formControlName]="formControlNames.fullName"
-              (change)="onTransliteration(fullName, formControlNames.fullNameSecondary)"
+              (focusout)="onTransliteration(fullName, formControlNames.fullNameSecondary)"
             />
             <mat-hint align="end">{{ fullName.value.length }} / 50</mat-hint>
             <mat-error *ngIf="!fullName.invalid"> {{ 'demographic.validation.name_required' | translate }} </mat-error>
@@ -161,7 +161,7 @@
               maxlength="50"
               placeholder="{{ 'demographic.label_address1' | translate }}"
               [formControlName]="formControlNames.addressLine1"
-              (change)="onTransliteration(addressLine1, formControlNames.addressLine1Secondary)"
+              (focusout)="onTransliteration(addressLine1, formControlNames.addressLine1Secondary)"
             />
             <mat-hint align="end">{{ addressLine1.value.length }} / 50</mat-hint>
             <mat-error *ngIf="!addressLine1.invalid">{{
@@ -176,7 +176,7 @@
               maxlength="50"
               placeholder="{{ 'demographic.label_address2' | translate }}"
               [formControlName]="formControlNames.addressLine2"
-              (change)="onTransliteration(addressLine2, formControlNames.addressLine2Secondary)"
+              (focusout)="onTransliteration(addressLine2, formControlNames.addressLine2Secondary)"
             />
             <mat-hint align="end">{{ addressLine2.value.length }} / 50</mat-hint>
             <mat-error *ngIf="!addressLine2.invalid">{{
@@ -191,7 +191,7 @@
               maxlength="50"
               placeholder="{{ 'demographic.label_address3' | translate }}"
               [formControlName]="formControlNames.addressLine3"
-              (change)="onTransliteration(addressLine3, formControlNames.addressLine3Secondary)"
+              (focusout)="onTransliteration(addressLine3, formControlNames.addressLine3Secondary)"
             />
             <mat-hint align="end">{{ addressLine3.value.length }} / 50</mat-hint>
             <mat-error *ngIf="!addressLine3.invalid">{{
@@ -275,7 +275,7 @@
                 [formControlName]="formControlNames.postalCode"
                 #postalCode
               />
-              <mat-hint align="end">{{ postalCode.value.length }} / 5</mat-hint>
+              <mat-hint align="end">{{ postalCode.value.length }} / 6</mat-hint>
               <mat-error *ngIf="!postalCode.invalid">{{
                 'demographic.validation.postal_code_required' | translate
               }}</mat-error>
@@ -291,7 +291,7 @@
                 placeholder="{{ 'demographic.label_mob_num' | translate }}"
                 [formControlName]="formControlNames.phone"
               />
-              <mat-hint align="end">{{ mobileNumber.value.length }} / 9</mat-hint>
+              <mat-hint align="end">{{ mobileNumber.value.length }} / 10</mat-hint>
               <mat-error *ngIf="!mobileNumber.invalid">{{
                 'demographic.validation.mobile_required' | translate
               }}</mat-error>
