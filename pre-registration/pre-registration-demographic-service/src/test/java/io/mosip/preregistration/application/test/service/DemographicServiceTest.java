@@ -58,6 +58,7 @@ import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
+import io.mosip.preregistration.application.exception.InvalidDateFormatException;
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
@@ -634,7 +635,7 @@ public class DemographicServiceTest {
 		String preRegId = "98746563542672";
 		preRegistrationEntity.setCreateDateTime(times);
 		preRegistrationEntity.setCreatedBy("9988905444");
-		preRegistrationEntity.setStatusCode("Pending_Appointment");
+		preRegistrationEntity.setStatusCode("Booked");
 		preRegistrationEntity.setUpdateDateTime(times);
 		preRegistrationEntity.setApplicantDetailJson(jsonTestObject.toJSONString().getBytes());
 		preRegistrationEntity.setPreRegistrationId("98746563542672");
@@ -797,8 +798,12 @@ public class DemographicServiceTest {
 
 	}
 
-
-
+@Test(expected=InvalidDateFormatException.class)
+public void getPreRegistrationByDateExceptionTest() {
+	String fromDate = "20-12-06 09:49:29";
+	String toDate = "2018-12-06 12:59:29";
+	preRegistrationService.getPreRegistrationByDate(fromDate, toDate);
+}
 	/**
 	 * @throws Exception
 	 */
