@@ -23,6 +23,8 @@ import io.mosip.kernel.auth.entities.TimeToken;
 import io.mosip.kernel.auth.service.CustomTokenServices;
 
 /**
+ * Class used for storing token 
+ * 
  * @author Ramadurai Pandian
  *
  */
@@ -94,7 +96,6 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 	}
 
 	private String checkUser(String userId) {
-		// TODO Auto-generated method stub
 		return jdbcTemplate.query(checkUserTokenSQL, new MapSqlParameterSource().addValue("userName", userId), new ResultSetExtractor<String>()
 				{
 
@@ -111,24 +112,6 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 					}
 			
 				});
-	}
-
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.auth.service.CustomTokenServices#refreshtoken(java.lang.String)
-	 */
-	@Override
-	public void refreshtoken(String token) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.auth.service.CustomTokenServices#invalidateToken(java.lang.String)
-	 */
-	@Override
-	public void invalidateToken(String token) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

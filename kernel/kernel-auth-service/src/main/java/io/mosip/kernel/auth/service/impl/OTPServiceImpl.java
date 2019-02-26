@@ -10,6 +10,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
+import io.mosip.kernel.auth.entities.AuthNResponseDto;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserDtoToken;
 
@@ -49,114 +50,115 @@ public class OTPServiceImpl implements OTPService {
 
 	@Autowired
 	MosipEnvironment mosipEnvironment;
-	
+
 	@Autowired
-    TokenGenerator tokenGenerator;
-	
+	TokenGenerator tokenGenerator;
+
 	@Autowired
 	OTPSendService oTPSendService;
-	
+
 	@Autowired
 	OTPTemplateService oTPTemplateService;
-	
+
 	@Autowired
 	OTPGenerateService oTPGenerateService;
 
 	@Override
-	public boolean sendOTP(MosipUserDto mosipUserDto, String channel) {
-		 OtpEmailSendResponseDto otpEmailSendResponseDto = null;
-		 OtpSmsSendResponseDto otpSmsSendResponseDto=null;
-		 OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUserDto,channel);
-		 if (channel.equals(AuthConstant.EMAIL)) {
-	            String message = getOtpEmailMessage(otpGenerateResponseDto);
-	            otpEmailSendResponseDto = sendOtpByEmail(message, mosipUserDto.getMail());
-	        } else {
-	            String message = getOtpSmsMessage(otpGenerateResponseDto);
-	            otpSmsSendResponseDto = sendOtpBySms(message, mosipUserDto.getMobile());
-	        }
-		return true;
+	public AuthNResponseDto sendOTP(MosipUserDto mosipUserDto, String channel) {
+		AuthNResponseDto authNResponseDto = null;
+		OtpEmailSendResponseDto otpEmailSendResponseDto = null;
+		OtpSmsSendResponseDto otpSmsSendResponseDto = null;
+		OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUserDto, channel);
+		if (channel.equals(AuthConstant.EMAIL)) {
+			String message = getOtpEmailMessage(otpGenerateResponseDto);
+			otpEmailSendResponseDto = sendOtpByEmail(message, mosipUserDto.getMail());
+		} else {
+			String message = getOtpSmsMessage(otpGenerateResponseDto);
+			otpSmsSendResponseDto = sendOtpBySms(message, mosipUserDto.getMobile());
+		}
+		if (otpEmailSendResponseDto != null) {
+			authNResponseDto = new AuthNResponseDto();
+			authNResponseDto.setMessage(otpEmailSendResponseDto.getMessage());
+		}
+		if (otpSmsSendResponseDto != null) {
+			authNResponseDto = new AuthNResponseDto();
+			authNResponseDto.setMessage(otpSmsSendResponseDto.getMessage());
+		}
+		return authNResponseDto;
 	}
 
-	private OtpGenerateResponseDto generateOtp(MosipUserDto mosipUserDto, String channel) {
+	private String getOtpEmailMessage(OtpGenerateResponseDto otpGenerateResponseDto) {
 		try {
-			OtpGenerateRequestDto otpGenerateRequestDto = new OtpGenerateRequestDto(mosipUserDto);
-			final String url = mosipEnvironment.getOtpManagerSvcUrl() + mosipEnvironment.getGenerateOtpApi();
-			OtpGenerateResponseDto otpGenerateResponseDto = restTemplate.postForObject(url, otpGenerateRequestDto,
-					OtpGenerateResponseDto.class);
-			return otpGenerateResponseDto;
+			final String url = mosipEnvironment.getMasterDataUrl() + mosipEnvironment.getMasterDataTemplateApi() + "eng"
+					+ mosipEnvironment.getMasterDataOtpTemplate();
+
+			OtpTemplateResponseDto otpTemplateResponseDto = restTemplate.getForObject(url,
+					OtpTemplateResponseDto.class);
+			OtpTemplateDto otpTemplateDto = otpTemplateResponseDto.getTemplates().get(0);
+			String template = otpTemplateDto.getFileText();
+			template.replace("$otp", otpGenerateResponseDto.getOtp());
+			return template;
 		} catch (Exception err) {
 			throw new RuntimeException(err);
 		}
 	}
-	
-	private String getOtpEmailMessage(OtpGenerateResponseDto otpGenerateResponseDto) {
-        try {
-            final String url = mosipEnvironment.getMasterDataUrl()
-                    + mosipEnvironment.getMasterDataTemplateApi()
-                    + "eng"
-                    + mosipEnvironment.getMasterDataOtpTemplate();
 
-            OtpTemplateResponseDto otpTemplateResponseDto = restTemplate.getForObject(url, OtpTemplateResponseDto.class);
-            OtpTemplateDto otpTemplateDto = otpTemplateResponseDto.getTemplates().get(0);
-            String template = otpTemplateDto.getFileText();
-            template.replace("$otp", otpGenerateResponseDto.getOtp());
-            return template;
-        } catch (Exception err) {
-            throw new RuntimeException(err);
-        }
-    }
-	
 	private String getOtpSmsMessage(OtpGenerateResponseDto otpGenerateResponseDto) {
-        try {
-            final String url = mosipEnvironment.getMasterDataUrl()
-                    + mosipEnvironment.getMasterDataTemplateApi()
-                    + "eng"
-                    + mosipEnvironment.getMasterDataOtpTemplate();
+		try {
+			final String url = mosipEnvironment.getMasterDataUrl() + mosipEnvironment.getMasterDataTemplateApi() + "eng"
+					+ mosipEnvironment.getMasterDataOtpTemplate();
 
-            OtpTemplateResponseDto otpTemplateResponseDto = restTemplate.getForObject(url, OtpTemplateResponseDto.class);
-            OtpTemplateDto otpTemplateDto = otpTemplateResponseDto.getTemplates().get(0);
-            String template = otpTemplateDto.getFileText();
-            template.replace("$otp", otpGenerateResponseDto.getOtp());
-            return template;
-        } catch (Exception err) {
-            throw new RuntimeException(err);
-        }
-    }
-
-	 private OtpEmailSendResponseDto sendOtpByEmail(String message, String email) {
-	        try {
-	            OtpEmailSendRequestDto otpEmailSendRequestDto = new OtpEmailSendRequestDto(email, message);
-	            String url = mosipEnvironment.getOtpSenderSvcUrl() + mosipEnvironment.getOtpSenderEmailApi();
-	            OtpEmailSendResponseDto otpEmailSendResponseDto = restTemplate.postForObject(url, otpEmailSendRequestDto, OtpEmailSendResponseDto.class);
-	            return otpEmailSendResponseDto;
-	        } catch (Exception err) {
-	            throw new RuntimeException(err);
-	        }
-	    }
-
-	    private OtpSmsSendResponseDto sendOtpBySms(String message, String mobile) {
-	        try {
-	            OtpSmsSendRequestDto otpSmsSendRequestDto = new OtpSmsSendRequestDto(mobile, message);
-	            String url = mosipEnvironment.getOtpSenderSvcUrl() + mosipEnvironment.getOtpSenderSmsApi();
-	            OtpSmsSendResponseDto otpSmsSendResponseDto = restTemplate.postForObject(url, otpSmsSendRequestDto, OtpSmsSendResponseDto.class);
-	            return otpSmsSendResponseDto;
-	        } catch (Exception err) {
-	            throw new RuntimeException(err);
-	        }
-	    }
-
-		@Override
-		public MosipUserDtoToken validateOTP(MosipUserDto mosipUser, String otp) {
-			String key = new OtpGenerateRequestDto(mosipUser).getKey();
-
-            final String url = mosipEnvironment.getOtpManagerSvcUrl() + mosipEnvironment.getVerifyOtpUserApi();
-            UriComponentsBuilder builder = UriComponentsBuilder
-                    .fromUriString(url)
-                    .queryParam("key", key)
-                    .queryParam("otp", otp);
-
-            restTemplate.getForObject(builder.toUriString(), OtpValidateResponseDto.class);
-            String verified_token = tokenGenerator.generateForOtp(mosipUser, true);
-			return new MosipUserDtoToken(mosipUser, verified_token,AuthConstant.OTP_VALIDATION_MESSAGE);
+			OtpTemplateResponseDto otpTemplateResponseDto = restTemplate.getForObject(url,
+					OtpTemplateResponseDto.class);
+			OtpTemplateDto otpTemplateDto = otpTemplateResponseDto.getTemplates().get(0);
+			String template = otpTemplateDto.getFileText();
+			template.replace("$otp", otpGenerateResponseDto.getOtp());
+			return template;
+		} catch (Exception err) {
+			throw new RuntimeException(err);
 		}
+	}
+
+	private OtpEmailSendResponseDto sendOtpByEmail(String message, String email) {
+		try {
+			OtpEmailSendRequestDto otpEmailSendRequestDto = new OtpEmailSendRequestDto(email, message);
+			String url = mosipEnvironment.getOtpSenderSvcUrl() + mosipEnvironment.getOtpSenderEmailApi();
+			OtpEmailSendResponseDto otpEmailSendResponseDto = restTemplate.postForObject(url, otpEmailSendRequestDto,
+					OtpEmailSendResponseDto.class);
+			return otpEmailSendResponseDto;
+		} catch (Exception err) {
+			throw new RuntimeException(err);
+		}
+	}
+
+	private OtpSmsSendResponseDto sendOtpBySms(String message, String mobile) {
+		try {
+			OtpSmsSendRequestDto otpSmsSendRequestDto = new OtpSmsSendRequestDto(mobile, message);
+			String url = mosipEnvironment.getOtpSenderSvcUrl() + mosipEnvironment.getOtpSenderSmsApi();
+			OtpSmsSendResponseDto otpSmsSendResponseDto = restTemplate.postForObject(url, otpSmsSendRequestDto,
+					OtpSmsSendResponseDto.class);
+			return otpSmsSendResponseDto;
+		} catch (Exception err) {
+			throw new RuntimeException(err);
+		}
+	}
+
+	@Override
+	public MosipUserDtoToken validateOTP(MosipUserDto mosipUser, String otp) {
+		String key = new OtpGenerateRequestDto(mosipUser).getKey();
+		MosipUserDtoToken mosipUserDtoToken = null;
+		String verified_token = null;
+
+		final String url = mosipEnvironment.getOtpManagerSvcUrl() + mosipEnvironment.getVerifyOtpUserApi();
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url).queryParam("key", key).queryParam("otp",
+				otp);
+
+		OtpValidateResponseDto otpValidateResponseDto = restTemplate.getForObject(builder.toUriString(),
+				OtpValidateResponseDto.class);
+		if (otpValidateResponseDto != null) {
+			verified_token = tokenGenerator.generateForOtp(mosipUser, true);
+			mosipUserDtoToken = new MosipUserDtoToken(mosipUser, verified_token, otpValidateResponseDto.getMessage());
+		}
+		return mosipUserDtoToken;
+	}
 }
