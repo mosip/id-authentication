@@ -120,8 +120,11 @@ public class BookingServiceUtil {
 	@Value("${demographic.resource.url}")
 	private String preRegResourceUrl;
 	
-	@Value("${timeSpanCheck}")
-	private long timeSpanCheck;
+	@Value("${timeSpanCheckForCancel}")
+	private long timeSpanCheckForCancel;
+	
+	@Value("${timeSpanCheckForRebook}")
+	private long timeSpanCheckForRebook;
 
 	private Logger log = LoggerConfiguration.logConfig(BookingServiceUtil.class);
 
@@ -303,34 +306,6 @@ public class BookingServiceUtil {
 	 * @param preId
 	 * @return status code
 	 */
-	/**
-	 * @param preId
-	 * @return
-	 */
-	/**
-	 * @param preId
-	 * @return
-	 */
-	/**
-	 * @param preId
-	 * @return
-	 */
-	/**
-	 * @param preId
-	 * @return
-	 */
-	/**
-	 * @param preId
-	 * @return
-	 */
-	/**
-	 * @param preId
-	 * @return
-	 */
-	/**
-	 * @param preId
-	 * @return
-	 */
 	public boolean callGetStatusForCancelRestService(String preId) {
 		log.info("sessionId", "idType", "id", "In callGetStatusForCancelRestService method of Booking Service Util");
 		try {
@@ -352,7 +327,7 @@ public class BookingServiceUtil {
 						.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class);
 
 				String statusCode = preRegResponsestatusDto.getStatusCode().trim();
-				if (!statusCode.equals(StatusCodes.BOOKED.getCode())&&!statusCode.equals(StatusCodes.EXPIRED.getCode())) {
+				if (!statusCode.equals(StatusCodes.BOOKED.getCode())) {
 					throw new AppointmentCannotBeCanceledException(ErrorCodes.PRG_BOOK_RCI_018.getCode(),
 							ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.getMessage());
 				}
@@ -369,10 +344,16 @@ public class BookingServiceUtil {
 		}
 		return true;
 	}
-	public boolean timeSpanCheck(LocalDateTime bookedDateTime) {
+	public boolean timeSpanCheckForCancle(LocalDateTime bookedDateTime) {
 		LocalDateTime current = LocalDateTime.now();
         long hours=ChronoUnit.MINUTES.between(current, bookedDateTime);
-		if(Math.abs(hours)>=timeSpanCheck) return true;
+		if(Math.abs(hours)>=timeSpanCheckForCancel) return true;
+		else return false;
+	}
+	public boolean timeSpanCheckForRebook(LocalDateTime bookedDateTime) {
+		LocalDateTime current = LocalDateTime.now();
+        long hours=ChronoUnit.MINUTES.between(current, bookedDateTime);
+		if(Math.abs(hours)>=timeSpanCheckForRebook) return true;
 		else return false;
 	}
 
@@ -710,4 +691,5 @@ public class BookingServiceUtil {
 		entity.setSlotToTime(LocalTime.parse(bookingRegistrationDTO.getSlotToTime()));
 		return entity;
 	}
+	
 }

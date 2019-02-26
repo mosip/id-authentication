@@ -122,6 +122,7 @@ public class BookingDAO {
 	}
 
 	/**
+	 * This method find entity for status other then CANCEL.
 	 * @param preregistrationId
 	 * @param statusCode
 	 * @return RegistrationBookingEntity based on Pre registration id and status code.
@@ -130,6 +131,27 @@ public class BookingDAO {
 		RegistrationBookingEntity entity = null;
 		try {
 			entity = registrationBookingRepository.findPreIdAndStatusCode(preregistrationId, statusCode);
+			if (entity == null) {
+				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
+						ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
+			}
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
+					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
+		}
+		return entity;
+	}
+	
+	/**
+	 * This method find entity for status BOOKED.
+	 * @param preregistrationId
+	 * @param statusCode
+	 * @return RegistrationBookingEntity based on Pre registration id and status code.
+	 */
+	public RegistrationBookingEntity findBookingByPreIdAndStatusCode(String preregistrationId, String statusCode) {
+		RegistrationBookingEntity entity = null;
+		try {
+			entity = registrationBookingRepository.findBookingByPreIdAndStatusCode(preregistrationId, statusCode);
 			if (entity == null) {
 				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
 						ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
