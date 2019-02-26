@@ -285,10 +285,10 @@ public class KycServiceImpl implements KycService {
 	private Optional<String> getFaceDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo)
 			throws IdAuthenticationBusinessException {
 		Map<String, String> valueMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, filteredIdentityInfo, null);
-		if (valueMap != null && !valueMap.isEmpty() && valueMap.containsKey("face")) {
-			return Optional.ofNullable(valueMap.values().stream().findFirst().orElse(""));
+		if (valueMap != null) {
+			return Optional.ofNullable(valueMap.get(BioMatchType.FACE.getIdMapping().getIdname()));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/**
