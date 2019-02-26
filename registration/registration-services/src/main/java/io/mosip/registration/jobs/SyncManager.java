@@ -15,7 +15,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 public interface SyncManager {
 
 	/**
-	 * To create a new transacion in sync transaction table
+	 * To create a new transaction in sync transaction table
 	 * 
 	 * @param status
 	 *            of Job
