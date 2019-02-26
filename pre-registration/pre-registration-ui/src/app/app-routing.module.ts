@@ -17,7 +17,7 @@ const appRoutes: Routes = [
   {
     path: 'pre-registration',
     component: ParentComponent,
-    // canActivate: [AuthGuardService],
+    canActivate: [AuthGuardService],
     children: [
       { path: '', pathMatch: 'full', redirectTo: '/' },
       { path: 'demographic', loadChildren: './feature/demographic/demographic.module#DemographicModule' },
