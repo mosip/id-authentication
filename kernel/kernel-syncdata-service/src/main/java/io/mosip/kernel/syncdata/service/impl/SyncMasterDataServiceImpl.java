@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
@@ -41,7 +42,10 @@ import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
 import io.mosip.kernel.syncdata.dto.TitleDto;
 import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
+import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.exception.DataNotFoundException;
+import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
+import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 
@@ -58,6 +62,9 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	@Autowired
 	SyncMasterDataServiceHelper serviceHelper;
 
+	@Autowired
+	MachineRepository machineRepository;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -69,13 +76,19 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	@Override
 	public MasterDataResponseDto syncData(String machineId, LocalDateTime lastUpdated, LocalDateTime currentTimeStamp)
 			throws InterruptedException, ExecutionException {
-		List<MachineDto> machineDetails = null;
-		machineDetails = serviceHelper.getMachines(machineId, lastUpdated, currentTimeStamp);
-		if (machineDetails==null) {
+		List<Machine> machines = null;
+		try {
+			machines = machineRepository.findByMachineIdAndIsActive(machineId);
+		} catch (DataAccessException ex) {
+			throw new SyncDataServiceException(MasterDataErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
+					ex.getMessage());
+		}
+		if (machines.isEmpty()) {
 			throw new DataNotFoundException(MasterDataErrorCode.MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
 		MasterDataResponseDto response = new MasterDataResponseDto();
+		CompletableFuture<List<MachineDto>> machineDetails = null;
 		CompletableFuture<List<ApplicationDto>> applications = null;
 		CompletableFuture<List<RegistrationCenterTypeDto>> registrationCenterTypes = null;
 		CompletableFuture<List<RegistrationCenterDto>> registrationCenters = null;
@@ -109,7 +122,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		CompletableFuture<List<RegistrationCenterUserDto>> registrationCenterUsers = null;
 
 		applications = serviceHelper.getApplications(lastUpdated, currentTimeStamp);
-
+		machineDetails = serviceHelper.getMachines(machineId, lastUpdated, currentTimeStamp);
 		registrationCenters = serviceHelper.getRegistrationCenter(machineId, lastUpdated, currentTimeStamp);
 		registrationCenterTypes = serviceHelper.getRegistrationCenterType(machineId, lastUpdated, currentTimeStamp);
 		templates = serviceHelper.getTemplates(lastUpdated, currentTimeStamp);
@@ -148,15 +161,15 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		registrationCenterUsers = serviceHelper.getRegistrationCenterUsers(regId, lastUpdated, currentTimeStamp);
 
 		CompletableFuture
-				.allOf(applications, registrationCenterTypes, registrationCenters, templates, templateFileFormats,
-						reasonCategory, reasonList, holidays, blacklistedWords, biometricTypes, biometricAttributes,
-						titles, languages, devices, documentCategories, documentTypes, idTypes, deviceSpecifications,
-						locationHierarchy, machineSpecification, machineType, templateTypes, deviceTypes,
-						validDocumentsMapping, registrationCenterMachines, registrationCenterDevices,
+				.allOf(machineDetails, applications, registrationCenterTypes, registrationCenters, templates,
+						templateFileFormats, reasonCategory, reasonList, holidays, blacklistedWords, biometricTypes,
+						biometricAttributes, titles, languages, devices, documentCategories, documentTypes, idTypes,
+						deviceSpecifications, locationHierarchy, machineSpecification, machineType, templateTypes,
+						deviceTypes, validDocumentsMapping, registrationCenterMachines, registrationCenterDevices,
 						registrationCenterMachineDevices, registrationCenterUserMachines, registrationCenterUsers)
 				.join();
 
-		response.setMachineDetails(machineDetails);
+		response.setMachineDetails(machineDetails.get());
 		response.setApplications(applications.get());
 		response.setRegistrationCenterTypes(registrationCenterTypes.get());
 		response.setRegistrationCenter(registrationCenters.get());

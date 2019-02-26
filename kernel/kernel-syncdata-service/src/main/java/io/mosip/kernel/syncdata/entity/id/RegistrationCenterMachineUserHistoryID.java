@@ -1,6 +1,7 @@
 package io.mosip.kernel.syncdata.entity.id;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -9,7 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** Entity class for Registration Center User Machine
+/** ID class for Registration Center User Machine History
  * @author Dharmesh Khandelwal
  * @since 1.0.0
  *
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegistrationCenterMachineUserID implements Serializable {
+public class RegistrationCenterMachineUserHistoryID implements Serializable {
 
 	/**
 	 *  Generated serial version
@@ -40,7 +41,14 @@ public class RegistrationCenterMachineUserID implements Serializable {
 	/**
 	 * Machine Id
 	 */
-	@Column(name = "machine_id", nullable = false, length = 10)
+	@Column(name = "machine_id", nullable = false, length = 36)
 	private String machineId;
+	
+	/**
+	 * Effective TimeStamp
+	 */
+	@Column(name = "eff_dtimes", nullable = false)
+	private LocalDateTime effectivetimes;
+
 
 }

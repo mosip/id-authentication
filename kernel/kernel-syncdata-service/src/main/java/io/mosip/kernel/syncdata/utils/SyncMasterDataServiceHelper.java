@@ -190,8 +190,8 @@ public class SyncMasterDataServiceHelper {
 	 *            lastUpdated time-stamp
 	 * @return list of {@link MachineDto}
 	 */
-	//@Async
-	public List<MachineDto> getMachines(String machineId, LocalDateTime lastUpdated,
+	@Async
+	public CompletableFuture<List<MachineDto>> getMachines(String machineId, LocalDateTime lastUpdated,
 			LocalDateTime timeStampOfNow) {
 		List<Machine> machineDetailList = new ArrayList<>();
 		List<MachineDto> machineDetailDtoList = null;
@@ -212,7 +212,7 @@ public class SyncMasterDataServiceHelper {
 
 		}
 
-		return machineDetailDtoList;
+		return CompletableFuture.completedFuture(machineDetailDtoList);
 	}
 
 	/**

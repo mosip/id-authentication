@@ -3,15 +3,19 @@ package io.mosip.kernel.syncdata.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import io.mosip.kernel.syncdata.entity.id.IdAndLanguageCodeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,15 +25,18 @@ import lombok.NoArgsConstructor;
  * 
  * Entity for Machine Details
  * 
- * @author Abhishek Kumar
- * @since 1.0.0
+ * @author Megha Tanga
+ * @since 1.0.1
+ *
  */
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "machine_master", schema = "master")
+@IdClass(IdAndLanguageCodeID.class)
 public class Machine extends BaseEntity implements Serializable {
 
 	/**
@@ -37,12 +44,11 @@ public class Machine extends BaseEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = -5585825705521742941L;
 
-	/**
-	 * Field for machine ID
-	 */
 	@Id
-	@Column(name = "id", unique = true, nullable = false, length = 36)
+	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 10)),
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 	private String id;
+	private String langCode;
 
 	/**
 	 * Field for machine name
@@ -74,19 +80,14 @@ public class Machine extends BaseEntity implements Serializable {
 	private String machineSpecId;
 
 	/**
-	 * Field for language code
-	 */
-	@Column(name = "lang_code", nullable = false, length = 3)
-	private String langCode;
-
-	/**
 	 * Field for validity end Date and Time for machine
 	 */
 	@Column(name = "validity_end_dtimes")
 	private LocalDateTime validityDateTime;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumns({ @JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false) })
+	@JoinColumns({ @JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	private MachineSpecification machineSpecification;
 
 }

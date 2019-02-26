@@ -26,6 +26,6 @@ public class LocationHierarchyDto extends BaseDto implements Serializable {
 
 	private String locationHierarchyName;
 
-	private Boolean isActive;
+	
 
 }

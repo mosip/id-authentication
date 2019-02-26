@@ -16,7 +16,4 @@ public class ReasonCategoryDto extends BaseDto {
 
 	private String description;
 
-	private String langCode;
-
-	private Boolean isActive;
 }

@@ -7,40 +7,24 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import io.mosip.kernel.syncdata.entity.id.IdAndLanguageCodeID;
+import io.mosip.kernel.syncdata.entity.id.IdAndEffectDateTimeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-/**
- * 
- * Entity for Device Details
- * 
- */
-/**
- * @author Sidhant Agarwal
- * @author Megha Tanga
- * @since 1.0.1
- *
- */
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "device_master", schema = "master")
-@IdClass(IdAndLanguageCodeID.class)
-public class Device extends BaseEntity implements Serializable {
+@Table(name = "device_master_h", schema = "master")
+@IdClass(IdAndEffectDateTimeID.class)
+public class DeviceHistory extends BaseEntity implements Serializable {
 
 	/**
 	 * 
@@ -49,8 +33,10 @@ public class Device extends BaseEntity implements Serializable {
 
 	@Id
 	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
+			@AttributeOverride(name = "effectDateTime", column = @Column(name = "eff_dtimes", nullable = false)),
 			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 	private String id;
+	private LocalDateTime effectDateTime;
 	private String langCode;
 
 	/**
@@ -85,10 +71,5 @@ public class Device extends BaseEntity implements Serializable {
 
 	@Column(name = "validity_end_dtimes")
 	private LocalDateTime validityDateTime;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumns({ @JoinColumn(name = "dspec_id", referencedColumnName = "id", insertable = false, updatable = false),
-			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
-	private DeviceSpecification deviceSpecification;
 
 }

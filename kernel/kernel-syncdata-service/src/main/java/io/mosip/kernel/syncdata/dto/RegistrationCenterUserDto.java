@@ -23,11 +23,9 @@ public class RegistrationCenterUserDto extends BaseDto {
 	@NotNull
 	@Size(min = 1, max = 10)
 	private String regCenterId;
-	
+
 	@NotNull
-	@Size(min =1, max = 36)
+	@Size(min = 1, max = 36)
 	private String userId;
-	
-	@NotNull
-	private Boolean isActive;
+
 }

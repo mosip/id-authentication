@@ -13,17 +13,19 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CodeAndLanguageCodeID implements Serializable {
+public class LocationCodeAndLanguageCodeID implements Serializable {
+	
 	
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9083898959072007739L;
+	private static final long serialVersionUID = -8017807110754974896L;
 
 	@Column(name = "code", nullable = false)
 	private String code;
 
 	@Column(name = "lang_code", nullable = false, length = 3)
-	private String langCode;
+	private String languageCode;
+
 }

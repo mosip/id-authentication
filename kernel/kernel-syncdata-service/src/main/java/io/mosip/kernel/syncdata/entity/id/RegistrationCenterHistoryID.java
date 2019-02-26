@@ -1,5 +1,6 @@
 package io.mosip.kernel.syncdata.entity.id;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -9,10 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 
- * 
- * 
- * @author Bal Vikash Sharma
+ *  
+ * @author Dharmesh Khandelwal
  * @since 1.0.0
  *
  */
@@ -21,13 +20,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class RegistrationCenterMachineID implements Serializable {
+public class RegistrationCenterHistoryID implements Serializable {
 
 	private static final long serialVersionUID = -8541947587557590379L;
 
-	@Column(name = "regcntr_id", unique = true, nullable = false, length = 10)
-	private String regCenterId;
+	@Column(name = "id",nullable = false, length = 36)
+	private String id;
 
-	@Column(name = "machine_id", unique = true, nullable = false, length = 10)
-	private String machineId;
+	@Column(name = "eff_dtimes",nullable = false)
+	private LocalDateTime effectivetimes;
+	
+	@Column(name = "lang_code", nullable = false, length = 3)
+	private String langCode;
 }
