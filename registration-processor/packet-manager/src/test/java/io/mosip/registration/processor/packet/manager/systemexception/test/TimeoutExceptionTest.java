@@ -34,10 +34,10 @@ public class TimeoutExceptionTest {
 	public void TestTimeoutException() throws IOException {
 		String fileName = "sample";
 		TimeoutException ex = new TimeoutException(PlatformErrorMessages.RPR_SYS_TIMEOUT_EXCEPTION.getMessage());
-		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
+		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
 
 		try {
-			fileManager.put(fileName, file, DirectoryPathDto.LANDING_ZONE);
+			fileManager.put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
 			fail();
 		} catch (TimeoutException e) {
 			assertThat("Should throw  Timeout Exception with correct error codes",

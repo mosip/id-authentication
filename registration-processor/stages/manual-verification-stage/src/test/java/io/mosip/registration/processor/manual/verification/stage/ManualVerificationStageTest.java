@@ -35,6 +35,8 @@ import org.springframework.core.env.Environment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
@@ -49,6 +51,7 @@ import io.mosip.registration.processor.manual.verification.response.dto.ManualVe
 import io.mosip.registration.processor.manual.verification.response.dto.ManualVerificationBioDemoResponseDTO;
 import io.mosip.registration.processor.manual.verification.response.dto.ManualVerificationPacketResponseDTO;
 import io.mosip.registration.processor.manual.verification.service.ManualVerificationService;
+import io.mosip.registration.processor.manual.verification.stage.ManualVerificationStage;
 import io.mosip.registration.processor.manual.verification.util.ManualVerificationRequestValidator;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
@@ -79,6 +82,9 @@ public class ManualVerificationStageTest {
 	private ManualVerificationService manualAdjudicationService;
 	@Mock
 	ManualVerificationResponseBuilder manualVerificationResponseBuilder;
+
+	@Mock
+	FileSystemAdapter filesystemCephAdapterImpl;
 
 	private String jsonData;
 

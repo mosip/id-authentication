@@ -39,7 +39,6 @@ import io.mosip.registration.processor.core.packet.dto.regcentermachine.MachineH
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistartionCenterTimestampResponseDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterDeviceHistoryDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterDeviceHistoryResponseDto;
-import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterResponseDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterUserMachineMappingHistoryDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterUserMachineMappingHistoryResponseDto;
@@ -79,14 +78,14 @@ public class UMCValidator {
 	private FileSystemAdapter adapter;
 
 	/** The primary languagecode. */
-	@Value("${primary.language}")
+	@Value("${mosip.primary-language}")
 	private String primaryLanguagecode;
 
 	/** The identity iterator util. */
 	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
-	
-	private static final String NO_DEVICE_HISTORY_FOUND= "no device history found for device : ";
-	
+
+	private static final String NO_DEVICE_HISTORY_FOUND = "no device history found for device : ";
+
 	private static final String IS_DEVICE_MAPPED_WITH_CENTER = "no center found for device : ";
 
 	/** The identity. */
@@ -109,7 +108,8 @@ public class UMCValidator {
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 */
-	private boolean isValidRegistrationCenter(String registrationCenterId, String langCode, String effectiveDate) throws ApisResourceAccessException {
+	private boolean isValidRegistrationCenter(String registrationCenterId, String langCode, String effectiveDate)
+			throws ApisResourceAccessException {
 		boolean activeRegCenter = false;
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(registrationCenterId);
@@ -120,13 +120,10 @@ public class UMCValidator {
 			rcpdto = (RegistrationCenterResponseDto) registrationProcessorRestService.getApi(ApiName.CENTERHISTORY,
 					pathsegments, "", "", RegistrationCenterResponseDto.class);
 
-					
-				activeRegCenter = rcpdto.getRegistrationCentersHistory().get(0).getIsActive();
-				if (!activeRegCenter) {
-					this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
-				}
-
-			
+			activeRegCenter = rcpdto.getRegistrationCentersHistory().get(0).getIsActive();
+			if (!activeRegCenter) {
+				this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
+			}
 
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
@@ -449,10 +446,11 @@ public class UMCValidator {
 								RegistrationCenterDeviceHistoryResponseDto.class);
 				isDeviceMappedWithCenter = validateDeviceMappedWithCenterResponse(
 						registrationCenterDeviceHistoryResponseDto, deviceId, rcmDto.getRegcntrId(), rcmDto.getRegId());
-if(!isDeviceMappedWithCenter) {
-	registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE+IS_DEVICE_MAPPED_WITH_CENTER+deviceId);
-	break;
-}
+				if (!isDeviceMappedWithCenter) {
+					registrationStatusDto.setStatusComment(
+							StatusMessage.OSI_VALIDATION_FAILURE + IS_DEVICE_MAPPED_WITH_CENTER + deviceId);
+					break;
+				}
 			} catch (ApisResourceAccessException e) {
 				if (e.getCause() instanceof HttpClientErrorException) {
 					HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
@@ -531,8 +529,9 @@ if(!isDeviceMappedWithCenter) {
 						.getApi(ApiName.DEVICESHISTORIES, pathsegments, "", "", DeviceHistoryResponseDto.class);
 
 				isDeviceActive = validateDeviceResponse(deviceHistoryResponsedto, deviceId, rcmDto.getRegId());
-				if(!isDeviceActive) {
-					registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE+NO_DEVICE_HISTORY_FOUND+deviceId);
+				if (!isDeviceActive) {
+					registrationStatusDto.setStatusComment(
+							StatusMessage.OSI_VALIDATION_FAILURE + NO_DEVICE_HISTORY_FOUND + deviceId);
 					break;
 
 				}

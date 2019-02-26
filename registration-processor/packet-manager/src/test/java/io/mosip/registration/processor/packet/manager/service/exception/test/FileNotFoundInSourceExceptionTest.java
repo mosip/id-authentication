@@ -24,16 +24,18 @@ public class FileNotFoundInSourceExceptionTest {
 	public void TestFileNotFoundInSourceException() {
 
 		String fileName = "sample.zip";
-		FileNotFoundInSourceException ex = new FileNotFoundInSourceException(PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_SOURCE.getMessage());
-		doThrow(ex).when(fileManager).cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileName);
+		FileNotFoundInSourceException ex = new FileNotFoundInSourceException(
+				PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_SOURCE.getMessage());
+		doThrow(ex).when(fileManager).cleanUpFile(DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC,
+				fileName);
 		try {
-			fileManager.cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileName);
+			fileManager.cleanUpFile(DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC, fileName);
 			fail();
 		} catch (FileNotFoundInSourceException e) {
-			assertThat("Should throw File Not Found In Source Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_SOURCE.getCode()));
-			assertThat("Should throw File Not Found In Source Exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_SOURCE.getMessage()));
+			assertThat("Should throw File Not Found In Source Exception with correct error codes", e.getErrorCode()
+					.equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_SOURCE.getCode()));
+			assertThat("Should throw File Not Found In Source Exception with correct messages", e.getErrorText()
+					.equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_SOURCE.getMessage()));
 
 		}
 

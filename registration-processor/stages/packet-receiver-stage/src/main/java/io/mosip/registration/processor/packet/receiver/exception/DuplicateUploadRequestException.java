@@ -2,9 +2,10 @@ package io.mosip.registration.processor.packet.receiver.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+
 /**
  * DuplicateUploadRequestException occurs When a packet is already present in
- * landing zone and again client tries to upload same packet.
+ * virus scanner zone and again client tries to upload same packet.
  */
 public class DuplicateUploadRequestException extends BaseUncheckedException {
 
