@@ -1223,10 +1223,6 @@ public class DemographicDetailController extends BaseController {
 				}
 			} else if (nodeForPlatformLang instanceof ComboBox) {
 				fxUtils.selectComboBoxValue((ComboBox<?>) nodeForPlatformLang, valueInPlatformLang);
-
-				if (nodeForLocalLang != null) {
-					((ComboBox) nodeForLocalLang).setValue(valueinLocalLang);
-				}
 			}
 		}
 	}
