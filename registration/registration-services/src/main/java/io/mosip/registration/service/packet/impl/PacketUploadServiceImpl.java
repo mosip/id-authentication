@@ -63,7 +63,7 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	public List<Registration> getSynchedPackets() {
 		LOGGER.info("REGISTRATION - GET_SYNCHED_PACKETS - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching synched packets from the database");
-		return registrationDAO.getRegistrationByStatus(RegistrationConstants.getStatus());
+		return registrationDAO.getRegistrationByStatus(RegistrationConstants.PACKET_UPLOAD_STATUS);
 	}
 
 	/*

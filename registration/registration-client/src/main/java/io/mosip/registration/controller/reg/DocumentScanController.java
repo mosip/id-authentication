@@ -153,6 +153,9 @@ public class DocumentScanController extends BaseController {
 
 	@Value("${DOCUMENT_DISABLE_FLAG}")
 	private String documentDisableFlag;
+	
+	@Value("${mosip.registration.age_limit_for_child}")
+	private int minAge;
 
 	private List<BufferedImage> docPages;
 
@@ -310,7 +313,7 @@ public class DocumentScanController extends BaseController {
 	}
 
 	private boolean isChild(Integer age) {
-		return Integer.valueOf(AppConfig.getApplicationProperty("age_limit_for_child")) <= age;
+		return Integer.valueOf(minAge) <= age;
 	}
 
 	private Identity getIdentityDto() {
