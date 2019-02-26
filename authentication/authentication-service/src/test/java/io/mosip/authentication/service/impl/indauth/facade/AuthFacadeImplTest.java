@@ -175,7 +175,7 @@ public class AuthFacadeImplTest {
 		ReflectionTestUtils.setField(authFacadeImpl, "auditHelper", auditHelper);
 		ReflectionTestUtils.setField(authFacadeImpl, "env", env);
 
-		ReflectionTestUtils.setField(kycServiceImpl, "demoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(kycServiceImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(kycServiceImpl, "idTemplateManager", idTemplateManager);
 		ReflectionTestUtils.setField(kycServiceImpl, "env", env);
 		ReflectionTestUtils.setField(kycServiceImpl, "messageSource", messageSource);

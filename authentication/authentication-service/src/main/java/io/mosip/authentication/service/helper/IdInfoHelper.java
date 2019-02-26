@@ -329,16 +329,16 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * Gets the entity info map.
 	 *
 	 * @param matchType  the match type
-	 * @param demoEntity the demo entity
+	 * @param identityInfos the demo entity
 	 * @param language
 	 * @return the entity info map
 	 * @throws IdAuthenticationBusinessException
 	 * @throws Exception
 	 */
-	public Map<String, String> getIdEntityInfoMap(MatchType matchType, Map<String, List<IdentityInfoDTO>> demoEntity,
+	public Map<String, String> getIdEntityInfoMap(MatchType matchType, Map<String, List<IdentityInfoDTO>> identityInfos,
 			String language) throws IdAuthenticationBusinessException {
 		List<String> propertyNames = getIdMappingValue(matchType.getIdMapping(), matchType);
-		Map<String, String> identityValuesMap = getIdentityValuesMap(matchType, propertyNames, language, demoEntity);
+		Map<String, String> identityValuesMap = getIdentityValuesMap(matchType, propertyNames, language, identityInfos);
 		return matchType.getEntityInfoMapper().apply(identityValuesMap);
 	}
 
@@ -848,9 +848,8 @@ public class IdInfoHelper implements IdInfoFetcher {
 			try {
 				bdbBasedOnType = cbeffUtil.getBDBBasedOnType(CryptoUtil.decodeBase64(identityValue.get()),
 						type.getType(), null);
-
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
+				// TODO Add corresponding error code and message
 				throw new IdAuthenticationBusinessException("Inside getCbeffValues", "", e);
 			}
 			return bdbBasedOnType.entrySet().stream()

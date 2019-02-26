@@ -166,7 +166,7 @@ public enum BioAuthType implements AuthType {
 			return BioAuthType.getIrisValuesCountInIdentity(reqDTO, helper);
 		}
 	},
-	FACE_IMG("faceImg", Collections.emptySet(), "Face", 1) {
+	FACE_IMG("faceImg", Collections.emptySet(), "face", 1) {
 		@Override
 		protected Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
 			// TODO

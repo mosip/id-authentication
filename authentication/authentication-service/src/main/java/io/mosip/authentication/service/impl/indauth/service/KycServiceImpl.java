@@ -41,6 +41,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.indauth.service.bio.BioMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -84,7 +85,7 @@ public class KycServiceImpl implements KycService {
 
 	/** The demo helper. */
 	@Autowired
-	private IdInfoHelper demoHelper;
+	private IdInfoHelper idInfoHelper;
 
 	/** The pdf generator. */
 	@Autowired
@@ -237,10 +238,10 @@ public class KycServiceImpl implements KycService {
 		pdfDetails.put("uin_label_sec", messageSource.getMessage("uin_label", null, new Locale(secondaryLanguage)));
 		pdfDetails.put("name_label_pri", messageSource.getMessage("name_label", null, LocaleContextHolder.getLocale()));
 		pdfDetails.put("name_label_sec", messageSource.getMessage("name_label", null, new Locale(secondaryLanguage)));
-		pdfDetails.put("name_pri", demoHelper.getEntityInfoAsString(DemoMatchType.NAME, filteredIdentityInfo));
-		String langCode = demoHelper.getLanguageCode(LanguageType.SECONDARY_LANG);
+		pdfDetails.put("name_pri", idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, filteredIdentityInfo));
+		String langCode = idInfoHelper.getLanguageCode(LanguageType.SECONDARY_LANG);
 		pdfDetails.put("name_sec",
-				demoHelper.getEntityInfoAsString(DemoMatchType.NAME, langCode, filteredIdentityInfo));
+				idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, langCode, filteredIdentityInfo));
 		faceDetails(filteredIdentityInfo, maskedUin, pdfDetails);
 		return pdfDetails;
 	}
@@ -279,10 +280,15 @@ public class KycServiceImpl implements KycService {
 	 *
 	 * @param filteredIdentityInfo the filtered identity info
 	 * @return the face details
+	 * @throws IdAuthenticationBusinessException
 	 */
-	private Optional<String> getFaceDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo) {
-		return filteredIdentityInfo.entrySet().stream().filter(e -> e.getKey().equals("face"))
-				.flatMap(val -> val.getValue().stream()).findAny().map(IdentityInfoDTO::getValue);
+	private Optional<String> getFaceDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo)
+			throws IdAuthenticationBusinessException {
+		Map<String, String> valueMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, filteredIdentityInfo, null);
+		if (valueMap != null && !valueMap.isEmpty() && valueMap.containsKey("face")) {
+			return Optional.ofNullable(valueMap.values().stream().findFirst().orElse(""));
+		}
+		return null;
 	}
 
 	/**
