@@ -119,7 +119,7 @@ public class BookingServiceUtil {
 	 */
 	@Value("${demographic.resource.url}")
 	private String preRegResourceUrl;
-	
+
 	@Value("${timeSpanCheck}")
 	private long timeSpanCheck;
 
@@ -161,8 +161,7 @@ public class BookingServiceUtil {
 				log.error("sessionId", "idType", "id",
 						"In callRegCenterDateRestService method of Booking Service Util for JsonParseException- "
 								+ e1.getMessage());
-				throw new RestCallException(e1.getErrorCode(),
-						e1.getErrorText());
+				throw new RestCallException(e1.getErrorCode(), e1.getErrorText());
 			}
 
 		}
@@ -352,7 +351,8 @@ public class BookingServiceUtil {
 						.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class);
 
 				String statusCode = preRegResponsestatusDto.getStatusCode().trim();
-				if (!statusCode.equals(StatusCodes.BOOKED.getCode())&&!statusCode.equals(StatusCodes.EXPIRED.getCode())) {
+				if (!statusCode.equals(StatusCodes.BOOKED.getCode())
+						&& !statusCode.equals(StatusCodes.EXPIRED.getCode())) {
 					throw new AppointmentCannotBeCanceledException(ErrorCodes.PRG_BOOK_RCI_018.getCode(),
 							ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.getMessage());
 				}
@@ -369,11 +369,14 @@ public class BookingServiceUtil {
 		}
 		return true;
 	}
+
 	public boolean timeSpanCheck(LocalDateTime bookedDateTime) {
 		LocalDateTime current = LocalDateTime.now();
-        long hours=ChronoUnit.MINUTES.between(current, bookedDateTime);
-		if(Math.abs(hours)>=timeSpanCheck) return true;
-		else return false;
+		long hours = ChronoUnit.MINUTES.between(current, bookedDateTime);
+		if (Math.abs(hours) >= timeSpanCheck)
+			return true;
+		else
+			return false;
 	}
 
 	/**
@@ -555,9 +558,12 @@ public class BookingServiceUtil {
 		} else {
 			dateTime.setHoliday(false);
 		}
-		dateTime.setTimeSlots(slotList);
-		dateTime.setDate(dateList.get(i).toString());
-		dateTimeList.add(dateTime);
+		if (!slotList.isEmpty()) {
+			dateTime.setTimeSlots(slotList);
+			dateTime.setDate(dateList.get(i).toString());
+			dateTimeList.add(dateTime);
+		}
+
 	}
 
 	/**

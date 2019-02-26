@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
@@ -175,6 +176,8 @@ public class DemographicServiceTest {
 
 	String fromDate = "";
 	String toDate = "";
+	
+	JSONArray fullname;
 
 	/**
 	 * @throws ParseException
@@ -421,7 +424,6 @@ public class DemographicServiceTest {
 
 		viewDto = new PreRegistrationViewDTO();
 		viewDto.setPreRegistrationId("98746563542672");
-		viewDto.setFullname("rupika");
 		viewDto.setStatusCode(preRegistrationEntity.getStatusCode());
 		viewDto.setBookingRegistrationDTO(bookingRegistrationDTO);
 
@@ -879,7 +881,6 @@ public void getPreRegistrationByDateExceptionTest() {
 
 		viewDto = new PreRegistrationViewDTO();
 		viewDto.setPreRegistrationId("98746563542672");
-		viewDto.setFullname("rupika");
 		viewDto.setStatusCode(preRegistrationEntity.getStatusCode());
 		viewDto.setBookingRegistrationDTO(bookingRegistrationDTO);
 

@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
+import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -33,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
@@ -67,6 +69,7 @@ import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.AuditLogUtil;
+import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
 
 /**
@@ -174,6 +177,9 @@ public class DemographicService {
 		requiredRequestMap.put("id", id);
 		requiredRequestMap.put("ver", ver);
 	}
+	
+	@Autowired
+	CryptoUtil cryptoUtil;
 
 	/*
 	 * This method is used to create the demographic data by generating the unique
@@ -237,12 +243,16 @@ public class DemographicService {
 						StatusCodes.CONSUMED.getCode());
 				if (!serviceUtil.isNull(demographicEntityList)) {
 					for (DemographicEntity demographicEntity : demographicEntityList) {
-						String identityValue = serviceUtil.getValueFromIdentity(
-								demographicEntity.getApplicantDetailJson(), RequestCodes.FULLNAME.getCode());
+						byte[] decryptedString = cryptoUtil.decrypt(demographicEntity.getApplicantDetailJson(), DateUtils.getUTCCurrentDateTime());
+						JSONArray identityValue = serviceUtil.getValueFromIdentity(
+								decryptedString, RequestCodes.FULLNAME.getCode());
+						String postalcode = serviceUtil.getPostalCode(
+								decryptedString, RequestCodes.POSTAL_CODE.getCode());
 						viewDto = new PreRegistrationViewDTO();
 						viewDto.setPreRegistrationId(demographicEntity.getPreRegistrationId());
 						viewDto.setFullname(identityValue);
 						viewDto.setStatusCode(demographicEntity.getStatusCode());
+						viewDto.setPostalCode(postalcode);
 						BookingRegistrationDTO bookingRegistrationDTO = callGetAppointmentDetailsRestService(
 								demographicEntity.getPreRegistrationId());
 						if (bookingRegistrationDTO != null) {
