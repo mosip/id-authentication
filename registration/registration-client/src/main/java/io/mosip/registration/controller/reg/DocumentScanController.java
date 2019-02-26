@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -177,7 +178,12 @@ public class DocumentScanController extends BaseController {
 
 	protected <T> void populateDocumentCategories() {
 
+		/* clearing all the previously added fields */
 		docScanVbox.getChildren().clear();
+		documentComboBoxes.clear();
+		documentVBoxes.clear();
+		initializePreviewSection();
+		
 		Identity identityDto = getIdentityDto();
 		String gender = null;
 		for (ValuesDTO valuesDTO : identityDto.getGender()) {
@@ -210,12 +216,17 @@ public class DocumentScanController extends BaseController {
 		 */
 		Map<String, DocumentDetailsDTO> documentsMap = getDocumentsMapFromSession();
 		if (documentsMap != null && !documentsMap.isEmpty() && !documentVBoxes.isEmpty()) {
-			for (String docCategoryKey : documentVBoxes.keySet()) {
+			Set<String> docCategoryKeys = documentVBoxes.keySet();
+			documentsMap.keySet().retainAll(docCategoryKeys);
+			for (String docCategoryKey : docCategoryKeys) {
 				DocumentDetailsDTO documentDetailsDTO = documentsMap.get(docCategoryKey);
 				if (documentDetailsDTO != null)
 					addDocumentsToScreen(documentDetailsDTO.getValue(), documentDetailsDTO.getFormat(),
 							documentVBoxes.get(docCategoryKey));
 			}
+		}
+		else if (documentVBoxes.isEmpty() && documentsMap != null) {
+			documentsMap.clear();
 		}
 	}
 
