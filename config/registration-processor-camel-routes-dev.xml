@@ -195,7 +195,7 @@
 		<choice>
 			<when>
 				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
-				<to uri="vertx:message-sender-bus" />
+				<!--<to uri="vertx:message-sender-bus" />-->
 				<to uri="vertx:printing-bus" />
 			</when>
 			<when>
