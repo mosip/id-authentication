@@ -38,6 +38,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -59,9 +60,9 @@ public class IrisCaptureController extends BaseController {
 	@FXML
 	private Label leftIrisQualityScore;
 	@FXML
-	private Pane rightIrisPane;
+	private AnchorPane rightIrisPane;
 	@FXML
-	private Pane leftIrisPane;
+	private AnchorPane leftIrisPane;
 	@FXML
 	private Label leftIrisThreshold;
 	@FXML
@@ -258,9 +259,11 @@ public class IrisCaptureController extends BaseController {
 
 			if (irisType.equals(RegistrationConstants.LEFT)) {
 				leftIrisImage.setImage(convertBytesToImage(irisDetailsDTO.getIris()));
+				leftIrisPane.getStyleClass().add("IrisPanesSelected");
 				leftIrisQualityScore.setText(getQualityScoreAsString(irisDetailsDTO.getQualityScore()));
 			} else {
 				rightIrisImage.setImage(convertBytesToImage(irisDetailsDTO.getIris()));
+				rightIrisPane.getStyleClass().add("IrisPanesSelected");
 				rightIrisQualityScore.setText(getQualityScoreAsString(irisDetailsDTO.getQualityScore()));
 			}
 
