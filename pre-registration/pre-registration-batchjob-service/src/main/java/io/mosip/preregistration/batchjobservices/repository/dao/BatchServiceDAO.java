@@ -68,8 +68,9 @@ public class BatchServiceDAO {
 		try {
 			entity = demographicRepository.findBypreRegistrationId(preRegId);
 			if (entity == null) {
-				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_001.getCode(),
-						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());
+				/*throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_001.getCode(),
+						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());*/
+				processedPreIdRepository.deleteBypreRegistrationId(preRegId);
 			}
 
 		} catch (DataAccessLayerException e) {
@@ -117,8 +118,9 @@ public class BatchServiceDAO {
 		try {
 			entity = regAppointmentRepository.getPreRegId(preRegId);
 			if (entity == null) {
-				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_003.getCode(),
-						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());
+				/*throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_003.getCode(),
+						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());*/
+				processedPreIdRepository.deleteBypreRegistrationId(preRegId);
 			}
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_005.getCode(),
