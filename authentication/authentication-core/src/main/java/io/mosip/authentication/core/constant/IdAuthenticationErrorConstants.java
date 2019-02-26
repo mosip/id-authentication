@@ -29,6 +29,7 @@ public enum IdAuthenticationErrorConstants {
 	UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated", "A0102"),
 	INVALID_VID("IDA-MLC-004", "Invalid VID", "A0103"), 
 	EXPIRED_VID("IDA-MLC-005", "Expired VID", "A0104"),
+	UNABLE_PROCESS("IDA-MLC-007","request could not be processed. Please try again"),
 	VID_DEACTIVATED_UIN("IDA-MLC-012","VID corresponding to a deactivated UIN"),// Not
 																											// referenced
 	INACTIVE_VID("IDA-IDV-005", "Inactive VID"), 

@@ -94,20 +94,15 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
-
 		mosipLogger.debug(DEFAULT_SESSION_ID, EVENT_EXCEPTION, "Entered handleAllExceptions",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
-
 		mosipLogger.error(DEFAULT_SESSION_ID, EVENT_EXCEPTION, ex.getClass().getName(),
 				ex.toString() + "\n Request : " + request + "\n Status returned : " + HttpStatus.OK
 						+ "\n" + ExceptionUtils.getStackTrace(ex));
-
 		IDAuthenticationUnknownException unknownException = new IDAuthenticationUnknownException(
 				IdAuthenticationErrorConstants.UNKNOWN_ERROR);
-
 		mosipLogger.debug(DEFAULT_SESSION_ID, EVENT_EXCEPTION, "Changing exception",
 				"Returing exception as " + ex.getClass().toString());
-
 		return new ResponseEntity<>(buildExceptionResponse(unknownException), HttpStatus.OK);
 	}
 
@@ -203,52 +198,42 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @return Object .
 	 */
 	private Object buildExceptionResponse(Exception ex) {
-
 		mosipLogger.debug(DEFAULT_SESSION_ID, "Building exception response", "Entered buildExceptionResponse",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
-
 		BaseAuthResponseDTO authResp = new BaseAuthResponseDTO();
-
 		authResp.setStatus("N");
-
 		if (ex instanceof IdAuthenticationBaseException) {
 			IdAuthenticationBaseException baseException = (IdAuthenticationBaseException) ex;
 			Locale locale = LocaleContextHolder.getLocale();
 			List<String> errorCodes = ((BaseCheckedException) ex).getCodes();
 			Collections.reverse(errorCodes);
-
 			try {
 				if (ex instanceof IDDataValidationException) {
 					IDDataValidationException validationException = (IDDataValidationException) ex;
 					List<Object[]> args = validationException.getArgs();
-
 					List<AuthError> errors = IntStream.range(0, errorCodes.size())
 							.mapToObj(i -> createAuthError(validationException, errorCodes.get(i),
 									messageSource.getMessage(errorCodes.get(i), args.get(i), locale)))
 							.distinct().collect(Collectors.toList());
-
 					authResp.setErr(errors);
 				} else {
 					List<AuthError> errors = IntStream.range(0, errorCodes.size())
 							.mapToObj(i -> createAuthError(baseException, errorCodes.get(i),
 									messageSource.getMessage(errorCodes.get(i), null, locale)))
 							.distinct().collect(Collectors.toList());
-
 					authResp.setErr(errors);
 				}
 			} catch (NoSuchMessageException e) {
 				mosipLogger.error(DEFAULT_SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, e.toString(),
 						"\n" + ExceptionUtils.getStackTrace(e));
 				authResp.setErr(Arrays.<AuthError>asList(
-						createAuthError(baseException, IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorCode(),
-								IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorMessage())));
+						createAuthError(baseException, IdAuthenticationErrorConstants.UNABLE_PROCESS.getErrorCode(),
+								IdAuthenticationErrorConstants.UNABLE_PROCESS.getErrorMessage())));
 			}
 		}
 
 		authResp.setResTime(mapper.convertValue(new Date(), String.class));
-
 		mosipLogger.error(DEFAULT_SESSION_ID, "Response", ex.getClass().getName(), authResp.toString());
-
 		return authResp;
 	}
 

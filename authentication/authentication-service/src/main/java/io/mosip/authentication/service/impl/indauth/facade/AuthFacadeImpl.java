@@ -267,18 +267,14 @@ public class AuthFacadeImpl implements AuthFacade {
 		if (authRequestDTO.getAuthType().isBio()) {
 			AuthStatusInfo bioValidationStatus;
 			try {
-
 				bioValidationStatus = bioAuthService.authenticate(authRequestDTO, uin, idInfo);
 				authStatusList.add(bioValidationStatus);
 				statusInfo = bioValidationStatus;
 			} finally {
-
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
-
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "BioMetric Authentication status :" + statusInfo);
 				saveAndAuditBioAuthTxn(authRequestDTO, isAuth, authRequestDTO.getIdvId(), idType, isStatus,
 						staticTokenId);
-
 			}
 		}
 	}
