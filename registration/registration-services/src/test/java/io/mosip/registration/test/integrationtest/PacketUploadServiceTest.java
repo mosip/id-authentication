@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.eclipse.jdt.internal.core.UserLibrary;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -27,8 +28,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.packet.PacketUploadService;
-import io.mosip.registration.test.integrationtest.Utils.DBUtil;
-import io.mosip.registration.test.integrationtest.Utils.UserLibrary;
 /**
  * @author Leona Mary S
  *
@@ -40,7 +39,7 @@ public class PacketUploadServiceTest extends BaseIntegrationTest {
 	@Autowired
 	PacketUploadService PUploadservice;
 
-	private static Properties prop = UserLibrary.loadPropertiesFile();
+	private static Properties prop = DBUtil.loadPropertiesFile();
 	static List<String> a=new ArrayList<String>(100);
 
 	@BeforeClass
@@ -140,7 +139,7 @@ public class PacketUploadServiceTest extends BaseIntegrationTest {
 		
 		List<String> regIdsData = null;
 		try {
-			regIdsData = PacketUploadServiceTest.testData("src/test/resources/testData/PacketUploadServiceData/PacketSyncService_syncEODPackets_regIds.json");
+			regIdsData = PacketUploadServiceTest.testData("src/test/resources/testData/PacketUploadServiceData/PacketUploadService_syncEODPackets_regIds.json");
 		} catch (IOException | ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

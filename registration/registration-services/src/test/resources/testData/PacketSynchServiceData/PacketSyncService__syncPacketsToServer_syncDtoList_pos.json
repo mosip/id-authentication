@@ -1,9 +1,8 @@
 [  
    {
-   
   "id": "mosip.registration.sync",
   "request": [
-    {
+    {    
       "langCode": "eng",
       "parentRegistrationId": null,
       "registrationId": "10031100110017020190225121028",

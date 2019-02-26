@@ -1,6 +1,8 @@
-package io.mosip.registration.test.integrationtest.Utils;
+package io.mosip.registration.test.integrationtest;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -18,13 +20,9 @@ import javax.naming.spi.DirStateFactory.Result;
 public class DBUtil {
 
 	private static String dbURL = "jdbc:derby:"+System.getProperty("user.dir") +"\\reg;bootPassword=mosip12345";
-			// + System.getProperty("user.dir") + "\\reg;bootPassword=mosip12345";
-	//connect 'jdbc:derby:D:\leona\18_1_19\mosip-test\automation\testFx/reg;bootPassword=mosip12345';
-
-
 	private static Connection conn = null;
 	private static Statement stmt = null;
-	private static Properties prop = UserLibrary.loadPropertiesFile();
+	private static Properties prop = loadPropertiesFile();
 
 	public static void createConnection() {
 		try {
@@ -68,6 +66,29 @@ public class DBUtil {
 			e.printStackTrace();
 		}
 	}
+	
+	public static Properties loadPropertiesFile() {
+		Properties prop = new Properties();
+		InputStream input = null;
+		try {
+			input = new FileInputStream("src\\test\\resources\\testData\\DB_Queries\\Queries.properties");
+			// load a properties file
+			prop.load(input);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return prop;
+
+	}
+
 
 	public static void main(String[] args) throws SQLException {
 		createConnection();

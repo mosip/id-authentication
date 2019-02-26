@@ -26,8 +26,6 @@ import io.mosip.registration.dto.SyncRegistrationDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.sync.PacketSynchService;
-import io.mosip.registration.test.integrationtest.Utils.DBUtil;
-import io.mosip.registration.test.integrationtest.Utils.UserLibrary;
 /**
  * @author Leona Mary S
  *
@@ -39,7 +37,7 @@ public class PacketSynchServiceTest extends BaseIntegrationTest{
 		@Autowired
 		PacketSynchService PsyncService;
 	
-		private static Properties prop = UserLibrary.loadPropertiesFile();
+		private static Properties prop = DBUtil.loadPropertiesFile();
 		static List<String> a=new ArrayList<String>(100);
 	
 		@BeforeClass
@@ -105,7 +103,7 @@ public class PacketSynchServiceTest extends BaseIntegrationTest{
 				System.out.println("Test case 3");
 				List<String> regIds = null;
 				try {
-					regIds = PacketSynchServiceTest.gettestData("src/test/resources/testData/PacketUploadServiceData/PacketSyncService_syncEODPackets_regIds.json");
+					regIds = PacketSynchServiceTest.gettestData("src/test/resources/testData/PacketSynchServiceData/PacketSynchService_syncEODPackets_regIds.json");
 				} catch (IOException | ParseException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
