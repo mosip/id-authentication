@@ -1,0 +1,13 @@
+{
+  "locations": [
+    {
+      "code": "RSK",
+      "name": "Rabat Sale Kenitra",
+      "hierarchyLevel": 1,
+      "hierarchyName": "Region",
+      "parentLocCode": "MOR",
+      "langCode": "eng",
+      "isActive": true
+    }
+  ]
+}

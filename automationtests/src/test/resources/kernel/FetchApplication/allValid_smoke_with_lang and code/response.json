@@ -1,0 +1,11 @@
+{
+  "applicationtypes": [
+    {
+      "code": "001113",
+      "name": "Pre_Reg",
+      "description": "string",
+      "langCode": "eng",
+      "isActive": true
+    }
+  ]
+}

@@ -23,4 +23,28 @@ public class OtpGeneratorRequestDto {
 	@NotBlank(message = "Key can't be empty or null", groups = NullEmptyValidationLevel.class)
 	@Size(min = 3, max = 64, message = "length should be in the range of 3-64", groups = InvalidLengthValidationLevel.class)
 	private String key;
+
+	/**
+	 * Getter for key.
+	 * 
+	 * @return the key.
+	 */
+	public String getKey() {
+		return key;
+	}
+
+	/**
+	 * Setter for key.
+	 * 
+	 * @param key
+	 *            the key.
+	 */
+	public void setKey(String key) {
+		if (key != null) {
+			this.key = key.trim();
+		} else {
+			this.key = key;
+		}
+	}
+
 }

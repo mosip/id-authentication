@@ -1,0 +1,28 @@
+{
+    "registrationCenters": [
+        {
+            "id": "10007",
+            "name": "Souk Khemiss Mograne",
+            "centerTypeCode": "REG",
+            "addressLine1": "Route N1",
+            "addressLine2": "Mograne",
+            "addressLine3": "Morroco",
+            "latitude": "34.405692",
+            "longitude": "-6.433368",
+            "locationCode": "14023",
+            "holidayLocationCode": "KTA",
+            "contactPhone": "734239083",
+            "workingHours": "8:00:00",
+            "languageCode": "eng",
+            "numberOfKiosks": 1,
+            "perKioskProcessTime": "00:15:00",
+            "centerStartTime": "09:00:00",
+            "centerEndTime": "17:00:00",
+            "timeZone": "(GTM+01:00) CENTRAL EUROPEAN TIME",
+            "contactPerson": "Mario Speedwagon",
+            "lunchStartTime": "13:00:00",
+            "lunchEndTime": "14:00:00",
+            "isActive": true
+        }
+    ]
+}

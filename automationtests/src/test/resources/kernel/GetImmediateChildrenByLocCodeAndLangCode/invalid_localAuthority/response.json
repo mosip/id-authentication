@@ -1,0 +1,13 @@
+{
+  "locations": [
+    {
+      "code": "10104",
+      "name": "10104",
+      "hierarchyLevel": 5,
+      "hierarchyName": "Postal Code",
+      "parentLocCode": "HARD",
+      "langCode": "eng",
+      "isActive": true
+    }
+  ]
+}
