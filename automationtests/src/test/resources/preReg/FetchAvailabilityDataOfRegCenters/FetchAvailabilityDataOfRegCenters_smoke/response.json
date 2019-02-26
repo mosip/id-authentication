@@ -1,0 +1,148 @@
+{
+  "err": null,
+  "status": true,
+  "resTime": "2019-01-31T14:43:14.657Z",
+  "response": {
+    "regCenterId": "10045",
+    "centerDetails": [
+      {
+        "date": "2019-02-02",
+        "timeSlots": [
+          {
+            "fromTime": "02:00:00",
+            "toTime": "02:15:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "02:15:00",
+            "toTime": "02:30:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "02:30:00",
+            "toTime": "02:45:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "02:45:00",
+            "toTime": "03:00:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "03:00:00",
+            "toTime": "03:15:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "03:15:00",
+            "toTime": "03:30:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "03:30:00",
+            "toTime": "03:45:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "03:45:00",
+            "toTime": "04:00:00",
+            "availability": 1
+          }
+        ],
+        "holiday": false
+      },
+      {
+        "date": "2019-02-03",
+        "timeSlots": [
+          {
+            "fromTime": "02:00:00",
+            "toTime": "02:15:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "02:15:00",
+            "toTime": "02:30:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "02:30:00",
+            "toTime": "02:45:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "02:45:00",
+            "toTime": "03:00:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "03:00:00",
+            "toTime": "03:15:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "03:15:00",
+            "toTime": "03:30:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "03:30:00",
+            "toTime": "03:45:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "03:45:00",
+            "toTime": "04:00:00",
+            "availability": 1
+          }
+        ],
+        "holiday": false
+      },
+      {
+        "date": "2019-02-04",
+        "timeSlots": [
+          {
+            "fromTime": "02:00:00",
+            "toTime": "02:15:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "02:15:00",
+            "toTime": "02:30:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "02:30:00",
+            "toTime": "02:45:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "02:45:00",
+            "toTime": "03:00:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "03:00:00",
+            "toTime": "03:15:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "03:15:00",
+            "toTime": "03:30:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "03:30:00",
+            "toTime": "03:45:00",
+            "availability": 1
+          },
+          {
+            "fromTime": "03:45:00",
+            "toTime": "04:00:00",
+            "availability": 1
+          }
+        ],
+        "holiday": false
+      }
+    ]
+  }
+}

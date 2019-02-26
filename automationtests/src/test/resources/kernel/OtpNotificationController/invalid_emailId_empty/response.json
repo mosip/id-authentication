@@ -1,0 +1,10 @@
+{
+  "timestamp": 1549365959417,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-NOT-007",
+      "errorMessage": "Email id cannot be empty or null"
+    }
+  ]
+}
