@@ -102,8 +102,8 @@ public class HeaderController extends BaseController {
 	 */
 	public void initialize() {
 
-		LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
-				APPLICATION_ID, "Displaying Registration Officer details");
+		LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+				"Displaying Registration Officer details");
 
 		registrationOfficerName.setText(SessionContext.userContext().getName());
 		registrationOfficeId
@@ -115,7 +115,7 @@ public class HeaderController extends BaseController {
 		menu.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)
 				&& !(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
-			homeSelectionMenu.getItems().remove(0, homeSelectionMenu.getItems().size()-3);
+			homeSelectionMenu.getItems().remove(0, homeSelectionMenu.getItems().size() - 3);
 		} else {
 			homeSelectionMenu.setDisable(false);
 		}
@@ -139,11 +139,7 @@ public class HeaderController extends BaseController {
 			auditFactory.audit(AuditEvent.LOGOUT_USER, Components.NAVIGATION, SessionContext.userContext().getUserId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
-					APPLICATION_ID, "Clearing Session context");
-
-			/** Stop Sync-Data Process */
-			jobConfigurationService.stopScheduler();
+			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID, "Clearing Session context");
 
 			SessionContext.destroySession();
 			SchedulerUtil.stopScheduler();
@@ -153,8 +149,8 @@ public class HeaderController extends BaseController {
 			getScene(loginpage);
 
 		} catch (IOException ioException) {
-			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
-					APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGOUT_PAGE);
 		}
@@ -170,14 +166,22 @@ public class HeaderController extends BaseController {
 	/**
 	 * Sync data through batch jobs.
 	 *
-	 * @param event the event
+	 * @param event
+	 *            the event
 	 */
 	public void syncData(ActionEvent event) {
 
 		AnchorPane syncData;
 		try {
-			auditFactory.audit(AuditEvent.NAV_SYNC_DATA, Components.NAVIGATION, SessionContext.userContext().getUserId(),
-					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+			auditFactory.audit(AuditEvent.NAV_SYNC_DATA, Components.NAVIGATION,
+					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+			ResponseDTO responseDTO = jobConfigurationService.executeAllJobs();
+
+			if (responseDTO.getSuccessResponseDTO() != null) {
+				generateAlert("Sync Success");
+			} else if (responseDTO.getErrorResponseDTOs() != null) {
+				generateAlert("Sync failure");
+			}
 
 			syncData = BaseController.load(getClass().getResource(RegistrationConstants.SYNC_DATA));
 
@@ -188,12 +192,12 @@ public class HeaderController extends BaseController {
 			pane.getChildren().add(syncData);
 
 		} catch (IOException ioException) {
-			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
-					APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-			
-		} catch(RuntimeException runtimeException) {
-			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
-					APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 
 	}
@@ -220,15 +224,15 @@ public class HeaderController extends BaseController {
 
 			}
 		} catch (IOException ioException) {
-			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage());
+			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 		}
 	}
 
 	/**
 	 * Redirects to Device On-Boarding UI Page.
 	 * 
-	 * @param actionEvent is an action event
+	 * @param actionEvent
+	 *            is an action event
 	 */
 	public void onBoardDevice(ActionEvent actionEvent) {
 		LOGGER.info(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
