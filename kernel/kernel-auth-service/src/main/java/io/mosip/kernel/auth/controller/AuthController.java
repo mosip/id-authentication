@@ -4,8 +4,8 @@ import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.entities.*;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
+import io.mosip.kernel.auth.service.AuthService;
 import io.mosip.kernel.auth.service.CustomTokenServices;
-import io.mosip.kernel.auth.service.impl.AuthC;
 import io.swagger.annotations.Api;
 
 import javax.servlet.http.Cookie;
@@ -34,7 +34,7 @@ public class AuthController {
 	private MosipEnvironment mosipEnvironment;
 
 	@Autowired
-	private AuthC authC;
+	private AuthService authService;
 
 	@Autowired
 	CustomTokenServices customTokenServices;
@@ -51,7 +51,7 @@ public class AuthController {
 	public ResponseEntity<AuthNResponse> authenticateUseridPwd(@RequestBody LoginUser loginUser,
 			HttpServletResponse res) throws Exception {
 		AuthNResponse authNResponse = null;
-		AuthNResponseDto authResponseDto = authC.authenticateUser(loginUser);
+		AuthNResponseDto authResponseDto = authService.authenticateUser(loginUser);
 		if (authResponseDto != null) {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
 			authNResponse = new AuthNResponse();
@@ -89,7 +89,7 @@ public class AuthController {
 	@ResponseStatus(value = HttpStatus.OK)
 	public ResponseEntity<AuthNResponse> sendOTP(@RequestBody OtpUser otpUser) throws Exception {
 		AuthNResponse authNResponse = null;
-		AuthNResponseDto authResponseDto = authC.authenticateWithOtp(otpUser);
+		AuthNResponseDto authResponseDto = authService.authenticateWithOtp(otpUser);
 		if (authResponseDto != null) {
 			authNResponse = new AuthNResponse();
 			authNResponse.setMessage(authResponseDto.getMessage());
@@ -109,7 +109,7 @@ public class AuthController {
 	public ResponseEntity<AuthNResponse> userIdOTP(@RequestBody UserOtp userOtp, HttpServletResponse res)
 			throws Exception {
 		AuthNResponse authNResponse = null;
-		AuthNResponseDto authResponseDto = authC.authenticateUserWithOtp(userOtp);
+		AuthNResponseDto authResponseDto = authService.authenticateUserWithOtp(userOtp);
 		if (authResponseDto != null) {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
 			authNResponse = new AuthNResponse();
@@ -133,7 +133,7 @@ public class AuthController {
 	public ResponseEntity<AuthNResponse> clientIdSecretKey(ClientSecret clientSecret, HttpServletResponse res)
 			throws Exception {
 		AuthNResponse authNResponse = null;
-		AuthNResponseDto authResponseDto = authC.authenticateWithSecretKey(clientSecret);
+		AuthNResponseDto authResponseDto = authService.authenticateWithSecretKey(clientSecret);
 		if (authResponseDto != null) {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
 			authNResponse = new AuthNResponse();
@@ -163,7 +163,7 @@ public class AuthController {
 			}
 		}
 
-		MosipUserDtoToken mosipUserDtoToken = authC.validateToken(authToken);
+		MosipUserDtoToken mosipUserDtoToken = authService.validateToken(authToken);
 		if (mosipUserDtoToken != null) {
 			mosipUserDtoToken.setMessage(AuthConstant.TOKEN_SUCCESS_MESSAGE);
 		}
@@ -189,7 +189,7 @@ public class AuthController {
 				authToken = cookie.getValue();
 			}
 		}
-		MosipUserDtoToken mosipUserDtoToken = authC.retryToken(authToken);
+		MosipUserDtoToken mosipUserDtoToken = authService.retryToken(authToken);
 		Cookie cookie = createCookie(mosipUserDtoToken.getToken(), mosipEnvironment.getTokenExpiry());
 		res.addCookie(cookie);
 		return new ResponseEntity<>(mosipUserDtoToken.getMosipUserDto(), HttpStatus.OK);
@@ -212,7 +212,7 @@ public class AuthController {
 				authToken = cookie.getValue();
 			}
 		}
-		AuthNResponse authNResponse = authC.invalidateToken(authToken);
+		AuthNResponse authNResponse = authService.invalidateToken(authToken);
 		return new ResponseEntity<>(authNResponse, HttpStatus.OK);
 	}
 
