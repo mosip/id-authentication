@@ -1411,9 +1411,9 @@ public class DemographicDetailController extends BaseController {
 			saveDetail();
 			SessionContext.map().put("demographicDetail", false);
 			SessionContext.map().put("documentScan", true);
-			if (!isEditPage()) {
+//			if (!isEditPage()) {
 				documentScanController.populateDocumentCategories();
-			}
+//			}
 
 			auditFactory.audit(AuditEvent.REG_DEMO_NEXT, Components.REG_DEMO_DETAILS, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
