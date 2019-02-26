@@ -178,9 +178,9 @@ public class HeaderController extends BaseController {
 			ResponseDTO responseDTO = jobConfigurationService.executeAllJobs();
 
 			if (responseDTO.getSuccessResponseDTO() != null) {
-				generateAlert("Sync Success");
+				generateAlert(RegistrationUIConstants.SYNC_SUCCESS);
 			} else if (responseDTO.getErrorResponseDTOs() != null) {
-				generateAlert("Sync failure");
+				generateAlert(RegistrationUIConstants.SYNC_FAILURE);
 			}
 
 			syncData = BaseController.load(getClass().getResource(RegistrationConstants.SYNC_DATA));

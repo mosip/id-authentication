@@ -716,13 +716,7 @@
 	-fx-border-width: 2.0;
 }
 /* Registration - Biometric - Iris Capture */
-#leftHandPalmPane,#rightHandPalmPane,#thumbPane,#rightIrisPane,#leftIrisPane {
-	-fx-border-color: lightgrey;
-}
-#leftHandPalmPane:focused ,#rightHandPalmPane:focused ,#thumbPane:focused ,#rightIrisPane:focused,
-#leftIrisPane:focused, #applicantPhoto:focused, #exceptionPhoto:focused {
-	-fx-border-color: black;
-}
+
 
 .scanScrollPane {
 	-fx-background-color: white;
@@ -1162,20 +1156,68 @@ Working on new Css by taleev
 }
 
 .fingerPrintPanes{
-	-fx-pref-height: 160px;	
-	-fx-pref-width: 180px;
-	-fx-background-color : #efefef;
+	-fx-pref-height: 160;	
+	-fx-pref-width: 180;
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #F0F0F0;
+	-fx-border-width : 5;
+	-fx-padding : -2.5;
+}
+
+.fingerPrintPanes:focused{
+	-fx-pref-height: 160;	
+	-fx-pref-width: 180;
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #00A6E9;
+	-fx-border-width : 5;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3,3,3,3;
+	
 }
 
 .fingerPrintPanesSelected{
-	-fx-pref-height: 160px;	
-	-fx-pref-width: 180px;
-	-fx-background-color : #FFFFFF;
+	-fx-pref-height: 160;	
+	-fx-pref-width: 180;
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #EFEFEF;
+	-fx-border-width : 5;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3,3,3,3;
 }
 
 .IrisPanes{
-	-fx-pref-height: 160px;	
-	-fx-pref-width: 180px;
+	-fx-pref-height: 160;	
+	-fx-pref-width: 180;
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #FFFFFF;
+	-fx-border-width : 5;
+	-fx-padding : -2.5;
+}
+
+.IrisPanes:focused{
+	-fx-pref-height: 160;	
+	-fx-pref-width: 180;
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #00A6E9;
+	-fx-border-width : 5;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3,3,3,3;
+	
+}
+
+.IrisPanesSelected{
+	-fx-pref-height: 160;	
+	-fx-pref-width: 180;
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #EFEFEF;
+	-fx-border-width : 5;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3,3,3,3;
+}
+.paneAtDisplayIris{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 600px;	
+	-fx-pref-width: 1000px;	
 }
 
 .PhotoCaptureWindow{
@@ -1189,15 +1231,34 @@ Working on new Css by taleev
 	-fx-pref-width: 250px;	
 }
 
-.qualityBox .label{
-	-fx-text-fill: #000000;
+.threshHoldLabel{
+	-fx-tex-fill : #000000;
+	-fx-font-size : 15px;
+}
+
+.qualityLabel{
+	-fx-tex-fill : #000000;
+	-fx-font-size : 15px;
+}
+
+.attemptsLabel{
+	-fx-tex-fill : #000000;
+	-fx-font-size : 15px;
+}
+
+.exceptionLabel{
+	-fx-tex-fill : #000000;
+	-fx-font-size : 15px;
+}
+
+.qualityBoxLabel{
+	-fx-text-fill : #666666;
+	-fx-font-size : 15px;
 }
 
 .paneHeader{
-	-fx-pref-height: 28px;	
-	-fx-pref-width: 200px;
 	-fx-text-fill: #E43391;
-	-fx-font-size : 15px;
+	-fx-font-size : 22px;
 }
 
 .authenticationBiometricSubPane{

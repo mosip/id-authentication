@@ -162,6 +162,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Loading of FingerprintCapture screen started");
 		try {
+
 			scanBtn.setDisable(true);
 
 			EventHandler<Event> mouseClick = event -> {
@@ -399,6 +400,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				rightSlapQualityScore.setText(getQualityScore(item.getQualityScore()));
 			} else if (item.getFingerType().equals(RegistrationConstants.THUMBS)) {
 				thumbImageview.setImage(new Image(new ByteArrayInputStream(item.getFingerPrint())));
+				thumbPane.getStyleClass().add("fingerPrintPanesSelected");
 				thumbsQualityScore.setText(getQualityScore(item.getQualityScore()));
 			}
 		});
@@ -469,7 +471,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 						RegistrationConstants.LEFTHAND_SEGMNTD_FILE_PATHS_USERONBOARD, leftHandPalmImageview,
 
-						leftSlapQualityScore, popupStage);
+						leftSlapQualityScore, popupStage, leftHandPalmPane);
 
 			} else if (selectedPane.getId() == rightHandPalmPane.getId()) {
 
@@ -477,14 +479,14 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 						RegistrationConstants.RIGHTHAND_SEGMNTD_FILE_PATHS_USERONBOARD, rightHandPalmImageview,
 
-						rightSlapQualityScore, popupStage);
+						rightSlapQualityScore, popupStage, rightHandPalmPane);
 
 			} else if (selectedPane.getId() == thumbPane.getId()) {
 
 				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.THUMBS,
 
 						RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD, thumbImageview, thumbsQualityScore,
-						popupStage);
+						popupStage, thumbPane);
 
 			}
 
@@ -527,7 +529,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 						RegistrationConstants.LEFTHAND_SEGMNTD_FILE_PATHS, leftHandPalmImageview,
 
-						leftSlapQualityScore, popupStage);
+						leftSlapQualityScore, popupStage,leftHandPalmPane);
 
 			} else if (selectedPane.getId() == rightHandPalmPane.getId()) {
 
@@ -537,14 +539,14 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 							RegistrationConstants.RIGHTHAND_SEGMNTD_FILE_PATHS, rightHandPalmImageview,
 
-							rightSlapQualityScore, popupStage);
+							rightSlapQualityScore, popupStage, rightHandPalmPane);
 
 				} else {
 					scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.RIGHTPALM,
 
 							RegistrationConstants.RIGHTHAND_SEGMNTD_DUPLICATE_FILE_PATHS, rightHandPalmImageview,
 
-							rightSlapQualityScore, popupStage);
+							rightSlapQualityScore, popupStage, rightHandPalmPane);
 				}
 
 			} else if (selectedPane.getId() == thumbPane.getId()) {
@@ -552,7 +554,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.THUMBS,
 
 						RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS, thumbImageview, thumbsQualityScore,
-						popupStage);
+						popupStage, thumbPane);
 
 			}
 
@@ -578,7 +580,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	private void scanFingers(FingerprintDetailsDTO detailsDTO, List<FingerprintDetailsDTO> fingerprintDetailsDTOs,
 			String fingerType, String[] segmentedFingersPath, ImageView fingerImageView, Label scoreLabel,
-			Stage popupStage) throws RegBaseCheckedException {
+			Stage popupStage, AnchorPane parentPane) throws RegBaseCheckedException {
 
 		ImageView imageView = fingerImageView;
 		Label qualityScoreLabel = scoreLabel;
@@ -618,7 +620,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FP_CAPTURE_SUCCESS);
 
 		popupStage.close();
-
+		parentPane.getStyleClass().add("fingerPrintPanesSelected");
 		imageView.setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 		qualityScoreLabel.setText(getQualityScore(detailsDTO.getQualityScore()));
 		scanBtn.setDisable(true);
