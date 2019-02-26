@@ -1,12 +1,12 @@
 <div *ngIf="input.case === 'APPLICANTS'">
-  <h1 mat-dialog-title>Email / SMS Acknowledgement</h1>
+  <h1 mat-dialog-title> {{ 'dialog.content_applicant' | translate }}</h1>
   <div mat-dialog-content>
     <table class="table-container">
       <tr>
         <td><i class="material-icons">email</i></td>
         <td>
             <mat-form-field>
-                <input matInput placeholder="Enter email ID" (keyup)="validateEmail()" type="text" [(ngModel)]="applicantEmail" />
+                <input matInput placeholder="{{ 'dialog.text_email' | translate}}" (keyup)="validateEmail()" type="text" [(ngModel)]="applicantEmail" />
             </mat-form-field>
         </td>
       </tr>
@@ -14,13 +14,13 @@
         <td><i class="material-icons">chat</i></td>
         <td>
             <mat-form-field>
-                <input matInput placeholder="Enter mobile number" (keyup)="validateMobile()" type="text" [(ngModel)]="applicantNumber" />
+                <input matInput placeholder="{{ 'dialog.text_mobile' | translate}}" (keyup)="validateMobile()" type="text" [(ngModel)]="applicantNumber" />
             </mat-form-field>
         </td>
       </tr>
     </table>
-    <div *ngIf="invalidApplicantNumber"><div>Invalid Mobile Number</div></div>
-    <div *ngIf="invalidApplicantEmail"><div>Invalid Email ID</div></div>
+    <div *ngIf="invalidApplicantNumber"><div>{{ 'dialog.invalidApplicantNumber' | translate }}</div></div>
+    <div *ngIf="invalidApplicantEmail"><div>{{ 'dialog.invalidApplicantEmailId' | translate }}</div></div>
   </div>
   <div mat-dialog-actions>
     <button [disabled]="invalidApplicantNumber || invalidApplicantEmail" mat-button [mat-dialog-close]="inputList" cdkFocusInitial>

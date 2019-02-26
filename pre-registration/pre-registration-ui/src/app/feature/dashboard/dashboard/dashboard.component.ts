@@ -26,6 +26,7 @@ export class DashBoardComponent implements OnInit {
   tempFiles;
   loginId = '';
 
+  secondaryLanguagelabels: any;
   disableModifyDataButton = false;
   disableModifyAppointmentButton = true;
   fetchedDetails = true;
@@ -54,6 +55,10 @@ export class DashBoardComponent implements OnInit {
       this.loginId = params['id'];
     });
     this.initUsers();
+    this.dataStorageService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+      this.secondaryLanguagelabels = response['dashboard'].discard;
+      console.log(this.secondaryLanguagelabels);
+    })
   }
 
   initUsers() {
@@ -162,10 +167,10 @@ export class DashBoardComponent implements OnInit {
       if (selectedOption && Number(selectedOption) === 1) {
         const body = {
           case: 'CONFIRMATION',
-          title: 'Confirm',
-          message: 'The selected application will be deleted. Please confirm.',
-          yesButtonText: 'Confirm',
-          noButtonText: 'Cancel'
+          title: this.secondaryLanguagelabels.title_confirm,
+          message: this.secondaryLanguagelabels.msg_confirm,
+          yesButtonText: this.secondaryLanguagelabels.button_confirm,
+          noButtonText: this.secondaryLanguagelabels.button_cancel
         };
         dialogRef = this.openDialog(body, '250px');
         dialogRef.afterClosed().subscribe(confirm => {
@@ -174,8 +179,8 @@ export class DashBoardComponent implements OnInit {
               response => {
                 const message = {
                   case: 'MESSAGE',
-                  title: 'Success',
-                  message: 'The selected application has been successfully deleted'
+                  title: this.secondaryLanguagelabels.title_success,
+                  message: this.secondaryLanguagelabels.msg_deleted
                 };
                 dialogRef = this.openDialog(message, '250px');
                 const index = this.users.indexOf(element);
@@ -186,8 +191,8 @@ export class DashBoardComponent implements OnInit {
                 console.log(error);
                 const message = {
                   case: 'MESSAGE',
-                  title: 'Error',
-                  message: 'The selected application could not be deleted'
+                  title: this.secondaryLanguagelabels.title_error,
+                  message: this.secondaryLanguagelabels.msg_could_not_deleted
                 };
                 dialogRef = this.openDialog(message, '250px');
               }
@@ -195,8 +200,8 @@ export class DashBoardComponent implements OnInit {
           } else {
             const message = {
               case: 'MESSAGE',
-              title: 'Error',
-              message: 'The selected application could not be deleted'
+              title: this.secondaryLanguagelabels.title_error,
+              message: this.secondaryLanguagelabels.msg_could_not_deleted
             };
             dialogRef = this.openDialog(message, '250px');
           }
@@ -204,10 +209,10 @@ export class DashBoardComponent implements OnInit {
       } else if (selectedOption && Number(selectedOption) === 2) {
         const body = {
           case: 'CONFIRMATION',
-          title: 'Confirm',
-          message: 'The selected application will be deleted. Please confirm.',
-          yesButtonText: 'Confirm',
-          noButtonText: 'Cancel'
+          title: this.secondaryLanguagelabels.title_confirm,
+          message: this.secondaryLanguagelabels.msg_confirm,
+          yesButtonText: this.secondaryLanguagelabels.button_confirm,
+          noButtonText: this.secondaryLanguagelabels.button_cancel
         };
         dialogRef = this.openDialog(body, '250px');
         dialogRef.afterClosed().subscribe(confirm => {
@@ -217,8 +222,8 @@ export class DashBoardComponent implements OnInit {
               response => {
                 const message = {
                   case: 'MESSAGE',
-                  title: 'Success',
-                  message: 'Appointment for the selected application has been successfully deleted'
+                  title: this.secondaryLanguagelabels.title_success,
+                  message: this.secondaryLanguagelabels.msg_deleted
                 };
                 dialogRef = this.openDialog(message, '250px');
                 const index = this.users.indexOf(element);
@@ -232,8 +237,8 @@ export class DashBoardComponent implements OnInit {
                 console.log(error);
                 const message = {
                   case: 'MESSAGE',
-                  title: 'Error',
-                  message: 'Appointment for the selected application could not be deleted'
+                  title: this.secondaryLanguagelabels.title_error,
+                  message: this.secondaryLanguagelabels.msg_could_not_deleted
                 };
                 dialogRef = this.openDialog(message, '250px');
               }
@@ -241,8 +246,8 @@ export class DashBoardComponent implements OnInit {
           } else {
             const message = {
               case: 'MESSAGE',
-              title: 'Error',
-              message: 'Appointment for the selected application could not be deleted'
+              title: this.secondaryLanguagelabels.title_error,
+              message: this.secondaryLanguagelabels.msg_could_not_deleted
             };
             dialogRef = this.openDialog(message, '250px');
           }
