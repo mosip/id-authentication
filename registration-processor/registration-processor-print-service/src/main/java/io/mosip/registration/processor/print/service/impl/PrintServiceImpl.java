@@ -2,7 +2,6 @@ package io.mosip.registration.processor.print.service.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
@@ -88,10 +87,10 @@ public class PrintServiceImpl implements PrintService<byte[]> {
 
 	/** The Constant UIN_CARD_TEMPLATE. */
 	private static final String UIN_CARD_TEMPLATE = "RPR_UIN_CARD_TEMPLATE";
-	
+
 	/** The Constant UIN. */
 	private static final String UIN = "UIN";
-	
+
 	/** The Constant RID. */
 	private static final String RID = "RID";
 
@@ -150,7 +149,7 @@ public class PrintServiceImpl implements PrintService<byte[]> {
 
 	/** The qr string. */
 	private StringBuilder qrString = new StringBuilder();
-	
+
 	/** The is transactional. */
 	private boolean isTransactionSuccessful = false;
 
@@ -171,7 +170,7 @@ public class PrintServiceImpl implements PrintService<byte[]> {
 		try {
 			if (idType.toString().equalsIgnoreCase(UIN)) {
 				uin = idValue;
-			} else if(idType.toString().equalsIgnoreCase(RID)) {
+			} else if (idType.toString().equalsIgnoreCase(RID)) {
 				uin = packetInfoManager.getUINByRid(idValue).get(0);
 				if (uin == null) {
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -179,43 +178,33 @@ public class PrintServiceImpl implements PrintService<byte[]> {
 							PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.name());
 					throw new UINNotFoundInDatabase(PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.getCode());
 				}
-			} 
-			
+			}
+
 			List<String> pathsegments = new ArrayList<>();
 			pathsegments.add(uin);
-			IdResponseDTO response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOSITORY, pathsegments, "", "",
-					IdResponseDTO.class);
+			IdResponseDTO response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOSITORY, pathsegments, "",
+					"", IdResponseDTO.class);
 
 			String jsonString = new JSONObject((Map) response.getResponse().getIdentity()).toString();
 
 			getArtifacts(jsonString);
 			attributes.put(UINCardConstant.UIN, uin);
-			
-			//generating qrcode to be attached in uin card
+
+			// generating qrcode to be attached in uin card
 			byte[] qrCodeBytes = qrCodeGenerator.generateQrCode(qrString.toString(), QrVersion.V30);
 			File qrCode = new File("QrCode.png");
-			FileUtils.writeByteArrayToFile( qrCode, qrCodeBytes);
-			
-			//generating template
+			FileUtils.writeByteArrayToFile(qrCode, qrCodeBytes);
+
+			// generating template
 			InputStream uinArtifact = templateGenerator.getTemplate(UIN_CARD_TEMPLATE, attributes, langCode);
-			
-			//generating pdf
+
+			// generating pdf
 			ByteArrayOutputStream pdf = uinCardGenerator.generateUinCard(uinArtifact, UinCardType.PDF);
-			
+
 			qrCode.delete();
 
 			pdfBytes = pdf.toByteArray();
-			
-			String outputPath = System.getProperty("user.dir");
-			String fileSepetator = System.getProperty("file.separator");
-			File OutPutPdfFile = new File(outputPath + fileSepetator + "html.pdf");
-			FileOutputStream op = new FileOutputStream(OutPutPdfFile);
-			op.write(pdf.toByteArray());
-			op.flush();
-			if (op != null) {
-				op.close();
-			}
-			
+
 			isTransactionSuccessful = true;
 
 		} catch (QrcodeGenerationException e) {
@@ -224,27 +213,27 @@ public class PrintServiceImpl implements PrintService<byte[]> {
 							+ ExceptionUtils.getStackTrace(e));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
-			
+
 		} catch (UINNotFoundInDatabase e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					uin, PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
-			
+
 		} catch (TemplateProcessingFailureException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					uin, PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw new TemplateProcessingFailureException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
-		
+
 		} catch (PDFGeneratorException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					uin, PlatformErrorMessages.RPR_PRT_PDF_NOT_GENERATED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
-			
+
 		} catch (ApisResourceAccessException | IOException | ParseException
 				| io.mosip.kernel.core.exception.IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -252,7 +241,7 @@ public class PrintServiceImpl implements PrintService<byte[]> {
 							+ ExceptionUtils.getStackTrace(e));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
-			
+
 		} finally {
 			String eventId = "";
 			String eventName = "";
@@ -269,8 +258,7 @@ public class PrintServiceImpl implements PrintService<byte[]> {
 				eventName = EventName.EXCEPTION.toString();
 				eventType = EventType.SYSTEM.toString();
 			}
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					uin);
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, uin);
 		}
 
 		return pdfBytes;
