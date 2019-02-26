@@ -801,10 +801,6 @@ public class TemplateGenerator extends BaseService {
 			Map<String, Object> responseMap = new HashMap<>();
 			responseMap.put(RegistrationConstants.TEMPLATE_NAME, writer);
 			setSuccessResponse(response, RegistrationConstants.SUCCESS, responseMap);
-		} catch (ParseException parseException) {
-			setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-			LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
-					parseException.getMessage() + ExceptionUtils.getStackTrace(parseException));
 		} catch (RuntimeException runtimeException) {
 			setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
 			LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
@@ -1026,9 +1022,6 @@ public class TemplateGenerator extends BaseService {
 						"generateNotificationTemplate method has been ended for preparing Notification Template.");
 			}
 			return writer;
-		} catch (ParseException parseException) {
-			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_DATE_PARSER_CODE.getErrorCode(),
-					RegistrationExceptionConstants.REG_PACKET_DATE_PARSER_CODE.getErrorMessage(), parseException);
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.TEMPLATE_GENERATOR_SMS_EXCEPTION,
 					runtimeException.getMessage(), runtimeException);
