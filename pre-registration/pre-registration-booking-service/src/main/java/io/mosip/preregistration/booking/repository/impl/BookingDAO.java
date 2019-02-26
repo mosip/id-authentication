@@ -267,5 +267,14 @@ public class BookingDAO {
 		}
 		return count;
 	}
+	
+	public void deleteRegistrationEntity(RegistrationBookingEntity bookingEnity) {
+		try {
+			registrationBookingRepository.delete(bookingEnity);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
+					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
+		}
+	}
 
 }

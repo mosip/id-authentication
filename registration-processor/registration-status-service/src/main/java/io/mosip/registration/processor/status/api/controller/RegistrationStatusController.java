@@ -107,7 +107,7 @@ Gson gson = new GsonBuilder().serializeNulls().create();
 			response.setId(env.getProperty(REG_STATUS_SERVICE_ID));
 		}
 		response.setError(null);
-		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		response.setVersion(env.getProperty(REG_STATUS_APPLICATION_VERSION));
 		response.setResponse(registrations);
 		response.setError(null);
