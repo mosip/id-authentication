@@ -13,11 +13,10 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
-import io.mosip.registration.dto.RegistrationDTO;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 
 @Component
 public class DateValidation extends BaseController {
@@ -58,11 +57,11 @@ public class DateValidation extends BaseController {
 		dateMapper.put("12", "31");
 	}
 
-	public void validateDate(TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
+	public void validateDate(AnchorPane parentPane, TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
 			TextField localField) {
 
 		try {
-			fxUtils.validateOnType(date, validation, localField);
+			fxUtils.validateOnType(parentPane,date, validation, localField);
 			date.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				int dateVal = 1;
 				if (date.getText().matches("\\d+")) {
@@ -92,10 +91,10 @@ public class DateValidation extends BaseController {
 		}
 	}
 
-	public void validateMonth(TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
+	public void validateMonth(AnchorPane parentPane,TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
 			TextField localField) {
 		try {
-			fxUtils.validateOnType(month, validation, localField);
+			fxUtils.validateOnType(parentPane, month, validation, localField);
 			month.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				if (month.getText().matches("\\d+")) {
 					int monthVal = Integer.parseInt(month.getText());
@@ -163,24 +162,29 @@ public class DateValidation extends BaseController {
 		}
 	}
 
-	public void validateYear(TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
+	public void validateYear(AnchorPane parentPane, TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
 			TextField localField) {
 		try {
-			fxUtils.validateOnType(year, validation, localField);
+			fxUtils.validateOnType(parentPane, year, validation, localField);
 			year.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				if (year.getText().matches("\\d{4}")) {
 					int yearVal = Integer.parseInt(year.getText());
 					LocalDate localDate = LocalDate.now();
 					int minYear = 1900;
-					RegistrationDTO registrationDto = ((RegistrationDTO) SessionContext.map()
-							.get(RegistrationConstants.REGISTRATION_DATA));
-					if (registrationDto.getSelectionListDTO() != null
-							&& registrationDto.getSelectionListDTO().isChild()) {
+					if (getRegistrationDTOFromSession().getSelectionListDTO() != null
+							&& getRegistrationDTOFromSession().getSelectionListDTO().isChild()) {
 						minYear = LocalDate.now().getYear() - 5;
 					}
 					if (yearVal < minYear || yearVal > localDate.getYear()) {
 						year.setText(oldValue);
 					}
+
+					if (getRegistrationDTOFromSession().getSelectionListDTO() != null
+							&& !getRegistrationDTOFromSession().getSelectionListDTO().isChild()
+							&& localDate.getYear() - yearVal <= 5) {
+						year.setText(oldValue);
+					}
+
 					if (!(yearVal % 4 == 0)) {
 						dateMapper.put("2", "28");
 					}

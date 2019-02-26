@@ -31,6 +31,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -70,6 +71,18 @@ public class TemplateGenerator extends BaseService {
 	 * Instance of {@link Logger}
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(TemplateGenerator.class);
+
+	@Value("${DOCUMENT_DISABLE_FLAG}")
+	private String documentDisableFlag;
+
+	@Value("${FINGERPRINT_DISABLE_FLAG}")
+	private String fingerprintDisableFlag;
+
+	@Value("${IRIS_DISABLE_FLAG}")
+	private String irisDisableFlag;
+
+	@Value("${FACE_DISABLE_FLAG}")
+	private String faceDisableFlag;
 
 	@Autowired
 	QrCodeGenerator<QrVersion> qrCodeGenerator;
@@ -199,10 +212,7 @@ public class TemplateGenerator extends BaseService {
 							exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 				}
 
-				templateValues = countMissingIrises(templateValues, registration);
-
-				if (ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)
-						.equals(RegistrationConstants.ENABLE)) {
+				if (irisDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 					try {
 						BufferedImage eyeImage = ImageIO.read(
 								this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_EYE_IMAGE_PATH));
@@ -232,8 +242,7 @@ public class TemplateGenerator extends BaseService {
 					}
 				}
 
-				if (ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-						.equals(RegistrationConstants.ENABLE)) {
+				if (fingerprintDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 					try {
 						BufferedImage leftPalmImage = ImageIO.read(this.getClass()
 								.getResourceAsStream(RegistrationConstants.TEMPLATE_LEFT_SLAP_IMAGE_PATH));
@@ -361,23 +370,28 @@ public class TemplateGenerator extends BaseService {
 						}
 					}
 				}
-				if (ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-						.equals(RegistrationConstants.ENABLE)) {
+				if (fingerprintDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+					boolean leftPalmCaptured = false;
+					boolean rightPalmCaptured = false;
+					boolean thumbsCaptured = false;
 					for (FingerprintDetailsDTO fpDetailsDTO : registration.getBiometricDTO().getApplicantBiometricDTO()
 							.getFingerprintDetailsDTO()) {
 						if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.LEFTPALM)) {
+							leftPalmCaptured = true;
 							byte[] leftPalmBytes = fpDetailsDTO.getFingerPrint();
 							String leftPalmEncodedBytes = StringUtils
 									.newStringUtf8(Base64.encodeBase64(leftPalmBytes, false));
 							templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_LEFT_SLAP,
 									RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + leftPalmEncodedBytes);
 						} else if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.RIGHTPALM)) {
+							rightPalmCaptured = true;
 							byte[] rightPalmBytes = fpDetailsDTO.getFingerPrint();
 							String rightPalmEncodedBytes = StringUtils
 									.newStringUtf8(Base64.encodeBase64(rightPalmBytes, false));
 							templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_RIGHT_SLAP,
 									RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + rightPalmEncodedBytes);
 						} else if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.THUMBS)) {
+							thumbsCaptured = true;
 							byte[] thumbsBytes = fpDetailsDTO.getFingerPrint();
 							String thumbsEncodedBytes = StringUtils
 									.newStringUtf8(Base64.encodeBase64(thumbsBytes, false));
@@ -385,28 +399,22 @@ public class TemplateGenerator extends BaseService {
 									RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + thumbsEncodedBytes);
 						}
 					}
-				}
-
-				if (ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)
-						.equals(RegistrationConstants.ENABLE)) {
-					for (IrisDetailsDTO capturedIris : registration.getBiometricDTO().getApplicantBiometricDTO()
-							.getIrisDetailsDTO()) {
-						if (capturedIris.getIrisType().contains(RegistrationConstants.LEFT)) {
-							byte[] leftIrisBytes = capturedIris.getIris();
-							String leftIrisEncodedBytes = StringUtils
-									.newStringUtf8(Base64.encodeBase64(leftIrisBytes, false));
-							templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_LEFT_EYE,
-									RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + leftIrisEncodedBytes);
-						} else if (capturedIris.getIrisType().contains(RegistrationConstants.RIGHT)) {
-							byte[] rightIrisBytes = capturedIris.getIris();
-							String rightIrisEncodedBytes = StringUtils
-									.newStringUtf8(Base64.encodeBase64(rightIrisBytes, false));
-							templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_RIGHT_EYE,
-									RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + rightIrisEncodedBytes);
-						}
+					if (!leftPalmCaptured) {
+						templateValues.put(RegistrationConstants.TEMPLATE_LEFT_SLAP_CAPTURED,
+								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+					}
+					if (!rightPalmCaptured) {
+						templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_SLAP_CAPTURED,
+								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+					}
+					if (!thumbsCaptured) {
+						templateValues.put(RegistrationConstants.TEMPLATE_THUMBS_CAPTURED,
+								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 					}
 				}
 			}
+
+			templateValues = countMissingIrises(templateValues, registration, templateType);
 
 			templateValues.put(RegistrationConstants.TEMPLATE_DEMO_INFO,
 					applicationLanguageProperties.getString("demographicInformation"));
@@ -447,9 +455,16 @@ public class TemplateGenerator extends BaseService {
 					localProperties.getString("ageField"));
 			templateValues.put(RegistrationConstants.TEMPLATE_AGE,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge(), null));
-			templateValues.put(RegistrationConstants.TEMPLATE_YEARS_USER_LANG,
-					applicationLanguageProperties.getString("years"));
-			templateValues.put(RegistrationConstants.TEMPLATE_YEARS_LOCAL_LANG, localProperties.getString("years"));
+
+			if (!getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge(), null)
+					.isEmpty()) {
+				templateValues.put(RegistrationConstants.TEMPLATE_YEARS_USER_LANG,
+						applicationLanguageProperties.getString("years"));
+				templateValues.put(RegistrationConstants.TEMPLATE_YEARS_LOCAL_LANG, localProperties.getString("years"));
+			} else {
+				templateValues.put(RegistrationConstants.TEMPLATE_YEARS_USER_LANG, RegistrationConstants.EMPTY);
+				templateValues.put(RegistrationConstants.TEMPLATE_YEARS_LOCAL_LANG, RegistrationConstants.EMPTY);
+			}
 			templateValues.put(RegistrationConstants.TEMPLATE_FOREIGNER_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("foreigner"));
 			templateValues.put(RegistrationConstants.TEMPLATE_FOREIGNER_LOCAL_LANG_LABEL,
@@ -541,8 +556,7 @@ public class TemplateGenerator extends BaseService {
 			templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER, getValue(
 					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getCnieNumber(), null));
 
-			if (ApplicationContext.map().get(RegistrationConstants.DOCUMENT_DISABLE_FLAG)
-					.equals(RegistrationConstants.ENABLE)) {
+			if (documentDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 				templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_USER_LANG_LABEL,
 						applicationLanguageProperties.getString("documents"));
 				templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG_LABEL,
@@ -569,7 +583,7 @@ public class TemplateGenerator extends BaseService {
 							.getProofOfDateOfBirth().getValue());
 				}
 				templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS, documentsList.toString());
-				templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG, documentsList.toString());
+				templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG, RegistrationConstants.EMPTY);
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_ENABLED,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
@@ -577,6 +591,8 @@ public class TemplateGenerator extends BaseService {
 
 			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("biometricsHeading"));
+			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_LOCAL_LANG_LABEL,
+					localProperties.getString("biometricsHeading"));
 			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("biometrics_captured"));
 			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED_LOCAL_LANG_LABEL,
@@ -595,39 +611,40 @@ public class TemplateGenerator extends BaseService {
 					capturedIris.size() };
 
 			StringBuilder biometricsCaptured = new StringBuilder();
+			StringBuilder biometricsCapturedLocalLang = new StringBuilder();
 
-			if (ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-					.equals(RegistrationConstants.ENABLE)) {
+			if (fingerprintDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 				biometricsCaptured
 						.append(MessageFormat.format((String) applicationLanguageProperties.getString("fingersCount"),
 								String.valueOf(fingersAndIrises[0])));
+				biometricsCapturedLocalLang.append(MessageFormat.format(localProperties.getString("fingersCount"),
+						String.valueOf(fingersAndIrises[0])));
 			}
-			if (ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)
-					.equals(RegistrationConstants.ENABLE)) {
+			if (irisDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 				if (biometricsCaptured.length() > 0) {
 					biometricsCaptured.append(",");
 				}
 				biometricsCaptured
 						.append(MessageFormat.format((String) applicationLanguageProperties.getString("irisCount"),
 								String.valueOf(fingersAndIrises[1])));
+				biometricsCapturedLocalLang.append(MessageFormat.format(localProperties.getString("irisCount"),
+						String.valueOf(fingersAndIrises[1])));
 			}
-			if (ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)
-					.equals(RegistrationConstants.ENABLE)) {
+			if (faceDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 				if (biometricsCaptured.length() > 0) {
 					biometricsCaptured.append(",");
 				}
 				biometricsCaptured.append(applicationLanguageProperties.getString("faceCount"));
+				biometricsCapturedLocalLang.append(localProperties.getString("faceCount"));
 			}
 
-			if (ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-					.equals(RegistrationConstants.ENABLE)
-					|| ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)
-							.equals(RegistrationConstants.ENABLE)
-					|| ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)
-							.equals(RegistrationConstants.ENABLE)) {
+			if (fingerprintDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)
+					|| irisDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)
+					|| faceDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 
 				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED, biometricsCaptured);
-				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED_LOCAL_LANG, biometricsCaptured);
+				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED_LOCAL_LANG,
+						biometricsCapturedLocalLang);
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_ENABLED,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
@@ -652,8 +669,7 @@ public class TemplateGenerator extends BaseService {
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			}
 
-			if (ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)
-					.equals(RegistrationConstants.ENABLE)) {
+			if (faceDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 				templateValues.put(RegistrationConstants.TEMPLATE_PHOTO_USER_LANG,
 						applicationLanguageProperties.getString("individualphoto"));
 				templateValues.put(RegistrationConstants.TEMPLATE_PHOTO_LOCAL_LANG,
@@ -669,8 +685,7 @@ public class TemplateGenerator extends BaseService {
 			}
 
 			// iris is configured
-			if (ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)
-					.equals(RegistrationConstants.ENABLE)) {
+			if (irisDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 				templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE_USER_LANG_LABEL,
 						applicationLanguageProperties.getString("lefteye"));
 				templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE_LOCAL_LANG_LABEL,
@@ -679,7 +694,13 @@ public class TemplateGenerator extends BaseService {
 						applicationLanguageProperties.getString("righteye"));
 				templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_EYE_LOCAL_LANG_LABEL,
 						localProperties.getString("righteye"));
+				templateValues.put(RegistrationConstants.TEMPLATE_IRIS_DISABLED,
+						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			} else {
+				if (!faceDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+					templateValues.put(RegistrationConstants.TEMPLATE_IRIS_DISABLED,
+							RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+				}
 				templateValues.put(RegistrationConstants.TEMPLATE_IRIS_ENABLED,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			}
@@ -792,34 +813,82 @@ public class TemplateGenerator extends BaseService {
 		return response;
 	}
 
-	private Map<String, Object> countMissingIrises(Map<String, Object> templateValues, RegistrationDTO registration) {
-		boolean missingLeftIris = false;
-		boolean missingRightIris = false;
-
-		List<BiometricExceptionDTO> exceptionBiometrics = registration.getBiometricDTO().getApplicantBiometricDTO()
-				.getBiometricExceptionDTO();
-		if (exceptionBiometrics != null) {
-			for (BiometricExceptionDTO exceptionBiometric : exceptionBiometrics) {
-				if (exceptionBiometric.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)) {
-					if (exceptionBiometric.getMissingBiometric().toLowerCase()
-							.contains(RegistrationConstants.LEFT.toLowerCase())) {
-						missingLeftIris = true;
-					} else if (exceptionBiometric.getMissingBiometric().toLowerCase()
-							.contains(RegistrationConstants.RIGHT.toLowerCase())) {
-						missingRightIris = true;
+	private Map<String, Object> countMissingIrises(Map<String, Object> templateValues, RegistrationDTO registration,
+			String templateType) {
+		if (irisDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+			List<IrisDetailsDTO> irisDetailsDTOs = registration.getBiometricDTO().getApplicantBiometricDTO()
+					.getIrisDetailsDTO();
+			if (irisDetailsDTOs.size() == 2) {
+				if (templateType.equals(RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE)) {
+					templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE,
+							RegistrationConstants.TEMPLATE_RIGHT_MARK);
+					templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_EYE,
+							RegistrationConstants.TEMPLATE_RIGHT_MARK);
+				} else {
+					for (IrisDetailsDTO capturedIris : registration.getBiometricDTO().getApplicantBiometricDTO()
+							.getIrisDetailsDTO()) {
+						if (capturedIris.getIrisType().contains(RegistrationConstants.LEFT)) {
+							byte[] leftIrisBytes = capturedIris.getIris();
+							String leftIrisEncodedBytes = StringUtils
+									.newStringUtf8(Base64.encodeBase64(leftIrisBytes, false));
+							templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_LEFT_EYE,
+									RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + leftIrisEncodedBytes);
+						} else if (capturedIris.getIrisType().contains(RegistrationConstants.RIGHT)) {
+							byte[] rightIrisBytes = capturedIris.getIris();
+							String rightIrisEncodedBytes = StringUtils
+									.newStringUtf8(Base64.encodeBase64(rightIrisBytes, false));
+							templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_RIGHT_EYE,
+									RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + rightIrisEncodedBytes);
+						}
 					}
 				}
+
+			} else if (irisDetailsDTOs.size() == 1) {
+				if (irisDetailsDTOs.get(0).getIrisType().contains(RegistrationConstants.LEFT)) {
+					if (templateType.equals(RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE)) {
+						templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE,
+								RegistrationConstants.TEMPLATE_RIGHT_MARK);
+						templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_EYE,
+								RegistrationConstants.TEMPLATE_CROSS_MARK);
+					} else {
+						byte[] leftIrisBytes = irisDetailsDTOs.get(0).getIris();
+						String leftIrisEncodedBytes = StringUtils
+								.newStringUtf8(Base64.encodeBase64(leftIrisBytes, false));
+						templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_LEFT_EYE,
+								RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + leftIrisEncodedBytes);
+						templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_EYE_CAPTURED,
+								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+					}
+
+				} else {
+					if (templateType.equals(RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE)) {
+						templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE,
+								RegistrationConstants.TEMPLATE_CROSS_MARK);
+						templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_EYE,
+								RegistrationConstants.TEMPLATE_RIGHT_MARK);
+					} else {
+						byte[] rightIrisBytes = irisDetailsDTOs.get(0).getIris();
+						String rightIrisEncodedBytes = StringUtils
+								.newStringUtf8(Base64.encodeBase64(rightIrisBytes, false));
+						templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_RIGHT_EYE,
+								RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + rightIrisEncodedBytes);
+						templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE_CAPTURED,
+								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+					}
+				}
+			} else if (irisDetailsDTOs.isEmpty()) {
+				if (templateType.equals(RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE)) {
+					templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE,
+							RegistrationConstants.TEMPLATE_CROSS_MARK);
+					templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_EYE,
+							RegistrationConstants.TEMPLATE_CROSS_MARK);
+				} else {
+					templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE_CAPTURED,
+							RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+					templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_EYE_CAPTURED,
+							RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+				}
 			}
-		}
-		if (missingLeftIris) {
-			templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE, RegistrationConstants.TEMPLATE_CROSS_MARK);
-		} else {
-			templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE, RegistrationConstants.TEMPLATE_RIGHT_MARK);
-		}
-		if (missingRightIris) {
-			templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_EYE, RegistrationConstants.TEMPLATE_CROSS_MARK);
-		} else {
-			templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_EYE, RegistrationConstants.TEMPLATE_RIGHT_MARK);
 		}
 		return templateValues;
 	}
@@ -848,29 +917,30 @@ public class TemplateGenerator extends BaseService {
 			}
 			if (missingLeftFingers != 0) {
 				templateValues.put(RegistrationConstants.TEMPLATE_LEFT_SLAP_EXCEPTION_USER_LANG,
-						MessageFormat.format((String) applicationLanguageProperties.getString("exception"),
+						MessageFormat.format((String) applicationLanguageProperties.getString("exceptionCount"),
 								String.valueOf(missingLeftFingers)));
-				templateValues.put(RegistrationConstants.TEMPLATE_LEFT_SLAP_EXCEPTION_LOCAL_LANG, MessageFormat
-						.format((String) localProperties.getString("exception"), String.valueOf(missingLeftFingers)));
+				templateValues.put(RegistrationConstants.TEMPLATE_LEFT_SLAP_EXCEPTION_LOCAL_LANG, MessageFormat.format(
+						(String) localProperties.getString("exceptionCount"), String.valueOf(missingLeftFingers)));
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_MISSING_LEFT_FINGERS,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			}
 			if (missingRightFingers != 0) {
 				templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_SLAP_EXCEPTION_USER_LANG,
-						MessageFormat.format((String) applicationLanguageProperties.getString("exception"),
+						MessageFormat.format((String) applicationLanguageProperties.getString("exceptionCount"),
 								String.valueOf(missingRightFingers)));
-				templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_SLAP_EXCEPTION_LOCAL_LANG, MessageFormat
-						.format((String) localProperties.getString("exception"), String.valueOf(missingRightFingers)));
+				templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_SLAP_EXCEPTION_LOCAL_LANG, MessageFormat.format(
+						(String) localProperties.getString("exceptionCount"), String.valueOf(missingRightFingers)));
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_MISSING_RIGHT_FINGERS,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			}
 			if (missingThumbs != 0) {
-				templateValues.put(RegistrationConstants.TEMPLATE_THUMBS_EXCEPTION_USER_LANG, MessageFormat.format(
-						(String) applicationLanguageProperties.getString("exception"), String.valueOf(missingThumbs)));
+				templateValues.put(RegistrationConstants.TEMPLATE_THUMBS_EXCEPTION_USER_LANG,
+						MessageFormat.format((String) applicationLanguageProperties.getString("exceptionCount"),
+								String.valueOf(missingThumbs)));
 				templateValues.put(RegistrationConstants.TEMPLATE_THUMBS_EXCEPTION_LOCAL_LANG, MessageFormat
-						.format((String) localProperties.getString("exception"), String.valueOf(missingThumbs)));
+						.format((String) localProperties.getString("exceptionCount"), String.valueOf(missingThumbs)));
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_MISSING_THUMBS,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);

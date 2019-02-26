@@ -254,19 +254,19 @@ public class JobConfigurationServiceTest {
 		initiateJobTest();
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(packetSyncJob);
 		Mockito.when(packetSyncJob.executeJob(Mockito.anyString(), Mockito.anyString())).thenReturn(new ResponseDTO());
-		jobConfigurationService.executeJob( "1234");
+		jobConfigurationService.executeJob( "1234",RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 	}
 
 	@Test
 	public void executeJobExceptionJobTest() throws SchedulerException {
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenThrow(NoSuchBeanDefinitionException.class);
-		jobConfigurationService.executeJob("packetSyncStatusJob");
+		jobConfigurationService.executeJob("packetSyncStatusJob",RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 	}
 	
 	@Test
 	public void executeJobRunTimeExceptionJobTest() throws SchedulerException {
 		Mockito.when(packetSyncJob.executeJob(Mockito.anyString(),Mockito.anyString())).thenThrow(NoSuchBeanDefinitionException.class);
-		jobConfigurationService.executeJob("packetSyncStatusJob");
+		jobConfigurationService.executeJob("packetSyncStatusJob",RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 	}
 
 	@Test

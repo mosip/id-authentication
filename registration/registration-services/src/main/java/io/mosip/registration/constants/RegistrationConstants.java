@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.RandomStringUtils;
-
 /**
  * Class contains the constants used in Registration application
  * 
@@ -16,9 +14,6 @@ import org.apache.commons.lang3.RandomStringUtils;
  *
  */
 public class RegistrationConstants {
-
-	public static final String CENTER_ID = RandomStringUtils.randomNumeric(5);
-	public static final String MACHINE_ID_GEN = RandomStringUtils.randomNumeric(5);
 
 	/**
 	 * private constructor
@@ -60,9 +55,8 @@ public class RegistrationConstants {
 	public static final String USER_ONBOARD_WEBCAM = "/fxml/UserOnboardWebCamera.fxml";
 	public static final String BIO_EXCEPTION_PAGE = "/fxml/BiometricException.fxml";
 	public static final String SEND_NOTIFICATION_PAGE = "/fxml/SendNotification.fxml";
-	
-	
-	//FXML Id
+
+	// FXML Id
 	public static final String DEMOGRAPHIC_DETAIL = "demographicDetail";
 	public static final String DOCUMENT_SCAN = "documentScan";
 	public static final String DOCUMENT_PANE = "documentPane";
@@ -77,8 +71,8 @@ public class RegistrationConstants {
 	public static final String OPERATOR_AUTHENTICATION = "operatorAuthenticationPane";
 	public static final String ONBOARD_USER_PARENT = "onboardUser";
 	public static final String ONBOARD_USER_SUCCESS = "userOnboardSuccess";
-	
-	//Page Flow
+
+	// Page Flow
 	public static final String VISIBILITY = "visibility";
 	public static final String ONBOARD_LIST = "onboardPageList";
 	public static final String ONBOARD_MAP = "onboardMap";
@@ -89,7 +83,7 @@ public class RegistrationConstants {
 	public static final String CSS_FILE_PATH = "application.css";
 
 	// Images path
-	public static final String CLOSE_IMAGE_PATH = "/images/close.jpg";
+	public static final String CLOSE_IMAGE_PATH = "/images/Close.png";
 	public static final String DOC_STUB_PATH = "/images/PANStubbed.jpg";
 	public static final String FP_IMG_PATH = "/images/fingerprint.jpg";
 	public static final String IRIS_IMG_PATH = "/images/iris.jpg";
@@ -100,7 +94,7 @@ public class RegistrationConstants {
 	public static final String RIGHT_IRIS_IMG_PATH = "/images/Eye.png";
 	public static final String LEFT_IRIS_IMG_PATH = "/images/Eye.png";
 	public static final String VIEW = "/images/View.png";
-	public static final String SELECTION_IMG_PATH = "/images/GreenRoundTick.png";
+	public static final String SCAN = "/images/Scan.png";
 
 	// Authentication
 	public static final String SUPERVISOR_VERIFICATION = "Supervisor Login";
@@ -209,17 +203,18 @@ public class RegistrationConstants {
 	public static final String PACKET_TYPE_UPDATE = "Update";
 	public static final String DOB_TOGGLE = "toggleAgeOrDob";
 	public static final String UIN_UPDATE_CONFIG_FLAG = "UIN_UPDATE_CONFIG_FLAG";
-	public static final String UIN_UPDATE_NAME_ENABLE_FLAG = "UIN_UPDATE.NAME_ENABLE_FLAG";
-	public static final String UIN_UPDATE_AGE_ENABLE_FLAG = "UIN_UPDATE.AGE_ENABLE_FLAG";
-	public static final String UIN_UPDATE_GENDER_ENABLE_FLAG = "UIN_UPDATE.GENDER_ENABLE_FLAG";
-	public static final String UIN_UPDATE_ADDRESS_ENABLE_FLAG = "UIN_UPDATE.ADDRESS_ENABLE_FLAG";
-	public static final String UIN_UPDATE_CONTACT_DTLS_ENABLE_FLG = "UIN_UPDATE.CONTACT_DTLS_ENABLE_FLG";
-	public static final String UIN_UPDATE_PARENT_DTLS_ENABLE_FLG = "UIN_UPDATE.PARENT_DTLS_ENABLE_FLG";
-	public static final String UIN_UPDATE_CNIE_NUMBER_ENABLE_FLAG = "UIN_UPDATE.CNIE_NUMBER_ENABLE_FLAG";
-	public static final String UIN_UPDATE_BIO_EXCEPTION_ENABLE_FLG = "UIN_UPDATE.BIO_EXCEPTION_ENABLE_FLG";
-	public static final String UIN_UPDATE_BIO_FP_ENABLE_FLG = "UIN_UPDATE.BIO_FP_ENABLE_FLG";
-	public static final String UIN_UPDATE_BIO_IRIS_ENABLE_FLG = "UIN_UPDATE.BIO_IRIS_ENABLE_FLG";
-	public static final String UIN_UPDATE_FOREIGNER_ENABLE_FLG = "UIN_UPDATE.FOREIGNER_ENABLE_FLG";
+	public static final String UIN_UPDATE_CONFIG_FIELDS_FROM_DB = "mosip.registration.uin.update.configured.fields";
+	public static final String UIN_UPDATE_NAME = "name";
+	public static final String UIN_UPDATE_AGE = "age";
+	public static final String UIN_UPDATE_ADDRESS = "address";
+	public static final String UIN_UPDATE_CONTACT_DETAILS = "contactDetails";
+	public static final String UIN_UPDATE_FOREIGNER = "foreigner";
+	public static final String UIN_UPDATE_GENDER = "gender";
+	public static final String UIN_UPDATE_PARENT_DETAILS = "parentOrGuardianDetails";
+	public static final String UIN_UPDATE_CNIE_NUMBER = "cnieNumber";
+	public static final String UIN_UPDATE_BIO_EXCEPTION = "biometricException";
+	public static final String UIN_UPDATE_BIO_FP = "biometricFingerprint";
+	public static final String UIN_UPDATE_BIO_IRIS = "biometricIris";
 
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";
@@ -239,15 +234,11 @@ public class RegistrationConstants {
 	public static final String EOD_PROCESS_CONFIG_FLAG = "EOD_PROCESS_CONFIG_FLAG";
 
 	// AES Encryption Constants
-	public static final String AES_KEY_MANAGER_ALG = "aes.algorithm";
-	public static final String AES_KEY_SEED_LENGTH = "aes.keyLengthInBytes";
-	public static final String AES_SESSION_KEY_LENGTH = "aes.keyLengthInBits";
 	public static final String AES_KEY_CIPHER_SPLITTER = "aes.keySplitter";
 
 	// Packet Store Location Constants
 	public static final String PACKET_STORE_LOCATION = "PACKET_STORE_LOCATION";
 	public static final String PACKET_STORE_DATE_FORMAT = "packet.location.dateFormat";
-	public static final String PRE_REG_PACKET_LOCATION = "PRE_REG_PACKET_LOCATION";
 
 	// Packet Creation Constants
 	public static final String ZIP_FILE_EXTENSION = ".zip";
@@ -268,7 +259,6 @@ public class RegistrationConstants {
 	public static final String CBEFF_BIR_UUIDS_MAP_NAME = "CBEFF_BIR_UUIDS";
 	public static final String RSA = "mosip.kernel.keygenerator.asymmetric-algorithm-name";
 	public static final String XML_FILE_FORMAT = ".xml";
-	public static final String FILE_NAME_TYPE_SEPERATOR = ".";
 	public static final String CBEFF_FILE_FORMAT = "cbeff";
 
 	// Validation Types
@@ -282,21 +272,9 @@ public class RegistrationConstants {
 	public static final String PWD_MISMATCH = "Username and Password Not Match";
 
 	// RSA
-	public static final String RSA_ALG = "RSA";
-	public static final String RSA_PUBLIC_KEY_FILE = "../Key_Store/public.key";
-	public static final String RSA_PRIVATE_KEY_FILE = "../Key_Store/private.key";
 	public static final String LOCALHOST = "localhost";
 
 	// Constants for Registration Creation Zip
-	/**
-	 * Specifies the Image type for storing the images in zip file
-	 */
-	public static final String IMAGE_TYPE = ".jpg";
-
-	/**
-	 * Specifies the Document type for storing the documents in zip file
-	 */
-	public static final String DOC_TYPE = ".jpg";
 
 	/**
 	 * Specifies the format for storing the Registration Acknowledgement
@@ -435,6 +413,7 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_DOCUMENTS = "Documents";
 	public static final String TEMPLATE_DOCUMENTS_LOCAL_LANG = "DocumentsLocalLang";
 	public static final String TEMPLATE_BIOMETRICS_USER_LANG_LABEL = "BiometricsUserLangLabel";
+	public static final String TEMPLATE_BIOMETRICS_LOCAL_LANG_LABEL = "BiometricsLocalLangLabel";
 	public static final String TEMPLATE_BIOMETRICS_CAPTURED_USER_LANG_LABEL = "BiometricsCapturedUserLangLabel";
 	public static final String TEMPLATE_BIOMETRICS_CAPTURED_LOCAL_LANG_LABEL = "BiometricsCapturedLocalLangLabel";
 	public static final String TEMPLATE_BIOMETRICS_CAPTURED = "Biometrics";
@@ -514,13 +493,22 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_MODIFY_IMAGE_PATH = "/images/Modify.png";
 	public static final String TEMPLATE_MODIFY_IMAGE_SOURCE = "ModifyImageSource";
 	public static final String TEMPLATE_MODIFY = "Modify";
-	public static final String TEMPLATE_REGISTRATION = "registration";
-	public static final String TEMPLATE_JS_OBJECT = "window";
 	public static final String TEMPLATE_ENCODING = "UTF-8";
 	public static final String TEMPLATE_FACE_CAPTURE_ENABLED = "FaceCaptureEnabled";
 	public static final String TEMPLATE_DOCUMENTS_ENABLED = "DocumentsEnabled";
 	public static final String TEMPLATE_BIOMETRICS_ENABLED = "BiometricsEnabled";
 	public static final String TEMPLATE_IRIS_ENABLED = "IrisEnabled";
+	public static final String TEMPLATE_IRIS_DISABLED = "IrisDisabled";
+	public static final String TEMPLATE_LEFT_EYE_CAPTURED = "leftEyeCaptured";
+	public static final String TEMPLATE_RIGHT_EYE_CAPTURED = "rightEyeCaptured";
+	public static final String TEMPLATE_LEFT_SLAP_CAPTURED = "leftSlapCaptured";
+	public static final String TEMPLATE_RIGHT_SLAP_CAPTURED = "rightSlapCaptured";
+	public static final String TEMPLATE_THUMBS_CAPTURED = "thumbsCaptured";
+
+	public static final String MODIFY_DEMO_INFO = "modifyDemographicInfo";
+	public static final String MODIFY_DOCUMENTS = "modifyDocuments";
+	public static final String MODIFY_BIOMETRICS = "modifyBiometrics";
+	public static final String CLICK = "click";
 
 	// Web Camera Constants
 	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";
@@ -576,10 +564,7 @@ public class RegistrationConstants {
 
 	// Upload Packet
 
-	public static List getStatus() {
-		String[] packetStatus = { "SYNCED", "EXPORTED", "resend", "E" };
-		return Arrays.asList(packetStatus);
-	}
+	public static final List<String> PACKET_UPLOAD_STATUS=Arrays.asList("SYNCED", "EXPORTED", "resend", "E" );
 
 	public static final String PACKET_UPLOAD = "packet_upload";
 	public static final String PACKET_DUPLICATE = "duplicate";
@@ -656,6 +641,7 @@ public class RegistrationConstants {
 	public static final String ONBOARD_DEVICES_MAP_UPDATED = "updatedDevicesMap";
 	public static final String DEVICE_TYPES_ALL_OPTION = "All";
 	public static final String DEVICE_TYPE = "deviceType";
+	public static final String DONGLE_SERIAL_NUMBER = "dongleSerialNumber";
 
 	// Template Name
 	public static final String ACKNOWLEDGEMENT_TEMPLATE = "Ack Template";
@@ -680,8 +666,6 @@ public class RegistrationConstants {
 	public static final String IRIS_DISABLE_FLAG = "IRIS_DISABLE_FLAG";
 	public static final String FACE_DISABLE_FLAG = "FACE_DISABLE_FLAG";
 	public static final String DOCUMENT_DISABLE_FLAG = "DOCUMENT_DISABLE_FLAG";
-	public static final String SEND_NOTIFICATION_DISABLE_FLAG = "SEND_NOTIFICATION_DISABLE_FLAG";
-	public static final String RECAPTURE_TIME = "RECAPTURE_TIME";
 
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
@@ -721,8 +705,6 @@ public class RegistrationConstants {
 	public static final String GPS_ERROR_CODE = "errorCode";
 	public static final String GPS_CAPTURING_EXCEPTION = "GPS_EXCEPTION";
 	public static final String GPS_SIGNAL = "$GP";
-
-	public static final List<String> ONBOARD_DEVICE_TYPES = Arrays.asList("Fingerprint");
 
 	// Documents
 	public static final String POA_DOCUMENT = "POA";
@@ -856,14 +838,7 @@ public class RegistrationConstants {
 	public static final String FETCH_DEVICE_MAPPING_EXCEPTION = DEVICE_ONBOARDING_SERVICE + "MMS-231";
 	public static final String UPDATE_DEVICE_MAPPING_EXCEPTION = DEVICE_ONBOARDING_SERVICE + "MMS-232";
 
-	// ID JSON Conversion
-	private static final String ID_JSON_UTIL = REG_SERVICE_CODE + "IDJ-";
-	public static final String ID_JSON_CONVERSION_EXCEPTION = ID_JSON_UTIL + "JSC-233";
-	public static final String ID_JSON_PARSER_EXCEPTION = ID_JSON_UTIL + "JSC-234";
-	public static final String ID_JSON_FIELD_ACCESS_EXCEPTION = ID_JSON_UTIL + "JSC-235";
-
 	// Exceptions
-
 	private static final String REG_UI_CODE = "REG-UI";
 
 	public static final String REG_UI_LOGIN_LOADER_EXCEPTION = REG_UI_CODE + "RAI-001";
@@ -1019,7 +994,6 @@ public class RegistrationConstants {
 
 	public static final String POLICY_SYNC_SERVICE = "policysync";
 	public static final String KEY_NAME = "KEY_POLICY_SYNC_THRESHOLD_VALUE";
-	public static final String REFERENCE_ID = "10011";
 
 	// Reg Deletion
 	public static final String REGISTRATION_DELETION_BATCH_JOBS_SUCCESS = "Registartion Packets Deletion Successful ";
@@ -1046,6 +1020,7 @@ public class RegistrationConstants {
 	public static final String USER_MACHINE_VALIDATION_CODE = "REG-URE‌-009";
 	public static final String USER_MACHINE_VALIDATION_MSG = "This computer is not mapped to the same Registration Centre as the dongle plugged in.";
 	public static final String USER_ONBOARD_DATA = "UserOnboardBiometricData";
+	public static final String USER_ON_BOARD_THRESHOLD_LIMIT = "USER_ON_BOARD_THRESHOLD_LIMIT";
 
 	// Configuration Constants
 	public static final String AUDIT_LOG_DELETION_CONFIGURED_DAYS = "AUDIT_LOG_DELETION_CONFIGURED_DAYS";
@@ -1076,7 +1051,7 @@ public class RegistrationConstants {
 	// Validations to ignore
 
 	public static List<String> fieldsToExclude() {
-		List<String> fieldToExclude = new ArrayList<String>();
+		List<String> fieldToExclude = new ArrayList<>();
 		fieldToExclude.add("preRegistrationId");
 		fieldToExclude.add("virtualKeyboard");
 		fieldToExclude.add("docPageNumber");
@@ -1084,6 +1059,7 @@ public class RegistrationConstants {
 		fieldToExclude.add("cniOrPinNumberLocalLanguage");
 		fieldToExclude.add("residence");
 		fieldToExclude.add("residenceLocalLanguage");
+		fieldToExclude.add("updateUinId");
 
 		return fieldToExclude;
 
@@ -1097,5 +1073,17 @@ public class RegistrationConstants {
 	// concent of applicant
 	public static final String CONCENT_OF_APPLICANT_SELECTED = "Yes";
 	public static final String CONCENT_OF_APPLICANT_UNSELECTED = "No";
+
+	// User Details
+	public static final String USER_DETAILS_SERVICE_NAME = "user_details";
+	public static final String MAPPER_UTILL = "MAPPER_UTILL";
+	public static final String REG_ID = "regid";
+
+	public static final String CONTENT_TYPE_EMAIL = "EMAIL";
+	public static final String CONTENT_TYPE_MOBILE = "MOBILE";
+
+	// Key-Policy Key validation
+	public static final String VALID_KEY = "VALID KEY";
+	public static final String INVALID_KEY = "Please sync to get latest key from the server before proceeding with this registration.";
 
 }
