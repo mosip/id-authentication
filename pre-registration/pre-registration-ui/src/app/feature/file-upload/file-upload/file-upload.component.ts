@@ -138,15 +138,7 @@ export class FileUploadComponent implements OnInit {
     // const arr = this.router.url.split('/');
     // this.loginId = arr[2];
     this.loginId = this.registration.getLoginId();
-
-    this.dataStroage.getUsers(this.loginId).subscribe(
-      applicants => {
-        console.log('applicants check', applicants);
-
-        this.sharedService.addApplicants(applicants);
-      },
-      err => {},
-      () => {
+    this.getAllApplicants();
         this.allApplicants = [];
         this.sameAs = this.registration.getSameAs();
         this.allApplicants = this.sharedService.getAllApplicants();
@@ -187,8 +179,19 @@ export class FileUploadComponent implements OnInit {
           // this.sortUserFiles();
           this.viewFirstFile();
         }
-      }
-    );
+
+  }
+
+  async getAllApplicants() {
+    await this.dataStroage.getUsers(this.loginId).subscribe(
+      applicants => {
+        console.log('applicants check', applicants);
+
+        this.sharedService.addApplicants(applicants);
+      },
+      err => {},
+      () => {
+      });
   }
 
   sortUserFiles() {
