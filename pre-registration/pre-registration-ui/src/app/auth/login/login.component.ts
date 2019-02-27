@@ -180,6 +180,7 @@ export class LoginComponent implements OnInit {
       clearInterval(this.timer);
       localStorage.setItem('loggedIn', 'true');
       this.authService.setToken();
+
       this.regService.setLoginId(this.inputContactDetails);
       this.router.navigate(['dashboard']);
     }
