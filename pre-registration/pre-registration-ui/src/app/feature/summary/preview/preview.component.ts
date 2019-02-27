@@ -168,12 +168,7 @@ export class PreviewComponent implements OnInit {
   }
 
   navigateNext() {
-    // const arr = this.router.url.split('/');
-    // arr.pop();
-    // arr.push('booking/pick-center');
-    // const url = arr.join('/');
     const url = Utils.getURL(this.router.url, 'booking/pick-center', 2);
     this.router.navigateByUrl(url);
-    // this.router.navigate(['../booking/pick-center'], { relativeTo: this.route });
   }
 }

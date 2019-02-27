@@ -191,6 +191,7 @@ export class TimeSelectionComponent implements OnInit {
               slot.fromTime,
               slot.toTime
             );
+            console.log(name);
             const requestObject = {
               newBookingDetails: bookingData,
               oldBookingDetails: name.status ? (name.status.toLowerCase() !== 'booked' ? null : name.regDto) : null,
