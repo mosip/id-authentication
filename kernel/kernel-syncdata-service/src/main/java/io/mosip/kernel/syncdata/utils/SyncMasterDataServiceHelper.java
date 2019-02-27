@@ -32,12 +32,17 @@ import io.mosip.kernel.syncdata.dto.MachineTypeDto;
 import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.syncdata.dto.ReasonListDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDeviceDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDeviceHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterUserHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingHistoryDto;
 import io.mosip.kernel.syncdata.dto.TemplateDto;
 import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
@@ -64,11 +69,16 @@ import io.mosip.kernel.syncdata.entity.ReasonCategory;
 import io.mosip.kernel.syncdata.entity.ReasonList;
 import io.mosip.kernel.syncdata.entity.RegistrationCenter;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterDevice;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterDeviceHistory;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterMachineDevice;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterMachineDeviceHistory;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterMachineHistory;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterType;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUser;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterUserHistory;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUserMachine;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterUserMachineHistory;
 import io.mosip.kernel.syncdata.entity.Template;
 import io.mosip.kernel.syncdata.entity.TemplateFileFormat;
 import io.mosip.kernel.syncdata.entity.TemplateType;
@@ -94,11 +104,16 @@ import io.mosip.kernel.syncdata.repository.MachineSpecificationRepository;
 import io.mosip.kernel.syncdata.repository.MachineTypeRepository;
 import io.mosip.kernel.syncdata.repository.ReasonCategoryRepository;
 import io.mosip.kernel.syncdata.repository.ReasonListRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterDeviceHistoryRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterDeviceRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterMachineDeviceHistoryRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterMachineDeviceRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterMachineHistoryRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterMachineRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterTypeRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterUserHistoryRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterUserMachineHistoryRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserMachineRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserRepository;
 import io.mosip.kernel.syncdata.repository.TemplateFileFormatRepository;
@@ -180,6 +195,16 @@ public class SyncMasterDataServiceHelper {
 	private RegistrationCenterUserMachineRepository registrationCenterUserMachineRepository;
 	@Autowired
 	private RegistrationCenterUserRepository registrationCenterUserRepository;
+	@Autowired
+	private RegistrationCenterUserHistoryRepository registrationCenterUserHistoryRepository;
+	@Autowired
+	private RegistrationCenterUserMachineHistoryRepository registrationCenterUserMachineHistoryRepository;
+	@Autowired
+	private RegistrationCenterMachineDeviceHistoryRepository registrationCenterMachineDeviceHistoryRepository;
+	@Autowired
+	private RegistrationCenterDeviceHistoryRepository registrationCenterDeviceHistoryRepository;
+	@Autowired
+	private RegistrationCenterMachineHistoryRepository registrationCenterMachineHistoryRepository;
 
 	/**
 	 * Method to fetch machine details by machine id
@@ -199,8 +224,8 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			machineDetailList = machineRepository.findAllLatestCreatedUpdateDeleted(machineId,
-					lastUpdated, timeStampOfNow);
+			machineDetailList = machineRepository.findAllLatestCreatedUpdateDeleted(machineId, lastUpdated,
+					timeStampOfNow);
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
@@ -303,7 +328,8 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			list = registrationCenterRepository.findLatestRegistrationCenterByMachineId(machineId, lastUpdated,currentTimeStamp);
+			list = registrationCenterRepository.findLatestRegistrationCenterByMachineId(machineId, lastUpdated,
+					currentTimeStamp);
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
@@ -741,7 +767,8 @@ public class SyncMasterDataServiceHelper {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			documentCategories = documentCategoryRepository.findAllLatestCreatedUpdateDeleted(lastUpdated,currentTimeStamp);
+			documentCategories = documentCategoryRepository.findAllLatestCreatedUpdateDeleted(lastUpdated,
+					currentTimeStamp);
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
@@ -820,7 +847,7 @@ public class SyncMasterDataServiceHelper {
 	 */
 	@Async
 	public CompletableFuture<List<DeviceSpecificationDto>> getDeviceSpecifications(String machineId,
-			LocalDateTime lastUpdated,LocalDateTime currentTimeStamp) {
+			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
 		List<DeviceSpecification> deviceSpecificationList = null;
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = null;
 		try {
@@ -828,7 +855,7 @@ public class SyncMasterDataServiceHelper {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
 			deviceSpecificationList = deviceSpecificationRepository.findLatestDeviceTypeByMachineId(machineId,
-					lastUpdated,currentTimeStamp);
+					lastUpdated, currentTimeStamp);
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_SPECIFICATION_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -968,7 +995,7 @@ public class SyncMasterDataServiceHelper {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
 			registrationCenterMachines = registrationCenterMachineRepository
-					.findAllLatestByMachineIdCreatedUpdatedDeleted(machineId, lastUpdated, currentTimeStamp);
+					.findAllLatestCreatedUpdatedDeleted(machineId, lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
@@ -1070,6 +1097,127 @@ public class SyncMasterDataServiceHelper {
 			registrationCenterUserDtos = MapperUtils.mapAll(registrationCenterUsers, RegistrationCenterUserDto.class);
 		}
 		return CompletableFuture.completedFuture(registrationCenterUserDtos);
+	}
+
+	@Async
+	public CompletableFuture<List<RegistrationCenterUserHistoryDto>> getRegistrationCenterUserHistory(String regId,
+			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
+		List<RegistrationCenterUserHistoryDto> registrationCenterUserHistoryDtos = null;
+		List<RegistrationCenterUserHistory> registrationCenterUserHistoryList = null;
+		try {
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			registrationCenterUserHistoryList = registrationCenterUserHistoryRepository
+					.findLatestRegistrationCenterUserHistory(regId, lastUpdated, currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			// TODO
+			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_USER_FETCH_EXCEPTION.getErrorCode(),
+					e.getMessage());
+		}
+		if (registrationCenterUserHistoryList != null && !registrationCenterUserHistoryList.isEmpty()) {
+			registrationCenterUserHistoryDtos = MapperUtils.mapAll(registrationCenterUserHistoryList,
+					RegistrationCenterUserHistoryDto.class);
+		}
+		return CompletableFuture.completedFuture(registrationCenterUserHistoryDtos);
+	}
+
+	@Async
+	public CompletableFuture<List<RegistrationCenterUserMachineMappingHistoryDto>> getRegistrationCenterUserMachineMapping(
+			String regId, LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
+		List<RegistrationCenterUserMachineMappingHistoryDto> registrationCenterUserMachineMappingHistoryDtos = null;
+		List<RegistrationCenterUserMachineHistory> registrationCenterUserMachineHistoryList = null;
+		try {
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			registrationCenterUserMachineHistoryList = registrationCenterUserMachineHistoryRepository
+					.findLatestRegistrationCenterUserMachineHistory(regId, lastUpdated, currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			// TODO
+			throw new SyncDataServiceException(
+					MasterDataErrorCode.REG_CENTER_USER_MACHINE_DEVICE_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
+		}
+		if (registrationCenterUserMachineHistoryList != null && !registrationCenterUserMachineHistoryList.isEmpty()) {
+			registrationCenterUserMachineMappingHistoryDtos = MapperUtils.mapAll(
+					registrationCenterUserMachineHistoryList, RegistrationCenterUserMachineMappingHistoryDto.class);
+		}
+		return CompletableFuture.completedFuture(registrationCenterUserMachineMappingHistoryDtos);
+	}
+
+	@Async
+	public CompletableFuture<List<RegistrationCenterMachineDeviceHistoryDto>> getRegistrationCenterMachineDeviceHistoryDetails(
+			String regId, LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
+		List<RegistrationCenterMachineDeviceHistoryDto> registrationCenterMachineDeviceHistoryDtos = null;
+		List<RegistrationCenterMachineDeviceHistory> registrationCenterMachineDeviceHistoryList = null;
+		try {
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			registrationCenterMachineDeviceHistoryList = registrationCenterMachineDeviceHistoryRepository
+					.findLatestRegistrationCenterMachineDeviceHistory(regId, lastUpdated, currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			// TODO
+			throw new SyncDataServiceException(
+					MasterDataErrorCode.REG_CENTER_MACHINE_DEVICE_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
+		}
+		if (registrationCenterMachineDeviceHistoryList != null
+				&& !registrationCenterMachineDeviceHistoryList.isEmpty()) {
+			registrationCenterMachineDeviceHistoryDtos = MapperUtils.mapAll(registrationCenterMachineDeviceHistoryList,
+					RegistrationCenterMachineDeviceHistoryDto.class);
+		}
+		return CompletableFuture.completedFuture(registrationCenterMachineDeviceHistoryDtos);
+	}
+
+	@Async
+	public CompletableFuture<List<RegistrationCenterDeviceHistoryDto>> getRegistrationCenterDeviceHistoryDetails(
+			String regId, LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
+		List<RegistrationCenterDeviceHistoryDto> registrationCenterDeviceHistoryDtos = null;
+		List<RegistrationCenterDeviceHistory> registrationCenterDeviceHistoryList = null;
+		try {
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			registrationCenterDeviceHistoryList = registrationCenterDeviceHistoryRepository
+					.findLatestRegistrationCenterDeviceHistory(regId, lastUpdated, currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			// TODO
+			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_DEVICE_FETCH_EXCEPTION.getErrorCode(),
+					e.getMessage());
+		}
+		if (registrationCenterDeviceHistoryList != null && !registrationCenterDeviceHistoryList.isEmpty()) {
+			registrationCenterDeviceHistoryDtos = MapperUtils.mapAll(registrationCenterDeviceHistoryList,
+					RegistrationCenterDeviceHistoryDto.class);
+		}
+		return CompletableFuture.completedFuture(registrationCenterDeviceHistoryDtos);
+	}
+
+	@Async
+	public CompletableFuture<List<RegistrationCenterMachineHistoryDto>> getRegistrationCenterMachineHistoryDetails(
+			String regId, LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) {
+		List<RegistrationCenterMachineHistoryDto> registrationCenterMachineHistoryDtos = null;
+		List<RegistrationCenterMachineHistory> registrationCenterMachineHistoryList = null;
+		try {
+			if (lastUpdated == null) {
+				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+			}
+			registrationCenterMachineHistoryList = registrationCenterMachineHistoryRepository
+					.findLatestRegistrationCenterMachineHistory(regId,lastUpdated, currentTimeStamp);
+
+		} catch (DataAccessException e) {
+			//TODO
+			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
+					e.getMessage());
+		}
+		if (registrationCenterMachineHistoryList != null && !registrationCenterMachineHistoryList.isEmpty()) {
+			registrationCenterMachineHistoryDtos = MapperUtils.mapAll(registrationCenterMachineHistoryList,
+					RegistrationCenterMachineHistoryDto.class);
+		}
+		return CompletableFuture.completedFuture(registrationCenterMachineHistoryDtos);
 	}
 
 }

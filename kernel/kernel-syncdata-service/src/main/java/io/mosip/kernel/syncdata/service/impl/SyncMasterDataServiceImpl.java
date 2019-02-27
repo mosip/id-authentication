@@ -30,12 +30,17 @@ import io.mosip.kernel.syncdata.dto.MachineTypeDto;
 import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.syncdata.dto.ReasonListDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDeviceDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDeviceHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterUserHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingHistoryDto;
 import io.mosip.kernel.syncdata.dto.TemplateDto;
 import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
@@ -120,6 +125,11 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		CompletableFuture<List<RegistrationCenterMachineDeviceDto>> registrationCenterMachineDevices = null;
 		CompletableFuture<List<RegistrationCenterUserMachineMappingDto>> registrationCenterUserMachines = null;
 		CompletableFuture<List<RegistrationCenterUserDto>> registrationCenterUsers = null;
+		CompletableFuture<List<RegistrationCenterUserHistoryDto>> registrationCenterUserHistoryList = null;
+		CompletableFuture<List<RegistrationCenterUserMachineMappingHistoryDto>> registrationCenterUserMachineMappingHistoryList = null;
+		CompletableFuture<List<RegistrationCenterMachineDeviceHistoryDto>> registrationCenterMachineDeviceHistoryList = null;
+		CompletableFuture<List<RegistrationCenterDeviceHistoryDto>> registrationCenterDeviceHistoryList = null;
+		CompletableFuture<List<RegistrationCenterMachineHistoryDto>> registrationCenterMachineHistoryList = null;
 
 		applications = serviceHelper.getApplications(lastUpdated, currentTimeStamp);
 		machineDetails = serviceHelper.getMachines(machineId, lastUpdated, currentTimeStamp);
@@ -148,26 +158,38 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		validDocumentsMapping = serviceHelper.getValidDocuments(lastUpdated, currentTimeStamp);
 		reasonList = serviceHelper.getReasonList(lastUpdated, currentTimeStamp);
 
-		registrationCenterMachines = serviceHelper.getRegistrationCenterMachines(machineId, lastUpdated,
-				currentTimeStamp);
-		List<RegistrationCenterMachineDto> registrationCenterMachineDto = registrationCenterMachines.get();
+		
+		//List<RegistrationCenterMachineDto> registrationCenterMachineDto = registrationCenterMachines.get();
 
-		String regId = getRegistrationCenterId(registrationCenterMachineDto);
+		String regId = getRegistrationCenterId(registrationCenters.get());
+		registrationCenterMachines = serviceHelper.getRegistrationCenterMachines(regId, lastUpdated,
+				currentTimeStamp);
 		registrationCenterDevices = serviceHelper.getRegistrationCenterDevices(regId, lastUpdated, currentTimeStamp);
 		registrationCenterMachineDevices = serviceHelper.getRegistrationCenterMachineDevices(regId, lastUpdated,
 				currentTimeStamp);
 		registrationCenterUserMachines = serviceHelper.getRegistrationCenterUserMachines(regId, lastUpdated,
 				currentTimeStamp);
 		registrationCenterUsers = serviceHelper.getRegistrationCenterUsers(regId, lastUpdated, currentTimeStamp);
+		registrationCenterUserHistoryList = serviceHelper.getRegistrationCenterUserHistory(regId, lastUpdated,
+				currentTimeStamp);
+		registrationCenterUserMachineMappingHistoryList = serviceHelper.getRegistrationCenterUserMachineMapping(regId,
+				lastUpdated, currentTimeStamp);
+		registrationCenterMachineDeviceHistoryList = serviceHelper
+				.getRegistrationCenterMachineDeviceHistoryDetails(regId, lastUpdated, currentTimeStamp);
+		registrationCenterDeviceHistoryList = serviceHelper.getRegistrationCenterDeviceHistoryDetails(regId,
+				lastUpdated, currentTimeStamp);
+		registrationCenterMachineHistoryList = serviceHelper.getRegistrationCenterMachineHistoryDetails(regId,
+				lastUpdated, currentTimeStamp);
 
-		CompletableFuture
-				.allOf(machineDetails, applications, registrationCenterTypes, registrationCenters, templates,
-						templateFileFormats, reasonCategory, reasonList, holidays, blacklistedWords, biometricTypes,
-						biometricAttributes, titles, languages, devices, documentCategories, documentTypes, idTypes,
-						deviceSpecifications, locationHierarchy, machineSpecification, machineType, templateTypes,
-						deviceTypes, validDocumentsMapping, registrationCenterMachines, registrationCenterDevices,
-						registrationCenterMachineDevices, registrationCenterUserMachines, registrationCenterUsers)
-				.join();
+		CompletableFuture.allOf(machineDetails, applications, registrationCenterTypes, registrationCenters, templates,
+				templateFileFormats, reasonCategory, reasonList, holidays, blacklistedWords, biometricTypes,
+				biometricAttributes, titles, languages, devices, documentCategories, documentTypes, idTypes,
+				deviceSpecifications, locationHierarchy, machineSpecification, machineType, templateTypes, deviceTypes,
+				validDocumentsMapping, registrationCenterMachines, registrationCenterDevices,
+				registrationCenterMachineDevices, registrationCenterUserMachines, registrationCenterUsers,
+				registrationCenterUserHistoryList, registrationCenterUserMachineMappingHistoryList,
+				registrationCenterMachineDeviceHistoryList, registrationCenterDeviceHistoryList,
+				registrationCenterMachineHistoryList).join();
 
 		response.setMachineDetails(machineDetails.get());
 		response.setApplications(applications.get());
@@ -201,14 +223,19 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		response.setRegistrationCenterMachineDevices(registrationCenterMachineDevices.get());
 		response.setRegistrationCenterUserMachines(registrationCenterUserMachines.get());
 		response.setRegistrationCenterUsers(registrationCenterUsers.get());
+		response.setRegistrationCenterUserHistory(registrationCenterUserHistoryList.get());
+		response.setRegistrationCenterUserMachineMappingHistory(registrationCenterUserMachineMappingHistoryList.get());
+		response.setRegistrationCenterDeviceHistory(registrationCenterDeviceHistoryList.get());
+		response.setRegistrationCenterMachineHistory(registrationCenterMachineHistoryList.get());
+		response.setRegistrationCenterMachineDeviceHistory(registrationCenterMachineDeviceHistoryList.get());
 
 		return response;
 	}
 
-	private static String getRegistrationCenterId(List<RegistrationCenterMachineDto> registrationCenterMachineDto) {
+	private static String getRegistrationCenterId(List<RegistrationCenterDto> registrationCenterDto) {
 		String regId = null;
-		if (registrationCenterMachineDto != null && !registrationCenterMachineDto.isEmpty()) {
-			regId = registrationCenterMachineDto.get(0).getRegCenterId();
+		if (registrationCenterDto != null && !registrationCenterDto.isEmpty()) {
+			regId = registrationCenterDto.get(0).getId();
 		}
 		return regId;
 	}
