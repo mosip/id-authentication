@@ -53,8 +53,8 @@ public class CheckSumValidation {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public boolean checksumvalidation(String registrationId, Identity identity) throws IOException {
-		List<FieldValueArray> hashSequence = identity.getHashSequence();
-		List<String> hashSequence2 = identity.getHashSequence2();
+		List<FieldValueArray> hashSequence = identity.getHashSequence1();
+		List<FieldValueArray> hashSequence2 = identity.getHashSequence2();
 
 		Boolean isValid = false;
 
@@ -68,6 +68,7 @@ public class CheckSumValidation {
 		// Generating hash bytes using files
 		CheckSumGeneration checkSumGeneration = new CheckSumGeneration(adapter);
 		byte[] generatedHash = checkSumGeneration.generateIdentityHash(hashSequence, registrationId);
+		
 		byte[] packetOsiHash = checkSumGeneration.generatePacketOSIHash(hashSequence2, registrationId);
 
 		Boolean isDataCheckSumEqual = Arrays.equals(generatedHash, packetDataHashByte);

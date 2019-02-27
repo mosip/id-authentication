@@ -4,12 +4,13 @@ package io.mosip.registration.processor.core.spi.packetmanager;
 import java.util.List;
 
 import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
-import io.mosip.registration.processor.core.packet.dto.Document;
+
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
+import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 
 /**
  * The Interface PacketInfoManager.
