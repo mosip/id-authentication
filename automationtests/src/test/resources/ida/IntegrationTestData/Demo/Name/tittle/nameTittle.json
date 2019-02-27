@@ -1,0 +1,67 @@
+{
+  "titleList": [
+    {
+      "code": "MIR",
+      "titleName": "Mr",
+      "titleDescription": "Male Title",
+      "isActive": true,
+      "langCode": "eng"
+    },
+    {
+      "code": "MRS",
+      "titleName": "Mrs",
+      "titleDescription": "Female Title",
+      "isActive": true,
+      "langCode": "eng"
+    },
+    {
+      "code": "MIS",
+      "titleName": "Miss",
+      "titleDescription": "Unmarried Female Title",
+      "isActive": true,
+      "langCode": "eng"
+    },
+    {
+      "code": "MIR",
+      "titleName": "أستاذ",
+      "titleDescription": "العنوان الذكور",
+      "isActive": true,
+      "langCode": "ara"
+    },
+    {
+      "code": "MRS",
+      "titleName": "ست ",
+      "titleDescription": "عنوان أنثى",
+      "isActive": true,
+      "langCode": "ara"
+    },
+    {
+      "code": "MIS",
+      "titleName": "آنسة ",
+      "titleDescription": "العنوان الإناث غير المتزوجات",
+      "isActive": true,
+      "langCode": "ara"
+    },
+    {
+      "code": "MIR",
+      "titleName": "Monsieur",
+      "titleDescription": "Titre masculin",
+      "isActive": true,
+      "langCode": "fra"
+    },
+    {
+      "code": "MRS",
+      "titleName": "Madame",
+      "titleDescription": "Titre féminin",
+      "isActive": true,
+      "langCode": "fra"
+    },
+    {
+      "code": "MIS",
+      "titleName": "Mademoiselle",
+      "titleDescription": "Titre de femme célibataire",
+      "isActive": true,
+      "langCode": "fra"
+    }
+  ]
+}
