@@ -18,8 +18,9 @@ public class BioInfo {
 	/** Obtain biometric information like face,iris or finger*/
 	private String bioType;
 	
-	/** Obtain device information like  device-id, manufacturer, model of device*/
-	private DeviceInfo deviceInfo;
+	/** variable to hold deviceId*/
+	private String deviceId;
 	
-	
+	/** variable to hold deviceProviderID*/
+	private String deviceProviderID;
 }

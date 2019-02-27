@@ -101,7 +101,7 @@ public enum PinAuthType implements AuthType {
 	 */
 	@Override
 	public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher idInfoFetcher) {
-		return Optional.of(authReq).map(AuthRequestDTO::getAuthType).filter(authTypePredicate).isPresent();
+		return Optional.of(authReq).map(AuthRequestDTO::getRequestedAuth).filter(authTypePredicate).isPresent();
 	}
 
 	/*

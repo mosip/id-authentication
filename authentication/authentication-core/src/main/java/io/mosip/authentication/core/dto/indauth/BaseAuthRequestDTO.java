@@ -15,5 +15,6 @@ public class BaseAuthRequestDTO {
 	/** The value for Id*/
 	private String id;
 	
-	//private String ver;
+	/** The value for version*/
+	private String version;
 }

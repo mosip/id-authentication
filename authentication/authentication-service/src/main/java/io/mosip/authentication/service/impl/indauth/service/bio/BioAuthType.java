@@ -38,7 +38,7 @@ public enum BioAuthType implements AuthType {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
 			Map<String, Object> valueMap = new HashMap<>();
-			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
+			authRequestDTO.getBioMetadata().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
 						BiFunction<String, String, Double> func = idInfoFetcher
 								.getFingerPrintProvider(bioinfovalue)::matchMinutiae;
@@ -63,7 +63,7 @@ public enum BioAuthType implements AuthType {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
 			Map<String, Object> valueMap = new HashMap<>();
-			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
+			authRequestDTO.getBioMetadata().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
 						BiFunction<String, String, Double> func = idInfoFetcher
 								.getFingerPrintProvider(bioinfovalue)::matchImage;
@@ -83,7 +83,7 @@ public enum BioAuthType implements AuthType {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
 			Map<String, Object> valueMap = new HashMap<>();
-			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
+			authRequestDTO.getBioMetadata().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
 						BiFunction<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
 								.getFingerPrintProvider(bioinfovalue)::matchMultiMinutae;
@@ -116,13 +116,13 @@ public enum BioAuthType implements AuthType {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
 			Map<String, Object> valueMap = new HashMap<>();
-			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
+			authRequestDTO.getBioMetadata().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
 						BiFunction<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
 								.getIrisProvider(bioinfovalue)::matchMultiImage;// TODO add provider
 						valueMap.put(IrisProvider.class.getSimpleName(), func);
 					});
-			valueMap.put("idvid", authRequestDTO.getIdvId());
+			valueMap.put("idvid",AuthType.getUinOrVid(authRequestDTO));
 			return valueMap;
 		}
 
@@ -151,13 +151,13 @@ public enum BioAuthType implements AuthType {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
 			Map<String, Object> valueMap = new HashMap<>();
-			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
+			authRequestDTO.getBioMetadata().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
 						BiFunction<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
 								.getIrisProvider(bioinfovalue)::matchImage;// TODO add provider
 						valueMap.put(IrisProvider.class.getSimpleName(), func);
 					});
-			valueMap.put("idvid", authRequestDTO.getIdvId());
+			valueMap.put("idvid", AuthType.getUinOrVid(authRequestDTO));
 			return valueMap;
 		}
 
@@ -251,7 +251,7 @@ public enum BioAuthType implements AuthType {
 	 */
 	@Override
 	public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher helper) {
-		return authReq.getAuthType().isBio() && getBioIdentityValuesCount(authReq, helper) == getCount();
+		return authReq.getRequestedAuth().isBio() && getBioIdentityValuesCount(authReq, helper) == getCount();
 	}
 
 	/**
@@ -302,7 +302,7 @@ public enum BioAuthType implements AuthType {
 	 */
 	@Override
 	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
-		return Optional.ofNullable(authRequestDTO.getBioInfo()).flatMap(
+		return Optional.ofNullable(authRequestDTO.getBioMetadata()).flatMap(
 				list -> list.stream().filter(bioInfo -> bioInfo.getBioType().equalsIgnoreCase(getType())).findAny())
 				.isPresent();
 	}

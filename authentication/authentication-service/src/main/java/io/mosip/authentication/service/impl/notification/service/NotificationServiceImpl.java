@@ -121,7 +121,7 @@ public class NotificationServiceImpl implements NotificationService {
 		values.put(NAME, infoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo));
 		String resTime = authResponseDTO.getResponseTime();
 
-		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(authRequestDTO.getReqTime());
+		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(authRequestDTO.getRequestTime());
 		ZoneId zone = zonedDateTime2.getZone();
 
 		ZonedDateTime dateTimeReq = ZonedDateTime.parse(resTime);
@@ -170,7 +170,7 @@ public class NotificationServiceImpl implements NotificationService {
 	public void sendOtpNotification(OtpRequestDTO otpRequestDto, String otp, String uin, String email,
 			String mobileNumber, Map<String, List<IdentityInfoDTO>> idInfo) {
 
-		Entry<String, String> dateAndTime = getDateAndTime(otpRequestDto.getReqTime(),
+		Entry<String, String> dateAndTime = getDateAndTime(otpRequestDto.getRequestTime(),
 				env.getProperty(DATETIME_PATTERN));
 		String date = dateAndTime.getKey();
 		String time = dateAndTime.getValue();

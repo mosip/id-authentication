@@ -131,7 +131,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
 	private void validateMUAPermission(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
 		String key = ACCESS_LEVEL
-				+ Optional.ofNullable(kycAuthRequestDTO.getAuthRequest()).map(AuthRequestDTO::getTspID).orElse("");
+				+ Optional.ofNullable(kycAuthRequestDTO.getAuthRequest()).map(AuthRequestDTO::getPartnerID).orElse("");
 		String accesslevel = environment.getProperty(key);
 		if (accesslevel != null && accesslevel.equals(KycType.NONE.getType())) {
 			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
@@ -152,7 +152,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 			boolean isValidAuthtype = kycAuthRequestDTO.getEKycAuthType().chars().mapToObj(i -> (char) i)
 					.map(String::valueOf)
 					.allMatch(authTypeStr -> EkycAuthType.getEkycAuthType(authTypeStr).filter(eAuthType -> eAuthType
-							.getAuthTypePredicate().test(kycAuthRequestDTO.getAuthRequest().getAuthType()))
+							.getAuthTypePredicate().test(kycAuthRequestDTO.getAuthRequest().getRequestedAuth()))
 							.isPresent());
 			if (!isValidAuthtype) {
 				mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_TYPE);
@@ -175,7 +175,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param errors the errors
 	 */
 	private void validateConsentReq(KycAuthRequestDTO kycAuthRequestDTO, Errors errors) {
-		if (!kycAuthRequestDTO.isConsentReq()) {
+		if (!kycAuthRequestDTO.getKycMetadata().isConsentRequired()) {
 			errors.rejectValue(CONSENT_REQ, IdAuthenticationErrorConstants.INVALID_EKYC_CONCENT.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_EKYC_CONCENT.getErrorMessage(), CONSENT_REQ));
 		}

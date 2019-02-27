@@ -80,7 +80,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	@Override
 	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin,Map<String,List<IdentityInfoDTO>> idInfo)
 			throws IdAuthenticationBusinessException {
-		String txnId = authRequestDTO.getTxnID();
+		String txnId = authRequestDTO.getTransactionID();
 		Optional<String> otp = getOtpValue(authRequestDTO);
 		if (otp.isPresent()) {
 			String vid = "";
@@ -94,7 +94,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 				}
 			}
 
-			boolean isValidRequest = validateTxnId(txnId, uin, vid, authRequestDTO.getReqTime());
+			boolean isValidRequest = validateTxnId(txnId, uin, vid, authRequestDTO.getRequestTime());
 			if (isValidRequest) {
 				mosipLogger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
 				List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
@@ -123,8 +123,8 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 */
 	public Map<String, String> getOtpKey(String uin, AuthRequestDTO authReq) throws IdAuthenticationBusinessException {
 		Map<String, String> map = new HashMap<>();
-		String txnID = authReq.getTxnID();
-		String tspID = authReq.getTspID();
+		String txnID = authReq.getTransactionID();
+		String tspID = authReq.getPartnerID();
 		String otpKey = OTPUtil.generateKey(env.getProperty("application.id"), uin, txnID, tspID);
 		String key = Optional.ofNullable(otpKey)
 				.orElseThrow(() -> new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_OTP_KEY));

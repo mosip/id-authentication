@@ -60,12 +60,12 @@ public class OTPRequestValidator extends IdAuthValidator {
 		if (Objects.nonNull(target)) {
 			OtpRequestDTO otpRequestDto = (OtpRequestDTO) target;
 
-			validateReqTime(otpRequestDto.getReqTime(), errors);
+			validateReqTime(otpRequestDto.getRequestTime(), errors);
 
-			validateTxnId(otpRequestDto.getTxnID(), errors);
+			validateTxnId(otpRequestDto.getTransactionID(), errors);
 
 			if (!errors.hasErrors()) {
-				validateRequestTimedOut(otpRequestDto.getReqTime(), errors);
+				validateRequestTimedOut(otpRequestDto.getRequestTime(), errors);
 			}
 
 			if (!errors.hasErrors()) {
@@ -75,7 +75,7 @@ public class OTPRequestValidator extends IdAuthValidator {
 
 				validateIdvId(otpRequestDto.getIdvId(), otpRequestDto.getIdvIdType(), errors);
 
-				validateTspId(otpRequestDto.getTspID(), errors);
+				validateTspId(otpRequestDto.getPartnerID(), errors);
 			}
 		}
 

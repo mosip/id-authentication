@@ -1,6 +1,9 @@
 package io.mosip.authentication.core.dto.indauth;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 /**
@@ -10,7 +13,14 @@ import lombok.Data;
 
 @Data
 public class IdentityDTO {
-
+	/** The value UIN */
+	@JsonProperty("UIN")
+	private String uin;
+	
+	/** The value VID */
+	@JsonProperty("VID")
+	private String vid;
+	
 	/** List of identity info to hold name */
 	List<IdentityInfoDTO> name;
 
@@ -55,44 +65,8 @@ public class IdentityDTO {
 
 	/** List of identity info to hold fullAddress */
 	List<IdentityInfoDTO> fullAddress;
-
-	/** List of identity info to hold leftEye */
-	List<IdentityInfoDTO> leftEye;
-
-	/** List of identity info to hold rightEye */
-	List<IdentityInfoDTO> rightEye;
-
-	/** List of identity info to hold leftIndex */
-	List<IdentityInfoDTO> leftIndex;
-
-	/** List of identity info to hold leftLittle */
-	List<IdentityInfoDTO> leftLittle;
-
-	/** List of identity info to hold leftMiddle */
-	List<IdentityInfoDTO> leftMiddle;
-
-	/** List of identity info to hold leftRing */
-	List<IdentityInfoDTO> leftRing;
-
-	/** List of identity info to hold leftThumb */
-	List<IdentityInfoDTO> leftThumb;
-
-	/** List of identity info to hold rightIndex */
-	List<IdentityInfoDTO> rightIndex;
-
-	/** List of identity info to hold rightLittle */
-	List<IdentityInfoDTO> rightLittle;
-
-	/** List of identity info to hold rightMiddle */
-	List<IdentityInfoDTO> rightMiddle;
-
-	/** List of identity info to hold rightRing */
-	List<IdentityInfoDTO> rightRing;
-
-	/** List of identity info to hold rightThumb */
-	List<IdentityInfoDTO> rightThumb;
-
-	/** List of identity info to hold face */
-	List<IdentityInfoDTO> face;
+	
+	/** List of biometric identity info */
+	List<BioIdentityInfoDTO> biometrics;
 
 }

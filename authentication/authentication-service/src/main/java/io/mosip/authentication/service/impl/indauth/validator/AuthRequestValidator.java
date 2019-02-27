@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -13,6 +14,9 @@ import org.springframework.validation.Errors;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
+import io.mosip.authentication.core.dto.indauth.IdType;
+import io.mosip.authentication.core.dto.indauth.IdentityDTO;
+import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -91,25 +95,37 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 		if (authRequestDto != null) {
 			
-			validateReqTime(authRequestDto.getReqTime(), errors);
-			validateTxnId(authRequestDto.getTxnID(), errors);
+			validateReqTime(authRequestDto.getRequestTime(), errors);
+			validateTxnId(authRequestDto.getTransactionID(), errors);
 			if (!errors.hasErrors()) {
-				validateAuthType(authRequestDto.getAuthType(), errors);
+				validateAuthType(authRequestDto.getRequestedAuth(), errors);
 			}
 			if (!errors.hasErrors()) {
-				validateRequestTimedOut(authRequestDto.getReqTime(), errors);
+				validateRequestTimedOut(authRequestDto.getRequestTime(), errors);
 			}
 
 			if (!errors.hasErrors()) {
 				super.validate(target, errors);
-
-				validateIdvId(authRequestDto.getIdvId(), authRequestDto.getIdvIdType(), errors);
+				
+				Optional<String> uinOpt = Optional.ofNullable(authRequestDto.getRequest())
+						.map(RequestDTO::getIdentity)
+						.map(IdentityDTO::getUin);
+				Optional<String> vidOpt = Optional.ofNullable(authRequestDto.getRequest())
+						.map(RequestDTO::getIdentity)
+						.map(IdentityDTO::getVid);
+				if(uinOpt.isPresent()) {
+					validateIdvId(uinOpt.get(), IdType.UIN.getType(), errors);
+				} else if(vidOpt.isPresent()) {
+					validateIdvId(vidOpt.get(), IdType.VID.getType(), errors);
+				} else {
+					// TODO Missing UIN/VID
+				}
 
 				// validateTspId(authRequestDto.getTspID(),errors);
 
-				validateBioDetails(authRequestDto, errors);
+				validateBioMetadataDetails(authRequestDto, errors);
 
-				validatePinDetails(authRequestDto,errors);
+//				validatePinDetails(authRequestDto,errors);
 				if (!errors.hasErrors()) {
 					checkAuthRequest(authRequestDto, errors);
 				}
@@ -169,11 +185,11 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 *            the errors
 	 */
 	private void checkAuthRequest(AuthRequestDTO authRequest, Errors errors) {
-		AuthTypeDTO authType = authRequest.getAuthType();
+		AuthTypeDTO authType = authRequest.getRequestedAuth();
 		if (!Objects.isNull(authType)) {
 			boolean anyAuthType = Stream
-					.<Supplier<Boolean>>of(authType::isOtp, authType::isBio, authType::isAddress,
-							authType::isFullAddress, authType::isPin, authType::isPersonalIdentity)
+					.<Supplier<Boolean>>of(authType::isOtp, authType::isBio, 
+							authType::isDemo, authType::isPin)
 					.anyMatch(Supplier<Boolean>::get);
 
 			if (!anyAuthType) {
@@ -184,7 +200,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 			} else if (authType.isOtp()) {
 				checkOTPAuth(authRequest, errors);
-			} else if (authType.isPersonalIdentity() || authType.isAddress() || authType.isFullAddress()) {
+			} else if (authType.isDemo()) {
 				checkDemoAuth(authRequest, errors);
 			}
 		} else {

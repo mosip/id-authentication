@@ -594,7 +594,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 			}
 			Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, this, language);
 			DeviceInfo deviceInfo = new DeviceInfo();
-			if (authRequestDTO.getAuthType().isBio()) {
+			if (authRequestDTO.getRequestedAuth().isBio()) {
 				Optional<DeviceInfo> deviceInfoOptional = getDeviceInfo(authRequestDTO.getBioInfo());
 				deviceInfo = deviceInfoOptional.orElse(null);
 			}

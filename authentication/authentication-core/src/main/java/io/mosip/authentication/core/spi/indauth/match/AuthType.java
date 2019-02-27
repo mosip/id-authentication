@@ -9,6 +9,9 @@ import java.util.stream.Stream;
 import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.IdType;
+import io.mosip.authentication.core.dto.indauth.IdentityDTO;
+import io.mosip.authentication.core.dto.indauth.RequestDTO;
 
 /**
  * 
@@ -115,4 +118,35 @@ public interface AuthType {
 		return Stream.of(authTypes).filter(at -> at.isAssociatedMatchType(matchType)).findAny();
 	}
 
+	
+	public static Optional<String> getUinOrVid(AuthRequestDTO authRequestDTO){
+		Optional<String> uin = Optional.ofNullable(authRequestDTO.getRequest())
+				.map(RequestDTO::getIdentity)
+				.map(IdentityDTO::getUin);
+		Optional<String> vid= Optional.ofNullable(authRequestDTO.getRequest())
+				.map(RequestDTO::getIdentity)
+				.map(IdentityDTO::getVid);
+		if(uin.isPresent()) {
+			return uin;
+		}
+		else if(vid.isPresent()) {
+			return vid;
+		}
+		return null;
+	}
+	public static IdType getUinOrVidType(AuthRequestDTO authRequestDTO){
+		Optional<String> uin = Optional.ofNullable(authRequestDTO.getRequest())
+				.map(RequestDTO::getIdentity)
+				.map(IdentityDTO::getUin);
+		Optional<String> vid= Optional.ofNullable(authRequestDTO.getRequest())
+				.map(RequestDTO::getIdentity)
+				.map(IdentityDTO::getVid);
+		if(uin.isPresent()) {
+			return IdType.UIN;
+		}
+		else if(vid.isPresent()) {
+			return IdType.VID;
+		}
+		return null;
+	}
 }

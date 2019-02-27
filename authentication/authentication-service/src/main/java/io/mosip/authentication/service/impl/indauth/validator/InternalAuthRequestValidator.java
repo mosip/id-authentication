@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
@@ -12,7 +13,10 @@ import org.springframework.validation.Errors;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
+import io.mosip.authentication.core.dto.indauth.IdType;
+import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.InternalAuthType;
+import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -56,9 +60,21 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 		if (authRequestDTO instanceof AuthRequestDTO) {
 			AuthRequestDTO requestDTO = (AuthRequestDTO) authRequestDTO;
 			validateId(requestDTO.getId(), errors);
-			validateIdvId(requestDTO.getIdvId(), requestDTO.getIdvIdType(), errors);
+			Optional<String> uinOpt = Optional.ofNullable(requestDTO.getRequest())
+					.map(RequestDTO::getIdentity)
+					.map(IdentityDTO::getUin);
+			Optional<String> vidOpt = Optional.ofNullable(requestDTO.getRequest())
+					.map(RequestDTO::getIdentity)
+					.map(IdentityDTO::getVid);
+			if(uinOpt.isPresent()) {
+				validateIdvId(uinOpt.get(), IdType.UIN.getType(), errors);
+			} else if(vidOpt.isPresent()) {
+				validateIdvId(vidOpt.get(), IdType.VID.getType(), errors);
+			} else {
+				// TODO Missing UIN/VID
+			}
 			//validateVer(requestDTO.getVer(), errors);
-			validateTxnId(requestDTO.getTxnID(), errors);
+			validateTxnId(requestDTO.getTransactionID(), errors);
 			validateDate(requestDTO, errors);
 			validateAuthType(requestDTO.getAuthType(), errors);
 			validateRequest(requestDTO, errors);
@@ -72,7 +88,7 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param errors
 	 */
 	private void validateRequest(AuthRequestDTO requestDTO, Errors errors) {
-		AuthTypeDTO authTypeDTO = requestDTO.getAuthType();
+		AuthTypeDTO authTypeDTO = requestDTO.getRequestedAuth();
 		if (authTypeDTO != null) {
 			Set<String> allowedAuthType = extractAuthInfo();			
 			validateAuthType(requestDTO, errors, authTypeDTO, allowedAuthType);
@@ -98,7 +114,7 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 		
 		if(authTypeDTO.isBio()) {
 			if(allowedAuthType.contains(InternalAuthType.BIO.getType())) {
-				validateBioDetails(requestDTO, errors);
+				validateBioMetadataDetails(requestDTO, errors);
 			} else {
 				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
@@ -117,7 +133,7 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 	 */
 	private void checkAllowedAuthType(AuthRequestDTO requestDTO, Errors errors, AuthTypeDTO authTypeDTO,
 			Set<String> allowedAuthType) {
-		if((authTypeDTO.isPersonalIdentity() || authTypeDTO.isFullAddress() || authTypeDTO.isAddress())) {
+		if(authTypeDTO.isDemo()) {
 			if(allowedAuthType.contains(InternalAuthType.DEMO.getType())) {
 				checkDemoAuth(requestDTO, errors);
 			} else {
@@ -137,7 +153,7 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 		
 		if(authTypeDTO.isPin()) {
 			if(allowedAuthType.contains(InternalAuthType.SPIN.getType())) {
-				validatePinDetails(requestDTO, errors);
+				validateAdditionalFactorsDetails(requestDTO, errors);
 			} else {
 				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
@@ -171,9 +187,9 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param errors the errors
 	 */
 	public void validateDate(AuthRequestDTO authRequestDTO, Errors errors) {
-		if (null != authRequestDTO.getReqTime() && !authRequestDTO.getReqTime().isEmpty()) {
+		if (null != authRequestDTO.getRequestTime()&& !authRequestDTO.getRequestTime().isEmpty()) {
 			try {
-				Date reqDate = DateUtils.parseToDate(authRequestDTO.getReqTime(),env.getProperty("datetime.pattern"));
+				Date reqDate = DateUtils.parseToDate(authRequestDTO.getRequestTime(),env.getProperty("datetime.pattern"));
 				Instant reqTimeInstance =reqDate.toInstant();
 				Instant now = Instant.now();
 				Integer reqDateMaxTimeInt = env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Integer.class);
