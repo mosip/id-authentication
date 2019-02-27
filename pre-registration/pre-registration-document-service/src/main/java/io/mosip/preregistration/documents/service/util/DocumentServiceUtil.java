@@ -247,21 +247,26 @@ public class DocumentServiceUtil {
 		}
 	}
 
-	public DocumentEntity documentEntitySetter(String destinationPreId, DocumentEntity documentEntity) {
+	public DocumentEntity documentEntitySetter(String destinationPreId, DocumentEntity sourceEntity,DocumentEntity destEntity) {
 		log.info("sessionId", "idType", "id", "In documentEntitySetter method of document service util");
 		DocumentEntity copyDocumentEntity = new DocumentEntity();
-		copyDocumentEntity.setDocumentId(UUIDGeneratorUtil.generateId());
+		if(destEntity!=null) {
+			copyDocumentEntity.setDocumentId(destEntity.getDocumentId());
+		}
+		else {
+			copyDocumentEntity.setDocumentId(UUIDGeneratorUtil.generateId());
+		}
 		copyDocumentEntity.setPreregId(destinationPreId);
 		copyDocumentEntity.setDocId("");
 		copyDocumentEntity.setDocHash("");
-		copyDocumentEntity.setDocName(documentEntity.getDocName());
-		copyDocumentEntity.setDocTypeCode(documentEntity.getDocTypeCode());
-		copyDocumentEntity.setDocCatCode(documentEntity.getDocCatCode());
-		copyDocumentEntity.setDocFileFormat(documentEntity.getDocFileFormat());
-		copyDocumentEntity.setCrBy(documentEntity.getCrBy());
-		copyDocumentEntity.setUpdBy(documentEntity.getUpdBy());
-		copyDocumentEntity.setLangCode(documentEntity.getLangCode());
-		copyDocumentEntity.setEncryptedDateTime(documentEntity.getEncryptedDateTime());
+		copyDocumentEntity.setDocName(sourceEntity.getDocName());
+		copyDocumentEntity.setDocTypeCode(sourceEntity.getDocTypeCode());
+		copyDocumentEntity.setDocCatCode(sourceEntity.getDocCatCode());
+		copyDocumentEntity.setDocFileFormat(sourceEntity.getDocFileFormat());
+		copyDocumentEntity.setCrBy(sourceEntity.getCrBy());
+		copyDocumentEntity.setUpdBy(sourceEntity.getUpdBy());
+		copyDocumentEntity.setLangCode(sourceEntity.getLangCode());
+		copyDocumentEntity.setEncryptedDateTime(sourceEntity.getEncryptedDateTime());
 		copyDocumentEntity.setCrDtime(DateUtils.parseDateToLocalDateTime(new Date()));
 		copyDocumentEntity.setUpdDtime(DateUtils.parseDateToLocalDateTime(new Date()));
 		copyDocumentEntity.setStatusCode(StatusCodes.PENDING_APPOINTMENT.getCode());

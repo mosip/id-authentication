@@ -256,9 +256,10 @@ public class DocumentService {
 				boolean destinationStatus=serviceUtil.callGetPreRegInfoRestService(destinationPreId);		
 				
 				DocumentEntity documentEntity = documnetDAO.findSingleDocument(sourcePreId, catCode);
+				DocumentEntity destEntity = documnetDAO.findSingleDocument(destinationPreId, catCode);
 				if (documentEntity != null && sourceStatus && destinationStatus) {
 					DocumentEntity copyDocumentEntity = documnetDAO
-							.saveDocument(serviceUtil.documentEntitySetter(destinationPreId, documentEntity));
+							.saveDocument(serviceUtil.documentEntitySetter(destinationPreId, documentEntity,destEntity));
 					sourceKey = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 					sourceBucketName = documentEntity.getPreregId();
 					copyFile(copyDocumentEntity, sourceBucketName, sourceKey);
