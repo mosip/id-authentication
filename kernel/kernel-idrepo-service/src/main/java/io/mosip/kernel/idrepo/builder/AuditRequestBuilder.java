@@ -73,7 +73,7 @@ public class AuditRequestBuilder {
 	request.setSessionUserId("sessionUserId");
 	request.setSessionUserName("sessionUserName");
 	request.setId(id);
-	request.setIdType("D");
+	request.setIdType("UIN");
 	request.setCreatedBy(env.getProperty("user.name"));
 	request.setModuleName(module.getModuleName());
 	request.setModuleId(module.getModuleId());
