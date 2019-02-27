@@ -24,21 +24,38 @@ o	Required files present inside packet.
 o	Integrity of the packet by comparing checksum value.
 o	Validate applicant document.
 
-#####1.	Validation – 1: Validate Required files present inside packet
-The decrypted packet sends packet related information inside packet_meta_info.json file. This will have information on all required files inside the hash sequence. Below are the sequence present inside packet -
-1. 
+##### 1.	Validation – 1: Validate Required files present inside packet
+- The decrypted packet sends packet related information inside packet_meta_info.json file. This will have information on all required files inside the hash sequence. There are 2 hashSequence present inside packet -> 
+1. hashSequence1 
+	i. applicantBiometricSequence
+	ii. introducerBiometricSequence
+	iii. applicantDemographicSequence
+2. hashSequence2
+	i. otherFiles
+	
+- The above hash sequence has all the required files for processing the packet. The files should be present inside the packet as well. 
+- In case of any missing file the validation will fail and registration status will be updated as "STRUCTURE_VALIDATION_FAILED" and fail the validation. Send message to camel bridge to acknowledge the applicant
+- In case of successful file validation move to the next check.
 
 
-#####2.	Validation – 2: Integrity of the packet by comparing checksum value
-By end of sprint-3 kernel will have HMACGeneration.generatePacketDtoHash() method which takes files and sequence in which HMAC gets generated and in return it gives back the hash. Registration-processor will use same functionality to generate HMAC. The packet will have HMACFile.txt file, which has the generated hash from registration client side. Server will compare generated hash with the hash present in HMACFile.txt to check the integrity of the packet. If the packet is modified during transport the hash will not be same.
-	If the validation fails then reject the packet, update status in registration-status table and send failure response to error queue.
-	If the validation is successful then go to next validation (Registration machine details, officer and center details).
+##### 2.	Validation – 2: Integrity of the packet by comparing checksum value
+- Read below hashsequence fields in same order present inside packet_meta_info json file-
+	1. applicantBiometricSequence
+	2. introducerBiometricSequence
+	3. applicantDemographicSequence
+	4. otherFiles
+- Use kernel FileSystemAdapter to get each file with filename present inside hash sequence.
+- Call kernel HMACUtils to generate hashSequence1 and hashSequence2 separately. The hashSequence1 includes "applicantBiometricSequence", "introducerBiometricSequence" and "applicantDemographicSequence". The hashSequence2 includes "otherFiles".
+- The packet will have packet_data_hash and osi_data_hash. Compare packet_data_hash with hashSequence1 and osi_data_hash to hashSequence2.
+- If both the hash sequence matches then proceed to the next check.
+- In case of mismatch fail the validation and update registration status as "STRUCTURE_VALIDATION_FAILED" and fail the validation. Send message to camel bridge to acknowledge the applicant
 
-3.	Validation – 3: Registration machine details, officer and center details
+##### 3.	Validation – 3: Validate requied documents
+- Get mandatory required document categories and types based on applicant type from masterdata api. 
+- Check if the document  is present for the document category. 
+- Fail the validation if document is missing.
+- Pass the validation if all documents are present. Send message to camel bridge after all successful validation.
 
-
-[Download script for registration table](https://github.com/mosip/mosip/tree/DEV/design/registration-processor/_scripts/regprc-registration_v003.zip)
-[Download script for registration_transaction table](https://github.com/mosip/mosip/tree/DEV/design/registration-processor/_scripts/regprc-registration_transaction_v003.zip)
 
 **Class Diagram**
 ![Registration status class diagram](_images/registration_status_class_diagram.png)
