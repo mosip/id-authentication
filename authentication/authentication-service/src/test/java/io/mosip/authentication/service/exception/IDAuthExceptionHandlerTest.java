@@ -72,7 +72,7 @@ public class IDAuthExceptionHandlerTest {
 	ResponseEntity<Object> handleAllExceptions = handler
 		.handleAllExceptions(new RuntimeException("Runtime Exception"), null);
 	BaseAuthResponseDTO response = (BaseAuthResponseDTO) handleAllExceptions.getBody();
-	List<AuthError> errorCode = response.getErr();
+	List<AuthError> errorCode = response.getErrors();
 	errorCode.forEach(e -> {
 	    assertEquals("IDA-MLC-101", e.getErrorCode());
 	    assertEquals("Unknown error occured", e.getErrorMessage());
@@ -85,7 +85,7 @@ public class IDAuthExceptionHandlerTest {
 		new HttpMediaTypeNotSupportedException("Http Media Type Not Supported Exception"), null, null,
 		HttpStatus.EXPECTATION_FAILED, null);
 	BaseAuthResponseDTO response = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
-	List<AuthError> errorCode = response.getErr();
+	List<AuthError> errorCode = response.getErrors();
 	errorCode.forEach(e -> {
 	    assertEquals("IDA-RQV-101", e.getErrorCode());
 	    assertEquals("Invalid Auth Request", e.getErrorMessage());
@@ -97,7 +97,7 @@ public class IDAuthExceptionHandlerTest {
 	ResponseEntity<Object> handleIdAppException = handler.handleIdAppException(
 		new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED), null);
 	BaseAuthResponseDTO response = (BaseAuthResponseDTO) handleIdAppException.getBody();
-	List<AuthError> errorCode = response.getErr();
+	List<AuthError> errorCode = response.getErrors();
 	errorCode.forEach(e -> {
 	    assertEquals("IDA-AUT-501", e.getErrorCode());
 	    assertEquals("Authentication failed", e.getErrorMessage());
@@ -111,7 +111,7 @@ public class IDAuthExceptionHandlerTest {
 		new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED));
 	ResponseEntity<Object> handleIdAppException = handler.handleIdAppException(ex, null);
 	BaseAuthResponseDTO response = (BaseAuthResponseDTO) handleIdAppException.getBody();
-	List<AuthError> errorCode = response.getErr();
+	List<AuthError> errorCode = response.getErrors();
 	errorCode.forEach(e -> {
 	    assertEquals("IDA-AUT-501", e.getErrorCode());
 	    assertEquals("Authentication failed", e.getErrorMessage());
@@ -124,14 +124,14 @@ public class IDAuthExceptionHandlerTest {
 		new HttpMediaTypeNotSupportedException("Http Media Type Not Supported Exception"), null, null, null,
 		null);
 	BaseAuthResponseDTO response = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
-	response.getErr();
+	response.getErrors();
     }
 
     @Test
     public void testHandleDataException() {
 	BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
 	expectedResponse.setStatus("N");
-	expectedResponse.setErr(Collections
+	expectedResponse.setErrors(Collections
 		.singletonList(new AuthError(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED.getErrorCode(),
 			IdAuthenticationErrorConstants.AUTHENTICATION_FAILED.getErrorMessage())));
 
@@ -144,7 +144,7 @@ public class IDAuthExceptionHandlerTest {
 	    ResponseEntity<Object> handleExceptionInternal = handler.handleIdAppException(
 		    new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e), null);
 	    BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
-	    actualResponse.setResTime(null);
+	    actualResponse.setResponseTime(null);
 	    assertEquals(expectedResponse, actualResponse);
 	}
     }
@@ -153,13 +153,13 @@ public class IDAuthExceptionHandlerTest {
     public void testAsyncRequestTimeoutException() {
 	BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
 	expectedResponse.setStatus("N");
-	expectedResponse.setErr(Collections
+	expectedResponse.setErrors(Collections
 		.singletonList(new AuthError(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT.getErrorCode(),
 			IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT.getErrorMessage())));
 	AsyncRequestTimeoutException e = new AsyncRequestTimeoutException();
 	ResponseEntity<Object> handleExceptionInternal = handler.handleExceptionInternal(e, null, null, null, null);
 	BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
-	actualResponse.setResTime(null);
+	actualResponse.setResponseTime(null);
 	assertEquals(expectedResponse, actualResponse);
     }
 
@@ -167,13 +167,13 @@ public class IDAuthExceptionHandlerTest {
     public void testNoSuchMessageException() {
 	BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
 	expectedResponse.setStatus("N");
-	expectedResponse.setErr(
+	expectedResponse.setErrors(
 		Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNABLE_PROCESS.getErrorCode(),
 			IdAuthenticationErrorConstants.UNABLE_PROCESS.getErrorMessage())));
 	ResponseEntity<Object> handleExceptionInternal = handler
 		.handleIdAppException(new IdAuthenticationAppException("1234", "1234"), null);
 	BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
-	actualResponse.setResTime(null);
+	actualResponse.setResponseTime(null);
 	assertEquals(expectedResponse, actualResponse);
     }
 
@@ -181,7 +181,7 @@ public class IDAuthExceptionHandlerTest {
     public void testhandleAllExceptionsUnknownError() {
 	BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
 	expectedResponse.setStatus("N");
-	expectedResponse.setErr(
+	expectedResponse.setErrors(
 		Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorCode(),
 			IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorMessage())));
 
@@ -195,7 +195,7 @@ public class IDAuthExceptionHandlerTest {
 		    new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e), null,
 		    null, null, null);
 	    BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
-	    actualResponse.setResTime(null);
+	    actualResponse.setResponseTime(null);
 	    assertEquals(expectedResponse, actualResponse);
 	}
     }
@@ -204,14 +204,14 @@ public class IDAuthExceptionHandlerTest {
     public void testCreateAuthError() {
 	BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
 	expectedResponse.setStatus("N");
-	expectedResponse.setErr(Collections
+	expectedResponse.setErrors(Collections
 		.singletonList(new ActionableAuthError(IdAuthenticationErrorConstants.INVALID_TXN_ID.getErrorCode(),
 			IdAuthenticationErrorConstants.INVALID_TXN_ID.getErrorMessage(),
 			IdAuthenticationErrorConstants.INVALID_TXN_ID.getActionCode())));
 	ResponseEntity<Object> handleExceptionInternal = handler.handleIdAppException(
 		new IdAuthenticationBaseException(IdAuthenticationErrorConstants.INVALID_TXN_ID), null);
 	BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
-	actualResponse.setResTime(null);
+	actualResponse.setResponseTime(null);
 	assertEquals(expectedResponse, actualResponse);
     }
 }

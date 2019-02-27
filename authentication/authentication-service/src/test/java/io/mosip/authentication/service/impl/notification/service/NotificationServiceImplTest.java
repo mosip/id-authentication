@@ -119,7 +119,7 @@ public class NotificationServiceImplTest {
 		// authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 		// .format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authResponseDTO.setStatus("N");
-		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
+		authResponseDTO.setResponseTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
 		String uin = "274390482564";
@@ -167,7 +167,7 @@ public class NotificationServiceImplTest {
 		authType.setPersonalIdentity(true);
 		authRequestDTO.setAuthType(authType);
 		authResponseDTO.setStatus("y");
-		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
+		authResponseDTO.setResponseTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
 		String uin = "4667732";

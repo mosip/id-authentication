@@ -293,16 +293,16 @@ public class KycFilterTest {
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> createResponse() throws IOException {
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setTxnID("12345");
-		AuthResponseInfo authResponseInfo = new AuthResponseInfo();
-		authResponseDTO.setInfo(authResponseInfo);
+		authResponseDTO.setTransactionID("12345");
+		//AuthResponseInfo authResponseInfo = new AuthResponseInfo();
+		//authResponseDTO.setInfo(authResponseInfo);
 		KycResponseDTO kycResponseDTO = new KycResponseDTO();
 		kycResponseDTO.setAuth(authResponseDTO);
 		kycResponseDTO.setKyc(new KycInfo());
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		kycAuthResponseDTO.setResponse(kycResponseDTO);
 		kycAuthResponseDTO.setTxnID("12345");
-		kycAuthResponseDTO.setResTime(DateUtils.getUTCCurrentDateTimeString());
+		kycAuthResponseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString());
 		String kycAuthResponse = mapper.writeValueAsString(kycAuthResponseDTO);
 		Map<String, Object> map = (Map<String, Object>) mapper.readValue(kycAuthResponse.getBytes(), Map.class);
 		return map;

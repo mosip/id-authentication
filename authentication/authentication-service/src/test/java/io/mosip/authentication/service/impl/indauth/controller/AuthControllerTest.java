@@ -203,11 +203,11 @@ public class AuthControllerTest {
 		otplist.add(pinInfo);
 		authRequestDTO.setPinInfo(otplist);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setErr(null);
-		authResponseDTO.setInfo(null);
-		authResponseDTO.setResTime("");
+		authResponseDTO.setErrors(null);
+		//authResponseDTO.setInfo(null);
+		authResponseDTO.setResponseTime("");
 		authResponseDTO.setStatus("Y");
-		authResponseDTO.setTxnID("34567");
+		authResponseDTO.setTransactionID("34567");
 		AuthRequestDTO authRequestDTOs = new AuthRequestDTO();
 		authRequestDTOs.setIdvIdType(IdType.UIN.getType());
 		authRequestDTOs.setId("1234567");
@@ -218,11 +218,11 @@ public class AuthControllerTest {
 		Mockito.when(authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest(), true))
 				.thenReturn(authResponseDTO);
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-		kycAuthResponseDTO.setResTime(Instant.now().atOffset(offset)
+		kycAuthResponseDTO.setResponseTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthResponseDTO.setStatus("Y");
 		kycAuthResponseDTO.setTxnID("34567");
-		kycAuthResponseDTO.setErr(null);
+		kycAuthResponseDTO.setErrors(null);
 		KycResponseDTO response = new KycResponseDTO();
 		response.setAuth(null);
 		response.setKyc(null);
@@ -240,7 +240,7 @@ public class AuthControllerTest {
 
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		authResponseDTO.setStatus("Y");
-		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
+		authResponseDTO.setResponseTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setId("1234567");
@@ -253,7 +253,7 @@ public class AuthControllerTest {
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		kycAuthResponseDTO.setStatus("Y");
 		kycAuthResponseDTO.setTxnID("34567");
-		kycAuthResponseDTO.setErr(null);
+		kycAuthResponseDTO.setErrors(null);
 		KycResponseDTO response = new KycResponseDTO();
 		response.setAuth(null);
 		response.setKyc(null);
