@@ -13,6 +13,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,23 +22,24 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.idrepo.constant.AuditEvents;
 import io.mosip.kernel.core.idrepo.constant.AuditModules;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.idrepo.spi.IdRepoService;
-import io.mosip.kernel.core.idrepo.spi.MosipDFSProvider;
 import io.mosip.kernel.core.idrepo.spi.ShardDataSourceResolver;
 import io.mosip.kernel.core.idrepo.spi.ShardResolver;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.fsadapter.hdfs.constant.HDFSAdapterErrorCode;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.controller.IdRepoController;
 import io.mosip.kernel.idrepo.dto.Documents;
@@ -83,9 +85,6 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	/** The Constant TYPE. */
 	private static final String TYPE = "type";
 
-	/** The Constant DOT. */
-	private static final String DOT = ".";
-
 	/** The Constant SLASH. */
 	private static final String SLASH = "/";
 
@@ -112,9 +111,6 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 
 	/** The Constant ID_REPO_SERVICE_IMPL. */
 	private static final String ID_REPO_SERVICE_IMPL = "IdRepoServiceImpl";
-
-	/** The Constant FORMAT. */
-	private static final String FORMAT = "format";
 
 	/** The Constant CREATE. */
 	private static final String CREATE = "create";
@@ -151,7 +147,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 
 	/** The allowed bio types. */
 	@Resource
-	private List<String> allowedBioTypes;
+	private List<String> allowedBioAttributes;
 
 	/** The shard resolver. */
 	@Autowired
@@ -163,7 +159,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 
 	/** The dfs provider. */
 	@Autowired
-	private MosipDFSProvider dfsProvider;
+	private FileSystemAdapter fsAdapter;
 
 	@Autowired
 	private AuditHelper auditHelper;
@@ -299,10 +295,9 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	private void getDemographicFiles(Uin uinObject, List<Documents> documents) {
 		uinObject.getDocuments().parallelStream().forEach(demo -> {
 			try {
-				ObjectNode identityMap = (ObjectNode) convertToObject(uinObject.getUinData(), ObjectNode.class);
-				String fileName = DEMOGRAPHICS + SLASH + demo.getDocId() + DOT
-						+ identityMap.get(demo.getDoccatCode()).get(FORMAT).asText();
-				String data = new String(securityManager.decrypt(dfsProvider.getFile(uinObject.getUin(), fileName)));
+				String fileName = DEMOGRAPHICS + SLASH + demo.getDocId();
+				String data = new String(
+						securityManager.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUin(), fileName))));
 				if (demo.getDocHash().equals(securityManager.hash(CryptoUtil.decodeBase64(data)))) {
 					documents.add(new Documents(demo.getDoccatCode(), data));
 				} else {
@@ -314,6 +309,18 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
 						"\n" + ExceptionUtils.getStackTrace(e));
 				throw new IdRepoAppUncheckedException(e.getErrorCode(), e.getErrorText(), e);
+			} catch (FSAdapterException e) {
+				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
+						"\n" + ExceptionUtils.getStackTrace(e));
+				throw new IdRepoAppUncheckedException(
+						e.getErrorCode().equals(HDFSAdapterErrorCode.FILE_NOT_FOUND_EXCEPTION.getErrorCode())
+								? IdRepoErrorConstants.FILE_NOT_FOUND
+								: IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR,
+						e);
+			} catch (IOException e) {
+				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
+						"\n" + ExceptionUtils.getStackTrace(e));
+				throw new IdRepoAppUncheckedException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
 			}
 		});
 	}
@@ -329,13 +336,11 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	 */
 	private void getBiometricFiles(Uin uinObject, List<Documents> documents) {
 		uinObject.getBiometrics().parallelStream().forEach(bio -> {
-			if (allowedBioTypes.contains(bio.getBiometricFileType())) {
+			if (allowedBioAttributes.contains(bio.getBiometricFileType())) {
 				try {
-					ObjectNode identityMap = (ObjectNode) convertToObject(uinObject.getUinData(), ObjectNode.class);
-					String fileName = BIOMETRICS + SLASH + bio.getBioFileId() + DOT
-							+ identityMap.get(bio.getBiometricFileType()).get(FORMAT).asText();
-					String data = new String(
-							securityManager.decrypt(dfsProvider.getFile(uinObject.getUin(), fileName)));
+					String fileName = BIOMETRICS + SLASH + bio.getBioFileId();
+					String data = new String(securityManager
+							.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUin(), fileName))));
 					if (Objects.nonNull(data)) {
 						if (StringUtils.equals(bio.getBiometricFileHash(),
 								securityManager.hash(CryptoUtil.decodeBase64(data)))) {
@@ -350,6 +355,18 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 					mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
 							"\n" + ExceptionUtils.getStackTrace(e));
 					throw new IdRepoAppUncheckedException(e.getErrorCode(), e.getErrorText(), e);
+				} catch (FSAdapterException e) {
+					mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
+							"\n" + ExceptionUtils.getStackTrace(e));
+					throw new IdRepoAppUncheckedException(
+							e.getErrorCode().equals(HDFSAdapterErrorCode.FILE_NOT_FOUND_EXCEPTION.getErrorCode())
+									? IdRepoErrorConstants.FILE_NOT_FOUND
+									: IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR,
+							e);
+				} catch (IOException e) {
+					mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
+							"\n" + ExceptionUtils.getStackTrace(e));
+					throw new IdRepoAppUncheckedException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
 				}
 			}
 		});

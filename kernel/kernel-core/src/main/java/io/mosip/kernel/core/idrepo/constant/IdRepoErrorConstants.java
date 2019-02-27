@@ -54,7 +54,9 @@ public enum IdRepoErrorConstants {
 	
 	SERVER_ERROR("KER-IDR-018", "5XX - Server Error occured"),
 	
-	CONNECTION_TIMED_OUT("KER-IDR-019", "Connection timed out");
+	CONNECTION_TIMED_OUT("KER-IDR-019", "Connection timed out"),
+	
+	FILE_NOT_FOUND("KER-IDR-020", "File(s) not found in DFS");
 
 	/** The error code. */
 	private final String errorCode;
