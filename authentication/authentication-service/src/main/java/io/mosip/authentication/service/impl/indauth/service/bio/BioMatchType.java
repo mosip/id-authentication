@@ -166,7 +166,9 @@ public enum BioMatchType implements MatchType {
 				}
 
 				return compositeIrisMap;
-			});
+			}),
+	FACE(IdaIdMapping.FACE, Collections.emptySet(), IdentityDTO::getFace,
+			AuthUsageDataBit.USED_BIO_FACE, AuthUsageDataBit.MATCHED_BIO_FACE, CbeffDocType.FACE);
 
 	/** The allowed matching strategy. */
 	private Set<MatchingStrategy> allowedMatchingStrategy;
