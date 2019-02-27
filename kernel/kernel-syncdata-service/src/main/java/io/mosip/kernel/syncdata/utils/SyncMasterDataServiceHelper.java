@@ -1112,9 +1112,11 @@ public class SyncMasterDataServiceHelper {
 					.findLatestRegistrationCenterUserHistory(regId, lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
-			// TODO
-			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_USER_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+
+			throw new SyncDataServiceException(
+					MasterDataErrorCode.REG_CENTER_USER_HISTORY_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.REG_CENTER_USER_HISTORY_FETCH_EXCEPTION.getErrorMessage() + " "
+							+ e.getMessage());
 		}
 		if (registrationCenterUserHistoryList != null && !registrationCenterUserHistoryList.isEmpty()) {
 			registrationCenterUserHistoryDtos = MapperUtils.mapAll(registrationCenterUserHistoryList,
@@ -1136,9 +1138,11 @@ public class SyncMasterDataServiceHelper {
 					.findLatestRegistrationCenterUserMachineHistory(regId, lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
-			// TODO
+
 			throw new SyncDataServiceException(
-					MasterDataErrorCode.REG_CENTER_USER_MACHINE_DEVICE_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
+					MasterDataErrorCode.REG_CENTER_MACHINE_USER_HISTORY_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.REG_CENTER_MACHINE_USER_HISTORY_FETCH_EXCEPTION.getErrorCode() + " "
+							+ e.getMessage());
 		}
 		if (registrationCenterUserMachineHistoryList != null && !registrationCenterUserMachineHistoryList.isEmpty()) {
 			registrationCenterUserMachineMappingHistoryDtos = MapperUtils.mapAll(
@@ -1160,9 +1164,11 @@ public class SyncMasterDataServiceHelper {
 					.findLatestRegistrationCenterMachineDeviceHistory(regId, lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
-			// TODO
+
 			throw new SyncDataServiceException(
-					MasterDataErrorCode.REG_CENTER_MACHINE_DEVICE_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
+					MasterDataErrorCode.REG_CENTER_MACHINE_DEVICE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.REG_CENTER_MACHINE_DEVICE_HISTORY_FETCH_EXCEPTION.getErrorMessage() + " "
+							+ e.getMessage());
 		}
 		if (registrationCenterMachineDeviceHistoryList != null
 				&& !registrationCenterMachineDeviceHistoryList.isEmpty()) {
@@ -1185,9 +1191,11 @@ public class SyncMasterDataServiceHelper {
 					.findLatestRegistrationCenterDeviceHistory(regId, lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
-			// TODO
-			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_DEVICE_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+
+			throw new SyncDataServiceException(
+					MasterDataErrorCode.REG_CENTER_DEVICE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.REG_CENTER_DEVICE_HISTORY_FETCH_EXCEPTION.getErrorMessage() + " "
+							+ e.getMessage());
 		}
 		if (registrationCenterDeviceHistoryList != null && !registrationCenterDeviceHistoryList.isEmpty()) {
 			registrationCenterDeviceHistoryDtos = MapperUtils.mapAll(registrationCenterDeviceHistoryList,
@@ -1206,12 +1214,14 @@ public class SyncMasterDataServiceHelper {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
 			registrationCenterMachineHistoryList = registrationCenterMachineHistoryRepository
-					.findLatestRegistrationCenterMachineHistory(regId,lastUpdated, currentTimeStamp);
+					.findLatestRegistrationCenterMachineHistory(regId, lastUpdated, currentTimeStamp);
 
 		} catch (DataAccessException e) {
-			//TODO
-			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+
+			throw new SyncDataServiceException(
+					MasterDataErrorCode.REG_CENTER_MACHINE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.REG_CENTER_MACHINE_HISTORY_FETCH_EXCEPTION.getErrorMessage() + " "
+							+ e.getMessage());
 		}
 		if (registrationCenterMachineHistoryList != null && !registrationCenterMachineHistoryList.isEmpty()) {
 			registrationCenterMachineHistoryDtos = MapperUtils.mapAll(registrationCenterMachineHistoryList,
