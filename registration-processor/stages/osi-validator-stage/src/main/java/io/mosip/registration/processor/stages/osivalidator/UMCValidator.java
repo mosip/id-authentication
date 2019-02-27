@@ -61,6 +61,9 @@ public class UMCValidator {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(UMCValidator.class);
+	
+	/** The response from masterdata validate api. */
+	private  static final String VALID ="Valid";
 
 	/** The packet info manager. */
 	@Autowired
@@ -613,7 +616,7 @@ if(!isDeviceMappedWithCenter) {
 					.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments, "", "",
 							RegistartionCenterTimestampResponseDto.class);
 
-			if (result.getStatus().equals("Accepted")) {
+			if (result.getStatus().equals(VALID)) {
 				isValid = true;
 			} else {
 				this.registrationStatusDto.setStatusComment(StatusMessage.TIMESTAMP_VALIDATION1 + " "

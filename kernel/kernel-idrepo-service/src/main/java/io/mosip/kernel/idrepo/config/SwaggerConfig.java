@@ -22,7 +22,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  *
  * @author Manoj SP
  */
-@Configuration(value = "ida_swagger_config")
+@Configuration(value = "idrepo_swagger_config")
 @EnableSwagger2
 public class SwaggerConfig {
 
@@ -67,7 +67,6 @@ public class SwaggerConfig {
 				}
 				targetSwagger = true;
 			} catch (MalformedURLException e) {
-				System.err.println("SwaggerUrlException: " + e);
 				throw e;
 			}
 		}
@@ -79,7 +78,6 @@ public class SwaggerConfig {
 		if (targetSwagger) {
 			docket.protocols(protocols()).host(hostWithPort);
 		}
-		System.err.println("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");
 
 		return docket;
 	}

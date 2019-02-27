@@ -24,6 +24,9 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
@@ -116,8 +119,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 				"Loading of FaceCapture screen started");
 
 		takePhoto.setDisable(true);
-		defaultExceptionImage = new Image(getClass().getResourceAsStream("/images/ExceptionPhoto.png"));
-		exceptionImage.setImage(defaultExceptionImage);
+		
 		if (capturePhotoUsingDevice.equals(RegistrationConstants.ENABLE)
 				|| (boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			// for applicant biometrics
@@ -128,9 +130,12 @@ public class FaceCaptureController extends BaseController implements Initializab
 					applicantImage.setImage(convertBytesToImage(
 							getBiometricDTOFromSession().getOperatorBiometricDTO().getFaceDetailsDTO().getFace()));
 				} else {
-					initialize();
+					defaultImage = applicantImage.getImage();
+					applicantImageCaptured = false;
 				}
 			} else {
+				defaultExceptionImage = new Image(getClass().getResourceAsStream("/images/ExceptionPhoto.png"));
+				exceptionImage.setImage(defaultExceptionImage);
 				if (getRegistrationDTOFromSession() != null
 						&& getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO() != null) {
 					if (getRegistrationDTOFromSession().getDemographicDTO().getApplicantDocumentDTO()
@@ -152,18 +157,14 @@ public class FaceCaptureController extends BaseController implements Initializab
 						}
 					}
 				} else {
-					initialize();
+					defaultImage = applicantImage.getImage();
+					defaultExceptionImage = exceptionImage.getImage();
+					applicantImageCaptured = false;
+					exceptionImageCaptured = false;
+					exceptionBufferedImage = null;
 				}
 			}
 		}
-	}
-
-	private void initialize() {
-		defaultImage = applicantImage.getImage();
-		defaultExceptionImage = exceptionImage.getImage();
-		applicantImageCaptured = false;
-		exceptionImageCaptured = false;
-		exceptionBufferedImage = null;
 	}
 
 	/**
@@ -174,8 +175,12 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 *            type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
+		auditFactory.audit(AuditEvent.REG_BIO_FACE_CAPTURE, Components.REG_BIOMETRICS, SessionContext.userId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+		
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
+
 		if (webCameraController.isWebcamPluggedIn()) {
 			try {
 				Stage primaryStage = new Stage();
@@ -209,6 +214,9 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 */
 	@FXML
 	private void saveBiometricDetails() {
+		auditFactory.audit(AuditEvent.REG_BIO_FACE_CAPTURE_NEXT, Components.REG_BIOMETRICS, SessionContext.userId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "saving the details of applicant biometrics");
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
@@ -228,6 +236,9 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	@FXML
 	private void goToPreviousPane() {
+		auditFactory.audit(AuditEvent.REG_BIO_FACE_CAPTURE_BACK, Components.REG_BIOMETRICS, SessionContext.userId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			if (validateOperatorPhoto()) {
 				registrationController.saveBiometricDetails(applicantBufferedImage, exceptionBufferedImage);

@@ -27,8 +27,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 /**
@@ -62,12 +63,6 @@ public class RejectionController extends BaseController implements Initializable
 	@FXML
 	private Button rejectionSubmit;
 
-	/**
-	 * HyperLink for Exit
-	 */
-	@FXML
-	private Hyperlink rejectionExit;
-
 	/** The rejectionmap list. */
 	private List<Map<String, String>> rejectionmapList;
 
@@ -78,6 +73,9 @@ public class RejectionController extends BaseController implements Initializable
 	private TableView<RegistrationApprovalDTO> regRejectionTable;
 
 	private String controllerName;
+	
+	@FXML
+	private Button closeButton;
 
 	/*
 	 * (non-Javadoc)
@@ -90,9 +88,8 @@ public class RejectionController extends BaseController implements Initializable
 		LOGGER.info(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
 		rejectionSubmit.disableProperty().set(true);
 		rejectionComboBox.getItems().clear();
-
 		List<ReasonListDto> reasonList = masterSyncService.getAllReasonsList(applicationContext.getApplicationLanguage());
-		
+		closeButton.setGraphic(new ImageView(new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 20, 20, true, true)));
 		rejectionComboBox.setItems(FXCollections
 				.observableArrayList(reasonList.stream().map(list -> list.getName()).collect(Collectors.toList())));
 

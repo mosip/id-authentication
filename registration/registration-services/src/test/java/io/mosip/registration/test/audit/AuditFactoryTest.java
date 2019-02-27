@@ -51,7 +51,7 @@ public class AuditFactoryTest {
 		sessionContext.getUserContext().setUserId("userId");
 		sessionContext.getUserContext().setName("operator");
 		when(auditHandler.addAudit(Mockito.any(AuditRequestDto.class))).thenReturn(true);
-		auditFactory.audit(AuditEvent.PACKET_APPROVED, Components.PACKET_CREATOR, "description", "id", "ref");
+		auditFactory.audit(AuditEvent.PACKET_APPROVED, Components.PACKET_CREATOR, "id", "ref");
 	}
 
 	@Test
@@ -65,7 +65,7 @@ public class AuditFactoryTest {
 		SessionContext.getInstance();
 
 		when(auditHandler.addAudit(Mockito.any(AuditRequestDto.class))).thenReturn(true);
-		auditFactory.audit(AuditEvent.PACKET_APPROVED, Components.PACKET_CREATOR, "description", "id", "ref");
+		auditFactory.audit(AuditEvent.PACKET_APPROVED, Components.PACKET_CREATOR, "id", "ref");
 		SessionContext.destroySession();
 	}
 

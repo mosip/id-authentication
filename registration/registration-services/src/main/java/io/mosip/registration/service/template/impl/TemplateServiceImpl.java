@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.TemplateDao;
 import io.mosip.registration.entity.Template;
 import io.mosip.registration.entity.TemplateFileFormat;
@@ -66,9 +67,11 @@ public class TemplateServiceImpl implements TemplateService {
 
 	public String getHtmlTemplate(String templateName) throws RegBaseCheckedException {
 		byte[] templateInBytes = null;
+		String templateText = RegistrationConstants.EMPTY;
 		if (getTemplate(templateName).getFileTxt() != null) {
 			templateInBytes = getTemplate(templateName).getFileTxt();
+			templateText = new String(templateInBytes, StandardCharsets.UTF_8);
 		}
-		return new String(templateInBytes, StandardCharsets.UTF_8);
+		return templateText;
 	}
 }

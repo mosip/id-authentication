@@ -14,15 +14,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.SSLContext;
+
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 
-/**
- *  @author Sabbu Uday Kumar
- *  @since 1.0.0
- */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
