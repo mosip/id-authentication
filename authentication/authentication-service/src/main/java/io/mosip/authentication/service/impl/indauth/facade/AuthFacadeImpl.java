@@ -157,8 +157,9 @@ public class AuthFacadeImpl implements AuthFacade {
 		String tspId = authRequestDTO.getTspID();
 		try {
 			idInfo = idInfoService.getIdInfo(idResDTO);
-			authResponseBuilder.setTxnID(authRequestDTO.getTxnID()).setIdType(authRequestDTO.getIdvIdType())
-					.setReqTime(authRequestDTO.getReqTime());
+			authResponseBuilder.setTxnID(authRequestDTO.getTxnID())/*.setIdType(authRequestDTO.getIdvIdType())
+					.setReqTime(authRequestDTO.getReqTime())*/;
+			authResponseBuilder.setId(authRequestDTO.getId());
 			String staticTokenId = tokenIdGenerator.generateId(tspId, uin);
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId);
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
@@ -506,9 +507,9 @@ public class AuthFacadeImpl implements AuthFacade {
 		kycAuthResponseDTO.setResponse(response);
 		kycAuthResponseDTO.getResponse().setKyc(info);
 		kycAuthResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
-		kycAuthResponseDTO.setErr(authResponseDTO.getErr());
+		kycAuthResponseDTO.setErrors(authResponseDTO.getErrors());
 		kycAuthResponseDTO.setStatus(authResponseDTO.getStatus());
-		kycAuthResponseDTO.setResTime(resTime);
+		kycAuthResponseDTO.setResponseTime(resTime);
 		return kycAuthResponseDTO;
 	}
 

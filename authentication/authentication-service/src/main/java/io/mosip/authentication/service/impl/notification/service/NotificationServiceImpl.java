@@ -119,7 +119,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 		Map<String, Object> values = new HashMap<>();
 		values.put(NAME, infoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo));
-		String resTime = authResponseDTO.getResTime();
+		String resTime = authResponseDTO.getResponseTime();
 
 		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(authRequestDTO.getReqTime());
 		ZoneId zone = zonedDateTime2.getZone();

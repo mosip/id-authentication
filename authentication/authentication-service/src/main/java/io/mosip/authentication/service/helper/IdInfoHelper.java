@@ -623,11 +623,11 @@ public class IdInfoHelper implements IdInfoFetcher {
 
 		statusInfoBuilder.setStatus(demoMatched);
 
-		buildMatchInfos(listMatchInputs, statusInfoBuilder, authTypes);
+		//buildMatchInfos(listMatchInputs, statusInfoBuilder, authTypes);
 
-		buildBioInfos(listMatchInputs, statusInfoBuilder, authTypes);
+		//buildBioInfos(listMatchInputs, statusInfoBuilder, authTypes);
 
-		buildUsageDataBits(listMatchOutputs, statusInfoBuilder);
+		prepareErrorList(listMatchOutputs, statusInfoBuilder);
 
 		return statusInfoBuilder.build();
 	}
@@ -639,7 +639,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * @param statusInfoBuilder
 	 * @param authTypes
 	 */
-	private void buildBioInfos(List<MatchInput> listMatchInputs, AuthStatusInfoBuilder statusInfoBuilder,
+	/*private void buildBioInfos(List<MatchInput> listMatchInputs, AuthStatusInfoBuilder statusInfoBuilder,
 			AuthType[] authTypes) {
 		listMatchInputs.stream().forEach((MatchInput matchInput) -> {
 			MatchType matchType = matchInput.getMatchType();
@@ -655,7 +655,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 			statusInfoBuilder.addAuthUsageDataBits(matchType.getUsedBit());
 		});
 
-	}
+	}*/
 
 	/**
 	 * Builds the usage data bits.
@@ -663,11 +663,15 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * @param listMatchOutputs  the list match outputs
 	 * @param statusInfoBuilder the status info builder
 	 */
-	private void buildUsageDataBits(List<MatchOutput> listMatchOutputs, AuthStatusInfoBuilder statusInfoBuilder) {
+	/**
+	 * prepares the list of errors if the authentication status got failed
+	 *
+	 * @param listMatchOutputs  the list match outputs
+	 * @param statusInfoBuilder the status info builder
+	 */
+	private void prepareErrorList(List<MatchOutput> listMatchOutputs, AuthStatusInfoBuilder statusInfoBuilder) {
 		listMatchOutputs.forEach((MatchOutput matchOutput) -> {
-			if (matchOutput.isMatched()) {
-				statusInfoBuilder.addAuthUsageDataBits(matchOutput.getMatchType().getMatchedBit());
-			} else {
+			if (!matchOutput.isMatched()) {
 				prepareErrorList(matchOutput, statusInfoBuilder);
 			}
 		});
@@ -786,7 +790,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * @param statusInfoBuilder the status info builder
 	 * @param authTypes         the auth types
 	 */
-	public void buildMatchInfos(List<MatchInput> listMatchInputs, AuthStatusInfoBuilder statusInfoBuilder,
+	/*public void buildMatchInfos(List<MatchInput> listMatchInputs, AuthStatusInfoBuilder statusInfoBuilder,
 			AuthType[] authTypes) {
 		listMatchInputs.stream().forEach((MatchInput matchInput) -> {
 			MatchType matchType = matchInput.getMatchType();
@@ -810,7 +814,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 			statusInfoBuilder.addAuthUsageDataBits(matchType.getUsedBit());
 		});
 	}
-
+*/
 	/**
 	 * Concat values.
 	 *

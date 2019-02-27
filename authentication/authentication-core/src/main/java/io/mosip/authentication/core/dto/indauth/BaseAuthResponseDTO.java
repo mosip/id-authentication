@@ -18,8 +18,8 @@ public class BaseAuthResponseDTO {
 	private String status;
 	
 	/** The error List */
-	private List<AuthError> err;
+	private List<AuthError> errors;
 	
 	/** The resTime value */
-	private String resTime;
+	private String responseTime;
 }

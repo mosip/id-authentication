@@ -215,24 +215,24 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 							.mapToObj(i -> createAuthError(validationException, errorCodes.get(i),
 									messageSource.getMessage(errorCodes.get(i), args.get(i), locale)))
 							.distinct().collect(Collectors.toList());
-					authResp.setErr(errors);
+					authResp.setErrors(errors);
 				} else {
 					List<AuthError> errors = IntStream.range(0, errorCodes.size())
 							.mapToObj(i -> createAuthError(baseException, errorCodes.get(i),
 									messageSource.getMessage(errorCodes.get(i), null, locale)))
 							.distinct().collect(Collectors.toList());
-					authResp.setErr(errors);
+					authResp.setErrors(errors);
 				}
 			} catch (NoSuchMessageException e) {
 				mosipLogger.error(DEFAULT_SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, e.toString(),
 						"\n" + ExceptionUtils.getStackTrace(e));
-				authResp.setErr(Arrays.<AuthError>asList(
+				authResp.setErrors(Arrays.<AuthError>asList(
 						createAuthError(baseException, IdAuthenticationErrorConstants.UNABLE_PROCESS.getErrorCode(),
 								IdAuthenticationErrorConstants.UNABLE_PROCESS.getErrorMessage())));
 			}
 		}
 
-		authResp.setResTime(mapper.convertValue(new Date(), String.class));
+		authResp.setResponseTime(mapper.convertValue(new Date(), String.class));
 		mosipLogger.error(DEFAULT_SESSION_ID, "Response", ex.getClass().getName(), authResp.toString());
 		return authResp;
 	}

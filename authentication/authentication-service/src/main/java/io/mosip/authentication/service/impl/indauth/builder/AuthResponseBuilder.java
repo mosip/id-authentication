@@ -46,8 +46,8 @@ public class AuthResponseBuilder {
 	 */
 	private AuthResponseBuilder(String dateTimePattern) {
 		responseDTO = new AuthResponseDTO();
-		AuthResponseInfo authResponseInfo = new AuthResponseInfo();
-		responseDTO.setInfo(authResponseInfo);
+		/*AuthResponseInfo authResponseInfo = new AuthResponseInfo();
+		responseDTO.setInfo(authResponseInfo);*/
 		authStatusInfos = new ArrayList<>();
 		dateFormat = new SimpleDateFormat(dateTimePattern);
 	}
@@ -60,7 +60,7 @@ public class AuthResponseBuilder {
 	 */
 	public AuthResponseBuilder setTxnID(String txnID) {
 		assertNotBuilt();
-		responseDTO.setTxnID(txnID);
+		responseDTO.setTransactionID(txnID);
 		return this;
 	}
 
@@ -72,11 +72,11 @@ public class AuthResponseBuilder {
 	 */
 	public AuthResponseBuilder addErrors(AuthError... errors) {
 		assertNotBuilt();
-		if (responseDTO.getErr() == null) {
-			responseDTO.setErr(new ArrayList<>());
+		if (responseDTO.getErrors() == null) {
+			responseDTO.setErrors(new ArrayList<>());
 		}
 
-		responseDTO.getErr().addAll(Arrays.asList(errors));
+		responseDTO.getErrors().addAll(Arrays.asList(errors));
 		return this;
 	}
 
@@ -98,10 +98,16 @@ public class AuthResponseBuilder {
 	 * @param idType the id type
 	 * @return the auth response builder
 	 */
-	public AuthResponseBuilder setIdType(String idType) {
+	/*public AuthResponseBuilder setIdType(String idType) {
 		responseDTO.getInfo().setIdType(idType);
 		return this;
-	}
+	}*/
+	
+	public AuthResponseBuilder setId(String idType) {
+	responseDTO.setId("mosip.identity.auth");
+	return this;
+}
+
 
 	/**
 	 * Sets the req time.
@@ -109,10 +115,10 @@ public class AuthResponseBuilder {
 	 * @param reqTime the req time
 	 * @return the auth response builder
 	 */
-	public AuthResponseBuilder setReqTime(String reqTime) {
+	/*public AuthResponseBuilder setReqTime(String reqTime) {
 		responseDTO.getInfo().setReqTime(reqTime);
 		return this;
-	}
+	}*/
 	/**
 	 * Sets the Static Token Id
 	 * @param staticTokenId
@@ -130,7 +136,7 @@ public class AuthResponseBuilder {
 	 * @return the auth response builder
 	 */
 	public AuthResponseBuilder setVersion(String ver) {
-		responseDTO.setVer(ver);
+		responseDTO.setVersion(ver);
 		return this;
 	}
 
@@ -148,13 +154,12 @@ public class AuthResponseBuilder {
 			responseDTO.setStatus("N");
 		}
 
-		responseDTO.setResTime(dateFormat.format(new Date()));
-
-		AuthError[] authErrors = authStatusInfos.stream().flatMap(statusInfo -> Optional.ofNullable(statusInfo.getErr())
+		responseDTO.setResponseTime(dateFormat.format(new Date()));
+	    AuthError[] authErrors = authStatusInfos.stream().flatMap(statusInfo -> Optional.ofNullable(statusInfo.getErr())
 				.map(List<AuthError>::stream).orElseGet(Stream::empty)).toArray(size -> new AuthError[size]);
 		addErrors(authErrors);
 
-		List<MatchInfo> matchInfos = authStatusInfos.stream().flatMap(statusInfo -> Optional
+		/*List<MatchInfo> matchInfos = authStatusInfos.stream().flatMap(statusInfo -> Optional
 				.ofNullable(statusInfo.getMatchInfos())
 				.map(List<MatchInfo>::stream)
 				.orElseGet(Stream::empty))
@@ -176,7 +181,7 @@ public class AuthResponseBuilder {
 				.collect(Collectors.toList())
 				.forEach(usageDataBit -> bitwiseInfo.setBit(usageDataBit.getHexNum(), usageDataBit.getBitIndex()));
 
-		responseDTO.getInfo().setUsageData(bitwiseInfo.toString());
+		responseDTO.getInfo().setUsageData(bitwiseInfo.toString());*/
 
 		built = true;
 		return responseDTO;

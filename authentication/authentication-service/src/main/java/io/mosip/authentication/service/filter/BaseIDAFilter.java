@@ -151,7 +151,7 @@ public abstract class BaseIDAFilter implements Filter {
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		List<AuthError> authErrorList = new ArrayList<>();
 		authErrorList.add(authError);
-		authResponseDTO.setErr(authErrorList);
+		authResponseDTO.setErrors(authErrorList);
 		Map<String, Object> requestMap = null;
 		try {
 			requestMap = getRequestBody(requestWrapper.getInputStream()); 
@@ -177,12 +177,12 @@ public abstract class BaseIDAFilter implements Filter {
 					env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone));
 		}
 		
-		if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get("txnID"))) {
-			authResponseDTO.setTxnID((String) requestMap.get("txnID"));
+		if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get("transactionID"))) {
+			authResponseDTO.setTransactionID((String) requestMap.get("transactionID"));
 		}
-		authResponseDTO.setResTime(resTime);
+		authResponseDTO.setResponseTime(resTime);
 		requestWrapper.resetInputStream();
-		authResponseDTO.setVer(getVersionFromUrl(requestWrapper));
+		authResponseDTO.setVersion(getVersionFromUrl(requestWrapper));
 		Map<String, Object> responseMap = mapper.readValue(mapper.writeValueAsString(authResponseDTO), new TypeReference<Map<String, Object>>() {
 		});
 		Map<String, Object> resultMap = new LinkedHashMap<>();
@@ -194,7 +194,7 @@ public abstract class BaseIDAFilter implements Filter {
 		response.getWriter().write(mapper.writeValueAsString(resultMap));
 		responseWrapper.setResponse(response);
 		responseWrapper.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-		logTime(authResponseDTO.getResTime(), RESPONSE);
+		logTime(authResponseDTO.getResponseTime(), RESPONSE);
 		return responseWrapper;
 	}
 	
@@ -278,7 +278,7 @@ public abstract class BaseIDAFilter implements Filter {
 			requestWrapper.resetInputStream();
 			Map<String, Object> responseMap = setResponseParams(getRequestBody(requestWrapper.getInputStream()),
 					getResponseBody(responseWrapper.toString()));
-			responseMap.put("ver", ver);
+			responseMap.put("version", ver);
 			String responseAsString = mapper.writeValueAsString(transformResponse(responseMap));
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), RESPONSE);
 			return responseAsString;
