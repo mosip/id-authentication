@@ -5,12 +5,11 @@
 package io.mosip.preregistration.booking.repository;
 
 import java.util.List;
-
-import javax.transaction.Transactional;
-
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
@@ -29,6 +28,7 @@ import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
 public interface RegistrationBookingRepository extends BaseRepository<RegistrationBookingEntity, String> {
 
 	public static final String preIdQuery = "SELECT u FROM RegistrationBookingEntity u WHERE u.bookingPK.preregistrationId = ?1";
+	public static final String dletePreIdQuery="delete from RegistrationBookingEntity u where u.bookingPK.preregistrationId = ?1";
 	/**
 	 * @param preregistrationId
 	 * @param statusCode
@@ -45,4 +45,11 @@ public interface RegistrationBookingRepository extends BaseRepository<Registrati
 	 * @return List RegistrationBookingEntity based on Registration center id and status code
  	 */
 	public List<RegistrationBookingEntity> findByRegistrationCenterIdAndStatusCode(@Param("regcntr_id")String registrationCenterId, @Param("status_code")String statusCode);
+	
+	@Query(preIdQuery)
+	public List<RegistrationBookingEntity> findBypreregistrationId(String preId);
+	@Transactional
+	@Modifying
+	@Query(dletePreIdQuery)
+	public int deleteByPreRegistrationId(String preregistrationId);
 }

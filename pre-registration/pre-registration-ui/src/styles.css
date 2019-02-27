@@ -11,6 +11,11 @@ body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
+.icon {
+  margin: 5px;
+  vertical-align: middle;
+}
+
 .mat-form-field-appearance-legacy .mat-form-field-underline {
   background-color: #696f7c !important;
 }

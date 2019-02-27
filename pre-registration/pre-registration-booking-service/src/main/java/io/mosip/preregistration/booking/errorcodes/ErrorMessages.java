@@ -14,6 +14,14 @@ package io.mosip.preregistration.booking.errorcodes;
  * @since 1.0.0
  *
  */
+/**
+ * @author M1043008
+ *
+ */
+/**
+ * @author M1043008
+ *
+ */
 public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_BOOK_RCI_001
@@ -142,7 +150,16 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_TRL_APP_026
 	 */
-	BOOKING_STATUS_CANNOT_BE_ALTERED_BEFORE("BOOKING_STATUS_CANNOT_BE_ALTERED_BEFORE");
+	BOOKING_STATUS_CANNOT_BE_ALTERED_BEFORE("BOOKING_STATUS_CANNOT_BE_ALTERED_BEFORE"),
+	
+	/**
+	 * ErrorMessage for PRG_TRL_APP_027
+	 */
+	DELETE_BOOKING_NOT_ALLOWED("DELETE_BOOKING_NOT_ALLOWED"),
+	/**
+	 * ErrorMessage for PRG_TRL_APP_028
+	 */
+	FAILED_TO_DELETE_THE_PRE_REGISTRATION_RECORD("FAILED_TO_DELETE_THE_PRE_REGISTRATION_RECORD");
 	/**
 	 * @param code
 	 */

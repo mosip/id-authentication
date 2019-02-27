@@ -3,6 +3,7 @@ package io.mosip.registration.test.service;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.when;
 
+import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +74,7 @@ public class AuditServiceTest {
 		registrations.add(registration);
 		
 		
-		Mockito.when(auditLogControlDAO.get(Mockito.any())).thenReturn(list);
+		Mockito.when(auditLogControlDAO.get(new Timestamp(Mockito.anyLong()))).thenReturn(list);
 		Mockito.when(registrationDAO.get(Mockito.anyList())).thenReturn(registrations);
 		
 		Mockito.doNothing().when(regPacketStatusService).deleteRegistrations(registrations);
@@ -93,7 +94,7 @@ public class AuditServiceTest {
 	
 	@Test
 	public void auditLogsDeletionExceptionTest() {
-		Mockito.when(auditLogControlDAO.get(Mockito.any())).thenThrow(RuntimeException.class);
+		Mockito.when(auditLogControlDAO.get(new Timestamp(Mockito.anyLong()))).thenThrow(RuntimeException.class);
 		
 		assertSame(RegistrationConstants.AUDIT_LOGS_DELETION_FLR_MSG, auditServiceImpl.deleteAuditLogs().getErrorResponseDTOs().get(0).getMessage());
 		

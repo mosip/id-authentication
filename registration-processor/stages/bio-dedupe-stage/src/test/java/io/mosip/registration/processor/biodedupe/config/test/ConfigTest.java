@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.biodedupe.config.test;
 
-
 import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 
 import org.junit.Before;
@@ -14,7 +14,6 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
 import io.mosip.registration.processor.biodedupe.config.BioDedupeBeanConfig;
-
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigTest {
@@ -46,10 +45,15 @@ public class ConfigTest {
 	public void getBioDedupeServiceTest() {
 		assertNotNull(config.getBioDedupeService());
 	}
-	
+
 	@Test
 	public void getBioDedupeStageTest() {
 		assertNotNull(config.getBioDedupeStage());
+	}
+
+	@Test
+	public void getBioDedupeProcessorTest() {
+		assertNotNull(config.getBioDedupeProcessor());
 	}
 
 }

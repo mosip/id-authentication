@@ -43,7 +43,7 @@ import io.swagger.annotations.ApiResponses;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping("/v0.1/pre-registration/")
+@RequestMapping("/")
 @Api(tags = "Document Handler")
 @CrossOrigin("*")
 public class DocumentController {

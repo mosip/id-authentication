@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.auth.dto.AuthRequestDTO;
 import io.mosip.registration.processor.core.auth.dto.AuthTypeDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityDTO;
@@ -25,19 +27,20 @@ import io.mosip.registration.processor.core.auth.dto.IdentityInfoDTO;
 import io.mosip.registration.processor.core.auth.dto.PinInfo;
 import io.mosip.registration.processor.core.auth.dto.RequestDTO;
 import io.mosip.registration.processor.core.constant.JsonConstant;
+import io.mosip.registration.processor.core.constant.PacketFiles;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.ApplicantType;
@@ -56,6 +59,9 @@ import io.mosip.registration.processor.status.service.TransactionService;
 @Service
 public class OSIValidator {
 
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(OSIValidatorStage.class);
+
 	/** The packet info manager. */
 	@Autowired
 	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
@@ -71,7 +77,7 @@ public class OSIValidator {
 
 	/** The adapter. */
 	@Autowired
-	private FileSystemAdapter<InputStream, Boolean> adapter;
+	private FileSystemAdapter adapter;
 
 	/** The rest client service. */
 	@Autowired
@@ -126,6 +132,8 @@ public class OSIValidator {
 	 *             the apis resource access exception
 	 */
 	public boolean isValidOSI(String registrationId) throws IOException, ApisResourceAccessException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "OSIValidator::isValidOSI()::entry");
 		boolean isValidOsi = false;
 		RegOsiDto regOsi = packetInfoManager.getOsi(registrationId);
 		String officerId = getOsiDataValue(registrationId, JsonConstant.OFFICERID);
@@ -139,6 +147,8 @@ public class OSIValidator {
 		if (((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId)))
 				&& (isValidIntroducer(regOsi, registrationId)))
 			isValidOsi = true;
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "OSIValidator::isValidOSI()::exit");
 		return isValidOsi;
 	}
 

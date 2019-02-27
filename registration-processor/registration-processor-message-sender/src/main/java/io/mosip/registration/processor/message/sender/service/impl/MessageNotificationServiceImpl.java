@@ -25,6 +25,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.IdType;
@@ -40,7 +41,6 @@ import io.mosip.registration.processor.core.notification.template.mapping.Notifi
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -99,7 +99,7 @@ public class MessageNotificationServiceImpl
 
 	/** The adapter. */
 	@Autowired
-	private FileSystemAdapter<InputStream, Boolean> adapter;
+	private FileSystemAdapter adapter;
 
 	/** The template generator. */
 	@Autowired
@@ -139,6 +139,8 @@ public class MessageNotificationServiceImpl
 	public SmsResponseDto sendSmsNotification(String templateTypeCode, String id, IdType idType,
 			Map<String, Object> attributes) throws ApisResourceAccessException, IOException {
 		SmsResponseDto response = null;
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				id, "MessageNotificationServiceImpl::sendSmsNotification()::entry");
 
 		try {
 
@@ -162,6 +164,8 @@ public class MessageNotificationServiceImpl
 			throw new TemplateGenerationFailedException(
 					PlatformErrorMessages.RPR_SMS_TEMPLATE_GENERATION_FAILURE.getCode(), e);
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				id, "MessageNotificationServiceImpl::sendSmsNotification()::exit");
 
 		return response;
 	}
@@ -178,6 +182,8 @@ public class MessageNotificationServiceImpl
 			Map<String, Object> attributes, String[] mailCc, String subject, MultipartFile[] attachment)
 			throws Exception {
 		ResponseDto response = null;
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				id, "MessageNotificationServiceImpl::sendEmailNotification()::entry");
 
 		try {
 
@@ -202,6 +208,8 @@ public class MessageNotificationServiceImpl
 			throw new TemplateGenerationFailedException(
 					PlatformErrorMessages.RPR_SMS_TEMPLATE_GENERATION_FAILURE.getCode(), e);
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				id, "MessageNotificationServiceImpl::sendEmailNotification()::exit");
 
 		return response;
 	}
@@ -234,7 +242,7 @@ public class MessageNotificationServiceImpl
 		for (String item : mailTo) {
 			builder.queryParam("mailTo", item);
 		}
-		
+
 		if (mailCc != null) {
 			for (String item : mailCc) {
 				builder.queryParam("mailCc", item);
@@ -398,7 +406,7 @@ public class MessageNotificationServiceImpl
 					.get(regProcessorTemplateJson.getIdentity().getIdschemaversion().getValue()));
 			template.setCnieNumber(
 					(Long) demographicIdentity.get(regProcessorTemplateJson.getIdentity().getCnienumber().getValue()));
-			
+
 		} catch (ParseException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					null, "Error while parsing Json file" + ExceptionUtils.getStackTrace(e));

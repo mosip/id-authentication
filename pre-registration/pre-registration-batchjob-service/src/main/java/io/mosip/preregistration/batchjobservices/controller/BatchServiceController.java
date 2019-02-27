@@ -19,7 +19,7 @@ import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.swagger.annotations.Api;
 
 @RestController
-@RequestMapping("/v0.1/pre-registration/batch")
+@RequestMapping("/")
 @Api(tags = "Services for batch job")
 @CrossOrigin("*")
 public class BatchServiceController {
@@ -30,7 +30,7 @@ public class BatchServiceController {
 	@Autowired
 	private ExpiredStatusService expiredStatusService;
 	
-	@PutMapping(path="/state/consumedStatus",produces=MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(path="/consumedStatus",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MainResponseDTO<String>> consumedAppointments(){
 		
 		MainResponseDTO<String> response=consumedStatusService.demographicConsumedStatus();
@@ -38,7 +38,7 @@ public class BatchServiceController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
-	@PutMapping(path="state/expiredStatus",produces=MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(path="/expiredStatus",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MainResponseDTO<String>> expiredAppointments(){
 		
 		MainResponseDTO<String> response=expiredStatusService.expireAppointments();

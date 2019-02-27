@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -72,7 +73,7 @@ public class KeymanagerExceptionHandler {
 		return new ResponseEntity<>(getErrorResponse(KeymanagerErrorConstant.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
 				e.getMessage() + KeymanagerConstant.WHITESPACE
 						+ KeymanagerErrorConstant.DATE_TIME_PARSE_EXCEPTION.getErrorMessage(),
-				HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+				HttpStatus.OK), HttpStatus.OK);
 	}
 
 
@@ -113,15 +114,6 @@ public class KeymanagerExceptionHandler {
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 
-	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
-	public ResponseEntity<ErrorResponse<ServiceError>> defaultErrorHandler(HttpServletRequest request, Exception e) {
-		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
-		ServiceError error = new ServiceError(KeymanagerErrorConstant.INTERNAL_SERVER_ERROR.getErrorCode(),
-				e.getMessage());
-		errorResponse.getErrors().add(error);
-		errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-	}
 
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> onHttpMessageNotReadable(
@@ -131,6 +123,28 @@ public class KeymanagerExceptionHandler {
 		errorResponse.getErrors().add(error);
 		errorResponse.setStatus(HttpStatus.OK.value());
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+	}
+	
+	@ExceptionHandler(MissingServletRequestParameterException.class)
+	public ResponseEntity<ErrorResponse<ServiceError>> onMissingServletRequestParameterException(
+			final MissingServletRequestParameterException e) {
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+		ServiceError error = new ServiceError(KeymanagerErrorConstant.INVALID_REQUEST.getErrorCode(), e.getMessage());
+		errorResponse.getErrors().add(error);
+		errorResponse.setStatus(HttpStatus.OK.value());
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+	}
+	
+	
+
+	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
+	public ResponseEntity<ErrorResponse<ServiceError>> defaultErrorHandler(HttpServletRequest request, Exception e) {
+		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+		ServiceError error = new ServiceError(KeymanagerErrorConstant.INTERNAL_SERVER_ERROR.getErrorCode(),
+				e.getMessage());
+		errorResponse.getErrors().add(error);
+		errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	private ErrorResponse<ServiceError> getErrorResponse(String errorCode, String errorMessage, HttpStatus httpStatus) {

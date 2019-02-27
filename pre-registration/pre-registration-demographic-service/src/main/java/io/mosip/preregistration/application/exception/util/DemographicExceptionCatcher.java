@@ -15,7 +15,11 @@ import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
+import io.mosip.preregistration.application.errorcodes.ErrorCodes;
+import io.mosip.preregistration.application.errorcodes.ErrorMessages;
+import io.mosip.preregistration.application.exception.BookingDeletionFailedException;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
+import io.mosip.preregistration.application.exception.InvalidDateFormatException;
 import io.mosip.preregistration.application.exception.MissingRequestParameterException;
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
@@ -26,7 +30,6 @@ import io.mosip.preregistration.application.exception.system.JsonValidationExcep
 import io.mosip.preregistration.application.exception.system.SystemFileIOException;
 import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
-import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
@@ -71,8 +74,7 @@ public class DemographicExceptionCatcher {
 		} else if (ex instanceof DocumentFailedToDeleteException) {
 			throw new DocumentFailedToDeleteException(((DocumentFailedToDeleteException) ex).getErrorCode(),((DocumentFailedToDeleteException) ex).getErrorText());
 		} else if (ex instanceof IllegalArgumentException) {
-			throw new SystemIllegalArgumentException(((BaseUncheckedException) ex).getErrorCode(),
-					ex.getMessage(), ex.getCause());
+			throw new SystemIllegalArgumentException(ErrorCodes.PRG_PAM_APP_007.name(),ErrorMessages.UNSUPPORTED_DATE_FORMAT.name());
 		} else if (ex instanceof SystemUnsupportedEncodingException) {
 			throw new SystemUnsupportedEncodingException(((SystemUnsupportedEncodingException) ex).getErrorCode(),((SystemUnsupportedEncodingException) ex).getErrorText());
 		} else if (ex instanceof DateParseException) {
@@ -84,6 +86,12 @@ public class DemographicExceptionCatcher {
 		}
 		else if (ex instanceof RecordFailedToDeleteException) {
 			throw new RecordFailedToDeleteException(((RecordFailedToDeleteException) ex).getErrorCode(),((RecordFailedToDeleteException) ex).getErrorText());
+		}
+		else if (ex instanceof InvalidDateFormatException) {
+			throw new InvalidDateFormatException(((InvalidDateFormatException) ex).getErrorCode(),
+					((InvalidDateFormatException) ex).getErrorText());
+		}else if (ex instanceof BookingDeletionFailedException) {
+			throw new BookingDeletionFailedException(((BookingDeletionFailedException) ex).getErrorCode(),((BookingDeletionFailedException) ex).getErrorText());
 		}
 	}
 

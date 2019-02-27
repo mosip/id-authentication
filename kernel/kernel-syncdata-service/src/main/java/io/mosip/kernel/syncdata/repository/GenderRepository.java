@@ -26,6 +26,6 @@ public interface GenderRepository extends BaseRepository<Gender, String> {
 	 *            timeStamp
 	 * @return list of {@link Gender}
 	 */
-	@Query("FROM Gender WHERE createdDateTime > ?1 OR updatedDateTime > ?1  OR deletedDateTime > ?1")
-	List<Gender> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated);
+	@Query("FROM Gender WHERE (createdDateTime > ?1 AND createdDateTime <=?2) OR (updatedDateTime > ?1 AND updatedDateTime<=?2)  OR (deletedDateTime > ?1 AND deletedDateTime <=?2)")
+	List<Gender> findAllLatestCreatedUpdateDeleted(LocalDateTime lastUpdated,LocalDateTime currentTimeStamp);
 }

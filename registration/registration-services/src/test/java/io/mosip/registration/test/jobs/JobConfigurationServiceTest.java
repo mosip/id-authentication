@@ -121,28 +121,7 @@ public class JobConfigurationServiceTest {
 		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
 	}
 
-	@Test
-	public void initiateJobTest() {
-		GlobalParam globalParam=new GlobalParam();
-		globalParam.setName("1234");
-		globalParam.setVal("0/10 * * * * ?");
-		globalParam.setIsActive(true);
-		List<GlobalParam> globalParams=new LinkedList<>();
-		globalParams.add(globalParam);
-		
-		List<SyncJobDef> updatedJobs = new LinkedList<>();
-		SyncJobDef syncJobDef=new SyncJobDef();
-		syncJobDef.setId(globalParam.getName());
-		syncJobDef.setSyncFrequency(globalParam.getVal());
-		syncJobDef.setIsActive(globalParam.getIsActive());
-		updatedJobs.add(syncJobDef);
-		
-		Mockito.when(globalParamDAO.getAll(Mockito.anyList())).thenReturn(globalParams);
-		Mockito.when(jobConfigDAO.updateAll(Mockito.anyList())).thenReturn(updatedJobs);
-		
-		jobConfigurationService.initiateJobs();
-
-	}
+	
 
 	@Test
 	public void startJobs() throws SchedulerException {
@@ -162,20 +141,43 @@ public class JobConfigurationServiceTest {
 		Mockito.when(packetSyncJob.executeJob(Mockito.anyString(), Mockito.anyString())).thenReturn(responseDTO);
 
 		assertSame(RegistrationConstants.BATCH_JOB_START_SUCCESS_MESSAGE,
-				jobConfigurationService.startScheduler(applicationContext).getSuccessResponseDTO().getMessage());
+				jobConfigurationService.startScheduler().getSuccessResponseDTO().getMessage());
+	}
+	
+	@Test
+	public void initiateJobTest() {
+		GlobalParam globalParam=new GlobalParam();
+		globalParam.setName("1234");
+		globalParam.setVal("0/10 * * * * ?");
+		globalParam.setIsActive(true);
+		List<GlobalParam> globalParams=new LinkedList<>();
+		globalParams.add(globalParam);
+		
+		List<SyncJobDef> updatedJobs = new LinkedList<>();
+		SyncJobDef syncJobDef=new SyncJobDef();
+		syncJobDef.setId(globalParam.getName());
+		syncJobDef.setSyncFrequency(globalParam.getVal());
+		syncJobDef.setIsActive(globalParam.getIsActive());
+		syncJobDef.setApiName("packetSyncStatusJob");
+		updatedJobs.add(syncJobDef);
+		
+		Mockito.when(globalParamDAO.getAll(Mockito.anyList())).thenReturn(globalParams);
+		Mockito.when(jobConfigDAO.updateAll(Mockito.anyList())).thenReturn(updatedJobs);
+		
+		jobConfigurationService.initiateJobs();
+
 	}
 
 	@Test
 	public void startJobsShedulerExceptionTest() throws SchedulerException {
-		BaseJob job = new PacketSyncStatusJob();
-
+		
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenThrow(NoSuchBeanDefinitionException.class);
 
 		Mockito.when(schedulerFactoryBean.getScheduler()).thenReturn(scheduler);
 		doNothing().when(scheduler).clear();
 		initiateJobTest();
 		assertSame(RegistrationConstants.START_SCHEDULER_ERROR_MESSAGE,
-				jobConfigurationService.startScheduler(applicationContext).getErrorResponseDTOs().get(0).getMessage());
+				jobConfigurationService.startScheduler().getErrorResponseDTOs().get(0).getMessage());
 
 	}
 
@@ -252,13 +254,19 @@ public class JobConfigurationServiceTest {
 		initiateJobTest();
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(packetSyncJob);
 		Mockito.when(packetSyncJob.executeJob(Mockito.anyString(), Mockito.anyString())).thenReturn(new ResponseDTO());
-		jobConfigurationService.executeJob(applicationContext, "1234");
+		jobConfigurationService.executeJob( "1234",RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 	}
 
 	@Test
 	public void executeJobExceptionJobTest() throws SchedulerException {
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenThrow(NoSuchBeanDefinitionException.class);
-		jobConfigurationService.executeJob(applicationContext, "packetSyncStatusJob");
+		jobConfigurationService.executeJob("packetSyncStatusJob",RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+	}
+	
+	@Test
+	public void executeJobRunTimeExceptionJobTest() throws SchedulerException {
+		Mockito.when(packetSyncJob.executeJob(Mockito.anyString(),Mockito.anyString())).thenThrow(NoSuchBeanDefinitionException.class);
+		jobConfigurationService.executeJob("packetSyncStatusJob",RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 	}
 
 	@Test
@@ -296,6 +304,7 @@ public class JobConfigurationServiceTest {
 		syncTransactions.add(syncTransaction);
 
 		Timestamp req =new Timestamp(System.currentTimeMillis());
+		
 		Mockito.when(syncJobTransactionDAO.getSyncTransactions(Mockito.any(),Mockito.anyString())).thenReturn(syncTransactions);
 				
 		Assert.assertNotNull(jobConfigurationService.getSyncJobsTransaction().getSuccessResponseDTO());

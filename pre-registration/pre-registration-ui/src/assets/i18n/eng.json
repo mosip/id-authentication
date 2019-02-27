@@ -75,7 +75,7 @@
   },
   "documents": {
     "title_document": "Upload Documents",
-    "text_filetype": "Allowed file type Pdf,Word and Max 1MB",
+    "text_filetype": "Allowed file type Pdf,Max size 1MB",
     "action_browse": "BROWSE",
     "action_back": "BACK",
     "action_skip": "SKIP",
@@ -162,7 +162,7 @@
     }
   },
   "uidStatus": {
-    "title": "My Applications",
+    "title": "Your Applications",
     "action_modify_information": "Modify Information",
     "action_modify_appointment": "Book/Modify Appointment",
     "action_cre_application": "Create New Application ",

@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>registration-processor</artifactId>
-		<version>0.8.8</version>
+		<version>0.8.14</version>
 	</parent>
 
 	<artifactId>registration-processor-message-sender</artifactId>
@@ -65,11 +65,6 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-core</artifactId>
-			<version>${kernel.core.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-templatemanager-velocity</artifactId>
 			<version>${kernel.templatemanager.velocity.version}</version>
 		</dependency>
@@ -102,11 +97,6 @@
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-processor-core</artifactId>
 			<version>${registration.processor.core.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>filesystem-adapter-ceph</artifactId>
-			<version>${filesystem.adapter.ceph.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>

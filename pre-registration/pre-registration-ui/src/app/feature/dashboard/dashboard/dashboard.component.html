@@ -5,7 +5,7 @@
     </div>
     <span class="spacer"></span>
     <div class="buttons">
-      <span
+      <span matTooltip="Info about the action" [matTooltipDisabled]="!disableModifyAppointmentButton"
         ><button
           mat-button
           [disabled]="disableModifyAppointmentButton"
@@ -31,15 +31,25 @@
         <mat-card>
           <div class="card-header">
             <span class="checkbox"
-              ><mat-checkbox (change)="onSelectUser(user, $event)"
+              ><mat-checkbox
+                [disabled]="isBookingAllowed(user.appointmentDateTime)"
+                (change)="onSelectUser(user, $event)"
                 >{{ 'uidStatus.card.text_app_id' | translate }}
               </mat-checkbox></span
             >
             <span class="checkbox"
-              ><strong>{{ user.applicationID }}</strong></span
-            >
+              ><strong>{{ user.applicationID }}</strong>
+              <mat-icon class="icon" matTooltip="Info about the action" [inline]="true">help_outline</mat-icon>
+            </span>
             <span class="spacer"></span>
-            <button (click)="onDelete(user)" mat-icon-button><img src="assets\delete.png" class="delete-img" /></button>
+            <button (click)="onDelete(user)" mat-icon-button [disabled]="user.status === 'Expired'">
+              <img
+                matTooltip="Info about the action"
+                [matTooltipDisabled]="false"
+                src="assets\delete.png"
+                class="delete-img"
+              />
+            </button>
           </div>
           <mat-card-content [ngStyle]="{ marginTop: getMargin(user.name) }">
             <div class="card-content">
@@ -54,7 +64,10 @@
                 </tr>
                 <tr>
                   <td>{{ 'uidStatus.card.text_status' | translate }}</td>
-                  <td id="status" [ngStyle]="{ color: getColor(user.status) }">{{ user.status }}</td>
+                  <td id="status" [ngStyle]="{ color: getColor(user.status) }">
+                    {{ user.status }}
+                    <mat-icon class="icon" matTooltip="Info about the action" [inline]="true">help_outline</mat-icon>
+                  </td>
                 </tr>
               </table>
             </div>

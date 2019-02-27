@@ -2,6 +2,7 @@ package io.mosip.registration.util.hmac;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -74,7 +75,12 @@ public class HMACGeneration {
 		byte[] applicantExceptionPhotoBytes = demographicDTO.getApplicantDocumentDTO().getExceptionPhoto();
 		byte[] registrationAck = demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceipt();
 
-		DocumentDetailsDTO documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity()
+		for (Entry<String, DocumentDetailsDTO> documentCategory : demographicDTO.getApplicantDocumentDTO()
+				.getDocuments().entrySet()) {
+			generateHash(documentCategory.getValue().getDocument(), documentCategory.getValue().getValue(), hashOrder);
+		}
+		
+		/*DocumentDetailsDTO documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity()
 				.getProofOfIdentity();
 
 		if (documentDetailsDTO != null) {
@@ -97,7 +103,7 @@ public class HMACGeneration {
 
 		if (documentDetailsDTO != null) {
 			generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(), hashOrder);
-		}
+		}*/
 
 		// hash for applicant photo
 		if (applicantPhotoBytes != null) {

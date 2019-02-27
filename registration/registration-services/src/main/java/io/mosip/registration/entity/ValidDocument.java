@@ -1,110 +1,144 @@
 package io.mosip.registration.entity;
 
+import java.io.Serializable;
+
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ * Entity class for valid document.
+ * 
+ * @author Sreekar chukka
+ * @since 1.0.0
+ *
+ */
 @Entity
-@Table(schema = "master", name = "valid_document")
-public class ValidDocument extends MasterCommonFields {
-	@EmbeddedId
-	private GenericId genericId;
-	@Column(name = "name")
-	private String name;
-	@Column(name = "descr")
-	private String description;
+@Table(name = "valid_document", schema = "reg")
+@IdClass(ValidDocumentID.class)
+public class ValidDocument extends RegistrationCommonFields implements Serializable {
 
 	/**
-	 * @return the genericId
-	 */
-	public GenericId getGenericId() {
-		return genericId;
-	}
-
-	/**
-	 * @param genericId
-	 *            the genericId to set
-	 */
-	public void setGenericId(GenericId genericId) {
-		this.genericId = genericId;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * @param description
-	 *            the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	/*
-	 * (non-Javadoc)
 	 * 
-	 * @see java.lang.Object#hashCode()
 	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((genericId == null) ? 0 : genericId.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
+	private static final long serialVersionUID = -3111581667845281498L;
+
+	@Id
+	@AttributeOverrides({ @AttributeOverride(name = "docTypeCode", column = @Column(name = "doctyp_code")),
+			@AttributeOverride(name = "docCategoryCode", column = @Column(name = "doccat_code")) })
+
+	private String docTypeCode;
+
+	private String docCategoryCode;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumns({
+			@JoinColumn(name = "doccat_code", referencedColumnName = "code", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false), })
+	DocumentCategory documentCategory;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumns({
+			@JoinColumn(name = "doctyp_code", referencedColumnName = "code", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	DocumentType documentType;
+
+	@Column(name = "lang_code")
+	private String langCode;
+	
+	@Column(name = "applicant_type")
+	private String applicantType;
+
+	/**
+	 * @return the docTypeCode
+	 */
+	public String getDocTypeCode() {
+		return docTypeCode;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/**
+	 * @param docTypeCode the docTypeCode to set
 	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ValidDocument other = (ValidDocument) obj;
-		if (description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!description.equals(other.description))
-			return false;
-		if (genericId == null) {
-			if (other.genericId != null)
-				return false;
-		} else if (!genericId.equals(other.genericId))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		return true;
+	public void setDocTypeCode(String docTypeCode) {
+		this.docTypeCode = docTypeCode;
 	}
 
+	/**
+	 * @return the docCategoryCode
+	 */
+	public String getDocCategoryCode() {
+		return docCategoryCode;
+	}
+
+	/**
+	 * @param docCategoryCode the docCategoryCode to set
+	 */
+	public void setDocCategoryCode(String docCategoryCode) {
+		this.docCategoryCode = docCategoryCode;
+	}
+
+	/**
+	 * @return the documentCategory
+	 */
+	public DocumentCategory getDocumentCategory() {
+		return documentCategory;
+	}
+
+	/**
+	 * @param documentCategory the documentCategory to set
+	 */
+	public void setDocumentCategory(DocumentCategory documentCategory) {
+		this.documentCategory = documentCategory;
+	}
+
+	/**
+	 * @return the documentType
+	 */
+	public DocumentType getDocumentType() {
+		return documentType;
+	}
+
+	/**
+	 * @param documentType the documentType to set
+	 */
+	public void setDocumentType(DocumentType documentType) {
+		this.documentType = documentType;
+	}
+
+	/**
+	 * @return the langCode
+	 */
+	public String getLangCode() {
+		return langCode;
+	}
+
+	/**
+	 * @param langCode the langCode to set
+	 */
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
+	}
+
+	/**
+	 * @return the applicantType
+	 */
+	public String getApplicantType() {
+		return applicantType;
+	}
+
+	/**
+	 * @param applicantType the applicantType to set
+	 */
+	public void setApplicantType(String applicantType) {
+		this.applicantType = applicantType;
+	}
+
+	
 }

@@ -1,0 +1,14 @@
+{
+    "EmptyRegistrationId":"",
+    "EmptyLangCode":"",
+    "EmptySyncType":"",
+    "SameRegIdAndParentRegId":"",
+    "RegId":"",
+    "Lang":"",
+    "SyncType":"",
+    "MultipleSyncType":"",
+    "MultipleLangCode":"",
+    "MultipleRegIds":"",
+    "RegIdAndLangCode":"",
+    "SyncTypeAndLangCode":""  
+ }

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import java.lang.*?>
@@ -12,126 +11,292 @@
 <?import javafx.collections.*?>
 <?import javafx.stage.Screen?>
 
-<AnchorPane fx:id="biometricException" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="578.0" prefWidth="903.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.BiometricExceptionController">
+<AnchorPane fx:id="biometricException" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="exceptionBackPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.BiometricExceptionController">
    <children>
-   <AnchorPane fx:id="biometricExceptionLayout" prefHeight="653.0" prefWidth="835.0" styleClass="anchorPanebgColor,borderStyle">
+      <ImageView fx:id="registrationImg" fitHeight="192.0" fitWidth="130.0" layoutX="1130.0" layoutY="152.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/exceptionProgressImg.png" />
+         </image>
+      </ImageView>
+      <AnchorPane fx:id="userOnboardTracker" layoutX="1130.0" layoutY="152.0" prefHeight="200.0" prefWidth="141.0">
          <children>
-         <ImageView fx:id="homePageImg" fitHeight="20.0" fitWidth="20.0" layoutX="14.0" layoutY="10.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
-  	 			<image>
-					<Image url="@../images/Home.png" />
-		 		</image>	
-    		</ImageView>    		
-    		<Text id="homeReg" fx:id="homePageLbl" layoutX="44.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="10.0" text="/ Onboard User" />
-      <Button fx:id="nextBtn" layoutX="773.0" layoutY="510.0" mnemonicParsing="false" onAction="#goToNextPage" styleClass="RegbuttonStyle" text="Next" />
-      <Button fx:id="previousBtn" layoutX="695.0" layoutY="510.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="RegbuttonStyle" text="Previous" />
-      <Label layoutX="58.0" layoutY="34.0" text="%exception" />
-            <HBox fx:id="exceptionBox" layoutX="34.0" layoutY="63.0" prefHeight="200.0" prefWidth="840.0">
+            <ImageView fitHeight="192.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/UserOnboardExceptionTracker.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="36.0" layoutY="0.0" styleClass="currentTracker" text="Exception" />
+            <Label layoutX="36.0" layoutY="67.0" styleClass="uncompleteTracker" text="Fingerprints" />
+            <Label layoutX="36.0" layoutY="122.0" styleClass="uncompleteTracker" text="Iris" />
+            <Label layoutX="36.0" layoutY="177.0" styleClass="uncompleteTracker" text="Photo" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="operatorExceptionHeader" layoutX="1.0" styleClass="userOnboardHeader">
+         <children>
+            <Text fx:id="onboardHomeLink" layoutX="20.0" layoutY="20.0" onMouseClicked="#goToHomePage" text="%homeLink" />
+            <Text fx:id="onboardPageDesc" layoutX="68.0" layoutY="20.0" text="%onboardOperator" />
+            <Label fx:id="onboardPageTitle" layoutX="559.0" layoutY="2.0" text="%onboardOperator" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="regExceptionHeader" layoutX="180.0" styleClass="regExceptionLayout" />
+      <AnchorPane layoutX="180.0" layoutY="34.0" styleClass="onboardImgPane">
+         <children>
+            <AnchorPane fx:id="operatorExceptionLayout" layoutX="66.0" layoutY="14.0" styleClass="operatorExceptionLayout">
                <children>
-                  <HBox fx:id="fingerBox" layoutX="34.0" layoutY="63.0" prefHeight="200.0" prefWidth="450.0">
-			          <children>
-			              <Pane fx:id="leftHandPane" layoutX="34.0" layoutY="63.0" prefHeight="200.0" prefWidth="200.0" styleClass="biometricExceptionPane">
-					      	   <children>
-					            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="14.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true">
-					               <image>
-					                  <Image url="@../images/LeftHand.png" />
-					               </image></ImageView>
-					            <Label fx:id="leftLittle" layoutX="52.0" layoutY="71.0" prefHeight="31.0" prefWidth="14.0" visible="true" />
-					            <Label fx:id="leftRing" layoutX="67.0" layoutY="57.0" prefHeight="45.0" prefWidth="14.0" visible="true" />
-					            <Label fx:id="leftMiddle" layoutX="84.0" layoutY="49.0" prefHeight="54.0" prefWidth="14.0" visible="true" />
-					            <Label fx:id="leftIndex" layoutX="102.0" layoutY="56.0" prefHeight="45.0" prefWidth="14.0" visible="true" />
-					            <Label fx:id="leftThumb" layoutX="116.0" layoutY="93.0" prefHeight="39.0" prefWidth="21.0" visible="true" />
-					            <ImageView fx:id="leftLittleImg" fitHeight="11.0" fitWidth="14.0" layoutX="52.0" layoutY="65.0" pickOnBounds="true" preserveRatio="true" visible="false">
-					               <image>
-					                  <Image url="@../images/Finger.png" />
-					               </image>
-					            </ImageView>
-					            <ImageView fx:id="leftRingImg" fitHeight="31.0" fitWidth="14.0" layoutX="67.0" layoutY="54.0" pickOnBounds="true" preserveRatio="true" visible="false">
-					               <image>
-					                  <Image url="@../images/Finger.png" />
-					               </image>
-					            </ImageView>
-					            <ImageView fx:id="leftMiddleImg" fitHeight="27.0" fitWidth="14.0" layoutX="84.0" layoutY="44.0" pickOnBounds="true" preserveRatio="true" visible="false">
-					               <image>
-					                  <Image url="@../images/Finger.png" />
-					               </image>
-					            </ImageView>
-					            <ImageView fx:id="leftIndexImg" fitHeight="27.0" fitWidth="14.0" layoutX="102.0" layoutY="55.0" pickOnBounds="true" preserveRatio="true" visible="false">
-					               <image>
-					                  <Image url="@../images/Finger.png" />
-					               </image>
-					            </ImageView>
-					            <ImageView fx:id="leftThumbImg" fitHeight="27.0" fitWidth="21.0" layoutX="127.0" layoutY="90.0" pickOnBounds="true" preserveRatio="true" visible="false">
-					               <image>
-					                  <Image url="@../images/LeftThumb.png" />
-					               </image>
-					            </ImageView>
-					         </children>
-					      </Pane>
-			         	  <Pane fx:id="rightHandPane" layoutX="242.0" layoutY="63.0" prefHeight="200.0" prefWidth="200.0" styleClass="biometricExceptionPane">
-					         <children>
-					            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="14.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true">
-					               <image>
-					                  <Image url="@../images/RightHand.png" />
-					               </image></ImageView>
-					            <Label fx:id="rightThumb" layoutX="56.0" layoutY="86.0" prefHeight="38.0" prefWidth="21.0" visible="true" />
-					            <Label fx:id="rightIndex" layoutX="75.0" layoutY="56.0" prefHeight="38.0" prefWidth="14.0" visible="true" />
-					            <Label fx:id="rightMiddle" layoutX="94.0" layoutY="42.0" prefHeight="54.0" prefWidth="14.0" visible="true" />
-					            <Label fx:id="rightRing" layoutX="111.0" layoutY="53.0" prefHeight="45.0" prefWidth="14.0" visible="true" />
-					            <Label fx:id="rightLittle" layoutX="127.0" layoutY="63.0" prefHeight="31.0" prefWidth="14.0" visible="true" />
-					            <ImageView fx:id="rightLittleImg" fitHeight="11.0" fitWidth="14.0" layoutX="132.0" layoutY="65.0" pickOnBounds="true" preserveRatio="true" visible="false">
-					               <image>
-					                  <Image url="@../images/Finger.png" />
-					               </image>
-					            </ImageView>
-					            <ImageView fx:id="rightRingImg" fitHeight="31.0" fitWidth="14.0" layoutX="115.0" layoutY="52.0" pickOnBounds="true" preserveRatio="true" visible="false">
-					               <image>
-					                  <Image url="@../images/Finger.png" />
-					               </image>
-					            </ImageView>
-					            <ImageView fx:id="rightMiddleImg" fitHeight="27.0" fitWidth="14.0" layoutX="97.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true" visible="false">
-					               <image>
-					                  <Image url="@../images/Finger.png" />
-					               </image>
-					            </ImageView>
-					            <ImageView fx:id="rightIndexImg" fitHeight="27.0" fitWidth="14.0" layoutX="80.0" layoutY="53.0" pickOnBounds="true" preserveRatio="true" visible="false">
-					               <image>
-					                  <Image url="@../images/Finger.png" />
-					               </image>
-					            </ImageView>
-					            <ImageView fx:id="rightThumbImg" fitHeight="45.0" fitWidth="21.0" layoutX="49.0" layoutY="83.0" pickOnBounds="true" preserveRatio="true" visible="false">
-					               <image>
-					                  <Image url="@../images/RightThumb.png" />
-					               </image>
-					            </ImageView>
-					         </children>
-					      </Pane>
-			               </children>
-			            </HBox>
-			            <HBox fx:id="eyeBox" layoutX="462.0" layoutY="63.0" prefHeight="200.0" prefWidth="400.0">
-			               <children>
-			                  <Pane fx:id="leftEyePane" layoutX="462.0" layoutY="63.0" prefHeight="200.0" prefWidth="200.0" styleClass="biometricExceptionPane">
-						         <children>
-						            <ImageView fx:id="leftEye" fitHeight="150.0" fitWidth="200.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
-						               <image>
-						                  <Image url="@../images/leftIris.png" />
-						               </image>
-						            </ImageView>
-						         </children>
-						      </Pane>
-			                  <Pane fx:id="rightEyePane" layoutX="668.0" layoutY="63.0" prefHeight="200.0" prefWidth="200.0" styleClass="biometricExceptionPane">
-						         <children>
-						            <ImageView fx:id="rightEye" fitHeight="150.0" fitWidth="200.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
-						               <image>
-						                  <Image url="@../images/rightIris.png" />
-						               </image>
-						            </ImageView>
-						         </children>
-						      </Pane>
-			               </children>
-			            </HBox>
-			          </children>
-			      </HBox>
-		</children>
-	</AnchorPane>
+                  <Label styleClass="onboardOperatorDetailsHeader" text="%employeeName" />
+                  <Label layoutX="192.0" styleClass="onboardOperatorDetailsHeader" text="%employeeCode" />
+                  <Label layoutX="589.0" styleClass="onboardOperatorDetailsHeader" text="%machineID" />
+                  <Label layoutX="376.0" styleClass="onboardOperatorDetailsHeader" text="%registrationCentreID" />
+                  <Label fx:id="employeeCode" layoutX="192.0" layoutY="25.0" styleClass="onboardOperatorDetails" />
+                  <Label fx:id="employeeName" layoutY="25.0" styleClass="onboardOperatorDetails" />
+                  <Label fx:id="machineID" layoutX="589.0" layoutY="25.0" styleClass="onboardOperatorDetails" text="machineID" />
+                  <Label fx:id="regCenterID" layoutX="376.0" layoutY="25.0" styleClass="onboardOperatorDetails" />
+               </children>
+            </AnchorPane>
+            <HBox layoutX="66.0" layoutY="90.0" styleClass="exceptionIrisPaneParent">
+               <children>
+                  <AnchorPane fx:id="fingerPane" layoutX="40.0" styleClass="exceptionFingerPane">
+                     <children>
+                        <Label styleClass="onboardPageBioTitle" text="%exception" />
+                        <Pane fx:id="rightHandPane" layoutX="32.0" layoutY="33.0" prefHeight="157.0" prefWidth="120.0" styleClass="biometricExceptionPaneFinger">
+                           <children>
+                              <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="12.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/rightHandException.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="rightLittleFinger" fitHeight="43.0" fitWidth="26.0" layoutX="12.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/rightLittleFinger.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="rightRingFinger" fitHeight="50.0" fitWidth="18.0" layoutX="33.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/rightRingFinger.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="rightMiddleFinger" fitHeight="45.0" fitWidth="18.0" layoutX="53.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/rightMiddleFinger.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="rightIndexFinger" fitHeight="39.0" fitWidth="18.0" layoutX="67.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/rightIndexFinger.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="rightThumbFinger" fitHeight="29.0" fitWidth="36.0" layoutX="79.0" layoutY="63.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/rightThumbFinger.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </Pane>
+                        <Pane fx:id="leftHandPane" layoutX="189.0" layoutY="33.0" prefHeight="157.0" prefWidth="120.0" styleClass="biometricExceptionPaneFinger">
+                           <children>
+                              <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="10.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/leftHandException.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="leftLittleFinger" fitHeight="45.0" fitWidth="26.0" layoutX="84.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/leftLittleFinger.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="leftRingFinger" fitHeight="45.0" fitWidth="18.0" layoutX="70.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/leftRingFinger.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="leftMiddleFinger" fitHeight="50.0" fitWidth="13.0" layoutX="56.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/leftMiddleFinger.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="leftIndexFinger" fitHeight="50.0" fitWidth="18.0" layoutX="38.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/leftIndexFinger.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="leftThumbFinger" fitHeight="27.0" fitWidth="58.0" layoutX="10.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/leftThumbFinger.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </Pane>
+                        <Label layoutX="46.0" layoutY="202.0" styleClass="onboardBioDetailsHeader" text="%rightHand" />
+                        <Label layoutX="229.0" layoutY="202.0" styleClass="onboardBioDetailsHeader" text="%leftHand" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="irisPane" layoutX="429.0" styleClass="exceptionPanes">
+                     <children>
+                        <Pane fx:id="rightEyePane" layoutX="4.0" layoutY="71.0" prefHeight="90.0" prefWidth="160.0" styleClass="biometricExceptionPaneIris">
+                           <children>
+                              <ImageView fx:id="rightEye" fitHeight="100.0" fitWidth="150.0" layoutX="5.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/exceptionEye.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </Pane>
+                        <Pane fx:id="leftEyePane" layoutX="173.0" layoutY="71.0" prefHeight="90.0" prefWidth="160.0" styleClass="biometricExceptionPaneIris">
+                           <children>
+                              <ImageView fx:id="leftEye" fitHeight="100.0" fitWidth="150.0" layoutX="5.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/exceptionEye.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </Pane>
+                        <Label styleClass="onboardPageBioTitle" text="%irisexception" />
+                        <Label layoutX="44.0" layoutY="202.0" styleClass="onboardBioDetailsHeader" text="%rightIris" />
+                        <Label layoutX="225.0" layoutY="202.0" styleClass="onboardBioDetailsHeader" text="%leftIris" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </HBox>
+            <AnchorPane layoutX="147.0" layoutY="410.0" prefHeight="157.0" prefWidth="322.0">
+               <children>
+                  <Label layoutX="7.0" layoutY="1.0" styleClass="onboardExceptionDetails" text="%markedasException" />
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="147.0" layoutY="360.0" prefHeight="50.0" prefWidth="449.0">
+               <children>
+                  <Label layoutX="24.0" layoutY="6.0" styleClass="onboardInfoDetails" text="%clicktomarktheparticular" />
+                  <Label layoutX="167.0" layoutY="6.0" styleClass="onboardInfoDetailsName" text="%finger/Iris" />
+                  <Label layoutX="231.0" layoutY="6.0" styleClass="onboardInfoDetails" text="%asException" />
+                  <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/infoSymbol.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="exceptionDocProof" layoutX="508.0" layoutY="410.0" styleClass="exceptionDocProof">
+               <children>
+                  <Label layoutX="1.0" layoutY="1.0" styleClass="onboardExceptionDetails" text="%documentEvidence" />
+                  <ComboBox layoutX="1.0" layoutY="17.0" prefHeight="35.0" prefWidth="200.0" promptText="%selectProForException" styleClass="exceptionCombobox" />
+                  <Button fx:id="scanBtn" layoutX="221.0" layoutY="24.0" mnemonicParsing="false" styleClass="onboardScanBtn" text="%scan">
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/scan.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="userOnboardFooter" layoutX="1.0" layoutY="620.0" styleClass="userOnboardFooter">
+         <children>
+            <Button fx:id="previousBtn" layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/arrowLeft.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="nextBtn" layoutX="991.0" layoutY="4.0" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="%continue">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/arrowRight.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="registrationFooter" layoutY="554.0" styleClass="registrationFooter">
+         <children>
+            <Button layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/arrowLeft.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button layoutX="991.0" layoutY="4.0" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="%continue">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/arrowRight.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="registrationExceptionHeader">
+         <children>
+            <AnchorPane fx:id="RegistrationHeader" layoutY="0.0">
+               <children>
+                  <AnchorPane>
+                     <children>
+                        <Button layoutY="2.0" mnemonicParsing="false" text="%home" />
+                        <Label layoutX="65.0" layoutY="7.0" text="/  Registration" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="210.0" layoutY="9.0" styleClass="registrationHeaderBorder">
+               <children>
+                  <AnchorPane>
+                     <children>
+                        <Label layoutX="59.0" layoutY="-3.0" text="%titleDemographicPane" />
+                        <ImageView fitHeight="24.0" fitWidth="18.0" layoutX="16.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/activeDemographicDetails.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="709.0">
+                     <children>
+                        <Label layoutX="46.0" layoutY="-3.0" text="%authentication" />
+                        <ImageView fitHeight="24.0" fitWidth="18.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/deactiveAuthentication.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="476.0">
+                     <children>
+                        <Label layoutX="62.0" layoutY="-3.0" text="%biometricDetails" />
+                        <ImageView fitHeight="24.0" fitWidth="18.0" layoutX="20.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/deactiveBiometriDetails.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="251.0">
+                     <children>
+                        <Label layoutX="42.0" layoutY="-3.0" text="%uploadDocuments" />
+                        <ImageView fitHeight="24.0" fitWidth="18.0" layoutX="1.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/deactiveUploadDocument.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <ImageView fx:id="trackerImage" fitHeight="25.0" fitWidth="194.0" layoutX="710.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/DemographicpageTracker.PNG" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

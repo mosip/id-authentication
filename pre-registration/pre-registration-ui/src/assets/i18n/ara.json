@@ -76,7 +76,7 @@
 
   "documents": {
     "title_document": "تحميل المستندات",
-    "text_filetype": "نوع الملف المسموح به Pdf و Word و Max 1 ميغابايت",
+    "text_filetype": "نوع الملف المسموح به Pdf وMax 1 ميغابايت",
     "action_browse": "تصفح",
     "action_back": "الى الخلف",
     "action_skip": "تخطى",
@@ -163,7 +163,7 @@
     }
   },
   "uidStatus": {
-    "title": "تطبيقاتي",
+    "title": "تطبيقاتك",
     "action_modify_information": "تعديل المعلومات",
     "action_modify_appointment": "كتاب / تعديل موعد",
     "action_cre_application": "إنشاء تطبيق جديد ",

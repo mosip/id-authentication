@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiOperation;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping("/v0.1/pre-registration/")
+@RequestMapping("/")
 @CrossOrigin("*")
 public class NotificationController {
 
@@ -46,7 +46,7 @@ public class NotificationController {
 	 *            the file to send.
 	 * @return the response entity.
 	 */
-	@PostMapping(path = "/notification", consumes = {
+	@PostMapping(path = "/notify", consumes = {
 			"multipart/form-data" }, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Trigger notification")
 	public ResponseEntity<MainResponseDTO<NotificationDTO>> sendNotification(

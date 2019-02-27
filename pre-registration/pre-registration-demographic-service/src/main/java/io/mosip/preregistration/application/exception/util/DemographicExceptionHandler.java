@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import io.mosip.preregistration.application.exception.BookingDeletionFailedException;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
+import io.mosip.preregistration.application.exception.InvalidDateFormatException;
 import io.mosip.preregistration.application.exception.MissingRequestParameterException;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
@@ -264,6 +266,42 @@ public class DemographicExceptionHandler {
 	 */
 	@ExceptionHandler(SystemFileIOException.class)
 	public ResponseEntity<MainListResponseDTO> systemFileIOException(final SystemFileIOException e,
+			WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
+		errorRes.setErr(errorDetails);
+		errorRes.setStatus(Boolean.FALSE);
+		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
+	
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for SystemFileIOException
+	 */
+	@ExceptionHandler(InvalidDateFormatException.class)
+	public ResponseEntity<MainListResponseDTO> InvalidDateFormatException(final InvalidDateFormatException e,
+			WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
+		errorRes.setErr(errorDetails);
+		errorRes.setStatus(Boolean.FALSE);
+		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
+	
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for SystemFileIOException
+	 */
+	@ExceptionHandler(BookingDeletionFailedException.class)
+	public ResponseEntity<MainListResponseDTO> bookingDeletionFailedException(final BookingDeletionFailedException e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();

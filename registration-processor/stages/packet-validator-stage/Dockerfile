@@ -15,6 +15,9 @@ ENV active_profile_env=${active_profile}
 # environment variable to pass github branch to pickup configuration from, at docker runtime
 ENV spring_config_label_env=${spring_config_label}
 
+# change volume to whichever storage directory you want to use for this container.
+VOLUME /home/logs
+
 COPY ./target/packet-validator-stage-*.jar packet-validator-stage.jar
 
 CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-jar","packet-validator-stage.jar"]

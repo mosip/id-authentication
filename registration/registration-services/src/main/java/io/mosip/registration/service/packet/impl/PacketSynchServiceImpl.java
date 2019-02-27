@@ -8,12 +8,14 @@ import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
@@ -39,12 +41,6 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 
 	@Value("${PACKET_SYNC_URL}")
 	private String syncUrlPath;
-
-	@Value("${UPLOAD_API_READ_TIMEOUT}")
-	private int syncReadTimeout;
-
-	@Value("${UPLOAD_API_WRITE_TIMEOUT}")
-	private int syncConnectTimeout;
 
 	private static final Logger LOGGER = AppConfig.getLogger(PacketSynchServiceImpl.class);
 
@@ -83,16 +79,16 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 			response = serviceDelegateUtil.post(RegistrationConstants.PACKET_SYNC, javaObjectToJsonString(syncDtoList));
 		} catch (HttpClientErrorException e) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER_CLIENT_ERROR - PACKET_SYNC_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, e.getRawStatusCode() + "Error in sync packets to the server");
+					APPLICATION_ID, e.getRawStatusCode() + "Error in sync packets to the server" + ExceptionUtils.getStackTrace(e));
 			throw new RegBaseCheckedException(Integer.toString(e.getRawStatusCode()), e.getStatusText());
 		} catch (RuntimeException e) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER_RUNTIME - PACKET_SYNC_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, e.getMessage() + "Error in sync and push packets to the server");
+					APPLICATION_ID, e.getMessage() + "Error in sync and push packets to the server"+ ExceptionUtils.getStackTrace(e));
 			throw new RegBaseUncheckedException(RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
 					RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorMessage());
 		} catch (SocketTimeoutException e) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER_SOCKET_ERROR - PACKET_SYNC_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, e.getMessage() + "Error in sync packets to the server");
+					APPLICATION_ID, e.getMessage() + "Error in sync packets to the server" + ExceptionUtils.getStackTrace(e));
 			throw new RegBaseCheckedException((e.getMessage()), e.getLocalizedMessage());
 		}
 
@@ -137,7 +133,6 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 		return syncPackets(registrations);
 	}
 
-
 	/**
 	 * Sync packets.
 	 *
@@ -145,6 +140,7 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 	 * @return the string
 	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
+	@SuppressWarnings("unchecked")
 	private String syncPackets(List<Registration> registrations) throws RegBaseCheckedException {
 		String syncErrorStatus = "";
 		try {
@@ -163,9 +159,9 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 
 			}
 
-			Object response = syncPacketsToServer(syncRegistrationDTOs);
+			Map<String, Object> response = (Map<String, Object>) syncPacketsToServer(syncRegistrationDTOs);
 
-			if (response != null) {
+			if (response.get("response") != null) {
 
 				updateSyncStatus(registrations);
 
@@ -173,13 +169,13 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 
 		} catch (RegBaseCheckedException | JsonProcessingException | URISyntaxException exception) {
 			LOGGER.error("REGISTRATION -UPDATE_SYNC_STATUS - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage());
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
 			syncErrorStatus = exception.getMessage();
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION -UPDATE_SYNC_STATUS - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
-					runtimeException.getMessage());
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
 			throw new RegBaseUncheckedException(RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
 					RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorMessage(), runtimeException);

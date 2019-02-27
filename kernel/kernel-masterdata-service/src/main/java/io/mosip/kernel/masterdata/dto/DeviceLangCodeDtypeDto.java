@@ -39,7 +39,7 @@ public class DeviceLangCodeDtypeDto {
 	/**
 	 * Field for device specification Id
 	 */
-	private String dspecId;
+	private String deviceSpecId;
 	/**
 	 * Field for device mac address
 	 */
@@ -52,7 +52,7 @@ public class DeviceLangCodeDtypeDto {
 	/**
 	 * Field for is active
 	 */
-	private boolean isActive;
+	private Boolean isActive;
 
 	/**
 	 * Field for device type

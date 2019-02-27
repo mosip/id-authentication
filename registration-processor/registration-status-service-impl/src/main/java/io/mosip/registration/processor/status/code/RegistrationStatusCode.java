@@ -16,9 +16,6 @@ public enum RegistrationStatusCode {
     /** The virus scan failed. */
     VIRUS_SCAN_FAILED,
 
-    /** The virus scan successful. */
-    VIRUS_SCAN_SUCCESS,
-
     /** The packet uploaded to filesystem. */
     PACKET_UPLOADED_TO_FILESYSTEM,
 

@@ -63,11 +63,6 @@ public class PacketUploadServiceTest {
 	@InjectMocks
 	private PacketUploadServiceImpl packetUploadServiceImpl;
 	
-	@Before
-	public void initialize() {
-		ReflectionTestUtils.setField(packetUploadServiceImpl, "urlPath", "http://104.211.209.102:8080/v0.1/registration-processor/packet-receiver/registrationpackets");
-	}
-	
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetSynchedPackets() {

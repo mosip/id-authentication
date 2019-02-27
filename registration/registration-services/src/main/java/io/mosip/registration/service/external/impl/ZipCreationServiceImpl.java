@@ -3,6 +3,7 @@ package io.mosip.registration.service.external.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -160,33 +161,11 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 	private static void addDemogrpahicData(final DemographicDTO demographicDTO, final String folderName,
 			final ZipOutputStream zipOutputStream) throws RegBaseCheckedException {
 		// Add Proofs
-		DocumentDetailsDTO documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity()
-				.getProofOfIdentity();
-
-		if (documentDetailsDTO != null) {
-			writeFileToZip(folderName + getFileNameWithExt(documentDetailsDTO), documentDetailsDTO.getDocument(),
-					zipOutputStream);
-		}
-
-		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfAddress();
-
-		if (documentDetailsDTO != null) {
-			writeFileToZip(folderName + getFileNameWithExt(documentDetailsDTO), documentDetailsDTO.getDocument(),
-					zipOutputStream);
-		}
-
-		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfRelationship();
-
-		if (documentDetailsDTO != null) {
-			writeFileToZip(folderName + getFileNameWithExt(documentDetailsDTO), documentDetailsDTO.getDocument(),
-					zipOutputStream);
-		}
-
-		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfDateOfBirth();
-
-		if (documentDetailsDTO != null) {
-			writeFileToZip(folderName + getFileNameWithExt(documentDetailsDTO), documentDetailsDTO.getDocument(),
-					zipOutputStream);
+		Map<String, DocumentDetailsDTO> documents = demographicDTO.getApplicantDocumentDTO().getDocuments();
+		
+		for (Entry<String, DocumentDetailsDTO> documentCategory : documents.entrySet()) {
+			writeFileToZip(folderName + getFileNameWithExt(documentCategory.getValue()),
+					documentCategory.getValue().getDocument(), zipOutputStream);
 		}
 
 		addToZip(demographicDTO.getApplicantDocumentDTO().getPhoto(),
@@ -244,7 +223,6 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 	private static void writeFileToZip(String fileName, byte[] file, ZipOutputStream zipOutputStream)
 			throws RegBaseCheckedException {
 		try {
-			// TODO : To be replaced with core kernel util class.
 			final ZipEntry zipEntry = new ZipEntry(fileName);
 			zipOutputStream.putNextEntry(zipEntry);
 			zipOutputStream.write(file);

@@ -31,10 +31,10 @@ import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.impl.MachineMappingDAOImpl;
 import io.mosip.registration.entity.CenterMachine;
 import io.mosip.registration.entity.CenterMachineId;
-import io.mosip.registration.entity.DeviceType;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.RegCenterDevice;
 import io.mosip.registration.entity.RegCentreMachineDevice;
+import io.mosip.registration.entity.RegDeviceType;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.entity.UserMachineMappingID;
@@ -79,7 +79,7 @@ public class UserClientMachineMappingDAOTest {
 	@Before
 	public void initialize() throws IOException, URISyntaxException {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 	}
 
 	@Test
@@ -188,8 +188,8 @@ public class UserClientMachineMappingDAOTest {
 		UserContext userContext = SessionContext.getInstance().getUserContext();
 		userContext.setUserId("ID007");
 		Mockito.when(userDetailRepository
-				.findByRegCenterUserRegCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike(
-						"Center123", RegistrationConstants.BLOCKED, userContext.getUserId()))
+				.findByRegCenterUserRegCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike("Center123",
+						RegistrationConstants.BLOCKED, userContext.getUserId()))
 				.thenThrow(new RegBaseUncheckedException());
 		machineMappingDAOImpl.getUsers("Center123");
 	}
@@ -262,8 +262,8 @@ public class UserClientMachineMappingDAOTest {
 		userDetailList.add(registrationUserDetail1);
 
 		Mockito.when(userDetailRepository
-				.findByRegCenterUserRegCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike(
-						"Center123", RegistrationConstants.BLOCKED, userContext.getUserId()))
+				.findByRegCenterUserRegCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike("Center123",
+						RegistrationConstants.BLOCKED, userContext.getUserId()))
 				.thenReturn(userDetailList);
 
 		List<UserDetail> details = machineMappingDAOImpl.getUsers("Center123");
@@ -273,11 +273,11 @@ public class UserClientMachineMappingDAOTest {
 
 	@Test
 	public void getAllDeviceTypesTest() {
-		List<DeviceType> deviceTypes = new ArrayList<>();
+		List<RegDeviceType> deviceTypes = new ArrayList<>();
 
 		Mockito.when(deviceTypeRepository.findByIsActiveTrue()).thenReturn(deviceTypes);
 
-		List<DeviceType> expectedDeviceTypes = machineMappingDAOImpl.getAllDeviceTypes();
+		List<RegDeviceType> expectedDeviceTypes = machineMappingDAOImpl.getAllDeviceTypes();
 
 		Assert.assertThat(expectedDeviceTypes, is(deviceTypes));
 	}
@@ -361,22 +361,24 @@ public class UserClientMachineMappingDAOTest {
 
 	@Test
 	public void isValidDeviceTest() {
-		Mockito.when(deviceMasterRepository.countBySerialNumberAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(
+		Mockito.when(deviceMasterRepository.countBySerialNumAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyObject())).thenReturn(1L);
 		boolean a = machineMappingDAOImpl.isValidDevice(DeviceTypes.FINGERPRINT, "SF001");
 		Assert.assertSame(true, a);
 	}
+
 	@Test
-	public void getUserMappingDetailsTest()
-	{
-		List<UserMachineMapping> list=new ArrayList<>();
-		UserMachineMapping userMachineMapping=new UserMachineMapping();
-		UserDetail userDetail=new UserDetail();
+	public void getUserMappingDetailsTest() {
+		List<UserMachineMapping> list = new ArrayList<>();
+		UserMachineMapping userMachineMapping = new UserMachineMapping();
+		UserDetail userDetail = new UserDetail();
 		userDetail.setId("mosip");
 		userMachineMapping.setUserDetail(userDetail);
 		list.add(userMachineMapping);
-		Mockito.when(machineMappingRepository.findByUserMachineMappingIdMachineID(Mockito.anyString())).thenReturn(list);
-		Assert.assertEquals(userMachineMapping.getUserDetail().getId(),machineMappingDAOImpl.getUserMappingDetails("machineId").get(0).getUserDetail().getId());
+		Mockito.when(machineMappingRepository.findByUserMachineMappingIdMachineID(Mockito.anyString()))
+				.thenReturn(list);
+		Assert.assertEquals(userMachineMapping.getUserDetail().getId(),
+				machineMappingDAOImpl.getUserMappingDetails("machineId").get(0).getUserDetail().getId());
 	}
 
 }

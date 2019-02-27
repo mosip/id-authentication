@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,6 +31,7 @@ import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.booking.service.BookingService;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
+import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
 import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
@@ -51,7 +53,7 @@ import io.swagger.annotations.ApiResponses;
  *
  */
 @RestController
-@RequestMapping("/v0.1/pre-registration/booking/")
+@RequestMapping("/")
 @Api(tags = "Booking")
 @CrossOrigin("*")
 public class BookingController {
@@ -171,6 +173,24 @@ public class BookingController {
 				"In getPreIdsByRegCenterId method of Booking controller for fetch the booking data for object: "
 						+ requestDTO);
 		return ResponseEntity.status(HttpStatus.OK).body(bookingService.getPreIdsByRegCenterId(requestDTO));
+	}
+	
+	/**
+	 * Delete API to delete the Individual booking associated with
+	 * the PreId.
+	 *
+	 * @param preId the pre id
+	 * @return the deletion status of booking for a pre-id
+	 */
+	@DeleteMapping(path = "/deleteBooking", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Discard Booking")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Deletion of Booking is successfully"),
+			@ApiResponse(code = 400, message = "Unable to delete booking") })
+	public ResponseEntity<MainListResponseDTO<DeleteBookingDTO>> discardIndividual(
+			@RequestParam(value = "pre_registration_id") String preId) {
+		log.info("sessionId","idType","id","In Booking controller for deletion of booking with preId "+preId);
+		
+		return ResponseEntity.status(HttpStatus.OK).body(bookingService.deleteBooking(preId));
 	}
 
 }

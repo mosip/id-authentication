@@ -4,7 +4,6 @@
  */
 package io.mosip.preregistration.application.repository;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,11 +39,6 @@ public interface DemographicRepository extends BaseRepository<DemographicEntity,
 	 */
 	public List<DemographicEntity> findByCreatedBy(@Param("userId") String userId ,@Param("statusCode") String statusCode);
 
-	/**
-	 * @param userId pass userId
-	 * @return list of group ids for a user id
-	 */
-	public List<String> noOfGroupIds(@Param("userId") String userId);
 
 	/**
 	 * @param preRegId pass preRegId

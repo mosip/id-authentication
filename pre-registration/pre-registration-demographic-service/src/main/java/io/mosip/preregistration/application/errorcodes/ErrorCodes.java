@@ -47,6 +47,9 @@ public enum ErrorCodes {
 
 	/* ErrorCode for DOCUMENT_FAILED_TO_DELETE */
 	PRG_PAM_DOC_015,
+	
+	/* ErrorCode for BOOKING_FAILED_TO_DELETE */
+	PRG_PAM_DOC_016,
 
 	/* ErrorCode for UNSUPPORTED_DATE_FORMAT */
 	PRG_PAM_APP_011,

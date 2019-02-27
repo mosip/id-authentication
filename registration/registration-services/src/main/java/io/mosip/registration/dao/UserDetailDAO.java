@@ -3,6 +3,7 @@ package io.mosip.registration.dao;
 import java.util.List;
 
 import io.mosip.registration.entity.UserDetail;
+import io.mosip.registration.dto.UserDetailResponseDto;
 import io.mosip.registration.entity.UserBiometric;
 
 /**
@@ -25,13 +26,14 @@ public interface UserDetailDAO {
 	/**
 	 * This method is used update login params
 	 * 
-	 * @param userDetail
-	 *            user details
+	 * @param userDetail user details
 	 */
 	void updateLoginParams(UserDetail userDetail);
-	
+
 	List<UserBiometric> getAllActiveUsers(String attrCode);
-	
+
 	List<UserBiometric> getUserSpecificBioDetails(String userId, String bioType);
+
+	void save(UserDetailResponseDto userDetailsResponse);
 
 }

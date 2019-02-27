@@ -13,7 +13,7 @@ This service can be used for Create, Fetch, Update and Delete operation on Maste
 - Create a project which provides REST service to perform CRUD on Master Data Tables.
 
 
-- REST service can be used by any MOSIP module to send SMS through HTTP client.
+- REST service can be used by any MOSIP module through HTTP client.
 
 
 

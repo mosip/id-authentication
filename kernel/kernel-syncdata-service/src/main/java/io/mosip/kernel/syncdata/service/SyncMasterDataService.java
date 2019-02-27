@@ -27,6 +27,6 @@ public interface SyncMasterDataService {
 	 * @throws InterruptedException
 	 *             - this method will throw interrupted exception
 	 */
-	MasterDataResponseDto syncData(String machineId, LocalDateTime lastUpdated)
+	MasterDataResponseDto syncData(String machineId, LocalDateTime lastUpdated,LocalDateTime localDateTimeOfnow)
 			throws InterruptedException, ExecutionException;
 }
