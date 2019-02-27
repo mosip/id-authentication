@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, NgForm, FormControlName } from '@angular/forms';
-import { MatSelectChange, MatButtonToggleChange, MatSlideToggleChange } from '@angular/material';
-import { DatePipe, Location } from '@angular/common';
+import { MatSelectChange, MatButtonToggleChange, MatSlideToggleChange, MatDialog } from '@angular/material';
+import { DatePipe } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
@@ -19,6 +19,8 @@ import { RequestModel } from 'src/app/shared/models/demographic-model/request.mo
 import AttributeModel from 'src/app/shared/models/demographic-model';
 import * as appConstants from '../../../app.constants';
 import Utils from 'src/app/app.util';
+import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
+import { AutofillMonitor } from '@angular/cdk/text-field';
 
 @Component({
   selector: 'app-demographic',
@@ -121,19 +123,18 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    // private route: ActivatedRoute,
     private regService: RegistrationService,
     private dataStorageService: DataStorageService,
     private sharedService: SharedService,
-    private location: Location,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private dialog: MatDialog
   ) {
-    console.log('CALIING  DEMOGRAPHIC');
     this.translate.use(localStorage.getItem('langCode'));
     this.initialization();
   }
 
   ngOnInit() {
+    if (!this.dataModification) this.consentDeclaration();
     this.initForm();
     this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
       this.secondaryLanguagelabels = response['demographic'];
@@ -160,6 +161,21 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
     const arr = this.router.url.split('/');
     this.loginId = this.regService.getLoginId();
+  }
+
+  private consentDeclaration() {
+    const data = {
+      case: 'CONSENTPOPUP',
+      title: 'Terms and Conditions',
+      subtitle: 'Your Agreement',
+      message:
+        'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit... Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit... Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit... Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit... Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit... Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit... Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit... Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit... Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...'
+    };
+    this.dialog.open(DialougComponent, {
+      width: '550px',
+      data: data,
+      disableClose: true
+    });
   }
 
   async initForm() {
@@ -536,7 +552,9 @@ export class DemographicComponent implements OnInit, OnDestroy {
         this.userForm.controls[this.formControlNames.age].patchValue(this.calculateAge(dateform));
       } else {
         this.userForm.controls[this.formControlNames.dateOfBirth].markAsTouched();
-        this.userForm.controls[this.formControlNames.dateOfBirth].setErrors({ incorrect: true });
+        this.userForm.controls[this.formControlNames.dateOfBirth].setErrors({
+          incorrect: true
+        });
         this.userForm.controls[this.formControlNames.age].patchValue('');
       }
     }
@@ -552,7 +570,9 @@ export class DemographicComponent implements OnInit, OnDestroy {
     }
     if (years > 150) {
       this.userForm.controls[this.formControlNames.dateOfBirth].markAsTouched();
-      this.userForm.controls[this.formControlNames.dateOfBirth].setErrors({ incorrect: true });
+      this.userForm.controls[this.formControlNames.dateOfBirth].setErrors({
+        incorrect: true
+      });
       this.userForm.controls[this.formControlNames.year].setErrors(null);
       return '';
     } else {
@@ -631,11 +651,14 @@ export class DemographicComponent implements OnInit, OnDestroy {
       this.step,
       new UserModel(this.preRegId, request, this.regService.getUserFiles(this.step), this.codeValue)
     );
-    this.sharedService.updateNameList(this.step, {
-      fullName: this.userForm.controls[this.formControlNames.fullName].value,
-      fullNameSecondaryLang: this.formControlValues.fullNameSecondary,
-      preRegId: this.preRegId
-    });
+    // this.sharedService.updateNameList(this.step, {
+    //   ...this.sharedService.getNameList(),
+    //   fullName: this.userForm.controls[this.formControlNames.fullName].value,
+    //   fullNameSecondaryLang: this.formControlValues.fullNameSecondary,
+    //   preRegId: this.preRegId
+    // });
+
+    console.log('NMAE LIST ', this.sharedService.getNameList());
   }
 
   private onAddition(response: any, request: RequestModel) {

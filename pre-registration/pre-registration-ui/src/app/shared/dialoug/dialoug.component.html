@@ -90,3 +90,17 @@
     <button mat-button [mat-dialog-close]="addedList" cdkFocusInitial>{{ 'dialog.action_add_to_slot' | translate }}</button>
   </div>
 </div>
+
+<div class="consent-popup-parent" *ngIf="input.case === 'CONSENTPOPUP'">
+  <button class="consent-popup-cross" mat-dialog-actions  (click)="onNoClick(); loggingOut()" cdkFocusInitial>x</button>
+
+  <h3 class="consent-popup-title" mat-dialog-title>{{ input.title }}</h3>
+  <h3 class="consent-popup-subtitle" mat-dialog-title>{{ input.subtitle }}</h3>
+  <div mat-dialog-content class="consentpopup-content">
+    <p>{{ input.message }}</p>
+  </div>
+  <mat-checkbox (change)="onSelectCheckbox()" class = "checkbox-accept" >
+    <label id="checkbox-label">Neque porro quisquam est qui dolorem ips." </label>
+  </mat-checkbox>
+  <div mat-dialog-actions><button class="accept-button"[ngClass]="isChecked  ? 'accept-button-disabled' : 'accept-button'" [disabled]="isChecked" mat-button (click)="onNoClick()" cdkFocusInitial>Accept</button></div>
+</div>
