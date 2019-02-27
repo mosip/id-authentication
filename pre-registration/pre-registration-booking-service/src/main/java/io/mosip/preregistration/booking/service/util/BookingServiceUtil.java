@@ -71,6 +71,7 @@ import io.mosip.preregistration.booking.exception.BookingTimeSlotNotSeletectedEx
 import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.exception.DemographicStatusUpdationException;
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
+import io.mosip.preregistration.booking.exception.OperationNotAllowedException;
 import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.booking.exception.TimeSpanException;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
@@ -114,9 +115,9 @@ public class BookingServiceUtil {
 	String holidayListUrl;
 
 	/**
-	 * Reference for ${preRegResourceUrl} from property file
+	 * Reference for ${demographic.resource.url} from property file
 	 */
-	@Value("${preRegResourceUrl}")
+	@Value("${demographic.resource.url}")
 	private String preRegResourceUrl;
 	
 	@Value("${timeSpanCheck}")
@@ -370,8 +371,8 @@ public class BookingServiceUtil {
 	}
 	public boolean timeSpanCheck(LocalDateTime bookedDateTime) {
 		LocalDateTime current = LocalDateTime.now();
-        long hours=ChronoUnit.HOURS.between(current, bookedDateTime);
-		if(hours>timeSpanCheck) return true;
+        long hours=ChronoUnit.MINUTES.between(current, bookedDateTime);
+		if(Math.abs(hours)>=timeSpanCheck) return true;
 		else return false;
 	}
 
@@ -709,5 +710,4 @@ public class BookingServiceUtil {
 		entity.setSlotToTime(LocalTime.parse(bookingRegistrationDTO.getSlotToTime()));
 		return entity;
 	}
-	
 }

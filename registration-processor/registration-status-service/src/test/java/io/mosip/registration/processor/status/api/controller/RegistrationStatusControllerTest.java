@@ -91,7 +91,7 @@ public class RegistrationStatusControllerTest {
 
 	/**
 	 * Sets the up.
-	 * 
+	 *
 	 * @throws JsonProcessingException
 	 */
 	@Before
@@ -113,9 +113,8 @@ public class RegistrationStatusControllerTest {
 		registrationStatusRequestDTO.setRequest(request);
 		registrationStatusRequestDTO.setId("mosip.registration.status");
 		registrationStatusRequestDTO.setVersion("1.0");
-		registrationStatusRequestDTO
-				.setTimestamp(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-		regStatusToJson = gson.toJson(registrationStatusRequestDTO);
+		registrationStatusRequestDTO.setRequestTimestamp(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+		regStatusToJson=gson.toJson(registrationStatusRequestDTO);
 		registrationDtoList = new ArrayList<>();
 		InternalRegistrationStatusDto registrationStatusDto1 = new InternalRegistrationStatusDto();
 		registrationStatusDto1.setRegistrationId("1001");

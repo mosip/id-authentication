@@ -8,6 +8,7 @@ package io.mosip.registration.dto;
  *
  */
 public class RegistrationMetaDataDTO extends BaseDTO {
+
 	private double geoLatitudeLoc;
 	private double geoLongitudeLoc;
 	// New , update , correction, lost UIN
@@ -19,6 +20,8 @@ public class RegistrationMetaDataDTO extends BaseDTO {
 	private String previousRID;
 	private String uin;
 	private String consentOfApplicant;
+	private String parentOrGuardianUINOrRID;
+	private String deviceId;
 
 	/**
 	 * @return the consentOfApplicant
@@ -151,6 +154,36 @@ public class RegistrationMetaDataDTO extends BaseDTO {
 	 */
 	public void setUin(String uin) {
 		this.uin = uin;
+	}
+
+	/**
+	 * @return the parentOrGuardianUINOrRID
+	 */
+	public String getParentOrGuardianUINOrRID() {
+		return parentOrGuardianUINOrRID;
+	}
+
+	/**
+	 * @param parentOrGuardianUINOrRID
+	 *            the parentOrGuardianUINOrRID to set
+	 */
+	public void setParentOrGuardianUINOrRID(String parentOrGuardianUINOrRID) {
+		this.parentOrGuardianUINOrRID = parentOrGuardianUINOrRID;
+	}
+
+	/**
+	 * @return the deviceId
+	 */
+	public String getDeviceId() {
+		return deviceId;
+	}
+
+	/**
+	 * @param deviceId
+	 *            the deviceId to set
+	 */
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
 	}
 
 }

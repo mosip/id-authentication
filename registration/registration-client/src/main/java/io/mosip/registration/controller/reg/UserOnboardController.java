@@ -43,7 +43,7 @@ public class UserOnboardController extends BaseController implements Initializab
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		operatorName
-		.setText(SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterName());
+		.setText("Hi " + SessionContext.userContext().getName() +", you are not onboarded into the system.");
 	}
 
 	@FXML

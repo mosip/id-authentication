@@ -1,0 +1,10 @@
+{
+  "timestamp": 1549878971460,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-AUD-001",
+      "errorMessage": "EventName size must be between 1 and 128"
+    }
+  ]
+}

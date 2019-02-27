@@ -101,6 +101,8 @@ public class VirusScannerStage extends MosipVerticleManager {
 	public MessageDTO process(MessageDTO object) {
 
 		String registrationId = object.getRid();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "VirusScannerStage::process()::entry");
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 				.getRegistrationStatus(registrationId);
 		String extension = env.getProperty("registration.processor.packet.ext");
@@ -144,11 +146,18 @@ public class VirusScannerStage extends MosipVerticleManager {
 
 			}
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			description = "virus scan successful for registrationId " + registrationId;
+			isTransactionSuccessful = true;
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "VirusScannerStage::process()::exit");
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, description);
 		} catch (VirusScanFailedException | IOException | io.mosip.kernel.core.exception.IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
 					VIRUS_SCAN_FAILED + " " + e.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
+			description = "virus scan failed for registrationId " + registrationId + "::" + e.getMessage();
 		} catch (PacketDecryptionFailureException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					e.getErrorCode(), e.getErrorText());
@@ -158,18 +167,17 @@ public class VirusScannerStage extends MosipVerticleManager {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = false;
 			object.setInternalError(Boolean.TRUE);
-			description = "Packet decryption failed for packet " + registrationId;
+			description = "Packet decryption failed for registrationId " + registrationId + "::" + e.getErrorCode()
+					+ e.getErrorText();
 		} catch (Exception ex) {
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PSJ_VIRUS_SCAN_FAILED.getMessage() + ex.getMessage()
 							+ ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
-			description = "Internal error occured while processing registration  id : " + registrationId;
+			description = "Internal error occured in virus scanner stage while processing registrationId : "
+					+ registrationId + ex.getMessage();
 		} finally {
-
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, description);
 			String eventId = "";
 			String eventName = "";
 			String eventType = "";
@@ -216,7 +224,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 		String registrationId = entry.getRegistrationId();
 
 		entry.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_SUCCESSFUL.toString());
-		entry.setStatusComment(StatusMessage.PACKET_VIRUS_SCAN_SUCCESS);
+		entry.setStatusComment(StatusMessage.PACKET_VIRUS_SCAN_SUCCESSFUL);
 		entry.setUpdatedBy(USER);
 		isTransactionSuccessful = true;
 		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

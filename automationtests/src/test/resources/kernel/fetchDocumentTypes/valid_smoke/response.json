@@ -1,0 +1,25 @@
+{
+  "documents": [
+    {
+      "code": "CRN",
+      "name": "شهادة العلاقة",
+      "description": "علاقة إثبات للشخص",
+      "langCode": "ara",
+      "isActive": true
+    },
+    {
+      "code": "CRN",
+      "name": "Certificate of Relationship",
+      "description": "Proof relationship of a person",
+      "langCode": "eng",
+      "isActive": true
+    },
+    {
+      "code": "CRN",
+      "name": "Certificat de relation",
+      "description": "Preuve de relation dune personne",
+      "langCode": "fra",
+      "isActive": true
+    }
+  ]
+}

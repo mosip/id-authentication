@@ -27,6 +27,9 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
@@ -44,11 +47,14 @@ import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.packet.PacketHandlerService;
+import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.packet.ReRegistrationService;
 import io.mosip.registration.service.packet.RegistrationApprovalService;
+import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
+import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -58,6 +64,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 /**
  * Class for Registration Packet operations
@@ -137,6 +145,15 @@ public class PacketHandlerController extends BaseController implements Initializ
 	@Autowired
 	private ReRegistrationService reRegistrationService;
 
+	@Autowired
+	private UserOnboardParentController userOnboardParentController;
+
+	@Autowired
+	private PacketSynchService packetSynchService;
+
+	@Autowired
+	private PacketUploadService packetUploadService;
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
@@ -171,8 +188,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * acknowledgement form
 	 */
 	public void createPacket() {
+
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creating of Registration Starting.");
 		try {
+			auditFactory.audit(AuditEvent.NAV_NEW_REG, Components.NAVIGATION, SessionContext.userContext().getUserId(),
+					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
 					applicationContext.getApplicationLanguageBundle());
 			LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
@@ -248,8 +269,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * Validating screen authorization and Approve, Reject and Hold packets
 	 */
 	public void approvePacket() {
+
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Pending Approval screen started.");
 		try {
+			auditFactory.audit(AuditEvent.NAV_APPROVE_REG, Components.NAVIGATION,
+					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.PENDING_APPROVAL_PAGE));
 
 			LOGGER.info("REGISTRATION - APPROVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
@@ -278,8 +303,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * Validating screen authorization and Uploading packets to FTP server
 	 */
 	public void uploadPacket() {
+
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Packet Upload screen started.");
 		try {
+			auditFactory.audit(AuditEvent.NAV_UPLOAD_PACKETS, Components.NAVIGATION,
+					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 			uploadRoot = BaseController.load(getClass().getResource(RegistrationConstants.FTP_UPLOAD_PAGE));
 
 			LOGGER.info("REGISTRATION - UPLOAD_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
@@ -304,8 +333,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 	}
 
 	public void updateUIN() {
+
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen started.");
 		try {
+			auditFactory.audit(AuditEvent.NAV_UIN_UPDATE, Components.NAVIGATION,
+					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
 
 			LOGGER.info("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
@@ -347,9 +380,13 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * @param event the event
 	 */
 	public void syncData() {
+
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Sync Data screen started.");
 		AnchorPane syncData;
 		try {
+			auditFactory.audit(AuditEvent.NAV_SYNC_DATA, Components.NAVIGATION,
+					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 			syncData = BaseController.load(getClass().getResource(RegistrationConstants.SYNC_DATA));
 			ObservableList<Node> nodes = homeController.getMainBox().getChildren();
 			IntStream.range(1, nodes.size()).forEach(index -> {
@@ -371,6 +408,10 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 */
 	@FXML
 	public void downloadPreRegData() {
+
+		auditFactory.audit(AuditEvent.NAV_DOWNLOAD_PRE_REG_DATA, Components.NAVIGATION,
+				SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Downloading pre-registration data started.");
 		ResponseDTO responseDTO = preRegistrationDataSyncService
 				.getPreRegistrationIds(RegistrationConstants.JOB_TRIGGER_POINT_USER);
@@ -396,9 +437,32 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * @throws IOException
 	 */
 	public void onBoardUser() {
+
+		auditFactory.audit(AuditEvent.NAV_ON_BOARD_USER, Components.NAVIGATION, APPLICATION_NAME,
+				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 		SessionContext.map().put(RegistrationConstants.ONBOARD_USER, true);
 		SessionContext.map().put(RegistrationConstants.ONBOARD_USER_UPDATE, true);
+
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading User Onboard Update page");
+
+		VBox mainBox = new VBox();
+		try {
+			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
+			mainBox.getChildren().add(headerRoot);
+			AnchorPane onboardRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_ONBOARD),
+					applicationContext.getApplicationLanguageBundle());
+			mainBox.getChildren().add(onboardRoot);
+			getScene(mainBox).setRoot(mainBox);
+			userOnboardParentController.userOnboardId.lookup("#onboardUser").setVisible(false);
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - ONBOARD_USER_UPDATE - REGISTRATION_OFFICER_DETAILS_CONTROLLER",
+					APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+		}
 		userOnboardController.initUserOnboard();
+
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "User Onboard Update page is loaded");
 	}
 
 	/**
@@ -409,13 +473,13 @@ public class PacketHandlerController extends BaseController implements Initializ
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "packet creation has been started");
 		byte[] ackInBytes = null;
 		try {
-			ackInBytes = stringWriter.toString().getBytes("UTF-8");
+			ackInBytes = stringWriter.toString().getBytes(RegistrationConstants.TEMPLATE_ENCODING);
 		} catch (java.io.IOException ioException) {
 			LOGGER.error("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		}
 
-		if (saveAck.equalsIgnoreCase("Y")) {
+		if (saveAck.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 			registrationDTO.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceipt(ackInBytes);
 			registrationDTO.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceiptName(
 					"RegistrationAcknowledgement." + RegistrationConstants.ACKNOWLEDGEMENT_FORMAT);
@@ -425,7 +489,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		ResponseDTO response = packetHandlerService.handle(registrationDTO);
 
 		if (response.getSuccessResponseDTO() != null
-				&& response.getSuccessResponseDTO().getMessage().equals("Success")) {
+				&& response.getSuccessResponseDTO().getMessage().equals(RegistrationConstants.SUCCESS)) {
 
 			String mobile = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity().getPhone();
 			String email = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity().getEmail();
@@ -433,6 +497,13 @@ public class PacketHandlerController extends BaseController implements Initializ
 			sendSMSNotification(mobile);
 
 			try {
+
+				if (!String.valueOf(ApplicationContext.map().get(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG))
+						.equals(RegistrationConstants.ENABLE)) {
+					updatePacketStatus();
+					syncAndUploadPacket();
+				}
+
 				// Generate the file path for storing the Encrypted Packet and Acknowledgement
 				// Receipt
 				String seperator = "/";
@@ -450,6 +521,10 @@ public class PacketHandlerController extends BaseController implements Initializ
 			} catch (io.mosip.kernel.core.exception.IOException ioException) {
 				LOGGER.error("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 						APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+			} catch (RegBaseCheckedException regBaseCheckedException) {
+				LOGGER.error("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+						APPLICATION_ID,
+						regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 			}
 
 			if (registrationDTO.getSelectionListDTO() == null) {
@@ -480,6 +555,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 	public void loadReRegistrationScreen() {
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading re-registration screen sarted.");
 		try {
+			auditFactory.audit(AuditEvent.NAV_RE_REGISTRATION, Components.NAVIGATION,
+					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.REREGISTRATION_PAGE));
 
 			LOGGER.info("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
@@ -503,5 +581,40 @@ public class PacketHandlerController extends BaseController implements Initializ
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_APPROVAL_PAGE);
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading re-registration screen ended.");
+	}
+
+	/**
+	 * Update packet status.
+	 */
+	private void updatePacketStatus() {
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
+				"Auto Approval of Packet when EOD process disabled started");
+
+		registrationApprovalService.updateRegistration((getRegistrationDTOFromSession().getRegistrationId()),
+				RegistrationConstants.EMPTY, RegistrationClientStatusCode.APPROVED.getCode());
+
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
+				"Auto Approval of Packet when EOD process disabled ended");
+
+	}
+
+	/**
+	 * Sync and upload packet.
+	 *
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 */
+	private void syncAndUploadPacket() throws RegBaseCheckedException {
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Sync and Upload of created Packet started");
+		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+
+			String response = packetSynchService.packetSync(getRegistrationDTOFromSession().getRegistrationId());
+
+			if (response.equals(RegistrationConstants.EMPTY)) {
+
+				packetUploadService.uploadPacket(getRegistrationDTOFromSession().getRegistrationId());
+			}
+
+		}
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Sync and Upload of created Packet ended");
 	}
 }

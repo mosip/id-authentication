@@ -64,38 +64,7 @@ public final class DateUtils {
 	 */
 	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
-	private static final Map<String, String> AVAILABLE_DATE_FORMATS = new HashMap<String, String>() {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
 
-		{
-			put("^\\d{8}$", "yyyyMMdd");
-			put("^\\d{1,2}-\\d{1,2}-\\d{4}$", "dd-MM-yyyy");
-			put("^\\d{4}-\\d{1,2}-\\d{1,2}$", "yyyy-MM-dd");
-			put("^\\d{1,2}/\\d{1,2}/\\d{4}$", "MM/dd/yyyy");
-			put("^\\d{4}/\\d{1,2}/\\d{1,2}$", "yyyy/MM/dd");
-			put("^\\d{1,2}\\s[a-z]{3}\\s\\d{4}$", "dd MMM yyyy");
-			put("^\\d{1,2}\\s[a-z]{4,}\\s\\d{4}$", "dd MMMM yyyy");
-			put("^\\d{12}$", "yyyyMMddHHmm");
-			put("^\\d{8}\\s\\d{4}$", "yyyyMMdd HHmm");
-			put("^\\d{1,2}-\\d{1,2}-\\d{4}\\s\\d{1,2}:\\d{2}$", "dd-MM-yyyy HH:mm");
-			put("^\\d{4}-\\d{1,2}-\\d{1,2}\\s\\d{1,2}:\\d{2}$", "yyyy-MM-dd HH:mm");
-			put("^\\d{1,2}/\\d{1,2}/\\d{4}\\s\\d{1,2}:\\d{2}$", "MM/dd/yyyy HH:mm");
-			put("^\\d{4}/\\d{1,2}/\\d{1,2}\\s\\d{1,2}:\\d{2}$", "yyyy/MM/dd HH:mm");
-			put("^\\d{1,2}\\s[a-z]{3}\\s\\d{4}\\s\\d{1,2}:\\d{2}$", "dd MMM yyyy HH:mm");
-			put("^\\d{1,2}\\s[a-z]{4,}\\s\\d{4}\\s\\d{1,2}:\\d{2}$", "dd MMMM yyyy HH:mm");
-			put("^\\d{14}$", "yyyyMMddHHmmss");
-			put("^\\d{8}\\s\\d{6}$", "yyyyMMdd HHmmss");
-			put("^\\d{1,2}-\\d{1,2}-\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$", "dd-MM-yyyy HH:mm:ss");
-			put("^\\d{4}-\\d{1,2}-\\d{1,2}\\s\\d{1,2}:\\d{2}:\\d{2}$", "yyyy-MM-dd HH:mm:ss");
-			put("^\\d{1,2}/\\d{1,2}/\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$", "MM/dd/yyyy HH:mm:ss");
-			put("^\\d{4}/\\d{1,2}/\\d{1,2}\\s\\d{1,2}:\\d{2}:\\d{2}$", "yyyy/MM/dd HH:mm:ss");
-			put("^\\d{1,2}\\s[a-z]{3}\\s\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$", "dd MMM yyyy HH:mm:ss");
-			put("^\\d{1,2}\\s[a-z]{4,}\\s\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$", "dd MMMM yyyy HH:mm:ss");
-		}
-	};
 
 	private DateUtils() {
 
@@ -893,7 +862,7 @@ public final class DateUtils {
 	 *             If <code>dateString</code> or <code>dateFormat</code> is null.
 	 * @see SimpleDateFormat
 	 */
-	public static Date parseToDate(String dateString, String pattern) throws ParseException {
+	public static Date parseToDate(String dateString, String pattern)  {
 		if (Objects.isNull(dateString) || Objects.isNull(pattern)) {
 			throw new io.mosip.kernel.core.exception.NullPointerException(
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
@@ -911,65 +880,6 @@ public final class DateUtils {
 					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
-	}
-
-	/**
-	 * Parses the given date string to date object and return a date instance based
-	 * on the given date string. This makes use of the
-	 * {@link DateUtils#determineDateFormat(String)} to determine the
-	 * SimpleDateFormat pattern to be used for parsing.
-	 * 
-	 * @param dateString
-	 *            The date string to be parsed to date object.
-	 * @return The parsed date object.
-	 * @throws io.mosip.kernel.core.exception.ParseException
-	 *             If the date format pattern of the given date string is unknown,
-	 *             or if the given date string or its actual date is invalid based
-	 *             on the date format pattern.
-	 * @throws io.mosip.kernel.core.exception.NullPointerException
-	 *             If <code>dateString</code> is null.
-	 */
-	@Deprecated
-	public static Date parse(String dateString) throws ParseException {
-		if (Objects.isNull(dateString)) {
-			throw new io.mosip.kernel.core.exception.NullPointerException(
-					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
-					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(),
-					new NullPointerException("dateString is null"));
-		}
-		try {
-			String dateFormat = determineDateFormat(dateString);
-			if (dateFormat == null) {
-				throw new io.mosip.kernel.core.exception.ParseException(
-						DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
-						DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(),
-						new ParseException("Unknown date format.", 0));
-			}
-			return parseToDate(dateString, dateFormat);
-		} catch (Exception e) {
-			throw new io.mosip.kernel.core.exception.ParseException(
-					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
-					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(), e.getCause());
-		}
-	}
-
-	/**
-	 * Determines SimpleDateFormat pattern matching with the given date string.
-	 * Returns null if format is unknown.
-	 * 
-	 * @param dateString
-	 *            The date string to determine the SimpleDateFormat pattern for.
-	 * @return The matching SimpleDateFormat pattern, or null if format is unknown.
-	 * @see SimpleDateFormat
-	 */
-	private static String determineDateFormat(String dateString) {
-		for (Entry<String, String> entry : AVAILABLE_DATE_FORMATS.entrySet()) {
-			String regexp = entry.getKey();
-			if (dateString.toLowerCase().matches(regexp)) {
-				return entry.getValue();
-			}
-		}
-		return null; // Unknown format.
 	}
 
 }

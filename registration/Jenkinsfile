@@ -11,16 +11,9 @@ node {
  def registryName = 'mosip-dev-admin.southindia.cloudapp.azure.com:5000'
  def buildInfo1
  def pom
- def version 	 
- def uploadSpec = """{
-  "files": [
-    {
-      "pattern": "0.8.0/registration/registration-client/target/registration-client-encrypted.jar",
-      "target": "libs-release-local/io/mosip/registration/registration-client/0.8.8"
-    }
- ]
- }"""
-
+ def version 
+ def uploadSpec
+ 
  stage('------- Checkout --------') {
   // Checkout only registration Module
   dir(branch) {
@@ -44,6 +37,15 @@ node {
    pom = readMavenPom file: branch + '/' + projectToBuild + '/pom.xml'
    version = pom.version 
    print version
+   print "libs-release-local/io/mosip/registration/registration-client/${version}/"
+   uploadSpec = """{
+  "files": [
+    {
+      "pattern": "${branch}/registration/registration-client/target/*.zip",
+      "target": "libs-release-local/io/mosip/registration/registration-client/${version}/"
+    }
+ ]
+ }"""
  }
 
  stage('--------- Artifactory configuration ----------------') {
@@ -67,8 +69,9 @@ node {
  }
 
  stage('----------- Publish build info -------------') {
-  //buildInfo.append buildInfo1
+ // buildInfo.append buildInfo1
   server.publishBuildInfo buildInfo
+  //server.publishBuildInfo buildInfo1
  }
 
  /*

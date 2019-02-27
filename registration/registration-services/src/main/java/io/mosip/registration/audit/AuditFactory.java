@@ -23,14 +23,12 @@ public interface AuditFactory {
 	 * @param appModuleEnum
 	 *            this {@code Enum} contains the application module details namely
 	 *            moduleId and moduleName
-	 * @param auditDescription
-	 *            the description of the audit event
 	 * @param refId
 	 *            the ref id of the audit event
 	 * @param refIdType
 	 *            the ref id type of the audit event
 	 */
-	void audit(AuditEvent auditEventEnum, Components appModuleEnum, String auditDescription, String refId,
+	void audit(AuditEvent auditEventEnum, Components appModuleEnum, String refId,
 			String refIdType);
 
 }

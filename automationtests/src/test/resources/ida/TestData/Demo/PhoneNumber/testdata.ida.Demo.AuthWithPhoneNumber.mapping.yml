@@ -1,0 +1,14 @@
+testdata:
+  Valid_MockRequest_PhoneNUmber_Authendication_smoke:
+    input.demo-auth-request:
+      demoAuthReq.idvId: $UIN$
+      demoAuthReq.tspID: TSP00001
+      demoAuthReq.reqTime: $TIMESTAMP$
+    input.identity-encrypt-data:
+      identityReq.valuephoneNumber: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~phone$
+      identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$    
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $IGNORE$
+      output.1.response.y.reqTime: $IGNORE$ 
+     

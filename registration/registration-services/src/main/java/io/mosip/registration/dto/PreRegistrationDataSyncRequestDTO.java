@@ -21,7 +21,7 @@ public class PreRegistrationDataSyncRequestDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	/** The Registration-client-Id. */
-	@JsonProperty("registartion-client-id")
+	@JsonProperty("registration-client-id")
 	private String regClientId;
 	
 	/** The from-date. */

@@ -6,13 +6,11 @@ import static io.mosip.registration.constants.RegistrationConstants.DEVICE_MAPPI
 import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS;
 import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE;
 import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_LOGGER_TITLE;
-import static io.mosip.registration.constants.RegistrationConstants.REGISTRATION_ID;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,14 +24,13 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dto.DeviceDTO;
-import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.UserMachineMappingDTO;
 import io.mosip.registration.entity.RegCenterDevice;
 import io.mosip.registration.entity.RegCentreMachineDevice;
@@ -45,7 +42,6 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.mapping.MapMachineService;
-import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 /**
  * This service implementation updates the mapping of users and devices to the
@@ -390,7 +386,7 @@ public class MapMachineServiceImpl extends BaseService implements MapMachineServ
 			machineMappingDAO.addedMappedDevice(regCentreMachineDevices);
 
 			auditFactory.audit(AuditEvent.DEVICE_MAPPING_SUCCESS, Components.DEVICE_MAPPING,
-					"Device mapped successfully", REGISTRATION_ID, "refIdType");
+					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 			// Add the Success Response
 			setSuccessResponse(responseDTO, RegistrationConstants.DEVICE_MAPPING_SUCCESS_MESSAGE, null);

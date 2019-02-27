@@ -1,0 +1,10 @@
+{
+  "emailBodyTemplate": "string",
+  "emailId": "string",
+  "emailSubjectTemplate": "string",
+  "mobileNumber": "8105477408",
+  "notificationTypes": [
+    "sms"
+  ],
+  "smsTemplate": ""
+}

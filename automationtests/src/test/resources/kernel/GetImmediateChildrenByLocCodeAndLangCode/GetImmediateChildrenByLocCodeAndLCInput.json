@@ -1,0 +1,10 @@
+{
+  
+  "langcode":"string",
+  "locationcode":"string",
+  "invalid_country":"string",
+  "invalid_provinace":"string",
+  "invalid_region":"string",
+  "invalid_city":"string",
+  "invalid_localAuthority":"string"
+}
