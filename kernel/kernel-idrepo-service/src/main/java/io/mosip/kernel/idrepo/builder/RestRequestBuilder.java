@@ -1,4 +1,4 @@
-package io.mosip.kernel.idrepo.factory;
+package io.mosip.kernel.idrepo.builder;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ import lombok.NoArgsConstructor;
  */
 @Component
 @NoArgsConstructor
-public class RestRequestFactory {
+public class RestRequestBuilder {
 
 	private static final String REST_TIMEOUT = ".rest.timeout";
 
@@ -55,7 +55,7 @@ public class RestRequestFactory {
 	private Environment env;
 
 	/** The logger. */
-	private static Logger mosipLogger = IdRepoLogger.getLogger(RestRequestFactory.class);
+	private static Logger mosipLogger = IdRepoLogger.getLogger(RestRequestBuilder.class);
 
 	/**
 	 * Builds the request.

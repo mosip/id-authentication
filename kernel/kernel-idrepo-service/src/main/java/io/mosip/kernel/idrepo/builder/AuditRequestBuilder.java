@@ -1,4 +1,4 @@
-package io.mosip.kernel.idrepo.factory;
+package io.mosip.kernel.idrepo.builder;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -23,10 +23,10 @@ import lombok.NoArgsConstructor;
  */
 @Component
 @NoArgsConstructor
-public class AuditRequestFactory {
+public class AuditRequestBuilder {
 
     /** The mosipLogger. */
-    private static Logger mosipLogger = IdRepoLogger.getLogger(AuditRequestFactory.class);
+    private static Logger mosipLogger = IdRepoLogger.getLogger(AuditRequestBuilder.class);
 
     /** The env. */
     @Autowired
@@ -73,7 +73,7 @@ public class AuditRequestFactory {
 	request.setSessionUserId("sessionUserId");
 	request.setSessionUserName("sessionUserName");
 	request.setId(id);
-	request.setIdType("D");
+	request.setIdType("UIN");
 	request.setCreatedBy(env.getProperty("user.name"));
 	request.setModuleName(module.getModuleName());
 	request.setModuleId(module.getModuleId());
