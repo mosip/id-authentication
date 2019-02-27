@@ -130,7 +130,9 @@ public enum IdAuthenticationErrorConstants {
 	NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST("IDA-MLC-008","No authentication type selected"),
 	
 	//for Auth Type not supported for a country
-	AUTH_TYPE_NOT_SUPPORTED("IDA-MLC-013","Authentication Type not supported");
+	AUTH_TYPE_NOT_SUPPORTED("IDA-MLC-013","Authentication Type not supported"),
+	
+	DEMO_MISMATCH("IDA-DEA-027","Demographic data %s did not match");
 
 	private final String errorCode;
 	private final String errorMessage;

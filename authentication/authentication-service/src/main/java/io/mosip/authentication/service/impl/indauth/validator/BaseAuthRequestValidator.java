@@ -143,6 +143,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/** The Constant PATTERN. */
 	private static final Pattern STATIC_PIN_PATTERN = Pattern.compile("^[0-9]{6}");
+	
+	/** The Constant AUTH_TYPE. */
+	private static final String AUTH_TYPE = "authType";
 
 	/** email Validator */
 	@Autowired
@@ -1204,5 +1207,20 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			allowedLang.add(languages);
 		}
 		return allowedLang;
+	}
+	
+	/**
+	 * Validates the AuthType
+	 * 
+	 * @param authType
+	 * @param errors
+	 */
+	protected void validateAuthType(AuthTypeDTO authType, Errors errors) {
+		if (!(authType.isAddress() || authType.isBio() || authType.isFullAddress() || authType.isOtp()
+				|| authType.isPersonalIdentity() || authType.isPin())) {
+			errors.rejectValue(AUTH_TYPE,
+					IdAuthenticationErrorConstants.NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST.getErrorCode(),
+					IdAuthenticationErrorConstants.NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST.getErrorMessage());
+		}
 	}
 }

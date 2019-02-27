@@ -4,11 +4,11 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import io.mosip.authentication.service.filter.DefaultIDAFilter;
 import io.mosip.authentication.service.filter.IdAuthFilter;
 import io.mosip.authentication.service.filter.InternalAuthFilter;
 import io.mosip.authentication.service.filter.KycAuthFilter;
 import io.mosip.authentication.service.filter.OTPFilter;
-import io.mosip.authentication.service.filter.StaticPinStoreFilter;
 
 /**
  * The configuration for adding filters.
@@ -80,10 +80,10 @@ public class FilterConfig {
      * @return Static Pin Store Filter
      */
     @Bean
-    public FilterRegistrationBean<StaticPinStoreFilter> getStaticPinStoreFilter() {
-	FilterRegistrationBean<StaticPinStoreFilter> registrationBean = new FilterRegistrationBean<>();
-	registrationBean.setFilter(new StaticPinStoreFilter());
-	registrationBean.addUrlPatterns("/v1.0/static-pin");
+    public FilterRegistrationBean<DefaultIDAFilter> getStaticPinStoreFilter() {
+	FilterRegistrationBean<DefaultIDAFilter> registrationBean = new FilterRegistrationBean<>();
+	registrationBean.setFilter(new DefaultIDAFilter());
+	registrationBean.addUrlPatterns("/v1.0/static-pin","/v1.0/vid/*");
 
 	return registrationBean;
     }

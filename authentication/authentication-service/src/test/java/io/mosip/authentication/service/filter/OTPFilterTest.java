@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.filter;
+/*package io.mosip.authentication.service.filter;
 
 import static org.junit.Assert.assertEquals;
 
@@ -33,3 +33,4 @@ public class OTPFilterTest {
 		assertEquals(responseBody, filter.encodedResponse(responseBody));
 	}
 }
+*/

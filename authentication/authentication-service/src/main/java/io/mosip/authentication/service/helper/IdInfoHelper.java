@@ -681,9 +681,45 @@ public class IdInfoHelper implements IdInfoFetcher {
 				constructBioError(matchOutput, statusInfoBuilder);
 			} else if (category.equalsIgnoreCase(Category.SPIN.getType())) {
 				constructPinError(matchOutput, statusInfoBuilder);
+			} else if (category.equalsIgnoreCase(Category.DEMO.getType())) {
+				constructDemoError(matchOutput, statusInfoBuilder);
+			} else if (category.equalsIgnoreCase(Category.OTP.getType())) {
+				constructOTPError(matchOutput, statusInfoBuilder);
 			}
-			// TODO to be applied for DEMO and OTP authentications
+		}
+	}
 
+	private void constructDemoError(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder) {
+		Optional<AuthType> authTypeForMatchType;
+		AuthType[] authTypes;
+		authTypes = PinAuthType.values();
+		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
+
+		if (authTypeForMatchType.isPresent()) {
+			AuthError errors = null;
+			List<String> mappings = IdaIdMapping.FULLADDRESS.getMappingFunction().apply(idMappingConfig, matchOutput.getMatchType());
+			IdMapping idMapping = matchOutput.getMatchType().getIdMapping();
+			if(mappings.contains(idMapping.getIdname())) {
+				errors = new AuthError(IdAuthenticationErrorConstants.DEMO_MISMATCH.getErrorCode(), 
+						String.format(IdAuthenticationErrorConstants.DEMO_MISMATCH.getErrorMessage(), "address line item(s)"));
+			} else {
+				errors = new AuthError(IdAuthenticationErrorConstants.DEMO_MISMATCH.getErrorCode(), 
+						String.format(IdAuthenticationErrorConstants.DEMO_MISMATCH.getErrorMessage(), idMapping.getIdname()));
+			}
+			statusInfoBuilder.addErrors(errors);
+		}
+	}
+
+	private void constructOTPError(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder) {
+		Optional<AuthType> authTypeForMatchType;
+		AuthType[] authTypes;
+		authTypes = PinAuthType.values();
+		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
+
+		if (authTypeForMatchType.isPresent()) {
+			AuthError errors = new AuthError(IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(), 
+						IdAuthenticationErrorConstants.INVALID_OTP.getErrorMessage());
+			statusInfoBuilder.addErrors(errors);
 		}
 	}
 

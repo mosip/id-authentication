@@ -104,7 +104,13 @@ public class OTPServiceImpl implements OTPService {
 		String txnId = otpRequestDto.getTxnID();
 		String tspID = otpRequestDto.getTspID();
 		Map<String, Object> idResDTO = idAuthService.processIdType(idvIdType, idvId, false);
+		Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
+		mobileNumber = getMobileNumber(idInfo);
+		email = getEmail(idInfo);
 		String uin = String.valueOf(idResDTO.get("uin"));
+		if(checkIsEmptyorNull(email) && checkIsEmptyorNull(mobileNumber)) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED);
+		}
 		if (isOtpFlooded(otpRequestDto)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
@@ -135,15 +141,12 @@ public class OTPServiceImpl implements OTPService {
 			otpResponseDTO.setTxnID(txnId);
 			status = "Y";
 			comment = "OTP_GENERATED";
-			Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
-			mobileNumber = getMobileNumber(idInfo);
-			email = getEmail(idInfo);
 			String responseTime = formatDate(new Date(), env.getProperty(DATETIME_PATTERN));
 			otpResponseDTO.setResTime(responseTime);
-			if (email != null && !email.isEmpty() && email.length() > 0) {
+			if (checkIsEmptyorNull(email)) {
 				otpResponseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
 			}
-			if (mobileNumber != null && !mobileNumber.isEmpty() && mobileNumber.length() > 0) {
+			if (checkIsEmptyorNull(mobileNumber)) {
 				otpResponseDTO.setMaskedMobile(MaskUtil.maskMobile(mobileNumber));
 			}
 			notificationService.sendOtpNotification(otpRequestDto, otp, uin, email, mobileNumber, idInfo);
@@ -153,6 +156,16 @@ public class OTPServiceImpl implements OTPService {
 		}
 		return otpResponseDTO;
 
+	}
+
+	/**
+	 * Check is emptyor null.
+	 *
+	 * @param data the data
+	 * @return true, if successful
+	 */
+	private static boolean checkIsEmptyorNull(String data) {
+		return data != null && !data.isEmpty() && data.trim().length() > 0;
 	}
 
 	/**
