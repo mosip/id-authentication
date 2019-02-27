@@ -242,5 +242,25 @@
     "action_back": "Retour",
     "action_book_later": "Réservez plus tard",
     "action_continue": "CONTINUER"
+  },
+  "helpText":{
+    "applicationId": "ID d'application pour votre pré-inscription",
+    "status":{
+      "pendingAppointment":"Rendez-vous n'est pas encore réservé",
+      "booked":"Rendez-vous est réservé avec succès",
+      "expired":"La date de rendez-vous est passée"
+     },
+     "deleteIcon":"Vous pouvez supprimer l’application entière ou annuler le rendez-vous et enregistrer les détails, Supprimer l’application entière et annuler le rendez-vous. Annulez le rendez-vous et enregistrez les détails.",
+     "book/modify_appointment":"Vous devez cocher la case en regard de l'identifiant de pré-inscription pour qu'un ou plusieurs demandeurs puissent prendre un rendez-vous",
+     "bookAppointment":"Commencez par sélectionner le créneau horaire préféré, puis sélectionnez le demandeur applicable pour le créneau sélectionné. ",
+     "send_email/sms":"Vous pouvez ajouter le destinataire supplémentaire pour recevoir la ou les notifications.",
+     "modify_at_DemoPreview":"Cliquez sur Modifier pour corriger les détails démographiques",
+     "modify_at_DocumentPreview":"Cliquez sur Modifier pour corriger le document téléchargé.",
+     "same_as":"Si la preuve d'adresse est identique à celle du demandeur déjà rempli, vous pouvez utiliser l'option Même comme",
+     "add_applicant":"Cliquez sur Ajouter un demandeur pour ajouter un ou plusieurs candidats.",
+     "recommended_centers":"Liste du centre recommandé selon votre code postal",
+     "nearBy":"Centres d'inscription basés sur votre géolocalisation",
+     "magnifying_glass":"Recherche basée sur la sélection du menu déroulant.",
+     "preview_continue": "Téléchargez tous les fichiers pour continuer"
   }
 }

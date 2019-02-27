@@ -12,8 +12,8 @@
       <!-- search container -->
       <div class="center_selection-intial-recommendation-container" *ngIf="searchClick; else elseBlock">
         <div class="center_selection-center_recommendation-display">
-          <span matTooltip="Info about the action"><b>{{ 'centerSelection.display_recommended' | translate }}</b></span>
-          <button matTooltip="Info about the action" mat-button class="center_selection-nearby-btn" (click)="getLocation()">
+          <span matTooltip="{{ 'helpText.recommended_centers' | translate}}"><b>{{ 'centerSelection.display_recommended' | translate }}</b></span>
+          <button matTooltip="{{ 'helpText.nearBy' | translate}}" mat-button class="center_selection-nearby-btn" (click)="getLocation()">
             {{ 'centerSelection.action_nearBy' | translate }}</button><br />
           <span class="center_selection-center-available-text">{{ 'centerSelection.text_found' | translate }} {{ dataSource.data.length }} {{ 'centerSelection.text_centers' | translate }}
           </span>
@@ -39,7 +39,7 @@
               <input *ngIf="locationType !== null" mat-input type="search" placeholder="{{ 'centerSelection.text_enter' | translate }} {{locationType.locationHierarchyName}}" name="search" class="search-input" [(ngModel)]="searchText" />
               <input *ngIf="locationType === null" mat-input type="search" placeholder="{{ 'centerSelection.text_search' | translate }}" name="search" class="search-input" [(ngModel)]="searchText" />
               <button
-                matTooltip="Info about the action"
+                matTooltip="{{ 'helpText.magnifying_glass' | translate}}"
                 mat-icon-button type="submit" (click)="showResults()">
                 <img src="assets\search_grey.png" />
               </button>
