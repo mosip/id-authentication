@@ -14,8 +14,7 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
@@ -40,8 +39,8 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
@@ -66,8 +65,8 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
@@ -92,15 +91,15 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
-      output.1.y.res.resTime: $TIMESTAMP$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMPZ$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
     output.output-2-expected-error-res:
       output.2.y.res.status: N
       output.2.y.res.resTime: $TIMESTAMP$
-      output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
       output.2.n.res.errorCode: IDA-IDV-002
       output.2.n.res.errorMessage: Invalid Input Parameter - reqTime
       
@@ -119,15 +118,15 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
-      output.1.y.res.resTime: $TIMESTAMP$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMPZ$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
     output.output-2-expected-error-res:
       output.2.y.res.status: N
       output.2.y.res.resTime: $TIMESTAMP$
-      output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
       output.2.n.res.errorCode: IDA-IDV-002
       output.2.n.res.errorMessage: Invalid Input Parameter - reqTime
       
@@ -146,15 +145,15 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
-      output.1.y.res.resTime: $TIMESTAMP$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMPZ$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
     output.output-2-expected-error-res:
       output.2.y.res.status: N
       output.2.y.res.resTime: $TIMESTAMP$
-      output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
       output.2.n.res.errorCode: IDA-IDV-003
       output.2.n.res.errorMessage: Missing Input Parameter - reqTime
       
@@ -173,15 +172,15 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
     output.output-2-expected-error-res:
       output.2.y.res.status: N
       output.2.y.res.resTime: $TIMESTAMP$
-      output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
       output.2.n.res.errorCode: IDA-MLC-001
       output.2.n.res.errorMessage: Request to be received at MOSIP within 24 hrs/min
       
@@ -200,15 +199,15 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
     output.output-2-expected-error-res:
       output.2.y.res.status: N
       output.2.y.res.resTime: $TIMESTAMP$
-      output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
       output.2.n.res.errorCode: IDA-MLC-001
       output.2.n.res.errorMessage: Request to be received at MOSIP within 24 hrs/min
       
@@ -227,15 +226,15 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
     output.output-2-expected-error-res:
       output.2.y.res.status: N
       output.2.y.res.resTime: $TIMESTAMP$
-      output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
       output.2.n.res.errorCode: IDA-MLC-002
       output.2.n.res.errorMessage: Invalid UIN
       
@@ -254,15 +253,15 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
     output.output-2-expected-error-res:
       output.2.y.res.status: N
       output.2.y.res.resTime: $TIMESTAMP$
-      output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
       output.2.n.res.errorCode: IDA-IDV-003
       output.2.n.res.errorMessage: Missing Input Parameter - idvId
       
@@ -281,15 +280,15 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
     output.output-2-expected-error-res:
       output.2.y.res.status: N
       output.2.y.res.resTime: $TIMESTAMP$
-      output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
       output.2.n.res.errorCode: IDA-IDV-003
       output.2.n.res.errorMessage: Missing Input Parameter - idvId
       
@@ -308,15 +307,15 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
     output.output-2-expected-error-res:
       output.2.y.res.status: N
       output.2.y.res.resTime: $TIMESTAMP$
-      output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
+      #output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
       output.2.n.res.errorCode: IDA-OTA-007
       output.2.n.res.errorMessage: Input txnID does not match txnID of OTP Request
       
@@ -335,15 +334,15 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
     output.output-2-expected-error-res:
       output.2.y.res.status: N
       output.2.y.res.resTime: $TIMESTAMP$
-      output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
+      #output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
       output.2.n.res.errorCode: IDA-IDV-002
       output.2.n.res.errorMessage: Invalid Input Parameter - txnID
       
@@ -362,15 +361,15 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
     output.output-2-expected-error-res:
       output.2.y.res.status: N
       output.2.y.res.resTime: $TIMESTAMP$
-      output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
+      #output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
       output.2.n.res.errorCode: IDA-IDV-002
       output.2.n.res.errorMessage: Invalid Input Parameter - txnID
       
@@ -389,15 +388,15 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
     output.output-2-expected-error-res:
       output.2.y.res.status: N
       output.2.y.res.resTime: $TIMESTAMP$
-      output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
+      #output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
       output.2.n.res.errorCode: IDA-IDV-003
       output.2.n.res.errorMessage: Missing Input Parameter - txnID
       
@@ -417,15 +416,15 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
     output.output-2-expected-error-res:
       output.2.y.res.status: N
       output.2.y.res.resTime: $TIMESTAMP$
-      output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
+      #output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
       output.2.n.res.errorCode: IDA-OTA-008
       output.2.n.res.errorMessage: Missing OTP value
       
@@ -445,15 +444,15 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
     output.output-2-expected-error-res:
       output.2.y.res.status: N
       output.2.y.res.resTime: $TIMESTAMP$
-      output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
+      #output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
       output.2.n.res.errorCode: IDA-OTA-008
       output.2.n.res.errorMessage: Missing OTP value
       
@@ -473,15 +472,15 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
     output.output-2-expected-error-res:
       output.2.y.res.status: N
       output.2.y.res.resTime: $TIMESTAMP$
-      output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
+      #output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
       output.2.n.res.errorCode: IDA-OTA-008
       output.2.n.res.errorMessage: Missing OTP value
       
@@ -500,15 +499,15 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_185'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
     output.output-2-expected-error-res:
       output.2.y.res.status: N
       output.2.y.res.resTime: $TIMESTAMP$
-      output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
+      #output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
       output.2.n.res.errorCode: IDA-OTA-005
       output.2.n.res.errorMessage: OTP has expired
       
@@ -527,15 +526,15 @@ testdata:
       otpAuthReq.valuepinInfo: 23456
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
     output.output-2-expected-error-res:
       output.2.y.res.status: N
       output.2.y.res.resTime: $TIMESTAMP$
-      output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
       output.2.n.res.errorCode: IDA-OTA-006
       output.2.n.res.errorMessage: OTP is invalid
       
@@ -555,15 +554,15 @@ testdata:
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
       output.1.y.res.status: Y
-      output.1.y.res.txnId: $IGNORE$
-      output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
     output.output-2-expected-error-res:
       output.2.y.res.status: N
       output.2.y.res.resTime: $TIMESTAMP$
-      output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
       output.2.n.res.errorCode: IDA-MLC-008
       output.2.n.res.errorMessage: No authentication type selected
       
