@@ -593,20 +593,14 @@ public class IdInfoHelper implements IdInfoFetcher {
 				}
 			}
 			Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, this, language);
-			DeviceInfo deviceInfo = new DeviceInfo();
-			if (authRequestDTO.getRequestedAuth().isBio()) {
-				Optional<DeviceInfo> deviceInfoOptional = getDeviceInfo(authRequestDTO.getBioInfo());
-				deviceInfo = deviceInfoOptional.orElse(null);
-			}
+			
 
-			return new MatchInput(authType, matchType, matchingStrategy, matchValue, matchProperties, deviceInfo,
+			return new MatchInput(authType, matchType, matchingStrategy, matchValue, matchProperties, 
 					language);
 		}
 	}
 
-	private Optional<DeviceInfo> getDeviceInfo(List<BioInfo> bioInfo) {
-		return bioInfo.stream().findAny().map(BioInfo::getDeviceInfo);
-	}
+	
 
 	/**
 	 * Builds the status info.
@@ -887,7 +881,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 			Map<String, String> bdbBasedOnType;
 			try {
 				bdbBasedOnType = cbeffUtil.getBDBBasedOnType(CryptoUtil.decodeBase64(identityValue.get()),
-						type.getType(), null);
+						type.getName(), null);
 			} catch (Exception e) {
 				// TODO Add corresponding error code and message
 				throw new IdAuthenticationBusinessException("Inside getCbeffValues", "", e);

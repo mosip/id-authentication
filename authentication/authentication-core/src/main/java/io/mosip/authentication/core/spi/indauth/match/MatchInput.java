@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class MatchInput {
-	
+
 	/** The match type. */
 	private AuthType authType;
 
@@ -28,9 +28,7 @@ public class MatchInput {
 	private Integer matchValue;
 
 	private Map<String, Object> matchProperties;
-	
-	private DeviceInfo deviceInfo;
-	
+
 	private String language;
 
 }
