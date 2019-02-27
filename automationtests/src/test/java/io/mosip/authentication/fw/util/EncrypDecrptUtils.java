@@ -1,5 +1,6 @@
 package io.mosip.authentication.fw.util;
 
+import java.io.File;
 import java.io.FileReader; 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,6 +68,26 @@ public class EncrypDecrptUtils extends IdaScriptsUtil{
 		}
 	}
 	
+	public String getDecodeFile(String content) {
+		try {
+			return objRestClient.postRequest(RunConfig.getEncryptUtilBaseUrl() + RunConfig.getDecodeFilePath(), content,
+					MediaType.TEXT_PLAIN, MediaType.APPLICATION_OCTET_STREAM).asString();
+		} catch (Exception e) {
+			logger.error("Exception: " + e);
+			return e.toString();
+		}
+	}
+	
+	public String getEncodeFile(File file) {
+		try {
+			return objRestClient.postRequest(RunConfig.getEncryptUtilBaseUrl() + RunConfig.getEncodeFilePath(), file,
+					MediaType.MULTIPART_FORM_DATA, MediaType.TEXT_PLAIN).asString();
+		} catch (Exception e) {
+			logger.error("Exception: " + e);
+			return e.toString();
+		}
+	}
+	
 	public String getDecodeFromFile(String filename) {
 		try {
 			JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(filename));
@@ -87,5 +108,4 @@ public class EncrypDecrptUtils extends IdaScriptsUtil{
 			return e.toString();
 		}
 	}
-	
 }

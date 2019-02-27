@@ -1,6 +1,6 @@
 package io.mosip.authentication.tests;
 
-import java.io.File; 
+import java.io.File;   
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -14,6 +14,7 @@ import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -25,18 +26,20 @@ import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
-
+import io.mosip.authentication.fw.dto.UinDto;
+import io.mosip.authentication.fw.dto.UinStaticPinDto;
+import io.mosip.authentication.fw.dto.VidStaticPinDto;
 import io.mosip.authentication.fw.util.AuditValidUtil;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.IdaScriptsUtil;
-import io.mosip.authentication.fw.util.OutputValidationDto;
+import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.fw.util.TestParameters;
-import io.mosip.testdata.TestDataProcessor;
-import io.mosip.testdata.TestDataUtil;
+import io.mosip.authentication.testdata.TestDataProcessor;
+import io.mosip.authentication.testdata.TestDataUtil;
 
 import org.testng.Reporter;
 
@@ -57,6 +60,7 @@ public class StaticPinStorage extends IdaScriptsUtil implements ITest{
 	protected static String testCaseName = "";
 	private TestDataProcessor objTestDataProcessor = new TestDataProcessor();
 	private AuditValidUtil objAuditValidUtil = new AuditValidUtil();
+	private Map<String,String> storeStaticPin = new HashMap<String,String>();
 
 	
 	@Parameters({ "testDatPath" , "testDataFileName" ,"testType"})
@@ -133,6 +137,25 @@ public class StaticPinStorage extends IdaScriptsUtil implements ITest{
 				objFileUtil.getFilePath(testCaseName, "output-1-expected").toString());
 		Reporter.log(objReportUtil.getOutputValiReport(ouputValid));
 		Assert.assertEquals(objOpValiUtil.publishOutputResult(ouputValid), true);
+		// To store UIN - StaticPin
+		if ((testCaseName.getName().toString().contains("UIN") || testCaseName.getName().toString().contains("uin"))
+				&& (testCaseName.getName().toString().contains("_Pos")
+						|| testCaseName.getName().toString().contains("_pos"))) {
+			String uin = getValueFromJson(testCaseName.listFiles(), mapping, "StaticPinStoreReq.UIN", "request");
+			String pin = getValueFromJson(testCaseName.listFiles(), mapping, "StaticPinStoreReq.staticPin", "request");
+			storeStaticPin.put(uin, pin);
+		}
+		// END of UIN - StaticPin
+		// To store UIN - StaticPin
+		else if ((testCaseName.getName().toString().contains("VID")
+				|| testCaseName.getName().toString().contains("vid"))
+				&& (testCaseName.getName().toString().contains("_Pos")
+						|| testCaseName.getName().toString().contains("_pos"))) {
+			String vid = getValueFromJson(testCaseName.listFiles(), mapping, "StaticPinStoreReq.VID", "request");
+			String pin = getValueFromJson(testCaseName.listFiles(), mapping, "StaticPinStoreReq.staticPin", "request");
+			storeStaticPin.put(vid, pin);
+		}
+		// END of UIN - StaticPin
 		if(objFileUtil.verifyFilePresent(testCaseName.listFiles(), "auth_transaction")) {
 			wait(5000);
 			logger.info("************* Auth Transaction Validation ******************");
@@ -150,6 +173,28 @@ public class StaticPinStorage extends IdaScriptsUtil implements ITest{
 			Reporter.log(objReportUtil.getOutputValiReport(auditLogValidation));
 			Assert.assertEquals(objOpValiUtil.publishOutputResult(auditLogValidation), true);
 		}
+	}
+	
+	@AfterClass
+	public void storeUinVidStaticPin() {
+		Map<String, String> uinPin = new HashMap<String, String>();
+		Map<String, String> vidPin = new HashMap<String, String>();
+		for (Entry<String, String> entry : storeStaticPin.entrySet()) {
+			if (entry.getKey().length() == 16)
+				vidPin.put(entry.getKey(), entry.getValue());
+			else
+				uinPin.put(entry.getKey(), entry.getValue());
+		}
+		UinStaticPinDto.setUinStaticPin(uinPin);
+		VidStaticPinDto.setVidStaticPin(vidPin);
+		logger.info("Stored Pin: " + UinStaticPinDto.getUinStaticPin());
+		generateMappingDic(RunConfig.getUserDirectory() + RunConfig.getSrcPath() + "ida/"
+				+ RunConfig.getTestDataFolderName() + "/RunConfig/uinStaticPin.properties",
+				UinStaticPinDto.getUinStaticPin());
+		logger.info("Stored Pin: " + VidStaticPinDto.getVidStaticPin());
+		generateMappingDic(RunConfig.getUserDirectory() + RunConfig.getSrcPath() + "ida/"
+				+ RunConfig.getTestDataFolderName() + "/RunConfig/vidStaticPin.properties",
+				VidStaticPinDto.getVidStaticPin());
 	}
 
 }

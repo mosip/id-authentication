@@ -1,54 +1,45 @@
 package io.mosip.authentication.tests;
 
-import java.io.File;  
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
-import org.json.simple.JSONObject;
 import org.testng.Assert;
 import org.testng.ITest;
-import org.testng.ITestContext;
 import org.testng.ITestResult;
+import org.testng.Reporter;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
-import com.google.common.base.Verify;
-
-import io.mosip.authentication.fw.util.AuditValidUtil;
+import io.mosip.authentication.fw.dto.OutputValidationDto;
+import io.mosip.authentication.fw.dto.UinDto;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
+import io.mosip.authentication.fw.util.IdRepoUtil;
 import io.mosip.authentication.fw.util.IdaScriptsUtil;
-import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.fw.util.TestParameters;
+import io.mosip.authentication.fw.util.UinVidNumberUtil;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
+import io.mosip.authentication.testdata.keywords.IdaKeywordUtil;
+import io.mosip.authentication.testdata.keywords.KeywordUtil;
 
-import org.testng.Reporter;
-
-/**
- * Tests to execute internal biometric authentication
- * 
- * @author Athila
- *
- */
-public class InternalBioAuthentication extends IdaScriptsUtil implements ITest{
-
-	private static Logger logger = Logger.getLogger(InternalBioAuthentication.class);
+public class UpdateUinRecord extends IdaScriptsUtil implements ITest{
+	
+	private static Logger logger = Logger.getLogger(UpdateUinRecord.class);
 	private DataProviderClass objDataProvider = new DataProviderClass();
 	private OutputValidationUtil objOpValiUtil = new OutputValidationUtil();
 	private ReportUtil objReportUtil = new ReportUtil();
@@ -56,13 +47,15 @@ public class InternalBioAuthentication extends IdaScriptsUtil implements ITest{
 	private FileUtil objFileUtil = new FileUtil();
 	protected static String testCaseName = "";
 	private TestDataProcessor objTestDataProcessor = new TestDataProcessor();
-	private AuditValidUtil objAuditValidUtil = new AuditValidUtil();
+	private IdRepoUtil objIdRepoUtil = new IdRepoUtil();
+	private Map<String,String> storeUinData = new HashMap<String,String>();
+	private static UinVidNumberUtil objUinVidNumberUtil = new UinVidNumberUtil();
 
-	@Parameters({ "testDatPath" , "testDataFileName" ,"testType"})
+	@Parameters({ "testDatPath" , "testDataFileName" })
 	@BeforeClass
-	public void setConfigurations(String testDatPath,String testDataFileName,String testType) {
-		objRunConfig.setConfig(testDatPath,testDataFileName,testType);
-		objTestDataProcessor.initateTestDataProcess(testDataFileName,testDatPath,"ida");	
+	public void setConfigurations(String testDatPath,String testDataFileName) {
+		objRunConfig.setConfig(testDatPath,testDataFileName,"smokeandregression");
+		objTestDataProcessor.initateTestDataProcess(testDataFileName,testDatPath,"ida");
 	}
 	
 	@BeforeMethod
@@ -83,12 +76,16 @@ public class InternalBioAuthentication extends IdaScriptsUtil implements ITest{
 		}
 		this.testCaseName = String.format(testCase);
 	}
-	
-	@DataProvider(name = "testcaselist")
-	public Object[][] getTestCaseList() {
-		return objDataProvider.getDataProvider(
+
+	@Test
+	public void updateUINTestData() {
+		Object[][] object = objDataProvider.getDataProvider(
 				System.getProperty("user.dir") + RunConfig.getSrcPath() + RunConfig.getScenarioPath(),
 				RunConfig.getScenarioPath(), RunConfig.getTestType());
+		for (int i = 1; i < object.length; i++) {
+			idaUpdateUINData(new TestParameters((TestParameters) object[i][0]), object[i][1].toString(),
+					object[i][2].toString());
+		}
 	}
 	
 	@Override
@@ -105,14 +102,13 @@ public class InternalBioAuthentication extends IdaScriptsUtil implements ITest{
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, InternalBioAuthentication.testCaseName);
+			f.set(baseTestMethod, UpdateUinRecord.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
 	} 
 
-	@Test(dataProvider = "testcaselist")
-	public void idaApiBioAuthExecution(TestParameters objTestParameters,String testScenario,String testcaseName) {
+	public void idaUpdateUINData(TestParameters objTestParameters, String testScenario, String testcaseName) {
 		File testCaseName = objTestParameters.getTestCaseFile();
 		int testCaseNumber = Integer.parseInt(objTestParameters.getTestId());
 		displayLog(testCaseName, testCaseNumber);
@@ -121,40 +117,32 @@ public class InternalBioAuthentication extends IdaScriptsUtil implements ITest{
 		setTestCaseName(testCaseName.getName());
 		String mapping = TestDataUtil.getMappingPath();
 		Map<String, String> tempMap = new HashMap<String, String>();
-		for (Entry<String, String> entry : getEncryptKeyvalue(testCaseName.listFiles(), "identity-encrypt")
-				.entrySet()) {
-			tempMap.put("key", entry.getKey());
-			tempMap.put("data", entry.getValue());
-		}
-		logger.info("************* Modification of bio auth request ******************");
-		Reporter.log("<b><u>Modification of bio auth request</u></b>");
-		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "bio-auth"), true);
-		logger.info("******Post request Json to EndPointUrl: " + RunConfig.getEndPointUrl() + RunConfig.getInternalAuthPath()
-				+ " *******");
-		Assert.assertEquals(postAndGenOutFile(testCaseName.listFiles(),
-				RunConfig.getEndPointUrl() + RunConfig.getInternalAuthPath(), "request", "output-1-actual-res",200), true);
+		String uin = objUinVidNumberUtil.getRandomUINKey();
+		logger.info("************* IdRepo UIN Update request ******************");
+		Reporter.log("<b><u>UIN create request</u></b>");
+		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "update"), true);
+		logger.info("******Post request Json to EndPointUrl: " + objIdRepoUtil.getCreateUinPath(uin) + " *******");
+		wait(10000);
+		Assert.assertEquals(postAndGenOutFileForUinUpdate(testCaseName.listFiles(), objIdRepoUtil.getCreateUinPath(uin),
+				"update", "output-1-actual-res", 0), true);
 		Map<String, List<OutputValidationDto>> ouputValid = objOpValiUtil.doOutputValidation(
 				objFileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				objFileUtil.getFilePath(testCaseName, "output-1-expected").toString());
 		Reporter.log(objReportUtil.getOutputValiReport(ouputValid));
-		Assert.assertEquals(objOpValiUtil.publishOutputResult(ouputValid), true);
-		if(objFileUtil.verifyFilePresent(testCaseName.listFiles(), "auth_transaction")) {
-			wait(5000);
-			logger.info("************* Auth Transaction Validation ******************");
-			Reporter.log("<b><u>Auth Transaction Validation</u></b>");
-			Map<String, List<OutputValidationDto>> auditTxnvalidation = objAuditValidUtil
-					.verifyAuditTxn(testCaseName.listFiles(), "auth_transaction");
-			Reporter.log(objReportUtil.getOutputValiReport(auditTxnvalidation));
-			Assert.assertEquals(objOpValiUtil.publishOutputResult(auditTxnvalidation), true);
-		}if (objFileUtil.verifyFilePresent(testCaseName.listFiles(), "audit_log")) {
-			wait(5000);
-			logger.info("************* Audit Log Validation ******************");
-			Reporter.log("<b><u>Audit Log Validation</u></b>");
-			Map<String, List<OutputValidationDto>> auditLogValidation = objAuditValidUtil
-					.verifyAuditLog(testCaseName.listFiles(), "audit_log");
-			Reporter.log(objReportUtil.getOutputValiReport(auditLogValidation));
-			Assert.assertEquals(objOpValiUtil.publishOutputResult(auditLogValidation), true);
-		}
+		if (objOpValiUtil.publishOutputResult(ouputValid)) {
+			Assert.assertEquals(true, true);
+			storeUinData.put(uin, testcaseName);
+		} else
+			Assert.assertEquals(true, false);
+	}
+	
+	@AfterClass
+	public void storeUinData() {
+		UinDto.setUinData(storeUinData);
+		logger.info("Updated UIN: " + UinDto.getUinData());
+		updateMappingDic(
+				RunConfig.getUserDirectory() + RunConfig.getSrcPath() + "ida/"+RunConfig.getTestDataFolderName()+"/RunConfig/uin.properties",
+				UinDto.getUinData());
 	}
 
 }
