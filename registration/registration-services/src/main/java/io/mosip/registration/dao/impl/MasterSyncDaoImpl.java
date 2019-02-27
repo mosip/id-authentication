@@ -15,6 +15,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -284,6 +285,8 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			syncControlResonse = syncStatusRepository.findBySyncJobId(synccontrol);
 
 		} catch (RuntimeException runtimeException) {
+			LOGGER.error(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			throw new RegBaseUncheckedException(RegistrationConstants.MASTER_SYNC_JOD_DETAILS,
 					runtimeException.getMessage());
 		}
@@ -471,9 +474,9 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			List<Title> masterTitleDtoEntity = MetaDataUtils.setCreateMetaData(masterTitleDto, Title.class);
 			titleRepository.saveAll(masterTitleDtoEntity);
 
-			List<ValidDocument> masterValidDocumnetsDtoEntity = MetaDataUtils.setCreateMetaData(masterValidDocumnetsDto,
-					ValidDocument.class);
-			validDocumentRepository.saveAll(masterValidDocumnetsDtoEntity);
+//			List<ValidDocument> masterValidDocumnetsDtoEntity = MetaDataUtils.setCreateMetaData(masterValidDocumnetsDto,
+//					ValidDocument.class);
+//			validDocumentRepository.saveAll(masterValidDocumnetsDtoEntity);
 
 			List<RegistrationCenter> regCentr = new ArrayList<>();
 			registrationCenter.forEach(regCenter -> {
@@ -588,7 +591,8 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			sucessResponse = RegistrationConstants.SUCCESS;
 		} catch (RuntimeException runtimeException) {
 
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage());
+			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			sucessResponse = RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO;
 			throw new RegBaseUncheckedException(RegistrationConstants.MASTER_SYNC_EXCEPTION + sucessResponse,
 					runtimeException.getMessage());

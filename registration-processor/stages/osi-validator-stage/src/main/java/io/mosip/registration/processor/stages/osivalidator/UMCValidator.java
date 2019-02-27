@@ -61,6 +61,9 @@ public class UMCValidator {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(UMCValidator.class);
+	
+	/** The response from masterdata validate api. */
+	private  static final String VALID ="Valid";
 
 	/** The packet info manager. */
 	@Autowired
@@ -84,9 +87,9 @@ public class UMCValidator {
 
 	/** The identity iterator util. */
 	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
-	
+
 	private static final String NO_DEVICE_HISTORY_FOUND= "no device history found for device : ";
-	
+
 	private static final String IS_DEVICE_MAPPED_WITH_CENTER = "no center found for device : ";
 
 	/** The identity. */
@@ -120,13 +123,13 @@ public class UMCValidator {
 			rcpdto = (RegistrationCenterResponseDto) registrationProcessorRestService.getApi(ApiName.CENTERHISTORY,
 					pathsegments, "", "", RegistrationCenterResponseDto.class);
 
-					
+
 				activeRegCenter = rcpdto.getRegistrationCentersHistory().get(0).getIsActive();
 				if (!activeRegCenter) {
 					this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
 				}
 
-			
+
 
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
@@ -299,6 +302,8 @@ public class UMCValidator {
 	 */
 	public boolean isValidUMC(String registrationId) throws ApisResourceAccessException, JsonParseException,
 			JsonMappingException, io.mosip.kernel.core.exception.IOException, IOException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "UMCValidator::isValidUMC()::entry");
 		RegistrationCenterMachineDto rcmDto = getCenterMachineDto(registrationId);
 
 		RegOsiDto regOsi = packetInfoManager.getOsi(registrationId);
@@ -316,7 +321,8 @@ public class UMCValidator {
 				&& validateCenterIdAndTimestamp(rcmDto) && isValidDevice(rcmDto)) {
 			umc = true;
 		}
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "UMCValidator::isValidUMC()::exit");
 		return umc;
 	}
 
@@ -600,7 +606,7 @@ if(!isDeviceMappedWithCenter) {
 	 * @throws UMCValidationException
 	 * 
 	 */
-	boolean validateCenterIdAndTimestamp(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException {
+	private boolean validateCenterIdAndTimestamp(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException {
 		boolean isValid = false;
 		try {
 			List<String> pathsegments = new ArrayList<>();
@@ -610,7 +616,7 @@ if(!isDeviceMappedWithCenter) {
 					.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments, "", "",
 							RegistartionCenterTimestampResponseDto.class);
 
-			if (result.getStatus().equals("Accepted")) {
+			if (result.getStatus().equals(VALID)) {
 				isValid = true;
 			} else {
 				this.registrationStatusDto.setStatusComment(StatusMessage.TIMESTAMP_VALIDATION1 + " "
@@ -618,7 +624,7 @@ if(!isDeviceMappedWithCenter) {
 			}
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					rcmDto.getRegId(), "" + e.getMessage() + ExceptionUtils.getStackTrace(e));
+					rcmDto.getRegId(), e.getMessage() + ExceptionUtils.getStackTrace(e));
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 

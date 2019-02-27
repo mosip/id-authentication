@@ -11,6 +11,7 @@ import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
@@ -85,7 +86,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 	/** The filesystem adapter impl. */
 	@Autowired
-	private FileSystemAdapter filesystemAdapterImpl;
+	private FileSystemAdapter filesystemCephAdapterImpl;
 
 	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 
@@ -98,6 +99,8 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	@Override
 	public String insertBiometrics(String registrationId) throws ApisResourceAccessException {
 
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::insertBiometrics()::entry");
 		String insertStatus = "failure";
 		String requestId = uuidGenerator();
 		String referenceId = uuidGenerator();
@@ -121,6 +124,8 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 			insertStatus = "success";
 		else
 			throwException(authResponseDTO.getFailureReason(), referenceId, requestId);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::insertBiometrics()::exit");
 
 		return insertStatus;
 
@@ -164,6 +169,8 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	 */
 	@Override
 	public List<String> performDedupe(String registrationId) throws ApisResourceAccessException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::performDedupe()::entry");
 		List<String> duplicates = new ArrayList<>();
 		List<String> abisResponseDuplicates = new ArrayList<>();
 
@@ -196,6 +203,8 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 			}
 		}
 
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::performDedupe()::exit");
 		return duplicates;
 	}
 
@@ -253,8 +262,10 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	 */
 	@Override
 	public byte[] getFile(String registrationId) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::getFile()::entry");
 		byte[] file = null;
-		InputStream packetMetaInfoStream = filesystemAdapterImpl.getFile(registrationId,
+		InputStream packetMetaInfoStream = filesystemCephAdapterImpl.getFile(registrationId,
 				PacketFiles.PACKET_META_INFO.name());
 		PacketMetaInfo packetMetaInfo = null;
 		String applicantBiometricFileName = "";
@@ -267,7 +278,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 					JsonConstant.APPLICANTBIOMETRICSEQUENCE);
 			if (hashList != null)
 				applicantBiometricFileName = hashList.get(0);
-			InputStream fileInStream = filesystemAdapterImpl.getFile(registrationId,
+			InputStream fileInStream = filesystemCephAdapterImpl.getFile(registrationId,
 					PacketStructure.BIOMETRIC + applicantBiometricFileName.toUpperCase());
 
 			file = IOUtils.toByteArray(fileInStream);
@@ -279,6 +290,8 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage() + e.getMessage());
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::getFile()::exit");
 		return file;
 	}
 

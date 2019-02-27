@@ -1,61 +1,11 @@
-.root {
-    -fx-font-size: 14.0px;
-    -fx-font-family: sans-serif;
-    -fx-background-color: #ffffff;
-}
-
-#anchor-pane {
-	-fx-background-color: #f8f9fa;
-}
-
-#demographicPane {
- 	-fx-padding: 10.0;
-	-fx-border-color: black;
-    -fx-background-color : white;
-    -fx-border-width: 0.0 0.0 0.0 0.0;
-	-fx-font-size : 12.0px;   
-    
-}
-
-
 #virtualKeyboard {
 	-fx-background-color: white;
 	-fx-border-width:1.0 1.0 1.0 1.0;
 	-fx-border-color: black;
 	-fx-background-radius: 6.0,5.0;
+	-fx-font-size : 15px;
 }
 
-#registrationAccordian.accordion .title > .arrow-button .arrow{
-    -fx-translate-x: 750.0;
-	-fx-shape: "M 10,150 L 70,10 L 130,150 z";    
-}
-
-#registrationAccordian.accordion > .titled-pane {
-    -fx-padding: 0.0 0.0 0.5em 0.0;
-}
-
-#registrationAccordian.accordion > .titled-pane > .title{
-    -fx-background-color : white;
-    -fx-font-size:15.0px;
-    -fx-font-weight:bold;
-    -fx-border-color: #D3D3D3;
-    -fx-border-width : 1.0 1.0 0.0 1.0;
-}
-
-#titleDemographicPaneApplicationLanguage, #titleDemographicPaneLocalLanguage, #documentTitlePaneApplicationLanguage{
-	 -fx-font-size:20.0px;
-    -fx-font-weight:bold;
-   
-}
-
-#registrationAccordian.accordion >.titled-pane:collapsed > .title {	
- 
- 
-    -fx-border-width : 1.0 1.0 1.0 1.0;
-    -fx-border-color: black;
-	
-
-}
 
 #doc_label{
 	-fx-font-size:10.0px;
@@ -82,16 +32,6 @@
 .biometricExceptionPane{
 	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: white;
-}
-#anchor-pane-registration .text-field {		
-	-fx-background-color: white;
-	-fx-border-color: black;
-	-fx-background-insets: 0.0,0.0 0.0 1.0 0.0;
-  	-fx-border-width: 0.0 0.0 1.0 0.0;	
-}
-
-#anchor-pane-registration{
-	-fx-background-color: white;
 }
 
 #registrationPreview {
@@ -145,16 +85,6 @@
 	-fx-background-color: #FF4081;
 	-fx-text-fill: white;
 	-fx-font-family: Roboto;
-}
-
-#anchor-pane-registration .text-field:focused{
-	-fx-border-color: red;
-	-fx-background-insets: 0.0,0.0 0.0 2.0 0.0;
-  	
-}
-
-#anchor-pane-registration .button {
-	-fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,1.0), 10.0, 0.0, 0.0, 0.0);
 }
 
 #homeReg{
@@ -239,14 +169,56 @@
   -fx-padding: 0em 0em 0em 0em;
   -fx-page-information-alignment: 10;
 }
-.menu-item .label{
+.menu-item .label {
     -fx-text-fill: #000000;
     -fx-font-size: 14.0px;
+     -fx-background-image: url(images/MenuItems.png);
+     -fx-background-repeat: no-repeat;
+     -fx-background-position: left;
+     -fx-background-size: 20px 20px;
+     -fx-padding: 0.0em 0.0em 0.0em 2.0em;
 }
 
 .separator .line { 
 	-fx-background-color: #C9C9C9;
-	-fx-border-width: 0.1px;
+	-fx-border-width: 0.001px;
+}
+
+.menu-item:focused .label{
+	-fx-background-color: #FF4081;
+    -fx-padding: 0.0em 0.0em 0.0em 2.0em;
+    -fx-background-image: url(images/MenuItemsFocus.png); 
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: left;
+    -fx-background-size: 20px 20px;
+    -fx-text-fill: white;    
+}
+.menu-item:focused {
+     -fx-background: -fx-accent;
+     -fx-background-color: #FF4081;
+}
+.menu-item {
+    -fx-background-color: transparent;
+    -fx-padding: 1.0em 1.0em 1.0em 1.0em;
+}
+#logout .label{
+	-fx-text-fill: #000000;
+    -fx-font-size: 14.0px;
+     -fx-background-image: url(images/logout.png);
+     -fx-background-repeat: no-repeat;
+     -fx-background-position: left;
+     -fx-background-size: 20px 20px;
+     -fx-padding: 0.0em 0.0em 0.0em 2.0em;    
+}
+
+#logout:focused .label{
+	-fx-text-fill: #000000;
+    -fx-font-size: 14.0px;
+     -fx-background-image: url(images/logoutFocus.png);
+     -fx-background-repeat: no-repeat;
+     -fx-background-position: left;
+     -fx-background-size: 20px 20px;
+     -fx-padding: 0.0em 0.0em 0.0em 2.0em;    
 }
 #registrationOfficeLocation{
 	-fx-pref-height: 21.0px;
@@ -289,9 +261,6 @@
 	-fx-border-color: #F4F4F4;
 	-fx-border-width: 1.0 1.0 0.0 1.0;
 	
-}
-#logout{
-	-fx-background-color: #FF4081;
 }
 /* Header Page design Ends Here */
 
@@ -439,6 +408,11 @@
 	-fx-font-size: 18.0px;
 	-fx-text-fill: #666666;	
 }
+.onboardAlertMsg{
+	-fx-font-family: Roboto;
+	-fx-font-size: 16.0px;
+	-fx-text-fill:  #45A30A;	
+}
 /*Onoard User page Design Ends here*/
 
 /*user onboard FP design starts */
@@ -446,7 +420,7 @@
 	-fx-background-color:#FFFFFF;
 	-fx-effect: dropshadow( three-pass-box , #000000 , 1.0, 0.0 , 0.0 , 0.0 );
 	-fx-pref-height: 32.0px;
-	-fx-pref-width: 1278.0px;
+	-fx-pref-width: 1300.0px;
 }
 .userOnboardBackPane{
 	-fx-background-color: #F7F8F9;
@@ -456,7 +430,7 @@
 .userOnboardFooter{
 	-fx-background-color: #FFFFFF;	
 	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
-	-fx-pref-height: 50.0px;
+	-fx-pref-height: 40.0px;
 	-fx-pref-width: 1278.0px;
 }
 .onboardProgressPane{
@@ -511,7 +485,7 @@
 }
 .onboardImgPane{
 	-fx-background-color:#ffffff;
-	-fx-pref-height: 590.0px;
+	-fx-pref-height: 650.0px;
 	-fx-pref-width: 938.0px;
 }
 .onboardFingerDetails{
@@ -522,8 +496,8 @@
 /*user onboard Iris design starts */
 .onboardIrisPanes{
 	-fx-background-color : #efefef;
-	-fx-pref-height: 170.0px;
-	-fx-pref-width: 230.0px;
+	-fx-pref-height: 160px;	
+	-fx-pref-width: 180px;
 }
 .onboardBioDetails{
 	-fx-font-family: Roboto;
@@ -552,6 +526,17 @@
 }
 /*user onboard Face design ends*/
 /*user onboard exception design starts */
+.completedTracker{
+	-fx-text-fill: #E43391;
+	-fx-font-size: 12.0px;
+}
+.uncompleteTracker{
+	-fx-font-size: 12.0px;
+}
+.currentTracker{
+	-fx-text-fill: #E43391;
+	-fx-font-size: 14.0px;
+}
 .onboardOperatorDetailsHeader{
 	-fx-font-family: Roboto;
 	-fx-font-size: 10.0px;
@@ -607,8 +592,8 @@
 }
 .exceptionBackPane{
 	-fx-background-color: #F7F8F9;
-	-fx-pref-height: 660.0px;
-	-fx-pref-width: 1280.0px;
+	-fx-pref-height: 970.0px;
+	-fx-pref-width: 1400.0px;
 }
 .operatorExceptionLayout{
 	-fx-pref-height: 59.0px;
@@ -696,24 +681,12 @@
 .imageAnchorPaneStyle{
 	-fx-background-color:#F4F4F4;
 }
-.rootPaneStyle{
-	-fx-border-width: 1.0 1.0 1.0 1.0;
-	-fx-border-color: black;
-}
-.labelAnchorPanebgColor{
-	-fx-background-color:#808080;
-}
 
-.comboboxStyle{
-	-fx-background-color:#ffffff;
-	-fx-border-width: 0.0 0.0 1.0 0.0;
-	-fx-border-color: black;
-	-fx-font-size: 14.0px;
-}
 .exitButtonStyle{
 	-fx-border-color: transparent;
     -fx-padding: 4.0 0.0 4.0 0.0;
     -fx-text-fill: black;
+    -fx-background-image : url('/images/Close.png');
     -fx-font-size: 14.0px;
 }
 .webCamPane {
@@ -743,13 +716,7 @@
 	-fx-border-width: 2.0;
 }
 /* Registration - Biometric - Iris Capture */
-#leftHandPalmPane,#rightHandPalmPane,#thumbPane,#rightIrisPane,#leftIrisPane {
-	-fx-border-color: lightgrey;
-}
-#leftHandPalmPane:focused ,#rightHandPalmPane:focused ,#thumbPane:focused ,#rightIrisPane:focused,
-#leftIrisPane:focused, #applicantPhoto:focused, #exceptionPhoto:focused {
-	-fx-border-color: black;
-}
+
 
 .scanScrollPane {
 	-fx-background-color: white;
@@ -759,6 +726,7 @@
 .scanVBox {
 	-fx-background-color: white;
 	-fx-border-width:0.0 0.0 0.0 0.0;
+	-fx-pref-width: 100.0px;
 }
 
 .headerPane {
@@ -779,15 +747,6 @@
 	-fx-pref-height: 307.0px;
 	-fx-pref-width: 483.0px;
 }
-
-#submit, #rejectionSubmit, #fetchBtn, #copyPrevious{
-	-fx-background-color:#ffffff; 
-    -fx-background-radius: 6.0,5.0;
-    -fx-background-insets: 0.0,1.0;
-    -fx-text-fill: black;
-    -fx-font-size: 10.0px;
-    -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
-} 
 
 .RegbuttonStyle {
 	-fx-background-color:#ffffff; 
@@ -1006,7 +965,7 @@ Working on new Css by taleev
 	-fx-background-color:#FFFFFF;
 	-fx-pref-height: 39px;
 	-fx-pref-width: 1290px;
-	
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
 }
 
 .parentPane{
@@ -1015,23 +974,28 @@ Working on new Css by taleev
 	-fx-pref-width: 700px;
 }
 
-.paneAtDisplayDemoGraphic{
-	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 800px;	
-	-fx-pref-width: 1100px;
-	
-}
-
 .paneAtDisplayDocument{
 	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 580px;	
-	-fx-pref-width: 1050px;	
+	-fx-pref-height: 600px;	
+	-fx-pref-width: 1100px;	
+}
+
+.biometricEceptionLabel{
+	-fx-text-fill : #666666;
+	-fx-font-size : 20px;
 }
 
 .registrationFooter{
 	-fx-background-color:#FFFFFF;
-	-fx-pref-height: 30px;	
+	-fx-pref-height: 40px;	
 	-fx-pref-width: 1290px;
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+}
+
+
+.trackerHighlighter{
+	-fx-font-size : 18;
+	-fx-text-fill : #E43391;	
 }
 
 .demoGraphicPaneContentButton{
@@ -1039,10 +1003,18 @@ Working on new Css by taleev
 	-fx-border-color: #FF4081;
 	-fx-background-color : #FFFFFF;
 	-fx-border-radius: 3,3,3,3;
-	-fx-pref-height: 2px;	
+	-fx-pref-height: 4px;	
 	-fx-pref-width: 150px;
+	-fx-font-size : 15px;
 	 
 }
+
+.paneAtDisplayDemoGraphic{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 1050px;	
+	-fx-pref-width: 1100px;
+}
+
 
 .documentContentButton{
 	-fx-border-width: 1 1 1 1;
@@ -1051,11 +1023,6 @@ Working on new Css by taleev
 	-fx-border-radius: 3,3,3,3;
 	-fx-pref-height: 2px;	
 	-fx-pref-width: 120px;
-	 
-}
-
-#demographicDetail .label{
-	-fx-font-size: 12px;
 }
 
 .contiuneButton{
@@ -1080,34 +1047,88 @@ Working on new Css by taleev
 
 .demoGraphicTextField{
 	-fx-pref-height: 10px;	
-	-fx-pref-width: 315px;
-	-fx-border-color: black;
+	-fx-pref-width: 395px;
+	-fx-border-color: #C9C9C9;
 	-fx-background-insets: 0,0 0 0 0;
   	-fx-border-width: 0 0 1 0;	
-  	-fx-background-color: white;
-  		
-	
+  	-fx-background-color: #FFFFFF;
+  	-fx-padding : 5 0 5 0;
+	-fx-prompt-text-fill: #000000;	
+	-fx-font-size: 15px;
 }
 
 .demoGraphicTextFieldTypeSecond{
 	-fx-pref-height: 10px;	
-	-fx-pref-width: 150px;
-	-fx-border-color: black;
+	-fx-pref-width: 190px;
+	-fx-border-color: #C9C9C9;
 	-fx-background-insets: 0,0 0 0 0;
   	-fx-border-width: 0 0 1 0;	
-  	-fx-background-color: white;
-  		
+  	-fx-background-color: #FFFFFF;
+  	-fx-padding: 5 0 5 0;
+  	-fx-prompt-text-fill: #000000;	
+  	-fx-font-size: 15px;
+  	
 }
+
+.demographicLangHeader{
+	-fx-font-size : 20px;
+	-fx-text-fill : #2F3033;
+}
+
+.demographicMiscTexts{
+	-fx-font-size: 15px;
+	-fx-text-fill: #000000;	
+}
+
+.demoGraphicTextFieldTypThree{
+	-fx-pref-height: 10px;	
+	-fx-pref-width: 40px;
+	-fx-border-color: #C9C9C9;
+	-fx-background-insets: 0,0 0 0 0;
+  	-fx-border-width: 0 0 1 0;	
+  	-fx-background-color: #FFFFFF;
+  	-fx-padding: 5 0 5 0;
+  	-fx-prompt-text-fill: #000000;	
+  	-fx-font-size: 15px;
+  	
+}
+.demographicScrollpane{
+		-fx-pref-height: 590px;	
+		-fx-pref-width: 1100px;
+	
+}
+
+.demoGraphicFieldLabel{
+		-fx-background-color:#ffffff;
+		-fx-border-width: 0;
+		-fx-pref-height: 10px;	
+		-fx-pref-width: 300px;
+		-fx-text-fill : black;
+		-fx-font-size: 17px;
+		
+}
+
+.demoGraphicFieldMessageLabel{
+		-fx-background-color:#ffffff;
+		-fx-pref-height: 10px;	
+		-fx-pref-width: 300px;
+		-fx-text-fill : red;
+}
+
 
 .demographicCombobox{
 	-fx-background-color:#ffffff;
 	-fx-border-width: 0 0 1 0;
-	-fx-border-color: black;
+	-fx-border-color: #C9C9C9;
 	-fx-font-size: 14px;
 	-fx-pref-height: 10px;	
-	-fx-pref-width: 150px;
+	-fx-pref-width: 190px;
 }
 
+.demographicCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
+    -fx-background-color: #FF4081;
+    -fx-text-fill: #FFFFFF;
+}
 .documentCombobox{
 	-fx-background-color:#ffffff;
 	-fx-border-width: 0 0 1 0;
@@ -1117,19 +1138,86 @@ Working on new Css by taleev
 	-fx-pref-width: 170px;
 }
 
+.documentCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
+    -fx-background-color: #FF4081;
+    -fx-text-fill: #FFFFFF;
+}
+
 .toggleButton{
 	-fx-pref-height: 15px;	
 	-fx-pref-width: 9px;
 }
 
+.paneAtDisplayFinger{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 600px;	
+	-fx-pref-width: 1000px;	
+	
+}
+
 .fingerPrintPanes{
-	-fx-pref-height: 160px;	
-	-fx-pref-width: 180px;
+	-fx-pref-height: 160;	
+	-fx-pref-width: 180;
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #F0F0F0;
+	-fx-border-width : 5;
+	-fx-padding : -2.5;
+}
+
+.fingerPrintPanes:focused{
+	-fx-pref-height: 160;	
+	-fx-pref-width: 180;
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #00A6E9;
+	-fx-border-width : 5;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3,3,3,3;
+	
+}
+
+.fingerPrintPanesSelected{
+	-fx-pref-height: 160;	
+	-fx-pref-width: 180;
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #EFEFEF;
+	-fx-border-width : 5;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3,3,3,3;
 }
 
 .IrisPanes{
-	-fx-pref-height: 160px;	
-	-fx-pref-width: 180px;
+	-fx-pref-height: 160;	
+	-fx-pref-width: 180;
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #FFFFFF;
+	-fx-border-width : 5;
+	-fx-padding : -2.5;
+}
+
+.IrisPanes:focused{
+	-fx-pref-height: 160;	
+	-fx-pref-width: 180;
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #00A6E9;
+	-fx-border-width : 5;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3,3,3,3;
+	
+}
+
+.IrisPanesSelected{
+	-fx-pref-height: 160;	
+	-fx-pref-width: 180;
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #EFEFEF;
+	-fx-border-width : 5;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3,3,3,3;
+}
+.paneAtDisplayIris{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 600px;	
+	-fx-pref-width: 1000px;	
 }
 
 .PhotoCaptureWindow{
@@ -1143,14 +1231,34 @@ Working on new Css by taleev
 	-fx-pref-width: 250px;	
 }
 
-.qualityBox .label{
-	-fx-text-fill: #000000;
+.threshHoldLabel{
+	-fx-tex-fill : #000000;
+	-fx-font-size : 15px;
+}
+
+.qualityLabel{
+	-fx-tex-fill : #000000;
+	-fx-font-size : 15px;
+}
+
+.attemptsLabel{
+	-fx-tex-fill : #000000;
+	-fx-font-size : 15px;
+}
+
+.exceptionLabel{
+	-fx-tex-fill : #000000;
+	-fx-font-size : 15px;
+}
+
+.qualityBoxLabel{
+	-fx-text-fill : #666666;
+	-fx-font-size : 15px;
 }
 
 .paneHeader{
-	-fx-pref-height: 28px;	
-	-fx-pref-width: 200px;
 	-fx-text-fill: #E43391;
+	-fx-font-size : 22px;
 }
 
 .authenticationBiometricSubPane{
@@ -1192,7 +1300,7 @@ Working on new Css by taleev
 	-fx-border-width: 0 0 1 0;
 	-fx-border-color: #FF4081;
 	-fx-pref-height: 28px;	
-	-fx-pref-width: 40px;
+	-fx-pref-width: 940px;
 	
 }
 
@@ -1248,10 +1356,9 @@ Working on new Css by taleev
 
 .homeButton{
 		-fx-background-color : #FFFFFF;
-		-fx-pref-height : 10;
+		-fx-pref-height : 20;
 		-fx-pref-width : 70;
 		-fx-padding : 0 0 0 0;
-		
 }
 
 
@@ -1470,6 +1577,63 @@ Working on new Css by taleev
 	-fx-font-family: Roboto;
 }
 
+.templateHeading {
+	-fx-font-size: 18.0px;
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+}
+
 .reRegTableId{
 	-fx-pref-width : 450;
 }
+
+/*
+ *	rejection page 
+ */
+
+.rejectionPageHeader{
+	-fx-background-color : #FFFFFF;
+	-fx-pref-width : 400;
+	-fx-pref-height : 50px;
+}
+
+.rejectionPageHeaderLabel{
+	-fx-text-fill : #000000;
+	-fx-font-family: Roboto;
+	-fx-font-size : 15px;
+	-fx-pref-heigth : 100;
+	 -fx-pref-width : 400;
+	
+}
+
+.rejectionPaneContent{
+  -fx-background-color : #FFFFFF;
+  -fx-pref-heigth : 150;
+  -fx-pref-width : 400;
+  
+}
+
+.rejectionParentPane{
+	  -fx-background-color : #FFFFFF;
+	  -fx-border-width : 1 1 1 1;
+	  -fx-border-color : black;
+	  -fx-pref-heigth : 100;
+	  -fx-pref-width : 400;	
+}
+
+#rejectionAnchorPane .comboboxStyle{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: black;
+	-fx-font-size: 14.0px;
+}
+
+#rejectionAnchorPane .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
+    -fx-background-color: #FF4081;
+    -fx-text-fill: #FFFFFF;
+}
+
+.rejectCommentCloseButton{
+	-fx-background-color:white;
+}
+

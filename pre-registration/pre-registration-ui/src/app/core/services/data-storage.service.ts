@@ -15,21 +15,22 @@ export class DataStorageService {
 
   // BASE_URL = environment.BASE_URL;
   BASE_URL = this.appConfigService.getConfig()['BASE_URL'];
-  SEND_FILE_URL = this.BASE_URL + 'document/v0.1/pre-registration/documents';
-  DELETE_FILE_URL = this.BASE_URL + 'document/v0.1/pre-registration/deleteDocument';
-  GET_FILE_URL = this.BASE_URL + 'document/v0.1/pre-registration/getDocument';
+  PRE_REG_URL = this.appConfigService.getConfig()['PRE_REG_URL'];
+  SEND_FILE_URL = this.BASE_URL + this.PRE_REG_URL + 'document/documents';
+  DELETE_FILE_URL = this.BASE_URL + this.PRE_REG_URL + 'document/deleteDocument';
+  GET_FILE_URL = this.BASE_URL + this.PRE_REG_URL + 'document/getDocument';
   MASTER_DATA_URL = this.BASE_URL + 'masterdata/v1.0/';
-  AVAILABILITY_URL = this.BASE_URL + 'booking/v0.1/pre-registration/booking/availability';
-  BOOKING_URL = this.BASE_URL + 'booking/v0.1/pre-registration/booking/book';
-  DELETE_REGISTRATION_URL = this.BASE_URL + 'demographic/v0.1/pre-registration/applications';
-  COPY_DOCUMENT_URL = this.BASE_URL + 'document/v0.1/pre-registration/copyDocuments';
-  QR_CODE_URL = this.BASE_URL + 'notification/v0.1/pre-registration/generateQRCode';
-  NOTIFICATION_URL = this.BASE_URL + 'notification/v0.1/pre-registration/notification';
-  LANGUAGE_CODE = 'eng';
+  AVAILABILITY_URL = this.BASE_URL + this.PRE_REG_URL + 'booking/availability';
+  BOOKING_URL = this.BASE_URL + this.PRE_REG_URL + 'booking/book';
+  DELETE_REGISTRATION_URL = this.BASE_URL + this.PRE_REG_URL + 'demographic/applications';
+  COPY_DOCUMENT_URL = this.BASE_URL + this.PRE_REG_URL + 'document/copyDocuments';
+  QR_CODE_URL = this.BASE_URL + this.PRE_REG_URL + 'notification/generateQRCode';
+  NOTIFICATION_URL = this.BASE_URL + this.PRE_REG_URL + 'notification/notify';
+  LANGUAGE_CODE = localStorage.getItem('langCode');
   DISTANCE = 2000;
 
   getUsers(value: string) {
-    return this.httpClient.get<Applicant[]>(this.BASE_URL + appConstants.APPEND_URL.applicants, {
+    return this.httpClient.get<Applicant[]>(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants, {
       observe: 'body',
       responseType: 'json',
       params: new HttpParams().append(appConstants.PARAMS_KEYS.getUsers, value)
@@ -37,7 +38,7 @@ export class DataStorageService {
   }
 
   getUser(preRegId: string) {
-    return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.get_applicant, {
+    return this.httpClient.get(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.get_applicant, {
       observe: 'body',
       responseType: 'json',
       params: new HttpParams().append(appConstants.PARAMS_KEYS.getUser, preRegId)
@@ -48,6 +49,10 @@ export class DataStorageService {
     return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.gender);
   }
 
+  getResidenceDetails() {
+    return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.resident);
+  }
+
   getTransliteration(request: any) {
     const obj = {
       id: appConstants.IDS.transliteration,
@@ -56,11 +61,13 @@ export class DataStorageService {
       request: request
     };
 
-    return this.httpClient.post(this.BASE_URL + appConstants.APPEND_URL.transliteration, obj);
+    console.log(obj);
+
+    return this.httpClient.post(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.transliteration, obj);
   }
 
   getUserDocuments(preRegId) {
-    console.log('pre reg id', preRegId);
+    console.log('documents fetched for : ', preRegId);
 
     return this.httpClient.get(this.GET_FILE_URL, {
       observe: 'body',
@@ -78,7 +85,7 @@ export class DataStorageService {
     };
     console.log('data being sent', obj);
 
-    return this.httpClient.post(this.BASE_URL + appConstants.APPEND_URL.applicants, obj);
+    return this.httpClient.post(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants, obj);
   }
 
   sendFile(formdata: FormData) {
@@ -191,10 +198,10 @@ export class DataStorageService {
     //   const options = new RequestOptions({
     //     params: params,
     //   });
-    this.COPY_DOCUMENT_URL =
+    const url =
       this.COPY_DOCUMENT_URL + '?catCode=POA&destinationPreId=' + destinationId + '&sourcePrId=' + sourceId;
-
-    return this.httpClient.post(this.COPY_DOCUMENT_URL, '');
+    console.log('copy document URL', url);
+    return this.httpClient.post(url, '');
   }
 
   generateQRCode(data: string) {
@@ -206,12 +213,11 @@ export class DataStorageService {
   }
 
   recommendedCenters(langCode: string, locationHierarchyCode: number, data: string[]) {
-    let url = this.MASTER_DATA_URL + 'registrationcenters/' + langCode + '/' +
-                  locationHierarchyCode + '/names?';
+    let url = this.MASTER_DATA_URL + 'registrationcenters/' + langCode + '/' + locationHierarchyCode + '/names?';
     data.forEach(name => {
       url += 'name=' + name;
       if (data.indexOf(name) !== data.length - 1) {
-        url += '&'
+        url += '&';
       }
     });
     console.log(url);

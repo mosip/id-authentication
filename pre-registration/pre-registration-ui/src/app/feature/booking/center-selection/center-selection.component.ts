@@ -221,7 +221,13 @@ async getUserDemographic(user) {
   }
 
   routeBack() {
-    const routeParams = this.router.url.split('/');
-    this.router.navigate([routeParams[1], routeParams[2], 'file-upload']);
+    if (this.registrationService.getUsers().length === 0) {
+      const routeParams = this.router.url.split('/');
+      console.log('route params', routeParams);
+      this.router.navigateByUrl(`dashboard/${routeParams[2]}`);
+    } else {
+      const routeParams = this.router.url.split('/');
+      this.router.navigate([routeParams[1], routeParams[2], 'summary', 'preview']);
+    } 
   }
 }

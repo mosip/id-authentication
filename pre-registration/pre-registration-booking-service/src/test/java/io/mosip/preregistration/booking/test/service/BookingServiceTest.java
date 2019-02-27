@@ -58,6 +58,7 @@ import io.mosip.preregistration.booking.dto.SlotDto;
 import io.mosip.preregistration.booking.entity.AvailibityEntity;
 import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.booking.entity.RegistrationBookingPK;
+import io.mosip.preregistration.booking.exception.AppointmentCannotBeBookedException;
 import io.mosip.preregistration.booking.exception.BookingDataNotFoundException;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
 import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
@@ -71,6 +72,7 @@ import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
+import io.mosip.preregistration.core.exception.AppointmentBookException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.ValidationUtil;
@@ -155,13 +157,13 @@ public class BookingServiceTest {
 	MainListRequestDTO<BookingRequestDTO> bookingDto = new MainListRequestDTO<>();
 	MainListRequestDTO<BookingRequestDTO> reBookingDto = new MainListRequestDTO<>();
 
-	@Value("${version}")
+	@Value("${ver}")
 	String versionUrl;
 
 	@Value("${id}")
 	String idUrl;
 
-	@Value("${preRegResourceUrl}")
+	@Value("${demographic.resource.url}")
 	private String preRegResourceUrl;
 
 	@Before
@@ -199,13 +201,13 @@ public class BookingServiceTest {
 		oldBooking.setRegistrationCenterId("1");
 		oldBooking.setSlotFromTime("09:00");
 		oldBooking.setSlotToTime("09:13");
-		oldBooking.setRegDate("2018-12-06");
+		oldBooking.setRegDate("2019-12-06");
 		rebookingRequestDTO.setOldBookingDetails(oldBooking);
 
 		newBooking.setRegistrationCenterId("1");
 		newBooking.setSlotFromTime("09:00");
 		newBooking.setSlotToTime("09:13");
-		newBooking.setRegDate("2018-12-12");
+		newBooking.setRegDate("2019-12-12");
 
 		rebookingRequestDTO.setNewBookingDetails(newBooking);
 		bookingRequestDTO.setPreRegistrationId("23587986034785");
@@ -213,7 +215,7 @@ public class BookingServiceTest {
 		oldBooking_success.setRegistrationCenterId("1");
 		oldBooking_success.setSlotFromTime("09:00");
 		oldBooking_success.setSlotToTime("09:13");
-		oldBooking_success.setRegDate("2018-12-05");
+		oldBooking_success.setRegDate("2019-12-05");
 		rebookingRequestDTO.setOldBookingDetails(oldBooking_success);
 		bookingRequestDTO.setOldBookingDetails(null);
 
@@ -245,7 +247,7 @@ public class BookingServiceTest {
 		cancelRequestdto.setId("mosip.pre-registration.booking.book");
 		cancelRequestdto.setVer("1.0");
 		cancelbookingDto.setPreRegistrationId("23587986034785");
-		cancelbookingDto.setRegDate("2018-12-04");
+		cancelbookingDto.setRegDate("2019-12-04");
 		cancelbookingDto.setRegistrationCenterId("1");
 		cancelbookingDto.setSlotFromTime("09:00");
 		cancelbookingDto.setSlotToTime("09:13");
@@ -257,7 +259,7 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(4);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2018-12-04"));
+		availableEntity.setRegDate(LocalDate.parse("2019-12-04"));
 		availableEntity.setToTime(localTime2);
 		availableEntity.setFromTime(localTime1);
 		availableEntity.setCrBy("987654321");
@@ -400,13 +402,24 @@ public void getPreIdsByRegCenterIdFailureTest2() {
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		ResponseEntity<MainListResponseDTO> respEntity = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(MainListResponseDTO.class))).thenReturn(respEntity);
+		
 		Mockito.when(mapper.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class))
 				.thenReturn(preRegistartionStatusDTO);
+		//RegistrationBookingEntity preRegistartionStatusDTO2;
+		preRegistartionStatusDTO.setStatusCode(StatusCodes.PENDING_APPOINTMENT.getCode());
+		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
+		requestValidatorFlag = ValidationUtil.requestValidator(requestMap1, requiredRequestMap);
+		RestTemplate restTemplate2 = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate2);
+		ResponseEntity<MainListResponseDTO> respEntity2 = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
 
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(MainListResponseDTO.class))).thenReturn(respEntity2);
 		MainResponseDTO<List<BookingStatusDTO>> response = service.bookAppointment(reBookingDto);
-		assertEquals(1, response.getResponse().size());
+		assertEquals(0, response.getResponse().size());
 	}
 
 	@Test
@@ -466,7 +479,6 @@ public void getPreIdsByRegCenterIdFailureTest2() {
 
 		String date5 = "2016-11-09 14:20:00";
 		Date localDateTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date5);
-		preRegistartionStatusDTO.setCreatedDateTime(localDateTime1);
 		preRegistartionStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
 		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
 		statusList.add(preRegistartionStatusDTO);
@@ -485,8 +497,8 @@ public void getPreIdsByRegCenterIdFailureTest2() {
 
 		Mockito.when(bookingDAO.findPreIdAndStatusCode(Mockito.any(), Mockito.any())).thenReturn(bookingEntity);
 
-		Mockito.when(bookingDAO.saveRegistrationEntityForCancel(Mockito.any())).thenReturn(bookingEntity);
-
+		//Mockito.when(bookingDAO.saveRegistrationEntityForCancel(Mockito.any())).thenReturn(bookingEntity);
+		Mockito.doNothing().when(bookingDAO).deleteRegistrationEntity(Mockito.any());
 		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
 		mainResponseDTO.setErr(null);
 		mainResponseDTO.setStatus(true);
@@ -582,7 +594,6 @@ public void getPreIdsByRegCenterIdFailureTest2() {
 		
 		String date5 = "2016-11-09 14:20:00";
 		Date localDateTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date5);
-		preRegistartionStatusDTO.setCreatedDateTime(localDateTime1);
 		preRegistartionStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
 		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
 		statusList.add(preRegistartionStatusDTO);

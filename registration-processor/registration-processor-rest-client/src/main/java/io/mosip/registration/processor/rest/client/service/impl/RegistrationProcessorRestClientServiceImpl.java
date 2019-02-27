@@ -2,18 +2,20 @@ package io.mosip.registration.processor.rest.client.service.impl;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -25,7 +27,7 @@ import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 public class RegistrationProcessorRestClientServiceImpl implements RegistrationProcessorRestClientService<Object> {
 
 	/** The logger. */
-	private final Logger LOGGER = LoggerFactory.getLogger(RegistrationProcessorRestClientServiceImpl.class);
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationProcessorRestClientServiceImpl.class);
 
 	/** The rest api client. */
 	@Autowired
@@ -47,6 +49,8 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 	@Override
 	public Object getApi(ApiName apiName, List<String> pathsegments, String queryParamName, String queryParamValue,
 			Class<?> responseType) throws ApisResourceAccessException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "RegistrationProcessorRestClientServiceImpl::getApi()::entry");
 		Object obj = null;
 		String apiHostIpPort = env.getProperty(apiName.name());
 
@@ -77,12 +81,16 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 				obj = restApiClient.getApi(builder.toUriString(), responseType);
 
 			} catch (Exception e) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+						"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 				throw new ApisResourceAccessException(
 						PlatformErrorMessages.RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION.getCode(), e);
 
 			}
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "RegistrationProcessorRestClientServiceImpl::getApi()::exit");
 		return obj;
 	}
 
@@ -98,6 +106,8 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 	@Override
 	public Object postApi(ApiName apiName, String queryParamName, String queryParamValue, Object requestedData,
 			Class<?> responseType) throws ApisResourceAccessException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "RegistrationProcessorRestClientServiceImpl::postApi()::entry");
 
 		Object obj = null;
 		String apiHostIpPort = env.getProperty(apiName.name());
@@ -119,12 +129,16 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 				obj = restApiClient.postApi(builder.toUriString(), requestedData, responseType);
 
 			} catch (Exception e) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+						"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 				throw new ApisResourceAccessException(
 						PlatformErrorMessages.RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION.getMessage(), e);
 
 			}
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "RegistrationProcessorRestClientServiceImpl::postApi()::exit");
 		return obj;
 	}
 
@@ -140,6 +154,8 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 	public Object postApi(ApiName apiName, List<String> pathsegments, String queryParamName, String queryParamValue,
 			Object requestedData, Class<?> responseType) throws ApisResourceAccessException {
 
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "RegistrationProcessorRestClientServiceImpl::postApi()::entry");
 		Object obj = null;
 		String apiHostIpPort = env.getProperty(apiName.name());
 		UriComponentsBuilder builder = null;
@@ -168,12 +184,16 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 				obj = restApiClient.postApi(builder.toUriString(), requestedData, responseType);
 
 			} catch (Exception e) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+						"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 				throw new ApisResourceAccessException(
 						PlatformErrorMessages.RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION.getMessage(), e);
 
 			}
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "RegistrationProcessorRestClientServiceImpl::postApi()::exit");
 		return obj;
 	}
 

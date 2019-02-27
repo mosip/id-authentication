@@ -15,7 +15,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.RegistrationDTO;
 import javafx.event.ActionEvent;
@@ -43,9 +42,9 @@ public class AckReceiptController extends BaseController implements Initializabl
 	private PacketHandlerController packetController;
 
 	private RegistrationDTO registrationData;
-	
+
 	private Writer stringWriter;
-	
+
 	@FXML
 	protected AnchorPane rootPane;
 
@@ -57,18 +56,21 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 	@FXML
 	private Button print;
-	
+
 	@FXML
 	private Button back;
 
 	@FXML
 	private Text registrationNavLabel;
-	
+
 	@FXML
 	private Button sendNotification;
 
 	@Autowired
 	private SendNotificationController sendNotificationController;
+
+	@Value("${SEND_NOTIFICATION_DISABLE_FLAG}")
+	private String sendNotificationFlag;
 
 	public RegistrationDTO getRegistrationData() {
 		return registrationData;
@@ -86,8 +88,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been started");
-		
-		if(ApplicationContext.map().get(RegistrationConstants.SEND_NOTIFICATION_DISABLE_FLAG).equals(RegistrationConstants.ENABLE)) {
+
+		if (sendNotificationFlag.equals(RegistrationConstants.ENABLE)) {
 			sendNotification.setVisible(true);
 		} else {
 			sendNotification.setVisible(false);
@@ -116,19 +118,19 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 		PrinterJob job = PrinterJob.createPrinterJob();
 		if (job != null) {
-			job.getJobSettings().setJobName(getRegistrationData().getRegistrationId()+"_Ack");
+			job.getJobSettings().setJobName(getRegistrationData().getRegistrationId() + "_Ack");
 			webView.getEngine().print(job);
 			job.endJob();
 		}
 		generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.PRINT_INITIATION_SUCCESS);
 		goToHomePageFromRegistration();
 	}
-	
+
 	@FXML
 	public void sendNotification(ActionEvent event) {
 		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Going to Send Notification Popup Window");
-		
+
 		sendNotificationController.init();
 	}
 

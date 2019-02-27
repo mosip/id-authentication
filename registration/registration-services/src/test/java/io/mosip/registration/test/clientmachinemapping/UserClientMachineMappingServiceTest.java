@@ -71,7 +71,7 @@ public class UserClientMachineMappingServiceTest {
 	@Before
 	public void initialize() throws IOException, URISyntaxException {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
 		SessionContext.getInstance().userContext().setUserId("mosip");
 	}

@@ -25,9 +25,11 @@ import io.mosip.kernel.syncdata.dto.HolidayDto;
 import io.mosip.kernel.syncdata.dto.MachineDto;
 import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.syncdata.dto.MachineTypeDto;
+import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
 import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
 import io.mosip.kernel.syncdata.dto.UserDetailMapDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
+import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUser;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterUserID;
 import io.mosip.kernel.syncdata.exception.DataNotFoundException;
@@ -36,6 +38,7 @@ import io.mosip.kernel.syncdata.repository.RegistrationCenterUserRepository;
 import io.mosip.kernel.syncdata.service.RegistrationCenterUserService;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
+import io.mosip.kernel.syncdata.service.SyncRolesService;
 import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
 import net.minidev.json.JSONObject;
 
@@ -55,6 +58,9 @@ public class SyncDataControllerTest {
 
 	@MockBean
 	private SyncUserDetailsService syncUserDetailsService;
+	
+	@MockBean
+	private SyncRolesService syncRolesService;
 
 	@Autowired
 	private RegistrationCenterUserService registrationCenterUserService;
@@ -136,13 +142,15 @@ public class SyncDataControllerTest {
 
 	@Test
 	public void syncMasterDataSuccess() throws Exception {
-		when(masterDataService.syncData(Mockito.anyString(), Mockito.isNull())).thenReturn(masterDataResponseDto);
+		when(masterDataService.syncData(Mockito.anyString(), Mockito.isNull(), Mockito.any()))
+				.thenReturn(masterDataResponseDto);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}", "1001")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void syncMasterDataWithlastUpdatedTimestampSuccess() throws Exception {
-		when(masterDataService.syncData(Mockito.anyString(), Mockito.any())).thenReturn(masterDataResponseDto);
+		when(masterDataService.syncData(Mockito.anyString(), Mockito.any(), Mockito.any()))
+				.thenReturn(masterDataResponseDto);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-01-01T01:01:01.021Z", "1001"))
 				.andExpect(status().isOk());
 	}
@@ -190,7 +198,7 @@ public class SyncDataControllerTest {
 
 	}
 
-	@Test(expected=SyncDataServiceException.class)
+	@Test(expected = SyncDataServiceException.class)
 	public void syncMasterDataRegistrationCenterUserFetchException() throws Exception {
 
 		when(registrationCenterUserRepository.findByRegistrationCenterUserByRegCenterId(Mockito.anyString()))
@@ -198,26 +206,48 @@ public class SyncDataControllerTest {
 		registrationCenterUserService.getUsersBasedOnRegistrationCenterId("110044");
 	}
 
-	@Test(expected=DataNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void getRegistrationCenterUserMasterDataNotFoundExcepetion() throws Exception {
 		when(registrationCenterUserRepository.findByRegistrationCenterUserByRegCenterId(Mockito.anyString()))
 				.thenReturn(new ArrayList<RegistrationCenterUser>());
 		registrationCenterUserService.getUsersBasedOnRegistrationCenterId("110044");
 
 	}
-	
+
 	@Test
 	public void getRegistrationCenterUsers() throws Exception {
-		RegistrationCenterUser registrationCenterUser= new RegistrationCenterUser();
-		RegistrationCenterUserID registrationCenterUserID= new RegistrationCenterUserID();
+		RegistrationCenterUser registrationCenterUser = new RegistrationCenterUser();
+		RegistrationCenterUserID registrationCenterUserID = new RegistrationCenterUserID();
 		registrationCenterUserID.setRegCenterId("110044");
 		registrationCenterUserID.setUserId("individual");
 		registrationCenterUser.setRegistrationCenterUserID(registrationCenterUserID);
-		List<RegistrationCenterUser> regList= new ArrayList<>();
+		List<RegistrationCenterUser> regList = new ArrayList<>();
 		regList.add(registrationCenterUser);
 		when(registrationCenterUserRepository.findByRegistrationCenterUserByRegCenterId(Mockito.anyString()))
-		.thenReturn(regList);
-		
+				.thenReturn(regList);
+
 		registrationCenterUserService.getUsersBasedOnRegistrationCenterId("110044");
+	}
+
+	// -----------------------public key-------------------------------------//
+
+	@Test
+	public void getPublicKey() throws Exception {
+		PublicKeyResponse<String> publicKeyResponse = new PublicKeyResponse<>();
+		publicKeyResponse.setPublicKey("aasfdsfsadfdsaf");
+
+		Mockito.when(syncConfigDetailsService.getPublicKey(Mockito.anyString(), Mockito.anyString(), Mockito.any()))
+				.thenReturn(publicKeyResponse);
+		mockMvc.perform(get("/v1.0/publickey/REGISTRATION").param("timeStamp", "2019-09-09T09%3A00%3A00.000Z")).andExpect(status().isOk());
+	}
+	
+	//-----------------AllRoles-------------------------------//
+	
+	@Test
+	public void getAllRoles() throws Exception{
+		RolesResponseDto rolesResponseDto= new RolesResponseDto();
+		rolesResponseDto.setLastSyncTime("2019-09-09T09:09:09.000Z");
+		Mockito.when(syncRolesService.getAllRoles()).thenReturn(rolesResponseDto);
+		mockMvc.perform(get("/v1.0/roles")).andExpect(status().isOk());
 	}
 }

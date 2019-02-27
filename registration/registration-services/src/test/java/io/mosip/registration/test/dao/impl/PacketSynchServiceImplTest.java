@@ -6,7 +6,9 @@ import static org.junit.Assert.assertTrue;
 import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -111,7 +113,7 @@ public class PacketSynchServiceImplTest {
 		reg.setId("123456789");
 		synchedPackets.add(reg);
 
-		Object respObj = new Object();
+		Map<String, Object> respObj = new HashMap<>();
 		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(), Mockito.anyString())).thenReturn(reg);
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyString())).thenReturn(respObj);
 		Mockito.when(registrationDAO.updatePacketSyncStatus(reg)).thenReturn(new Registration());
@@ -160,7 +162,7 @@ public class PacketSynchServiceImplTest {
 		reg.setId("123456789");
 		synchedPackets.add(reg);
 
-		Object respObj = new Object();
+		Map<String, Object> respObj = new HashMap<>();
 		Mockito.when(registrationDAO.get(Mockito.anyList())).thenReturn(synchedPackets);
 
 		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();

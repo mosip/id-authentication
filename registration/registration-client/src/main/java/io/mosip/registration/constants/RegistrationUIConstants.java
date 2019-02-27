@@ -12,7 +12,8 @@ public class RegistrationUIConstants {
 
 	// LOGIN
 	public static final String UNABLE_LOAD_LOGIN_SCREEN = bundle.getString("UNABLE_LOAD_LOGIN_SCREEN");
-	public static final String BIOMETRIC_DISABLE_SCREEN = bundle.getString("BIOMETRIC_DISABLE_SCREEN");
+	public static final String BIOMETRIC_DISABLE_SCREEN_1 = bundle.getString("BIOMETRIC_DISABLE_SCREEN_1");
+	public static final String BIOMETRIC_DISABLE_SCREEN_2 = bundle.getString("BIOMETRIC_DISABLE_SCREEN_2");
 	public static final String MISSING_MANDATOTY_FIELDS = bundle.getString("MISSING_MANDATOTY_FIELDS");
 	public static final String CREDENTIALS_FIELD_EMPTY = bundle.getString("CREDENTIALS_FIELD_EMPTY");
 	public static final String USERNAME_FIELD_EMPTY = bundle.getString("USERNAME_FIELD_EMPTY");
@@ -55,10 +56,15 @@ public class RegistrationUIConstants {
 			.getString("USER_ACCOUNT_LOCK_MESSAGE_MINUTES");
 
 	// NOTIFICATIONS
+	public static final String EMAIL_NOTIFICATION_SUCCESS = bundle.getString("EMAIL_NOTIFICATION_SUCCESS");
+	public static final String SMS_NOTIFICATION_SUCCESS = bundle.getString("SMS_NOTIFICATION_SUCCESS");
+	public static final String NO_VALID_EMAIL = bundle.getString("NO_VALID_EMAIL");
+	public static final String NO_VALID_MOBILE = bundle.getString("NO_VALID_MOBILE");
 	public static final String NOTIFICATION_SUCCESS = bundle.getString("NOTIFICATION_SUCCESS");
 	public static final String NOTIFICATION_FAIL = bundle.getString("NOTIFICATION_FAIL");
 	public static final String NOTIFICATION_SMS_FAIL = bundle.getString("NOTIFICATION_SMS_FAIL");
 	public static final String NOTIFICATION_EMAIL_FAIL = bundle.getString("NOTIFICATION_EMAIL_FAIL");
+	public static final String NOTIFICATION_LIMIT_EXCEEDED = bundle.getString("NOTIFICATION_LIMIT_EXCEEDED");
 	public static final String PACKET_CREATION_FAILURE = bundle.getString("PACKET_CREATION_FAILURE");
 
 	// SUCCESS
@@ -90,6 +96,7 @@ public class RegistrationUIConstants {
 
 	// REGISTRATION
 	public static final String MAX_AGE_WARNING = bundle.getString("MAX_AGE_WARNING");
+	public static final String MIN_AGE_WARNING = bundle.getString("MIN_AGE_WARNING");
 	public static final String POA_DOCUMENT_EMPTY = bundle.getString("poaDocuments");
 	public static final String POI_DOCUMENT_EMPTY = bundle.getString("poiDocuments");
 	public static final String POR_DOCUMENT_EMPTY = bundle.getString("porDocuments");
@@ -202,4 +209,6 @@ public class RegistrationUIConstants {
 	public static final String VIRUS_SCAN_ERROR_FIRST_PART = bundle.getString("VIRUS_SCAN_ERROR_FIRST_PART");
 	public static final String VIRUS_SCAN_ERROR_SECOND_PART = bundle.getString("VIRUS_SCAN_ERROR_SECOND_PART");
 	public static final String VIRUS_SCAN_SUCCESS = bundle.getString("VIRUS_SCAN_SUCCESS");
+	
+	public static final String INVALID_KEY = bundle.getString("INVALID_KEY");
 }

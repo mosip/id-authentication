@@ -6,13 +6,13 @@ package io.mosip.preregistration.application.service;
 
 import java.net.URLDecoder;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
@@ -42,7 +42,9 @@ import io.mosip.preregistration.application.dto.UpdateResponseDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
+import io.mosip.preregistration.application.exception.BookingDeletionFailedException;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
+import io.mosip.preregistration.application.exception.InvalidDateFormatException;
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
@@ -56,6 +58,7 @@ import io.mosip.preregistration.core.code.EventType;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
+import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
@@ -120,9 +123,9 @@ public class DemographicService {
 	AuditLogUtil auditLogUtil;
 
 	/**
-	 * Reference for ${resource.url} from property file
+	 * Reference for ${document.resource.url} from property file
 	 */
-	@Value("${resource.url}")
+	@Value("${document.resource.url}")
 	private String resourceUrl;
 
 	/**
@@ -143,6 +146,8 @@ public class DemographicService {
 	@Value("${appointmentResourse.url}")
 	private String appointmentResourseUrl;
 
+	@Value("${booking.resource.url}")
+	private String deleteAppointmentResourseUrl;
 	/**
 	 * Reference for ${schemaName} from property file
 	 */
@@ -294,7 +299,6 @@ public class DemographicService {
 				if (demographicEntity != null) {
 					statusdto.setPreRegistartionId(demographicEntity.getPreRegistrationId());
 					statusdto.setStatusCode(demographicEntity.getStatusCode());
-					statusdto.setCreatedDateTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse(demographicEntity.getCreateDateTime().toString()));
 					statusList.add(statusdto);
 					response.setResponse(statusList);
 					response.setResTime(serviceUtil.getCurrentResponseTime());
@@ -336,6 +340,9 @@ public class DemographicService {
 				if (!serviceUtil.isNull(demographicEntity)) {
 					if (serviceUtil.checkStatusForDeletion(demographicEntity.getStatusCode())) {
 						callDocumentServiceToDeleteAllByPreId(preregId);
+						if(!(demographicEntity.getStatusCode().equals(StatusCodes.PENDING_APPOINTMENT.getCode()))) {
+							callBookingServiceToDeleteAllByPreId(preregId);
+						}		
 						int isDeletedDemo = demographicRepository.deleteByPreRegistrationId(preregId);
 						if (isDeletedDemo > 0) {
 							deleteDto.setPreRegistrationId(demographicEntity.getPreRegistrationId());
@@ -481,10 +488,16 @@ public class DemographicService {
 
 		Map<String, String> reqDateRange = new HashMap<>();
 		Map<String, String> inputDateRange = new HashMap<>();
+		fromDate=fromDate.replace("%20", " ");
+		toDate=toDate.replace("%20", " ");
 		try {
 			reqDateRange.put(RequestCodes.FROM_DATE.getCode(), fromDate);
 			reqDateRange.put(RequestCodes.TO_DATE.getCode(), toDate);
 			String format = "yyyy-MM-dd HH:mm:ss";
+			String pattern="^\\d{4}-([0]\\d|1[0-2])-([0-2]\\d|3[01]) (\\d{2}):(\\d{2}):(\\d{2})$";
+			if(Pattern.matches(pattern,fromDate)&&Pattern.matches(pattern,toDate)) {
+				
+			
 			String parsedFromDate = URLDecoder.decode(reqDateRange.get(RequestCodes.FROM_DATE.getCode()), "UTF-8");
 			String parsedToDate = URLDecoder.decode(reqDateRange.get(RequestCodes.TO_DATE.getCode()), "UTF-8");
 			inputDateRange.put(RequestCodes.FROM_DATE.getCode(), parsedFromDate);
@@ -495,6 +508,11 @@ public class DemographicService {
 						reqTimeStamp.get(RequestCodes.FROM_DATE.getCode()),
 						reqTimeStamp.get(RequestCodes.TO_DATE.getCode()));
 				response.setResponse(getPreRegistrationByDateEntityCheck(details));
+			}
+			}
+			else {
+				throw new InvalidDateFormatException(ErrorCodes.PRG_PAM_APP_011.toString(),
+						ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString());
 			}
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
@@ -576,7 +594,6 @@ public class DemographicService {
 		MainListResponseDTO<DemographicResponseDTO> response = new MainListResponseDTO<>();
 		List<DemographicResponseDTO> saveList = new ArrayList<>();
 		DemographicEntity demographicEntity;
-		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		if (serviceUtil.isNull(demographicRequest.getPreRegistrationId())) {
 			demographicRequest.setPreRegistrationId(pridGenerator.generateId());
 			demographicEntity = demographicRepository.save(serviceUtil.prepareDemographicEntity(demographicRequest,
@@ -588,7 +605,6 @@ public class DemographicService {
 			demographicEntity = demographicRepository
 					.findBypreRegistrationId(demographicRequest.getPreRegistrationId());
 			if (!serviceUtil.isNull(demographicEntity)) {
-				demographicRepository.deleteByPreRegistrationId(demographicRequest.getPreRegistrationId());
 				demographicEntity = demographicRepository.save(serviceUtil.prepareDemographicEntity(demographicRequest,
 						requestId, RequestCodes.UPDATE.getCode(), demographicEntity.getStatusCode()));
 				setAuditValues(EventId.PRE_402.toString(), EventName.UPDATE.toString(), EventType.BUSINESS.toString(),
@@ -621,7 +637,7 @@ public class DemographicService {
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder
-					.fromHttpUrl(resourceUrl + "pre-registration/deleteAllByPreRegId")
+					.fromHttpUrl(resourceUrl + "/deleteAllByPreRegId")
 					.queryParam("pre_registration_id", preregId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -667,5 +683,38 @@ public class DemographicService {
 		auditRequestDto.setModuleName(AuditLogVariables.DEMOGRAPHY_SERVICE.toString());
 		auditLogUtil.saveAuditDetails(auditRequestDto);
 	}
+	
+	
+	private void callBookingServiceToDeleteAllByPreId(String preregId) {
+		log.info("sessionId", "idType", "id",
+				"In callBookingServiceToDeleteAllByPreId method of pre-registration service ");
+		ResponseEntity<MainListResponseDTO> responseEntity = null;
+		try {
+			RestTemplate restTemplate = restTemplateBuilder.build();
+			UriComponentsBuilder uriBuilder = UriComponentsBuilder
+					.fromHttpUrl(deleteAppointmentResourseUrl + "/deleteBooking")
+					.queryParam("pre_registration_id", preregId);
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+			HttpEntity<MainListResponseDTO<DeleteBookingDTO>> httpEntity = new HttpEntity<>(headers);
+			String strUriBuilder = uriBuilder.build().encode().toUriString();
+			log.info("sessionId", "idType", "id",
+					"In callBookingServiceToDeleteAllByPreId method URL- " + strUriBuilder);
+			responseEntity = restTemplate.exchange(strUriBuilder, HttpMethod.DELETE, httpEntity,
+					MainListResponseDTO.class);
+
+			if (!responseEntity.getBody().isStatus()) {
+					throw new BookingDeletionFailedException(ErrorCodes.PRG_PAM_DOC_016.name(),
+							ErrorMessages.BOOKING_FAILED_TO_DELETE.name());
+				
+			}
+		} catch (RestClientException ex) {
+			log.error("sessionId", "idType", "id",
+					"In callBookingServiceToDeleteAllByPreId method of pre-registration service- " + ex.getMessage());
+			throw new BookingDeletionFailedException(ErrorCodes.PRG_PAM_DOC_016.name(),
+					ErrorMessages.BOOKING_FAILED_TO_DELETE.name());
+		}
+	}
+
 
 }

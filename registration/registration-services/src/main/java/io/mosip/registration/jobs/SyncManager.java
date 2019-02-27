@@ -14,10 +14,8 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
  */
 public interface SyncManager {
 
-	
-	
 	/**
-	 * To create a new transacion in sync transaction table
+	 * To create a new transaction in sync transaction table
 	 * 
 	 * @param status
 	 *            of Job
@@ -31,8 +29,8 @@ public interface SyncManager {
 	 * @return last inserted sync transaction
 	 */
 	public SyncTransaction createSyncTransaction(String status, String statusComment, String triggerPoint,
-			String syncJobId) throws RegBaseUncheckedException;
-	
+			String syncJobId);
+
 	/**
 	 * @param syncTransaction
 	 *            last transaction
@@ -40,35 +38,4 @@ public interface SyncManager {
 	 */
 	public SyncControl createSyncControlTransaction(SyncTransaction syncTransaction);
 
-
-	/**
-	 * @param syncTransaction
-	 *            last transaction
-	 * @return updated sync control for respective sync job transaction
-	 *//*
-	public SyncControl createSyncControlTransaction(SyncTransaction syncTransaction);
-	
-	
-	public String getJobId(JobExecutionContext context);
-	
-	public String getJobId(JobDetail jobDetail);
-	
-	*//**
-	 * To get the job by using trigger information
-	 * 
-	 * @param trigger
-	 *            class
-	 * @return SyncJob the entity
-	 *//*
-	public String getJobId(Trigger trigger);
-	
-	*//**
-	 * To get the job by using jobContext
-	 * 
-	 * @param context
-	 *            is a job information
-	 * @return SyncJob the entity
-	 *//*
-	public Map<String, SyncJobDef> getChildJobs(JobExecutionContext context);
-*/
 }
