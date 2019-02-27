@@ -60,7 +60,7 @@ export class DashBoardComponent implements OnInit {
     this.dataStorageService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
       this.secondaryLanguagelabels = response['dashboard'].discard;
       console.log(this.secondaryLanguagelabels);
-    })
+    });
   }
 
   initUsers() {
@@ -258,12 +258,20 @@ export class DashBoardComponent implements OnInit {
     });
   }
 
-  onModifyInformation(preId: string) {
+  onModifyInformation(user: Applicant) {
+    const preId = user.applicationID;
     this.regService.changeMessage({ modifyUser: 'true' });
     this.disableModifyDataButton = true;
     this.dataStorageService
       .getUserDocuments(preId)
       .subscribe(response => this.setUserFiles(response), error => console.log('response from modify data', error));
+    this.sharedService.addNameList({
+      fullName: user.name,
+      preRegId: user.applicationID,
+      regDto: user.regDto,
+      status: user.status
+    });
+    console.log(this.sharedService.getNameList());
 
     this.dataStorageService.getUser(preId).subscribe(
       response => this.onModification(response, preId),
