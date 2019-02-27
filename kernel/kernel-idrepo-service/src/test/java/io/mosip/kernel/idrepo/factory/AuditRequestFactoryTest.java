@@ -63,7 +63,7 @@ public class AuditRequestFactoryTest {
 			expectedRequest.setSessionUserId("sessionUserId");
 			expectedRequest.setSessionUserName("sessionUserName");
 			expectedRequest.setId("id");
-			expectedRequest.setIdType("D");
+			expectedRequest.setIdType("UIN");
 			expectedRequest.setCreatedBy(env.getProperty("user.name"));
 			expectedRequest.setModuleName(AuditModules.CREATE_IDENTITY.getModuleName());
 			expectedRequest.setModuleId(AuditModules.CREATE_IDENTITY.getModuleId());
