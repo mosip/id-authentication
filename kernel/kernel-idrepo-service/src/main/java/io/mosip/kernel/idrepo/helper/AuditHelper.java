@@ -7,11 +7,11 @@ import io.mosip.kernel.core.idrepo.constant.AuditEvents;
 import io.mosip.kernel.core.idrepo.constant.AuditModules;
 import io.mosip.kernel.core.idrepo.constant.RestServicesConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
+import io.mosip.kernel.idrepo.builder.AuditRequestBuilder;
+import io.mosip.kernel.idrepo.builder.RestRequestBuilder;
 import io.mosip.kernel.idrepo.dto.AuditRequestDto;
 import io.mosip.kernel.idrepo.dto.AuditResponseDto;
 import io.mosip.kernel.idrepo.dto.RestRequestDTO;
-import io.mosip.kernel.idrepo.factory.AuditRequestFactory;
-import io.mosip.kernel.idrepo.factory.RestRequestFactory;
 
 /**
  * The Class AuditHelper.
@@ -27,11 +27,11 @@ public class AuditHelper {
 
 	/** The audit factory. */
 	@Autowired
-	private AuditRequestFactory auditFactory;
+	private AuditRequestBuilder auditBuilder;
 
 	/** The rest factory. */
 	@Autowired
-	private RestRequestFactory restFactory;
+	private RestRequestBuilder restBuilder;
 
 	/**
 	 * Audit.
@@ -51,8 +51,8 @@ public class AuditHelper {
 	 */
 	public void audit(AuditModules module, AuditEvents event, String id, String desc)
 			throws IdRepoDataValidationException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest(module, event, id, desc);
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+		AuditRequestDto auditRequest = auditBuilder.buildRequest(module, event, id, desc);
+		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
 		restHelper.requestAsync(restRequest);
 	}

@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -155,13 +154,7 @@ public class IdRepoController {
 	 */
 	@GetMapping(path = "/identity/v1.0/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> retrieveIdentity(@PathVariable String uin,
-			@RequestParam(name = TYPE, required = false) @Nullable String type, @Nullable HttpServletRequest request)
-			throws IdRepoAppException {
-		if (request.getParameterMap().size() > 1
-				|| (request.getParameterMap().size() == 1 && !request.getParameterMap().containsKey(TYPE))) {
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST, id.get(READ));
-		}
-
+			@RequestParam(name = TYPE, required = false) @Nullable String type) throws IdRepoAppException {
 		try {
 			if (Objects.nonNull(type)) {
 				List<String> typeList = Arrays.asList(StringUtils.split(type.toLowerCase(), ','));
