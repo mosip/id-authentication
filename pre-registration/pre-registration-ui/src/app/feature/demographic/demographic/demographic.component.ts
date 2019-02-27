@@ -159,7 +159,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
       this.step = this.regService.getUsers().length;
     }
     const arr = this.router.url.split('/');
-    this.loginId = arr[2];
+    this.loginId = this.regService.getLoginId();
   }
 
   async initForm() {
