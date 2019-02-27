@@ -1,5 +1,6 @@
 package io.mosip.kernel.auth.adapter;
 
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -16,7 +17,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.www.NonceExpiredException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.SSLContext;
@@ -44,6 +49,9 @@ public class AuthProvider extends AbstractUserDetailsAuthenticationProvider {
 
     @Value("${auth.server.validate.url}")
     private String validateUrl;
+    
+    @Value("${auth.server.refreshToken.url}")
+    private String refreshTokenUrl;
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
@@ -60,30 +68,65 @@ public class AuthProvider extends AbstractUserDetailsAuthenticationProvider {
         return restTemplate;
     }
 
+	private ResponseEntity<MosipUserDto> getResponseEntity(
+			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken, String newToken) throws RestClientException, KeyManagementException, KeyStoreException, NoSuchAlgorithmException {
+		String token =null;
+		AuthToken authToken = (AuthToken) usernamePasswordAuthenticationToken;
+		if(newToken!=null)
+		{
+			token = newToken;
+		}
+		else
+		{
+			token = authToken.getToken();
+		}
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Cookie", AuthAdapterConstant.AUTH_COOOKIE_HEADER+token);
+        HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);           
+        ResponseEntity<MosipUserDto> response = getRestTemplate().exchange(validateUrl, HttpMethod.POST, entity, MosipUserDto.class);
+		return response;
+	}
+	
+	private ResponseEntity<MosipUserDto> getNewToken(String token) throws RestClientException, KeyManagementException, KeyStoreException, NoSuchAlgorithmException {
+		HttpHeaders headers = new HttpHeaders();
+        headers.set("Cookie", AuthAdapterConstant.AUTH_COOOKIE_HEADER+token);
+        HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);           
+        ResponseEntity<MosipUserDto> response = getRestTemplate().exchange(refreshTokenUrl, HttpMethod.POST, entity, MosipUserDto.class);
+        return response;
+	}
+    
     @Override
     protected UserDetails retrieveUser(String userName, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
-        AuthToken authToken = (AuthToken) usernamePasswordAuthenticationToken;
-        String token = authToken.getToken();
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", token);
-        HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-        ResponseEntity<MosipUserDto> response = null;
+    	ResponseEntity<MosipUserDto> response = null;
         try {
-            response = getRestTemplate().exchange(validateUrl, HttpMethod.GET, entity, MosipUserDto.class);
-        } catch (Exception err) {
-            throw new RuntimeException("Invalid Token");
-        }
+        	  response =  getResponseEntity(usernamePasswordAuthenticationToken,null);
+        } catch (NonceExpiredException expired) {
+        	System.out.println(expired.getMessage());
+        	
+        }catch (HttpClientErrorException | HttpServerErrorException  | KeyManagementException | KeyStoreException | NoSuchAlgorithmException  err) {
 
+        	AuthToken authToken = (AuthToken) usernamePasswordAuthenticationToken;
+        	try {
+				response = getNewToken(authToken.getToken());
+			} catch (RestClientException | KeyManagementException | KeyStoreException | NoSuchAlgorithmException e) {
+				throw new RuntimeException("Failure of Token");
+			}
+        
+        }
+        
         MosipUserDto mosipUserDto = response.getBody();
         if (mosipUserDto == null) {
             throw new RuntimeException("Invalid Token");
         }
 
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(mosipUserDto.getRole());
-        AuthUserDetails authUserDetails = new AuthUserDetails(mosipUserDto,
-                response.getHeaders().get("Authorization").get(0));
+        String responseToken = response.getHeaders().get("Set-Cookie").get(0).replaceAll(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "");
+        AuthUserDetails authUserDetails = new AuthUserDetails(mosipUserDto,responseToken);
         authUserDetails.setAuthorities(grantedAuthorities);
-
         return authUserDetails;
     }
+
+	
+
+
 }

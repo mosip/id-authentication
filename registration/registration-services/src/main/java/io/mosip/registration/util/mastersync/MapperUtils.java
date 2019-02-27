@@ -1,6 +1,10 @@
 
 package io.mosip.registration.util.mastersync;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.MAPPER_UTILL;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
@@ -12,7 +16,11 @@ import javax.persistence.Entity;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.entity.RegistrationCommonFields;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 
 /**
  * MapperUtils class provides methods to map or copy values from source object
@@ -26,6 +34,9 @@ import io.mosip.registration.entity.RegistrationCommonFields;
 @Component
 @SuppressWarnings("unchecked")
 public class MapperUtils {
+
+	/** Object for Logger. */
+	private static final Logger LOGGER = AppConfig.getLogger(MapperUtils.class);
 
 	private MapperUtils() {
 		super();
@@ -91,9 +102,11 @@ public class MapperUtils {
 		Objects.requireNonNull(destination, DESTINATION_NULL_MESSAGE);
 		try {
 			mapValues(source, destination);
-		} catch (IllegalAccessException | InstantiationException e) {
-			throw new DataAccessLayerException("KER-MSD-991", "Exception in mapping vlaues from source : "
-					+ source.getClass().getName() + " to destination : " + destination.getClass().getName(), e);
+		} catch (IllegalAccessException | InstantiationException exOperationException) {
+			LOGGER.error(MAPPER_UTILL, APPLICATION_NAME, APPLICATION_ID, "Exception raised while mapping values form "
+					+ source.getClass().getName() + " to " + destination.getClass().getName());
+			throw new RegBaseUncheckedException(MAPPER_UTILL,
+					exOperationException.getMessage() + ExceptionUtils.getStackTrace(exOperationException));
 		}
 		return destination;
 	}
@@ -123,9 +136,11 @@ public class MapperUtils {
 		Object destination = null;
 		try {
 			destination = destinationClass.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			throw new DataAccessLayerException("KER-MSD-991", "Exception in mapping vlaues from source : "
-					+ source.getClass().getName() + " to destination : " + destinationClass.getClass().getName(), e);
+		} catch (InstantiationException | IllegalAccessException exOperationException) {
+			LOGGER.error(MAPPER_UTILL, APPLICATION_NAME, APPLICATION_ID, "Exception in mapping vlaues from source : "
+					+ source.getClass().getName() + " to destination : " + destinationClass.getClass().getName());
+			throw new RegBaseUncheckedException(MAPPER_UTILL,
+					exOperationException.getMessage() + ExceptionUtils.getStackTrace(exOperationException));
 		}
 		return (D) map(source, destination);
 	}
@@ -312,10 +327,11 @@ public class MapperUtils {
 					}
 				}
 			}
-		} catch (IllegalAccessException e) {
-
-			throw new DataAccessLayerException("MapperUtils", "Exception raised while mapping values form "
-					+ source.getClass().getName() + " to " + destination.getClass().getName(), e);
+		} catch (IllegalAccessException exIllegalAccessException) {
+			LOGGER.error(MAPPER_UTILL, APPLICATION_NAME, APPLICATION_ID, "Exception raised while mapping values form "
+					+ source.getClass().getName() + " to " + destination.getClass().getName());
+			throw new RegBaseUncheckedException("MapperUtils",
+					exIllegalAccessException.getMessage() + ExceptionUtils.getStackTrace(exIllegalAccessException));
 		}
 	}
 

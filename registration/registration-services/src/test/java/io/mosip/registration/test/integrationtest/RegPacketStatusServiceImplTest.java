@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import org.assertj.core.util.Files;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,6 +57,10 @@ public class RegPacketStatusServiceImplTest {
 		context.setApplicationMap(map);
 
 	}
+	/**
+	 * Test Case for verifying the deletion of RegPacket.
+	 * @throws IOException
+	 */
 	
 	@Test
 	public void deleteRegistrationPacketsTest() throws IOException {
@@ -80,6 +85,7 @@ public class RegPacketStatusServiceImplTest {
 		sampleReg.setId("101");
 		sampleReg.setCrDtime(new Timestamp(cal.getTimeInMillis()));
 		sampleReg.setAckFilename(packetPath);
+		sampleReg.setClientStatusCode(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED);
 		registrationRepository.save(sampleReg);
 		auditLogControlRepository.save(sampleAuditLog);
 		regTransactionRepository.save(sampleRegTransaction);
@@ -89,6 +95,7 @@ public class RegPacketStatusServiceImplTest {
 		regTransactionRepository.deleteAll();
 		regTransactionRepository.saveAll(listRegTransaction);
 		auditLogControlRepository.saveAll(listAuditLog);
+		Files.delete(samplePacket);
 		}
 	
 }

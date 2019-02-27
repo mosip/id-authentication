@@ -16,6 +16,9 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
@@ -35,6 +38,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -56,9 +60,9 @@ public class IrisCaptureController extends BaseController {
 	@FXML
 	private Label leftIrisQualityScore;
 	@FXML
-	private Pane rightIrisPane;
+	private AnchorPane rightIrisPane;
 	@FXML
-	private Pane leftIrisPane;
+	private AnchorPane leftIrisPane;
 	@FXML
 	private Label leftIrisThreshold;
 	@FXML
@@ -199,6 +203,9 @@ public class IrisCaptureController extends BaseController {
 					.parseInt(getValueFromApplicationMap(RegistrationConstants.IRIS_RETRY_COUNT))))
 					|| (irisDetailsDTO == null
 							&& ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)))) {
+				auditFactory.audit(AuditEvent.REG_BIO_IRIS_SCAN, Components.REG_BIOMETRICS, SessionContext.userId(),
+						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				
 				scanPopUpViewController.init(this, RegistrationUIConstants.IRIS_SCAN);
 			} else {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_SCAN_RETRIES_EXCEEDED);
@@ -252,9 +259,11 @@ public class IrisCaptureController extends BaseController {
 
 			if (irisType.equals(RegistrationConstants.LEFT)) {
 				leftIrisImage.setImage(convertBytesToImage(irisDetailsDTO.getIris()));
+				leftIrisPane.getStyleClass().add("IrisPanesSelected");
 				leftIrisQualityScore.setText(getQualityScoreAsString(irisDetailsDTO.getQualityScore()));
 			} else {
 				rightIrisImage.setImage(convertBytesToImage(irisDetailsDTO.getIris()));
+				rightIrisPane.getStyleClass().add("IrisPanesSelected");
 				rightIrisQualityScore.setText(getQualityScoreAsString(irisDetailsDTO.getQualityScore()));
 			}
 
@@ -288,6 +297,9 @@ public class IrisCaptureController extends BaseController {
 	@FXML
 	private void nextSection() {
 		try {
+			auditFactory.audit(AuditEvent.REG_BIO_IRIS_NEXT, Components.REG_BIOMETRICS, SessionContext.userId(),
+					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+			
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Photo capture page for user registration");
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
@@ -325,6 +337,9 @@ public class IrisCaptureController extends BaseController {
 	@FXML
 	private void previousSection() {
 		try {
+			auditFactory.audit(AuditEvent.REG_BIO_IRIS_BACK, Components.REG_BIOMETRICS, SessionContext.userId(),
+					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+			
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Fingerprint capture page for user registration");
 

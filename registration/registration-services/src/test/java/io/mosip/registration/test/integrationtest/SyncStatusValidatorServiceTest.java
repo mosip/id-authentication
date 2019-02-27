@@ -10,6 +10,7 @@ import io.mosip.registration.service.sync.SyncStatusValidatorService;
 
 public class SyncStatusValidatorServiceTest extends BaseIntegrationTest
 {
+	//defect MOS-16007
 	@Autowired
 	private SyncStatusValidatorService syncstatusvalidatorservice;
 	
