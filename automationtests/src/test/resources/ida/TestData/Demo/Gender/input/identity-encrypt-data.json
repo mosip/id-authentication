@@ -1,0 +1,14 @@
+{
+	"identityRequest": {
+		"identity": {
+			"gender": [
+
+        {
+          
+          "value": "M"
+        }
+      ]
+		}
+	},
+  "tspID": "TSP00001"
+}

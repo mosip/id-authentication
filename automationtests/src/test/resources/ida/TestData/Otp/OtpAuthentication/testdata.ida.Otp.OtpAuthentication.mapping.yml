@@ -1,0 +1,569 @@
+testdata:
+  Otp_authentication_UIN_1_smoke_Pos:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-otp-auth-res:
+      output.2.y.res.status: Y
+      output.2.y.res.reqTime: $TIMESTAMP$
+      output.2.y.res.resTime: $TIMESTAMP$
+      output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      
+  Otp_authentication_UIN_2_smoke_Pos:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-otp-auth-res:
+      output.2.y.res.status: Y
+      output.2.y.res.reqTime: $TIMESTAMP$
+      output.2.y.res.resTime: $TIMESTAMP$
+      output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+     
+  Otp_authentication_UIN_3_smoke_Pos:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-otp-auth-res:
+      output.2.y.res.status: Y
+      output.2.y.res.reqTime: $TIMESTAMP$
+      output.2.y.res.resTime: $TIMESTAMP$
+      output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      
+  Otp_auth_invalid_reqTime_regression_Neg:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $INVALIDTIMESTAMPZ$
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMPZ$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      output.2.n.res.errorCode: IDA-IDV-002
+      output.2.n.res.errorMessage: Invalid Input Parameter - reqTime
+      
+  Otp_auth_null_reqTime_regression_Neg:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: ''
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMPZ$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      output.2.n.res.errorCode: IDA-IDV-002
+      output.2.n.res.errorMessage: Invalid Input Parameter - reqTime
+      
+  Otp_auth_without_reqTime_regression_Neg:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $REMOVE$
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMPZ$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      output.2.n.res.errorCode: IDA-IDV-003
+      output.2.n.res.errorMessage: Missing Input Parameter - reqTime
+      
+  Otp_auth_reqTime_greaterThan_24Hour_regression_Neg:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$HOUR+25
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      output.2.n.res.errorCode: IDA-MLC-001
+      output.2.n.res.errorMessage: Request to be received at MOSIP within 24 hrs/min
+      
+  Otp_auth_reqTime_lessThan_24Hour_regression_Neg:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$HOUR-25
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      output.2.n.res.errorCode: IDA-MLC-001
+      output.2.n.res.errorMessage: Request to be received at MOSIP within 24 hrs/min
+      
+  Otp_auth_invalid_uin_regression_Neg:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: 1234567890
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      output.2.n.res.errorCode: IDA-MLC-002
+      output.2.n.res.errorMessage: Invalid UIN
+      
+  Otp_auth_null_uin_regression_Neg:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: ''
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      output.2.n.res.errorCode: IDA-IDV-003
+      output.2.n.res.errorMessage: Missing Input Parameter - idvId
+      
+  Otp_auth_without_uin_regression_Neg:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: $REMOVE$
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      output.2.n.res.errorCode: IDA-IDV-003
+      output.2.n.res.errorMessage: Missing Input Parameter - idvId
+      
+  Otp_auth_different_txnID_regression_Neg:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: $RANDOM:N:10$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
+      output.2.n.res.errorCode: IDA-OTA-007
+      output.2.n.res.errorMessage: Input txnID does not match txnID of OTP Request
+      
+  Otp_auth_null_txnID_regression_Neg:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: ''
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
+      output.2.n.res.errorCode: IDA-IDV-002
+      output.2.n.res.errorMessage: Invalid Input Parameter - txnID
+      
+  Otp_auth_invalid_txnID_regression_Neg:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: $RANDOM:N:11$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
+      output.2.n.res.errorCode: IDA-IDV-002
+      output.2.n.res.errorMessage: Invalid Input Parameter - txnID
+      
+  Otp_auth_without_txnID_regression_Neg:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: $REMOVE$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
+      output.2.n.res.errorCode: IDA-IDV-003
+      output.2.n.res.errorMessage: Missing Input Parameter - txnID
+      
+  Otp_auth_invalid_pininfo_type_regression_Neg:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.typepinInfo: TOP
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
+      output.2.n.res.errorCode: IDA-OTA-008
+      output.2.n.res.errorMessage: Missing OTP value
+      
+  Otp_auth_null_pininfo_type_regression_Neg:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.typepinInfo: ''
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
+      output.2.n.res.errorCode: IDA-OTA-008
+      output.2.n.res.errorMessage: Missing OTP value
+      
+  Otp_auth_without_pininfo_type_regression_Neg:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.typepinInfo: $REMOVE$
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
+      output.2.n.res.errorCode: IDA-OTA-008
+      output.2.n.res.errorMessage: Missing OTP value
+      
+  Otp_auth_expired_otp_regression_Neg:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_185'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-auth-request:otpAuthReq.txnID$
+      output.2.n.res.errorCode: IDA-OTA-005
+      output.2.n.res.errorMessage: OTP has expired
+      
+  Otp_auth_invalid_otp_regression_Neg:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.valuepinInfo: 23456
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      output.2.n.res.errorCode: IDA-OTA-006
+      output.2.n.res.errorMessage: OTP is invalid
+      
+  Otp_auth_no_authtype_regression_Neg:
+    input.otp-generate:
+      otpGenReq.idvId: $UIN$
+      otpGenReq.muaCode: 7404012868
+      otpGenReq.reqTime: $TIMESTAMP$
+      otpGenReq.txnID: $RANDOM:N:10$
+      otpGenReq.tspID: TSP00001
+    input.otp-auth-request:
+      otpAuthReq.otp: false
+      otpAuthReq.idvId: $input.otp-generate:otpGenReq.idvId$
+      otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
+      otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
+      otpAuthReq.reqTime: $TIMESTAMP$
+      otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
+    output.output-1-expected-otp-gen-res:
+      output.1.y.res.status: Y
+      ##output.1.y.res.txnID: $IGNORE$
+      ##output.1.y.res.txnID: $IGNORE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.maskedEmail: $IGNORE$
+      output.1.y.res.maskedMobile: $IGNORE$
+    output.output-2-expected-error-res:
+      output.2.y.res.status: N
+      output.2.y.res.resTime: $TIMESTAMP$
+      #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
+      output.2.n.res.errorCode: IDA-MLC-008
+      output.2.n.res.errorMessage: No authentication type selected
+      
+  

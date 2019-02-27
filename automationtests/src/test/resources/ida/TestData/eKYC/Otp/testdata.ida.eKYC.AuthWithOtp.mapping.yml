@@ -1,0 +1,37 @@
+testdata:      
+  Valid_ekyc_request_with_otp_smoke_Pos:
+    input.otp-generate:
+      otpGen.idvId: $UIN$
+      otpGen.reqTime: $TIMESTAMP$
+      otpGen.txnID: $RANDOM:N:10$
+      otpGen.tspID: TSP00001
+    input.bio-auth-data:
+      bioAuth.idvId: $input.otp-generate:otpGen.idvId$
+      bioAuth.txnID: $input.otp-generate:otpGen.txnID$
+      bioAuth.tspID: $input.otp-generate:otpGen.tspID$
+      bioAuth.reqTime: $input.otp-generate:otpGen.reqTime$
+      bioAuth.valuepinInfo: '%$input.otp-generate:otpGen.txnID$_$input.otp-generate:otpGen.tspID$%_30'
+    input.ekyc-request:
+      ekycReq.ekycAuthType: O
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.response: $IGNORE$
+      output.1.response.y.txnID: $input.otp-generate:otpGen.txnID$ 
+    audit.auth_transaction:
+      refId: $input.otp-generate:otpGen.idvId$
+      txnId: $input.otp-generate:otpGen.txnID$
+      authTypeCode: OTP-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $REGEXP:.*OTP.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId:  $input.otp-generate:otpGen.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      appName: ID-Authentication
+      moduleName: EKYC_AUTH
+      refIdType: UIN 

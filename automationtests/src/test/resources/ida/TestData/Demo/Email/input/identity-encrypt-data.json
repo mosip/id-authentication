@@ -1,0 +1,14 @@
+{
+	"identityRequest": {
+		"identity": {
+		
+    "emailId": [
+             {
+         
+               "value": "LoganathanSekar@mindtree.com"
+             }
+                ]   
+		}
+	},
+  "tspID": "TSP00001"
+}
