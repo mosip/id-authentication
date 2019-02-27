@@ -285,7 +285,7 @@ public class IdRequestValidator implements Validator {
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
 							IDENTITY + " - " + (StringUtils.isEmpty(StringUtils.substringAfter(e.getMessage(), " at "))
-									? IDENTITY
+									? "/" + IDENTITY
 									: StringUtils.remove(StringUtils.substringAfter(e.getMessage(), " at "), "\""))));
 		} catch (FileIOException | NullJsonSchemaException | NullJsonNodeException | JsonSchemaIOException e) {
 			mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
@@ -316,12 +316,13 @@ public class IdRequestValidator implements Validator {
 			if (requestMap.containsKey(DOCUMENTS) && requestMap.containsKey(IDENTITY)
 					&& Objects.nonNull(requestMap.get(IDENTITY))) {
 				Map<String, Object> identityMap = convertToMap(requestMap.get(IDENTITY));
-				checkForDuplicates(requestMap, errors);
-				if (!errors.hasErrors() && Objects.nonNull(requestMap.get(DOCUMENTS))
+				if (Objects.nonNull(requestMap.get(DOCUMENTS))
 						&& requestMap.get(DOCUMENTS) instanceof List
 						&& !((List<Map<String, String>>) requestMap.get(DOCUMENTS)).isEmpty()) {
+					checkForDuplicates(requestMap, errors);
 					((List<Map<String, String>>) requestMap.get(DOCUMENTS)).parallelStream()
-							.filter(doc -> doc.containsKey(DOC_CAT) && Objects.nonNull(doc.get(DOC_CAT)))
+							.filter(doc -> !errors.hasErrors() && doc.containsKey(DOC_CAT)
+									&& Objects.nonNull(doc.get(DOC_CAT)))
 							.forEach(doc -> {
 								if (!identityMap.containsKey(doc.get(DOC_CAT))) {
 									mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,

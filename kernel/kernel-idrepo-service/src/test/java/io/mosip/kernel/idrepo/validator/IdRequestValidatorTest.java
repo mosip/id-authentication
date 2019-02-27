@@ -33,7 +33,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
@@ -194,7 +193,7 @@ public class IdRequestValidatorTest {
 
 	@Test
 	public void testValidateVerNullVer() {
-		ReflectionTestUtils.invokeMethod(validator, "validateVer", null, errors);
+		ReflectionTestUtils.invokeMethod(validator, "validateVersion", null, errors);
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
@@ -206,7 +205,7 @@ public class IdRequestValidatorTest {
 
 	@Test
 	public void testValidateVerInvalidVer() {
-		ReflectionTestUtils.invokeMethod(validator, "validateVer", "1234", errors);
+		ReflectionTestUtils.invokeMethod(validator, "validateVersion", "1234.a", errors);
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
@@ -313,6 +312,16 @@ public class IdRequestValidatorTest {
 				errors);
 		assertTrue(errors.hasErrors());
 	}
+	
+	@Test
+	public void testValidateRequestWithDocumentsDuplicateDoc() throws JsonParseException, JsonMappingException,
+			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
+		ReflectionTestUtils.invokeMethod(validator, "validateDocuments",
+				mapper.readValue("{\"identity\":{\"individualBiometrics\": {\"format\": \"cbeff\", \"version\": 1.0,\"value\": \"le monde est grand et petit\"}},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}, {\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}".getBytes(),
+						Map.class),
+				errors);
+		assertTrue(errors.hasErrors());
+	}
 
 	@Test(expected = IdRepoAppException.class)
 	public void testconvertToMap() throws Throwable {
@@ -355,7 +364,7 @@ public class IdRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "identity -  at /identity"),
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "identity - /identity"),
 					error.getDefaultMessage());
 			assertEquals("request", ((FieldError) error).getField());
 		});
