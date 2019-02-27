@@ -11,6 +11,7 @@ import org.testng.annotations.Test;
 
 import io.mosip.dbentity.Gender;
 import io.mosip.dbentity.OtpEntity;
+import io.mosip.service.BaseTestCase;
 
 @Test
 public class read_otpTransactiondb {
@@ -23,8 +24,15 @@ public class read_otpTransactiondb {
 	{
 		boolean flag=false;
 		
-		factory = new Configuration().configure("kernel.cfg.xml")                      
-	.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
+		if(BaseTestCase.environment.equalsIgnoreCase("integration"))		
+			factory = new Configuration().configure("kernelinteg.cfg.xml")                      
+		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
+			else
+			{
+				if(BaseTestCase.environment.equalsIgnoreCase("qa"))		
+					factory = new Configuration().configure("kernelinteg.cfg.xml")                      
+				.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
+			}
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 		flag=validateOTPinDB(session, otp);
