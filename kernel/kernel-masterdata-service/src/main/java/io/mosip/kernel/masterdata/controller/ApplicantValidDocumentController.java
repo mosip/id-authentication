@@ -17,7 +17,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@RequestMapping(value = "/v1.0/applicantvaliddocument")
+@RequestMapping(value = "/v1.0/applicanttype")
 @Api(tags = { "ApplicantValidDocument" })
 public class ApplicantValidDocumentController {
 

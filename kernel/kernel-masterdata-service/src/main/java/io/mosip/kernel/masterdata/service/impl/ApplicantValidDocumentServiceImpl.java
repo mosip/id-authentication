@@ -7,13 +7,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.masterdata.constant.ApplicantTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.ApplicantValidDocumentDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryAndTypeResponseDto;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.ApplicantValidDocumentRepository;
 import io.mosip.kernel.masterdata.service.ApplicantValidDocumentService;
+import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 
 @Service
 public class ApplicantValidDocumentServiceImpl implements ApplicantValidDocumentService {
@@ -29,6 +35,12 @@ public class ApplicantValidDocumentServiceImpl implements ApplicantValidDocument
 		try {
 			List<Object[]> list = applicantValidDocumentRepository
 					.getDocumentCategoryAndTypesForApplicantCode(applicantTypeCode, languages);
+
+			if (EmptyCheckUtils.isNullEmpty(list)) {
+				throw new DataNotFoundException(
+						ApplicantTypeErrorCode.APPLICANT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						ApplicantTypeErrorCode.APPLICANT_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
 
 			boolean isActive = true;
 			dto.setAppTypeCode(applicantTypeCode);
@@ -72,8 +84,9 @@ public class ApplicantValidDocumentServiceImpl implements ApplicantValidDocument
 				dto.getDocumentCategories().add(dcr);
 			}
 
-		} catch (Exception e) {
-
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(ApplicantTypeErrorCode.APPLICANT_TYPE_FETCH_EXCEPTION.getErrorCode(),
+					ApplicantTypeErrorCode.APPLICANT_TYPE_FETCH_EXCEPTION.getErrorMessage());
 		}
 
 		return dto;
