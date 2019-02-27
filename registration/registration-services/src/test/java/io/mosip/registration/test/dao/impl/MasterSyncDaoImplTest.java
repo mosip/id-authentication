@@ -48,7 +48,13 @@ import io.mosip.registration.dto.mastersync.MachineTypeDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.dto.mastersync.PostReasonCategoryDto;
 import io.mosip.registration.dto.mastersync.ReasonListDto;
+import io.mosip.registration.dto.mastersync.RegistrationCenterDeviceDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterDto;
+import io.mosip.registration.dto.mastersync.RegistrationCenterMachineDeviceDto;
+import io.mosip.registration.dto.mastersync.RegistrationCenterMachineDto;
+import io.mosip.registration.dto.mastersync.RegistrationCenterTypeDto;
+import io.mosip.registration.dto.mastersync.RegistrationCenterUserDto;
+import io.mosip.registration.dto.mastersync.RegistrationCenterUserMachineMappingDto;
 import io.mosip.registration.dto.mastersync.TemplateDto;
 import io.mosip.registration.dto.mastersync.TemplateFileFormatDto;
 import io.mosip.registration.dto.mastersync.TemplateTypeDto;
@@ -90,6 +96,7 @@ import io.mosip.registration.repositories.ApplicationRepository;
 import io.mosip.registration.repositories.BiometricAttributeRepository;
 import io.mosip.registration.repositories.BiometricTypeRepository;
 import io.mosip.registration.repositories.BlacklistedWordsRepository;
+import io.mosip.registration.repositories.CenterMachineRepository;
 import io.mosip.registration.repositories.DeviceMasterRepository;
 import io.mosip.registration.repositories.DeviceSpecificationRepository;
 import io.mosip.registration.repositories.DeviceTypeRepository;
@@ -105,17 +112,20 @@ import io.mosip.registration.repositories.MachineSpecificationRepository;
 import io.mosip.registration.repositories.MachineTypeRepository;
 import io.mosip.registration.repositories.ReasonCategoryRepository;
 import io.mosip.registration.repositories.ReasonListRepository;
+import io.mosip.registration.repositories.RegistrationCenterDeviceRepository;
+import io.mosip.registration.repositories.RegistrationCenterMachineDeviceRepository;
 import io.mosip.registration.repositories.RegistrationCenterRepository;
 import io.mosip.registration.repositories.RegistrationCenterTypeRepository;
+import io.mosip.registration.repositories.RegistrationCenterUserRepository;
 import io.mosip.registration.repositories.SyncJobControlRepository;
 import io.mosip.registration.repositories.TemplateFileFormatRepository;
 import io.mosip.registration.repositories.TemplateRepository;
 import io.mosip.registration.repositories.TemplateTypeRepository;
 import io.mosip.registration.repositories.TitleRepository;
+import io.mosip.registration.repositories.UserMachineMappingRepository;
 import io.mosip.registration.repositories.ValidDocumentRepository;
 import io.mosip.registration.service.impl.MasterSyncServiceImpl;
 import io.mosip.registration.util.mastersync.MetaDataUtils;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 
 /**
  * @author Sreekar Chukka
@@ -187,6 +197,34 @@ public class MasterSyncDaoImplTest {
 	@Mock
 	private ValidDocumentRepository masterSyncValidDocumentRepository;
 
+	/** Object for Sync language Repository. */
+	@Mock
+	private RegistrationCenterDeviceRepository registrationCenterDeviceRepository;
+
+	/** Object for Sync language Repository. */
+	@Mock
+	private RegistrationCenterMachineDeviceRepository registrationCenterMachineDeviceRepository;
+
+	/** Object for Sync language Repository. */
+	@Mock
+	private UserMachineMappingRepository userMachineMappingRepository;
+
+	/** Object for Sync language Repository. */
+	@Mock
+	private RegistrationCenterUserRepository registrationCenterUserRepository;
+
+	/** Object for Sync language Repository. */
+	@Mock
+	private CenterMachineRepository centerMachineRepository;
+
+	/** Object for Sync language Repository. */
+	@Mock
+	private RegistrationCenterRepository registrationCenterRepository;
+
+	/** Object for Sync language Repository. */
+	@Mock
+	private RegistrationCenterTypeRepository registrationCenterTypeRepository;
+
 	@Mock
 	private MasterSyncDao masterSyncDao;
 
@@ -245,15 +283,54 @@ public class MasterSyncDaoImplTest {
 		}
 	}
 
-	//@Test
-	/*public void testMasterSyncDao() throws RegBaseCheckedException {
+	@Test
+	public void testMasterSyncDao() throws RegBaseCheckedException {
 
 		PowerMockito.mockStatic(MetaDataUtils.class);
 		MasterDataResponseDto masterSyncDto = new MasterDataResponseDto();
 
 		List<ApplicationDto> application = new ArrayList<>();
 		masterSyncDto.setApplications(application);
+		List<RegistrationCenterDeviceDto> masterRegCenterDeviceEntity = new ArrayList<>();
+		RegistrationCenterDeviceDto temp5 = new RegistrationCenterDeviceDto();
+		temp5.setDeviceId("10011");
+		temp5.setIsActive(true);
+		temp5.setRegCenterId("10031");
+		masterRegCenterDeviceEntity.add(temp5);
+		List<RegistrationCenterMachineDeviceDto> masterRegCenterMachineDeviceEntity = new ArrayList<>();
+		RegistrationCenterMachineDeviceDto temp1 = new RegistrationCenterMachineDeviceDto();
+		temp1.setDeviceId("10031");
+		temp1.setIsActive(true);
+		temp1.setMachineId("10031");
+		temp1.setRegCenterId("10031");
+		masterRegCenterMachineDeviceEntity.add(temp1);
+		List<RegistrationCenterUserMachineMappingDto> masterRegCenterUserMachineEntity = new ArrayList<>();
+		RegistrationCenterUserMachineMappingDto temp2 = new RegistrationCenterUserMachineMappingDto();
+		temp2.setActive(true);
+		temp2.setCntrId("10031");
+		temp2.setMachineId("10031");
+		temp2.setUsrId("10031");
+		masterRegCenterUserMachineEntity.add(temp2);
 
+		List<RegistrationCenterUserDto> masterRegCenterUserEntity = new ArrayList<>();
+		RegistrationCenterUserDto temp3 = new RegistrationCenterUserDto();
+		temp3.setIsActive(true);
+		temp3.setRegCenterId("10031");
+		temp3.setUserId("10031");
+		masterRegCenterUserEntity.add(temp3);
+
+		List<RegistrationCenterMachineDto> masterRegCenterMachineEntity = new ArrayList<>();
+		RegistrationCenterMachineDto test4 = new RegistrationCenterMachineDto();
+		test4.setIsActive(true);
+		test4.setMachineId("10031");
+		test4.setRegCenterId("10031");
+		masterRegCenterMachineEntity.add(test4);
+
+		masterSyncDto.setRegistrationCenterMachines(masterRegCenterMachineEntity);
+		masterSyncDto.setRegistrationCenterDevices(masterRegCenterDeviceEntity);
+		masterSyncDto.setRegistrationCenterMachineDevices(masterRegCenterMachineDeviceEntity);
+		masterSyncDto.setRegistrationCenterUserMachines(masterRegCenterUserMachineEntity);
+		masterSyncDto.setRegistrationCenterUsers(masterRegCenterUserEntity);
 		List<DeviceTypeDto> masterDeviceTypeDto = new ArrayList<>();
 
 		masterSyncDto.setDeviceTypes(masterDeviceTypeDto);
@@ -309,7 +386,38 @@ public class MasterSyncDaoImplTest {
 		masterSyncDto.setTemplateFileFormat(masterTemplateFileDto);
 
 		List<RegistrationCenterDto> regCenter = new ArrayList<>();
+		RegistrationCenterDto regCntr = new RegistrationCenterDto();
+		regCntr.setId("10031");
+		regCntr.setAddressLine1("Chennai");
+		regCntr.setIsActive(true);
+		regCntr.setLanguageCode("eng");
+		regCntr.setAddressLine2("chennai");
+		regCntr.setAddressLine3("TN");
+		regCntr.setCenterEndTime(LocalTime.now());
+		regCntr.setCenterStartTime(LocalTime.now());
+		regCntr.setCenterTypeCode("reg");
+		regCntr.setContactPerson("admin");
+		regCntr.setContactPhone("999999999");
+		regCntr.setHolidayLocationCode("Happy New Year");
+		regCntr.setLatitude("87.3123");
+		regCntr.setLongitude("8.3232");
+		regCntr.setLunchStartTime(LocalTime.now());
+		regCntr.setLunchEndTime(LocalTime.now());
+		regCntr.setName("Registartion");
+		regCntr.setNumberOfKiosks(Short.MIN_VALUE);
+		regCntr.setNumberOfStations(Short.MIN_VALUE);
+		regCntr.setPerKioskProcessTime(LocalTime.now());
+		regCntr.setWorkingHours("8h");
+		regCenter.add(regCntr);
 		masterSyncDto.setRegistrationCenter(regCenter);
+
+		List<RegistrationCenterTypeDto> regCenterType = new ArrayList<>();
+		RegistrationCenterTypeDto type = new RegistrationCenterTypeDto();
+		type.setCode("10031");
+		type.setIsActive(true);
+		type.setLangCode("eng");
+		regCenterType.add(type);
+		masterSyncDto.setRegistrationCenterTypes(regCenterType);
 
 		List<MachineTypeDto> masterMachineType = new ArrayList<>();
 		masterSyncDto.setMachineType(masterMachineType);
@@ -664,7 +772,7 @@ public class MasterSyncDaoImplTest {
 
 		masterSyncDaoImpl.save(masterSyncDto);
 
-	}*/
+	}
 
 	@SuppressWarnings("unchecked")
 	@Test
@@ -1411,9 +1519,8 @@ public class MasterSyncDaoImplTest {
 		locattion.setParentLocCode("english");
 		locations.add(locattion);
 
-		Mockito.when(masterSyncLocationRepository
-				.findByIsActiveTrueAndHierarchyNameAndLangCode(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(locations);
+		Mockito.when(masterSyncLocationRepository.findByIsActiveTrueAndHierarchyNameAndLangCode(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(locations);
 
 		masterSyncDaoImpl.findLocationByLangCode("Region", "ENG");
 
@@ -1433,9 +1540,8 @@ public class MasterSyncDaoImplTest {
 		locattion.setParentLocCode("english");
 		locations.add(locattion);
 
-		Mockito.when(masterSyncLocationRepository
-				.findByIsActiveTrueAndHierarchyNameAndLangCode(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(locations);
+		Mockito.when(masterSyncLocationRepository.findByIsActiveTrueAndHierarchyNameAndLangCode(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(locations);
 
 		masterSyncDaoImpl.findLocationByParentLocCode("TPT", "eng");
 
@@ -1535,6 +1641,23 @@ public class MasterSyncDaoImplTest {
 		masterSyncDaoImpl.getGenderDtls("ENG");
 
 		assertTrue(genderList != null);
+
+	}
+
+	@Test
+	public void findValidDoc() {
+
+		List<ValidDocument> docList = new ArrayList<>();
+		ValidDocument docs = new ValidDocument();
+		docs.setDocTypeCode("POA");
+		docs.setLangCode("eng");
+		docList.add(docs);
+
+		Mockito.when(masterSyncDao.getValidDocumets(Mockito.anyString(), Mockito.anyString())).thenReturn(docList);
+
+		masterSyncDaoImpl.getValidDocumets("POA", "eng");
+
+		assertTrue(docList != null);
 
 	}
 

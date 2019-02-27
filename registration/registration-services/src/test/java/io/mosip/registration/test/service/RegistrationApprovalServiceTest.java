@@ -54,7 +54,7 @@ public class RegistrationApprovalServiceTest {
 	@Before
 	public void initialize() throws IOException, URISyntaxException, RegBaseCheckedException {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 		List<String> roles = new ArrayList<>();
 		roles.add("SUPERADMIN");
 		roles.add("SUPERVISOR");

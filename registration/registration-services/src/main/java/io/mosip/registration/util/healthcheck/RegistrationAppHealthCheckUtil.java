@@ -56,7 +56,7 @@ public class RegistrationAppHealthCheckUtil {
 		boolean isNWAvailable = false;
 		try {
 			HttpURLConnection connection = null;
-			System.setProperty("java.net.useSystemProxies", "true");
+			//System.setProperty("java.net.useSystemProxies", "true");
 			int timeout = Integer.parseInt(AppConfig.getApplicationProperty("ONLINE_CONNECT_URL_TIMEOUT"));
 			URL url = new URL(AppConfig.getApplicationProperty("ONLINE_CONNECT_URL"));
 			List<Proxy> proxyList = ProxySelector.getDefault().select(new URI(url.toString()));

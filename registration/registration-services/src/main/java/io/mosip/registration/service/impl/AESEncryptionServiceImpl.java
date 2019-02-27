@@ -19,6 +19,7 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -92,7 +93,7 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 
 			// Combine AES Session Key, AES Key Splitter and RSA Encrypted Data
 			auditFactory.audit(AuditEvent.PACKET_AES_ENCRYPTED, Components.PACKET_AES_ENCRYPTOR,
-					"RSA and AES Encryption completed successfully", "RID", "Packet RID");
+					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 			return CryptoUtil.combineByteArray(encryptedData, rsaEncryptedKey,
 					environment.getProperty(RegistrationConstants.AES_KEY_CIPHER_SPLITTER));

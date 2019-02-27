@@ -46,19 +46,18 @@ public class AuditFactoryImpl implements AuditFactory {
 	 * @see io.mosip.registration.audit.AuditFactory#audit(io.mosip.registration.constants.AuditEvent, io.mosip.registration.constants.Components, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void audit(AuditEvent auditEventEnum, Components appModuleEnum, String auditDescription, String refId,
-			String refIdType) {
+	public void audit(AuditEvent auditEventEnum, Components appModuleEnum, String refId, String refIdType) {
 
 		// Getting Host IP Address and Name
 		String hostIP = null;
 		String hostName = null;
 		try {
-			InetAddress hostInetAddress = InetAddress.getLocalHost();
-			hostIP = hostInetAddress.getHostAddress();
-			hostName = hostInetAddress.getHostName();
+			hostIP = InetAddress.getLocalHost().getHostAddress();
+			hostName = InetAddress.getLocalHost().getHostName();
 		} catch (UnknownHostException unknownHostException) {
 			LOGGER.info("REGISTRATION-AUDIT_FACTORY-AUDIT", APPLICATION_NAME, APPLICATION_ID,
 					ExceptionUtils.getStackTrace(unknownHostException));
+
 			hostIP = environment.getProperty(RegistrationConstants.HOST_IP);
 			hostName = environment.getProperty(RegistrationConstants.HOST_NAME);
 		}
@@ -67,7 +66,7 @@ public class AuditFactoryImpl implements AuditFactory {
 		auditRequestBuilder.setActionTimeStamp(LocalDateTime.now())
 				.setApplicationId(environment.getProperty(RegistrationConstants.AUDIT_APPLICATION_ID))
 				.setApplicationName(environment.getProperty(RegistrationConstants.AUDIT_APPLICATION_NAME))
-				.setCreatedBy(SessionContext.userName()).setDescription(auditDescription)
+				.setCreatedBy(SessionContext.userName()).setDescription(auditEventEnum.getDescription())
 				.setEventId(auditEventEnum.getId()).setEventName(auditEventEnum.getName())
 				.setEventType(auditEventEnum.getType()).setHostIp(hostIP).setHostName(hostName).setId(refId)
 				.setIdType(refIdType).setModuleId(appModuleEnum.getId()).setModuleName(appModuleEnum.getName())

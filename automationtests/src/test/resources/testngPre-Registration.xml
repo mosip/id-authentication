@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="Mosip preregistration API Suite">
+
+
+	<!-- Suite -->
+
+	<!-- Passing Group as parmeter unsing "testType"Possible Groups are:smokeregressionsmoke -->
+
+
+	<test name="CreateApplication.Fetch_all_application_created_by_user">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class name="io.mosip.preregistration.tests.Fetch_all_application_created_by_user" />
+
+		</classes>
+
+	</test>
+
+<!-- 
+	<test name="CreateApplication.Fetch_the_status_of_a_application">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class name="io.mosip.preregistration.tests.Fetch_the_status_of_a_application" />
+
+		</classes>
+
+	</test>
+
+
+	<test name="CreateApplication.Get_Pre_Registartion_data">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class name="io.mosip.preregistration.tests.Get_Pre_Registartion_data" />
+
+		</classes>
+
+	</test>
+	<test name="CreateApplication.Create_preregistrationistration">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class name="io.mosip.preregistration.tests.Create_preregistrationistration" />
+
+		</classes>
+
+	</test>
+
+
+	<test name="CreateApplication.Update_Pre_Registration_Status">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class name="io.mosip.preregistration.tests.Update_Pre_Registration_Status" />
+
+		</classes>
+
+	</test>
+
+
+	<test name="CreateApplication.Get_preregistrationistration_data_by_date_and_time">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class
+				name="io.mosip.preregistration.tests.Get_preregistrationistration_data_by_date_and_time" />
+
+		</classes>
+
+	</test>
+
+
+	<test name="CreateApplication.Fetch_all_preregistrationistration_Ids">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class name="io.mosip.preregistration.tests.Fetch_all_preregistrationistration_Ids" />
+
+		</classes>
+
+	</test>
+
+
+	<test name="CreateApplication.Retrive_preregistrationistration">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class name="io.mosip.preregistration.tests.Retrive_preregistrationistration" />
+
+		</classes>
+
+	</test>
+
+
+	<test name="CreateApplication.Discard_Individual">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class name="io.mosip.preregistration.tests.Discard_Individual" />
+
+		</classes>
+
+	</test>
+
+
+	<test name="documentUpload.DocumentUpload">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class name="io.mosip.preregistration.tests.DocumentUpload" />
+
+		</classes>
+
+	</test>
+
+
+	<test name="documentUpload.GetAllDocumentForpreregistrationId">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class name="io.mosip.preregistration.tests.GetAllDocumentForpreregistrationId" />
+
+		</classes>
+
+	</test>
+
+
+	<test name="documentUpload.DeleteAllDocumentsBypreregistrationID">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class name="io.mosip.preregistration.tests.DeleteAllDocumentsBypreregistrationID" />
+
+		</classes>
+
+	</test>
+
+
+	<test name="documentUpload.DeleteDocumentByDocId">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class name="io.mosip.preregistration.tests.DeleteDocumentByDocId" />
+
+		</classes>
+
+	</test>
+
+
+	<test name="documentUpload.CopyUploadedDocument">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class name="io.mosip.preregistration.tests.CopyUploadedDocument" />
+
+		</classes>
+
+	</test>
+
+
+	<test name="Booking.FetchAppointmentDetails">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class name="io.mosip.preregistration.tests.FetchAppointmentDetails" />
+
+		</classes>
+
+	</test>
+
+
+	<test name="Booking.BookingAppointment">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class name="io.mosip.preregistration.tests.BookingAppointment" />
+
+		</classes>
+
+	</test>
+
+
+	<test name="Booking.FetchAvailabilityDataOfRegistrationCenters">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class
+				name="io.mosip.preregistration.tests.FetchAvailabilityDataOfRegistrationCenters" />
+
+		</classes>
+
+	</test>
+
+
+	<test name="Booking.CancelAnBookedAppointment">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class name="io.mosip.preregistration.tests.CancelAnBookedAppointment" />
+
+		</classes>
+
+	</test>
+
+
+	<test name="Booking.RetriveAllpreregistrationIdByRegCenterId">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class name="io.mosip.preregistration.tests.RetriveAllpreregistrationIdByRegCenterId" />
+
+		</classes>
+
+	</test>
+
+
+	<test name="Booking.ReBookingAnAppointment">
+
+		<parameter name="testType" value="smoke" />
+
+
+		<classes>
+
+			<class name="io.mosip.preregistration.tests.ReBookingAnAppointment" />
+
+		</classes>
+
+	</test>  
+	
+	
+	<test name="Kernel Dependent Test Cases">
+
+		<parameter name="testType" value="smoke" />
+		
+		<classes>
+
+			<class name="io.mosip.kernel.tests.EncrptionDecryption" />
+
+			<class name="io.mosip.preregistration.tests.preregistration_moduleInteg" />
+
+		</classes>
+
+	</test> 
+  -->
+	
+
+
+</suite>
+
+

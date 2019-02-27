@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
@@ -155,15 +156,15 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 			}
 
 		} catch (RegBaseUncheckedException | RegBaseCheckedException regBaseUncheckedException) {
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-					regBaseUncheckedException.getMessage() + resoponse);
+			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, regBaseUncheckedException.getMessage()
+					+ resoponse + ExceptionUtils.getStackTrace(regBaseUncheckedException));
 
 			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
 					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 
 		} catch (RuntimeException | IOException runtimeException) {
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-					runtimeException.getMessage() + resoponse);
+					runtimeException.getMessage() + resoponse + ExceptionUtils.getStackTrace(runtimeException));
 
 			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
 					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
@@ -187,7 +188,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		// Setting uri Variables
 
 		Map<String, String> requestParamMap = new LinkedHashMap<>();
-		requestParamMap.put(RegistrationConstants.MACHINE_ID, "10011");
+		requestParamMap.put(RegistrationConstants.MACHINE_ID, machineId);
 		if (null != lastSyncTime) {
 			String time = DateUtils.formatToISOString(lastSyncTime);
 			requestParamMap.put(RegistrationConstants.MASTER_DATA_LASTUPDTAE, time);
@@ -198,12 +199,14 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 					true);
 		} catch (HttpClientErrorException httpClientErrorException) {
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-					httpClientErrorException.getRawStatusCode() + "Http error while pulling json from server");
+					httpClientErrorException.getRawStatusCode() + "Http error while pulling json from server"
+							+ ExceptionUtils.getStackTrace(httpClientErrorException));
 			throw new RegBaseCheckedException(Integer.toString(httpClientErrorException.getRawStatusCode()),
 					httpClientErrorException.getStatusText());
 		} catch (SocketTimeoutException socketTimeoutException) {
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-					socketTimeoutException.getMessage() + "Http error while pulling json from server");
+					socketTimeoutException.getMessage() + "Http error while pulling json from server"
+							+ ExceptionUtils.getStackTrace(socketTimeoutException));
 			throw new RegBaseCheckedException(socketTimeoutException.getMessage(),
 					socketTimeoutException.getLocalizedMessage());
 		}

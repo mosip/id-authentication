@@ -1,0 +1,45 @@
+testdata:
+  Valid_MockRequest_LeftAndRightIndex_With_ValidCompositeScoreMatch_smoke:
+    input.identity-encrypt-data:
+      identityReq.valuerightIndex: Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUCtAMvlZICRAOlXXYDBAPBqZECkAKPWXYDZAN9oZEBzAMXRSYC6AJNcV4DMAJdZXUDpAO9zZIByAQJmZECDAJC7ZIDfAQ56XUBeAPZgV0BhAJwyV0DVASsBXUEEAJ/RZEBZAIq6UEC+AVV7SUCjAOheXUCHANncV0DFAK5cXUDZANJfXUB3ANBRSUCdAJrKXUCJAJvEXUCxAQ91XUCjARj7XYCuAIXeV4CUAIC4ZIDRARr3XUDFAH5jV0BoAJG1ZEDcASWCUEDWAHFfZEBnASp4SUDhAVd1FECMALzWV0DKALxYXUCwAKbfV0DSAOpsZECAAK89V4CSAQdpZICpAJPWV0DoAORiXUCmAIazV0CxARt7XUCDARp0ZED9ANNTZIDhAIzSZICSAHSjZIBXAQpxUECgAGaIXYCBAUJ/ZAAA
+      identityReq.valueleftIndex: Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA
+      identityReq.tspID: 7404012867
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$    
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.usageData: '0x0000800000008000'
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
+      
+  Valid_MockRequest_LeftIndex_With_ValidScoreMatch_smoke:
+    input.identity-encrypt-data:   
+      identityReq.rightIndex: $REMOVE$   
+      identityReq.valueleftIndex: Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA
+      identityReq.tspID: 7404012867
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$    
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.usageData: '0x0000800000008000'
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
+      
+  Valid_MockRequest_RightIndex_With_ValidScoreMatch_smoke:
+    input.identity-encrypt-data:
+      identityReq.valuerightIndex: Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUCtAMvlZICRAOlXXYDBAPBqZECkAKPWXYDZAN9oZEBzAMXRSYC6AJNcV4DMAJdZXUDpAO9zZIByAQJmZECDAJC7ZIDfAQ56XUBeAPZgV0BhAJwyV0DVASsBXUEEAJ/RZEBZAIq6UEC+AVV7SUCjAOheXUCHANncV0DFAK5cXUDZANJfXUB3ANBRSUCdAJrKXUCJAJvEXUCxAQ91XUCjARj7XYCuAIXeV4CUAIC4ZIDRARr3XUDFAH5jV0BoAJG1ZEDcASWCUEDWAHFfZEBnASp4SUDhAVd1FECMALzWV0DKALxYXUCwAKbfV0DSAOpsZECAAK89V4CSAQdpZICpAJPWV0DoAORiXUCmAIazV0CxARt7XUCDARp0ZED9ANNTZIDhAIzSZICSAHSjZIBXAQpxUECgAGaIXYCBAUJ/ZAAA
+      identityReq.leftIndex: $REMOVE$  
+      identityReq.tspID: 7404012867
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$    
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      output.1.response.y.usageData: '0x0000800000008000'
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$

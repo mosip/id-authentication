@@ -1,0 +1,29 @@
+testdata:
+  Invalid_Missing_Biometric_data_In_Mosip_DB:
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: Rk1SACA9OV4CrAK49ZICRAIvOV4DCAL+vZIBkAMfTZIBoAHGtZIDmAMu8ZIBKAGywZICAAEOOZEDJARUUZIAiAIKqUIClATAIZEAyADiXXYChALhSZICIAJnMXYCFAIy3V4DOAKFBZIBPAKI2ZIC+APaVZIDWAG7GZICuAQ4ZZIA3AHeuZIEIAM/JUEECAPStV0D2AQotV0DMAUn8V4ClAKBLV4C5AK6sZEB1AI0kZECSAHaaXYCLAGGQZEDrAKTFZIDiAG/KZIB1AQxjZIBjARNlZIDqAFfRZEBMARxtUEAoAFucXUBFABUQSQAA
+      identityReq.tspID: REF01
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN:WITH:NoBio$
+      bioAuthReq.tspID: $input.identity-encrypt-data:identityReq.tspID$
+      bioAuthReq.reqTime: $TIMESTAMP$    
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: N
+      output.1.response.n.err.resTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: Missing biometric data in MOSIP database for the given UIN/Virtual ID
+      output.1.response.n.err.errorCode: IDA-BIA-011
+      output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+    audit.auth_transaction:
+      txnId: $input.bio-auth-request:bioAuthReq.txnID$
+      authTypeCode: IRIS-AUTH
+      statusCode: $output.output-1-expected-n-error-res:output.1.response.n.err.status$
+      statusComment: $REGEXP:.*Iris.*Authentication.*Failed.*$
+      idType: D
+    audit.audit_log:
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      appName: ID-Authentication
+      moduleName: IRIS_AUTH

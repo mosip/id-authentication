@@ -155,7 +155,7 @@ public class UMCValidatorTest {
 		offrepdto.setRegistrationCenters(officerucmdtos);
 
 		RegistartionCenterTimestampResponseDto test = new RegistartionCenterTimestampResponseDto();
-		test.setStatus("Accepted");
+		test.setStatus("Valid");
 
 		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
 		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();

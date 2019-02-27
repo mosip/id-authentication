@@ -1,0 +1,8 @@
+{
+  "errors": [
+    {
+      "errorCode": "KER-SNC-100",
+      "errorMessage": "Text '2019-01-06T15:00:00.000' could not be parsed at index 23"
+    }
+  ]
+}
