@@ -108,7 +108,7 @@ public class OTPServiceImpl implements OTPService {
 		mobileNumber = getMobileNumber(idInfo);
 		email = getEmail(idInfo);
 		String uin = String.valueOf(idResDTO.get("uin"));
-		if(checkIsEmptyorNull(email) && checkIsEmptyorNull(mobileNumber)) {
+		if(!checkIsEmptyorNull(email) && !checkIsEmptyorNull(mobileNumber)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED);
 		}
 		if (isOtpFlooded(otpRequestDto)) {

@@ -212,6 +212,8 @@ public class OTPServiceImplTest {
 		String otp = "987654";
 		Map<String, Object> repoDetails = repoDetails();
 		repoDetails.put("uin", uin);
+		repoDetails.put("mobileNumber", "7697698650");
+		repoDetails.put("emailId", "abc@abc.com");
 		Mockito.when(idAuthService.getIdRepoByUIN(uin, false)).thenReturn(repoDetails);
 		String otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getTspID());
 		Mockito.when(otpManager.generateOTP(otpKey)).thenReturn(otp);
