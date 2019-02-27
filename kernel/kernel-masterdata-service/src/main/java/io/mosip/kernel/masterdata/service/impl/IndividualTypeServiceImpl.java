@@ -24,6 +24,9 @@ public class IndividualTypeServiceImpl implements IndividualTypeService {
 	@Autowired
 	private IndividualTypeRepository individualTypeRepository;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.IndividualTypeService#getAllIndividualTypes()
+	 */
 	@Override
 	public IndividualTypeResponseDto getAllIndividualTypes() {
 		IndividualTypeResponseDto responseDto = new IndividualTypeResponseDto();
