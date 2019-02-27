@@ -212,9 +212,9 @@
 					<suiteXmlFiles>
 						<suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile> 
 					</suiteXmlFiles>
-					<systemPropertyVariables>
+					<!-- <systemPropertyVariables>
                         <environment>${env.user}</environment>
-                    </systemPropertyVariables>
+                    </systemPropertyVariables> -->
 				</configuration>
 
 			</plugin>
