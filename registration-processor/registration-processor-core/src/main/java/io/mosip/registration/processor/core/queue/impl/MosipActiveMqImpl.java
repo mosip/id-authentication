@@ -30,7 +30,7 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(MosipActiveMqImpl.class);
-	
+
 	private Connection connection;
 	private Session session;
 	private Destination destination;
@@ -38,19 +38,16 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 	/**
 	 * The method to set up session and destination
 	 * 
-	 * @param mosipActiveMq The Mosip ActiveMq instance
-	 * @param address       The address to set up
+	 * @param mosipActiveMq
+	 *            The Mosip ActiveMq instance
 	 */
-	private void setup(MosipActiveMq mosipActiveMq, String address) {
+	private void setup(MosipActiveMq mosipActiveMq) {
 		if (connection == null) {
 			try {
 				this.connection = mosipActiveMq.getActiveMQConnectionFactory().createConnection();
 				if (session == null) {
 					connection.start();
 					this.session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-				}
-				if (this.destination == null) {
-					this.destination = this.session.createQueue(address);
 				}
 			} catch (JMSException e) {
 				throw new ConnectionUnavailableException(
@@ -75,9 +72,10 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 			throw new InvalidConnectionException(PlatformErrorMessages.RPR_MQI_INVALID_CONNECTION.getMessage());
 		}
 		if (destination == null) {
-			setup(mosipActiveMq, address);
+			setup(mosipActiveMq);
 		}
 		try {
+			destination = session.createQueue(address);
 			MessageProducer messageProducer = session.createProducer(destination);
 			BytesMessage byteMessage = session.createBytesMessage();
 			byteMessage.writeObject(message);
@@ -105,10 +103,11 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 			throw new InvalidConnectionException(PlatformErrorMessages.RPR_MQI_INVALID_CONNECTION.getMessage());
 		}
 		if (destination == null) {
-			setup(mosipActiveMq, address);
+			setup(mosipActiveMq);
 		}
 		MessageConsumer consumer;
 		try {
+			destination = session.createQueue(address);
 			consumer = session.createConsumer(destination);
 			BytesMessage message = (BytesMessage) consumer.receive(5000);
 			if (message != null) {
@@ -117,7 +116,7 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 				return data;
 			} else {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.APPLICATIONID.toString(), "failed : ", 
+						LoggerFileConstant.APPLICATIONID.toString(), "failed : ",
 						PlatformErrorMessages.RPR_MQI_NO_FILES_FOUND_IN_QUEUE.getMessage());
 			}
 		} catch (JMSException e) {
