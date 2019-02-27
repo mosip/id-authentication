@@ -47,11 +47,17 @@ import io.mosip.kernel.syncdata.entity.ReasonCategory;
 import io.mosip.kernel.syncdata.entity.ReasonList;
 import io.mosip.kernel.syncdata.entity.RegistrationCenter;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterDevice;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterDeviceHistory;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterDeviceHistoryPk;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterMachineDevice;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterMachineDeviceHistory;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterMachineHistory;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterType;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUser;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterUserHistory;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUserMachine;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterUserMachineHistory;
 import io.mosip.kernel.syncdata.entity.Template;
 import io.mosip.kernel.syncdata.entity.TemplateFileFormat;
 import io.mosip.kernel.syncdata.entity.TemplateType;
@@ -60,7 +66,9 @@ import io.mosip.kernel.syncdata.entity.ValidDocument;
 import io.mosip.kernel.syncdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterDeviceID;
+import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineDeviceHistoryID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineDeviceID;
+import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineHistoryID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineUserID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterUserID;
@@ -83,11 +91,16 @@ import io.mosip.kernel.syncdata.repository.MachineSpecificationRepository;
 import io.mosip.kernel.syncdata.repository.MachineTypeRepository;
 import io.mosip.kernel.syncdata.repository.ReasonCategoryRepository;
 import io.mosip.kernel.syncdata.repository.ReasonListRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterDeviceHistoryRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterDeviceRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterMachineDeviceHistoryRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterMachineDeviceRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterMachineHistoryRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterMachineRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterTypeRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterUserHistoryRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterUserMachineHistoryRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserMachineRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserRepository;
 import io.mosip.kernel.syncdata.repository.TemplateFileFormatRepository;
@@ -138,6 +151,11 @@ public class SyncDataIntegrationTest {
 	private List<RegistrationCenterMachineDevice> registrationCenterMachineDevices;
 	private List<RegistrationCenterUserMachine> registrationCenterUserMachines;
 	private List<RegistrationCenterUser> registrationCenterUsers;
+	private List<RegistrationCenterMachineHistory> registrationCenterMachineHistory;
+	private List<RegistrationCenterDeviceHistory> registrationCenterDeviceHistory; 
+	private List<RegistrationCenterUserHistory> registrationCenterUserHistory;
+	private List<RegistrationCenterMachineDeviceHistory> registrationCenterMachineDeviceHistory;
+	private List<RegistrationCenterUserMachineHistory>  registrationCenterUserMachineHistory;
 
 	@MockBean
 	private ApplicationRepository applicationRepository;
@@ -199,6 +217,16 @@ public class SyncDataIntegrationTest {
 	private RegistrationCenterMachineDeviceRepository registrationCenterMachineDeviceRepository;
 	@MockBean
 	private RegistrationCenterUserMachineRepository registrationCenterUserMachineRepository;
+	@MockBean
+	private RegistrationCenterUserHistoryRepository registrationCenterUserHistoryRepository;
+	@MockBean
+	private RegistrationCenterUserMachineHistoryRepository registrationCenterUserMachineHistoryRepository;
+	@MockBean
+	private RegistrationCenterMachineDeviceHistoryRepository registrationCenterMachineDeviceHistoryRepository;
+	@MockBean
+	private RegistrationCenterDeviceHistoryRepository registrationCenterDeviceHistoryRepository;
+	@MockBean
+	private RegistrationCenterMachineHistoryRepository registrationCenterMachineHistoryRepository;
 
 	/*
 	 * @MockBean private RestTemplate restTemplateM;
@@ -404,6 +432,23 @@ public class SyncDataIntegrationTest {
 
 		builder = new StringBuilder();
 		builder.append(authBaseUri).append(authAllRolesUri);
+		
+		registrationCenterDeviceHistory=new ArrayList<>();
+		registrationCenterDeviceHistory.add(new RegistrationCenterDeviceHistory(new RegistrationCenterDeviceHistoryPk("1001", "1001", LocalDateTime.now()), "eng"));
+		
+		registrationCenterMachineDeviceHistory=new ArrayList<>();
+		registrationCenterMachineDeviceHistory.add(new RegistrationCenterMachineDeviceHistory(new RegistrationCenterMachineDeviceHistoryID("1001", "1001", "1001", LocalDateTime.now()) , "eng"));
+		
+		registrationCenterMachineHistory=new ArrayList<>();
+		registrationCenterMachineHistory.add(new RegistrationCenterMachineHistory(new RegistrationCenterMachineHistoryID("1001", "1001", LocalDateTime.now()), "eng"));
+		
+		registrationCenterUserHistory= new ArrayList<>();
+		registrationCenterUserHistory.add(new RegistrationCenterUserHistory("1001","1001",LocalDateTime.now(),"eng"));
+		
+		registrationCenterUserMachineHistory=new ArrayList<>();
+		registrationCenterUserMachineHistory.add(new RegistrationCenterUserMachineHistory("10001","1001","10001",LocalDateTime.now(),"eng"));
+		
+		
 
 	}
 
@@ -485,7 +530,7 @@ public class SyncDataIntegrationTest {
 		when(locationRepository.findAll()).thenReturn(locations);
 		when(registrationCenterMachineRepository.findAllByMachineId(Mockito.any()))
 				.thenReturn(registrationCenterMachines);
-		when(registrationCenterMachineRepository.findAllLatestByMachineIdCreatedUpdatedDeleted(Mockito.any(),
+		when(registrationCenterMachineRepository.findAllLatestCreatedUpdatedDeleted(Mockito.any(),
 				Mockito.any(), Mockito.any())).thenReturn(registrationCenterMachines);
 		when(registrationCenterDeviceRepository.findAllByRegistrationCenter(Mockito.any()))
 				.thenReturn(registrationCenterDevices);
@@ -503,6 +548,12 @@ public class SyncDataIntegrationTest {
 				.thenReturn(registrationCenterUsers);
 		when(registrationCenterUserRepository.findAllByRegistrationCenterIdCreatedUpdatedDeleted(Mockito.any(),
 				Mockito.any(), Mockito.any())).thenReturn(registrationCenterUsers);
+	   when(registrationCenterUserHistoryRepository.findLatestRegistrationCenterUserHistory(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(registrationCenterUserHistory);
+	   when(registrationCenterUserMachineHistoryRepository.findLatestRegistrationCenterUserMachineHistory(Mockito.anyString(),Mockito.any(),Mockito.any())).thenReturn(registrationCenterUserMachineHistory);
+	   when(registrationCenterDeviceHistoryRepository.findLatestRegistrationCenterDeviceHistory(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(registrationCenterDeviceHistory);
+	   when(registrationCenterMachineHistoryRepository.findLatestRegistrationCenterMachineHistory(Mockito.anyString(),Mockito.any(),Mockito.any())).thenReturn(registrationCenterMachineHistory);
+	   when(registrationCenterMachineDeviceHistoryRepository.findLatestRegistrationCenterMachineDeviceHistory(Mockito.anyString(),Mockito.any(),Mockito.any())).thenReturn(registrationCenterMachineDeviceHistory);
+		
 	}
 
 	@Test
@@ -796,7 +847,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataRegistrationCenterMachineFetchException() throws Exception {
 		mockSuccess();
-		when(registrationCenterMachineRepository.findAllLatestByMachineIdCreatedUpdatedDeleted(Mockito.anyString(),
+		when(registrationCenterMachineRepository.findAllLatestCreatedUpdatedDeleted(Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -836,6 +887,51 @@ public class SyncDataIntegrationTest {
 		mockSuccess();
 		when(registrationCenterUserRepository.findAllByRegistrationCenterIdCreatedUpdatedDeleted(Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+				.andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	public void syncMasterDataRegistrationCenterUserHistoryFetchException() throws Exception {
+		mockSuccess();
+		when(registrationCenterUserHistoryRepository.findLatestRegistrationCenterUserHistory(Mockito.anyString(),
+				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+				.andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	public void syncMasterDataRegistrationCenterUserMachineHistoryFetchException() throws Exception {
+		mockSuccess();
+		when(registrationCenterUserMachineHistoryRepository.findLatestRegistrationCenterUserMachineHistory(Mockito.anyString(),Mockito.any(),Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+				.andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	public void syncMasterDataRegistrationCenterMachineHistoryFetchException() throws Exception {
+		mockSuccess();
+		when(registrationCenterMachineHistoryRepository.findLatestRegistrationCenterMachineHistory(Mockito.anyString(),Mockito.any(),Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+				.andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	public void syncMasterDataRegistrationCenterDeviceHistoryFetchException() throws Exception {
+		mockSuccess();
+		when(registrationCenterDeviceHistoryRepository.findLatestRegistrationCenterDeviceHistory(Mockito.anyString(), Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+				.andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	public void syncMasterDataRegistrationCenterMachineDeviceHistoryFetchException() throws Exception {
+		mockSuccess();
+		when(registrationCenterMachineDeviceHistoryRepository.findLatestRegistrationCenterMachineDeviceHistory(Mockito.anyString(),Mockito.any(),Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
