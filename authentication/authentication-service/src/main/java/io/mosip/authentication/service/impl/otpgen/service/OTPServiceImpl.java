@@ -44,6 +44,10 @@ import io.mosip.kernel.core.util.UUIDUtils;
 @Service
 public class OTPServiceImpl implements OTPService {
 	
+	private static final String OTP_REQUEST_MAX_COUNT = "otp.request.max-count";
+
+	private static final String OTP_REQUEST_ADD_MINUTES = "otp.request.add-minutes";
+
 	private static final String DATETIME_PATTERN = "datetime.pattern";
 
 	/** The Constant SESSION_ID. */
@@ -243,9 +247,11 @@ public class OTPServiceImpl implements OTPService {
 					e);
 		}
 		//TODO make minutes and value configurable
-		Date addMinutesInOtpRequestDTime = addMinutes(requestTime, -1);
+		int addMinutes = Integer.parseInt(env.getProperty(OTP_REQUEST_ADD_MINUTES));
+		Date addMinutesInOtpRequestDTime = addMinutes(requestTime, -addMinutes);
 		LocalDateTime addMinutesInOtpRequestDTimes = DateUtils.parseDateToLocalDateTime(addMinutesInOtpRequestDTime);
-		if (autntxnrepository.countRequestDTime(reqTime, addMinutesInOtpRequestDTimes, uniqueID) > 3) {
+		int maxCount = Integer.parseInt(env.getProperty(OTP_REQUEST_MAX_COUNT));
+		if (autntxnrepository.countRequestDTime(reqTime, addMinutesInOtpRequestDTimes, uniqueID) > maxCount) {
 			isOtpFlooded = true;
 		}
 
