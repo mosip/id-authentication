@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
  * Controller APIs for Authentication and Authorization
  * 
  * @author Ramadurai Pandian
- * 
+ * @since 1.0.0
  *
  */
 
@@ -29,15 +29,27 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1.0")
 @Api(value = "Operation related to Authentication and Authorization", tags = { "authmanager" })
 public class AuthController {
+	
+	/**
+	 * Autowired reference for {@link MosipEnvironment}
+	 */
 
 	@Autowired
 	private MosipEnvironment mosipEnvironment;
+	
+	/**
+	 * Autowired reference for {@link AuthService}
+	 */
 
 	@Autowired
 	private AuthService authService;
+	
+	/**
+	 * Autowired reference for {@link CustomTokenServices}
+	 */
 
 	@Autowired
-	CustomTokenServices customTokenServices;
+	private CustomTokenServices customTokenServices;
 
 	/**
 	 * API to authenticate using userName and password
