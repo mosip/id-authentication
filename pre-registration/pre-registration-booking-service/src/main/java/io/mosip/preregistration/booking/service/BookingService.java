@@ -60,7 +60,6 @@ import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
-import io.mosip.preregistration.core.stateUtil.StateManager;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
 
@@ -192,7 +191,7 @@ public class BookingService {
 		log.info("sessionId", "idType", "id", "In bookAppointment method of Booking Service");
 		MainResponseDTO<List<BookingStatusDTO>> responseDTO = new MainResponseDTO<>();
 		List<BookingStatusDTO> respList = new ArrayList<>();
-		try {
+		try { 
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(bookingRequestDTOs),
 					requiredRequestMap)) {
 				for (BookingRequestDTO bookingRequestDTO : bookingRequestDTOs.getRequest()) {
@@ -205,13 +204,12 @@ public class BookingService {
 							oldBookingRegistrationDTO, newBookingRegistrationDTO)) {
 
 						/* Checking the availability of slots */
-						checkSlotAvailability(newBookingRegistrationDTO, bookingRequestDTO.getPreRegistrationId());
+						checkSlotAvailability(newBookingRegistrationDTO);
 
 						if (preRegStatusCode.equals(StatusCodes.PENDING_APPOINTMENT.getCode())) {
 
 							/* Creating new booking */
-							respList.add(book(bookingRequestDTO.getPreRegistrationId(), newBookingRegistrationDTO,
-									preRegStatusCode));
+							respList.add(book(bookingRequestDTO.getPreRegistrationId(), newBookingRegistrationDTO));
 
 						} else if (preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
 
@@ -233,8 +231,7 @@ public class BookingService {
 							increaseAvailability(oldBookingRegistrationDTO);
 
 							/* Creating new booking */
-							respList.add(book(bookingRequestDTO.getPreRegistrationId(), newBookingRegistrationDTO,
-									preRegStatusCode));
+							respList.add(book(bookingRequestDTO.getPreRegistrationId(), newBookingRegistrationDTO));
 
 						} else if (preRegStatusCode.equals(StatusCodes.EXPIRED.getCode())) {
 
@@ -242,8 +239,7 @@ public class BookingService {
 							deleteOldBooking(bookingRequestDTO.getPreRegistrationId());
 
 							/* Creating new booking */
-							respList.add(book(bookingRequestDTO.getPreRegistrationId(), newBookingRegistrationDTO,
-									preRegStatusCode));
+							respList.add(book(bookingRequestDTO.getPreRegistrationId(), newBookingRegistrationDTO));
 						}
 
 					}
@@ -252,7 +248,6 @@ public class BookingService {
 			}
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In bookAppointment method of Booking Service- " + ex.getMessage());
-			ex.printStackTrace();
 			new BookingExceptionCatcher().handle(ex);
 		}
 		responseDTO.setStatus(true);
@@ -261,15 +256,6 @@ public class BookingService {
 		return responseDTO;
 	}
 
-	public boolean cancel(String preRegistrationId, BookingRegistrationDTO oldBookingRegistrationDTO,
-			BookingRegistrationDTO newBookingRegistrationDTO, String status) {
-		log.info("sessionId", "idType", "id", "In cancel method of Booking Service");
-		if (serviceUtil.isNotDuplicate(oldBookingRegistrationDTO, newBookingRegistrationDTO)
-				&& StateManager.checkIsValidStatus(status, "rebook")) {
-			cancelBooking(serviceUtil.cancelBookingDtoSetter(preRegistrationId, oldBookingRegistrationDTO));
-		}
-		return true;
-	}
 
 	/**
 	 * This method is for getting appointment details.
@@ -320,8 +306,7 @@ public class BookingService {
 			}
 
 		} catch (Exception ex) {
-			log.error("sessionId", "idType", "id",
-					"In cancelAppointment method of Booking Service- " + ex.getMessage());
+			log.error("sessionId", "idType", "id","In cancelAppointment method of Booking Service- " + ex.getMessage());
 			new BookingExceptionCatcher().handle(ex);
 		}
 		responseDto.setStatus(true);
@@ -380,8 +365,7 @@ public class BookingService {
 	 * @param bookingRegistrationDTO
 	 * @return BookingStatusDTO
 	 */
-	public BookingStatusDTO book(String preRegistrationId, BookingRegistrationDTO bookingRegistrationDTO,
-			String status) {
+	public BookingStatusDTO book(String preRegistrationId, BookingRegistrationDTO bookingRegistrationDTO) {
 		log.info("sessionId", "idType", "id", "In book method of Booking Service");
 		BookingStatusDTO bookingStatusDTO = new BookingStatusDTO();
 		try {
@@ -441,7 +425,7 @@ public class BookingService {
 
 					RegistrationBookingEntity bookingEntity = bookingDAO.findPreIdAndStatusCode(
 							cancelBookingDTO.getPreRegistrationId(), StatusCodes.CANCELED.getCode());
-
+ 
 					String str = bookingEntity.getRegDate() + " " + bookingEntity.getSlotFromTime();
 					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 					LocalDateTime bookedDateTime = LocalDateTime.parse(str, formatter);
@@ -513,7 +497,7 @@ public class BookingService {
 		return response;
 	}
 
-	public void checkSlotAvailability(BookingRegistrationDTO newBookingRegistrationDTO, String preId) {
+	public void checkSlotAvailability(BookingRegistrationDTO newBookingRegistrationDTO) {
 
 		bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
 				LocalTime.parse(newBookingRegistrationDTO.getSlotFromTime()),
@@ -524,11 +508,9 @@ public class BookingService {
 	}
 
 	public boolean deleteOldBooking(String preId) {
-		int count = 0;
-		bookingDAO.deleteByPreRegistrationId(preId);
-		if (count > 0)
-			return true;
-		return false;
+		int count = bookingDAO.deleteByPreRegistrationId(preId);
+		if (count > 0) return true;
+		else return false;
 	}
 
 	public boolean increaseAvailability(BookingRegistrationDTO bookingDto) {
