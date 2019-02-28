@@ -648,15 +648,12 @@ public class OSIValidator {
 		InternalRegistrationStatusDto introducerRegistrationStatusDto = registrationStatusService
 				.getRegistrationStatus(introducerRid);
 		if (introducerRegistrationStatusDto != null) {
-			TransactionDto transactionDto = transcationStatusService.getTransactionByRegIdAndStatusCode(introducerRid,
-					RegistrationStatusCode.UIN_GENERATED.toString());
-			if (transactionDto != null) {
-				return true;
-			} else {
-				registrationStatusDto.setStatusComment(StatusMessage.PACKET_IS_ON_HOLD);
-				return false;
-			}
-
+			List<String> introducerUINList = packetInfoManager.getUINByRid(introducerRid);
+			if(!introducerUINList.isEmpty()) {
+						return true;
+					}
+			registrationStatusDto.setStatusComment(StatusMessage.PACKET_IS_ON_HOLD);
+			return false;
 		} else {
 			registrationStatusDto.setStatusComment(StatusMessage.PARENT_RID_NOT_IN_REGISTRATION_TABLE + registrationId);
 			return false;

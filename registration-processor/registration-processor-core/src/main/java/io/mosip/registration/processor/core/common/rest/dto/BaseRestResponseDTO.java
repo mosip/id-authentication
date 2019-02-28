@@ -20,6 +20,6 @@ public class BaseRestResponseDTO implements Serializable {
 	private String version;
 	
 	/** The timestamp. */
-	private String responseTimestamp;
+	private String responsetime;
 
 }
