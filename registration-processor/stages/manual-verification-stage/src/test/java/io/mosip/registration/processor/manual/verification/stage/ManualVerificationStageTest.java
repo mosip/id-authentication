@@ -1,4 +1,4 @@
-/*
+
 package io.mosip.registration.processor.manual.verification.stage;
 
 
@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import static org.junit.Assert.*;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,11 +28,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.core.env.Environment;
+import org.springframework.test.context.junit4.SpringRunner;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -67,9 +71,7 @@ import io.vertx.ext.web.Route;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
-@PrepareForTest(ManualVerificationResponseBuilder.class)
+@RunWith(SpringRunner.class)
 public class ManualVerificationStageTest{
 
 	private RoutingContext ctx;
@@ -85,9 +87,11 @@ public class ManualVerificationStageTest{
 	private Environment env;
 	@Mock
 	ManualVerificationRequestValidator manualVerificationRequestValidator;
-	Gson gson = new GsonBuilder().serializeNulls().create();
-	String serviceID=""; ErrorDTO errorCode;
-
+	Gson gson = new GsonBuilder().create();
+	String serviceID="";
+	private List<ErrorDTO> errors=new ArrayList<>();
+	ErrorDTO errorCode=new ErrorDTO("","");
+	
 	@InjectMocks
 	ManualVerificationStage manualVerificationStage = new ManualVerificationStage() {
 
@@ -98,21 +102,21 @@ public class ManualVerificationStageTest{
 
 			if(serviceID=="bio") {
 				ManualVerificationBioDemoResponseDTO manualVerificationBioDemoResponseDTO =gson.fromJson(jsonData, ManualVerificationBioDemoResponseDTO.class);
-				errorCode=manualVerificationBioDemoResponseDTO.getError();
+				errors=manualVerificationBioDemoResponseDTO.getErrors();
 			}else if(serviceID=="demo") {
 				ManualVerificationBioDemoResponseDTO manualVerificationBioDemoResponseDTO =gson.fromJson(jsonData, ManualVerificationBioDemoResponseDTO.class);
-				errorCode=manualVerificationBioDemoResponseDTO.getError();	
+				errors=manualVerificationBioDemoResponseDTO.getErrors();	
 			}else if(serviceID=="assign") {
 				ManualVerificationAssignResponseDTO manualVerificationAssignResponseDTO =gson.fromJson(jsonData, ManualVerificationAssignResponseDTO.class);
-				errorCode=manualVerificationAssignResponseDTO.getError();	
+				errors=manualVerificationAssignResponseDTO.getErrors();	
 
 			}else if(serviceID=="decision") {
 				ManualVerificationAssignResponseDTO manualVerificationAssignResponseDTO =gson.fromJson(jsonData, ManualVerificationAssignResponseDTO.class);
-				errorCode=manualVerificationAssignResponseDTO.getError();	
+				errors=manualVerificationAssignResponseDTO.getErrors();	
 
 			}else if(serviceID=="packetinfo") {
 				ManualVerificationPacketResponseDTO manualVerificationPacketResponseDTO =gson.fromJson(jsonData, 		ManualVerificationPacketResponseDTO.class);
-				errorCode=manualVerificationPacketResponseDTO.getError();	
+				errors=manualVerificationPacketResponseDTO.getErrors();	
 
 			}
 
@@ -129,15 +133,10 @@ public class ManualVerificationStageTest{
 	};
 	@Before
 	public void setup() throws Exception {
-
 		ctx = setContext();
-		ManualVerificationApplication.main(null);	
-		PowerMockito.mockStatic(ManualVerificationResponseBuilder.class);
+		ManualVerificationApplication.main(null);
 		when(env.getProperty(anyString())).thenReturn("mosip.manual.verification.biometric");
-		PowerMockito.when(ManualVerificationResponseBuilder.class, "buildManualVerificationSuccessResponse",any(ManualVerificationDTO.class), anyString(), anyString(), anyString()).thenReturn(getDataAsJson("2"));
-		PowerMockito.when(ManualVerificationResponseBuilder.class, "buildManualVerificationSuccessResponse",any(PacketMetaInfo.class), anyString(), anyString(), anyString()).thenReturn(getDataAsJson("2"));
-		PowerMockito.when(ManualVerificationResponseBuilder.class, "buildManualVerificationSuccessResponse",any(String.class), anyString(), anyString(), anyString()).thenReturn(getDataAsJson("1"));
-		
+		when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");	
 	}
 
 
@@ -146,7 +145,7 @@ public class ManualVerificationStageTest{
 		JsonObject obj= new JsonObject();
 		obj.put("id", "mosip.manual.verification.biometric");
 		obj.put("version", "1.0");
-		obj.put("responseTimestamp", "2019-02-04T13:46:39.919+0000");
+		obj.put("responsetime", "2019-02-04T13:46:39.919+0000");
 		JsonObject obj1= new JsonObject();
 		obj1.put("regId", "27847657360002520181208123456");
 		  
@@ -156,7 +155,7 @@ public class ManualVerificationStageTest{
 			obj.put("response",obj1);
 		}
 		errorCode=null;
-		obj.put("error",errorCode);
+		obj.put("errors",errorCode);
 		
 
 
@@ -168,7 +167,6 @@ public class ManualVerificationStageTest{
 
 
 	@Test
-	@Ignore
 	public void testAllProcesses() throws ClientProtocolException, IOException, ManualVerificationAppException {
 		doNothing().when(manualVerificationRequestValidator).validate(any(JsonObject.class),any(String.class));
 
@@ -188,8 +186,7 @@ public class ManualVerificationStageTest{
 		byte[] packetInfo = "packetInfo".getBytes();
 		when(manualAdjudicationService.getApplicantFile(any(String.class),any(String.class))).thenReturn(packetInfo);
 		manualVerificationStage.processBiometric(ctx);
-
-		assertEquals(errorCode, null);
+		assertEquals(errors, null);
 
 
 	}
@@ -200,7 +197,7 @@ public class ManualVerificationStageTest{
 		byte[] packetInfo = "packetInfo".getBytes();
 		when(manualAdjudicationService.getApplicantFile(any(String.class),any(String.class))).thenReturn(packetInfo);
 		manualVerificationStage.processDemographic(ctx);
-		assertEquals(errorCode, null);
+		assertEquals(errors, null);
 
 	}
 
@@ -211,7 +208,7 @@ public class ManualVerificationStageTest{
 		ManualVerificationDTO manualVerificationDTO= new ManualVerificationDTO();
 		when(manualAdjudicationService.assignApplicant(any(UserDto.class))).thenReturn(manualVerificationDTO);
 		manualVerificationStage.processAssignment(ctx);
-		assertEquals(errorCode, null);
+		assertEquals(errors, null);
 
 	}
 
@@ -219,7 +216,7 @@ public class ManualVerificationStageTest{
 	public void processDecisionTest(){
 		serviceID="decision";
 		manualVerificationStage.processDecision(ctx);
-		assertEquals(errorCode, null);
+		assertEquals(errors, null);
 
 	}
 
@@ -229,7 +226,7 @@ public class ManualVerificationStageTest{
 		PacketMetaInfo packetInfo = new PacketMetaInfo();
 		when(manualAdjudicationService.getApplicantPacketInfo(any(String.class))).thenReturn(packetInfo);
 		manualVerificationStage.processPacketInfo(ctx);
-		assertEquals(errorCode, null);
+		assertEquals(errors, null);
 
 	}
 
@@ -249,23 +246,23 @@ public class ManualVerificationStageTest{
 		HttpResponse getResponse = client.execute(httpGet);
 		assertEquals(200, getResponse.getStatusLine().getStatusCode());
 
-		HttpPost applicantBiometric = getHttpPost("http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/applicantBiometric");
+		HttpPost applicantBiometric = getHttpPost("http://localhost:8084/manual-verification/applicantBiometric/v1.0");
 		CloseableHttpResponse response = HttpClients.createDefault().execute(applicantBiometric);
 		assertEquals(response.getStatusLine().getStatusCode(), 200);
 
-		HttpPost applicantDemographic = getHttpPost("http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/applicantDemographic");
+		HttpPost applicantDemographic = getHttpPost("http://localhost:8084/manual-verification/applicantDemographic/v1.0");
 		response = HttpClients.createDefault().execute(applicantDemographic);
 		assertEquals(response.getStatusLine().getStatusCode(), 200);
 
-		HttpPost assignment = getHttpPost("http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/assignment");
+		HttpPost assignment = getHttpPost("http://localhost:8084/manual-verification/assignment/v1.0");
 		response = HttpClients.createDefault().execute(assignment);
 		assertEquals(response.getStatusLine().getStatusCode(), 200);
 
-		HttpPost decision = getHttpPost("http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/decision");
+		HttpPost decision = getHttpPost("http://localhost:8084/manual-verification/decision/v1.0");
 		response = HttpClients.createDefault().execute(decision);
 		assertEquals(response.getStatusLine().getStatusCode(), 200);
 
-		HttpPost packetInfo = getHttpPost("http://localhost:8084/manualverification/v0.1/registration-processor/manual-verification/packetInfo");
+		HttpPost packetInfo = getHttpPost("http://localhost:8084/manual-verification/packetInfo/v1.0");
 		response = HttpClients.createDefault().execute(packetInfo);
 		assertEquals(response.getStatusLine().getStatusCode(), 200);
 
@@ -428,7 +425,7 @@ public class ManualVerificationStageTest{
 				JsonObject obj= new JsonObject();
 				obj.put("id", "51130282650000320190117144316");
 				obj.put("version", "1.0");
-				obj.put("requestTimestamp", "51130282650000320190117");
+				obj.put("requesttime", "51130282650000320190117");
 				JsonObject obj1= new JsonObject();
 
 				if(serviceID=="bio") {
@@ -539,4 +536,4 @@ public class ManualVerificationStageTest{
 		};
 	}
 }
-*/
+

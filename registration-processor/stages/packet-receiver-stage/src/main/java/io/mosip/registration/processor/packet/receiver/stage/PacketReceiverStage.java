@@ -13,7 +13,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import io.mosip.registration.processor.packet.receiver.builder.PacketReceiverResponseBuilder;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
@@ -33,7 +35,7 @@ import io.vertx.ext.web.RoutingContext;
  * The Class PacketReceiverStage.
  */
 
-@RefreshScope
+//@RefreshScope
 @Service
 public class PacketReceiverStage extends MosipVerticleAPIManager {
 
@@ -68,6 +70,11 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 */
 	private MosipEventBus mosipEventBus;
 
+	@Autowired
+	private FileSystemAdapter fileSystemAdapter;
+
+	
+	
 	/**
 	 * deploys this verticle.
 	 */
@@ -98,7 +105,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 */
 	private void routes(Router router) {
 		
-		router.post("/packetreceiver/v0.1/registration-processor/packet-receiver/registrationpackets").handler(ctx -> {
+		router.post("/packetreceiver/registration-processor/registrationpackets/v1.0").handler(ctx -> {
 			processURL(ctx);
 		}).failureHandler(failureHandler -> {
 			this.setResponse(failureHandler, globalExceptionHandler.handler(failureHandler.failure()),APPLICATION_JSON);
@@ -121,14 +128,13 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 		File file = null;
 		try {
 			listObj.add(env.getProperty(MODULE_ID));
-			listObj.add(env.getProperty(DATETIME_PATTERN));
-			listObj.add(env.getProperty(APPLICATION_VERSION));
-			
 			FileUtils.copyFile(new File(fileUpload.uploadedFileName()),
 					new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName()));
 			FileUtils.forceDelete(new File(fileUpload.uploadedFileName()));
 			file = new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName());
 			MessageDTO messageDTO = packetReceiverService.storePacket(file);
+			listObj.add(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+			listObj.add(env.getProperty(APPLICATION_VERSION));
 			if (messageDTO.getIsValid()) {
 				this.setResponse(ctx,PacketReceiverResponseBuilder.buildPacketReceiverResponse(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString(),listObj),APPLICATION_JSON);
 				this.sendMessage(messageDTO);

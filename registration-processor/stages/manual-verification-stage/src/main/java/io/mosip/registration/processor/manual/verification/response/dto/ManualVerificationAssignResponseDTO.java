@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.manual.verification.response.dto;
 
+import java.util.List;
+
 import io.mosip.registration.processor.core.common.rest.dto.BaseRestResponseDTO;
 import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
@@ -25,6 +27,6 @@ public class ManualVerificationAssignResponseDTO extends BaseRestResponseDTO {
 	private ManualVerificationDTO response;
 	
 	/** The error. */
-	private ErrorDTO error;
+	private List<ErrorDTO> errors;
 	
 }
