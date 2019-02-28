@@ -73,23 +73,23 @@ registration.processor.print.documentype which will have values: PDF, IMAGE
 
  ```html
 { 
-			"id":"mosip.registration.print.acknolgement",			
-			"version":"1.0",	
-			"requesttime":"2007-12-03T10:15:30Z",
-			"metadata" : {
-			},
-			"response" : {
-				"status":"<UIN> Print Success"
-			}
-			"errors":[
-					"errorCode": "PRINT_APP_001",
-					"message": "Mobile or email not available"
-				},
-				  {
-					"errorCode": "PRINT_APP_002",
-					"message": "Service vendor is not responding"
-				}
-			]
+	"id":"mosip.registration.print.acknolgement",			
+	"version":"1.0",	
+	"requesttime":"2007-12-03T10:15:30Z",
+	"metadata" : {
+	},
+	"response" : {
+		"status":"<UIN> Print Success"
+	}
+	"errors":[
+		"errorCode": "PRINT_APP_001",
+		"message": "Mobile or email not available"
+		},
+		  {
+		"errorCode": "PRINT_APP_002",
+		"message": "Service vendor is not responding"
+		}
+	]
 }
 ```
 
@@ -97,15 +97,14 @@ registration.processor.print.documentype which will have values: PDF, IMAGE
 
  ```html
 { 
-		{
-			"id":"mosip.registration.reprint",			
-			"version":"1.0",	
-			"requesttime":"2007-12-03T10:15:30Z",
-			"metadata" : {
-			},
-			"request" : {
-				"uin":"123456789"
-			}
+	"id":"mosip.registration.reprint",			
+	"version":"1.0",	
+	"requesttime":"2007-12-03T10:15:30Z",
+	"metadata" : {
+	},
+	"request" : {
+		"uin":"123456789"
+	}
 }
 ```	
 	
