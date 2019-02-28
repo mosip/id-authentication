@@ -49,7 +49,7 @@ import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 @Component
 public class IdRequestValidator implements Validator {
 
-	private static final String VALUE = "fileReference";
+	private static final String DOC_VALUE = "value";
 
 	private static final String JSON_SCHEMA_FILE_NAME = "mosip.kernel.idrepo.json-schema-fileName";
 
@@ -333,7 +333,7 @@ public class IdRequestValidator implements Validator {
 													IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
 													"Documents - " + doc.get(DOC_CAT)));
 								}
-								if (StringUtils.isEmpty(doc.get(VALUE))) {
+								if (StringUtils.isEmpty(doc.get(DOC_VALUE))) {
 									mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 											(VALIDATE_REQUEST + "- empty doc value failed for " + doc.get(DOC_CAT)));
 									errors.rejectValue(REQUEST,

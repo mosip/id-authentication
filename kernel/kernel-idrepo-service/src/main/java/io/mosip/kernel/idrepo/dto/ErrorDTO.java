@@ -13,8 +13,8 @@ import lombok.Data;
 public class ErrorDTO {
 
 	/** The err code. */
-	private String errCode;
+	private String errorCode;
 	
 	/** The err message. */
-	private String errMessage;
+	private String errorMessage;
 }
