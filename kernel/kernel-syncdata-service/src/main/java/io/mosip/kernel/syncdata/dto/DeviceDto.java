@@ -43,13 +43,6 @@ public class DeviceDto extends BaseDto{
 	 * Field for device ip address
 	 */
 	private String ipAddress;
-	/**
-	 * Field for language code
-	 */
-	private String langCode;
-	/**
-	 * Field for is active
-	 */
-	private Boolean isActive;
+	
 
 }

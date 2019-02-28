@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
+
 /**
  * Dto for response to user for user machine mappings
  * 
@@ -23,16 +24,17 @@ public class RegistrationCenterUserMachineMappingHistoryDto {
 	 * Machine Id for response
 	 */
 	private String machineId;
-	
+
 	/**
 	 * User Id for response
 	 */
 	private String usrId;
-	
+
 	private Boolean isActive;
-	
+
+	private String langCode;
+
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime effectivetimes;
-	
 
 }

@@ -178,6 +178,8 @@
 		<module>kernel-fsadapter-ceph</module>
 
 		<module>kernel-idvalidator</module>
+		<module>kernel-applicanttype-service</module>
+		<module>kernel-applicanttype-api</module>
 
 		<!-- <module>kernel-packetuploader-sftp-jsch</module> -->
 		<!-- <module>kernel-packetserver-http</module> -->

@@ -16,6 +16,4 @@ import lombok.NoArgsConstructor;
 public class TemplateFileFormatDto extends BaseDto {
 	private String code;
 	private String description;
-	private String langCode;
-	private Boolean isActive;
 }

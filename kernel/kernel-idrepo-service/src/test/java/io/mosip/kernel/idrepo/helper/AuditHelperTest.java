@@ -18,8 +18,8 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.kernel.core.idrepo.constant.AuditEvents;
 import io.mosip.kernel.core.idrepo.constant.AuditModules;
 import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
-import io.mosip.kernel.idrepo.factory.AuditRequestFactory;
-import io.mosip.kernel.idrepo.factory.RestRequestFactory;
+import io.mosip.kernel.idrepo.builder.AuditRequestBuilder;
+import io.mosip.kernel.idrepo.builder.RestRequestBuilder;
 
 /**
  * @author Manoj SP
@@ -40,18 +40,18 @@ public class AuditHelperTest {
     MockMvc mockMvc;
 	
     @Mock
-	AuditRequestFactory auditFactory;
+	AuditRequestBuilder auditBuilder;
 	
     @Mock
-	RestRequestFactory restFactory;
+	RestRequestBuilder restBuilder;
     
     @Autowired
     Environment env;
 	
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(auditFactory, "env", env);
-		ReflectionTestUtils.setField(restFactory, "env", env);
+		ReflectionTestUtils.setField(auditBuilder, "env", env);
+		ReflectionTestUtils.setField(restBuilder, "env", env);
 	}
 	
 	@Test

@@ -21,7 +21,8 @@ import lombok.NoArgsConstructor;
 /**
  * 
  * @author Abhishek Kumar
- * @since 1.0.0
+ * @version 1.0.0
+ * @since 24-10-2018
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -34,14 +35,15 @@ public class Holiday extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1329042436883315822L;
 
 	@EmbeddedId
-	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
+	@AttributeOverrides({
 			@AttributeOverride(name = "locationCode", column = @Column(name = "location_code", nullable = false, length = 36)),
-			@AttributeOverride(name = "holidayDate", column = @Column(name = "holiday_date", nullable = false, length = 36)),
-			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 36)) })
+			@AttributeOverride(name = "holidayDate", column = @Column(name = "holiday_date", nullable = false)),
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)),
+			@AttributeOverride(name = "holidayName", column = @Column(name = "holiday_name", nullable = false, length = 64)) })
 	private HolidayID holidayId;
 
-	@Column(name = "holiday_name", nullable = false, length = 64)
-	private String holidayName;
+	@Column(name = "id", unique = true, nullable = false)
+	private int id;
 
 	@Column(name = "holiday_desc", length = 128)
 	private String holidayDesc;

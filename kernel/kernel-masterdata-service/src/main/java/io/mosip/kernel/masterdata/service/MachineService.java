@@ -4,6 +4,7 @@ import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -68,7 +69,7 @@ public interface MachineService {
 	 * Abstract method to save Machine Details to the Database
 	 * 
 	 * @param machine
-	 *            machine DTO 
+	 *            machine DTO
 	 * 
 	 * @return IdResponseDto returning machine id which is inserted successfully
 	 *         {@link IdResponseDto}
@@ -76,12 +77,13 @@ public interface MachineService {
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while saving Machine
 	 */
-	public IdResponseDto createMachine(RequestDto<MachineDto> machine);
+	public IdAndLanguageCodeID createMachine(RequestDto<MachineDto> machine);
+
 	/**
 	 * Abstract method to update Machine Details to the Database
 	 * 
 	 * @param machine
-	 *            machine DTO 
+	 *            machine DTO
 	 * 
 	 * @return IdResponseDto returning machine id which is updated successfully
 	 *         {@link IdResponseDto}
@@ -92,12 +94,13 @@ public interface MachineService {
 	 *             if any error occurred while updating Machine
 	 * 
 	 */
-	public IdResponseDto updateMachine(RequestDto<MachineDto> machine);
+	public IdAndLanguageCodeID updateMachine(RequestDto<MachineDto> machine);
+
 	/**
 	 * Abstract method to delete Machine Details to the Database
 	 * 
 	 * @param id
-	 *            machine id 
+	 *            machine id
 	 * 
 	 * @return IdResponseDto returning machine id which is updated successfully
 	 *         {@link IdResponseDto}

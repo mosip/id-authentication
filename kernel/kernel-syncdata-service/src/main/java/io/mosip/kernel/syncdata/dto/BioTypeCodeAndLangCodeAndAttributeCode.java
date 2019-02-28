@@ -18,5 +18,5 @@ import lombok.NoArgsConstructor;
 public class BioTypeCodeAndLangCodeAndAttributeCode extends BaseDto{
 	private String code;
 	private String biometricTypeCode;
-	private String langCode;
+	
 }

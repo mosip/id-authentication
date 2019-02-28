@@ -18,10 +18,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-/**
- * @author Abhishek Kumar
- * @since 1.0.0
- */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
@@ -36,10 +32,12 @@ public class ReasonCategory extends BaseEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = 1440279821197074364L;
 
+	
 	@Id
 	@Column(name = "code", nullable = false)
 	private String code;
-
+	
+	
 	@Id
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
@@ -53,9 +51,8 @@ public class ReasonCategory extends BaseEntity implements Serializable {
 	@OneToMany(mappedBy = "reasonCategory", cascade = CascadeType.ALL)
 	private List<ReasonList> reasonList = new ArrayList<>();
 
-	public void addReasonList(ReasonList list) {
-		list.setReasonCategory(this);
-		this.reasonList.add(list);
-	}
+
+
+	
 
 }

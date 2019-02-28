@@ -141,24 +141,29 @@ public class CheckSumGeneration {
 		}
 	}
 
-	public byte[] generatePacketOSIHash(List<String> hashSequence2, String registrationId) {
-		hashSequence2.forEach(value -> {
-			byte[] valuebyte = null;
-			try {
-				InputStream fileStream = adapter.getFile(registrationId, value.toUpperCase());
+	public byte[] generatePacketOSIHash(List<FieldValueArray> hashSequence2, String registrationId) {
+		for (FieldValueArray fieldValueArray : hashSequence2) {
+			List<String> hashValues = fieldValueArray.getValue();
+			hashValues.forEach(value -> {
+				byte[] valuebyte = null;
+				try {
+					InputStream fileStream = adapter.getFile(registrationId, value.toUpperCase());
 
-				valuebyte = IOUtils.toByteArray(fileStream);
-			} catch (IOException e) {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.APPLICATIONID.toString(), StatusMessage.INPUTSTREAM_NOT_READABLE,
-						e.getMessage() + ExceptionUtils.getStackTrace(e));
-			}
+					valuebyte = IOUtils.toByteArray(fileStream);
+				} catch (IOException e) {
+					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.APPLICATIONID.toString(), StatusMessage.INPUTSTREAM_NOT_READABLE,
+							e.getMessage() + ExceptionUtils.getStackTrace(e));
+				}
 
-			generateHash(valuebyte);
-		});
+				generateHash(valuebyte);
+			});
+		}
 
 		// generated hash
 		return HMACUtils.digestAsPlainText(HMACUtils.updatedHash()).getBytes();
+
 	}
+		
 
 }

@@ -40,11 +40,12 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
-import io.mosip.registration.processor.core.packet.dto.Document;
+
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ExceptionJSONInfoDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDatasyncReponseDTO;
@@ -174,7 +175,7 @@ public class PacketValidateProcessorTest {
 		List<Document> documents = new ArrayList<Document>();
 		documents.add(documentPob);
 		documents.add(document);
-		identity.setDocuments(documents);
+		//identity.setDocuments(documents);
 		Mockito.when(documentUtility.getDocumentList(any())).thenReturn(documents);
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 
@@ -203,7 +204,11 @@ public class PacketValidateProcessorTest {
 		identity.setHashSequence(fieldValueArrayList);
 		List<String> sequence2 = new ArrayList<>();
 		sequence2.add("audit");
-		identity.setHashSequence2(sequence2);
+		List<FieldValueArray> fieldValueArrayListSequence = new ArrayList<FieldValueArray>();
+		FieldValueArray hashsequence2= new FieldValueArray();
+		hashsequence2.setValue(sequence2);
+		fieldValueArrayListSequence.add(hashsequence2);
+		identity.setHashSequence2(fieldValueArrayListSequence);
 		packetMetaInfo.setIdentity(identity);
 
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
@@ -304,7 +309,7 @@ public class PacketValidateProcessorTest {
 		List<Document> documents = new ArrayList<Document>();
 		documents.add(documentPob);
 		documents.add(document);
-		identity.setDocuments(documents);
+		//identity.setDocuments(documents);
 
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 
@@ -331,8 +336,11 @@ public class PacketValidateProcessorTest {
 		identity.setHashSequence(fieldValueArrayList);
 		List<String> sequence2 = new ArrayList<>();
 		sequence2.add("audit");
-		identity.setHashSequence2(sequence2);
-
+		List<FieldValueArray> fieldValueArrayListSequence = new ArrayList<FieldValueArray>();
+		FieldValueArray hashsequence2= new FieldValueArray();
+		hashsequence2.setValue(sequence2);
+		fieldValueArrayListSequence.add(hashsequence2);
+		identity.setHashSequence2(fieldValueArrayListSequence);
 		packetMetaInfo.setIdentity(identity);
 
 		PowerMockito.mockStatic(JsonUtil.class);
@@ -386,7 +394,7 @@ public class PacketValidateProcessorTest {
 		documents.add(documentPob);
 		documents.add(document);
 		documents.add(document2);
-		identity.setDocuments(documents);
+		//identity.setDocuments(documents);
 		Mockito.when(documentUtility.getDocumentList(any())).thenReturn(documents);
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 
@@ -416,8 +424,11 @@ public class PacketValidateProcessorTest {
 		identity.setHashSequence(fieldValueArrayList);
 		List<String> sequence2 = new ArrayList<>();
 		sequence2.add("audit");
-		identity.setHashSequence2(sequence2);
-
+		List<FieldValueArray> fieldValueArrayListSequence = new ArrayList<FieldValueArray>();
+		FieldValueArray hashsequence2= new FieldValueArray();
+		hashsequence2.setValue(sequence2);
+		fieldValueArrayListSequence.add(hashsequence2);
+		identity.setHashSequence2(fieldValueArrayListSequence);
 		packetMetaInfo.setIdentity(identity);
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
