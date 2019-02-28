@@ -1,12 +1,19 @@
 package io.mosip.authentication.fw.util;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;    
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -21,11 +28,16 @@ import javax.ws.rs.core.MediaType;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.codehaus.plexus.util.cli.CommandLineException;
+import org.codehaus.plexus.util.cli.CommandLineUtils;
+import org.codehaus.plexus.util.cli.Commandline;
+import org.codehaus.plexus.util.cli.WriterStreamConsumer;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.testng.ITestContext;
 import org.testng.Reporter;
 import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeSuite;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
@@ -492,5 +504,54 @@ public class IdaScriptsUtil {
 		 */
 		String currentModule = ctx.getCurrentXmlTest().getClasses().get(0).getName().split("\\.")[2];
 		objReportUtil.moveReport(currentModule);
+		exitDemoAppRunner();
 	}
-}
+
+	@BeforeSuite(alwaysRun = true)
+	public void wakeDemoApp() {
+		createBatFileForDemoApp();
+		batDemoAppRunner();
+	}
+	
+	private static File demoAppBatchFilePath;
+	public void createBatFileForDemoApp() {
+		try {
+			String javaHome = System.getenv("JAVA_HOME");
+			String demoAppJarPath = System.getProperty("user.dir") + "/src/test/resources/demoApp.jar";
+			String content = '"' + javaHome + "/bin/java" + '"'
+					+ " -Dspring.profiles.active=local -Djava.net.useSystemProxies=true -agentlib:jdwp=transport=dt_socket,server=y,address=4000,suspend=n -jar "
+					+ '"' + demoAppJarPath.toString() + '"';
+			demoAppBatchFilePath = new File(System.getProperty("user.dir") + "/src/test/resources/demoApp.bat");
+			FileOutputStream fos = new FileOutputStream(demoAppBatchFilePath);
+			DataOutputStream dos = new DataOutputStream(fos);
+			dos.writeBytes(content);
+			dos.close();
+			fos.flush();
+			fos.close();
+		} catch (Exception e) {
+			logger.error("Exception in creating the bat file for demoApp application " + e.getMessage());
+		}
+	}
+	
+	
+	public void batDemoAppRunner() {
+		try {
+			Runtime.getRuntime().exec(new String[] { "cmd", "/c", "start", "cmd.exe", "/K", demoAppBatchFilePath.getAbsolutePath() });
+			Thread.sleep(20000);
+		} catch (Exception e) {
+			logger.error("Execption in launching demoApp application" + e.getMessage());
+		}
+	}
+	
+	public void exitDemoAppRunner() {
+		try {
+			Runtime.getRuntime()
+					.exec(new String[] { "cmd", "/c", "start", "cmd.exe", "/K", "taskkill /f /im conhost.exe" });
+			Runtime.getRuntime()
+					.exec(new String[] { "cmd", "/c", "start", "cmd.exe", "/K", "taskkill /f /im java.exe" });
+		} catch (Exception e) {
+			logger.error("Execption in quitting demoApp application" + e.getMessage());
+		}
+	}
+
+} 
