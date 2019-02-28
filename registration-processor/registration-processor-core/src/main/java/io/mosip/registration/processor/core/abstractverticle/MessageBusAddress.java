@@ -88,6 +88,9 @@ public class MessageBusAddress implements Serializable {
 	/** The Constant FTP_SCAN_BUS. */
 	public static final MessageBusAddress FTP_SCAN_BUS_OUT = new MessageBusAddress("ftp-scanner-stage");
 
+	/** The Constant PACKET_RECEIVER_OUT. */
+	public static final MessageBusAddress PACKET_RECEIVER_OUT = new MessageBusAddress("packet-receiver-out");
+
 	/** The Constant STRUCTURE_BUS_IN. */
 	public static final MessageBusAddress OSI_BUS_IN = new MessageBusAddress("osi-validator-bus-in");
 
@@ -110,7 +113,7 @@ public class MessageBusAddress implements Serializable {
 	public static final MessageBusAddress UIN_GENERATION_BUS_OUT = new MessageBusAddress("uin-generation-bus-out");
 
 	/** The Constant PACKET_UPLOADER_IN. */
-	public static final MessageBusAddress PACKET_UPLOADER_IN = new MessageBusAddress("packet-uploader-bus-in");
+	public static final MessageBusAddress PACKET_UPLOADER_IN = new MessageBusAddress("packet-uploader-in");
 
 	/** The Constant MESSAGE_SENDER_BUS_IN. */
 	public static final MessageBusAddress MESSAGE_SENDER_BUS = new MessageBusAddress("message-sender-bus");
@@ -119,7 +122,8 @@ public class MessageBusAddress implements Serializable {
 	public static final MessageBusAddress PACKET_UPLOADER_OUT = new MessageBusAddress("packet-uploader-bus-out");
 
 	/** The Constant REGISTRATION_CONNECTOR_BUS_OUT. */
-	public static final MessageBusAddress REGISTRATION_CONNECTOR_BUS_OUT = new MessageBusAddress("registration-connector-bus-out");
+	public static final MessageBusAddress REGISTRATION_CONNECTOR_BUS_OUT = new MessageBusAddress(
+			"registration-connector-bus-out");
 
 	/** The Constant PRINTING_BUS_IN. */
 	public static final MessageBusAddress PRINTING_BUS = new MessageBusAddress("printing-bus");

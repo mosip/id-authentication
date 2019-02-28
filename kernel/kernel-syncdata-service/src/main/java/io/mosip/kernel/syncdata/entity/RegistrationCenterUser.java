@@ -31,10 +31,13 @@ import lombok.NoArgsConstructor;
 public class RegistrationCenterUser extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 3941306023356031908L;
-	
+
 	@EmbeddedId
 	@AttributeOverrides({ @AttributeOverride(name = "regCenterId", column = @Column(name = "regcntr_id")),
 			@AttributeOverride(name = "userId", column = @Column(name = "usr_Id")) })
 	private RegistrationCenterUserID registrationCenterUserID;
+
+	@Column(name = "lang_code", length = 3)
+	private String langCode;
 
 }
