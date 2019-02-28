@@ -122,14 +122,18 @@ spec:
         backend:
           serviceName: registration-processor-dmz
           servicePort: 8081
+      - path: /abis
+        backend:
+          serviceName: registration-processor-stages
+          servicePort: 9098
       - path: /registrationstatus
         backend:
-          serviceName: registration-processor-registration-status-api
+          serviceName: registration-processor-registration-status-service
           servicePort: 8083
       - path: /nginx
         backend:
           serviceName: sample-nginx
-          servicePort: 80
+          servicePort: 80 
           
       
           
