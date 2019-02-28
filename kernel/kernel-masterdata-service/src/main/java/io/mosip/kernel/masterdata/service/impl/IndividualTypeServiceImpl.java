@@ -18,14 +18,21 @@ import io.mosip.kernel.masterdata.service.IndividualTypeService;
 import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 
+/**
+ * @author Bal Vikash Sharma
+ *
+ */
 @Service
 public class IndividualTypeServiceImpl implements IndividualTypeService {
 
 	@Autowired
 	private IndividualTypeRepository individualTypeRepository;
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.IndividualTypeService#getAllIndividualTypes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.IndividualTypeService#
+	 * getAllIndividualTypes()
 	 */
 	@Override
 	public IndividualTypeResponseDto getAllIndividualTypes() {
