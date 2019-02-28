@@ -30,7 +30,7 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * @return list of {@link Machine}
 	 */
 	@Query(value = "SELECT mm.id, mm.name, mm.mac_address, mm.serial_num, mm.ip_address, mm.mspec_id, mm.lang_code, mm.is_active, mm.cr_by, mm.cr_dtimes, mm.upd_by, mm.upd_dtimes, mm.is_deleted, mm.del_dtimes, mm.validity_end_dtimes FROM master.machine_master mm where mm.id=?1 and ((mm.cr_dtimes >?2 AND mm.cr_dtimes <=?3) or (mm.upd_dtimes >?2 AND mm.upd_dtimes<=?3) or (mm.del_dtimes >?2 AND mm.del_dtimes<=?3))", nativeQuery = true)
-	List<Machine> findAllLatestCreatedUpdateDeleted(String id, LocalDateTime lastUpdated,LocalDateTime timeStampOfNow);
+	List<Machine> findAllLatestCreatedUpdateDeleted(String id, LocalDateTime lastUpdated, LocalDateTime timeStampOfNow);
 
 	/**
 	 * Method to fetch Machine by id
@@ -39,6 +39,9 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 *            id of the machine
 	 * @return {@link Machine}
 	 */
-	@Query(value = "SELECT mm.id, mm.name, mm.mac_address, mm.serial_num, mm.ip_address, mm.mspec_id, mm.lang_code, mm.is_active, mm.cr_by, mm.cr_dtimes, mm.upd_by, mm.upd_dtimes, mm.is_deleted, mm.del_dtimes, mm.validity_end_dtimes FROM master.machine_master mm where mm.id=?1", nativeQuery = true)
+	@Query(value = "SELECT mm.id, mm.name, mm.mac_address, mm.serial_num, mm.ip_address, mm.mspec_id, mm.lang_code, mm.is_active, mm.cr_by, mm.cr_dtimes, mm.upd_by, mm.upd_dtimes, mm.is_deleted, mm.del_dtimes, mm.validity_end_dtimes FROM master.machine_master mm where mm.id=?1 ", nativeQuery = true)
 	List<Machine> findMachineById(String machineId);
+
+	@Query(value = "SELECT mm.id, mm.name, mm.mac_address, mm.serial_num, mm.ip_address, mm.mspec_id, mm.lang_code, mm.is_active, mm.cr_by, mm.cr_dtimes, mm.upd_by, mm.upd_dtimes, mm.is_deleted, mm.del_dtimes, mm.validity_end_dtimes FROM master.machine_master mm where mm.id=?1 and mm.is_active=true ", nativeQuery = true)
+	List<Machine> findByMachineIdAndIsActive(String machineId);
 }

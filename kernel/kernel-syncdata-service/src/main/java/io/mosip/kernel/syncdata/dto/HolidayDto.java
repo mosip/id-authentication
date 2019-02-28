@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class HolidayDto extends BaseDto{
+public class HolidayDto extends BaseDto {
 	private String holidayId;
 	private String holidayDate;
 	/**
@@ -28,8 +28,6 @@ public class HolidayDto extends BaseDto{
 	private String holidayMonth;
 	private String holidayYear;
 	private String holidayName;
-	private String languageCode;
 	private String locationCode;
-	private Boolean isActive;
 
 }

@@ -72,6 +72,6 @@ public interface GenderTypeRepository extends BaseRepository<Gender, CodeAndLang
 	 *            gender name eg: male or female
 	 * @return boolean
 	 */
-	@Query(value="select EXISTS(select * from master.gender g where LOWER(g.name)=LOWER(?1) and (g.is_deleted is null or g.is_deleted =false))" , nativeQuery = true)
+	@Query(value="select EXISTS(select * from master.gender g where LOWER(g.name)=LOWER(?1) and (g.is_deleted is null or g.is_deleted =false) and g.is_active=true)" , nativeQuery = true)
 	boolean isGenderNamePresent(String genderName);
 }

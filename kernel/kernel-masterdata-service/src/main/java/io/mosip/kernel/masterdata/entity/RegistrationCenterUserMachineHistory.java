@@ -46,8 +46,8 @@ public class RegistrationCenterUserMachineHistory extends BaseEntity implements 
 			@AttributeOverride(name = "cntrId", column = @Column(name = "regcntr_id", nullable = false, length = 36)),
 			@AttributeOverride(name = "usrId", column = @Column(name = "usr_id", nullable = false, length = 36)),
 			@AttributeOverride(name = "machineId", column = @Column(name = "machine_id", nullable = false, length = 36)),
-			@AttributeOverride(name = "effectivetimes", column = @Column(name = "eff_dtimes", nullable = false)),})
-	
+			@AttributeOverride(name = "effectivetimes", column = @Column(name = "eff_dtimes", nullable = false)), })
+
 	/**
 	 * Center Id
 	 */
@@ -62,9 +62,12 @@ public class RegistrationCenterUserMachineHistory extends BaseEntity implements 
 	 * Machine Id
 	 */
 	private String machineId;
-	
+
 	/**
 	 * Effective TimeStamp
 	 */
 	private LocalDateTime effectivetimes;
+
+	@Column(name = "lang_code", nullable = false, length = 3)
+	private String langCode;
 }

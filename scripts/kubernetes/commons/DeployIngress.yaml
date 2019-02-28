@@ -18,6 +18,10 @@ spec:
         backend:
           serviceName: kernel-uingenerator-service
           servicePort: 8080
+      - path: /applicanttype
+        backend:
+          serviceName: kernel-applicanttype-service
+          servicePort: 8094
       - path: /auditmanager
         backend:
           serviceName: kernel-auditmanager-service
