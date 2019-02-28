@@ -428,7 +428,7 @@ public class SyncDataIntegrationTest {
 		registrationCenterUserMachines
 				.add(registrationCenterUserMachine);
 		registrationCenterUsers = new ArrayList<>();
-		registrationCenterUsers.add(new RegistrationCenterUser(new RegistrationCenterUserID("01010", "qc001")));
+		registrationCenterUsers.add(new RegistrationCenterUser(new RegistrationCenterUserID("01010", "qc001"),"eng"));
 
 		builder = new StringBuilder();
 		builder.append(authBaseUri).append(authAllRolesUri);
