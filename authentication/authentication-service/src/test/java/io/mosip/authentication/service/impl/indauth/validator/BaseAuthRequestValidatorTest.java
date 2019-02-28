@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.impl.indauth.validator;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -33,17 +32,16 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.core.dto.indauth.AdditionalFactorsDTO;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BaseAuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.BioType;
-import io.mosip.authentication.core.dto.indauth.DeviceInfo;
-import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.MatchInfo;
-import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.helper.IdInfoHelper;
@@ -54,7 +52,6 @@ import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
 import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
-// TODO: Auto-generated Javadoc
 /**
  * Test class for {@link BaseAuthRequestValidator}.
  *
@@ -128,7 +125,7 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateVersionAndId() {
 		BaseAuthRequestDTO baseAuthRequestDTO = new BaseAuthRequestDTO();
 		baseAuthRequestDTO.setId("123456");
-		// baseAuthRequestDTO.setVer("1.0");
+		 baseAuthRequestDTO.setVersion("1.0");
 		baseAuthRequestValidator.validate(baseAuthRequestDTO, error);
 		assertFalse(error.hasErrors());
 	}
@@ -164,15 +161,15 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO = getAuthRequestDTO();
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(true);
-		authRequestDTO.setAuthType(authType);
+		authRequestDTO.setRequestedAuth(authType);
 
 		BioInfo bioinfo = new BioInfo();
 
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		bioInfoList.add(bioinfo);
-		authRequestDTO.setBioInfo(null);
+		authRequestDTO.setBioMetadata(null);
 
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioDetails", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 
 	}
@@ -187,12 +184,12 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO = getAuthRequestDTO();
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(true);
-		authRequestDTO.setAuthType(authType);
+		authRequestDTO.setRequestedAuth(authType);
 
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
-		authRequestDTO.setBioInfo(bioInfoList);
+		authRequestDTO.setBioMetadata(bioInfoList);
 
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioDetails", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 
 	}
@@ -206,12 +203,12 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO = getAuthRequestDTO();
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(false);
-		authRequestDTO.setAuthType(authType);
+		authRequestDTO.setRequestedAuth(authType);
 
 		List<BioInfo> bioInfoList = null;
-		authRequestDTO.setBioInfo(bioInfoList);
+		authRequestDTO.setBioMetadata(bioInfoList);
 
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioDetails", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 
 	}
@@ -225,28 +222,28 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO = getAuthRequestDTO();
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(true);
-		authRequestDTO.setAuthType(authType);
+		authRequestDTO.setRequestedAuth(authType);
 
-		IdentityInfoDTO fingerValue = new IdentityInfoDTO();
-		fingerValue.setValue("finger img");
-
-		IdentityInfoDTO irisValue = new IdentityInfoDTO();
+		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
+		fingerValue.setValue("finger");
+		fingerValue.setSubType("Thumb");
+		fingerValue.setType("finger");
+		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		irisValue.setValue("iris img");
-
-		IdentityInfoDTO faceValue = new IdentityInfoDTO();
+		irisValue.setSubType("left");
+		irisValue.setType("iris");
+		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
 		faceValue.setValue("face img");
-
-		List<IdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<IdentityInfoDTO>();
+		faceValue.setSubType("Thumb");
+		faceValue.setType("face");
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(fingerValue);
-		List<IdentityInfoDTO> irisIdentityInfoDtoList = new ArrayList<IdentityInfoDTO>();
-		irisIdentityInfoDtoList.add(irisValue);
-		List<IdentityInfoDTO> faceIdentityInfoDtoList = new ArrayList<IdentityInfoDTO>();
-		faceIdentityInfoDtoList.add(faceValue);
+		fingerIdentityInfoDtoList.add(irisValue);
+		fingerIdentityInfoDtoList.add(faceValue);
+		
 
 		IdentityDTO identitydto = new IdentityDTO();
-		identitydto.setLeftThumb(fingerIdentityInfoDtoList);
-		identitydto.setLeftEye(irisIdentityInfoDtoList);
-		identitydto.setFace(faceIdentityInfoDtoList);
+		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setIdentity(identitydto);
@@ -255,18 +252,14 @@ public class BaseAuthRequestValidatorTest {
 
 		BioInfo bioinfo = new BioInfo();
 		bioinfo.setBioType(BioType.FGRIMG.getType());
-
-		DeviceInfo deviceInfo = new DeviceInfo();
-		deviceInfo.setDeviceId("12345");
-		deviceInfo.setMake("mantra");
-		deviceInfo.setModel("M123");
-		bioinfo.setDeviceInfo(deviceInfo);
+		bioinfo.setDeviceId("123456789");
+		bioinfo.setDeviceProviderID("1234567890");
 
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		bioInfoList.add(bioinfo);
-		authRequestDTO.setBioInfo(bioInfoList);
+		authRequestDTO.setBioMetadata(bioInfoList);
 
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioDetails", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 
 	}
@@ -278,16 +271,30 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateFinger_NoErrors() {
 		authRequestDTO = getAuthRequestDTO();
 
-		IdentityInfoDTO fingerValue = new IdentityInfoDTO();
-		fingerValue.setValue("finger img");
-		List<IdentityInfoDTO> finger = new ArrayList<IdentityInfoDTO>();
-		finger.add(fingerValue);
+		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
+		fingerValue.setValue("finger");
+		fingerValue.setSubType("Thumb");
+		fingerValue.setType("finger");
+		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
+		irisValue.setValue("iris img");
+		irisValue.setSubType("left");
+		irisValue.setType("iris");
+		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
+		faceValue.setValue("face img");
+		faceValue.setSubType("Thumb");
+		faceValue.setType("face");
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(fingerValue);
+		fingerIdentityInfoDtoList.add(irisValue);
+		fingerIdentityInfoDtoList.add(faceValue);
+		
 
-		IdentityDTO fingerIdentity = new IdentityDTO();
-		fingerIdentity.setLeftThumb(finger);
+		IdentityDTO identitydto = new IdentityDTO();
+		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
 		RequestDTO requestDTO = new RequestDTO();
-		requestDTO.setIdentity(fingerIdentity);
+		requestDTO.setIdentity(identitydto);
+
 
 		authRequestDTO.setRequest(requestDTO);
 
@@ -295,7 +302,7 @@ public class BaseAuthRequestValidatorTest {
 		bioinfo.setBioType(BioType.FGRIMG.getType());
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		bioInfoList.add(bioinfo);
-		authRequestDTO.setBioInfo(bioInfoList);
+		authRequestDTO.setBioMetadata(bioInfoList);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFinger", authRequestDTO, bioInfoList,
 				error);
@@ -309,16 +316,30 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateIris() {
 		authRequestDTO = getAuthRequestDTO();
 
-		IdentityInfoDTO irisValue = new IdentityInfoDTO();
-		irisValue.setValue("iris");
-		List<IdentityInfoDTO> iris = new ArrayList<IdentityInfoDTO>();
-		iris.add(irisValue);
+		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
+		fingerValue.setValue("finger");
+		fingerValue.setSubType("Thumb");
+		fingerValue.setType("finger");
+		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
+		irisValue.setValue("iris img");
+		irisValue.setSubType("left");
+		irisValue.setType("iris");
+		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
+		faceValue.setValue("face img");
+		faceValue.setSubType("Thumb");
+		faceValue.setType("face");
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(fingerValue);
+		fingerIdentityInfoDtoList.add(irisValue);
+		fingerIdentityInfoDtoList.add(faceValue);
+		
 
-		IdentityDTO irisIdentity = new IdentityDTO();
-		irisIdentity.setLeftEye(iris);
+		IdentityDTO identitydto = new IdentityDTO();
+		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
 		RequestDTO requestDTO = new RequestDTO();
-		requestDTO.setIdentity(irisIdentity);
+		requestDTO.setIdentity(identitydto);
+
 
 		authRequestDTO.setRequest(requestDTO);
 
@@ -326,7 +347,7 @@ public class BaseAuthRequestValidatorTest {
 		bioinfo.setBioType(BioType.IRISIMG.getType());
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		bioInfoList.add(bioinfo);
-		authRequestDTO.setBioInfo(bioInfoList);
+		authRequestDTO.setBioMetadata(bioInfoList);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIris", authRequestDTO, bioInfoList, error);
 		assertFalse(error.hasErrors());
@@ -340,16 +361,19 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateIrisrightEye() {
 		authRequestDTO = getAuthRequestDTO();
 
-		IdentityInfoDTO irisValue = new IdentityInfoDTO();
-		irisValue.setValue("iris");
-		List<IdentityInfoDTO> iris = new ArrayList<IdentityInfoDTO>();
-		iris.add(irisValue);
+		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
+		irisValue.setValue("iris img");
+		irisValue.setSubType("right");
+		irisValue.setType("iris");
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(irisValue);
+		
 
-		IdentityDTO irisIdentity = new IdentityDTO();
-		irisIdentity.setLeftEye(iris);
-		irisIdentity.setRightEye(iris);
+		IdentityDTO identitydto = new IdentityDTO();
+		identitydto.setBiometrics(fingerIdentityInfoDtoList);
+
 		RequestDTO requestDTO = new RequestDTO();
-		requestDTO.setIdentity(irisIdentity);
+		requestDTO.setIdentity(identitydto);
 
 		authRequestDTO.setRequest(requestDTO);
 
@@ -357,10 +381,10 @@ public class BaseAuthRequestValidatorTest {
 		bioinfo.setBioType(BioType.IRISIMG.getType());
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		bioInfoList.add(bioinfo);
-		authRequestDTO.setBioInfo(bioInfoList);
+		authRequestDTO.setBioMetadata(bioInfoList);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIris", authRequestDTO, bioInfoList, error);
-		assertTrue(error.hasErrors());
+		assertFalse(error.hasErrors());
 
 	}
 
@@ -371,25 +395,39 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateFace() {
 
 		authRequestDTO = getAuthRequestDTO();
+		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
+		fingerValue.setValue("finger");
+		fingerValue.setSubType("Thumb");
+		fingerValue.setType("finger");
+		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
+		irisValue.setValue("iris img");
+		irisValue.setSubType("left");
+		irisValue.setType("iris");
+		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
+		faceValue.setValue("face img");
+		faceValue.setSubType("Thumb");
+		faceValue.setType("face");
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(fingerValue);
+		fingerIdentityInfoDtoList.add(irisValue);
+		fingerIdentityInfoDtoList.add(faceValue);
+		
 
-		IdentityInfoDTO faceValue = new IdentityInfoDTO();
-		faceValue.setValue("face");
-		List<IdentityInfoDTO> face = new ArrayList<IdentityInfoDTO>();
-		face.add(faceValue);
-
-		IdentityDTO faceIdentity = new IdentityDTO();
-		faceIdentity.setFace(face);
+		IdentityDTO identitydto = new IdentityDTO();
+		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
 		RequestDTO requestDTO = new RequestDTO();
-		requestDTO.setIdentity(faceIdentity);
+		requestDTO.setIdentity(identitydto);
+
 
 		authRequestDTO.setRequest(requestDTO);
+
 
 		BioInfo bioinfo = new BioInfo();
 		bioinfo.setBioType(BioType.FACEIMG.getType());
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		bioInfoList.add(bioinfo);
-		authRequestDTO.setBioInfo(bioInfoList);
+		authRequestDTO.setBioMetadata(bioInfoList);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFace", authRequestDTO, bioInfoList, error);
 		assertFalse(error.hasErrors());
@@ -417,28 +455,32 @@ public class BaseAuthRequestValidatorTest {
 	public void testCheckAtleastOneFingerRequestAvailable() {
 		authRequestDTO = getAuthRequestDTO();
 
+		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
+		fingerValue.setValue("finger");
+		fingerValue.setSubType("Thumb");
+		fingerValue.setType("finger");
+		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
+		irisValue.setValue("iris img");
+		irisValue.setSubType("left");
+		irisValue.setType("iris");
+		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
+		faceValue.setValue("face img");
+		faceValue.setSubType("Thumb");
+		faceValue.setType("face");
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(fingerValue);
+		fingerIdentityInfoDtoList.add(irisValue);
+		fingerIdentityInfoDtoList.add(faceValue);
+		
+
 		IdentityDTO identitydto = new IdentityDTO();
-		RequestDTO request = new RequestDTO();
+		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue("fingerImage");
-		List<IdentityInfoDTO> leftThumb = new ArrayList<IdentityInfoDTO>();
-		leftThumb.add(identityInfoDTO);
+		RequestDTO requestDTO = new RequestDTO();
+		requestDTO.setIdentity(identitydto);
 
-		identitydto.setLeftThumb(leftThumb);
-		request.setIdentity(identitydto);
-		authRequestDTO.setRequest(request);
 
-		Function<IdentityDTO, List<IdentityInfoDTO>> fun = new Function<IdentityDTO, List<IdentityInfoDTO>>() {
-			@Override
-			public List<IdentityInfoDTO> apply(IdentityDTO t) {
-				return t.getLeftThumb();
-			}
-		};
-		@SuppressWarnings("unchecked")
-		boolean checkAnyIdInfoAvailable = baseAuthRequestValidator.checkAnyIdInfoAvailable(authRequestDTO, fun);
-		assertTrue(checkAnyIdInfoAvailable);
-
+		authRequestDTO.setRequest(requestDTO);
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkAtleastOneFingerRequestAvailable",
 				authRequestDTO, error);
 		assertFalse(error.hasErrors());
@@ -469,16 +511,31 @@ public class BaseAuthRequestValidatorTest {
 
 		authRequestDTO = getAuthRequestDTO();
 
+		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
+		fingerValue.setValue("finger");
+		fingerValue.setSubType("Thumb");
+		fingerValue.setType("finger");
+		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
+		irisValue.setValue("iris img");
+		irisValue.setSubType("left");
+		irisValue.setType("iris");
+		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
+		faceValue.setValue("face img");
+		faceValue.setSubType("Thumb");
+		faceValue.setType("face");
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(fingerValue);
+		fingerIdentityInfoDtoList.add(irisValue);
+		fingerIdentityInfoDtoList.add(faceValue);
+		
+
 		IdentityDTO identitydto = new IdentityDTO();
-		RequestDTO request = new RequestDTO();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue("iris");
-		List<IdentityInfoDTO> iris = new ArrayList<IdentityInfoDTO>();
-		iris.add(identityInfoDTO);
-		identitydto.setLeftEye(iris);
-		identitydto.setRightEye(iris);
-		request.setIdentity(identitydto);
-		authRequestDTO.setRequest(request);
+		identitydto.setBiometrics(fingerIdentityInfoDtoList);
+
+		RequestDTO requestDTO = new RequestDTO();
+		requestDTO.setIdentity(identitydto);
+
+		authRequestDTO.setRequest(requestDTO);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkAtleastOneIrisRequestAvailable",
 				authRequestDTO, error);
@@ -508,16 +565,29 @@ public class BaseAuthRequestValidatorTest {
 	public void test_AtleastOneFaceRequestAvailable() {
 		authRequestDTO = getAuthRequestDTO();
 
-		IdentityInfoDTO faceValue = new IdentityInfoDTO();
-		faceValue.setValue("face");
-		List<IdentityInfoDTO> face = new ArrayList<IdentityInfoDTO>();
-		face.add(faceValue);
+		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
+		fingerValue.setValue("finger");
+		fingerValue.setSubType("Thumb");
+		fingerValue.setType("finger");
+		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
+		irisValue.setValue("iris img");
+		irisValue.setSubType("left");
+		irisValue.setType("iris");
+		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
+		faceValue.setValue("face img");
+		faceValue.setSubType("Thumb");
+		faceValue.setType("face");
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(fingerValue);
+		fingerIdentityInfoDtoList.add(irisValue);
+		fingerIdentityInfoDtoList.add(faceValue);
+		
 
-		IdentityDTO faceIdentity = new IdentityDTO();
-		faceIdentity.setFace(face);
+		IdentityDTO identitydto = new IdentityDTO();
+		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
 		RequestDTO requestDTO = new RequestDTO();
-		requestDTO.setIdentity(faceIdentity);
+		requestDTO.setIdentity(identitydto);
 
 		authRequestDTO.setRequest(requestDTO);
 
@@ -537,18 +607,17 @@ public class BaseAuthRequestValidatorTest {
 		RequestDTO request = new RequestDTO();
 
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue("fingerImage");
-		List<IdentityInfoDTO> leftThumb = new ArrayList<IdentityInfoDTO>();
-		leftThumb.add(identityInfoDTO);
-
-		identitydto.setLeftThumb(leftThumb);
+		identityInfoDTO.setValue("V");
+		List<IdentityInfoDTO> dobType = new ArrayList<IdentityInfoDTO>();
+		dobType.add(identityInfoDTO);
+		identitydto.setDobType(dobType);
 		request.setIdentity(identitydto);
 		authRequestDTO.setRequest(request);
 
 		Function<IdentityDTO, List<IdentityInfoDTO>> fun = new Function<IdentityDTO, List<IdentityInfoDTO>>() {
 			@Override
 			public List<IdentityInfoDTO> apply(IdentityDTO t) {
-				return t.getLeftThumb();
+				return t.getDobType();
 			}
 		};
 		@SuppressWarnings("unchecked")
@@ -565,20 +634,18 @@ public class BaseAuthRequestValidatorTest {
 
 		IdentityDTO identitydto = new IdentityDTO();
 		RequestDTO request = new RequestDTO();
-
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue("fingerImage");
-		List<IdentityInfoDTO> leftThumb = new ArrayList<IdentityInfoDTO>();
-		leftThumb.add(identityInfoDTO);
-
-		identitydto.setLeftThumb(leftThumb);
+		identityInfoDTO.setValue("");
+		List<IdentityInfoDTO> dobType = new ArrayList<IdentityInfoDTO>();
+		dobType.add(identityInfoDTO);
+		identitydto.setDobType(dobType);
 		request.setIdentity(identitydto);
 		authRequestDTO.setRequest(null);
 
 		Function<IdentityDTO, List<IdentityInfoDTO>> fun = new Function<IdentityDTO, List<IdentityInfoDTO>>() {
 			@Override
 			public List<IdentityInfoDTO> apply(IdentityDTO t) {
-				return t.getLeftThumb();
+				return t.getDobType();
 			}
 		};
 		@SuppressWarnings("unchecked")
@@ -621,16 +688,13 @@ public class BaseAuthRequestValidatorTest {
 	@Test
 	public void testIsContainDeviceInfo_DeviceAvailable_ReturnTrue() {
 		BioInfo bioinfo = new BioInfo();
-		DeviceInfo deviceInfo = new DeviceInfo();
-		deviceInfo.setDeviceId("12345");
-		deviceInfo.setMake("Mantra");
-		deviceInfo.setModel("M123");
-		bioinfo.setDeviceInfo(deviceInfo);
+		bioinfo.setDeviceId("1234567890");
+		bioinfo.setDeviceProviderID("1234567890");
 		List<BioInfo> deviceInfoList = new ArrayList<BioInfo>();
 		deviceInfoList.add(bioinfo);
 
 		boolean isDeviceAvailableForBio = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator,
-				"isContainDeviceInfo", deviceInfoList);
+				"isContainDeviceId", deviceInfoList);
 		assertTrue(isDeviceAvailableForBio);
 
 	}
@@ -641,12 +705,11 @@ public class BaseAuthRequestValidatorTest {
 	@Test
 	public void testIsContainDeviceInfo_DeviceNotAvailable_ReturnFalse() {
 		BioInfo bioinfo = new BioInfo();
-		bioinfo.setDeviceInfo(null);
 		List<BioInfo> deviceInfoList = new ArrayList<BioInfo>();
 		deviceInfoList.add(bioinfo);
 
 		boolean isDeviceAvailableForBio = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator,
-				"isContainDeviceInfo", deviceInfoList);
+				"isContainDeviceId", deviceInfoList);
 		assertFalse(isDeviceAvailableForBio);
 
 	}
@@ -666,7 +729,7 @@ public class BaseAuthRequestValidatorTest {
 		bioInfoList.add(bioinfo);
 		bioInfoList.add(bioinfo1);
 
-		authRequestDTO.setBioInfo(bioInfoList);
+		authRequestDTO.setBioMetadata(bioInfoList);
 
 		boolean isDuplicateBioType = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "isDuplicateBioType",
 				authRequestDTO, BioType.IRISIMG);
@@ -687,7 +750,7 @@ public class BaseAuthRequestValidatorTest {
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		bioInfoList.add(bioinfo);
 
-		authRequestDTO.setBioInfo(bioInfoList);
+		authRequestDTO.setBioMetadata(bioInfoList);
 
 		boolean isDuplicateBioType = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "isDuplicateBioType",
 				authRequestDTO, BioType.IRISIMG);
@@ -707,7 +770,7 @@ public class BaseAuthRequestValidatorTest {
 		bioinfo1.setBioType("test");
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 
-		authRequestDTO.setBioInfo(bioInfoList);
+		authRequestDTO.setBioMetadata(bioInfoList);
 
 		boolean isDuplicateBioType = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "isDuplicateBioType",
 				authRequestDTO, BioType.FGRIMG);
@@ -728,8 +791,6 @@ public class BaseAuthRequestValidatorTest {
 		finger.add(identityInfoDTO);
 
 		IdentityDTO identity = new IdentityDTO();
-		identity.setLeftThumb(finger);
-		identity.setLeftIndex(finger);
 
 		RequestDTO request = new RequestDTO();
 		request.setIdentity(identity);
@@ -746,28 +807,30 @@ public class BaseAuthRequestValidatorTest {
 	@Test
 	public void testValidateFingerRequestCount_anyInfoIsEqualToOneOrLessThanOne_fingerCountExceeding2() {
 		authRequestDTO = getAuthRequestDTO();
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setBio(true);
+		authRequestDTO.setRequestedAuth(authType);
 
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue("fingerImage");
-		List<IdentityInfoDTO> finger = new ArrayList<IdentityInfoDTO>();
-		finger.add(identityInfoDTO);
+		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
+		fingerValue.setValue("finger");
+		fingerValue.setSubType("Thumb");
+		fingerValue.setType("finger");
+		BioIdentityInfoDTO fingerValue2 = new BioIdentityInfoDTO();
+		fingerValue2.setValue("");
+		fingerValue2.setSubType("Thumb");
+		fingerValue2.setType("finger");
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(fingerValue);
+		fingerIdentityInfoDtoList.add(fingerValue2);
+		
 
-		IdentityDTO identity = new IdentityDTO();
-		identity.setLeftThumb(finger);
-		identity.setLeftIndex(finger);
-		identity.setLeftMiddle(finger);
-		identity.setLeftRing(finger);
-		identity.setLeftLittle(finger);
-		identity.setRightThumb(finger);
-		identity.setRightIndex(finger);
-		identity.setRightMiddle(finger);
-		identity.setRightRing(finger);
-		identity.setRightLittle(finger);
+		IdentityDTO identitydto = new IdentityDTO();
+		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
-		RequestDTO request = new RequestDTO();
-		request.setIdentity(identity);
-		authRequestDTO.setRequest(request);
+		RequestDTO requestDTO = new RequestDTO();
+		requestDTO.setIdentity(identitydto);
 
+		authRequestDTO.setRequest(requestDTO);
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFingerRequestCount", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 	}
@@ -779,18 +842,26 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateFingerRequestCount_anyInfoIsMoreThanOne() {
 		authRequestDTO = getAuthRequestDTO();
 
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue("fingerImage");
-		List<IdentityInfoDTO> finger = new ArrayList<IdentityInfoDTO>();
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
+		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
+		fingerValue.setValue("finger");
+		fingerValue.setSubType("Thumb");
+		fingerValue.setType("finger");
+		BioIdentityInfoDTO fingerValue2 = new BioIdentityInfoDTO();
+		fingerValue2.setValue("finger");
+		fingerValue2.setSubType("INDEXFINGER");
+		fingerValue2.setType("finger");
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(fingerValue);
+		fingerIdentityInfoDtoList.add(fingerValue2);
+		
 
-		IdentityDTO identity = new IdentityDTO();
-		identity.setLeftThumb(finger);
+		IdentityDTO identitydto = new IdentityDTO();
+		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
-		RequestDTO request = new RequestDTO();
-		request.setIdentity(identity);
-		authRequestDTO.setRequest(request);
+		RequestDTO requestDTO = new RequestDTO();
+		requestDTO.setIdentity(identitydto);
+
+		authRequestDTO.setRequest(requestDTO);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFingerRequestCount", authRequestDTO, error);
 		assertTrue(error.hasErrors());
@@ -803,79 +874,43 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateFingerRequestCount_fingerCountExceeding10() {
 		authRequestDTO = getAuthRequestDTO();
 
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue("fingerImage");
-		List<IdentityInfoDTO> finger = new ArrayList<IdentityInfoDTO>();
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
+		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
+		fingerValue.setValue("finger");
+		fingerValue.setSubType("Thumb");
+		fingerValue.setType("finger");
+		BioIdentityInfoDTO fingerValue2 = new BioIdentityInfoDTO();
+		fingerValue2.setValue("finger");
+		fingerValue2.setSubType("INDEXFINGER");
+		fingerValue2.setType("finger");
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(fingerValue);
+		fingerIdentityInfoDtoList.add(fingerValue2);
+		fingerIdentityInfoDtoList.add(fingerValue2);
+		fingerIdentityInfoDtoList.add(fingerValue2);
+		fingerIdentityInfoDtoList.add(fingerValue2);
+		fingerIdentityInfoDtoList.add(fingerValue2);
+		fingerIdentityInfoDtoList.add(fingerValue2);
+		fingerIdentityInfoDtoList.add(fingerValue2);
+		fingerIdentityInfoDtoList.add(fingerValue2);
+		fingerIdentityInfoDtoList.add(fingerValue2);
+		fingerIdentityInfoDtoList.add(fingerValue2);
+		fingerIdentityInfoDtoList.add(fingerValue2);
+		fingerIdentityInfoDtoList.add(fingerValue2);
+		
 
-		IdentityDTO identity = new IdentityDTO();
-		identity.setLeftThumb(finger);
+		IdentityDTO identitydto = new IdentityDTO();
+		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
-		RequestDTO request = new RequestDTO();
-		request.setIdentity(identity);
-		authRequestDTO.setRequest(request);
+		RequestDTO requestDTO = new RequestDTO();
+		requestDTO.setIdentity(identitydto);
+
+		authRequestDTO.setRequest(requestDTO);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFingerRequestCount", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 	}
 
-	/**
-	 * Test multi fingers valueis exist.
-	 */
-	@Test
-	public void testMultiFingersValueisExist() {
-		authRequestDTO = getAuthRequestDTO();
 
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue("fingerImage");
-		List<IdentityInfoDTO> finger = new ArrayList<IdentityInfoDTO>();
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		finger.add(identityInfoDTO);
-		IdentityDTO identity = new IdentityDTO();
-		identity.setLeftThumb(finger);
-		identity.setRightThumb(finger);
-		RequestDTO request = new RequestDTO();
-		request.setIdentity(identity);
-		authRequestDTO.setRequest(request);
-
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateMultiFingersValue", authRequestDTO, error);
-		assertTrue(error.hasErrors());
-	}
-
-	/**
-	 * Test id info count.
-	 */
-	@Test
-	public void testIdInfoCount() {
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue("fingerImage");
-		List<IdentityInfoDTO> deviceInfoList = new ArrayList<IdentityInfoDTO>();
-		deviceInfoList.add(identityInfoDTO);
-
-		Long idInfoCount = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "getIdInfoCount", deviceInfoList);
-		assertEquals(idInfoCount, Long.valueOf(1));
-	}
 
 	/**
 	 * Test validate iris request count.
@@ -884,17 +919,27 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateIrisRequestCount() {
 		authRequestDTO = getAuthRequestDTO();
 
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue("iris");
-		List<IdentityInfoDTO> leftEye = new ArrayList<IdentityInfoDTO>();
-		leftEye.add(identityInfoDTO);
+		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
+		irisValue.setValue("iris img");
+		irisValue.setSubType("left");
+		irisValue.setType("iris");
+		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
+		faceValue.setValue("face img");
+		faceValue.setSubType("Thumb");
+		faceValue.setType("face");
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(irisValue);
+		fingerIdentityInfoDtoList.add(faceValue);
+		
 
-		IdentityDTO identity = new IdentityDTO();
-		identity.setLeftEye(leftEye);
+		IdentityDTO identitydto = new IdentityDTO();
+		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
-		RequestDTO request = new RequestDTO();
-		request.setIdentity(identity);
-		authRequestDTO.setRequest(request);
+		RequestDTO requestDTO = new RequestDTO();
+		requestDTO.setIdentity(identitydto);
+
+		authRequestDTO.setRequest(requestDTO);
+
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIrisRequestCount", authRequestDTO, error);
 
@@ -909,18 +954,28 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateIrisRequestCount_hasLeftEyeRequestMoreThanOne() {
 		authRequestDTO = getAuthRequestDTO();
 
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue("iris");
-		List<IdentityInfoDTO> leftEye = new ArrayList<IdentityInfoDTO>();
-		leftEye.add(identityInfoDTO);
-		leftEye.add(identityInfoDTO);
+		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
+		irisValue.setValue("iris img");
+		irisValue.setSubType("left");
+		irisValue.setType("iris");
+		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
+		faceValue.setValue("face img");
+		faceValue.setSubType("Thumb");
+		faceValue.setType("face");
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(irisValue);
+		fingerIdentityInfoDtoList.add(faceValue);
+		fingerIdentityInfoDtoList.add(irisValue);
+		
 
-		IdentityDTO identity = new IdentityDTO();
-		identity.setLeftEye(leftEye);
+		IdentityDTO identitydto = new IdentityDTO();
+		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
-		RequestDTO request = new RequestDTO();
-		request.setIdentity(identity);
-		authRequestDTO.setRequest(request);
+		RequestDTO requestDTO = new RequestDTO();
+		requestDTO.setIdentity(identitydto);
+
+		authRequestDTO.setRequest(requestDTO);
+
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIrisRequestCount", authRequestDTO, error);
 		System.err.println(error);
@@ -934,13 +989,12 @@ public class BaseAuthRequestValidatorTest {
 	@Test
 	public void testCheckOTPAuth_HasNoError() {
 		String otp = "456789";
-		PinInfo pinInfo = new PinInfo();
-		pinInfo.setType("OTP");
-		pinInfo.setValue(otp);
 		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
-		List<PinInfo> listOfPinInfo = new ArrayList<>();
-		listOfPinInfo.add(pinInfo);
-		authRequestDTO.setPinInfo(listOfPinInfo);
+		RequestDTO request=new RequestDTO();
+		AdditionalFactorsDTO additionalFactors=new AdditionalFactorsDTO();
+		additionalFactors.setTotp(otp);
+		request.setAdditionalFactors(additionalFactors);
+	authRequestDTO.setRequest(request);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkOTPAuth", authRequestDTO, error);
 		assertFalse(error.hasErrors());
@@ -952,7 +1006,6 @@ public class BaseAuthRequestValidatorTest {
 	@Test
 	public void testCheckOTPAuth_HasNullValue_HasError() {
 		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
-		authRequestDTO.setPinInfo(null);
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkOTPAuth", authRequestDTO, error);
 		assertTrue(error.hasErrors());
@@ -964,14 +1017,12 @@ public class BaseAuthRequestValidatorTest {
 	@Test
 	public void testCheckOTPAuth_HasEmptyOTP_HasError() {
 		String otp = "";
-		PinInfo pinInfo = new PinInfo();
-		pinInfo.setType("OTP");
-		pinInfo.setValue(otp);
 		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
-		List<PinInfo> listOfPinInfo = new ArrayList<>();
-		listOfPinInfo.add(pinInfo);
-		authRequestDTO.setPinInfo(listOfPinInfo);
-
+		RequestDTO request=new RequestDTO();
+		AdditionalFactorsDTO additionalFactors=new AdditionalFactorsDTO();
+		additionalFactors.setTotp(otp);
+		request.setAdditionalFactors(additionalFactors);
+	authRequestDTO.setRequest(request);
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkOTPAuth", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 	}
@@ -983,14 +1034,13 @@ public class BaseAuthRequestValidatorTest {
 	public void testGetOtpValue() {
 
 		String otp = "456789";
-		PinInfo pinInfo = new PinInfo();
-		pinInfo.setType("OTP");
-		pinInfo.setValue(otp);
 		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
-		List<PinInfo> listOfPinInfo = new ArrayList<>();
-		listOfPinInfo.add(pinInfo);
+		RequestDTO request=new RequestDTO();
+		AdditionalFactorsDTO additionalFactors=new AdditionalFactorsDTO();
+		additionalFactors.setTotp(otp);
+		request.setAdditionalFactors(additionalFactors);
+	authRequestDTO.setRequest(request);
 
-		authRequestDTO.setPinInfo(listOfPinInfo);
 		Optional<String> isOtp = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "getOtpValue",
 				authRequestDTO);
 		assertTrue(isOtp.isPresent());
@@ -1113,13 +1163,12 @@ public class BaseAuthRequestValidatorTest {
 	private AuthRequestDTO getAuthRequestDTO() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+		authRequestDTO.setPolicyID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("5371843613598206");
+		
 
 		return authRequestDTO;
 	}
@@ -1130,16 +1179,14 @@ public class BaseAuthRequestValidatorTest {
 	@Test
 	public void testValidAuthRequest() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("234567890123");
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setPolicyID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setDemo(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(environment.getProperty("mosip.primary.lang-code"));
 		idInfoDTO.setValue("John");
@@ -1153,16 +1200,8 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
-		MatchInfo matchInfo = new MatchInfo();
-		matchInfo.setAuthType("personalIdentity");
-		matchInfo.setLanguage("fre");
-		matchInfo.setMatchingStrategy("E");
-		matchInfo.setMatchingThreshold(100);
-		List<MatchInfo> matList = new ArrayList<>();
-		matList.add(matchInfo);
-		authRequestDTO.setMatchInfo(matList);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
 		assertFalse(errors.hasErrors());
@@ -1174,16 +1213,14 @@ public class BaseAuthRequestValidatorTest {
 	@Test
 	public void testInValidAuthRequest_SecondaryLanguage() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("234567890123");
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setPolicyID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setDemo(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(environment.getProperty("mosip.secondary.lang-code"));
 		idInfoDTO.setValue("John");
@@ -1197,7 +1234,7 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("fullAddress");
@@ -1212,7 +1249,6 @@ public class BaseAuthRequestValidatorTest {
 		List<MatchInfo> matList = new ArrayList<>();
 		matList.add(matchInfo);
 		matList.add(matchInfo111);
-		authRequestDTO.setMatchInfo(matList);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
 		assertFalse(errors.hasErrors());
@@ -1224,17 +1260,14 @@ public class BaseAuthRequestValidatorTest {
 	@Test
 	public void testInValidAuthRequest() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("234567890123");
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setPolicyID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
-		authTypeDTO.setFullAddress(true);
+		authTypeDTO.setDemo(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(null);
 		idInfoDTO.setValue(null);
@@ -1248,7 +1281,7 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("personalIdentity");
@@ -1263,7 +1296,6 @@ public class BaseAuthRequestValidatorTest {
 		List<MatchInfo> matList = new ArrayList<>();
 		matList.add(matchInfo);
 		matList.add(matchInfo111);
-		authRequestDTO.setMatchInfo(matList);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
 		assertFalse(errors.hasErrors());
@@ -1275,19 +1307,15 @@ public class BaseAuthRequestValidatorTest {
 	@Test
 	public void testValidAuthRequest2() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("234567890123");
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setPolicyID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
-		authTypeDTO.setAddress(true);
+		authTypeDTO.setDemo(true);
 		authTypeDTO.setBio(true);
-		authTypeDTO.setFullAddress(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(environment.getProperty("mosip.primary.lang-code"));
 		idInfoDTO.setValue("John");
@@ -1301,7 +1329,7 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("personalIdentity");
@@ -1339,7 +1367,6 @@ public class BaseAuthRequestValidatorTest {
 		matList.add(matchInfo1);
 		matList.add(matchInfo11);
 		matList.add(matchInfo);
-		authRequestDTO.setMatchInfo(matList);
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 	}
@@ -1357,8 +1384,8 @@ public class BaseAuthRequestValidatorTest {
 		leftEye.add(identityInfoDTO);
 
 		IdentityDTO identity = new IdentityDTO();
-		identity.setLeftEye(leftEye);
-		identity.setRightEye(leftEye);
+//		identity.setLeftEye(leftEye);
+//		identity.setRightEye(leftEye);
 
 		RequestDTO request = new RequestDTO();
 		request.setIdentity(identity);
@@ -1375,22 +1402,33 @@ public class BaseAuthRequestValidatorTest {
 	@Test
 	public void testValidateMultiIrisRequest() {
 		authRequestDTO = getAuthRequestDTO();
+		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
+		irisValue.setValue("irisImage");
+		irisValue.setSubType("left");
+		irisValue.setType("iris");
+		BioIdentityInfoDTO irisValue2 = new BioIdentityInfoDTO();
+		irisValue2.setValue("iris img");
+		irisValue2.setSubType("right");
+		irisValue2.setType("iris");
+		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
+		faceValue.setValue("face img");
+		faceValue.setSubType("Thumb");
+		faceValue.setType("face");
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(irisValue);
+		fingerIdentityInfoDtoList.add(faceValue);
+		fingerIdentityInfoDtoList.add(irisValue2);
+		
 
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue(null);
-		List<IdentityInfoDTO> leftEye = new ArrayList<IdentityInfoDTO>();
-		leftEye.add(identityInfoDTO);
-		IdentityInfoDTO identityInfoDTOs = new IdentityInfoDTO();
-		identityInfoDTOs.setValue("");
-		List<IdentityInfoDTO> rightEye = new ArrayList<IdentityInfoDTO>();
-		rightEye.add(identityInfoDTOs);
-		IdentityDTO identity = new IdentityDTO();
-		identity.setLeftEye(leftEye);
-		identity.setRightEye(rightEye);
+		IdentityDTO identitydto = new IdentityDTO();
+		identitydto.setBiometrics(fingerIdentityInfoDtoList);
 
-		RequestDTO request = new RequestDTO();
-		request.setIdentity(identity);
-		authRequestDTO.setRequest(request);
+		RequestDTO requestDTO = new RequestDTO();
+		requestDTO.setIdentity(identitydto);
+
+		authRequestDTO.setRequest(requestDTO);
+
+
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateMultiIrisValue", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 
@@ -1403,20 +1441,33 @@ public class BaseAuthRequestValidatorTest {
 	public void testInvalidMultiIrisRequest() {
 		authRequestDTO = getAuthRequestDTO();
 
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue(null);
-		List<IdentityInfoDTO> leftEye = new ArrayList<IdentityInfoDTO>();
-		leftEye.add(identityInfoDTO);
-		IdentityInfoDTO identityInfoDTOs = new IdentityInfoDTO();
-		identityInfoDTOs.setValue("Finger1");
-		List<IdentityInfoDTO> rightEye = new ArrayList<IdentityInfoDTO>();
-		rightEye.add(identityInfoDTOs);
-		IdentityDTO identity = new IdentityDTO();
-		identity.setLeftEye(rightEye);
-		identity.setRightEye(rightEye);
-		RequestDTO request = new RequestDTO();
-		request.setIdentity(identity);
-		authRequestDTO.setRequest(request);
+		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
+		irisValue.setValue("iris img");
+		irisValue.setSubType("left");
+		irisValue.setType("iris");
+		BioIdentityInfoDTO irisValue2 = new BioIdentityInfoDTO();
+		irisValue2.setValue("iris img");
+		irisValue2.setSubType("right");
+		irisValue2.setType("iris");
+		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
+		faceValue.setValue("face img");
+		faceValue.setSubType("Thumb");
+		faceValue.setType("face");
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(irisValue);
+		fingerIdentityInfoDtoList.add(faceValue);
+		fingerIdentityInfoDtoList.add(irisValue2);
+		
+
+		IdentityDTO identitydto = new IdentityDTO();
+		identitydto.setBiometrics(fingerIdentityInfoDtoList);
+
+		RequestDTO requestDTO = new RequestDTO();
+		requestDTO.setIdentity(identitydto);
+
+		authRequestDTO.setRequest(requestDTO);
+
+
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateMultiIrisValue", authRequestDTO, error);
 
 		assertTrue(error.hasErrors());
@@ -1429,10 +1480,9 @@ public class BaseAuthRequestValidatorTest {
 	@Test
 	public void testValidateAdandFullAdd() {
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
-		authTypeDTO.setFullAddress(true);
+		authTypeDTO.setDemo(true);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		Set<String> availableAuthTypeInfos = new HashSet<>();
 		availableAuthTypeInfos.add("address");
 		availableAuthTypeInfos.add("fullAddress");
@@ -1457,15 +1507,14 @@ public class BaseAuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
-		authTypeDTO.setFullAddress(true);
-		authRequestDTO.setAuthType(authTypeDTO);
+		authTypeDTO.setDemo(true);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
 		idDTO.setAge(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkAge", authRequestDTO, error);
 		assertTrue(error.hasErrors());
@@ -1483,169 +1532,158 @@ public class BaseAuthRequestValidatorTest {
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
-		authTypeDTO.setFullAddress(true);
-		authRequestDTO.setAuthType(authTypeDTO);
+		authTypeDTO.setDemo(true);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setDob(idInfoList);
 		idDTO.setAge(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDOB", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 	}
 
-	/**
-	 * Test validate device info.
-	 */
-	@Test
-	public void testValidateDeviceInfo() {
-		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType("irisImg");
-		DeviceInfo deviceInfo = new DeviceInfo();
-		deviceInfo.setDeviceId("test1");
-		deviceInfo.setMake("cogent");
-		deviceInfo.setModel("M123");
-		DeviceInfo deviceInfo1 = new DeviceInfo();
-		deviceInfo1.setDeviceId(null);
-		deviceInfo1.setMake(null);
-		deviceInfo1.setModel("M123");
-		DeviceInfo deviceInfo2 = new DeviceInfo();
-		deviceInfo2.setDeviceId("");
-		deviceInfo2.setMake("");
-		deviceInfo2.setModel("M123");
-		DeviceInfo deviceInfo3 = new DeviceInfo();
-		deviceInfo3.setDeviceId(null);
-		deviceInfo3.setMake("");
-		deviceInfo3.setModel("M123");
-		bioinfo.setDeviceInfo(deviceInfo1);
-		List<BioInfo> deviceInfoList = new ArrayList<BioInfo>();
-		deviceInfoList.add(bioinfo);
 
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateDeviceInfo", deviceInfoList, error);
-		assertTrue(error.hasErrors());
-	}
-
-	/**
-	 * Test validate bio type.
-	 */
-	@Test
-	public void testValidateBioType() {
-		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType("test");
-		DeviceInfo deviceInfo = new DeviceInfo();
-		deviceInfo.setDeviceId("test1");
-		deviceInfo.setMake("test");
-		deviceInfo.setModel("M123");
-		DeviceInfo deviceInfo1 = new DeviceInfo();
-		deviceInfo1.setDeviceId(null);
-		deviceInfo1.setMake(null);
-		deviceInfo1.setModel("M123");
-		DeviceInfo deviceInfo2 = new DeviceInfo();
-		deviceInfo2.setDeviceId("");
-		deviceInfo2.setMake("");
-		deviceInfo2.setModel("M123");
-		DeviceInfo deviceInfo3 = new DeviceInfo();
-		deviceInfo3.setDeviceId(null);
-		deviceInfo3.setMake("");
-		deviceInfo3.setModel("M123");
-		bioinfo.setDeviceInfo(deviceInfo1);
-		List<BioInfo> deviceInfoList = new ArrayList<BioInfo>();
-		deviceInfoList.add(bioinfo);
-
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioType", deviceInfoList, error);
-		assertTrue(error.hasErrors());
-	}
 
 	@Test
 	public void testPinDetails_success() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("mosip.identity.auth");
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("284169042058");
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setPolicyID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPin(true);
-		authRequestDTO.setAuthType(authTypeDTO);
-		PinInfo info = new PinInfo();
-		info.setType("pin");
-		info.setValue("112233");
-		List<PinInfo> infoList = new ArrayList<PinInfo>();
-		infoList.add(info);
-		authRequestDTO.setPinInfo(infoList);
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validatePinDetails", authRequestDTO, error);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
+		String pin = "456789";
+		RequestDTO request=new RequestDTO();
+		AdditionalFactorsDTO additionalFactors=new AdditionalFactorsDTO();
+		additionalFactors.setStaticPin(pin);
+		request.setAdditionalFactors(additionalFactors);
+	authRequestDTO.setRequest(request);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO, error);
 	}
 
 	@Test
 	public void testPinDetails_isEmpty() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("mosip.identity.auth");
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("284169042058");
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setPolicyID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPin(true);
-		authRequestDTO.setAuthType(authTypeDTO);
-		PinInfo info = new PinInfo();
-		info.setType("");
-		info.setValue("");
-		List<PinInfo> infoList = new ArrayList<PinInfo>();
-		infoList.add(info);
-		authRequestDTO.setPinInfo(infoList);
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validatePinDetails", authRequestDTO, error);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
+		String pin = "";
+		RequestDTO request=new RequestDTO();
+		AdditionalFactorsDTO additionalFactors=new AdditionalFactorsDTO();
+		additionalFactors.setStaticPin(pin);
+		request.setAdditionalFactors(additionalFactors);
+	authRequestDTO.setRequest(request);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO, error);
 	}
 
 	@Test
 	public void testPinDetails_isNull() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setId("mosip.identity.auth");
-		authRequestDTO.setIdvId("284169042058");
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setPolicyID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPin(true);
-		authRequestDTO.setAuthType(authTypeDTO);
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validatePinDetails", authRequestDTO, error);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
+		String pin = null;
+		RequestDTO request=new RequestDTO();
+		AdditionalFactorsDTO additionalFactors=new AdditionalFactorsDTO();
+		additionalFactors.setStaticPin(pin);
+		request.setAdditionalFactors(additionalFactors);
+	authRequestDTO.setRequest(request);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO, error);
 	}
 
 	@Test
 	public void testPinDetails_invalidPinTypePinValue() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("mosip.identity.auth");
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("284169042058");
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setPolicyID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPin(true);
-		authRequestDTO.setAuthType(authTypeDTO);
-		PinInfo info = new PinInfo();
-		info.setType("test");
-		info.setValue("test");
-		List<PinInfo> infoList = new ArrayList<PinInfo>();
-		infoList.add(info);
-		authRequestDTO.setPinInfo(infoList);
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validatePinDetails", authRequestDTO, error);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
+		String pin = "123e45";
+		RequestDTO request=new RequestDTO();
+		AdditionalFactorsDTO additionalFactors=new AdditionalFactorsDTO();
+		additionalFactors.setStaticPin(pin);
+		request.setAdditionalFactors(additionalFactors);
+	authRequestDTO.setRequest(request);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO, error);
+	}
+	@Test
+	public void testOTP_validOTPValue() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("mosip.identity.auth");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setId("id");
+		authRequestDTO.setPolicyID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setOtp(true);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
+		String otp = "123445";
+		RequestDTO request=new RequestDTO();
+		AdditionalFactorsDTO additionalFactors=new AdditionalFactorsDTO();
+		additionalFactors.setTotp(otp);
+		request.setAdditionalFactors(additionalFactors);
+	authRequestDTO.setRequest(request);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO, error);
+	}
+	@Test
+	public void testOTP_InValidOTPValue() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("mosip.identity.auth");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setId("id");
+		authRequestDTO.setPolicyID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setOtp(true);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
+		String otp = null;
+		RequestDTO request=new RequestDTO();
+		AdditionalFactorsDTO additionalFactors=new AdditionalFactorsDTO();
+		additionalFactors.setTotp(otp);
+		request.setAdditionalFactors(additionalFactors);
+	authRequestDTO.setRequest(request);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO, error);
+	}
+	
+	@Test
+	public void testBioType() {
+		BioInfo bioInfo=new BioInfo();
+		bioInfo.setBioType("fgrMins");
+		List<BioInfo> bioMetadata=new ArrayList<BioInfo>();
+		bioMetadata.add(bioInfo);
+	ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioType", bioMetadata, error);
+	assertTrue(error.hasErrors());
 	}
 }

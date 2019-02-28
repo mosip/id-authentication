@@ -197,11 +197,9 @@ public class OTPControllerTest {
 
 	private OtpRequestDTO getOtpRequestDTO() {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
-		otpRequestDto.setTspID("1234567890");
-		otpRequestDto.setIdvIdType(IdType.UIN.getType());
+		otpRequestDto.setPartnerID("1234567890");
 		// otpRequestDto.setRequestTime(new Date());
-		otpRequestDto.setTxnID("1234567890");
-		otpRequestDto.setIdvId("1234567890");
+		otpRequestDto.setTransactionID("1234567890");
 		//otpRequestDto.setVer("1.0");
 
 		return otpRequestDto;

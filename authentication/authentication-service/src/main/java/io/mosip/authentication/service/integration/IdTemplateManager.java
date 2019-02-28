@@ -42,32 +42,32 @@ public class IdTemplateManager {
 	/** UTF type. */
 	private static final String ENCODE_TYPE = "UTF-8";
 
-	/** The template manager. */
+	/** The template manager to apply template for eKyc */
 	private TemplateManager templateManager;
 
-	/** PDF Generator */
+	/** PDF Generator for eKYC document */
 	private PDFGenerator pdfGenerator;
 
 	/**
-	 * 
+	 * Template Manager Builder to build templates
 	 */
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
 
 	/**
-	 * 
+	 * To integrate Master data from Kernal
 	 */
 	@Autowired
 	private MasterDataManager masterDataManager;
 
 	/**
-	 * 
+	 * The environment
 	 */
 	@Autowired
 	private Environment environment;
 
 	/**
-	 * 
+	 * Id Info Helper
 	 */
 	@Autowired
 	private IdInfoHelper idInfoHelper;

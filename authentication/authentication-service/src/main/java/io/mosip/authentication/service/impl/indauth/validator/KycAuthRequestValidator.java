@@ -1,6 +1,11 @@
 package io.mosip.authentication.service.impl.indauth.validator;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -27,6 +32,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 
 @Component
 public class KycAuthRequestValidator extends BaseAuthRequestValidator {
+
+	private static final String EKYC_ALLOWED_AUTH_TYPE = "ekyc.allowed.auth.type";
 
 	/** The auth request validator. */
 	@Autowired
@@ -88,19 +95,9 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 		super.validate(target, errors);
 		KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO) target;
 		if (kycAuthRequestDTO != null) {
-
-			if (kycAuthRequestDTO.getAuthRequest() != null) {
-				AuthRequestDTO authRequest = kycAuthRequestDTO.getAuthRequest();
-				BeanPropertyBindingResult authErrors = new BeanPropertyBindingResult(authRequest,
-						errors.getObjectName());
-				authRequestValidator.validate(authRequest, authErrors);
-				errors.addAllErrors(authErrors);
-			} else {
-				mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_AUTH_REQUEST + AUTH_REQUEST);
-				errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
-								AUTH_REQUEST));
-			}
+			BeanPropertyBindingResult authErrors = new BeanPropertyBindingResult(kycAuthRequestDTO, errors.getObjectName());
+			authRequestValidator.validate(kycAuthRequestDTO, authErrors);
+			errors.addAllErrors(authErrors);
 
 			if (!errors.hasErrors()) {
 				validateConsentReq(kycAuthRequestDTO, errors);
@@ -131,7 +128,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
 	private void validateMUAPermission(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
 		String key = ACCESS_LEVEL
-				+ Optional.ofNullable(kycAuthRequestDTO.getAuthRequest()).map(AuthRequestDTO::getPartnerID).orElse("");
+				+ Optional.ofNullable(kycAuthRequestDTO).map(AuthRequestDTO::getPartnerID).orElse("");
 		String accesslevel = environment.getProperty(key);
 		if (accesslevel != null && accesslevel.equals(KycType.NONE.getType())) {
 			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
@@ -148,22 +145,26 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param kycAuthRequestDTO the kyc auth request DTO
 	 */
 	private void validateAuthType(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
-		if (kycAuthRequestDTO.getEKycAuthType() != null && !kycAuthRequestDTO.getEKycAuthType().isEmpty()) {
-			boolean isValidAuthtype = kycAuthRequestDTO.getEKycAuthType().chars().mapToObj(i -> (char) i)
-					.map(String::valueOf)
-					.allMatch(authTypeStr -> EkycAuthType.getEkycAuthType(authTypeStr).filter(eAuthType -> eAuthType
-							.getAuthTypePredicate().test(kycAuthRequestDTO.getAuthRequest().getRequestedAuth()))
-							.isPresent());
-			if (!isValidAuthtype) {
-				mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_TYPE);
-				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_EKYC_AUTHTYPE.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INVALID_EKYC_AUTHTYPE.getErrorMessage(),
-								AUTH_TYPE));
-			}
-		} else {
-			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + AUTH_TYPE);
-			errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { AUTH_TYPE }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		String values = env.getProperty(EKYC_ALLOWED_AUTH_TYPE);
+		List<String> allowedAuthTypesList = Arrays.stream(values.split(",")).collect(Collectors.toList());
+		Map<Boolean, List<EkycAuthType>> authTypes = Stream.of(EkycAuthType.values())
+											.collect(Collectors.partitioningBy(ekycAuthType -> allowedAuthTypesList.contains(ekycAuthType.getType())));
+		List<EkycAuthType> allowedAuthTypes = authTypes.get(Boolean.TRUE);
+		List<EkycAuthType> notAllowedAuthTypes =  authTypes.get(Boolean.FALSE);
+		
+		boolean noNotAllowedAuthTypeEnabled = notAllowedAuthTypes.stream()
+									.noneMatch(ekycAuthType -> 
+											ekycAuthType.getAuthTypePredicate()
+														.test(kycAuthRequestDTO.getRequestedAuth()));
+		boolean anyAllowedAuthTypeEnabled = allowedAuthTypes.stream()
+									.anyMatch(ekycAuthType -> 
+											ekycAuthType.getAuthTypePredicate()
+														.test(kycAuthRequestDTO.getRequestedAuth()));
+		boolean isValidAuthtype = noNotAllowedAuthTypeEnabled && anyAllowedAuthTypeEnabled;
+		if (!isValidAuthtype) {
+			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_TYPE);
+			errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_EKYC_AUTHTYPE.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_EKYC_AUTHTYPE.getErrorMessage(), AUTH_TYPE));
 		}
 
 	}

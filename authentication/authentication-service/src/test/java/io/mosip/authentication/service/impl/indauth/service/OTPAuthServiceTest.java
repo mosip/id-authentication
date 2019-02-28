@@ -102,17 +102,11 @@ public class OTPAuthServiceTest {
 	@Test(expected = IdValidationFailedException.class)
 	public void TestIDDataValidationException() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authreqdto = new AuthRequestDTO();
-		authreqdto.setReqTime("2019-02-18T18:17:48.923+05:30");
+		authreqdto.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setOtp(true);
-		authreqdto.setAuthType(authType);
-		List<PinInfo> pinInfolist = new ArrayList<>();
-		PinInfo pinInfo = new PinInfo();
-		pinInfo.setType(PinType.OTP.getType());
-		pinInfo.setValue("123456");
-		pinInfolist.add(pinInfo);
-		authreqdto.setPinInfo(pinInfolist);
-		authserviceimpl.authenticate(authreqdto, "1234567890",Collections.emptyMap());
+		authreqdto.setRequestedAuth(authType);
+		authserviceimpl.authenticate(authreqdto, "1234567890", Collections.emptyMap());
 	}
 
 	@Test
@@ -120,17 +114,11 @@ public class OTPAuthServiceTest {
 		AuthRequestDTO authreqdto = new AuthRequestDTO();
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setOtp(true);
-		authreqdto.setAuthType(authType);
-		authreqdto.setTxnID("1234567890");
-		authreqdto.setTspID("1234567890");
-		authreqdto.setReqTime("2019-02-18T18:17:48.923+05:30");
+		authreqdto.setRequestedAuth(authType);
+		authreqdto.setTransactionID("1234567890");
+		authreqdto.setPartnerID("1234567890");
+		authreqdto.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		List<PinInfo> pinInfolist = new ArrayList<>();
-		PinInfo pinInfo = new PinInfo();
-		pinInfo.setType(PinType.OTP.getType());
-		pinInfo.setValue("123456");
-		pinInfolist.add(pinInfo);
-		authreqdto.setPinInfo(pinInfolist);
-		authreqdto.setIdvIdType(IdType.UIN.getType());
 		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
 		AutnTxn authtxn = new AutnTxn();
 		authtxn.setId("test");
@@ -139,8 +127,8 @@ public class OTPAuthServiceTest {
 		valueList.add("1234567890");
 		Mockito.when(vidrepository.findVIDByUIN(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				 Mockito.any(), Mockito.any())).thenReturn(valueList);
-		AuthStatusInfo authStatusInfo = authserviceimpl.authenticate(authreqdto, "1234567890",Collections.emptyMap());
+				Mockito.any(), Mockito.any())).thenReturn(valueList);
+		AuthStatusInfo authStatusInfo = authserviceimpl.authenticate(authreqdto, "1234567890", Collections.emptyMap());
 		assertNotNull(authStatusInfo);
 	}
 
@@ -151,15 +139,9 @@ public class OTPAuthServiceTest {
 		mockenv.setProperty("application.id", "");
 		ReflectionTestUtils.setField(authserviceimpl, "env", mockenv);
 		AuthRequestDTO authreqdto = new AuthRequestDTO();
-		authreqdto.setReqTime("2019-02-18T18:17:48.923+05:30");
-		List<PinInfo> pinInfolist = new ArrayList<>();
-		PinInfo pinInfo = new PinInfo();
-		pinInfo.setType(PinType.OTP.getType());
-		pinInfo.setValue("123456");
-		pinInfolist.add(pinInfo);
-		authreqdto.setPinInfo(pinInfolist);
+		authreqdto.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		Mockito.when(otpmanager.validateOtp(Mockito.any(), Mockito.any())).thenReturn(true);
-		authserviceimpl.authenticate(authreqdto, "",Collections.emptyMap());
+		authserviceimpl.authenticate(authreqdto, "", Collections.emptyMap());
 	}
 
 	/**
@@ -174,7 +156,7 @@ public class OTPAuthServiceTest {
 		List<String> valueList = new ArrayList<>();
 		valueList.add("1234567890");
 		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				 Mockito.any(), Mockito.any())).thenReturn(valueList);
+				Mockito.any(), Mockito.any())).thenReturn(valueList);
 		assertTrue(authserviceimpl.validateTxnId("", "", "", "2019-02-18T18:17:48.923+05:30"));
 	}
 
@@ -194,7 +176,8 @@ public class OTPAuthServiceTest {
 		valueList.add("1234567890");
 		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenReturn(valueList);
-		assertTrue(authserviceimpl.validateTxnId("232323", "1234567890", "1234567890", "2019-02-18T18:17:48.923+05:30"));
+		assertTrue(
+				authserviceimpl.validateTxnId("232323", "1234567890", "1234567890", "2019-02-18T18:17:48.923+05:30"));
 	}
 
 	/**
@@ -239,7 +222,7 @@ public class OTPAuthServiceTest {
 	@Test(expected = IDDataValidationException.class)
 	public void TestOtpisNotPresent() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authserviceimpl.authenticate(authRequestDTO, "",Collections.emptyMap());
+		authserviceimpl.authenticate(authRequestDTO, "", Collections.emptyMap());
 	}
 
 	/**
@@ -255,26 +238,23 @@ public class OTPAuthServiceTest {
 		autntxnList.add(autntxn);
 		List<String> valueList = new ArrayList<>();
 		valueList.add("1234567890");
-		otpAuthRequestDTO.setTxnID("TXN00001");
+		otpAuthRequestDTO.setTransactionID("TXN00001");
 		otpAuthRequestDTO.setId("mosip.identity.auth");
-		otpAuthRequestDTO.setIdvId("1234567890");
-		otpAuthRequestDTO.setIdvIdType(IdType.VID.getType());
-		otpAuthRequestDTO.setTspID("TST0000001");
+		otpAuthRequestDTO.getRequest().getIdentity().setUin("1234567890");
+		otpAuthRequestDTO.setPartnerID("TST0000001");
 		PinInfo pinInfo = new PinInfo();
 		pinInfo.setType(PinType.OTP.getType());
 		pinInfo.setValue("23232323");
-		List<PinInfo> pinInfoList = new ArrayList();
-		pinInfoList.add(pinInfo);
-		otpAuthRequestDTO.setPinInfo(pinInfoList);
 		ZoneOffset offset = ZoneOffset.MAX;
-		otpAuthRequestDTO.setReqTime("2019-02-18T18:17:48.923+05:30");
+		otpAuthRequestDTO.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setOtp(true);
-		otpAuthRequestDTO.setAuthType(authType);
+		otpAuthRequestDTO.setRequestedAuth(authType);
 		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				 Mockito.any(), Mockito.any())).thenReturn(valueList);
+				Mockito.any(), Mockito.any())).thenReturn(valueList);
 		Mockito.when(vidrepository.findVIDByUIN(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
-		AuthStatusInfo authStatus = authserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",Collections.emptyMap());
+		AuthStatusInfo authStatus = authserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",
+				Collections.emptyMap());
 		assertFalse(authStatus.isStatus());
 	}
 
@@ -293,49 +273,18 @@ public class OTPAuthServiceTest {
 		autntxnList.add(autntxn);
 		List<String> valueList = new ArrayList<>();
 		valueList.add("1234567890");
-		otpAuthRequestDTO.setTxnID("TXN00001");
+		otpAuthRequestDTO.setTransactionID("TXN00001");
 		otpAuthRequestDTO.setId("mosip.identity.auth");
-		otpAuthRequestDTO.setIdvIdType(IdType.VID.getType());
-		otpAuthRequestDTO.setTspID("TST0000001");
-		PinInfo pinInfo = new PinInfo();
-		pinInfo.setType(PinType.OTP.getType());
-		pinInfo.setValue("23232323");
-		List<PinInfo> pinInfoList = new ArrayList();
-		pinInfoList.add(pinInfo);
-		otpAuthRequestDTO.setPinInfo(pinInfoList);
+		otpAuthRequestDTO.setPartnerID("TST0000001");
 		ZoneOffset offset = ZoneOffset.MAX;
-		otpAuthRequestDTO.setReqTime("2019-02-18T18:17:48.923+05:30");
+		otpAuthRequestDTO.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setOtp(true);
-		otpAuthRequestDTO.setAuthType(authType);
+		otpAuthRequestDTO.setRequestedAuth(authType);
 		Mockito.when(vidrepository.findVIDByUIN(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
-		AuthStatusInfo authStatus = authserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",Collections.emptyMap());
+		AuthStatusInfo authStatus = authserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",
+				Collections.emptyMap());
 		assertFalse(authStatus.isStatus());
-	}
-
-	/**
-	 * Test auth service with validate OTP
-	 * 
-	 * @throws IdAuthenticationBusinessException
-	 */
-
-//	@Ignore
-//	@Test(expected = IDDataValidationException.class)
-	@Test
-	public void TEst_isEMptynull() throws IdAuthenticationBusinessException {
-//		OTPAuthServiceImpl authservice = Mockito.mock(OTPAuthServiceImpl.class);
-//		Mockito.when(authservice.isEmpty(Mockito.any())).thenReturn(true);
-//		otpAuthRequestDTO.setTxnID("1234567890");
-//		otpAuthRequestDTO.setMuaCode("ASA000000011");
-//		otpAuthRequestDTO.setTxnID("TXN00001");
-//		otpAuthRequestDTO.setId("1134034024034");
-//		otpAuthRequestDTO.setMuaCode("AUA0001");
-//		PinDTO pindto = new PinDTO();
-//		pindto.setType(PinType.OTP);
-//		pindto.setValue("23232323");
-//		otpAuthRequestDTO.setPii(new PersonalIdentityDataDTO());
-//		otpAuthRequestDTO.getPii().setPin(pindto);
-//		authservice.validateOtp(otpAuthRequestDTO, "34545");
 	}
 
 }

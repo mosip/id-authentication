@@ -64,13 +64,36 @@ public interface IdInfoFetcher {
 	 */
 	public MosipBiometricProvider getFingerPrintProvider(BioInfo bioinfovalue);
 
+	/**
+	 * Validate Otp function
+	 * 
+	 * @return
+	 */
 	public ValidateOtpFunction getValidateOTPFunction();
 
+	/**
+	 * To fetch cbeff values
+	 * 
+	 * @param idEntity
+	 * @param cbeffDocType
+	 * @param matchType
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
 	public Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValues(Map<String, List<IdentityInfoDTO>> idEntity,
 			CbeffDocType cbeffDocType, MatchType matchType) throws IdAuthenticationBusinessException;
 
+	/**
+	 * To get Environment
+	 * 
+	 * @return
+	 */
 	public Environment getEnvironment();
 
+	/**
+	 * Title info fetcher from Master data manager
+	 * @return
+	 */
 	public MasterDataFetcher getTitleFetcher();
 
 }
