@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
@@ -22,8 +23,14 @@ import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 public interface RegistrationCenterMachineRepository
 		extends BaseRepository<RegistrationCenterMachine, RegistrationCenterMachineID> {
 
-@Query("FROM RegistrationCenterMachine WHERE registrationCenterMachinePk =?1 and (isDeleted is null or isDeleted =false)")
-Optional<RegistrationCenterMachine> findAllNondeletedMappings(RegistrationCenterMachineID registrationCenterMachinePk);
+	@Query("FROM RegistrationCenterMachine WHERE registrationCenterMachinePk =?1 and (isDeleted is null or isDeleted =false)")
+	Optional<RegistrationCenterMachine> findAllNondeletedMappings(
+			RegistrationCenterMachineID registrationCenterMachinePk);
 
+	@Query("FROM RegistrationCenterMachine rm where rm.registrationCenterMachinePk.machineId = ?1 AND (rm.isDeleted is null or rm.isDeleted=false)")
+	List<RegistrationCenterMachine> findByMachineIdAndIsDeletedFalseOrIsDeletedIsNull(String machineId);
+
+	@Query("FROM RegistrationCenterMachine rm where rm.registrationCenterMachinePk.regCenterId = ?1 AND (rm.isDeleted is null or rm.isDeleted=false)")
+	List<RegistrationCenterMachine> findByRegCenterIdAndIsDeletedFalseOrIsDeletedIsNull(String regCenterId);
 
 }

@@ -41,4 +41,7 @@ public class RegistrationCenterMachineHistory extends BaseEntity implements Seri
 			@AttributeOverride(name = "machineId", column = @Column(name = "machine_id")) })
 	private RegistrationCenterMachineHistoryID registrationCenterMachineHistoryPk;
 
+	@Column(name = "lang_code", nullable = false, length = 3)
+	private String langCode;
+
 }

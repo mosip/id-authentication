@@ -15,12 +15,19 @@ import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachine;
+import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
 import io.mosip.kernel.masterdata.repository.MachineTypeRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineUserRepository;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.service.MachineService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
@@ -43,7 +50,6 @@ public class MachineServiceImpl implements MachineService {
 	@Autowired
 	MachineRepository machineRepository;
 
-
 	@Autowired
 	MachineSpecificationRepository machineSpecificationRepository;
 
@@ -52,6 +58,15 @@ public class MachineServiceImpl implements MachineService {
 
 	@Autowired
 	MachineTypeRepository machineTypeRepository;
+
+	@Autowired
+	RegistrationCenterMachineRepository registrationCenterMachineRepository;
+
+	@Autowired
+	RegistrationCenterMachineUserRepository registrationCenterMachineUserRepository;
+
+	@Autowired
+	RegistrationCenterMachineDeviceRepository registrationCenterMachineDeviceRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -148,7 +163,7 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@Override
 	@Transactional
-	public IdResponseDto createMachine(RequestDto<MachineDto> machine) {
+	public IdAndLanguageCodeID createMachine(RequestDto<MachineDto> machine) {
 		Machine crtMachine = null;
 		Machine entity = MetaDataUtils.setCreateMetaData(machine.getRequest(), Machine.class);
 		MachineHistory entityHistory = MetaDataUtils.setCreateMetaData(machine.getRequest(), MachineHistory.class);
@@ -161,10 +176,11 @@ public class MachineServiceImpl implements MachineService {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
-		IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.map(crtMachine, idResponseDto);
 
-		return idResponseDto;
+		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
+		MapperUtils.map(crtMachine, idAndLanguageCodeID);
+
+		return idAndLanguageCodeID;
 	}
 
 	/*
@@ -176,16 +192,16 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@Override
 	@Transactional
-	public IdResponseDto updateMachine(RequestDto<MachineDto> machine) {
+	public IdAndLanguageCodeID updateMachine(RequestDto<MachineDto> machine) {
 		Machine updMachine = null;
 		try {
-			Machine renmachine = machineRepository
-					.findMachineByIdAndIsDeletedFalseorIsDeletedIsNull(machine.getRequest().getId());
+			Machine renmachine = machineRepository.findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(
+					machine.getRequest().getId(), machine.getRequest().getLangCode());
 
 			if (renmachine != null) {
 				MetaDataUtils.setUpdateMetaData(machine.getRequest(), renmachine, false);
 				updMachine = machineRepository.update(renmachine);
-				
+
 				MachineHistory machineHistory = new MachineHistory();
 				MapperUtils.map(updMachine, machineHistory);
 				MapperUtils.setBaseFieldValue(updMachine, machineHistory);
@@ -201,9 +217,9 @@ public class MachineServiceImpl implements MachineService {
 					MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 
-		IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.map(updMachine, idResponseDto);
-		return idResponseDto;
+		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
+		MapperUtils.map(updMachine, idAndLanguageCodeID);
+		return idAndLanguageCodeID;
 	}
 
 	/*
@@ -218,19 +234,34 @@ public class MachineServiceImpl implements MachineService {
 	public IdResponseDto deleteMachine(String id) {
 		Machine delMachine = null;
 		try {
-			Machine renMachine = machineRepository.findMachineByIdAndIsDeletedFalseorIsDeletedIsNull(id);
-			if (renMachine != null) {
+			List<Machine> renMachineList = machineRepository.findMachineByIdAndIsDeletedFalseorIsDeletedIsNull(id);
+			if (!renMachineList.isEmpty()) {
+				for (Machine renMachine : renMachineList) {
 
-				MetaDataUtils.setDeleteMetaData(renMachine);
-				delMachine = machineRepository.update(renMachine);
+					List<RegistrationCenterMachine> registrationCenterMachineList = registrationCenterMachineRepository
+							.findByMachineIdAndIsDeletedFalseOrIsDeletedIsNull(renMachine.getId());
+					List<RegistrationCenterUserMachine> registrationCenterMachineUser = registrationCenterMachineUserRepository
+							.findByMachineIdAndIsDeletedFalseOrIsDeletedIsNull(renMachine.getId());
+					List<RegistrationCenterMachineDevice> registrationCenterMachineDevice = registrationCenterMachineDeviceRepository
+							.findByMachineIdAndIsDeletedFalseOrIsDeletedIsNull(renMachine.getId());
 
-				MachineHistory machineHistory = new MachineHistory();
-				MapperUtils.map(delMachine, machineHistory);
-				MapperUtils.setBaseFieldValue(delMachine, machineHistory);
+					if (registrationCenterMachineList.isEmpty() && registrationCenterMachineUser.isEmpty()
+							&& registrationCenterMachineDevice.isEmpty()) {
+						MetaDataUtils.setDeleteMetaData(renMachine);
+						delMachine = machineRepository.update(renMachine);
 
-				machineHistory.setEffectDateTime(delMachine.getDeletedDateTime());
-				machineHistory.setDeletedDateTime(delMachine.getDeletedDateTime());
-				machineHistoryService.createMachineHistory(machineHistory);
+						MachineHistory machineHistory = new MachineHistory();
+						MapperUtils.map(delMachine, machineHistory);
+						MapperUtils.setBaseFieldValue(delMachine, machineHistory);
+
+						machineHistory.setEffectDateTime(delMachine.getDeletedDateTime());
+						machineHistory.setDeletedDateTime(delMachine.getDeletedDateTime());
+						machineHistoryService.createMachineHistory(machineHistory);
+					} else {
+						throw new RequestException(MachineErrorCode.DEPENDENCY_EXCEPTION.getErrorCode(),
+								MachineErrorCode.DEPENDENCY_EXCEPTION.getErrorMessage());
+					}
+				}
 			} else {
 				throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -242,9 +273,8 @@ public class MachineServiceImpl implements MachineService {
 		}
 
 		IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.map(delMachine, idResponseDto);
+		idResponseDto.setId(id);
 		return idResponseDto;
 
 	}
-
 }
