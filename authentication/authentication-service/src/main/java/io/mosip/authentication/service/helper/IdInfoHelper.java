@@ -880,7 +880,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 			Map<String, String> bdbBasedOnType;
 			try {
 				bdbBasedOnType = cbeffUtil.getBDBBasedOnType(CryptoUtil.decodeBase64(identityValue.get()),
-						type.getType(), null);
+						type.getName(), null);
 			} catch (Exception e) {
 				// TODO Add corresponding error code and message
 				throw new IdAuthenticationBusinessException("Inside getCbeffValues", "", e);
