@@ -8,7 +8,6 @@ import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
-import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 
@@ -89,9 +88,9 @@ public interface PacketInfoManager<T, /** D, M, */
 	public List<String> getApplicantIrisImageNameById(String regId);
 
 	/**
-	 * Gets the applicant registration id by UIN
-	 * 
-	 * @param uin
+	 * Gets the applicant registration id by UIN.
+	 *
+	 * @param uin the uin
 	 * @return the registration id by UIN
 	 */
 	public List<String> getRegIdByUIN(String uin);
@@ -141,6 +140,19 @@ public interface PacketInfoManager<T, /** D, M, */
 	 */
 	public List<String> getRidByReferenceId(String refId);
 
+	/**
+	 * Save documents.
+	 *
+	 * @param documentDtos the document dtos
+	 */
 	public void saveDocuments(List<Document> documentDtos);
+
+	/**
+	 * Gets the UIN by rid.
+	 *
+	 * @param Rid the rid
+	 * @return the UIN by rid
+	 */
+	public List<String> getUINByRid(String Rid);
 
 }

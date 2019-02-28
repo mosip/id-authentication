@@ -16,17 +16,6 @@ whose values will be replaced as present in id json file. These variables has th
 	 province
 	 city
 	 postalCode
-	 parentOrGuardianName
-	 parentOrGuardianRIDOrUIN
-	 proofOfAddress
-	 proofOfIdentity
-	 proofOfRelationship
-	 proofOfDateOfBirth
-	 individualBiometrics
-	 parentOrGuardianBiometrics
-	 localAdministrativeAuthority
-	 idSchemaVersion
-	 cnieNumber
 	 UIN
 	 RID
 	 

@@ -91,7 +91,7 @@ public class ManualVerificationStageTest{
 	String serviceID="";
 	private List<ErrorDTO> errors=new ArrayList<>();
 	ErrorDTO errorCode=new ErrorDTO("","");
-	
+
 	@InjectMocks
 	ManualVerificationStage manualVerificationStage = new ManualVerificationStage() {
 
@@ -105,18 +105,18 @@ public class ManualVerificationStageTest{
 				errors=manualVerificationBioDemoResponseDTO.getErrors();
 			}else if(serviceID=="demo") {
 				ManualVerificationBioDemoResponseDTO manualVerificationBioDemoResponseDTO =gson.fromJson(jsonData, ManualVerificationBioDemoResponseDTO.class);
-				errors=manualVerificationBioDemoResponseDTO.getErrors();	
+				errors=manualVerificationBioDemoResponseDTO.getErrors();
 			}else if(serviceID=="assign") {
 				ManualVerificationAssignResponseDTO manualVerificationAssignResponseDTO =gson.fromJson(jsonData, ManualVerificationAssignResponseDTO.class);
-				errors=manualVerificationAssignResponseDTO.getErrors();	
+				errors=manualVerificationAssignResponseDTO.getErrors();
 
 			}else if(serviceID=="decision") {
 				ManualVerificationAssignResponseDTO manualVerificationAssignResponseDTO =gson.fromJson(jsonData, ManualVerificationAssignResponseDTO.class);
-				errors=manualVerificationAssignResponseDTO.getErrors();	
+				errors=manualVerificationAssignResponseDTO.getErrors();
 
 			}else if(serviceID=="packetinfo") {
 				ManualVerificationPacketResponseDTO manualVerificationPacketResponseDTO =gson.fromJson(jsonData, 		ManualVerificationPacketResponseDTO.class);
-				errors=manualVerificationPacketResponseDTO.getErrors();	
+				errors=manualVerificationPacketResponseDTO.getErrors();
 
 			}
 
@@ -136,7 +136,7 @@ public class ManualVerificationStageTest{
 		ctx = setContext();
 		ManualVerificationApplication.main(null);
 		when(env.getProperty(anyString())).thenReturn("mosip.manual.verification.biometric");
-		when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");	
+		when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	}
 
 

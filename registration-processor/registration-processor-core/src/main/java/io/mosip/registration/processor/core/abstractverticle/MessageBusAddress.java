@@ -127,4 +127,7 @@ public class MessageBusAddress implements Serializable {
 	/** The Constant REGISTRATION_CONNECTOR_BUS_OUT. */
 	public static final MessageBusAddress REGISTRATION_CONNECTOR_BUS_OUT = new MessageBusAddress("registration-connector-bus-out");
 	
+	/** The Constant PRINTING_BUS_IN. */
+	public static final MessageBusAddress PRINTING_BUS = new MessageBusAddress("printing-bus");
+	
 }

@@ -113,7 +113,7 @@ public class PacketReceiverStageTest {
 		ctx = setContext();
 		when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		PacketReceiverApplication.main(null);
-		
+
 	}
 	public String getDataAsJson(String Status) {
 		JsonObject obj= new JsonObject();
