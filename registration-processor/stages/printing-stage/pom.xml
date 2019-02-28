@@ -94,7 +94,7 @@
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-processor-print-service</artifactId>
-			<version>0.8.15</version>
+			<version>${registration.processor.print.service.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
