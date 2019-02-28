@@ -1,0 +1,12 @@
+{
+  "id": "mosip.identity.vid",
+  "version": "1.0",
+  "responseTime": "2019-02-27T08:50:25.726Z",
+  "vid": "2675071205649621",
+  "error": [
+    {
+      "errorCode": "IDA-MLC-011",
+      "errorMessage": "VID regeneration not allowed. Use existing VID"
+    }
+  ]
+}
