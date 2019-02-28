@@ -40,7 +40,7 @@ public class RegistrationCenterMachineUserID implements Serializable {
 	/**
 	 * Machine Id
 	 */
-	@Column(name = "machine_id", nullable = false, length = 36)
+	@Column(name = "machine_id", nullable = false, length = 10)
 	private String machineId;
 
 }

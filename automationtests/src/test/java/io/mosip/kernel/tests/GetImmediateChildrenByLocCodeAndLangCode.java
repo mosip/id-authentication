@@ -1,7 +1,6 @@
 package io.mosip.kernel.tests;
 
 import java.io.FileNotFoundException;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -28,9 +27,10 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
+import io.mosip.dbaccess.KernelMasterDataR;
+import io.mosip.dbdto.LocationDto;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
-import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -84,7 +84,7 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smokeAndRegression") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -131,12 +131,18 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 		listOfElementToRemove.add("timestamp");
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
-//	             String id= (actualRequest.get("id").toString());
-//	             System.out.println("id------------>"+id);
-//	             String queryStr = "SELECT * FROM master.registration_center WHERE id='"+id+"'";
-//					boolean valid = KernelMasterDataR.masterDataDBConnection(RegistrationCenterDto.class,queryStr);
-//					System.out.println("status------>"+valid);
-			if(status)
+    	  
+    	  if(testCaseName.contains("smoke"))
+    	  {
+    		  String locationcode= (actualRequest.get("locationcode").toString());
+    		  String langCode=actualRequest.get("langcode").toString();
+	            
+	             String queryStr = "SELECT master.location.* FROM master.location WHERE code='"+locationcode+"' and lang_code='"+langCode+"'";
+					boolean valid = KernelMasterDataR.masterDataDBConnection(LocationDto.class,queryStr);
+					System.out.println("status------>"+valid);
+    	  
+	            
+			if(valid)
 					{
 						finalStatus ="Pass";
 					}
@@ -145,7 +151,7 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 		 				finalStatus ="Fail";
 						//break;
 					}
-	            
+    	  }else
 				finalStatus = "Pass";
 			}	
 		

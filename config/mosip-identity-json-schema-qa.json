@@ -153,7 +153,7 @@
 					"type": "string"
 				}
 			},
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"biometricsType": {
 			"type": "object",
@@ -168,7 +168,7 @@
 					"type": "string"
 				}
 			},
-			"additionalProperties": false
+			"additionalProperties": true
 		}
 	}
 }

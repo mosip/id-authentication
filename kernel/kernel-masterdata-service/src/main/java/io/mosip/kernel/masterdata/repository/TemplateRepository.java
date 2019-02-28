@@ -1,7 +1,9 @@
 package io.mosip.kernel.masterdata.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -73,9 +75,35 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	 * To fetch the template by id
 	 * 
 	 * @param id
-	 * 		the id of template
+	 *            the id of template
 	 * @return {@link Template}
 	 */
 	@Query("FROM Template WHERE id =?1 AND (isDeleted is null OR isDeleted = false)")
-	Template findTemplateByIDAndIsDeletedFalseOrIsDeletedIsNull(String id);
+	List<Template> findTemplateByIDAndIsDeletedFalseOrIsDeletedIsNull(String id);
+
+	/**
+	 * To fetch the template by id
+	 * 
+	 * @param id
+	 *            the id of template
+	 * @return {@link Template}
+	 */
+	@Query("FROM Template WHERE id =?1 AND langCode=?2 AND (isDeleted is null OR isDeleted = false)")
+	Template findTemplateByIDAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String id, String langCode);
+
+	/**
+	 * Update Gender Type by code provided.
+	 * 
+	 * @param id
+	 *            id of the template.
+	 * @param deletedDateTime
+	 *            metadata Deleted Date time
+	 * @param updatedBy
+	 *            updatedBy
+	 * @return rows modified
+	 */
+
+	@Modifying
+	@Query("UPDATE Template t SET t.updatedBy=?3 , t.isDeleted =true , t.deletedDateTime = ?2 WHERE t.id =?1 and (t.isDeleted is null or t.isDeleted =false)")
+	int deleteTemplate(String id, LocalDateTime deletedDateTime, String updatedBy);
 }

@@ -34,12 +34,12 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 
 	@Qualifier("biometricTypeTobiometricTypeDtoDefaultMapper")
 	@Autowired
-	DataMapper<BiometricType,BiometricTypeDto> biometricTypeTobiometricTypeDtoDefaultMapper;
+	DataMapper<BiometricType, BiometricTypeDto> biometricTypeTobiometricTypeDtoDefaultMapper;
 
 	@Qualifier("biometricTypeToCodeandlanguagecodeDefaultMapper")
 	@Autowired
-	DataMapper<BiometricType, CodeAndLanguageCodeID> biometricTypeToCodeandlanguagecodeDefaultMapper; 
-	
+	DataMapper<BiometricType, CodeAndLanguageCodeID> biometricTypeToCodeandlanguagecodeDefaultMapper;
+
 	@Autowired
 	private BiometricTypeRepository biometricTypeRepository;
 	private List<BiometricTypeDto> biometricTypeDtoList;
@@ -63,9 +63,8 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 							+ ExceptionUtils.parseException(e));
 		}
 		if (!(biometricTypesList.isEmpty())) {
-			biometricTypesList.forEach(biometricType -> 
-				biometricTypeDtoList.add(biometricTypeTobiometricTypeDtoDefaultMapper.map(biometricType))
-			);
+			biometricTypesList.forEach(biometricType -> biometricTypeDtoList
+					.add(biometricTypeTobiometricTypeDtoDefaultMapper.map(biometricType)));
 		} else {
 			throw new DataNotFoundException(BiometricTypeErrorCode.BIOMETRIC_TYPE_NOT_FOUND.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_NOT_FOUND.getErrorMessage());
@@ -92,9 +91,8 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 							+ ExceptionUtils.parseException(e));
 		}
 		if (!(biometricTypesList.isEmpty())) {
-			biometricTypesList.forEach(biometricType -> 
-				biometricTypeDtoList.add(biometricTypeTobiometricTypeDtoDefaultMapper.map(biometricType))
-			);
+			biometricTypesList.forEach(biometricType -> biometricTypeDtoList
+					.add(biometricTypeTobiometricTypeDtoDefaultMapper.map(biometricType)));
 		} else {
 			throw new DataNotFoundException(BiometricTypeErrorCode.BIOMETRIC_TYPE_NOT_FOUND.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_NOT_FOUND.getErrorMessage());
@@ -113,7 +111,7 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 	@Override
 	public BiometricTypeResponseDto getBiometricTypeByCodeAndLangCode(String code, String langCode) {
 		BiometricType biometricType;
-		BiometricTypeDto biometricTypeDto; 
+		BiometricTypeDto biometricTypeDto;
 		try {
 			biometricType = biometricTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(code,
 					langCode);
@@ -124,7 +122,7 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 		}
 
 		if (biometricType != null) {
-			biometricTypeDto=biometricTypeTobiometricTypeDtoDefaultMapper.map(biometricType);
+			biometricTypeDto = biometricTypeTobiometricTypeDtoDefaultMapper.map(biometricType);
 		} else {
 			throw new DataNotFoundException(BiometricTypeErrorCode.BIOMETRIC_TYPE_NOT_FOUND.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_NOT_FOUND.getErrorMessage());
@@ -156,7 +154,7 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 							+ ExceptionUtils.parseException(e));
 		}
 		return biometricTypeToCodeandlanguagecodeDefaultMapper.map(biometricType);
-	 
+
 	}
 
 }

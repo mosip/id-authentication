@@ -92,6 +92,7 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
+	@Transactional
 	public RegistrationCenterMachineUserID deleteRegistrationCentersMachineUserMapping(String regCenterId,
 			String machineId, String userId) {
 		RegistrationCenterMachineUserID registrationCenterMachineUserID = null;
@@ -191,9 +192,10 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 		registrationCenterMachineUserRepository.update(centerUserMachine);
 		registrationCenterUserMachineHistoryRepository.create(history);
 		registrationCenterMachineUserID = new RegistrationCenterMachineUserID();
-		registrationCenterMachineUserID.setCntrId(centerUserMachine.getCntrId());
-		registrationCenterMachineUserID.setMachineId(centerUserMachine.getMachineId());
-		registrationCenterMachineUserID.setUsrId(centerUserMachine.getUsrId());
+		registrationCenterMachineUserID.setCntrId(centerUserMachine.getRegistrationCenterMachineUserID().getCntrId());
+		registrationCenterMachineUserID
+				.setMachineId(centerUserMachine.getRegistrationCenterMachineUserID().getMachineId());
+		registrationCenterMachineUserID.setUsrId(centerUserMachine.getRegistrationCenterMachineUserID().getUsrId());
 		return registrationCenterMachineUserID;
 	}
 
