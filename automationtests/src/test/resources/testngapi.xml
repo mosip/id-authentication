@@ -49,6 +49,11 @@
 				<class name="io.mosip.kernel.tests.SyncMasterDataWithTimestamp" />
 																																																				
 				<class name="io.mosip.kernel.tests.SyncPublicKeyToRegClient" />
+				<class name="io.mosip.kernel.tests.UINGeneration"/>
+
+			<class name="io.mosip.kernel.tests.ValidateGenderByName"/>
+
+			<class name="io.mosip.kernel.tests.ValidateLocationByName"/>
 			</classes>
 		</test> 
 		
@@ -98,6 +103,7 @@
                            <class name="io.mosip.preregistration.tests.RetriveAllPreRegIdByRegCenterId" />
                            <class name="io.mosip.preregistration.tests.RetrivePreRegistration" />
                            <class name="io.mosip.preregistration.tests.UpdatePreRegistrationStatus" />
+                           
 			
 		</classes>
 
