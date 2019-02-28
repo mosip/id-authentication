@@ -3,7 +3,6 @@ package io.mosip.kernel.applicanttype.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,7 +23,6 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping(value = "/v1.0/applicanttype")
 @Api(value = "This service provide operations on applicant type", tags = { "ApplicantType" })
-@Validated
 public class ApplicantTypeController {
 
 	@Autowired
@@ -34,7 +32,7 @@ public class ApplicantTypeController {
 	@ApiOperation(value = "Get applicant type for provided queries", notes = "Get applicant type for matching queries", response = String.class)
 	public ResponseEntity<ResponseDTO> getApplicantType(@RequestParam("individualTypeCode") String individualTypeCode,
 			@RequestParam("genderCode") String genderCode, @RequestParam("dateofbirth") String dateofbirth,
-			@RequestParam("biometricAvailable") String biometricAvailable) {
+			@RequestParam(value = "biometricAvailable", required = false) String biometricAvailable) {
 		RequestDTO dto = new RequestDTO();
 		KeyValues request = new KeyValues();
 		request.getRequest().put("individualTypeCode", individualTypeCode);

@@ -1,7 +1,9 @@
 package io.mosip.kernel.applicanttype.api.impl;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -13,7 +15,6 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.applicanttype.api.constant.ApplicantTypeErrorCode;
 import io.mosip.kernel.core.applicanttype.exception.InvalidApplicantArgumentException;
 import io.mosip.kernel.core.applicanttype.spi.ApplicantType;
-import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * Implementation for Applicant Type.
@@ -25,6 +26,7 @@ import io.mosip.kernel.core.util.DateUtils;
 public class ApplicantTypeImpl implements ApplicantType {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicantTypeImpl.class);
+	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	private static final String FOREIGNER = "FR";
 	private static final String NON_FOREIGNER = "NFR";
@@ -181,7 +183,7 @@ public class ApplicantTypeImpl implements ApplicantType {
 
 	private int calculateAge(String dob) {
 		int age = 0;
-		LocalDate birthDate = DateUtils.parseToLocalDateTime(dob).toLocalDate();
+		LocalDate birthDate = LocalDateTime.parse(dob, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN)).toLocalDate();
 		LocalDate currentDate = LocalDate.now();
 		if (birthDate != null && currentDate != null) {
 			age = Period.between(birthDate, currentDate).getYears();
