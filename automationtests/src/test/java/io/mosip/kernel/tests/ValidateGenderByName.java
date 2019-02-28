@@ -5,9 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Comparator;
-
-import javax.ws.rs.client.Invocation;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -26,7 +25,7 @@ import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
-import com.google.common.collect.Ordering;
+import com.google.common.base.Verify;
 
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
@@ -38,27 +37,28 @@ import io.restassured.response.Response;
  * @author Arunakumar Rati
  *
  */
-public class UINGeneration extends BaseTestCase implements ITest{
-	
-	public UINGeneration()
-	{
+public class ValidateGenderByName extends BaseTestCase implements ITest{
+
+	public ValidateGenderByName() {
+		// TODO Auto-generated constructor stub
 		super();
 	}
 	/**
 	 *  Declaration of all variables
 	 */
-	private static Logger logger = Logger.getLogger(UINGeneration.class);
+	private static Logger logger = Logger.getLogger(ValidateGenderByName.class);
 	protected static String testCaseName = "";
 	static SoftAssert softAssert=new SoftAssert();
 	public static JSONArray arr = new JSONArray();
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String uingenerator = "/uingenerator/v1.0/uin";
+	private static final String validateGenderByName = "/masterdata//v1.0/gendertypes/validate/{gendername}";
+	
 	static String dest = "";
-	static String folderPath = "kernel/UINGeneration";
-	static String outputFile = "UINGenerationOutput.json";
-	static String requestKeyFile = "UINGenerationInput.json";
+	static String folderPath = "kernel/ValidateGenderByName";
+	static String outputFile = "ValidateGenderByNameOutput.json";
+	static String requestKeyFile = "ValidateGenderByNameInput.json";
 	static JSONObject Expectedresponse = null;
 	String finalStatus = "";
 	static String testParam="";
@@ -68,7 +68,7 @@ public class UINGeneration extends BaseTestCase implements ITest{
 	@BeforeMethod
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		
+		// testName.set(object.get("testCaseName").toString());
 		testCaseName = object.get("testCaseName").toString();
 	} 
 	
@@ -76,11 +76,10 @@ public class UINGeneration extends BaseTestCase implements ITest{
 	 * @return input jsons folders
 	 * @throws Exception
 	 */
-	@DataProvider(name = "UINValidator")
+	@DataProvider(name = "ValidateGenderByName")
 	public static Object[][] readData1(ITestContext context) throws Exception {
-		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -95,61 +94,52 @@ public class UINGeneration extends BaseTestCase implements ITest{
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws ParseException
-	 * getRegCenterByID_Timestamp
-	 * Given input Json as per defined folders When GET request is sent to /uingenerator/v1.0/uin send
+	 * getAllConfiguration
+	 * Given input Json as per defined folders When GET request is sent to /masterdata//v1.0/gendertypes/validate/{gendername}
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
-	
-	@Test(dataProvider="UINValidator",invocationCount=1)
-	public void getUIN(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
+	@Test(dataProvider="ValidateGenderByName")
+	public void validateGenderByName(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
-		
+	
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		@SuppressWarnings("unchecked")
-		/*
-		 * Calling the GET method with no parameters
-		 */
-		Response res=applicationLibrary.GetRequestNoParameter(uingenerator);
 		
-		 String uin = res.jsonPath().get("uin").toString();
-		 char[] list = uin.toCharArray();
-		 int uin_length=uin.length();
-		 String first_half=uin.substring(0, uin_length/2);
-		 String second_half=uin.substring(uin_length/2);
-		 String rev_half="";
-		 for(int j=second_half.length()-1;j>=0;j--){
-			 rev_half=rev_half+second_half.charAt(j);
-		 }
-		if(uin_length==10){
-        	   if(first_half.equals(second_half)){ 
-        		   finalStatus="fail";
-        	   }else {
-        		   if(first_half.equals(rev_half)){
-        			   finalStatus="fail";
-        		   }else{
-        			   String first2=uin.substring(0,1);int count =1;
-        				for(int k=2;k<uin.length();k++){
-        					if(first2.equals(uin.substring(k, i+k))){
-        						count++;
-        					}
-        				}if(count==5)
-        					finalStatus="fail";
-        				else
-        					finalStatus="pass";
-        		   }
-           }   
-        	boolean isAscending = UINGeneration.ascendingMethod(uin);
-        	boolean isDescending = UINGeneration.ascendingMethod(uin);
-        	   if(isAscending&&isDescending)
-        		   finalStatus="fail";
-   				else
-   					finalStatus="pass";   
-           }
-		else
-			finalStatus="fail";
-        		   
-
+		/*
+		 * Calling GET method with path parameters
+		 */
+		Response res=applicationLibrary.getRequestPathPara(validateGenderByName, actualRequest);
+		/*
+		 * Removing the unstable attributes from response	
+		 */
+		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
+		listOfElementToRemove.add("timestamp");
+		
+		/*
+		 * Getting the response time in milliseconds	
+		 */
+		long response_time = res.getTimeIn(TimeUnit.MILLISECONDS);
+	
+		/*
+		 * Comparing expected and actual response
+		 */
+		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
+      if (status) {
+	            
+				/*if(response_time<=300)
+					finalStatus = "Pass";
+				else
+					finalStatus = "Fail";*/
+    	  	finalStatus = "Pass";
+			}	
+		
+		else {
+			finalStatus="Fail";
+			logger.error(res);
+			//softAssert.assertTrue(false);
+		}
+		
 		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
@@ -158,7 +148,9 @@ public class UINGeneration extends BaseTestCase implements ITest{
 			setFinalStatus=false;
 		else if(finalStatus.equals("Pass"))
 			setFinalStatus=true;
-		
+		Verify.verify(setFinalStatus);
+		softAssert.assertAll();
+
 }
 		@Override
 		public String getTestName() {
@@ -176,7 +168,7 @@ public class UINGeneration extends BaseTestCase implements ITest{
 				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 				f.setAccessible(true);
 
-				f.set(baseTestMethod, UINGeneration.testCaseName);
+				f.set(baseTestMethod, ValidateGenderByName.testCaseName);
 
 				
 			} catch (Exception e) {
@@ -186,51 +178,10 @@ public class UINGeneration extends BaseTestCase implements ITest{
 		
 		@AfterClass
 		public void updateOutput() throws IOException {
-			String configPath = "src/test/resources/kernel/UINGeneration/UINGenerationOutput.json";
+			String configPath = "src/test/resources/kernel/ValidateGenderByName/ValidateGenderByNameOutput.json";
 			try (FileWriter file = new FileWriter(configPath)) {
 				file.write(arr.toString());
-				logger.info("Successfully updated Results to UINGenerationOutput.json file.......................!!");
+				logger.info("Successfully updated Results to ValidateGenderByNameOutput.json file.......................!!");
 			}
 		}
-
-		
-		public static boolean ascendingMethod(String uin){
-		 	   char first_char=uin.charAt(0); 
-		 	   String latest_uin="";
-		 	   for(int i=0;i<uin.length();i++){
-		 		   if(first_char>'9'){
-		 			  first_char='0';
-		 		   }
-		 		   
-		 		   
-		 		  latest_uin=latest_uin+first_char;
-		 	 	   first_char++;
-		 	   }
-		 	   
-		 	   if(uin.equals(latest_uin)){
-		 		   return true;
-		 	   }else{
-		 		   return false;
-		 	   }
-			}
-		public static boolean descendingMethod(String uin){
-		 	   char first_char=uin.charAt(0); 
-		 	   String latest_uin="";
-		 	   for(int i=0;i<uin.length();i++){
-		 		   if(first_char<'0'){
-		 			  first_char='9';
-		 		   }
-		 		   
-		 		   
-		 		  latest_uin=latest_uin+first_char;
-		 	 	   first_char--;
-		 	   }
-		 	   
-		 	   if(uin.equals(latest_uin)){
-		 		   return true;
-		 	   }else{
-		 		   return false;
-		 	   }
-			}
-	
 }
