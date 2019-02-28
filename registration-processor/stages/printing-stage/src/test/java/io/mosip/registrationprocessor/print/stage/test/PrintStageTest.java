@@ -1,4 +1,4 @@
-package io.mosip.registrationprocessor.print.stage.test;
+/*package io.mosip.registrationprocessor.print.stage.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -77,36 +77,36 @@ import io.vertx.ext.web.Route;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
 
-/**
+*//**
  * The Class PrintStageTest.
  * 
  * @author M1048358 Alok
- */
+ *//*
 @SuppressWarnings("deprecation")
 @RunWith(SpringRunner.class)
 @PrepareForTest({ Utilities.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.*" })
 @PropertySource("classpath:bootstrap.properties")
-//@ContextConfiguration(classes= {PrintStageConfigTest.class})
+// @ContextConfiguration(classes= {PrintStageConfigTest.class})
 public class PrintStageTest {
 
-	/** The audit log request builder. */
+	*//** The audit log request builder. *//*
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
-	/** The packet info manager. */
+	*//** The packet info manager. *//*
 	@Mock
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
-	/** The mosip connection factory. */
+	*//** The mosip connection factory. *//*
 	@Mock
 	private MosipQueueConnectionFactory<MosipQueue> mosipConnectionFactory;
 
-	/** The mosip queue manager. */
+	*//** The mosip queue manager. *//*
 	@Mock
 	private MosipQueueManager<MosipQueue, byte[]> mosipQueueManager;
 
-	/** The queue. */
+	*//** The queue. *//*
 	@Mock
 	private MosipQueue queue;
 
@@ -116,49 +116,37 @@ public class PrintStageTest {
 	@Mock
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	/** The ctx. */
+	*//** The ctx. *//*
 	private RoutingContext ctx;
 
-	/** The response object. */
+	*//** The response object. *//*
 	private Boolean responseObject;
 
 	@Mock
 	private PrintService<byte[]> printService;
-	
+
 	@Mock
 	public FileSystemAdapter filesystemAdapter;
 
 	@Mock
 	public ConnectionUtil connectionUtil;
 
-	/** The stage. */
+	*//** The stage. *//*
 	@InjectMocks
-	private PrintStage stage = new PrintStage() {
-		@Override
-		public MosipEventBus getEventBus(Object verticleName, String clusterManagerUrl) {
-			return null;
-		}
+	private PrintStage stage=new PrintStage(){@Override public MosipEventBus getEventBus(Object verticleName,String clusterManagerUrl){return null;}
 
-		@Override
-		public void consume(MosipEventBus mosipEventBus, MessageBusAddress fromAddress) {
-		}
+	@Override public void consume(MosipEventBus mosipEventBus,MessageBusAddress fromAddress){}
 
-		@Override
-		public void setResponse(RoutingContext ctx, Object object) {
-			responseObject = Boolean.TRUE;
-		}
+	@Override public void setResponse(RoutingContext ctx,Object object){responseObject=Boolean.TRUE;}
 
-		@Override
-		public void send(MosipEventBus mosipEventBus, MessageBusAddress toAddress, MessageDTO message) {
-		}
-	};
+	@Override public void send(MosipEventBus mosipEventBus,MessageBusAddress toAddress,MessageDTO message){}};
 
-	/**
+	*//**
 	 * Setup.
 	 *
 	 * @throws Exception
 	 *             the exception
-	 */
+	 *//*
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() throws Exception {
@@ -183,21 +171,20 @@ public class PrintStageTest {
 		Mockito.doNothing().when(registrationStatusDto).setStatusComment(any());
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
 
-		
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
 				EventType.BUSINESS.toString(), "1234testcase");
 	}
 
-	/**
+	*//**
 	 * Test all.
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 */
+	 *//*
 
 	@Test
 	public void testAll() throws ApisResourceAccessException, IOException {
@@ -209,16 +196,16 @@ public class PrintStageTest {
 		testRoutes();
 	}
 
-	/**
+	*//**
 	 * Test deploy verticle.
-	 */
+	 *//*
 	public void testDeployVerticle() {
 		stage.deployVerticle();
 	}
 
-	/**
+	*//**
 	 * Test print stage success.
-	 */
+	 *//*
 	@Test
 	public void testPrintStageSuccess() {
 		MessageDTO dto = new MessageDTO();
@@ -228,9 +215,9 @@ public class PrintStageTest {
 		assertTrue(result.getIsValid());
 	}
 
-	/**
+	*//**
 	 * Test print stage failure.
-	 */
+	 *//*
 	@Test
 	public void testPrintStageFailure() {
 		Mockito.when(mosipQueueManager.send(any(), any(), anyString())).thenReturn(false);
@@ -242,9 +229,9 @@ public class PrintStageTest {
 		assertFalse(result.getIsValid());
 	}
 
-	/**
+	*//**
 	 * Test queue connection null.
-	 */
+	 *//*
 	@Test
 	public void testQueueConnectionNull() {
 		Mockito.when(mosipConnectionFactory.createConnection(anyString(), anyString(), anyString(), anyString()))
@@ -293,12 +280,12 @@ public class PrintStageTest {
 		assertTrue(result.getInternalError());
 	}
 
-	/**
+	*//**
 	 * Test exception.
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
-	 */
+	 *//*
 	@Test
 	public void testException() throws ApisResourceAccessException {
 		NullPointerException e = new NullPointerException();
@@ -311,29 +298,29 @@ public class PrintStageTest {
 		assertTrue(result.getInternalError());
 	}
 
-	/**
+	*//**
 	 * Test send message.
-	 */
+	 *//*
 	public void testSendMessage() {
 		stage.sendMessage(null);
 	}
 
-	/**
+	*//**
 	 * Test resend print pdf.
-	 */
+	 *//*
 	public void testResendPrintPdf() {
 		stage.reSendPrintPdf(ctx);
 		assertTrue(responseObject);
 	}
 
-	/**
+	*//**
 	 * Test routes.
 	 *
 	 * @throws ClientProtocolException
 	 *             the client protocol exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 */
+	 *//*
 	public void testRoutes() throws ClientProtocolException, IOException {
 		HttpGet health = new HttpGet("http://localhost:8099/print-stage/health");
 		HttpClient client = HttpClientBuilder.create().build();
@@ -345,7 +332,7 @@ public class PrintStageTest {
 		assertEquals(200, response.getStatusLine().getStatusCode());
 	}
 
-	/**
+	*//**
 	 * Gets the http post.
 	 *
 	 * @param url
@@ -353,7 +340,7 @@ public class PrintStageTest {
 	 * @return the http post
 	 * @throws UnsupportedEncodingException
 	 *             the unsupported encoding exception
-	 */
+	 *//*
 	private HttpPost getHttpPost(String url) throws UnsupportedEncodingException {
 		HttpPost httpPost = new HttpPost(url);
 		String json = "{'regId':'51130282650000320190117144316'}";
@@ -363,11 +350,11 @@ public class PrintStageTest {
 		return httpPost;
 	}
 
-	/**
+	*//**
 	 * Sets the context.
 	 *
 	 * @return the routing context
-	 */
+	 *//*
 	private RoutingContext setContext() {
 		return new RoutingContext() {
 
@@ -597,4 +584,4 @@ public class PrintStageTest {
 
 	}
 
-}
+}*/

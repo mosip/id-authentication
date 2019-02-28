@@ -39,7 +39,6 @@ import io.mosip.registration.processor.core.packet.dto.regcentermachine.MachineH
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistartionCenterTimestampResponseDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterDeviceHistoryDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterDeviceHistoryResponseDto;
-import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterResponseDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterUserMachineMappingHistoryDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterUserMachineMappingHistoryResponseDto;
@@ -61,7 +60,7 @@ public class UMCValidator {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(UMCValidator.class);
-	
+
 	/** The response from masterdata validate api. */
 	private  static final String VALID ="Valid";
 
@@ -91,7 +90,7 @@ public class UMCValidator {
 	private static final String NO_DEVICE_HISTORY_FOUND= "no device history found for device : ";
 
 	private static final String IS_DEVICE_MAPPED_WITH_CENTER = "no center found for device : ";
-	
+
 
 	/** The identity. */
 	Identity identity;
@@ -180,7 +179,7 @@ public class UMCValidator {
 			mhrdto = (MachineHistoryResponseDto) registrationProcessorRestService.getApi(ApiName.MACHINEHISTORY,
 					pathsegments, "", "", MachineHistoryResponseDto.class);
 
-			
+
 			if(mhrdto.getErrors()==null) {
 			MachineHistoryDto dto = mhrdto.getMachineHistoryDetails().get(0);
 
@@ -573,7 +572,7 @@ public class UMCValidator {
                	    this.registrationStatusDto.setStatusComment(error.getErrorMessage());
                	    break;
                }
-				
+
 			} catch (ApisResourceAccessException e) {
 				if (e.getCause() instanceof HttpClientErrorException) {
 					HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();

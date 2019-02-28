@@ -17,9 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
+import io.mosip.registration.processor.packet.manager.config.PacketManagerConfigTest;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 
 /**
@@ -29,6 +31,7 @@ import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @RefreshScope
+@ContextConfiguration(classes = PacketManagerConfigTest.class)
 public class FileManagerTest {
 
 	@Autowired
@@ -45,19 +48,19 @@ public class FileManagerTest {
 	public void setUp() throws Exception {
 		ClassLoader classLoader = getClass().getClassLoader();
 		file = new File(classLoader.getResource("1001.zip").getFile());
-		when(env.getProperty("LANDING_ZONE")).thenReturn(testEnvironment.getProperty("LANDING_ZONE"));
-		when(env.getProperty("VIRUS_SCAN")).thenReturn(testEnvironment.getProperty("VIRUS_SCAN"));
+		when(env.getProperty("VIRUS_SCAN_ENC")).thenReturn(testEnvironment.getProperty("VIRUS_SCAN_ENC"));
+		when(env.getProperty("VIRUS_SCAN_DEC")).thenReturn(testEnvironment.getProperty("VIRUS_SCAN_DEC"));
 	}
 
 	@Test
 	public void getPutAndIfFileExistsAndCopyMethodCheck() throws IOException {
 		String fileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.LANDING_ZONE);
-		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.LANDING_ZONE, fileNameWithoutExtn);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN_ENC);
+		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN_ENC, fileNameWithoutExtn);
 		assertTrue(exists);
-		fileManager.copy(fileNameWithoutExtn, DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN);
-		boolean fileExists = fileManager.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN, fileNameWithoutExtn);
+		fileManager.copy(fileNameWithoutExtn, DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC);
+		boolean fileExists = fileManager.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN_DEC, fileNameWithoutExtn);
 		assertTrue(fileExists);
 	}
 

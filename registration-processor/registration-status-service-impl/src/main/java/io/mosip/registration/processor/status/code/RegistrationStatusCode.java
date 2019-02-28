@@ -7,9 +7,6 @@ package io.mosip.registration.processor.status.code;
  */
 public enum RegistrationStatusCode {
 
-	/** The packet uploaded to landing zone. */
-	PACKET_UPLOADED_TO_LANDING_ZONE,
-
     /** The packet uploaded to virus scan. */
     PACKET_UPLOADED_TO_VIRUS_SCAN,
 

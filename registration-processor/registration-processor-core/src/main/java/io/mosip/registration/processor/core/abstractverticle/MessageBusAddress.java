@@ -75,7 +75,7 @@ public class MessageBusAddress implements Serializable {
 
 	/** The Constant ERROR. */
 	public static final MessageBusAddress ERROR = new MessageBusAddress("error");
-	
+
 	/** The Constant QUALITY_CHECK_BUS. */
 	public static final MessageBusAddress QUALITY_CHECK_BUS = new MessageBusAddress("quality_check_bus");
 
@@ -87,9 +87,6 @@ public class MessageBusAddress implements Serializable {
 
 	/** The Constant FTP_SCAN_BUS. */
 	public static final MessageBusAddress FTP_SCAN_BUS_OUT = new MessageBusAddress("ftp-scanner-stage");
-
-	/** The Constant LANDING_ZONE_BUS. */
-	public static final MessageBusAddress LANDING_ZONE_BUS_OUT = new MessageBusAddress("landing-zone-scanner-stage");
 
 	/** The Constant PACKET_RECEIVER_OUT. */
 	public static final MessageBusAddress PACKET_RECEIVER_OUT = new MessageBusAddress("packet-receiver-out");
@@ -106,28 +103,29 @@ public class MessageBusAddress implements Serializable {
 	/** The Constant DEMODEDUPE_BUS_OUT. */
 	public static final MessageBusAddress DEMO_DEDUPE_BUS_OUT = new MessageBusAddress("demo-dedupe-bus-out");
 
-	/**  The Constant MANUAL_VERIFICATION_BUS. */
+	/** The Constant MANUAL_VERIFICATION_BUS. */
 	public static final MessageBusAddress MANUAL_VERIFICATION_BUS = new MessageBusAddress("manual-verification-bus");
 
-	/**  The Constant UIN_GENERATION_BUS_IN. */
+	/** The Constant UIN_GENERATION_BUS_IN. */
 	public static final MessageBusAddress UIN_GENERATION_BUS_IN = new MessageBusAddress("uin-generation-bus-in");
 
-	/**  The Constant UIN_GENERATION_BUS_OUT. */
+	/** The Constant UIN_GENERATION_BUS_OUT. */
 	public static final MessageBusAddress UIN_GENERATION_BUS_OUT = new MessageBusAddress("uin-generation-bus-out");
 
 	/** The Constant PACKET_UPLOADER_IN. */
 	public static final MessageBusAddress PACKET_UPLOADER_IN = new MessageBusAddress("packet-uploader-in");
-	
+
 	/** The Constant MESSAGE_SENDER_BUS_IN. */
 	public static final MessageBusAddress MESSAGE_SENDER_BUS = new MessageBusAddress("message-sender-bus");
 
 	/** The Constant PACKET_UPLOADER_OUT. */
 	public static final MessageBusAddress PACKET_UPLOADER_OUT = new MessageBusAddress("packet-uploader-bus-out");
-	
+
 	/** The Constant REGISTRATION_CONNECTOR_BUS_OUT. */
-	public static final MessageBusAddress REGISTRATION_CONNECTOR_BUS_OUT = new MessageBusAddress("registration-connector-bus-out");
-	
+	public static final MessageBusAddress REGISTRATION_CONNECTOR_BUS_OUT = new MessageBusAddress(
+			"registration-connector-bus-out");
+
 	/** The Constant PRINTING_BUS_IN. */
 	public static final MessageBusAddress PRINTING_BUS = new MessageBusAddress("printing-bus");
-	
+
 }
