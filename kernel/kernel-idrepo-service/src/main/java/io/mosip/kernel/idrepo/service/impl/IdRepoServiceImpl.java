@@ -138,7 +138,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	private static final String FORMAT = "format";
 
 	/** The Constant VALUE. */
-	private static final String VALUE = "value";
+	private static final String VALUE = "fileReference";
 
 	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "mosip.utc-datetime-pattern";

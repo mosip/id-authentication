@@ -49,7 +49,7 @@ import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 @Component
 public class IdRequestValidator implements Validator {
 
-	private static final String VALUE = "value";
+	private static final String VALUE = "fileReference";
 
 	private static final String JSON_SCHEMA_FILE_NAME = "mosip.kernel.idrepo.json-schema-fileName";
 
