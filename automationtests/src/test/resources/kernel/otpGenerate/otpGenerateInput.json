@@ -7,7 +7,6 @@
 	"invalid_key_frozen":"string",
 	"invalid_key_2":"string",
 	"invalid_used_otp":"string",
-	"invalid_otp_length":"string",
-	"invalid_key_empty":"string"
+	"invalid_otp_length":"string"
 	
 }
