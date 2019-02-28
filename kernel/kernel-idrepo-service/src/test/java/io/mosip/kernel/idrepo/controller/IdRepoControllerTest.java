@@ -8,8 +8,6 @@ import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,9 +62,6 @@ public class IdRepoControllerTest {
 
 	@InjectMocks
 	IdRepoController controller;
-
-	@Mock
-	HttpServletRequest request;
 
 	@Before
 	public void before() {
@@ -130,7 +125,7 @@ public class IdRepoControllerTest {
 		IdResponseDTO response = new IdResponseDTO();
 		when(uinValidatorImpl.validateId(anyString())).thenReturn(true);
 		when(idRepoService.retrieveIdentity(any(), any())).thenReturn(response);
-		ResponseEntity<IdResponseDTO> responseEntity = controller.retrieveIdentity("1234", "demo", request);
+		ResponseEntity<IdResponseDTO> responseEntity = controller.retrieveIdentity("1234", "demo");
 		assertEquals(response, responseEntity.getBody());
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
@@ -140,7 +135,7 @@ public class IdRepoControllerTest {
 		IdResponseDTO response = new IdResponseDTO();
 		when(uinValidatorImpl.validateId(anyString())).thenReturn(true);
 		when(idRepoService.retrieveIdentity(any(), any())).thenReturn(response);
-		ResponseEntity<IdResponseDTO> responseEntity = controller.retrieveIdentity("1234", "demo,all", request);
+		ResponseEntity<IdResponseDTO> responseEntity = controller.retrieveIdentity("1234", "demo,all");
 		assertEquals(response, responseEntity.getBody());
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
@@ -156,7 +151,7 @@ public class IdRepoControllerTest {
 		IdResponseDTO response = new IdResponseDTO();
 		when(uinValidatorImpl.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
 		when(idRepoService.retrieveIdentity(any(), any())).thenReturn(response);
-		controller.retrieveIdentity("1234", "demo", request);
+		controller.retrieveIdentity("1234", "demo");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -164,7 +159,7 @@ public class IdRepoControllerTest {
 		IdResponseDTO response = new IdResponseDTO();
 		when(uinValidatorImpl.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
 		when(idRepoService.retrieveIdentity(any(), any())).thenReturn(response);
-		controller.retrieveIdentity("1234", "dem", request);
+		controller.retrieveIdentity("1234", "dem");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -172,7 +167,7 @@ public class IdRepoControllerTest {
 		IdResponseDTO response = new IdResponseDTO();
 		when(uinValidatorImpl.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
 		when(idRepoService.retrieveIdentity(any(), any())).thenReturn(response);
-		controller.retrieveIdentity("1234", "dem, abc", request);
+		controller.retrieveIdentity("1234", "dem, abc");
 	}
 	
 	@Test
@@ -180,34 +175,16 @@ public class IdRepoControllerTest {
 		IdResponseDTO response = new IdResponseDTO();
 		when(uinValidatorImpl.validateId(anyString())).thenReturn(true);
 		when(idRepoService.retrieveIdentity(any(), any())).thenReturn(response);
-		controller.retrieveIdentity("1234", "demo,all,bio", request);
+		controller.retrieveIdentity("1234", "demo,all,bio");
 	}
 
 	@Test(expected = IdRepoAppException.class)
 	public void testRetrieveIdentityRequestParameterMap() throws IdRepoAppException {
 		Map<String, String[]> paramMap = new HashMap<>();
 		paramMap.put("k", new String[] { "v" });
-		when(request.getParameterMap()).thenReturn(paramMap);
-		controller.retrieveIdentity("1234", "dem, abc", request);
+		controller.retrieveIdentity("1234", "dem, abc");
 	}
 	
-	@Test(expected = IdRepoAppException.class)
-	public void testRetrieveIdentityRequestParameterMapValid() throws IdRepoAppException {
-		Map<String, String[]> paramMap = new HashMap<>();
-		paramMap.put("type", new String[] { "demo" });
-		when(request.getParameterMap()).thenReturn(paramMap);
-		controller.retrieveIdentity("1234", "demo, bio", request);
-	}
-	
-	@Test(expected = IdRepoAppException.class)
-	public void testRetrieveIdentityRequestMultiParameterMap() throws IdRepoAppException {
-		Map<String, String[]> paramMap = new HashMap<>();
-		paramMap.put("type", new String[] { "demo" });
-		paramMap.put("k", new String[] { "v" });
-		when(request.getParameterMap()).thenReturn(paramMap);
-		controller.retrieveIdentity("1234", "demo,bio,all", request);
-	}
-
 	/**
 	 * Test retrieve identity null id.
 	 *
@@ -217,7 +194,7 @@ public class IdRepoControllerTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testRetrieveIdentityNullId() throws IdRepoAppException {
 		when(uinValidatorImpl.validateId(any())).thenThrow(new InvalidIDException(null, null));
-		controller.retrieveIdentity(null, null, request);
+		controller.retrieveIdentity(null, null);
 	}
 
 	/**

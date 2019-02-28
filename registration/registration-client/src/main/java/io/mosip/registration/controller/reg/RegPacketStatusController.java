@@ -74,15 +74,16 @@ public class RegPacketStatusController extends BaseController implements Initial
 	 */
 	@SuppressWarnings("unchecked")
 	private void packetSyncStatus() {
-		
-		ResponseDTO response = jobConfigurationService.executeJob("POS_J00008");
-		
+
+		ResponseDTO response = jobConfigurationService.executeJob("POS_J00008",
+				RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+
 		if (response.getSuccessResponseDTO() != null) {
 			List<LinkedHashMap<String, String>> registrations = (List<LinkedHashMap<String, String>>) response
 					.getSuccessResponseDTO().getOtherAttributes()
 					.get(RegistrationConstants.PACKET_STATUS_SYNC_RESPONSE_ENTITY);
-			
-			if(registrations == null) {
+
+			if (registrations == null) {
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, response.getSuccessResponseDTO().getMessage());
 			} else {
 				ObservableList<RegPacketStatusDTO> packetStatus = FXCollections.observableArrayList();
@@ -91,10 +92,10 @@ public class RegPacketStatusController extends BaseController implements Initial
 							registration.get(RegistrationConstants.PACKET_STATUS_SYNC_REGISTRATION_ID),
 							registration.get(RegistrationConstants.PACKET_STATUS_SYNC_STATUS_CODE)));
 				}
-	
+
 				regID.setCellValueFactory(new PropertyValueFactory<RegPacketStatusDTO, String>("packetId"));
 				syncStatus.setCellValueFactory(new PropertyValueFactory<RegPacketStatusDTO, String>("status"));
-	
+
 				table.setItems(packetStatus);
 			}
 		} else if (response.getErrorResponseDTOs() != null) {

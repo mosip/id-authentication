@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.EMAIL_SERVICE;
 import static io.mosip.registration.constants.RegistrationConstants.EMAIL_SUBJECT;
 import static io.mosip.registration.constants.RegistrationConstants.NOTIFICATION_SERVICE;
-import static io.mosip.registration.constants.RegistrationConstants.REGISTRATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.SMS_SERVICE;
 
 import java.net.SocketTimeoutException;
@@ -26,7 +25,9 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.NotificationDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -102,8 +103,8 @@ public class NotificationServiceImpl implements NotificationService {
 				sb.append(service.toUpperCase()).append(" request submitted successfully");
 
 				LOGGER.info(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, sb.toString());
-				auditFactory.audit(AuditEvent.NOTIFICATION_STATUS, Components.NOTIFICATION_SERVICE, sb.toString(),
-						REGISTRATION_ID, regId);
+				auditFactory.audit(AuditEvent.NOTIFICATION_STATUS, Components.NOTIFICATION_SERVICE,
+						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 				// creating success response
 				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 				successResponseDTO.setMessage("Success");
@@ -120,8 +121,8 @@ public class NotificationServiceImpl implements NotificationService {
 				responseDTO.setErrorResponseDTOs(errorResponse);
 				
 				LOGGER.info(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, errorMessage);
-				auditFactory.audit(AuditEvent.NOTIFICATION_STATUS, Components.NOTIFICATION_SERVICE, errorMessage,
-						REGISTRATION_ID, regId);
+				auditFactory.audit(AuditEvent.NOTIFICATION_STATUS, Components.NOTIFICATION_SERVICE,
+						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 			}
 		} catch (HttpClientErrorException | RegBaseCheckedException | HttpServerErrorException | SocketTimeoutException
 				| ResourceAccessException exception) {
@@ -130,8 +131,8 @@ public class NotificationServiceImpl implements NotificationService {
 					.append(exception.getMessage());
 
 			LOGGER.error(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-			auditFactory.audit(AuditEvent.NOTIFICATION_STATUS, Components.NOTIFICATION_SERVICE, sb.toString(),
-					REGISTRATION_ID, regId);
+			auditFactory.audit(AuditEvent.NOTIFICATION_STATUS, Components.NOTIFICATION_SERVICE,
+					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 			
 			// creating error response
 			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
@@ -154,7 +155,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 		LOGGER.info(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, "sendEmail Method called");
 		auditFactory.audit(AuditEvent.NOTIFICATION_STATUS, Components.NOTIFICATION_SERVICE,
-				"SMS request submitted successfully", REGISTRATION_ID, "regid");
+				SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		LinkedMultiValueMap<String, Object> emailDetails = new LinkedMultiValueMap<>();

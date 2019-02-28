@@ -1,5 +1,7 @@
 package io.mosip.registration.dto.demographic;
 
+import java.util.Map;
+
 import io.mosip.registration.dto.BaseDTO;
 
 /**
@@ -10,6 +12,9 @@ import io.mosip.registration.dto.BaseDTO;
  * @since 1.0.0
  */
 public class ApplicantDocumentDTO extends BaseDTO {
+
+	/** The documents. */
+	private Map<String, DocumentDetailsDTO> documents;
 
 	/** The photograph name. */
 	private String photographName;
@@ -40,6 +45,20 @@ public class ApplicantDocumentDTO extends BaseDTO {
 
 	/** The acknowledge receipt name. */
 	private String acknowledgeReceiptName;
+
+	/**
+	 * @return the documents
+	 */
+	public Map<String, DocumentDetailsDTO> getDocuments() {
+		return documents;
+	}
+
+	/**
+	 * @param documents the documents to set
+	 */
+	public void setDocuments(Map<String, DocumentDetailsDTO> documents) {
+		this.documents = documents;
+	}
 
 	/**
 	 * @return the photographName

@@ -5,15 +5,21 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.Writer;
-import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.events.EventTarget;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
@@ -24,13 +30,11 @@ import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 import javafx.scene.web.WebView;
-import netscape.javascript.JSObject;
 
 @Controller
-public class RegistrationPreviewController extends BaseController implements Initializable {
+public class RegistrationPreviewController extends BaseController {
 
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationPreviewController.class);
 
@@ -52,21 +56,20 @@ public class RegistrationPreviewController extends BaseController implements Ini
 	@Autowired
 	private RegistrationController registrationController;
 
-	@Autowired
-	private RegistrationPreviewController previewController;
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		consentOfApplicant.setSelected(true);
-	}
-		
 	@FXML
 	public void goToPrevPage(ActionEvent event) {
-		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW,RegistrationConstants.PREVIOUS));
+		auditFactory.audit(AuditEvent.REG_PREVIEW_BACK, Components.REG_PREVIEW, SessionContext.userId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
+		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+				getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.PREVIOUS));
 	}
 
 	@FXML
 	public void goToNextPage(ActionEvent event) {
+		auditFactory.audit(AuditEvent.REG_PREVIEW_SUBMIT, Components.REG_PREVIEW, SessionContext.userId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 		if (consentOfApplicant.isSelected()) {
 			getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
 					.setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_SELECTED);
@@ -74,13 +77,14 @@ public class RegistrationPreviewController extends BaseController implements Ini
 			getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
 					.setConsentOfApplicant(RegistrationConstants.CONCENT_OF_APPLICANT_UNSELECTED);
 		}
-		
-		if(getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+
+		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			SessionContext.map().put("registrationPreview", false);
 			SessionContext.map().put("operatorAuthenticationPane", true);
 			registrationController.showUINUpdateCurrentPage();
 		} else {
-			registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW,RegistrationConstants.NEXT));
+			registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+					getPageDetails(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.NEXT));
 		}
 		registrationController.goToAuthenticationPage();
 	}
@@ -94,9 +98,8 @@ public class RegistrationPreviewController extends BaseController implements Ini
 				Writer stringWriter = (Writer) templateResponse.getSuccessResponseDTO().getOtherAttributes()
 						.get(RegistrationConstants.TEMPLATE_NAME);
 				webView.getEngine().loadContent(stringWriter.toString());
-				JSObject window = (JSObject) webView.getEngine()
-						.executeScript(RegistrationConstants.TEMPLATE_JS_OBJECT);
-				window.setMember(RegistrationConstants.TEMPLATE_REGISTRATION, previewController);
+				webView.getEngine().documentProperty()
+						.addListener((observableValue, oldValue, document) -> listenToButton(document));
 			} else {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_PREVIEW_PAGE);
 				clearRegistrationData();
@@ -108,15 +111,56 @@ public class RegistrationPreviewController extends BaseController implements Ini
 		}
 	}
 
+	private void listenToButton(Document document) {
+		if (document == null) {
+			return;
+		}
+
+		List<String> modifyElements = new ArrayList<>();
+		modifyElements.add(RegistrationConstants.MODIFY_DEMO_INFO);
+		modifyElements.add(RegistrationConstants.MODIFY_DOCUMENTS);
+		modifyElements.add(RegistrationConstants.MODIFY_BIOMETRICS);
+		for (String element : modifyElements) {
+			Element button = document.getElementById(element);
+			((EventTarget) button).addEventListener(RegistrationConstants.CLICK, event -> modifyElement(element),
+					false);
+		}
+	}
+
+	private void modifyElement(String element) {
+		if (element.equals(RegistrationConstants.MODIFY_DEMO_INFO)) {
+			modifyDemographicInfo();
+		} else if (element.equals(RegistrationConstants.MODIFY_DOCUMENTS)) {
+			modifyDocuments();
+		} else if (element.equals(RegistrationConstants.MODIFY_BIOMETRICS)) {
+			modifyBiometrics();
+		}
+	}
+
 	public void modifyDemographicInfo() {
-		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.DEMOGRAPHIC_DETAIL);
+		auditFactory.audit(AuditEvent.REG_PREVIEW_DEMO_EDIT, Components.REG_PREVIEW, SessionContext.userId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
+		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
+		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+				RegistrationConstants.DEMOGRAPHIC_DETAIL);
 	}
 
 	public void modifyDocuments() {
-		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.DOCUMENT_SCAN);
+		auditFactory.audit(AuditEvent.REG_PREVIEW_DOC_EDIT, Components.REG_PREVIEW, SessionContext.userId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
+		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
+		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+				RegistrationConstants.DOCUMENT_SCAN);
 	}
 
 	public void modifyBiometrics() {
-		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW, RegistrationConstants.FINGERPRINT_CAPTURE);
+		auditFactory.audit(AuditEvent.REG_PREVIEW_BIO_EDIT, Components.REG_PREVIEW, SessionContext.userId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
+		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
+		registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+				RegistrationConstants.FINGERPRINT_CAPTURE);
 	}
 }

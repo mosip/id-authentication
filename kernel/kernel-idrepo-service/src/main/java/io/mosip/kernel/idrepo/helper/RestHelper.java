@@ -256,15 +256,15 @@ public class RestHelper {
 					"Status error : " + e.getRawStatusCode() + " " + e.getStatusCode() + "  " + e.getStatusText());
 			if (e.getStatusCode().is4xxClientError()) {
 				mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
-						"Status error - returning RestServiceException - CLIENT_ERROR");
-				return new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR,
-						e.getResponseBodyAsString(),
+						"Status error - returning RestServiceException - CLIENT_ERROR -- "
+								+ e.getResponseBodyAsString());
+				return new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, e.getResponseBodyAsString(),
 						mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
 			} else {
 				mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
-						"Status error - returning RestServiceException - SERVER_ERROR");
-				return new RestServiceException(IdRepoErrorConstants.SERVER_ERROR,
-						e.getResponseBodyAsString(),
+						"Status error - returning RestServiceException - SERVER_ERROR -- "
+								+ e.getResponseBodyAsString());
+				return new RestServiceException(IdRepoErrorConstants.SERVER_ERROR, e.getResponseBodyAsString(),
 						mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
 			}
 		} catch (IOException ex) {

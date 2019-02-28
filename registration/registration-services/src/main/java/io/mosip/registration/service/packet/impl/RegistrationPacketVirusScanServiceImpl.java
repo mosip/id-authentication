@@ -22,7 +22,7 @@ import io.mosip.registration.service.packet.RegistrationPacketVirusScanService;
 public class RegistrationPacketVirusScanServiceImpl implements RegistrationPacketVirusScanService {
 
 	@Autowired
-	VirusScanner<Boolean, String> virusScanner;
+	private VirusScanner<Boolean, String> virusScanner;
 
 	@Value("${PACKET_STORE_LOCATION}")
 	private String packetStoreLocation;

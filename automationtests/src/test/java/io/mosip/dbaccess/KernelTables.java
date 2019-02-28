@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import io.mosip.dbentity.OtpEntity;
+import io.mosip.service.BaseTestCase;
 
 /**
  * @author Ravi Kant
@@ -25,8 +26,15 @@ public class KernelTables {
 	{
 		boolean flag=false;
 		try {	
-		factory = new Configuration().configure("masterData.cfg.xml")
-	.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
+			if(BaseTestCase.environment.equalsIgnoreCase("integration"))
+				factory = new Configuration().configure("masterDatainteg.cfg.xml")
+			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
+					else
+					{
+						if(BaseTestCase.environment.equalsIgnoreCase("integration"))
+							factory = new Configuration().configure("masterDatainteg.cfg.xml")
+						.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
+					}
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 		logger.info("Session value is :" +session);

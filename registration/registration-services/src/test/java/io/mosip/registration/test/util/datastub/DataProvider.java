@@ -5,8 +5,10 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import io.mosip.registration.builder.Builder;
@@ -16,6 +18,7 @@ import io.mosip.registration.dto.AuditDTO;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.RegistrationMetaDataDTO;
+import io.mosip.registration.dto.SelectionListDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
@@ -66,6 +69,9 @@ public class DataProvider {
 
 		registrationDTO.setDemographicDTO(DataProvider.getDemographicDTO());
 		registrationDTO.setBiometricDTO(DataProvider.getBiometricDTO());
+		SelectionListDTO selectionListDTO=new SelectionListDTO();
+		selectionListDTO.setAge(true);
+		registrationDTO.setSelectionListDTO(selectionListDTO);
 		return registrationDTO;
 
 	}
@@ -200,7 +206,9 @@ public class DataProvider {
 		DemographicDTO demographicDTO = new DemographicDTO();
 		demographicDTO.setApplicantDocumentDTO(DataProvider.setApplicantDocumentDTO());
 		demographicDTO.setDemographicInfoDTO(DataProvider.getDemoInLocalLang());
-		getDocumentDetailsDTO(demographicDTO.getDemographicInfoDTO().getIdentity());
+		demographicDTO.getApplicantDocumentDTO().setDocuments(new HashMap<String, DocumentDetailsDTO>());
+		getDocumentDetailsDTO(demographicDTO.getDemographicInfoDTO().getIdentity(),
+				demographicDTO.getApplicantDocumentDTO().getDocuments());
 		return demographicDTO;
 	}
 
@@ -318,43 +326,47 @@ public class DataProvider {
 		return applicantDocumentDTO;
 	}
 
-	private static void getDocumentDetailsDTO(Identity identity) throws RegBaseCheckedException {
+	private static void getDocumentDetailsDTO(Identity identity, Map<String, DocumentDetailsDTO> documents) throws RegBaseCheckedException {
 
 		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
 		documentDetailsDTO.setType("Passport");
 		documentDetailsDTO.setFormat("jpg");
-		documentDetailsDTO.setValue("ProofOfIdentity.jpg");
+		documentDetailsDTO.setValue("ProofOfIdentity");
 		documentDetailsDTO.setOwner("Self");
 		
 		identity.setProofOfIdentity(documentDetailsDTO);
+		documents.put("POI", documentDetailsDTO);
 
 		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
 		documentDetailsResidenceDTO.setType("Passport");
 		documentDetailsResidenceDTO.setFormat("jpg");
-		documentDetailsResidenceDTO.setValue("ProofOfAddress.jpg");
+		documentDetailsResidenceDTO.setValue("ProofOfAddress");
 		documentDetailsResidenceDTO.setOwner("hof");
 		
 		identity.setProofOfAddress(documentDetailsResidenceDTO);
+		documents.put("POA", documentDetailsResidenceDTO);
 
 		documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
 		documentDetailsDTO.setType("Passport");
 		documentDetailsDTO.setFormat("jpg");
-		documentDetailsDTO.setValue("ProofOfRelationship.jpg");
+		documentDetailsDTO.setValue("ProofOfRelationship");
 		documentDetailsDTO.setOwner("Self");
 		
 		identity.setProofOfRelationship(documentDetailsDTO);
+		documents.put("POR", documentDetailsDTO);
 
 		documentDetailsResidenceDTO = new DocumentDetailsDTO();
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
 		documentDetailsResidenceDTO.setType("Passport");
 		documentDetailsResidenceDTO.setFormat("jpg");
-		documentDetailsResidenceDTO.setValue("DateOfBirthProof.jpg");
+		documentDetailsResidenceDTO.setValue("DateOfBirthProof");
 		documentDetailsResidenceDTO.setOwner("hof");
 		
 		identity.setProofOfDateOfBirth(documentDetailsResidenceDTO);
+		documents.put("POB", documentDetailsResidenceDTO);
 	}
 
 	private static RegistrationMetaDataDTO getRegistrationMetaDataDTO() {

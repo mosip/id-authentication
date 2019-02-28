@@ -50,7 +50,7 @@ public class FilesValidation {
 	public boolean filesValidation(String registrationId, Identity identity) {
 		boolean filesValidated = false;
 
-		List<FieldValueArray> hashSequence = identity.getHashSequence();
+		List<FieldValueArray> hashSequence = identity.getHashSequence1();
 		filesValidated = validateHashSequence(registrationId, hashSequence);
 
 		if (!filesValidated)

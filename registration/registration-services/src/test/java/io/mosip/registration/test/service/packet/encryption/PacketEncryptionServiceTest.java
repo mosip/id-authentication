@@ -77,7 +77,7 @@ public class PacketEncryptionServiceTest {
 		registrationDTO = DataProvider.getPacketDTO();
 
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 		doNothing().when(auditLogControlDAO).save(Mockito.any(AuditLogControl.class));
 		
 		ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);

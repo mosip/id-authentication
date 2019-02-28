@@ -55,13 +55,15 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 	 */
 	@Override
 	synchronized public ResponseDTO fetchPolicy() {
-		LOGGER.info("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"synch the public key is started");
+
 		KeyStore keyStore = null;
 		ResponseDTO responseDTO = new ResponseDTO();
 		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-
-			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE, null);
+			LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, "user is not in online");
+			 setErrorResponse(responseDTO,
+					RegistrationConstants.POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE, null);
 		} else {
 			keyStore = policySyncDAO.findByMaxExpireTime();
 
@@ -70,26 +72,28 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 				long difference = ChronoUnit.DAYS.between(new Date().toInstant(), validDate.toInstant());
 				if (Integer
 						.parseInt((String) ApplicationContext.map().get(RegistrationConstants.KEY_NAME)) < difference) {
-					setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
+					 setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE,
+							null);
 				} else {
 
 					try {
-						getPublicKey(LocalDateTime.now(), RegistrationConstants.REFERENCE_ID);
-					} catch (KeyManagementException | IOException | java.security.NoSuchAlgorithmException e) {
+						 getPublicKey(responseDTO);
+					} catch (KeyManagementException | IOException | java.security.NoSuchAlgorithmException exception) {
 						LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
-								"error response is created");
+								exception.getMessage());
 
-						setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+						setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE,
+								null);
 
 					}
 				}
 			} else {
 				try {
-					getPublicKey(LocalDateTime.now(), RegistrationConstants.REFERENCE_ID);
+					getPublicKey(responseDTO);
 				} catch (KeyManagementException | IOException | java.security.NoSuchAlgorithmException exception) {
 					LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 							exception.getMessage());
-					setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+					 setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
 
 				}
 
@@ -98,14 +102,14 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		return responseDTO;
 	}
 
-	public synchronized void getPublicKey(LocalDateTime timeStamp, String referenceId)
+	public synchronized void getPublicKey(ResponseDTO responseDTO)
 			throws KeyManagementException, IOException, java.security.NoSuchAlgorithmException {
-
+		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
+				getCenterId(getStationId(getMacAddress())));
 		KeyStore keyStore = new KeyStore();
-		ResponseDTO responseDTO = new ResponseDTO();
 		Map<String, String> requestParams = new HashMap<String, String>();
 		requestParams.put("timeStamp", Instant.now().toString());
-		requestParams.put("referenceId", RegistrationConstants.REFERENCE_ID);
+		requestParams.put("referenceId", getCenterId(getStationId(getMacAddress())));
 		try {
 			PublicKeyResponse<String> publicKeyResponse = (PublicKeyResponse<String>) serviceDelegateUtil
 					.get("policysync", requestParams, false);
@@ -116,13 +120,16 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 			keyStore.setCreatedBy(getUserIdFromSession());
 			keyStore.setCreatedDtimes(Timestamp.valueOf(LocalDateTime.now()));
 			policySyncDAO.updatePolicy(keyStore);
-			setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
+			responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
+			LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
+					"synch the public key is completed");
 
 		} catch (HttpClientErrorException | RegBaseCheckedException exception) {
 			LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
-			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+			 setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
 
 		}
+		
 
 	}
 }
