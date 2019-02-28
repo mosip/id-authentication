@@ -102,7 +102,9 @@ public enum BioMatchType implements MatchType {
 			CbeffDocType.IRIS,SingleAnySubtypeType.LEFT, null),
 	
 	//FIXME get Bio ID info of all eyes and return the map
-	IRIS_COMP(IdaIdMapping.IRIS, setOf(CompositeIrisMatchingStrategy.PARTIAL), CbeffDocType.IRIS, null, null);
+	IRIS_COMP(IdaIdMapping.IRIS, setOf(CompositeIrisMatchingStrategy.PARTIAL), CbeffDocType.IRIS, null, null),
+	
+	FACE(IdaIdMapping.FACE, Collections.emptySet(), CbeffDocType.FACE, null, null);
 
 	/** The allowed matching strategy. */
 	private Set<MatchingStrategy> allowedMatchingStrategy;
