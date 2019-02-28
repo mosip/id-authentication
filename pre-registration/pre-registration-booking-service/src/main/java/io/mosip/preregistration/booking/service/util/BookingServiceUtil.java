@@ -346,13 +346,13 @@ public class BookingServiceUtil {
 	}
 	public boolean timeSpanCheckForCancle(LocalDateTime bookedDateTime) {
 		LocalDateTime current = LocalDateTime.now();
-        long hours=ChronoUnit.MINUTES.between(current, bookedDateTime);
+        long hours=ChronoUnit.HOURS.between(current, bookedDateTime);
 		if(Math.abs(hours)>=timeSpanCheckForCancel) return true;
 		else return false;
 	}
 	public boolean timeSpanCheckForRebook(LocalDateTime bookedDateTime) {
 		LocalDateTime current = LocalDateTime.now();
-        long hours=ChronoUnit.MINUTES.between(current, bookedDateTime);
+        long hours=ChronoUnit.HOURS.between(current, bookedDateTime);
 		if(Math.abs(hours)>=timeSpanCheckForRebook) return true;
 		else return false;
 
