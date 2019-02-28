@@ -150,7 +150,8 @@
               userForm.get(formControlNames.residenceStatus).invalid
             "
           >
-            Please select nationality
+          {{ 'demographic.nationality_validation' | translate }}
+           
           </div>
 
           <mat-form-field>
@@ -440,7 +441,7 @@
               <mat-button-toggle value="national"> {{ secondaryLanguagelabels.button_national }} </mat-button-toggle>
               <mat-button-toggle value="foreigner"> {{ secondaryLanguagelabels.button_foreigner }} </mat-button-toggle>
             </mat-button-toggle-group>
-<!--             
+<!--
             <mat-button-toggle *ngFor="let resident of secondaryResidenceStatus" [value]="resident.code">{{
               resident.residentName
             }}</mat-button-toggle> -->

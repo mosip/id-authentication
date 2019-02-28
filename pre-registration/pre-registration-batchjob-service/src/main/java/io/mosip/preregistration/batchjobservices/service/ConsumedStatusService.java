@@ -64,14 +64,19 @@ public class ConsumedStatusService {
 				String preRegId = iterate.getPreRegistrationId();
 
 				DemographicEntity demographicEntity = batchServiceDAO.getApplicantDemographicDetails(preRegId);
-				demographicEntity.setStatusCode(status);
-				batchServiceDAO.updateApplicantDemographic(demographicEntity);
-				LOGGER.info(LOGDISPLAY, "Update the status successfully into Applicant demographic table");
-				
+				if(!(demographicEntity==null)) {
+					demographicEntity.setStatusCode(status);
+					batchServiceDAO.updateApplicantDemographic(demographicEntity);
+					LOGGER.info(LOGDISPLAY, "Update the status successfully into Applicant demographic table");
+				}
 				RegistrationBookingEntity bookingEntity=batchServiceDAO.getPreRegId(preRegId);
-				bookingEntity.setStatusCode(status);
-				batchServiceDAO.updateBooking(bookingEntity);
-				LOGGER.info(LOGDISPLAY, "Update the status successfully into Booking table");
+				if(!(bookingEntity==null)) {
+					bookingEntity.setStatusCode(status);
+					batchServiceDAO.updateBooking(bookingEntity);
+					LOGGER.info(LOGDISPLAY, "Update the status successfully into Booking table");
+				}
+				
+				
 				
 				iterate.setStatusComments(NEW_STATUS_COMMENTS);
 				batchServiceDAO.updateProcessedList(iterate);

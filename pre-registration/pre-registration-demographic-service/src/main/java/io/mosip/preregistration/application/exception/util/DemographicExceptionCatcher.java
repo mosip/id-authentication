@@ -20,6 +20,7 @@ import io.mosip.preregistration.application.exception.BookingDeletionFailedExcep
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.InvalidDateFormatException;
 import io.mosip.preregistration.application.exception.MissingRequestParameterException;
+import io.mosip.preregistration.application.exception.OperationNotAllowedException;
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
@@ -95,6 +96,8 @@ public class DemographicExceptionCatcher {
 			throw new BookingDeletionFailedException(((BookingDeletionFailedException) ex).getErrorCode(),((BookingDeletionFailedException) ex).getErrorText());
 		}else if (ex instanceof HashingException) {
 			throw new HashingException(((HashingException) ex).getErrorCode(),((HashingException) ex).getErrorText());
+		}else if (ex instanceof OperationNotAllowedException) {
+			throw new OperationNotAllowedException(((OperationNotAllowedException) ex).getErrorCode(),((OperationNotAllowedException) ex).getErrorText());
 		}
 	}
 

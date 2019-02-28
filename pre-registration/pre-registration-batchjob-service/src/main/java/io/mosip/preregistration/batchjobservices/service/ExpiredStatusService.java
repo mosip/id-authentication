@@ -58,9 +58,12 @@ public class ExpiredStatusService {
 					iterate.setStatusCode(StatusCodes.EXPIRED.getCode());
 					
 					DemographicEntity demographicEntity = batchServiceDAO.getApplicantDemographicDetails(preRegId);
-					demographicEntity.setStatusCode(StatusCodes.EXPIRED.getCode());
-					batchServiceDAO.updateBooking(iterate);
-					batchServiceDAO.updateApplicantDemographic(demographicEntity);
+					if(!(demographicEntity==null)) {
+						demographicEntity.setStatusCode(StatusCodes.EXPIRED.getCode());
+						batchServiceDAO.updateBooking(iterate);
+						batchServiceDAO.updateApplicantDemographic(demographicEntity);
+					}
+					
 
 					LOGGER.info(LOGDISPLAY,
 							"Update the status successfully into Registration Appointment table and Demographic table");

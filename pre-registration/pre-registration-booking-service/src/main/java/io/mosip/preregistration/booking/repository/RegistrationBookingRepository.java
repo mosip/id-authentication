@@ -28,13 +28,17 @@ import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
 public interface RegistrationBookingRepository extends BaseRepository<RegistrationBookingEntity, String> {
 
 	public static final String preIdQuery = "SELECT u FROM RegistrationBookingEntity u WHERE u.bookingPK.preregistrationId = ?1";
-	public static final String dletePreIdQuery="delete from RegistrationBookingEntity u where u.bookingPK.preregistrationId = ?1";
+	public static final String deletePreIdQuery="delete from RegistrationBookingEntity u where u.bookingPK.preregistrationId = ?1";
+	public static final String preIdAndStatusQuery = "SELECT u FROM RegistrationBookingEntity u WHERE u.bookingPK.preregistrationId = ?1 and u.statusCode=?2";
 	/**
 	 * @param preregistrationId
 	 * @param statusCode
 	 * @return RegistrationBookingEntity based on Pre-registration-Id and status code
 	 */
 	public RegistrationBookingEntity findPreIdAndStatusCode(String preregistrationId, String statusCode);
+	
+	@Query(preIdAndStatusQuery)
+	public RegistrationBookingEntity findBookingByPreIdAndStatusCode(String preregistrationId, String statusCode);
 	 
 	@Query(preIdQuery)
 	RegistrationBookingEntity getPreRegId(@Param("preRegId") String preRegId);
@@ -50,6 +54,6 @@ public interface RegistrationBookingRepository extends BaseRepository<Registrati
 	public List<RegistrationBookingEntity> findBypreregistrationId(String preId);
 	@Transactional
 	@Modifying
-	@Query(dletePreIdQuery)
+	@Query(deletePreIdQuery)
 	public int deleteByPreRegistrationId(String preregistrationId);
 }

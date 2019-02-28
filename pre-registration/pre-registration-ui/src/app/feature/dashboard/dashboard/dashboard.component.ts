@@ -14,6 +14,7 @@ import { FileModel } from 'src/app/shared/models/demographic-model/file.model';
 import { Applicant } from 'src/app/shared/models/dashboard-model/dashboard.modal';
 import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
 import * as appConstants from '../../../app.constants';
+import Utils from 'src/app/app.util';
 
 @Component({
   selector: 'app-registration',
@@ -26,6 +27,7 @@ export class DashBoardComponent implements OnInit {
   tempFiles;
   loginId = '';
 
+  secondaryLanguagelabels: any;
   disableModifyDataButton = false;
   disableModifyAppointmentButton = true;
   fetchedDetails = true;
@@ -50,10 +52,12 @@ export class DashBoardComponent implements OnInit {
   }
   ngOnInit() {
     this.regService.changeMessage({ modifyUser: 'false' });
-    this.route.params.subscribe((params: Params) => {
-      this.loginId = params['id'];
-    });
+    this.loginId = this.regService.getLoginId();
     this.initUsers();
+    this.dataStorageService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+      this.secondaryLanguagelabels = response['dashboard'].discard;
+      console.log(this.secondaryLanguagelabels);
+    });
   }
 
   initUsers() {
@@ -111,19 +115,21 @@ export class DashBoardComponent implements OnInit {
     const applicantResponse = applicants[appConstants.RESPONSE][index];
     const applicant: Applicant = {
       applicationID: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.preId],
-      name: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname],
+      name: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][0]['value'],
       appointmentDateTime: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto]
         ? this.createAppointmentDateTime(applicantResponse)
         : '-',
       status: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.statusCode],
-      regDto: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto]
+      regDto: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto],
+      nameInSecondaryLanguage: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][1]['value'],
+      postalCode: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.postalCode]
     };
     return applicant;
   }
 
   onNewApplication() {
     if (this.loginId) {
-      this.router.navigate(['pre-registration', this.loginId, 'demographic']);
+      this.router.navigate(['pre-registration', 'demographic']);
       this.isNewApplication = true;
     } else {
       this.router.navigate(['/']);
@@ -162,10 +168,10 @@ export class DashBoardComponent implements OnInit {
       if (selectedOption && Number(selectedOption) === 1) {
         const body = {
           case: 'CONFIRMATION',
-          title: 'Confirm',
-          message: 'The selected application will be deleted. Please confirm.',
-          yesButtonText: 'Confirm',
-          noButtonText: 'Cancel'
+          title: this.secondaryLanguagelabels.title_confirm,
+          message: this.secondaryLanguagelabels.msg_confirm,
+          yesButtonText: this.secondaryLanguagelabels.button_confirm,
+          noButtonText: this.secondaryLanguagelabels.button_cancel
         };
         dialogRef = this.openDialog(body, '250px');
         dialogRef.afterClosed().subscribe(confirm => {
@@ -174,8 +180,8 @@ export class DashBoardComponent implements OnInit {
               response => {
                 const message = {
                   case: 'MESSAGE',
-                  title: 'Success',
-                  message: 'The selected application has been successfully deleted'
+                  title: this.secondaryLanguagelabels.title_success,
+                  message: this.secondaryLanguagelabels.msg_deleted
                 };
                 dialogRef = this.openDialog(message, '250px');
                 const index = this.users.indexOf(element);
@@ -186,8 +192,8 @@ export class DashBoardComponent implements OnInit {
                 console.log(error);
                 const message = {
                   case: 'MESSAGE',
-                  title: 'Error',
-                  message: 'The selected application could not be deleted'
+                  title: this.secondaryLanguagelabels.title_error,
+                  message: this.secondaryLanguagelabels.msg_could_not_deleted
                 };
                 dialogRef = this.openDialog(message, '250px');
               }
@@ -195,8 +201,8 @@ export class DashBoardComponent implements OnInit {
           } else {
             const message = {
               case: 'MESSAGE',
-              title: 'Error',
-              message: 'The selected application could not be deleted'
+              title: this.secondaryLanguagelabels.title_error,
+              message: this.secondaryLanguagelabels.msg_could_not_deleted
             };
             dialogRef = this.openDialog(message, '250px');
           }
@@ -204,10 +210,10 @@ export class DashBoardComponent implements OnInit {
       } else if (selectedOption && Number(selectedOption) === 2) {
         const body = {
           case: 'CONFIRMATION',
-          title: 'Confirm',
-          message: 'Appointment for the selected application will be cancelled. Please confirm.',
-          yesButtonText: 'Confirm',
-          noButtonText: 'Cancel'
+          title: this.secondaryLanguagelabels.title_confirm,
+          message: this.secondaryLanguagelabels.msg_confirm,
+          yesButtonText: this.secondaryLanguagelabels.button_confirm,
+          noButtonText: this.secondaryLanguagelabels.button_cancel
         };
         dialogRef = this.openDialog(body, '250px');
         dialogRef.afterClosed().subscribe(confirm => {
@@ -217,8 +223,8 @@ export class DashBoardComponent implements OnInit {
               response => {
                 const message = {
                   case: 'MESSAGE',
-                  title: 'Success',
-                  message: 'Appointment for the selected application has been successfully cancelled'
+                  title: this.secondaryLanguagelabels.title_success,
+                  message: this.secondaryLanguagelabels.msg_deleted
                 };
                 dialogRef = this.openDialog(message, '250px');
                 const index = this.users.indexOf(element);
@@ -232,8 +238,8 @@ export class DashBoardComponent implements OnInit {
                 console.log(error);
                 const message = {
                   case: 'MESSAGE',
-                  title: 'Error',
-                  message: 'Appointment for the selected application could not be cancelled'
+                  title: this.secondaryLanguagelabels.title_error,
+                  message: this.secondaryLanguagelabels.msg_could_not_deleted
                 };
                 dialogRef = this.openDialog(message, '250px');
               }
@@ -241,8 +247,8 @@ export class DashBoardComponent implements OnInit {
           } else {
             const message = {
               case: 'MESSAGE',
-              title: 'Error',
-              message: 'Appointment for the selected application could not be deleted'
+              title: this.secondaryLanguagelabels.title_error,
+              message: this.secondaryLanguagelabels.msg_could_not_deleted
             };
             dialogRef = this.openDialog(message, '250px');
           }
@@ -251,12 +257,22 @@ export class DashBoardComponent implements OnInit {
     });
   }
 
-  onModifyInformation(preId: string) {
+  onModifyInformation(user: Applicant) {
+    const preId = user.applicationID;
     this.regService.changeMessage({ modifyUser: 'true' });
     this.disableModifyDataButton = true;
     this.dataStorageService
       .getUserDocuments(preId)
       .subscribe(response => this.setUserFiles(response), error => console.log('response from modify data', error));
+    this.sharedService.addNameList({
+      fullName: user.name,
+      preRegId: user.applicationID,
+      regDto: user.regDto,
+      status: user.status,
+      fullNameSecondaryLang: user.nameInSecondaryLanguage,
+      postalCode: user.postalCode
+    });
+    console.log(this.sharedService.getNameList());
 
     this.dataStorageService.getUser(preId).subscribe(
       response => this.onModification(response, preId),
@@ -274,7 +290,7 @@ export class DashBoardComponent implements OnInit {
     this.disableModifyDataButton = true;
     this.regService.addUser(new UserModel(preId, request, this.userFiles));
     this.fetchedDetails = true;
-    this.router.navigate(['pre-registration', this.loginId, 'demographic']);
+    this.router.navigate(['pre-registration', 'demographic']);
   }
 
   onSelectUser(user: Applicant, event: MatCheckboxChange) {
@@ -307,8 +323,8 @@ export class DashBoardComponent implements OnInit {
         status: status
       });
     }
-    const arr = this.router.url.split('/');
-    const url = `/pre-registration/${arr.pop()}/booking/pick-center`;
+    let url = '';
+    url = Utils.getURL(this.router.url, 'pre-registration/booking/pick-center');
     this.router.navigateByUrl(url);
   }
 

@@ -10,6 +10,7 @@ import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
 import { SharedService } from '../booking.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { TranslateService } from '@ngx-translate/core';
+import Utils from 'src/app/app.util';
 
 let REGISTRATION_CENTRES: RegistrationCentre[] = [];
 
@@ -60,16 +61,16 @@ export class CenterSelectionComponent implements OnInit {
     REGISTRATION_CENTRES = [];
     this.dataSource.data = REGISTRATION_CENTRES;
     this.selectedCentre = null;
-  //  this.getLocation();
+    //  this.getLocation();
     this.dataService.getLocationTypeData().subscribe(response => {
       this.locationTypes = response['locations'];
       console.log(this.locationTypes);
     });
     this.users = this.service.getNameList();
-//    this.getRecommendedCenters();
+    //    this.getRecommendedCenters();
   }
 
-getRecommendedCenters() {
+  getRecommendedCenters() {
     const pincodes = [];
     this.users.forEach(user => {
       const pincode = this.getUserDemographic(user).then(() => {
@@ -79,8 +80,8 @@ getRecommendedCenters() {
     });
   }
 
-async getUserDemographic(user) {
-  this.dataService.getUser(user.preRegId).subscribe(response => {
+  async getUserDemographic(user) {
+    this.dataService.getUser(user.preRegId).subscribe(response => {
       console.log(response);
       return response['response'][0].demographicDetails.identity.postalCode;
     });
@@ -117,23 +118,25 @@ async getUserDemographic(user) {
     console.log(this.locationType, this.searchText);
     if (this.locationType !== null && this.searchText !== null) {
       this.showMap = false;
-      this.dataService.getRegistrationCentersByName(this.locationType.locationHierarchylevel, this.searchText).subscribe(
-        response => {
-          console.log(response);
-          if (response['registrationCenters'].length !== 0) {
-            REGISTRATION_CENTRES = response['registrationCenters'];
-            this.dataSource.data = REGISTRATION_CENTRES;
-            this.showTable = true;
-            this.selectedRow(REGISTRATION_CENTRES[0]);
-            this.dispatchCenterCoordinatesList();
-          } else {
+      this.dataService
+        .getRegistrationCentersByName(this.locationType.locationHierarchylevel, this.searchText)
+        .subscribe(
+          response => {
+            console.log(response);
+            if (response['registrationCenters'].length !== 0) {
+              REGISTRATION_CENTRES = response['registrationCenters'];
+              this.dataSource.data = REGISTRATION_CENTRES;
+              this.showTable = true;
+              this.selectedRow(REGISTRATION_CENTRES[0]);
+              this.dispatchCenterCoordinatesList();
+            } else {
+              this.showMessage = true;
+            }
+          },
+          error => {
             this.showMessage = true;
           }
-        },
-        error => {
-          this.showMessage = true;
-        }
-      );
+        );
     }
   }
 
@@ -216,18 +219,23 @@ async getUserDemographic(user) {
   }
 
   routeDashboard() {
-    const routeParams = this.router.url.split('/');
-    this.router.navigate(['dashboard', routeParams[2]]);
+    // const routeParams = this.router.url.split('/');
+    this.router.navigate(['dashboard']);
   }
 
   routeBack() {
+    let url = '';
     if (this.registrationService.getUsers().length === 0) {
-      const routeParams = this.router.url.split('/');
-      console.log('route params', routeParams);
-      this.router.navigateByUrl(`dashboard/${routeParams[2]}`);
+      // const routeParams = this.router.url.split('/');
+      // console.log('route params', routeParams);
+      url = Utils.getURL(this.router.url, 'dashboard', 3);
+
+      // this.router.navigateByUrl(`dashboard`);
     } else {
-      const routeParams = this.router.url.split('/');
-      this.router.navigate([routeParams[1], routeParams[2], 'summary', 'preview']);
-    } 
+      // const routeParams = this.router.url.split('/');
+      url = Utils.getURL(this.router.url, 'summary/preview', 2);
+      // this.router.navigate([routeParams[1], 'summary', 'preview']);
+    }
+    this.router.navigateByUrl(url);
   }
 }

@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
+import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -33,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
@@ -68,6 +70,7 @@ import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.HashingException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
+import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.HashUtill;
 import io.mosip.preregistration.core.util.ValidationUtil;
 
@@ -176,6 +179,9 @@ public class DemographicService {
 		requiredRequestMap.put("id", id);
 		requiredRequestMap.put("ver", ver);
 	}
+	
+	@Autowired
+	CryptoUtil cryptoUtil;
 
 	/*
 	 * This method is used to create the demographic data by generating the unique
@@ -239,12 +245,16 @@ public class DemographicService {
 						StatusCodes.CONSUMED.getCode());
 				if (!serviceUtil.isNull(demographicEntityList)) {
 					for (DemographicEntity demographicEntity : demographicEntityList) {
-						String identityValue = serviceUtil.getValueFromIdentity(
-								demographicEntity.getApplicantDetailJson(), RequestCodes.FULLNAME.getCode());
+						byte[] decryptedString = cryptoUtil.decrypt(demographicEntity.getApplicantDetailJson(), DateUtils.getUTCCurrentDateTime());
+						JSONArray identityValue = serviceUtil.getValueFromIdentity(
+								decryptedString, RequestCodes.FULLNAME.getCode());
+						String postalcode = serviceUtil.getPostalCode(
+								decryptedString, RequestCodes.POSTAL_CODE.getCode());
 						viewDto = new PreRegistrationViewDTO();
 						viewDto.setPreRegistrationId(demographicEntity.getPreRegistrationId());
 						viewDto.setFullname(identityValue);
 						viewDto.setStatusCode(demographicEntity.getStatusCode());
+						viewDto.setPostalCode(postalcode);
 						BookingRegistrationDTO bookingRegistrationDTO = callGetAppointmentDetailsRestService(
 								demographicEntity.getPreRegistrationId());
 						if (bookingRegistrationDTO != null) {
@@ -411,9 +421,19 @@ public class DemographicService {
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
 				if (demographicEntity != null) {
+					if (demographicEntity.getDemogDetailHash()
+							.equals(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson()).toString())) {
+
 					DemographicResponseDTO createDto = serviceUtil.setterForCreateDTO(demographicEntity);
 					createDtos.add(createDto);
 					response.setResponse(createDtos);
+					}
+					else {
+						throw new HashingException(io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_010.name(),
+								io.mosip.preregistration.core.errorcodes.ErrorMessages.HASHING_FAILED.name());
+						
+					
+					}
 				} else {
 					throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
 							ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
