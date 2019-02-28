@@ -58,13 +58,15 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.core.env.Environment;
+import org.springframework.test.context.junit4.SpringRunner;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 
-@RunWith(PowerMockRunner.class)
+@RunWith(SpringRunner.class)
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 @PrepareForTest(PacketReceiverResponseBuilder.class)
 public class PacketReceiverStageTest {
@@ -119,7 +121,7 @@ public class PacketReceiverStageTest {
 		fileUpload = setFileUpload();
 		ctx = setContext();
 		PacketReceiverApplication.main(null);
-		PowerMockito.mockStatic(PacketReceiverResponseBuilder.class);
+		when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		
 	}
 	public String getDataAsJson(String Status) {
@@ -147,7 +149,7 @@ public class PacketReceiverStageTest {
 	public void testProcessURLSuccess() throws Exception {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setIsValid(Boolean.TRUE);
-		PowerMockito.when(PacketReceiverResponseBuilder.class, "buildPacketReceiverResponse", anyString(),anyList()).thenReturn(getDataAsJson(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString()));
+		//PowerMockito.when(PacketReceiverResponseBuilder.class, "buildPacketReceiverResponse", anyString(),anyList()).thenReturn(getDataAsJson(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString()));
 		when(packetReceiverService.storePacket(any(File.class))).thenReturn(messageDTO);
 		packetReceiverStage.processURL(ctx);
 		assertEquals(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString(), registrationStatusCode);
@@ -157,7 +159,7 @@ public class PacketReceiverStageTest {
 	@Ignore
 	public void testProcessURLFail() throws Exception {
 		MessageDTO messageDTO = new MessageDTO();
-		PowerMockito.when(PacketReceiverResponseBuilder.class, "buildPacketReceiverResponse", anyString(),anyList()).thenReturn(getDataAsJson(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString()));
+		//PowerMockito.when(PacketReceiverResponseBuilder.class, "buildPacketReceiverResponse", anyString(),anyList()).thenReturn(getDataAsJson(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString()));
 		messageDTO.setIsValid(Boolean.FALSE);
 		when(packetReceiverService.storePacket(any(File.class))).thenReturn(messageDTO);
 		packetReceiverStage.processURL(ctx);

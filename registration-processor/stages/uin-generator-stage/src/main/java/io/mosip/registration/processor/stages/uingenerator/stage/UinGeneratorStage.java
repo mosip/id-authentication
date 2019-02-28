@@ -171,6 +171,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 		object.setMessageBusAddress(MessageBusAddress.UIN_GENERATION_BUS_IN);
 		object.setInternalError(Boolean.FALSE);
+		object.setIsValid(true);
 		String description = "";
 		boolean isTransactionSuccessful = false;
 		this.registrationId = object.getRid();

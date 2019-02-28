@@ -1,4 +1,3 @@
-/*
 package io.mosip.registration.processor.manual.verification.stage;
 
 
@@ -32,6 +31,8 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.core.env.Environment;
+import org.springframework.test.context.junit4.SpringRunner;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -67,7 +68,7 @@ import io.vertx.ext.web.Route;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
 
-@RunWith(PowerMockRunner.class)
+@RunWith(SpringRunner.class)
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 @PrepareForTest(ManualVerificationResponseBuilder.class)
 public class ManualVerificationStageTest{
@@ -132,11 +133,12 @@ public class ManualVerificationStageTest{
 
 		ctx = setContext();
 		ManualVerificationApplication.main(null);	
-		PowerMockito.mockStatic(ManualVerificationResponseBuilder.class);
+		//PowerMockito.mockStatic(ManualVerificationResponseBuilder.class);
 		when(env.getProperty(anyString())).thenReturn("mosip.manual.verification.biometric");
-		PowerMockito.when(ManualVerificationResponseBuilder.class, "buildManualVerificationSuccessResponse",any(ManualVerificationDTO.class), anyString(), anyString(), anyString()).thenReturn(getDataAsJson("2"));
-		PowerMockito.when(ManualVerificationResponseBuilder.class, "buildManualVerificationSuccessResponse",any(PacketMetaInfo.class), anyString(), anyString(), anyString()).thenReturn(getDataAsJson("2"));
-		PowerMockito.when(ManualVerificationResponseBuilder.class, "buildManualVerificationSuccessResponse",any(String.class), anyString(), anyString(), anyString()).thenReturn(getDataAsJson("1"));
+		when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		//PowerMockito.when(ManualVerificationResponseBuilder.class, "buildManualVerificationSuccessResponse",any(ManualVerificationDTO.class), anyString(), anyString(), anyString()).thenReturn(getDataAsJson("2"));
+		//PowerMockito.when(ManualVerificationResponseBuilder.class, "buildManualVerificationSuccessResponse",any(PacketMetaInfo.class), anyString(), anyString(), anyString()).thenReturn(getDataAsJson("2"));
+		//PowerMockito.when(ManualVerificationResponseBuilder.class, "buildManualVerificationSuccessResponse",any(String.class), anyString(), anyString(), anyString()).thenReturn(getDataAsJson("1"));
 		
 	}
 
@@ -539,4 +541,4 @@ public class ManualVerificationStageTest{
 		};
 	}
 }
-*/
+

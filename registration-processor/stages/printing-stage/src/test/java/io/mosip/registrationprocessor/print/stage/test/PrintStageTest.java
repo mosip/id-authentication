@@ -29,10 +29,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
+import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtil;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
@@ -81,10 +83,11 @@ import io.vertx.ext.web.Session;
  * @author M1048358 Alok
  */
 @SuppressWarnings("deprecation")
-@RunWith(PowerMockRunner.class)
+@RunWith(SpringRunner.class)
 @PrepareForTest({ Utilities.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.*" })
 @PropertySource("classpath:bootstrap.properties")
+//@ContextConfiguration(classes= {PrintStageConfigTest.class})
 public class PrintStageTest {
 
 	/** The audit log request builder. */
@@ -121,6 +124,12 @@ public class PrintStageTest {
 
 	@Mock
 	private PrintService<byte[]> printService;
+	
+	@Mock
+	public FileSystemAdapter filesystemAdapter;
+
+	@Mock
+	public ConnectionUtil connectionUtil;
 
 	/** The stage. */
 	@InjectMocks
@@ -334,10 +343,6 @@ public class PrintStageTest {
 		HttpPost resend = getHttpPost("http://localhost:8099/v0.1/registration-processor/print-stage/resend");
 		CloseableHttpResponse response = HttpClients.createDefault().execute(resend);
 		assertEquals(200, response.getStatusLine().getStatusCode());
-		
-		HttpPost test_resend = getHttpPost("http://localhost:8099/print-stage/health");
-		CloseableHttpResponse test_response = HttpClients.createDefault().execute(test_resend);
-		assertEquals(404, test_response.getStatusLine().getStatusCode());
 	}
 
 	/**

@@ -651,7 +651,7 @@ public class OSIValidator {
 			List<String> introducerUINList = packetInfoManager.getUINByRid(introducerRid);
 			if(!introducerUINList.isEmpty()) {
 						return true;
-			}
+					}
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_IS_ON_HOLD);
 			return false;
 		} else {

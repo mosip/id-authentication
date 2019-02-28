@@ -91,6 +91,7 @@ public class UMCValidator {
 	private static final String NO_DEVICE_HISTORY_FOUND= "no device history found for device : ";
 
 	private static final String IS_DEVICE_MAPPED_WITH_CENTER = "no center found for device : ";
+	
 
 	/** The identity. */
 	Identity identity;
@@ -637,26 +638,26 @@ public class UMCValidator {
 	 * @throws UMCValidationException
 	 * 
 	 */
-	private boolean validateCenterIdAndTimestamp(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException {
+	private boolean validateCenterIdAndTimestamp(RegistrationCenterMachineDto rcmDto)
+			throws ApisResourceAccessException {
 		boolean isValid = false;
-        try {
-            List<String> pathsegments = new ArrayList<>();
-            pathsegments.add(rcmDto.getRegcntrId());
-            pathsegments.add(rcmDto.getPacketCreationDate());
-            RegistartionCenterTimestampResponseDto result = (RegistartionCenterTimestampResponseDto) registrationProcessorRestService
-                         .getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments, "", "",
-                                      RegistartionCenterTimestampResponseDto.class);
+		try {
+			List<String> pathsegments = new ArrayList<>();
+			pathsegments.add(rcmDto.getRegcntrId());
+			pathsegments.add(rcmDto.getPacketCreationDate());
+			RegistartionCenterTimestampResponseDto result = (RegistartionCenterTimestampResponseDto) registrationProcessorRestService
+					.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments, "", "",
+							RegistartionCenterTimestampResponseDto.class);
 
-            if (result.getErrors() == null) {
-                  if (result.getStatus().equals(VALID)) {
-                         isValid = true;
-                  }
-            } else {
-                  ErrorDTO error = result.getErrors().get(0);
-            this.registrationStatusDto.setStatusComment(error.getErrorMessage());
-            }
-     }
-        catch (ApisResourceAccessException e) {
+			if (result.getErrors() == null) {
+				if (result.getStatus().equals(VALID)) {
+					isValid = true;
+				}
+			} else {
+				ErrorDTO error = result.getErrors().get(0);
+				this.registrationStatusDto.setStatusComment(error.getErrorMessage());
+			}
+		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					rcmDto.getRegId(), e.getMessage() + ExceptionUtils.getStackTrace(e));
 			if (e.getCause() instanceof HttpClientErrorException) {
