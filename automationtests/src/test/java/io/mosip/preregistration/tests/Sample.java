@@ -54,7 +54,7 @@ public class Sample extends BaseTestCase {
 	}
 	
 	@Test(groups = { "IntegrationScenarios" })
-	public void bookAppointmentForDiscardedApplication() {
+	public void bookAppointmentForDiscardedApplication() throws FileNotFoundException, IOException, ParseException {
 		JSONObject createPregRequest = null;
 		testSuite = "Create_PreRegistration\\createPreRegistration_smoke";
 		/**
@@ -85,16 +85,13 @@ public class Sample extends BaseTestCase {
 				}
 			}
 			Response createResponse = lib.CreatePreReg(createPregRequest);
-			/*String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
+			String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
 			Response documentUpload = lib.documentUpload(createResponse);
-			lib.discardApplication(preID);
 			Response FetchCentreResponse = lib.FetchCentre();
-			Response BookAppointmentResponse = lib.BookAppointment(documentUpload, FetchCentreResponse, preID);
-			String errorCode = BookAppointmentResponse.jsonPath().get("err.errorCode").toString();
-			String message = BookAppointmentResponse.jsonPath().get("err.message").toString();
-			lib.compareValues(errorCode, "PRG_PAM_APP_005");
-			lib.compareValues(message, "INVALID_PRE_REGISTRATION_ID");*/
-
+			lib.BookExpiredAppointment(documentUpload, FetchCentreResponse, preID);
+			lib.expiredStatus();
+			lib.getPreRegistrationStatus(preID);
+			
 		}
 	}
 }

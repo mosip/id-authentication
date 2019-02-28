@@ -210,11 +210,12 @@
 				<inherited>true</inherited>
 				<configuration>
 					<suiteXmlFiles>
-						<suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile> 
+						<!-- <suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile> --> 
+						<suiteXmlFile>src/test/resources/testngPreRegistration.xml</suiteXmlFile> 
 					</suiteXmlFiles>
-					<systemPropertyVariables>
+					<!-- <systemPropertyVariables>
                         <environment>${env.user}</environment>
-                    </systemPropertyVariables>
+                    </systemPropertyVariables> -->
 				</configuration>
 
 			</plugin>
