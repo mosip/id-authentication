@@ -13,7 +13,6 @@ public class Document {
 	private String documentCategory;
 	private String documentOwner;
 	private String documentType;
-	private String format;
 
 	/**
 	 * @return the documentName
@@ -73,14 +72,6 @@ public class Document {
 	 */
 	public void setDocumentType(String documentType) {
 		this.documentType = documentType;
-	}
-
-	public String getFormat() {
-		return format;
-	}
-
-	public void setFormat(String format) {
-		this.format = format;
 	}
 
 }

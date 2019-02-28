@@ -25,6 +25,7 @@ import org.springframework.web.client.ResourceAccessException;
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.NotificationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -45,7 +46,8 @@ public class NotificationServiceTest {
 	@Before
 	public void initialize() throws IOException, URISyntaxException {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
+		SessionContext.getInstance().getUserContext().setUserId("mosip");
 	}
 
 	@Test

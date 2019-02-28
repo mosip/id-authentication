@@ -4,22 +4,36 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
+import java.io.Writer;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ResourceBundle;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.template.NotificationService;
+import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -28,7 +42,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 @Controller
-public class SendNotificationController extends BaseController {
+public class SendNotificationController extends BaseController implements Initializable {
 
 	private static final Logger LOGGER = AppConfig.getLogger(SendNotificationController.class);
 
@@ -37,10 +51,21 @@ public class SendNotificationController extends BaseController {
 	@FXML
 	private TextField mobile;
 	@FXML
-	private ImageView emailImageView;
+	private ImageView emailIcon;
 	@FXML
-	private ImageView mobileImageView;
-	
+	private ImageView mobileIcon;
+	@FXML
+	private Button send;
+
+	@Value("${mosip.registration.mode_of_communication}")
+	private String modeOfCommunication;
+
+	@Autowired
+	private NotificationService notificationService;
+
+	@Autowired
+	private Validations validations;
+
 	private Stage popupStage;
 
 	public void init() {
@@ -57,10 +82,24 @@ public class SendNotificationController extends BaseController {
 			popupStage.initModality(Modality.WINDOW_MODAL);
 			popupStage.initOwner(fXComponents.getStage());
 			popupStage.show();
+			send.disableProperty()
+					.bind(Bindings.isEmpty(email.textProperty()).and(Bindings.isEmpty(mobile.textProperty())));
 		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - UI- ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.error("REGISTRATION - UI- SEND_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage());
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_NOTIFICATION_PAGE);
+		}
+	}
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		if (!modeOfCommunication.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
+			email.setVisible(false);
+			emailIcon.setVisible(false);
+		}
+		if (!modeOfCommunication.contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {
+			mobile.setVisible(false);
+			mobileIcon.setVisible(false);
 		}
 	}
 
@@ -70,77 +109,135 @@ public class SendNotificationController extends BaseController {
 	 */
 	@FXML
 	public void sendNotification(ActionEvent event) {
-		LOGGER.debug("REGISTRATION - UI - GENERATE_NOTIFICATION", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.debug("REGISTRATION - UI - SEND_NOTIFICATION", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "generating Email/SMS notification after packet creation");
 
-		ResponseDTO emailNotificationResponse = new ResponseDTO();
-		ResponseDTO smsNotificationResponse = new ResponseDTO();
+		try {
+			Writer writeNotificationTemplate = getNotificationTemplate();
+			String registrationId = getRegistrationDTOFromSession().getRegistrationId();
 
-		if (!email.getText().isEmpty()) {
-			String emails = email.getText();
-			List<String> emailList = Arrays.asList(emails.split(","));
-			for (String emailId : emailList) {
-				emailNotificationResponse = sendEmailNotification(emailId);
-			}
-			if (smsNotificationResponse != null && smsNotificationResponse.getSuccessResponseDTO() != null) {
-				generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.NOTIFICATION_SUCCESS);
-			} else {
-				String alert = RegistrationConstants.EMPTY;
-				if (emailNotificationResponse != null && emailNotificationResponse.getErrorResponseDTOs() != null
-						&& emailNotificationResponse.getErrorResponseDTOs().get(0) != null) {
-					alert = alert + RegistrationConstants.EMAIL_SERVICE.toUpperCase();
-				}
-				// generate alert for email notification
-				if (!alert.equals("")) {
-					generateNotificationAlert(RegistrationUIConstants.NOTIFICATION_FAIL);
-					if (alert.equals("EMAIL")) {
-						generateNotificationAlert(RegistrationUIConstants.NOTIFICATION_EMAIL_FAIL);
+			List<String> notifications = new ArrayList<>();
+			if (email.getText() != null && !email.getText().isEmpty()) {
+				String emails = email.getText();
+				List<String> emailList = getRecipients(emails, RegistrationConstants.CONTENT_TYPE_EMAIL);
+				if (!emailList.isEmpty()) {
+					StringBuilder unsentMails = new StringBuilder();
+					String prefix = "";
+					for (String emailId : emailList) {
+						ResponseDTO emailNotificationResponse = notificationService
+								.sendEmail(writeNotificationTemplate.toString(), emailId, registrationId);
+						if (emailNotificationResponse.getErrorResponseDTOs() != null) {
+							unsentMails.append(prefix);
+							prefix = ",";
+							unsentMails.append(emailId);
+						}
 					}
-				}
-			}
-		}
-		if (!mobile.getText().isEmpty()) {
-			String mobileNos = mobile.getText();
-			List<String> mobileList = Arrays.asList(mobileNos.split(","));
-			for (String mobileNo : mobileList) {
-				smsNotificationResponse = sendSMSNotification(mobileNo);
-			}
-			if (smsNotificationResponse != null && smsNotificationResponse.getSuccessResponseDTO() != null) {
-				generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.NOTIFICATION_SUCCESS);
-			} else {
-				String alert = RegistrationConstants.EMPTY;
-				if (smsNotificationResponse != null && smsNotificationResponse.getErrorResponseDTOs() != null
-						&& smsNotificationResponse.getErrorResponseDTOs().get(0) != null) {
-					alert = RegistrationConstants.SMS_SERVICE.toUpperCase();
-				}
-				// generate alert for SMS notification
-				if (!alert.equals("")) {
-					generateNotificationAlert(RegistrationUIConstants.NOTIFICATION_FAIL);
-					if (alert.equals("SMS")) {
-						generateNotificationAlert(RegistrationUIConstants.NOTIFICATION_SMS_FAIL);
+					if (unsentMails.length() > 1) {
+						generateAlert(RegistrationConstants.ERROR,
+								RegistrationUIConstants.NOTIFICATION_EMAIL_FAIL + " to " + unsentMails);
+					} else {
+						notifications.add(RegistrationConstants.CONTENT_TYPE_EMAIL);
+
 					}
+				} else {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_VALID_EMAIL);
 				}
 			}
+			if (mobile.getText() != null && !mobile.getText().isEmpty()) {
+				String mobileNos = mobile.getText();
+				List<String> mobileList = getRecipients(mobileNos, RegistrationConstants.CONTENT_TYPE_MOBILE);
+				if (!mobileList.isEmpty()) {
+					StringBuilder unsentSMS = new StringBuilder();
+					String prefix = "";
+					for (String mobileNo : mobileList) {
+						ResponseDTO smsNotificationResponse = notificationService
+								.sendSMS(writeNotificationTemplate.toString(), mobileNo, registrationId);
+						if (smsNotificationResponse.getErrorResponseDTOs() != null) {
+							unsentSMS.append(prefix);
+							prefix = ",";
+							unsentSMS.append(mobileNo);
+						}
+					}
+					if (unsentSMS.length() > 1) {
+						generateAlert(RegistrationConstants.ERROR,
+								RegistrationUIConstants.NOTIFICATION_SMS_FAIL + " to " + unsentSMS);
+					} else {
+						notifications.add(RegistrationConstants.CONTENT_TYPE_MOBILE);
+					}
+				} else {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_VALID_MOBILE);
+				}
+			}
+			if (notifications.size() > 1) {
+				generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.NOTIFICATION_SUCCESS);
+				popupStage.close();
+			} else if (notifications.size() == 1) {
+				if (notifications.get(0).equals(RegistrationConstants.CONTENT_TYPE_EMAIL)) {
+					generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.EMAIL_NOTIFICATION_SUCCESS);
+				} else if (notifications.get(0).equals(RegistrationConstants.CONTENT_TYPE_MOBILE)) {
+					generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.SMS_NOTIFICATION_SUCCESS);
+				}
+				popupStage.close();
+			}
+		} catch (RegBaseUncheckedException regBaseUncheckedException) {
+			LOGGER.error("REGISTRATION - UI - SEND_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
+					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
 		}
 	}
 
 	@FXML
 	public void closeWindow(MouseEvent event) {
-		LOGGER.debug("REGISTRATION - UI- ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug("REGISTRATION - UI- SEND_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Calling exit window to close the popup");
 
 		popupStage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
 		popupStage.close();
 
-		LOGGER.debug("REGISTRATION - UI- ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID, "Popup is closed");
+		LOGGER.debug("REGISTRATION - UI- SEND_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID, "Popup is closed");
 	}
 
-	/**
-	 * To generate alert if the email/sms notification is not sent
-	 */
-	private void generateNotificationAlert(String alertMessage) {
-		/* Generate Alert */
-		generateAlert(RegistrationConstants.ERROR, alertMessage);
+	private List<String> getRecipients(String textField, String contentType) {
+		LOGGER.debug("REGISTRATION - UI- SEND_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Splitting the multiple emails/mobile numbers and validating each of them");
+
+		/* List of Emails/Mobiles */
+		List<String> contentsList = new LinkedList<>();
+		String delimiter = ",";
+
+		/* remove spaces as the mail/mobile will not contain any spaces */
+		textField = textField.replaceAll("\\s", "");
+
+		/* Split the mails/mobiles through Comma */
+		List<String> contents = new ArrayList<>(Arrays.asList(textField.split(delimiter)));
+
+		for (Iterator<String> iterator = contents.iterator(); iterator.hasNext();) {
+			String content = iterator.next();
+			if (content.isEmpty()) {
+				iterator.remove();
+			}
+		}
+		if (contents.size() > 5) {
+			generateAlert(RegistrationUIConstants.NOTIFICATION_LIMIT_EXCEEDED);
+		} else {
+			for (String content : contents) {
+				if (RegistrationConstants.CONTENT_TYPE_EMAIL.equalsIgnoreCase(contentType) ? validateMail(content)
+						: validateMobile(content)) {
+					contentsList.add(content);
+				}
+			}
+		}
+
+		LOGGER.debug("REGISTRATION - UI- SEND_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
+				"validation for each of the input is done");
+
+		return contentsList;
 	}
 
+	private boolean validateMail(String emailId) {
+		return validations.validateSingleString(emailId, email.getId());
+	}
+
+	private boolean validateMobile(String mobileNo) {
+		return validations.validateSingleString(mobileNo, mobile.getId());
+	}
 }

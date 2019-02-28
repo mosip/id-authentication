@@ -23,7 +23,6 @@ import io.mosip.kernel.masterdata.service.ApplicationService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
-
 /**
  * Service API implementaion class for Application
  * 
@@ -36,14 +35,14 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 	@Autowired
 	private ApplicationRepository applicationRepository;
-	
+
 	@Qualifier("applicationtoToApplicationDtoDefaultMapper")
 	@Autowired
-	private DataMapper<Application,ApplicationDto> applicationtoToApplicationDtoDefaultMapper;
-	
+	private DataMapper<Application, ApplicationDto> applicationtoToApplicationDtoDefaultMapper;
+
 	@Qualifier("applicationToCodeandlanguagecodeDefaultMapper")
 	@Autowired
-	private DataMapper<Application,CodeAndLanguageCodeID> applicationToCodeandlanguagecodeDefaultMapper;
+	private DataMapper<Application, CodeAndLanguageCodeID> applicationToCodeandlanguagecodeDefaultMapper;
 
 	/*
 	 * (non-Javadoc)
@@ -53,7 +52,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	 */
 	@Override
 	public ApplicationResponseDto getAllApplication() {
-		List<ApplicationDto> applicationDtoList= new ArrayList<>();
+		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		List<Application> applicationList;
 		try {
 			applicationList = applicationRepository.findAllByIsDeletedFalseOrIsDeletedNull(Application.class);
@@ -64,9 +63,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 		}
 
 		if (!(applicationList.isEmpty())) {
-			applicationList.forEach(application -> 
-			applicationDtoList.add(applicationtoToApplicationDtoDefaultMapper.map(application))
-		);
+			applicationList.forEach(
+					application -> applicationDtoList.add(applicationtoToApplicationDtoDefaultMapper.map(application)));
 		} else {
 			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -84,7 +82,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	 */
 	@Override
 	public ApplicationResponseDto getAllApplicationByLanguageCode(String languageCode) {
-		List<ApplicationDto> applicationDtoList= new ArrayList<>();
+		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		List<Application> applicationList;
 		try {
 			applicationList = applicationRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
@@ -94,9 +92,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 							+ ExceptionUtils.parseException(e));
 		}
 		if (!(applicationList.isEmpty())) {
-			applicationList.forEach(application -> 
-			applicationDtoList.add(applicationtoToApplicationDtoDefaultMapper.map(application))
-		);
+			applicationList.forEach(
+					application -> applicationDtoList.add(applicationtoToApplicationDtoDefaultMapper.map(application)));
 		} else {
 			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -125,7 +122,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 							+ ExceptionUtils.parseException(e));
 		}
 		if (application != null) {
-	     applicationDtoList.add(applicationtoToApplicationDtoDefaultMapper.map(application));
+			applicationDtoList.add(applicationtoToApplicationDtoDefaultMapper.map(application));
 		} else {
 			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorMessage());

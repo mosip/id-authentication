@@ -49,6 +49,15 @@ class ResettableStreamHttpServletRequest extends HttpServletRequestWrapper {
 		servletStream.stream = new ResettableServletInputStream(
 				new ByteArrayInputStream(rawData));
 	}
+	
+	/**
+	 * Replace the request data with the given bytes
+	 * @param newData the new data to be replaced with
+	 */
+	public void replaceData(byte[] newData) {
+		rawData = newData;
+		servletStream.stream = new ByteArrayInputStream(rawData);
+	}
 
 	/*
 	 * (non-Javadoc)

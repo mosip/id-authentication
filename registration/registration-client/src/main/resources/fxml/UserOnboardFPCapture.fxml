@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.text.*?>
@@ -8,28 +7,35 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
-
-<AnchorPane fx:id="fingerPrintCapturePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="onboardParenPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.FingerPrintCaptureController">
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:id="fingerPrintCapture" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="onboardParenPane" fx:controller="io.mosip.registration.controller.device.FingerPrintCaptureController">
    <children>
-   <AnchorPane layoutX="1.0" styleClass="userOnboardHeader">
+      <AnchorPane layoutX="1.0" styleClass="userOnboardHeader">
          <children>
-            <Text fx:id="onboardHomeLink" layoutX="20.0" layoutY="20.0" onMouseClicked="#goToHomePage" text="Home /" />
-            <Text fx:id="onboardPageDesc" layoutX="68.0" layoutY="20.0" text=" Onboard Operator" />
-            <Label fx:id="onboardPageTitle" layoutX="559.0" layoutY="2.0" text="Onboard Operator" />
+            <Text fx:id="onboardHomeLink" layoutX="20.0" layoutY="20.0" onMouseClicked="#goToHomePage" text="%homeLink" />
+            <Text fx:id="onboardPageDesc" layoutX="68.0" layoutY="20.0" text="%onboardOperator" />
+            <Label fx:id="onboardPageTitle" layoutX="559.0" layoutY="2.0" text="%onboardOperator" />
          </children>
       </AnchorPane>
-   <AnchorPane layoutX="1.0" layoutY="33.0" styleClass="userOnboardBackPane">
-   <children>
-            <ImageView fitHeight="192.0" fitWidth="130.0" layoutX="1130.0" layoutY="152.0" pickOnBounds="true" preserveRatio="true">
-            	<image>
-                   <Image url="@../images/onboardFPProgress.png" />
-                </image>
-            </ImageView>
-            <Label fx:id="duplicateCheckLbl" layoutY="501.0" />
-      <AnchorPane layoutX="180.0" styleClass="onboardImgPane">
+      <AnchorPane layoutX="1.0" layoutY="33.0" styleClass="userOnboardBackPane">
          <children>
-          <Label layoutX="100.0" layoutY="30.0" text="Fingerprint" styleClass="onboardPageBioTitle" />
-            <AnchorPane fx:id="leftHandPalmPane" layoutX="100.0" layoutY="70.0" styleClass="onboardFingerPrintPanes">
+            <AnchorPane layoutX="1130.0" layoutY="152.0" prefHeight="200.0" prefWidth="141.0">
+               <children>
+                  <ImageView fx:id="userOnboardImg" fitHeight="192.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/userOnboardFPTracker.png" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="36.0" layoutY="0.0" styleClass="completedTracker" text="Exception" />
+                  <Label layoutX="36.0" layoutY="67.0" styleClass="currentTracker" text="Fingerprints" />
+                  <Label layoutX="36.0" layoutY="122.0" styleClass="uncompleteTracker" text="Iris" />
+                  <Label layoutX="36.0" layoutY="177.0" styleClass="uncompleteTracker" text="Photo" />
+               </children>
+            </AnchorPane>
+            <Label fx:id="duplicateCheckLbl" layoutY="501.0" />
+            <AnchorPane layoutX="180.0" styleClass="onboardImgPane">
+               <children>
+                  <Label layoutX="100.0" layoutY="30.0" text="%fingerprint" styleClass="onboardPageBioTitle" />
+                  <AnchorPane fx:id="leftHandPalmPane" layoutX="100.0" layoutY="70.0" styleClass="onboardFingerPrintPanes">
                      <children>
                         <ImageView fx:id="leftHandPalmImageview" fitHeight="160.0" fitWidth="180.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -38,8 +44,7 @@
                         </ImageView>
                      </children>
                   </AnchorPane>
-           
-           <AnchorPane fx:id="rightHandPalmPane" layoutX="380.0" layoutY="70.0" styleClass="onboardFingerPrintPanes">
+                  <AnchorPane fx:id="rightHandPalmPane" layoutX="380.0" layoutY="70.0" styleClass="onboardFingerPrintPanes">
                      <children>
                         <ImageView fx:id="rightHandPalmImageview" fitHeight="160.0" fitWidth="180.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -48,7 +53,7 @@
                         </ImageView>
                      </children>
                   </AnchorPane>
-             <AnchorPane fx:id="thumbPane" layoutX="660.0" layoutY="70.0" styleClass="onboardFingerPrintPanes">
+                  <AnchorPane fx:id="thumbPane" layoutX="660.0" layoutY="70.0" styleClass="onboardFingerPrintPanes">
                      <children>
                         <ImageView fx:id="thumbImageview" fitHeight="160.0" fitWidth="180.0" layoutX="3.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -57,85 +62,85 @@
                         </ImageView>
                      </children>
                   </AnchorPane>
-            <AnchorPane layoutX="100.0" layoutY="250.0" styleClass="onboardFingerDetails">
-            <children>
-            <Label layoutX="52.0" text="Left Hand" styleClass="onboardBioDetailsHeader"/>
-            <Label layoutX="100.0" layoutY="40.0" text="Quality %" styleClass="onboardBioDetails"/>
-            <Label layoutY="40.0" text="Threshold %" styleClass="onboardBioDetails"/>
-            <Label layoutY="100.0" text="Attempts" styleClass="onboardBioDetails"/>
-            <Label layoutX="100.0" layoutY="100.0" text="Exceptions" styleClass="onboardBioDetails"/>
-            <Label fx:id="leftSlapQualityScore" layoutX="120.0" layoutY="70.0" text="-" styleClass="onboardBioDetails"/>
-            <Label fx:id="leftSlapThresholdScoreLbl" layoutX="20.0" layoutY="70.0" styleClass="onboardBioDetails"/>
-            <Label fx:id="leftSlapAttempt" layoutX="20.0" layoutY="130.0" text="-" styleClass="onboardBioDetails"/>
-            <Label fx:id="leftSlapException" layoutX="120.0" layoutY="130.0" text="-" styleClass="onboardBioDetails"/>                        
-            </children>
-            </AnchorPane>
+                  <AnchorPane layoutX="100.0" layoutY="250.0" styleClass="onboardFingerDetails">
+                     <children>
+                        <Label layoutX="52.0" text="%leftHand" styleClass="onboardBioDetailsHeader" />
+                        <Label layoutX="100.0" layoutY="40.0" text="%qualityPercent" styleClass="onboardBioDetails" />
+                        <Label layoutY="40.0" text="%thresholdPercent" styleClass="onboardBioDetails" />
+                        <Label layoutY="100.0" text="%attempts" styleClass="onboardBioDetails" />
+                        <Label layoutX="100.0" layoutY="100.0" text="%exceptions" styleClass="onboardBioDetails" />
+                        <Label fx:id="leftSlapQualityScore" layoutX="120.0" layoutY="70.0" text="-" styleClass="onboardBioDetails" />
+                        <Label fx:id="leftSlapThresholdScoreLbl" layoutX="20.0" layoutY="70.0" styleClass="onboardBioDetails" />
+                        <Label fx:id="leftSlapAttempt" layoutX="20.0" layoutY="130.0" text="-" styleClass="onboardBioDetails" />
+                        <Label fx:id="leftSlapException" layoutX="120.0" layoutY="130.0" text="-" styleClass="onboardBioDetails" />
+                     </children>
+                  </AnchorPane>
                   <AnchorPane layoutX="380.0" layoutY="250.0" styleClass="onboardFingerDetails">
                      <children>
-                     	<Label layoutX="63.0" text="Right Hand" styleClass="onboardBioDetailsHeader"/>
-                        <Label fx:id="rightSlapThresholdScoreLbl" layoutX="20.0" layoutY="70.0" styleClass="onboardBioDetails"/>
-                        <Label fx:id="rightSlapQualityScore" layoutX="120.0" layoutY="70.0" text="-" styleClass="onboardBioDetails"/>
-                        <Label layoutX="100.0" layoutY="40.0" text="Quality %" styleClass="onboardBioDetails"/>
-                        <Label layoutY="40.0" text="Threshold %" styleClass="onboardBioDetails"/>                        
-                        <Label fx:id="rightSlapException" layoutX="20.0" layoutY="130.0" text="-" styleClass="onboardBioDetails"/>
-                        <Label fx:id="rightSlapAttempt" layoutX="120.0" layoutY="130.0" text="-" styleClass="onboardBioDetails"/>
-                        <Label layoutX="100.0" layoutY="100.0" text="Exceptions" styleClass="onboardBioDetails"/>
-                        <Label layoutY="100.0" text="Attempts" styleClass="onboardBioDetails"/>
+                        <Label layoutX="63.0" text="%rightHand" styleClass="onboardBioDetailsHeader" />
+                        <Label fx:id="rightSlapThresholdScoreLbl" layoutX="20.0" layoutY="70.0" styleClass="onboardBioDetails" />
+                        <Label fx:id="rightSlapQualityScore" layoutX="120.0" layoutY="70.0" text="-" styleClass="onboardBioDetails" />
+                        <Label layoutX="100.0" layoutY="40.0" text="%qualityPercent" styleClass="onboardBioDetails" />
+                        <Label layoutY="40.0" text="%thresholdPercent" styleClass="onboardBioDetails" />
+                        <Label fx:id="rightSlapException" layoutX="20.0" layoutY="130.0" text="-" styleClass="onboardBioDetails" />
+                        <Label fx:id="rightSlapAttempt" layoutX="120.0" layoutY="130.0" text="-" styleClass="onboardBioDetails" />
+                        <Label layoutX="100.0" layoutY="100.0" text="%exceptions" styleClass="onboardBioDetails" />
+                        <Label layoutY="100.0" text="%attempts" styleClass="onboardBioDetails" />
                      </children>
                   </AnchorPane>
                   <AnchorPane layoutX="665.0" layoutY="250.0" styleClass="onboardFingerDetails">
                      <children>
-                     	<Label layoutX="61.0" text="Thumbs" styleClass="onboardBioDetailsHeader"/>
-                        <Label fx:id="thumbsThresholdScoreLbl" layoutX="20.0" layoutY="70.0" styleClass="onboardBioDetails"/>
-                        <Label fx:id="thumbsQualityScore" layoutX="120.0" layoutY="70.0" text="-" styleClass="onboardBioDetails"/>
-                        <Label layoutX="100.0" layoutY="40.0" text="Quality %" styleClass="onboardBioDetails"/>
-                        <Label layoutY="40.0" text="Threshold %" styleClass="onboardBioDetails"/>                        
-                        <Label layoutY="100.0" text="Attempts" styleClass="onboardBioDetails"/>
-                        <Label layoutX="100.0" layoutY="100.0" text="Exceptions" styleClass="onboardBioDetails"/>
-                        <Label fx:id="thumbSlapAttempt" layoutX="20.0" layoutY="130.0" text="-" styleClass="onboardBioDetails"/>
-                        <Label fx:id="thumbSlapException" layoutX="120.0" layoutY="130.0" text="-" styleClass="onboardBioDetails"/>
+                        <Label layoutX="61.0" text="%thumbs" styleClass="onboardBioDetailsHeader" />
+                        <Label fx:id="thumbsThresholdScoreLbl" layoutX="20.0" layoutY="70.0" styleClass="onboardBioDetails" />
+                        <Label fx:id="thumbsQualityScore" layoutX="120.0" layoutY="70.0" text="-" styleClass="onboardBioDetails" />
+                        <Label layoutX="100.0" layoutY="40.0" text="%qualityPercent" styleClass="onboardBioDetails" />
+                        <Label layoutY="40.0" text="%thresholdPercent" styleClass="onboardBioDetails" />
+                        <Label layoutY="100.0" text="%attempts" styleClass="onboardBioDetails" />
+                        <Label layoutX="100.0" layoutY="100.0" text="%exceptions" styleClass="onboardBioDetails" />
+                        <Label fx:id="thumbSlapAttempt" layoutX="20.0" layoutY="130.0" text="-" styleClass="onboardBioDetails" />
+                        <Label fx:id="thumbSlapException" layoutX="120.0" layoutY="130.0" text="-" styleClass="onboardBioDetails" />
                      </children>
                   </AnchorPane>
                   <AnchorPane layoutX="100.0" layoutY="415.0" styleClass="onboardProgressPane">
                      <children>
-                        <Button fx:id="scanBtn" layoutX="620.0" layoutY="65.0" mnemonicParsing="false" onAction="#scan" styleClass="onboardScanBtn" text="Scan">
-                        <graphic>
-                        <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../images/scan.png" />
-                                       </image>
-                                    </ImageView>
-                                    </graphic>
+                        <Button fx:id="scanBtn" layoutX="620.0" layoutY="65.0" mnemonicParsing="false" onAction="#scan" styleClass="onboardScanBtn" text="%scan">
+                           <graphic>
+                              <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/scan.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
                         </Button>
-                        <Label layoutX="151.0" layoutY="71.0" text="Quality" />
+                        <Label layoutX="151.0" layoutY="71.0" text="%quality" />
                         <Line endX="100.0" layoutX="372.0" layoutY="85.0" startX="-100.0" />
                      </children>
-                  </AnchorPane>            
-         </children>
-      </AnchorPane>            
-      </children>
-   </AnchorPane>
-   <AnchorPane layoutX="1.0" layoutY="605.0" styleClass="userOnboardFooter">
-               <children>
-                <Button fx:id="previousBtn" layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="Back">
-             <graphic>
-                  	<ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../images/arrowLeft.png" />
-                                       </image>
-                                    </ImageView>
-                  </graphic>
-            </Button>
-            <Button fx:id="nextBtn" layoutX="991.0" layoutY="4.0" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="Continue">
-            <graphic>
-                  	<ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../images/arrowRight.png" />
-                                       </image>
-                                    </ImageView>
-                  </graphic>
-            </Button>
+                  </AnchorPane>
                </children>
-            </AnchorPane>      
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="1.0" layoutY="620.0" styleClass="userOnboardFooter">
+         <children>
+            <Button fx:id="previousBtn" layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/arrowLeft.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="nextBtn" layoutX="991.0" layoutY="4.0" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="%continue">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/arrowRight.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

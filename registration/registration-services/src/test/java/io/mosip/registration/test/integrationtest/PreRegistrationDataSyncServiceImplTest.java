@@ -46,7 +46,7 @@ public class PreRegistrationDataSyncServiceImplTest {
 		context.setLocalLanguageProperty();
 		context.setLocalMessagesBundle();
 		Map<String,Object> map=globalParamService.getGlobalParams();
-		map.put(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS,"5");
+		map.put(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS,"120");
 		context.setApplicationMap(map);
 
 	}
@@ -80,7 +80,7 @@ public class PreRegistrationDataSyncServiceImplTest {
 		preRegEntity.setPacketPath(packetPath);
 		System.out.println(preRegEntity.getIsDeleted());	
 		Calendar c=Calendar.getInstance();
-		c.add(Calendar.DATE, -8);
+		c.add(Calendar.DATE, -130);
 		preRegEntity.setAppointmentDate(Date.from(c.toInstant()));
 		preRegistrationDataSyncRepository.save(preRegEntity);
 		assertEquals(preRegistrationDataSyncService.fetchAndDeleteRecords().getSuccessResponseDTO().getMessage(),"Pre-Registration Records deleted");

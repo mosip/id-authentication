@@ -36,7 +36,7 @@ public interface TemplateFileFormatService {
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while updating Device
 	 */
-	public CodeAndLanguageCodeID updateDevice(RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto);
+	public CodeAndLanguageCodeID updateTemplateFileFormat(RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto);
 
 	/**
 	 * Method to delete TemplateFileFormat based on code provided.

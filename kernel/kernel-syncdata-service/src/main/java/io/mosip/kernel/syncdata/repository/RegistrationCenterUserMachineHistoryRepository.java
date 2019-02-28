@@ -1,0 +1,27 @@
+package io.mosip.kernel.syncdata.repository;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterUserMachineHistory;
+import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineUserHistoryID;
+
+/**
+ * Repository class for user machine mapping
+ * 
+ * @author Dharmesh Khandelwal
+ * @since 1.0.0
+ *
+ */
+@Repository
+public interface RegistrationCenterUserMachineHistoryRepository
+		extends BaseRepository<RegistrationCenterUserMachineHistory, RegistrationCenterMachineUserHistoryID> {
+
+
+	@Query("FROM RegistrationCenterUserMachineHistory rcumh WHERE rcumh.cntrId=?1 AND ((rcumh.createdDateTime > ?2 AND rcumh.createdDateTime<=?3) OR (rcumh.updatedDateTime > ?2 AND rcumh.updatedDateTime <=?3) OR (rcumh.deletedDateTime > ?2 AND rcumh.deletedDateTime<=?3))")
+	List<RegistrationCenterUserMachineHistory> findLatestRegistrationCenterUserMachineHistory(String regId,LocalDateTime lastUpdated,LocalDateTime currentTimeStamp);
+}

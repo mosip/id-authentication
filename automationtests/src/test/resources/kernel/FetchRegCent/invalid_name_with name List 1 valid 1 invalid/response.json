@@ -1,0 +1,10 @@
+{
+    "timestamp": 1550152063899,
+    "status": 200,
+    "errors": [
+        {
+            "errorCode": "KER-MSD-042",
+            "errorMessage": "Registration Center not found"
+        }
+    ]
+}

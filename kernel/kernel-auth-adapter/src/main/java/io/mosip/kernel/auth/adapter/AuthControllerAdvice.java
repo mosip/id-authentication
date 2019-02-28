@@ -21,7 +21,15 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 public class AuthControllerAdvice implements ResponseBodyAdvice<Object> {
 
     private AuthUserDetails getAuthUserDetails() {
-        AuthUserDetails authUserDetails = (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	AuthUserDetails authUserDetails = null;
+    	Object details = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	if(details instanceof String){
+    		
+    	}
+    	else 
+    	{
+    		 authUserDetails = (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	}
         return authUserDetails;
     }
 
@@ -37,7 +45,8 @@ public class AuthControllerAdvice implements ResponseBodyAdvice<Object> {
                                   Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   ServerHttpRequest request,
                                   ServerHttpResponse response) {
-        response.getHeaders().add("Authorization", getAuthUserDetails().getToken());
+    	if(getAuthUserDetails()!=null)
+        response.getHeaders().add("Set-Cookie:", AuthAdapterConstant.AUTH_COOOKIE_HEADER+getAuthUserDetails().getToken());
         return body;
     }
 }

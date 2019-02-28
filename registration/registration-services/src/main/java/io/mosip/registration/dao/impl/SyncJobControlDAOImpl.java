@@ -13,9 +13,11 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.SyncControl;
@@ -71,8 +73,7 @@ public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 					"Fetching the last sync details from databse ended");
 
 			auditFactory.audit(AuditEvent.SYNCJOB_INFO_FETCH, Components.SYNC_VALIDATE,
-					"SyncJobInfo containing the synccontrol list and yet to exportpacket count fetched successfully",
-					"refId", "refIdType");
+					SessionContext.userId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 			return new SyncJobInfo(syncJobRepository.findAll(), registrationsList.size());
 

@@ -52,6 +52,9 @@ public class ValidDocument extends RegistrationCommonFields implements Serializa
 
 	@Column(name = "lang_code")
 	private String langCode;
+	
+	@Column(name = "applicant_type")
+	private String applicantType;
 
 	/**
 	 * @return the docTypeCode
@@ -123,4 +126,19 @@ public class ValidDocument extends RegistrationCommonFields implements Serializa
 		this.langCode = langCode;
 	}
 
+	/**
+	 * @return the applicantType
+	 */
+	public String getApplicantType() {
+		return applicantType;
+	}
+
+	/**
+	 * @param applicantType the applicantType to set
+	 */
+	public void setApplicantType(String applicantType) {
+		this.applicantType = applicantType;
+	}
+
+	
 }

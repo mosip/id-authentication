@@ -60,8 +60,7 @@ public class Applicant {
 	}
 
 	/**
-	 * @param leftThumb
-	 *            the leftThumb to set
+	 * @param leftThumb the leftThumb to set
 	 */
 	public void setLeftThumb(BiometricDetails leftThumb) {
 		this.leftThumb = leftThumb;
@@ -75,8 +74,7 @@ public class Applicant {
 	}
 
 	/**
-	 * @param rightThumb
-	 *            the rightThumb to set
+	 * @param rightThumb the rightThumb to set
 	 */
 	public void setRightThumb(BiometricDetails rightThumb) {
 		this.rightThumb = rightThumb;
@@ -90,8 +88,7 @@ public class Applicant {
 	}
 
 	/**
-	 * @param leftIndex
-	 *            the leftIndex to set
+	 * @param leftIndex the leftIndex to set
 	 */
 	public void setLeftIndex(BiometricDetails leftIndex) {
 		this.leftIndex = leftIndex;
@@ -105,8 +102,7 @@ public class Applicant {
 	}
 
 	/**
-	 * @param leftMiddle
-	 *            the leftMiddle to set
+	 * @param leftMiddle the leftMiddle to set
 	 */
 	public void setLeftMiddle(BiometricDetails leftMiddle) {
 		this.leftMiddle = leftMiddle;
@@ -120,8 +116,7 @@ public class Applicant {
 	}
 
 	/**
-	 * @param leftRing
-	 *            the leftRing to set
+	 * @param leftRing the leftRing to set
 	 */
 	public void setLeftRing(BiometricDetails leftRing) {
 		this.leftRing = leftRing;
@@ -135,8 +130,7 @@ public class Applicant {
 	}
 
 	/**
-	 * @param leftLittle
-	 *            the leftLittle to set
+	 * @param leftLittle the leftLittle to set
 	 */
 	public void setLeftLittle(BiometricDetails leftLittle) {
 		this.leftLittle = leftLittle;
@@ -150,8 +144,7 @@ public class Applicant {
 	}
 
 	/**
-	 * @param rightIndex
-	 *            the rightIndex to set
+	 * @param rightIndex the rightIndex to set
 	 */
 	public void setRightIndex(BiometricDetails rightIndex) {
 		this.rightIndex = rightIndex;
@@ -165,8 +158,7 @@ public class Applicant {
 	}
 
 	/**
-	 * @param rightMiddle
-	 *            the rightMiddle to set
+	 * @param rightMiddle the rightMiddle to set
 	 */
 	public void setRightMiddle(BiometricDetails rightMiddle) {
 		this.rightMiddle = rightMiddle;
@@ -180,8 +172,7 @@ public class Applicant {
 	}
 
 	/**
-	 * @param rightRing
-	 *            the rightRing to set
+	 * @param rightRing the rightRing to set
 	 */
 	public void setRightRing(BiometricDetails rightRing) {
 		this.rightRing = rightRing;
@@ -195,8 +186,7 @@ public class Applicant {
 	}
 
 	/**
-	 * @param rightLittle
-	 *            the rightLittle to set
+	 * @param rightLittle the rightLittle to set
 	 */
 	public void setRightLittle(BiometricDetails rightLittle) {
 		this.rightLittle = rightLittle;
