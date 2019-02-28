@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -32,32 +33,29 @@ import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
-/**
- * @author Arunakumar Rati
- *
- */
-public class GetListOfRoles extends BaseTestCase implements ITest{
 
-	public GetListOfRoles() {
+public class GetDocType_DocCatByAppID extends BaseTestCase implements ITest {
+
+	public GetDocType_DocCatByAppID() {
 		// TODO Auto-generated constructor stub
 		super();
 	}
 	/**
 	 *  Declaration of all variables
 	 */
-	private static Logger logger = Logger.getLogger(GetListOfRoles.class);
+	private static Logger logger = Logger.getLogger(GetDocType_DocCatByAppID.class);
 	protected static String testCaseName = "";
 	static SoftAssert softAssert=new SoftAssert();
 	public static JSONArray arr = new JSONArray();
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String getRoles = "/syncdata/v1.0/roles";
+	private static final String getDocType_DocCatByAppID = "/masterdata/v1.0/applicanttype/{applicantId}/languages";
 	
 	static String dest = "";
-	static String folderPath = "kernel/GetListOfRoles";
-	static String outputFile = "GetListOfRolesOutput.json";
-	static String requestKeyFile = "GetListOfRolesInput.json";
+	static String folderPath = "kernel/GetDocType_DocCatByAppID";
+	static String outputFile = "GetDocType_DocCatByAppIDOutput.json";
+	static String requestKeyFile = "GetDocType_DocCatByAppIDInput.json";
 	static JSONObject Expectedresponse = null;
 	String finalStatus = "";
 	static String testParam="";
@@ -75,7 +73,7 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 	 * @return input jsons folders
 	 * @throws Exception
 	 */
-	@DataProvider(name = "GetListOfRoles")
+	@DataProvider(name = "GetDocType_DocCatByAppID")
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
@@ -98,18 +96,26 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 	 * Given input Json as per defined folders When GET request is sent to /syncdata/v1.0/configuration/{registrationCenterId}
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
-	@Test(dataProvider="GetListOfRoles")
+	@Test(dataProvider="GetDocType_DocCatByAppID")
 	public void getAllConfiguration(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
 	
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
+		String applicantId = actualRequest.get("applicantId").toString();
+		String languages = actualRequest.get("languages").toString();
+		HashMap<String, String> pathPar=new HashMap<>();
+		pathPar.put(applicantId, applicantId);
+		
+		HashMap<String, String> queryPar=new HashMap<>();
+		queryPar.put(languages, languages);
+		
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		@SuppressWarnings("unchecked")
 		
 		/*
 		 * Calling GET method with path parameters
 		 */
-		Response res=applicationLibrary.GetRequestNoParameter(getRoles);
+		Response res=applicationLibrary.getRequestPathQueryPara(getDocType_DocCatByAppID, pathPar,queryPar);
 		/*
 		 * Removing the unstable attributes from response	
 		 */
@@ -158,7 +164,7 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 				f.setAccessible(true);
 
-				f.set(baseTestMethod, GetListOfRoles.testCaseName);
+				f.set(baseTestMethod, GetDocType_DocCatByAppID.testCaseName);
 
 				
 			} catch (Exception e) {
@@ -168,10 +174,10 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 		
 		@AfterClass
 		public void updateOutput() throws IOException {
-			String configPath = "src/test/resources/kernel/GetListOfRoles/GetListOfRolesOutput.json";
+			String configPath = "src/test/resources/kernel/GetDocType_DocCatByAppID/GetDocType_DocCatByAppIDOutput.json";
 			try (FileWriter file = new FileWriter(configPath)) {
 				file.write(arr.toString());
-				logger.info("Successfully updated Results to GetListOfRolesOutput.json file.......................!!");
+				logger.info("Successfully updated Results to GetDocType_DocCatByAppIDOutput.json file.......................!!");
 			}
 		}
 }

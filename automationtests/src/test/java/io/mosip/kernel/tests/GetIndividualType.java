@@ -36,28 +36,29 @@ import io.restassured.response.Response;
  * @author Arunakumar Rati
  *
  */
-public class GetListOfRoles extends BaseTestCase implements ITest{
+public class GetIndividualType extends BaseTestCase implements ITest{
 
-	public GetListOfRoles() {
+	public GetIndividualType() {
 		// TODO Auto-generated constructor stub
 		super();
 	}
+	
 	/**
 	 *  Declaration of all variables
 	 */
-	private static Logger logger = Logger.getLogger(GetListOfRoles.class);
+	private static Logger logger = Logger.getLogger(GetIndividualType.class);
 	protected static String testCaseName = "";
 	static SoftAssert softAssert=new SoftAssert();
 	public static JSONArray arr = new JSONArray();
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String getRoles = "/syncdata/v1.0/roles";
+	private static final String getIndividualType = "/masterdata/v1.0/individualtypes";
 	
 	static String dest = "";
-	static String folderPath = "kernel/GetListOfRoles";
-	static String outputFile = "GetListOfRolesOutput.json";
-	static String requestKeyFile = "GetListOfRolesInput.json";
+	static String folderPath = "kernel/GetIndividualType";
+	static String outputFile = "GetIndividualTypeOutput.json";
+	static String requestKeyFile = "GetIndividualTypeInput.json";
 	static JSONObject Expectedresponse = null;
 	String finalStatus = "";
 	static String testParam="";
@@ -75,7 +76,7 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 	 * @return input jsons folders
 	 * @throws Exception
 	 */
-	@DataProvider(name = "GetListOfRoles")
+	@DataProvider(name = "GetIndividualType")
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
@@ -95,10 +96,10 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 	 * @throws IOException
 	 * @throws ParseException
 	 * getAllConfiguration
-	 * Given input Json as per defined folders When GET request is sent to /syncdata/v1.0/configuration/{registrationCenterId}
+	 * Given input Json as per defined folders When GET request is sent to /masterdata/v1.0/individualtypes
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
-	@Test(dataProvider="GetListOfRoles")
+	@Test(dataProvider="GetIndividualType")
 	public void getAllConfiguration(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
 	
@@ -109,12 +110,12 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 		/*
 		 * Calling GET method with path parameters
 		 */
-		Response res=applicationLibrary.GetRequestNoParameter(getRoles);
+		Response res=applicationLibrary.GetRequestNoParameter(getIndividualType);
 		/*
 		 * Removing the unstable attributes from response	
 		 */
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("lastSyncTime");
+		listOfElementToRemove.add("timestamp");
 		/*
 		 * Comparing expected and actual response
 		 */
@@ -158,7 +159,7 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 				f.setAccessible(true);
 
-				f.set(baseTestMethod, GetListOfRoles.testCaseName);
+				f.set(baseTestMethod, GetIndividualType.testCaseName);
 
 				
 			} catch (Exception e) {
@@ -168,10 +169,10 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 		
 		@AfterClass
 		public void updateOutput() throws IOException {
-			String configPath = "src/test/resources/kernel/GetListOfRoles/GetListOfRolesOutput.json";
+			String configPath = "src/test/resources/kernel/GetIndividualType/GetIndividualTypeOutput.json";
 			try (FileWriter file = new FileWriter(configPath)) {
 				file.write(arr.toString());
-				logger.info("Successfully updated Results to GetListOfRolesOutput.json file.......................!!");
+				logger.info("Successfully updated Results to GetIndividualTypeOutput.json file.......................!!");
 			}
 		}
 }
