@@ -139,7 +139,7 @@ public class AuthController {
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		try {
 			DataValidationUtil.validate(errors);
-			authResponseDTO = authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest(), true);
+			authResponseDTO = authFacade.authenticateApplicant(kycAuthRequestDTO, true);
 			if (authResponseDTO != null) {
 				kycAuthResponseDTO = authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO);
 			}

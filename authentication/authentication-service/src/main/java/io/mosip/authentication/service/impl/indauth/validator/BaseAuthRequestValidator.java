@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.impl.indauth.validator;
 
-import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
@@ -13,7 +12,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,8 +29,6 @@ import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.BioType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.PinInfo;
-import io.mosip.authentication.core.dto.indauth.PinType;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -44,10 +40,8 @@ import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
-import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
 import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.authentication.service.validator.IdAuthValidator;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.core.datavalidator.exception.InvalidPhoneNumberException;
 import io.mosip.kernel.core.datavalidator.exception.InvalideEmailException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -76,9 +70,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/** The Final Constant For PIN_VALUE */
 	private static final String PIN_VALUE = "pinValue";
-
-	/** The Final Constant For PIN_TYPE */
-	private static final String PIN_TYPE = "pinType";
 
 	/** The Final Constant For MODEL */
 	private static final String DEVICE_PROVIDER_ID = "deviceProviderID";
@@ -116,9 +107,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/** The Constant VALIDATE_CHECK_OTP_AUTH. */
 	private static final String VALIDATE_CHECK_OTP_AUTH = "validate -> checkOTPAuth";
-
-	/** The Constant PIN_INFO. */
-	private static final String PIN_INFO = "pinInfo";
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
@@ -984,12 +972,12 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		if (!otp.isPresent()) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_CHECK_OTP_AUTH,
 					"INVALID_OTP - pinType is not OTP");
-			errors.rejectValue(PIN_INFO, IdAuthenticationErrorConstants.OTP_NOT_PRESENT.getErrorCode(),
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.OTP_NOT_PRESENT.getErrorCode(),
 					IdAuthenticationErrorConstants.OTP_NOT_PRESENT.getErrorMessage());
 		} else if (OTP_LENGTH != otp.orElse("").length()) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_CHECK_OTP_AUTH,
 					"INVALID_OTP - pinType is not OTP");
-			errors.rejectValue(PIN_INFO, IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(),
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_OTP.getErrorMessage());
 		}
 	}

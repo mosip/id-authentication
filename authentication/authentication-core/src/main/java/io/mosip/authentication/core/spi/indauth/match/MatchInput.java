@@ -2,7 +2,6 @@ package io.mosip.authentication.core.spi.indauth.match;
 
 import java.util.Map;
 
-import io.mosip.authentication.core.dto.indauth.DeviceInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

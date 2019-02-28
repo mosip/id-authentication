@@ -25,8 +25,6 @@ public class AuthRequestDTO extends BaseAuthRequestDTO {
 	
 	private String sessionKey;
 
-	private AuthSecureDTO key;
-
 	private List<BioInfo> bioMetadata;
 
 	private RequestDTO request;

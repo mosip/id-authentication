@@ -30,7 +30,7 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 public abstract class IdAuthValidator implements Validator {
 
 	/** The Constant TSP_ID. */
-	private static final String TSP_ID = "tspID";
+	private static final String POLICYID = "policyID";
 
 	/** The Constant IDV_ID_TYPE. */
 	private static final String IDV_ID_TYPE = "idvIdType";
@@ -54,10 +54,10 @@ public abstract class IdAuthValidator implements Validator {
 	protected static final String DATETIME_PATTERN = "datetime.pattern";
 
 	/** The Constant REQ_TIME. */
-	private static final String REQ_TIME = "reqTime";
+	private static final String REQ_TIME = "requestTime";
 
 	/** The Constant TXN_ID. */
-	private static final String TXN_ID = "txnID";
+	private static final String TXN_ID = "transactionID";
 
 	/** The Constant ID. */
 	private static final String ID = "id";
@@ -246,9 +246,9 @@ public abstract class IdAuthValidator implements Validator {
 	 */
 	protected void validateTspId(String tspID, Errors errors) {
 		if (Objects.isNull(tspID)) {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + TSP_ID);
-			errors.rejectValue(TSP_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { TSP_ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + POLICYID);
+			errors.rejectValue(POLICYID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { POLICYID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 
 	}
