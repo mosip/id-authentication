@@ -15,6 +15,12 @@ import io.mosip.kernel.core.applicanttype.exception.InvalidApplicantArgumentExce
 import io.mosip.kernel.core.applicanttype.spi.ApplicantType;
 import io.mosip.kernel.core.util.DateUtils;
 
+/**
+ * Implementation for Applicant Type.
+ * 
+ * @author Bal Vikash Sharma
+ *
+ */
 @Component
 public class ApplicantTypeImpl implements ApplicantType {
 
