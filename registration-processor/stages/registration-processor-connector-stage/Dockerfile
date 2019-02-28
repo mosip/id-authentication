@@ -20,5 +20,7 @@ VOLUME /home/logs
 
 COPY ./target/registration-processor-connector-stage-*.jar registration-processor-connector-stage.jar
 
+EXPOSE 8091
+
 CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-jar","registration-processor-connector-stage.jar"]
 

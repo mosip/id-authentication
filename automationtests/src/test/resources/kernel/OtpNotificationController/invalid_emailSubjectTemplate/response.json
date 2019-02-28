@@ -1,0 +1,10 @@
+{
+  "timestamp": 1549366150590,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-NOT-008",
+      "errorMessage": "Email subject cannot be empty or null"
+    }
+  ]
+}

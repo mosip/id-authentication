@@ -1,0 +1,16 @@
+{
+  "deviceHistoryDetails": [
+    {
+      "id": "3000021",
+      "name": "Finger Print Scanner 1",
+      "serialNum": "SZ5912878988",
+      "ipAddress": "",
+      "macAddress": "85:bb:97:4b:14:05",
+      "deviceSpecId": "165",
+      "langCode": "eng",
+      "isActive": true,
+      "effectDateTime": "2019-01-21T10:45:38.773Z",
+      "validityDateTime": null
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+package io.mosip.kernel.auth.entities;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ *  @author Sabbu Uday Kumar
+ *  @since 1.0.0
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class MosipUserDto {
+    private String userName;
+    private String mobile;
+    private String mail;
+    private String langCode;
+    private byte[] userPassword;
+    private String name;
+    private String role;
+}

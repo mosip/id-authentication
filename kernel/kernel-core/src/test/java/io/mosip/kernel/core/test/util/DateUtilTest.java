@@ -531,18 +531,4 @@ public final class DateUtilTest {
 	public void parseToDate() {
 		DateUtils.parseToDate(LocalDateTime.now().toString(), "dd.MM.yyyy", TimeZone.getDefault());
 	}
-
-	@SuppressWarnings("deprecation")
-	@Test(expected = io.mosip.kernel.core.exception.NullPointerException.class)
-	public void testParseMethodNullPointerException() throws java.text.ParseException {
-		DateUtils.parse(null);
-	}
-
-	@SuppressWarnings("deprecation")
-	@Test(expected = io.mosip.kernel.core.exception.ParseException.class)
-	public void testParseMethod() throws java.text.ParseException {
-		DateUtils.parse("2019-01-01");
-		DateUtils.parse("2019.01.01");
-	}
-
 }

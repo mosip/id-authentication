@@ -13,8 +13,10 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.entity.Registration;
@@ -57,15 +59,17 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 		LOGGER.info("REGISTRATION - PACKET - RETRIVE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching Packets list by status started");
 		auditFactory.audit(AuditEvent.PACKET_RETRIVE, Components.PACKET_RETRIVE,
-				"Packets are in retrived based on state", "refId", "refIdType");
+				SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		List<RegistrationApprovalDTO> list = new ArrayList<>();
 		try {
 			List<Registration> details = registrationDAO.getEnrollmentByStatus(status);
+
 			LOGGER.info("REGISTRATION - PACKET - RETRIVE", APPLICATION_NAME, APPLICATION_ID,
 					"Packet  list has been fetched");
 			auditFactory.audit(AuditEvent.PACKET_RETRIVE, Components.PACKET_RETRIVE,
-					"Packets which are in given state are retrived", "refId", "refIdType");
+					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 			details.forEach(detail -> list.add(new RegistrationApprovalDTO(detail.getId(), detail.getAckFilename(),
 					RegistrationConstants.PENDING)));
 		} catch (RuntimeException runtimeException) {
@@ -88,8 +92,8 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 	public Registration updateRegistration(String registrationID, String statusComments, String clientStatusCode) {
 
 		LOGGER.info("REGISTRATION - PACKET - UPDATE", APPLICATION_NAME, APPLICATION_ID, "Updating status of Packet");
-		auditFactory.audit(AuditEvent.PACKET_UPDATE, Components.PACKET_UPDATE,
-				"Packets which are in created state are updated according to desired status", "refId", "refIdType");
+		auditFactory.audit(AuditEvent.PACKET_UPDATE, Components.PACKET_UPDATE, SessionContext.userContext().getUserId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		return registrationDAO.updateRegistration(registrationID, statusComments, clientStatusCode);
 	}

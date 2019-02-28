@@ -25,11 +25,11 @@ public class ManualVerificationResponseBuilder{
 			if (Objects.isNull(response.getId())) {
 				response.setId(id);
 			}
-			response.setError(null);
-			response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString(dateTimePattern));
+			response.setErrors(null);
+			response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(dateTimePattern));
 			response.setVersion(version);
 			response.setResponse((ManualVerificationDTO)classType);
-			Gson gson = new GsonBuilder().serializeNulls().create();
+			Gson gson = new GsonBuilder().create();
 			return gson.toJson(response);
 		
 		}else if(classType.getClass()==String.class) {
@@ -37,11 +37,11 @@ public class ManualVerificationResponseBuilder{
 			if (Objects.isNull(response.getId())) {
 				response.setId(id);
 			} 
-			response.setError(null);
-			response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString(dateTimePattern));
+			response.setErrors(null);
+			response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(dateTimePattern));
 			response.setVersion(version);
 			response.setFile((String)classType);
-			Gson gson = new GsonBuilder().serializeNulls().create();
+			Gson gson = new GsonBuilder().create();
 			return gson.toJson(response);
 		}else {
 
@@ -49,11 +49,11 @@ public class ManualVerificationResponseBuilder{
 			if (Objects.isNull(response.getId())) {
 				response.setId(id);
 			}
-			response.setError(null);
-			response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString(dateTimePattern));
+			response.setErrors(null);
+			response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(dateTimePattern));
 			response.setVersion(version);
 			response.setResponse((PacketMetaInfo)classType);
-			Gson gson = new GsonBuilder().serializeNulls().create();
+			Gson gson = new GsonBuilder().create();
 			return gson.toJson(response);
 		}
 	}

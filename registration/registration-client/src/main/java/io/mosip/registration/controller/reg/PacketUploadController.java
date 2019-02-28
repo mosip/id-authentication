@@ -18,6 +18,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -86,6 +87,10 @@ public class PacketUploadController extends BaseController {
 		try {
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 				String packetSyncStatus = packetSync();
+
+				auditFactory.audit(AuditEvent.UPLOAD_PACKET, Components.UPLOAD_PACKET,
+						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 				progressIndicator.progressProperty().bind(service.progressProperty());
 				service.start();
 				service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
@@ -129,8 +134,9 @@ public class PacketUploadController extends BaseController {
 				APPLICATION_ID, "Sync the packets to the server");
 		String syncErrorStatus = "";
 		try {
-			auditFactory.audit(AuditEvent.SYNC_SERVER, Components.PACKET_SYNC, "Sync the packets status to the server",
-					SessionContext.userContext().getUserId(), RegistrationConstants.PACKET_SYNC_REF_ID);
+			auditFactory.audit(AuditEvent.UPLOAD_PACKET, Components.UPLOAD_PACKET,
+					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
 			List<Registration> packetsToBeSynched = packetSynchService.fetchPacketsToBeSynched();
 			List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
 			Object response = null;
@@ -210,11 +216,11 @@ public class PacketUploadController extends BaseController {
 					List<Registration> synchedPackets = packetUploadService.getSynchedPackets();
 					List<Registration> packetUploadList = new ArrayList<>();
 					String status = "";
-					Map<String, String> tableMap = new HashMap<String, String>();
+					Map<String, String> tableMap = new HashMap<>();
 					if (!synchedPackets.isEmpty()) {
 						auditFactory.audit(AuditEvent.PACKET_UPLOAD, Components.PACKET_UPLOAD,
-								"Upload packets to the server", SessionContext.userContext().getUserId(),
-								RegistrationConstants.PACKET_UPLOAD_REF_ID);
+								SessionContext.userContext().getUserId(), RegistrationConstants.PACKET_UPLOAD_REF_ID);
+
 						progressIndicator.setVisible(true);
 						for (int i = 0; i < synchedPackets.size(); i++) {
 							Registration synchedPacket = synchedPackets.get(i);

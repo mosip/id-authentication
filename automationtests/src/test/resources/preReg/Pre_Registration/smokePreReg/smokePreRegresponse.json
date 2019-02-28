@@ -1,0 +1,126 @@
+{
+    "err": null,
+    "status": true,
+    "resTime": "2019-02-21T05:29:51.068Z",
+    "response": [
+        {
+            "preRegistrationId": "97680581931854",
+            "createdBy": "9900806086",
+            "createdDateTime": "2019-02-21T08:23:34.930Z",
+            "updatedBy": null,
+            "updatedDateTime": "2019-02-21T05:29:51.068Z",
+            "statusCode": "Pending_Appointment",
+            "langCode": "fra",
+            "demographicDetails": {
+                "identity": {
+                    "CNIENumber": "9900806086",
+                    "gender": [
+                        {
+                            "language": "fra",
+                            "value": "MLE"
+                        },
+                        {
+                            "language": "ara",
+                            "value": "MLE"
+                        }
+                    ],
+                    "city": [
+                        {
+                            "language": "fra",
+                            "value": "KNT"
+                        },
+                        {
+                            "language": "ara",
+                            "value": "KNT"
+                        }
+                    ],
+                    "postalCode": "767882",
+                    "fullName": [
+                        {
+                            "language": "fra",
+                            "value": "ashish"
+                        },
+                        {
+                            "language": "ara",
+                            "value": "ÙŽØ³Ù‡Ù?Ø³Ù‡"
+                        }
+                    ],
+                    "localAdministrativeAuthority": [
+                        {
+                            "language": "fra",
+                            "value": "MNAS"
+                        },
+                        {
+                            "language": "ara",
+                            "value": "MNAS"
+                        }
+                    ],
+                    "dateOfBirth": "1989/04/12",
+                    "IDSchemaVersion": 1,
+                    "province": [
+                        {
+                            "language": "fra",
+                            "value": "KTA"
+                        },
+                        {
+                            "language": "ara",
+                            "value": "KTA"
+                        }
+                    ],
+                    "phone": "9900806086",
+                    "addressLine1": [
+                        {
+                            "language": "fra",
+                            "value": "dresse est "
+                        },
+                        {
+                            "language": "ara",
+                            "value": "Ø¯Ø±Ù?Ø³Ø³Ù? Ù?Ø³Øª "
+                        }
+                    ],
+                    "residenceStatus": [
+                        {
+                            "language": "fra",
+                            "value": "national"
+                        },
+                        {
+                            "language": "ara",
+                            "value": "national"
+                        }
+                    ],
+                    "addressLine2": [
+                        {
+                            "language": "fra",
+                            "value": "yuwue utter"
+                        },
+                        {
+                            "language": "ara",
+                            "value": "ÙŠÙ?ÙˆÙ?Ù? Ù?ØªØªÙ?Ø±"
+                        }
+                    ],
+                    "addressLine3": [
+                        {
+                            "language": "fra",
+                            "value": "afterfh jdhdy"
+                        },
+                        {
+                            "language": "ara",
+                            "value": "ÙŽÙ?ØªÙ?Ø±Ù?Ù‡ Ø¬Ø¯Ù‡Ø¯ÙŠ"
+                        }
+                    ],
+                    "region": [
+                        {
+                            "language": "fra",
+                            "value": "RSK"
+                        },
+                        {
+                            "language": "ara",
+                            "value": "RSK"
+                        }
+                    ],
+                    "email": "ashis@gmail.com"
+                }
+            }
+        }
+    ]
+}

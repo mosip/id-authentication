@@ -1,0 +1,13 @@
+{
+  "locations": [
+    {
+      "code": "10106",
+      "name": "10106",
+      "hierarchyLevel": 5,
+      "hierarchyName": "Postal Code",
+      "parentLocCode": "AGDL",
+      "langCode": "eng",
+      "isActive": true
+    }
+  ]
+}

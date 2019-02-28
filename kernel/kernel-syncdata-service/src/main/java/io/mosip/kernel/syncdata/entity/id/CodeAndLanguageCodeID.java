@@ -9,19 +9,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * @author Abhishek Kumar
- * @since 1.0.0
- */
 @Embeddable
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class CodeAndLanguageCodeID implements Serializable {
+	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7001663925687776491L;
+	private static final long serialVersionUID = -9083898959072007739L;
 
 	@Column(name = "code", nullable = false)
 	private String code;

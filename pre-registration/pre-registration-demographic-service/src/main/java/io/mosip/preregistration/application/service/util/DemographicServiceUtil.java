@@ -85,7 +85,7 @@ public class DemographicServiceUtil {
 			createDto.setCreatedBy(demographicEntity.getCreatedBy());
 			createDto.setCreatedDateTime(getLocalDateString(demographicEntity.getCreateDateTime()));
 			createDto.setUpdatedBy(demographicEntity.getUpdatedBy());
-			createDto.setUpdatedDateTime(getLocalDateString(LocalDateTime.now()));
+			createDto.setUpdatedDateTime(getLocalDateString(demographicEntity.getUpdateDateTime()));
 		} catch (ParseException ex) {
 			log.error("sessionId", "idType", "id",
 					"In setterForCreateDTO method of pre-registration service- " + ex.getMessage());

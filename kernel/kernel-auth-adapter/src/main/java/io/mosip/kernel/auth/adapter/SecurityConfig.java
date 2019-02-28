@@ -70,6 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         AuthFilter filter = new AuthFilter(requestMatcher);
         filter.setAuthenticationManager(authenticationManager());
         filter.setAuthenticationSuccessHandler(new AuthSuccessHandler());
+        filter.setAuthenticationFailureHandler(new AuthFailureHandler());
         return filter;
     }
 

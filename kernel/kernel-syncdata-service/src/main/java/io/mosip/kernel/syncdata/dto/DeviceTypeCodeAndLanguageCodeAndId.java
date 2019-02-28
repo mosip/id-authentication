@@ -19,7 +19,7 @@ public class DeviceTypeCodeAndLanguageCodeAndId extends BaseDto{
 	
 	private String id;
 	private String deviceTypeCode;
-	private String langCode;
+	
 	
 
 }

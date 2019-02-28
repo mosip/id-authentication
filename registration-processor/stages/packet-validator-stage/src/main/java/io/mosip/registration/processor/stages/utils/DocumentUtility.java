@@ -16,8 +16,9 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
-import io.mosip.registration.processor.core.packet.dto.Document;
+
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
+import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 

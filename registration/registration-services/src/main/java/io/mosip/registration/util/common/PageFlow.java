@@ -29,6 +29,9 @@ public class PageFlow {
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(PageFlow.class);
 	
+	@Value("${DOCUMENT_DISABLE_FLAG}")
+	private String documentDisableFlag;
+	
 	@Value("${FINGERPRINT_DISABLE_FLAG}")
 	private String fingerprintDisableFlag;
 	
@@ -100,6 +103,7 @@ public class PageFlow {
 		ApplicationContext.map().put(RegistrationConstants.ONBOARD_LIST, getOnboardPageList(onboardMap));
 		ApplicationContext.map().put(RegistrationConstants.ONBOARD_MAP, onboardMap);
 		ApplicationContext.map().put(RegistrationConstants.REGISTRATION_MAP, registrationMap);
+		ApplicationContext.map().put("biometricExceptionFlow", registrationMap.get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.VISIBILITY));
 		
 		LOGGER.info(LoggerConstants.LOG_REG_PAGE_FLOW, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Updating Map and storing in Application Context");
@@ -111,15 +115,15 @@ public class PageFlow {
 		LOGGER.info(LoggerConstants.LOG_REG_PAGE_FLOW, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Updating Map values based on Configuration ");
 		
-		updateDetailMap(registrationMap, fingerprintDisableFlag, RegistrationConstants.FINGERPRINT_CAPTURE, RegistrationConstants.BIOMETRIC_EXCEPTION,RegistrationConstants.FINGER_PANE, page);
-		updateDetailMap(registrationMap, irisDisableFlag, RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.BIOMETRIC_EXCEPTION,RegistrationConstants.IRIS_PANE, page);
-		updateDetailMap(registrationMap, faceDisableFlag, RegistrationConstants.FACE_CAPTURE,"","", page);
+		updateDetailMap(registrationMap, fingerprintDisableFlag, RegistrationConstants.FINGERPRINT_CAPTURE, RegistrationConstants.BIOMETRIC_EXCEPTION,RegistrationConstants.FINGER_PANE);
+		updateDetailMap(registrationMap, irisDisableFlag, RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.BIOMETRIC_EXCEPTION,RegistrationConstants.IRIS_PANE);
+		updateDetailMap(registrationMap, faceDisableFlag, RegistrationConstants.FACE_CAPTURE,"","");
 		
 		LOGGER.info(LoggerConstants.LOG_REG_PAGE_FLOW, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Updating Child values of Map based on Configuration");
 		
 		if(page.equalsIgnoreCase(RegistrationConstants.APPLICATION_NAME)) {
-			updateDetailMap(registrationMap, RegistrationConstants.DOCUMENT_DISABLE_FLAG, RegistrationConstants.DOCUMENT_PANE,RegistrationConstants.DOCUMENT_SCAN,"", page);
+			updateDetailMap(registrationMap, documentDisableFlag, RegistrationConstants.DOCUMENT_PANE,RegistrationConstants.DOCUMENT_SCAN,"");
 			
 			if(!registrationMap.get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.FINGER_PANE) && !registrationMap.get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.IRIS_PANE)) {
 				registrationMap.get(RegistrationConstants.BIOMETRIC_EXCEPTION).put(RegistrationConstants.VISIBILITY, false);
@@ -135,7 +139,7 @@ public class PageFlow {
 				RegistrationConstants.APPLICATION_ID, "Map values are updated based on Configuration");
 	}
 	
-	private void updateDetailMap(Map<String, Map<String, Boolean>> detailMap, String flagVal, String pageId, String subPane, String childId, String page) {
+	private void updateDetailMap(Map<String, Map<String, Boolean>> detailMap, String flagVal, String pageId, String subPane, String childId) {
 		
 		LOGGER.info(LoggerConstants.LOG_REG_PAGE_FLOW, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Updating Visibility values based on Configuration");

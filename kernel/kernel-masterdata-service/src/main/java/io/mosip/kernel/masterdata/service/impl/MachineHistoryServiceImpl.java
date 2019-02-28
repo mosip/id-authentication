@@ -84,14 +84,18 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 		return machineHistoryResponseDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.MachineHistoryService#createMachineHistory(io.mosip.kernel.masterdata.entity.MachineHistory)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.MachineHistoryService#createMachineHistory
+	 * (io.mosip.kernel.masterdata.entity.MachineHistory)
 	 */
 	@Override
-	@Transactional(propagation=Propagation.MANDATORY)
+	@Transactional(propagation = Propagation.MANDATORY)
 	public IdResponseDto createMachineHistory(MachineHistory entityHistory) {
 		MachineHistory createdHistory;
-			createdHistory = machineHistoryRepository.create(entityHistory);
+		createdHistory = machineHistoryRepository.create(entityHistory);
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(createdHistory, idResponseDto);
 		return idResponseDto;

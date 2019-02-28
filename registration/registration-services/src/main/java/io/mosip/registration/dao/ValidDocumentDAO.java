@@ -19,4 +19,6 @@ public interface ValidDocumentDAO {
 
 	List<ValidDocument> getValidDocuments();
 
+	List<ValidDocument> getValidDocuments(String applicantType, String docCategoryCode, String langCode);
+
 }

@@ -3,6 +3,7 @@ package io.mosip.kernel.idrepo.validator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -34,6 +35,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
@@ -191,7 +193,7 @@ public class IdRequestValidatorTest {
 
 	@Test
 	public void testValidateVerNullVer() {
-		ReflectionTestUtils.invokeMethod(validator, "validateVer", null, errors);
+		ReflectionTestUtils.invokeMethod(validator, "validateVersion", null, errors);
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
@@ -203,7 +205,7 @@ public class IdRequestValidatorTest {
 
 	@Test
 	public void testValidateVerInvalidVer() {
-		ReflectionTestUtils.invokeMethod(validator, "validateVer", "1234", errors);
+		ReflectionTestUtils.invokeMethod(validator, "validateVersion", "1234.a", errors);
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
@@ -301,8 +303,22 @@ public class IdRequestValidatorTest {
 	@Test
 	public void testValidateRequestWithDocumentsInvalidIdentity() throws JsonParseException, JsonMappingException,
 			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
-		ReflectionTestUtils.invokeMethod(validator, "validateDocuments", null,
-				"{\"identity\":{},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}",
+		ObjectMapper mockMapper = mock(ObjectMapper.class);
+		when(mockMapper.writeValueAsBytes(Mockito.any())).thenThrow(new UnrecognizedPropertyException(null, "", null, null, "", null));
+		ReflectionTestUtils.setField(validator, "mapper", mockMapper);
+		ReflectionTestUtils.invokeMethod(validator, "validateDocuments",
+				mapper.readValue("{\"identity\":{},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}".getBytes(),
+						Map.class),
+				errors);
+		assertTrue(errors.hasErrors());
+	}
+	
+	@Test
+	public void testValidateRequestWithDocumentsDuplicateDoc() throws JsonParseException, JsonMappingException,
+			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
+		ReflectionTestUtils.invokeMethod(validator, "validateDocuments",
+				mapper.readValue("{\"identity\":{\"individualBiometrics\": {\"format\": \"cbeff\", \"version\": 1.0,\"value\": \"le monde est grand et petit\"}},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}, {\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}".getBytes(),
+						Map.class),
 				errors);
 		assertTrue(errors.hasErrors());
 	}
@@ -348,7 +364,7 @@ public class IdRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "identity -  at /identity"),
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "identity - /identity"),
 					error.getDefaultMessage());
 			assertEquals("request", ((FieldError) error).getField());
 		});

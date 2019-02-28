@@ -1,0 +1,10 @@
+{
+  "licenseKey": "string",
+  "permissions": [
+    "string"
+  ],
+  "tspId": "string",
+  "invalid_licenseKey_missing":"string",
+  
+  "invalid_tspId_missing":"string"
+}

@@ -2,6 +2,7 @@ package io.mosip.registration.processor.message.sender.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -50,13 +51,13 @@ import io.mosip.registration.processor.message.sender.exception.TemplateGenerati
 import io.mosip.registration.processor.message.sender.exception.TemplateNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
-import io.mosip.registration.processor.message.sender.utility.MessageSenderUtil;
 import io.mosip.registration.processor.message.sender.utility.TemplateConstant;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 
 /**
@@ -107,7 +108,7 @@ public class MessageNotificationServiceImpl
 
 	/** The utility. */
 	@Autowired
-	private MessageSenderUtil utility;
+	private Utilities utility;
 
 	/** The reg processor template json. */
 	@Autowired
@@ -146,7 +147,10 @@ public class MessageNotificationServiceImpl
 
 			NotificationTemplate templatejson = getTemplateJson(id, idType, attributes);
 
-			String artifact = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
+			InputStream in = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(in, writer, "UTF-8");
+			String artifact = writer.toString();
 
 			if (templatejson.getPhoneNumber().isEmpty() || templatejson.getPhoneNumber() == null) {
 				throw new PhoneNumberNotFoundException(PlatformErrorMessages.RPR_SMS_PHONE_NUMBER_NOT_FOUND.getCode());
@@ -189,7 +193,10 @@ public class MessageNotificationServiceImpl
 
 			NotificationTemplate template = getTemplateJson(id, idType, attributes);
 
-			String artifact = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
+			InputStream in = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(in, writer, "UTF-8");
+			String artifact = writer.toString();
 
 			if (template.getEmailID().isEmpty() || template.getEmailID() == null) {
 				throw new EmailIdNotFoundException(PlatformErrorMessages.RPR_EML_EMAILID_NOT_FOUND.getCode());
@@ -291,8 +298,9 @@ public class MessageNotificationServiceImpl
 
 		demographicInfoStream = adapter.getFile(id,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-
-		String demographicInfo = new String(IOUtils.toByteArray(demographicInfoStream));
+		
+		byte[] bytearray = IOUtils.toByteArray(demographicInfoStream);
+		String demographicInfo = new String(bytearray);
 
 		NotificationTemplate templatejson = getKeysandValues(demographicInfo);
 
@@ -356,7 +364,7 @@ public class MessageNotificationServiceImpl
 
 		try {
 			// Get Identity Json from config server and map keys to Java Object
-			String templateJsonString = MessageSenderUtil.getJson(utility.getConfigServerFileStorageURL(),
+			String templateJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
 					utility.getGetRegProcessorIdentityJson());
 
 			ObjectMapper mapTemplateJsonStringToObject = new ObjectMapper();

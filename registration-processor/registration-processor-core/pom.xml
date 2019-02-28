@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>registration-processor</artifactId>
-		<version>0.8.11</version>
+		<version>0.8.15</version>
 	</parent>
 	<artifactId>registration-processor-core</artifactId>
 
@@ -16,6 +16,15 @@
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-web</artifactId>
 			<version>${vertx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-core</artifactId>
+			<version>5.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-activemq</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.vertx</groupId>
@@ -62,10 +71,21 @@
 			<artifactId>kernel-logger-logback</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-pdfgenerator-itext</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-fsadapter-hdfs</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-qrcodegenerator-zxing</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
 

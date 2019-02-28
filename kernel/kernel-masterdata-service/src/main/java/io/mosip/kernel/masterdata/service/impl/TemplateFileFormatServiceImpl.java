@@ -60,7 +60,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 	}
 
 	@Override
-	public CodeAndLanguageCodeID updateDevice(RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto) {
+	public CodeAndLanguageCodeID updateTemplateFileFormat(RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto) {
 
 		TemplateFileFormatDto templateFileFormatDto = templateFileFormatRequestDto.getRequest();
 

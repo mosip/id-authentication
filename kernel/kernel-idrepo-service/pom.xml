@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.8.11</version>
+		<version>0.8.15</version>
 	</parent>
 	<artifactId>kernel-idrepo-service</artifactId>
 	<dependencies>
@@ -12,11 +12,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 			<version>${spring.boot.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.amazonaws</groupId>
-			<artifactId>aws-java-sdk</artifactId>
-			<version>${aws.javasdk.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
@@ -98,8 +93,13 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 			<version>${spring.boot.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-fsadapter-hdfs</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
-	<build>
+		<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

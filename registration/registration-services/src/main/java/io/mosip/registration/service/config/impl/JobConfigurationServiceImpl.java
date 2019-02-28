@@ -6,9 +6,11 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -242,8 +244,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				}
 			} catch (SchedulerException | NoSuchBeanDefinitionException exception) {
 				LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, exception.getMessage()
-								+ ExceptionUtils.getStackTrace(exception));
+						RegistrationConstants.APPLICATION_ID,
+						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
 				/* Stop, Clear Scheduler and set Error response */
 				setStartExceptionError(responseDTO);
@@ -389,10 +391,10 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	 * 
 	 * @see
 	 * io.mosip.registration.service.config.JobConfigurationService#executeJob(java.
-	 * lang.String)
+	 * lang.String, java.lang.String)
 	 */
 	@Override
-	public ResponseDTO executeJob(String jobId) {
+	public ResponseDTO executeJob(String jobId, String triggerPoint) {
 
 		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Execute job started");
@@ -405,11 +407,15 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				// Get Job using application context and api name
 				baseJob = (BaseJob) applicationContext.getBean(syncJobDef.getApiName());
 
-				String triggerPoint = getUserIdFromSession() != null ? getUserIdFromSession()
-						: RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
-
 				// Job Invocation
 				responseDTO = baseJob.executeJob(triggerPoint, jobId);
+
+				if (responseDTO.getSuccessResponseDTO() != null) {
+					baseJob.setApplicationContext(applicationContext);
+
+					/* Execute all its child jobs */
+					baseJob.executeChildJob(jobId, syncJobMap);
+				}
 			} else {
 				responseDTO = new ResponseDTO();
 				setErrorResponse(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE, null);
@@ -634,12 +640,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 					Timestamp.from(last.get().toInstant()), Timestamp.from(next.get().toInstant()));
 
 			/* Execute the Job if it was not started on previous pre-scheduled time */
-			if ((isNull(syncTransactions) || isEmpty(syncTransactions))
-					&& (executeJob(jobId).getSuccessResponseDTO() != null)) {
-				baseJob.setApplicationContext(applicationContext);
-
-				/* Execute all its child jobs */
-				baseJob.executeChildJob(jobId, syncJobMap);
+			if ((isNull(syncTransactions) || isEmpty(syncTransactions))) {
+				executeJob(jobId, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 
 			}
 		}
@@ -649,7 +651,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	private void executeMissedTriggers(Map<String, SyncJobDef> map) {
 
 		map.forEach((jobId, syncJob) -> {
-			if (syncJob.getParentSyncJobId() == null && syncJob.getSyncFrequency() != null) {
+			if (syncJob.getParentSyncJobId() == null && syncJob.getSyncFrequency() != null
+					&& syncJob.getApiName() != null) {
 				/* An Async task to complete missed trigger */
 				new Thread(() -> executeMissedTrigger(jobId, syncJob.getSyncFrequency())).start();
 			}
@@ -657,4 +660,30 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		});
 
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.config.JobConfigurationService#executeAllJobs()
+	 */
+	@Override
+	public ResponseDTO executeAllJobs() {
+		ResponseDTO responseDTO = new ResponseDTO();
+		
+		
+		for (Entry<String, SyncJobDef> syncJob : syncActiveJobMap.entrySet()) {
+			if (syncJob.getValue().getParentSyncJobId() == null && syncJob.getValue().getApiName() != null) {
+
+				ResponseDTO jobResponse = executeJob(syncJob.getKey(), getUserIdFromSession());
+				if (jobResponse.getErrorResponseDTOs() != null) {
+					responseDTO.setSuccessResponseDTO(null);
+					responseDTO.setErrorResponseDTOs(jobResponse.getErrorResponseDTOs());
+				}
+			}
+		}
+
+		return responseDTO;
+	}
+
 }
