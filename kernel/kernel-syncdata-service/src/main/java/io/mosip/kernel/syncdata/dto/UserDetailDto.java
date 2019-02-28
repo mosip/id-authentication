@@ -1,14 +1,15 @@
 package io.mosip.kernel.syncdata.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class UserDetailDto {
+@EqualsAndHashCode(callSuper=true)
+public class UserDetailDto extends BaseDto {
 
     private String userName;
     private String mobile;
     private String mail;
-    private String langCode;
     private byte[] userPassword;
     private String name;
     private String role;

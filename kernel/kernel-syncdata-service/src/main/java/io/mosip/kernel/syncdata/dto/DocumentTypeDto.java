@@ -31,11 +31,6 @@ public class DocumentTypeDto extends BaseDto{
 	@Size(min = 1, max = 128)
 	private String description;
 
-	@NotNull
-	@Size(min = 1, max = 3)
-	private String langCode;
-
-	@NotNull
-	private Boolean isActive;
+	
 
 }

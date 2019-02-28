@@ -39,14 +39,7 @@ public class DocumentCategoryData extends BaseDto{
 	 */
 	private String description;
 
-	/**
-	 * The Language Code.
-	 */
-	private String langCode;
-
-	/**
-	 * Is active or not.
-	 */
-	private Boolean isActive;
+	
+	
 
 }
