@@ -126,7 +126,7 @@ public class OTPServiceImpl implements OTPService {
 	 private OtpEmailSendResponseDto sendOtpByEmail(String message, String email) {
 	        try {
 	            OtpEmailSendRequestDto otpEmailSendRequestDto = new OtpEmailSendRequestDto(email, message);
-	            String url = mosipEnvironment.getOtpSenderSvcUrl() + mosipEnvironment.getOtpSenderEmailApi();
+	            String url = mosipEnvironment.getOtpSenderEmailSvcUrl() + mosipEnvironment.getOtpSenderEmailApi();
 	            OtpEmailSendResponseDto otpEmailSendResponseDto = restTemplate.postForObject(url, otpEmailSendRequestDto, OtpEmailSendResponseDto.class);
 	            return otpEmailSendResponseDto;
 	        } catch (Exception err) {
@@ -137,7 +137,7 @@ public class OTPServiceImpl implements OTPService {
 	    private OtpSmsSendResponseDto sendOtpBySms(String message, String mobile) {
 	        try {
 	            OtpSmsSendRequestDto otpSmsSendRequestDto = new OtpSmsSendRequestDto(mobile, message);
-	            String url = mosipEnvironment.getOtpSenderSvcUrl() + mosipEnvironment.getOtpSenderSmsApi();
+	            String url = mosipEnvironment.getOtpSenderSmsSvcUrl() + mosipEnvironment.getOtpSenderSmsApi();
 	            OtpSmsSendResponseDto otpSmsSendResponseDto = restTemplate.postForObject(url, otpSmsSendRequestDto, OtpSmsSendResponseDto.class);
 	            return otpSmsSendResponseDto;
 	        } catch (Exception err) {
