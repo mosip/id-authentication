@@ -31,6 +31,6 @@ public interface MachineHistoryRepository extends BaseRepository<MachineHistory,
 	 *            "yyyy-mm-ddThh:mm:ss"
 	 * @return list of {@link MachineHistory}
 	 */
-	List<MachineHistory> findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalse(String id, String langCode,
+	List<MachineHistory> findByIdAndLangCodeAndEffectDateTimeLessThanEqualAndIsDeletedFalse(String id, String langCode,
 			LocalDateTime effectDtimes);
 }

@@ -3,23 +3,22 @@ package io.mosip.kernel.syncdata.dto;
 import java.util.List;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class UserDetailMapDto {
-	
-private String userName;
-	
-	private String mail;
-	
-	private String mobile;
-	
-	private String langCode;
-	
-	private byte[] userPassword;
-	
-    private String name;
-    
-    private List<String> roles;
+@EqualsAndHashCode(callSuper=true)
+public class UserDetailMapDto extends BaseDto {
 
+	private String userName;
+
+	private String mail;
+
+	private String mobile;
+
+	private byte[] userPassword;
+
+	private String name;
+
+	private List<String> roles;
 
 }
