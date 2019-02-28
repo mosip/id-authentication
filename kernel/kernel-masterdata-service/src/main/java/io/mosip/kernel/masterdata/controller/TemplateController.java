@@ -18,6 +18,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -86,11 +87,11 @@ public class TemplateController {
 	 * @return {@link IdResponseDto}
 	 */
 	@PostMapping
-	@ApiOperation(value = "Service to create template ", notes = "create Template  and return  code", response = IdResponseDto.class)
-	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = IdResponseDto.class),
+	@ApiOperation(value = "Service to create template ", notes = "create Template  and return  code", response = IdAndLanguageCodeID.class)
+	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = IdAndLanguageCodeID.class),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
-	public ResponseEntity<IdResponseDto> createTemplate(@Valid @RequestBody RequestDto<TemplateDto> template) {
+	public ResponseEntity<IdAndLanguageCodeID> createTemplate(@Valid @RequestBody RequestDto<TemplateDto> template) {
 		return new ResponseEntity<>(templateService.createTemplate(template.getRequest()), HttpStatus.OK);
 	}
 
@@ -102,11 +103,11 @@ public class TemplateController {
 	 * @return {@link IdResponseDto}
 	 */
 	@PutMapping
-	@ApiOperation(value = "Service to update template ", notes = "update Template  and return  code ", response = IdResponseDto.class)
-	@ApiResponses({ @ApiResponse(code = 200, message = " successfully updated", response = IdResponseDto.class),
+	@ApiOperation(value = "Service to update template ", notes = "update Template  and return  code ", response = IdAndLanguageCodeID.class)
+	@ApiResponses({ @ApiResponse(code = 200, message = " successfully updated", response = IdAndLanguageCodeID.class),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
-	public ResponseEntity<IdResponseDto> updateTemplate(@Valid @RequestBody RequestDto<TemplateDto> template) {
+	public ResponseEntity<IdAndLanguageCodeID> updateTemplate(@Valid @RequestBody RequestDto<TemplateDto> template) {
 		return new ResponseEntity<>(templateService.updateTemplates(template.getRequest()), HttpStatus.OK);
 	}
 
