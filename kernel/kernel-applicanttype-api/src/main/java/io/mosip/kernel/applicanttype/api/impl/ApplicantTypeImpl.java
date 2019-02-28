@@ -72,6 +72,11 @@ public class ApplicantTypeImpl implements ApplicantType {
 		Integer age = null;
 		try {
 			age = calculateAge(dob);
+			if (age == null || age <= 0) {
+				throw new InvalidApplicantArgumentException(
+						ApplicantTypeErrorCode.INVALID_QUERY_EXCEPTION.getErrorCode(),
+						ApplicantTypeErrorCode.INVALID_QUERY_EXCEPTION.getErrorMessage());
+			}
 		} catch (Exception e) {
 			LOGGER.error("Error while claculating age");
 			throw new InvalidApplicantArgumentException(
