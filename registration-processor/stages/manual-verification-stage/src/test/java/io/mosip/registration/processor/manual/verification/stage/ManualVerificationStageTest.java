@@ -1,4 +1,4 @@
-
+/*
 package io.mosip.registration.processor.manual.verification.stage;
 
 
@@ -537,3 +537,4 @@ public class ManualVerificationStageTest{
 	}
 }
 
+*/

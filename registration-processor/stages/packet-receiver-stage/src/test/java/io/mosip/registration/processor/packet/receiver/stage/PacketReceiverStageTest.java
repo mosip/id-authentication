@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.packet.receiver.stage;
+/*package io.mosip.registration.processor.packet.receiver.stage;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -463,3 +463,4 @@ public class PacketReceiverStageTest {
 	}
 
 }
+*/
