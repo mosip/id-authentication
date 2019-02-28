@@ -13,6 +13,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
+import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -111,7 +112,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	 * createDeviceSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdResponseDto createDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecifications) {
+	public IdAndLanguageCodeID createDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecifications) {
 		DeviceSpecification renDeviceSpecification = new DeviceSpecification();
 
 		DeviceSpecification entity = MetaDataUtils.setCreateMetaData(deviceSpecifications.getRequest(),
@@ -124,10 +125,11 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
-		IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.map(renDeviceSpecification, idResponseDto);
 
-		return idResponseDto;
+		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
+		MapperUtils.map(renDeviceSpecification, idAndLanguageCodeID);
+
+		return idAndLanguageCodeID;
 	}
 
 	/*
@@ -137,15 +139,17 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	 * updateDeviceSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdResponseDto updateDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecification) {
-		IdResponseDto idResponseDto = new IdResponseDto();
+	public IdAndLanguageCodeID updateDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecification) {
+		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		try {
 			DeviceSpecification entity = deviceSpecificationRepository
-					.findByIdAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getRequest().getId());
+					.findByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getRequest().getId(),
+							deviceSpecification.getRequest().getLangCode());
 			if (!EmptyCheckUtils.isNullEmpty(entity)) {
 				MetaDataUtils.setUpdateMetaData(deviceSpecification.getRequest(), entity, false);
 				deviceSpecificationRepository.update(entity);
-				idResponseDto.setId(entity.getId());
+				idAndLanguageCodeID.setId(entity.getId());
+				idAndLanguageCodeID.setLangCode(entity.getLangCode());
 			} else {
 				throw new RequestException(
 						DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -157,7 +161,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_UPDATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
-		return idResponseDto;
+		return idAndLanguageCodeID;
 	}
 
 	/*
@@ -170,20 +174,22 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	public IdResponseDto deleteDeviceSpecification(String id) {
 		IdResponseDto idResponseDto = new IdResponseDto();
 		try {
-			DeviceSpecification deviceSpecification = deviceSpecificationRepository
+			List<DeviceSpecification> deviceSpecifications = deviceSpecificationRepository
 					.findByIdAndIsDeletedFalseorIsDeletedIsNull(id);
 
-			if (deviceSpecification != null) {
-				List<Device> renDeviceList = deviceRepository
-						.findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getId());
-				if (renDeviceList.isEmpty()) {
-					MetaDataUtils.setDeleteMetaData(deviceSpecification);
-					deviceSpecificationRepository.update(deviceSpecification);
-					idResponseDto.setId(deviceSpecification.getId());
-				} else {
-					throw new MasterDataServiceException(
-							DeviceSpecificationErrorCode.DEVICE_DELETE_DEPENDENCY_EXCEPTION.getErrorCode(),
-							DeviceSpecificationErrorCode.DEVICE_DELETE_DEPENDENCY_EXCEPTION.getErrorMessage());
+			if (!deviceSpecifications.isEmpty()) {
+				for (DeviceSpecification deviceSpecification : deviceSpecifications) {
+					List<Device> renDeviceList = deviceRepository
+							.findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(deviceSpecification.getId());
+					if (renDeviceList.isEmpty()) {
+						MetaDataUtils.setDeleteMetaData(deviceSpecification);
+						deviceSpecificationRepository.update(deviceSpecification);
+						idResponseDto.setId(deviceSpecification.getId());
+					} else {
+						throw new MasterDataServiceException(
+								DeviceSpecificationErrorCode.DEVICE_DELETE_DEPENDENCY_EXCEPTION.getErrorCode(),
+								DeviceSpecificationErrorCode.DEVICE_DELETE_DEPENDENCY_EXCEPTION.getErrorMessage());
+					}
 				}
 
 			} else {

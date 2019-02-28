@@ -19,10 +19,6 @@ public class RegistrationCenterTypeDto extends BaseDto{
 	 */
 	private String code;
 	/**
-	 * the language code.
-	 */
-	private String langCode;
-	/**
 	 * the name.
 	 */
 	private String name;
@@ -31,5 +27,4 @@ public class RegistrationCenterTypeDto extends BaseDto{
 	 */
 	private String descr;
 	
-	private Boolean isActive;
 }

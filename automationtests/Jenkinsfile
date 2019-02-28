@@ -1,0 +1,46 @@
+node {
+
+ //def branch = env.NEXT_BRANCH_NAME
+ def branch = '0.8.0'
+ def projectToBuild = 'automationtests'
+ stage('------- Checkout --------') {
+  // Checkout only automation tests Module
+  dir(branch) {
+   checkout([$class: 'GitSCM',
+    branches: [
+     [name: branch]
+    ],
+    userRemoteConfigs: [
+     [url: 'https://github.com/mosip/mosip', credentialsId: '4c9741a2-4c15-4aad-a13d-3a1206u05321']
+    ],
+    extensions: [
+
+     [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
+      [$class: 'SparseCheckoutPath', path: '/'+projectToBuild + '/']
+     ]]
+
+    ],
+   ])
+  }
+ }
+
+
+stage ('---------- mvn-clean-test ---------------') {
+	  dir(branch+"/"+projectToBuild)
+  {
+	sh '/usr/local/maven/bin/mvn clean install -Dmaven.test.failure.ignore=true -Denv.user=integration'
+		  
+  }
+  
+  publishHTML (target: [
+      allowMissing: false,
+      alwaysLinkToLastBuild: false,
+      keepAll: true,
+      reportDir: branch+"/"+projectToBuild+"/target/surefire-reports",
+      reportFiles: 'emailable-report.html',
+      reportName: "Tests Report"
+  ])
+}
+
+
+}

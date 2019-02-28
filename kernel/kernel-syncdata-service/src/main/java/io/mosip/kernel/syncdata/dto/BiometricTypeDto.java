@@ -29,8 +29,6 @@ public class BiometricTypeDto extends BaseDto {
 
 	private String description;
 
-	private String langCode;
-
-	private Boolean isActive;
+	
 
 }

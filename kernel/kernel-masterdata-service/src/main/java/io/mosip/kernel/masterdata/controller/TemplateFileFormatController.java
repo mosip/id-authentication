@@ -74,7 +74,7 @@ public class TemplateFileFormatController {
 	public ResponseEntity<CodeAndLanguageCodeID> updateDevice(
 			@Valid @RequestBody RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto) {
 
-		return new ResponseEntity<>(templateFileFormatService.updateDevice(templateFileFormatRequestDto),
+		return new ResponseEntity<>(templateFileFormatService.updateTemplateFileFormat(templateFileFormatRequestDto),
 				HttpStatus.OK);
 	}
 
