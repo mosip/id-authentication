@@ -1,7 +1,5 @@
 package io.mosip.kernel.applicanttype.controller;
 
-import java.time.LocalDateTime;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,15 +34,13 @@ public class ApplicantTypeController {
 	@ApiOperation(value = "Get applicant type for provided queries", notes = "Get applicant type for matching queries", response = String.class)
 	public ResponseEntity<ResponseDTO> getApplicantType(@RequestParam("individualTypeCode") String individualTypeCode,
 			@RequestParam("genderCode") String genderCode, @RequestParam("dateofbirth") String dateofbirth,
-			@RequestParam("biometricAvailable") String biometricAvailable,
-			@RequestParam("languagecode") String languagecode) {
+			@RequestParam("biometricAvailable") String biometricAvailable) {
 		RequestDTO dto = new RequestDTO();
 		KeyValues request = new KeyValues();
 		request.getRequest().put("individualTypeCode", individualTypeCode);
 		request.getRequest().put("genderCode", genderCode);
 		request.getRequest().put("dateofbirth", dateofbirth);
 		request.getRequest().put("biometricAvailable", biometricAvailable);
-		request.getRequest().put("languagecode", languagecode);
 		dto.setRequest(request);
 		return new ResponseEntity<>(applicantTypeService.getApplicantType(dto), HttpStatus.OK);
 	}
