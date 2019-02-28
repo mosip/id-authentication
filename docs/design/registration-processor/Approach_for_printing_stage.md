@@ -47,11 +47,67 @@ registration.processor.print.documentype which will have values: PDF, IMAGE
 	
 **Sample Request and Response**
 - Print message:
+ - Text File Content:
+ ```html
+ { 
+					"name_ara":"َتهِفَ َلمَس",
+					"name_eng":"Mohamed Zhaeer",
+					"addressLine1_ara":"٢٥ مُهَمِد سترِِت",
+					"addressLine1_eng":"25 Mohamed Street",
+					"addressLine2_ara":"سيرَِ رَُد",
+					"addressLine2_eng":"Syria Road",
+					"addressLine3_ara":"ِرَن",
+					"addressLine3_eng":"IRAN",
+					"region_ara":"ِرَن",
+					"region_eng":"IRAN",
+					"province_ara":"فِس-مِكنِس",
+					"province_eng":"Fes-Meknes",
+					"postalCode":"300033",
+					"phoneNumber":"9003356458",
+					"city_ara":"سيرَِ",
+					"city_eng":"SYRIA"
+}
+```
 
 - Acknolgement:
 
+ ```html
+{ 
+			"id":"mosip.registration.print.acknolgement",			
+			"version":"1.0",	
+			"requesttime":"2007-12-03T10:15:30Z",
+			"metadata" : {
+			},
+			"response" : {
+				"status":"<UIN> Print Success"
+			}
+			"errors":[
+					"errorCode": "PRINT_APP_001",
+					"message": "Mobile or email not available"
+				},
+				  {
+					"errorCode": "PRINT_APP_002",
+					"message": "Service vendor is not responding"
+				}
+			]
+}
+```
+
 - Reprint Request:
-	
+
+ ```html
+{ 
+		{
+			"id":"mosip.registration.reprint",			
+			"version":"1.0",	
+			"requesttime":"2007-12-03T10:15:30Z",
+			"metadata" : {
+			},
+			"request" : {
+				"uin":"123456789"
+			}
+}
+```	
 	
 	
 **Logical Architecture Diagram**
