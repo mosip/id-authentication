@@ -57,7 +57,7 @@ public class SwaggerConfig {
 	String proto = "http";
 	String host = "localhost";
 	int port = -1;
-	String hostWithPort = "localhost:8094";
+	String hostWithPort = "localhost:8080";
 
 	/**
 	 * Produces {@link ApiInfo}

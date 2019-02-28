@@ -30,7 +30,7 @@ public class ApplicantTypeImpl implements ApplicantType {
 	private static final String ATTR_DATE_OF_BIRTH = "dateofbirth";
 	private static final String ATTR_GENDER_TYPE = "genderCode";
 	private static final String ATTR_BIOMETRIC_EXCEPTION_TYPE = "biometricAvailable";
-	@Value("${applicant.type.age.limit}")
+	@Value("${mosip.kernel.applicant.type.age.limit}")
 	private String ageLimit;
 
 	/*

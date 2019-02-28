@@ -7,8 +7,8 @@ package io.mosip.kernel.masterdata.constant;
  * @since 1.0.0
  */
 public enum ApplicantTypeErrorCode {
-	APPLICANT_TYPE_FETCH_EXCEPTION("KER-MSD-XXXX",
-			"Error occurred while fetching Applicant type"), APPLICANT_TYPE_NOT_FOUND_EXCEPTION("KER-MSD-XXXX",
+	APPLICANT_TYPE_FETCH_EXCEPTION("KER-MSD-149",
+			"Error occurred while fetching Applicant type"), APPLICANT_TYPE_NOT_FOUND_EXCEPTION("KER-MSD-150",
 					"No records found");
 
 	private final String errorCode;
