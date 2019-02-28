@@ -16,10 +16,25 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
+import io.mosip.registration.processor.connector.stage.ConnectorStage;
+
+/**
+ * Bean configuration class for connector stage
+ * @author Jyoti Prakash Nayak
+ *
+ */
 @Configuration
 @EnableAspectJAutoProxy
 @PropertySource("classpath:bootstrap.properties")
 public class ConnectorConfig {
+	/**
+	 * ConnectorStage bean
+	 * @return ConnectorStage object
+	 */
+	@Bean
+	public ConnectorStage connectorStage() {
+		return new ConnectorStage();
+	}
 	/**
 	 * method to load config server values
 	 * @param env
