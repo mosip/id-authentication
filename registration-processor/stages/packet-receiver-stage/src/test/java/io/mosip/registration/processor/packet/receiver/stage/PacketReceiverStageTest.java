@@ -28,8 +28,6 @@ import io.vertx.ext.web.Session;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyString;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
@@ -48,15 +46,10 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -67,8 +60,6 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 
 @RunWith(SpringRunner.class)
-@PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
-@PrepareForTest(PacketReceiverResponseBuilder.class)
 public class PacketReceiverStageTest {
 
 	private Vertx vertx;
@@ -77,7 +68,7 @@ public class PacketReceiverStageTest {
 	private File file;
 	private String jsonData;
 	private String registrationStatusCode;
-	Gson gson = new GsonBuilder().serializeNulls().create();
+	Gson gson = new GsonBuilder().create();
 
 	@Mock
 	public PacketReceiverService<File, MessageDTO> packetReceiverService;
@@ -120,25 +111,24 @@ public class PacketReceiverStageTest {
 		file = new File(classLoader.getResource(id).getFile());
 		fileUpload = setFileUpload();
 		ctx = setContext();
-		PacketReceiverApplication.main(null);
 		when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		
+		PacketReceiverApplication.main(null);
+
 	}
 	public String getDataAsJson(String Status) {
 		JsonObject obj= new JsonObject();
 		obj.put("id", "mosip.registration.packet");
 		obj.put("version", "1.0");
-		obj.put("timestamp", "2019-02-04T13:46:39.919+0000");
+		obj.put("responsetime", "2019-02-04T13:46:39.919+0000");
 		JsonObject obj1= new JsonObject();
 		obj1.put("status", Status);
 			obj.put("response",obj1);
 			obj1=null;
-		obj.put("error",obj1);
+		obj.put("errors",obj1);
 		return obj.toString();
 	}
 
 	@Test
-	@Ignore
 	public void testAllProcess() throws Exception {
 		testProcessURLSuccess();
 		healthCheckTest();
@@ -149,17 +139,14 @@ public class PacketReceiverStageTest {
 	public void testProcessURLSuccess() throws Exception {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setIsValid(Boolean.TRUE);
-		//PowerMockito.when(PacketReceiverResponseBuilder.class, "buildPacketReceiverResponse", anyString(),anyList()).thenReturn(getDataAsJson(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString()));
 		when(packetReceiverService.storePacket(any(File.class))).thenReturn(messageDTO);
 		packetReceiverStage.processURL(ctx);
 		assertEquals(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString(), registrationStatusCode);
 	}
 	
 	@Test
-	@Ignore
 	public void testProcessURLFail() throws Exception {
 		MessageDTO messageDTO = new MessageDTO();
-		//PowerMockito.when(PacketReceiverResponseBuilder.class, "buildPacketReceiverResponse", anyString(),anyList()).thenReturn(getDataAsJson(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString()));
 		messageDTO.setIsValid(Boolean.FALSE);
 		when(packetReceiverService.storePacket(any(File.class))).thenReturn(messageDTO);
 		packetReceiverStage.processURL(ctx);
@@ -174,7 +161,6 @@ public class PacketReceiverStageTest {
 	}
 
 	@Test
-	@Ignore
 	public void packetUploaderTest() throws ClientProtocolException, IOException {
 		FileBody fileBody = new FileBody(file, ContentType.DEFAULT_BINARY);
 
@@ -183,7 +169,7 @@ public class PacketReceiverStageTest {
 		builder.addPart("file", fileBody);
 		HttpEntity entity = builder.build();
 
-		HttpPost request = new HttpPost("http://localhost:8081/packetreceiver/v0.1/registration-processor/packet-receiver/registrationpackets");
+		HttpPost request = new HttpPost("http://localhost:8081/packetreceiver/registration-processor/registrationpackets/v1.0");
 		request.setEntity(entity);
 
 		HttpClient client = HttpClientBuilder.create().build();

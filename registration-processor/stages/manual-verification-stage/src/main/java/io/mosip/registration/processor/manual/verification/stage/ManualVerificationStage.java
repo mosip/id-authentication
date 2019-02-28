@@ -1,8 +1,5 @@
 package io.mosip.registration.processor.manual.verification.stage;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -98,7 +95,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 	}
 
 	private void routes(Router router) {
-		router.post("/manualverification/v0.1/registration-processor/manual-verification/applicantBiometric").handler(ctx -> {
+		router.post("/manual-verification/applicantBiometric/v1.0").handler(ctx -> {
 			processBiometric(ctx);
 		}).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(BIOMETRIC_SERVICE_ID));
@@ -106,7 +103,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),APPLICATION_JSON); 
 		});
 
-		router.post("/manualverification/v0.1/registration-processor/manual-verification/applicantDemographic").handler(ctx -> {
+		router.post("/manual-verification/applicantDemographic/v1.0").handler(ctx -> { 
 			processDemographic(ctx);
 		}).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(DEMOGRAPHIC_SERVICE_ID));
@@ -115,7 +112,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 		
 		});
 		
-		router.post("/manualverification/v0.1/registration-processor/manual-verification/assignment").handler(ctx -> {
+		router.post("/manual-verification/assignment/v1.0").handler(ctx -> {
 			processAssignment(ctx);
 		}).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(ASSIGNMENT_SERVICE_ID));
@@ -124,7 +121,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 		 
 		});
 
-		router.post("/manualverification/v0.1/registration-processor/manual-verification/decision").handler(ctx -> {
+		router.post("/manual-verification/decision/v1.0").handler(ctx -> {
 			processDecision(ctx);
 		}).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(DECISION_SERVICE_ID));
@@ -132,7 +129,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager{
 			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()),APPLICATION_JSON);  
 		});
 
-		router.post("/manualverification/v0.1/registration-processor/manual-verification/packetInfo").handler(ctx -> {
+		router.post("/manual-verification/packetInfo/v1.0").handler(ctx -> {
 			processPacketInfo(ctx);
 		}).failureHandler(handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(PACKETINFO_SERVICE_ID));
