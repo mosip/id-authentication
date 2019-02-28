@@ -53,11 +53,6 @@ public class LanguageDto extends BaseDto{
 	@ApiModelProperty(value = "Language Native Name", dataType = "java.lang.String")
 	private String nativeName;
 
-	/**
-	 * Field for the status of data.
-	 */
-	@NotNull
-	@ApiModelProperty(value = "Language isActive status", required = true, dataType = "java.lang.Boolean")
-	private Boolean isActive;
+	
 
 }

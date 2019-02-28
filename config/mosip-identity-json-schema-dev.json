@@ -13,7 +13,8 @@
 			"additionalProperties": false,
 			"properties": {
 				"IDSchemaVersion": {
-					"type": "number"
+					"type": "number",
+					"minimum": 0
 				},
 				"UIN": {
 					"type": "integer",
@@ -151,7 +152,8 @@
 				"fileReference": {
 					"type": "string"
 				}
-			}
+			},
+			"additionalProperties": false
 		},
 		"biometricsType": {
 			"type": "object",
@@ -165,7 +167,8 @@
 				"fileReference": {
 					"type": "string"
 				}
-			}
+			},
+			"additionalProperties": false
 		}
 	}
 }

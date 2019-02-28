@@ -27,10 +27,4 @@ public class ValidDocumentDto extends BaseDto{
 	@Size(min = 1, max = 36)
 	private String docCategoryCode;
 
-	@NotNull
-	@Size(min = 1, max = 3)
-	private String langCode;
-
-	@NotNull
-	private Boolean isActive;
 }

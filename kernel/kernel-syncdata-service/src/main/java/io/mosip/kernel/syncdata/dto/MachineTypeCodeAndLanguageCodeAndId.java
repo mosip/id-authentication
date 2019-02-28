@@ -19,6 +19,5 @@ public class MachineTypeCodeAndLanguageCodeAndId extends BaseDto{
 	
 	private String id;
 	private String machineTypeCode;
-	private String langCode;
 
 }

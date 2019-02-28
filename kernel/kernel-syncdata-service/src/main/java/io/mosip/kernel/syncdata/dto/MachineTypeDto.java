@@ -9,15 +9,12 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class MachineTypeDto extends BaseDto{
-	
-	private String code;
+public class MachineTypeDto extends BaseDto {
 
-	private String langCode;
+	private String code;
 
 	private String name;
 
 	private String description;
-	private Boolean isActive;
 
 }

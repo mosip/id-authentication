@@ -13,10 +13,12 @@
 			"additionalProperties": false,
 			"properties": {
 				"IDSchemaVersion": {
-					"type": "number"
+					"type": "number",
+					"minimum": 0
 				},
 				"UIN": {
-					"type": "number"
+					"type": "integer",
+					"minimum": 0
 				},
 				"fullName": {
 					"$ref": "#/definitions/simpleType"
@@ -25,7 +27,8 @@
 					"$ref": "#/definitions/dateOfBirthType"
 				},
 				"age": {
-					"type": "number"
+					"type": "integer",
+					"minimum": 0
 				},
 				"gender": {
 					"$ref": "#/definitions/simpleType"
@@ -57,8 +60,11 @@
 				"email": {
 					"$ref": "#/definitions/emailType"
 				},
+				"residenceStatus": {
+					"$ref": "#/definitions/simpleType"
+				},
 				"CNIENumber": {
-					"type": "number"
+					"$ref": "#/definitions/CNIENumberType"
 				},
 				"localAdministrativeAuthority": {
 					"$ref": "#/definitions/simpleType"
@@ -67,7 +73,8 @@
 					"$ref": "#/definitions/simpleType"
 				},
 				"parentOrGuardianRIDOrUIN": {
-					"type": "number"
+					"type": "integer",
+					"minimum": 0
 				},
 				"proofOfAddress": {
 					"$ref": "#/definitions/documentType"
@@ -129,6 +136,10 @@
 			"type": "string",
 			"pattern": "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$"
 		},
+		"CNIENumberType": {
+			"type": "string",
+			"pattern": "^([0-9]{10,30})$"
+		},
 		"documentType": {
 			"type": "object",
 			"properties": {
@@ -141,7 +152,8 @@
 				"fileReference": {
 					"type": "string"
 				}
-			}
+			},
+			"additionalProperties": false
 		},
 		"biometricsType": {
 			"type": "object",
@@ -155,7 +167,8 @@
 				"fileReference": {
 					"type": "string"
 				}
-			}
+			},
+			"additionalProperties": false
 		}
 	}
 }
