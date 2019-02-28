@@ -47,25 +47,25 @@ registration.processor.print.documentype which will have values: PDF, IMAGE
 	
 **Sample Request and Response**
 - Print message:
- - Text File Content:
+ ######Text File Content:
  ```html
  { 
-					"name_ara":"َتهِفَ َلمَس",
-					"name_eng":"Mohamed Zhaeer",
-					"addressLine1_ara":"٢٥ مُهَمِد سترِِت",
-					"addressLine1_eng":"25 Mohamed Street",
-					"addressLine2_ara":"سيرَِ رَُد",
-					"addressLine2_eng":"Syria Road",
-					"addressLine3_ara":"ِرَن",
-					"addressLine3_eng":"IRAN",
-					"region_ara":"ِرَن",
-					"region_eng":"IRAN",
-					"province_ara":"فِس-مِكنِس",
-					"province_eng":"Fes-Meknes",
-					"postalCode":"300033",
-					"phoneNumber":"9003356458",
-					"city_ara":"سيرَِ",
-					"city_eng":"SYRIA"
+	"name_ara":"َتهِفَ َلمَس",
+	"name_eng":"Mohamed Zhaeer",
+	"addressLine1_ara":"٢٥ مُهَمِد سترِِت",
+	"addressLine1_eng":"25 Mohamed Street",
+	"addressLine2_ara":"سيرَِ رَُد",
+	"addressLine2_eng":"Syria Road",
+	"addressLine3_ara":"ِرَن",
+	"addressLine3_eng":"IRAN",
+	"region_ara":"ِرَن",
+	"region_eng":"IRAN",
+	"province_ara":"فِس-مِكنِس",
+	"province_eng":"Fes-Meknes",
+	"postalCode":"300033",
+	"phoneNumber":"9003356458",
+	"city_ara":"سيرَِ",
+	"city_eng":"SYRIA"
 }
 ```
 
