@@ -48,9 +48,9 @@ export class DataStorageService {
     return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.gender);
   }
 
-  getResidenceDetails() {
-    return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.resident);
-  }
+  // getResidenceDetails() {
+  //   return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.resident);
+  // }
 
   getTransliteration(request: any) {
     const obj = {
@@ -197,8 +197,7 @@ export class DataStorageService {
     //   const options = new RequestOptions({
     //     params: params,
     //   });
-    const url =
-      this.COPY_DOCUMENT_URL + '?catCode=POA&destinationPreId=' + destinationId + '&sourcePrId=' + sourceId;
+    const url = this.COPY_DOCUMENT_URL + '?catCode=POA&destinationPreId=' + destinationId + '&sourcePrId=' + sourceId;
     console.log('copy document URL', url);
     return this.httpClient.post(url, '');
   }

@@ -115,14 +115,15 @@ export class DashBoardComponent implements OnInit {
     const applicantResponse = applicants[appConstants.RESPONSE][index];
     const applicant: Applicant = {
       applicationID: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.preId],
-      name: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][0]['value'],
+      // name: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][0]['value'],
+      name: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname],
       appointmentDateTime: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto]
         ? this.createAppointmentDateTime(applicantResponse)
         : '-',
       status: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.statusCode],
-      regDto: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto],
-      nameInSecondaryLanguage: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][1]['value'],
-      postalCode: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.postalCode]
+      regDto: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto]
+      // nameInSecondaryLanguage: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][1]['value'],
+      // postalCode: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.postalCode]
     };
     return applicant;
   }
@@ -268,9 +269,9 @@ export class DashBoardComponent implements OnInit {
       fullName: user.name,
       preRegId: user.applicationID,
       regDto: user.regDto,
-      status: user.status,
-      fullNameSecondaryLang: user.nameInSecondaryLanguage,
-      postalCode: user.postalCode
+      status: user.status
+      // fullNameSecondaryLang: user.nameInSecondaryLanguage,
+      // postalCode: user.postalCode
     });
     console.log(this.sharedService.getNameList());
 

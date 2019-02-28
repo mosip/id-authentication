@@ -20,7 +20,6 @@ import AttributeModel from 'src/app/shared/models/demographic-model';
 import * as appConstants from '../../../app.constants';
 import Utils from 'src/app/app.util';
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
-import { AutofillMonitor } from '@angular/cdk/text-field';
 
 @Component({
   selector: 'app-demographic',
@@ -159,7 +158,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
       this.dataModification = false;
       this.step = this.regService.getUsers().length;
     }
-    const arr = this.router.url.split('/');
     this.loginId = this.regService.getLoginId();
   }
 
@@ -310,11 +308,11 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.filterOnLangCode(this.secondaryLang, this.secondaryGender, this.genders);
   }
 
-  private async setResidentStatus() {
-    await this.getResidenceDetails();
-    this.filterOnLangCode(this.primaryLang, this.primaryResidenceStatus, this.residenceStatus);
-    this.filterOnLangCode(this.secondaryLang, this.secondaryResidenceStatus, this.residenceStatus);
-  }
+  // private async setResidentStatus() {
+  //   await this.getResidenceDetails();
+  //   this.filterOnLangCode(this.primaryLang, this.primaryResidenceStatus, this.residenceStatus);
+  //   this.filterOnLangCode(this.secondaryLang, this.secondaryResidenceStatus, this.residenceStatus);
+  // }
 
   private setFormControlValues() {
     if (!this.dataModification) {
@@ -345,22 +343,29 @@ export class DemographicComponent implements OnInit, OnDestroy {
         addressLine3Secondary: ''
       };
     } else {
+      let index = 0;
+      let secondaryIndex = 1;
+      console.log(this.user.request.demographicDetails.identity.fullName[0].language);
+      if (this.user.request.demographicDetails.identity.fullName[0].language !== this.primaryLang) {
+        index = 1;
+        secondaryIndex = 0;
+      }
       const dob = this.user.request.demographicDetails.identity.dateOfBirth;
       this.formControlValues = {
-        fullName: this.user.request.demographicDetails.identity.fullName[0].value,
-        gender: this.user.request.demographicDetails.identity.gender[0].value,
-        residenceStatus: this.user.request.demographicDetails.identity.residenceStatus[0].value,
+        fullName: this.user.request.demographicDetails.identity.fullName[index].value,
+        gender: this.user.request.demographicDetails.identity.gender[index].value,
+        residenceStatus: this.user.request.demographicDetails.identity.residenceStatus[index].value,
         date: this.user.request.demographicDetails.identity.dateOfBirth.split('/')[2],
         month: this.user.request.demographicDetails.identity.dateOfBirth.split('/')[1],
         year: this.user.request.demographicDetails.identity.dateOfBirth.split('/')[0],
         dateOfBirth: dob,
         age: this.calculateAge(new Date(new Date(dob))).toString(),
-        addressLine1: this.user.request.demographicDetails.identity.addressLine1[0].value,
-        addressLine2: this.user.request.demographicDetails.identity.addressLine2[0].value,
-        addressLine3: this.user.request.demographicDetails.identity.addressLine3[0].value,
-        region: this.user.request.demographicDetails.identity.region[0].value,
-        province: this.user.request.demographicDetails.identity.province[0].value,
-        city: this.user.request.demographicDetails.identity.city[0].value,
+        addressLine1: this.user.request.demographicDetails.identity.addressLine1[index].value,
+        addressLine2: this.user.request.demographicDetails.identity.addressLine2[index].value,
+        addressLine3: this.user.request.demographicDetails.identity.addressLine3[index].value,
+        region: this.user.request.demographicDetails.identity.region[index].value,
+        province: this.user.request.demographicDetails.identity.province[index].value,
+        city: this.user.request.demographicDetails.identity.city[index].value,
         localAdministrativeAuthority: this.user.request.demographicDetails.identity.localAdministrativeAuthority[0]
           .value,
         email: this.user.request.demographicDetails.identity.email,
@@ -368,10 +373,10 @@ export class DemographicComponent implements OnInit, OnDestroy {
         phone: this.user.request.demographicDetails.identity.phone,
         CNIENumber: this.user.request.demographicDetails.identity.CNIENumber.toString(),
 
-        fullNameSecondary: this.user.request.demographicDetails.identity.fullName[1].value,
-        addressLine1Secondary: this.user.request.demographicDetails.identity.addressLine1[1].value,
-        addressLine2Secondary: this.user.request.demographicDetails.identity.addressLine2[1].value,
-        addressLine3Secondary: this.user.request.demographicDetails.identity.addressLine3[1].value
+        fullNameSecondary: this.user.request.demographicDetails.identity.fullName[secondaryIndex].value,
+        addressLine1Secondary: this.user.request.demographicDetails.identity.addressLine1[secondaryIndex].value,
+        addressLine2Secondary: this.user.request.demographicDetails.identity.addressLine2[secondaryIndex].value,
+        addressLine3Secondary: this.user.request.demographicDetails.identity.addressLine3[secondaryIndex].value
       };
     }
   }
@@ -393,14 +398,14 @@ export class DemographicComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getResidenceDetails() {
-    return new Promise((resolve, reject) => {
-      this.dataStorageService.getResidenceDetails().subscribe(response => {
-        this.residenceStatus = response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.residentTypes];
-        resolve(true);
-      });
-    });
-  }
+  // private getResidenceDetails() {
+  //   return new Promise((resolve, reject) => {
+  //     this.dataStorageService.getResidenceDetails().subscribe(response => {
+  //       this.residenceStatus = response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.residentTypes];
+  //       resolve(true);
+  //     });
+  //   });
+  // }
 
   private filterOnLangCode(langCode: string, genderEntity = [], entityArray: any) {
     entityArray.filter((element: any) => {
