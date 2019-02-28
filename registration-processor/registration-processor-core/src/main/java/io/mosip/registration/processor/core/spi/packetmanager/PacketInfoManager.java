@@ -4,11 +4,12 @@ package io.mosip.registration.processor.core.spi.packetmanager;
 import java.util.List;
 
 import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
-import io.mosip.registration.processor.core.packet.dto.Document;
+
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
+import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 
 /**
  * The Interface PacketInfoManager.
@@ -33,8 +34,10 @@ public interface PacketInfoManager<T, /** D, M, */
 	/**
 	 * Save demographic data.
 	 *
-	 * @param bytes the bytes
-	 * @param metaData            the meta data
+	 * @param demographicJsonStream
+	 *            the demographic json stream
+	 * @param metaData
+	 *            the meta data
 	 */
 	public void saveDemographicInfoJson(byte[] bytes, List<FieldValue> metaData);
 
@@ -143,7 +146,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @param documentDtos the document dtos
 	 */
 	public void saveDocuments(List<Document> documentDtos);
-	
+
 	/**
 	 * Gets the UIN by rid.
 	 *

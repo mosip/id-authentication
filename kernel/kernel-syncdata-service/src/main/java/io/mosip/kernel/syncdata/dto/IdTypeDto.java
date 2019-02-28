@@ -28,11 +28,6 @@ public class IdTypeDto extends BaseDto{
 	 * The id description.
 	 */
 	private String descr;
-	/**
-	 * The language code.
-	 */
-	private String langCode;
 	
-	private Boolean isActive;
 }
 

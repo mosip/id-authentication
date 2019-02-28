@@ -24,10 +24,6 @@ public class LocationDto extends BaseDto{
 
 	private String parentLocCode;
 
-	private String langCode;
-
-	private Boolean isActive;
-
 	private String createdBy;
 
 	private String updatedBy;

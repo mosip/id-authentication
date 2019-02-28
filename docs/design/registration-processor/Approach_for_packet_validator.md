@@ -1,47 +1,61 @@
-# Approach for Registration status module
+# Approach for Packet Validator
 
 **Background**
-Registration packets created by the registration clients will be periodically uploaded to the server for processing. The packets will be further processed and in each step  status will be updated in registration status table.
+The camel bridge will send an event to registration-processor-connector stage after packet moved to packet store. The The connector stage will send an event to packet-validator-stage for further validation.
 
 The target users are
--	Client application, which will use search API to get current status of packets.
--	Server application which will process the packets
--	Administrator of the platform who may need to verify the packets
+-	Server application, which will store sync information.
+-	Administrator of the platform who may need to verify the sync info.
 
 The key requirements are
--	Get registration status based on id.
--	Get the registration based on status.
--	Update registration status.
--	Add registration status.
--	Provide rest API to get the registration statuses for list of registration ids.
--	Add registration transaction record for each transaction.
+-	Packet integrity validation by comparing checksum value.
+-	Validate the list of required files are present in packet before start processing.
+-	Validate required applicant documents are present inside packet.
 
 The key non-functional requirements are
--	Performance: Should fetch information from DB in less time for millions of records. Should be able to support processing multiple status requests per second.
+-	Performance: Should validate hundreds of packets per second.
 
 
 
 **Solution**
 The key solution considerations are
--	2 new tables -
-	“registration”table : this table stores current registration status. Example below -
-	![Registration table](_images/registration.PNG)
-	“registration_transaction” table : this table holds all the transactions for a registration id. There can be multiple transactions against one registration id. All the transactions will be recorded in this table with parent transaction id so that we can trace all transactions for a particular registration id. In below example there are multiple  transactions for same registration id which indicates what are the stages it has went through -
-	![Registration transaction table](_images/reg_transaction.PNG)
 -	Create Registration and Transaction entity and create dao layer for below crud operations:
-o	Add new registration status.
-o	Add Transaction details with transaction type code and status code (TRANSACTION_STARTED, TRANSACTION_SUCCESSFUL, and TRANSACTION_FAILED).
-o	Get registration status by ID.
-o	Update registration status.
-o	Get registration status by status code.
-o	Find registration status by time threshold on creation date time.
--	Provide rest API to search registration status based on list of registration ids.
--	Registration and Transaction service.
--	Handle exceptions in using custom Exception handler and send correct response to client.
--	Audit the entire transaction.
+o	Required files present inside packet.
+o	Integrity of the packet by comparing checksum value.
+o	Validate applicant document.
 
-[Download script for registration table](https://github.com/mosip/mosip/tree/DEV/design/registration-processor/_scripts/regprc-registration_v003.zip)
-[Download script for registration_transaction table](https://github.com/mosip/mosip/tree/DEV/design/registration-processor/_scripts/regprc-registration_transaction_v003.zip)
+##### 1.	Validation – 1: Validate Required files present inside packet
+- The decrypted packet sends packet related information inside packet_meta_info.json file. This will have information on all required files inside the hash sequence. There are 2 hashSequence present inside packet -> 
+1. hashSequence1 
+	i. applicantBiometricSequence
+	ii. introducerBiometricSequence
+	iii. applicantDemographicSequence
+2. hashSequence2
+	i. otherFiles
+	
+- The above hash sequence has all the required files for processing the packet. The files should be present inside the packet as well. 
+- In case of any missing file the validation will fail and registration status will be updated as "STRUCTURE_VALIDATION_FAILED" and fail the validation. Send message to camel bridge to acknowledge the applicant
+- In case of successful file validation move to the next check.
+
+
+##### 2.	Validation – 2: Integrity of the packet by comparing checksum value
+- Read below hashsequence fields in same order present inside packet_meta_info json file-
+	1. applicantBiometricSequence
+	2. introducerBiometricSequence
+	3. applicantDemographicSequence
+	4. otherFiles
+- Use kernel FileSystemAdapter to get each file with filename present inside hash sequence.
+- Call kernel HMACUtils to generate hashSequence1 and hashSequence2 separately. The hashSequence1 includes "applicantBiometricSequence", "introducerBiometricSequence" and "applicantDemographicSequence". The hashSequence2 includes "otherFiles".
+- The packet will have packet_data_hash and osi_data_hash. Compare packet_data_hash with hashSequence1 and osi_data_hash to hashSequence2.
+- If both the hash sequence matches then proceed to the next check.
+- In case of mismatch fail the validation and update registration status as "STRUCTURE_VALIDATION_FAILED" and fail the validation. Send message to camel bridge to acknowledge the applicant
+
+##### 3.	Validation – 3: Validate requied documents
+- Get mandatory required document categories and types based on applicant type from masterdata api. 
+- Check if the document  is present for the document category. 
+- Fail the validation if document is missing.
+- Pass the validation if all documents are present. Send message to camel bridge after all successful validation.
+
 
 **Class Diagram**
 ![Registration status class diagram](_images/registration_status_class_diagram.png)

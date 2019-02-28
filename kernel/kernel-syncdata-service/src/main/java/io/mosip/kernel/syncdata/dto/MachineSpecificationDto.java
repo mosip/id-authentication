@@ -17,7 +17,6 @@ public class MachineSpecificationDto extends BaseDto{
 	private String machineTypeCode;
 	private String minDriverversion;
 	private String description;
-	private String langCode;
-	private Boolean isActive;
+	
 
 }

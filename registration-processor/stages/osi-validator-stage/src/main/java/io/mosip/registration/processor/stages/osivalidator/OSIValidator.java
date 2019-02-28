@@ -707,7 +707,7 @@ public class OSIValidator {
 	private String getHashSequenceValue(String registrationId, String field) throws UnsupportedEncodingException {
 
 		Identity identity = getIdentity(registrationId);
-		List<FieldValueArray> hashSequence = identity.getHashSequence();
+		List<FieldValueArray> hashSequence = identity.getHashSequence1();
 		List<String> hashList = identityIteratorUtil.getHashSequence(hashSequence, field);
 		if (hashList != null)
 			return hashList.get(0).toUpperCase();
