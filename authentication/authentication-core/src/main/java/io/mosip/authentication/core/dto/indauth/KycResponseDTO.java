@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.dto.indauth;
 
+import java.util.Map;
+
 import lombok.Data;
 
 /**
@@ -11,9 +13,7 @@ import lombok.Data;
 
 @Data
 public class KycResponseDTO {
-	/** The AuthResponseDTO auth */
-	private AuthResponseDTO auth;
 	
-	/** The KycInfo kyc*/
-	private KycInfo kyc;
+	private String ttl;
+	private Map<String, ? extends Object> identity;
 }

@@ -32,7 +32,7 @@ import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
-import io.mosip.authentication.core.dto.indauth.DeviceInfo;
+import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
@@ -860,7 +860,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 *
 	 * @return the sets the
 	 */
-	private Set<String> extractAllowedLang() {
+	public Set<String> extractAllowedLang() {
 		Set<String> allowedLang;
 		String languages = environment.getProperty("mosip.supported-languages");
 		if (null != languages && languages.contains(",")) {
@@ -926,5 +926,43 @@ public class IdInfoHelper implements IdInfoFetcher {
 	@Override
 	public MasterDataFetcher getTitleFetcher() {
 		return masterDataManager::fetchTitles;
+	}
+	
+	/**
+	 * Gets the uin or vid.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @return the uin or vid
+	 */
+	public static Optional<String> getUinOrVid(AuthRequestDTO authRequestDTO) {
+		Optional<String> uin = Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
+				.map(IdentityDTO::getUin);
+		Optional<String> vid = Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
+				.map(IdentityDTO::getVid);
+		if (uin.isPresent()) {
+			return uin;
+		} else if (vid.isPresent()) {
+			return vid;
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the uin or vid type.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @return the uin or vid type
+	 */
+	public static IdType getUinOrVidType(AuthRequestDTO authRequestDTO) {
+		Optional<String> uin = Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
+				.map(IdentityDTO::getUin);
+		Optional<String> vid = Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
+				.map(IdentityDTO::getVid);
+		if (uin.isPresent()) {
+			return IdType.UIN;
+		} else if (vid.isPresent()) {
+			return IdType.VID;
+		}
+		return null;
 	}
 }

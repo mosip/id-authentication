@@ -13,8 +13,7 @@ public class KycMetadataDTO {
 	 * Boolean for consentReq
 	 */
 	private boolean consentRequired;
-	/**
-	 * Boolean for secLangReq
-	 */
-	private boolean secondaryLangCode;
+	
+	/** The secondary lang code. */
+	private String secondaryLangCode;
 }
