@@ -32,8 +32,7 @@ public class ApplicantTypeController {
 	@Autowired
 	private ApplicantTypeService applicantTypeService;
 
-	@GetMapping
-	@RequestMapping(value = "/getApplicantType")
+	@GetMapping(value = "/getApplicantType")
 	@ApiOperation(value = "Get applicant type for provided queries", notes = "Get applicant type for matching queries", response = String.class)
 	public ResponseEntity<ResponseDTO> getApplicantType(@RequestParam("individualTypeCode") String individualTypeCode,
 			@RequestParam("genderCode") String genderCode, @RequestParam("dateofbirth") String dateofbirth,
