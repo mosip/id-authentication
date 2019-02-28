@@ -113,7 +113,7 @@ public class RegistrationStatusControllerTest {
 		registrationStatusRequestDTO.setRequest(request);
 		registrationStatusRequestDTO.setId("mosip.registration.status");
 		registrationStatusRequestDTO.setVersion("1.0");
-		registrationStatusRequestDTO.setRequestTimestamp(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+		registrationStatusRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 		regStatusToJson=gson.toJson(registrationStatusRequestDTO);
 		registrationDtoList = new ArrayList<>();
 		InternalRegistrationStatusDto registrationStatusDto1 = new InternalRegistrationStatusDto();
@@ -144,13 +144,11 @@ public class RegistrationStatusControllerTest {
 	 */
 	@Test
 	public void searchSuccessTest() throws Exception {
-		doNothing().when(registrationStatusRequestValidator).validate((registrationStatusRequestDTO),
-				"mosip.registration.status");
-		this.mockMvc
-				.perform(MockMvcRequestBuilders
-						.get("/v0.1/registration-processor/registration-status/registrationstatus")
-						.param("request", regStatusToJson).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
-				.andExpect(MockMvcResultMatchers.status().isOk());
+        doNothing().when(registrationStatusRequestValidator).validate((registrationStatusRequestDTO),"mosip.registration.status");
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .get("/registration-processor/registrationstatus/v1.0")
+                .param("request", regStatusToJson).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	/**
@@ -161,11 +159,9 @@ public class RegistrationStatusControllerTest {
 	 */
 	@Test
 	public void searchFailureTest() throws Exception {
-		this.mockMvc
-				.perform(MockMvcRequestBuilders
-						.get("/v0.1/registration-processor/registration-status/registrationstatus")
-						.accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
-				.andExpect(MockMvcResultMatchers.status().isBadRequest());
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .get("/registration-processor/registrationstatus/v1.0").accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
 
 }

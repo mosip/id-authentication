@@ -19,10 +19,4 @@ public class ReasonListDto extends BaseDto{
 
 	private String rsnCatCode;
 
-	private String langCode;
-
-	private Boolean isActive;
-
-	private boolean isDeleted;
-
 }

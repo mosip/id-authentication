@@ -171,6 +171,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 		object.setMessageBusAddress(MessageBusAddress.UIN_GENERATION_BUS_IN);
 		object.setInternalError(Boolean.FALSE);
+		object.setIsValid(true);
 		String description = "";
 		boolean isTransactionSuccessful = false;
 		this.registrationId = object.getRid();
@@ -380,7 +381,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 					PacketMetaInfo.class);
 
-			List<FieldValueArray> hashSequence = packetMetaInfo.getIdentity().getHashSequence();
+			List<FieldValueArray> hashSequence = packetMetaInfo.getIdentity().getHashSequence1();
 			List<String> hashList = identityIteratorUtil.getHashSequence(hashSequence,
 					JsonConstant.APPLICANTBIOMETRICSEQUENCE);
 			if (hashList != null)

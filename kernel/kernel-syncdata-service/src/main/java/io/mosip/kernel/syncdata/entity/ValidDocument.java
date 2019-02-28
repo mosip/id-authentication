@@ -56,6 +56,7 @@ public class ValidDocument extends BaseEntity implements Serializable {
 			@JoinColumn(name = "doccat_code", referencedColumnName = "code", insertable = false, updatable = false),
 			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false), })
 	DocumentCategory documentCategory;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
 			@JoinColumn(name = "doctyp_code", referencedColumnName = "code", insertable = false, updatable = false),

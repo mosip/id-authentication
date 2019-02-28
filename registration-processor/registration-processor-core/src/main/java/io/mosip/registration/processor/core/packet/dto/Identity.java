@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * This contains the attributes which have to be displayed in PacketMetaInfo
  * JSON
- *
+ * 
  * @author Balaji Sridharan
  * @since 1.0.0
  */
@@ -18,11 +18,12 @@ public class Identity {
 	private List<Document> documents;
 	private List<FieldValue> metaData;
 	private List<FieldValue> osiData;
-	private List<FieldValueArray> hashSequence;
-	private List<String> hashSequence2;
+	private List<FieldValueArray> hashSequence1;
+	private List<FieldValueArray> hashSequence2;
 	private List<FieldValue> capturedRegisteredDevices;
 	private List<FieldValue> capturedNonRegisteredDevices;
 	private List<FieldValue> checkSum;
+	private List<String> uinUpdatedFields;
 
 	/**
 	 * @return the biometric
@@ -132,8 +133,8 @@ public class Identity {
 	/**
 	 * @return the hashSequence
 	 */
-	public List<FieldValueArray> getHashSequence() {
-		return hashSequence;
+	public List<FieldValueArray> getHashSequence1() {
+		return hashSequence1;
 	}
 
 	/**
@@ -141,21 +142,20 @@ public class Identity {
 	 *            the hashSequence to set
 	 */
 	public void setHashSequence(List<FieldValueArray> hashSequence) {
-		this.hashSequence = hashSequence;
+		this.hashSequence1 = hashSequence;
 	}
-	
+
 	/**
 	 * @return the hashSequence2
 	 */
-	public List<String> getHashSequence2() {
+	public List<FieldValueArray> getHashSequence2() {
 		return hashSequence2;
 	}
 
 	/**
-	 * @param hashSequence2
-	 *            the hashSequence2 to set
+	 * @param hashSequence2 the hashSequence2 to set
 	 */
-	public void setHashSequence2(List<String> hashSequence2) {
+	public void setHashSequence2(List<FieldValueArray> hashSequence2) {
 		this.hashSequence2 = hashSequence2;
 	}
 
@@ -167,8 +167,7 @@ public class Identity {
 	}
 
 	/**
-	 * @param capturedRegisteredDevices
-	 *            the capturedRegisteredDevices to set
+	 * @param capturedRegisteredDevices the capturedRegisteredDevices to set
 	 */
 	public void setCapturedRegisteredDevices(List<FieldValue> capturedRegisteredDevices) {
 		this.capturedRegisteredDevices = capturedRegisteredDevices;
@@ -182,8 +181,7 @@ public class Identity {
 	}
 
 	/**
-	 * @param capturedNonRegisteredDevices
-	 *            the capturedNonRegisteredDevices to set
+	 * @param capturedNonRegisteredDevices the capturedNonRegisteredDevices to set
 	 */
 	public void setCapturedNonRegisteredDevices(List<FieldValue> capturedNonRegisteredDevices) {
 		this.capturedNonRegisteredDevices = capturedNonRegisteredDevices;
@@ -202,6 +200,20 @@ public class Identity {
 	 */
 	public void setCheckSum(List<FieldValue> checkSum) {
 		this.checkSum = checkSum;
+	}
+
+	/**
+	 * @return the uinUpdatedFields
+	 */
+	public List<String> getUinUpdatedFields() {
+		return uinUpdatedFields;
+	}
+
+	/**
+	 * @param uinUpdatedFields the uinUpdatedFields to set
+	 */
+	public void setUinUpdatedFields(List<String> uinUpdatedFields) {
+		this.uinUpdatedFields = uinUpdatedFields;
 	}
 
 }

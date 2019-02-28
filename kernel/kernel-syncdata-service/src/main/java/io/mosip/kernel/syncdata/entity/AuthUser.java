@@ -8,10 +8,6 @@ import org.springframework.security.core.userdetails.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- * @author Abhishek Kumar
- * @since 1.0.0
- */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class AuthUser extends User {

@@ -123,7 +123,7 @@ public class RegistrationSyncControllerTest {
 		registrationSyncRequestDTO.setRequest(list);
 		registrationSyncRequestDTO.setId("mosip.registration.sync");
 		registrationSyncRequestDTO.setVersion("1.0");
-		registrationSyncRequestDTO.setRequestTimestamp(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+		registrationSyncRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 		arrayToJson=gson.toJson(registrationSyncRequestDTO);
 		SyncResponseDto syncResponseDto = new SyncResponseDto();
 
@@ -145,12 +145,9 @@ public class RegistrationSyncControllerTest {
 	@Test
 	public void syncRegistrationControllerSuccessTest() throws Exception {
 		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(syncResponseDtoList);
-
-		this.mockMvc
-				.perform(
-						post("/v0.1/registration-processor/registration-status/sync").accept(MediaType.APPLICATION_JSON)
-								.contentType(MediaType.APPLICATION_JSON).content(arrayToJson))
-				.andExpect(status().isOk());
+		
+		this.mockMvc.perform(post("/registration-processor/sync/v1.0").accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON).content(arrayToJson)).andExpect(status().isOk());
 	}
 
 	/**
@@ -163,10 +160,8 @@ public class RegistrationSyncControllerTest {
 	public void syncRegistrationControllerFailureTest() throws Exception {
 
 		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(syncResponseDtoList);
-		this.mockMvc
-				.perform(post("/v0.1/registration-processor/registration-status/sync")
-						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isBadRequest());
+		this.mockMvc.perform(post("/registration-processor/sync/v1.0").accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
 	}
 
 }

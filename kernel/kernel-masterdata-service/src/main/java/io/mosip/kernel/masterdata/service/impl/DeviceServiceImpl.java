@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,15 @@ import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceHistory;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
+import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepository;
 import io.mosip.kernel.masterdata.service.DeviceHistoryService;
 import io.mosip.kernel.masterdata.service.DeviceService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
@@ -47,6 +53,12 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Autowired
 	DeviceHistoryService deviceHistoryService;
+
+	@Autowired
+	RegistrationCenterDeviceRepository registrationCenterDeviceRepository;
+
+	@Autowired
+	RegistrationCenterMachineDeviceRepository registrationCenterMachineDeviceRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -114,27 +126,28 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Override
 	@Transactional
-	public IdResponseDto createDevice(RequestDto<DeviceDto> deviceDto) {
+	public IdAndLanguageCodeID createDevice(RequestDto<DeviceDto> deviceDto) {
 		Device device = null;
 
 		Device entity = MetaDataUtils.setCreateMetaData(deviceDto.getRequest(), Device.class);
 		DeviceHistory entityHistory = MetaDataUtils.setCreateMetaData(deviceDto.getRequest(), DeviceHistory.class);
 		entityHistory.setEffectDateTime(entity.getCreatedDateTime());
 		entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
-		
+
 		try {
-			
+
 			device = deviceRepository.create(entity);
 			deviceHistoryService.createDeviceHistory(entityHistory);
-		
+
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
-		IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.map(device, idResponseDto);
 
-		return idResponseDto;
+		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
+		MapperUtils.map(device, idAndLanguageCodeID);
+
+		return idAndLanguageCodeID;
 
 	}
 
@@ -147,13 +160,12 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Override
 	@Transactional
-	public IdResponseDto updateDevice(RequestDto<DeviceDto> deviceRequestDto) {
-		Device oldDevice = null;
+	public IdAndLanguageCodeID updateDevice(RequestDto<DeviceDto> deviceRequestDto) {
 		Device entity = null;
 		Device updatedDevice = null;
 		try {
-			oldDevice = deviceRepository
-					.findByIdAndIsDeletedFalseOrIsDeletedIsNull(deviceRequestDto.getRequest().getId());
+			Device oldDevice = deviceRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
+					deviceRequestDto.getRequest().getId(), deviceRequestDto.getRequest().getLangCode());
 
 			if (oldDevice != null) {
 				entity = MetaDataUtils.setUpdateMetaData(deviceRequestDto.getRequest(), oldDevice, false);
@@ -161,11 +173,10 @@ public class DeviceServiceImpl implements DeviceService {
 				DeviceHistory deviceHistory = new DeviceHistory();
 				MapperUtils.map(updatedDevice, deviceHistory);
 				MapperUtils.setBaseFieldValue(updatedDevice, deviceHistory);
-				
-				
+
 				deviceHistory.setEffectDateTime(updatedDevice.getUpdatedDateTime());
 				deviceHistory.setUpdatedDateTime(updatedDevice.getUpdatedDateTime());
-				
+
 				deviceHistoryService.createDeviceHistory(deviceHistory);
 			} else {
 				throw new RequestException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -175,9 +186,12 @@ public class DeviceServiceImpl implements DeviceService {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
-		IdResponseDto idResponseDto = new IdResponseDto();
-		idResponseDto.setId(entity.getId());
-		return idResponseDto;
+
+		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
+		idAndLanguageCodeID.setId(entity.getId());
+		idAndLanguageCodeID.setLangCode(entity.getLangCode());
+
+		return idAndLanguageCodeID;
 	}
 
 	/*
@@ -189,31 +203,46 @@ public class DeviceServiceImpl implements DeviceService {
 	@Override
 	@Transactional
 	public IdResponseDto deleteDevice(String id) {
-		Device foundDevice = null;
-		Device entity = null;
+		List<Device> foundDeviceList = new ArrayList<>();
 		Device deletedDevice = null;
 		try {
-			foundDevice = deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(id);
-			if (foundDevice != null) {
-				entity = MetaDataUtils.setDeleteMetaData(foundDevice);
-				deletedDevice = deviceRepository.update(entity);
-				DeviceHistory deviceHistory = new DeviceHistory();
-				MapperUtils.map(deletedDevice, deviceHistory);
-				MapperUtils.setBaseFieldValue(deletedDevice, deviceHistory);
+			foundDeviceList = deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(id);
 
-				deviceHistory.setEffectDateTime(deletedDevice.getDeletedDateTime());
-				deviceHistory.setDeletedDateTime(deletedDevice.getDeletedDateTime());
-				deviceHistoryService.createDeviceHistory(deviceHistory);
+			if (!foundDeviceList.isEmpty()) {
+				for (Device foundDevice : foundDeviceList) {
+
+					List<RegistrationCenterMachineDevice> registrationCenterMachineDeviceList = registrationCenterMachineDeviceRepository
+							.findByDeviceIdAndIsDeletedFalseOrIsDeletedIsNull(foundDevice.getId());
+					List<RegistrationCenterDevice> registrationCenterDeviceList = registrationCenterDeviceRepository
+							.findByDeviceIdAndIsDeletedFalseOrIsDeletedIsNull(foundDevice.getId());
+					if (registrationCenterMachineDeviceList.isEmpty() && registrationCenterDeviceList.isEmpty()) {
+						
+						MetaDataUtils.setDeleteMetaData(foundDevice);
+						deletedDevice = deviceRepository.update(foundDevice);
+
+						DeviceHistory deviceHistory = new DeviceHistory();
+						MapperUtils.map(deletedDevice, deviceHistory);
+						MapperUtils.setBaseFieldValue(deletedDevice, deviceHistory);
+
+						deviceHistory.setEffectDateTime(deletedDevice.getDeletedDateTime());
+						deviceHistory.setDeletedDateTime(deletedDevice.getDeletedDateTime());
+						deviceHistoryService.createDeviceHistory(deviceHistory);
+					} else {
+						throw new RequestException(DeviceErrorCode.DEPENDENCY_EXCEPTION.getErrorCode(),
+								DeviceErrorCode.DEPENDENCY_EXCEPTION.getErrorMessage());
+					}
+				}
 			} else {
 				throw new RequestException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
+
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
-		idResponseDto.setId(entity.getId());
+		idResponseDto.setId(id);
 		return idResponseDto;
 	}
 

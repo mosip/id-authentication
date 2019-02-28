@@ -74,7 +74,7 @@ public enum RegistrationStatusCode {
     PACKET_BIO_DEDUPE_FAILED,
 
     /** The uin generated. */
-    UIN_GENERATED,
+    PACKET_UIN_GENERATION_SUCCESS,
 
     /** The manual adjudication success. */
     MANUAL_ADJUDICATION_SUCCESS,
@@ -89,6 +89,18 @@ public enum RegistrationStatusCode {
     PACKET_UIN_UPDATION_SUCCESS,
 
     /** The packet uin updation failure. */
-    PACKET_UIN_UPDATION_FAILURE
+    PACKET_UIN_UPDATION_FAILURE,
+
+    /** The document resent to camel queue*/
+    DOCUMENT_RESENT_TO_CAMEL_QUEUE,
+
+    /** The packet sent for printing. */
+    PACKET_SENT_FOR_PRINTING,
+
+    /** The unable to sent for printing. */
+    UNABLE_TO_SENT_FOR_PRINTING,
+
+    /** The notification sent to resident. */
+    NOTIFICATION_SENT_TO_RESIDENT
 
 }

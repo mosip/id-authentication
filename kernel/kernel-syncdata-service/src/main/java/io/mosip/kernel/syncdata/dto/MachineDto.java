@@ -46,14 +46,7 @@ public class MachineDto extends BaseDto{
 	 * Field for machine specification Id
 	 */
 	private String machineSpecId;
-	/**
-	 * Field for language code
-	 */
-	private String langCode;
-	/**
-	 * Field for is active
-	 */
-	private Boolean isActive;
+	
 	/**
 	 * Field for is validity of the Device
 	 */

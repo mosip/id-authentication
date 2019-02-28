@@ -2,9 +2,6 @@ package io.mosip.registration.processor.packet.receiver.builder;
 
 import java.util.List;
 import java.util.Objects;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,13 +25,13 @@ public class PacketReceiverResponseBuilder{
 		if (Objects.isNull(response.getId())) {
 			response.setId(l.get(0));
 		}
-		response.setError(null);
-		response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString(l.get(1)));
+		response.setErrors(null);
+		response.setResponsetime(l.get(1));
 		response.setVersion(l.get(2));
 		ResponseDTO responseDTO=new ResponseDTO();
 		responseDTO.setStatus(statusCode);
 		response.setResponse(responseDTO);
-		Gson gson = new GsonBuilder().serializeNulls().create();
+		Gson gson = new GsonBuilder().create();
 		return gson.toJson(response);
 	}
 

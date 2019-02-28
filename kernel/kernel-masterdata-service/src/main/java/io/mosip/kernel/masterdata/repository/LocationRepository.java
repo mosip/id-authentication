@@ -59,6 +59,6 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 	 * @param locationName
 	 * @return boolean
 	 */
-	@Query(value="SELECT EXISTS(select name FROM master.location where LOWER(name)=LOWER(?1))",nativeQuery=true)
+	@Query(value="SELECT EXISTS(select name FROM master.location where (LOWER(name)=LOWER(?1)) and (is_active=true) and (is_deleted is null or is_deleted =false))",nativeQuery=true)
     boolean isLocationNamePresent(String locationName);
 }
