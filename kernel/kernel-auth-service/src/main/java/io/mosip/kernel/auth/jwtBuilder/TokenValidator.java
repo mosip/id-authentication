@@ -1,6 +1,7 @@
 package io.mosip.kernel.auth.jwtBuilder;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.entities.AuthToken;
@@ -62,7 +63,9 @@ public class TokenValidator {
                     .getBody();
 
             return claims;
-        } catch (Exception e) {
+        } catch(ExpiredJwtException ex){
+        	throw new NonceExpiredException("Token Expired");
+        }catch (Exception e) {
             throw new RuntimeException("Invalid Token");
         }
     }

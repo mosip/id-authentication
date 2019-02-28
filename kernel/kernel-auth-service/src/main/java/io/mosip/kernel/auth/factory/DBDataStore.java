@@ -38,12 +38,14 @@ public class DBDataStore implements IDataStore {
 	
 	private static final String NEW_USER_OTP = "INSERT INTO user_details( user_name,name,email,mobile,langcode,created_date,password) VALUES ( :userName,:name,:email,:phone,:langcode,NOW(),:password);";
 	
-	private static final String GET_USER="select user.user_name,user.password,user.name,user.email,user.mobile,user.langcode,role.role from user_details user,user_roles role "
-			+ " where user.user_id=role.user_id and user.user_name = :userName ";
+	private static final String GET_USER="select user.user_name,user.password,user.name,user.email,user.mobile,user.langcode,role.role from user_details user,roles role,user_role userrole where user.user_id=userrole.user_id "
+			+ " and role.role_id =userrole.role_id and user.user_name = :userName";
 	
 	private static final String GET_PASSWORD="select password from user_details where user_name = :userName ";
 	
-	private static final String NEW_ROLE_OTP="insert into user_roles(user_id,role,created_date,description) values(:userId,:role,NOW(),:description)";
+	private static final String NEW_ROLE_OTP="insert into role(role,created_date,description) values(:role,NOW(),:description)";
+	
+	private static final String USER_ROLE_MAPPING="insert into user_role(role_id,user_id,created_date) values(roleId,userId,NOW())";
 	
 	
 	public DBDataStore()
@@ -131,16 +133,25 @@ public class DBDataStore implements IDataStore {
 		if(mosipUserDto==null)
 		{
 			int userId =createUser(otpUser);
-			createRole(userId,otpUser);
+			int roleId=createRole(userId,otpUser);
+			createMapping(userId,roleId);
 		}
 		return getUser(otpUser.getUserId());
 	}
 
-	private void createRole(int userId, OtpUser otpUser) {
+	private void createMapping(int userId, int roleId) {
+		jdbcTemplate.update(USER_ROLE_MAPPING, 
+				new MapSqlParameterSource().addValue("userId", userId)
+				.addValue("roleId", roleId));
+	}
+
+	private int createRole(int userId, OtpUser otpUser) {
+		KeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcTemplate.update(NEW_ROLE_OTP, 
 				new MapSqlParameterSource().addValue("userId", userId)
 				.addValue("role", "individual")
-				.addValue("description", "Individual User"));
+				.addValue("description", "Individual User"),keyHolder,new String[]{"role_id"});
+		return keyHolder.getKey().intValue();
 		
 	}
 

@@ -197,7 +197,7 @@ public class AuthServiceImpl implements AuthService {
 			checkRefreshToken = tokenValidator.validateExpiry(accessToken.getRefreshToken());
 		}
 		if (checkRefreshToken) {
-			TimeToken newAccessToken = tokenGenerator.generateNewToken(existingToken);
+			TimeToken newAccessToken = tokenGenerator.generateNewToken(accessToken.getRefreshToken());
 			AuthToken updatedAccessToken = customTokenServices.getUpdatedAccessToken(accessToken.getUserId(),
 					newAccessToken, accessToken.getUserId());
 			mosipUserDtoToken = tokenValidator.validateToken(updatedAccessToken.getAccessToken());

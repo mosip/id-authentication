@@ -7,12 +7,16 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import static org.mockito.Mockito.when;
 
 import io.mosip.kernel.auth.AuthApp;
+import io.mosip.kernel.auth.controller.AuthController;
+import io.mosip.kernel.auth.entities.AuthNResponse;
 import io.mosip.kernel.auth.entities.AuthNResponseDto;
 import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.service.AuthService;
@@ -27,6 +31,9 @@ public class AuthControllerTest {
 	
 	@Mock
 	private AuthService authService;
+	
+	@InjectMocks
+	AuthController controller;
 	/**
 	 * Test method for {@link io.mosip.kernel.auth.controller.AuthController#authenticateUseridPwd(io.mosip.kernel.auth.entities.LoginUser, javax.servlet.http.HttpServletResponse)}.
 	 * @throws Exception 

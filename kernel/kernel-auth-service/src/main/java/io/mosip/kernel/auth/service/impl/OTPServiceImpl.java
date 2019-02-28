@@ -26,9 +26,7 @@ import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.entities.otp.OtpValidateResponseDto;
 import io.mosip.kernel.auth.jwtBuilder.TokenGenerator;
 import io.mosip.kernel.auth.service.OTPGenerateService;
-import io.mosip.kernel.auth.service.OTPSendService;
 import io.mosip.kernel.auth.service.OTPService;
-import io.mosip.kernel.auth.service.OTPTemplateService;
 
 /**
  * @author Ramadurai Pandian
@@ -53,12 +51,6 @@ public class OTPServiceImpl implements OTPService {
 
 	@Autowired
 	TokenGenerator tokenGenerator;
-
-	@Autowired
-	OTPSendService oTPSendService;
-
-	@Autowired
-	OTPTemplateService oTPTemplateService;
 
 	@Autowired
 	OTPGenerateService oTPGenerateService;
