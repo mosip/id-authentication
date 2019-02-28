@@ -107,13 +107,13 @@ public class NotificationServiceImplTest {
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setPersonalIdentity(true);
-		authRequestDTO.setAuthType(authType);
+		authType.setDemo(true);
+		authRequestDTO.setRequestedAuth(authType);
 
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ZoneOffset offset = ZoneOffset.MAX;
 
-		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).toString());
 
 		// authRequestDTO.setReqTime(Instant.now().atOffset(offset)
@@ -161,11 +161,11 @@ public class NotificationServiceImplTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 
-		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).toString());
 		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setPersonalIdentity(true);
-		authRequestDTO.setAuthType(authType);
+		authType.setDemo(true);
+		authRequestDTO.setRequestedAuth(authType);
 		authResponseDTO.setStatus("y");
 		authResponseDTO.setResponseTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
@@ -217,7 +217,7 @@ public class NotificationServiceImplTest {
 	public void testSendOtpNotification()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
-		otpRequestDto.setIdvId("8765");
+//		otpRequestDto.getIdentity().setUin("8765");
 		String otp = "987654";
 		String uin = "274390482564";
 		String date = "";
@@ -225,7 +225,7 @@ public class NotificationServiceImplTest {
 		String email = "abc@gmail.cpm";
 		String mobileNumber = "";
 
-		otpRequestDto.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+		otpRequestDto.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).toString());
 		// otpRequestDto.setReqTime(ZonedDateTime.now()
 		// .format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());

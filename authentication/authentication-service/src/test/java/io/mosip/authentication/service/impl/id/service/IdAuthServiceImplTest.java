@@ -205,10 +205,8 @@ public class IdAuthServiceImplTest {
 	@Test
 	public void testSaveAutnTxn() {
 		OtpRequestDTO otpRequestDto = getOtpRequestDTO();
-		String idvId = otpRequestDto.getIdvId();
-		String idvIdType = otpRequestDto.getIdvIdType();
-		String reqTime = otpRequestDto.getReqTime();
-		String txnId = otpRequestDto.getTxnID();
+		String reqTime = otpRequestDto.getRequestTime();
+		String txnId = otpRequestDto.getTransactionID();
 
 		RequestType requestType = RequestType.OTP_AUTH;
 
@@ -225,12 +223,10 @@ public class IdAuthServiceImplTest {
 	private OtpRequestDTO getOtpRequestDTO() {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
 		otpRequestDto.setId("id");
-		otpRequestDto.setTspID("2345678901234");
-		otpRequestDto.setIdvIdType(IdType.UIN.getType());
-		otpRequestDto.setReqTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
-		otpRequestDto.setTxnID("2345678901234");
-		otpRequestDto.setIdvId("2345678901234");
-		// otpRequestDto.setVer("1.0");
+		otpRequestDto.setPartnerID("2345678901234");
+		otpRequestDto.setRequestTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
+		otpRequestDto.setTransactionID("2345678901234");
+//		otpRequestDto.get("2345678901234");
 
 		return otpRequestDto;
 	}
