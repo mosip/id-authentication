@@ -71,7 +71,7 @@ public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 	}
 
 	private static void logError(IdAuthenticationErrorConstants errorConstants) {
-		mosipLogger.error(DEFAULT_SESSION_ID, TYPE, "Inside AgeMathing Strategy" + errorConstants.getErrorCode(),
+		mosipLogger.error(DEFAULT_SESSION_ID, TYPE, "Inside Fingerprint Strategy" + errorConstants.getErrorCode(),
 				errorConstants.getErrorMessage());
 	}
 
