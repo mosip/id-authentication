@@ -307,8 +307,14 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 		LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
 		fsAdapter.storeFile(uin, BIOMETRICS + SLASH + fileRefId,
 				new ByteArrayInputStream(CryptoUtil.decodeBase64(new String(securityManager.encrypt(data)))));
-		mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "STORE FILES", "time taken to store file : "
-				+ fileRefId + "  - " + Duration.between(startTime, DateUtils.getUTCCurrentDateTime()));
+		mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "storeFiles", "time taken to store file in millis: "
+				+ fileRefId + "  - " 
+				+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis()
+				+ "  "
+				+ "Start time : " + startTime
+				+ "  "
+				+ "end time : " + DateUtils.getUTCCurrentDateTime()
+				);
 		
 		bioList.add(new UinBiometric(uinRefId, fileRefId, doc.getCategory(),
 				docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(), securityManager.hash(data),
@@ -345,8 +351,14 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 		LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
 		fsAdapter.storeFile(uin, DEMOGRAPHICS + SLASH + fileRefId, new ByteArrayInputStream(
 				CryptoUtil.decodeBase64(new String(securityManager.encrypt(CryptoUtil.decodeBase64(doc.getValue()))))));
-		mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "STORE FILES", "time taken to store file : "
-				+ fileRefId + "  - " + Duration.between(startTime, DateUtils.getUTCCurrentDateTime()));
+		mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "storeFiles", "time taken to store file in millis: "
+				+ fileRefId + "  - " 
+				+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis()
+				+ "  "
+				+ "Start time : " + startTime
+				+ "  "
+				+ "end time : " + DateUtils.getUTCCurrentDateTime()
+				);
 
 		docList.add(new UinDocument(uinRefId, doc.getCategory(), docType.get(TYPE).asText(), fileRefId,
 				docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),

@@ -122,7 +122,6 @@ public class IdRepoFilter extends OncePerRequestFilter {
 
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(request);
 		mosipLogger.debug(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Request received");
-		requestWrapper.resetInputStream();
 
 		if (request.getMethod().equals(GET) && (request.getParameterMap().size() > 1
 				|| (request.getParameterMap().size() == 1 && !request.getParameterMap().containsKey(TYPE)))) {

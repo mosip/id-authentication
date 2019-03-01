@@ -295,8 +295,14 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 				LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
 				String data = new String(
 						securityManager.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUin(), fileName))));
-				mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES, "time taken to get file : "
-						+ fileName + "  - " + Duration.between(startTime, DateUtils.getUTCCurrentDateTime()));
+				mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
+						"time taken to get file in millis: " + fileName + "  - " 
+								+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis()
+								+ "  "
+								+ "Start time : " + startTime
+								+ "  "
+								+ "end time : " + DateUtils.getUTCCurrentDateTime()
+								);
 				if (demo.getDocHash().equals(securityManager.hash(CryptoUtil.decodeBase64(data)))) {
 					documents.add(new Documents(demo.getDoccatCode(), data));
 				} else {
@@ -341,8 +347,14 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 					LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
 					String data = new String(securityManager
 							.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUin(), fileName))));
-					mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES, "time taken to get file : "
-							+ fileName + "  - " + Duration.between(startTime, DateUtils.getUTCCurrentDateTime()));
+					mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
+							"time taken to get file in millis: " + fileName + "  - " 
+									+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis()
+									+ "  "
+									+ "Start time : " + startTime
+									+ "  "
+									+ "end time : " + DateUtils.getUTCCurrentDateTime()
+									);
 					if (Objects.nonNull(data)) {
 						if (StringUtils.equals(bio.getBiometricFileHash(),
 								securityManager.hash(CryptoUtil.decodeBase64(data)))) {

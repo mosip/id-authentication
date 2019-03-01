@@ -18,6 +18,7 @@ import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -280,8 +281,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	 * @return the data source
 	 */
 	private DataSource buildDataSource(Map<String, String> dataSourceValues) {
-		HikariDataSource dataSource = new HikariDataSource();
-		dataSource.setJdbcUrl(dataSourceValues.get("url"));
+		DriverManagerDataSource dataSource = new DriverManagerDataSource(dataSourceValues.get("url"));
 		dataSource.setUsername(dataSourceValues.get("username"));
 		dataSource.setPassword(dataSourceValues.get("password"));
 		dataSource.setDriverClassName(dataSourceValues.get("driverClassName"));
