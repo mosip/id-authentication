@@ -51,6 +51,17 @@ public class AuthServiceImpl implements AuthService {
 	@Autowired
 	OTPService oTPService;
 
+	/**
+	 * Method used for validating Auth token
+	 * 
+	 * @param token
+	 * 
+	 * @return mosipUserDtoToken is of type {@link MosipUserDtoToken}
+	 * 
+	 * @throws Exception
+	 * 
+	 */
+
 	@Override
 	public MosipUserDtoToken validateToken(String token) throws Exception {
 		long currentTime = new Date().getTime();
@@ -62,6 +73,18 @@ public class AuthServiceImpl implements AuthService {
 			throw new NonceExpiredException(AuthConstant.AUTH_TOKEN_EXPIRED_MESSAGE);
 		}
 	}
+
+	/**
+	 * Method used for Authenticating User based on username and password
+	 * 
+	 * @param loginUser
+	 *            is of type {@link LoginUser}
+	 * 
+	 * @return authNResponseDto is of type {@link AuthNResponseDto}
+	 * 
+	 * @throws Exception
+	 * 
+	 */
 
 	@Override
 	public AuthNResponseDto authenticateUser(LoginUser loginUser) throws Exception {
@@ -80,16 +103,39 @@ public class AuthServiceImpl implements AuthService {
 		return authNResponseDto;
 	}
 
+	/**
+	 * Method used for sending OTP
+	 * 
+	 * @param otpUser
+	 *            is of type {@link OtpUser}
+	 * 
+	 * @return authNResponseDto is of type {@link AuthNResponseDto}
+	 * 
+	 * @throws Exception
+	 * 
+	 */
+
 	@Override
 	public AuthNResponseDto authenticateWithOtp(OtpUser otpUser) throws Exception {
 		AuthNResponseDto authNResponseDto = null;
 		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(otpUser.getAppId())
 				.authenticateWithOtp(otpUser);
-		oTPService.sendOTP(mosipUser, otpUser.getOtpChannel());
-		authNResponseDto = new AuthNResponseDto();
+		authNResponseDto = oTPService.sendOTP(mosipUser, otpUser.getOtpChannel(),otpUser.getAppId());
 		authNResponseDto.setMessage(AuthConstant.OTP_SENT_MESSAGE);
 		return authNResponseDto;
 	}
+
+	/**
+	 * Method used for Authenticating User based with username and OTP
+	 * 
+	 * @param userOtp
+	 *            is of type {@link UserOtp}
+	 * 
+	 * @return authNResponseDto is of type {@link AuthNResponseDto}
+	 * 
+	 * @throws Exception
+	 * 
+	 */
 
 	@Override
 	public AuthNResponseDto authenticateUserWithOtp(UserOtp userOtp) throws Exception {
@@ -99,8 +145,22 @@ public class AuthServiceImpl implements AuthService {
 		MosipUserDtoToken mosipToken = oTPService.validateOTP(mosipUser, userOtp.getOtp());
 		authNResponseDto.setMessage(AuthConstant.OTP_VALIDATION_MESSAGE);
 		authNResponseDto.setToken(mosipToken.getToken());
+		authNResponseDto.setRefreshToken(mosipToken.getRefreshToken());
+		authNResponseDto.setUserId(mosipToken.getMosipUserDto().getUserName());
 		return authNResponseDto;
 	}
+
+	/**
+	 * Method used for Authenticating User based with secretkey and password
+	 * 
+	 * @param clientSecret
+	 *            is of type {@link ClientSecret}
+	 * 
+	 * @return authNResponseDto is of type {@link AuthNResponseDto}
+	 * 
+	 * @throws Exception
+	 * 
+	 */
 
 	@Override
 	public AuthNResponseDto authenticateWithSecretKey(ClientSecret clientSecret) throws Exception {
@@ -119,27 +179,56 @@ public class AuthServiceImpl implements AuthService {
 		return authNResponseDto;
 	}
 
+	/**
+	 * Method used for generating refresh token
+	 * 
+	 * @param token
+	 * 
+	 * @return mosipUserDtoToken is of type {@link MosipUserDtoToken}
+	 * 
+	 * @throws Exception
+	 * 
+	 */
+
 	@Override
-	public MosipUserDtoToken retryToken(String existingToken) {
+	public MosipUserDtoToken retryToken(String existingToken) throws Exception{
 		MosipUserDtoToken mosipUserDtoToken = null;
 		boolean checkRefreshToken = false;
 		AuthToken accessToken = customTokenServices.getTokenDetails(existingToken);
+		if(accessToken!=null)
+		{
 		if (accessToken.getRefreshToken() != null) {
 			checkRefreshToken = tokenValidator.validateExpiry(accessToken.getRefreshToken());
 		}
 		if (checkRefreshToken) {
-			TimeToken newAccessToken = tokenGenerator.generateNewToken(existingToken);
+			TimeToken newAccessToken = tokenGenerator.generateNewToken(accessToken.getRefreshToken());
 			AuthToken updatedAccessToken = customTokenServices.getUpdatedAccessToken(accessToken.getUserId(),
 					newAccessToken, accessToken.getUserId());
 			mosipUserDtoToken = tokenValidator.validateToken(updatedAccessToken.getAccessToken());
 		} else {
 			throw new RuntimeException("Refresh Token Expired");
 		}
+		}
+		else
+		{
+			throw new RuntimeException("Token doesn't exist");
+		}
 		return mosipUserDtoToken;
 	}
 
+	/**
+	 * Method used for invalidate token
+	 * 
+	 * @param token
+	 * 
+	 * @return authNResponse is of type {@link AuthNResponse}
+	 * 
+	 * @throws Exception
+	 * 
+	 */
+
 	@Override
-	public AuthNResponse invalidateToken(String token) {
+	public AuthNResponse invalidateToken(String token) throws Exception{
 		AuthNResponse authNResponse = null;
 		customTokenServices.revokeToken(token);
 		authNResponse = new AuthNResponse();

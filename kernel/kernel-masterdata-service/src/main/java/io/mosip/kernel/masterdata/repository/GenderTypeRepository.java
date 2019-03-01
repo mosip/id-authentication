@@ -22,6 +22,14 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 @Repository
 public interface GenderTypeRepository extends BaseRepository<Gender, CodeAndLanguageCodeID> {
 
+	/**
+	 * Get all Gender based on isActive true and isDeleted as false or null
+	 * 
+	 * @return list of gender
+	 */
+	@Query("FROM Gender WHERE isActive=true AND (isDeleted=false OR isDeleted is null)")
+	List<Gender> findAllByIsActiveAndIsDeleted();
+	
 	@Query("FROM Gender WHERE langCode =?1 and (isDeleted is null or isDeleted =false)")
 	List<Gender> findGenderByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
 
@@ -72,6 +80,6 @@ public interface GenderTypeRepository extends BaseRepository<Gender, CodeAndLang
 	 *            gender name eg: male or female
 	 * @return boolean
 	 */
-	@Query(value="select EXISTS(select * from master.gender g where LOWER(g.name)=LOWER(?1) and (g.is_deleted is null or g.is_deleted =false))" , nativeQuery = true)
+	@Query(value="select EXISTS(select * from master.gender g where LOWER(g.name)=LOWER(?1) and (g.is_deleted is null or g.is_deleted =false) and g.is_active=true)" , nativeQuery = true)
 	boolean isGenderNamePresent(String genderName);
 }

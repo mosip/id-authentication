@@ -38,9 +38,11 @@ public class RegistrationCenterMachineDeviceHistory extends BaseEntity implement
 	@EmbeddedId
 	@AttributeOverrides({ @AttributeOverride(name = "regCenterId", column = @Column(name = "regcntr_id")),
 			@AttributeOverride(name = "machineId", column = @Column(name = "machine_id")),
-			@AttributeOverride(name = "deviceId", column = @Column(name = "device_id")), 
-	         @AttributeOverride(name="effectivetimes",column=@Column(name="eff_dtimes")) })
+			@AttributeOverride(name = "deviceId", column = @Column(name = "device_id")),
+			@AttributeOverride(name = "effectivetimes", column = @Column(name = "eff_dtimes")) })
 	private RegistrationCenterMachineDeviceHistoryID registrationCenterMachineDeviceHistoryPk;
 
-	
+	@Column(name = "lang_code", nullable = false, length = 3)
+	private String langCode;
+
 }

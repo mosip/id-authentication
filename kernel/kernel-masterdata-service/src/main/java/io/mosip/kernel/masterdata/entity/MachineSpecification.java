@@ -2,15 +2,19 @@ package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,6 +33,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "machine_spec", schema = "master")
+@IdClass(IdAndLanguageCodeID.class)
 public class MachineSpecification extends BaseEntity implements Serializable {
 
 	/**
@@ -36,12 +41,11 @@ public class MachineSpecification extends BaseEntity implements Serializable {
 	*/
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Field for machine Specification id
-	 */
 	@Id
-	@Column(name = "id", nullable = false, length = 36)
+	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 	private String id;
+	private String langCode;
 
 	/**
 	 * Field for machine Specification name
@@ -78,12 +82,6 @@ public class MachineSpecification extends BaseEntity implements Serializable {
 	 */
 	@Column(name = "descr", length = 256)
 	private String description;
-
-	/**
-	 * Field for machine Specification langCode
-	 */
-	@Column(name = "lang_code", nullable = false, length = 3)
-	private String langCode;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({

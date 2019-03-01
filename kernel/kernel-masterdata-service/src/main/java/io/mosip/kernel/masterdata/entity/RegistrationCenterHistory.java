@@ -39,12 +39,12 @@ public class RegistrationCenterHistory extends BaseEntity implements Serializabl
 	private static final long serialVersionUID = -8541947587557590379L;
 
 	@Id
-	@AttributeOverrides({
-			@AttributeOverride(name = "id", column = @Column(name = "id", nullable = false,length = 36)),
-			@AttributeOverride(name = "effectivetimes", column = @Column(name = "eff_dtimes", nullable = false))})
-	
+	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
+			@AttributeOverride(name = "effectivetimes", column = @Column(name = "eff_dtimes", nullable = false)),
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
+
 	private String id;
-	
+	private String langCode;
 	private LocalDateTime effectivetimes;
 
 	@Column(name = "name", nullable = false, length = 128)
@@ -92,9 +92,6 @@ public class RegistrationCenterHistory extends BaseEntity implements Serializabl
 	@Column(name = "center_end_time")
 	private LocalTime centerEndTime;
 
-	@Column(name = "lang_code", nullable = false, length = 3)
-	private String languageCode;
-
 	@Column(name = "time_zone", length = 64)
 	private String timeZone;
 
@@ -107,11 +104,10 @@ public class RegistrationCenterHistory extends BaseEntity implements Serializabl
 	@Column(name = "lunch_end_time")
 	private LocalTime lunchEndTime;
 
-	
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumns({
 			@JoinColumn(name = "location_code", referencedColumnName = "code", insertable = false, updatable = false),
 			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false), })
 	private Location location;
-	
+
 }

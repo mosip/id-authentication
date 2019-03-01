@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,11 +47,17 @@ import io.mosip.kernel.syncdata.entity.ReasonCategory;
 import io.mosip.kernel.syncdata.entity.ReasonList;
 import io.mosip.kernel.syncdata.entity.RegistrationCenter;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterDevice;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterDeviceHistory;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterDeviceHistoryPk;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterMachineDevice;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterMachineDeviceHistory;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterMachineHistory;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterType;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUser;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterUserHistory;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUserMachine;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterUserMachineHistory;
 import io.mosip.kernel.syncdata.entity.Template;
 import io.mosip.kernel.syncdata.entity.TemplateFileFormat;
 import io.mosip.kernel.syncdata.entity.TemplateType;
@@ -58,8 +66,11 @@ import io.mosip.kernel.syncdata.entity.ValidDocument;
 import io.mosip.kernel.syncdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterDeviceID;
+import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineDeviceHistoryID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineDeviceID;
+import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineHistoryID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineID;
+import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineUserID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterUserID;
 import io.mosip.kernel.syncdata.repository.ApplicationRepository;
 import io.mosip.kernel.syncdata.repository.BiometricAttributeRepository;
@@ -80,11 +91,16 @@ import io.mosip.kernel.syncdata.repository.MachineSpecificationRepository;
 import io.mosip.kernel.syncdata.repository.MachineTypeRepository;
 import io.mosip.kernel.syncdata.repository.ReasonCategoryRepository;
 import io.mosip.kernel.syncdata.repository.ReasonListRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterDeviceHistoryRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterDeviceRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterMachineDeviceHistoryRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterMachineDeviceRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterMachineHistoryRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterMachineRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterTypeRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterUserHistoryRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterUserMachineHistoryRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserMachineRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserRepository;
 import io.mosip.kernel.syncdata.repository.TemplateFileFormatRepository;
@@ -135,6 +151,11 @@ public class SyncDataIntegrationTest {
 	private List<RegistrationCenterMachineDevice> registrationCenterMachineDevices;
 	private List<RegistrationCenterUserMachine> registrationCenterUserMachines;
 	private List<RegistrationCenterUser> registrationCenterUsers;
+	private List<RegistrationCenterMachineHistory> registrationCenterMachineHistory;
+	private List<RegistrationCenterDeviceHistory> registrationCenterDeviceHistory; 
+	private List<RegistrationCenterUserHistory> registrationCenterUserHistory;
+	private List<RegistrationCenterMachineDeviceHistory> registrationCenterMachineDeviceHistory;
+	private List<RegistrationCenterUserMachineHistory>  registrationCenterUserMachineHistory;
 
 	@MockBean
 	private ApplicationRepository applicationRepository;
@@ -196,6 +217,16 @@ public class SyncDataIntegrationTest {
 	private RegistrationCenterMachineDeviceRepository registrationCenterMachineDeviceRepository;
 	@MockBean
 	private RegistrationCenterUserMachineRepository registrationCenterUserMachineRepository;
+	@MockBean
+	private RegistrationCenterUserHistoryRepository registrationCenterUserHistoryRepository;
+	@MockBean
+	private RegistrationCenterUserMachineHistoryRepository registrationCenterUserMachineHistoryRepository;
+	@MockBean
+	private RegistrationCenterMachineDeviceHistoryRepository registrationCenterMachineDeviceHistoryRepository;
+	@MockBean
+	private RegistrationCenterDeviceHistoryRepository registrationCenterDeviceHistoryRepository;
+	@MockBean
+	private RegistrationCenterMachineHistoryRepository registrationCenterMachineHistoryRepository;
 
 	/*
 	 * @MockBean private RestTemplate restTemplateM;
@@ -237,8 +268,18 @@ public class SyncDataIntegrationTest {
 		machineType = new ArrayList<>();
 		machineType.add(new MachineType("1001", "ENG", "System", "System"));
 		devices = new ArrayList<>();
-		devices.add(new Device("1011", "printer", "123", "127.0.0.122", "213:21:132:312", "1011", "ENG", localdateTime,
-				true, "moisp", localdateTime, null, null, null, null));
+		Device device = new Device();
+		device.setId("1000");
+		device.setName("Printer");
+		device.setLangCode("eng");
+		device.setIsActive(true);
+		device.setMacAddress("127.0.0.0");
+		device.setIpAddress("127.0.0.10");
+		device.setSerialNum("234");
+		device.setDeviceSpecId("234");
+		device.setValidityDateTime(localdateTime);
+		devices.add(device);
+		
 		deviceSpecification = new ArrayList<>();
 		deviceSpecification.add(new DeviceSpecification("1011", "SP-1011", "HP", "E1011", "T1011", "1.0", "HP-SP1011",
 				"Hp Printer", null));
@@ -257,24 +298,52 @@ public class SyncDataIntegrationTest {
 		registrationCenter.setContactPhone("9865123456");
 		registrationCenter.setHolidayLocationCode("LOC01");
 		registrationCenter.setIsActive(true);
-		registrationCenter.setLanguageCode("ENG");
+		registrationCenter.setLangCode("ENG");
 		registrationCenter.setWorkingHours("9");
 		registrationCenter.setLunchEndTime(localTime);
 		registrationCenter.setLunchStartTime(localTime);
 		registrationCenters.add(registrationCenter);
 
 		registrationCenterType = new ArrayList<>();
-		registrationCenterType.add(new RegistrationCenterType("T1011", "ENG", "Main", "Main"));
+		RegistrationCenterType regCenterType = new RegistrationCenterType();
+		regCenterType.setCode("T01");
+		registrationCenterType.add(regCenterType);
+		
 		templates = new ArrayList<>();
-		templates.add(new Template("T1", "ENG", "Email-Template", "Email-Template", "F101", "m", "text", "M101",
-				"ModuleName", "T101"));
+		Template template = new Template();
+		template.setId("T222");
+		template.setLangCode("eng");
+		template.setName("Email template");
+		template.setTemplateTypeCode("EMAIL");
+		template.setFileFormatCode("XML");
+		template.setModuleId("preregistation");
+		template.setIsActive(Boolean.TRUE);
+		templates.add(template);
 		templateFileFormats = new ArrayList<>();
 		templateFileFormats.add(new TemplateFileFormat("T101", "ENG", "Email"));
 		templateTypes = new ArrayList<>();
 		templateTypes.add(new TemplateType("T101", "ENG", "Description"));
 		holidays = new ArrayList<>();
-		holidays.add(new Holiday(new HolidayID(1, "LOC01", LocalDate.parse("2019-01-01"), "ENG"), "New Year",
-				"description"));
+		Holiday holiday = new Holiday();
+		LocalDate date = LocalDate.of(2018, Month.NOVEMBER, 7);
+		holiday = new Holiday();
+		holiday.setHolidayId(new HolidayID("KAR", date, "eng", "Diwali"));
+		holiday.setId(1);
+		holiday.setCreatedBy("John");
+		holiday.setCreatedDateTime(localdateTime);
+		holiday.setHolidayDesc("Diwali");
+		holiday.setIsActive(true);
+
+		Holiday holiday2 = new Holiday();
+		holiday2.setHolidayId(new HolidayID("KAH", date , "eng", "Durga Puja"));
+		holiday2.setId(1);
+		holiday2.setCreatedBy("John");
+		holiday2.setCreatedDateTime(localdateTime);
+		holiday2.setHolidayDesc("Diwali");
+		holiday2.setIsActive(true);
+
+		holidays.add(holiday);
+		holidays.add(holiday2);
 		blackListedWords = new ArrayList<>();
 		blackListedWords.add(new BlacklistedWords("ABC", "ENG", "description"));
 		titles = new ArrayList<>();
@@ -300,26 +369,92 @@ public class SyncDataIntegrationTest {
 		reasonLists = new ArrayList<>();
 		reasonLists.add(new ReasonList("RL101", "RL1", "ENG", "RL", "description", null));
 		locations = new ArrayList<>();
-		locations.add(new Location("LOC01", "ENG", "Location", 1, "1", "1"));
+		Location locationHierarchy = new Location();
+		locationHierarchy.setCode("PAT");
+		locationHierarchy.setName("PATANA");
+		locationHierarchy.setHierarchyLevel(2);
+		locationHierarchy.setHierarchyName("Distic");
+		locationHierarchy.setParentLocCode("BHR");
+		locationHierarchy.setLangCode("ENG");
+		locationHierarchy.setCreatedBy("admin");
+		locationHierarchy.setUpdatedBy("admin");
+		locationHierarchy.setIsActive(true);
+		locations.add(locationHierarchy);
 		registrationCenterMachines = new ArrayList<>();
-		registrationCenterMachines.add(new RegistrationCenterMachine(new RegistrationCenterMachineID("01010", "111")));
+		RegistrationCenterMachineID rmId = new RegistrationCenterMachineID();
+		rmId.setMachineId("10001");
+		rmId.setRegCenterId("10001");
+		RegistrationCenterMachine registrationCenterMachine= new RegistrationCenterMachine();
+		registrationCenterMachine.setRegistrationCenterMachinePk(rmId);
+		registrationCenterMachine.setIsActive(true);
+		registrationCenterMachine.setLangCode("eng");
+		registrationCenterMachine.setCreatedBy("admin");
+		registrationCenterMachine.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		registrationCenterMachine.setIsDeleted(false);
+		registrationCenterMachines.add(registrationCenterMachine);
 		registrationCenterDevices = new ArrayList<>();
-		registrationCenterDevices.add(new RegistrationCenterDevice(new RegistrationCenterDeviceID("01010", "string")));
+		RegistrationCenterDevice registrationCenterDevice = new RegistrationCenterDevice();
+		RegistrationCenterDeviceID rcId = new RegistrationCenterDeviceID();
+		rcId.setDeviceId("10001");
+		rcId.setRegCenterId("10001");
+		registrationCenterDevice.setRegistrationCenterDevicePk(rcId);
+		registrationCenterDevice.setIsActive(true);
+		registrationCenterDevice.setLangCode("eng");
+		registrationCenterDevice.setCreatedBy("admin");
+		registrationCenterDevice.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		registrationCenterDevice.setIsDeleted(false);
+		registrationCenterDevices.add(registrationCenterDevice);
+		RegistrationCenterMachineDevice registrationCenterMachineDevice = new RegistrationCenterMachineDevice();
+		RegistrationCenterMachineDeviceID rcmdId = new RegistrationCenterMachineDeviceID();
+		rcmdId.setDeviceId("101");
+		rcmdId.setMachineId("1789");
+		rcmdId.setRegCenterId("1");
+		registrationCenterMachineDevice.setRegistrationCenterMachineDevicePk(rcmdId);
+		registrationCenterMachineDevice.setIsActive(true);
+		registrationCenterMachineDevice.setLangCode("eng");
+		registrationCenterMachineDevice.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		registrationCenterMachineDevice.setCreatedBy("admin");
+
 		registrationCenterMachineDevices = new ArrayList<>();
-		registrationCenterMachineDevices.add(
-				new RegistrationCenterMachineDevice(new RegistrationCenterMachineDeviceID("01010", "111", "1000")));
+		registrationCenterMachineDevices.add(registrationCenterMachineDevice);
+		RegistrationCenterUserMachine registrationCenterUserMachine = new RegistrationCenterUserMachine();
+		RegistrationCenterMachineUserID registrationCenterMachineUserID = new RegistrationCenterMachineUserID();
+		registrationCenterMachineUserID.setCntrId("REG001");
+		registrationCenterMachineUserID.setUsrId("QC001");
+		registrationCenterMachineUserID.setMachineId("MAC001");
+		registrationCenterUserMachine.setLangCode("eng");
+		registrationCenterUserMachine.setRegistrationCenterMachineUserID(registrationCenterMachineUserID);
 		registrationCenterUserMachines = new ArrayList<>();
 		registrationCenterUserMachines
-				.add(new RegistrationCenterUserMachine("01010", "qc001", "111", null, null, null));
+				.add(registrationCenterUserMachine);
 		registrationCenterUsers = new ArrayList<>();
-		registrationCenterUsers.add(new RegistrationCenterUser(new RegistrationCenterUserID("01010", "qc001")));
+		registrationCenterUsers.add(new RegistrationCenterUser(new RegistrationCenterUserID("01010", "qc001"),"eng"));
 
 		builder = new StringBuilder();
 		builder.append(authBaseUri).append(authAllRolesUri);
+		
+		registrationCenterDeviceHistory=new ArrayList<>();
+		registrationCenterDeviceHistory.add(new RegistrationCenterDeviceHistory(new RegistrationCenterDeviceHistoryPk("1001", "1001", LocalDateTime.now()), "eng"));
+		
+		registrationCenterMachineDeviceHistory=new ArrayList<>();
+		registrationCenterMachineDeviceHistory.add(new RegistrationCenterMachineDeviceHistory(new RegistrationCenterMachineDeviceHistoryID("1001", "1001", "1001", LocalDateTime.now()) , "eng"));
+		
+		registrationCenterMachineHistory=new ArrayList<>();
+		registrationCenterMachineHistory.add(new RegistrationCenterMachineHistory(new RegistrationCenterMachineHistoryID("1001", "1001", LocalDateTime.now()), "eng"));
+		
+		registrationCenterUserHistory= new ArrayList<>();
+		registrationCenterUserHistory.add(new RegistrationCenterUserHistory("1001","1001",LocalDateTime.now(),"eng"));
+		
+		registrationCenterUserMachineHistory=new ArrayList<>();
+		registrationCenterUserMachineHistory.add(new RegistrationCenterUserMachineHistory("10001","1001","10001",LocalDateTime.now(),"eng"));
+		
+		
 
 	}
 
 	private void mockSuccess() {
+		
+		when(machineRepository.findByMachineIdAndIsActive(Mockito.anyString())).thenReturn(machines);
 		when(applicationRepository.findAll()).thenReturn(applications);
 		when(applicationRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
 				.thenReturn(applications);
@@ -395,7 +530,7 @@ public class SyncDataIntegrationTest {
 		when(locationRepository.findAll()).thenReturn(locations);
 		when(registrationCenterMachineRepository.findAllByMachineId(Mockito.any()))
 				.thenReturn(registrationCenterMachines);
-		when(registrationCenterMachineRepository.findAllLatestByMachineIdCreatedUpdatedDeleted(Mockito.any(),
+		when(registrationCenterMachineRepository.findAllLatestCreatedUpdatedDeleted(Mockito.any(),
 				Mockito.any(), Mockito.any())).thenReturn(registrationCenterMachines);
 		when(registrationCenterDeviceRepository.findAllByRegistrationCenter(Mockito.any()))
 				.thenReturn(registrationCenterDevices);
@@ -413,6 +548,12 @@ public class SyncDataIntegrationTest {
 				.thenReturn(registrationCenterUsers);
 		when(registrationCenterUserRepository.findAllByRegistrationCenterIdCreatedUpdatedDeleted(Mockito.any(),
 				Mockito.any(), Mockito.any())).thenReturn(registrationCenterUsers);
+	   when(registrationCenterUserHistoryRepository.findLatestRegistrationCenterUserHistory(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(registrationCenterUserHistory);
+	   when(registrationCenterUserMachineHistoryRepository.findLatestRegistrationCenterUserMachineHistory(Mockito.anyString(),Mockito.any(),Mockito.any())).thenReturn(registrationCenterUserMachineHistory);
+	   when(registrationCenterDeviceHistoryRepository.findLatestRegistrationCenterDeviceHistory(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(registrationCenterDeviceHistory);
+	   when(registrationCenterMachineHistoryRepository.findLatestRegistrationCenterMachineHistory(Mockito.anyString(),Mockito.any(),Mockito.any())).thenReturn(registrationCenterMachineHistory);
+	   when(registrationCenterMachineDeviceHistoryRepository.findLatestRegistrationCenterMachineDeviceHistory(Mockito.anyString(),Mockito.any(),Mockito.any())).thenReturn(registrationCenterMachineDeviceHistory);
+		
 	}
 
 	@Test
@@ -706,7 +847,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataRegistrationCenterMachineFetchException() throws Exception {
 		mockSuccess();
-		when(registrationCenterMachineRepository.findAllLatestByMachineIdCreatedUpdatedDeleted(Mockito.anyString(),
+		when(registrationCenterMachineRepository.findAllLatestCreatedUpdatedDeleted(Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
@@ -749,6 +890,51 @@ public class SyncDataIntegrationTest {
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
+	
+	@Test
+	public void syncMasterDataRegistrationCenterUserHistoryFetchException() throws Exception {
+		mockSuccess();
+		when(registrationCenterUserHistoryRepository.findLatestRegistrationCenterUserHistory(Mockito.anyString(),
+				Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+				.andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	public void syncMasterDataRegistrationCenterUserMachineHistoryFetchException() throws Exception {
+		mockSuccess();
+		when(registrationCenterUserMachineHistoryRepository.findLatestRegistrationCenterUserMachineHistory(Mockito.anyString(),Mockito.any(),Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+				.andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	public void syncMasterDataRegistrationCenterMachineHistoryFetchException() throws Exception {
+		mockSuccess();
+		when(registrationCenterMachineHistoryRepository.findLatestRegistrationCenterMachineHistory(Mockito.anyString(),Mockito.any(),Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+				.andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	public void syncMasterDataRegistrationCenterDeviceHistoryFetchException() throws Exception {
+		mockSuccess();
+		when(registrationCenterDeviceHistoryRepository.findLatestRegistrationCenterDeviceHistory(Mockito.anyString(), Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+				.andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	public void syncMasterDataRegistrationCenterMachineDeviceHistoryFetchException() throws Exception {
+		mockSuccess();
+		when(registrationCenterMachineDeviceHistoryRepository.findLatestRegistrationCenterMachineDeviceHistory(Mockito.anyString(),Mockito.any(),Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+				.andExpect(status().isInternalServerError());
+	}
 
 	@Test
 	public void getRegistrationCenterUserMasterDataNotFoundExcepetion() throws Exception {
@@ -756,6 +942,22 @@ public class SyncDataIntegrationTest {
 				.thenReturn(new ArrayList<RegistrationCenterUser>());
 
 		mockMvc.perform(get("/v1.0/registrationcenteruser/1")).andExpect(status().isNotFound());
+	}
+	
+	@Test
+	public void IsMachineIdPresentServiceExceptionTest() throws Exception {
+		when(machineRepository.findByMachineIdAndIsActive(Mockito.anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
+
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001")).andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	public void IsMachineIdPresentDataNotFoundTest() throws Exception {
+		when(machineRepository.findByMachineIdAndIsActive(Mockito.anyString()))
+				.thenReturn(new ArrayList<Machine>());
+
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001")).andExpect(status().isOk());
 	}
 
 }

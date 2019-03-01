@@ -63,7 +63,7 @@ public class ManualVerificationRequestValidator{
 		id.put("manual", serviceId);
 		validateId(obj.getString("id"));
 		validateVersion(obj.getString("version"));
-		validateReqTime(obj.getString("timestamp"));
+		validateReqTime(obj.getString("requesttime"));
 	}
 
 

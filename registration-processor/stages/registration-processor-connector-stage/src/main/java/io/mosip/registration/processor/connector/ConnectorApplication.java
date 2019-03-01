@@ -13,7 +13,7 @@ public class ConnectorApplication
 {
 	
     /**
-     * the main method
+     * the main method to execute connector stage
      * @param args
      */
     public static void main( String[] args ) 
@@ -23,7 +23,7 @@ public class ConnectorApplication
 				  "io.mosip.registration.processor.connector.config",
 				  "io.mosip.registration.processor.connector.stage");
 		configApplicationContext.refresh();
-		ConnectorStage connectorStage = (ConnectorStage) configApplicationContext.getBean("connectorStage");
+		ConnectorStage connectorStage = (ConnectorStage) configApplicationContext.getBean(ConnectorStage.class);
 		connectorStage.deployVerticle();
     }
 }

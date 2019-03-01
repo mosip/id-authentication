@@ -47,7 +47,6 @@ public class RegistrationCenterHistoryDto {
 	private String longitude;
 
 	@NotBlank
-	@ValidLangCode
 	@Size(min = 1, max = 36)
 	private String locationCode;
 
@@ -60,9 +59,10 @@ public class RegistrationCenterHistoryDto {
 	@Size(min = 1, max = 32)
 	private String workingHours;
 
+	@ValidLangCode
 	@NotBlank
 	@Size(min = 1, max = 3)
-	private String languageCode;
+	private String langCode;
 
 	private Short numberOfKiosks;
 

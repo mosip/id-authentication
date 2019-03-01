@@ -34,10 +34,10 @@ public interface MachineHistoryService {
 	 * Abstract method to save Machine History to the Database
 	 * 
 	 * @param entityHistory
-	 *            machine History entity 
+	 *            machine History entity
 	 * 
-	 * @return IdResponseDto returning machine History id which is inserted successfully
-	 *         {@link IdResponseDto}
+	 * @return IdResponseDto returning machine History id which is inserted
+	 *         successfully {@link IdResponseDto}
 	 * 
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while saving Machine History

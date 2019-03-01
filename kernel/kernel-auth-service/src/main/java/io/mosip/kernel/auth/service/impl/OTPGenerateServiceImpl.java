@@ -37,8 +37,8 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 			OtpGenerateResponseDto otpGenerateResponseDto = restTemplate.postForObject(url, otpGenerateRequestDto,
 					OtpGenerateResponseDto.class);
 			return otpGenerateResponseDto;
-		} catch (Exception err) {
-			throw new RuntimeException(err);
+		} catch (Exception exp) {
+			throw new RuntimeException(exp);
 		}
 	}
 

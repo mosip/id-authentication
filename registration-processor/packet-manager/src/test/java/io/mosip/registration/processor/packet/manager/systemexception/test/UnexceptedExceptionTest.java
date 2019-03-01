@@ -33,11 +33,12 @@ public class UnexceptedExceptionTest {
 	@Test
 	public void TestUnexceptedException() throws IOException {
 		String fileName = "sample";
-		UnexpectedException ex = new UnexpectedException(PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getMessage());
-		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
+		UnexpectedException ex = new UnexpectedException(
+				PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getMessage());
+		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
 
 		try {
-			fileManager.put(fileName, file, DirectoryPathDto.LANDING_ZONE);
+			fileManager.put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
 			fail();
 		} catch (UnexpectedException e) {
 			assertThat("Should throw  Unexpected Exception  with correct error codes",

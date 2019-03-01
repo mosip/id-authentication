@@ -27,7 +27,4 @@ public class RegistrationCenterDeviceDto extends BaseDto{
 	@Size(min = 1, max = 36)
 	private String deviceId;
 
-	@NotNull
-	private Boolean isActive;
-
 }
