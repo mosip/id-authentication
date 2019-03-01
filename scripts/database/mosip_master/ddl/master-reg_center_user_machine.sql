@@ -2,7 +2,7 @@
 -- schema 		: master  					- Master Reference schema
 -- table 		: reg_center_user_machine	- MOSIP Registration center, User and Machine mapping
 -- table alias  : cntrmusr	
-
+ 
 -- schemas section -------------------------------------------------
 
 -- create schema if master reference schema not exists
@@ -15,6 +15,8 @@ create table master.reg_center_user_machine (
 	regcntr_id  character varying (10) not null,	-- master.registration_center.id
 	usr_id  	character varying (36) not null,	-- master.user_detail.id
 	machine_id  character varying (10) not null,	-- master.machine_master.id
+	
+	lang_code 	character varying (3) not null ,	-- master.language.code	
 	
 	is_active 	boolean not null,
 	cr_by 		character varying (32) not null,

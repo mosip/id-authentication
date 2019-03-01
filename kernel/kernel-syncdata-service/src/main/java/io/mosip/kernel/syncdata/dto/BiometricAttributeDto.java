@@ -50,18 +50,7 @@ public class BiometricAttributeDto extends BaseDto {
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "Biometric Type code", required = true, dataType = "java.lang.String")
 	private String biometricTypeCode;
-	/**
-	 * Field for language code
-	 */
-	@NotNull
-	@Size(min = 1, max = 3)
-	@ApiModelProperty(value = "Language Code", required = true, dataType = "java.lang.String")
-	private String langCode;
-	/**
-	 * Field for the status of data.
-	 */
-	@NotNull
-	@ApiModelProperty(value = "BiometricAttribute isActive status", required = true, dataType = "java.lang.Boolean")
-	private Boolean isActive;
+	
+	
 
 }

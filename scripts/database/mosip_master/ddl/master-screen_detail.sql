@@ -31,14 +31,9 @@ create table master.screen_detail (
 ;
 
 -- keys section -------------------------------------------------
- alter table master.screen_detail add constraint pk_scrdtl_id primary key (id)
+ alter table master.screen_detail add constraint pk_scrdtl_id primary key (id, lang_code)
  ;
 
 -- indexes section -------------------------------------------------
 -- create index idx_scrdtl_name on master.screen_detail (name)
 -- ;
-
--- comments section ------------------------------------------------- 
-comment on table master.screen_detail is 'List of MOSIP Applications Screen and details'
-;
-

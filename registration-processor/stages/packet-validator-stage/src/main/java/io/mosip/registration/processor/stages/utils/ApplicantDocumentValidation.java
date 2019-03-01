@@ -4,8 +4,9 @@ import java.util.List;
 
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
-import io.mosip.registration.processor.core.packet.dto.Document;
+
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.stages.packet.validator.code.DocumentCategory;
 import io.mosip.registration.processor.status.code.ApplicantType;
@@ -107,7 +108,7 @@ public class ApplicantDocumentValidation {
 			if (doc.getDocumentCategory().equalsIgnoreCase(category)) {
 				String documentname = doc.getDocumentName();
 
-				List<String> hashSequence = identityIterator.getHashSequence(identity.getHashSequence(),
+				List<String> hashSequence = identityIterator.getHashSequence(identity.getHashSequence1(),
 						PacketFiles.APPLICANTDEMOGRAPHICSEQUENCE.name());
 				if (hashSequence != null && hashSequence.contains(documentname))
 					return true;

@@ -122,21 +122,21 @@ public class SyncDataControllerTest {
 	public void syncMasterDataSetup() {
 		masterDataResponseDto = new MasterDataResponseDto();
 		List<ApplicationDto> applications = new ArrayList<>();
-		applications.add(new ApplicationDto("01", "REG FORM", "REG Form", "ENG", true));
+		applications.add(new ApplicationDto("01", "REG FORM", "REG Form"));
 		masterDataResponseDto.setApplications(applications);
 		List<HolidayDto> holidays = new ArrayList<>();
-		holidays.add(new HolidayDto("1", "2018-01-01", "01", "01", "2018", "NEW YEAR", "ENG", "LOC01", true));
+		holidays.add(new HolidayDto("1", "2018-01-01", "01", "01", "2018", "NEW YEAR", "LOC01"));
 		masterDataResponseDto.setHolidays(holidays);
 		List<MachineDto> machines = new ArrayList<>();
-		machines.add(new MachineDto("1001", "Laptop", "QWE23456", "1223:23:31:23", "172.12.128.1", "1", "ENG", true,
+		machines.add(new MachineDto("1001", "Laptop", "QWE23456", "1223:23:31:23", "172.12.128.1", "1",
 				LocalDateTime.parse("2018-01-01T01:01:01")));
 		masterDataResponseDto.setMachineDetails(machines);
 		List<MachineSpecificationDto> machineSpecifications = new ArrayList<>();
 		machineSpecifications.add(new MachineSpecificationDto("1", "lenovo Thinkpad", "Lenovo", "T480", "1", "1.0.1",
-				"Thinkpad", "ENG", true));
+				"Thinkpad"));
 		masterDataResponseDto.setMachineSpecification(machineSpecifications);
 		List<MachineTypeDto> machineTypes = new ArrayList<>();
-		machineTypes.add(new MachineTypeDto("1", "ENG", "Laptop", "Laptop", true));
+		machineTypes.add(new MachineTypeDto("1", "ENG", "Laptop"));
 		masterDataResponseDto.setMachineType(machineTypes);
 	}
 

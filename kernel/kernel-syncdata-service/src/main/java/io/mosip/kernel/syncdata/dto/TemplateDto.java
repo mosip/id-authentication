@@ -35,7 +35,4 @@ public class TemplateDto extends BaseDto{
 
 	private String templateTypeCode;
 
-	private String langCode;
-	
-	private Boolean isActive;
 }
