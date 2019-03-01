@@ -35,7 +35,6 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.core.dto.indauth.AdditionalFactorsDTO;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
@@ -91,7 +90,7 @@ public class AuthRequestValidatorTest {
 
 	@InjectMocks
 	IdInfoHelper idinfoHelper;
-	
+
 	@Mock
 	private MasterDataManager masterDataManager;
 
@@ -118,12 +117,12 @@ public class AuthRequestValidatorTest {
 	@Test
 	public void testValidUin() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		
+
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		 authRequestDTO.setVersion("1.1");
+		authRequestDTO.setVersion("1.1");
 		authRequestDTO.setPartnerID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setDemo(true);
@@ -159,7 +158,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		 authRequestDTO.setVersion("1.1");
+		authRequestDTO.setVersion("1.1");
 		authRequestDTO.setPartnerID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setDemo(true);
@@ -192,7 +191,8 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		 authRequestDTO.setVersion("1.1");
+		authRequestDTO.setVersion("1.1");
+		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setPartnerID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setDemo(true);
@@ -207,7 +207,7 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
-		idDTO.setUin("234567890123");
+		idDTO.setVid("234567890123");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
@@ -225,7 +225,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		 authRequestDTO.setVersion("1.1");
+		authRequestDTO.setVersion("1.1");
 		authRequestDTO.setPartnerID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setDemo(true);
@@ -293,18 +293,17 @@ public class AuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestDTO.setRequestTime(Instant.now().toString());
-		 authRequestDTO.setVersion("1.12");
+		authRequestDTO.setVersion("1.12");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
 
-	
 	@Test
 	public void testInvalidTxnId() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestDTO.setRequestTime(Instant.now().toString());
-		 authRequestDTO.setVersion("1.1");
+		authRequestDTO.setVersion("1.1");
 		authRequestDTO.setTransactionID("");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
@@ -318,7 +317,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		 authRequestDTO.setVersion("1.1");
+		authRequestDTO.setVersion("1.1");
 		authRequestDTO.setPartnerID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setDemo(true);
@@ -342,7 +341,6 @@ public class AuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
-	
 	@Test
 	public void testInValidRequest() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -352,7 +350,8 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		 authRequestDTO.setVersion("1.1");
+		authRequestDTO.setVersion("1.1");
+		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setPartnerID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setDemo(true);
@@ -367,19 +366,20 @@ public class AuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
-		idDTO.setVid("234567890123");
+		idDTO.setUin("234567890123");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		authRequestValidator.validate(authRequestDTO, errors);
+		System.err.println(errors);
 		assertTrue(errors.hasErrors());
 	}
 
 	@Test
 	public void testValidRequest() throws IdAuthenticationBusinessException {
 		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(fetchGenderType());
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(Boolean.TRUE);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
@@ -432,12 +432,13 @@ public class AuthRequestValidatorTest {
 		idDTO.setDobType(idInfoList2);
 		idDTO.setGender(idInfoList4);
 		idDTO.setAge(idInfoList3);
-		idDTO.setUin("5371843613598206");
+		idDTO.setUin("5134256294");
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		authRequestValidator.validate(authRequestDTO, errors);
+		System.err.println(errors);
 		assertFalse(errors.hasErrors());
 	}
 
@@ -921,16 +922,17 @@ public class AuthRequestValidatorTest {
 		idDTO.setAge(idInfoList3);
 		idDTO.setUin("5371843613598206");
 		RequestDTO reqDTO = new RequestDTO();
-		String pin="123456";
+		String pin = "123456";
 		authTypeDTO.setOtp(true);
-		AdditionalFactorsDTO additionalFactors=new AdditionalFactorsDTO();
+		AdditionalFactorsDTO additionalFactors = new AdditionalFactorsDTO();
 		additionalFactors.setTotp(pin);
 		reqDTO.setAdditionalFactors(additionalFactors);
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertFalse(errors.hasErrors());
+		System.err.println(errors);
+		assertTrue(errors.hasErrors());
 	}
 
 	@Test
@@ -994,10 +996,10 @@ public class AuthRequestValidatorTest {
 		idDTO.setAge(idInfoList3);
 		idDTO.setUin("5371843613598206");
 		authTypeDTO.setOtp(true);
-		String pin="123456";
+		String pin = "123456";
 		authTypeDTO.setOtp(true);
 		RequestDTO reqDTO = new RequestDTO();
-		AdditionalFactorsDTO additionalFactors=new AdditionalFactorsDTO();
+		AdditionalFactorsDTO additionalFactors = new AdditionalFactorsDTO();
 		additionalFactors.setTotp(pin);
 		reqDTO.setAdditionalFactors(additionalFactors);
 		reqDTO.setIdentity(idDTO);
@@ -1070,9 +1072,9 @@ public class AuthRequestValidatorTest {
 
 		authTypeDTO.setOtp(true);
 		RequestDTO reqDTO = new RequestDTO();
-		String otp="";
+		String otp = "";
 		authTypeDTO.setOtp(true);
-		AdditionalFactorsDTO additionalFactors=new AdditionalFactorsDTO();
+		AdditionalFactorsDTO additionalFactors = new AdditionalFactorsDTO();
 		additionalFactors.setTotp(otp);
 		reqDTO.setAdditionalFactors(additionalFactors);
 		reqDTO.setIdentity(idDTO);
@@ -1173,19 +1175,23 @@ public class AuthRequestValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
-	public void testNullAuthType() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		Method declaredMethod = AuthRequestValidator.class.getDeclaredMethod("checkAuthRequest", AuthRequestDTO.class, Errors.class);
+	public void testNullAuthType() throws NoSuchMethodException, SecurityException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
+		Method declaredMethod = AuthRequestValidator.class.getDeclaredMethod("checkAuthRequest", AuthRequestDTO.class,
+				Errors.class);
 		declaredMethod.setAccessible(true);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		declaredMethod.invoke(authRequestValidator, authRequestDTO, errors);
 	}
-	
+
 	@Test
-	public void testNullAuthType2() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		Method declaredMethod = AuthRequestValidator.class.getDeclaredMethod("checkAuthRequest", AuthRequestDTO.class, Errors.class);
+	public void testNullAuthType2() throws NoSuchMethodException, SecurityException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
+		Method declaredMethod = AuthRequestValidator.class.getDeclaredMethod("checkAuthRequest", AuthRequestDTO.class,
+				Errors.class);
 		declaredMethod.setAccessible(true);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthTypeDTO authType = new AuthTypeDTO();
@@ -1197,13 +1203,16 @@ public class AuthRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		declaredMethod.invoke(authRequestValidator, authRequestDTO, errors);
 	}
-	
+
 	@Test
-	public void testInvalidTimeStamp() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		Method declaredMethod = AuthRequestValidator.class.getDeclaredMethod("validateRequestTimedOut", String.class, Errors.class);
+	public void testInvalidTimeStamp() throws NoSuchMethodException, SecurityException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
+		Method declaredMethod = AuthRequestValidator.class.getDeclaredMethod("validateRequestTimedOut", String.class,
+				Errors.class);
 		declaredMethod.setAccessible(true);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		declaredMethod.invoke(authRequestValidator, "2019-01-28", errors);
 	}
+
 }

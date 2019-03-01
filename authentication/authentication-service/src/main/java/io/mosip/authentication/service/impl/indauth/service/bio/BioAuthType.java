@@ -19,6 +19,7 @@ import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
+import io.mosip.authentication.service.helper.IdInfoHelper;
 
 /**
  * The Enum BioAuthType.
@@ -122,7 +123,7 @@ public enum BioAuthType implements AuthType {
 								.getIrisProvider(bioinfovalue)::matchMultiImage;// TODO add provider
 						valueMap.put(IrisProvider.class.getSimpleName(), func);
 					});
-			valueMap.put("idvid",AuthType.getUinOrVid(authRequestDTO));
+			valueMap.put("idvid",IdInfoHelper.getUinOrVid(authRequestDTO));
 			return valueMap;
 		}
 
@@ -157,7 +158,7 @@ public enum BioAuthType implements AuthType {
 								.getIrisProvider(bioinfovalue)::matchImage;// TODO add provider
 						valueMap.put(IrisProvider.class.getSimpleName(), func);
 					});
-			valueMap.put("idvid", AuthType.getUinOrVid(authRequestDTO));
+			valueMap.put("idvid", IdInfoHelper.getUinOrVid(authRequestDTO));
 			return valueMap;
 		}
 

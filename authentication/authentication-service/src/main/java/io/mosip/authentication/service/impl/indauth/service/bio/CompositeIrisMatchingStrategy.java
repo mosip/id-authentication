@@ -17,6 +17,7 @@ import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
  */
 public enum CompositeIrisMatchingStrategy implements MatchingStrategy {
 
+	@SuppressWarnings("unchecked")
 	PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {
 			Object object = props.get(IrisProvider.class.getSimpleName()); 

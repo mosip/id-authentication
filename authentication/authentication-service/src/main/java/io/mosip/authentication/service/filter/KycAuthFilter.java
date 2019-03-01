@@ -74,7 +74,7 @@ public class KycAuthFilter extends BaseAuthFilter {
 		try {
 			Map<String, Object> authRequest = (Map<String, Object>) decodeToMap((String) requestBody.get(AUTH_REQUEST));
 			authRequest.replace(REQUEST, decode((String) authRequest.get(REQUEST)));
-			if (null != authRequest.get(REQUEST)) {
+			if (Objects.nonNull(authRequest.get(REQUEST))) {
 				authRequest.replace(REQUEST, keyManager.requestData(authRequest, mapper));
 			}
 			requestBody.replace(AUTH_REQUEST, authRequest);
@@ -98,8 +98,8 @@ public class KycAuthFilter extends BaseAuthFilter {
 			throws IdAuthenticationAppException {
 		try {			
 			Map<String, Object> response = (Map<String, Object>) responseBody.get(RESPONSE);
-			if (response != null) {
-				if (null != publicKey) {
+			if (Objects.nonNull(response)) {
+				if (Objects.nonNull(publicKey)) {
 					encryptKycResponse(response);
 				} else {
 					Object kyc = response.get(KYC);
@@ -125,13 +125,13 @@ public class KycAuthFilter extends BaseAuthFilter {
 		Object kycDetail = response.get(KYC);
 		byte[] symmetricDataEncrypt = null;
 		byte[] asymmetricKeyEncrypt = null;
-		if (kycDetail != null) {
+		if (Objects.nonNull(kycDetail)) {
 			SecretKey symmetricKey = keyManager.getSymmetricKey();
 			symmetricDataEncrypt = encryptor.symmetricEncrypt(symmetricKey, toJsonString(kycDetail).getBytes());
 			asymmetricKeyEncrypt = encryptor.asymmetricPublicEncrypt(publicKey, symmetricKey.getEncoded());
 		}
 
-		if (null != asymmetricKeyEncrypt && null != symmetricDataEncrypt) {
+		if (Objects.nonNull(asymmetricKeyEncrypt) && Objects.nonNull(symmetricDataEncrypt)) {
 			response.replace(KYC, org.apache.commons.codec.binary.Base64.encodeBase64String(asymmetricKeyEncrypt)
 					.concat(org.apache.commons.codec.binary.Base64.encodeBase64String(symmetricDataEncrypt)));
 		}
@@ -161,7 +161,7 @@ public class KycAuthFilter extends BaseAuthFilter {
 						&& isDate((String) authReq.get(REQ_TIME))) {
 					convertZoneDate(responseBody, authReq);
 					Object response = responseBody.get(RESPONSE);
-					if (null != response) {
+					if (Objects.nonNull(response)) {
 						Map<String, Object> authResponse = (Map<String, Object>) response;
 						authResponse.replace(AUTH,
 								setAuthResponseParam((Map<String, Object>) requestBody.get(AUTH_REQUEST),
@@ -242,7 +242,7 @@ public class KycAuthFilter extends BaseAuthFilter {
 
 	protected Object decodeToMap(String stringToDecode) throws IdAuthenticationAppException {
 		try {
-			if (stringToDecode != null) {
+			if (Objects.nonNull(stringToDecode)) {
 				return mapper.readValue(Base64.getDecoder().decode(stringToDecode),
 						new TypeReference<Map<String, Object>>() {
 						});

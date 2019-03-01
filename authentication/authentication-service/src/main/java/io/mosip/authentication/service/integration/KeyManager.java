@@ -2,8 +2,6 @@ package io.mosip.authentication.service.integration;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 //import java.util.Base64;
 import java.util.Map;
 import java.util.Objects;
@@ -34,7 +32,6 @@ import io.mosip.authentication.service.integration.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
 /**
@@ -91,6 +88,7 @@ public class KeyManager {
 	 * @return the map
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> requestData(Map<String, Object> requestBody, ObjectMapper mapper)
 			throws IdAuthenticationAppException {
 		Map<String, Object> request = null;
@@ -132,6 +130,7 @@ public class KeyManager {
 					logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
 					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.SERVER_ERROR);
 				} catch (IDDataValidationException e) {
+					logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
 					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
 				}
 
@@ -139,6 +138,7 @@ public class KeyManager {
 				});
 			}
 		} catch (IOException e) {
+			logger.error("NA", "NA", "", e.getMessage());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 		}

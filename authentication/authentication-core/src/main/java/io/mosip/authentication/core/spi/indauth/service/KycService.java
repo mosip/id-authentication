@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.KycInfo;
+import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
@@ -16,7 +16,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 @FunctionalInterface
 public interface KycService {
 	
-	public KycInfo retrieveKycInfo(String uin, KycType eKycType, boolean ePrintReq, boolean isSecLangInfoRequired,
+	public KycResponseDTO retrieveKycInfo(String uin, KycType eKycType, String secLangCode,
 			Map<String, List<IdentityInfoDTO>> identityInfo) throws IdAuthenticationBusinessException;
 
 	

@@ -38,7 +38,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	private static final String AUTH_REQUEST = "authRequest";
 
 	/** The Constant AUTH_TYPE. */
-	private static final String AUTH_TYPE = "authType";
+	private static final String AUTH_TYPE = "requestedAuth";
 
 	/** The Constant MISSING_INPUT_PARAMETER. */
 	private static final String MISSING_INPUT_PARAMETER = "MISSING_INPUT_PARAMETER - ";
@@ -56,7 +56,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	private static final String SESSION_ID = "SESSION_ID";
 
 	/** The Constant REQ_TIME. */
-	private static final String REQ_TIME = "reqTime";
+	private static final String REQ_TIME = "requestTime";
 
 	/** The Constant VALIDATE_REQUEST_TIMED_OUT. */
 	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
@@ -124,8 +124,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				// validateTspId(authRequestDto.getTspID(),errors);
 
 				validateBioMetadataDetails(authRequestDto, errors);
-
-//				validatePinDetails(authRequestDto,errors);
 				if (!errors.hasErrors()) {
 					checkAuthRequest(authRequestDto, errors);
 				}

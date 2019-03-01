@@ -29,8 +29,10 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 @Component
 public abstract class IdAuthValidator implements Validator {
 
+	private static final String REQUEST = "request";
+
 	/** The Constant TSP_ID. */
-	private static final String POLICYID = "policyID";
+	private static final String PARTNER_ID = "partnerID";
 
 	/** The Constant IDV_ID_TYPE. */
 	private static final String IDV_ID_TYPE = "idvIdType";
@@ -100,7 +102,7 @@ public abstract class IdAuthValidator implements Validator {
 	}
 	
 	public void validateIdvId(String id, String idType, Errors errors) {
-		validateIdvId(id, idType, errors, IDV_ID);
+		validateIdvId(id, idType, errors, REQUEST);
 	}
 
 	/**
@@ -117,8 +119,8 @@ public abstract class IdAuthValidator implements Validator {
 	public void validateIdvId(String id, String idType, Errors errors, String idFieldName) {
 		if (Objects.isNull(id) || id.isEmpty()) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID);
-			errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { IDV_ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { REQUEST }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else {
 			validateIdtypeUinVid(id, idType, errors, idFieldName);
 		}
@@ -208,8 +210,8 @@ public abstract class IdAuthValidator implements Validator {
 	private void validateIdtypeUinVid(String id, String idType, Errors errors, String idFieldName) {
 		if (Objects.isNull(idType)) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID_TYPE);
-			errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { IDV_ID_TYPE },
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { REQUEST },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else if (idType.equals(IdType.UIN.getType())) {
 			try {
@@ -246,9 +248,9 @@ public abstract class IdAuthValidator implements Validator {
 	 */
 	protected void validateTspId(String tspID, Errors errors) {
 		if (Objects.isNull(tspID)) {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + POLICYID);
-			errors.rejectValue(POLICYID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { POLICYID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + PARTNER_ID);
+			errors.rejectValue(PARTNER_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { PARTNER_ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 
 	}
