@@ -1,7 +1,5 @@
 package io.mosip.registration.service.config;
 
-import org.springframework.context.ApplicationContext;
-
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -73,5 +71,19 @@ public interface JobConfigurationService {
 	 * @return response of job
 	 */
 	ResponseDTO executeAllJobs();
+
+	/**
+	 * Is Application to be restart
+	 * @return response
+	 */
+	ResponseDTO isRestart();
+	
+	/**
+	 * Get restart time
+	 * @return response
+	 */
+	ResponseDTO getRestartTime();
+	
+	
 
 }

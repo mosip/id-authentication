@@ -1,5 +1,6 @@
 package io.mosip.registration.config;
 
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 import javax.sql.DataSource;
@@ -23,6 +24,7 @@ import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryI
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 import io.mosip.kernel.logger.logback.factory.Logfactory;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
+import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.jobs.JobProcessListener;
 import io.mosip.registration.jobs.JobTriggerListener;
 
@@ -61,6 +63,8 @@ public class AppConfig {
 	 */
 	@Autowired
 	private JobTriggerListener commonTriggerListener;
+	@Autowired
+	private SyncJobConfigDAO syncJobConfigDAO;
 
 	static {
 		ResourceBundle resourceBundle = ResourceBundle.getBundle("log4j");
@@ -104,8 +108,11 @@ public class AppConfig {
 		SchedulerFactoryBean schFactoryBean = new SchedulerFactoryBean();
 		schFactoryBean.setGlobalTriggerListeners(new TriggerListener[] { commonTriggerListener });
 		schFactoryBean.setGlobalJobListeners(new JobListener[] { jobProcessListener });
+		Properties quartzProperties = new Properties();
+		quartzProperties.put("org.quartz.threadPool.threadCount",
+				String.valueOf(syncJobConfigDAO.getActiveJobs().size()));
+		schFactoryBean.setQuartzProperties(quartzProperties);
 		return schFactoryBean;
 	}
-	
-	
+
 }

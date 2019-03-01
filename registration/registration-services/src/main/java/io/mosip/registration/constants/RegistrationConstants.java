@@ -1085,5 +1085,8 @@ public class RegistrationConstants {
 	// Key-Policy Key validation
 	public static final String VALID_KEY = "VALID KEY";
 	public static final String INVALID_KEY = "Please sync to get latest key from the server before proceeding with this registration.";
+	public static final String SYNC_DATA_FREQ = "SYNC_DATA_FREQ";
+	public static final String JOB_ID = "JOB_ID";
+	public static final String UI_SYNC_DATA = "UI_SYNC_DATA";
 
 }

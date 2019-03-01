@@ -250,7 +250,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 			setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
 			return response;
-		} catch(RuntimeException runtimeException) {
+		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
@@ -297,8 +297,11 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.packet.RegPacketStatusService#deleteRegistrations(java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.packet.RegPacketStatusService#
+	 * deleteRegistrations(java.util.List)
 	 */
 	@Override
 	public void deleteRegistrations(final List<Registration> registrations) {
@@ -323,9 +326,10 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			Files.delete(ackFile);
 			Files.delete(zipFile);
 
-			/* Delete row from DB */
-			regPacketStatusDAO.delete(registration);
 		}
+
+		/* Delete row from DB */
+		regPacketStatusDAO.delete(registration);
 	}
 
 	public ResponseDTO syncPacket() {

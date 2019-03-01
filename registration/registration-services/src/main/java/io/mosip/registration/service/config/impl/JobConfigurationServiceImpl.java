@@ -1,12 +1,13 @@
 package io.mosip.registration.service.config.impl;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -38,16 +39,15 @@ import com.cronutils.parser.CronParser;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.dao.SyncTransactionDAO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SyncDataProcessDTO;
-import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
@@ -118,15 +118,11 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	private JobDataMap jobDataMap = null;
 
 	/**
-	 * To fetch required global params
-	 */
-	@Autowired
-	private GlobalParamDAO globalParamDAO;
-
-	/**
 	 * Base Job
 	 */
 	private BaseJob baseJob;
+
+	private static List<String> restartableJobList = new LinkedList<>();
 
 	/**
 	 * create a parser based on provided definition
@@ -144,6 +140,15 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was started");
 
 		try {
+			/* Master Data Sync */
+			restartableJobList.add("MDS_J00001");
+
+			/* Policy Sync */
+			restartableJobList.add("POS_J00008");
+
+			/* Registration Client Config Sync */
+			restartableJobList.add("SCD_J00011");
+
 			/* Get All Jobs */
 			List<SyncJobDef> jobDefs = getJobs();
 
@@ -152,19 +157,27 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				/* Set Job-map and active sync-job-map */
 				setSyncJobMap(jobDefs);
 
-				List<String> names = jobDefs.stream().map(syncJobDef -> {
-					return syncJobDef.getId();
-				}).collect(Collectors.toList());
+				/* Get Scheduler frequency from global param */
+				String syncDataFreq = getGlobalConfigValueOf(RegistrationConstants.SYNC_DATA_FREQ);
 
-				/* Get Job Values from Global_Param for all jobs */
-				List<GlobalParam> globalParams = globalParamDAO.getAll(names);
+				if (syncDataFreq != null) {
+					List<SyncJobDef> jobsToBeUpdated = new LinkedList<>();
 
-				if (!isNull(globalParams) && !isEmpty(globalParams)) {
+					/* Store the jobs to be updated */
+					for (SyncJobDef syncJobDef : jobDefs) {
+						if (!syncDataFreq.equals(syncJobDef.getSyncFrequency())) {
+							syncJobDef.setSyncFrequency(syncDataFreq);
 
-					/* Update Jobs Using global_Params and refresh the job maps */
-					updateJobsFromGlobalParam(globalParams);
+							jobsToBeUpdated.add(syncJobDef);
+						}
 
+					}
+					if (!isNull(jobsToBeUpdated) && !isEmpty(jobsToBeUpdated)) {
+						/* Update Jobs */
+						updateJobs(jobsToBeUpdated);
+					}
 				}
+
 			}
 
 			/* Check and Execute missed triggers */
@@ -363,7 +376,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 					SyncJobDef syncJobDef = syncJobMap.get(jobExecutionContext.getJobDetail().getKey().getName());
 
 					return constructDTO(syncJobDef.getId(), syncJobDef.getName(), RegistrationConstants.JOB_RUNNING,
-							new Timestamp(System.currentTimeMillis()).toString());
+							Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).toString());
 
 				}).collect(Collectors.toList());
 
@@ -506,7 +519,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 			/* Get Calendar instance */
 			Calendar cal = Calendar.getInstance();
-			cal.setTime(new Timestamp(System.currentTimeMillis()));
+			cal.setTime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 			cal.add(Calendar.DATE, -syncTransactionConfiguredDays);
 
 			/* To-Date */
@@ -581,63 +594,28 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		});
 	}
 
-	private void updateJobsFromGlobalParam(final List<GlobalParam> globalParams) {
+	private void updateJobs(final List<SyncJobDef> syncJobDefs) {
 
-		/* Jobs to be updated */
-		List<SyncJobDef> jobsToBeUpdated = new LinkedList<>();
+		jobConfigDAO.updateAll(syncJobDefs);
 
-		globalParams.forEach(globalParam -> {
+		/* Refresh The sync job map and sync active job map as we have updated jobs */
+		setSyncJobMap(syncJobDefs);
 
-			/* Check the global param's value is valid or not */
-			if (globalParam.getVal() != null && syncJobMap.containsKey(globalParam.getName())) {
-				SyncJobDef syncJobDef = syncJobMap.get(globalParam.getName());
-
-				/* check whether the job has any new value to be updated */
-				if (syncJobDef.getSyncFrequency() == null
-						|| !(syncJobDef.getSyncFrequency().equals(globalParam.getVal()))
-						|| !(syncJobDef.getIsActive().equals(globalParam.getIsActive()))) {
-
-					syncJobDef.setSyncFrequency(globalParam.getVal());
-					syncJobDef.setIsActive(globalParam.getIsActive());
-					syncJobDef.setUpdBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-					syncJobDef.setUpdDtimes(Timestamp.valueOf(LocalDateTime.now()));
-
-					jobsToBeUpdated.add(syncJobDef);
-
-				}
-
-			}
-		});
-
-		if (!isEmpty(jobsToBeUpdated)) {
-			/* Update The Sync Jobs */
-			List<SyncJobDef> updatedJobs = updateJobs(jobsToBeUpdated);
-
-			/* Refresh The sync job map and sync active job map as we have updated jobs */
-			setSyncJobMap(updatedJobs);
-		}
-
-	}
-
-	private List<SyncJobDef> updateJobs(final List<SyncJobDef> syncJobDefs) {
-		return jobConfigDAO.updateAll(syncJobDefs);
 	}
 
 	private void executeMissedTrigger(final String jobId, final String syncFrequency) {
 
-		ExecutionTime executionTime = ExecutionTime.forCron(cronParser.parse(syncFrequency));
+		ExecutionTime executionTime = getExecutionTime(syncFrequency);
 
-		ZonedDateTime currentTime = ZonedDateTime.now(ZoneOffset.systemDefault());
-
-		Optional<ZonedDateTime> last = executionTime.lastExecution(currentTime);
-		Optional<ZonedDateTime> next = executionTime.nextExecution(currentTime);
+		Instant last = getLast(executionTime);
+		Instant next = getNext(executionTime);
 
 		/* Check last and next has values present */
-		if (last.isPresent() && next.isPresent()) {
+		if (last != null && next != null) {
 
 			/* Get all Transactions in between last and next crDtimes */
-			List<SyncTransaction> syncTransactions = syncJobTransactionDAO.getAll(jobId,
-					Timestamp.from(last.get().toInstant()), Timestamp.from(next.get().toInstant()));
+			List<SyncTransaction> syncTransactions = syncJobTransactionDAO.getAll(jobId, Timestamp.from(last),
+					Timestamp.from(next));
 
 			/* Execute the Job if it was not started on previous pre-scheduled time */
 			if ((isNull(syncTransactions) || isEmpty(syncTransactions))) {
@@ -648,12 +626,44 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 	}
 
+	private Instant getLast(ExecutionTime executionTime) {
+		ZonedDateTime currentTime = ZonedDateTime.now(ZoneId.of("UTC"));
+
+		Optional<ZonedDateTime> lastDate = executionTime.lastExecution(currentTime);
+		Instant last = null;
+		if (lastDate.isPresent()) {
+			last = lastDate.get().toInstant();
+
+		}
+
+		return last;
+
+	}
+
+	private Instant getNext(ExecutionTime executionTime) {
+		ZonedDateTime currentTime = ZonedDateTime.now(ZoneId.of("UTC"));
+
+		Optional<ZonedDateTime> nextDate = executionTime.nextExecution(currentTime);
+		Instant next = null;
+		if (nextDate.isPresent()) {
+			next = nextDate.get().toInstant();
+
+		}
+
+		return next;
+
+	}
+
+	private ExecutionTime getExecutionTime(String syncFrequency) {
+		return ExecutionTime.forCron(cronParser.parse(syncFrequency));
+	}
+
 	private void executeMissedTriggers(Map<String, SyncJobDef> map) {
 
 		map.forEach((jobId, syncJob) -> {
 			if (syncJob.getParentSyncJobId() == null && syncJob.getSyncFrequency() != null
 					&& syncJob.getApiName() != null) {
-				/* An Async task to complete missed trigger */
+				/* An A-sync task to complete missed trigger */
 				new Thread(() -> executeMissedTrigger(jobId, syncJob.getSyncFrequency())).start();
 			}
 
@@ -670,19 +680,74 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	@Override
 	public ResponseDTO executeAllJobs() {
 		ResponseDTO responseDTO = new ResponseDTO();
-		
-		
+
+		List<String> failureJobs = new LinkedList<>();
+
 		for (Entry<String, SyncJobDef> syncJob : syncActiveJobMap.entrySet()) {
 			if (syncJob.getValue().getParentSyncJobId() == null && syncJob.getValue().getApiName() != null) {
 
-				ResponseDTO jobResponse = executeJob(syncJob.getKey(), getUserIdFromSession());
+				ResponseDTO jobResponse = executeJob(syncJob.getKey(), RegistrationConstants.JOB_TRIGGER_POINT_USER);
 				if (jobResponse.getErrorResponseDTOs() != null) {
-					responseDTO.setSuccessResponseDTO(null);
-					responseDTO.setErrorResponseDTOs(jobResponse.getErrorResponseDTOs());
+					failureJobs.add(syncActiveJobMap.get(syncJob.getKey()).getName());
 				}
 			}
 		}
 
+		if (!isEmpty(failureJobs)) {
+			setErrorResponse(responseDTO, failureJobs.toString().replace("[", "").replace("]", ""), null);
+		}
+
+		return responseDTO;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.config.JobConfigurationService#isRestart()
+	 */
+	@Override
+	public ResponseDTO isRestart() {
+		ResponseDTO responseDTO = new ResponseDTO();
+		/* Fetch completed job map */
+		HashMap<String, String> completedSyncJobMap = (HashMap<String, String>) BaseJob.getCompletedJobMap();
+
+		/* Compare with restart-able job list */
+		for (String jobId : restartableJobList) {
+
+			/* Check the job completed with success/failure */
+			if (RegistrationConstants.JOB_EXECUTION_SUCCESS.equals(completedSyncJobMap.get(jobId))) {
+
+				/* Store job info in attributes of response */
+				Map<String, Object> successJobAttribute = new HashMap<>();
+				successJobAttribute.put(RegistrationConstants.JOB_ID, jobId);
+
+				return setSuccessResponse(responseDTO,
+						syncActiveJobMap.get(jobId).getName() + " " + RegistrationConstants.OTP_VALIDATION_SUCCESS,
+						successJobAttribute);
+			}
+		}
+
+		return responseDTO;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.config.JobConfigurationService#getRestartTime()
+	 */
+	@Override
+	public ResponseDTO getRestartTime() {
+
+		ResponseDTO responseDTO = new ResponseDTO();
+
+		String syncDataFreq = getGlobalConfigValueOf(RegistrationConstants.SYNC_DATA_FREQ);
+		if (syncDataFreq != null) {
+			ExecutionTime executionTime = getExecutionTime(syncDataFreq);
+			Instant last = getLast(executionTime);
+			Instant next = getNext(executionTime);
+
+			if (last != null && next != null) {
+				setSuccessResponse(responseDTO, String.valueOf((Duration.between(last, next).toMillis()) / 5), null);
+			}
+		}
 		return responseDTO;
 	}
 
