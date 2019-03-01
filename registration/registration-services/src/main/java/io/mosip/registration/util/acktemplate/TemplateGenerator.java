@@ -13,7 +13,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigInteger;
 import java.text.MessageFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -55,7 +54,6 @@ import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.demographic.ValuesDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.BaseService;
 
 /**
@@ -745,15 +743,14 @@ public class TemplateGenerator extends BaseService {
 					localProperties.getString("ro_name"));
 			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME,
 					getValue(registration.getOsiDataDTO().getOperatorID(), platformLanguageCode));
-			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_LOCAL_LANG,
-					getValue(registration.getOsiDataDTO().getOperatorID(), localLanguageCode));
+			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_LOCAL_LANG, RegistrationConstants.EMPTY);
 			templateValues.put(RegistrationConstants.TEMPLATE_REG_CENTER_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("registrationcenter"));
 			templateValues.put(RegistrationConstants.TEMPLATE_REG_CENTER_LOCAL_LANG_LABEL,
 					localProperties.getString("registrationcenter"));
 			templateValues.put(RegistrationConstants.TEMPLATE_REG_CENTER,
 					SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterName());
-			templateValues.put(RegistrationConstants.TEMPLATE_REG_CENTER_LOCAL_LANG, "");
+			templateValues.put(RegistrationConstants.TEMPLATE_REG_CENTER_LOCAL_LANG, RegistrationConstants.EMPTY);
 			templateValues.put(RegistrationConstants.TEMPLATE_IMPORTANT_GUIDELINES,
 					applicationLanguageProperties.getString("importantguidelines"));
 
