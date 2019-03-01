@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.constant;
 
 /**
- * Constants for Language related errors.
+ * Constants for Individual type related errors.
  * 
  * @author Bal Vikash Sharma
  * @since 1.0.0
