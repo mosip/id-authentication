@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.print.stage;
 
+import java.util.Map;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,6 +53,10 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
+	private static final String UIN_CARD_PDF = "uinPdf";
+
+	private static final String UIN_TEXT_FILE = "textFile";
+
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PrintStage.class);
 
@@ -90,7 +96,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 	private MosipQueueConnectionFactory<MosipQueue> mosipConnectionFactory;
 
 	@Autowired
-	private PrintService<byte[]> printService;
+	private PrintService<Map<String, byte[]>> printService;
 
 	@Value("${registration.processor.queue.username}")
 	private String username;
@@ -133,7 +139,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(regId);
 
-			byte[] pdfBytes = printService.getPdf(IdType.RID, regId);
+			Map<String, byte[]> documentBytesMap = printService.getPdf(IdType.RID, regId);
 
 			MosipQueue queue = mosipConnectionFactory.createConnection(typeOfQueue, username, password, url);
 			if (queue == null) {
@@ -142,10 +148,10 @@ public class PrintStage extends MosipVerticleAPIManager {
 						PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.name());
 				throw new QueueConnectionNotFound(PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.getCode());
 			}
-			
-			boolean isPdfAddedtoQueue = mosipQueueManager.send(queue, pdfBytes, address);
 
-			if (isPdfAddedtoQueue) {
+			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0);
+
+			if (isAddedToQueue) {
 				object.setIsValid(Boolean.TRUE);
 				isTransactionSuccessful = true;
 				description = "Pdf added to the mosip queue for printing";
@@ -178,7 +184,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 					regId, PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-		} catch(ConnectionUnavailableException e) {
+		} catch (ConnectionUnavailableException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_MQI_UNABLE_TO_SEND_TO_QUEUE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
@@ -193,17 +199,39 @@ public class PrintStage extends MosipVerticleAPIManager {
 			String eventId = "";
 			String eventName = "";
 			String eventType = "";
-			description = isTransactionSuccessful ? "Pdf generated and sent to mosip queue" : "Either pdf not generated or not sent to mosip queue";
+			description = isTransactionSuccessful ? "Pdf generated and sent to mosip queue"
+					: "Either pdf not generated or not sent to mosip queue";
 			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
 					: EventName.EXCEPTION.toString();
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,regId);
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, regId);
 		}
 
 		return object;
+	}
+
+	private boolean sendToQueue(MosipQueue queue, Map<String, byte[]> documentBytesMap, int count) {
+		boolean isPdfAddedtoQueue = false;
+		boolean isTextFileAddedToQueue = false;
+		try {
+			isPdfAddedtoQueue = mosipQueueManager.send(queue, documentBytesMap.get(UIN_CARD_PDF), address);
+			isTextFileAddedToQueue = mosipQueueManager.send(queue, documentBytesMap.get(UIN_TEXT_FILE), address);
+		} catch (QueueConnectionNotFound e) {
+			if (count < 5) {
+				sendToQueue(queue, documentBytesMap, count + 1);
+			} else {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						PlatformErrorMessages.RPR_MQI_UNABLE_TO_SEND_TO_QUEUE.name() + e.getMessage()
+								+ ExceptionUtils.getStackTrace(e));
+				throw new QueueConnectionNotFound(PlatformErrorMessages.RPR_MQI_UNABLE_TO_SEND_TO_QUEUE.getCode());
+			}
+		}
+
+		return isPdfAddedtoQueue && isTextFileAddedToQueue ? true : false;
 	}
 
 	/**

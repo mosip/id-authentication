@@ -3,6 +3,7 @@ package io.mosip.registration.processor.print.service.config;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,9 +32,11 @@ public class PrintServiceConfig {
 	/**
 	 * Loads config server values.
 	 *
-	 * @param env the env
+	 * @param env
+	 *            the env
 	 * @return the property sources placeholder configurer
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	@Bean
 	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env)
@@ -60,7 +63,8 @@ public class PrintServiceConfig {
 	/**
 	 * Gets list of application name mentioned in bootstrap.properties
 	 *
-	 * @param env the env
+	 * @param env
+	 *            the env
 	 * @return the app names
 	 */
 	public List<String> getAppNames(Environment env) {
@@ -74,7 +78,7 @@ public class PrintServiceConfig {
 	 * @return the prints the service
 	 */
 	@Bean
-	public PrintService<?> getPrintService() {
+	public PrintService<Map<String,byte[]>> getPrintService() {
 		return new PrintServiceImpl();
 	}
 
