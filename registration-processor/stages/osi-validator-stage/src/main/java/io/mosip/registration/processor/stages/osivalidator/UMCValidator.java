@@ -641,9 +641,13 @@ public class UMCValidator {
 			throws ApisResourceAccessException {
 		boolean isValid = false;
 		try {
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					rcmDto.getRegId(), "UMCValidator::validateCenterIdAndTimestamp()::entry");
 			List<String> pathsegments = new ArrayList<>();
 			pathsegments.add(rcmDto.getRegcntrId());
+			pathsegments.add(primaryLanguagecode);
 			pathsegments.add(rcmDto.getPacketCreationDate());
+			
 			RegistartionCenterTimestampResponseDto result = (RegistartionCenterTimestampResponseDto) registrationProcessorRestService
 					.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments, "", "",
 							RegistartionCenterTimestampResponseDto.class);
@@ -656,6 +660,8 @@ public class UMCValidator {
 				ErrorDTO error = result.getErrors().get(0);
 				this.registrationStatusDto.setStatusComment(error.getErrorMessage());
 			}
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					rcmDto.getRegId(), "UMCValidator::validateCenterIdAndTimestamp()::exit");
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					rcmDto.getRegId(), e.getMessage() + ExceptionUtils.getStackTrace(e));
