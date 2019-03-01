@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -69,7 +72,9 @@ public class CbeffImplTest {
 	public void setUp() throws Exception {
 		byte[] fingerImg = CbeffISOReader.readISOImage(localpath + "/images/" + "ISOImage.iso", "Finger");
 		byte[] irisImg = CbeffISOReader.readISOImage(localpath + "/images/" + "Sample_IRIS.iso", "Iris");
-		BIR rFinger = new BIR.BIRBuilder().withBdb(fingerImg)
+		JAXBElement<String> jaxbElementUnique = new JAXBElement<String>(new QName("testschema","TestFinger"),String.class,"Unique");
+		JAXBElement<String> jaxbElementDulicate = new JAXBElement<String>(new QName("testschema","TestFinger"),String.class,"Duplicate");
+		BIR rFinger = new BIR.BIRBuilder().withBdb(fingerImg).withElement(Arrays.asList(jaxbElementUnique))
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(7))
 						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
@@ -78,7 +83,7 @@ public class CbeffImplTest {
 						.build())
 				.build();
 
-		BIR lFinger = new BIR.BIRBuilder().withBdb(fingerImg)
+		BIR lFinger = new BIR.BIRBuilder().withBdb(fingerImg).withElement(Arrays.asList(jaxbElementDulicate))
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(7))
 						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
@@ -87,7 +92,7 @@ public class CbeffImplTest {
 						.build())
 				.build();
 
-		BIR thumb = new BIR.BIRBuilder().withBdb(fingerImg)
+		BIR thumb = new BIR.BIRBuilder().withBdb(fingerImg).withElement(Arrays.asList(jaxbElementUnique))
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(7))
 						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
@@ -95,21 +100,21 @@ public class CbeffImplTest {
 						.withLevel(ProcessedLevelType.RAW).withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
 				.build();
 
-		BIR face = new BIR.BIRBuilder().withBdb(new String("Test").getBytes())
+		BIR face = new BIR.BIRBuilder().withBdb(new String("Test").getBytes()).withElement(Arrays.asList(jaxbElementUnique))
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(8))
 						.withQuality(90).withType(Arrays.asList(SingleType.FACE)).withPurpose(PurposeType.ENROLL)
 						.withLevel(ProcessedLevelType.RAW).withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
 				.build();
 
-		BIR leftIris = new BIR.BIRBuilder().withBdb(new String(irisImg).getBytes())
+		BIR leftIris = new BIR.BIRBuilder().withBdb(new String(irisImg).getBytes()).withElement(Arrays.asList(jaxbElementUnique))
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(9))
 						.withQuality(80).withType(Arrays.asList(SingleType.IRIS)).withSubtype(Arrays.asList("Left"))
 						.withPurpose(PurposeType.ENROLL).withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).withLevel(ProcessedLevelType.RAW).build())
 				.build();
 
-		BIR rightIris = new BIR.BIRBuilder().withBdb(new String(irisImg).getBytes())
+		BIR rightIris = new BIR.BIRBuilder().withBdb(new String(irisImg).getBytes()).withElement(Arrays.asList(jaxbElementUnique))
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(9))
 						.withQuality(90).withType(Arrays.asList(SingleType.IRIS)).withSubtype(Arrays.asList("Right"))
@@ -125,7 +130,7 @@ public class CbeffImplTest {
 		createList.add(face);
 
 		// Finger Minutiae is of Single Type - Finger and BDB Format Type - 2
-		BIR fingerMinutiae1 = new BIR.BIRBuilder().withBdb(fingerImg)
+		BIR fingerMinutiae1 = new BIR.BIRBuilder().withBdb(fingerImg).withElement(Arrays.asList(jaxbElementUnique))
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(2))
 						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
@@ -134,7 +139,7 @@ public class CbeffImplTest {
 						.build())
 				.build();
 		
-		BIR fingerMinutiae2 = new BIR.BIRBuilder().withBdb(new String("fingerminutae").getBytes())
+		BIR fingerMinutiae2 = new BIR.BIRBuilder().withBdb(new String("fingerminutae").getBytes()).withElement(Arrays.asList(jaxbElementUnique))
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(2))
 						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
@@ -154,6 +159,14 @@ public class CbeffImplTest {
 		byte[] createXml = cbeffUtilImpl.createXML(createList);
 		createXMLFile(createXml, "createCbeff");
 		assertEquals(new String(createXml), new String(readCreatedXML("createCbeff")));
+
+	}
+	
+	@Test
+	public void testCreateXMLFromLocal() throws Exception {
+		byte[] createXml = cbeffUtilImpl.createXML(createList,readXSD("cbeff"));
+		createXMLFile(createXml, "createCbeffLocal");
+		assertEquals(new String(createXml), new String(readCreatedXML("createCbeffLocal")));
 
 	}
 

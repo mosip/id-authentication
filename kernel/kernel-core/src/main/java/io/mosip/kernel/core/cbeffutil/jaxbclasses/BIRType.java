@@ -11,6 +11,8 @@ package io.mosip.kernel.core.cbeffutil.jaxbclasses;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
@@ -53,6 +55,7 @@ import io.mosip.kernel.core.cbeffutil.common.Base64Adapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "BIRType", propOrder = {
+	 "any",
     "version",
     "cbeffVersion",
     "birInfo",
@@ -60,8 +63,8 @@ import io.mosip.kernel.core.cbeffutil.common.Base64Adapter;
     "sbInfo",
     "bir",
     "bdb",
-    "sb",
-    "any"
+    "sb"
+
 })
 @XmlRootElement(name="BIR")
 public class BIRType {

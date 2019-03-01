@@ -154,7 +154,22 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 
 	@Query("SELECT demo.id.regId FROM IndividualDemographicDedupeEntity demo WHERE demo.uin =:uin")
 	public List<String> getRegIdByUIN(@Param("uin") String uin);
+	
+	/**
+	 * Gets the UIN by rid.
+	 *
+	 * @param rid the rid
+	 * @return the UIN by rid
+	 */
+	@Query("SELECT demo.uin FROM IndividualDemographicDedupeEntity demo WHERE demo.id.regId =:rid")
+	public List<String> getUINByRid(@Param("rid") String rid);
 
+	/**
+	 * Gets the documents by reg id.
+	 *
+	 * @param regId the reg id
+	 * @return the documents by reg id
+	 */
 	@Query("SELECT app FROM ApplicantDocumentEntity app WHERE app.id.regId=:regId")
 	public List<E> getDocumentsByRegId(@Param("regId") String regId);
 

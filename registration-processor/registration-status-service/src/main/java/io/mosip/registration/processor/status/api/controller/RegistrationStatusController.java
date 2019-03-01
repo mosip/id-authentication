@@ -49,7 +49,7 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusRequestDTO;
  */
 @RefreshScope
 @RestController
-@RequestMapping("/v0.1/registration-processor/registration-status")
+@RequestMapping("/registration-processor")
 @Api(tags = "Registration Status")
 public class RegistrationStatusController {
 
@@ -73,7 +73,7 @@ public class RegistrationStatusController {
 	@Autowired
 	private Environment env;
 	
-Gson gson = new GsonBuilder().serializeNulls().create();
+Gson gson = new GsonBuilder().create();
 
 	/**
 	 * Search.
@@ -83,35 +83,35 @@ Gson gson = new GsonBuilder().serializeNulls().create();
 	 * @return the response entity
 	 * @throws RegStatusAppException
 	 */
-	@GetMapping(path = "/registrationstatus", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/registrationstatus/v1.0", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the registration entity", response = RegistrationExternalStatusCode.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Registration Entity successfully fetched"),
 			@ApiResponse(code = 400, message = "Unable to fetch the Registration Entity") })
-	public ResponseEntity<RegStatusResponseDTO> search(@RequestParam(name = "request", required = true) String jsonRequest) throws RegStatusAppException {
+	public ResponseEntity<Object> search(@RequestParam(name = "request", required = true) String jsonRequest) throws RegStatusAppException {
 		try {
 			RegistrationStatusRequestDTO registrationStatusRequestDTO =gson.fromJson(jsonRequest, RegistrationStatusRequestDTO.class);
 			registrationStatusRequestValidator.validate(registrationStatusRequestDTO,env.getProperty(REG_STATUS_SERVICE_ID));
 			List<RegistrationStatusDto> registrations = registrationStatusService.getByIds(registrationStatusRequestDTO.getRequest());
 			return ResponseEntity.status(HttpStatus.OK).body(buildRegistrationStatusResponse(registrations));
-		} catch (RegStatusValidationException e) {
+		} catch (RegStatusAppException e) {
 			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
 		}catch(Exception e) {
 			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_UNKNOWN_EXCEPTION, e);
 		}
 	}
 
-	public RegStatusResponseDTO buildRegistrationStatusResponse(List<RegistrationStatusDto> registrations) {
+	public String buildRegistrationStatusResponse(List<RegistrationStatusDto> registrations) {
 
 		RegStatusResponseDTO response = new RegStatusResponseDTO();
 		if (Objects.isNull(response.getId())) {
 			response.setId(env.getProperty(REG_STATUS_SERVICE_ID));
 		}
-		response.setError(null);
-		response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		response.setVersion(env.getProperty(REG_STATUS_APPLICATION_VERSION));
 		response.setResponse(registrations);
-		response.setError(null);
-		return response;
+		response.setErrors(null);
+		Gson gson = new GsonBuilder().create();
+		return gson.toJson(response);
 	}
 
 }

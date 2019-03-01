@@ -3,10 +3,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 
 <suite name="Mosip PreReg API Suite">
-<listeners>
-      <listener class-name = "io.mosip.util.Report" />
-   </listeners>
-
 
 
 	<!-- Suite -->
@@ -27,7 +23,7 @@
 
 	</test>
 
-	 <test name="Booking.CancelAnBookedAppointment">
+	<test name="Booking.CancelAnBookedAppointment">
 
 		<parameter name="testType" value="smoke" />
 
@@ -289,7 +285,8 @@
 		<classes>
 			<class name="io.mosip.preregistration.tests.IntegrationScenarios" />
 		</classes>
-	</test> 
+	</test>
 
 
 </suite>
+

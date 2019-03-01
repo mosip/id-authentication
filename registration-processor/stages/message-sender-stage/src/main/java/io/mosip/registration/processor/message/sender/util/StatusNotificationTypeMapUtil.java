@@ -41,9 +41,8 @@ public class StatusNotificationTypeMapUtil {
 
 		statusMap.put(RegistrationStatusCode.PACKET_OSI_VALIDATION_FAILED, NotificationTemplateType.TECHNICAL_ISSUE);
 		statusMap.put(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED, NotificationTemplateType.TECHNICAL_ISSUE);
-		statusMap.put(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED, NotificationTemplateType.DUPLICATE_UIN);
-		statusMap.put(RegistrationStatusCode.PACKET_DEMO_DEDUPE_FAILED, NotificationTemplateType.DUPLICATE_UIN);
-		statusMap.put(RegistrationStatusCode.UIN_GENERATED, NotificationTemplateType.UIN_CREATED);
+		statusMap.put(RegistrationStatusCode.MANUAL_ADJUDICATION_FAILED, NotificationTemplateType.DUPLICATE_UIN);
+		statusMap.put(RegistrationStatusCode.PACKET_UIN_GENERATION_SUCCESS, NotificationTemplateType.UIN_CREATED);
 		statusMap.put(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS, NotificationTemplateType.UIN_UPDATE);
 
 		return unmodifiableMap;
