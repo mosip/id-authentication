@@ -86,6 +86,7 @@ public class SwaggerConfig {
 	@Bean
 	public Docket api() {
 		boolean targetSwagger = false;
+		localEnv = true;
 		if (!localEnv && swaggerUrl != null && !swaggerUrl.isEmpty()) {
 			try {
 				proto = new URL(swaggerUrl).getProtocol();
