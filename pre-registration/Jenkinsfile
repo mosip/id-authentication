@@ -3,8 +3,7 @@ node {
  def server = Artifactory.server 'ART'
  def rtMaven = Artifactory.newMavenBuild()
  def buildInfo
- //def branch = env.NEXT_BRANCH_NAME
- def branch = '0.8.0'
+ def branch = env.NEXT_BRANCH_NAME
  def dockerImagesTagVersion = 'NaV'  //This will ensure that docker images tag should have 1-1 relation ship with project version
  def projectToBuild = 'pre-registration'
  def registryUrl = 'http://docker-registry.mosip.io:5000'
@@ -44,7 +43,7 @@ node {
 
 stage ('---------- build ---------------') {
 	// for building java projects
-        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -Dspring.cloud.config.label='+branch, buildInfo: buildInfo
+        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
  	// For building angular project
 	dir(branch) {
 		// Looking for angular.json file to to find out if the submodule we are building is an angular project
@@ -113,7 +112,7 @@ stage ('---------- build ---------------') {
     sh "rm -f parentDirectoryPath"
     docker.withRegistry(registryUrl, registryCredentials) {
      def buildName = "$parentDirectoryName:$dockerImagesTagVersion.$BUILD_NUMBER"
-     newApp = docker.build(buildName, '--build-arg spring_config_label='+branch+' -f ' + locationOfDockerFiles[i] + ' ' + parentDirectoryPath)
+     newApp = docker.build(buildName, '-f ' + locationOfDockerFiles[i] + ' ' + parentDirectoryPath)
      newApp.push()
      newApp.push 'latest'
     }
