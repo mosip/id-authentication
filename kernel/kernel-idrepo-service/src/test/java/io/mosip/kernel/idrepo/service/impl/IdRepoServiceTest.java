@@ -901,7 +901,7 @@ public class IdRepoServiceTest {
 		try {
 			RestRequestDTO restRequestDTO = new RestRequestDTO();
 			when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(restRequestDTO);
-			when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException());
+			when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR));
 			Uin uin = new Uin();
 			uin.setUinData(new byte[] { 0 });
 			ReflectionTestUtils.invokeMethod(securityManager, "encryptDecryptData", restRequestDTO);
@@ -915,7 +915,7 @@ public class IdRepoServiceTest {
 		try {
 			RestRequestDTO restRequestDTO = new RestRequestDTO();
 			when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(restRequestDTO);
-			when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException());
+			when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR));
 			Uin uin = new Uin();
 			uin.setUinData(new byte[] { 0 });
 			ReflectionTestUtils.invokeMethod(securityManager, "encryptDecryptData", restRequestDTO);
