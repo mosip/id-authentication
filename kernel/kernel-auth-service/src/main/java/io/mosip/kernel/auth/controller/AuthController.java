@@ -100,7 +100,8 @@ public class AuthController {
 		final Cookie cookie = new Cookie(mosipEnvironment.getAuthTokenHeader(), content);
 		cookie.setMaxAge(expirationTimeSeconds);
 		cookie.setHttpOnly(true);
-		cookie.setSecure(true);
+		//TODO: To be set as true once SSL is enabled
+		//cookie.setSecure(true);
 		cookie.setPath("/");
 		return cookie;
 	}
