@@ -36,7 +36,7 @@ import io.mosip.kernel.idrepo.dto.RestRequestDTO;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class RestRequestFactoryTest {
+public class RestRequestBuilderTest {
 
 	@InjectMocks
 	RestRequestBuilder restBuilder;
