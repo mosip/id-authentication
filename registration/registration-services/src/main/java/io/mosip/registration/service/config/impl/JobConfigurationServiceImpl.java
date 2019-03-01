@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -218,7 +219,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			isSchedulerRunning = true;
 
 			/* Job Data Map */
-			Map<String, Object> jobDataAsMap = new HashMap<>();
+			Map<String, Object> jobDataAsMap = new WeakHashMap<>();
 			jobDataAsMap.put("applicationContext", applicationContext);
 			jobDataAsMap.putAll(syncJobMap);
 
@@ -570,7 +571,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			setErrorResponse(responseDTO, errorMsg, null);
 
 		} else {
-			HashMap<String, Object> attributes = new HashMap<>();
+			Map<String, Object> attributes = new WeakHashMap<>();
 			attributes.put(RegistrationConstants.SYNC_DATA_DTO, syncDataProcessDTOs);
 
 			setSuccessResponse(responseDTO, successMsg, attributes);
@@ -709,7 +710,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	public ResponseDTO isRestart() {
 		ResponseDTO responseDTO = new ResponseDTO();
 		/* Fetch completed job map */
-		HashMap<String, String> completedSyncJobMap = (HashMap<String, String>) BaseJob.getCompletedJobMap();
+		Map<String, String> completedSyncJobMap = BaseJob.getCompletedJobMap();
 
 		/* Compare with restart-able job list */
 		for (String jobId : restartableJobList) {
@@ -718,7 +719,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			if (RegistrationConstants.JOB_EXECUTION_SUCCESS.equals(completedSyncJobMap.get(jobId))) {
 
 				/* Store job info in attributes of response */
-				Map<String, Object> successJobAttribute = new HashMap<>();
+				Map<String, Object> successJobAttribute = new WeakHashMap<>();
 				successJobAttribute.put(RegistrationConstants.JOB_ID, jobId);
 
 				return setSuccessResponse(responseDTO,
@@ -730,9 +731,6 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		return responseDTO;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.config.JobConfigurationService#getRestartTime()
-	 */
 	@Override
 	public ResponseDTO getRestartTime() {
 

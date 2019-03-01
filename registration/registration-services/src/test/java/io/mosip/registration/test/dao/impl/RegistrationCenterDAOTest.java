@@ -15,6 +15,7 @@ import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dao.impl.RegistrationCenterDAOImpl;
 import io.mosip.registration.entity.RegistrationCenter;
+import io.mosip.registration.entity.id.RegistartionCenterId;
 import io.mosip.registration.repositories.RegistrationCenterRepository;
 
 public class RegistrationCenterDAOTest {
@@ -32,9 +33,12 @@ public class RegistrationCenterDAOTest {
 	public void getRegistrationCenterDetailsSuccessTest() {
 
 		RegistrationCenter registrationCenter = new RegistrationCenter();
+		RegistartionCenterId registartionCenterId = new RegistartionCenterId();
+		registartionCenterId.setId("10011");
+		registrationCenter.setRegistartionCenterId(registartionCenterId);
 		
 		Optional<RegistrationCenter> registrationCenterList = Optional.of(registrationCenter);
-		Mockito.when(registrationCenterRepository.findByCenterIdAndIsActiveTrue("mosip"))
+		Mockito.when(registrationCenterRepository.findByRegistartionCenterIdIdAndIsActiveTrue("mosip"))
 				.thenReturn(registrationCenterList);
 		assertTrue(registrationCenterList.isPresent());
 		assertNotNull(registrationCenterDAOImpl.getRegistrationCenterDetails("mosip"));

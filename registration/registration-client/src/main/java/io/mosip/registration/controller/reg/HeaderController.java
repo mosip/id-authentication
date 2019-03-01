@@ -99,7 +99,6 @@ public class HeaderController extends BaseController {
 	@Autowired
 	private RegistrationPacketVirusScanService registrationPacketVirusScanService;
 	
-
 	@Autowired
 	private RestartController restartController;
 
@@ -194,7 +193,6 @@ public class HeaderController extends BaseController {
 				restartController.restart();
 			}
 
-			
 			if ("Y".equalsIgnoreCase((String) ApplicationContext.getInstance().getApplicationMap()
 					.get(RegistrationConstants.UI_SYNC_DATA))) {
 				syncData = BaseController.load(getClass().getResource(RegistrationConstants.SYNC_DATA));
@@ -215,6 +213,32 @@ public class HeaderController extends BaseController {
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 
+	}
+
+	/**
+	 * Redirecting to PacketStatusSync Page
+	 */
+	public void syncPacketStatus(ActionEvent event) {
+		try {
+			auditFactory.audit(AuditEvent.SYNC_REGISTRATION_PACKET_STATUS, Components.SYNC_SERVER_TO_CLIENT,
+					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
+			AnchorPane syncServerClientRoot = BaseController
+					.load(getClass().getResource(RegistrationConstants.SYNC_STATUS));
+
+			if (!validateScreenAuthorization(syncServerClientRoot.getId())) {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
+			} else {
+				VBox pane = (VBox) (menu.getParent().getParent().getParent());
+				for (int index = pane.getChildren().size() - 1; index > 0; index--) {
+					pane.getChildren().remove(index);
+				}
+				pane.getChildren().add(syncServerClientRoot);
+
+			}
+		} catch (IOException ioException) {
+			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+		}
 	}
 
 	/**

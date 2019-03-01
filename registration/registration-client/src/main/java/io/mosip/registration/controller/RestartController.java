@@ -100,7 +100,6 @@ public class RestartController extends BaseController {
 				generatedAlerts.forEach(alert -> {
 					alert.close();
 				});
-
 				return true;
 			}
 

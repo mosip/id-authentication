@@ -4,7 +4,7 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.entity.RegCenterUser;
-import io.mosip.registration.entity.RegCenterUserId;
+import io.mosip.registration.entity.id.RegCenterUserId;
 
 /**
  * Repository for Center User Mapping

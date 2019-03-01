@@ -12,10 +12,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.WeakHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -316,7 +316,7 @@ public class RegistrationApprovalController extends BaseController implements In
 				}
 			}
 
-			Map<String, String> map = new HashMap<>();
+			Map<String, String> map = new WeakHashMap<>();
 			map.put(RegistrationConstants.REGISTRATIONID,
 					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId());
 			map.put(RegistrationConstants.STATUSCODE, RegistrationClientStatusCode.APPROVED.getCode());

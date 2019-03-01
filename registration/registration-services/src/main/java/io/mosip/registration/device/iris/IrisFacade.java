@@ -8,9 +8,9 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import javax.imageio.ImageIO;
 
@@ -93,7 +93,7 @@ public class IrisFacade {
 			}
 
 			// Add image format, image and quality score in bytes array to map
-			Map<String, Object> scannedIris = new HashMap<>();
+			Map<String, Object> scannedIris = new WeakHashMap<>();
 			scannedIris.put(RegistrationConstants.IMAGE_FORMAT_KEY, "png");
 			scannedIris.put(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY, scannedIrisBytes);
 			scannedIris.put(RegistrationConstants.IMAGE_SCORE_KEY, qualityScore);

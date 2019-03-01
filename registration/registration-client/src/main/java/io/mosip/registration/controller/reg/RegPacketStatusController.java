@@ -89,8 +89,8 @@ public class RegPacketStatusController extends BaseController implements Initial
 				ObservableList<RegPacketStatusDTO> packetStatus = FXCollections.observableArrayList();
 				for (LinkedHashMap<String, String> registration : registrations) {
 					packetStatus.add(new RegPacketStatusDTO(
-							registration.get(RegistrationConstants.PACKET_STATUS_SYNC_REGISTRATION_ID),
-							registration.get(RegistrationConstants.PACKET_STATUS_SYNC_STATUS_CODE)));
+							registration.get(RegistrationConstants.PACKET_STATUS_READER_REGISTRATION_ID),
+							registration.get(RegistrationConstants.PACKET_STATUS_READER_STATUS_CODE)));
 				}
 
 				regID.setCellValueFactory(new PropertyValueFactory<RegPacketStatusDTO, String>("packetId"));

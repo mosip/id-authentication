@@ -19,18 +19,17 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.impl.UserDetailDAOImpl;
 import io.mosip.registration.dto.UserDetailDto;
 import io.mosip.registration.dto.UserDetailResponseDto;
-import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserBiometric;
+import io.mosip.registration.entity.UserDetail;
+import io.mosip.registration.repositories.UserBiometricRepository;
 import io.mosip.registration.repositories.UserDetailRepository;
 import io.mosip.registration.repositories.UserPwdRepository;
 import io.mosip.registration.repositories.UserRoleRepository;
-import io.mosip.registration.repositories.UserBiometricRepository;
 
 public class UserDetailDAOTest {
 

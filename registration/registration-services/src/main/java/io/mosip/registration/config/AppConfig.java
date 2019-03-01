@@ -63,6 +63,7 @@ public class AppConfig {
 	 */
 	@Autowired
 	private JobTriggerListener commonTriggerListener;
+
 	@Autowired
 	private SyncJobConfigDAO syncJobConfigDAO;
 

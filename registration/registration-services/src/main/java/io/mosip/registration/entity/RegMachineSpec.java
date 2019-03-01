@@ -3,13 +3,15 @@ package io.mosip.registration.entity;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import io.mosip.registration.entity.id.RegMachineSpecId;
 
 /**
  * @author Sreekar chukka
@@ -24,9 +26,8 @@ public class RegMachineSpec extends RegistrationCommonFields implements Serializ
 	*/
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@Column(name = "id")
-	private String id;
+	@EmbeddedId
+	private RegMachineSpecId regMachineSpecId;
 
 	@Column(name = "name")
 	private String name;
@@ -46,28 +47,10 @@ public class RegMachineSpec extends RegistrationCommonFields implements Serializ
 	@Column(name = "descr")
 	private String description;
 
-	@Column(name = "lang_code")
-	private String langCode;
-
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "mtyp_code", referencedColumnName = "code", insertable = false, updatable = false),
+	@JoinColumns({ @JoinColumn(name = "mtyp_code", referencedColumnName = "code", insertable = false, updatable = false),
 			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	private MachineType machineType;
-
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
 
 	/**
 	 * @return the name
@@ -153,19 +136,6 @@ public class RegMachineSpec extends RegistrationCommonFields implements Serializ
 		this.description = description;
 	}
 
-	/**
-	 * @return the langCode
-	 */
-	public String getLangCode() {
-		return langCode;
-	}
-
-	/**
-	 * @param langCode the langCode to set
-	 */
-	public void setLangCode(String langCode) {
-		this.langCode = langCode;
-	}
 
 	public MachineType getMachineType() {
 		return machineType;

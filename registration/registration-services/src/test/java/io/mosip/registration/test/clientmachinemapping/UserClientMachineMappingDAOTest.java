@@ -30,16 +30,17 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.impl.MachineMappingDAOImpl;
 import io.mosip.registration.entity.CenterMachine;
-import io.mosip.registration.entity.CenterMachineId;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.RegCenterDevice;
 import io.mosip.registration.entity.RegCentreMachineDevice;
 import io.mosip.registration.entity.RegDeviceType;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
-import io.mosip.registration.entity.UserMachineMappingID;
 import io.mosip.registration.entity.UserRole;
-import io.mosip.registration.entity.UserRoleID;
+import io.mosip.registration.entity.id.CenterMachineId;
+import io.mosip.registration.entity.id.RegMachineSpecId;
+import io.mosip.registration.entity.id.UserMachineMappingID;
+import io.mosip.registration.entity.id.UserRoleID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.CenterMachineRepository;
@@ -124,7 +125,7 @@ public class UserClientMachineMappingDAOTest {
 
 	@Test(expected = RegBaseUncheckedException.class)
 	public void getStationIDRunException() throws RegBaseCheckedException {
-		Mockito.when(machineMasterRepository.findByMacAddress(Mockito.anyString()))
+		Mockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddress(Mockito.anyString()))
 				.thenThrow(new RegBaseUncheckedException());
 		machineMappingDAOImpl.getStationID("8C-16-45-88-E7-0B");
 	}
@@ -133,15 +134,18 @@ public class UserClientMachineMappingDAOTest {
 	public void getStationID() throws RegBaseCheckedException {
 		MachineMaster machineMaster = new MachineMaster();
 		machineMaster.setMacAddress("8C-16-45-88-E7-0C");
-		machineMaster.setId("StationID1947");
-		Mockito.when(machineMasterRepository.findByMacAddress(Mockito.anyString())).thenReturn(machineMaster);
+		RegMachineSpecId specId=new RegMachineSpecId();
+		specId.setId("100131");
+		specId.setLangCode("eng");
+		machineMaster.setRegMachineSpecId(specId);
+		Mockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddress(Mockito.anyString())).thenReturn(machineMaster);
 		String stationId = machineMappingDAOImpl.getStationID("8C-16-45-88-E7-0C");
-		Assert.assertSame("StationID1947", stationId);
+		Assert.assertSame("100131", stationId);
 	}
 
 	@Test(expected = RegBaseUncheckedException.class)
 	public void getCenterIDRunExceptionTest() throws RegBaseCheckedException {
-		Mockito.when(centerMachineRepository.findByCenterMachineIdId(Mockito.anyString()))
+		Mockito.when(centerMachineRepository.findByIsActiveTrueAndCenterMachineIdId(Mockito.anyString()))
 				.thenThrow(new RegBaseUncheckedException());
 		machineMappingDAOImpl.getCenterID("StationID1947");
 	}
@@ -155,7 +159,7 @@ public class UserClientMachineMappingDAOTest {
 		CenterMachine centerMachine = new CenterMachine();
 		centerMachine.setCenterMachineId(centerMachineId);
 
-		Mockito.when(centerMachineRepository.findByCenterMachineIdId(Mockito.anyString())).thenReturn(centerMachine);
+		Mockito.when(centerMachineRepository.findByIsActiveTrueAndCenterMachineIdId(Mockito.anyString())).thenReturn(centerMachine);
 		String stationId = machineMappingDAOImpl.getCenterID("StationID1947");
 		Assert.assertSame("CenterID1947", stationId);
 	}
@@ -329,7 +333,7 @@ public class UserClientMachineMappingDAOTest {
 
 	@Test
 	public void getCenterIDNullTest() {
-		Mockito.when(centerMachineRepository.findByCenterMachineIdId(Mockito.anyString())).thenReturn(null);
+		Mockito.when(centerMachineRepository.findByIsActiveTrueAndCenterMachineIdId(Mockito.anyString())).thenReturn(null);
 		try {
 			machineMappingDAOImpl.getCenterID("StationID1947");
 		} catch (RegBaseCheckedException regBaseCheckedException) {
@@ -339,7 +343,7 @@ public class UserClientMachineMappingDAOTest {
 
 	@Test
 	public void getStationIDNullTest() {
-		Mockito.when(centerMachineRepository.findByCenterMachineIdId(Mockito.anyString())).thenReturn(null);
+		Mockito.when(centerMachineRepository.findByIsActiveTrueAndCenterMachineIdId(Mockito.anyString())).thenReturn(null);
 		try {
 			machineMappingDAOImpl.getStationID("8C-16-45-88-E7-0C");
 		} catch (RegBaseCheckedException regBaseCheckedException) {
@@ -349,7 +353,7 @@ public class UserClientMachineMappingDAOTest {
 
 	@Test
 	public void getUsersNullTest() {
-		Mockito.when(centerMachineRepository.findByCenterMachineIdId(Mockito.anyString())).thenReturn(null);
+		Mockito.when(centerMachineRepository.findByIsActiveTrueAndCenterMachineIdId(Mockito.anyString())).thenReturn(null);
 		try {
 			SessionContext.getInstance();
 			machineMappingDAOImpl.getUsers("8C-16-45-88-E7-0C");
@@ -375,10 +379,18 @@ public class UserClientMachineMappingDAOTest {
 		userDetail.setId("mosip");
 		userMachineMapping.setUserDetail(userDetail);
 		list.add(userMachineMapping);
-		Mockito.when(machineMappingRepository.findByUserMachineMappingIdMachineID(Mockito.anyString()))
+		Mockito.when(machineMappingRepository.findByIsActiveTrueAndUserMachineMappingIdMachineID(Mockito.anyString()))
 				.thenReturn(list);
 		Assert.assertEquals(userMachineMapping.getUserDetail().getId(),
 				machineMappingDAOImpl.getUserMappingDetails("machineId").get(0).getUserDetail().getId());
+	}
+
+	@Test
+	public void getAllDevicesTest() {
+		Mockito.when(deviceMasterRepository.findByRegMachineSpecIdLangCode(
+				Mockito.anyString())).thenReturn(new ArrayList<>());
+		
+		Assert.assertNotNull(machineMappingDAOImpl.getAllValidDevicesByCenterId("eng"));
 	}
 
 }

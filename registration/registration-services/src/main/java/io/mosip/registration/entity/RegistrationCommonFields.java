@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
+import io.mosip.kernel.core.util.DateUtils;
+
 @MappedSuperclass
 public class RegistrationCommonFields {
 	
@@ -63,7 +65,7 @@ public class RegistrationCommonFields {
 	 *            the crDtime to set
 	 */
 	public void setCrDtime(Timestamp crDtime) {
-		this.crDtime = crDtime;
+		this.crDtime = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 	}
 
 	/**
@@ -93,7 +95,7 @@ public class RegistrationCommonFields {
 	 *            the updDtimes to set
 	 */
 	public void setUpdDtimes(Timestamp updDtimes) {
-		this.updDtimes = updDtimes;
+		this.updDtimes = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 	}
 
 }

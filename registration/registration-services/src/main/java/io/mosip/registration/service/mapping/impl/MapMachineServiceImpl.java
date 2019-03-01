@@ -9,10 +9,9 @@ import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPP
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
@@ -34,10 +34,10 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.UserMachineMappingDTO;
 import io.mosip.registration.entity.RegCenterDevice;
 import io.mosip.registration.entity.RegCentreMachineDevice;
-import io.mosip.registration.entity.RegCentreMachineDeviceId;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
-import io.mosip.registration.entity.UserMachineMappingID;
+import io.mosip.registration.entity.id.RegCentreMachineDeviceId;
+import io.mosip.registration.entity.id.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.BaseService;
@@ -100,7 +100,7 @@ public class MapMachineServiceImpl extends BaseService implements MapMachineServ
 			if (user != null) {
 				/* if user already exists */
 				user.setUpdBy(getUserIdFromSession());
-				user.setUpdDtimes(new Timestamp(System.currentTimeMillis()));
+				user.setUpdDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				user.setIsActive(isActive);
 
 				user.setIsActive(isActive);
@@ -111,9 +111,9 @@ public class MapMachineServiceImpl extends BaseService implements MapMachineServ
 				user.setUserMachineMappingId(userID);
 				user.setIsActive(isActive);
 				user.setCrBy(getUserIdFromSession());
-				user.setCrDtime(new Timestamp(System.currentTimeMillis()));
+				user.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				user.setUpdBy(getUserIdFromSession());
-				user.setUpdDtimes(new Timestamp(System.currentTimeMillis()));
+				user.setUpdDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 
 				machineMappingDAO.save(user);
 			}
@@ -180,7 +180,7 @@ public class MapMachineServiceImpl extends BaseService implements MapMachineServ
 	private Map<String, Object> constructDTOs(String machineID, String stationID, String centreID,
 			List<UserDetail> userDetails) {
 		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "constructDTOs() method called");
-		Map<String, Object> userDetailMap = new HashMap<>();
+		Map<String, Object> userDetailMap = new WeakHashMap<>();
 		try {
 			List<UserMachineMappingDTO> userMachineMappingDTOs = userDetails.stream().map(registrationUserDetail -> {
 				UserMachineMappingDTO userMachineMappingDTO = null;
@@ -249,7 +249,7 @@ public class MapMachineServiceImpl extends BaseService implements MapMachineServ
 
 		try {
 			machineMappingDAO.getAllDeviceTypes()
-					.forEach(deviceType -> list.add(deviceType.getCode()));
+					.forEach(deviceType -> list.add(deviceType.getRegDeviceTypeId().getCode()));
 
 			LOGGER.info(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 					"getAllDeviceTypes() method is ended");
@@ -273,7 +273,7 @@ public class MapMachineServiceImpl extends BaseService implements MapMachineServ
 		LOGGER.info(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"getDeviceMappingList(String,String) method is strarted");
 
-		Map<String, List<DeviceDTO>> map = new HashMap<>();
+		Map<String, List<DeviceDTO>> map = new WeakHashMap<>();
 
 		try {
 			List<DeviceDTO> availableDeviceDTOs = new ArrayList<>();
@@ -289,7 +289,7 @@ public class MapMachineServiceImpl extends BaseService implements MapMachineServ
 						.setManufacturerName(regCenterMachineDevice.getRegDeviceMaster().getRegDeviceSpec().getBrand());
 				deviceDTO.setModelName(regCenterMachineDevice.getRegDeviceMaster().getRegDeviceSpec().getModel());
 				deviceDTO.setDeviceType(regCenterMachineDevice.getRegDeviceMaster().getRegDeviceSpec()
-						.getRegDeviceType().getCode());
+						.getRegDeviceType().getRegDeviceTypeId().getCode());
 				deviceDTO.setRegCenterId(regCenterMachineDevice.getRegCentreMachineDeviceId().getRegCentreId());
 				deviceDTO.setDeviceId(regCenterMachineDevice.getRegCentreMachineDeviceId().getDeviceId());
 				deviceDTO.setMachineId(regCenterMachineDevice.getRegCentreMachineDeviceId().getMachineId());
@@ -306,7 +306,7 @@ public class MapMachineServiceImpl extends BaseService implements MapMachineServ
 				deviceDTO.setManufacturerName(regCenterDevice.getRegDeviceMaster().getRegDeviceSpec().getBrand());
 				deviceDTO.setModelName(regCenterDevice.getRegDeviceMaster().getRegDeviceSpec().getModel());
 				deviceDTO.setDeviceType(regCenterDevice.getRegDeviceMaster().getRegDeviceSpec().getRegDeviceType()
-						.getCode());
+						.getRegDeviceTypeId().getCode());
 				deviceDTO.setRegCenterId(regCenterDevice.getRegCenterDeviceId().getRegCenterId());
 				deviceDTO.setDeviceId(regCenterDevice.getRegCenterDeviceId().getDeviceId());
 
@@ -379,7 +379,7 @@ public class MapMachineServiceImpl extends BaseService implements MapMachineServ
 				regCentreMachineDevice.setRegCentreMachineDeviceId(regCentreMachineDeviceId);
 				regCentreMachineDevice.setIsActive(true);
 				regCentreMachineDevice.setCrBy(SessionContext.userContext().getUserId());
-				regCentreMachineDevice.setCrDtime(new Timestamp(new Date().getTime()));
+				regCentreMachineDevice.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 
 				regCentreMachineDevices.add(regCentreMachineDevice);
 			}

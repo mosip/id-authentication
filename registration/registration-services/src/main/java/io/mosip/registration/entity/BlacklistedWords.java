@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
+import io.mosip.registration.entity.id.WordAndLanguageCodeID;
+
 /**
  * Entity class for blacklisted words.
  * 

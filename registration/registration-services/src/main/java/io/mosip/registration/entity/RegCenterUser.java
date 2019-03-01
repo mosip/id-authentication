@@ -6,9 +6,11 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import io.mosip.registration.entity.id.RegCenterUserId;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,7 +27,6 @@ import lombok.Setter;
 public class RegCenterUser extends RegistrationCommonFields {
 
 	@EmbeddedId
-	@Column(name = "pk_cntrusr_usr_id")
 	private RegCenterUserId regCenterUserId;
 
 	@OneToOne
@@ -33,12 +34,15 @@ public class RegCenterUser extends RegistrationCommonFields {
 	private UserDetail userDetail;
 
 	@OneToOne
-	@JoinColumn(name = "regcntr_id", nullable = false, insertable = false, updatable = false)
+	@JoinColumns({ @JoinColumn(name = "regcntr_id",referencedColumnName="id", insertable = false, updatable = false),
+		@JoinColumn(name = "lang_code",referencedColumnName="lang_code", insertable = false, updatable = false) })
 	private RegistrationCenter registrationCenter;
 
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 	@Column(name = "del_dtimes")
 	private Timestamp delDtimes;
+	@Column(name = "lang_code")
+	private String langCode;
 
 }

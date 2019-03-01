@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -216,7 +217,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 			// Add the Actual Devices Map and Updated Devices Map (Placeholder) to
 			// SessionContext object
 			SessionContext.map().put(RegistrationConstants.ONBOARD_DEVICES_MAP, devicesMap);
-			Map<String, Set<DeviceDTO>> upadtedDevicesMap = new HashMap<>();
+			Map<String, Set<DeviceDTO>> upadtedDevicesMap = new WeakHashMap<>();
 			upadtedDevicesMap.put(RegistrationConstants.ONBOARD_AVAILABLE_DEVICES, new HashSet<DeviceDTO>());
 			upadtedDevicesMap.put(RegistrationConstants.ONBOARD_MAPPED_DEVICES, new HashSet<DeviceDTO>());
 			SessionContext.map().put(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED,

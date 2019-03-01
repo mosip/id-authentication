@@ -10,6 +10,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import io.mosip.registration.entity.id.UserBiometricId;
 import lombok.Getter;
 import lombok.Setter;
 

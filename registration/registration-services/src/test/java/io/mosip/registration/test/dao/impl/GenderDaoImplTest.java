@@ -2,9 +2,7 @@ package io.mosip.registration.test.dao.impl;
 
 import static org.junit.Assert.assertEquals;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Rule;
@@ -17,7 +15,7 @@ import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dao.impl.GenderDAOImpl;
 import io.mosip.registration.entity.Gender;
-import io.mosip.registration.entity.GenericId;
+import io.mosip.registration.entity.id.GenericId;
 import io.mosip.registration.repositories.GenderRepository;
 
 public class GenderDaoImplTest {

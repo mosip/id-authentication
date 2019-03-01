@@ -63,7 +63,7 @@
                         <Line endX="100.0" layoutX="372.0" layoutY="85.0" startX="-100.0" />
                      </children>
                   </AnchorPane>
-                  <Pane id="applicantPhoto" fx:id="applicantImagePane" layoutX="352.0" layoutY="47.0" onMouseClicked="#enableCapture" prefHeight="214.0" prefWidth="242.0">
+                  <AnchorPane id="applicantPhoto" fx:id="applicantImagePane" layoutX="352.0" layoutY="47.0" onMouseClicked="#enableCapture" prefHeight="214.0" prefWidth="242.0">
                      <children>
                         <ImageView fx:id="applicantImage" fitHeight="210.0" fitWidth="240.0" layoutX="2.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -71,7 +71,7 @@
                            </image>
                         </ImageView>
                      </children>
-                  </Pane>
+                  </AnchorPane>
                </children>
             </AnchorPane>
          </children>

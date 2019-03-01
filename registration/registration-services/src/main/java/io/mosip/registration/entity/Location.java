@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
+import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
+
 /**
  * 
  * @author Brahmananda Reddy
@@ -17,9 +19,6 @@ import javax.persistence.Table;
 @Table(schema = "reg", name = "location")
 @IdClass(CodeAndLanguageCodeID.class)
 public class Location extends RegistrationCommonFields implements Serializable {
-	/**
-	 * 
-	 */
 
 	private static final long serialVersionUID = -5585825705521742941L;
 

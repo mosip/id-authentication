@@ -3,11 +3,11 @@ package io.mosip.registration.mapper;
 import java.beans.PropertyDescriptor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.WeakHashMap;
 
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -97,7 +97,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			List<FingerprintDetailsDTO> fingerprintDetailsDTOs = biometricInfoDTO.getFingerprintDetailsDTO();
 
 			// Put the finger-prints to map
-			Map<String, FingerprintDetailsDTO> fingerprintMap = new HashMap<>();
+			Map<String, FingerprintDetailsDTO> fingerprintMap = new WeakHashMap<>();
 			if (fingerprintDetailsDTOs != null) {
 				for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
 					for (FingerprintDetailsDTO segmentedFingerprint : fingerprintDetailsDTO
@@ -152,7 +152,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			List<IrisDetailsDTO> irisDetailsDTOs = biometricInfoDTO.getIrisDetailsDTO();
 
 			// Put Iris to map
-			Map<String, IrisDetailsDTO> irisMap = new HashMap<>();
+			Map<String, IrisDetailsDTO> irisMap = new WeakHashMap<>();
 			if (irisDetailsDTOs != null) {
 				for (IrisDetailsDTO irisDetailsDTO : irisDetailsDTOs) {
 					irisMap.put(irisDetailsDTO.getIrisType().toUpperCase(), irisDetailsDTO);
@@ -180,12 +180,6 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 
 			// Set OSIData
 			identity.setOsiData(getOSIData(source));
-
-			// Set Registered Device
-			identity.setCapturedRegisteredDevices(getRegisteredDevices());
-
-			// Set Registered Device
-			identity.setCapturedNonRegisteredDevices(getNonRegisteredDevices());
 
 			// Set Checksum
 			List<FieldValue> checkSums = new LinkedList<>();
@@ -416,6 +410,8 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		// Add Registration Creation Date
 		metaData.add(buildFieldValue("creationDate", DateUtils.formatToISOString(LocalDateTime.now())));
 
+		metaData.add(buildFieldValue("applicantTypeCode", metaDataDTO.getApplicantTypeCode()));
+		
 		return metaData;
 	}
 
@@ -529,36 +525,6 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			fileName = fileName.substring(0, fileName.lastIndexOf('.'));
 		}
 		return fileName;
-	}
-
-	private List<FieldValue> getRegisteredDevices() {
-		List<FieldValue> registratedDevices = new LinkedList<>();
-
-		// Add fingerprint device
-		registratedDevices.add(buildFieldValue("fingerprint", "123455YRHTIFHKJI8U90U2334"));
-		// Add Iris Device
-		registratedDevices.add(buildFieldValue("iris", "123455YRHTIFHKJI8U9r2rrr3r3"));
-		// Add GPS Device
-		registratedDevices.add(buildFieldValue("gps", "123455YRHTIFHKJI8U90r3ttt4ttf"));
-		// Add Photo Camera Device
-		registratedDevices.add(buildFieldValue("photo", "12345ttt4tggrgrrwrgwgwgrggrggw"));
-
-		return registratedDevices;
-	}
-
-	private List<FieldValue> getNonRegisteredDevices() {
-		List<FieldValue> registratedDevices = new LinkedList<>();
-
-		// Add fingerprint device
-		registratedDevices.add(buildFieldValue("fingerprint", "trergrfrfrfrfrw21313113"));
-		// Add Iris Device
-		registratedDevices.add(buildFieldValue("iris", "313rq342s4s3gg5g54bth5j4j64j64"));
-		// Add GPS Device
-		registratedDevices.add(buildFieldValue("gps", "8yjh98q78njh7t62hbkjkjqhkjqbqhhkh"));
-		// Add Photo Camera Device
-		registratedDevices.add(buildFieldValue("photo", "11331oiu31y8bahagyaftfafahfakhfagk"));
-
-		return registratedDevices;
 	}
 
 	@SuppressWarnings("unchecked")

@@ -28,9 +28,15 @@
       </AnchorPane>
       <AnchorPane fx:id="exceptionPane" layoutX="199.0" layoutY="540.0">
          <children>
-            <Label id="toggleLabel2" fx:id="bioExceptionToggleLabel1" layoutX="342.0" layoutY="10.0" styleClass="toggleButton" text="" />
-            <Label id="toggleLabel1" fx:id="bioExceptionToggleLabel2" layoutX="350.0" layoutY="10.0" styleClass="toggleButton" text="" />
-            <Label layoutX="12.0" layoutY="8.0" text="%biometricexception" styleClass="biometricEceptionLabel"/>
+            <AnchorPane layoutX="342.0" layoutY="12.0">
+               <children>
+ 	              <Label id="toggleLabel1" fx:id="bioExceptionToggleLabel1" layoutY="0.0" styleClass="toggleButton" text="" />
+                  <Label id="toggleLabel2" fx:id="bioExceptionToggleLabel2" layoutX="0.0" layoutY="2.0" styleClass="toggleButton" text="" />
+               </children>
+            </AnchorPane>
+            <Label layoutX="12.0" layoutY="8.0" styleClass="biometricEceptionLabel" text="%biometricexception" />
+            <Label layoutX="300.0" layoutY="15.0" text="%no" styleClass="uinUpdateLabelsTypeTwo" />
+            <Label layoutX="425.0" layoutY="15.0" text="%yes" styleClass="uinUpdateLabelsTypeTwo" />
          </children>
       </AnchorPane>
       <AnchorPane fx:id="RegistrationHeader">

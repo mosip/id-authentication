@@ -74,16 +74,16 @@ public interface JobConfigurationService {
 
 	/**
 	 * Is Application to be restart
+	 * 
 	 * @return response
 	 */
 	ResponseDTO isRestart();
-	
+
 	/**
 	 * Get restart time
+	 * 
 	 * @return response
 	 */
 	ResponseDTO getRestartTime();
-	
-	
 
 }

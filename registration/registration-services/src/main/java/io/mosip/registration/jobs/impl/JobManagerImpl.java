@@ -1,7 +1,7 @@
 package io.mosip.registration.jobs.impl;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -48,7 +48,7 @@ public class JobManagerImpl implements JobManager {
 		// Get Job Map
 		JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
 
-		Map<String, SyncJobDef> syncjobMap = new HashMap<>();
+		Map<String, SyncJobDef> syncjobMap = new WeakHashMap<>();
 
 		jobDataMap.forEach((key, value) -> {
 

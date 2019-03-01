@@ -32,10 +32,9 @@ public class DateValidation extends BaseController {
 	private static final Logger LOGGER = AppConfig.getLogger(DateValidation.class);
 
 	public DateValidation() {
-		dateMapper = new HashMap<String, String>();
+		dateMapper = new HashMap<>();
 		dateMapper.put("1", "31");
 		dateMapper.put("2", "29");
-		dateMapper.put("3", "30");
 		dateMapper.put("3", "31");
 		dateMapper.put("4", "30");
 		dateMapper.put("5", "31");
@@ -61,7 +60,7 @@ public class DateValidation extends BaseController {
 			TextField localField) {
 
 		try {
-			fxUtils.validateOnType(parentPane,date, validation, localField);
+			fxUtils.populateLocalFieldOnType(parentPane,date, validation, localField);
 			date.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				int dateVal = 1;
 				if (date.getText().matches("\\d+")) {
@@ -94,7 +93,7 @@ public class DateValidation extends BaseController {
 	public void validateMonth(AnchorPane parentPane,TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
 			TextField localField) {
 		try {
-			fxUtils.validateOnType(parentPane, month, validation, localField);
+			fxUtils.populateLocalFieldOnType(parentPane, month, validation, localField);
 			month.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				if (month.getText().matches("\\d+")) {
 					int monthVal = Integer.parseInt(month.getText());
@@ -165,7 +164,7 @@ public class DateValidation extends BaseController {
 	public void validateYear(AnchorPane parentPane, TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
 			TextField localField) {
 		try {
-			fxUtils.validateOnType(parentPane, year, validation, localField);
+			fxUtils.populateLocalFieldOnType(parentPane, year, validation, localField);
 			year.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				if (year.getText().matches("\\d{4}")) {
 					int yearVal = Integer.parseInt(year.getText());

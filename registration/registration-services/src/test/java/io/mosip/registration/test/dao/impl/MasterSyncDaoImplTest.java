@@ -64,12 +64,10 @@ import io.mosip.registration.entity.Application;
 import io.mosip.registration.entity.BiometricAttribute;
 import io.mosip.registration.entity.BiometricType;
 import io.mosip.registration.entity.BlacklistedWords;
-import io.mosip.registration.entity.CodeAndLanguageCodeID;
 import io.mosip.registration.entity.DocumentCategory;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.Gender;
 import io.mosip.registration.entity.Holiday;
-import io.mosip.registration.entity.HolidayID;
 import io.mosip.registration.entity.IdType;
 import io.mosip.registration.entity.Language;
 import io.mosip.registration.entity.Location;
@@ -90,6 +88,10 @@ import io.mosip.registration.entity.TemplateFileFormat;
 import io.mosip.registration.entity.TemplateType;
 import io.mosip.registration.entity.Title;
 import io.mosip.registration.entity.ValidDocument;
+import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
+import io.mosip.registration.entity.id.HolidayID;
+import io.mosip.registration.entity.id.RegDeviceTypeId;
+import io.mosip.registration.entity.id.RegMachineSpecId;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.ApplicationRepository;
@@ -390,7 +392,7 @@ public class MasterSyncDaoImplTest {
 		regCntr.setId("10031");
 		regCntr.setAddressLine1("Chennai");
 		regCntr.setIsActive(true);
-		regCntr.setLanguageCode("eng");
+		regCntr.setLangCode("eng");
 		regCntr.setAddressLine2("chennai");
 		regCntr.setAddressLine3("TN");
 		regCntr.setCenterEndTime(LocalTime.now());
@@ -548,55 +550,67 @@ public class MasterSyncDaoImplTest {
 		// Machine
 		List<MachineMaster> machines = new ArrayList<>();
 		MachineMaster machine = new MachineMaster();
-		machine.setId("1001");
+		RegMachineSpecId reg=new RegMachineSpecId();
+		reg.setId("10031");
+		reg.setLangCode("eng");
+		machine.setRegMachineSpecId(reg);
 		machine.setIpAddress("172.12.01.128");
 		machine.setMacAddress("21:21:21:12");
 		machine.setMachineSpecId("9876427");
 		machine.setMachineSpecId("1001");
 		machine.setName("Laptop");
-		machine.setLangCode("ENG");
 		machines.add(machine);
 		// Machine Specification
 		List<RegDeviceSpec> machineSpecification = new ArrayList<>();
 		RegDeviceSpec machineSpec = new RegDeviceSpec();
-		machineSpec.setId("1001");
+		RegMachineSpecId specId=new RegMachineSpecId();
+		specId.setId("1001");
 		machineSpec.setBrand("Lenovo");
 		machineSpec.setModel("T480");
 		machineSpec.setName("Laptop");
-		machineSpec.setLangCode("ENG");
+		specId.setLangCode("ENG");
+		machineSpec.setRegMachineSpecId(specId);
 		machineSpecification.add(machineSpec);
 		// Machine Type
 		List<MachineType> machineType = new ArrayList<>();
 		MachineType MasterMachineType = new MachineType();
-		MasterMachineType.setCode("1001");
+		CodeAndLanguageCodeID id=new CodeAndLanguageCodeID();
+		id.setCode("1001");
+		id.setLangCode("eng");
+		MasterMachineType.setCodeAndLanguageCodeID(id);
 		MasterMachineType.setName("System");
-		MasterMachineType.setLangCode("ENG");
 		MasterMachineType.setDescription("System");
 		machineType.add(MasterMachineType);
 		// Device
 		List<RegDeviceMaster> devices = new ArrayList<>();
 		RegDeviceMaster Masterdevices = new RegDeviceMaster();
-		Masterdevices.setId("1011");
+		RegMachineSpecId regMachineSpecId = new RegMachineSpecId();
+		regMachineSpecId.setId("1011");
 		Masterdevices.setName("printer");
 		Masterdevices.setIpAddress("127.0.0.122");
 		Masterdevices.setSerialNum("1011");
-		Masterdevices.setLangCode("ENG");
+		regMachineSpecId.setLangCode("ENG");
+		Masterdevices.setRegMachineSpecId(regMachineSpecId);
 		Masterdevices.setMacAddress("213:21:132:312");
 		devices.add(Masterdevices);
 		// Device Specification
 		List<RegDeviceSpec> deviceSpecification = new ArrayList<>();
 		RegDeviceSpec MasterDeviceSpecification = new RegDeviceSpec();
-		MasterDeviceSpecification.setId("1011");
+		RegMachineSpecId specMachineId=new RegMachineSpecId();
+		specMachineId.setId("1011");
 		MasterDeviceSpecification.setBrand("Hp Printer");
-		MasterDeviceSpecification.setLangCode("ENG");
+		specMachineId.setLangCode("ENG");
 		MasterDeviceSpecification.setModel("HP-SP1011");
+		MasterDeviceSpecification.setRegMachineSpecId(specId);
 		deviceSpecification.add(MasterDeviceSpecification);
 		// Device Type
 		List<RegDeviceType> deviceType = new ArrayList<>();
 		RegDeviceType MasterDeviceType = new RegDeviceType();
-		MasterDeviceType.setCode("T1011");
+		RegDeviceTypeId deviceTypeId = new RegDeviceTypeId();
+		deviceTypeId.setCode("FRS");
+		deviceTypeId.setLangCode("eng");
+		MasterDeviceType.setRegDeviceTypeId(deviceTypeId);
 		MasterDeviceType.setName("device");
-		MasterDeviceType.setLangCode("ENG");
 		MasterDeviceType.setDescription("deviceDescriptiom");
 		deviceType.add(MasterDeviceType);
 		// Reg Center
@@ -612,7 +626,6 @@ public class MasterSyncDaoImplTest {
 		registrationCenter.setContactPhone("9865123456");
 		registrationCenter.setHolidayLocCode(("LOC01"));
 		registrationCenter.setIsActive(true);
-		registrationCenter.setLangCode("eng");
 		registrationCenter.setWorkingHours("9");
 		registrationCenter.setLunchEndTime(localTime);
 		registrationCenter.setLunchStartTime(localTime);
@@ -669,11 +682,11 @@ public class MasterSyncDaoImplTest {
 		// titles
 		List<Title> titles = new ArrayList<>();
 		Title titleType = new Title();
-		CodeAndLanguageCodeID id = new CodeAndLanguageCodeID();
-		id.setCode("1001");
-		id.setLangCode("eng");
+		CodeAndLanguageCodeID idCode = new CodeAndLanguageCodeID();
+		idCode.setCode("1001");
+		idCode.setLangCode("eng");
 		// titleType.setTitleDescription("dsddsd");
-		titleType.setId(id);
+		titleType.setId(idCode);
 		// titleType.setTitleName("admin");
 		titles.add(titleType);
 		// genders
@@ -694,11 +707,13 @@ public class MasterSyncDaoImplTest {
 		// idTypes
 		List<IdType> idTypes = new ArrayList<>();
 		IdType idTypeDto = new IdType();
+		CodeAndLanguageCodeID codeAndLanguageCodeID = new CodeAndLanguageCodeID();
 		idTypeDto.setName("ID");
-		idTypeDto.setLangCode("ENG");
+		codeAndLanguageCodeID.setLangCode("ENG");
 		idTypeDto.setIsActive(true);
-		idTypeDto.setCode("ID101");
+		codeAndLanguageCodeID.setCode("ID101");
 		idTypeDto.setDescr("descr");
+		idTypeDto.setCodeAndLanguageCodeID(codeAndLanguageCodeID);
 		idTypes.add(idTypeDto);
 		// validDocuments
 		List<ValidDocument> validDocuments = new ArrayList<>();
@@ -936,13 +951,15 @@ public class MasterSyncDaoImplTest {
 		// Machine
 		List<MachineMaster> machines = new ArrayList<>();
 		MachineMaster machine = new MachineMaster();
-		machine.setId("1001");
+		RegMachineSpecId specId=new RegMachineSpecId();
+		specId.setId("100131");
+		specId.setLangCode("eng");
+		machine.setRegMachineSpecId(specId);
 		machine.setIpAddress("172.12.01.128");
 		machine.setMacAddress("21:21:21:12");
 		machine.setMachineSpecId("9876427");
 		machine.setMachineSpecId("1001");
 		machine.setName("Laptop");
-		machine.setLangCode("ENG");
 		machines.add(machine);
 		List<Application> masterApplicationDtoEntity = new ArrayList<>();
 		try {
@@ -1117,13 +1134,15 @@ public class MasterSyncDaoImplTest {
 		// Machine
 		List<MachineMaster> machines = new ArrayList<>();
 		MachineMaster machine = new MachineMaster();
-		machine.setId("1001");
+		RegMachineSpecId specId=new RegMachineSpecId();
+		specId.setId("100131");
+		specId.setLangCode("eng");
+		machine.setRegMachineSpecId(specId);
 		machine.setIpAddress("172.12.01.128");
 		machine.setMacAddress("21:21:21:12");
 		machine.setMachineSpecId("9876427");
 		machine.setMachineSpecId("1001");
 		machine.setName("Laptop");
-		machine.setLangCode("ENG");
 		machines.add(machine);
 		List<Application> masterApplicationDtoEntity = new ArrayList<>();
 		try {
@@ -1299,13 +1318,15 @@ public class MasterSyncDaoImplTest {
 		// Machine
 		List<MachineMaster> machines = new ArrayList<>();
 		MachineMaster machine = new MachineMaster();
-		machine.setId("1001");
+		RegMachineSpecId specId=new RegMachineSpecId();
+		specId.setId("100131");
+		specId.setLangCode("eng");
+		machine.setRegMachineSpecId(specId);
 		machine.setIpAddress("172.12.01.128");
 		machine.setMacAddress("21:21:21:12");
 		machine.setMachineSpecId("9876427");
 		machine.setMachineSpecId("1001");
 		machine.setName("Laptop");
-		machine.setLangCode("ENG");
 		machines.add(machine);
 		List<Application> masterApplicationDtoEntity = new ArrayList<>();
 		try {
@@ -1487,13 +1508,15 @@ public class MasterSyncDaoImplTest {
 		// Machine
 		List<MachineMaster> machines = new ArrayList<>();
 		MachineMaster machine = new MachineMaster();
-		machine.setId("1001");
+		RegMachineSpecId specId=new RegMachineSpecId();
+		specId.setId("100131");
+		specId.setLangCode("eng");
+		machine.setRegMachineSpecId(specId);
 		machine.setIpAddress("172.12.01.128");
 		machine.setMacAddress("21:21:21:12");
 		machine.setMachineSpecId("9876427");
 		machine.setMachineSpecId("1001");
 		machine.setName("Laptop");
-		machine.setLangCode("ENG");
 		machines.add(machine);
 		List<Application> masterApplicationDtoEntity = new ArrayList<>();
 		try {
@@ -1576,7 +1599,7 @@ public class MasterSyncDaoImplTest {
 		reasons.setLangCode("FRE");
 		allReason.add(reasons);
 
-		Mockito.when(masterSyncReasonListRepository.findByLangCodeAndReasonCategoryCodeIn(Mockito.anyString(),
+		Mockito.when(masterSyncReasonListRepository.findByIsActiveTrueAndLangCodeAndReasonCategoryCodeIn(Mockito.anyString(),
 				Mockito.anyList())).thenReturn(allReason);
 
 		masterSyncDaoImpl.getReasonList("FRE", reasonCat);

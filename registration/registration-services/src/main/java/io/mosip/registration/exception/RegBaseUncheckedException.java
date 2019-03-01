@@ -4,6 +4,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 
@@ -58,7 +59,7 @@ public class RegBaseUncheckedException extends BaseUncheckedException {
 	 */
 	public RegBaseUncheckedException(String errorCode, String errorMessage, Throwable throwable) {
 		super(errorCode, errorMessage, throwable);
-		LOGGER.error("REGISTRATION - UNCHECKED_EXCEPTION", APPLICATION_NAME,
-				APPLICATION_ID, errorCode + "-->" + errorMessage);
+		LOGGER.error("REGISTRATION - UNCHECKED_EXCEPTION", APPLICATION_NAME, APPLICATION_ID,
+				errorCode + "-->" + errorMessage + "-->" + ExceptionUtils.getStackTrace(throwable));
 	}
 }

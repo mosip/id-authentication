@@ -93,7 +93,7 @@ public class PreRegistrationDataSyncJob extends BaseJob {
 		LOGGER.info(LoggerConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
 
-		this.responseDTO = preRegistrationDataSyncService.getPreRegistration(jobId);
+		this.responseDTO = preRegistrationDataSyncService.getPreRegistrationIds(jobId);
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		LOGGER.info(LoggerConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,

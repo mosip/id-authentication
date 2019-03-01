@@ -12,22 +12,22 @@
 }
 
 #toggleLabel1{
-	-fx-background-color: grey;
-	-fx-border-width: 1.0 1.0 1.0 1.0;
-	-fx-border-color: black;
-	-fx-pref-height : 15;
-	-fx-pref-width : 9.1;
-	
+	-fx-background-radius: 21.0,21.0,21.0,21.0;	
+	-fx-background-color: #FF4081;
+	-fx-border-radius: 21.0,21.0,21.0,21.0;
+	-fx-border-color: #FF4081;
+	-fx-pref-height: 25.0px;
+	-fx-pref-width: 25.0px;
 }
 
 #toggleLabel2{
-	-fx-background-color: white;
-	-fx-border-width: 1.0 1.0 1.0 1.0;
-	-fx-border-color: black;
-	-fx-pref-height : 15;
-	-fx-pref-width : 9.1;
-	
-	
+	-fx-background-radius: 21.0,21.0,21.0,21.0;	
+	-fx-background-color: #FF4081;
+	-fx-border-radius: 21.0,21.0,21.0,21.0;
+	-fx-border-color: #FF4081;
+	-fx-Opacity: 0.4; 
+	-fx-pref-height: 20.0px;
+	-fx-pref-width: 55.0px;
 }
 .biometricExceptionPane{
 	-fx-border-width: 1.0 1.0 1.0 1.0;
@@ -980,9 +980,23 @@ Working on new Css by taleev
 	-fx-pref-width: 1100px;	
 }
 
+.paneAtDisplayAuthentication{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 600px;	
+	-fx-pref-width: 1000px;	
+	
+}
+
 .biometricEceptionLabel{
 	-fx-text-fill : #666666;
 	-fx-font-size : 20px;
+}
+
+
+.paneAtDisplayFaceCapture{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 600px;	
+	-fx-pref-width: 1000px;	
 }
 
 .registrationFooter{
@@ -1226,6 +1240,42 @@ Working on new Css by taleev
 	-fx-background-color : #C9C9C9;	
 }
 
+.photoCapturePanes{
+	-fx-pref-height: 160;	
+	-fx-pref-width: 180;
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #FFFFFF;
+	-fx-border-width : 5;
+	-fx-padding : -2.5;
+}
+
+.photoCapturePanes:focused{
+	-fx-pref-height: 160;	
+	-fx-pref-width: 180;
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #00A6E9;
+	-fx-border-width : 5;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3,3,3,3;
+	
+}
+
+.photoAlert{
+	-fx-text-fill : #FF4081;
+	-fx-font-size : 15;
+}
+
+.photoCapturePanesSelected{
+	-fx-pref-height: 160;	
+	-fx-pref-width: 180;
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #EFEFEF;
+	-fx-border-width : 5;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3,3,3,3;
+}
+
+
 .qualityBox{
 	-fx-pref-height: 200px;	
 	-fx-pref-width: 250px;	
@@ -1440,6 +1490,7 @@ Working on new Css by taleev
 
 .uinUpdateLabelsTypeTwo{
 	-fx-text-fill : #666666;
+	-fx-font-size : 15px;
 }
 
 .uinUpdateFooter{

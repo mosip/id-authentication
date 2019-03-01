@@ -34,6 +34,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.AuditLogControlDAO;
+import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -49,9 +50,11 @@ import io.mosip.registration.dto.cbeff.jaxbclasses.TestBiometric;
 import io.mosip.registration.dto.cbeff.jaxbclasses.TestBiometricType;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
 import io.mosip.registration.dto.json.metadata.DemographicSequence;
+import io.mosip.registration.dto.json.metadata.FieldValue;
 import io.mosip.registration.dto.json.metadata.FieldValueArray;
 import io.mosip.registration.dto.json.metadata.HashSequence;
 import io.mosip.registration.dto.json.metadata.PacketMetaInfo;
+import io.mosip.registration.entity.RegDeviceMaster;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
@@ -92,6 +95,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private AuditLogControlDAO auditLogControlDAO;
 	@Autowired
 	private AuditDAO auditDAO;
+	@Autowired
+	private MachineMappingDAO machineMappingDAO;
 
 	/*
 	 * (non-Javadoc)
@@ -214,6 +219,12 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			// Generating Packet Meta-Info JSON as byte array
 			PacketMetaInfo packetInfo = MAPPER_FACADE.convert(registrationDTO, PacketMetaInfo.class, "packetMetaInfo");
+
+			// Set Registered Device
+			packetInfo.getIdentity().setCapturedRegisteredDevices(getRegisteredDevices());
+
+			// Set Registered Device
+			packetInfo.getIdentity().setCapturedNonRegisteredDevices(null);
 
 			// Add HashSequence
 			packetInfo.getIdentity().setHashSequence(buildHashSequence(hashSequence));
@@ -398,6 +409,25 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		}
 
 		return fingerSubTypes;
+	}
+
+	private List<FieldValue> getRegisteredDevices() {
+		List<RegDeviceMaster> registeredDevices = machineMappingDAO
+				.getDevicesMappedToRegCenter(ApplicationContext.applicationLanguage());
+
+		List<FieldValue> capturedRegisteredDevices = new ArrayList<>();
+		FieldValue capturedRegisteredDevice;
+
+		if (registeredDevices != null) {
+			for (RegDeviceMaster registeredDevice : registeredDevices) {
+				capturedRegisteredDevice = new FieldValue();
+				capturedRegisteredDevice.setLabel(registeredDevice.getRegDeviceSpec().getRegDeviceType().getName());
+				capturedRegisteredDevice.setValue(registeredDevice.getRegMachineSpecId().getId());
+				capturedRegisteredDevices.add(capturedRegisteredDevice);
+			}
+		}
+
+		return capturedRegisteredDevices;
 	}
 
 }

@@ -3,6 +3,7 @@ package io.mosip.registration.jobs;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -148,7 +149,7 @@ public abstract class BaseJob extends QuartzJobBean {
 				/* Insert Sync Control transaction */
 				syncManager.createSyncControlTransaction(syncTransaction);
 
-				Map<String, Object> attributes = new HashMap<>();
+				Map<String, Object> attributes = new WeakHashMap<>();
 				attributes.put(RegistrationConstants.SYNC_TRANSACTION, syncTransaction);
 
 				SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();

@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import io.mosip.kernel.core.util.DateUtils;
 /**
  * Entity class for sync_control
  * @author Dinesh Ashokan
@@ -70,7 +71,7 @@ public class SyncTransaction  {
 		return crDtime;
 	}
 	public void setCrDtime(Timestamp crDtime) {
-		this.crDtime = crDtime;
+		this.crDtime = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 	}
 	public String getUpdBy() {
 		return updBy;
@@ -82,7 +83,7 @@ public class SyncTransaction  {
 		return updDtimes;
 	}
 	public void setUpdDtimes(Timestamp updDtimes) {
-		this.updDtimes = updDtimes;
+		this.updDtimes = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 	}
 	public String getId() {
 		return id;
@@ -100,7 +101,7 @@ public class SyncTransaction  {
 		return syncDateTime;
 	}
 	public void setSyncDateTime(Timestamp syncDateTime) {
-		this.syncDateTime = syncDateTime;
+		this.syncDateTime = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 	}
 	public String getStatusCode() {
 		return statusCode;
@@ -179,7 +180,7 @@ public class SyncTransaction  {
 		return deletedDateTime;
 	}
 	public void setDeletedDateTime(Timestamp deletedDateTime) {
-		this.deletedDateTime = deletedDateTime;
+		this.deletedDateTime = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 	}
 	
 	

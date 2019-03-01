@@ -77,7 +77,7 @@ public class Initialization extends Application {
 	public static void setApplicationContext(ApplicationContext applicationContext) {
 		Initialization.applicationContext = applicationContext;
 	}
-
+	
 	public static Stage getPrimaryStage() {
 		return primaryStage;
 	}

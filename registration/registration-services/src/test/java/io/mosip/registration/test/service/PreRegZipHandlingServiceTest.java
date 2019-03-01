@@ -43,7 +43,7 @@ import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
-import io.mosip.registration.dto.demographic.Identity;
+import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.impl.PreRegZipHandlingServiceImpl;
@@ -85,6 +85,8 @@ public class PreRegZipHandlingServiceTest {
 			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		Mockito.when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(new ValidationReport());
+		ReflectionTestUtils.setField(preRegZipHandlingServiceImpl, "identityClassName",
+				"io.mosip.registration.dto.demographic.MoroccoIdentity");
 		RegistrationDTO registrationDTO = preRegZipHandlingServiceImpl.extractPreRegZipFile(preRegPacket);
 
 		assertNotNull(registrationDTO);
@@ -174,7 +176,7 @@ public class PreRegZipHandlingServiceTest {
 		applicantDocumentDTO.setDocuments(new  HashMap<>());
 
 		DemographicInfoDTO demographicInfoDTOLocal = new DemographicInfoDTO();
-		Identity identity = new Identity();
+		MoroccoIdentity identity = new MoroccoIdentity();
 		demographicInfoDTOLocal.setIdentity(identity);
 
 		demographicDTO.setDemographicInfoDTO(demographicInfoDTOLocal);

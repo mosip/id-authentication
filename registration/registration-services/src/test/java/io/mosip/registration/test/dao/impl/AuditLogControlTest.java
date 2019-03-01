@@ -1,5 +1,10 @@
 package io.mosip.registration.test.dao.impl;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -20,11 +25,6 @@ import io.mosip.registration.dao.impl.AuditLogControlDAOImpl;
 import io.mosip.registration.entity.AuditLogControl;
 import io.mosip.registration.entity.RegistrationAuditDates;
 import io.mosip.registration.repositories.AuditLogControlRepository;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
 
 public class AuditLogControlTest {
 

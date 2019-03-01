@@ -59,7 +59,7 @@
 							<arguments>
 								<argument>${main.basedir}/registration-client/target/registration-client-${project.version}.jar</argument>
 								<argument>${main.basedir}/registration-client/target/registration-client-${project.version}-shaded.jar</argument>
-								<argument>fdHPgbFn5LZjPE8fX5S0UQ==</argument>
+								<argument>bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4=</argument>
 								<argument>${project.version}</argument>
 								<argument>${main.basedir}/registration-libs/target/</argument>
 							</arguments>

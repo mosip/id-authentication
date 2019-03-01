@@ -22,7 +22,7 @@ public class HolidayDto extends MasterSyncBaseDto {
 	
 	private String holidayName;
 	
-	private String languageCode;
+	private String langCode;
 
 	private String locationCode;
 
@@ -42,18 +42,19 @@ public class HolidayDto extends MasterSyncBaseDto {
 		this.holidayId = holidayId;
 	}
 
+
 	/**
-	 * @return the languageCode
+	 * @return the langCode
 	 */
-	public String getLanguageCode() {
-		return languageCode;
+	public String getLangCode() {
+		return langCode;
 	}
 
 	/**
-	 * @param languageCode the languageCode to set
+	 * @param langCode the langCode to set
 	 */
-	public void setLanguageCode(String languageCode) {
-		this.languageCode = languageCode;
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
 	}
 
 	/**

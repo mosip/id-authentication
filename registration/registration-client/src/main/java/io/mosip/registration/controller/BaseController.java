@@ -270,11 +270,11 @@ public class BaseController {
 	 */
 	protected void generateAlert(AnchorPane parentPane, String id, String context, String isConsolidated,
 			StringBuilder validationMessage) {
-		if (id.equals("dd") || id.equals("mm") || id.equals("yyyy")) {
-			id = "dob";
+		if (id.equals(RegistrationConstants.DD) || id.equals(RegistrationConstants.MM) || id.equals(RegistrationConstants.YYYY)) {
+			id = RegistrationConstants.DOB;
 		}
 		if (isConsolidated.equals(RegistrationConstants.DISABLE)) {
-			Label label = ((Label) (parentPane.lookup("#" + id + "Message")));
+			Label label = ((Label) (parentPane.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
 			if (!label.isVisible()) {
 				label.setText(context);
 				label.setVisible(true);
@@ -623,7 +623,7 @@ public class BaseController {
 					// get the data for notification template
 					String notificationTemplate = templateService
 							.getHtmlTemplate(RegistrationConstants.NOTIFICATION_TEMPLATE);
-					if (!notificationTemplate.isEmpty()) {
+					if (notificationTemplate != null && !notificationTemplate.isEmpty()) {
 						// generate the notification template
 						writeNotificationTemplate = templateGenerator.generateNotificationTemplate(notificationTemplate,
 								registrationDTO, templateManagerBuilder);
@@ -918,8 +918,8 @@ public class BaseController {
 	/**
 	 * Create alert with given title, header and context
 	 * 
-	 * @param alert
-	 *            type
+	 * @param alertType
+	 *            type of alert
 	 * @param title
 	 *            alert's title
 	 * @param header

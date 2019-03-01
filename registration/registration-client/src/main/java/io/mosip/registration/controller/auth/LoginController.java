@@ -8,7 +8,6 @@ import static io.mosip.registration.constants.RegistrationConstants.URL;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
@@ -275,13 +275,12 @@ public class LoginController extends BaseController implements Initializable {
 
 				String regCenter = (String) ApplicationContext.map()
 						.get(RegistrationConstants.REGISTARTION_CENTER);
+				
+				String stationId = userOnboardService.getMachineCenterId().get(RegistrationConstants.USER_CENTER_ID);
 
-				if (regCenter
-						.equals(userOnboardService.getMachineCenterId().get(RegistrationConstants.USER_CENTER_ID))) {
+				if (regCenter.equals(stationId)) {
 
-					String stationID = userOnboardService.getMachineCenterId()
-							.get(RegistrationConstants.USER_STATION_ID);
-					ApplicationContext.map().put(RegistrationConstants.MACHINE_ID, stationID);
+					ApplicationContext.map().put(RegistrationConstants.MACHINE_ID, stationId);
 
 					if (userDetail == null) {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_ONBOARDED);
@@ -294,7 +293,7 @@ public class LoginController extends BaseController implements Initializable {
 							ApplicationContext.map().put(RegistrationConstants.DONGLE_SERIAL_NUMBER,
 									userMachineMapping.getMachineMaster().getSerialNum());
 						}
-						
+
 						Set<String> roleList = new LinkedHashSet<>();
 
 						userDetail.getUserRole().forEach(roleCode -> {
@@ -314,7 +313,7 @@ public class LoginController extends BaseController implements Initializable {
 
 							Map<String, Object> sessionContextMap = SessionContext.getInstance().getMapObject();
 
-							sessionContextMap.put(RegistrationConstants.USER_STATION_ID, stationID);
+							sessionContextMap.put(RegistrationConstants.USER_STATION_ID, stationId);
 
 							if (getCenterMachineStatus(userDetail)) {
 								sessionContextMap.put(RegistrationConstants.ONBOARD_USER, isNewUser);
@@ -330,22 +329,25 @@ public class LoginController extends BaseController implements Initializable {
 
 							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 									"Ignoring FingerPrint login if the configuration is off");
-							
-							if (loginList.size() > 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)) {
+
+							if (loginList.size() > 1
+									&& RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)) {
 								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.BIO));
 							}
-							
+
 							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 									"Ignoring Iris login if the configuration is off");
-							
-							if (loginList.size() > 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)) {
+
+							if (loginList.size() > 1
+									&& RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)) {
 								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.IRIS));
 							}
-							
+
 							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 									"Ignoring Face login if the configuration is off");
-							
-							if (loginList.size() > 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)) {
+
+							if (loginList.size() > 1
+									&& RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)) {
 								loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.FACE));
 							}
 
@@ -368,7 +370,8 @@ public class LoginController extends BaseController implements Initializable {
 												&& loginMode.equalsIgnoreCase(RegistrationConstants.FACE))) {
 
 									generateAlert(RegistrationConstants.ERROR,
-											RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1.concat(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2));
+											RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1
+													.concat(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2));
 
 								} else {
 									userIdPane.setVisible(false);
@@ -812,7 +815,7 @@ public class LoginController extends BaseController implements Initializable {
 					BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 
 					userDetail.setLastLoginMethod(loginMode);
-					userDetail.setLastLoginDtimes(Timestamp.valueOf(LocalDateTime.now()));
+					userDetail.setLastLoginDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 					userDetail.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ZERO);
 
 					loginService.updateLoginParams(userDetail);
@@ -999,7 +1002,7 @@ public class LoginController extends BaseController implements Initializable {
 				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 						"updating login count and time for invalid login attempts");
 				loginCount = loginCount + RegistrationConstants.PARAM_ONE;
-				userDetail.setUserlockTillDtimes(Timestamp.valueOf(LocalDateTime.now()));
+				userDetail.setUserlockTillDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				userDetail.setUnsuccessfulLoginCount(loginCount);
 
 				loginService.updateLoginParams(userDetail);

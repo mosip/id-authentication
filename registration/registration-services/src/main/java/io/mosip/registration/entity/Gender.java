@@ -6,6 +6,8 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
+import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
+
 @Entity
 @Table(schema = "reg", name = "gender")
 @IdClass(CodeAndLanguageCodeID.class)

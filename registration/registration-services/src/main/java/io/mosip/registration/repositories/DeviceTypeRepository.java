@@ -4,7 +4,7 @@ import java.util.List;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.entity.RegDeviceType;
-import io.mosip.registration.entity.RegDeviceTypeId;
+import io.mosip.registration.entity.id.RegDeviceTypeId;
 
 /**
  * This repository interface for {@link RegDeviceType} entity

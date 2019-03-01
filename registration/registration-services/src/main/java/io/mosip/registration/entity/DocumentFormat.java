@@ -5,6 +5,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import io.mosip.registration.entity.id.GenericId;
+
 @Entity
 @Table(schema = "master", name = "valid_document")
 public class DocumentFormat extends MasterCommonFields {

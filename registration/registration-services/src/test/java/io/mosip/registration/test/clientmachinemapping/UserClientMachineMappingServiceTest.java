@@ -37,18 +37,18 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.UserMachineMappingDTO;
 import io.mosip.registration.entity.RegCenterDevice;
-import io.mosip.registration.entity.RegCenterDeviceId;
 import io.mosip.registration.entity.RegCentreMachineDevice;
-import io.mosip.registration.entity.RegCentreMachineDeviceId;
 import io.mosip.registration.entity.RegDeviceMaster;
 import io.mosip.registration.entity.RegDeviceSpec;
 import io.mosip.registration.entity.RegDeviceType;
-import io.mosip.registration.entity.RegDeviceTypeId;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
-import io.mosip.registration.entity.UserMachineMappingID;
 import io.mosip.registration.entity.UserRole;
-import io.mosip.registration.entity.UserRoleID;
+import io.mosip.registration.entity.id.RegCenterDeviceId;
+import io.mosip.registration.entity.id.RegCentreMachineDeviceId;
+import io.mosip.registration.entity.id.RegDeviceTypeId;
+import io.mosip.registration.entity.id.UserMachineMappingID;
+import io.mosip.registration.entity.id.UserRoleID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.mapping.impl.MapMachineServiceImpl;
@@ -208,23 +208,29 @@ public class UserClientMachineMappingServiceTest {
 
 	@Test
 	public void getAllDeviceTypesTest() {
+		
 		// Add Device Types
 		List<RegDeviceType> deviceTypes = new ArrayList<>();
 		RegDeviceType deviceType = new RegDeviceType();
 		RegDeviceTypeId deviceTypeId = new RegDeviceTypeId();
 
-		deviceType.setCode("FRS");
-		deviceType.setLangCode("eng");
+		deviceTypeId.setCode("FRS");
+		deviceTypeId.setLangCode("eng");
+		deviceType.setRegDeviceTypeId(deviceTypeId);
 		deviceTypes.add(deviceType);
 
 		deviceType = new RegDeviceType();
-		deviceType.setCode("IRS");
-		deviceType.setLangCode("eng");
+		deviceTypeId = new RegDeviceTypeId();
+		deviceTypeId.setCode("IRS");
+		deviceTypeId.setLangCode("eng");
+		deviceType.setRegDeviceTypeId(deviceTypeId);
 		deviceTypes.add(deviceType);
 
 		deviceType = new RegDeviceType();
-		deviceType.setCode("CMR");
-		deviceType.setLangCode("eng");
+		deviceTypeId = new RegDeviceTypeId();
+		deviceTypeId.setCode("SCN");
+		deviceTypeId.setLangCode("eng");
+		deviceType.setRegDeviceTypeId(deviceTypeId);
 		deviceTypes.add(deviceType);
 
 		// Mock DAO Call

@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import javax.imageio.ImageIO;
 
@@ -166,7 +166,7 @@ public class FingerprintFacade {
 			byte[] scannedFingerPrintBytes = byteArrayOutputStream.toByteArray();
 
 			// Add image format, image and quality score in bytes array to map
-			Map<String, Object> scannedFingerPrints = new HashMap<>();
+			Map<String, Object> scannedFingerPrints = new WeakHashMap<>();
 			scannedFingerPrints.put(RegistrationConstants.IMAGE_FORMAT_KEY, "jpg");
 			scannedFingerPrints.put(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY, scannedFingerPrintBytes);
 			if (path.contains(RegistrationConstants.THUMBS)) {
