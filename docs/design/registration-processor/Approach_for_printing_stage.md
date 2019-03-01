@@ -47,7 +47,10 @@ registration.processor.print.documentype which will have values: PDF, IMAGE
 	
 **Sample Request and Response**
 - Print message:
- ######Text File Content:
+ 
+------------
+
+Text File Content:
  ```html
  { 
 	"name_ara":"َتهِفَ َلمَس",
@@ -71,15 +74,37 @@ registration.processor.print.documentype which will have values: PDF, IMAGE
 
 - Acknolgement:
 
+------------
  ```html
+ 
+- Success Message:
+
 { 
 	"id":"mosip.registration.print.acknolgement",			
 	"version":"1.0",	
 	"requesttime":"2007-12-03T10:15:30Z",
 	"metadata" : {
+		"uin":"<UIN NUMBER>"
 	},
 	"response" : {
-		"status":"<UIN> Print Success"
+		"status":"Print Success"
+	}
+	"errors":[
+	]
+}
+```
+```html
+- Error Message:
+
+{ 
+	"id":"mosip.registration.print.acknolgement",			
+	"version":"1.0",	
+	"requesttime":"2007-12-03T10:15:30Z",
+	"metadata" : {
+		"uin":"<UIN NUMBER>"
+	},
+	"response" : {
+		"status":"Print Error"
 	}
 	"errors":[
 		"errorCode": "PRINT_APP_001",
@@ -91,9 +116,12 @@ registration.processor.print.documentype which will have values: PDF, IMAGE
 		}
 	]
 }
+
 ```
 
 - Reprint Request:
+
+------------
 
  ```html
 { 
