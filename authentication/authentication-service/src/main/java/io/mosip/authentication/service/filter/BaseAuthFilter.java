@@ -16,7 +16,6 @@ import java.util.stream.Stream;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.jose4j.jws.JsonWebSignature;
@@ -33,6 +32,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.service.integration.KeyManager;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 
@@ -63,7 +63,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	private static final String MOSIP_TSP_ORGANIZATION = "mosip.jws.certificate.organization";
 
 	/** The Constant MOSIP_JWS_CERTIFICATE_ALGO. */
-	private static final String MOSIP_JWS_CERTIFICATE_ALGO = "mosip.jws.certificate.algo";
+	private static final String MOSIP_JWS_CERTIFICATE_ALGM = "mosip.jws.certificate.algo";
 
 	/** The public key. */
 	protected PublicKey publicKey;
@@ -177,7 +177,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 			jws.setCompactSerialization(signature);
 			List<X509Certificate> certificateChainHeaderValue = jws.getCertificateChainHeaderValue();
 			if (certificateChainHeaderValue.size() == NumberUtils.INTEGER_ONE
-					&& jws.getAlgorithmHeaderValue().equals(env.getProperty(MOSIP_JWS_CERTIFICATE_ALGO))) {
+					&& jws.getAlgorithmHeaderValue().equals(env.getProperty(MOSIP_JWS_CERTIFICATE_ALGM))) {
 				X509Certificate certificate = certificateChainHeaderValue.get(0);
 				certificate.checkValidity();
 				publicKey = certificate.getPublicKey();
@@ -292,7 +292,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	protected static Object decode(String stringToDecode) throws IdAuthenticationAppException {
 		try {
 			if (stringToDecode != null) {
-				return Base64.decodeBase64(stringToDecode);
+				return CryptoUtil.decodeBase64(stringToDecode);
 			} else {
 				return stringToDecode;
 			}
@@ -314,7 +314,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	protected static String encode(String stringToEncode) throws IdAuthenticationAppException {
 		try {
 			if (stringToEncode != null) {
-				return Base64.encodeBase64String(stringToEncode.getBytes());
+				return CryptoUtil.encodeBase64String(stringToEncode.getBytes());
 			} else {
 				return stringToEncode;
 			}

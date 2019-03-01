@@ -1,6 +1,7 @@
 package io.mosip.authentication.service.filter;
 
 import java.util.Map;
+import java.util.Objects;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -25,7 +26,7 @@ public class InternalAuthFilter extends BaseAuthFilter {
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
 			requestBody.replace(REQUEST, decode((String) requestBody.get(REQUEST)));
-			if (null != requestBody.get(REQUEST)) {
+			if (Objects.nonNull(requestBody.get(REQUEST))) {
 				Map<String, Object> request = keyManager.requestData(requestBody, mapper);
 				requestBody.replace(REQUEST, request);
 			}

@@ -62,6 +62,7 @@ public class KycServiceImpl implements KycService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public KycResponseDTO retrieveKycInfo(String uin, KycType eKycType, String secLangCode,
 			Map<String, List<IdentityInfoDTO>> identityInfo) throws IdAuthenticationBusinessException {

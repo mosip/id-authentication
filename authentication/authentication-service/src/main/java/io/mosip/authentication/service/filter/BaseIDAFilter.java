@@ -53,6 +53,9 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 public abstract class BaseIDAFilter implements Filter {
 
+	/** The Constant VER_REX. */
+	private static final String VER_REX = "[\\s+a-zA-Z]";
+
 	/** The Constant TRANSACTION_ID. */
 	private static final String TRANSACTION_ID = "transactionID";
 
@@ -295,7 +298,7 @@ public abstract class BaseIDAFilter implements Filter {
 				String[] splitedUrlByContext = url.split(context);
 				String versionStr = Arrays.stream(splitedUrlByContext[1].split("/")).filter(s -> !s.isEmpty()).findFirst()
 						.orElse(DEFAULT_VERSION);
-				ver = versionStr.replaceAll("[\\s+a-zA-Z]", "");
+				ver = versionStr.replaceAll(VER_REX, "");
 			}
 		}
 		return ver;

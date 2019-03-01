@@ -28,9 +28,6 @@ public enum AgeMatchingStrategy implements TextMatchingStrategy {
 		} catch (NumberFormatException e) {
 			logError(e);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AGE_MISMATCH, e);
-
-			// Don't handle
-//				return 0;
 		}
 	});
 
