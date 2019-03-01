@@ -8,6 +8,7 @@ import static org.mockito.Matchers.anyString;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,6 +54,7 @@ import io.mosip.registration.processor.message.sender.exception.TemplateProcessi
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.PrintStageApplication;
+import io.mosip.registration.processor.print.exception.QueueConnectionNotFound;
 import io.mosip.registration.processor.print.stage.PrintStage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
@@ -87,7 +89,7 @@ import io.vertx.ext.web.Session;
 @PrepareForTest({ Utilities.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.*" })
 @PropertySource("classpath:bootstrap.properties")
-// @ContextConfiguration(classes= {PrintStageConfigTest.class})
+//@ContextConfiguration(classes= {PrintStageConfigTest.class})
 public class PrintStageTest {
 
 	*//** The audit log request builder. *//*
@@ -123,8 +125,8 @@ public class PrintStageTest {
 	private Boolean responseObject;
 
 	@Mock
-	private PrintService<byte[]> printService;
-
+	private PrintService<Map<String, byte[]>> printService;
+	
 	@Mock
 	public FileSystemAdapter filesystemAdapter;
 
@@ -133,13 +135,25 @@ public class PrintStageTest {
 
 	*//** The stage. *//*
 	@InjectMocks
-	private PrintStage stage=new PrintStage(){@Override public MosipEventBus getEventBus(Object verticleName,String clusterManagerUrl){return null;}
+	private PrintStage stage = new PrintStage() {
+		@Override
+		public MosipEventBus getEventBus(Object verticleName, String clusterManagerUrl) {
+			return null;
+		}
 
-	@Override public void consume(MosipEventBus mosipEventBus,MessageBusAddress fromAddress){}
+		@Override
+		public void consume(MosipEventBus mosipEventBus, MessageBusAddress fromAddress) {
+		}
 
-	@Override public void setResponse(RoutingContext ctx,Object object){responseObject=Boolean.TRUE;}
+		@Override
+		public void setResponse(RoutingContext ctx, Object object) {
+			responseObject = Boolean.TRUE;
+		}
 
-	@Override public void send(MosipEventBus mosipEventBus,MessageBusAddress toAddress,MessageDTO message){}};
+		@Override
+		public void send(MosipEventBus mosipEventBus, MessageBusAddress toAddress, MessageDTO message) {
+		}
+	};
 
 	*//**
 	 * Setup.
@@ -147,7 +161,6 @@ public class PrintStageTest {
 	 * @throws Exception
 	 *             the exception
 	 *//*
-	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() throws Exception {
 		System.setProperty("server.port", "8099");
@@ -157,11 +170,17 @@ public class PrintStageTest {
 		System.setProperty("registration.processor.queue.url", "tcp://localhost:61616");
 		System.setProperty("registration.processor.queue.typeOfQueue", "ACTIVEMQ");
 		System.setProperty("registration.processor.queue.address", "test");
+		System.setProperty("mosip.kernel.xsdstorage-uri","http://104.211.212.28:51000");
+		System.setProperty("mosip.kernel.xsdfile", "mosip-cbeff.xsd");
 
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 
 		byte[] pdfbytes = "UIN Card Template pdf".getBytes();
-		Mockito.when(printService.getPdf(any(), anyString())).thenReturn(pdfbytes);
+		byte[] textBytes = "Text File ".getBytes();
+		Map<String, byte[]> byteMap = new HashMap<>();
+		byteMap.put("uinPdf", pdfbytes);
+		byteMap.put("textFile", textBytes);
+		Mockito.when(printService.getPdf(any(), anyString())).thenReturn(byteMap);
 
 		Mockito.when(mosipConnectionFactory.createConnection(anyString(), anyString(), anyString(), anyString()))
 				.thenReturn(queue);
@@ -171,6 +190,7 @@ public class PrintStageTest {
 		Mockito.doNothing().when(registrationStatusDto).setStatusComment(any());
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
 
+		
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
@@ -271,6 +291,18 @@ public class PrintStageTest {
 	@Test
 	public void testConnectionUnavailableException() {
 		ConnectionUnavailableException e = new ConnectionUnavailableException();
+		Mockito.doThrow(e).when(mosipQueueManager).send(any(), any(), anyString());
+
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("1234567890987654321");
+
+		MessageDTO result = stage.process(dto);
+		assertTrue(result.getInternalError());
+	}
+
+	@Test
+	public void testRetrySend() {
+		QueueConnectionNotFound e  = new QueueConnectionNotFound();
 		Mockito.doThrow(e).when(mosipQueueManager).send(any(), any(), anyString());
 
 		MessageDTO dto = new MessageDTO();
@@ -584,4 +616,5 @@ public class PrintStageTest {
 
 	}
 
-}*/
+}
+*/
