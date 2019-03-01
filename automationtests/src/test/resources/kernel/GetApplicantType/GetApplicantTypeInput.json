@@ -1,0 +1,6 @@
+{
+	"biometricAvailable":"string",
+	"dateofbirth":"string",
+	"genderCode":"string",
+	"individualTypeCode":"string"
+}

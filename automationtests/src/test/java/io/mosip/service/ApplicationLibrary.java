@@ -3,6 +3,7 @@ package io.mosip.service;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
@@ -55,7 +56,7 @@ public class ApplicationLibrary extends BaseTestCase{
         return commonLibrary.get_Request_pathParameters(ApplnURI + Resource_URI , valueMap);
       
   } 
-    public Response getRequestPathQueryPara(String Resource_URI, HashMap<String, String> path_value,HashMap<String, String> query_value) {
+    public Response getRequestPathQueryPara(String Resource_URI, HashMap<String, String> path_value,HashMap<String, List<String>> query_value) {
         return commonLibrary.get_Request_Path_queryParam(ApplnURI + Resource_URI , path_value,query_value);
     }
     /** Author Arjun

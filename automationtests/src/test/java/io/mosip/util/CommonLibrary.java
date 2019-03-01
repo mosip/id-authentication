@@ -5,7 +5,6 @@ import static io.restassured.RestAssured.given;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -21,6 +20,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
+
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.io.FileUtils;
@@ -29,8 +29,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 
@@ -324,7 +322,7 @@ public class CommonLibrary {
     *            destination of the request
     * @return Response object that has the REST response
     */
-    public Response get_Request_Path_queryParam(String url,HashMap<String, String> path_value,HashMap<String, String> query_value) {
+    public Response get_Request_Path_queryParam(String url,HashMap<String, String> path_value,HashMap<String, List<String>> query_value) {
           logger.info("REST-ASSURED: Sending a GET request to " + url);
           Response getResponse = given().relaxedHTTPSValidation().pathParameters(path_value).queryParams(query_value)
                       .log().all().when().get(url).then().log().all().extract().response();

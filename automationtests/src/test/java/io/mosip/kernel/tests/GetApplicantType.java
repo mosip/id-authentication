@@ -39,28 +39,28 @@ import io.restassured.response.Response;
  * @author Arunakumar Rati
  *
  */
-public class GetDocType_DocCatByAppID extends BaseTestCase implements ITest {
+public class GetApplicantType extends BaseTestCase implements ITest{
 
-	public GetDocType_DocCatByAppID() {
+	public GetApplicantType() {
 		// TODO Auto-generated constructor stub
 		super();
 	}
 	/**
 	 *  Declaration of all variables
 	 */
-	private static Logger logger = Logger.getLogger(GetDocType_DocCatByAppID.class);
+	private static Logger logger = Logger.getLogger(GetApplicantType.class);
 	protected static String testCaseName = "";
 	static SoftAssert softAssert=new SoftAssert();
 	public static JSONArray arr = new JSONArray();
 	boolean status = false;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String getDocType_DocCatByAppID = "/masterdata/v1.0/applicanttype/{applicantId}/languages";
+	private static final String getApplicantType = "/applicanttype/v1.0/applicanttype/getApplicantType";
 	
 	static String dest = "";
-	static String folderPath = "kernel/GetDocType_DocCatByAppID";
-	static String outputFile = "GetDocType_DocCatByAppIDOutput.json";
-	static String requestKeyFile = "GetDocType_DocCatByAppIDInput.json";
+	static String folderPath = "kernel/GetApplicantType";
+	static String outputFile = "GetApplicantTypeOutput.json";
+	static String requestKeyFile = "GetApplicantTypeInput.json";
 	static JSONObject Expectedresponse = null;
 	String finalStatus = "";
 	static String testParam="";
@@ -78,11 +78,11 @@ public class GetDocType_DocCatByAppID extends BaseTestCase implements ITest {
 	 * @return input jsons folders
 	 * @throws Exception
 	 */
-	@DataProvider(name = "GetDocType_DocCatByAppID")
+	@DataProvider(name = "GetApplicantType")
 	public static Object[][] readData1(ITestContext context) throws Exception {
 		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smokeAndRegression") {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -98,24 +98,14 @@ public class GetDocType_DocCatByAppID extends BaseTestCase implements ITest {
 	 * @throws IOException
 	 * @throws ParseException
 	 * getAllConfiguration
-	 * Given input Json as per defined folders When GET request is sent to /syncdata/v1.0/configuration/{registrationCenterId}
+	 * Given input Json as per defined folders When GET request is sent to /applicanttype/v1.0/applicanttype/getApplicantType
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
-	@Test(dataProvider="GetDocType_DocCatByAppID")
-	public void getAllConfiguration(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
+	@Test(dataProvider="GetApplicantType")
+	public void getApplicantType(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
 	
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-		
-		String applicantId = actualRequest.get("applicantId").toString();
-		
-		List<String> languages = (JSONArray)actualRequest.get("languages");
-		HashMap<String, String> pathPar=new HashMap<>();
-		pathPar.put("applicantId", applicantId);
-		
-		HashMap<String, List<String>> queryPar=new HashMap<>();
-		
-		queryPar.put("languages",languages);
 				
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		@SuppressWarnings("unchecked")
@@ -123,7 +113,7 @@ public class GetDocType_DocCatByAppID extends BaseTestCase implements ITest {
 		/*
 		 * Calling GET method with path parameters
 		 */
-		Response res=applicationLibrary.getRequestPathQueryPara(getDocType_DocCatByAppID, pathPar,queryPar);
+		Response res=applicationLibrary.getRequestAsQueryParam(getApplicantType, actualRequest);
 		/*
 		 * Removing the unstable attributes from response	
 		 */
@@ -172,7 +162,7 @@ public class GetDocType_DocCatByAppID extends BaseTestCase implements ITest {
 				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 				f.setAccessible(true);
 
-				f.set(baseTestMethod, GetDocType_DocCatByAppID.testCaseName);
+				f.set(baseTestMethod, GetApplicantType.testCaseName);
 
 				
 			} catch (Exception e) {
@@ -182,10 +172,10 @@ public class GetDocType_DocCatByAppID extends BaseTestCase implements ITest {
 		
 		@AfterClass
 		public void updateOutput() throws IOException {
-			String configPath = "src/test/resources/kernel/GetDocType_DocCatByAppID/GetDocType_DocCatByAppIDOutput.json";
+			String configPath = "src/test/resources/kernel/GetApplicantType/GetApplicantTypeOutput.json";
 			try (FileWriter file = new FileWriter(configPath)) {
 				file.write(arr.toString());
-				logger.info("Successfully updated Results to GetDocType_DocCatByAppIDOutput.json file.......................!!");
+				logger.info("Successfully updated Results to GetApplicantTypeOutput.json file.......................!!");
 			}
 		}
 }

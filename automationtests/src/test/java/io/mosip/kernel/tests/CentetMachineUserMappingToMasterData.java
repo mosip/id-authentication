@@ -83,7 +83,7 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 	@DataProvider(name = "CentetMachineUserMappingToMasterData")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
 		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch (testParam) {
+		 switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders("kernel/CentetMachineUserMappingToMasterData", "CentetMachineUserMappingToMasterDataOutput.json","CentetMachineUserMappingToMasterDataInput.json","smoke");
 			
