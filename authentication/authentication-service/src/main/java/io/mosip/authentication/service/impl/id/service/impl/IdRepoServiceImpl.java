@@ -10,21 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
-import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
-import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * 
@@ -42,16 +37,6 @@ public class IdRepoServiceImpl implements IdRepoService {
 
 
 	private static final String STATUS_KEY = "status";
-
-
-	private static Logger logger = IdaLogger.getLogger(OTPManager.class);
-
-	/** The Constant DEFAULT_SESSION_ID. */
-	private static final String SESSION_ID = "sessionId";
-
-	/** The Constant AUTH_FACADE. */
-	private static final String ID_REPO_SERVICE = "IDA - IdRepoService";
-
 	@Autowired
 	private RestHelper restHelper;
 
@@ -60,13 +45,11 @@ public class IdRepoServiceImpl implements IdRepoService {
 	
 	@Autowired
 	private Environment environment;
-	
-	@Autowired
-	private ObjectMapper mapper;
 
 	/**
 	 * Fetch data from Id Repo based on Individual's UIN / VID value and all UIN scenarios 
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> getIdenity(String uin, boolean isBio) throws IdAuthenticationBusinessException {
 
 		RestRequestDTO buildRequest = null;
