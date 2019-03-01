@@ -8,4 +8,5 @@ public class OtpUser{
     private String langCode;
     private String otpChannel;
     private String appId;
+    private String useridtype;
 }
