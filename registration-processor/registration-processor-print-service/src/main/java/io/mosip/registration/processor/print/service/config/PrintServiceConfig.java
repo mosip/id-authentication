@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
@@ -16,6 +17,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
+import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
+import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
+import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
+import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
+import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
+import io.mosip.kernel.qrcode.generator.zxing.QrcodeGeneratorImpl;
+import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerator;
 import io.mosip.registration.processor.print.service.impl.PrintServiceImpl;
@@ -91,5 +99,24 @@ public class PrintServiceConfig {
 	public UinCardGenerator<ByteArrayOutputStream> getUinCardGeneratorImpl() {
 		return new UinCardGeneratorImpl();
 	}
+	
+	@Bean
+	@Primary
+	public PDFGenerator getPDFGenerator() {
+		return new PDFGeneratorImpl();
+	}
+
+	@Bean
+	@Primary
+	public QrCodeGenerator<QrVersion> getQrCodeGenerator(){
+		return new QrcodeGeneratorImpl();
+	}
+	
+	@Bean
+	@Primary
+	public CbeffUtil getCbeffUtil() {
+		return new CbeffImpl();
+	}
+
 
 }
