@@ -133,7 +133,9 @@ public class StoreIdData extends BaseTestCase implements ITest {
 		object.put("Test case Name", testcaseName);
 		object.put("Jira ID", jiraID);
 
-		// calling the uin generator rest api and storing as JSON object
+		/*
+		 * calling the uin generator rest api and storing as JSON object
+		 * */
 		JSONObject uin = (JSONObject) new JSONParser()
 				.parse(applicationLibrary.GetRequestNoParameter(service_URI_uin).asString());
 
