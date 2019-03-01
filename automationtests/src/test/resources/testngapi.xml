@@ -55,7 +55,7 @@
 
 			<class name="io.mosip.kernel.tests.ValidateLocationByName"/>
 			</classes>
-		</test> 
+		</test>  
 		
 			
 	
@@ -77,7 +77,7 @@
  -->		
 	 <test name="PreRegistration Tests">
 
-		<parameter name="testType" value="smoke" />
+		<parameter name="testType" value="smokeandregression" />
 
 
 		<classes>
@@ -109,7 +109,7 @@
 
 	</test>
 
-	<test name="RegistrationProcessor Tests">    						
+	 <test name="RegistrationProcessor Tests">    						
    <parameter name="testType" value="smokeAndregression"/>
     <classes>
      <class name="io.mosip.regProc.tests.PacketStatus"/>     
@@ -117,7 +117,7 @@
 	<class name="io.mosip.regProc.tests.PacketReceiver"/>    
 	<class name="io.mosip.regProc.tests.IntegrationScenarios"/>          
     </classes>
-  </test> 
+  </test>  
 		
 
 	

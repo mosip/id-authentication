@@ -10,6 +10,7 @@
 	<!-- Passing Group as parmeter unsing "testType"Possible Groups are:smokeregressionsmoke -->
 
 
+
 	<test name="Booking.BookingAppointment">
 
 		<parameter name="testType" value="smokeAndRegression" />
@@ -23,7 +24,7 @@
 
 	</test>
 
-	<test name="Booking.CancelAnBookedAppointment">
+<test name="Booking.CancelAnBookedAppointment">
 
 		<parameter name="testType" value="smoke" />
 
@@ -286,7 +287,6 @@
 			<class name="io.mosip.preregistration.tests.IntegrationScenarios" />
 		</classes>
 	</test>
-
 
 </suite>
 
