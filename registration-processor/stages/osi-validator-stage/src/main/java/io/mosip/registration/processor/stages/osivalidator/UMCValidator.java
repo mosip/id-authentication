@@ -656,6 +656,10 @@ public class UMCValidator {
 				if (result.getStatus().equals(VALID)) {
 					isValid = true;
 				}
+				 else {
+						this.registrationStatusDto.setStatusComment(StatusMessage.TIMESTAMP_VALIDATION1 + " "
+								+ rcmDto.getRegId() + StatusMessage.TIMESTAMP_VALIDATION2 + " " + rcmDto.getRegcntrId());
+					} 
 			} else {
 				ErrorDTO error = result.getErrors().get(0);
 				this.registrationStatusDto.setStatusComment(error.getErrorMessage());
