@@ -14,7 +14,9 @@ create table reg.reg_center_user (
 
 	regcntr_id character varying (10) not null,	 -- reg.registration_center.id
 	usr_id  character varying (36) not null,	 -- reg.user_detail.id
-
+	
+	lang_code 	character varying (3) not null ,		-- master.language.code	
+	
 	is_active 	boolean not null,
 	cr_by 		character varying (32) not null,
 	cr_dtimes 	timestamp  not null,
@@ -32,8 +34,4 @@ create table reg.reg_center_user (
 -- indexes section -------------------------------------------------
 -- create index idx_cntrusr_<colX> on reg.reg_center_user (colX )
 -- ;
-
--- comments section ------------------------------------------------- 
-comment on table reg.reg_center_user is 'Table to store all MOSIP Application users and their mapped registration centers'
-;
 

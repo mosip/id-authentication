@@ -11,3 +11,6 @@ POR,Preuve de relation,Preuve de relation de la personne,fra,TRUE,superadmin,now
 POB,Proof of Birth,Proof date of birth of the person,eng,TRUE,superadmin,now()
 POB,إثبات الميلاد,تاريخ إثبات ميلاد الشخص,ara,TRUE,superadmin,now()
 POB,Preuve de naissance,Preuve de la date de naissance de la personne,fra,TRUE,superadmin,now()
+POE,Proof of Biometric Exception,Proof of Biometric Exception,eng,TRUE,superadmin,now()
+POE,دليل استثناء البيومترية,دليل استثناء البيومترية,ara,TRUE,superadmin,now()
+POE,Preuve dexception biométrique,Preuve dexception biométrique,fra,TRUE,superadmin,now()

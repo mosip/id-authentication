@@ -37,14 +37,10 @@ create table reg.machine_master (
 ;
 
 -- keys section -------------------------------------------------
- alter table reg.machine_master add constraint pk_machm_id primary key (id)
+ alter table reg.machine_master add constraint pk_machm_id primary key (id, lang_code)
  ;
 
 -- indexes section -------------------------------------------------
 -- create index idx_machm_<colX> on reg.machine_master (colX )
 -- ;
-
--- comments section ------------------------------------------------- 
-comment on table reg.machine_master is 'Table to store master list of machines like desktop, laptop, notebook...etc used at registration centers for individual registration'
-;
 

@@ -2,7 +2,7 @@
 -- schema 		: master	    	- Master reference Module
 -- table 		: machine_master	- Master List of Machines used for registration
 -- table alias  : machm
-
+ 
 -- schemas section -------------------------------------------------
  
 -- create schema if master schema for Master reference Module is not exists
@@ -36,14 +36,11 @@ create table master.machine_master (
 ;
 
 -- keys section -------------------------------------------------
- alter table master.machine_master add constraint pk_machm_id primary key (id)
+ alter table master.machine_master add constraint pk_machm_id primary key (id, lang_code)
  ;
 
 -- indexes section -------------------------------------------------
 -- create index idx_machm_<colX> on master.machine_master (colX )
 -- ;
 
--- comments section ------------------------------------------------- 
-comment on table master.machine_master is 'Table to store master list of machines like desktop, laptop, notebook...etc used at registration centers for individual registration'
-;
 
