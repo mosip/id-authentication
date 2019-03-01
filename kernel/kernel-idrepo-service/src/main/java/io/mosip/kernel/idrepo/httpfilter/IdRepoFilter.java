@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idrepo.constant.IdRepoConstants;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -49,12 +50,6 @@ public class IdRepoFilter extends OncePerRequestFilter {
 	/** The Constant ID_REPO_FILTER. */
 	private static final String ID_REPO_FILTER = "IdRepoFilter";
 	
-	/** The Constant APPLICATION_VERSION. */
-	private static final String APPLICATION_VERSION = "mosip.kernel.idrepo.application.version";
-	
-	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "mosip.utc-datetime-pattern";
-
 	/** The Constant ID_REPO. */
 	private static final String ID_REPO = "IdRepo";
 	
@@ -159,8 +154,9 @@ public class IdRepoFilter extends OncePerRequestFilter {
 		try {
 			IdResponseDTO response = new IdResponseDTO();
 			response.setId(id.get(READ));
-			response.setVersion(env.getProperty(APPLICATION_VERSION));
-			response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+			response.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
+			response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(
+					env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
 			ErrorDTO errors = new ErrorDTO(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(),
 					IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage());
 			response.setErrors(Collections.singletonList(errors));

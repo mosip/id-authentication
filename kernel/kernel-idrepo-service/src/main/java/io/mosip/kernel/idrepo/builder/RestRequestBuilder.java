@@ -21,6 +21,7 @@ import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.constant.RestServicesConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.dto.RestRequestDTO;
 import lombok.NoArgsConstructor;
@@ -116,7 +117,7 @@ public class RestRequestBuilder {
 			request.setPathVariables(pathVariables);
 		}
 
-		if (checkIfEmptyOrWhiteSpace(timeout)) {
+		if (StringUtils.isEmpty(timeout)) {
 			request.setTimeout(Integer.parseInt(timeout));
 		}
 
@@ -207,7 +208,7 @@ public class RestRequestBuilder {
 	 *             the ID data validation exception
 	 */
 	private void checkHttpMethod(RestRequestDTO request, String httpMethod) throws IdRepoDataValidationException {
-		if (checkIfEmptyOrWhiteSpace(httpMethod)) {
+		if (StringUtils.isEmpty(httpMethod)) {
 			request.setHttpMethod(HttpMethod.valueOf(httpMethod));
 		} else {
 			mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "httpMethod",
@@ -228,7 +229,7 @@ public class RestRequestBuilder {
 	 *             the ID data validation exception
 	 */
 	private void checkUri(RestRequestDTO request, String uri) throws IdRepoDataValidationException {
-		if (checkIfEmptyOrWhiteSpace(uri)) {
+		if (StringUtils.isEmpty(uri)) {
 			request.setUri(uri);
 		} else {
 			mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "uri",
@@ -238,19 +239,4 @@ public class RestRequestBuilder {
 		}
 	}
 
-	/**
-	 * Check if empty or white space.
-	 *
-	 * @param string
-	 *            the string
-	 * @return true, if successful
-	 */
-	private boolean checkIfEmptyOrWhiteSpace(String string) {
-		boolean result = false;
-
-		if (string != null && !string.isEmpty()) {
-			result = true;
-		}
-		return result;
-	}
 }

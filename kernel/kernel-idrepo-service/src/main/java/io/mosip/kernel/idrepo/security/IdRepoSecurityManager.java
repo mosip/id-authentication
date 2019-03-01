@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idrepo.constant.IdRepoConstants;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.constant.RestServicesConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
@@ -33,14 +34,8 @@ import io.mosip.kernel.idrepo.helper.RestHelper;
 @Component
 public class IdRepoSecurityManager {
 
-	/** The Constant MOSIP_KERNEL_IDREPO_APPLICATION_ID. */
-	private static final String MOSIP_KERNEL_IDREPO_APPLICATION_ID = "mosip.kernel.idrepo.application.id";
-
 	/** The mosip logger. */
 	private Logger mosipLogger = IdRepoLogger.getLogger(IdRepoSecurityManager.class);
-
-	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "mosip.utc-datetime-pattern";
 
 	/** The Constant ID_REPO_SERVICE. */
 	private static final String ID_REPO_SERVICE = "IdRepoService";
@@ -73,8 +68,9 @@ public class IdRepoSecurityManager {
 	@PostConstruct
 	public void buildRequest() {
 		request = new ObjectNode(mapper.getNodeFactory());
-		request.put("applicationId", env.getProperty(MOSIP_KERNEL_IDREPO_APPLICATION_ID));
-		request.put("timeStamp", DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN)));
+		request.put("applicationId", env.getProperty(IdRepoConstants.APPLICATION_ID.getValue()));
+		request.put("timeStamp",
+				DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
 	}
 
 	/**
