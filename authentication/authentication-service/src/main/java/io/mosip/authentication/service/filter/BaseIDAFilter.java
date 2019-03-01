@@ -2,7 +2,6 @@ package io.mosip.authentication.service.filter;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -162,7 +161,7 @@ public abstract class BaseIDAFilter implements Filter {
 		}
 		requestWrapper.replaceData(EMPTY_JSON_OBJ_STRING.getBytes());
 		String resTime = DateUtils.formatDate(
-				DateUtils.parseToDate(mapper.convertValue(new Date(), String.class),
+				DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(),
 						env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(ZoneOffset.UTC)),
 				env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(ZoneOffset.UTC));
 		authResponseDTO.setStatus("N");
@@ -183,7 +182,7 @@ public abstract class BaseIDAFilter implements Filter {
 		authResponseDTO.setResponseTime(resTime);
 		requestWrapper.resetInputStream();
 		authResponseDTO.setVersion(getVersionFromUrl(requestWrapper));
-		Map<String, Object> responseMap = mapper.readValue(mapper.writeValueAsString(authResponseDTO), new TypeReference<Map<String, Object>>() {
+		Map<String, Object> responseMap = mapper.convertValue(mapper.writeValueAsString(authResponseDTO), new TypeReference<Map<String, Object>>() {
 		});
 		Map<String, Object> resultMap = new LinkedHashMap<>();
 		for(Map.Entry<String, Object> map : responseMap.entrySet()) {
@@ -240,8 +239,8 @@ public abstract class BaseIDAFilter implements Filter {
 		try {
 			return mapper.readValue(output, Map.class);
 		} catch (IOException | ClassCastException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
 		}
 	}
 	
@@ -252,16 +251,16 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected void consumeRequest(ResettableStreamHttpServletRequest requestWrapper) throws IdAuthenticationAppException {
-		requestTime = DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN));
-		byte[] requestAsByte = null;
 		try {
+			requestTime = DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN));
+			byte[] requestAsByte = null;
 			requestAsByte = IOUtils.toByteArray(requestWrapper.getInputStream());
+			logTime(requestTime, "request");
+			logDataSize(new String(requestAsByte), "request");
 		} catch (IOException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
 		}
-		logTime(requestTime, "request");
-		logDataSize(new String(requestAsByte), "request");
 	}
 	
 	/**
@@ -274,17 +273,16 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	protected String mapResponse(ResettableStreamHttpServletRequest requestWrapper, CharResponseWrapper responseWrapper) throws IdAuthenticationAppException {
 		try {
-			String ver = getVersionFromUrl(requestWrapper);			
 			requestWrapper.resetInputStream();
 			Map<String, Object> responseMap = setResponseParams(getRequestBody(requestWrapper.getInputStream()),
 					getResponseBody(responseWrapper.toString()));
-			responseMap.put("version", ver);
+			responseMap.put("version", getVersionFromUrl(requestWrapper));
 			String responseAsString = mapper.writeValueAsString(transformResponse(responseMap));
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), RESPONSE);
 			return responseAsString;
 		} catch (IdAuthenticationAppException | IOException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
 		}
 	}
 
@@ -292,13 +290,12 @@ public abstract class BaseIDAFilter implements Filter {
 		String ver = null;
 		if (requestWrapper instanceof HttpServletRequestWrapper) {
 			String url = requestWrapper.getRequestURL().toString();
-			String context = requestWrapper.getContextPath();
+			String contextPath = requestWrapper.getContextPath();
 
-			if ((url != null && !url.isEmpty()) && (context != null && !context.isEmpty())) {
-				String[] splitedUrlByContext = url.split(context);
-				String versionStr = Arrays.stream(splitedUrlByContext[1].split("/")).filter(s -> !s.isEmpty()).findFirst()
-						.orElse(DEFAULT_VERSION);
-				ver = versionStr.replaceAll(VER_REX, "");
+			if ((Objects.nonNull(url) && !url.isEmpty()) && (Objects.nonNull(contextPath) && !contextPath.isEmpty())) {
+				String[] splitedUrlByContext = url.split(contextPath);
+				ver = Arrays.stream(splitedUrlByContext[1].split("/")).filter(s -> !s.isEmpty()).findFirst()
+						.orElse(DEFAULT_VERSION).replaceAll(VER_REX, "");
 			}
 		}
 		return ver;
@@ -343,12 +340,12 @@ public abstract class BaseIDAFilter implements Filter {
 	
 	protected Map<String, Object> getRequestBody(InputStream inputStream) throws IdAuthenticationAppException {
 		try {
-			return mapper.readValue(IOUtils.toString(inputStream, Charset.defaultCharset()),
+			return mapper.readValue(inputStream,
 					new TypeReference<Map<String, Object>>() {
 					});
 		} catch (IOException | ClassCastException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
 		}
 	}
 	

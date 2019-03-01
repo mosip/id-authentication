@@ -119,18 +119,16 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		authenticateRequest(requestWrapper);
 		
 		try {
-			ObjectWriter objectWriter = mapper.writerWithDefaultPrettyPrinter();
 			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
-
 			Map<String, Object> decipherRequest = decipherRequest(requestBody);
+			ObjectWriter objectWriter = mapper.writerWithDefaultPrettyPrinter();
+			String requestAsString = objectWriter.writeValueAsString(decipherRequest);
 			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
-					"Input Request: \n" + objectWriter.writeValueAsString(decipherRequest));
-			requestWrapper.resetInputStream();
-
-			requestWrapper.replaceData(objectWriter.writeValueAsString(decipherRequest).getBytes());
+					"Input Request: \n" + requestAsString);
+			requestWrapper.replaceData(requestAsString.getBytes());
 		} catch (IOException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST);
 		}
 		
 	}
@@ -141,21 +139,16 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	@Override
 	protected void authenticateRequest(ResettableStreamHttpServletRequest requestWrapper) throws IdAuthenticationAppException {
 		String signature = requestWrapper.getHeader("Authorization");// FIXME header name
-		byte[] requestAsByte = null;
 		try {
 			requestWrapper.resetInputStream();
-			requestAsByte = IOUtils.toByteArray(requestWrapper.getInputStream());
-			requestWrapper.resetInputStream();
-			
-			if (!validateSignature(signature, requestAsByte)) {
+			if (!validateSignature(signature, IOUtils.toByteArray(requestWrapper.getInputStream()))) {
 				mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid Signature");
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_SIGNATURE.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_SIGNATURE.getErrorMessage());
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_SIGNATURE);
 			}
 			
 		} catch (IOException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
 		}
 	}
 	
@@ -187,14 +180,12 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 			} else {
 				mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "certificate not present");
 				throw new IdAuthenticationAppException(
-						IdAuthenticationErrorConstants.INVALID_CERTIFICATE.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_CERTIFICATE.getErrorMessage());
+						IdAuthenticationErrorConstants.INVALID_CERTIFICATE);
 			}
 		} catch (JoseException | InvalidKeyException | CertificateException | NoSuchAlgorithmException
 				| NoSuchProviderException | SignatureException e) {
 			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid certificate");
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_CERTIFICATE.getErrorMessage());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE, e);
 		}
 		return isSigned;
 	}
@@ -297,8 +288,8 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 				return stringToDecode;
 			}
 		} catch (IllegalArgumentException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
 		}
 	}
 	
@@ -319,8 +310,8 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 				return stringToEncode;
 			}
 		} catch (IllegalArgumentException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
 		}
 	}
 	

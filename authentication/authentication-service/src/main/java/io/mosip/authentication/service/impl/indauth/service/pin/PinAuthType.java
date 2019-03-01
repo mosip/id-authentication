@@ -25,8 +25,6 @@ import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
  */
 public enum PinAuthType implements AuthType {
 
-	// @formatter:off
-
 	SPIN("pin", setOf(PinMatchType.SPIN), AuthTypeDTO::isPin, "PIN"),
 	OTP("otp", setOf(PinMatchType.OTP), AuthTypeDTO::isOtp, "OTP") {
 		@Override
