@@ -4,6 +4,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -290,8 +292,11 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 		uinObject.getDocuments().parallelStream().forEach(demo -> {
 			try {
 				String fileName = DEMOGRAPHICS + SLASH + demo.getDocId();
+				LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
 				String data = new String(
 						securityManager.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUin(), fileName))));
+				mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES, "time taken to get file : "
+						+ fileName + "  - " + Duration.between(startTime, DateUtils.getUTCCurrentDateTime()));
 				if (demo.getDocHash().equals(securityManager.hash(CryptoUtil.decodeBase64(data)))) {
 					documents.add(new Documents(demo.getDoccatCode(), data));
 				} else {
@@ -333,8 +338,11 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 			if (allowedBioAttributes.contains(bio.getBiometricFileType())) {
 				try {
 					String fileName = BIOMETRICS + SLASH + bio.getBioFileId();
+					LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
 					String data = new String(securityManager
 							.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUin(), fileName))));
+					mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES, "time taken to get file : "
+							+ fileName + "  - " + Duration.between(startTime, DateUtils.getUTCCurrentDateTime()));
 					if (Objects.nonNull(data)) {
 						if (StringUtils.equals(bio.getBiometricFileHash(),
 								securityManager.hash(CryptoUtil.decodeBase64(data)))) {

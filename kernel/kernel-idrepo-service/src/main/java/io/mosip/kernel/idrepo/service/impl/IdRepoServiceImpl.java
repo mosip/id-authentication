@@ -2,6 +2,7 @@ package io.mosip.kernel.idrepo.service.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -302,10 +303,13 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 		} else {
 			data = CryptoUtil.decodeBase64(doc.getValue());
 		}
-
+		
+		LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
 		fsAdapter.storeFile(uin, BIOMETRICS + SLASH + fileRefId,
 				new ByteArrayInputStream(CryptoUtil.decodeBase64(new String(securityManager.encrypt(data)))));
-
+		mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "STORE FILES", "time taken to store file : "
+				+ fileRefId + "  - " + Duration.between(startTime, DateUtils.getUTCCurrentDateTime()));
+		
 		bioList.add(new UinBiometric(uinRefId, fileRefId, doc.getCategory(),
 				docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(), securityManager.hash(data),
 				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
@@ -338,8 +342,11 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 								.toInstant().toEpochMilli())
 				.toString() + DOT + docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText();
 
+		LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
 		fsAdapter.storeFile(uin, DEMOGRAPHICS + SLASH + fileRefId, new ByteArrayInputStream(
 				CryptoUtil.decodeBase64(new String(securityManager.encrypt(CryptoUtil.decodeBase64(doc.getValue()))))));
+		mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "STORE FILES", "time taken to store file : "
+				+ fileRefId + "  - " + Duration.between(startTime, DateUtils.getUTCCurrentDateTime()));
 
 		docList.add(new UinDocument(uinRefId, doc.getCategory(), docType.get(TYPE).asText(), fileRefId,
 				docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),

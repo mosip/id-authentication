@@ -1,7 +1,6 @@
 package io.mosip.kernel.idrepo.httpfilter;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
@@ -15,7 +14,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -123,8 +121,7 @@ public class IdRepoFilter extends OncePerRequestFilter {
 		mosipLogger.debug(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Request URL: " + request.getRequestURL());
 
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(request);
-		mosipLogger.debug(SESSION_ID, ID_REPO, ID_REPO_FILTER,
-				"Request body : \n" + IOUtils.toString(requestWrapper.getInputStream(), Charset.defaultCharset()));
+		mosipLogger.debug(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Request received");
 		requestWrapper.resetInputStream();
 
 		if (request.getMethod().equals(GET) && (request.getParameterMap().size() > 1
@@ -142,7 +139,8 @@ public class IdRepoFilter extends OncePerRequestFilter {
 		mosipLogger.debug(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Response sent at: " + responseTime);
 		long duration = Duration.between(requestTime, responseTime).toMillis();
 		mosipLogger.debug(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Time taken to respond in ms: " + duration
-				+ ". Time difference between request and response in Seconds: " + ((double) duration / 1000));
+				+ ". Time difference between request and response in Seconds: " + ((double) duration / 1000)
+				+ " for url : " + request.getRequestURL() + " method: " + request.getMethod());
 	}
 
 	/**
