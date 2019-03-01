@@ -7,9 +7,11 @@ import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public class RegistrationCommonFields {
+	
+	
 
 	@Column(name = "IS_ACTIVE")
-	protected Boolean isActive;
+	private Boolean isActive;
 	@Column(name = "CR_BY")
 	protected String crBy;
 	@Column(name = "CR_DTIMES")

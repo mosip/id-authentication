@@ -4,6 +4,7 @@
 \ir ddl/master-appl_form_type.sql
 \ir ddl/master-app_authentication_method.sql
 \ir ddl/master-app_detail.sql
+\ir ddl/master-app_role_priority.sql
 \ir ddl/master-authentication_method.sql
 \ir ddl/master-authentication_type.sql
 \ir ddl/master-biometric_attribute.sql
@@ -21,6 +22,8 @@
 \ir ddl/master-id_type.sql
 \ir ddl/master-introducer_type.sql
 \ir ddl/master-language.sql
+\ir ddl/master-licensekey_list.sql
+\ir ddl/master-licensekey_permission.sql
 \ir ddl/master-location.sql
 \ir ddl/master-loc_holiday.sql
 \ir ddl/master-machine_master.sql
@@ -28,7 +31,10 @@
 \ir ddl/master-machine_spec.sql
 \ir ddl/master-machine_type.sql
 \ir ddl/master-message_list.sql
+\ir ddl/master-mid_seq.sql
 \ir ddl/master-module_detail.sql
+\ir ddl/master-process_list.sql
+\ir ddl/master-rcid_seq.sql
 \ir ddl/master-reason_category.sql
 \ir ddl/master-reason_list.sql
 \ir ddl/master-registration_center.sql
@@ -54,11 +60,13 @@
 \ir ddl/master-template_type.sql
 \ir ddl/master-title.sql
 \ir ddl/master-transaction_type.sql
+\ir ddl/master-tsp_licensekey_map.sql
+\ir ddl/master-tspid_seq.sql
 \ir ddl/master-user_detail.sql
 \ir ddl/master-user_detail_h.sql
 \ir ddl/master-user_pwd.sql
 \ir ddl/master-user_role.sql
 \ir ddl/master-valid_document.sql
-\
+
 \ir ddl/AlterFK_master_schema.sql
 \ir ddl/AlterFK_master_dropLang.sql

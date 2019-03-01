@@ -17,16 +17,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
-import io.mosip.preregistration.documents.exception.DemographicGetDetailsException;
 import io.mosip.preregistration.documents.exception.InvalidDocumnetIdExcepion;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
-import software.amazon.ion.IonException;
 
 
 @RunWith(SpringRunner.class)
@@ -121,12 +118,6 @@ public class DocumentServiceUtilTest {
 	public void virusscannerFailureTest() throws Exception{
 		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenThrow(java.io.IOException.class);
 		serviceUtil.isVirusScanSuccess(mockMultipartFile);
-	}
-	
-//	@Test(expected=DemographicGetDetailsException.class)
-//	public void callGetPreRegInfoRestServiceFailureTest() {
-//		
-//	}
-	
+	}	
 
 }

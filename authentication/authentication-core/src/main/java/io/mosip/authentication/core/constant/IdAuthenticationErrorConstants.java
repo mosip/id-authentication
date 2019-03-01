@@ -20,16 +20,16 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_OTP("IDA-OTA-006", "OTP is invalid", "A0108"),
 	INVALID_TXN_ID("IDA-OTA-007", "Input txnID does not match txnID of OTP Request", "A0109"),
 	OTP_NOT_PRESENT("IDA-OTA-008", "Missing OTP value", "A0110"),
-	//REQUEST_PROCESSING_ERROR("IDA-OTA-010", "Request could not be processed. Please try again"),
-	BLOCKED_OTP_TO_GENERATE("IDA-OTA-010", "Could not generate OTP as UIN is locked "),
-	BLOCKED_OTP_TO_VALIDATE("IDA-OTA-011", "UIN locked due to exceeding no of invalid OTP trials"),
+	BLOCKED_OTP_TO_GENERATE("IDA-OTA-010", "UIN is locked for OTP generation. Please try again later"),
+	BLOCKED_OTP_TO_VALIDATE("IDA-OTA-011", "UIN is locked for OTP validation due to exceeding no of invalid OTP trials"),
 
 	// To be discussed with BA
 	INVALID_AUTH_REQUEST_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s hrs/min"),
 	INVALID_UIN("IDA-MLC-002", "Invalid UIN", "A0101"),
 	UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated", "A0102"),
 	INVALID_VID("IDA-MLC-004", "Invalid VID", "A0103"), 
-	EXPIRED_VID("IDA-MLC-005", "Expired VID", "A0104"), // Not
+	EXPIRED_VID("IDA-MLC-005", "Expired VID", "A0104"),
+	VID_DEACTIVATED_UIN("IDA-MLC-012","VID corresponding to a deactivated UIN"),// Not
 																											// referenced
 	INACTIVE_VID("IDA-IDV-005", "Inactive VID"), 
 	AUTHENTICATION_FAILED("IDA-AUT-501", "Authentication failed"),
@@ -119,6 +119,11 @@ public enum IdAuthenticationErrorConstants {
 	
 	//Static Pin Store
 	STATICPIN_NOT_STORED_PINVAUE("IDA-SPA-003","Could not store the static pin of the individual"),
+	
+	//VID Generator
+	VID_GENERATION_FAILED("IDA-MLC-010","Could not generate VID for the individual"),
+	
+	VID_REGENERATION_FAILED("IDA-MLC-011","VID regeneration not allowed. Use existing VID"),
 	
 	// for No authentication type selected
 	NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST("IDA-MLC-008","No authentication type selected");

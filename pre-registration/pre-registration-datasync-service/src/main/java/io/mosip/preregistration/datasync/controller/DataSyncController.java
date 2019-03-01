@@ -36,7 +36,7 @@ import io.swagger.annotations.ApiResponses;
  *
  */
 @RestController
-@RequestMapping("/v0.1/pre-registration/data-sync/")
+@RequestMapping("/")
 @Api(tags = "Data-Sync")
 @CrossOrigin("*")
 public class DataSyncController {

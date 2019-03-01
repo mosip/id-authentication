@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>registration-processor</artifactId>
-		<version>0.8.2</version>
+		<version>0.8.15</version>
 	</parent>
 	<artifactId>registration-processor-camel-bridge</artifactId>
 	<packaging>jar</packaging>
@@ -59,6 +59,17 @@
 		<dependency>
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-vertx</artifactId>
+			<version>${camel.vertx.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-http</artifactId>
 			<version>${camel.vertx.version}</version>
 			<exclusions>
 				<exclusion>

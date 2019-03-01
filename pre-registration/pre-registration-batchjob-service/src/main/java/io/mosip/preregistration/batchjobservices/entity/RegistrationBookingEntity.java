@@ -12,11 +12,10 @@ import java.time.LocalTime;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.NamedQuery;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -32,6 +31,8 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "reg_appointment", schema = "prereg")
+@NamedQuery(name = "RegistrationBookingEntity.existsByPreIdandStatusCode", query = "SELECT CASE WHEN COUNT(u) > 0 THEN 'true' ELSE 'false' END FROM RegistrationBookingEntity u WHERE u.bookingPK.preregistrationId = ?1 and u.statusCode = ?2")
+@NamedQuery(name="RegistrationBookingEntity.findPreIdAndStatusCode",query="SELECT r from RegistrationBookingEntity r WHERE r.bookingPK.preregistrationId = ?1 and r.statusCode<>?2")
 public class RegistrationBookingEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -39,8 +40,6 @@ public class RegistrationBookingEntity implements Serializable {
 
 	/** Id. */
 	@Id
-	@GeneratedValue(generator="system-uuid" )
-	@GenericGenerator(name="system-uuid", strategy = "uuid" )
 	@Column(name = "id")
 	private String id;
 	
@@ -88,14 +87,5 @@ public class RegistrationBookingEntity implements Serializable {
 	@Column(name = "upd_dtimes")
 	private LocalDateTime updDate;
 
-	/** Is deleted. */
-	@Column(name = "is_deleted")
-	private boolean isDeleted;
-
-	/** delete date timee. */
-	@Column(name = "del_dtimes")
-	private LocalDateTime delTime;
-	
-	
 
 }

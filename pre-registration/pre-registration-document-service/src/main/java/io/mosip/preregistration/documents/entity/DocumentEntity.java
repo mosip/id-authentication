@@ -49,11 +49,8 @@ public class DocumentEntity implements Serializable {
 	/**
 	 * Document Id
 	 */
-	//@Id
-	//@SequenceGenerator(name = "applicant_document_id_seq", sequenceName = "applicant_document_id_seq", allocationSize = 1)
-	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "applicant_document_id_seq")
-	@Id @GeneratedValue(generator="system-uuid" )
-	@GenericGenerator(name="system-uuid", strategy = "uuid" )
+	
+	@Id 
 	@Column(name = "id")
 	private String documentId;
 
@@ -128,4 +125,18 @@ public class DocumentEntity implements Serializable {
 	 */
 	@Column(name = "encrypted_dtimes")
 	private LocalDateTime encryptedDateTime;
+	
+	/**
+	 * Document Id
+	 */
+	@Column(name = "doc_id")
+	private String docId;
+	
+	/**
+	 * Hash value of row
+	 */
+	@Column(name = "doc_hash")
+	private String DocHash;
+	
+	
 }

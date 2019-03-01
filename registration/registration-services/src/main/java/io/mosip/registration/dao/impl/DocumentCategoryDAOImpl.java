@@ -36,10 +36,17 @@ public class DocumentCategoryDAOImpl implements DocumentCategoryDAO {
 	 */
 	@Override
 	public List<DocumentCategory> getDocumentCategories() {
-		LOGGER.info("REGISTRATION-PACKET_CREATION-DOCUMENTCATEGORY", APPLICATION_NAME,
-				APPLICATION_ID, "fetching the document categories");
+		LOGGER.info("REGISTRATION-PACKET_CREATION-DOCUMENTCATEGORY", APPLICATION_NAME, APPLICATION_ID,
+				"fetching the document categories");
 
 		return documentCategoryRepository.findAll();
 	}
 
+	@Override
+	public List<DocumentCategory> getDocumentCategoriesByLangCode(String langCode) {
+		LOGGER.info("REGISTRATION-PACKET_CREATION-DOCUMENTCATEGORY", APPLICATION_NAME, APPLICATION_ID,
+				"fetching the document categories by lang code");
+
+		return documentCategoryRepository.findByLangCode(langCode);
+	}
 }

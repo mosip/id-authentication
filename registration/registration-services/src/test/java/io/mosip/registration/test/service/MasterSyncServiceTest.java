@@ -9,11 +9,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,17 +44,17 @@ import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
-import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
+import io.mosip.registration.entity.BlacklistedWords;
+import io.mosip.registration.entity.DocumentType;
+import io.mosip.registration.entity.Gender;
+import io.mosip.registration.entity.Location;
+import io.mosip.registration.entity.ReasonCategory;
+import io.mosip.registration.entity.ReasonList;
 import io.mosip.registration.entity.SyncControl;
-import io.mosip.registration.entity.mastersync.MasterBlacklistedWords;
-import io.mosip.registration.entity.mastersync.MasterDocumentType;
-import io.mosip.registration.entity.mastersync.MasterGender;
-import io.mosip.registration.entity.mastersync.MasterLocation;
-import io.mosip.registration.entity.mastersync.MasterReasonCategory;
-import io.mosip.registration.entity.mastersync.MasterReasonList;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.impl.MasterSyncServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
@@ -83,6 +84,9 @@ public class MasterSyncServiceTest {
 
 	@Mock
 	private ServiceDelegateUtil serviceDelegateUtil;
+	
+	@Mock
+	private UserOnboardService userOnboardService;
 
 	/*
 	 * @Mock UriComponentsBuilder UriComponentsBuilder;
@@ -146,6 +150,10 @@ public class MasterSyncServiceTest {
 
 		String masterJson = "{\"languages\":[{\"language\":[{\"languageCode\":\"1\",\"languageName\":\"eng\",\"languageFamily\":\"Engish\",\"nativeName\":\"Engilsh\"},{\"languageCode\":\"2\",\"languageName\":\"arb\",\"languageFamily\":\"Arab\",\"nativeName\":\"Arab\"}]}],\"biometricattributes\":[{\"biometricattribute\":[{\"code\":\"1\",\"name\":\"asdf\",\"description\":\"testing\",\"biometricTypeCode\":\"1\",\"langCode\":\"eng\"}]},{\"biometricattribute\":[{\"code\":\"2\",\"name\":\"asdf\",\"description\":\"testing\",\"biometricTypeCode\":\"1\",\"langCode\":\"eng\"}]},{\"biometricattribute\":[{\"code\":\"3\",\"name\":\"asfesr\",\"description\":\"testing2\",\"biometricTypeCode\":\"2\",\"langCode\":\"eng\"}]}],\"blacklistedwords\":[{\"word\":\"1\",\"description\":\"asdf1\",\"langCode\":\"eng\"},{\"word\":\"2\",\"description\":\"asdf2\",\"langCode\":\"eng\"},{\"word\":\"3\",\"description\":\"asdf3\",\"langCode\":\"eng\"}],\"biometrictypes\":[{\"biometrictype\":[{\"code\":\"1\",\"name\":\"fingerprints\",\"description\":\"fingerprint\",\"langCode\":\"eng\"}]},{\"biometrictype\":[{\"code\":\"2\",\"name\":\"iries\",\"description\":\"iriescapture\",\"langCode\":\"eng\"}]}],\"idtypes\":[{\"code\":\"1\",\"name\":\"PAN\",\"description\":\"pan card\",\"langCode\":\"eng\"},{\"code\":\"1\",\"name\":\"VID\",\"description\":\"voter id\",\"langCode\":\"eng\"}],\"documentcategories\":[{\"code\":\"1\",\"name\":\"POA\",\"description\":\"poaaa\",\"langCode\":\"eng\"},{\"code\":\"2\",\"name\":\"POI\",\"description\":\"porrr\",\"langCode\":\"eng\"},{\"code\":\"3\",\"name\":\"POR\",\"description\":\"pobbb\",\"langCode\":\"eng\"},{\"code\":\"4\",\"name\":\"POB\",\"description\":\"poiii\",\"langCode\":\"eng\"}],\"documenttypes\":[{\"code\":\"1\",\"name\":\"passport\",\"description\":\"passportid\",\"langCode\":\"eng\"},{\"code\":\"2\",\"name\":\"passport\",\"description\":\"passportid's\",\"langCode\":\"eng\"},{\"code\":\"3\",\"name\":\"voterid\",\"description\":\"votercards\",\"langCode\":\"eng\"},{\"code\":\"4\",\"name\":\"passport\",\"description\":\"passports\",\"langCode\":\"eng\"}],\"locations\":[{\"code\":\"1\",\"name\":\"chennai\",\"hierarchyLevel\":\"1\",\"hierarchyName\":\"Tamil Nadu\",\"parentLocCode\":\"1\",\"langCode\":\"eng\"},{\"code\":\"2\",\"name\":\"hyderabad\",\"hierarchyLevel\":\"2\",\"hierarchyName\":\"Telengana\",\"parentLocCode\":\"2\",\"langCode\":\"eng\"}],\"titles\":[{\"title\":[{\"code\":\"1\",\"titleName\":\"admin\",\"titleDescription\":\"ahsasa\",\"langCode\":\"eng\"}]},{\"title\":[{\"code\":\"2\",\"titleDescription\":\"asas\",\"titleName\":\"superadmin\",\"langCode\":\"eng\"}]}],\"genders\":[{\"gender\":[{\"genderCode\":\"1\",\"genderName\":\"male\",\"langCode\":\"eng\"},{\"genderCode\":\"2\",\"genderName\":\"female\",\"langCode\":\"eng\"}]},{\"gender\":[{\"genderCode\":\"1\",\"genderName\":\"female\",\"langCode\":\"eng\"}]}],\"reasonCategory\":{\"code\":\"1\",\"name\":\"rejected\",\"description\":\"rejectedfile\",\"langCode\":\"eng\",\"reasonLists\":[{\"code\":\"1\",\"name\":\"document\",\"description\":\"inavliddoc\",\"langCode\":\"eng\",\"reasonCategoryCode\":\"1\"},{\"code\":\"2\",\"name\":\"document\",\"description\":\"inavlidtype\",\"langCode\":\"eng\",\"reasonCategoryCode\":\"2\"}]}}";
 
+		Map<String, String> map =new HashMap<>();
+		map.put(RegistrationConstants.USER_CENTER_ID, "10011");
+		Mockito.when(userOnboardService.getMachineCenterId()).thenReturn(map);
+		
 		Mockito.when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenReturn(masterSyncDetails);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
@@ -1006,7 +1014,8 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(),Mockito.anyBoolean())).thenReturn(masterJson);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean()))
+				.thenReturn(masterJson);
 
 		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class))
 				.thenReturn(masterSyncDt);
@@ -1076,7 +1085,7 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(),Mockito.anyBoolean()))
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean()))
 				.thenThrow(HttpClientErrorException.class);
 
 		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class))
@@ -1146,7 +1155,7 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(),Mockito.anyBoolean()))
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean()))
 				.thenThrow(SocketTimeoutException.class);
 
 		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class))
@@ -1167,8 +1176,8 @@ public class MasterSyncServiceTest {
 	@Test
 	public void findLocationByHierarchyCode() {
 
-		List<MasterLocation> locations = new ArrayList<>();
-		MasterLocation locattion = new MasterLocation();
+		List<Location> locations = new ArrayList<>();
+		Location locattion = new Location();
 		locattion.setCode("LOC01");
 		locattion.setName("english");
 		locattion.setLangCode("ENG");
@@ -1187,8 +1196,8 @@ public class MasterSyncServiceTest {
 	@Test
 	public void findProvianceByHierarchyCode() {
 
-		List<MasterLocation> locations = new ArrayList<>();
-		MasterLocation locattion = new MasterLocation();
+		List<Location> locations = new ArrayList<>();
+		Location locattion = new Location();
 		locattion.setCode("LOC01");
 		locattion.setName("english");
 		locattion.setLangCode("ENG");
@@ -1197,30 +1206,31 @@ public class MasterSyncServiceTest {
 		locattion.setParentLocCode("english");
 		locations.add(locattion);
 
-		Mockito.when(masterSyncDao.findLocationByParentLocCode(Mockito.anyString(),Mockito.anyString())).thenReturn(locations);
+		Mockito.when(masterSyncDao.findLocationByParentLocCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(locations);
 
-		masterSyncServiceImpl.findProvianceByHierarchyCode("LOC01","eng");
+		masterSyncServiceImpl.findProvianceByHierarchyCode("LOC01", "eng");
 
 	}
 
 	@Test
 	public void findAllReasons() {
 
-		List<MasterReasonCategory> allReason = new ArrayList<>();
-		MasterReasonCategory reasons = new MasterReasonCategory();
+		List<ReasonCategory> allReason = new ArrayList<>();
+		ReasonCategory reasons = new ReasonCategory();
 		reasons.setCode("DEMO");
 		reasons.setName("InvalidData");
 		reasons.setLangCode("FRE");
 		allReason.add(reasons);
 
-		List<MasterReasonList> allReasonList = new ArrayList<>();
-		MasterReasonList reasonList = new MasterReasonList();
+		List<ReasonList> allReasonList = new ArrayList<>();
+		ReasonList reasonList = new ReasonList();
 		reasonList.setCode("DEMO");
 		reasonList.setName("InvalidData");
 		reasonList.setLangCode("FRE");
 		allReasonList.add(reasonList);
 
-		Mockito.when(masterSyncDao.getAllReasonCatogery()).thenReturn(allReason);
+		Mockito.when(masterSyncDao.getAllReasonCatogery(Mockito.anyString())).thenReturn(allReason);
 		Mockito.when(masterSyncDao.getReasonList(Mockito.anyString(), Mockito.anyList())).thenReturn(allReasonList);
 
 		masterSyncServiceImpl.getAllReasonsList("ENG");
@@ -1230,8 +1240,8 @@ public class MasterSyncServiceTest {
 	@Test
 	public void findAllBlackWords() {
 
-		List<MasterBlacklistedWords> allBlackWords = new ArrayList<>();
-		MasterBlacklistedWords blackWord = new MasterBlacklistedWords();
+		List<BlacklistedWords> allBlackWords = new ArrayList<>();
+		BlacklistedWords blackWord = new BlacklistedWords();
 		blackWord.setWord("asdfg");
 		blackWord.setDescription("asdfg");
 		blackWord.setLangCode("ENG");
@@ -1244,11 +1254,12 @@ public class MasterSyncServiceTest {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void findDocumentCategories() {
-	
-		List<MasterDocumentType> documents = new ArrayList<>();
-		MasterDocumentType document = new MasterDocumentType();
+
+		List<DocumentType> documents = new ArrayList<>();
+		DocumentType document = new DocumentType();
 		document.setName("Aadhar");
 		document.setDescription("Aadhar card");
 		document.setLangCode("ENG");
@@ -1256,18 +1267,18 @@ public class MasterSyncServiceTest {
 		documents.add(document);
 		List<String> validDocuments = new ArrayList<>();
 		validDocuments.add("CLR");
-		//validDocuments.add("MNA");
-		Mockito.when(masterSyncDao.getDocumentTypes(Mockito.anyList(),Mockito.anyString())).thenReturn(documents);
-	
-		masterSyncServiceImpl.getDocumentCategories("ENG","Test");
-	
+		// validDocuments.add("MNA");
+		Mockito.when(masterSyncDao.getDocumentTypes(Mockito.anyList(), Mockito.anyString())).thenReturn(documents);
+
+		masterSyncServiceImpl.getDocumentCategories("ENG", "Test");
+
 	}
-	
+
 	@Test
 	public void findGender() {
 
-		List<MasterGender> genderList = new ArrayList<>();
-		MasterGender gender = new MasterGender();
+		List<Gender> genderList = new ArrayList<>();
+		Gender gender = new Gender();
 		gender.setCode("1");
 		gender.setGenderName("male");
 		gender.setLangCode("ENG");

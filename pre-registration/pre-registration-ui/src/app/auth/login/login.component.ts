@@ -2,13 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { FormControl, Validators } from '@angular/forms';
+import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
+import { MatDialog } from '@angular/material';
+import { AuthService } from '../auth.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  languages: string[] = ['English', 'French', 'Arabic'];
+  languages: string[] = ['French', 'Arabic'];
 
   inputPlaceholderContact = 'Email ID or Phone Number';
   inputPlaceholderOTP = 'Enter OTP';
@@ -19,7 +22,7 @@ export class LoginComponent implements OnInit {
   inputContactDetails = '';
   inputOTP: string;
   selectedLanguage = '';
-  langCode = 'eng';
+  langCode = 'ara';
   dir = 'ltr';
   showSendOTP = true;
   showResend = false;
@@ -37,12 +40,20 @@ export class LoginComponent implements OnInit {
       : '';
   }
 
-  constructor(private router: Router, private translate: TranslateService) {
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private translate: TranslateService,
+    private dialog: MatDialog
+  ) {
+    const loggedOut = localStorage.getItem('loggedOut');
+    localStorage.clear();
     translate.addLangs(['eng', 'fra', 'ara']);
-    translate.setDefaultLang('eng');
+    translate.setDefaultLang('ara');
 
-    const browserLang = translate.getBrowserLang();
-    translate.use(browserLang.match(/eng|fra|ara/) ? browserLang : 'eng');
+    // const browserLang = translate.getBrowserLang();
+    // translate.use(browserLang.match(/eng|fra|ara/) ? browserLang : 'ara');
+    localStorage.setItem('loggedOut', loggedOut);
     localStorage.setItem('langCode', this.langCode);
   }
 
@@ -50,6 +61,17 @@ export class LoginComponent implements OnInit {
     if (localStorage.getItem('langCode')) {
       this.langCode = localStorage.getItem('langCode');
       this.translate.use(this.langCode);
+    }
+    if (localStorage.getItem('loggedOut') && localStorage.getItem('loggedOut') === 'true') {
+      localStorage.removeItem('loggedOut');
+      const data = {
+        case: 'MESSAGE',
+        message: 'Applicant has to login with same Mobile/Email to access the created applications'
+      };
+      this.dialog.open(DialougComponent, {
+        width: '350px',
+        data: data
+      });
     }
     localStorage.setItem('loggedIn', 'false');
   }
@@ -138,8 +160,8 @@ export class LoginComponent implements OnInit {
       // dynamic update of button text for Resend and Verify
     } else if (this.showVerify) {
       clearInterval(this.timer);
-      console.log(this.inputContactDetails);
       localStorage.setItem('loggedIn', 'true');
+      // this.authService.setToken();
       this.router.navigate(['dashboard', this.inputContactDetails]);
     }
   }

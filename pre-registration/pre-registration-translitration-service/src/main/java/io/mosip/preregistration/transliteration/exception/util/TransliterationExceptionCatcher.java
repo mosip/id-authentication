@@ -15,6 +15,7 @@ import io.mosip.preregistration.transliteration.errorcode.ErrorCodes;
 import io.mosip.preregistration.transliteration.errorcode.ErrorMessage;
 import io.mosip.preregistration.transliteration.exception.IllegalParamException;
 import io.mosip.preregistration.transliteration.exception.JsonValidationException;
+import io.mosip.preregistration.transliteration.exception.MandatoryFieldRequiredException;
 import io.mosip.preregistration.transliteration.exception.MissingRequestParameterException;
 
 /**
@@ -27,7 +28,7 @@ import io.mosip.preregistration.transliteration.exception.MissingRequestParamete
  */
 @Component
 public class TransliterationExceptionCatcher {
-
+ 
 	/**
 	 * Method to handle the respective exceptions
 	 * 
@@ -53,6 +54,10 @@ public class TransliterationExceptionCatcher {
 		} else if (ex instanceof MissingRequestParameterException) {
 			throw new MissingRequestParameterException(((MissingRequestParameterException) ex).getErrorCode(),
 					((MissingRequestParameterException) ex).getErrorText());
+		}
+		else if (ex instanceof MandatoryFieldRequiredException) {
+			throw new MandatoryFieldRequiredException(((MandatoryFieldRequiredException) ex).getErrorCode(),
+					((MandatoryFieldRequiredException) ex).getErrorText());
 		}
 	}
 

@@ -132,12 +132,7 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 		WritableImage writableImage = null;
 		
 		if (null != fingerDataInByte) {
-			BufferedImage l_objBufferImg = null;
-			try {
-				l_objBufferImg = ImageIO.read(new ByteArrayInputStream(fingerDataInByte));
-			} catch (IOException ex) {
-				throw ex;
-			}
+			BufferedImage l_objBufferImg = ImageIO.read(new ByteArrayInputStream(fingerDataInByte));
 
 			if (l_objBufferImg != null) {
 				writableImage = new WritableImage(l_objBufferImg.getWidth(), l_objBufferImg.getHeight());

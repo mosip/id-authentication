@@ -20,7 +20,15 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -29,6 +37,7 @@ import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
+import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.MissingRequestParameterException;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
 import io.mosip.preregistration.application.exception.system.DateParseException;
@@ -36,6 +45,8 @@ import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
+import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
@@ -81,10 +92,10 @@ public class DemographicServiceUtil {
 			createDto.setCreatedBy(demographicEntity.getCreatedBy());
 			createDto.setCreatedDateTime(getLocalDateString(demographicEntity.getCreateDateTime()));
 			createDto.setUpdatedBy(demographicEntity.getUpdatedBy());
-			createDto.setUpdatedDateTime(getLocalDateString(LocalDateTime.now()));
+			createDto.setUpdatedDateTime(getLocalDateString(demographicEntity.getUpdateDateTime()));
 		} catch (ParseException ex) {
 			log.error("sessionId", "idType", "id",
-					"In setterForCreateDTO method of pre-registration service- " + ex.getCause());
+					"In setterForCreateDTO method of pre-registration service- " + ex.getMessage());
 			throw new JsonParseException(ErrorCodes.PRG_PAM_APP_007.toString(),
 					ErrorMessages.JSON_PARSING_FAILED.toString(), ex.getCause());
 		}
@@ -108,26 +119,27 @@ public class DemographicServiceUtil {
 		log.info("sessionId", "idType", "id", "In prepareDemographicEntity method of pre-registration service util");
 		DemographicEntity demographicEntity = new DemographicEntity();
 		demographicEntity.setPreRegistrationId(demographicRequest.getPreRegistrationId());
-		demographicEntity.setGroupId("1234567890");
 		LocalDateTime encryptionDateTime = DateUtils.getUTCCurrentDateTime();
 		byte[] encryptedDemographicDetails = cryptoUtil
 				.encrypt(demographicRequest.getDemographicDetails().toJSONString().getBytes(), encryptionDateTime);
 		demographicEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		demographicEntity.setLangCode(demographicRequest.getLangCode());
 		demographicEntity.setCrAppuserId(requestId);
+		demographicEntity.setCreatedBy(demographicRequest.getCreatedBy());
+		demographicEntity.setCreateDateTime(DateUtils
+				.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
+		demographicEntity.setStatusCode(statuscode);
+		demographicEntity.setDemogDetailHash("");
 		try {
 			if (entityType.equals(RequestCodes.SAVE.getCode())) {
 				if (!isNull(demographicRequest.getCreatedBy()) && !isNull(demographicRequest.getCreatedDateTime())
 						&& isNull(demographicRequest.getUpdatedBy()) && isNull(demographicEntity.getUpdateDateTime())) {
-					demographicEntity.setCreatedBy(demographicRequest.getCreatedBy());
-					demographicEntity.setCreateDateTime(DateUtils
-							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
-					demographicEntity.setStatusCode(statuscode);
+					
 					demographicEntity.setUpdatedBy(null);
 					demographicEntity.setUpdateDateTime(DateUtils
 							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
 					demographicEntity.setEncryptedDateTime(encryptionDateTime);
-					demographicEntity.setConsumed(Boolean.FALSE);
+					
 				} else {
 					throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_APP_012.toString(),
 							ErrorMessages.MISSING_REQUEST_PARAMETER.toString());
@@ -136,15 +148,12 @@ public class DemographicServiceUtil {
 				if (!isNull(demographicRequest.getCreatedBy()) && !isNull(demographicRequest.getCreatedDateTime())
 						&& !isNull(demographicRequest.getUpdatedBy())
 						&& !isNull(demographicRequest.getUpdatedDateTime())) {
-					demographicEntity.setCreatedBy(demographicRequest.getCreatedBy());
-					demographicEntity.setCreateDateTime(DateUtils
-							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
-					demographicEntity.setStatusCode(statuscode);
 					demographicEntity.setUpdatedBy(demographicRequest.getUpdatedBy());
 					demographicEntity.setUpdateDateTime(DateUtils
 							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getUpdatedDateTime())));
 					demographicEntity.setEncryptedDateTime(encryptionDateTime);
-					demographicEntity.setConsumed(Boolean.FALSE);
+					
+					
 				} else {
 					throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_APP_012.toString(),
 							ErrorMessages.MISSING_REQUEST_PARAMETER.toString());
@@ -255,10 +264,10 @@ public class DemographicServiceUtil {
 		log.info("sessionId", "idType", "id", "In dateSetter method of pre-registration service util ");
 		Map<String, LocalDateTime> localDateTimeMap = new HashMap<>();
 		try {
-
+			  
 			Date fromDate = DateUtils
 					.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.FROM_DATE.getCode()), "UTF-8"), format);
-
+          
 			Date toDate;
 			if (dateMap.get(RequestCodes.TO_DATE.getCode()) == null
 					|| isNull(dateMap.get(RequestCodes.TO_DATE.getCode()))) {
@@ -317,5 +326,6 @@ public class DemographicServiceUtil {
 				return true;
 		return false;
 	}
+
 
 }

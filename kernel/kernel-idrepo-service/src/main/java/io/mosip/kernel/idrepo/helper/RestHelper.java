@@ -2,6 +2,7 @@ package io.mosip.kernel.idrepo.helper;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
@@ -19,11 +20,13 @@ import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.RestServiceException;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.dto.RestRequestDTO;
 import io.netty.handler.ssl.SslContext;
@@ -38,12 +41,11 @@ import reactor.core.publisher.Mono;
  * @author Manoj SP
  */
 @Component
-
-/**
- * Instantiates a new rest helper.
- */
 @NoArgsConstructor
 public class RestHelper {
+
+	/** The Constant ERRORS. */
+	private static final String ERRORS = "errors";
 
 	/** The mapper. */
 	@Autowired
@@ -70,9 +72,13 @@ public class RestHelper {
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
+	/** The Constant THROWING_REST_SERVICE_EXCEPTION. */
 	private static final String THROWING_REST_SERVICE_EXCEPTION = "Throwing RestServiceException";
 
+	/** The Constant REQUEST_SYNC_RUNTIME_EXCEPTION. */
 	private static final String REQUEST_SYNC_RUNTIME_EXCEPTION = "requestSync-RuntimeException";
+	
+	private LocalDateTime requestTime;
 
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdRepoLogger.getLogger(RestHelper.class);
@@ -89,18 +95,20 @@ public class RestHelper {
 	public <T> T requestSync(@Valid RestRequestDTO request) throws RestServiceException {
 		Object response;
 		try {
+			requestTime = DateUtils.getUTCCurrentDateTime();
+			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, "Request received at : " + requestTime);
+			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
 			if (request.getTimeout() != null) {
-				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-						PREFIX_REQUEST + request + "\n" + request.getHeaders().getContentType());
 				response = request(request, getSslContext()).timeout(Duration.ofSeconds(request.getTimeout())).block();
-				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+				mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
+				checkErrorResponse(response, request.getResponseType());
 				return (T) response;
 			} else {
-				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
 				response = request(request, getSslContext()).block();
-				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+				mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
+				checkErrorResponse(response, request.getResponseType());
 				return (T) response;
 			}
 		} catch (WebClientResponseException e) {
@@ -119,6 +127,14 @@ public class RestHelper {
 						THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
 				throw new RestServiceException(IdRepoErrorConstants.UNKNOWN_ERROR, e);
 			}
+		} finally {
+			LocalDateTime responseTime = DateUtils.getUTCCurrentDateTime();
+			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+					"Response sent at : " + responseTime);
+			long duration = Duration.between(requestTime, responseTime).toMillis();
+			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+					"Time difference between request and response in millis:" + duration
+							+ ".  Time difference between request and response in Seconds: " + ((double) duration / 1000));
 		}
 
 	}
@@ -131,10 +147,10 @@ public class RestHelper {
 	 */
 	public Supplier<Object> requestAsync(@Valid RestRequestDTO request) {
 		try {
-			mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, PREFIX_REQUEST + request);
+			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, PREFIX_REQUEST + request);
 			Mono<?> sendRequest = request(request, getSslContext());
 			sendRequest.subscribe();
-			mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, "Request subscribed");
+			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, "Request subscribed");
 			return () -> sendRequest.block();
 		} catch (RestServiceException e) {
 			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
@@ -203,6 +219,29 @@ public class RestHelper {
 
 		return monoResponse;
 	}
+	
+	/**
+	 * Check error response.
+	 *
+	 * @param response the response
+	 * @param responseType the response type
+	 * @throws RestServiceException the rest service exception
+	 */
+	private void checkErrorResponse(Object response, Class<?> responseType) throws RestServiceException {
+		try {
+			ObjectNode responseNode = mapper.readValue(mapper.writeValueAsBytes(response), ObjectNode.class);
+			if (responseNode.has(ERRORS) && !responseNode.get(ERRORS).isNull() && responseNode.get(ERRORS).isArray()
+					&& responseNode.get(ERRORS).size() > 0) {
+				throw new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR,
+						responseNode.toString(),
+						mapper.readValue(responseNode.toString().getBytes(), responseType));
+			}
+		} catch (IOException e) {
+			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
+					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
+			throw new RestServiceException(IdRepoErrorConstants.UNKNOWN_ERROR, e);
+		}
+	}
 
 	/**
 	 * Handle 4XX/5XX status error.
@@ -217,15 +256,15 @@ public class RestHelper {
 					"Status error : " + e.getRawStatusCode() + " " + e.getStatusCode() + "  " + e.getStatusText());
 			if (e.getStatusCode().is4xxClientError()) {
 				mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
-						"Status error - returning RestServiceException - CLIENT_ERROR");
-				return new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR,
-						e.getResponseBodyAsString(),
+						"Status error - returning RestServiceException - CLIENT_ERROR -- "
+								+ e.getResponseBodyAsString());
+				return new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, e.getResponseBodyAsString(),
 						mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
 			} else {
 				mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
-						"Status error - returning RestServiceException - SERVER_ERROR");
-				return new RestServiceException(IdRepoErrorConstants.SERVER_ERROR,
-						e.getResponseBodyAsString(),
+						"Status error - returning RestServiceException - SERVER_ERROR -- "
+								+ e.getResponseBodyAsString());
+				return new RestServiceException(IdRepoErrorConstants.SERVER_ERROR, e.getResponseBodyAsString(),
 						mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
 			}
 		} catch (IOException ex) {

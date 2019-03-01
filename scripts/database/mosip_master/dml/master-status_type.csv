@@ -1,0 +1,2 @@
+﻿code,name,descr,lang_code,is_active,cr_by,cr_dtimes
+ADT,Activation Status,Activation Status,eng,TRUE,superadmin,now()

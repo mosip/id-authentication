@@ -3,14 +3,12 @@ package io.mosip.registration.processor.message.sender.template.generator;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.log.NullLogChute;
@@ -35,6 +33,8 @@ import io.vertx.core.logging.LoggerFactory;
 
 /**
  * The Class TemplateGenerator.
+ * 
+ * @author M1048358 Alok
  */
 @Component
 public class TemplateGenerator {
@@ -76,9 +76,8 @@ public class TemplateGenerator {
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 */
-	public String getTemplate(String templateTypeCode, Map<String, Object> attributes, String langCode)
+	public InputStream getTemplate(String templateTypeCode, Map<String, Object> attributes, String langCode)
 			throws IOException, ApisResourceAccessException {
-		String artifact = null;
 
 		try {
 			List<String> pathSegments = new ArrayList<>();
@@ -91,19 +90,12 @@ public class TemplateGenerator {
 			InputStream is = new ByteArrayInputStream(
 					template.getTemplates().iterator().next().getFileText().getBytes());
 
-			InputStream out = getTemplateManager().merge(is, attributes);
-
-			StringWriter writer = new StringWriter();
-			IOUtils.copy(out, writer, "UTF-8");
-
-			artifact = writer.toString();
+			return getTemplateManager().merge(is, attributes);
 
 		} catch (TemplateResourceNotFoundException | TemplateParsingException | TemplateMethodInvocationException e) {
 			log.error("Template processing failed due to resource absence", e);
 			throw new TemplateProcessingFailureException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
 		}
-
-		return artifact;
 	}
 
 	/**

@@ -12,7 +12,8 @@ public class RegistrationUIConstants {
 
 	// LOGIN
 	public static final String UNABLE_LOAD_LOGIN_SCREEN = bundle.getString("UNABLE_LOAD_LOGIN_SCREEN");
-	public static final String DISABLE_FINGERPRINT_SCREEN = bundle.getString("DISABLE_FINGERPRINT_SCREEN");
+	public static final String BIOMETRIC_DISABLE_SCREEN_1 = bundle.getString("BIOMETRIC_DISABLE_SCREEN_1");
+	public static final String BIOMETRIC_DISABLE_SCREEN_2 = bundle.getString("BIOMETRIC_DISABLE_SCREEN_2");
 	public static final String MISSING_MANDATOTY_FIELDS = bundle.getString("MISSING_MANDATOTY_FIELDS");
 	public static final String CREDENTIALS_FIELD_EMPTY = bundle.getString("CREDENTIALS_FIELD_EMPTY");
 	public static final String USERNAME_FIELD_EMPTY = bundle.getString("USERNAME_FIELD_EMPTY");
@@ -55,9 +56,15 @@ public class RegistrationUIConstants {
 			.getString("USER_ACCOUNT_LOCK_MESSAGE_MINUTES");
 
 	// NOTIFICATIONS
+	public static final String EMAIL_NOTIFICATION_SUCCESS = bundle.getString("EMAIL_NOTIFICATION_SUCCESS");
+	public static final String SMS_NOTIFICATION_SUCCESS = bundle.getString("SMS_NOTIFICATION_SUCCESS");
+	public static final String NO_VALID_EMAIL = bundle.getString("NO_VALID_EMAIL");
+	public static final String NO_VALID_MOBILE = bundle.getString("NO_VALID_MOBILE");
+	public static final String NOTIFICATION_SUCCESS = bundle.getString("NOTIFICATION_SUCCESS");
 	public static final String NOTIFICATION_FAIL = bundle.getString("NOTIFICATION_FAIL");
 	public static final String NOTIFICATION_SMS_FAIL = bundle.getString("NOTIFICATION_SMS_FAIL");
 	public static final String NOTIFICATION_EMAIL_FAIL = bundle.getString("NOTIFICATION_EMAIL_FAIL");
+	public static final String NOTIFICATION_LIMIT_EXCEEDED = bundle.getString("NOTIFICATION_LIMIT_EXCEEDED");
 	public static final String PACKET_CREATION_FAILURE = bundle.getString("PACKET_CREATION_FAILURE");
 
 	// SUCCESS
@@ -65,7 +72,9 @@ public class RegistrationUIConstants {
 	public static final String PRINT_INITIATION_SUCCESS = bundle.getString("PRINT_INITIATION_SUCCESS");
 	public static final String REREGISTRATION_APPROVE_SUCCESS = bundle.getString("REREGISTRATION_APPROVE_SUCCESS");
 	public static final String REREGISTER_TITLEPANE=bundle.getString("REREGISTER_TITLEPANE");
-	public static final String PENDING_APPROVAL=bundle.getString("PENDING_APPROVAL");
+	public static final String APPLICATIONS=bundle.getString("APPLICATIONS");
+	public static final String NO_PENDING_APPLICATIONS=bundle.getString("NO_PENDING_APPLICATIONS");
+	public static final String NO_RE_REGISTER_APPLICATIONS=bundle.getString("NO_RE_REGISTER_APPLICATIONS");
 
 
 	// DEVICE MAPPING
@@ -87,6 +96,7 @@ public class RegistrationUIConstants {
 
 	// REGISTRATION
 	public static final String MAX_AGE_WARNING = bundle.getString("MAX_AGE_WARNING");
+	public static final String MIN_AGE_WARNING = bundle.getString("MIN_AGE_WARNING");
 	public static final String POA_DOCUMENT_EMPTY = bundle.getString("poaDocuments");
 	public static final String POI_DOCUMENT_EMPTY = bundle.getString("poiDocuments");
 	public static final String POR_DOCUMENT_EMPTY = bundle.getString("porDocuments");
@@ -116,6 +126,7 @@ public class RegistrationUIConstants {
 	//PACKET EXPORT
 	public static final String PACKET_EXPORT_SUCCESS_MESSAGE = bundle.getString("PACKET_EXPORT_SUCCESS_MESSAGE");
 	public static final String PACKET_EXPORT_MESSAGE = bundle.getString("PACKET_EXPORT_MESSAGE");
+	public static final String PACKET_EXPORT_FAILURE = bundle.getString("PACKET_EXPORT_FAILURE");
 
 	// JOBS
 	public static final String EXECUTE_JOB_ERROR_MESSAGE = bundle.getString("EXECUTE_JOB_ERROR_MESSAGE");
@@ -125,6 +136,8 @@ public class RegistrationUIConstants {
 	public static final String STOP_SCHEDULER_ERROR_MESSAGE = bundle.getString("STOP_SCHEDULER_ERROR_MESSAGE");
 	public static final String CURRENT_JOB_DETAILS_ERROR_MESSAGE = bundle
 			.getString("CURRENT_JOB_DETAILS_ERROR_MESSAGE");
+	public static final String SYNC_SUCCESS = bundle.getString("SYNC_SUCCESS");
+	public static final String SYNC_FAILURE = bundle.getString("SYNC_FAILURE"); 
 
 	// MACHINE MAPPING
 	public static final String MACHINE_MAPPING_SUCCESS_MESSAGE = bundle.getString("MACHINE_MAPPING_SUCCESS_MESSAGE");
@@ -145,6 +158,10 @@ public class RegistrationUIConstants {
 	public static final String UNABLE_LOAD_LOGOUT_PAGE = bundle.getString("UNABLE_LOAD_LOGOUT_PAGE");
 	public static final String UNABLE_LOAD_APPROVAL_PAGE = bundle.getString("UNABLE_LOAD_APPROVAL_PAGE");
 	public static final String UNABLE_LOAD_REG_PAGE = bundle.getString("UNABLE_LOAD_REG_PAGE");
+	public static final String UNABLE_LOAD_DEMOGRAPHIC_PAGE = bundle.getString("UNABLE_LOAD_DEMOGRAPHIC_PAGE");
+	public static final String UNABLE_LOAD_NOTIFICATION_PAGE = bundle.getString("UNABLE_LOAD_NOTIFICATION_PAGE");
+	public static final String UNABLE_LOAD_PREVIEW_PAGE = bundle.getString("UNABLE_LOAD_PREVIEW_PAGE");
+	public static final String UNABLE_LOAD_ACKNOWLEDGEMENT_PAGE = bundle.getString("UNABLE_LOAD_ACKNOWLEDGEMENT_PAGE");
 
 	// Individual Registartion - Iris Capture
 	public static final String UNABLE_LOAD_IRIS_SCAN_POPUP = bundle.getString("UNABLE_LOAD_IRIS_SCAN_POPUP");
@@ -179,4 +196,21 @@ public class RegistrationUIConstants {
 
 	// User Onboard
 	public static final String UNABLE_LOAD_USERONBOARD_SCREEN = bundle.getString("UNABLE_LOAD_USERONBOARD_SCREEN");
+	public static final String USER_ONBOARD_SUCCESS = bundle.getString("USER_ONBOARD_SUCCESS");
+	
+	// Supervisor Authentication configuration from global_param
+	public static final String SUPERVISOR_AUTHENTICATION_CONFIGURATION = "SUPERVISOR_AUTHENTICATION_CONFIGURATION";
+
+	//Registration Approval - EOD Process
+	public static final String ERROR_IN_SYNC_AND_UPLOAD = bundle.getString("ERROR_IN_SYNC_AND_UPLOAD");
+	public static final String UNABLE_TO_SYNC_AND_UPLOAD = bundle.getString("UNABLE_TO_SYNC_AND_UPLOAD");
+	public static final String NETWORK_ERROR = bundle.getString("NETWORK_ERROR");
+
+	
+	//Virus Scan
+	public static final String VIRUS_SCAN_ERROR_FIRST_PART = bundle.getString("VIRUS_SCAN_ERROR_FIRST_PART");
+	public static final String VIRUS_SCAN_ERROR_SECOND_PART = bundle.getString("VIRUS_SCAN_ERROR_SECOND_PART");
+	public static final String VIRUS_SCAN_SUCCESS = bundle.getString("VIRUS_SCAN_SUCCESS");
+	
+	public static final String INVALID_KEY = bundle.getString("INVALID_KEY");
 }

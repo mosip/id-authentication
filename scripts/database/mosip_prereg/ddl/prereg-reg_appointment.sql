@@ -27,7 +27,6 @@ create schema if not exists prereg
 		cr_dtimes 	timestamp not null ,
 		upd_by 		character varying (32) ,
 		upd_dtimes 	timestamp
-				
 	)
 ;
 

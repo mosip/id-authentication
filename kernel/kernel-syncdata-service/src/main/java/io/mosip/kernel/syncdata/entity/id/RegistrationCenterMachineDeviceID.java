@@ -25,12 +25,12 @@ public class RegistrationCenterMachineDeviceID implements Serializable {
 
 	private static final long serialVersionUID = -8541947587557590379L;
 
-	@Column(name = "regcntr_id", unique = true, nullable = false, length = 36)
+	@Column(name = "regcntr_id", unique = true, nullable = false, length = 10)
 	private String regCenterId;
 
 	@Column(name = "device_id", unique = true, nullable = false, length = 36)
 	private String deviceId;
 
-	@Column(name = "machine_id", unique = true, nullable = false, length = 36)
+	@Column(name = "machine_id", unique = true, nullable = false, length = 10)
 	private String machineId;
 }

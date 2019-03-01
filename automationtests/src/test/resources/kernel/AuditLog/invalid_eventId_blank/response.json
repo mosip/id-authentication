@@ -1,0 +1,10 @@
+{
+  "timestamp": 1549878808108,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-AUD-001",
+      "errorMessage": "EventId size must be between 1 and 64"
+    }
+  ]
+}

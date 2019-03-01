@@ -39,4 +39,7 @@ public class RegistrationCenterDeviceHistory extends BaseEntity implements Seria
 			@AttributeOverride(name = "deviceId", column = @Column(name = "device_id")) })
 	private RegistrationCenterDeviceHistoryPk registrationCenterDeviceHistoryPk;
 
+	@Column(name = "lang_code", nullable = false, length = 3)
+	private String langCode;
+
 }

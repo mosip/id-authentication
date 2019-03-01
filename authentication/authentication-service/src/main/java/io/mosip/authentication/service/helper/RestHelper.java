@@ -2,6 +2,7 @@ package io.mosip.authentication.service.helper;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
@@ -19,6 +20,7 @@ import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.RestServiceException;
@@ -26,6 +28,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
@@ -38,17 +41,16 @@ import reactor.core.publisher.Mono;
  * @author Manoj SP
  */
 @Component
-
-/**
- * Instantiates a new rest helper.
- */
 @NoArgsConstructor
 public class RestHelper {
+
+	/** The Constant ERRORS. */
+	private static final String ERRORS = "errors";
 
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
-
+	
 	/** The Constant METHOD_REQUEST_SYNC. */
 	private static final String METHOD_REQUEST_SYNC = "requestSync";
 
@@ -70,9 +72,13 @@ public class RestHelper {
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
+	/** The Constant THROWING_REST_SERVICE_EXCEPTION. */
 	private static final String THROWING_REST_SERVICE_EXCEPTION = "Throwing RestServiceException";
 
+	/** The Constant REQUEST_SYNC_RUNTIME_EXCEPTION. */
 	private static final String REQUEST_SYNC_RUNTIME_EXCEPTION = "requestSync-RuntimeException";
+	
+	private LocalDateTime requestTime;
 
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(RestHelper.class);
@@ -89,17 +95,19 @@ public class RestHelper {
 	public <T> T requestSync(@Valid RestRequestDTO request) throws RestServiceException {
 		Object response;
 		try {
+			requestTime = DateUtils.getUTCCurrentDateTime();
+			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, "Request received at : " + requestTime);
+			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
 			if (request.getTimeout() != null) {
-				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-						PREFIX_REQUEST + request + "\n" + request.getHeaders().getContentType());
 				response = request(request, getSslContext()).timeout(Duration.ofSeconds(request.getTimeout())).block();
-				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+				checkErrorResponse(response, request.getResponseType());
+				mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
 				return (T) response;
 			} else {
-				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
 				response = request(request, getSslContext()).block();
-				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+				checkErrorResponse(response, request.getResponseType());
+				mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
 				return (T) response;
 			}
@@ -119,8 +127,15 @@ public class RestHelper {
 						THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
 				throw new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
 			}
+		} finally {
+			LocalDateTime responseTime = DateUtils.getUTCCurrentDateTime();
+			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+					"Response sent at : " + responseTime);
+			long duration = Duration.between(requestTime, responseTime).toMillis();
+			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+					"Time difference between request and response in millis:" + duration
+							+ ".  Time difference between request and response in Seconds: " + ((double) duration / 1000));
 		}
-
 	}
 
 	/**
@@ -131,10 +146,10 @@ public class RestHelper {
 	 */
 	public Supplier<Object> requestAsync(@Valid RestRequestDTO request) {
 		try {
-			mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, PREFIX_REQUEST + request);
+			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, PREFIX_REQUEST + request);
 			Mono<?> sendRequest = request(request, getSslContext());
 			sendRequest.subscribe();
-			mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, "Request subscribed");
+			mosipLogger.debug(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, "Request subscribed");
 			return () -> sendRequest.block();
 		} catch (RestServiceException e) {
 			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
@@ -202,6 +217,29 @@ public class RestHelper {
 		monoResponse = exchange.bodyToMono(request.getResponseType());
 
 		return monoResponse;
+	}
+	
+	/**
+	 * Check error response.
+	 *
+	 * @param response the response
+	 * @param responseType the response type
+	 * @throws RestServiceException the rest service exception
+	 */
+	private void checkErrorResponse(Object response, Class<?> responseType) throws RestServiceException {
+		try {
+			ObjectNode responseNode = mapper.readValue(mapper.writeValueAsBytes(response), ObjectNode.class);
+			if (responseNode.has(ERRORS) && !responseNode.get(ERRORS).isNull() && responseNode.get(ERRORS).isArray()
+					&& responseNode.get(ERRORS).size() > 0) {
+				throw new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR,
+						responseNode.toString(),
+						mapper.readValue(responseNode.toString().getBytes(), responseType));
+			}
+		} catch (IOException e) {
+			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
+					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
+			throw new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
+		}
 	}
 
 	/**

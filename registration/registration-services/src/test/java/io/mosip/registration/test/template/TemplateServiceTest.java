@@ -42,7 +42,7 @@ public class TemplateServiceTest {
 		template.setTemplateTypCode("vel");
 		template.setFileFormatCode("vel");
 		template.setId("T01");
-		template.setFileTxt("sample text");
+		template.setFileTxt(new byte[1024]);
 		template.setLangCode("en");
 		template.setActive(true);
 		templates.add(template);
@@ -106,7 +106,7 @@ public class TemplateServiceTest {
 	public void createReceiptTest() throws RegBaseCheckedException {
 		Template template = new Template();
 		template.setId("T01");
-		template.setFileTxt("sample text");
+		template.setFileTxt(new byte[1024]);
 		template.setLangCode("en");
 		template.setActive(true);
 		template.setName("AckTemplate");

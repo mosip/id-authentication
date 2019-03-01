@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.preregistration.batchjobservices.entity.ApplicantDemographic;
+import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
 import io.mosip.preregistration.batchjobservices.entity.ProcessedPreRegEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingPK;
@@ -50,7 +50,7 @@ public class ConsumedStatusServiceTest {
 	private static final String STATUS_COMMENTS = "Processed by registration processor";
 
 	List<ProcessedPreRegEntity> preRegList = new ArrayList<>();
-	ApplicantDemographic demographicEntity = new ApplicantDemographic();
+	DemographicEntity demographicEntity = new DemographicEntity();
 	RegistrationBookingEntity bookingEntity = new RegistrationBookingEntity();
 	RegistrationBookingPK bookingPK = new RegistrationBookingPK();
 	ProcessedPreRegEntity processedEntity = new ProcessedPreRegEntity();
@@ -73,7 +73,7 @@ public class ConsumedStatusServiceTest {
 		logger.info("demographicEntity " + demographicEntity);
 		logger.info("bookingEntity " + bookingEntity);
 		Mockito.when(preIdRepository.findBystatusComments(STATUS_COMMENTS))
-	    		.thenReturn(preRegList);
+	    		.thenReturn(preRegList); 
 		Mockito.when(demographicRepository.findBypreRegistrationId(demographicEntity.getPreRegistrationId()))
 				.thenReturn(demographicEntity);
 		demographicEntity.setStatusCode("Consumed");
@@ -83,10 +83,6 @@ public class ConsumedStatusServiceTest {
 		Mockito.when(regAppointmentRepository.save(bookingEntity)).thenReturn(bookingEntity);
 
 		Mockito.when(preIdRepository.save(Mockito.any())).thenReturn(processedEntity);
-
-		// preRegList.get(0).setStatusCode("NEW_STATUS_COMMENT");
-
-		// Mockito.when(batchServiceDAO.updateProcessedList(preRegList.)).thenReturn(true);
 
 		response = service.demographicConsumedStatus();
 		assertEquals("Demographic status to consumed updated successfully", response.getResponse());

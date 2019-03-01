@@ -1,0 +1,10 @@
+{
+  "timestamp": 1549878671821,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-AUD-001",
+      "errorMessage": "CreatedBy size must be between 1 and 255"
+    }
+  ]
+}

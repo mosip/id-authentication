@@ -31,6 +31,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.bio.dedupe.abis.dto.AbisInsertResponceDto;
 import io.mosip.registration.processor.bio.dedupe.abis.dto.CandidateListDto;
 import io.mosip.registration.processor.bio.dedupe.abis.dto.CandidatesDto;
@@ -46,7 +47,6 @@ import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
@@ -88,7 +88,7 @@ public class BioDedupeServiceImplTest {
 
 	/** The adapter. */
 	@Mock
-	FileSystemAdapter<InputStream, Boolean> adapter;
+	FileSystemAdapter adapter;
 
 	private PacketMetaInfo packetMetaInfo;
 
@@ -384,8 +384,6 @@ public class BioDedupeServiceImplTest {
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenThrow(new IOException());
 
 		byte[] fileData = bioDedupeService.getFile(registrationId);
-		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.containsExactly(Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1000 - IO EXCEPTION null"));
-
+		Assertions.assertThatExceptionOfType(IOException.class);
 	}
 }

@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: registration-processor-registration-status-api
+  name: registration-processor-registration-status-service
 spec:
   replicas: 1
   minReadySeconds: 10
@@ -14,11 +14,11 @@ spec:
   template:
     metadata:
       labels:
-        app: registration-processor-registration-status-api
+        app: registration-processor-registration-status-service
     spec:
       containers:
-      - name: registration-status-api
-        image: docker-registry.mosip.io:5000/registration-status-api
+      - name: registration-status-service
+        image: docker-registry.mosip.io:5000/registration-status-service
         env:
         - name: active_profile_env
           value: dev
@@ -31,10 +31,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: registration-processor-registration-status-api
+  name: registration-processor-registration-status-service
 spec:
   ports:
     - port: 8083
   selector:
-    app: registration-processor-registration-status-api
+    app: registration-processor-registration-status-service
 

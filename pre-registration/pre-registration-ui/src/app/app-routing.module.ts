@@ -1,13 +1,10 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { FaqComponent } from './core/faq/faq.component';
 import { AboutUsComponent } from './core/about-us/about-us.component';
 import { ContactComponent } from './core/contact/contact.component';
 import { ErrorComponent } from './shared/error/error.component';
 import { ParentComponent } from './shared/parent/parent.component';
-import { PreviewComponent } from './feature/components/preview/preview.component';
-import { AcknowledgementComponent } from './feature/components/acknowledgement/acknowledgement.component';
-// import { DashBoardComponent } from './registration/dashboard/dashboard.component';
 
 const appRoutes: Routes = [
   { path: 'dashboard/:id', loadChildren: './feature/dashboard/dashboard.module#DashboardModule' },
@@ -23,17 +20,15 @@ const appRoutes: Routes = [
       { path: '', pathMatch: 'full', redirectTo: '/' },
       { path: 'demographic', loadChildren: './feature/demographic/demographic.module#DemographicModule' },
       { path: 'file-upload', loadChildren: './feature/file-upload/file-upload.module#FileUploadModule' },
-      { path: 'booking', loadChildren: './feature/booking/booking.module#BookingModule' },
-
-      { path: 'preview', component: PreviewComponent },
-      { path: 'acknowledgement', component: AcknowledgementComponent }
+      { path: 'summary', loadChildren: './feature/summary/summary.module#SummaryModule' },
+      { path: 'booking', loadChildren: './feature/booking/booking.module#BookingModule' }
     ]
   }
   // { path: '**', redirectTo: '/' }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(appRoutes, { useHash: true })],
+  imports: [RouterModule.forRoot(appRoutes, { useHash: true, preloadingStrategy: PreloadAllModules })],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

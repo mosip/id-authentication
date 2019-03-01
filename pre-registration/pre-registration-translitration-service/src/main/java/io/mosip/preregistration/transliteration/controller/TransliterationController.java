@@ -32,7 +32,7 @@ import io.swagger.annotations.ApiResponses;
  *
  */
 @RestController
-@RequestMapping("/v0.1/pre-registration/")
+@RequestMapping("/")
 @Api(tags = "Pre-Registration")
 @CrossOrigin("*")
 public class TransliterationController {

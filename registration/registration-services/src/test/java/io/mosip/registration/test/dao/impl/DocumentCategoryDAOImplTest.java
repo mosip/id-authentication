@@ -34,14 +34,14 @@ public class DocumentCategoryDAOImplTest {
 		DocumentCategory documentCategory = new DocumentCategory();
 		documentCategory.setDescription("description");
 		documentCategory.setName("name");
-		documentCategory.setCreatedTimesZone(timestamp);
-		documentCategory.setCreatedBy("createdBy");
-		documentCategory.setDeletedTimesZone(timestamp);
-		documentCategory.setLanguageCode("languageCode");
+		//documentCategory.setCreatedTimesZone(timestamp);
+		documentCategory.setCrBy("createdBy");
+		//documentCategory.setDeletedTimesZone(timestamp);
+		documentCategory.setLangCode("languageCode");
 		GenericId genericId = new GenericId();
 		genericId.setActive(true);
 		genericId.setCode("code");
-		documentCategory.setGenericId(genericId);
+		//documentCategory.setGenericId(genericId);
 		List<DocumentCategory> list = new ArrayList<>();
 		list.add(documentCategory);
 

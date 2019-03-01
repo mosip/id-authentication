@@ -345,4 +345,14 @@ public class PacketInfoDao {
 		applicantDocumentDto.setDocStore(entity.getDocStore());
 		return applicantDocumentDto;
 	}
+
+	/**
+	 * Gets the UIN by rid.
+	 *
+	 * @param rid the rid
+	 * @return the UIN by rid
+	 */
+	public List<String> getUINByRid(String rid) {
+		return demographicDedupeRepository.getUINByRid(rid);
+	}
 }

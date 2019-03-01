@@ -22,6 +22,12 @@ import org.springframework.stereotype.Component;
 public class PridFilterUtils {
 
 	/**
+	 * List of restricted numbers
+	 */
+	@Value("#{'${mosip.kernel.prid.restricted-numbers}'.split(',')}")
+	private List<String> restrictedAdminDigits;
+
+	/**
 	 * Upper bound of number of digits in sequence allowed in id. For example if
 	 * limit is 3, then 12 is allowed but 123 is not allowed in id (in both
 	 * ascending and descending order)
@@ -130,7 +136,18 @@ public class PridFilterUtils {
 	public boolean isValidId(String id) {
 
 		return !(sequenceFilter(id) || regexFilter(id, repeatingPattern) || regexFilter(id, repeatingBlockpattern)
-				|| validateNotStartWith(id) || validateIdLength(id));
+				|| validateNotStartWith(id) || validateIdLength(id) || restrictedAdminFilter(id));
+	}
+
+	/**
+	 * Checks the input id for {@link #restrictedNumbers} filter
+	 * 
+	 * @param id
+	 *            The input id to validate
+	 * @return true if the id matches the filter
+	 */
+	private boolean restrictedAdminFilter(String id) {
+		return restrictedAdminDigits.parallelStream().anyMatch(id::contains);
 	}
 
 	/**
@@ -141,10 +158,11 @@ public class PridFilterUtils {
 	 * @return true if the id matches the filter
 	 */
 	private boolean sequenceFilter(String id) {
-		if (sequenceLimit > 0)
+		if (sequenceLimit > 0) {
 			return IntStream.rangeClosed(0, id.length() - sequenceLimit).parallel()
 					.mapToObj(index -> id.subSequence(index, index + sequenceLimit))
 					.anyMatch(idSubSequence -> SEQ_ASC.contains(idSubSequence) || SEQ_DEC.contains(idSubSequence));
+		}
 		return false;
 	}
 

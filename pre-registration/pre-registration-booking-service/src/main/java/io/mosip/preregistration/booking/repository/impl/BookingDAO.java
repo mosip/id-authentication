@@ -23,6 +23,7 @@ import io.mosip.preregistration.booking.exception.AvailabilityUpdationFailedExce
 import io.mosip.preregistration.booking.exception.AvailablityNotFoundException;
 import io.mosip.preregistration.booking.exception.BookingDataNotFoundException;
 import io.mosip.preregistration.booking.exception.CancelAppointmentFailedException;
+import io.mosip.preregistration.booking.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
 import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
@@ -241,6 +242,39 @@ public class BookingDAO {
 	 */
 	public boolean saveAvailability(AvailibityEntity entity) {
 		return bookingAvailabilityRepository.save(entity) != null;
+	}
+	public List<RegistrationBookingEntity> findByPreregistrationId(String preId) {
+		List<RegistrationBookingEntity> entityList=new ArrayList<>();
+		try {
+			entityList=registrationBookingRepository.findBypreregistrationId(preId);
+			if (entityList.isEmpty()) {
+				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
+						ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
+			}
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
+					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
+		}
+		return entityList;
+		
+	}
+	
+	public int deleteByPreRegistrationId(String preId) {
+		int count=registrationBookingRepository.deleteByPreRegistrationId(preId);
+		if(count<0) {
+			throw new RecordFailedToDeleteException(ErrorCodes.PRG_BOOK_RCI_028.getCode(),
+					ErrorMessages.FAILED_TO_DELETE_THE_PRE_REGISTRATION_RECORD.getMessage());
+		}
+		return count;
+	}
+	
+	public void deleteRegistrationEntity(RegistrationBookingEntity bookingEnity) {
+		try {
+			registrationBookingRepository.delete(bookingEnity);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
+					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
+		}
 	}
 
 }

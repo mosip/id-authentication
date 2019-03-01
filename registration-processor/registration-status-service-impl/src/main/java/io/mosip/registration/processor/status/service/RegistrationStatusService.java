@@ -1,8 +1,10 @@
 package io.mosip.registration.processor.status.service;
-	
+
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+
+import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDto;
 
 /**
  * This service is used to perform crud operations(get/add/update) on registration
@@ -25,7 +27,8 @@ public interface RegistrationStatusService<T, U, D> {
 	/**
 	 * Gets the registration status.
 	 *
-	 * @param enrolmentId the enrolment id
+	 * @param enrolmentId
+	 *            the enrolment id
 	 * @return the registration status
 	 */
 	public U getRegistrationStatus(T enrolmentId);
@@ -33,29 +36,24 @@ public interface RegistrationStatusService<T, U, D> {
 	/**
 	 * Adds the registration status.
 	 *
-	 * @param registrationStatusDto the registration status dto
+	 * @param registrationStatusDto
+	 *            the registration status dto
 	 */
 	public void addRegistrationStatus(U registrationStatusDto);
 
 	/**
 	 * Update registration status.
 	 *
-	 * @param registrationStatusDto the registration status dto
+	 * @param registrationStatusDto
+	 *            the registration status dto
 	 */
 	public void updateRegistrationStatus(U registrationStatusDto);
 
 	/**
-	 * Findbyfiles by threshold.
-	 *
-	 * @param statusCode the status code
-	 * @return the list
-	 */
-	public List<U> findbyfilesByThreshold(String statusCode);
-
-	/**
 	 * Gets the by status.
 	 *
-	 * @param status the status
+	 * @param status
+	 *            the status
 	 * @return the by status
 	 */
 	public List<U> getByStatus(String status);
@@ -63,8 +61,9 @@ public interface RegistrationStatusService<T, U, D> {
 	/**
 	 * Gets the by ids.
 	 *
-	 * @param ids the ids
+	 * @param ids
+	 *            the ids
 	 * @return the list of Registrations for the given ids.
 	 */
-	public List<D> getByIds(String ids);
+	public List<D> getByIds(List<RegistrationStatusSubRequestDto> requestIds);
 }

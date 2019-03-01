@@ -11,12 +11,25 @@ body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
+.icon {
+  margin: 5px;
+  vertical-align: middle;
+}
+
 .mat-form-field-appearance-legacy .mat-form-field-underline {
   background-color: #696f7c !important;
 }
 
 .mat-error {
   color: #e44c29;
+}
+
+.mat-slide-toggle .mat-slide-toggle-thumb {
+  background-color: #ff4081;
+}
+
+.mat-slide-toggle .mat-slide-toggle-bar {
+  background-color: rgba(255, 64, 129, 0.54);
 }
 
 .mat-button-toggle-focus-overlay {
@@ -31,4 +44,17 @@ body {
 .user__gender mat-button-toggle-group .mat-button-toggle .mat-button-toggle-button .mat-button-toggle-label-content {
   padding: 0;
   line-height: 30px;
+}
+
+@media (max-width: 500px) {
+  .mat-keyboard .mat-raised-button {
+    font-size: 10px;
+    line-height: 12px;
+    margin-left: -30px;
+    padding: 0;
+    height: 20px;
+  }
+}
+.user__date .mat-form-field-label {
+  text-align: center;
 }

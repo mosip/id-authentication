@@ -1,7 +1,6 @@
 package io.mosip.kernel.idrepo.interceptor;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.codec.binary.StringUtils;
@@ -9,28 +8,18 @@ import org.assertj.core.util.Arrays;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
-import io.mosip.kernel.core.idrepo.constant.RestServicesConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
-import io.mosip.kernel.core.idrepo.exception.RestServiceException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
-import io.mosip.kernel.idrepo.dto.RestRequestDTO;
 import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.entity.UinHistory;
-import io.mosip.kernel.idrepo.factory.RestRequestFactory;
-import io.mosip.kernel.idrepo.helper.RestHelper;
+import io.mosip.kernel.idrepo.security.IdRepoSecurityManager;
 
 /**
  * The Class IdRepoEntityInterceptor.
@@ -46,8 +35,6 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 
 	private static final String UIN_DATA_HASH = "uinDataHash";
 
-	private static final String DECRYPT = "decrypt";
-
 	private static final String UIN_DATA = "uinData";
 
 	/** The mosip logger. */
@@ -57,18 +44,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 	private static final long serialVersionUID = 4985336846122302850L;
 
 	@Autowired
-	private transient RestRequestFactory restFactory;
-	
-	@Autowired
-	private transient RestHelper restHelper;
-	
-	/** The env. */
-	@Autowired
-	private transient Environment env;
-
-	/** The mapper. */
-	@Autowired
-	private transient ObjectMapper mapper;
+	private transient IdRepoSecurityManager securityManager;
 
 	/*
 	 * (non-Javadoc)
@@ -80,11 +56,9 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 	@Override
 	public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
 		try {
-
 			if (entity instanceof Uin) {
 				Uin uinEntity = (Uin) entity;
-				byte[] encryptedData = encryptDecryptIdentity(
-						CryptoUtil.encodeBase64(uinEntity.getUinData()).getBytes(), "encrypt");
+				byte[] encryptedData = securityManager.encrypt(uinEntity.getUinData());
 				uinEntity.setUinData(encryptedData);
 				List<Object> propertyNamesList = Arrays.asList(propertyNames);
 				int indexOfData = propertyNamesList.indexOf(UIN_DATA);
@@ -94,7 +68,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 			if (entity instanceof UinHistory) {
 				UinHistory uinHEntity = (UinHistory) entity;
 				uinHEntity.setUinData(
-						encryptDecryptIdentity(CryptoUtil.encodeBase64(uinHEntity.getUinData()).getBytes(), "encrypt"));
+						securityManager.encrypt(CryptoUtil.encodeBase64(uinHEntity.getUinData()).getBytes()));
 				return super.onSave(uinHEntity, id, state, propertyNames, types);
 			}
 		} catch (IdRepoAppException e) {
@@ -119,9 +93,10 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 				List<Object> propertyNamesList = Arrays.asList(propertyNames);
 				int indexOfData = propertyNamesList.indexOf(UIN_DATA);
 				state[indexOfData] = CryptoUtil
-						.decodeBase64(new String(encryptDecryptIdentity((byte[]) state[indexOfData], DECRYPT)));
+						.decodeBase64(new String(securityManager.decrypt(CryptoUtil
+								.decodeBase64(new String((byte[]) state[indexOfData])))));
 
-				if (!StringUtils.equals(hash((byte[]) state[indexOfData]),
+				if (!StringUtils.equals(securityManager.hash((byte[]) state[indexOfData]),
 						(String) state[propertyNamesList.indexOf(UIN_DATA_HASH)])) {
 					throw new IdRepoAppUncheckedException(IdRepoErrorConstants.IDENTITY_HASH_MISMATCH);
 				}
@@ -140,8 +115,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 		try {
 			if (entity instanceof Uin) {
 				Uin uinEntity = (Uin) entity;
-				byte[] encryptedData = encryptDecryptIdentity(
-						CryptoUtil.encodeBase64(uinEntity.getUinData()).getBytes(), "encrypt");
+				byte[] encryptedData = securityManager.encrypt(uinEntity.getUinData());
 				List<Object> propertyNamesList = Arrays.asList(propertyNames);
 				int indexOfData = propertyNamesList.indexOf(UIN_DATA);
 				currentState[indexOfData] = encryptedData;
@@ -153,57 +127,5 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 		return super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);
-	}
-
-	/**
-	 * Encrypt identity.
-	 *
-	 * @param identity
-	 *            the identity
-	 * @param method
-	 *            the method
-	 * @return the byte[]
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
-	 */
-	private byte[] encryptDecryptIdentity(byte[] identity, String method) throws IdRepoAppException {
-		try {
-			RestRequestDTO restRequest = null;
-			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
-			request.put("applicationId", env.getProperty("mosip.kernel.idrepo.application.id"));
-			request.put("timeStamp", DateUtils.formatDate(new Date(), env.getProperty("mosip.kernel.idrepo.datetime.pattern")));
-			request.put("data", new String(identity));
-
-			if (method.equals("encrypt")) {
-				restRequest = restFactory.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT, request, ObjectNode.class);
-			} else {
-				restRequest = restFactory.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT, request, ObjectNode.class);
-			}
-			
-			ObjectNode response = restHelper.requestSync(restRequest);
-
-			if (response.has("data")) {
-				return response.get("data").asText().getBytes();
-			} else {
-				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_ENTITY_INTERCEPTOR, "encryptDecryptIdentity",
-						"No data block found in response");
-				throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED);
-			}
-		} catch (RestServiceException e) {
-			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_ENTITY_INTERCEPTOR, "encryptDecryptIdentity",
-					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
-		}
-	}
-
-	/**
-	 * Hash.
-	 *
-	 * @param identityInfo
-	 *            the identity info
-	 * @return the string
-	 */
-	private String hash(byte[] identityInfo) {
-		return CryptoUtil.encodeBase64(HMACUtils.generateHash(identityInfo));
 	}
 }

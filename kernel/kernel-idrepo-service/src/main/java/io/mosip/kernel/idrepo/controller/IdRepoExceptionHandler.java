@@ -44,6 +44,7 @@ import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 @RestControllerAdvice
 public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
+	/** The Constant APPLICATION_VERSION. */
 	private static final String APPLICATION_VERSION = "mosip.kernel.idrepo.application.version";
 
 	/** The Constant ID_REPO_EXCEPTION_HANDLER. */
@@ -56,7 +57,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	private static final String SESSION_ID = "sessionId";
 
 	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "mosip.kernel.idrepo.datetime.pattern";
+	private static final String DATETIME_PATTERN = "mosip.utc-datetime-pattern";
 
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoExceptionHandler.class);
@@ -106,7 +107,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 					IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage());
 
 			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.OK);
-			} else {
+		} else {
 			return handleAllExceptions(ex, request);
 		}
 	}
@@ -158,6 +159,52 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
 		IdResponseDTO response = new IdResponseDTO();
 
+		Throwable e = getRootCause(ex, response);
+
+		if (Objects.isNull(response.getId())) {
+			response.setId("mosip.id.error");
+		}
+
+		if (e instanceof BaseCheckedException) {
+			List<String> errorCodes = ((BaseCheckedException) e).getCodes();
+			List<String> errorTexts = ((BaseCheckedException) e).getErrorTexts();
+
+			List<ErrorDTO> errors = errorTexts.parallelStream()
+					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
+					.collect(Collectors.toList());
+
+			response.setErrors(errors);
+		}
+
+		if (e instanceof BaseUncheckedException) {
+			List<String> errorCodes = ((BaseUncheckedException) e).getCodes();
+			List<String> errorTexts = ((BaseUncheckedException) e).getErrorTexts();
+
+			List<ErrorDTO> errors = errorTexts.parallelStream()
+					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
+					.collect(Collectors.toList());
+
+			response.setErrors(errors);
+		}
+
+		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+
+		response.setVersion(env.getProperty(APPLICATION_VERSION));
+
+		mapper.setFilterProvider(new SimpleFilterProvider().addFilter("responseFilter",
+				SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response")));
+
+		return response;
+	}
+
+	/**
+	 * Gets the root cause.
+	 *
+	 * @param ex the ex
+	 * @param response the response
+	 * @return the root cause
+	 */
+	private Throwable getRootCause(Exception ex, IdResponseDTO response) {
 		Throwable e = ex;
 		while (e != null) {
 			if (e instanceof IdRepoAppException && Objects.nonNull(((IdRepoAppException) e).getId())) {
@@ -176,42 +223,6 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 				break;
 			}
 		}
-
-		if (Objects.isNull(response.getId())) {
-			response.setId("mosip.id.error");
-		}
-
-		if (e instanceof BaseCheckedException)
-
-		{
-			List<String> errorCodes = ((BaseCheckedException) e).getCodes();
-			List<String> errorTexts = ((BaseCheckedException) e).getErrorTexts();
-
-			List<ErrorDTO> errors = errorTexts.parallelStream()
-					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
-					.collect(Collectors.toList());
-
-			response.setError(errors);
-		}
-
-		if (e instanceof BaseUncheckedException) {
-			List<String> errorCodes = ((BaseUncheckedException) e).getCodes();
-			List<String> errorTexts = ((BaseUncheckedException) e).getErrorTexts();
-
-			List<ErrorDTO> errors = errorTexts.parallelStream()
-					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
-					.collect(Collectors.toList());
-
-			response.setError(errors);
-		}
-
-		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
-
-		response.setVersion(env.getProperty(APPLICATION_VERSION));
-
-		mapper.setFilterProvider(new SimpleFilterProvider().addFilter("responseFilter",
-				SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response")));
-
-		return response;
+		return e;
 	}
 }

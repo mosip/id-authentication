@@ -33,11 +33,12 @@ public class ServiceUnavailableExceptionTest {
 	@Test
 	public void TestServiceUnavailableException() throws IOException {
 		String fileName = "sample";
-		ServiceUnavailableException ex = new ServiceUnavailableException(PlatformErrorMessages.RPR_SYS_SERVICE_UNAVAILABLE.getMessage());
-		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
+		ServiceUnavailableException ex = new ServiceUnavailableException(
+				PlatformErrorMessages.RPR_SYS_SERVICE_UNAVAILABLE.getMessage());
+		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
 
 		try {
-			fileManager.put(fileName, file, DirectoryPathDto.LANDING_ZONE);
+			fileManager.put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
 			fail();
 
 		} catch (ServiceUnavailableException e) {

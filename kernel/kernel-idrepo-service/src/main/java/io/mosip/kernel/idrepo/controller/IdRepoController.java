@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,7 +36,6 @@ import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.dto.IdResponseDTO;
-import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.util.DataValidationUtil;
 import io.mosip.kernel.idrepo.validator.IdRequestValidator;
 import springfox.documentation.annotations.ApiIgnore;
@@ -93,7 +91,7 @@ public class IdRepoController {
 
 	/** The id repo service. */
 	@Autowired
-	private IdRepoService<IdRequestDTO, IdResponseDTO, Uin> idRepoService;
+	private IdRepoService<IdRequestDTO, IdResponseDTO> idRepoService;
 
 	/** The validator. */
 	@Autowired
@@ -156,13 +154,7 @@ public class IdRepoController {
 	 */
 	@GetMapping(path = "/identity/v1.0/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> retrieveIdentity(@PathVariable String uin,
-			@RequestParam(name = TYPE, required = false) @Nullable String type, @Nullable HttpServletRequest request)
-			throws IdRepoAppException {
-		if (request.getParameterMap().size() > 1
-				|| (request.getParameterMap().size() == 1 && !request.getParameterMap().containsKey(TYPE))) {
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST, id.get(READ));
-		}
-
+			@RequestParam(name = TYPE, required = false) @Nullable String type) throws IdRepoAppException {
 		try {
 			if (Objects.nonNull(type)) {
 				List<String> typeList = Arrays.asList(StringUtils.split(type.toLowerCase(), ','));

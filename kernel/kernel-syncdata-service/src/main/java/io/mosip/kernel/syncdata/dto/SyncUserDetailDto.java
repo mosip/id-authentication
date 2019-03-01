@@ -10,5 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SyncUserDetailDto {
-	List<UserDetailMapDto> userDetails;
+
+	private String lastSyncTime;
+	private List<UserDetailMapDto> userDetails;
 }

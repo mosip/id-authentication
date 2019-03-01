@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.core.code.AuditLogVariables;
@@ -46,7 +47,7 @@ import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
-import io.mosip.preregistration.documents.exception.CephServerException;
+import io.mosip.preregistration.documents.exception.FSServerException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToCopyException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToUploadException;
 import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
@@ -54,7 +55,7 @@ import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
 import io.mosip.preregistration.documents.exception.util.DocumentExceptionCatcher;
 import io.mosip.preregistration.documents.repository.util.DocumentDAO;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
+
 
 /**
  * This class provides the service implementation for Document
@@ -92,7 +93,7 @@ public class DocumentService {
 	 * Autowired reference for {@link #FileSystemAdapter}
 	 */
 	@Autowired
-	private FileSystemAdapter<InputStream, Boolean> ceph;
+	private FileSystemAdapter fs;
 
 	/**
 	 * Autowired reference for {@link #DocumentServiceUtil}
@@ -206,10 +207,10 @@ public class DocumentService {
 			if (documentEntity != null) {
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 				byte[] encryptedDocument = cryptoUtil.encrypt(file.getBytes(), DateUtils.getUTCCurrentDateTime());
-				boolean isStoreSuccess = ceph.storeFile(documentEntity.getPreregId(), key,
+				boolean isStoreSuccess = fs.storeFile(documentEntity.getPreregId(), key,
 						new ByteArrayInputStream(encryptedDocument));
 				if (!isStoreSuccess) {
-					throw new CephServerException(ErrorCodes.PRG_PAM_DOC_009.toString(),
+					throw new FSServerException(ErrorCodes.PRG_PAM_DOC_009.toString(),
 							ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
 				}
 				docResponseDto.setPreRegistrationId(documentEntity.getPreregId());
@@ -251,8 +252,11 @@ public class DocumentService {
 		try {
 			if (ValidationUtil.isvalidPreRegId(sourcePreId) && ValidationUtil.isvalidPreRegId(destinationPreId)
 					&& serviceUtil.isValidCatCode(catCode)) {
+				boolean sourceStatus=serviceUtil.callGetPreRegInfoRestService(sourcePreId);
+				boolean destinationStatus=serviceUtil.callGetPreRegInfoRestService(destinationPreId);		
+				
 				DocumentEntity documentEntity = documnetDAO.findSingleDocument(sourcePreId, catCode);
-				if (documentEntity != null) {
+				if (documentEntity != null && sourceStatus && destinationStatus) {
 					DocumentEntity copyDocumentEntity = documnetDAO
 							.saveDocument(serviceUtil.documentEntitySetter(destinationPreId, documentEntity));
 					sourceKey = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
@@ -303,9 +307,9 @@ public class DocumentService {
 		if (copyDocumentEntity != null) {
 			destinationBucketName = copyDocumentEntity.getPreregId();
 			destinationKey = copyDocumentEntity.getDocCatCode() + "_" + copyDocumentEntity.getDocumentId();
-			boolean isStoreSuccess = ceph.copyFile(sourceBucketName, sourceKey, destinationBucketName, destinationKey);
+			boolean isStoreSuccess = fs.copyFile(sourceBucketName, sourceKey, destinationBucketName, destinationKey);
 			if (!isStoreSuccess) {
-				throw new CephServerException(ErrorCodes.PRG_PAM_DOC_009.toString(),
+				throw new FSServerException(ErrorCodes.PRG_PAM_DOC_009.toString(),
 						ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
 			}
 
@@ -368,11 +372,12 @@ public class DocumentService {
 				allDocDto.setDoc_id(doc.getDocumentId());
 				allDocDto.setDoc_typ_code(doc.getDocTypeCode());
 				String key = doc.getDocCatCode() + "_" + doc.getDocumentId();
-				byte[] cephBytes = IOUtils.toByteArray(ceph.getFile(doc.getPreregId(), key));
-				if (cephBytes == null) {
-					throw new CephServerException(ErrorCodes.PRG_PAM_DOC_005.toString(),
+				InputStream file=fs.getFile(doc.getPreregId(), key);
+				if (file == null) {
+					throw new FSServerException(ErrorCodes.PRG_PAM_DOC_005.toString(),
 							ErrorMessages.DOCUMENT_FAILED_TO_FETCH.toString());
 				}
+				byte[] cephBytes = IOUtils.toByteArray(file);
 				LocalDateTime decryptionDateTime = DateUtils.getUTCCurrentDateTime();
 
 				allDocDto.setMultipartFile(cryptoUtil.decrypt(cephBytes, decryptionDateTime));
@@ -402,9 +407,9 @@ public class DocumentService {
 			DocumentEntity documentEntity = documnetDAO.findBydocumentId(documentId);
 			if (documnetDAO.deleteAllBydocumentId(documentId) > 0) {
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
-				boolean isDeleted = ceph.deleteFile(documentEntity.getPreregId(), key);
+				boolean isDeleted = fs.deleteFile(documentEntity.getPreregId(), key);
 				if (!isDeleted) {
-					throw new CephServerException(ErrorCodes.PRG_PAM_DOC_006.toString(),
+					throw new FSServerException(ErrorCodes.PRG_PAM_DOC_006.toString(),
 							ErrorMessages.DOCUMENT_FAILED_TO_DELETE.toString());
 				}
 				DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
@@ -433,10 +438,11 @@ public class DocumentService {
 	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteAllByPreId(String preregId) {
 		log.info("sessionId", "idType", "id", "In deleteAllByPreId method of document service");
 		boolean isDeleteSuccess = false;
+		MainListResponseDTO<DocumentDeleteResponseDTO> deleteRes = null;
 		try {
 			if (ValidationUtil.isvalidPreRegId(preregId)) {
 				List<DocumentEntity> documentEntityList = documnetDAO.findBypreregId(preregId);
-				return deleteFile(documentEntityList, preregId);
+				deleteRes=deleteFile(documentEntityList, preregId);
 			}
 			isDeleteSuccess = true;
 		} catch (Exception ex) {
@@ -453,7 +459,7 @@ public class DocumentService {
 						"Document deletion failed", AuditLogVariables.NO_ID.toString());
 			}
 		}
-		return null;
+		return deleteRes;
 	}
 
 	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteFile(List<DocumentEntity> documentEntityList,
@@ -461,14 +467,21 @@ public class DocumentService {
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
 		if (documnetDAO.deleteAllBypreregId(preregId) >= 0) {
-			for (DocumentEntity documentEntity : documentEntityList) {
-				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
-				ceph.deleteFile(documentEntity.getPreregId(), key);
+			if(documentEntityList==null || documentEntityList.isEmpty()) {
 				DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
-				deleteDTO.setDocumnet_Id(String.valueOf(documentEntity.getDocumentId()));
-				deleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
+				deleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_NOT_AVAILABLE.toString());
 				deleteAllList.add(deleteDTO);
+			}else {
+				for (DocumentEntity documentEntity : documentEntityList) {
+					DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
+					String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
+					fs.deleteFile(documentEntity.getPreregId(), key);
+					deleteDTO.setDocumnet_Id(String.valueOf(documentEntity.getDocumentId()));
+					deleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
+					deleteAllList.add(deleteDTO);
+				}
 			}
+			
 			delResponseDto.setResponse(deleteAllList);
 			delResponseDto.setStatus(responseStatus);
 			delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
@@ -497,5 +510,4 @@ public class DocumentService {
 		auditRequestDto.setModuleName(AuditLogVariables.DOCUMENT_SERVICE.toString());
 		auditLogUtil.saveAuditDetails(auditRequestDto);
 	}
-
 }

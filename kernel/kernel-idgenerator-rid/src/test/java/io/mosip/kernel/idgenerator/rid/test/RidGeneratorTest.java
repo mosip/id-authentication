@@ -1,11 +1,9 @@
 package io.mosip.kernel.idgenerator.rid.test;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
-import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.idgenerator.rid.entity.Rid;
 import io.mosip.kernel.idgenerator.rid.exception.EmptyInputException;
 import io.mosip.kernel.idgenerator.rid.exception.InputLengthException;
@@ -50,7 +46,7 @@ public class RidGeneratorTest {
 
 	@Value("${mosip.kernel.rid.test.invalid-centerId-length}")
 	private int invalidCenterIdLength;
-	
+
 	@Value("${mosip.kernel.rid.test.valid-rid}")
 	private String validRid;
 
@@ -60,18 +56,19 @@ public class RidGeneratorTest {
 	@Value("${mosip.kernel.rid.test.invalid-machineid-rid}")
 	private String invalidMachineIdRid;
 
+	@Value("${mosip.kernel.rid.sequence-length}")
+	private int sequenceLimit;
+
+	@Value("${mosip.kernel.rid.timestamp-length}")
+	private int timestampLength;
 
 	@MockBean
 	RidRepository repository;
 
 	@Autowired
 	RidGenerator<String> ridGeneratorImpl;
-	
-	@Autowired
-	RidValidator<String> ridValidatorImpl;
 
-
-	// @Test
+	@Test
 	public void generateIdTypeTest() {
 		Rid entity = new Rid();
 		entity.setCurrentSequenceNo(00001);
@@ -110,7 +107,7 @@ public class RidGeneratorTest {
 	}
 
 	@Test
-	public void generateIdFirstSequenceTypeTest() {
+	public void generateFirstIdTypeTest() {
 		when(repository.findLastRid()).thenReturn(null);
 		assertThat(ridGeneratorImpl.generateId(centerId, machineId), isA(String.class));
 	}
@@ -128,8 +125,8 @@ public class RidGeneratorTest {
 		Rid entity = new Rid();
 		entity.setCurrentSequenceNo(00001);
 		when(repository.findLastRid()).thenReturn(entity);
-		assertThat(ridGeneratorImpl.generateId(centerId, machineId, centerIdLength, machineIDLength),
-				isA(String.class));
+		assertThat(ridGeneratorImpl.generateId(centerId, machineId, centerIdLength, machineIDLength, sequenceLimit,
+				timestampLength), isA(String.class));
 	}
 
 	@Test(expected = RidException.class)
@@ -137,7 +134,8 @@ public class RidGeneratorTest {
 		Rid entity = new Rid();
 		entity.setCurrentSequenceNo(00001);
 		when(repository.findLastRid()).thenThrow(DataRetrievalFailureException.class);
-		ridGeneratorImpl.generateId(centerId, machineId, centerIdLength, machineIDLength);
+		ridGeneratorImpl.generateId(centerId, machineId, centerIdLength, machineIDLength, sequenceLimit,
+				timestampLength);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -146,7 +144,8 @@ public class RidGeneratorTest {
 		Rid entity = new Rid();
 		entity.setCurrentSequenceNo(00001);
 		when(repository.save(entity)).thenThrow(DataRetrievalFailureException.class, DataAccessLayerException.class);
-		ridGeneratorImpl.generateId(centerId, machineId, centerIdLength, machineIDLength);
+		ridGeneratorImpl.generateId(centerId, machineId, centerIdLength, machineIDLength, sequenceLimit,
+				timestampLength);
 	}
 
 	@Test(expected = InputLengthException.class)
@@ -154,23 +153,17 @@ public class RidGeneratorTest {
 		Rid entity = new Rid();
 		entity.setCurrentSequenceNo(00001);
 		when(repository.findLastRid()).thenReturn(entity);
-		assertThat(ridGeneratorImpl.generateId(centerId, machineId, invalidCenterIdLength, machineIDLength),
+		assertThat(ridGeneratorImpl.generateId(centerId, machineId, invalidCenterIdLength, machineIDLength,
+				sequenceLimit, timestampLength), isA(String.class));
+	}
+
+	@Test(expected = InputLengthException.class)
+	public void generateIdInvalidSeqLengthTest() {
+		Rid entity = new Rid();
+		entity.setCurrentSequenceNo(00001);
+		when(repository.findLastRid()).thenReturn(entity);
+		assertThat(
+				ridGeneratorImpl.generateId(centerId, machineId, centerIdLength, machineIDLength, 0, timestampLength),
 				isA(String.class));
-	}
-
-	@Ignore
-	@Test
-	public void validRidTest() {
-		assertThat(ridValidatorImpl.validateId(validRid, centerId, machineId), is(true));
-	}
-
-	@Test(expected = InvalidIDException.class)
-	public void invalidCenterIdInRidTest() {
-		ridValidatorImpl.validateId(invalidCenterIdRid, centerId, machineId);
-	}
-
-	@Test(expected = InvalidIDException.class)
-	public void invalidMachineIdInRidTest() {
-		ridValidatorImpl.validateId(invalidMachineIdRid, centerId, machineId);
 	}
 }

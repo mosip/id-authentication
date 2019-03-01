@@ -40,7 +40,7 @@ public class CryptoUtil {
 	public String cryptoResourceUrl;
 
 	public byte[] encrypt(byte[] originalInput, LocalDateTime localDateTime) {
-		log.info("sessionId", "idType", "id", "In encrypt method of CryptoUtil service - " + originalInput);
+		log.info("sessionId", "idType", "id", "In encrypt method of CryptoUtil service ");
 
 		ResponseEntity<CryptoManagerResponseDTO> response = null;
 		byte[] encryptedBytes = null;
@@ -69,7 +69,7 @@ public class CryptoUtil {
 	}
 
 	public byte[] decrypt(byte[] originalInput, LocalDateTime localDateTime) {
-		log.info("sessionId", "idType", "id", "In decrypt method of CryptoUtil service - " + originalInput);
+		log.info("sessionId", "idType", "id", "In decrypt method of CryptoUtil service ") ;
 		ResponseEntity<CryptoManagerResponseDTO> response = null;
 		byte[] decodedBytes = null;
 		try {

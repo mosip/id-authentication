@@ -1,9 +1,5 @@
 package io.mosip.registration.controller.reg;
 
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -13,15 +9,12 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.device.FingerPrintCaptureController;
-import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
+import javafx.scene.control.Label;
 
 /**
  * {@code UserOnboardController} is to capture and display the captured
@@ -39,17 +32,18 @@ public class UserOnboardController extends BaseController implements Initializab
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(UserOnboardController.class);
 	
+	@FXML
+	private Label operatorName;
+	
 	@Autowired
-	private FingerPrintCaptureController fingerPrintCaptureController;
+	private UserOnboardParentController userOnboardParentController;
 
-	@Autowired
-	private IrisCaptureController irisCaptureController;
-
-	private BiometricDTO biometricDTO;
-
+	private BiometricDTO biometricDTO;	
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
+		operatorName
+		.setText("Hi " + SessionContext.userContext().getName() +", you are not onboarded into the system.");
 	}
 
 	@FXML
@@ -57,42 +51,7 @@ public class UserOnboardController extends BaseController implements Initializab
 		biometricDTO = new BiometricDTO();
 		biometricDTO.setOperatorBiometricDTO(createBiometricInfoDTO());
 		SessionContext.map().put(RegistrationConstants.USER_ONBOARD_DATA, biometricDTO);		
-		loadPage(RegistrationConstants.BIO_EXCEPTION_PAGE);
+		userOnboardParentController.showCurrentPage(RegistrationConstants.ONBOARD_USER_PARENT, getOnboardPageDetails(RegistrationConstants.ONBOARD_USER_PARENT,RegistrationConstants.NEXT));
 		clearAllValues();
 	}
-
-	/**
-	 * Method to load the biometric fingerprint page
-	 */
-	public void loadFingerPrint() {
-		
-		if (applicationContext.getApplicationMap()
-				.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-				.equals(RegistrationConstants.ENABLE)) {
-			
-			loadPage(RegistrationConstants.USER_ONBOARD_IRIS);
-			irisCaptureController.clearIrisBasedOnExceptions();
-		} else {
-			fingerPrintCaptureController.clearImage();
-			loadPage(RegistrationConstants.USER_ONBOARD_FP);
-		}
-	}
-
-	/**
-	 * Method to load fxml page
-	 * 
-	 * @param fxml file name
-	 */
-	private void loadPage(String page) {
-		Parent createRoot;
-		try {
-			createRoot = BaseController.load(getClass().getResource(page));
-			getScene(createRoot).setRoot(createRoot);
-		} catch (IOException exception) {
-			LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage());
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
-		}
-	}
-
 }

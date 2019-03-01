@@ -85,10 +85,8 @@ public class OtpNotificationUtil {
 	/**
 	 * This method merge template with otp provided.
 	 * 
-	 * @param otp
-	 *            the otp generated.
-	 * @param template
-	 *            the template provided.
+	 * @param otp      the otp generated.
+	 * @param template the template provided.
 	 * @return the merged template.
 	 */
 	public String templateMerger(String otp, String template, String notificationType) {
@@ -122,10 +120,8 @@ public class OtpNotificationUtil {
 	/**
 	 * This method send SMS notification to the number provided with given template.
 	 * 
-	 * @param number
-	 *            the mobile number.
-	 * @param smsTemplate
-	 *            the sms template provided.
+	 * @param number      the mobile number.
+	 * @param smsTemplate the sms template provided.
 	 */
 	public void sendSmsNotification(String number, String smsTemplate) {
 
@@ -146,12 +142,7 @@ public class OtpNotificationUtil {
 		String responseBody = response.getBody();
 
 		List<ServiceError> validationErrorsList = null;
-		try {
-			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-		} catch (IOException e) {
-			throw new OtpNotifierServiceException(OtpNotificationErrorConstant.NOTIFIER_SMS_IO_ERROR.getErrorCode(),
-					OtpNotificationErrorConstant.NOTIFIER_SMS_IO_ERROR.getErrorMessage());
-		}
+		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
 
 		if (!validationErrorsList.isEmpty()) {
 			throw new OtpNotificationInvalidArgumentException(validationErrorsList);
@@ -163,12 +154,9 @@ public class OtpNotificationUtil {
 	 * This method send email notification to the emailid provided with given
 	 * template.
 	 * 
-	 * @param emailId
-	 *            the email id provided.
-	 * @param emailBodyTemplate
-	 *            the email body template provided.
-	 * @param emailSubjectTemplate
-	 *            the email subject template.
+	 * @param emailId              the email id provided.
+	 * @param emailBodyTemplate    the email body template provided.
+	 * @param emailSubjectTemplate the email subject template.
 	 */
 	public void sendEmailNotification(String emailId, String emailBodyTemplate, String emailSubjectTemplate) {
 		HttpHeaders emailHeaders = new HttpHeaders();
@@ -186,12 +174,9 @@ public class OtpNotificationUtil {
 		String responseBody = response.getBody();
 
 		List<ServiceError> validationErrorsList = null;
-		try {
+		
 			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-		} catch (IOException e) {
-			throw new OtpNotifierServiceException(OtpNotificationErrorConstant.NOTIFIER_EMAIL_IO_ERROR.getErrorCode(),
-					OtpNotificationErrorConstant.NOTIFIER_EMAIL_IO_ERROR.getErrorMessage());
-		}
+		
 
 		if (!validationErrorsList.isEmpty()) {
 			throw new OtpNotificationInvalidArgumentException(validationErrorsList);
@@ -201,8 +186,7 @@ public class OtpNotificationUtil {
 	/**
 	 * This method generate OTP agains provided key.
 	 * 
-	 * @param request
-	 *            the dto with key.
+	 * @param request the dto with key.
 	 * @return the generated OTP.
 	 */
 	public String generateOtp(OtpRequestDto request) {
@@ -217,12 +201,8 @@ public class OtpNotificationUtil {
 		String responseBody = response.getBody();
 
 		List<ServiceError> validationErrorsList = null;
-		try {
-			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-		} catch (IOException e1) {
-			throw new OtpNotifierServiceException(OtpNotificationErrorConstant.NOTIFIER_OTP_IO_ERROR.getErrorCode(),
-					OtpNotificationErrorConstant.NOTIFIER_OTP_IO_ERROR.getErrorMessage());
-		}
+
+		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
 
 		if (!validationErrorsList.isEmpty()) {
 			throw new OtpNotificationInvalidArgumentException(validationErrorsList);
@@ -247,12 +227,9 @@ public class OtpNotificationUtil {
 	/**
 	 * This method provide key as per notification channel type mentions.
 	 * 
-	 * @param notificationflag
-	 *            the notification types.
-	 * @param number
-	 *            the mobile number of user.
-	 * @param emailId
-	 *            the email id of user.
+	 * @param notificationflag the notification types.
+	 * @param number           the mobile number of user.
+	 * @param emailId          the email id of user.
 	 * @return the key.
 	 */
 	public String getKey(List<String> notificationflag, String number, String emailId) {
@@ -280,8 +257,7 @@ public class OtpNotificationUtil {
 	/**
 	 * This method validates notification channel type is valid or not.
 	 * 
-	 * @param types
-	 *            the notification channel type.
+	 * @param types the notification channel type.
 	 * @return the true if type is valid.
 	 */
 	public boolean containsNotificationTypes(String types) {
@@ -298,8 +274,7 @@ public class OtpNotificationUtil {
 	/**
 	 * This method validate request dto with valid notification types mention.
 	 * 
-	 * @param request
-	 *            the request dto for OTP notification.
+	 * @param request the request dto for OTP notification.
 	 * @return the list of {@link ServiceError}.
 	 */
 	public List<ServiceError> validationRequestArguments(OtpNotificationRequestDto request) {

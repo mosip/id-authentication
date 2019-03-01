@@ -38,18 +38,20 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.kernel.core.idrepo.constant.AuditEvents;
 import io.mosip.kernel.core.idrepo.constant.AuditModules;
 import io.mosip.kernel.core.idrepo.constant.RestServicesConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
 import io.mosip.kernel.core.idrepo.exception.RestServiceException;
+import io.mosip.kernel.idrepo.builder.AuditRequestBuilder;
+import io.mosip.kernel.idrepo.builder.RestRequestBuilder;
 import io.mosip.kernel.idrepo.dto.AuditRequestDto;
 import io.mosip.kernel.idrepo.dto.AuditResponseDto;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.dto.RestRequestDTO;
-import io.mosip.kernel.idrepo.factory.AuditRequestFactory;
-import io.mosip.kernel.idrepo.factory.RestRequestFactory;
 import io.netty.handler.ssl.SslContext;
 import reactor.core.publisher.Mono;
 import reactor.ipc.netty.http.HttpResources;
@@ -86,11 +88,11 @@ public class RestHelperTest {
 
 	/** The audit factory. */
 	@InjectMocks
-	AuditRequestFactory auditFactory;
+	AuditRequestBuilder auditBuilder;
 
 	/** The rest factory. */
 	@InjectMocks
-	RestRequestFactory restFactory;
+	RestRequestBuilder restBuilder;
 
 	/** The server. */
 	static BlockingNettyContext server;
@@ -100,8 +102,8 @@ public class RestHelperTest {
 	 */
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(auditFactory, "env", environment);
-		ReflectionTestUtils.setField(restFactory, "env", environment);
+		ReflectionTestUtils.setField(auditBuilder, "env", environment);
+		ReflectionTestUtils.setField(restBuilder, "env", environment);
 		ReflectionTestUtils.setField(restHelper, "mapper", mapper);
 	}
 
@@ -146,10 +148,10 @@ public class RestHelperTest {
 	@Test
 	public void testRequestSync() throws IdRepoDataValidationException, RestServiceException {
 
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.CREATE_IDENTITY,
+		AuditRequestDto auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc");
 
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
 
 		restRequest.setTimeout(100);
@@ -174,7 +176,7 @@ public class RestHelperTest {
 		MockEnvironment env = new MockEnvironment();
 		env.merge(((AbstractEnvironment) environment));
 		env.setProperty("audit.rest.uri.queryparam.audit", "yes");
-		ReflectionTestUtils.setField(restFactory, "env", env);
+		ReflectionTestUtils.setField(restBuilder, "env", env);
 		server.shutdown();
 		HttpResources.reset();
 		RouterFunction<?> functionSuccess = RouterFunctions.route(
@@ -190,10 +192,10 @@ public class RestHelperTest {
 		server = HttpServer.create(8082).start(adapter);
 		server.installShutdownHook();
 
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.CREATE_IDENTITY,
+		AuditRequestDto auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc");
 
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
 
 		restRequest.setTimeout(100);
@@ -221,7 +223,7 @@ public class RestHelperTest {
 		MockEnvironment env = new MockEnvironment();
 		env.merge(((AbstractEnvironment) environment));
 		env.setProperty("audit.rest.uri.pathparam.audit", "yes");
-		ReflectionTestUtils.setField(restFactory, "env", env);
+		ReflectionTestUtils.setField(restBuilder, "env", env);
 		server.shutdown();
 		HttpResources.reset();
 		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.POST("/auditmanager/{service}"),
@@ -235,10 +237,10 @@ public class RestHelperTest {
 		server = HttpServer.create(8082).start(adapter);
 		server.installShutdownHook();
 
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.CREATE_IDENTITY,
+		AuditRequestDto auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",  "desc");
 
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
 
 		restRequest.setTimeout(100);
@@ -275,10 +277,10 @@ public class RestHelperTest {
 			return resp.status(200).send();
 		});
 
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.CREATE_IDENTITY,
+		AuditRequestDto auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",  "desc");
 
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
 
 		restRequest.setTimeout(1);
@@ -296,10 +298,10 @@ public class RestHelperTest {
 	 */
 	@Test
 	public void testRequestSyncWithoutTimeout() throws IdRepoDataValidationException, RestServiceException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.CREATE_IDENTITY,
+		AuditRequestDto auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",  "desc");
 
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
 
 		restRequest.setTimeout(null);
@@ -320,10 +322,10 @@ public class RestHelperTest {
 	 */
 	@Test
 	public void testRequestAsync() throws IdRepoDataValidationException, RestServiceException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.CREATE_IDENTITY,
+		AuditRequestDto auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",  "desc");
 
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
 		restHelper.requestAsync(restRequest);
 	}
@@ -338,10 +340,10 @@ public class RestHelperTest {
 	 */
 	@Test
 	public void testRequestAsyncAndReturn() throws IdRepoDataValidationException, RestServiceException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.CREATE_IDENTITY,
+		AuditRequestDto auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",  "desc");
 
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
 
 		restRequest.setTimeout(100);
@@ -362,10 +364,10 @@ public class RestHelperTest {
 	 */
 	@Test
 	public void testRequestAsyncWithoutHeaders() throws IdRepoDataValidationException, RestServiceException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.CREATE_IDENTITY,
+		AuditRequestDto auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",  "desc");
 
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
 
 		restRequest.setHeaders(null);
@@ -383,7 +385,7 @@ public class RestHelperTest {
 	 */
 	@Test
 	public void testRequestWithoutBody() throws IdRepoDataValidationException, RestServiceException {
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, null,
+		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, null,
 				AuditResponseDto.class);
 
 		restHelper.requestAsync(restRequest);
@@ -427,10 +429,10 @@ public class RestHelperTest {
 		server = HttpServer.create(8082).start(adapter);
 		server.installShutdownHook();
 
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.CREATE_IDENTITY,
+		AuditRequestDto auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",  "desc");
 
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
 
 		restHelper.requestSync(restRequest);
@@ -459,10 +461,10 @@ public class RestHelperTest {
 		server = HttpServer.create(8082).start(adapter);
 		server.installShutdownHook();
 
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.CREATE_IDENTITY,
+		AuditRequestDto auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",  "desc");
 
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
 
 		restHelper.requestSync(restRequest);
@@ -515,10 +517,10 @@ public class RestHelperTest {
 	
 	@Test(expected = RestServiceException.class)
 	public void testRequestSyncRuntimeException() throws IdRepoDataValidationException, RestServiceException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.CREATE_IDENTITY,
+		AuditRequestDto auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",  "desc");
 
-		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
 		restRequest.setUri("https://localhost:8082/auditmanager/v1.0/audits");
 		restRequest.setTimeout(100);
@@ -526,4 +528,68 @@ public class RestHelperTest {
 		restHelper.requestSync(restRequest);
 	}
 	
+	@Test(expected = RestServiceException.class)
+	public void ztestRequestSyncCheckForErrorsWithoutTimeout() throws IdRepoDataValidationException, RestServiceException {
+		server.shutdown();
+		HttpResources.reset();
+		ObjectNode node = mapper.createObjectNode();
+		ArrayNode array = mapper.createArrayNode();
+		array.add(mapper.createObjectNode().put("error", "error"));
+		node.set("errors", array);
+		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.POST("/auditmanager/audits"),
+				request -> ServerResponse.status(HttpStatus.OK)
+						.body(Mono.just(node), ObjectNode.class));
+
+		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
+
+		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
+
+		server = HttpServer.create(8082).start(adapter);
+		server.installShutdownHook();
+
+		AuditRequestDto auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
+				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",  "desc");
+
+		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+				ObjectNode.class);
+		restRequest.setTimeout(null);
+		restHelper.requestSync(restRequest);
+	}
+	
+	@Test(expected = RestServiceException.class)
+	public void ztestRequestSyncCheckForErrorsWithTimeout() throws IdRepoDataValidationException, RestServiceException {
+		server.shutdown();
+		HttpResources.reset();
+		ObjectNode node = mapper.createObjectNode();
+		ArrayNode array = mapper.createArrayNode();
+		array.add(mapper.createObjectNode().put("error", "error"));
+		node.set("errors", array);
+		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.POST("/auditmanager/audits"),
+				request -> ServerResponse.status(HttpStatus.OK)
+						.body(Mono.just(node), ObjectNode.class));
+
+		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
+
+		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
+
+		server = HttpServer.create(8082).start(adapter);
+		server.installShutdownHook();
+
+		AuditRequestDto auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
+				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",  "desc");
+
+		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+				ObjectNode.class);
+		restRequest.setTimeout(10);
+		restHelper.requestSync(restRequest);
+	}
+
+	@Test(expected = RestServiceException.class)
+	public void ztestRequestSyncCheckForErrorsUnknownError() throws Throwable {
+		try {
+			ReflectionTestUtils.invokeMethod(restHelper, "checkErrorResponse", "args", null);
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
 }

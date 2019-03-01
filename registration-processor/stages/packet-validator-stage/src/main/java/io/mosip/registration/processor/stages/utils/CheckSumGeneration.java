@@ -7,13 +7,13 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 
 /**
  * The Class CheckSumGeneration.
@@ -30,7 +30,7 @@ public class CheckSumGeneration {
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(CheckSumGeneration.class);
 
 	/** The adapter. */
-	private FileSystemAdapter<InputStream, Boolean> adapter;
+	private FileSystemAdapter adapter;
 
 	/**
 	 * Instantiates a new check sum generation.
@@ -38,7 +38,7 @@ public class CheckSumGeneration {
 	 * @param adapter
 	 *            the adapter
 	 */
-	public CheckSumGeneration(FileSystemAdapter<InputStream, Boolean> adapter) {
+	public CheckSumGeneration(FileSystemAdapter adapter) {
 		this.adapter = adapter;
 	}
 
@@ -141,24 +141,29 @@ public class CheckSumGeneration {
 		}
 	}
 
-	public byte[] generatePacketOSIHash(List<String> hashSequence2, String registrationId) {
-		hashSequence2.forEach(value -> {
-			byte[] valuebyte = null;
-			try {
-				InputStream fileStream = adapter.getFile(registrationId, value.toUpperCase());
+	public byte[] generatePacketOSIHash(List<FieldValueArray> hashSequence2, String registrationId) {
+		for (FieldValueArray fieldValueArray : hashSequence2) {
+			List<String> hashValues = fieldValueArray.getValue();
+			hashValues.forEach(value -> {
+				byte[] valuebyte = null;
+				try {
+					InputStream fileStream = adapter.getFile(registrationId, value.toUpperCase());
 
-				valuebyte = IOUtils.toByteArray(fileStream);
-			} catch (IOException e) {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.APPLICATIONID.toString(), StatusMessage.INPUTSTREAM_NOT_READABLE,
-						e.getMessage() + ExceptionUtils.getStackTrace(e));
-			}
+					valuebyte = IOUtils.toByteArray(fileStream);
+				} catch (IOException e) {
+					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.APPLICATIONID.toString(), StatusMessage.INPUTSTREAM_NOT_READABLE,
+							e.getMessage() + ExceptionUtils.getStackTrace(e));
+				}
 
-			generateHash(valuebyte);
-		});
+				generateHash(valuebyte);
+			});
+		}
 
 		// generated hash
 		return HMACUtils.digestAsPlainText(HMACUtils.updatedHash()).getBytes();
+
 	}
+		
 
 }

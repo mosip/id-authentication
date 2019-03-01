@@ -14,10 +14,12 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
-
+import io.mosip.registration.processor.manual.verification.exception.handler.ManualVerificationExceptionHandler;
+import io.mosip.registration.processor.manual.verification.response.builder.ManualVerificationResponseBuilder;
 import io.mosip.registration.processor.manual.verification.service.ManualVerificationService;
 import io.mosip.registration.processor.manual.verification.service.impl.ManualVerificationServiceImpl;
 import io.mosip.registration.processor.manual.verification.stage.ManualVerificationStage;
+import io.mosip.registration.processor.manual.verification.util.ManualVerificationRequestValidator;
 
 @PropertySource("classpath:bootstrap.properties")
 @Configuration
@@ -32,7 +34,21 @@ public class ManualVerificationConfigBean {
 		return new ManualVerificationServiceImpl();
 	}
 
+	@Bean
+	ManualVerificationRequestValidator getManualVerificationRequestValidator() {
+		return new ManualVerificationRequestValidator();
+	}
 	
+	@Bean
+	ManualVerificationExceptionHandler getManualVerificationExceptionHandler() {
+		return new ManualVerificationExceptionHandler();
+	}
+	
+	@Bean
+	ManualVerificationResponseBuilder getManualVerificationResponseBuilder() {
+		return new ManualVerificationResponseBuilder();
+	}
+
 	@Bean
 	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env) throws IOException {
 

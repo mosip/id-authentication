@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="onBoardRoot" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UserOnboardParentController">
+   <children>
+      <AnchorPane fx:id="userOnboardId">
+      	<children>      		
+         	<fx:include fx:id="biometricException" source="BiometricException.fxml" visible="false" />
+            <fx:include fx:id="fingerPrintCapture" source="UserOnboardFPCapture.fxml" visible="false" />
+            <fx:include fx:id="irisCapture" source="UserOnboardIrisCapture.fxml" visible="false" />
+            <fx:include fx:id="faceCapture" source="UserOnboardWebCamera.fxml" visible="false" />
+            <fx:include fx:id="onboardUser" source="UserOnboard.fxml" visible="true" />
+        	</children>
+       </AnchorPane>
+   </children>
+</AnchorPane>

@@ -8,16 +8,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.constant.JsonConstant;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
 import io.mosip.registration.processor.core.packet.dto.BiometricException;
 
-import io.mosip.registration.processor.core.packet.dto.Document;
+
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
@@ -25,6 +27,7 @@ import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoJson;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
+import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicInfoJsonEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicInfoJsonPKEntity;
@@ -53,8 +56,8 @@ import io.mosip.registration.processor.packet.storage.exception.DateParseExcepti
  */
 public class PacketInfoMapper {
 
-	/** The Constant LOGGER. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(PacketInfoMapper.class);
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketInfoMapper.class);
 
 	/** The Constant REGISTRATION_ID. */
 	private static final String REGISTRATION_ID = "registrationId";
@@ -82,6 +85,9 @@ public class PacketInfoMapper {
 	 * @return the applicant document entity
 	 */
 	public static ApplicantDocumentEntity convertAppDocDtoToEntity(Document documentDto, List<FieldValue> metaData) {
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoMapper::convertAppDocDtoToEntity()::entry");
 
 		Optional<FieldValue> regId = metaData.stream().filter(m -> m.getLabel().equals(REGISTRATION_ID)).findFirst();
 		String registrationId = "";
@@ -106,6 +112,8 @@ public class PacketInfoMapper {
 		applicantDocumentEntity.setDocOwner(documentDto.getDocumentOwner());
 		applicantDocumentEntity.setDocFileFormat(documentDto.getFormat());
 		applicantDocumentEntity.setActive(true);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoMapper::convertAppDocDtoToEntity()::exit");
 
 		return applicantDocumentEntity;
 	}
@@ -120,6 +128,8 @@ public class PacketInfoMapper {
 	 * @return the applicant iris entity
 	 */
 	public static ApplicantIrisEntity convertIrisDtoToEntity(BiometricDetails iris, List<FieldValue> metaData) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoMapper::convertIrisDtoToEntity()::entry");
 		Optional<FieldValue> regId = metaData.stream().filter(m -> m.getLabel().equals(REGISTRATION_ID)).findFirst();
 		String registrationId = "";
 		if (regId.isPresent())
@@ -144,6 +154,8 @@ public class PacketInfoMapper {
 		applicantIrisEntity.setQualityScore(BigDecimal.valueOf(iris.getQualityScore()));
 		applicantIrisEntity.setActive(true);
 
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoMapper::convertIrisDtoToEntity()::exit");
 		return applicantIrisEntity;
 	}
 
@@ -158,6 +170,9 @@ public class PacketInfoMapper {
 	 */
 	public static ApplicantFingerprintEntity convertFingerprintDtoToEntity(BiometricDetails fingerprint,
 			List<FieldValue> metaData) {
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoMapper::convertFingerprintDtoToEntity()::entry");
 		Optional<FieldValue> regId = metaData.stream().filter(m -> m.getLabel().equals(REGISTRATION_ID)).findFirst();
 		String registrationId = "";
 		if (regId.isPresent())
@@ -181,6 +196,8 @@ public class PacketInfoMapper {
 		applicantFingerprintEntity.setPreRegId(preregistrationId);
 		applicantFingerprintEntity.setQualityScore(BigDecimal.valueOf(fingerprint.getQualityScore()));
 		applicantFingerprintEntity.setActive(true);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoMapper::convertFingerprintDtoToEntity()::exit");
 
 		return applicantFingerprintEntity;
 
@@ -197,6 +214,8 @@ public class PacketInfoMapper {
 	 */
 	public static BiometricExceptionEntity convertBiometricExceptioDtoToEntity(BiometricException exception,
 			List<FieldValue> metaData) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoMapper::convertBiometricExceptioDtoToEntity()::entry");
 		Optional<FieldValue> regId = metaData.stream().filter(m -> m.getLabel().equals(REGISTRATION_ID)).findFirst();
 		String registrationId = "";
 		if (regId.isPresent())
@@ -220,6 +239,8 @@ public class PacketInfoMapper {
 		bioMetricExceptionEntity.setExcpTyp(exception.getExceptionType());
 		bioMetricExceptionEntity.setIsDeleted(false);
 		bioMetricExceptionEntity.setStatusCode("BiometricException Saved");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoMapper::convertBiometricExceptioDtoToEntity()::exit");
 		return bioMetricExceptionEntity;
 	}
 
@@ -236,6 +257,8 @@ public class PacketInfoMapper {
 	 */
 	public static ApplicantPhotographEntity convertPhotoGraphDtoToEntity(Photograph photoGraphData,
 			Photograph exceptionPhotographData, List<FieldValue> metaData) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoMapper::convertPhotoGraphDtoToEntity()::entry");
 		Optional<FieldValue> regId = metaData.stream().filter(m -> m.getLabel().equals(REGISTRATION_ID)).findFirst();
 		String registrationId = "";
 		if (regId.isPresent())
@@ -265,6 +288,8 @@ public class PacketInfoMapper {
 		applicantPhotographEntity.setHasExcpPhotograph(isHasExceptionPhoto);
 		applicantPhotographEntity.setQualityScore(BigDecimal.valueOf(photoGraphData.getQualityScore()));
 		applicantPhotographEntity.setActive(true);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoMapper::convertPhotoGraphDtoToEntity()::exit");
 
 		return applicantPhotographEntity;
 	}
@@ -282,6 +307,8 @@ public class PacketInfoMapper {
 	 */
 	public static RegOsiEntity convertOsiDataToEntity(List<FieldValue> osiData, Introducer introducer,
 			List<FieldValue> metaData) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoMapper::convertOsiDataToEntity()::entry");
 
 		RegOsiEntity regOsiEntity = new RegOsiEntity();
 
@@ -339,6 +366,8 @@ public class PacketInfoMapper {
 		regOsiEntity.setId(regOsiPkEntity);
 
 		regOsiEntity.setIsActive(true);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoMapper::convertOsiDataToEntity()::exit");
 
 		return regOsiEntity;
 	}
@@ -351,6 +380,8 @@ public class PacketInfoMapper {
 	 * @return the reg abis ref entity
 	 */
 	public static RegAbisRefEntity convertRegAbisRefToEntity(RegAbisRefDto regAbisRefDto) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				regAbisRefDto.getReg_id(), "PacketInfoMapper::convertRegAbisRefToEntity()::entry");
 
 		RegAbisRefEntity regAbisRefEntity = new RegAbisRefEntity();
 
@@ -361,6 +392,8 @@ public class PacketInfoMapper {
 		regAbisRefEntity.setId(regAbisRefPkEntity);
 		regAbisRefEntity.setIsActive(true);
 
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				regAbisRefDto.getReg_id(), "PacketInfoMapper::convertRegAbisRefToEntity()::exit");
 		return regAbisRefEntity;
 	}
 
@@ -372,6 +405,8 @@ public class PacketInfoMapper {
 	 * @return the reg center machine entity
 	 */
 	public static RegCenterMachineEntity convertRegCenterMachineToEntity(List<FieldValue> metaData) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoMapper::RegCenterMachineEntity()::entry");
 		IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 		RegCenterMachinePKEntity regCenterMachinePKEntity = new RegCenterMachinePKEntity();
 		RegCenterMachineEntity regCenterMachineEntity = new RegCenterMachineEntity();
@@ -393,6 +428,8 @@ public class PacketInfoMapper {
 		regCenterMachineEntity.setId(regCenterMachinePKEntity);
 		regCenterMachineEntity.setIsActive(true);
 
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoMapper::RegCenterMachineEntity()::exit");
 		return regCenterMachineEntity;
 	}
 
@@ -448,6 +485,8 @@ public class PacketInfoMapper {
 	 */
 	public static List<IndividualDemographicDedupeEntity> converDemographicDedupeDtoToEntity(
 			IndividualDemographicDedupe demoDto, String regId) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				regId, "PacketInfoMapper::converDemographicDedupeDtoToEntity()::entry");
 		IndividualDemographicDedupeEntity entity;
 		IndividualDemographicDedupePKEntity applicantDemographicPKEntity;
 		List<IndividualDemographicDedupeEntity> demogrphicDedupeEntities = new ArrayList<>();
@@ -476,7 +515,8 @@ public class PacketInfoMapper {
 
 					entity.setDob(date);
 				} catch (ParseException e) {
-					LOGGER.error("ErrorWhile Parsing Date");
+					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+							regId, e.getMessage() + ExceptionUtils.getStackTrace(e));
 					throw new DateParseException(PlatformErrorMessages.RPR_SYS_PARSING_DATE_EXCEPTION.getMessage(), e);
 				}
 			}
@@ -485,6 +525,8 @@ public class PacketInfoMapper {
 
 		}
 
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				regId, "PacketInfoMapper::converDemographicDedupeDtoToEntity()::exit");
 		return demogrphicDedupeEntities;
 	}
 
@@ -496,6 +538,8 @@ public class PacketInfoMapper {
 	 * @return the applicant demographic info json entity
 	 */
 	public static ApplicantDemographicInfoJsonEntity convertDemographicInfoJsonToEntity(DemographicInfoJson infoJson) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoMapper::convertDemographicInfoJsonToEntity()::entry");
 		ApplicantDemographicInfoJsonEntity applicantDemographicDataEntity = new ApplicantDemographicInfoJsonEntity();
 		ApplicantDemographicInfoJsonPKEntity applicantDemographicDataPKEntity = new ApplicantDemographicInfoJsonPKEntity();
 		applicantDemographicDataPKEntity.setRegId(infoJson.getRegId());
@@ -507,6 +551,8 @@ public class PacketInfoMapper {
 		applicantDemographicDataEntity.setPreRegId(infoJson.getPreRegId());
 		applicantDemographicDataEntity.setStatusCode(infoJson.getStatusCode());
 		applicantDemographicDataEntity.setLangCode(infoJson.getLangCode());
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoMapper::convertDemographicInfoJsonToEntity()::exit");
 		return applicantDemographicDataEntity;
 	}
 

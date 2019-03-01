@@ -194,7 +194,7 @@ public class DataSyncServiceUtil {
 					ErrorMessages.INVALID_REQUESTED_CREATED_DATE.toString());
 		} else {
 			try {
-				new SimpleDateFormat(dateTimeFormat).parse(createdDateTime.toString());
+				new SimpleDateFormat(dateTimeFormat).parse(getDateString(createdDateTime));
 			} catch (Exception ex) {
 				log.error("sessionId", "idType", "id",
 						"In validateReverseDataSyncRequest method of datasync service util - " + ex.getMessage());
@@ -213,7 +213,7 @@ public class DataSyncServiceUtil {
 					ErrorMessages.INVALID_REQUESTED_CREATED_DATE.toString());
 		} else {
 			try {
-				new SimpleDateFormat(dateTimeFormat).format(updatedDateTime);
+				new SimpleDateFormat(dateTimeFormat).parse(getDateString(updatedDateTime));
 			} catch (Exception ex) {
 				log.error("sessionId", "idType", "id",
 						"In validateReverseDataSyncRequest method of datasync service util - " + ex.getMessage());
@@ -447,7 +447,7 @@ public class DataSyncServiceUtil {
 	 * @param documentEntityList
 	 * @return zipped file's byte array
 	 */
-	private PreRegArchiveDTO preparePreRegArchiveDTO(DemographicResponseDTO preRegistrationDTO,
+	public PreRegArchiveDTO preparePreRegArchiveDTO(DemographicResponseDTO preRegistrationDTO,
 			BookingRegistrationDTO bookingRegistrationDTO) {
 		log.info("sessionId", "idType", "id", "In preparePreRegArchiveDTO method of datasync service util");
 		PreRegArchiveDTO preRegArchiveDTO = new PreRegArchiveDTO();

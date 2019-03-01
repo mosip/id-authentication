@@ -1,6 +1,8 @@
 <mat-card class="time-selection__title-card">
   <mat-card-header>
-      <p class="time-selection__title-card-text">{{'bookAppointment.title_book'|translate}} </p>
+      <p class="time-selection__title-card-text">{{'bookAppointment.title_book'|translate}} 
+          <mat-icon class="icon" matTooltip="Info about the action" [inline]="true">help_outline</mat-icon>
+      </p>
   </mat-card-header>
 </mat-card>
 <mat-card class="time-selection__date-card">
@@ -42,14 +44,14 @@
     <div class="container-card">
       <div *ngIf="availabilityData[selectedTile] !== undefined" #cardsContent class="middle-card">
         <div *ngFor="let data of availabilityData[selectedTile].timeSlots; let i = index;">
-                <mat-card [ngClass]="selectedCard === i ? 'card card-content selected-card' : 'card card-content'" (click)="cardSelected(i)">
-                  <mat-card-content>
+                <mat-card *ngIf="data.tag === activeTab" [ngClass]="selectedCard === i ? 'card card-content selected-card' : 'card card-content'" (click)="cardSelected(i)">
+                  <mat-card-content style="width:100%">
                       <p class="card-time-text">
                           {{data.displayTime}}
                       </p>
                       <p [ngClass]="selectedCard === i ? 'card-slot-text-selected' : 'card-slot-text'">
                           {{data.availability}} slots
-                        <span *ngIf="data.names.length !== 0" class="card-slot-text-span-number">{{data.names.length}}</span><span *ngIf="selectedCard === i" class="card-slot-text-span-image"><img src="assets/slots.png" height="10px" width="10px" /></span>
+                        <span *ngIf="data.names.length !== 0" class="card-slot-text-span-number">{{data.names.length}}</span><span *ngIf="selectedCard === i" class="card-slot-text-span-image"><img src="assets/slots.png" height="20px" width="20px" /></span>
                       </p>
                   </mat-card-content>
                 </mat-card>

@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.GenderTypeErrorCode;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Gender;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -51,7 +53,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 		List<Gender> genderType = null;
 
 		try {
-			genderType = genderTypeRepository.findAll(Gender.class);
+			genderType = genderTypeRepository.findAllByIsActiveAndIsDeleted();
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
@@ -134,19 +136,20 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	@Override
 	public CodeAndLanguageCodeID updateGenderType(RequestDto<GenderTypeDto> gender) {
 		GenderTypeDto genderTypeDto = gender.getRequest();
-        CodeAndLanguageCodeID genderTypeId = new CodeAndLanguageCodeID();
-        MapperUtils.mapFieldValues(genderTypeDto, genderTypeId);
+		CodeAndLanguageCodeID genderTypeId = new CodeAndLanguageCodeID();
+		MapperUtils.mapFieldValues(genderTypeDto, genderTypeId);
 		try {
-			int updatedRows= genderTypeRepository.updateGenderType(genderTypeDto.getCode(), genderTypeDto.getLangCode(),
-					genderTypeDto.getGenderName(), genderTypeDto.getIsActive(), MetaDataUtils.getCurrentDateTime(),
-					MetaDataUtils.getContextUser());
+			int updatedRows = genderTypeRepository.updateGenderType(genderTypeDto.getCode(),
+					genderTypeDto.getLangCode(), genderTypeDto.getGenderName(), genderTypeDto.getIsActive(),
+					MetaDataUtils.getCurrentDateTime(), MetaDataUtils.getContextUser());
 			if (updatedRows < 1) {
 				throw new RequestException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 						GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_UPDATE_EXCEPTION.getErrorCode(),
-					GenderTypeErrorCode.GENDER_TYPE_UPDATE_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(e));
+					GenderTypeErrorCode.GENDER_TYPE_UPDATE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
 		}
 		return genderTypeId;
 	}
@@ -162,18 +165,45 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	@Override
 	public CodeResponseDto deleteGenderType(String code) {
 		try {
-			int updatedRows = genderTypeRepository.deleteGenderType(code, MetaDataUtils.getCurrentDateTime(),MetaDataUtils.getContextUser());
+			int updatedRows = genderTypeRepository.deleteGenderType(code, MetaDataUtils.getCurrentDateTime(),
+					MetaDataUtils.getContextUser());
 			if (updatedRows < 1) {
 				throw new RequestException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
 						GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_DELETE_EXCEPTION.getErrorCode(),
-					GenderTypeErrorCode.GENDER_TYPE_DELETE_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(e));
+					GenderTypeErrorCode.GENDER_TYPE_DELETE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
 		}
 		CodeResponseDto codeResponseDto = new CodeResponseDto();
 		codeResponseDto.setCode(code);
 		return codeResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.GenderTypeService#validateGender(java.lang.String)
+	 */
+	@Override
+	public StatusResponseDto validateGender(String genderName) {
+		StatusResponseDto statusResponseDto = null;
+		boolean isPresent = false;
+		try {
+			statusResponseDto = new StatusResponseDto();
+			isPresent = genderTypeRepository.isGenderNamePresent(genderName);
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorCode(),
+					GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorMessage());
+		}
+		if (isPresent) {
+			statusResponseDto.setStatus(MasterDataConstant.VALID);
+		} else {
+			statusResponseDto.setStatus(MasterDataConstant.INVALID);
+		}
+
+		return statusResponseDto;
+		
 	}
 
 }

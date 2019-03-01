@@ -25,9 +25,13 @@ public enum ErrorCodes {
 	/**
 	 * INPUT_OUTPUT_EXCEPTION
 	 */
-	PRG_ACK_005("PRG_ACK_005"); 
+	PRG_ACK_005("PRG_ACK_005"), 
 
-
+	/**
+	 * QRCODE_FAILED_TO_GENERATE
+	 */
+  PRG_ACK_006("PRG_ACK_006");
+	
 	/**
 	 * @param code
 	 */

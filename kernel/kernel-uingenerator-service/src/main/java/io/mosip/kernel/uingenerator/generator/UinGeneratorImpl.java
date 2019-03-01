@@ -82,7 +82,7 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 		Set<UinEntity> uins = new HashSet<>();
 		long upperBound = Long.parseLong(StringUtils.repeat(UinGeneratorConstant.NINE, generatedIdLength));
 		long lowerBound = Long.parseLong(
-				UinGeneratorConstant.TWO + StringUtils.repeat(UinGeneratorConstant.ZERO, generatedIdLength - 1));
+				StringUtils.repeat(UinGeneratorConstant.ZERO, generatedIdLength));
 		LOGGER.info("Generating {} uins ", uinsCount);
 		while (uins.size() < uinsCount) {
 			String generatedUIN = generateSingleId(generatedIdLength, lowerBound, upperBound);

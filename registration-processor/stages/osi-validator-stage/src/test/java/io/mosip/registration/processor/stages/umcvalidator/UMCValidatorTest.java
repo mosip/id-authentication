@@ -24,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.kernel.core.exception.IOException;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -41,13 +42,11 @@ import io.mosip.registration.processor.core.packet.dto.regcentermachine.Registra
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterResponseDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterUserMachineMappingHistoryDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterUserMachineMappingHistoryResponseDto;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.stages.osivalidator.UMCValidator;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
-
 
 /**
  * The Class UMCValidatorTest.
@@ -65,15 +64,15 @@ public class UMCValidatorTest {
 
 	/** The adapter. */
 	@Mock
-	private FileSystemAdapter<InputStream, Boolean> adapter;
+	private FileSystemAdapter adapter;
 
 	/** The registration processor rest service. */
 	@Mock
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
-	
+
 	/** The rcm dto. */
 	RegistrationCenterMachineDto rcmDto = new RegistrationCenterMachineDto();
-	
+
 	/** The reg osi. */
 	RegOsiDto regOsi;
 
@@ -107,7 +106,6 @@ public class UMCValidatorTest {
 		Mockito.when(adapter.getFile(any(), any())).thenReturn(packetMetaInfoStream);
 
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsi);
-	
 
 	}
 
@@ -157,7 +155,7 @@ public class UMCValidatorTest {
 		offrepdto.setRegistrationCenters(officerucmdtos);
 
 		RegistartionCenterTimestampResponseDto test = new RegistartionCenterTimestampResponseDto();
-		test.setStatus("Accepted");
+		test.setStatus("Valid");
 
 		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
 		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
@@ -176,7 +174,7 @@ public class UMCValidatorTest {
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto).thenReturn(offrepdto).thenReturn(test)
 				.thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);
-        // UMC validation successfull;
+		// UMC validation successfull;
 		assertTrue(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
 
@@ -226,7 +224,7 @@ public class UMCValidatorTest {
 
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto);
-        // UMC validation Failure;
+		// UMC validation Failure;
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
 
@@ -327,53 +325,6 @@ public class UMCValidatorTest {
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
 
-	/**
-	 * Gps datanot present in master test.
-	 *
-	 * @throws ApisResourceAccessException the apis resource access exception
-	 * @throws JsonParseException the json parse exception
-	 * @throws JsonMappingException the json mapping exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	@Test
-	public void gpsDatanotPresentInMasterTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException {
-		RegistrationCenterDto rcdto = new RegistrationCenterDto();
-		rcdto.setIsActive(true);
-		rcdto.setId("12245");
-
-		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
-		rcdtos.add(rcdto);
-		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCentersHistory(rcdtos);
-
-		MachineHistoryDto mcdto = new MachineHistoryDto();
-		mcdto.setIsActive(true);
-		mcdto.setId("yyeqy26356");
-
-		List<MachineHistoryDto> mcdtos = new ArrayList<>();
-		mcdtos.add(mcdto);
-		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
-		mhrepdto.setMachineHistoryDetails(mcdtos);
-
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
-		officerucmdto.setIsActive(true);
-		officerucmdto.setCntrId("12245");
-		officerucmdto.setMachineId("yyeqy26356");
-		officerucmdto.setUsrId("O1234");
-
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
-		officerucmdtos.add(officerucmdto);
-
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
-		offrepdto.setRegistrationCenters(officerucmdtos);
-
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
-				.thenReturn(mhrepdto).thenReturn(offrepdto);
-        // UMC validation Failure;
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
-	}
 
 	/**
 	 * Wronggps data present in master test.

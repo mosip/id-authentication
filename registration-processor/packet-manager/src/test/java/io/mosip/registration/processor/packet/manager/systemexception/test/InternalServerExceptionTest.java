@@ -41,11 +41,12 @@ public class InternalServerExceptionTest {
 	@Test
 	public void TestInternalServerException() throws IOException {
 		String fileName = "sample";
-		InternalServerException ex = new InternalServerException(PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getMessage());
-		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
+		InternalServerException ex = new InternalServerException(
+				PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getMessage());
+		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
 
 		try {
-			fileManager.put(fileName, file, DirectoryPathDto.LANDING_ZONE);
+			fileManager.put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
 			fail();
 		} catch (InternalServerException e) {
 			assertThat("Should throw Server error with correct error codes",

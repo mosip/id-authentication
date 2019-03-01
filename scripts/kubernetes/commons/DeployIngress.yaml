@@ -18,6 +18,10 @@ spec:
         backend:
           serviceName: kernel-uingenerator-service
           servicePort: 8080
+      - path: /applicanttype
+        backend:
+          serviceName: kernel-applicanttype-service
+          servicePort: 8094
       - path: /auditmanager
         backend:
           serviceName: kernel-auditmanager-service
@@ -46,6 +50,10 @@ spec:
         backend:
           serviceName: kernel-cryptomanager-service
           servicePort: 8087
+      - path: /keymanager
+        backend:
+          serviceName: kernel-keymanager-service
+          servicePort: 8088
       - path: /syncdata
         backend:
           serviceName: kernel-syncdata-service
@@ -70,35 +78,35 @@ spec:
         backend:
           serviceName: kernel-config-server
           servicePort: 51000
-      - path: /auth
+      - path: /pre-registration/v1.0/auth
         backend:
           serviceName: pre-registration-auth-service
           servicePort: 9090
-      - path: /demographic
+      - path: /pre-registration/v1.0/demographic
         backend:
           serviceName: pre-registration-demographic-service
           servicePort: 9092
-      - path: /document
+      - path: /pre-registration/v1.0/document
         backend:
           serviceName: pre-registration-document-service
           servicePort: 9093
-      - path: /datasync
+      - path: /pre-registration/v1.0/sync
         backend:
           serviceName: pre-registration-datasync-service
           servicePort: 9094
-      - path: /booking
+      - path: /pre-registration/v1.0/booking
         backend:
           serviceName: pre-registration-booking-service
           servicePort: 9095
-      - path: /batchjob
+      - path: /pre-registration/v1.0/batchjob
         backend:
           serviceName: pre-registration-batchjob-service
           servicePort: 9096
-      - path: /transliterate
+      - path: /pre-registration/v1.0/translitration
         backend:
           serviceName: pre-registration-translitration-service
           servicePort: 9098
-      - path: /notification
+      - path: /pre-registration/v1.0/notification
         backend:
           serviceName: pre-registration-notification-service
           servicePort: 9099
@@ -114,14 +122,18 @@ spec:
         backend:
           serviceName: registration-processor-dmz
           servicePort: 8081
+      - path: /abis
+        backend:
+          serviceName: registration-processor-stages
+          servicePort: 9098
       - path: /registrationstatus
         backend:
-          serviceName: registration-processor-registration-status-api
+          serviceName: registration-processor-registration-status-service
           servicePort: 8083
       - path: /nginx
         backend:
           serviceName: sample-nginx
-          servicePort: 80
+          servicePort: 80 
           
       
           

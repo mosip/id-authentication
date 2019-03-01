@@ -22,6 +22,7 @@ public interface DeviceMasterRepository extends BaseRepository<RegDeviceMaster, 
 	 * @param currentDate
 	 * @return returns the record
 	 */
-	Long countBySerialNumberAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(String serialNo, String deviceType,
+	Long countBySerialNumAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(String serialNo, String deviceType,
 			Timestamp currentDate);
+	
 }	

@@ -6,6 +6,7 @@ import org.quartz.listeners.JobListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
@@ -74,7 +75,7 @@ public class JobProcessListener extends JobListenerSupport {
 					jobManager.getJobId(context));
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
+					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
 		}
 
 		LOGGER.info(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -101,7 +102,7 @@ public class JobProcessListener extends JobListenerSupport {
 
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
+					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
 		}
 
 		LOGGER.info(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,

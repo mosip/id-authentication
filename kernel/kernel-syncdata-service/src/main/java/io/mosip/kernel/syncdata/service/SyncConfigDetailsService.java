@@ -1,6 +1,9 @@
 package io.mosip.kernel.syncdata.service;
 
+import java.util.Optional;
+
 import io.mosip.kernel.syncdata.dto.ConfigDto;
+import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
 import net.minidev.json.JSONObject;
 
 /**
@@ -18,7 +21,7 @@ public interface SyncConfigDetailsService {
 	 * 
 	 * @return JSONObject - config synced data
 	 */
-	public JSONObject getConfigDetails();
+	public ConfigDto getConfigDetails();
 
 	/**
 	 * This service will fetch all Global Configaration details available from
@@ -39,4 +42,18 @@ public interface SyncConfigDetailsService {
 	public JSONObject getRegistrationCenterConfigDetails(String regId);
 
 	ConfigDto getConfiguration(String registrationCenterId);
+	
+	/**
+	 * Function to get public key
+	 * 
+	 * @param applicationId
+	 *            applicationId
+	 * @param timeStamp
+	 *            timeStamp
+	 * @param referenceId
+	 *            referenceId
+	 * @return {@link PublicKeyResponse} instance
+	 */
+	public PublicKeyResponse<String> getPublicKey(String applicationId, String timeStamp,
+			Optional<String> referenceId);
 }

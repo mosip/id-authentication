@@ -22,12 +22,17 @@ import io.mosip.kernel.syncdata.dto.MachineTypeDto;
 import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.syncdata.dto.ReasonListDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDeviceDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDeviceHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterUserHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingHistoryDto;
 import io.mosip.kernel.syncdata.dto.TemplateDto;
 import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
@@ -45,6 +50,7 @@ import lombok.Data;
  */
 @Data
 public class MasterDataResponseDto {
+	private String lastSyncTime;
 	private List<RegistrationCenterDto> registrationCenter;
 	private List<RegistrationCenterTypeDto> registrationCenterTypes;
 	private List<MachineDto> machineDetails;
@@ -77,5 +83,11 @@ public class MasterDataResponseDto {
 	private List<RegistrationCenterMachineDeviceDto> registrationCenterMachineDevices;
 	private List<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachines;
 	private List<RegistrationCenterUserDto> registrationCenterUsers;
+	private List<RegistrationCenterMachineHistoryDto> registrationCenterMachineHistory;
+	private List<RegistrationCenterDeviceHistoryDto> registrationCenterDeviceHistory;
+	private List<RegistrationCenterMachineDeviceHistoryDto> registrationCenterMachineDeviceHistory;
+	private List<RegistrationCenterUserMachineMappingHistoryDto> registrationCenterUserMachineMappingHistory;
+	private List<RegistrationCenterUserHistoryDto> registrationCenterUserHistory;
+	
 
 }

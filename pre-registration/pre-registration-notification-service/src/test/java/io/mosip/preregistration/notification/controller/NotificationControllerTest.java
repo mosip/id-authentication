@@ -81,7 +81,7 @@ public class NotificationControllerTest {
 String langCode="eng";
 		Mockito.when(service.sendNotification(stringjson, "eng", null)).thenReturn(responseDTO);
 		
-		mockMvc.perform(MockMvcRequestBuilders.multipart("/v0.1/pre-registration/notification")
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/notify")
 				.file(new MockMultipartFile("NotificationDTO",stringjson,
 						"application/json",stringjson.getBytes(Charset.forName("UTF-8") ))).
 				file(new MockMultipartFile("langCode",langCode,
@@ -99,7 +99,7 @@ String langCode="eng";
 		String stringjson = mapper.writeValueAsString(notificationDTO);
 		Mockito.when(service.sendNotification(stringjson, "eng", null)).thenReturn(responseDTO);
 		
-		mockMvc.perform(post("/v0.1/pre-registration/generateQRCode").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(post("/generateQRCode").contentType(MediaType.APPLICATION_JSON)
 			.content(stringjson)).andExpect(status().isOk());
 
 	}

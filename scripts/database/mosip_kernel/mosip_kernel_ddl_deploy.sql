@@ -8,6 +8,7 @@
 \ir ddl/kernel-sync_control.sql
 \ir ddl/kernel-sync_job_def.sql
 \ir ddl/kernel-sync_transaction.sql
+\ir ddl/kernel-uin.sql
 
 \ir ddl/AlterFK_kernel_schema.sql
 

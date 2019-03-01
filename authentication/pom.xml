@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.8.2</version>
+		<version>0.8.15</version>
 	</parent>
 	
 	<groupId>io.mosip.authentication</groupId>
@@ -32,7 +32,7 @@
 		<maven.swagger.version>2.9.2</maven.swagger.version>
 		<maven.jacoco.version>0.8.2</maven.jacoco.version>
 		<maven.sonar.version>3.2</maven.sonar.version>
-		
+		<powermock.version>2.0.0</powermock.version>
 		<!-- Kernel components -->
 		<kernel.core.version>0.8.1</kernel.core.version>
 		<kernel.hibernate.version>0.8.1</kernel.hibernate.version>

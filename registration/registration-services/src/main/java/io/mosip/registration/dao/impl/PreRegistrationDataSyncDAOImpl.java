@@ -91,5 +91,4 @@ public class PreRegistrationDataSyncDAOImpl implements PreRegistrationDataSyncDA
 				RegistrationConstants.APPLICATION_ID, "delete records ended");
 		
 	}
-
 }

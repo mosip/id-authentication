@@ -24,14 +24,5 @@ public interface IdRepoService {
 	 */
 	public Map<String, Object> getIdenity(String uin, boolean isBio) throws IdAuthenticationBusinessException;
 
-	/**
-	 * Method to get Identity info.
-	 *
-	 * @param idResponseDTO the id response DTO
-	 * @return the id info
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
-	 */
-	Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO)
-			throws IdAuthenticationBusinessException;
+
 }

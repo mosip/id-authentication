@@ -131,7 +131,6 @@ public class IDAuthExceptionHandlerTest {
     public void testHandleDataException() {
 	BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
 	expectedResponse.setStatus("N");
-	expectedResponse.setTxnID(null);
 	expectedResponse.setErr(Collections
 		.singletonList(new AuthError(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED.getErrorCode(),
 			IdAuthenticationErrorConstants.AUTHENTICATION_FAILED.getErrorMessage())));
@@ -154,7 +153,6 @@ public class IDAuthExceptionHandlerTest {
     public void testAsyncRequestTimeoutException() {
 	BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
 	expectedResponse.setStatus("N");
-	expectedResponse.setTxnID(null);
 	expectedResponse.setErr(Collections
 		.singletonList(new AuthError(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT.getErrorCode(),
 			IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT.getErrorMessage())));
@@ -169,7 +167,6 @@ public class IDAuthExceptionHandlerTest {
     public void testNoSuchMessageException() {
 	BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
 	expectedResponse.setStatus("N");
-	expectedResponse.setTxnID(null);
 	expectedResponse.setErr(
 		Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorCode(),
 			IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorMessage())));
@@ -184,7 +181,6 @@ public class IDAuthExceptionHandlerTest {
     public void testhandleAllExceptionsUnknownError() {
 	BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
 	expectedResponse.setStatus("N");
-	expectedResponse.setTxnID(null);
 	expectedResponse.setErr(
 		Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorCode(),
 			IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorMessage())));
@@ -208,7 +204,6 @@ public class IDAuthExceptionHandlerTest {
     public void testCreateAuthError() {
 	BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
 	expectedResponse.setStatus("N");
-	expectedResponse.setTxnID(null);
 	expectedResponse.setErr(Collections
 		.singletonList(new ActionableAuthError(IdAuthenticationErrorConstants.INVALID_TXN_ID.getErrorCode(),
 			IdAuthenticationErrorConstants.INVALID_TXN_ID.getErrorMessage(),

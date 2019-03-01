@@ -47,5 +47,39 @@ spec:
         - name: active_profile_env
           value: dev
         imagePullPolicy: Always
+      - name: registration-processor-abis
+        image: docker-registry.mosip.io:5000/registration-processor-abis
+        env:
+        - name: active_profile_env
+          value: dev
+        imagePullPolicy: Always
+      - name: registration-processor-packet-bio-dedupe-service
+        image: docker-registry.mosip.io:5000/packet-bio-dedupe-service
+        env:
+        - name: active_profile_env
+          value: dev
+        imagePullPolicy: Always
+      - name: registration-processor-connector-stage
+        image: docker-registry.mosip.io:5000/registration-processor-connector-stage
+        env:
+        - name: active_profile_env
+          value: dev
+        imagePullPolicy: Always
+      - name: registration-processor-uin-generator-stage
+        image: docker-registry.mosip.io:5000/uin-generator-stage
+        env:
+        - name: active_profile_env
+          value: dev
+        imagePullPolicy: Always
       imagePullSecrets:
       - name: pvt-reg-cred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: registration-processor-stages
+spec:
+  ports:
+    - port: 9098
+  selector:
+    app: registration-processor-stages

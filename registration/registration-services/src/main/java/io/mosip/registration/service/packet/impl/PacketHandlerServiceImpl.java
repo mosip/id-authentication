@@ -3,8 +3,6 @@ package io.mosip.registration.service.packet.impl;
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_HANLDER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.INTERNAL_SERVER_ERROR;
-import static io.mosip.registration.constants.RegistrationConstants.REGISTRATION_ID;
 import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_PACKET_CREATION_ERROR_CODE;
 
 import java.util.ArrayList;
@@ -13,10 +11,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ErrorResponseDTO;
@@ -93,12 +93,15 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 
 				LOGGER.info(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
 						"Error in creating Registration Packet");
-				auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, Components.PACKET_HANDLER, INTERNAL_SERVER_ERROR,
-						REGISTRATION_ID, rid);
+				auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, Components.PACKET_HANDLER, rid,
+						AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 			}
 		} catch (RegBaseCheckedException exception) {
-			auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, Components.PACKET_HANDLER, INTERNAL_SERVER_ERROR,
-					REGISTRATION_ID, rid);
+			LOGGER.info(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
+					ExceptionUtils.getStackTrace(exception));
+
+			auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, Components.PACKET_HANDLER, rid,
+					AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 
 			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 			errorResponseDTO.setCode(RegistrationConstants.REG_FRAMEWORK_PACKET_HANDLING_EXCEPTION);
@@ -107,8 +110,11 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 			errorResponseDTOs.add(errorResponseDTO);
 			responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 		} catch (RegBaseUncheckedException uncheckedException) {
-			auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, Components.PACKET_HANDLER, INTERNAL_SERVER_ERROR,
-					REGISTRATION_ID, rid);
+			LOGGER.info(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
+					ExceptionUtils.getStackTrace(uncheckedException));
+	
+			auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, Components.PACKET_HANDLER, rid,
+					AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 
 			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 			errorResponseDTO.setCode(RegistrationConstants.REG_FRAMEWORK_PACKET_HANDLING_EXCEPTION);

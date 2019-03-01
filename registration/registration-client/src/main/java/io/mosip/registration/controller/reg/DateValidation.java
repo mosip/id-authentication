@@ -1,5 +1,7 @@
 package io.mosip.registration.controller.reg;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,9 +9,14 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 
 @Component
 public class DateValidation extends BaseController {
@@ -18,6 +25,11 @@ public class DateValidation extends BaseController {
 	private Validations validation;
 
 	private Map<String, String> dateMapper;
+
+	/**
+	 * Instance of {@link Logger}
+	 */
+	private static final Logger LOGGER = AppConfig.getLogger(DateValidation.class);
 
 	public DateValidation() {
 		dateMapper = new HashMap<String, String>();
@@ -45,16 +57,16 @@ public class DateValidation extends BaseController {
 		dateMapper.put("12", "31");
 	}
 
-	public void validateDate(TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
+	public void validateDate(AnchorPane parentPane, TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
 			TextField localField) {
 
 		try {
-			fxUtils.validateOnType(date, validation, localField);
+			fxUtils.validateOnType(parentPane,date, validation, localField);
 			date.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				int dateVal = 1;
 				if (date.getText().matches("\\d+")) {
 					dateVal = Integer.parseInt(date.getText());
-					if (dateVal > 31 ) {
+					if (dateVal > 31) {
 						date.setText(oldValue);
 					}
 				}
@@ -64,20 +76,25 @@ public class DateValidation extends BaseController {
 							generateAlert("Date", "Please enter the appropriate value");
 							date.setText(oldValue);
 						}
-					} catch (NumberFormatException e) {
+					} catch (RuntimeException runTimeException) {
+						LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+								runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
+
 					}
 				}
 				validateTheDate(date, month, year);
 			});
-		} catch (Exception e) {
+		} catch (RuntimeException runTimeException) {
+			LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
 
 		}
 	}
 
-	public void validateMonth(TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
+	public void validateMonth(AnchorPane parentPane,TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
 			TextField localField) {
 		try {
-			fxUtils.validateOnType(month, validation, localField);
+			fxUtils.validateOnType(parentPane, month, validation, localField);
 			month.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				if (month.getText().matches("\\d+")) {
 					int monthVal = Integer.parseInt(month.getText());
@@ -90,13 +107,18 @@ public class DateValidation extends BaseController {
 								generateAlert("Please enter the appropriate value");
 								date.clear();
 							}
-						} catch (NumberFormatException e) {
+						} catch (RuntimeException runTimeException) {
+							LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+									runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
+
 						}
 					}
 				}
 				validateTheDate(date, month, year);
 			});
-		} catch (Exception e) {
+		} catch (RuntimeException runTimeException) {
+			LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
 
 		}
 	}
@@ -133,22 +155,36 @@ public class DateValidation extends BaseController {
 				}
 
 			}
-		} catch (Exception e) {
+		} catch (RuntimeException runTimeException) {
+			LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
 
 		}
 	}
 
-	public void validateYear(TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
+	public void validateYear(AnchorPane parentPane, TextField date, TextField month, TextField year, Validations validations, FXUtils fxUtils,
 			TextField localField) {
 		try {
-			fxUtils.validateOnType(year, validation, localField);
+			fxUtils.validateOnType(parentPane, year, validation, localField);
 			year.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				if (year.getText().matches("\\d{4}")) {
 					int yearVal = Integer.parseInt(year.getText());
 					LocalDate localDate = LocalDate.now();
-					if (yearVal < 1900 || yearVal > localDate.getYear()) {
+					int minYear = 1900;
+					if (getRegistrationDTOFromSession().getSelectionListDTO() != null
+							&& getRegistrationDTOFromSession().getSelectionListDTO().isChild()) {
+						minYear = LocalDate.now().getYear() - 5;
+					}
+					if (yearVal < minYear || yearVal > localDate.getYear()) {
 						year.setText(oldValue);
 					}
+
+					if (getRegistrationDTOFromSession().getSelectionListDTO() != null
+							&& !getRegistrationDTOFromSession().getSelectionListDTO().isChild()
+							&& localDate.getYear() - yearVal <= 5) {
+						year.setText(oldValue);
+					}
+
 					if (!(yearVal % 4 == 0)) {
 						dateMapper.put("2", "28");
 					}
@@ -162,14 +198,19 @@ public class DateValidation extends BaseController {
 								date.clear();
 								generateAlert("Please enter the appropriate value");
 							}
-						} catch (NumberFormatException e) {
+						} catch (RuntimeException runTimeException) {
+							LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+									runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
+
 						}
 
 					}
 				}
 				validateTheDate(date, month, year);
 			});
-		} catch (Exception e) {
+		} catch (RuntimeException runTimeException) {
+			LOGGER.error("DATE VALIDATOINS", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
 
 		}
 	}
