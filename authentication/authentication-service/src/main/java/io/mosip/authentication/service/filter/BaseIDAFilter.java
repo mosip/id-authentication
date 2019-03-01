@@ -9,11 +9,10 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
@@ -54,6 +53,9 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 public abstract class BaseIDAFilter implements Filter {
 
+	/** The Constant TRANSACTION_ID. */
+	private static final String TRANSACTION_ID = "transactionID";
+
 	/** The Constant RESPONSE. */
 	private static final String RESPONSE = "response";
 
@@ -77,9 +79,6 @@ public abstract class BaseIDAFilter implements Filter {
 
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SessionId";
-	
-	/** The Constant TXN_ID. */
-	private static final String TXN_ID = "txnID";
 	
 	/** The request time. */
 	private String requestTime;
@@ -149,9 +148,7 @@ public abstract class BaseIDAFilter implements Filter {
 	private CharResponseWrapper sendErrorResponse(ServletResponse response,
 			CharResponseWrapper responseWrapper, ResettableStreamHttpServletRequest requestWrapper, AuthError authError) throws IOException {
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		List<AuthError> authErrorList = new ArrayList<>();
-		authErrorList.add(authError);
-		authResponseDTO.setErrors(authErrorList);
+		authResponseDTO.setErrors(Collections.singletonList(authError));
 		Map<String, Object> requestMap = null;
 		try {
 			requestMap = getRequestBody(requestWrapper.getInputStream()); 
@@ -177,8 +174,8 @@ public abstract class BaseIDAFilter implements Filter {
 					env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone));
 		}
 		
-		if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get("transactionID"))) {
-			authResponseDTO.setTransactionID((String) requestMap.get("transactionID"));
+		if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get(TRANSACTION_ID))) {
+			authResponseDTO.setTransactionID((String) requestMap.get(TRANSACTION_ID));
 		}
 		authResponseDTO.setResponseTime(resTime);
 		requestWrapper.resetInputStream();
@@ -313,8 +310,8 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected Map<String, Object> setResponseParams(Map<String, Object> requestBody, Map<String, Object> responseBody) throws IdAuthenticationAppException {
-		if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(TXN_ID))) {
-			responseBody.replace(TXN_ID, requestBody.get(TXN_ID));
+		if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(TRANSACTION_ID))) {
+			responseBody.replace(TRANSACTION_ID, requestBody.get(TRANSACTION_ID));
 		}
 		if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(REQ_TIME))
 				&& isDate((String) requestBody.get(REQ_TIME))) {

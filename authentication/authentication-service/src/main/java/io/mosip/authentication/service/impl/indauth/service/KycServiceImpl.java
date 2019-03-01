@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,11 @@ import io.mosip.authentication.service.helper.IdInfoHelper;
 @Service
 public class KycServiceImpl implements KycService {
 
+	/** The Constant EKYC_TYPE_FULLKYC. */
+	private static final String EKYC_TYPE_FULLKYC = "ekyc.type.fullkyc";
+	
+	/** The Constant EKYC_TYPE_LIMITEDKYC. */
+	private static final String EKYC_TYPE_LIMITEDKYC = "ekyc.type.limitedkyc";
 	/** The env. */
 	@Autowired
 	Environment env;
@@ -53,18 +59,18 @@ public class KycServiceImpl implements KycService {
 		KycResponseDTO kycResponseDTO = new KycResponseDTO();
 		String kycTypeKey;
 		if (eKycType == KycType.LIMITED) {
-			kycTypeKey = "ekyc.type.limitedkyc";
+			kycTypeKey = EKYC_TYPE_LIMITEDKYC;
 		} else {
-			kycTypeKey = "ekyc.type.fullkyc";
+			kycTypeKey = EKYC_TYPE_FULLKYC;
 		}
 
 		String kycType = env.getProperty(kycTypeKey);
 		Map<String, Object> filteredIdentityInfo = constructIdentityInfo(kycType, identityInfo,
 				secLangCode);
-		if(null != filteredIdentityInfo && filteredIdentityInfo.get("face") instanceof List) {			
+		if(Objects.nonNull(filteredIdentityInfo) && filteredIdentityInfo.get("face") instanceof List) {			
 			List<IdentityInfoDTO> faceValue = (List<IdentityInfoDTO>) filteredIdentityInfo.get("face");
 			List<BioIdentityInfoDTO> bioValue = new ArrayList<>();
-			if(null != faceValue) {
+			if(Objects.nonNull(faceValue)) {
 				BioIdentityInfoDTO bioIdentityInfoDTO = null;
 				for(IdentityInfoDTO identityInfoDTO : faceValue) {				
 					bioIdentityInfoDTO = new BioIdentityInfoDTO();
@@ -75,7 +81,7 @@ public class KycServiceImpl implements KycService {
 			}
 			filteredIdentityInfo.put("biometrics", bioValue);
 		}
-		if (null != filteredIdentityInfo) {
+		if (Objects.nonNull(filteredIdentityInfo)) {
 			Object maskedUin = uin;
 			Boolean maskRequired = env.getProperty("uin.masking.required", Boolean.class);
 			Integer maskCount = env.getProperty("uin.masking.charcount", Integer.class);
@@ -100,12 +106,12 @@ public class KycServiceImpl implements KycService {
 			Map<String, List<IdentityInfoDTO>> identity, String secLangCode) {
 		Map<String, List<IdentityInfoDTO>> identityInfo = null;
 		Map<String, Object> identityInfos = null;
-		if (null != kycType) {
+		if (Objects.nonNull(kycType)) {
 			List<String> limitedKycDetail = Arrays.asList(kycType.split(","));
 			identityInfo = identity.entrySet().stream().filter(id -> limitedKycDetail.contains(id.getKey()))
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		}
-		if (null != identityInfo) {
+		if (Objects.nonNull(identityInfo)) {
 			Set<String> allowedLang = idInfoHelper.extractAllowedLang();
 			String secondayLangCode = allowedLang.contains(secLangCode) ? secLangCode : null;
 			String primaryLanguage = env.getProperty("mosip.primary.lang-code");
