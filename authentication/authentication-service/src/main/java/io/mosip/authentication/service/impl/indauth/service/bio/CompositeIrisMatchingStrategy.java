@@ -34,8 +34,7 @@ public enum CompositeIrisMatchingStrategy implements MatchingStrategy {
 	});
 
 	
-	private static final String IDVID = "idvid";
-	
+	private static final String IDVID = "idvid";	
 	
 	/** The match strategy type. */
 	private final MatchingStrategyType matchStrategyType;

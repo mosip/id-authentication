@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.constant.AuditEvents;
@@ -52,10 +51,6 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
 	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
-
-	/** The env. */
-	@Autowired
-	private Environment env;
 
 	/** The rest helper. */
 	@Autowired

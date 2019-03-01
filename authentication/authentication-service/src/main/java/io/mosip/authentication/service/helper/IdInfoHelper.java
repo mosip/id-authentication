@@ -76,6 +76,9 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class IdInfoHelper implements IdInfoFetcher {
 
+	/** The Constant MOSIP_SUPPORTED_LANGUAGES. */
+	private static final String MOSIP_SUPPORTED_LANGUAGES = "mosip.supported-languages";
+
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(IdInfoHelper.class);
 
@@ -862,7 +865,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 */
 	public Set<String> extractAllowedLang() {
 		Set<String> allowedLang;
-		String languages = environment.getProperty("mosip.supported-languages");
+		String languages = environment.getProperty(MOSIP_SUPPORTED_LANGUAGES);
 		if (null != languages && languages.contains(",")) {
 			allowedLang = Arrays.stream(languages.split(",")).collect(Collectors.toSet());
 		} else {
