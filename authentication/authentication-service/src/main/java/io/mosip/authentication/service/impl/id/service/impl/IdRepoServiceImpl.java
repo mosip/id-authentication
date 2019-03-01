@@ -65,7 +65,7 @@ public class IdRepoServiceImpl implements IdRepoService {
 	private ObjectMapper mapper;
 
 	/**
-	 * Fetch data from Id Repo based on Individual's UIN / VID value and also handles  when UIN gets deactivated. 
+	 * Fetch data from Id Repo based on Individual's UIN / VID value and all UIN scenarios 
 	 */
 	public Map<String, Object> getIdenity(String uin, boolean isBio) throws IdAuthenticationBusinessException {
 
