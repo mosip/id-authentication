@@ -117,7 +117,7 @@ public class RestRequestBuilder {
 			request.setPathVariables(pathVariables);
 		}
 
-		if (StringUtils.isEmpty(timeout)) {
+		if (!StringUtils.isEmpty(timeout)) {
 			request.setTimeout(Integer.parseInt(timeout));
 		}
 
@@ -208,7 +208,7 @@ public class RestRequestBuilder {
 	 *             the ID data validation exception
 	 */
 	private void checkHttpMethod(RestRequestDTO request, String httpMethod) throws IdRepoDataValidationException {
-		if (StringUtils.isEmpty(httpMethod)) {
+		if (!StringUtils.isEmpty(httpMethod)) {
 			request.setHttpMethod(HttpMethod.valueOf(httpMethod));
 		} else {
 			mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "httpMethod",
@@ -229,7 +229,7 @@ public class RestRequestBuilder {
 	 *             the ID data validation exception
 	 */
 	private void checkUri(RestRequestDTO request, String uri) throws IdRepoDataValidationException {
-		if (StringUtils.isEmpty(uri)) {
+		if (!StringUtils.isEmpty(uri)) {
 			request.setUri(uri);
 		} else {
 			mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "uri",
