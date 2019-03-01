@@ -2,7 +2,6 @@ package io.mosip.authentication.service.impl.id.service;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,10 +24,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -39,8 +34,6 @@ import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.id.service.impl.IdRepoServiceImpl;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
-import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
-import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 
 /**
  * IdRepoServiceImplTest test class.
@@ -204,6 +197,68 @@ public class IdRepoServiceImplTest {
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any()))
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.UIN_DEACTIVATED));
+		idReposerviceImpl.getIdenity("76746685", false);
+	}
+	
+	
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void checkerrorexist() throws RestServiceException, IdAuthenticationBusinessException {
+		RestRequestDTO restRequestDTO = new RestRequestDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null, Map.class))
+				.thenReturn(restRequestDTO);
+		Map<String, Object> responseBody = new HashMap<>();
+		List<Map<String, Object>> valuelist = new ArrayList<>();
+		responseBody.put("errors1", valuelist);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+				IdAuthenticationErrorConstants.INVALID_UIN, responseBody.toString(), (Object) responseBody));
+		idReposerviceImpl.getIdenity("76746685", false);
+	}
+	
+	
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void checkerrorexist1() throws RestServiceException, IdAuthenticationBusinessException {
+		RestRequestDTO restRequestDTO = new RestRequestDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null, Map.class))
+				.thenReturn(restRequestDTO);
+		Map<String, Object> responseBody = new HashMap<>();
+		List<Map<String, Object>> valuelist = new ArrayList<>();
+		responseBody.put("errors", valuelist);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+				IdAuthenticationErrorConstants.INVALID_UIN, responseBody.toString(), (Object) responseBody));
+		idReposerviceImpl.getIdenity("76746685", false);
+	}
+	
+	
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void checkerrorexist2() throws RestServiceException, IdAuthenticationBusinessException {
+		RestRequestDTO restRequestDTO = new RestRequestDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null, Map.class))
+				.thenReturn(restRequestDTO);
+		Map<String, Object> responseBody = new HashMap<>();
+		List<Map<String, Object>> valuelist = new ArrayList<>();
+		Map<String, Object> errorcode = new HashMap<>();
+		errorcode.put("errCode1", IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode());
+		valuelist.add(errorcode);
+		responseBody.put("errors", valuelist);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+				IdAuthenticationErrorConstants.INVALID_UIN, responseBody.toString(), (Object) responseBody));
+		idReposerviceImpl.getIdenity("76746685", false);
+	}
+	
+	
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void checkerrorexist3() throws RestServiceException, IdAuthenticationBusinessException {
+		RestRequestDTO restRequestDTO = new RestRequestDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null, Map.class))
+				.thenReturn(restRequestDTO);
+		Map<String, Object> responseBody = new HashMap<>();
+		List<Map<String, Object>> valuelist = new ArrayList<>();
+		Map<String, Object> errorcode = new HashMap<>();
+		errorcode.put("errCode", IdAuthenticationErrorConstants.ADDR_PRI_MISMATCH.getErrorCode());
+		valuelist.add(errorcode);
+		responseBody.put("errors", valuelist);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+				IdAuthenticationErrorConstants.INVALID_UIN, responseBody.toString(), (Object) responseBody));
 		idReposerviceImpl.getIdenity("76746685", false);
 	}
 
