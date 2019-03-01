@@ -15,11 +15,10 @@ There are many ID generators inside MOSIP. To generate the ID, Secured Random ge
 
 - Generate a single secure random number and keep that securely. 
 
-- Have an incremental counter value. 
+- Have an incremental counter value, which is also a Secure Random number. Save this it to the datbaase. 
 
-- Whenever a new request for the ID generation gets received, increment the counter and add that with the secure random number. 
+- Whenever a new request for the ID generation gets received, increment the counter and use that as a key to the AES algorithm and encrypt the initial secure random number
 
-- Hash it with the RSA algorithm. 
 
 - Convert the Hash to the number and provide this as the ID. 
 
