@@ -1,4 +1,4 @@
-﻿# Authentication and Authorization in MOSIP platform
+# Authentication and Authorization in MOSIP platform
 
 #### Background
 
@@ -22,6 +22,11 @@ The authentication and authorization in the MOSIP platform is handled in the a c
 - An additional layers in the Auth service will ensure about the forced logout scenario. Essentially, all the service calls to the Auth Service will go through this creamy layer, where we have a proxy user datastore which will maintain the additional information about the validitiy of the tokens. 
 
 - The Tokens are stored in the creamy layer for an individual user. In case of force logout scenario, this record will be deleted from this proxy user datastore. 
+
+**Tokens Overview**
+
+![Tokens Overview](_images/kernel-authn-tokensoverview.jpg)
+
 
 **Class diagram**
 
