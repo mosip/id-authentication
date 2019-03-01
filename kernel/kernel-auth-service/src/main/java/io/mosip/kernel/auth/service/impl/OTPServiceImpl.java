@@ -3,6 +3,8 @@
  */
 package io.mosip.kernel.auth.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -11,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.entities.AuthNResponseDto;
+import io.mosip.kernel.auth.entities.BasicTokenDto;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserDtoToken;
 
@@ -56,16 +59,16 @@ public class OTPServiceImpl implements OTPService {
 	OTPGenerateService oTPGenerateService;
 
 	@Override
-	public AuthNResponseDto sendOTP(MosipUserDto mosipUserDto, String channel) {
+	public AuthNResponseDto sendOTP(MosipUserDto mosipUserDto, String channel, String appId) {
 		AuthNResponseDto authNResponseDto = null;
 		OtpEmailSendResponseDto otpEmailSendResponseDto = null;
 		OtpSmsSendResponseDto otpSmsSendResponseDto = null;
 		OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUserDto, channel);
 		if (channel.equals(AuthConstant.EMAIL)) {
-			String message = getOtpEmailMessage(otpGenerateResponseDto);
+			String message = getOtpEmailMessage(otpGenerateResponseDto,appId);
 			otpEmailSendResponseDto = sendOtpByEmail(message, mosipUserDto.getMail());
 		} else {
-			String message = getOtpSmsMessage(otpGenerateResponseDto);
+			String message = getOtpSmsMessage(otpGenerateResponseDto,appId);
 			otpSmsSendResponseDto = sendOtpBySms(message, mosipUserDto.getMobile());
 		}
 		if (otpEmailSendResponseDto != null) {
@@ -79,32 +82,50 @@ public class OTPServiceImpl implements OTPService {
 		return authNResponseDto;
 	}
 
-	private String getOtpEmailMessage(OtpGenerateResponseDto otpGenerateResponseDto) {
+	private String getOtpEmailMessage(OtpGenerateResponseDto otpGenerateResponseDto, String appId) {
 		try {
-			final String url = mosipEnvironment.getMasterDataUrl() + mosipEnvironment.getMasterDataTemplateApi() + "eng"
+			String template = null;
+			final String url = mosipEnvironment.getMasterDataUrl() + mosipEnvironment.getMasterDataTemplateApi() + mosipEnvironment.getPrimaryLanguage()
 					+ mosipEnvironment.getMasterDataOtpTemplate();
 
 			OtpTemplateResponseDto otpTemplateResponseDto = restTemplate.getForObject(url,
 					OtpTemplateResponseDto.class);
-			OtpTemplateDto otpTemplateDto = otpTemplateResponseDto.getTemplates().get(0);
-			String template = otpTemplateDto.getFileText();
-			template.replace("$otp", otpGenerateResponseDto.getOtp());
+			List<OtpTemplateDto> otpTemplateList = otpTemplateResponseDto.getTemplates();
+			for(OtpTemplateDto otpTemplateDto : otpTemplateList)
+			{
+				if(otpTemplateDto.getId().equals(appId))
+				{
+				template = otpTemplateDto.getFileText();
+				
+				}
+			}
+			String otp = otpGenerateResponseDto.getOtp();
+			template = template.replace("$otp",otp);
 			return template;
 		} catch (Exception err) {
 			throw new RuntimeException(err);
 		}
 	}
 
-	private String getOtpSmsMessage(OtpGenerateResponseDto otpGenerateResponseDto) {
+	private String getOtpSmsMessage(OtpGenerateResponseDto otpGenerateResponseDto, String appId) {
 		try {
-			final String url = mosipEnvironment.getMasterDataUrl() + mosipEnvironment.getMasterDataTemplateApi() + "eng"
+			final String url = mosipEnvironment.getMasterDataUrl() + mosipEnvironment.getMasterDataTemplateApi() + mosipEnvironment.getPrimaryLanguage()
 					+ mosipEnvironment.getMasterDataOtpTemplate();
 
 			OtpTemplateResponseDto otpTemplateResponseDto = restTemplate.getForObject(url,
 					OtpTemplateResponseDto.class);
-			OtpTemplateDto otpTemplateDto = otpTemplateResponseDto.getTemplates().get(0);
-			String template = otpTemplateDto.getFileText();
-			template.replace("$otp", otpGenerateResponseDto.getOtp());
+			String template = null;
+			List<OtpTemplateDto> otpTemplateList = otpTemplateResponseDto.getTemplates();
+			for(OtpTemplateDto otpTemplateDto : otpTemplateList)
+			{
+				if(otpTemplateDto.getId().equals(appId))
+				{
+				template = otpTemplateDto.getFileText();
+				
+				}
+			}
+			String otp = otpGenerateResponseDto.getOtp();
+			template = template.replace("$otp",otp);
 			return template;
 		} catch (Exception err) {
 			throw new RuntimeException(err);
@@ -140,6 +161,7 @@ public class OTPServiceImpl implements OTPService {
 		String key = new OtpGenerateRequestDto(mosipUser).getKey();
 		MosipUserDtoToken mosipUserDtoToken = null;
 		String verified_token = null;
+		String refresh_token = null;
 
 		final String url = mosipEnvironment.getOtpManagerSvcUrl() + mosipEnvironment.getVerifyOtpUserApi();
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url).queryParam("key", key).queryParam("otp",
@@ -148,9 +170,17 @@ public class OTPServiceImpl implements OTPService {
 		OtpValidateResponseDto otpValidateResponseDto = restTemplate.getForObject(builder.toUriString(),
 				OtpValidateResponseDto.class);
 		if (otpValidateResponseDto != null) {
-			verified_token = tokenGenerator.generateForOtp(mosipUser, true);
-			mosipUserDtoToken = new MosipUserDtoToken(mosipUser, verified_token, otpValidateResponseDto.getMessage());
+			BasicTokenDto basicToken = tokenGenerator.basicGenerateOTPToken(mosipUser, true);
+			//verified_token = tokenGenerator.generateForOtp(mosipUser, true);
+			//refresh_token = tokenGenerator.refreshTokenForOTP(mosipUser);
+			mosipUserDtoToken = new MosipUserDtoToken(mosipUser, basicToken.getAuthToken(),basicToken.getRefreshToken(),basicToken.getExpiryTime(), otpValidateResponseDto.getMessage());
 		}
 		return mosipUserDtoToken;
+	}
+	
+	public static void main(String ar[])
+	{
+		String text = "added OTP $otp ";
+		System.out.println(text.replace("$otp", "12345"));
 	}
 }

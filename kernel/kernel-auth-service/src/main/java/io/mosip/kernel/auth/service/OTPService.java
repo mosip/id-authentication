@@ -15,7 +15,7 @@ import io.mosip.kernel.auth.entities.MosipUserWithToken;
 
 public interface OTPService {
 	
-	AuthNResponseDto sendOTP(MosipUserDto mosipUserDto,String channel);
+	AuthNResponseDto sendOTP(MosipUserDto mosipUserDto,String channel, String appId);
 
 	MosipUserDtoToken validateOTP(MosipUserDto mosipUser, String otp);
 

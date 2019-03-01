@@ -31,22 +31,22 @@ import io.mosip.kernel.auth.service.CustomTokenServices;
 @Repository
 public class CustomTokenServicesImpl implements CustomTokenServices {
 	
-	public static final String INSERT_TOKEN="insert into oauth_access_token(user_name,token,refresh_token,expiration_time) values(:userName,:token,:refreshToken,:expTime)";
+	public static final String INSERT_TOKEN="insert into iam.oauth_access_token(user_id,auth_token,refresh_token,expiration_time,cr_dtimes,is_active,cr_by) values(:userName,:token,:refreshToken,:expTime,NOW(),true,'Admin')";
 	
-	public static final String SELECT_TOKEN="select user_name,token,refresh_token,expiration_time from oauth_access_token where token like :token ";
+	public static final String SELECT_TOKEN="select user_id,auth_token,refresh_token,expiration_time from iam.oauth_access_token where auth_token like :token ";
 	
-	public static final String UPDATE_TOKEN="update oauth_access_token set user_name=:userName,token=:token,refresh_token=:refreshToken,expiration_time=:expTime "
-			+ " where user_name = :userName";
+	public static final String UPDATE_TOKEN="update iam.oauth_access_token set user_id=:userName,auth_token=:token,refresh_token=:refreshToken,expiration_time=:expTime "
+			+ " where user_id = :userName";
 	
-	public static final String CHECK_USER="select user_name from oauth_access_token where user_name like :userName";
+	public static final String CHECK_USER="select user_id from iam.oauth_access_token where user_id like :userName";
 	
-	public static final String UPDATE_NEW_TOKEN="update oauth_access_token set token=:token,expiration_time=:expTime where user_name like :userName ";
+	public static final String UPDATE_NEW_TOKEN="update iam.oauth_access_token set auth_token=:token,expiration_time=:expTime where user_id like :userName ";
 	
-	public static final String SELECT_TOKEN_NAME="select user_name,token,refresh_token,expiration_time from oauth_access_token where user_name like :userName ";
+	public static final String SELECT_TOKEN_NAME="select user_id,auth_token,refresh_token,expiration_time from iam.oauth_access_token where user_id like :userName ";
 	
-	public static final String DELETE_ACCESS_TOKEN="delete token from oauth_access_token where user_name like :userName";
+	public static final String DELETE_ACCESS_TOKEN="delete auth_token from iam.oauth_access_token where user_id like :userName";
 	
-	public static final String DELETE_REFRESH_TOKEN="delete refresh_token from oauth_access_token where user_name like :userName";
+	public static final String DELETE_REFRESH_TOKEN="delete from iam.oauth_access_token where user_id like :userName";
 	
 	private final String insertTokenSQL=INSERT_TOKEN;
 	
@@ -105,7 +105,7 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 						{
 						while(rs.next())
 						{
-							return new String(rs.getString("user_name"));
+							return new String(rs.getString("user_id"));
 						}
 						}
 						return null;
@@ -124,8 +124,8 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 				while(rs.next())
 				{
 					AuthToken authToken = new AuthToken();
-					authToken.setAccessToken(rs.getString("token"));
-					authToken.setUserId(rs.getString("user_name"));
+					authToken.setAccessToken(rs.getString("auth_token"));
+					authToken.setUserId(rs.getString("user_id"));
 					authToken.setExpirationTime(rs.getTimestamp("expiration_time").getTime());
 					authToken.setRefreshToken(rs.getString("refresh_token"));
 					return authToken;
@@ -149,8 +149,8 @@ public class CustomTokenServicesImpl implements CustomTokenServices {
 				while(rs.next())
 				{
 					AuthToken authToken = new AuthToken();
-					authToken.setAccessToken(rs.getString("token"));
-					authToken.setUserId(rs.getString("user_name"));
+					authToken.setAccessToken(rs.getString("auth_token"));
+					authToken.setUserId(rs.getString("user_id"));
 					authToken.setExpirationTime(rs.getTimestamp("expiration_time").getTime());
 					authToken.setRefreshToken(rs.getString("refresh_token"));
 					return authToken;

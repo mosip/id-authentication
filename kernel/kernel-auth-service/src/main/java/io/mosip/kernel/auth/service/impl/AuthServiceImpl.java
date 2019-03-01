@@ -120,7 +120,7 @@ public class AuthServiceImpl implements AuthService {
 		AuthNResponseDto authNResponseDto = null;
 		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(otpUser.getAppId())
 				.authenticateWithOtp(otpUser);
-		authNResponseDto = oTPService.sendOTP(mosipUser, otpUser.getOtpChannel());
+		authNResponseDto = oTPService.sendOTP(mosipUser, otpUser.getOtpChannel(),otpUser.getAppId());
 		authNResponseDto.setMessage(AuthConstant.OTP_SENT_MESSAGE);
 		return authNResponseDto;
 	}
@@ -145,6 +145,8 @@ public class AuthServiceImpl implements AuthService {
 		MosipUserDtoToken mosipToken = oTPService.validateOTP(mosipUser, userOtp.getOtp());
 		authNResponseDto.setMessage(AuthConstant.OTP_VALIDATION_MESSAGE);
 		authNResponseDto.setToken(mosipToken.getToken());
+		authNResponseDto.setRefreshToken(mosipToken.getRefreshToken());
+		authNResponseDto.setUserId(mosipToken.getMosipUserDto().getUserName());
 		return authNResponseDto;
 	}
 
@@ -189,10 +191,12 @@ public class AuthServiceImpl implements AuthService {
 	 */
 
 	@Override
-	public MosipUserDtoToken retryToken(String existingToken) {
+	public MosipUserDtoToken retryToken(String existingToken) throws Exception{
 		MosipUserDtoToken mosipUserDtoToken = null;
 		boolean checkRefreshToken = false;
 		AuthToken accessToken = customTokenServices.getTokenDetails(existingToken);
+		if(accessToken!=null)
+		{
 		if (accessToken.getRefreshToken() != null) {
 			checkRefreshToken = tokenValidator.validateExpiry(accessToken.getRefreshToken());
 		}
@@ -203,6 +207,11 @@ public class AuthServiceImpl implements AuthService {
 			mosipUserDtoToken = tokenValidator.validateToken(updatedAccessToken.getAccessToken());
 		} else {
 			throw new RuntimeException("Refresh Token Expired");
+		}
+		}
+		else
+		{
+			throw new RuntimeException("Token doesn't exist");
 		}
 		return mosipUserDtoToken;
 	}
@@ -219,7 +228,7 @@ public class AuthServiceImpl implements AuthService {
 	 */
 
 	@Override
-	public AuthNResponse invalidateToken(String token) {
+	public AuthNResponse invalidateToken(String token) throws Exception{
 		AuthNResponse authNResponse = null;
 		customTokenServices.revokeToken(token);
 		authNResponse = new AuthNResponse();
