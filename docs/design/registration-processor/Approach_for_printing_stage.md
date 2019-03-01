@@ -138,17 +138,20 @@ Text File Content:
 	
 	
 **Logical Architecture Diagram**
+
 ------------
 
 ![logical class diagram](_images/reg_logical_arch_print_diagram.png)
 
 
 **Class Diagram**
+
 ------------
 
 ![Printing_stage class diagram](_images/print_stage_class_diagram.png)
 
 **Sequence Diagram**
+
 ------------
 
 ![Printing_stage seq diagram](_images/print_stage_seq_diagram.png)
