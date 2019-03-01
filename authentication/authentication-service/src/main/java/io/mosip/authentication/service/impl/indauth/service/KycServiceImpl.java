@@ -30,6 +30,15 @@ import io.mosip.authentication.service.helper.IdInfoHelper;
 @Service
 public class KycServiceImpl implements KycService {
 
+	/** The Constant UIN_MASKING_CHARCOUNT. */
+	private static final String UIN_MASKING_CHARCOUNT = "uin.masking.charcount";
+
+	/** The Constant UIN_MASKING_REQUIRED. */
+	private static final String UIN_MASKING_REQUIRED = "uin.masking.required";
+
+	/** The Constant MOSIP_PRIMARY_LANG_CODE. */
+	private static final String MOSIP_PRIMARY_LANG_CODE = "mosip.primary.lang-code";
+
 	/** The Constant EKYC_TYPE_FULLKYC. */
 	private static final String EKYC_TYPE_FULLKYC = "ekyc.type.fullkyc";
 	
@@ -83,9 +92,9 @@ public class KycServiceImpl implements KycService {
 		}
 		if (Objects.nonNull(filteredIdentityInfo)) {
 			Object maskedUin = uin;
-			Boolean maskRequired = env.getProperty("uin.masking.required", Boolean.class);
-			Integer maskCount = env.getProperty("uin.masking.charcount", Integer.class);
-			if (null != maskRequired && maskRequired.booleanValue() && null != maskCount) {
+			Boolean maskRequired = env.getProperty(UIN_MASKING_REQUIRED, Boolean.class);
+			Integer maskCount = env.getProperty(UIN_MASKING_CHARCOUNT, Integer.class);
+			if (maskRequired.booleanValue()) {
 				maskedUin = MaskUtil.generateMaskValue(uin, maskCount);
 			}
 			filteredIdentityInfo.put("uin", maskedUin);
@@ -114,11 +123,11 @@ public class KycServiceImpl implements KycService {
 		if (Objects.nonNull(identityInfo)) {
 			Set<String> allowedLang = idInfoHelper.extractAllowedLang();
 			String secondayLangCode = allowedLang.contains(secLangCode) ? secLangCode : null;
-			String primaryLanguage = env.getProperty("mosip.primary.lang-code");
+			String primaryLanguage = env.getProperty(MOSIP_PRIMARY_LANG_CODE);
 			identityInfos = identityInfo.entrySet().stream()
 					.collect(Collectors.toMap(Map.Entry::getKey,
 							entry -> entry.getValue().stream()
-									.filter((IdentityInfoDTO info) -> info.getLanguage() == null
+									.filter((IdentityInfoDTO info) -> Objects.nonNull(info.getLanguage())
 											|| info.getLanguage().equalsIgnoreCase("null")
 											|| info.getLanguage().equalsIgnoreCase(primaryLanguage)
 											|| (secondayLangCode != null && info.getLanguage().equalsIgnoreCase(secondayLangCode)))
