@@ -31,9 +31,9 @@ package io.mosip.kernel.tests;
 	import com.fasterxml.jackson.databind.JsonMappingException;
 	import com.google.common.base.Verify;
 	import com.google.common.io.BaseEncoding;
-
-import io.mosip.dbaccess.KernelTables;
-import io.mosip.dbentity.PublicKeyResponse;
+	
+	import io.mosip.dbaccess.KernelTables;
+import io.mosip.dbdto.PublicKeyResponse;
 import io.mosip.service.ApplicationLibrary;
 	import io.mosip.service.AssertKernel;
 	import io.mosip.service.BaseTestCase;

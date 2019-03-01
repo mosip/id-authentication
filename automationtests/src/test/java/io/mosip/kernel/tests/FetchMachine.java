@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -30,23 +32,28 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
+import io.mosip.dbaccess.MasterDataGetRequests;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
 
-public class FetchMachineByIdLang extends BaseTestCase implements ITest {
-	FetchMachineByIdLang() {
+/**
+ * @author Ravi Kant
+ *
+ */
+public class FetchMachine extends BaseTestCase implements ITest {
+	FetchMachine() {
 		super();
 	}
 
-	private static Logger logger = Logger.getLogger(FetchMachineByIdLang.class);
+	private static Logger logger = Logger.getLogger(FetchMachine.class);
 	private static final String jiraID = "MOS-8222";
 	private static final String moduleName = "kernel";
-	private static final String apiName = "FetchMachineByIdLang";
-	private static final String requestJsonName = "FetchMachineByIdLangRequest";
-	private static final String outputJsonName = "FetchMachineByIdLangOutput";
+	private static final String apiName = "FetchMachine";
+	private static final String requestJsonName = "FetchMachineRequest";
+	private static final String outputJsonName = "FetchMachineOutput";
 	private static final String service_URI = "/masterdata/v1.0/machines";
 	private static final String service_lang_URI = "/masterdata/v1.0/machines/{langcode}";
 	private static final String service_id_lang_URI = "/masterdata/v1.0/machines/{id}/{langcode}";
@@ -117,7 +124,7 @@ public class FetchMachineByIdLang extends BaseTestCase implements ITest {
 		String fieldName = fieldNameArray[1];
 
 		JSONObject requestJson = new TestCaseReader().readRequestJson(moduleName, apiName, requestJsonName);
-		
+
 		for (Object key : requestJson.keySet()) {
 			if (fieldName.equals(key.toString()))
 				object.put(key.toString(), "invalid");
@@ -125,9 +132,8 @@ public class FetchMachineByIdLang extends BaseTestCase implements ITest {
 				object.put(key.toString(), "valid");
 		}
 
-		String configPath =  "src/test/resources/" + moduleName + "/" + apiName
-				+ "/" + testcaseName;
-		
+		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + testcaseName;
+
 		File folder = new File(configPath);
 		File[] listofFiles = folder.listFiles();
 		JSONObject objectData = null;
@@ -137,37 +143,91 @@ public class FetchMachineByIdLang extends BaseTestCase implements ITest {
 				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
 
-				if(objectData.containsKey("id"))
+				if (objectData.containsKey("id"))
 					response = applicationLibrary.getRequestPathPara(service_id_lang_URI, objectData);
-					else
+				else
 					response = applicationLibrary.getRequestPathPara(service_lang_URI, objectData);
 
-			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
+			} else if (listofFiles[k].getName().toLowerCase().contains("response")
+					&& !testcaseName.toLowerCase().contains("smoke")) {
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
+				logger.info("Expected Response:" + responseObject.toJSONString());
+			}
 		}
-		logger.info("Expected Response:" + responseObject.toJSONString());
-		
-		// add parameters to remove in response before comparison like time stamp
-		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
 
-		 objectData = new JSONObject(); 
-		if(response==null)
+		// sending request to get request without param
+		if (response == null) {
+			objectData = new JSONObject();
 			response = applicationLibrary.getRequestPathPara(service_URI, objectData);
-		
-		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
-		if (status) {
-			int statusCode = response.statusCode();
-			logger.info("Status Code is : " + statusCode);
+			objectData = null;
+		}
+		int statusCode = response.statusCode();
+		logger.info("Status Code is : " + statusCode);
 
-		
-			finalStatus = "Pass";
+		if (testcaseName.toLowerCase().contains("smoke")) {
+
+			String queryPart = "select count(*) from master.machine_master";
+
+			String query = queryPart;
+			if (objectData != null) {
+				if (objectData.containsKey("id"))
+					query = query + " where id = '" + objectData.get("id") + "' and lang_code = '"
+							+ objectData.get("langcode") + "'";
+				else
+					query = queryPart + " where lang_code = '" + objectData.get("langcode") + "'";
+			}
+			long obtainedObjectsCount = MasterDataGetRequests.validateDB(query);
+
+			// fetching json object from response
+			JSONObject responseJson = (JSONObject) new JSONParser().parse(response.asString());
+			// fetching json array of objects from response
+			JSONArray responseArrayFromGet = (JSONArray) responseJson.get("machines");
+			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + responseArrayFromGet.size());
+
+			// validating number of objects obtained form db and from get request
+			if (responseArrayFromGet.size() == obtainedObjectsCount) {
+
+				// list to validate existance of attributes in response objects
+				List<String> attributesToValidateExistance = new ArrayList();
+				attributesToValidateExistance.add("id");
+				attributesToValidateExistance.add("name");
+				attributesToValidateExistance.add("macAddress");
+				attributesToValidateExistance.add("ipAddress");
+				attributesToValidateExistance.add("serialNum");
+				attributesToValidateExistance.add("machineSpecId");
+				attributesToValidateExistance.add("isActive");
+
+				// key value of the attributes passed to fetch the data, should be same in all
+				// obtained objects
+				HashMap<String, String> passedAttributesToFetch = new HashMap();
+				if (objectData != null) {
+					if (objectData.containsKey("id")) {
+						passedAttributesToFetch.put("id", objectData.get("id").toString());
+						passedAttributesToFetch.put("langCode", objectData.get("langcode").toString());
+					}
+					passedAttributesToFetch.put("langCode", objectData.get("langcode").toString());
+				}
+
+				status = AssertKernel.validator(responseArrayFromGet, attributesToValidateExistance,
+						passedAttributesToFetch);
+			} else
+				status = false;
+
 		}
 
 		else {
-			finalStatus = "Fail";
+
+			// add parameters to remove in response before comparison like time stamp
+			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+			listOfElementToRemove.add("timestamp");
+			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		}
 
+		if (status) {
+			finalStatus = "Pass";
+		} else {
+			finalStatus = "Fail";
+		}
 		object.put("status", finalStatus);
 
 		arr.add(object);
@@ -206,8 +266,7 @@ public class FetchMachineByIdLang extends BaseTestCase implements ITest {
 	 */
 	@AfterClass
 	public void updateOutput() throws IOException {
-		String configPath =  "src/test/resources/" + moduleName + "/" + apiName
-				+ "/" + outputJsonName + ".json";
+		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + outputJsonName + ".json";
 		try (FileWriter file = new FileWriter(configPath)) {
 			file.write(arr.toString());
 			logger.info("Successfully updated Results to " + outputJsonName + ".json file.......................!!");

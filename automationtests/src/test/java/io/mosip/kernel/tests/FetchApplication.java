@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -28,13 +30,12 @@ import org.testng.internal.TestResult;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
+import io.mosip.dbaccess.MasterDataGetRequests;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.ReadFolder;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
 
@@ -42,14 +43,14 @@ import io.restassured.response.Response;
  * @author Ravi Kant
  *
  */
-public class FetchApplication extends BaseTestCase implements ITest{
-	
+public class FetchApplication extends BaseTestCase implements ITest {
+
 	FetchApplication() {
 		super();
 	}
 
 	private static Logger logger = Logger.getLogger(FetchApplication.class);
-	private static final String jiraID = "MOS-8271";
+	private static final String jiraID = "MOS-8888";
 	private static final String moduleName = "kernel";
 	private static final String apiName = "FetchApplication";
 	private static final String requestJsonName = "FetchApplicationRequest";
@@ -124,7 +125,7 @@ public class FetchApplication extends BaseTestCase implements ITest{
 		String fieldName = fieldNameArray[1];
 
 		JSONObject requestJson = new TestCaseReader().readRequestJson(moduleName, apiName, requestJsonName);
-		
+
 		for (Object key : requestJson.keySet()) {
 			if (fieldName.equals(key.toString()))
 				object.put(key.toString(), "invalid");
@@ -132,9 +133,8 @@ public class FetchApplication extends BaseTestCase implements ITest{
 				object.put(key.toString(), "valid");
 		}
 
-		String configPath =  "src/test/resources/" + moduleName + "/" + apiName
-				+ "/" + testcaseName;
-		
+		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + testcaseName;
+
 		File folder = new File(configPath);
 		File[] listofFiles = folder.listFiles();
 		JSONObject objectData = null;
@@ -144,34 +144,82 @@ public class FetchApplication extends BaseTestCase implements ITest{
 				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
 
-				if(objectData.containsKey("code"))
+				if (objectData.containsKey("code"))
 					response = applicationLibrary.getRequestPathPara(service_id_lang_URI, objectData);
-					else
+				else
 					response = applicationLibrary.getRequestPathPara(service_lang_URI, objectData);
 
-			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
+			} else if (listofFiles[k].getName().toLowerCase().contains("response")
+					&& !testcaseName.toLowerCase().contains("smoke")) {
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
+				logger.info("Expected Response:" + responseObject.toJSONString());
+			}
 		}
-		logger.info("Expected Response:" + responseObject.toJSONString());
-		
-		// add parameters to remove in response before comparison like time stamp
-		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
 
-		 objectData = new JSONObject(); 
-		if(response==null)
+		// sending request to get request without param
+		if (response == null) {
+			objectData = new JSONObject();
 			response = applicationLibrary.getRequestPathPara(service_URI, objectData);
-		
-		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
-		if (status) {
-			int statusCode = response.statusCode();
-			logger.info("Status Code is : " + statusCode);
+			objectData = null;
+		}
+		int statusCode = response.statusCode();
+		logger.info("Status Code is : " + statusCode);
 
-		
-			finalStatus = "Pass";
+		if (testcaseName.toLowerCase().contains("smoke")) {
+
+			String queryPart = "select count(*) from master.appl_form_type";
+
+			String query = queryPart;
+			if (objectData != null) {
+				if (objectData.containsKey("code"))
+					query = query + " where code = '" + objectData.get("code") + "' and lang_code = '"
+							+ objectData.get("langcode") + "'";
+				else
+					query = queryPart + " where lang_code = '" + objectData.get("langcode") + "'";
+			}
+			long obtainedObjectsCount = MasterDataGetRequests.validateDB(query);
+
+			// fetching json object from response
+			JSONObject responseJson = (JSONObject) new JSONParser().parse(response.asString());
+			// fetching json array of objects from response
+			JSONArray responseArrayFromGet = (JSONArray) responseJson.get("applicationtypes");
+			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + responseArrayFromGet.size());
+			
+			// validating number of objects obtained form db and from get request
+			if (responseArrayFromGet.size() == obtainedObjectsCount) {
+
+				// list to validate existance of attributes in response objects
+				List<String> attributesToValidateExistance = new ArrayList();
+				attributesToValidateExistance.add("code");
+				attributesToValidateExistance.add("description");
+				attributesToValidateExistance.add("isActive");
+
+				// key value of the attributes passed to fetch the data, should be same in all obtained objects
+				HashMap<String, String> passedAttributesToFetch = new HashMap();
+				if (objectData != null) {
+					if (objectData.containsKey("code")) {
+						passedAttributesToFetch.put("code", objectData.get("code").toString());
+						passedAttributesToFetch.put("langCode", objectData.get("langcode").toString());
+					}
+					passedAttributesToFetch.put("langCode", objectData.get("langcode").toString());
+				}
+
+				status = AssertKernel.validator(responseArrayFromGet, attributesToValidateExistance, passedAttributesToFetch);
+			} else
+				status = false;
+
 		}
 
 		else {
+			// add parameters to remove in response before comparison like time stamp
+			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+			listOfElementToRemove.add("timestamp");
+			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
+		}
+
+		if (status) {
+			finalStatus = "Pass";
+		} else {
 			finalStatus = "Fail";
 		}
 
@@ -213,173 +261,10 @@ public class FetchApplication extends BaseTestCase implements ITest{
 	 */
 	@AfterClass
 	public void updateOutput() throws IOException {
-		String configPath =  "src/test/resources/" + moduleName + "/" + apiName
-				+ "/" + outputJsonName + ".json";
+		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + outputJsonName + ".json";
 		try (FileWriter file = new FileWriter(configPath)) {
 			file.write(arr.toString());
 			logger.info("Successfully updated Results to " + outputJsonName + ".json file.......................!!");
 		}
 	}
 }
-
-	
-	
-	
-	
-/*	
-	FetchApplication() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-	//Defining Logger variables
-	private static Logger logger = Logger.getLogger(FetchApplication.class);
-
-	protected static String testCaseName = "";
-	static SoftAssert softAssert=new SoftAssert();
-	
-	boolean status = false;
-	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
-	ObjectMapper mapper = new ObjectMapper();
-	static Response response = null;
-	static JSONObject responseObject = null;
-	private static AssertKernel fetchApplicationAssert = new AssertKernel();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static final String fetchApplicationCode_Lang_URI = "/masterdata/v1.0/applicationtypes/{code}/{langcode}";
-	private static final String fetchApplicationLang_URI = "/masterdata/v1.0/applicationtypes/{langcode}";
-	private static final String fetchApplication_URI = "/masterdata/v1.0/applicationtypes";
-
-	
-	 * Data Prividers to read the input json files from the folders
-	 
-	
-	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
-		JSONObject object = (JSONObject) testdata[2];
-		testCaseName = object.get("testCaseName").toString();
-	} 
-	@DataProvider(name = "fetchApplication")
-	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
-		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch (testParam) {
-		case "smoke":
-			return ReadFolder.readFolders("kernel\\FetchApplication", "fetchApplicationOutput.json","fetchApplicationRequest.json","smoke");
-			
-		case "regression":	
-			return ReadFolder.readFolders("kernel\\FetchApplication", "fetchApplicationOutput.json","fetchApplicationRequest.json","regression");
-		default:
-			return ReadFolder.readFolders("kernel\\FetchApplication", "fetchApplicationOutput.json","fetchApplicationRequest.json","smokeAndRegression");
-		}
-		
-	}
-	
-	
-	
-	 * 
-	 * Given input Json as per defined folders When POST request is sent to /masterdata/v1.0/devicespecifications
-	 * Then Response is expected as 200 and other responses as per inputs passed in the request
-	 
-	@SuppressWarnings("unchecked")
-	@Test(dataProvider = "fetchApplication")
-	public void fetchApplication(String fileName, Integer i, JSONObject object)
-			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		String filepath=System.getProperty("user.dir") + "\\src\\test\\resources\\"+fileName+"\\fetchApplicationRequest.json";
-		JSONObject requestKeys= (JSONObject) new JSONParser().parse(new FileReader(filepath));
-	
-		String configPath = System.getProperty("user.dir") + "\\src\\test\\resources\\" + fileName + "\\";
-		File folder = new File(configPath);
-		File[] listOfFolders = folder.listFiles();
-		for (int j = 0; j < listOfFolders.length; j++) {
-			if (listOfFolders[j].isDirectory()) {
-				if(listOfFolders[j].getName().equals(object.get("testCaseName").toString())) {
-					logger.info("name of test Case------------------------>"+listOfFolders[j].getName());
-				File[] listofFiles = listOfFolders[j].listFiles();
-				JSONObject objectData = null;
-				for (int k = 0; k < listofFiles.length; k++) {
-
-					if (listofFiles[k].getName().toLowerCase().contains("request")) {
-						 objectData = (JSONObject) new JSONParser()
-								.parse(new FileReader(listofFiles[k].getPath()));
-
-						logger.info("Json Request Is : " +objectData.toJSONString());
-						if(objectData.containsKey("code"))
-						response = applicationLibrary.GetRequestPathPara(fetchApplicationCode_Lang_URI, objectData);
-						else
-						response = applicationLibrary.GetRequestPathPara(fetchApplicationLang_URI, objectData);
-					} else if (listofFiles[k].getName().toLowerCase().contains("response")) {
-						responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-
-					}
-
-				}
-				
-				ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-				listOfElementToRemove.add("timestamp");
-				objectData = new JSONObject(); 
-				if(response==null)
-					response = applicationLibrary.GetRequestPathPara(fetchApplication_URI, objectData);
-			status = fetchApplicationAssert.assertKernel(response, responseObject,listOfElementToRemove);
-			
-				if (status) {
-					
-					
-							int statusCode=response.statusCode();
-							logger.info("Status Code is : " +statusCode);
-						
-							finalStatus ="Pass";
-						}
-					
-				 else {
-					finalStatus ="Fail";
-					break;
-				}
-				response=null;
-			}
-			} else {
-				continue;
-			}
-		}
-		object.put("status", finalStatus);
-		arr.add(object);
-		boolean setFinalStatus=false;
-		if(finalStatus.equals("Fail")) {
-			setFinalStatus=false;
-		  logger.debug(response);
-		}
-		else if(finalStatus.equals("Pass"))
-			setFinalStatus=true;
-		Verify.verify(setFinalStatus);
-		softAssert.assertAll();
-	}
-	@Override
-	public String getTestName() {
-		return this.testCaseName;
-	} 
-	 
-		@AfterMethod(alwaysRun = true)
-		public void setResultTestName(ITestResult result) {
-			
-	try {
-				Field method = TestResult.class.getDeclaredField("m_method");
-				method.setAccessible(true);
-				method.set(result, result.getMethod().clone());
-				BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
-				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
-				f.setAccessible(true);
-				f.set(baseTestMethod, FetchApplication.testCaseName);
-			} catch (Exception e) {
-				Reporter.log("Exception : " + e.getMessage());
-			}
-		}
-
-	@AfterClass
-	public void updateOutput() throws IOException {
-		String configPath = System.getProperty("user.dir") + "\\src\\test\\resources\\kernel\\FetchApplication\\fetchApplicationOutput.json";
-		try (FileWriter file = new FileWriter(configPath)) {
-			file.write(arr.toString());
-			logger.info("Successfully updated Results to fetchApplicationOutput.json file.......................!!");
-		}
-	}
-}
-
-*/

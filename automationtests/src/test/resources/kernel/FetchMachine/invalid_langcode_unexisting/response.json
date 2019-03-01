@@ -1,0 +1,10 @@
+{
+  "timestamp": 1549366126512,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-MSD-030",
+      "errorMessage": "Machine not Found"
+    }
+  ]
+}
