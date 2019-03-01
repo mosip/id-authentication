@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
@@ -23,8 +25,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
-import io.mosip.authentication.service.impl.indauth.service.bio.IrisMatchingStrategy;;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;;
 
 /**
  * 
@@ -92,8 +93,8 @@ public enum BioMatchType implements MatchType {
 	// Multi-fingerPrint
 	//FIXME get Bio ID info of all fingers and return the map
 	FGRMIN_MULTI(IdaIdMapping.FINGERPRINT, setOf(MultiFingerprintMatchingStrategy.PARTIAL),
-			
-			CbeffDocType.FMR, null, null, null),
+			CbeffDocType.FMR, null, null, identityDto -> getIdValuesMap(identityDto,FGRMIN_LEFT_THUMB,FGRMIN_LEFT_INDEX,FGRMIN_LEFT_MIDDLE,FGRMIN_LEFT_RING,FGRMIN_LEFT_LITTLE,
+					                                                            FGRMIN_RIGHT_THUMB,FGRMIN_RIGHT_INDEX,FGRMIN_RIGHT_MIDDLE,FGRMIN_RIGHT_RING,FGRMIN_RIGHT_LITTLE)),
 
 	RIGHT_IRIS(IdaIdMapping.RIGHTEYE, setOf(IrisMatchingStrategy.PARTIAL),
 			CbeffDocType.IRIS, SingleAnySubtypeType.RIGHT,null),
@@ -102,7 +103,7 @@ public enum BioMatchType implements MatchType {
 			CbeffDocType.IRIS,SingleAnySubtypeType.LEFT, null),
 	
 	//FIXME get Bio ID info of all eyes and return the map
-	IRIS_COMP(IdaIdMapping.IRIS, setOf(CompositeIrisMatchingStrategy.PARTIAL), CbeffDocType.IRIS, null, null),
+	IRIS_COMP(IdaIdMapping.IRIS, setOf(CompositeIrisMatchingStrategy.PARTIAL), CbeffDocType.IRIS, null, null,identityDTO->getIdValuesMap(identityDTO,LEFT_IRIS,RIGHT_IRIS)),
 	
 	FACE(IdaIdMapping.FACE, Collections.emptySet(), CbeffDocType.FACE, null, null);
 
@@ -126,8 +127,16 @@ public enum BioMatchType implements MatchType {
 		this.identityInfoFunction = (IdentityDTO identityDTO) -> {
 			Optional<String> valueOpt = identityDTO.getBiometrics()
 						.stream()
-						.filter(bioId -> bioId.getType().equalsIgnoreCase(cbeffDocType.getType().name()) 
-								&& bioId.getSubType().equalsIgnoreCase(subType.name()))
+						.filter(bioId -> {
+							if(bioId.getType().equalsIgnoreCase(CbeffDocType.FMR.getType().name())) {
+								return  bioId.getSubType().equalsIgnoreCase(subType.name()+"_"+singleSubtype.name());
+							} else if(bioId.getType().equalsIgnoreCase(CbeffDocType.IRIS.getType().name())) {
+								return bioId.getSubType().equalsIgnoreCase(subType.name());
+							} else if(bioId.getType().equalsIgnoreCase(CbeffDocType.FACE.getType().name())) {
+								return true;
+							}
+							return false;
+						})
 						.map(BioIdentityInfoDTO::getValue)
 						.findAny();
 			if(valueOpt.isPresent()) {
@@ -207,6 +216,18 @@ public enum BioMatchType implements MatchType {
 
 	public CbeffDocType getCbeffDocType() {
 		return cbeffDocType;
+	}
+	
+	public static Map<String, List<IdentityInfoDTO>> getIdValuesMap(IdentityDTO identityDto, BioMatchType... bioMatchTypes) {
+	  return Stream.of(bioMatchTypes)
+			  		.flatMap(bioMatchType -> 
+			  						bioMatchType.getIdentityInfoFunction()
+			  									.apply(identityDto)
+			  									.entrySet()
+			  									.stream())
+			  		.collect(Collectors.toMap(Entry::getKey, Entry::getValue, 
+			  										(list1, list2) 
+			  											-> Stream.concat(list1.stream(), list1.stream()).collect(Collectors.toList())));	
 	}
 	
 	
