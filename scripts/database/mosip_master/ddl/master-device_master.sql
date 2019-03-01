@@ -7,7 +7,7 @@
  
 -- create schema if  master schema for Master reference Module is not exists
 create schema if not exists master
-;
+; 
  
 -- table section -------------------------------------------------
 create table master.device_master (
@@ -36,14 +36,10 @@ create table master.device_master (
 ;
 
 -- keys section -------------------------------------------------
- alter table master.device_master add constraint pk_devicem_id primary key (id)
+ alter table master.device_master add constraint pk_devicem_id primary key (id, lang_code)
  ;
 
 -- indexes section -------------------------------------------------
 -- create index idx_devicem_<colX> on master.device_master (colX )
 -- ;
-
--- comments section ------------------------------------------------- 
-comment on table master.device_master is 'Table to store master list of device like fingerprint scanner, iris scanner, scanner...etc used at registration centers for individual registration'
-;
 

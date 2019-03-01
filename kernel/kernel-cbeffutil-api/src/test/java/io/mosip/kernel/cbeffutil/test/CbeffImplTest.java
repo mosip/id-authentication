@@ -162,7 +162,7 @@ public class CbeffImplTest {
 
 	}
 	
-	@Test
+	//@Test
 	public void testCreateXMLFromLocal() throws Exception {
 		byte[] createXml = cbeffUtilImpl.createXML(createList,readXSD("cbeff"));
 		createXMLFile(createXml, "createCbeffLocal");

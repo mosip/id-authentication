@@ -1,6 +1,7 @@
 run ddl/reg-app_authentication_method.sql
 run ddl/reg-app_detail.sql
 run ddl/reg-app_role_priority.sql
+run ddl/reg-applicant_valid_document.sql
 run ddl/reg-audit_log_control.sql
 run ddl/reg-authentication_method.sql
 run ddl/reg-biometric_attribute.sql
@@ -13,6 +14,7 @@ run ddl/reg-doc_category.sql
 run ddl/reg-doc_type.sql
 run ddl/reg-gender.sql
 run ddl/reg-id_type.sql
+run ddl/reg-individual_type.sql
 run ddl/reg-key_store_DRBY.sql
 run ddl/reg-language.sql
 run ddl/reg-location.sql

@@ -37,13 +37,9 @@ create schema if not exists reg
 ;
 
 -- keys section ---------------------------------------------------------------------------
-alter table reg.machine_spec add constraint pk_mspec_code primary key (id)
+alter table reg.machine_spec add constraint pk_mspec_code primary key (id, lang_code)
  ;
 
 -- indexes section ------------------------------------------------------------------------
 -- create index idx_mspec_<col> on reg.machine_spec (col)
 -- ;
-
--- comments section -----------------------------------------------------------------------
-comment on table reg.machine_spec is 'reg machine_spec table'
-;

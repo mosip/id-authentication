@@ -16,6 +16,8 @@ create table reg.reg_center_user_machine (
 	usr_id  character varying (36) not null,	-- reg.user_detail.id
 	machine_id character varying (10) not null,	-- reg.machine_master.id
 
+	lang_code 	character varying (3) not null ,		-- master.language.code	
+	
 	is_active 	boolean not null,
 	cr_by 		character varying (32) not null,
 	cr_dtimes 	timestamp  not null,
