@@ -14,5 +14,7 @@ import lombok.NoArgsConstructor;
 public class MosipUserDtoToken {
  private MosipUserDto mosipUserDto;
  private String token;
+ private String refreshToken;
+ private long expTime;
  private String message;
 }

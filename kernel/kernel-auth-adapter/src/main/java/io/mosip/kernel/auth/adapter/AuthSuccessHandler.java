@@ -2,6 +2,8 @@ package io.mosip.kernel.auth.adapter;
 
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 public class AuthSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) {
-        System.out.println("Successfully Authenticated");
+        AuthUserDetails authUser = (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();  
     }
 }

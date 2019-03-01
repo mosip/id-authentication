@@ -14,10 +14,6 @@ public interface CustomTokenServices {
 	
 	void StoreToken(AuthToken token);
 	
-	void refreshtoken(String token);
-	
-	void invalidateToken(String token);
-	
 	AuthToken getTokenDetails(String token);
 
 	AuthToken getUpdatedAccessToken(String token, TimeToken newAccessToken, String userName);
