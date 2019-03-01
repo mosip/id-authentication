@@ -64,10 +64,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
 
-	/** The primary language. */
-	@Value("${primary.language}")
-	private String langCode;
-
 	/** The core audit request builder. */
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
@@ -231,7 +227,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			}
 		}
 
-		return isPdfAddedtoQueue && isTextFileAddedToQueue ? true : false;
+		return isPdfAddedtoQueue && isTextFileAddedToQueue ? Boolean.TRUE : Boolean.FALSE;
 	}
 
 	/**

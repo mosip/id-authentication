@@ -86,7 +86,7 @@ public class PrintServiceConfig {
 	 * @return the prints the service
 	 */
 	@Bean
-	public PrintService<Map<String,byte[]>> getPrintService() {
+	public PrintService<Map<String, byte[]>> getPrintService() {
 		return new PrintServiceImpl();
 	}
 
@@ -99,24 +99,38 @@ public class PrintServiceConfig {
 	public UinCardGenerator<ByteArrayOutputStream> getUinCardGeneratorImpl() {
 		return new UinCardGeneratorImpl();
 	}
-	
+
+	/**
+	 * Gets the PDF generator.
+	 *
+	 * @return the PDF generator
+	 */
 	@Bean
 	@Primary
 	public PDFGenerator getPDFGenerator() {
 		return new PDFGeneratorImpl();
 	}
 
+	/**
+	 * Gets the qr code generator.
+	 *
+	 * @return the qr code generator
+	 */
 	@Bean
 	@Primary
-	public QrCodeGenerator<QrVersion> getQrCodeGenerator(){
+	public QrCodeGenerator<QrVersion> getQrCodeGenerator() {
 		return new QrcodeGeneratorImpl();
 	}
-	
+
+	/**
+	 * Gets the cbeff util.
+	 *
+	 * @return the cbeff util
+	 */
 	@Bean
 	@Primary
 	public CbeffUtil getCbeffUtil() {
 		return new CbeffImpl();
 	}
-
 
 }

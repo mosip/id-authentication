@@ -26,6 +26,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BDBInfoType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
@@ -110,7 +111,9 @@ public class PrintServiceImplTest {
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() throws Exception {
-		System.setProperty("primary.language", "eng");
+		ReflectionTestUtils.setField(printService, "langCode", "eng");
+		ReflectionTestUtils.setField(printService, "primaryLang", "eng");
+		ReflectionTestUtils.setField(printService, "secondaryLang", "ara");
 		
 		List<String> uinList = new ArrayList<>();
 		uinList.add("4238135072");

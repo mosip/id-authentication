@@ -87,11 +87,13 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	/** The Constant VALUE. */
 	private static final String VALUE = "value";
 
-	/** The Constant ENG. */
-	private static final String ENG = "eng";
+	/** The primary lang. */
+	@Value("${mosip.primary-language}")
+	private String primaryLang;
 
-	/** The Constant ARA. */
-	private static final String ARA = "ara";
+	/** The secondary lang. */
+	@Value("${mosip.secondary-language}")
+	private String secondaryLang;
 
 	/** The Constant UIN_CARD_TEMPLATE. */
 	private static final String UIN_CARD_TEMPLATE = "RPR_UIN_CARD_TEMPLATE";
@@ -119,7 +121,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	private String clusterManagerUrl;
 
 	/** The primary language. */
-	@Value("${primary.language}")
+	@Value("${mosip.primary-language}")
 	private String langCode;
 
 	/** The core audit request builder. */
@@ -355,9 +357,9 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		textMap.put(UINCardConstant.CITY_ENG, attributes.get(UINCardConstant.CITY_ENG));
 		textMap.put(UINCardConstant.CITY_ARA, attributes.get(UINCardConstant.CITY_ARA));
 		textMap.put(UINCardConstant.POSTALCODE, attributes.get(UINCardConstant.POSTALCODE));
-		
+
 		ObjectMapper mapper = new ObjectMapper();
-		
+
 		File jsonText = new File(attributes.get(UINCardConstant.UIN).toString() + ".txt");
 		mapper.writeValue(jsonText, textMap);
 
@@ -430,9 +432,8 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 * @param bIRTypeList
 	 *            the b IR type list
 	 * @return true, if successful
-	 * @throws io.mosip.kernel.core.exception.IOException
-	 * @throws Exception
-	 *             the exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	private boolean setPhoto(boolean isPhotoSet, List<BIRType> bIRTypeList)
 			throws io.mosip.kernel.core.exception.IOException {
@@ -508,23 +509,23 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 *            the new atrributes
 	 */
 	private void setAtrributes(NotificationTemplate template) {
-		attributes.put(UINCardConstant.NAME_ENG, getParameter(template.getFirstName(), ENG));
-		attributes.put(UINCardConstant.NAME_ARA, getParameter(template.getFirstName(), ARA));
-		attributes.put(UINCardConstant.GENDER_ENG, getParameter(template.getGender(), ENG));
-		attributes.put(UINCardConstant.GENDER_ARA, getParameter(template.getGender(), ARA));
+		attributes.put(UINCardConstant.NAME_ENG, getParameter(template.getFirstName(), primaryLang));
+		attributes.put(UINCardConstant.NAME_ARA, getParameter(template.getFirstName(), secondaryLang));
+		attributes.put(UINCardConstant.GENDER_ENG, getParameter(template.getGender(), primaryLang));
+		attributes.put(UINCardConstant.GENDER_ARA, getParameter(template.getGender(), secondaryLang));
 		attributes.put(UINCardConstant.DATEOFBIRTH, template.getDateOfBirth());
-		attributes.put(UINCardConstant.ADDRESSLINE1_ENG, getParameter(template.getAddressLine1(), ENG));
-		attributes.put(UINCardConstant.ADDRESSLINE1_ARA, getParameter(template.getAddressLine1(), ARA));
-		attributes.put(UINCardConstant.ADDRESSLINE2_ENG, getParameter(template.getAddressLine2(), ENG));
-		attributes.put(UINCardConstant.ADDRESSLINE2_ARA, getParameter(template.getAddressLine2(), ARA));
-		attributes.put(UINCardConstant.ADDRESSLINE3_ENG, getParameter(template.getAddressLine3(), ENG));
-		attributes.put(UINCardConstant.ADDRESSLINE3_ARA, getParameter(template.getAddressLine3(), ARA));
-		attributes.put(UINCardConstant.REGION_ENG, getParameter(template.getRegion(), ENG));
-		attributes.put(UINCardConstant.REGION_ARA, getParameter(template.getRegion(), ARA));
-		attributes.put(UINCardConstant.PROVINCE_ENG, getParameter(template.getProvince(), ENG));
-		attributes.put(UINCardConstant.PROVINCE_ARA, getParameter(template.getProvince(), ARA));
-		attributes.put(UINCardConstant.CITY_ENG, getParameter(template.getCity(), ENG));
-		attributes.put(UINCardConstant.CITY_ARA, getParameter(template.getCity(), ARA));
+		attributes.put(UINCardConstant.ADDRESSLINE1_ENG, getParameter(template.getAddressLine1(), primaryLang));
+		attributes.put(UINCardConstant.ADDRESSLINE1_ARA, getParameter(template.getAddressLine1(), secondaryLang));
+		attributes.put(UINCardConstant.ADDRESSLINE2_ENG, getParameter(template.getAddressLine2(), primaryLang));
+		attributes.put(UINCardConstant.ADDRESSLINE2_ARA, getParameter(template.getAddressLine2(), secondaryLang));
+		attributes.put(UINCardConstant.ADDRESSLINE3_ENG, getParameter(template.getAddressLine3(), primaryLang));
+		attributes.put(UINCardConstant.ADDRESSLINE3_ARA, getParameter(template.getAddressLine3(), secondaryLang));
+		attributes.put(UINCardConstant.REGION_ENG, getParameter(template.getRegion(), primaryLang));
+		attributes.put(UINCardConstant.REGION_ARA, getParameter(template.getRegion(), secondaryLang));
+		attributes.put(UINCardConstant.PROVINCE_ENG, getParameter(template.getProvince(), primaryLang));
+		attributes.put(UINCardConstant.PROVINCE_ARA, getParameter(template.getProvince(), secondaryLang));
+		attributes.put(UINCardConstant.CITY_ENG, getParameter(template.getCity(), primaryLang));
+		attributes.put(UINCardConstant.CITY_ARA, getParameter(template.getCity(), secondaryLang));
 		attributes.put(UINCardConstant.POSTALCODE, template.getPostalCode());
 		attributes.put(UINCardConstant.PHONENUMBER, template.getPhoneNumber());
 		attributes.put(UINCardConstant.EMAILID, template.getEmailID());
@@ -540,16 +541,16 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 *
 	 * @param jsonValues
 	 *            the json values
-	 * @param langCode
-	 *            the lang code
+	 * @param language
+	 *            the language
 	 * @return the parameter
 	 */
-	private String getParameter(JsonValue[] jsonValues, String langCode) {
+	private String getParameter(JsonValue[] jsonValues, String language) {
 		String parameter = null;
 		if (jsonValues != null) {
 			for (int count = 0; count < jsonValues.length; count++) {
 				String lang = jsonValues[count].getLanguage();
-				if (langCode.contains(lang)) {
+				if (language.contains(lang)) {
 					parameter = jsonValues[count].getValue();
 					break;
 				}
