@@ -91,7 +91,7 @@ public class MessageNotificationServiceImpl
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(MessageNotificationServiceImpl.class);
 
 	/** The primary language. */
-	@Value("${primary.language}")
+	@Value("${mosip.primary-language}")
 	private String langCode;
 
 	/** The env. */

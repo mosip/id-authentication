@@ -88,7 +88,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	private static final String VALUE = "value";
 
 	/** The Constant ENG. */
-	private static final String ENG = "fre";
+	private static final String ENG = "eng";
 
 	/** The Constant ARA. */
 	private static final String ARA = "ara";
