@@ -32,9 +32,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
+import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
-import io.mosip.authentication.core.dto.indauth.DeviceInfo;
-import io.mosip.authentication.core.dto.indauth.IdType;
+import io.mosip.authentication.core.dto.indauth.BioType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
@@ -101,18 +101,16 @@ public class InternalAuthRequestValidatorTest {
 	@Test
 	public void testinValidInternalAuthRequestValidator() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("234567890123");
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().plus(2, ChronoUnit.DAYS).atOffset(offset)
+		authRequestDTO.setRequestTime(Instant.now().plus(2, ChronoUnit.DAYS).atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setPartnerID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
 //		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setDemo(true);
 		authTypeDTO.setOtp(true);
 		authTypeDTO.setBio(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
@@ -128,7 +126,7 @@ public class InternalAuthRequestValidatorTest {
 		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
@@ -148,15 +146,12 @@ public class InternalAuthRequestValidatorTest {
 	@Test
 	public void testinValidInternalAuthRequestValidator2() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("234567890123");
 		authRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-//		authRequestDTO.setReqHmac("zdskfkdsnj");
+		authRequestDTO.setPartnerID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setDemo(true);
 		authTypeDTO.setOtp(true);
 		authTypeDTO.setBio(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
@@ -172,7 +167,7 @@ public class InternalAuthRequestValidatorTest {
 		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
@@ -191,18 +186,15 @@ public class InternalAuthRequestValidatorTest {
 	@Test
 	public void testValidInternalAuthRequestValidator2() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("234567890123");
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-//		authRequestDTO.setReqHmac("zdskfkdsnj");
+		authRequestDTO.setPartnerID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setDemo(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
 		idInfoDTO.setValue("John");
@@ -216,7 +208,7 @@ public class InternalAuthRequestValidatorTest {
 		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
@@ -226,18 +218,15 @@ public class InternalAuthRequestValidatorTest {
 	@Test
 	public void testinValiddata() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("234567890123");
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-//		authRequestDTO.setReqHmac("zdskfkdsnj");
+		authRequestDTO.setPartnerID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setDemo(true);
 		authTypeDTO.setOtp(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
@@ -252,7 +241,7 @@ public class InternalAuthRequestValidatorTest {
 		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
@@ -262,30 +251,19 @@ public class InternalAuthRequestValidatorTest {
 	@Test
 	public void testValidInternalAuthRequestValidator() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("234567890123");
 		ZoneOffset offset = ZoneOffset.MAX;
-		// authRequestDTO.setReqTime("2018-11-23T17:00:57.086+0530");
-		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		// authRequestDTO.setVer("1.1");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-//		authRequestDTO.setReqHmac("zdskfkdsnj");
+		authRequestDTO.setPartnerID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(false);
+		authTypeDTO.setDemo(false);
 		authTypeDTO.setBio(true);
 		BioInfo bioInfo = new BioInfo();
-		DeviceInfo dInfo = new DeviceInfo();
-		bioInfo.setBioType("fgrImg");
-		dInfo.setModel("Mantra");
-		dInfo.setDeviceId("1234");
-		dInfo.setMake("mantra");
-		bioInfo.setDeviceInfo(dInfo);
 		List<BioInfo> lb = new ArrayList<>();
 		lb.add(bioInfo);
-		authRequestDTO.setBioInfo(lb);
+		authRequestDTO.setBioMetadata(lb);
 
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage("ara");
@@ -297,43 +275,64 @@ public class InternalAuthRequestValidatorTest {
 		 */
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
-		// idInfoList.add(idInfoDTO1);
-		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setName(idInfoList);
-		idDTO.setFace(idInfoList);
-		idDTO.setLeftEye(idInfoList);
-		idDTO.setRightIndex(idInfoList);
-		RequestDTO reqDTO = new RequestDTO();
-		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
-		authRequestDTO.setRequest(reqDTO);
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setBio(true);
+		authRequestDTO.setRequestedAuth(authType);
+
+		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
+		fingerValue.setValue("finger");
+		fingerValue.setSubType("Thumb");
+		fingerValue.setType("finger");
+		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
+		irisValue.setValue("iris img");
+		irisValue.setSubType("left");
+		irisValue.setType("iris");
+		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
+		faceValue.setValue("face img");
+		faceValue.setSubType("Thumb");
+		faceValue.setType("face");
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(fingerValue);
+		fingerIdentityInfoDtoList.add(irisValue);
+		fingerIdentityInfoDtoList.add(faceValue);
+		
+
+		IdentityDTO identitydto = new IdentityDTO();
+		identitydto.setBiometrics(fingerIdentityInfoDtoList);
+
+		RequestDTO requestDTO = new RequestDTO();
+		requestDTO.setIdentity(identitydto);
+		BioInfo bioinfo = new BioInfo();
+		bioinfo.setBioType(BioType.FGRIMG.getType());
+		bioinfo.setDeviceId("123456789");
+		bioinfo.setDeviceProviderID("1234567890");
+
+		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
+		bioInfoList.add(bioinfo);
+		authRequestDTO.setBioMetadata(bioInfoList);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
+		authRequestDTO.setRequest(requestDTO);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
+		System.err.println(errors);
 		assertFalse(errors.hasErrors());
 	}
 
 	@Test
 	public void testValidInternalAuthRequestValidatorEmptyID() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setReqTime(Instant.now().toString());
+		authRequestDTO.setRequestTime(Instant.now().toString());
 		authRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-//		authRequestDTO.setReqHmac("zdskfkdsnj");
+		authRequestDTO.setPartnerID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
-
-		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
-		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setName(idInfoList);
-		idDTO.setFace(idInfoList);
-		idDTO.setLeftEye(idInfoList);
-		idDTO.setRightIndex(idInfoList);
+		IdentityDTO identitydto = new IdentityDTO();
+		identitydto.setUin("");
+		authTypeDTO.setDemo(true);
 		RequestDTO reqDTO = new RequestDTO();
-		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
+		reqDTO.setIdentity(identitydto);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
@@ -343,17 +342,14 @@ public class InternalAuthRequestValidatorTest {
 	@Test
 	public void testInvalidInternalAuthRequestValidator() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("234567890123");
 
-		authRequestDTO.setReqTime("2018-11-23T17:00:57.086+0530");
+		authRequestDTO.setRequestTime("2018-11-23T17:00:57.086+0530");
 		authRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-//		authRequestDTO.setReqHmac("zdskfkdsnj");
+		authRequestDTO.setPartnerID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setDemo(true);
 
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage("EN");
@@ -368,7 +364,7 @@ public class InternalAuthRequestValidatorTest {
 		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
@@ -378,17 +374,14 @@ public class InternalAuthRequestValidatorTest {
 	@Test
 	public void testInvalidDate() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("234567890123");
 
-		authRequestDTO.setReqTime(Instant.now().toString());
+		authRequestDTO.setRequestTime(Instant.now().toString());
 		authRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-//		authRequestDTO.setReqHmac("zdskfkdsnj");
+		authRequestDTO.setPartnerID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setDemo(true);
 		// authTypeDTO.setFace(true);
 		// authTypeDTO.setFingerPrint(true);
 		// authTypeDTO.setIris(true);
@@ -405,9 +398,8 @@ public class InternalAuthRequestValidatorTest {
 		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
-		// authRequestDTO.setAuthType(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
-		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
@@ -418,13 +410,12 @@ public class InternalAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
-		authRequestDTO.setTspID("1234567890");
-		authRequestDTO.setTxnID("1234567890");
-		authRequestDTO.setReqTime("a2018-11-11");
+		authRequestDTO.setPartnerID("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
+		authRequestDTO.setRequestTime("a2018-11-11");
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("123456789012");
 		internalAuthRequestValidator.validateDate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
 	}
 
 }
