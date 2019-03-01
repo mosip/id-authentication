@@ -34,8 +34,6 @@ public class IdRepoServiceImpl implements IdRepoService {
 														IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(),
 				                                        IdRepoErrorConstants.INVALID_UIN.getErrorCode()
 			                                        );
-
-
 	private static final String STATUS_KEY = "status";
 	@Autowired
 	private RestHelper restHelper;
