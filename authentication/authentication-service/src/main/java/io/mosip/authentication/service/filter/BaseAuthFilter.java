@@ -11,6 +11,7 @@ import java.security.cert.X509Certificate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import javax.servlet.FilterConfig;
@@ -282,7 +283,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	 */
 	protected static Object decode(String stringToDecode) throws IdAuthenticationAppException {
 		try {
-			if (stringToDecode != null) {
+			if (Objects.nonNull(stringToDecode)) {
 				return CryptoUtil.decodeBase64(stringToDecode);
 			} else {
 				return stringToDecode;
@@ -304,7 +305,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	 */
 	protected static String encode(String stringToEncode) throws IdAuthenticationAppException {
 		try {
-			if (stringToEncode != null) {
+			if (Objects.nonNull(stringToEncode)) {
 				return CryptoUtil.encodeBase64String(stringToEncode.getBytes());
 			} else {
 				return stringToEncode;
