@@ -78,7 +78,7 @@ public class SyncDataServiceTest {
 
 	@Autowired
 	private SyncUserDetailsService syncUserDetailsService;
-	
+
 	@MockBean
 	MachineRepository machineRespository;
 
@@ -164,11 +164,11 @@ public class SyncDataServiceTest {
 				LocalDateTime.parse("2018-01-01T01:01:01")));
 		masterDataResponseDto.setMachineDetails(machines);
 		machineSpecifications = new ArrayList<>();
-		machineSpecifications.add(new MachineSpecificationDto("1", "lenovo Thinkpad", "Lenovo", "T480", "1", "1.0.1",
-				"Thinkpad"));
+		machineSpecifications
+				.add(new MachineSpecificationDto("1", "lenovo Thinkpad", "Lenovo", "T480", "1", "1.0.1", "Thinkpad"));
 		masterDataResponseDto.setMachineSpecification(machineSpecifications);
 		machineTypes = new ArrayList<>();
-		machineTypes.add(new MachineTypeDto("1","Laptop", "Laptop"));
+		machineTypes.add(new MachineTypeDto("1", "Laptop", "Laptop"));
 		masterDataResponseDto.setMachineType(machineTypes);
 	}
 
@@ -193,7 +193,7 @@ public class SyncDataServiceTest {
 		configProfile = env.getProperty("spring.profiles.active");
 		configAppName = env.getProperty("spring.application.name");
 		uriBuilder = new StringBuilder();
-		uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
+		uriBuilder.append("/" + configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
 				.append(configLabel + "/");
 
 		builder = new StringBuilder();
@@ -203,15 +203,15 @@ public class SyncDataServiceTest {
 
 	@Test(expected = SyncDataServiceException.class)
 	public void syncDataFailure() throws InterruptedException, ExecutionException {
-		Machine machine= new Machine();
+		Machine machine = new Machine();
 		machine.setId("10001");
 		machine.setLangCode("eng");
-		List<Machine> machines= new ArrayList<>();
+		List<Machine> machines = new ArrayList<>();
 		machines.add(machine);
 		when(machineRespository.findByMachineIdAndIsActive(Mockito.anyString())).thenReturn(machines);
-		when(masterDataServiceHelper.getMachines(Mockito.anyString(),Mockito.any(), Mockito.any()))
+		when(masterDataServiceHelper.getMachines(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(SyncDataServiceException.class);
-		masterDataService.syncData("1001",null, null);
+		masterDataService.syncData("1001", null, null);
 
 	}
 
@@ -232,7 +232,7 @@ public class SyncDataServiceTest {
 		// Assert.assertEquals(120, jsonObject.get("fingerprintQualityThreshold"));
 	}
 
-	//@Test(expected = SyncDataServiceException.class)
+	@Test(expected = SyncDataServiceException.class)
 	public void registrationConfigsyncFailure() {
 
 		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
@@ -240,7 +240,7 @@ public class SyncDataServiceTest {
 		syncConfigDetailsService.getRegistrationCenterConfigDetails("1");
 	}
 
-	//@Test(expected = SyncDataServiceException.class)
+	@Test(expected = SyncDataServiceException.class)
 	public void globalConfigsyncFailure() {
 
 		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
@@ -248,7 +248,7 @@ public class SyncDataServiceTest {
 		syncConfigDetailsService.getGlobalConfigDetails();
 	}
 
-	//@Test(expected = SyncDataServiceException.class)
+	@Test(expected = SyncDataServiceException.class)
 	public void globalConfigsyncFileNameNullFailure() {
 
 		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
@@ -314,7 +314,7 @@ public class SyncDataServiceTest {
 
 	@Test
 	public void getAllUserDetailNoDetail() {
-		//String response = "{ \"userDetails\": [] }";
+		// String response = "{ \"userDetails\": [] }";
 		String regId = "10044";
 		RegistrationCenterUserResponseDto registrationCenterUserResponseDto = new RegistrationCenterUserResponseDto();
 		List<RegistrationCenterUserDto> registrationCenterUserDtos = new ArrayList<>();
@@ -368,12 +368,13 @@ public class SyncDataServiceTest {
 		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
 
 		mockRestServer.expect(MockRestRequestMatchers.requestTo(builder.buildAndExpand(uriParams).toString()))
-				.andRespond(withSuccess().body("{\"publicKey\": \"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw2OmxIpq_BL9iYbL2nb845hNM86I0ujhC4CCkuOrVjHjw1zoOOSN2bPR-hitfZBGxgxnANZ4h63EJgCBXZRr0vaUJHbjhDp_hn0ETu1b2yqeJEFsIIm_SCg4no-EKVB77u59TFAZgDlkAbE21AJAUzC_B00QLlRB47VkLUwLL0kE9pctcmblJIr3iFKMBfGMBcIbs795RsLH-FsYFWQCcNqg4ku6LPlJZ2sOIDGPgHzx7ruH5t0RRCoUVmwqTQsdCqF7618m_W8N10S54aItUQaERqGs6gRj56f9-6tt-yyxFwm4qxv5UWyN9aGBxSEV-lNta074NTYpG-6qCKr3AwIDAQAB\", \"issuedAt\": \"2019-09-09T09:00:00\", \"expiryAt\": \"2020-09-08T09:00:00\"}"));
-        PublicKeyResponse<String> publicKeyResp= new PublicKeyResponse<>();
-        publicKeyResp.setExpiryAt(LocalDateTime.parse("2020-09-08T09:00:00"));
-        publicKeyResp.setIssuedAt(LocalDateTime.parse("2019-09-09T09:00:00"));
-        publicKeyResp.setPublicKey("sdfsfsdfsadfdsfsdfasf");
-        
+				.andRespond(withSuccess().body(
+						"{\"publicKey\": \"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw2OmxIpq_BL9iYbL2nb845hNM86I0ujhC4CCkuOrVjHjw1zoOOSN2bPR-hitfZBGxgxnANZ4h63EJgCBXZRr0vaUJHbjhDp_hn0ETu1b2yqeJEFsIIm_SCg4no-EKVB77u59TFAZgDlkAbE21AJAUzC_B00QLlRB47VkLUwLL0kE9pctcmblJIr3iFKMBfGMBcIbs795RsLH-FsYFWQCcNqg4ku6LPlJZ2sOIDGPgHzx7ruH5t0RRCoUVmwqTQsdCqF7618m_W8N10S54aItUQaERqGs6gRj56f9-6tt-yyxFwm4qxv5UWyN9aGBxSEV-lNta074NTYpG-6qCKr3AwIDAQAB\", \"issuedAt\": \"2019-09-09T09:00:00\", \"expiryAt\": \"2020-09-08T09:00:00\"}"));
+		PublicKeyResponse<String> publicKeyResp = new PublicKeyResponse<>();
+		publicKeyResp.setExpiryAt(LocalDateTime.parse("2020-09-08T09:00:00"));
+		publicKeyResp.setIssuedAt(LocalDateTime.parse("2019-09-09T09:00:00"));
+		publicKeyResp.setPublicKey("sdfsfsdfsadfdsfsdfasf");
+
 		when(objectMapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenReturn(publicKeyResp);
 		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", Optional.of("referenceId"));
 	}
@@ -429,7 +430,8 @@ public class SyncDataServiceTest {
 		MockRestServiceServer mockRestServer = MockRestServiceServer.bindTo(restTemplate).build();
 
 		mockRestServer.expect(MockRestRequestMatchers.requestTo(builder.buildAndExpand(uriParams).toString()))
-				.andRespond(withSuccess().body("{\"publicKey\": \"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw2OmxIpq_BL9iYbL2nb845hNM86I0ujhC4CCkuOrVjHjw1zoOOSN2bPR-hitfZBGxgxnANZ4h63EJgCBXZRr0vaUJHbjhDp_hn0ETu1b2yqeJEFsIIm_SCg4no-EKVB77u59TFAZgDlkAbE21AJAUzC_B00QLlRB47VkLUwLL0kE9pctcmblJIr3iFKMBfGMBcIbs795RsLH-FsYFWQCcNqg4ku6LPlJZ2sOIDGPgHzx7ruH5t0RRCoUVmwqTQsdCqF7618m_W8N10S54aItUQaERqGs6gRj56f9-6tt-yyxFwm4qxv5UWyN9aGBxSEV-lNta074NTYpG-6qCKr3AwIDAQAB\", \"issuedAt\": \"2019-09-09T09:00:00\", \"expiryAt\": \"2020-09-08T09:00:00\"}"));
+				.andRespond(withSuccess().body(
+						"{\"publicKey\": \"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw2OmxIpq_BL9iYbL2nb845hNM86I0ujhC4CCkuOrVjHjw1zoOOSN2bPR-hitfZBGxgxnANZ4h63EJgCBXZRr0vaUJHbjhDp_hn0ETu1b2yqeJEFsIIm_SCg4no-EKVB77u59TFAZgDlkAbE21AJAUzC_B00QLlRB47VkLUwLL0kE9pctcmblJIr3iFKMBfGMBcIbs795RsLH-FsYFWQCcNqg4ku6LPlJZ2sOIDGPgHzx7ruH5t0RRCoUVmwqTQsdCqF7618m_W8N10S54aItUQaERqGs6gRj56f9-6tt-yyxFwm4qxv5UWyN9aGBxSEV-lNta074NTYpG-6qCKr3AwIDAQAB\", \"issuedAt\": \"2019-09-09T09:00:00\", \"expiryAt\": \"2020-09-08T09:00:00\"}"));
 		when(objectMapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenThrow(new IOException());
 
 		syncConfigDetailsService.getPublicKey("REGISTRATION", "2019-09-09T09:00:00.000Z", Optional.of("referenceId"));
