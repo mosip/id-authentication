@@ -3,6 +3,7 @@ package io.mosip.authentication.service.integration;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -37,6 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
@@ -151,8 +153,10 @@ public class KeyManagerTest {
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IDDataValidationException());
 		keyManager.requestData(reqMap, mapper);
-	}
+	} 
 
+	
+	
 	/**
 	 * Request invalid data test 2.
 	 *
@@ -170,6 +174,26 @@ public class KeyManagerTest {
 		Mockito.when(restHelper.requestSync(Mockito.any()))
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.INVALID_REST_SERVICE));
 		keyManager.requestData(reqMap, mapper);
+	}
+
+	@Test(expected = IdAuthenticationAppException.class)
+	public void TestTspIdisNullorEmpty() throws IdAuthenticationAppException {
+		Map<String, Object> requestBody = new HashMap<>();
+		keyManager.requestData(requestBody, mapper);
+	}
+	
+	@Test(expected = IdAuthenticationAppException.class)
+	public void TestTspIdisNull() throws IdAuthenticationAppException {
+		Map<String, Object> requestBody = new HashMap<>();
+		requestBody.put("tspID", null);
+		keyManager.requestData(requestBody, mapper);
+	}
+	
+	@Test(expected = IdAuthenticationAppException.class)
+	public void TestTspIdisEmpty() throws IdAuthenticationAppException {
+		Map<String, Object> requestBody = new HashMap<>();
+		requestBody.put("tspID", "");
+		keyManager.requestData(requestBody, mapper);
 	}
 
 	// ====================================================================

@@ -87,6 +87,14 @@ public class IdTemplateManagerTest {
 
 	@InjectMocks
 	private ObjectMapper mapper;
+	@InjectMocks
+	private TemplateManagerBuilderImpl templateManagerBuilder;
+
+	/** UTF type. */
+	private static final String ENCODE_TYPE = "UTF-8";
+
+	/** Class path. */
+	private static final String CLASSPATH = "classpath";
 
 	private final String value = "OTP for UIN  $uin is $otp and is valid for $validTime minutes. (Generated at $datetimestamp)";
 
@@ -98,6 +106,8 @@ public class IdTemplateManagerTest {
 		ReflectionTestUtils.setField(masterDataManager, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(restFactory, "env", environment);
+		ReflectionTestUtils.setField(idTemplateManager, "templateManagerBuilder", templateManagerBuilder);
+		templateManagerBuilder.encodingType(ENCODE_TYPE).enableCache(false).resourceLoader(CLASSPATH).build();
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -106,6 +116,11 @@ public class IdTemplateManagerTest {
 		mockRestCalls();
 		Map<String, Object> valueMap = new HashMap<>();
 		idTemplateManager.applyTemplate("otp-sms-template", valueMap);
+	}
+
+	@Test
+	public void Testpostconstruct() {
+		idTemplateManager.idTemplateManagerPostConstruct();
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -126,6 +141,16 @@ public class IdTemplateManagerTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment));
 		mockenv.setProperty("notification.language.support", "primary");
+		ReflectionTestUtils.setField(idTemplateManager, "environment", mockenv);
+		mockRestCalls();
+		idTemplateManager.fetchTemplate("test");
+	}
+	
+	@Test
+	public void TestInvalidLangtype() throws IdAuthenticationBusinessException, RestServiceException {
+		MockEnvironment mockenv = new MockEnvironment();
+		mockenv.merge(((AbstractEnvironment) environment));
+		mockenv.setProperty("notification.language.support", "invalid");
 		ReflectionTestUtils.setField(idTemplateManager, "environment", mockenv);
 		mockRestCalls();
 		idTemplateManager.fetchTemplate("test");
