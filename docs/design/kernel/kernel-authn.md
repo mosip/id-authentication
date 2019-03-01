@@ -17,7 +17,7 @@ The authentication and authorization in the MOSIP platform is handled in the a c
 
 - Auth token contains the information about the authenticated user and the meta data such as the expiration time, subject, issuer etc., 
 
-- Refresh token is long lived. The refresh token is used to get a new Access token. 
+- Refresh token is long lived. The refresh token is used to get a new Auth token. 
 
 - An additional layers in the Auth service will ensure about the forced logout scenario. Essentially, all the service calls to the Auth Service will go through this creamy layer, where we have a proxy user datastore which will maintain the additional information about the validitiy of the tokens. 
 
