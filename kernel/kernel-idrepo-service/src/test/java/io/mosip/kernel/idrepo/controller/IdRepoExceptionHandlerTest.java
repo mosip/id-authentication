@@ -76,8 +76,8 @@ public class IdRepoExceptionHandlerTest {
 		IdResponseDTO response = (IdResponseDTO) handleAllExceptions.getBody();
 		List<ErrorDTO> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
-			assertEquals(IdRepoErrorConstants.UNKNOWN_ERROR.getErrorCode(), e.getErrCode());
-			assertEquals(IdRepoErrorConstants.UNKNOWN_ERROR.getErrorMessage(), e.getErrMessage());
+			assertEquals(IdRepoErrorConstants.UNKNOWN_ERROR.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.UNKNOWN_ERROR.getErrorMessage(), e.getErrorMessage());
 		});
 	}
 
@@ -93,8 +93,8 @@ public class IdRepoExceptionHandlerTest {
 		IdResponseDTO response = (IdResponseDTO) handleExceptionInternal.getBody();
 		List<ErrorDTO> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
-			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(), e.getErrCode());
-			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage(), e.getErrMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage(), e.getErrorMessage());
 		});
 	}
 
@@ -108,8 +108,8 @@ public class IdRepoExceptionHandlerTest {
 		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
 		List<ErrorDTO> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrCode());
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrorMessage());
 		});
 	}
 
@@ -125,8 +125,8 @@ public class IdRepoExceptionHandlerTest {
 		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
 		List<ErrorDTO> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrCode());
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrorMessage());
 		});
 	}
 	
@@ -140,8 +140,8 @@ public class IdRepoExceptionHandlerTest {
 		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
 		List<ErrorDTO> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrCode());
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrorMessage());
 		});
 	}
 
@@ -154,8 +154,8 @@ public class IdRepoExceptionHandlerTest {
 		IdResponseDTO response = (IdResponseDTO) handleIdAppUncheckedException.getBody();
 		List<ErrorDTO> errorCode = response.getErrors();
 		errorCode.forEach(e -> {
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrCode());
-			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrorMessage());
 		});
 	}
 

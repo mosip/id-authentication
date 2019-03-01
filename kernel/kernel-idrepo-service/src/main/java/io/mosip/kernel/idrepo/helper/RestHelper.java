@@ -113,18 +113,18 @@ public class RestHelper {
 			}
 		} catch (WebClientResponseException e) {
 			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-					THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + ExceptionUtils.getStackTrace(e)
-							+ " \n Response Body : \n" + e.getResponseBodyAsString());
+					THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + e.getMessage()
+							+ " \n Response Body : \n" + ExceptionUtils.getStackTrace(e));
 			throw handleStatusError(e, request.getResponseType());
 		} catch (RuntimeException e) {
 			if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
 				mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						THROWING_REST_SERVICE_EXCEPTION + "- CONNECTION_TIMED_OUT - \n "
-								+ ExceptionUtils.getStackTrace(e));
+								+ e.getMessage());
 				throw new RestServiceException(IdRepoErrorConstants.CONNECTION_TIMED_OUT, e);
 			} else {
 				mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
-						THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
+						THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e.getMessage());
 				throw new RestServiceException(IdRepoErrorConstants.UNKNOWN_ERROR, e);
 			}
 		} finally {
@@ -154,7 +154,7 @@ public class RestHelper {
 			return () -> sendRequest.block();
 		} catch (RestServiceException e) {
 			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
-					"Throwing RestServiceException - UNKNOWN_ERROR - " + e);
+					"Throwing RestServiceException - UNKNOWN_ERROR - " + e.getMessage());
 			return () -> new RestServiceException(IdRepoErrorConstants.UNKNOWN_ERROR, e);
 		}
 	}
@@ -170,7 +170,7 @@ public class RestHelper {
 			return SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
 		} catch (SSLException e) {
 			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
-					"Throwing RestServiceException - UNKNOWN_ERROR - " + e);
+					"Throwing RestServiceException - UNKNOWN_ERROR - " + e.getMessage());
 			throw new RestServiceException(IdRepoErrorConstants.UNKNOWN_ERROR, e);
 		}
 	}
@@ -238,7 +238,7 @@ public class RestHelper {
 			}
 		} catch (IOException e) {
 			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
-					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
+					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e.getMessage());
 			throw new RestServiceException(IdRepoErrorConstants.UNKNOWN_ERROR, e);
 		}
 	}
@@ -268,6 +268,8 @@ public class RestHelper {
 						mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
 			}
 		} catch (IOException ex) {
+			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+					ex.getMessage());
 			return new RestServiceException(IdRepoErrorConstants.UNKNOWN_ERROR, ex);
 		}
 
