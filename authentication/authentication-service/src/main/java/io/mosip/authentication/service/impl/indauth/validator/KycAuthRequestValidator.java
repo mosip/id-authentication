@@ -43,7 +43,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	private static Logger mosipLogger = IdaLogger.getLogger(KycAuthRequestValidator.class);
 
 	/** The Constant AuthRequest. */
-	private static final String AUTH_REQUEST = "authRequest";
+	private static final String AUTH_REQUEST = "requestedAuth";
 
 	/** The Constant INVALID_INPUT_PARAMETER. */
 	private static final String INVALID_INPUT_PARAMETER = "INVALID_INPUT_PARAMETER - ";
@@ -58,19 +58,15 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	private static final String SESSION_ID = "SESSION_ID";
 
 	/** The Constant Consent Request. */
-	private static final String CONSENT_REQ = "consentReq";
+	private static final String KYCMETADATA = "kycMetadata";
 
 	/** The Constant Access Level. */
 	private static final String ACCESS_LEVEL = "ekyc.mua.accesslevel.";
 
-	/** The Constant Invalid Auth Request. */
-	private static final String INVALID_AUTH_REQUEST = "Invalid Auth Request";
 
 	/** The Constant eKycAuthType. */
-	private static final String AUTH_TYPE = "eKycAuthType";
+	private static final String REQUESTEDAUTH = "requestedAuth";
 
-	/** The Constant Missing Input Parameter. */
-	private static final String MISSING_INPUT_PARAMETER = "Missing Input Parameter";
 
 	/** The env. */
 	@Autowired
@@ -145,7 +141,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param kycAuthRequestDTO the kyc auth request DTO
 	 */
 	private void validateAuthType(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
-		String values = env.getProperty(EKYC_ALLOWED_AUTH_TYPE);
+		String values = environment.getProperty(EKYC_ALLOWED_AUTH_TYPE);
 		List<String> allowedAuthTypesList = Arrays.stream(values.split(",")).collect(Collectors.toList());
 		Map<Boolean, List<EkycAuthType>> authTypes = Stream.of(EkycAuthType.values())
 											.collect(Collectors.partitioningBy(ekycAuthType -> allowedAuthTypesList.contains(ekycAuthType.getType())));
@@ -162,9 +158,9 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 														.test(kycAuthRequestDTO.getRequestedAuth()));
 		boolean isValidAuthtype = noNotAllowedAuthTypeEnabled && anyAllowedAuthTypeEnabled;
 		if (!isValidAuthtype) {
-			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_TYPE);
-			errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_EKYC_AUTHTYPE.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.INVALID_EKYC_AUTHTYPE.getErrorMessage(), AUTH_TYPE));
+			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + REQUESTEDAUTH);
+			errors.rejectValue(REQUESTEDAUTH, IdAuthenticationErrorConstants.INVALID_EKYC_AUTHTYPE.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_EKYC_AUTHTYPE.getErrorMessage(), REQUESTEDAUTH));
 		}
 
 	}
@@ -177,8 +173,8 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	 */
 	private void validateConsentReq(KycAuthRequestDTO kycAuthRequestDTO, Errors errors) {
 		if (!kycAuthRequestDTO.getKycMetadata().isConsentRequired()) {
-			errors.rejectValue(CONSENT_REQ, IdAuthenticationErrorConstants.INVALID_EKYC_CONCENT.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.INVALID_EKYC_CONCENT.getErrorMessage(), CONSENT_REQ));
+			errors.rejectValue(KYCMETADATA, IdAuthenticationErrorConstants.INVALID_EKYC_CONCENT.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_EKYC_CONCENT.getErrorMessage(), KYCMETADATA));
 		}
 	}
 

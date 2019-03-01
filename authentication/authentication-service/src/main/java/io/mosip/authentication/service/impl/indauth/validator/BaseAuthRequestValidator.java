@@ -139,7 +139,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	private static final Pattern STATIC_PIN_PATTERN = Pattern.compile("^[0-9]{6}");
 	
 	/** The Constant AUTH_TYPE. */
-	private static final String AUTH_TYPE = "authType";
+	private static final String AUTH_TYPE = "requestedAuth";
 
 	/** email Validator */
 	@Autowired
@@ -624,8 +624,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			}
 		}
 
-		checkAvaliableAuthInfo(authRequest, errors, authTypes, availableAuthTypeInfos);
-
 		if (!hasMatch) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "Missing IdentityInfoDTO");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
@@ -636,120 +634,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		}
 	}
 
-	/**
-	 * Check avaliable auth info.
-	 *
-	 * @param authRequest            the auth request
-	 * @param errors                 the errors
-	 * @param authTypes              the auth types
-	 * @param availableAuthTypeInfos the available auth type infos
-	 */
-	private void checkAvaliableAuthInfo(AuthRequestDTO authRequest, Errors errors, AuthType[] authTypes,
-			Set<String> availableAuthTypeInfos) {
-		Set<String> allowedLang = extractAllowedLang();
-		for (AuthType authType : authTypes) {
-			if (authType.isAuthTypeEnabled(authRequest, idInfoHelper)) {
-				addMissingAuthTypeError(errors, availableAuthTypeInfos, authType);
-
-				for (String lang : allowedLang) {
-					checkAvailableMatchingStrategy(authRequest, errors, authType, lang);
-					checkAvailableMatchingThreshold(authRequest, errors, authType, lang);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Check available matching threshold.
-	 *
-	 * @param authRequest the auth request
-	 * @param errors      the errors
-	 * @param authType    the auth type
-	 * @param lang
-	 */
-	private void checkAvailableMatchingThreshold(AuthRequestDTO authRequest, Errors errors, AuthType authType,
-			String lang) {
-		Optional<Integer> matchingThreshold = authType.getMatchingThreshold(authRequest, lang, env);
-		if (matchingThreshold.isPresent()) {
-			Integer integer = matchingThreshold.get();
-			if (integer <= 0 || integer >= 100) {
-				if (authType.equals(DemoAuthType.FULL_ADDRESS)) {
-					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
-							"Full Address Matching Strategy is Missing");
-					errors.rejectValue(REQUEST,
-							IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_FAD_PRI.getErrorCode(),
-							new Object[] { PERSONALIDENTITY },
-							IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_FAD_PRI.getErrorMessage());
-				} else if (authType.equals(DemoAuthType.PERSONAL_IDENTITY)) {
-					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
-							"Personal Identity Matching Threshold is Invalid");
-					errors.rejectValue(REQUEST,
-							IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_PI_PRI.getErrorCode(),
-							new Object[] { PERSONALIDENTITY },
-							IdAuthenticationErrorConstants.INVALID_MATCHINGTHRESHOLD_PI_PRI.getErrorMessage());
-				}
-			}
-		}
-	}
-
-	/**
-	 * Check available matching strategy.
-	 *
-	 * @param authRequest the auth request
-	 * @param errors      the errors
-	 * @param authType    the auth type
-	 * @param lang
-	 */
-	private void checkAvailableMatchingStrategy(AuthRequestDTO authRequest, Errors errors, AuthType authType,
-			String lang) {
-		Optional<String> matchingStrategy = authType.getMatchingStrategy(authRequest, lang);
-		if (matchingStrategy.isPresent()) {
-			if (!MatchingStrategyType.getMatchStrategyType(matchingStrategy.get()).isPresent()) {
-				if (authType.equals(DemoAuthType.FULL_ADDRESS)) {
-					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
-							"fullAddress Matching Strategy is Missing");
-					errors.rejectValue(REQUEST,
-							IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_FAD_PRI.getErrorCode(),
-							new Object[] { FULLADDRESS },
-							IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_FAD_PRI.getErrorMessage());
-				} else if (authType.equals(DemoAuthType.PERSONAL_IDENTITY)) {
-					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
-							"personalIdentity Matching Strategy is Missing");
-					errors.rejectValue(REQUEST,
-							IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_PI_PRI.getErrorCode(),
-							new Object[] { PERSONALIDENTITY },
-							IdAuthenticationErrorConstants.INVALID_MATCHINGSTRATEGY_PI_PRI.getErrorMessage());
-				}
-			}
-		}
-	}
-
-	/**
-	 * Check available auth type.
-	 *
-	 * @param errors                 the errors
-	 * @param availableAuthTypeInfos the available auth type infos
-	 * @param authType               the auth type
-	 */
-	private void addMissingAuthTypeError(Errors errors, Set<String> availableAuthTypeInfos, AuthType authType) {
-		if (!availableAuthTypeInfos.contains(authType.getType())) {
-			if ((authType.equals(DemoAuthType.FULL_ADDRESS))) {
-				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
-						"Full Address is Missing");
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_FAD.getErrorCode(),
-						new Object[] { FULLADDRESS }, IdAuthenticationErrorConstants.MISSING_FAD.getErrorMessage());
-			} else if ((authType.equals(DemoAuthType.ADDRESS))) {
-				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER, "Address is Missing");
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AD.getErrorCode(),
-						new Object[] { ADDRESS }, IdAuthenticationErrorConstants.MISSING_AD.getErrorMessage());
-			} else if ((authType.equals(DemoAuthType.PERSONAL_IDENTITY))) {
-				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
-						"personalIdentity is Missing");
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_PI.getErrorCode(),
-						new Object[] { PERSONALIDENTITY }, IdAuthenticationErrorConstants.MISSING_PI.getErrorMessage());
-			}
-		}
-	}
 
 	/**
 	 * Check identity info value.

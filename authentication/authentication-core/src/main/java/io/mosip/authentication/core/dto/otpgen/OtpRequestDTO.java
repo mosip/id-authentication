@@ -14,13 +14,13 @@ public class OtpRequestDTO {
 
 	/** Variable to hold id */
 	private String id;
-	
+
 	/** Variable to hold version */
 	private String version;
-	
+
 	/** Variable to hold policyID */
 	private String policyID;
-	
+
 	/** Variable to hold partnerID */
 	private String partnerID;
 
@@ -29,10 +29,7 @@ public class OtpRequestDTO {
 
 	/** Variable to hold Transaction ID */
 	private String transactionID;
-	
-	/** Variable to hold OtpIdentityDTO */
-	private OtpIdentityDTO identity;
-	
-	private ChannelDTO channel;
+
+	private RequestInfoDTO request;
 
 }
