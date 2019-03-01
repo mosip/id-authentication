@@ -34,6 +34,7 @@ import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.booking.service.BookingService;
 import io.mosip.preregistration.booking.service.util.BookingServiceUtil;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
+import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
 import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
@@ -242,6 +243,25 @@ response.setResTime(serviceUtil.getCurrentResponseTime());
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject1.toString());
 
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void deleteBookingTest() throws Exception {
+		String preId = "3";
+		MainListResponseDTO<DeleteBookingDTO> response = new MainListResponseDTO<>();
+		List<DeleteBookingDTO> DeleteList = new ArrayList<DeleteBookingDTO>();
+		DeleteBookingDTO deleteDto = new DeleteBookingDTO();
+
+		deleteDto.setPreRegistrationId("3");
+		deleteDto.setDeletedBy("9527832358");
+		DeleteList.add(deleteDto);
+		response.setResponse(DeleteList);
+		Mockito.when(service.deleteBooking(preId)).thenReturn(response);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/deleteBooking")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", preId);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 

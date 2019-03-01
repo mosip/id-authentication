@@ -311,9 +311,10 @@ public class DemographicService {
 				
 				
 				if (demographicEntity != null) {
+String hashString = new String(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson()));
+					
 					if (demographicEntity.getDemogDetailHash()
-							.equals(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson()).toString())) {
-
+							.equals(hashString)) {
 					statusdto.setPreRegistartionId(demographicEntity.getPreRegistrationId());
 					statusdto.setStatusCode(demographicEntity.getStatusCode());
 					statusList.add(statusdto);
@@ -421,8 +422,10 @@ public class DemographicService {
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
 				if (demographicEntity != null) {
+					String hashString = new String(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson()));
+					
 					if (demographicEntity.getDemogDetailHash()
-							.equals(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson()).toString())) {
+							.equals(hashString)) {
 
 					DemographicResponseDTO createDto = serviceUtil.setterForCreateDTO(demographicEntity);
 					createDtos.add(createDto);
