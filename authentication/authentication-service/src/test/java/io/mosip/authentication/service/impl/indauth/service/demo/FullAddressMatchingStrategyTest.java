@@ -301,4 +301,12 @@ public class FullAddressMatchingStrategyTest {
 		int value = matchFunction.match(5, "arabic", matchProperties);
 		assertEquals(0, value);
 	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestThrowError() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
+		int value = matchFunction.match(5, 3, matchProperties);
+		assertEquals(0, value);
+	} 
 }
