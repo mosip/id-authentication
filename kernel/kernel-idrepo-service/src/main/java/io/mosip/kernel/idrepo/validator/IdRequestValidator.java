@@ -410,7 +410,7 @@ public class IdRequestValidator implements Validator {
 			});
 		} catch (IOException e) {
 			mosipLogger.error(ID_REPO_SERVICE, "IdRequestValidator", "convertToMap",
-					"\n" + ExceptionUtils.getStackTrace(e));
+					"\n" + e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST), e);
 		}

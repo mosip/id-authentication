@@ -265,12 +265,12 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 				}
 			} catch (IdRepoAppException e) {
 				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
-						"\n" + ExceptionUtils.getStackTrace(e));
+						e.getMessage());
 				throw new IdRepoAppUncheckedException(e.getErrorCode(), e.getErrorText(), e);
 			} catch (FSAdapterException e) {
 				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
-						"\n" + ExceptionUtils.getStackTrace(e));
-				throw new IdRepoAppUncheckedException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR);
+						e.getMessage());
+				throw new IdRepoAppUncheckedException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
 			}
 		});
 	}
@@ -436,7 +436,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 			return uinRepo.save(uinObject);
 		} catch (JSONException | InvalidJsonException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, UPDATE_IDENTITY,
-					"\n" + ExceptionUtils.getStackTrace(e));
+					e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.JSON_PROCESSING_FAILED, e);
 		} catch (IdRepoAppUncheckedException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, UPDATE_IDENTITY,
@@ -685,7 +685,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 						}
 					} catch (FSAdapterException e) {
 						mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
-								"\n" + ExceptionUtils.getStackTrace(e));
+								e.getMessage());
 						throw new IdRepoAppUncheckedException(
 								e.getErrorCode().equals(HDFSAdapterErrorCode.FILE_NOT_FOUND_EXCEPTION.getErrorCode())
 										? IdRepoErrorConstants.FILE_NOT_FOUND
@@ -781,7 +781,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 					DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())),
 					env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue()));
 		} catch (ParseException | io.mosip.kernel.core.exception.IllegalArgumentException e) {
-			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "now()", "\n" + ExceptionUtils.getStackTrace(e));
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "now()", e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), "DATETIME_PATTERN"), e);
 		}
@@ -803,7 +803,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 			return mapper.readValue(identity, clazz);
 		} catch (IOException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "convertToObject",
-					"\n" + ExceptionUtils.getStackTrace(e));
+					e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.JSON_PROCESSING_FAILED, e);
 		}
 	}
@@ -822,7 +822,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 			return mapper.writeValueAsBytes(identity);
 		} catch (JsonProcessingException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "convertToBytes",
-					"\n" + ExceptionUtils.getStackTrace(e));
+					e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.JSON_PROCESSING_FAILED, e);
 		}
 	}
