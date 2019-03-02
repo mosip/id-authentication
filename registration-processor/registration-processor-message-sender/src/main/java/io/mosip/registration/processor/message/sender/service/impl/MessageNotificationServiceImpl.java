@@ -412,8 +412,7 @@ public class MessageNotificationServiceImpl
 					(String) regProcessorTemplateJson.getIdentity().getLocalAdministrativeAuthority().getValue());
 			template.setIdSchemaVersion((Double) demographicIdentity
 					.get(regProcessorTemplateJson.getIdentity().getIdschemaversion().getValue()));
-			template.setCnieNumber(
-					(Long) demographicIdentity.get(regProcessorTemplateJson.getIdentity().getCnienumber().getValue()));
+			template.setCnieNumber((String)demographicIdentity.get(regProcessorTemplateJson.getIdentity().getCnienumber().getValue()));
 
 		} catch (ParseException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

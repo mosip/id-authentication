@@ -83,7 +83,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 	/** The notification emails. */
 	@Value("${registration.processor.notification.emails}")
 	private String notificationEmails;
-
+	
 	/** The uin generated subject. */
 	@Value("${registration.processor.uin.generated.subject}")
 	private String uinGeneratedSubject;
@@ -283,13 +283,13 @@ public class MessageSenderStage extends MosipVerticleManager {
 		case UIN_CREATED:
 			smsTemplateCode = NotificationTemplateCode.RPR_UIN_GEN_SMS;
 			emailTemplateCode = NotificationTemplateCode.RPR_UIN_GEN_EMAIL;
-			idType = IdType.UIN;
+			idType = IdType.RID;
 			subject = uinGeneratedSubject;
 			break;
 		case UIN_UPDATE:
 			smsTemplateCode = NotificationTemplateCode.RPR_UIN_UPD_SMS;
 			emailTemplateCode = NotificationTemplateCode.RPR_UIN_UPD_EMAIL;
-			idType = IdType.UIN;
+			idType = IdType.RID;
 			subject = uinGeneratedSubject;
 			break;
 		case DUPLICATE_UIN:
