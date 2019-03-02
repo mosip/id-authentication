@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -191,11 +191,11 @@ public class MessageSenderStage extends MosipVerticleManager {
 			registrationStatusDto.setStatusComment(description);
 
 			TransactionDto transactionDto = new TransactionDto(UUID.randomUUID().toString(),
-					registrationStatusDto.getRegistrationId(), null, TransactionTypeCode.CREATE.toString(),
-					"Added registration status record", registrationStatusDto.getStatusCode(),
+					registrationStatusDto.getRegistrationId(), null, TransactionTypeCode.UPDATE.toString(),
+					"updated registration status record", registrationStatusDto.getStatusCode(),
 					registrationStatusDto.getStatusComment());
 			transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
-			transactionDto.setReferenceIdType("Added registration record");
+			transactionDto.setReferenceIdType("updated registration record");
 			transcationStatusService.addRegistrationTransaction(transactionDto);
 
 		} catch (EmailIdNotFoundException | PhoneNumberNotFoundException | TemplateGenerationFailedException
