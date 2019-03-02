@@ -232,15 +232,15 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
 			} else {
-				String statusComment = idResponseDTO.getErrors().get(0).getErrMessage();
+				String statusComment = idResponseDTO.getErrors().get(0).getErrorMessage();
 				registrationStatusDto.setStatusComment(statusComment);
 				object.setInternalError(Boolean.TRUE);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
 				isTransactionSuccessful = false;
-				description = UIN_FAILURE + registrationId + "::" + idResponseDTO.getErrors().get(0).getErrMessage();
+				description = UIN_FAILURE + registrationId + "::" + idResponseDTO.getErrors().get(0).getErrorMessage();
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-						idResponseDTO.getErrors().get(0).getErrMessage() + "  :  " + idResponseDTO.toString());
+						idResponseDTO.getErrors().get(0).getErrorMessage() + "  :  " + idResponseDTO.toString());
 
 			}
 
