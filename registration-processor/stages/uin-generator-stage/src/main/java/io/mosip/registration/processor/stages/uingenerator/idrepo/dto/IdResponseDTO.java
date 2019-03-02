@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * The Class IdResponseDTO.
@@ -14,14 +15,12 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString
 @JsonFilter("responseFilter")
 public class IdResponseDTO extends BaseIdRequestResponseDTO {
 	
 	/** The err. */
-	private List<ErrorDTO> error;
-	
-	/** The uin id. */
-	private String uin;
+	private List<ErrorDTO> errors;
 	
 	/** The status. */
 	private String status;

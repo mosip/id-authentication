@@ -203,7 +203,7 @@ public class MessageNotificationServiceImplTest {
 				.thenReturn(smsResponseDto);
 
 		SmsResponseDto resultResponse = messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345",
-				IdType.UIN, attributes);
+				IdType.RID, attributes);
 		assertEquals("Test for SMS Notification Success", "Success", resultResponse.getMessage());
 	}
 
@@ -221,7 +221,7 @@ public class MessageNotificationServiceImplTest {
 		Mockito.when(restApiClient.postApi(any(), any(), any())).thenReturn(responseDto);
 
 		ResponseDto resultResponse = messageNotificationServiceImpl.sendEmailNotification("RPR_UIN_GEN_EMAIL", "12345",
-				IdType.UIN, attributes, mailCc, subject, null);
+				IdType.RID, attributes, mailCc, subject, null);
 		assertEquals("Test for Email Notification Success", "Success", resultResponse.getStatus());
 	}
 
@@ -240,7 +240,7 @@ public class MessageNotificationServiceImplTest {
 		InputStream inputStream = new FileInputStream(demographicJsonFile);
 		Mockito.when(adapter.getFile(any(), any())).thenReturn(inputStream);
 
-		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.UIN, attributes);
+		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.RID, attributes);
 
 	}
 
@@ -257,7 +257,7 @@ public class MessageNotificationServiceImplTest {
 		InputStream inputStream = new FileInputStream(demographicJsonFile);
 		Mockito.when(adapter.getFile(any(), any())).thenReturn(inputStream);
 
-		messageNotificationServiceImpl.sendEmailNotification("RPR_UIN_GEN_EMAIL", "12345", IdType.UIN, attributes,
+		messageNotificationServiceImpl.sendEmailNotification("RPR_UIN_GEN_EMAIL", "12345", IdType.RID, attributes,
 				mailCc, subject, null);
 	}
 
@@ -274,7 +274,7 @@ public class MessageNotificationServiceImplTest {
 		Mockito.when(templateGenerator.getTemplate("RPR_UIN_GEN_SMS", attributes, "eng"))
 				.thenThrow(new TemplateNotFoundException());
 
-		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.UIN, attributes);
+		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.RID, attributes);
 	}
 
 	/**
@@ -288,7 +288,7 @@ public class MessageNotificationServiceImplTest {
 		Mockito.when(templateGenerator.getTemplate("RPR_UIN_GEN_EMAIL", attributes, "eng"))
 				.thenThrow(new TemplateNotFoundException());
 
-		messageNotificationServiceImpl.sendEmailNotification("RPR_UIN_GEN_EMAIL", "12345", IdType.UIN, attributes,
+		messageNotificationServiceImpl.sendEmailNotification("RPR_UIN_GEN_EMAIL", "12345", IdType.RID, attributes,
 				mailCc, subject, null);
 	}
 
