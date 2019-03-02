@@ -8,7 +8,7 @@
 -- create schema if master schema for Master reference Module is not exists
 create schema if not exists master
 ;
-
+ 
 -- table section -------------------------------------------------
 create table master.app_detail (
 	
@@ -31,14 +31,11 @@ create table master.app_detail (
 ;
 
 -- keys section -------------------------------------------------
- alter table master.app_detail add constraint pk_appdtl_id primary key (id)
+ alter table master.app_detail add constraint pk_appdtl_id primary key (id, lang_code)
  ;
 
 -- indexes section -------------------------------------------------
 create unique index idx_appdtl_name on master.app_detail (name)
 ;
 
--- comments section ------------------------------------------------- 
-comment on table master.app_detail is 'List of MOSIP Applications and details'
-;
 

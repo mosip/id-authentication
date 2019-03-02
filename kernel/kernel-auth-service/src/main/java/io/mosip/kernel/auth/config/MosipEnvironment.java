@@ -16,6 +16,7 @@ public class MosipEnvironment implements EnvironmentAware {
 	private final String tokenExpiry = "auth.jwt.expiry";
 	private final String refreshTokenExpiry = "auth.jwt.refresh.expiry";
 	private final String authTokenHeader = "auth.token.header";
+	private final String authRefreshTokenHeader = "auth.refreshtoken.header";
 
 	private final String ldapSvcUrl = "ldap.svc.url";
 	private final String ldapAuthenticate = "ldap.api.authenticate";
@@ -47,10 +48,24 @@ public class MosipEnvironment implements EnvironmentAware {
 	private String rolesSearchPrefix = "ldap.roles.search.prefix";
 	private String rolesSearchSuffix = "ldap.roles.search.suffix";
 	private String ldapRolesClass = "ldap.roles.class";
+	
+	private String otpPrimaryLanguage = "auth.primary.language";
+	
+	public String getPrimaryLanguage() {
+		return environment.getProperty(otpPrimaryLanguage);
+	}
 
 	@Override
 	public void setEnvironment(final Environment environment) {
 		this.environment = environment;
+	}
+	
+	public String getAuthTokenHeader() {
+		return environment.getProperty(authTokenHeader);
+	}
+	
+	public String getRefreshTokenHeader() {
+		return environment.getProperty(authRefreshTokenHeader);
 	}
 
 	public String getDriverName(String datasource) {
@@ -95,10 +110,6 @@ public class MosipEnvironment implements EnvironmentAware {
 
 	public Long getRefreshTokenExpiry() {
 		return Long.valueOf(environment.getProperty(refreshTokenExpiry));
-	}
-
-	public String getAuthTokenHeader() {
-		return environment.getProperty(authTokenHeader);
 	}
 
 	public String getLdapSvcUrl() {

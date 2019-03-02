@@ -91,6 +91,8 @@ public class BaseTestCase {
 				ApplnURI="https://integ.mosip.io";
 			else
 				ApplnURI="https://integ.mosip.io";
+			/*environment ="integration";
+			ApplnURI="https://integ.mosip.io";*/
 			logger.info("Configs from properties file are set.");
 			
 

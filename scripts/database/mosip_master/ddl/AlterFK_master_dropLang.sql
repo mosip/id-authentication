@@ -42,7 +42,5 @@ alter table master.template drop constraint fk_tmplt_lang   ;
 alter table master.title drop constraint fk_ttl_lang   ;
 alter table master.transaction_type  drop constraint fk_trntyp_lang   ;
 alter table master.user_detail drop constraint fk_usrdtl_lang   ;
-alter table master.user_role drop constraint fk_usrrol_lang   ;
-alter table master.valid_document drop constraint fk_valdoc_lang   ;
 alter table master.blacklisted_words drop constraint fk_blwrd_lang   ;
 alter table master.user_pwd drop constraint fk_usrpwd_lang ;

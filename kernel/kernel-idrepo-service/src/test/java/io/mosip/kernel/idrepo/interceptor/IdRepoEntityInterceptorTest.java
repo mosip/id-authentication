@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
 import io.mosip.kernel.core.idrepo.exception.RestServiceException;
@@ -130,7 +131,7 @@ public class IdRepoEntityInterceptorTest {
 	public void testOnLoadUinFailedEncrption() throws RestClientException, JsonParseException, JsonMappingException, IOException, IdRepoDataValidationException, RestServiceException {
 		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
 		when(restHelper.requestSync(Mockito.any()))
-				.thenThrow(new RestServiceException());
+				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR));
 		Uin uin = new Uin();
 		uin.setUinData(new byte[] { 0 });
 		Object[] state = new Object[] { new byte[] { 0 } , "5B72C3B57A72C6497461289FCA7B1F865ED6FB0596B446FEA1F92AF931A5D4B7"};
@@ -190,7 +191,7 @@ public class IdRepoEntityInterceptorTest {
 	public void testOnFlushDirtyException() throws RestClientException, JsonParseException, JsonMappingException, IOException, IdRepoDataValidationException, RestServiceException {
 		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
 		when(restHelper.requestSync(Mockito.any()))
-		.thenThrow(new RestServiceException());
+		.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR));
 		Uin uin = new Uin();
 		uin.setUinData(new byte[] { 0 });
 		Object[] state = new Object[] { new byte[] { 0 } };

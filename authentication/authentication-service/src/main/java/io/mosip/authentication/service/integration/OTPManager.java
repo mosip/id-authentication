@@ -121,9 +121,8 @@ public class OTPManager {
 			params.add("key", otpKey);
 			params.add("otp", pinValue);
 			restreqdto.setParams(params);
-			Map<String,Object> otpvalidateresponsedto = restHelper.requestSync(restreqdto);
-			isValidOtp = Optional.ofNullable(otpvalidateresponsedto)
-					.filter(res -> res.containsKey("status"))
+			Map<String, Object> otpvalidateresponsedto = restHelper.requestSync(restreqdto);
+			isValidOtp = Optional.ofNullable(otpvalidateresponsedto).filter(res -> res.containsKey("status"))
 					.map(res -> String.valueOf(res.get("status")))
 					.filter(status -> status.equalsIgnoreCase(STATUS_SUCCESS)).isPresent();
 		} catch (RestServiceException e) {
@@ -131,11 +130,11 @@ public class OTPManager {
 
 			Optional<Object> responseBody = e.getResponseBody();
 			if (responseBody.isPresent()) {
-				Map<String,Object> res = (Map<String,Object>) responseBody.get();
+				Map<String, Object> res = (Map<String, Object>) responseBody.get();
 				Object status = res.get("status");
-				Object message =(String) res.get("message");
+				Object message = res.get("message");
 				if (status instanceof String && message instanceof String) {
-					if (((String)status).equalsIgnoreCase(STATUS_FAILURE)) {
+					if (((String) status).equalsIgnoreCase(STATUS_FAILURE)) {
 						throwOtpException((String) message);
 					}
 				} else {

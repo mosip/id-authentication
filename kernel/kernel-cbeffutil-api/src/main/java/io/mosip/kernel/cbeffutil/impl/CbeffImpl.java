@@ -58,6 +58,26 @@ public class CbeffImpl implements CbeffUtil {
 		byte[] xmlByte = CbeffValidator.createXMLBytes(bir,xsd);
 		return xmlByte;
 	}
+	
+	/**
+	 * Method used for creating Cbeff XML with xsd
+	 * 
+	 * @param birList pass List of BIR for creating Cbeff data
+	 * @param byte array of XSD data
+	 *        
+	 * @return return byte array of XML data
+	 * @throws CbeffException 
+	 * @throws Exception 
+	 * 
+	 */
+	
+	@Override
+	public byte[] createXML(List<BIR> birList,byte[] xsd) throws Exception  {
+		CbeffContainerImpl cbeffContainer = new CbeffContainerImpl();
+		BIRType bir = cbeffContainer.createBIRType(birList);
+		byte[] xmlByte = CbeffValidator.createXMLBytes(bir,xsd);
+		return xmlByte;
+	}
 
 	private byte[] getXSDfromConfigServer() throws URISyntaxException, IOException {
 		InputStream input = new URL(configServerFileStorageURL+schemaName).openStream();

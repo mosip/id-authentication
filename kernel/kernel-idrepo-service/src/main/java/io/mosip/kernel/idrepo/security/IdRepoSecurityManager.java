@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idrepo.constant.IdRepoConstants;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.constant.RestServicesConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
@@ -33,14 +33,10 @@ import io.mosip.kernel.idrepo.helper.RestHelper;
 @Component
 public class IdRepoSecurityManager {
 
-	/** The Constant MOSIP_KERNEL_IDREPO_APPLICATION_ID. */
-	private static final String MOSIP_KERNEL_IDREPO_APPLICATION_ID = "mosip.kernel.idrepo.application.id";
-
 	/** The mosip logger. */
 	private Logger mosipLogger = IdRepoLogger.getLogger(IdRepoSecurityManager.class);
-
-	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "mosip.utc-datetime-pattern";
+	
+	private static final String ENCRYPT_DECRYPT_DATA = "encryptDecryptData";
 
 	/** The Constant ID_REPO_SERVICE. */
 	private static final String ID_REPO_SERVICE = "IdRepoService";
@@ -73,8 +69,9 @@ public class IdRepoSecurityManager {
 	@PostConstruct
 	public void buildRequest() {
 		request = new ObjectNode(mapper.getNodeFactory());
-		request.put("applicationId", env.getProperty(MOSIP_KERNEL_IDREPO_APPLICATION_ID));
-		request.put("timeStamp", DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN)));
+		request.put("applicationId", env.getProperty(IdRepoConstants.APPLICATION_ID.getValue()));
+		request.put("timeStamp",
+				DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
 	}
 
 	/**
@@ -101,6 +98,8 @@ public class IdRepoSecurityManager {
 			return encryptDecryptData(
 					restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT, request, ObjectNode.class));
 		} catch (IdRepoAppException e) {
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
+					e.getErrorText());
 			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 	}
@@ -118,6 +117,8 @@ public class IdRepoSecurityManager {
 			return encryptDecryptData(
 					restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT, request, ObjectNode.class));
 		} catch (IdRepoAppException e) {
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
+					e.getErrorText());
 			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 	}
@@ -136,13 +137,13 @@ public class IdRepoSecurityManager {
 			if (response.has("data")) {
 				return response.get("data").asText().getBytes();
 			} else {
-				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SECURITY_MANAGER, "encryptDecryptData",
+				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
 						"No data block found in response");
 				throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED);
 			}
 		} catch (RestServiceException e) {
-			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SECURITY_MANAGER, "encryptDecryptData",
-					"\n" + ExceptionUtils.getStackTrace(e));
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
+					e.getErrorText());
 			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 	}

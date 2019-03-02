@@ -17,3 +17,6 @@ CRN,Certificat de relation,Preuve de relation dune personne,fra,TRUE,superadmin,
 COB,Certificate of Birth,Proof birth and age of a person,eng,TRUE,superadmin,now()
 COB,شهادة الميلاد,إثبات الولادة وعمر الشخص,ara,TRUE,superadmin,now()
 COB,Certificat de naissance,Preuve de naissance et âge dune personne,fra,TRUE,superadmin,now()
+COE,Certification of Exception,Certificate of Exception,eng,TRUE,superadmin,now()
+COE,شهادة استثناء,شهادة استثناء,ara,TRUE,superadmin,now()
+COE,Certification dexception,Certification dexception,fra,TRUE,superadmin,now()
