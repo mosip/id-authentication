@@ -24,5 +24,7 @@ public class IdRequestDto {
 	
 	/** The version. */
 	private String version;
+	
+	private String status;
 
 }
