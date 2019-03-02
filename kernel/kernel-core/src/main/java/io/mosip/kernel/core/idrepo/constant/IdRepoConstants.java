@@ -14,7 +14,7 @@ public enum IdRepoConstants {
 	FILE_FORMAT_ATTRIBUTE("format"),
 	
 	/** The identity file name key. */
-	FILE_NAME_ATTRIBUTE("fileReference"),
+	FILE_NAME_ATTRIBUTE("value"),
 	
 	/** The root path. */
 	ROOT_PATH("identity"),

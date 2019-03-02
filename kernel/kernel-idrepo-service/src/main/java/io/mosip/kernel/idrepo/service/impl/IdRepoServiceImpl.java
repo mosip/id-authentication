@@ -137,6 +137,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	/** The Constant DEMOGRAPHICS. */
 	private static final String DEMOGRAPHICS = "Demographics";
 
+	private static final String IDENTITY = "identity";
+
 	/** The env. */
 	@Autowired
 	private Environment env;
@@ -279,53 +281,63 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	/**
 	 * Adds the biometric documents.
 	 *
-	 * @param uin the uin
-	 * @param uinRefId the uin ref id
-	 * @param bioList the bio list
-	 * @param doc the doc
-	 * @param docType the doc type
-	 * @throws IdRepoAppException the id repo app exception
+	 * @param uin
+	 *            the uin
+	 * @param uinRefId
+	 *            the uin ref id
+	 * @param bioList
+	 *            the bio list
+	 * @param doc
+	 *            the doc
+	 * @param docType
+	 *            the doc type
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
 	 */
 	private void addBiometricDocuments(String uin, String uinRefId, List<UinBiometric> bioList, Documents doc,
 			JsonNode docType) throws IdRepoAppException {
-		byte[] data = null;
-		String fileRefId = UUIDUtils
-				.getUUID(UUIDUtils.NAMESPACE_OID,
-						docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText() + "_" + DateUtils
-								.getUTCCurrentDateTime()
-								.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
-								.toInstant().toEpochMilli())
-				.toString() + DOT + docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText();
+		try {
+			byte[] data = null;
+			String fileRefId = UUIDUtils
+					.getUUID(UUIDUtils.NAMESPACE_OID,
+							docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText() + "_" + DateUtils
+									.getUTCCurrentDateTime()
+									.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
+									.toInstant().toEpochMilli())
+					.toString() + DOT + docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText();
 
-		if (StringUtils.equalsIgnoreCase(docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText(),
-				IdRepoConstants.CBEFF_FORMAT.getValue())) {
-			data = convertToFMR(doc.getCategory(), doc.getValue());
-		} else {
-			data = CryptoUtil.decodeBase64(doc.getValue());
+			if (StringUtils.equalsIgnoreCase(docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText(),
+					IdRepoConstants.CBEFF_FORMAT.getValue())) {
+				data = convertToFMR(doc.getCategory(), doc.getValue());
+			} else {
+				data = CryptoUtil.decodeBase64(doc.getValue());
+			}
+
+			LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
+			fsAdapter.storeFile(uin, BIOMETRICS + SLASH + fileRefId,
+					new ByteArrayInputStream(CryptoUtil.decodeBase64(new String(securityManager.encrypt(data)))));
+			mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "storeFiles",
+					"time taken to store file in millis: " + fileRefId + "  - "
+							+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis() + "  "
+							+ "Start time : " + startTime + "  " + "end time : " + DateUtils.getUTCCurrentDateTime());
+
+			bioList.add(new UinBiometric(uinRefId, fileRefId, doc.getCategory(),
+					docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(), securityManager.hash(data),
+					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
+					now(), false, now()));
+
+			uinBioHRepo.save(new UinBiometricHistory(uinRefId, now(), fileRefId, doc.getCategory(),
+					docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),
+					securityManager.hash(CryptoUtil.decodeBase64(doc.getValue())),
+					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
+					now(), false, now()));
+		} catch (NullPointerException e) {
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
+					"\n" + ExceptionUtils.getStackTrace(e));
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+							IDENTITY + " - " + doc.getCategory()));
 		}
-		
-		LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
-		fsAdapter.storeFile(uin, BIOMETRICS + SLASH + fileRefId,
-				new ByteArrayInputStream(CryptoUtil.decodeBase64(new String(securityManager.encrypt(data)))));
-		mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "storeFiles", "time taken to store file in millis: "
-				+ fileRefId + "  - " 
-				+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis()
-				+ "  "
-				+ "Start time : " + startTime
-				+ "  "
-				+ "end time : " + DateUtils.getUTCCurrentDateTime()
-				);
-		
-		bioList.add(new UinBiometric(uinRefId, fileRefId, doc.getCategory(),
-				docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(), securityManager.hash(data),
-				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
-				now(), false, now()));
-
-		uinBioHRepo.save(new UinBiometricHistory(uinRefId, now(), fileRefId, doc.getCategory(),
-				docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),
-				securityManager.hash(CryptoUtil.decodeBase64(doc.getValue())),
-				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
-				now(), false, now()));
 	}
 	
 	/**
@@ -340,39 +352,43 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	 */
 	private void addDemographicDocuments(String uin, String uinRefId, List<UinDocument> docList, Documents doc,
 			JsonNode docType) throws IdRepoAppException {
-		String fileRefId = UUIDUtils
-				.getUUID(UUIDUtils.NAMESPACE_OID,
-						docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText() + "_" + DateUtils
-								.getUTCCurrentDateTime()
-								.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
-								.toInstant().toEpochMilli())
-				.toString() + DOT + docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText();
+		try {
+			String fileRefId = UUIDUtils
+					.getUUID(UUIDUtils.NAMESPACE_OID,
+							docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText() + "_" + DateUtils
+									.getUTCCurrentDateTime()
+									.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
+									.toInstant().toEpochMilli())
+					.toString() + DOT + docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText();
 
-		LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
-		fsAdapter.storeFile(uin, DEMOGRAPHICS + SLASH + fileRefId, new ByteArrayInputStream(
-				CryptoUtil.decodeBase64(new String(securityManager.encrypt(CryptoUtil.decodeBase64(doc.getValue()))))));
-		mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "storeFiles", "time taken to store file in millis: "
-				+ fileRefId + "  - " 
-				+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis()
-				+ "  "
-				+ "Start time : " + startTime
-				+ "  "
-				+ "end time : " + DateUtils.getUTCCurrentDateTime()
-				);
+			LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
+			fsAdapter.storeFile(uin, DEMOGRAPHICS + SLASH + fileRefId, new ByteArrayInputStream(CryptoUtil
+					.decodeBase64(new String(securityManager.encrypt(CryptoUtil.decodeBase64(doc.getValue()))))));
+			mosipLogger.debug(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "storeFiles",
+					"time taken to store file in millis: " + fileRefId + "  - "
+							+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis() + "  "
+							+ "Start time : " + startTime + "  " + "end time : " + DateUtils.getUTCCurrentDateTime());
 
-		docList.add(new UinDocument(uinRefId, doc.getCategory(), docType.get(TYPE).asText(), fileRefId,
-				docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),
-				docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText(),
-				securityManager.hash(CryptoUtil.decodeBase64(doc.getValue())),
-				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
-				now(), false, now()));
+			docList.add(new UinDocument(uinRefId, doc.getCategory(), docType.get(TYPE).asText(), fileRefId,
+					docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),
+					docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText(),
+					securityManager.hash(CryptoUtil.decodeBase64(doc.getValue())),
+					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
+					now(), false, now()));
 
-		uinDocHRepo.save(new UinDocumentHistory(uinRefId, now(), doc.getCategory(), docType.get(TYPE).asText(),
-				fileRefId, docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),
-				docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText(),
-				securityManager.hash(CryptoUtil.decodeBase64(doc.getValue())),
-				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
-				now(), false, now()));
+			uinDocHRepo.save(new UinDocumentHistory(uinRefId, now(), doc.getCategory(), docType.get(TYPE).asText(),
+					fileRefId, docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),
+					docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText(),
+					securityManager.hash(CryptoUtil.decodeBase64(doc.getValue())),
+					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
+					now(), false, now()));
+		} catch (NullPointerException e) {
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
+					"\n" + ExceptionUtils.getStackTrace(e));
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+							IDENTITY + " - " + doc.getCategory()));
+		}
 	}
 
 	/**
