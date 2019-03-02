@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.filter;
+/*package io.mosip.authentication.service.filter;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,17 +23,17 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
-/**
+*//**
  * 
  * @author Prem Kumar
  *
- */
+ *//*
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class StaticPinStoreFilterTest {
 
-	/** The Constant DATETIME_PATTERN. */
+	*//** The Constant DATETIME_PATTERN. *//*
 	private static final String DATETIME_PATTERN = "datetime.pattern";
 
 	StaticPinStoreFilter filter = new StaticPinStoreFilter();
@@ -45,7 +45,7 @@ public class StaticPinStoreFilterTest {
 	@Autowired
 	private ObjectMapper mapper;
 
-	/** The env. */
+	*//** The env. *//*
 	@Autowired
 	Environment env;
 
@@ -79,3 +79,4 @@ public class StaticPinStoreFilterTest {
 		assertEquals(responseBody, filter.decodedRequest(requestBody));
 	}
 }
+*/

@@ -44,10 +44,10 @@ public class BadGatewayExceptionTest {
 		String fileName = "sample";
 		BadGatewayException ex = new BadGatewayException(PlatformErrorMessages.RPR_SYS_BAD_GATEWAY.getMessage());
 
-		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
+		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
 
 		try {
-			fileManager.put(fileName, file, DirectoryPathDto.LANDING_ZONE);
+			fileManager.put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
 			fail();
 		} catch (BadGatewayException e) {
 			assertThat("Should throw Bad Gateway exception with correct error codes",

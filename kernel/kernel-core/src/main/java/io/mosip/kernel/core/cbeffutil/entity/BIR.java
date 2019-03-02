@@ -3,11 +3,18 @@
  */
 package io.mosip.kernel.core.cbeffutil.entity;
 
+import java.util.List;
+
+import javax.xml.bind.JAXBElement;
+
+import org.w3c.dom.Element;
+
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 
 /**
  * 
  * BIR class with Builder to create data
+ * 
  * @author Ramadurai Pandian
  *
  */
@@ -19,7 +26,8 @@ public class BIR {
 	private BDBInfo bdbInfo;
 	private byte[] bdb;
 	private byte[] sb;
-	private SBInfo sbInfo;
+	private SBInfo sbInfo; 
+	private List<Object> element;
 
 	public BIR(BIRBuilder birBuilder) {
 		this.version = birBuilder.version;
@@ -29,9 +37,15 @@ public class BIR {
 		this.bdb = birBuilder.bdb;
 		this.sb = birBuilder.sb;
 		this.sbInfo = birBuilder.sbInfo;
+		this.element = birBuilder.element;
 	}
 
-	
+	/**
+	 * @return the element
+	 */
+	public List<Object> getElement() {
+		return element;
+	}
 
 	/**
 	 * @return the version
@@ -92,6 +106,12 @@ public class BIR {
 		private byte[] bdb;
 		private byte[] sb;
 		private SBInfo sbInfo;
+		private List<Object> element;
+		
+		public BIRBuilder withElement(List<Object> element) {
+			this.element = element;
+			return this;
+		}
 
 		public BIRBuilder withVersion(BIRVersion version) {
 			this.version = version;
@@ -139,10 +159,15 @@ public class BIR {
 		if (bir.getCbeffversion() != null)
 			bIRType.setVersion(bir.getCbeffversion().toVersion());
 		bIRType.setBDB(getBdb());
+		bIRType.setSB(getSb());
 		if (bir.getBirInfo() != null)
 			bIRType.setBIRInfo(bir.getBirInfo().toBIRInfo());
 		if (bir.getBdbInfo() != null)
 			bIRType.setBDBInfo(bir.getBdbInfo().toBDBInfo());
+		if(bir.getSbInfo()!=null)
+			bIRType.setSBInfo(bir.getSbInfo().toSBInfoType());
+		if(bir.getElement()!=null)
+			bIRType.setAny(getElement());
 		return bIRType;
 	}
 

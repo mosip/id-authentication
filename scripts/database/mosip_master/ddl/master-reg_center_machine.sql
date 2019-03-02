@@ -2,7 +2,7 @@
 -- schema 		: master	    		- Master reference Module
 -- table 		: reg_center_machine	- MOSIP Registration center and Machine mapping
 -- table alias  : cntrmac	
-
+ 
 -- schemas section ---------------------------------------------------------
 
 -- create schema if master schema for Master reference Module is not exists
@@ -14,7 +14,9 @@ create table master.reg_center_machine (
 
 	regcntr_id 	character varying (10) not null,	-- master.registration_center.id
 	machine_id 	character varying (10) not null, 	-- master.machine_master.id
-	
+
+	lang_code 	character varying (3) not null ,  -- master.language.code
+
 	is_active 	boolean not null,
 	cr_by 		character varying (32) not null,
 	cr_dtimes	timestamp not null,
@@ -32,7 +34,3 @@ create table master.reg_center_machine (
 -- indexes section --------------------------------------------------------
 -- create index idx_cntrmac_<colX> on master.reg_center_machine (colX )
 -- ;
-
--- comments section --------------------------------------------------------
-comment on table master.reg_center_machine is 'Table to store all MOSIP registration centers and their mapped machines'
-;

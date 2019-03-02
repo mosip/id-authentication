@@ -1,1 +1,1 @@
-[{"testType":"smoke","testCaseName":"DeleteDocumentByDocId_smoke","jiraId":"MOS-1002","documentId":"valid","status":""}]
+[{"jiraId":"MOS-1002","testType":"smoke","documentId":"valid","testCaseName":"DeleteDocumentByDocId_smoke","status":"Pass"}]

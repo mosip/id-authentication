@@ -8,8 +8,10 @@ import static org.mockito.Mockito.doNothing;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -59,7 +62,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.vertx.core.Vertx;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ IOUtils.class, HMACUtils.class })
+@PrepareForTest({ IOUtils.class, HMACUtils.class, Utilities.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class UinGeneratorStageTest {
 
@@ -134,9 +137,11 @@ public class UinGeneratorStageTest {
 	Identity identitydemoinfo = new Identity();
 
 	/** The Constant CONFIG_SERVER_URL. */
-	private static final String CONFIG_SERVER_URL = "http://104.211.212.28:51000/registration-processor/int/0.8.0/";
+	private static final String CONFIG_SERVER_URL = "url";
 
 	private PacketMetaInfo packetMetaInfo;
+
+	private String identityMappingjsonString;
 
 	@Before
 	public void setup() throws Exception {
@@ -158,10 +163,21 @@ public class UinGeneratorStageTest {
 		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(idJsonStream);
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 
+		File identityMappingjson = new File(classLoader.getResource("RegistrationProcessorIdentity.json").getFile());
+		InputStream identityMappingjsonStream = new FileInputStream(identityMappingjson);
+
+		try {
+			identityMappingjsonString = IOUtils.toString(identityMappingjsonStream, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		PowerMockito.mockStatic(Utilities.class);
+		PowerMockito.when(Utilities.class, "getJson", CONFIG_SERVER_URL, "RegistrationProcessorIdentity.json")
+				.thenReturn(identityMappingjsonString);
 		Mockito.when(utility.getConfigServerFileStorageURL()).thenReturn(CONFIG_SERVER_URL);
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
 		Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentity.json");
-
+		
 		Mockito.when(identityJson.get(anyString())).thenReturn(demographicIdentity);
 		List<ApplicantDocument> applicantDocument = new ArrayList<>();
 		ApplicantDocument appDocument = new ApplicantDocument();
@@ -169,7 +185,7 @@ public class UinGeneratorStageTest {
 		appDocument.setDocName("POA");
 		appDocument.setDocStore("ProofOfAddress".getBytes());
 		applicantDocument.add(appDocument);
-
+		
 		Mockito.when(packetInfoManager.getDocumentsByRegId(Matchers.anyString())).thenReturn(applicantDocument);
 
 	}

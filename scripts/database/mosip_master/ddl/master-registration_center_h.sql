@@ -4,7 +4,7 @@
 -- table alias  : regcntr_h	
 
 -- schema section ---------------------------------------------------------------
-
+ 
 -- create schema if master reference schema not exists
 create schema if not exists master
 ;
@@ -54,19 +54,14 @@ create table master.registration_center_h (
 	
 		eff_dtimes timestamp not null		-- for history record maintenance including the latest record in base table.
 
-
 	)
 ;
 
 -- keys section -------------------------------------------------------------------------------
-alter table master.registration_center_h add constraint pk_regcntr_h_code primary key (id, eff_dtimes)
+alter table master.registration_center_h add constraint pk_regcntr_h_code primary key (id, lang_code, eff_dtimes)
  ;
 
 -- indexes section -----------------------------------------------------------------------
 -- create index idx_regcntr_h_name on master.registration_center_h (name)
 -- ;
-
--- comments section -------------------------------------------------------------------------- 
-comment on table master.registration_center_h is 'History table : Master registration_center_h table'
-;
 

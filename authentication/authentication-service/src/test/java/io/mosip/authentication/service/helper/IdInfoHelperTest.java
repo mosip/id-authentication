@@ -67,11 +67,11 @@ public class IdInfoHelperTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment));
 		mockenv.setProperty(priLangCode, "ara");
-		mockenv.setProperty(secLangCode, "fre");
+		mockenv.setProperty(secLangCode, "fra");
 		String languageCode = idInfoHelper.getLanguageCode(LanguageType.PRIMARY_LANG);
 		assertEquals("ara", languageCode);
 		String languageCode2 = idInfoHelper.getLanguageCode(LanguageType.SECONDARY_LANG);
-		assertEquals("fre", languageCode2);
+		assertEquals("fra", languageCode2);
 	}
 
 }

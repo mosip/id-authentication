@@ -21,7 +21,7 @@ public class MosipVerticleManagerConsumeTest {
 	private MessageDTO messageDTO;
 	private Vertx vertx;
 
-	private ConsumerVerticle consumerVerticle;
+	private ConsumerVerticle consumerVerticle; 
 
 	@Before
 	public void setup(TestContext testContext) throws Exception {

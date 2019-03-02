@@ -1,11 +1,16 @@
 package io.mosip.authentication.service.impl.id.service.impl;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
@@ -18,6 +23,7 @@ import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.integration.OTPManager;
+import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -28,6 +34,12 @@ import io.mosip.kernel.core.logger.spi.Logger;
 
 @Service
 public class IdRepoServiceImpl implements IdRepoService {
+
+	private static final List<String> ID_REPO_ERRORS_INVALID_UIN = Arrays.asList(
+														IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(),
+				                                        IdRepoErrorConstants.INVALID_UIN.getErrorCode()
+			                                        );
+
 
 	private static final String STATUS_KEY = "status";
 
@@ -48,6 +60,9 @@ public class IdRepoServiceImpl implements IdRepoService {
 	
 	@Autowired
 	private Environment environment;
+	
+	@Autowired
+	private ObjectMapper mapper;
 
 	/**
 	 * Fetch data from Id Repo based on Individual's UIN / VID value
@@ -77,8 +92,20 @@ public class IdRepoServiceImpl implements IdRepoService {
 			}
 			
 		} catch (RestServiceException e) {
-			logger.error(SESSION_ID, ID_REPO_SERVICE, e.getErrorCode(), e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
+		  Optional<Object> responseBody = e.getResponseBody();
+			if (responseBody.isPresent()) {
+				Map<String, Object> idrepoMap = (Map<String, Object>) responseBody.get();
+				if (idrepoMap.containsKey("errors")) {
+					List<Map<String, Object>> idRepoerrorList = (List<Map<String, Object>>) idrepoMap.get("errors");
+					if (!idRepoerrorList.isEmpty() && idRepoerrorList.stream().anyMatch(
+							map -> map.containsKey("errCode") && ID_REPO_ERRORS_INVALID_UIN.contains(map.get("errCode")))) {
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN);
+					} else {
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_PROCESS);
+					}
+				}
+			}
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_PROCESS);
 		} catch (IDDataValidationException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 		}

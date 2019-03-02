@@ -80,7 +80,6 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
 	 */
 	@DataProvider(name = "GetDeviceHistory")
 	public static Object[][] readData1(ITestContext context) throws Exception {
-		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
 		switch (testParam) {
 		case "smoke":
@@ -126,15 +125,15 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
 		 */
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
-    	  if(status)
+    	  if(testCaseName.equals("smoke_1"))
     	  {
-//    		        String id = actualRequest.get("id").toString();
-//	                String queryStr = "SELECT id, FROM master.registration_center WHERE id='"+id+"'";
-//					boolean valid = KernelMasterDataR.masterDataDBConnection(DeviceHistoryDto.class,queryStr);
-//					System.out.println("status------>"+valid);
-//    	  
+    		        String id = actualRequest.get("id").toString();
+	                String queryStr = "SELECT master.device_master_h.* FROM master.device_master_h WHERE id='"+id+"'";
+					boolean valid = KernelMasterDataR.masterDataDBConnection(DeviceHistoryDto.class,queryStr);
+					System.out.println("status------>"+valid);
+    	  
 	            
-			if(status)
+			if(valid)
 					{
 						finalStatus ="Pass";
 					}
@@ -143,7 +142,7 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
 		 				finalStatus ="Fail";
 						//break;
 					}
-    	  }
+    	  }else
 				finalStatus = "Pass";
 				
       }

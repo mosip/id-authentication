@@ -3,8 +3,7 @@ node {
  def server = Artifactory.server 'ART'
  def rtMaven = Artifactory.newMavenBuild()
  def buildInfo
- //def branch = env.NEXT_BRANCH_NAME
- def branch = '0.8.0'
+ def branch = env.NEXT_BRANCH_NAME
  def dockerImagesTagVersion = branch  //This will ensure that docker images tag should have 1-1 relation ship with project version
  projectToBuild = 'registration'
  def registryUrl = 'http://mosip-dev-admin.southindia.cloudapp.azure.com:5000'
@@ -57,7 +56,7 @@ node {
  }
 
  stage('---------- mvn-clean-install ---------------') {
-  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -Dspring.cloud.config.label='+branch, buildInfo: buildInfo
+  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
   buildInfo1 = server.upload spec: uploadSpec
  }
 

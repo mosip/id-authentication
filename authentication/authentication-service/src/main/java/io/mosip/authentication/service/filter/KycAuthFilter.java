@@ -3,11 +3,14 @@ package io.mosip.authentication.service.filter;
 import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.Base64;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
@@ -18,9 +21,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
@@ -31,8 +31,11 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class KycAuthFilter extends BaseAuthFilter {
 
-	/** The mosip logger. */
-	private static Logger mosipLogger = IdaLogger.getLogger(InternalAuthFilter.class);
+	/** The Constant IDENTITY. */
+	private static final String IDENTITY = "identity";
+
+	/** The Constant KYC. */
+	private static final String KYC = "kyc";
 
 	/** The Constant TXN_ID. */
 	private static final String TXN_ID = "txnID";
@@ -48,9 +51,6 @@ public class KycAuthFilter extends BaseAuthFilter {
 
 	/** The Constant AUTH. */
 	private static final String AUTH = "auth";
-
-	/** The Constant KYC. */
-	private static final String KYC = "kyc";
 
 	/** The Constant REQ_TIME. */
 	private static final String REQ_TIME = "reqTime";
@@ -70,7 +70,7 @@ public class KycAuthFilter extends BaseAuthFilter {
 	 */
 	@SuppressWarnings({ "unchecked" })
 	@Override
-	protected Map<String, Object> decodedRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
+	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
 			Map<String, Object> authRequest = (Map<String, Object>) decodeToMap((String) requestBody.get(AUTH_REQUEST));
 			authRequest.replace(REQUEST, decode((String) authRequest.get(REQUEST)));
@@ -94,9 +94,9 @@ public class KycAuthFilter extends BaseAuthFilter {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	protected Map<String, Object> encodedResponse(Map<String, Object> responseBody)
+	protected Map<String, Object> encipherResponse(Map<String, Object> responseBody)
 			throws IdAuthenticationAppException {
-		try {
+		try {			
 			Map<String, Object> response = (Map<String, Object>) responseBody.get(RESPONSE);
 			if (response != null) {
 				if (null != publicKey) {
@@ -112,7 +112,6 @@ public class KycAuthFilter extends BaseAuthFilter {
 				if (auth != null) {
 					response.replace(AUTH, encode(toJsonString(auth)));
 				}
-
 				responseBody.replace(RESPONSE, encode(toJsonString(responseBody.get(RESPONSE))));
 			}
 			return responseBody;
@@ -151,64 +150,65 @@ public class KycAuthFilter extends BaseAuthFilter {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	protected Map<String, Object> setResponseParam(Map<String, Object> requestBody, Map<String, Object> responseBody)
+	protected Map<String, Object> setResponseParams(Map<String, Object> requestBody, Map<String, Object> responseBody)
 			throws IdAuthenticationAppException {
-		try {
-			if (Objects.nonNull(requestBody)) {
-				Object object = requestBody.get(AUTH_REQUEST);
-				if(object instanceof Map) {
-					Map<String, Object> authReq = (Map<String, Object>) object;
-					setTxnID(responseBody, authReq);
-					if (Objects.nonNull(authReq) && Objects.nonNull(authReq.get(REQ_TIME))
-							&& isDate((String) authReq.get(REQ_TIME))) {
-						convertZoneDate(responseBody, authReq);
-						if (null != responseBody.get(RESPONSE)) {
-							Map<String, Object> authResponse = (Map<String, Object>) responseBody.get(RESPONSE);
-							authResponse.replace(AUTH,
-									setAuthResponseParam((Map<String, Object>) requestBody.get(AUTH_REQUEST),
-											(Map<String, Object>) ((Map<String, Object>) responseBody.get(RESPONSE))
-													.get(AUTH)));
-							responseBody.replace(RESPONSE, authResponse);
-						}
-						return responseBody;
-					}
-				}
-				else if(object instanceof String) {
-					setResponseForEncodeRequest(responseBody, (String) object);
-				}
-			}
-			return responseBody;
-		} catch (DateTimeParseException e) {
-			mosipLogger.error("sessionId", "IdAuthFilter", "setResponseParam", "\n" + ExceptionUtils.getStackTrace(e));
-			return responseBody;
-		}
-	}
-
-	/**
-	 * Sets the response for encode request.
-	 *
-	 * @param responseBody the response body
-	 * @param object the object
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	@SuppressWarnings("unchecked")
-	private void setResponseForEncodeRequest(Map<String, Object> responseBody, String req)
-			throws IdAuthenticationAppException {
-		String request = new String(Base64.getDecoder().decode(req));
-		Map<String, Object> authReq;
-		try {
-			authReq = mapper.readValue(request, Map.class);
-			if (authReq instanceof Map) {
+		if (Objects.nonNull(requestBody)) {
+			Object object = requestBody.get(AUTH_REQUEST);
+			if (object instanceof Map) {
+				Map<String, Object> authReq = (Map<String, Object>) object;
 				setTxnID(responseBody, authReq);
 				if (Objects.nonNull(authReq) && Objects.nonNull(authReq.get(REQ_TIME))
 						&& isDate((String) authReq.get(REQ_TIME))) {
 					convertZoneDate(responseBody, authReq);
+					Object response = responseBody.get(RESPONSE);
+					if (null != response) {
+						Map<String, Object> authResponse = (Map<String, Object>) response;
+						authResponse.replace(AUTH,
+								setAuthResponseParam((Map<String, Object>) requestBody.get(AUTH_REQUEST),
+										(Map<String, Object>) ((Map<String, Object>) response).get(AUTH)));
+						authResponse.replace(KYC, setKycParams((Map<String, Object>) response));
+						responseBody.replace(RESPONSE, authResponse);
+					}
+					return responseBody;
 				}
 			}
-		} catch (IOException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 		}
+		return responseBody;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	private Map<String, Object> setKycParams(Map<String, Object> response) {
+		Object kyc = response.get(KYC);
+		Map<String, Object> kycDetails = null;
+		if (kyc instanceof Map) {
+			kycDetails = (Map<String, Object>) kyc;
+			Object identity = kycDetails.get(IDENTITY);
+			if (identity instanceof Map) {
+				Map<String, Object> kycIdentityMap = constructKycInfo((Map<String, Object>) identity);
+				kycDetails.put(IDENTITY, kycIdentityMap);
+
+			}
+		}
+		return kycDetails;
+	}
+
+	@SuppressWarnings("unchecked")
+	private Map<String, Object> constructKycInfo(Map<String, Object> identity) {
+		return identity.entrySet().stream()
+				.filter(entry -> entry.getValue() instanceof List)
+				.collect(Collectors.toMap(Entry::getKey, entry -> {
+					List<Map<String, Object>> listOfMap = (List<Map<String, Object>>) entry.getValue();
+					return listOfMap.stream()
+							 .map((Map<String, Object> map) -> 
+							 		map.entrySet()
+							 			.stream()
+							 			.filter(innerEntry -> innerEntry.getValue() != null)
+							 			.collect(Collectors.toMap(Entry::getKey, Entry::getValue, (map1, map2) -> map1, LinkedHashMap::new)))
+							 .collect(Collectors.toList());
+					
+				}));
+		
 	}
 
 	/**

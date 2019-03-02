@@ -20,8 +20,8 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 @Repository
 public interface VIDRepository extends BaseRepository<VIDEntity, String> {
 
-	@Query("Select uin from VIDEntity where id = :vidNumber and expiry_dtimes>=:currentDate and isActive=true ")
-	Optional<String> findUinByVid(@Param("vidNumber") String uinRefId, @Param("currentDate") LocalDateTime currentDate);
+	@Query("Select vid from VIDEntity vid where vid.id =:vidNumber")
+	Optional<VIDEntity> findUinByVid(@Param("vidNumber") String vidNumber);
 
 	@Query(value = "SELECT * FROM ida.vid where uin=:uin ORDER BY generated_dtimes DESC", nativeQuery = true)
 	List<VIDEntity> findByUIN(@Param("uin") String uin, Pageable pagaeable);

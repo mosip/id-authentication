@@ -5,7 +5,9 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,9 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
 import org.springframework.stereotype.Component;
@@ -101,7 +105,6 @@ public class AuthProvider extends AbstractUserDetailsAuthenticationProvider {
         try {
         	  response =  getResponseEntity(usernamePasswordAuthenticationToken,null);
         } catch (NonceExpiredException expired) {
-        	System.out.println(expired.getMessage());
         	
         }catch (HttpClientErrorException | HttpServerErrorException  | KeyManagementException | KeyStoreException | NoSuchAlgorithmException  err) {
 
@@ -118,7 +121,7 @@ public class AuthProvider extends AbstractUserDetailsAuthenticationProvider {
         if (mosipUserDto == null) {
             throw new RuntimeException("Invalid Token");
         }
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(mosipUserDto.getRole());
         String responseToken = response.getHeaders().get("Set-Cookie").get(0).replaceAll(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "");
         AuthUserDetails authUserDetails = new AuthUserDetails(mosipUserDto,responseToken);

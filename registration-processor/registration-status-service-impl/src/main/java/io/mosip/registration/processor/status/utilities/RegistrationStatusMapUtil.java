@@ -42,8 +42,6 @@ public class RegistrationStatusMapUtil {
 	 */
 	private static Map<RegistrationStatusCode, RegistrationExternalStatusCode> statusMapper() {
 
-		statusMap.put(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE,
-				RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN, RegistrationExternalStatusCode.PROCESSING);
 
 		statusMap.put(RegistrationStatusCode.VIRUS_SCAN_FAILED, RegistrationExternalStatusCode.REREGISTER);
@@ -71,7 +69,7 @@ public class RegistrationStatusMapUtil {
 		statusMap.put(RegistrationStatusCode.PACKET_BIO_POTENTIAL_MATCH, RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED, RegistrationExternalStatusCode.PROCESSING);
 
-		statusMap.put(RegistrationStatusCode.UIN_GENERATED, RegistrationExternalStatusCode.PROCESSED);
+		statusMap.put(RegistrationStatusCode.PACKET_UIN_GENERATION_SUCCESS, RegistrationExternalStatusCode.PROCESSED);
 
 		return unmodifiableMap;
 
