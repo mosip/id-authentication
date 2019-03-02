@@ -206,7 +206,6 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 				Gson gson = new GsonBuilder().create();
 				String idResponse = gson.toJson(idResponseDTO);
-				System.out.println("** id Response *** "+idResponse);
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString() + registrationId, "Response from IdRepo API",
 						"is :" + idResponse);
@@ -321,8 +320,6 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		idRequestDTO.setVersion(idRepoApiVersion);
 		Gson gson = new GsonBuilder().create();
 		String idRequest = gson.toJson(idRequestDTO);
-		System.out.println("** id resuest *** "+idRequest);
-
 		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 				LoggerFileConstant.REGISTRATIONID.toString() + regId, "Request to IdRepo API", "is: " + idRequest);
 		try {
@@ -333,12 +330,16 @@ public class UinGeneratorStage extends MosipVerticleManager {
 					"is : " + result.toString());
 
 		} catch (ApisResourceAccessException e) {
-//			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-//					registrationId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage()
-//							+ ExceptionUtils.getStackTrace(e));
-//
-//			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-//					registrationId, "Internal Error Occured ");
+			// regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+			// LoggerFileConstant.REGISTRATIONID.toString(),
+			// registrationId,
+			// PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() +
+			// e.getMessage()
+			// + ExceptionUtils.getStackTrace(e));
+			//
+			// regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+			// LoggerFileConstant.REGISTRATIONID.toString(),
+			// registrationId, "Internal Error Occured ");
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 				description = UIN_GENERATION_FAILED + registrationId + "::"
@@ -496,9 +497,9 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	 */
 	public void deployVerticle() {
 		//
-		 mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
-		 this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,
-		 MessageBusAddress.UIN_GENERATION_BUS_OUT);
+		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
+		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,
+				MessageBusAddress.UIN_GENERATION_BUS_OUT);
 
 	}
 }
