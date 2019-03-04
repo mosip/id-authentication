@@ -39,8 +39,8 @@ public class ApplicationContext {
 	 */
 	public void loadResourceBundle() {
 		try {
-			applicationLanguge = "eng";
-			localLanguage = "ara";
+			applicationLanguge = (String) applicationMap.get(RegistrationConstants.PRIMARY_LANGUAGE);
+			localLanguage = (String) applicationMap.get(RegistrationConstants.SECONDARY_LANGUAGE);
 		} catch (RuntimeException exception) {
 			LOGGER.error("Application Context", RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
