@@ -270,10 +270,10 @@ public class BaseController {
 	 */
 	protected void generateAlert(AnchorPane parentPane, String id, String context, String isConsolidated,
 			StringBuilder validationMessage) {
-		if (id.equals(RegistrationConstants.DD) || id.equals(RegistrationConstants.MM) || id.equals(RegistrationConstants.YYYY)) {
+		if (RegistrationConstants.DD.equalsIgnoreCase(id) || RegistrationConstants.MM.equalsIgnoreCase(id) || RegistrationConstants.YYYY.equalsIgnoreCase(id)) {
 			id = RegistrationConstants.DOB;
 		}
-		if (isConsolidated.equals(RegistrationConstants.DISABLE)) {
+		if (RegistrationConstants.DISABLE.equalsIgnoreCase(isConsolidated)) {
 			Label label = ((Label) (parentPane.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
 			if (!label.isVisible()) {
 				label.setText(context);

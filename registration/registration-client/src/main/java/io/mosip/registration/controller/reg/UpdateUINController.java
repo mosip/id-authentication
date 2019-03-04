@@ -128,19 +128,19 @@ public class UpdateUINController extends BaseController implements Initializable
 			SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
 			fxUtils.validateOnType(uinUpdateRoot, uinId, validation);
 			biometricBox.getChildren().forEach(bio -> {
-				if (fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)
-						&& bio.getId().equals(RegistrationConstants.UIN_UPDATE_BIO_FP)) {
+				if (RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
+							&& RegistrationConstants.UIN_UPDATE_BIO_FP.equalsIgnoreCase(bio.getId())) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}
-				if (irisDisableFlag.equals(RegistrationConstants.DISABLE)
-						&& bio.getId().equals(RegistrationConstants.UIN_UPDATE_BIO_IRIS)) {
+				if (RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
+						&& RegistrationConstants.UIN_UPDATE_BIO_IRIS.equalsIgnoreCase(bio.getId())) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}
-				if (fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)
-						&& irisDisableFlag.equals(RegistrationConstants.DISABLE)
-						&& bio.getId().equals(RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION)) {
+				if (RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
+						&& RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
+						&& RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION.equalsIgnoreCase(bio.getId())) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}
@@ -184,16 +184,16 @@ public class UpdateUINController extends BaseController implements Initializable
 			} else {
 				biometricBox.getChildren().forEach(demographicNode -> {
 					if (demographicNode.getId().equals(RegistrationConstants.UIN_UPDATE_BIO_FP)
-							&& fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)) {
+							&& RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)) {
 						demographicNode.setVisible(false);
 						demographicNode.setManaged(false);
 					} else if (demographicNode.getId().equals(RegistrationConstants.UIN_UPDATE_BIO_IRIS)
-							&& irisDisableFlag.equals(RegistrationConstants.DISABLE)) {
+							&& RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)) {
 						demographicNode.setVisible(false);
 						demographicNode.setManaged(false);
 					} else if (demographicNode.getId().equals(RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION)
-							&& fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)
-							&& irisDisableFlag.equals(RegistrationConstants.DISABLE)) {
+							&& RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
+							&& RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)) {
 						demographicNode.setVisible(false);
 						demographicNode.setManaged(false);
 					}

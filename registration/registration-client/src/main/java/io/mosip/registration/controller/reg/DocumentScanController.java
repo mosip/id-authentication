@@ -941,7 +941,7 @@ public class DocumentScanController extends BaseController {
 			}
 			registrationController.showUINUpdateCurrentPage();
 		} else {
-			if (documentDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+			if (RegistrationConstants.ENABLE.equalsIgnoreCase(documentDisableFlag)) {
 				if (registrationController.validateDemographicPane(documentScanPane)) {
 					registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN,
 							getPageDetails(RegistrationConstants.DOCUMENT_SCAN, RegistrationConstants.NEXT));

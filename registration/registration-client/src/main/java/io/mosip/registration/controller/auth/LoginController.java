@@ -362,12 +362,12 @@ public class LoginController extends BaseController implements Initializable {
 								errorPane.setVisible(true);
 							} else {
 
-								if ((fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)
-										&& loginMode.equalsIgnoreCase(RegistrationConstants.BIO))
-										|| (irisDisableFlag.equals(RegistrationConstants.DISABLE)
-												&& loginMode.equalsIgnoreCase(RegistrationConstants.IRIS))
-										|| (faceDisableFlag.equals(RegistrationConstants.DISABLE)
-												&& loginMode.equalsIgnoreCase(RegistrationConstants.FACE))) {
+								if ((RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
+										&& RegistrationConstants.BIO.equalsIgnoreCase(loginMode))
+										|| (RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
+												&& RegistrationConstants.IRIS.equalsIgnoreCase(loginMode))
+										|| (RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)
+												&& RegistrationConstants.FACE.equalsIgnoreCase(loginMode))) {
 
 									generateAlert(RegistrationConstants.ERROR,
 											RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1
