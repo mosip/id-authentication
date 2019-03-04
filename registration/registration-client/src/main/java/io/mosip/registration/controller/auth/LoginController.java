@@ -1042,7 +1042,7 @@ public class LoginController extends BaseController implements Initializable {
 				"Comparing timestamps in case of invalid login attempts");
 
 		return (loginCount >= invalidLoginCount && TimeUnit.MILLISECONDS
-				.toMinutes(System.currentTimeMillis() - loginTime.getTime()) > invalidLoginTime);
+				.toMinutes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime() - loginTime.getTime()) > invalidLoginTime);
 	}
 
 }
