@@ -107,11 +107,13 @@ public class PolicySyncServiceTest {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
 		Date date = dateFormat.parse("2020-12-29");
 		Timestamp timestamp = new Timestamp(date.getTime());
+
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 		KeyStore keyStore = new KeyStore();
 		keyStore.setValidTillDtimes(timestamp);
 		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
+
 		assertNotNull(policySyncServiceImpl.fetchPolicy());
 
 	}
@@ -136,28 +138,26 @@ public class PolicySyncServiceTest {
 
 		assertNotNull(policySyncServiceImpl.fetchPolicy());
 	}
+
 	@Test
-	public void checkKeyValidationExpiryTest()
-	{
-		KeyStore keyStore=new KeyStore();
+	public void checkKeyValidationExpiryTest() {
+		KeyStore keyStore = new KeyStore();
 		keyStore.setValidTillDtimes(Timestamp.valueOf(LocalDateTime.now()));
 		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
 		policySyncServiceImpl.checkKeyValidation();
 	}
-	
+
 	@Test
-	public void checkKeyValidationTest()
-	{
-		KeyStore keyStore=new KeyStore();
+	public void checkKeyValidationTest() {
+		KeyStore keyStore = new KeyStore();
 		keyStore.setValidTillDtimes(Timestamp.valueOf(("2019-03-28 13:00:57.172")));
 		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
 		policySyncServiceImpl.checkKeyValidation();
 	}
-	
+
 	@Test
-	public void checkKeyValidationTestFailure()
-	{
-		KeyStore keyStore=new KeyStore();
+	public void checkKeyValidationTestFailure() {
+		KeyStore keyStore = new KeyStore();
 		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
 		policySyncServiceImpl.checkKeyValidation();
 	}
