@@ -7,13 +7,8 @@
   						smoke
   						regression
   						smokeAndRegression -->
- <test name="SyncPublicKeyToRegClient">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.SyncPublicKeyToRegClient" />
-			</classes>
-		</test>
-  		   <!-- <test name="AuditLog">
+ 
+  		   <test name="AuditLog">
 			<parameter name="testType" value="smokeandregression" />
 			<classes>
 				<class name="io.mosip.kernel.tests.AuditLog" />
@@ -318,7 +313,7 @@
 				<class name="io.mosip.kernel.tests.ValidateLocationByName" />
 			</classes>
 
-		</test>   -->
+		</test>  
 		
 
 </suite> <!-- Suite -->
