@@ -168,8 +168,8 @@ public class IDAuthExceptionHandlerTest {
 	BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
 	expectedResponse.setStatus("N");
 	expectedResponse.setErr(
-		Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorCode(),
-			IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorMessage())));
+		Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNABLE_PROCESS.getErrorCode(),
+			IdAuthenticationErrorConstants.UNABLE_PROCESS.getErrorMessage())));
 	ResponseEntity<Object> handleExceptionInternal = handler
 		.handleIdAppException(new IdAuthenticationAppException("1234", "1234"), null);
 	BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();

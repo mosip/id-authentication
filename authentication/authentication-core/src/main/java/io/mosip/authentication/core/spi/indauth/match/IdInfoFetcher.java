@@ -12,6 +12,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;;
 
 /**
@@ -66,10 +67,10 @@ public interface IdInfoFetcher {
 	public ValidateOtpFunction getValidateOTPFunction();
 
 	public Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValues(Map<String, List<IdentityInfoDTO>> idEntity,
-			String string) throws IdAuthenticationBusinessException;
+			CbeffDocType cbeffDocType, MatchType matchType) throws IdAuthenticationBusinessException;
 
 	public Environment getEnvironment();
-	
+
 	public MasterDataFetcher getTitleFetcher();
 
 }

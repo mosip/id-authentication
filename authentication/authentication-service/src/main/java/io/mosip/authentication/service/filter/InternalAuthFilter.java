@@ -22,7 +22,7 @@ public class InternalAuthFilter extends BaseAuthFilter {
 	 * util.Map)
 	 */
 	@Override
-	protected Map<String, Object> decodedRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
+	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
 			requestBody.replace(REQUEST, decode((String) requestBody.get(REQUEST)));
 			if (null != requestBody.get(REQUEST)) {
@@ -40,26 +40,14 @@ public class InternalAuthFilter extends BaseAuthFilter {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * io.mosip.authentication.service.filter.BaseAuthFilter#encodedResponse(java.
-	 * util.Map)
-	 */
-	@Override
-	protected Map<String, Object> encodedResponse(Map<String, Object> responseBody)
-			throws IdAuthenticationAppException {
-		return responseBody;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
 	 * io.mosip.authentication.service.filter.BaseAuthFilter#setTxnId(java.util.Map,
 	 * java.util.Map)
 	 */
 	@Override
-	protected Map<String, Object> setResponseParam(Map<String, Object> requestBody, Map<String, Object> responseBody)
+	protected Map<String, Object> setResponseParams(Map<String, Object> requestBody, Map<String, Object> responseBody)
 			throws IdAuthenticationAppException {
-		return setAuthResponseParam(requestBody, responseBody);
+		Map<String, Object> responseParams = super.setResponseParams(requestBody, responseBody);
+		return setAuthResponseParam(requestBody, responseParams);
 	}
 
 	@Override

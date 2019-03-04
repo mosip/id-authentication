@@ -10,7 +10,6 @@ import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.service.factory.IDAMappingFactory;
 import lombok.Data;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class IDAMappingConfig.
  *
@@ -18,7 +17,7 @@ import lombok.Data;
  */
 
 @Configuration
-@PropertySource(value = "classpath:ida-mapping.json", factory = IDAMappingFactory.class)
+@PropertySource(value = "${ida.mapping.property.source}", factory = IDAMappingFactory.class)
 @ConfigurationProperties
 
 /**

@@ -57,6 +57,35 @@ public class TokenGenerator {
         claims.put("isOtpVerified", isOtpVerifiedYet);
         return buildToken(claims);
     }
+    
+    public String refreshTokenForOTP(MosipUserDto mosipUser) {
+    	Claims claims = getBasicClaims(mosipUser);
+        claims.put("isOtpRequired", true);
+        claims.put("isOtpVerified", true);
+		return buildRefreshTokenOTP(claims);
+	}
+
+	private String buildRefreshTokenOTP(Claims claims) {
+        String secret = mosipEnvironment.getJwtSecret();
+        String token_base = mosipEnvironment.getTokenBase();
+        long token_expiry = mosipEnvironment.getRefreshTokenExpiry();
+
+        long currentTimeInMs = System.currentTimeMillis();
+        Date currentDate = new Date(currentTimeInMs);
+
+        JwtBuilder builder = Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(currentDate)
+                .signWith(SignatureAlgorithm.HS512, secret);
+
+
+        if (token_expiry >= 0) {
+            long expTimeInMs = currentTimeInMs + token_expiry;
+            builder.setExpiration(new Date(expTimeInMs));
+        }
+
+        return token_base.concat(builder.compact());
+    }
 
 	public BasicTokenDto basicGenerate(MosipUserDto mosipUser) {
 		BasicTokenDto basicTokenDto = new BasicTokenDto();
@@ -65,6 +94,22 @@ public class TokenGenerator {
 	        claims.put("mail", mosipUser.getMail());
 	        claims.put("role", mosipUser.getRole());
 	        claims.put("lang", mosipUser.getLangCode());
+	        TimeToken token = getToken(claims);
+	        String refreshToken = buildRefreshToken(claims);
+	        basicTokenDto.setAuthToken(token.getToken());
+	        basicTokenDto.setRefreshToken(refreshToken);
+	        basicTokenDto.setExpiryTime(token.getExpTime());
+		return basicTokenDto;
+	}
+	public BasicTokenDto basicGenerateOTPToken(MosipUserDto mosipUser,boolean otpVerified) {
+		BasicTokenDto basicTokenDto = new BasicTokenDto();
+		 Claims claims = Jwts.claims().setSubject(mosipUser.getUserName());
+	        claims.put("mobile", mosipUser.getMobile());
+	        claims.put("mail", mosipUser.getMail());
+	        claims.put("role", mosipUser.getRole());
+	        claims.put("lang", mosipUser.getLangCode());
+	        claims.put("isOtpRequired", true);
+	        claims.put("isOtpVerified", otpVerified);
 	        TimeToken token = getToken(claims);
 	        String refreshToken = buildRefreshToken(claims);
 	        basicTokenDto.setAuthToken(token.getToken());

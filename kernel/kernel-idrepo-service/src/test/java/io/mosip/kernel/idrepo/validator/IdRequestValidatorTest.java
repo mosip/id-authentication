@@ -317,7 +317,7 @@ public class IdRequestValidatorTest {
 	public void testValidateRequestWithDocumentsDuplicateDoc() throws JsonParseException, JsonMappingException,
 			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		ReflectionTestUtils.invokeMethod(validator, "validateDocuments",
-				mapper.readValue("{\"identity\":{\"individualBiometrics\": {\"format\": \"cbeff\", \"version\": 1.0,\"value\": \"le monde est grand et petit\"}},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}, {\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}".getBytes(),
+				mapper.readValue("{\"identity\":{\"individualBiometrics\": {\"format\": \"cbeff\", \"version\": 1.0,\"fileReference\": \"le monde est grand et petit\"}},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}, {\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}".getBytes(),
 						Map.class),
 				errors);
 		assertTrue(errors.hasErrors());

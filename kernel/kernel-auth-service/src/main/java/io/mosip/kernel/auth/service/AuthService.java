@@ -12,7 +12,7 @@ import io.mosip.kernel.auth.entities.MosipUserDtoToken;
  */
 public interface AuthService extends AuthZService,AuthNService{
 	
-	public MosipUserDtoToken retryToken(String existingToken);
-	public AuthNResponse invalidateToken(String token);
+	public MosipUserDtoToken retryToken(String existingToken) throws Exception;
+	public AuthNResponse invalidateToken(String token) throws Exception;
 
 }

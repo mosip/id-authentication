@@ -57,7 +57,7 @@ public class IdAuthFilterTest {
 	public void testSetTxnId() throws IdAuthenticationAppException, ServletException {
 		requestBody.put("txnId", null);
 		responseBody.put("txnId", "1234");
-		assertEquals(responseBody.toString(), filter.setResponseParam(requestBody, responseBody).toString());
+		assertEquals(responseBody.toString(), filter.setResponseParams(requestBody, responseBody).toString());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -74,7 +74,16 @@ public class IdAuthFilterTest {
 				"{\"authType\":{\"address\":\"true\",\"bio\":\"true\",\"face\":\"true\",\"fingerprint\":\"true\",\"fullAddress\":\"true\",\"iris\":\"true\",\"otp\":\"true\",\"personalIdentity\":\"true\",\"pin\":\"true\"}}"
 						.getBytes(),
 				Map.class));
-		assertEquals(responseBody.toString(), filter.decodedRequest(requestBody).toString());
+		assertEquals(responseBody.toString(), filter.decipherRequest(requestBody).toString());
+	}
+	
+	@Test(expected=IdAuthenticationAppException.class)
+	public void testInValidDecodedRequest() throws IdAuthenticationAppException, JsonParseException, JsonMappingException, IOException {
+		KeyManager keyManager = Mockito.mock(KeyManager.class);
+		ReflectionTestUtils.setField(filter, "keyManager", keyManager);
+		requestBody.put("request",
+				123214214);
+		filter.decipherRequest(requestBody);
 	}
 
 	@Test
@@ -85,6 +94,11 @@ public class IdAuthFilterTest {
 				"{authType={address=true, bio=true, face=true, fingerprint=true, fullAddress=true, iris=true, otp=true, personalIdentity=true, pin=true}}");
 		responseBody.put("request",
 				"{authType={address=true, bio=true, face=true, fingerprint=true, fullAddress=true, iris=true, otp=true, personalIdentity=true, pin=true}}");
-		assertEquals(requestBody.toString(), filter.encodedResponse(responseBody).toString());
+		assertEquals(requestBody.toString(), filter.encipherResponse(responseBody).toString());
+	}
+	
+	@Test
+	public void testSign() throws IdAuthenticationAppException {
+		assertEquals(true, filter.validateSignature("something", "something".getBytes()));
 	}
 }

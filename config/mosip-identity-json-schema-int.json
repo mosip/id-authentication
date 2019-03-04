@@ -149,11 +149,11 @@
 				"type": {
 					"type": "string"
 				},
-				"fileReference": {
+				"value": {
 					"type": "string"
 				}
 			},
-			"additionalProperties": true
+			"additionalProperties": false
 		},
 		"biometricsType": {
 			"type": "object",
@@ -164,11 +164,11 @@
 				"version": {
 					"type": "number"
 				},
-				"fileReference": {
+				"value": {
 					"type": "string"
 				}
 			},
-			"additionalProperties": true
+			"additionalProperties": false
 		}
 	}
 }
