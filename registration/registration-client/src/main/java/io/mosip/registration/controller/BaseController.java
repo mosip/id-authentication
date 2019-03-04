@@ -179,7 +179,6 @@ public class BaseController {
 	}
 
 	protected Scene getScene(Parent borderPane) {
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		scene = fXComponents.getScene();
 		if (scene == null) {
 			scene = new Scene(borderPane);
@@ -187,7 +186,7 @@ public class BaseController {
 		}
 		scene.setRoot(borderPane);
 		fXComponents.getStage().setScene(scene);
-		scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+		scene.getStylesheets().add(ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 		return scene;
 	}
 

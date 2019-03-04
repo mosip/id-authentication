@@ -79,7 +79,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.util.StringConverter;
 
 /**
- * Class for Registration Page Controller
+ * Class for Demographic Detail Page Controller
  * 
  * @author Taleev.Aalam
  * @since 1.0.0
@@ -92,7 +92,7 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * Instance of {@link Logger}
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(RegistrationController.class);
+	private static final Logger LOGGER = AppConfig.getLogger(DemographicDetailController.class);
 
 	@FXML
 	public TextField preRegistrationId;

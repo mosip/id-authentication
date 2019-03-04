@@ -125,9 +125,9 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 					getPreRegistration(responseDTO, preRegDetail.getKey(), syncJobId,
 							Timestamp.from(Instant.parse(preRegDetail.getValue())));
-					if (responseDTO.getErrorResponseDTOs() != null) {
+				/*	if (responseDTO.getErrorResponseDTOs() != null) {
 						break;
-					}
+					}*/
 				}
 			} else {
 				String errMsg = RegistrationConstants.PRE_REG_TO_GET_ID_ERROR;

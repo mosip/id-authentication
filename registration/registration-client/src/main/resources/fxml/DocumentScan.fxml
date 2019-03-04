@@ -34,9 +34,9 @@
                   <Label id="toggleLabel2" fx:id="bioExceptionToggleLabel2" layoutX="0.0" layoutY="2.0" styleClass="toggleButton" text="" />
                </children>
             </AnchorPane>
-            <Label layoutX="12.0" layoutY="8.0" styleClass="biometricEceptionLabel" text="%biometricexception" />
-            <Label layoutX="300.0" layoutY="15.0" text="%no" styleClass="uinUpdateLabelsTypeTwo" />
-            <Label layoutX="425.0" layoutY="15.0" text="%yes" styleClass="uinUpdateLabelsTypeTwo" />
+            <Label layoutX="12.0" layoutY="8.0" styleClass="biometricEceptionLabel" text="%biometricexceptionrequired" />
+            <Label layoutX="300.0" layoutY="15.0" styleClass="uinUpdateLabelsTypeTwo" text="%no" />
+            <Label layoutX="425.0" layoutY="15.0" styleClass="uinUpdateLabelsTypeTwo" text="%yes" />
          </children>
       </AnchorPane>
       <AnchorPane fx:id="RegistrationHeader">
@@ -113,7 +113,6 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button layoutX="887.0" layoutY="8.0" mnemonicParsing="false" onAction="#skip" styleClass="backButton" text="Skip" />
             <Button layoutX="1026.0" layoutY="5.0" mnemonicParsing="false" onAction="#next" styleClass="contiuneButton" text="Continue">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">

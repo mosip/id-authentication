@@ -214,7 +214,7 @@
             </Button>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="registrationFooter" layoutY="554.0" styleClass="registrationFooter">
+      <AnchorPane fx:id="registrationFooter" layoutY="624.0" styleClass="registrationFooter">
          <children>
             <Button layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back">
                <graphic>
@@ -238,12 +238,12 @@
       </AnchorPane>
       <AnchorPane fx:id="registrationExceptionHeader">
          <children>
-            <AnchorPane fx:id="RegistrationHeader" layoutY="0.0">
+            <AnchorPane fx:id="biometricExceptionHeader" layoutY="0.0">
                <children>
                   <AnchorPane>
                      <children>
-                        <Button layoutY="2.0" mnemonicParsing="false" text="%home" />
-                        <Label layoutX="65.0" layoutY="7.0" text="/  Registration" />
+                        <Button layoutY="5.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+                        <Label layoutX="65.0" layoutY="7.0" styleClass="headerLabel" text="%/biometricException" />
                      </children>
                   </AnchorPane>
                </children>
@@ -294,7 +294,7 @@
             </AnchorPane>
          </children>
       </AnchorPane>
-      <ImageView fx:id="trackerImage" fitHeight="25.0" fitWidth="194.0" layoutX="710.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="trackerImage" fitHeight="25.0" fitWidth="194.0" layoutX="710.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/DemographicpageTracker.png" />
          </image>

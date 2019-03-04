@@ -968,6 +968,13 @@ Working on new Css by taleev
 	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
 }
 
+#biometricExceptionHeader{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 39px;
+	-fx-pref-width: 1290px;
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+}
+
 .parentPane{
 	-fx-background-color:#F4F4F4;
 	-fx-pref-height: 794px;
@@ -1349,7 +1356,7 @@ Working on new Css by taleev
 .registrationHeaderBorder{
 	-fx-border-width: 0 0 1 0;
 	-fx-border-color: #FF4081;
-	-fx-pref-height: 28px;	
+	-fx-pref-height: 30px;	
 	-fx-pref-width: 940px;
 	
 }
@@ -1416,6 +1423,15 @@ Working on new Css by taleev
 	-fx-background-color:#FFFFFF;
 	-fx-pref-height: 35px;
 	-fx-pref-width: 1290px;
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+}
+
+#reRegistrationHeader{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 35px;
+	-fx-pref-width: 1290px;	
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+
 	
 }
 
@@ -1564,7 +1580,7 @@ Working on new Css by taleev
 	-fx-background-color:#FFFFFF;
 	-fx-pref-height: 40px;	
 	-fx-pref-width: 1290px;
-	-fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,1.0), 10.0, 0.0, 0.0, 0.0);
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
 }
 
 .pendingApprovalTableId{
@@ -1687,4 +1703,3 @@ Working on new Css by taleev
 .rejectCommentCloseButton{
 	-fx-background-color:white;
 }
-
