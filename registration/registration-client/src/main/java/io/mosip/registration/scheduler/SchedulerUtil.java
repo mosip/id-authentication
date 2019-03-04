@@ -3,7 +3,6 @@ package io.mosip.registration.scheduler;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Optional;
@@ -16,13 +15,11 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -152,16 +149,6 @@ public class SchedulerUtil extends BaseController {
 	public static void stopScheduler() {
 		if (timer != null) {
 			timer.cancel();
-		}
-	}
-
-	private void loadLoginScreen() {
-		try {
-			Parent root = load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
-			getStage().setScene(getScene(root));
-		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		}
 	}
 }

@@ -992,6 +992,7 @@ public class LoginController extends BaseController implements Initializable {
 			} else {
 
 				generateAlert(RegistrationConstants.ERROR, unlockMessage);
+				loadLoginScreen();
 
 			}
 			return false;
@@ -1010,6 +1011,7 @@ public class LoginController extends BaseController implements Initializable {
 				if (loginCount >= invalidLoginCount) {
 
 					generateAlert(RegistrationConstants.ERROR, unlockMessage);
+					loadLoginScreen();
 
 				} else {
 

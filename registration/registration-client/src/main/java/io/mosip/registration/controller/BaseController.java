@@ -371,6 +371,24 @@ public class BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 		}
 	}
+	
+	
+	/**
+	 * 
+	 * Opens the home page screen
+	 * 
+	 * @throws ioException
+	 * 
+	 */
+	public void loadLoginScreen() {
+		try {
+			Parent root = load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
+			getStage().setScene(getScene(root));
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - REDIRECLOGIN - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+		}
+	}
 
 	/**
 	 * This method is used clear all the new registration related mapm values and
