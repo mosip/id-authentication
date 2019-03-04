@@ -275,14 +275,7 @@ export class DashBoardComponent implements OnInit {
     this.dataStorageService
       .getUserDocuments(preId)
       .subscribe(response => this.setUserFiles(response), error => console.log('response from modify data', error));
-    this.sharedService.addNameList({
-      fullName: user.name,
-      preRegId: user.applicationID,
-      regDto: user.regDto,
-      status: user.status,
-      fullNameSecondaryLang: user.nameInSecondaryLanguage,
-      postalCode: user.postalCode
-    });
+    this.addtoNameList(user);
     console.log(this.sharedService.getNameList());
 
     this.dataStorageService.getUser(preId).subscribe(
@@ -323,28 +316,36 @@ export class DashBoardComponent implements OnInit {
 
   onModifyMultipleAppointment() {
     for (let index = 0; index < this.selectedUsers.length; index++) {
-      const preId = this.selectedUsers[index].applicationID;
-      const fullName = this.selectedUsers[index].name;
-      const regDto = this.selectedUsers[index].regDto;
-      const status = this.selectedUsers[index].status;
-      const postalCode = this.selectedUsers[index].postalCode;
-      const nameInSecondaryLanguage = this.selectedUsers[index].nameInSecondaryLanguage;
-      this.sharedService.addNameList({
-        fullName: fullName,
-        preRegId: preId,
-        regDto: regDto,
-        status: status,
-        postalCode: postalCode,
-        fullNameSecondaryLang: nameInSecondaryLanguage
-      });
+      this.addtoNameList(this.selectedUsers[index]);
     }
     let url = '';
     url = Utils.getURL(this.router.url, 'pre-registration/booking/pick-center');
     this.router.navigateByUrl(url);
   }
 
-  onAcknowledgementView(applicationID: any) {
-    console.log(applicationID);
+  onAcknowledgementView(user: any) {
+    console.log(user);
+    this.addtoNameList(user);
+    let url = '';
+    url = Utils.getURL(this.router.url, 'pre-registration/summary/acknowledgement');
+    this.router.navigateByUrl(url);
+  }
+
+  private addtoNameList(user: Applicant) {
+    const preId = user.applicationID;
+    const fullName = user.name;
+    const regDto = user.regDto;
+    const status = user.status;
+    const postalCode = user.postalCode;
+    const nameInSecondaryLanguage = user.nameInSecondaryLanguage;
+    this.sharedService.addNameList({
+      fullName: fullName,
+      preRegId: preId,
+      regDto: regDto,
+      status: status,
+      postalCode: postalCode,
+      fullNameSecondaryLang: nameInSecondaryLanguage
+    });
   }
 
   setUserFiles(response) {
