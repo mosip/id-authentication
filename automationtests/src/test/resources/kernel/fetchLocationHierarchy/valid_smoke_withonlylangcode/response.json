@@ -1,34 +1,34 @@
 {
-  "locations": [
-    {
-      "locationHierarchylevel": 3,
-      "locationHierarchyName": "City",
-      "isActive": true
-    },
-    {
-      "locationHierarchylevel": 2,
-      "locationHierarchyName": "Province",
-      "isActive": true
-    },
-    {
-      "locationHierarchylevel": 4,
-      "locationHierarchyName": "Local Administrative Authority",
-      "isActive": true
-    },
-    {
-      "locationHierarchylevel": 5,
-      "locationHierarchyName": "Postal Code",
-      "isActive": true
-    },
-    {
-      "locationHierarchylevel": 1,
-      "locationHierarchyName": "Region",
-      "isActive": true
-    },
-    {
-      "locationHierarchylevel": 0,
-      "locationHierarchyName": "Country",
-      "isActive": true
-    }
-  ]
+    "locations": [
+        {
+            "locationHierarchylevel": 2,
+            "locationHierarchyName": "city",
+            "isActive": true
+        },
+        {
+            "locationHierarchylevel": 4,
+            "locationHierarchyName": "Postal Code",
+            "isActive": true
+        },
+        {
+            "locationHierarchylevel": 1,
+            "locationHierarchyName": "Region",
+            "isActive": true
+        },
+        {
+            "locationHierarchylevel": 2,
+            "locationHierarchyName": "Province",
+            "isActive": true
+        },
+        {
+            "locationHierarchylevel": 0,
+            "locationHierarchyName": "Country",
+            "isActive": true
+        },
+        {
+            "locationHierarchylevel": 3,
+            "locationHierarchyName": "Local Administrative Authority",
+            "isActive": true
+        }
+    ]
 }

@@ -166,9 +166,7 @@ import io.mosip.service.ApplicationLibrary;
 	              ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 	              listOfElementToRemove.add("timestamp");
 	              
-	              JSONObject respo = (JSONObject) new JSONParser().parse(response.asString());
-	              
-	              if (respo.containsKey("publicKey"))
+	              if (testcaseName.toLowerCase().contains("smoke"))
 	              {
 	                     System.err.println((response.jsonPath().get("publicKey")).toString());
 	                     String referenceId=(objectData.get("referenceId")).toString();
