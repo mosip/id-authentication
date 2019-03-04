@@ -63,8 +63,8 @@ public class ApplicantTypeImpl implements ApplicantType {
 				dob = entry.getValue();
 			} else if (entry.getKey().equals(ATTR_GENDER_TYPE)) {
 				genderType = entry.getValue();
-			} else if (entry.getKey().equals(ATTR_BIOMETRIC_EXCEPTION_TYPE) && !isNullEmpty(entry.getValue())) {
-				isBioExPresent = entry.getValue().equals("true");
+			} else if (entry.getKey().equals(ATTR_BIOMETRIC_EXCEPTION_TYPE)) {
+				isBioExPresent = Boolean.parseBoolean(entry.getValue());
 			}
 		}
 
