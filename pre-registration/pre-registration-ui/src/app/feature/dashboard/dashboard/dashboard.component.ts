@@ -327,11 +327,15 @@ export class DashBoardComponent implements OnInit {
       const fullName = this.selectedUsers[index].name;
       const regDto = this.selectedUsers[index].regDto;
       const status = this.selectedUsers[index].status;
+      const postalCode = this.selectedUsers[index].postalCode;
+      const nameInSecondaryLanguage = this.selectedUsers[index].nameInSecondaryLanguage;
       this.sharedService.addNameList({
         fullName: fullName,
         preRegId: preId,
         regDto: regDto,
-        status: status
+        status: status,
+        postalCode: postalCode,
+        fullNameSecondaryLang: nameInSecondaryLanguage
       });
     }
     let url = '';
