@@ -27,12 +27,14 @@ import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.AuditLogControlDAO;
+import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -46,12 +48,13 @@ import io.mosip.registration.dto.cbeff.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.registration.dto.cbeff.jaxbclasses.SingleType;
 import io.mosip.registration.dto.cbeff.jaxbclasses.TestBiometric;
 import io.mosip.registration.dto.cbeff.jaxbclasses.TestBiometricType;
-import io.mosip.registration.dto.demographic.CBEFFFilePropertiesDTO;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
 import io.mosip.registration.dto.json.metadata.DemographicSequence;
+import io.mosip.registration.dto.json.metadata.FieldValue;
 import io.mosip.registration.dto.json.metadata.FieldValueArray;
 import io.mosip.registration.dto.json.metadata.HashSequence;
 import io.mosip.registration.dto.json.metadata.PacketMetaInfo;
+import io.mosip.registration.entity.RegDeviceMaster;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
@@ -66,7 +69,6 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_CREATION;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.DEMOGRPAHIC_JSON_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.REGISTRATION_ID;
 import static io.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
 
 /**
@@ -93,6 +95,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private AuditLogControlDAO auditLogControlDAO;
 	@Autowired
 	private AuditDAO auditDAO;
+	@Autowired
+	private MachineMappingDAO machineMappingDAO;
 
 	/*
 	 * (non-Javadoc)
@@ -100,6 +104,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	 * @see io.mosip.registration.service.PacketCreationService#create(io.mosip.
 	 * registration.dto.RegistrationDTO)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public byte[] create(final RegistrationDTO registrationDTO) throws RegBaseCheckedException {
 		LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Creation had been called");
@@ -119,21 +124,12 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 					RegistrationConstants.INDIVIDUAL, birUUIDs);
 			if (cbeffInBytes != null) {
 				filesGeneratedForPacket.put(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME, cbeffInBytes);
-
-				registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
-						.setIndividualBiometrics(Builder.build(CBEFFFilePropertiesDTO.class)
-								.with(cbeffProperty -> cbeffProperty.setFormat(RegistrationConstants.CBEFF_FILE_FORMAT))
-								.with(cbeffProperty -> cbeffProperty
-										.setValue(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME.replace(
-												RegistrationConstants.XML_FILE_FORMAT, RegistrationConstants.EMPTY)))
-								.with(cbeffProperty -> cbeffProperty.setVersion(1.0)).get());
 			}
 
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME));
-			auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR,
-					String.format(loggerMessageForCBEFF, RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME),
-					REGISTRATION_ID, rid);
+			auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
+					AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 
 			if (registrationDTO.getBiometricDTO().getIntroducerBiometricDTO() != null) {
 				cbeffInBytes = createCBEFFXML(registrationDTO.getBiometricDTO().getIntroducerBiometricDTO(),
@@ -142,21 +138,10 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				if (cbeffInBytes != null) {
 					filesGeneratedForPacket.put(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME, cbeffInBytes);
 
-					registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
-							.setParentOrGuardianBiometrics(Builder.build(CBEFFFilePropertiesDTO.class)
-									.with(cbeffProperty -> cbeffProperty
-											.setFormat(RegistrationConstants.CBEFF_FILE_FORMAT))
-									.with(cbeffProperty -> cbeffProperty
-											.setValue(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME.replace(
-													RegistrationConstants.XML_FILE_FORMAT,
-													RegistrationConstants.EMPTY)))
-									.with(cbeffProperty -> cbeffProperty.setVersion(1.0)).get());
-
 					LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 							String.format(loggerMessageForCBEFF, RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME));
-					auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR,
-							String.format(loggerMessageForCBEFF, RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME),
-							REGISTRATION_ID, rid);
+					auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
+							AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 				}
 			}
 
@@ -169,9 +154,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 					LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 							String.format(loggerMessageForCBEFF, RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME));
-					auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR,
-							String.format(loggerMessageForCBEFF, RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME),
-							REGISTRATION_ID, rid);
+					auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
+							AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 				}
 			}
 
@@ -184,9 +168,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 					LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 							String.format(loggerMessageForCBEFF, RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME));
-					auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR,
-							String.format(loggerMessageForCBEFF, RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME),
-							REGISTRATION_ID, rid);
+					auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
+							AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 				}
 			}
 
@@ -197,9 +180,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.DEMOGRPAHIC_JSON_NAME));
-			auditFactory.audit(AuditEvent.PACKET_DEMO_JSON_CREATED, Components.PACKET_CREATOR,
-					String.format(loggerMessageForCBEFF, RegistrationConstants.DEMOGRPAHIC_JSON_NAME), REGISTRATION_ID,
-					rid);
+			auditFactory.audit(AuditEvent.PACKET_DEMO_JSON_CREATED, Components.PACKET_CREATOR, rid,
+					AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 
 			// Generating Audit JSON as byte array
 			// Fetch unsync'ed audit logs from DB
@@ -212,8 +194,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.AUDIT_JSON_FILE));
-			auditFactory.audit(AuditEvent.PACKET_META_JSON_CREATED, Components.PACKET_CREATOR,
-					String.format(loggerMessageForCBEFF, RegistrationConstants.AUDIT_JSON_FILE), REGISTRATION_ID, rid);
+			auditFactory.audit(AuditEvent.PACKET_META_JSON_CREATED, Components.PACKET_CREATOR, rid,
+					AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 
 			// Generating HMAC File as byte array
 			HashSequence hashSequence = new HashSequence(new BiometricSequence(new LinkedList<>(), new LinkedList<>()),
@@ -223,9 +205,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_DATA_HASH_FILE_NAME));
-			auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR,
-					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_DATA_HASH_FILE_NAME),
-					REGISTRATION_ID, rid);
+			auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
+					AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 
 			// Generating packet_osi_hash text file as byte array
 			filesGeneratedForPacket.put(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME,
@@ -233,34 +214,43 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_OSI_HASH_FILE_NAME));
-			auditFactory.audit(AuditEvent.PACKET_META_JSON_CREATED, Components.PACKET_CREATOR,
-					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_OSI_HASH_FILE_NAME),
-					REGISTRATION_ID, rid);
+			auditFactory.audit(AuditEvent.PACKET_META_JSON_CREATED, Components.PACKET_CREATOR, rid,
+					AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 
 			// Generating Packet Meta-Info JSON as byte array
 			PacketMetaInfo packetInfo = MAPPER_FACADE.convert(registrationDTO, PacketMetaInfo.class, "packetMetaInfo");
+
+			// Set Registered Device
+			packetInfo.getIdentity().setCapturedRegisteredDevices(getRegisteredDevices());
+
+			// Set Registered Device
+			packetInfo.getIdentity().setCapturedNonRegisteredDevices(null);
 
 			// Add HashSequence
 			packetInfo.getIdentity().setHashSequence(buildHashSequence(hashSequence));
 
 			// Add HashSequence for packet_osi_data
-			packetInfo.getIdentity().setHashSequence2(hashSequence.getOsiDataHashSequence());
+			packetInfo.getIdentity()
+					.setHashSequence2((List<FieldValueArray>) Builder.build(ArrayList.class)
+							.with(values -> values.add(Builder.build(FieldValueArray.class)
+									.with(field -> field.setLabel("otherFiles"))
+									.with(field -> field.setValue(hashSequence.getOsiDataHashSequence())).get()))
+							.get());
 
 			filesGeneratedForPacket.put(RegistrationConstants.PACKET_META_JSON_NAME,
 					javaObjectToJsonString(packetInfo).getBytes());
 
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_META_JSON_NAME));
-			auditFactory.audit(AuditEvent.PACKET_META_JSON_CREATED, Components.PACKET_CREATOR,
-					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_META_JSON_NAME), REGISTRATION_ID,
-					rid);
+			auditFactory.audit(AuditEvent.PACKET_META_JSON_CREATED, Components.PACKET_CREATOR, rid,
+					AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 
 			// Creating in-memory zip file for Packet Encryption
 			byte[] packetZipBytes = zipCreationService.createPacket(registrationDTO, filesGeneratedForPacket);
 
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Creation had been ended");
-			auditFactory.audit(AuditEvent.PACKET_INTERNAL_ZIP, Components.PACKET_CREATOR,
-					"Packet Internal Zip File created successfully", REGISTRATION_ID, rid);
+			auditFactory.audit(AuditEvent.PACKET_INTERNAL_ZIP, Components.PACKET_CREATOR, rid,
+					AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 
 			return packetZipBytes;
 		} catch (JsonProcessingException mosipJsonProcessingException) {
@@ -419,6 +409,25 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		}
 
 		return fingerSubTypes;
+	}
+
+	private List<FieldValue> getRegisteredDevices() {
+		List<RegDeviceMaster> registeredDevices = machineMappingDAO
+				.getDevicesMappedToRegCenter(ApplicationContext.applicationLanguage());
+
+		List<FieldValue> capturedRegisteredDevices = new ArrayList<>();
+		FieldValue capturedRegisteredDevice;
+
+		if (registeredDevices != null) {
+			for (RegDeviceMaster registeredDevice : registeredDevices) {
+				capturedRegisteredDevice = new FieldValue();
+				capturedRegisteredDevice.setLabel(registeredDevice.getRegDeviceSpec().getRegDeviceType().getName());
+				capturedRegisteredDevice.setValue(registeredDevice.getRegMachineSpecId().getId());
+				capturedRegisteredDevices.add(capturedRegisteredDevice);
+			}
+		}
+
+		return capturedRegisteredDevices;
 	}
 
 }

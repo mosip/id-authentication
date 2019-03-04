@@ -1,0 +1,11 @@
+{
+  "err": null,
+  "status": true,
+  "resTime": "2019-01-31T08:19:06.137Z",
+  "response": [
+    {
+      "documnet_Id": "2c9180836833c1240168a2fd4d785b7d",
+      "resMsg": "DOCUMENT_DELETE_SUCCESSFUL"
+    }
+  ]
+}

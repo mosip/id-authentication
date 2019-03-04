@@ -43,7 +43,7 @@ import io.mosip.kernel.core.util.UUIDUtils;
  */
 @Service
 public class OTPServiceImpl implements OTPService {
-	
+
 	private static final String OTP_REQUEST_MAX_COUNT = "otp.request.max-count";
 
 	private static final String OTP_REQUEST_ADD_MINUTES = "otp.request.add-minutes";
@@ -77,14 +77,14 @@ public class OTPServiceImpl implements OTPService {
 
 	@Autowired
 	private NotificationService notificationService;
-	
+
 	/** The otp manager. */
 	@Autowired
 	private OTPManager otpManager;
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPServiceImpl.class);
-	
+
 	/**
 	 * Generate OTP, store the OTP request details for success/failure. And send OTP
 	 * notification by sms(on mobile)/mail(on email-id).
@@ -112,7 +112,7 @@ public class OTPServiceImpl implements OTPService {
 		mobileNumber = getMobileNumber(idInfo);
 		email = getEmail(idInfo);
 		String uin = String.valueOf(idResDTO.get("uin"));
-		if(!checkIsEmptyorNull(email) && !checkIsEmptyorNull(mobileNumber)) {
+		if (!checkIsEmptyorNull(email) && !checkIsEmptyorNull(mobileNumber)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED);
 		}
 		if (isOtpFlooded(otpRequestDto)) {
@@ -206,7 +206,7 @@ public class OTPServiceImpl implements OTPService {
 			// FIXME
 			autnTxn.setLangCode(env.getProperty("mosip.primary.lang-code"));
 			return autnTxn;
-		} catch (ParseException e) {
+		} catch (ParseException | java.time.format.DateTimeParseException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
 					e);
@@ -246,7 +246,7 @@ public class OTPServiceImpl implements OTPService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
 					e);
 		}
-		//TODO make minutes and value configurable
+		// TODO make minutes and value configurable
 		int addMinutes = Integer.parseInt(env.getProperty(OTP_REQUEST_ADD_MINUTES));
 		Date addMinutesInOtpRequestDTime = addMinutes(requestTime, -addMinutes);
 		LocalDateTime addMinutesInOtpRequestDTimes = DateUtils.parseDateToLocalDateTime(addMinutesInOtpRequestDTime);
@@ -303,13 +303,14 @@ public class OTPServiceImpl implements OTPService {
 	private String getMobileNumber(Map<String, List<IdentityInfoDTO>> idInfo) throws IdAuthenticationBusinessException {
 		return idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
 	}
-	
+
 	/**
 	 * Generate otp.
 	 *
 	 * @param otpKey the otp key
 	 * @return the string
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	private String generateOtp(String otpKey) throws IdAuthenticationBusinessException {
 		String otp = null;
@@ -322,10 +323,9 @@ public class OTPServiceImpl implements OTPService {
 
 			if (otp == null || otp.trim().isEmpty()) {
 				mosipLogger.error("NA", "NA", "NA", "generated OTP is: " + otp);
-				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
 			}
-			
+
 			mosipLogger.info("NA", "NA", "NA", " generated OTP is: " + otp);
 		}
 

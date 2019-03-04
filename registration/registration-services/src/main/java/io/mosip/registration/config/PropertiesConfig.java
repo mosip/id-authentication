@@ -2,10 +2,9 @@ package io.mosip.registration.config;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
@@ -36,8 +35,11 @@ public class PropertiesConfig {
 		return jdbcTemplate.query(GLOBAL_PARAM_PROPERTIES, new ResultSetExtractor<Map<String,Object>>(){
 		    @Override
 		    public Map<String,Object> extractData(ResultSet globalParamResultset) throws SQLException {
-		        Map<String,Object> globalParamProps= new HashMap<>();
+		        Map<String,Object> globalParamProps= new WeakHashMap<>();
 		        while(globalParamResultset.next()){
+//		        	if(globalParamResultset.getString(VALUE)==null)
+//		        		globalParamProps.put(globalParamResultset.getString(KEY),"null");
+//		        	else
 		        	globalParamProps.put(globalParamResultset.getString(KEY),globalParamResultset.getString(VALUE));
 		        }
 		        return globalParamProps;

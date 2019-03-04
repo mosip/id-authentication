@@ -1,0 +1,7 @@
+{
+    "timestamp": "2019-02-24T11:43:47.509+0000",
+    "status": 400,
+    "error": "Bad Request",
+    "message": "Required String parameter 'pre_registration_id' is not present",
+    "path": "/pre-registration/v1.0/demographic//applicationStatus"
+}

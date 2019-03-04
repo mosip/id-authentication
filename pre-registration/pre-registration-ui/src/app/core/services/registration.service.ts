@@ -11,6 +11,7 @@ export class RegistrationService {
   currentMessage = this.messageSource.asObservable();
   private users: UserModel[] = [];
   private regCenterId: string;
+  sameAs = '';
 
   changeMessage(message: Object) {
     this.messageSource.next(message);
@@ -58,5 +59,12 @@ export class RegistrationService {
 
   getRegCenterId() {
     return this.regCenterId;
+  }
+
+  setSameAs(value) {
+    this.sameAs = value;
+  }
+  getSameAs() {
+    return this.sameAs;
   }
 }

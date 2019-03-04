@@ -42,17 +42,6 @@ public class DocumentCategoryDto extends BaseDto{
 	@Size(min = 1, max = 128)
 	private String description;
 
-	/**
-	 * The Language Code.
-	 */
-	@NotNull
-	@Size(min = 1, max = 3)
-	private String langCode;
-
-	/**
-	 * Is active or not.
-	 */
-	@NotNull
-	private Boolean isActive;
+	
 
 }

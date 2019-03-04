@@ -77,7 +77,7 @@ public class PacketEncryptionServiceTest {
 		registrationDTO = DataProvider.getPacketDTO();
 
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 		doNothing().when(auditLogControlDAO).save(Mockito.any(AuditLogControl.class));
 		
 		ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
@@ -121,7 +121,7 @@ public class PacketEncryptionServiceTest {
 		packetEncryptionServiceImpl.encrypt(new RegistrationDTO(), "PacketZip".getBytes());
 	}
 	
-	@Test(expected = RegBaseCheckedException.class)
+	@Test
 	public void packetSizeExceededTets() throws RegBaseCheckedException {
 		byte[] encryptedData = new byte[1050576];
 		when(aesEncryptionService.encrypt(Mockito.anyString().getBytes())).thenReturn(encryptedData);

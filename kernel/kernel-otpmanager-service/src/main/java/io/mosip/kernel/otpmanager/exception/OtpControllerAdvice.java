@@ -39,7 +39,7 @@ public class OtpControllerAdvice {
 		final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
 		fieldErrors.forEach(x -> {
 			ServiceError error = new ServiceError(OtpErrorConstants.OTP_GEN_ILLEGAL_KEY_INPUT.getErrorCode(),
-					OtpErrorConstants.OTP_GEN_ILLEGAL_KEY_INPUT.getErrorMessage());
+					x.getField() + ": " + x.getDefaultMessage());
 			errorResponse.getErrors().add(error);
 		});
 		errorResponse.setStatus(HttpStatus.OK.value());

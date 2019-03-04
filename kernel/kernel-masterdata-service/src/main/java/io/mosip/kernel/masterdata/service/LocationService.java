@@ -7,6 +7,7 @@ import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
@@ -91,5 +92,12 @@ public interface LocationService {
 	 * 
 	 */
 	public Map<Integer, List<Location>> getLocationByLangCodeAndHierarchyLevel(String langCode, Integer hierarchyLevel);
+	
+	/**
+	 * checks whether the given location name is valid or not
+	 * @param locationName
+	 * @return StatusResponseDto
+	 */
+	public StatusResponseDto validateLocationName(String locationName);
 
 }

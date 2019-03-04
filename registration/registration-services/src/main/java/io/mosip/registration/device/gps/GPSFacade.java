@@ -4,15 +4,16 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -73,7 +74,7 @@ public class GPSFacade extends GPSBU343Connector {
 			serialPortConnected = serialPortLinuxConnected;
 		}
 
-		Map<String, Object> gpsResponseMap = new HashMap<>();
+		Map<String, Object> gpsResponseMap = new WeakHashMap<>();
 
 		try {
 
@@ -139,12 +140,12 @@ public class GPSFacade extends GPSBU343Connector {
 				}
 
 			}
-		} catch (RegBaseCheckedException exception) {
+		} catch (RegBaseCheckedException regBaseCheckedException) {
 
-			gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, exception.getMessage());
+			gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, regBaseCheckedException.getMessage());
 
-			LOGGER.info(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, exception.toString());
+			LOGGER.error(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, ExceptionUtils.getStackTrace(regBaseCheckedException));
 		}
 
 		LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
@@ -226,7 +227,7 @@ public class GPSFacade extends GPSBU343Connector {
 					"GPS Response after parsing" + geoLocation);
 
 		} catch (Exception exception) {
-			throw new RegBaseCheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION, exception.toString());
+			throw new RegBaseCheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION, exception.toString(), exception);
 		}
 		return geoLocation;
 

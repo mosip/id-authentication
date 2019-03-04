@@ -5,7 +5,10 @@ import static org.mockito.Mockito.doNothing;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,6 +25,7 @@ import org.springframework.web.client.ResourceAccessException;
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.NotificationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -42,7 +46,8 @@ public class NotificationServiceTest {
 	@Before
 	public void initialize() throws IOException, URISyntaxException {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
+		SessionContext.getInstance().getUserContext().setUserId("mosip");
 	}
 
 	@Test
@@ -52,7 +57,7 @@ public class NotificationServiceTest {
 		//NotificationDTO emailDTO = new NotificationDTO();
 		//emailDTO.setStatus("Email Request submitted");
 		HashMap<String, String> emailDTO=new HashMap<>();
-		emailDTO.put("status", "Email Request submitted");
+		emailDTO.put("status", "success");
 		
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyObject())).thenReturn(emailDTO);
 		ResponseDTO responseDTO = notificationServiceImpl.sendEmail("Hi", "qwerty@gmail.com", "regid");
@@ -91,5 +96,21 @@ public class NotificationServiceTest {
 		ResponseDTO responseDTO = notificationServiceImpl.sendEmail("Hi", null, "regid");
 		Assert.assertEquals("Unable to send EMAIL Notification",
 				responseDTO.getErrorResponseDTOs().get(0).getMessage());
+	}
+	
+	@Test
+	public void sendEmailFailuretest1() throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException{
+		Map<String, List<Map<String,String>>> emailDTO=new HashMap<>();
+		List<Map<String,String>> list= new ArrayList();
+		Map<String,String> map=new HashMap<>();
+		map.put("errorCode", "Err_Code_KER200");
+		map.put("errorMessage", "To must be valid. It can't be empty or null.");
+		list.add(map);
+		emailDTO.put("errors",list);
+		
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyObject())).thenReturn(emailDTO);
+		ResponseDTO responseDTO = notificationServiceImpl.sendEmail("Hi", "qwerty@gmail.com", "regid");
+
+		Assert.assertEquals("To must be valid. It can't be empty or null.", responseDTO.getErrorResponseDTOs().get(0).getMessage());
 	}
 }

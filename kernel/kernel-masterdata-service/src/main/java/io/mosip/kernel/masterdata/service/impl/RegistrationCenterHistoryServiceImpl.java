@@ -7,11 +7,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHistoryDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterHistoryResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -56,7 +59,7 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 		}
 		try {
 			registrationCenters = registrationCenterHistoryRepository
-					.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+					.findByIdAndLangCodeAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 							registrationCenterId, langCode, localDateTime);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
@@ -72,5 +75,22 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 					MapperUtils.mapAll(registrationCenters, RegistrationCenterHistoryDto.class));
 		}
 		return registrationCenterDto;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.MachineHistoryService#createMachineHistory
+	 * (io.mosip.kernel.masterdata.entity.MachineHistory)
+	 */
+	@Override
+	@Transactional(propagation = Propagation.MANDATORY)
+	public IdResponseDto createRegistrationCenterHistory(RegistrationCenterHistory entityHistory) {
+		RegistrationCenterHistory createdHistory;
+		createdHistory = registrationCenterHistoryRepository.create(entityHistory);
+		IdResponseDto idResponseDto = new IdResponseDto();
+		MapperUtils.map(createdHistory, idResponseDto);
+		return idResponseDto;
 	}
 }

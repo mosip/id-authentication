@@ -11,62 +11,157 @@
 <?import javafx.stage.Screen?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="616.0" prefWidth="790.0" visible="false" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.FaceCaptureController">
-	<children>
-		<Button fx:id="captureImage" layoutX="104.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForApplicantPhoto" styleClass="RegbuttonStyle" text="%capture" />
-		<Button fx:id="captureExceptionImage" disable="true" layoutX="471.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForExceptionPhoto" styleClass="RegbuttonStyle" text="%capture" />
-		<Label layoutX="180.0" layoutY="328.0" text="%applicantimage" />
-		<Label layoutX="537.0" layoutY="328.0" text="%exceptionimage" />
-		<Label layoutX="115.0" layoutY="390.0" text="%threshold" visible="false">
-			<font>
-				<Font size="16.0" />
-			</font>
-		</Label>
-		<Label layoutX="488.0" layoutY="390.0" text="%threshold" visible="false">
-			<font>
-				<Font size="16.0" />
-			</font>
-		</Label>
-		<Label layoutX="115.0" layoutY="363.0" text="%quality" visible="false">
-			<font>
-				<Font size="16.0" />
-			</font>
-		</Label>
-		<Label layoutX="488.0" layoutY="363.0" text="%quality" visible="false">
-			<font>
-				<Font size="16.0" />
-			</font>
-		</Label>
-		<Label layoutX="284.0" layoutY="390.0" text="    85%" visible="false">
-			<font>
-				<Font size="16.0" />
-			</font>
-		</Label>
-		<Label layoutX="656.0" layoutY="390.0" text="    85%" visible="false">
-			<font>
-				<Font size ="16.0" />
-			</font>
-		</Label>
-		<HBox fx:id="applicantImageHBox" layoutX="104.0" layoutY="105.0" prefHeight="183.0" prefWidth="265.0">
-			<children>
-				<ImageView fx:id="applicantImage" fitHeight="210.0" fitWidth="265.0" pickOnBounds="true" preserveRatio="true">
-					<image>
-						<Image url="@../images/ApplicantPhoto.png" />
-					</image>
-				</ImageView>
-			</children>
-		</HBox>
-		<HBox fx:id="exceptionImageHBox" layoutX="471.0" layoutY="106.0" prefHeight="182.0" prefWidth="265.0">
-			<children>
-				<ImageView fx:id="exceptionImage" fitHeight="210.0" fitWidth="265.0" pickOnBounds="true" preserveRatio="true">
-					<image>
-						<Image url="@../images/ApplicantPhoto.png" />
-					</image>
-				</ImageView>
-			</children>
-		</HBox>
-		<Label layoutX="104.0" layoutY="54.0" text="%image" />
-		<Button fx:id="biometricPrevBtn" layoutX="616.0" layoutY="486.0" mnemonicParsing="false" onAction="#goToPreviousPane" styleClass="RegbuttonStyle" text="%previous" />
-		<Button fx:id="saveBiometricDetailsBtn" layoutX="712.0" layoutY="486.0" mnemonicParsing="false" onAction="#saveBiometricDetails" styleClass="RegbuttonStyle" text="%next" />
-	</children>
+<AnchorPane fx:id="faceCapture" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="parentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.FaceCaptureController">
+   <children>
+      <AnchorPane layoutX="90.0" layoutY="37.0" styleClass="paneAtDisplayFaceCapture" visible="true">
+         <children>
+            <Label layoutX="94.0" layoutY="34.0" styleClass="paneHeader" text="%image" />
+            <AnchorPane layoutX="180.0" layoutY="460.0" styleClass="onboardProgressPane">
+               <children>
+                  <Label layoutX="91.0" layoutY="31.0" text="%quality" styleClass="qualityLabel"/>
+                  <Line endX="100.0" layoutX="332.0" layoutY="40.0" startX="-100.0" />
+                  <Button fx:id="takePhoto" disable="true" layoutX="520.0" layoutY="27.0" mnemonicParsing="false" onAction="#takePhoto" styleClass="documentContentButton" text="Take Photo">
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/scan.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                </children>
+            </AnchorPane>
+            <AnchorPane id="applicantPhoto" fx:id="applicantImagePane" layoutX="243.0" layoutY="100.0" onMouseClicked="#enableCapture" styleClass="photoCapturePanes">
+               <children>
+                  <ImageView fx:id="applicantImage" fitHeight="160.0" fitWidth="180.0" layoutX="5.0" layoutY="5.0" pickOnBounds="true" preserveRatio="false">
+                     <image>
+                        <Image url="@../images/Photo.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane id="exceptionPhoto" fx:id="exceptionImagePane" layoutX="608.0" layoutY="100.0" onMouseClicked="#enableCapture" styleClass="photoCapturePanes">
+               <children>
+                  <ImageView fx:id="exceptionImage" fitHeight="160.0" fitWidth="180.0" layoutX="5.0" layoutY="5.0" pickOnBounds="true" preserveRatio="false">
+                     <image>
+                        <Image url="@../images/ExceptionPhoto.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="240.0" layoutY="280.0" styleClass="qualityBox">
+               <children>
+                  <Label layoutY="30.0" styleClass="threshHoldLabel" text="%threshold" />
+                  <Label fx:id="leftIrisThreshold" layoutX="30.0" layoutY="60.0" styleClass="threshHoldLabel" />
+                  <Label layoutX="161.0" layoutY="30.0" styleClass="qualityLabel" text="%quality" />
+                  <Label fx:id="leftIrisQualityScore" layoutX="180.0" layoutY="60.0" styleClass="qualityLabel" text="-" />
+                  <Label layoutY="80.0" styleClass="attemptsLabel" text="%attempts" />
+                  <Label layoutX="180.0" layoutY="110.0" styleClass="attemptsLabel" text="-" />
+                  <Label layoutX="30.0" layoutY="110.0" styleClass="exceptionLabel" text="-" />
+                  <Label layoutX="150.0" layoutY="80.0" styleClass="exceptionLabel" text="%exceptions" />
+                  <Label layoutX="80.0" text="%applicantimage" />
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="610.0" layoutY="280.0" styleClass="qualityBox">
+               <children>
+                  <Label layoutY="30.0" styleClass="threshHoldLabel" text="%threshold" />
+                  <Label fx:id="leftIrisThreshold1" layoutX="30.0" layoutY="60.0" styleClass="threshHoldLabel" />
+                  <Label layoutX="161.0" layoutY="30.0" styleClass="qualityLabel" text="%quality" />
+                  <Label fx:id="leftIrisQualityScore1" layoutX="180.0" layoutY="60.0" styleClass="qualityLabel" text="-" />
+                  <Label layoutY="80.0" styleClass="attemptsLabel" text="%attempts" />
+                  <Label layoutX="180.0" layoutY="110.0" styleClass="attemptsLabel" text="-" />
+                  <Label layoutX="30.0" layoutY="110.0" styleClass="exceptionLabel" text="-" />
+                  <Label layoutX="150.0" layoutY="80.0" styleClass="exceptionLabel" text="%exceptions" />
+                  <Label layoutX="60.0" text="%exceptionimage" />
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutY="627.0" styleClass="registrationFooter">
+         <children>
+            <Button fx:id="saveBiometricDetailsBtn" layoutX="991.0" layoutY="4.0" onAction="#saveBiometricDetails" styleClass="contiuneButton" text="Continue">
+			 <graphic>
+                  	<ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/arrowRight.png" />
+                                       </image>
+                                    </ImageView>
+                  </graphic>            
+            </Button>
+            <Button fx:id="biometricPrevBtn" layoutX="124.0" layoutY="3.0" onAction="#goToPreviousPane" styleClass="backButton" text="Back">
+             <graphic>
+                  	<ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/arrowLeft.png" />
+                                       </image>
+                                    </ImageView>
+                  </graphic>
+            </Button>
+         </children>
+      </AnchorPane>
+      <Label fx:id="photoAlert" layoutX="824.0" layoutY="462.0" styleClass="photoAlert" />
+      <AnchorPane fx:id="RegistrationHeader">
+         <children>
+            <AnchorPane layoutY="-3.0">
+               <children>
+                  <AnchorPane layoutX="1.0" layoutY="6.0">
+                     <children>
+                        <Button layoutY="2.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+                        <Label layoutX="56.0" layoutY="5.0" text="%/registration" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="200.0" layoutY="11.0" styleClass="registrationHeaderBorder">
+               <children>
+                  <AnchorPane>
+                     <children>
+                        <Label layoutX="35.0" layoutY="-3.0" text="%demograhpicDetails" />
+                        <ImageView fitHeight="14.0" fitWidth="14.0" layoutX="1.0" layoutY="-3.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/activeDemographicDetails.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="750.0">
+                     <children>
+                        <Label layoutX="35.0" layoutY="-3.0" text="%authentication" />
+                        <ImageView fitHeight="24.0" fitWidth="18.0" layoutX="1.0" layoutY="-3.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/deactiveAuthentication.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="500.0">
+                     <children>
+                        <Label layoutX="35.0" layoutY="-3.0" styleClass="trackerHighlighter" text="%biometricDetails" />
+                        <ImageView fitHeight="24.0" fitWidth="18.0" layoutX="1.0" layoutY="-3.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/activeBiometricDetail.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="251.0">
+                     <children>
+                        <Label layoutX="35.0" layoutY="-3.0" text="%uploadDocuments" />
+                        <ImageView fitHeight="14.0" fitWidth="14.0" layoutX="1.0" layoutY="-3.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/activeUplaodDocument.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <ImageView fx:id="trackerImage" fitHeight="25.0" fitWidth="194.0" layoutX="700.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/DemographicpageTracker.png" />
+         </image>
+      </ImageView>
+   </children>
 </AnchorPane>

@@ -8,6 +8,7 @@ package io.mosip.registration.dto;
  *
  */
 public class RegistrationMetaDataDTO extends BaseDTO {
+
 	private double geoLatitudeLoc;
 	private double geoLongitudeLoc;
 	// New , update , correction, lost UIN
@@ -18,7 +19,24 @@ public class RegistrationMetaDataDTO extends BaseDTO {
 	private String centerId;
 	private String previousRID;
 	private String uin;
+	private String consentOfApplicant;
+	private String parentOrGuardianUINOrRID;
+	private String deviceId;
+	private String applicantTypeCode;
 
+	/**
+	 * @return the consentOfApplicant
+	 */
+	public String getConsentOfApplicant() {
+		return consentOfApplicant;
+	}
+
+	/**
+	 * @param consentOfApplicant the consentOfApplicant to set
+	 */
+	public void setConsentOfApplicant(String consentOfApplicant) {
+		this.consentOfApplicant = consentOfApplicant;
+	}
 	/**
 	 * @return the geoLatitudeLoc
 	 */
@@ -139,4 +157,49 @@ public class RegistrationMetaDataDTO extends BaseDTO {
 		this.uin = uin;
 	}
 
+	/**
+	 * @return the parentOrGuardianUINOrRID
+	 */
+	public String getParentOrGuardianUINOrRID() {
+		return parentOrGuardianUINOrRID;
+	}
+
+	/**
+	 * @param parentOrGuardianUINOrRID
+	 *            the parentOrGuardianUINOrRID to set
+	 */
+	public void setParentOrGuardianUINOrRID(String parentOrGuardianUINOrRID) {
+		this.parentOrGuardianUINOrRID = parentOrGuardianUINOrRID;
+	}
+
+	/**
+	 * @return the deviceId
+	 */
+	public String getDeviceId() {
+		return deviceId;
+	}
+
+	/**
+	 * @param deviceId
+	 *            the deviceId to set
+	 */
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
+	}
+
+	/**
+	 * @return the applicantTypeCode
+	 */
+	public String getApplicantTypeCode() {
+		return applicantTypeCode;
+	}
+
+	/**
+	 * @param applicantTypeCode the applicantTypeCode to set
+	 */
+	public void setApplicantTypeCode(String applicantTypeCode) {
+		this.applicantTypeCode = applicantTypeCode;
+	}
+
+	
 }

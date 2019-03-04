@@ -8,11 +8,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +30,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.IdType;
@@ -35,7 +38,6 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.notification.template.generator.dto.ResponseDto;
 import io.mosip.registration.processor.core.notification.template.generator.dto.SmsResponseDto;
 import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -45,25 +47,25 @@ import io.mosip.registration.processor.message.sender.exception.TemplateGenerati
 import io.mosip.registration.processor.message.sender.exception.TemplateNotFoundException;
 import io.mosip.registration.processor.message.sender.service.impl.MessageNotificationServiceImpl;
 import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
-import io.mosip.registration.processor.message.sender.utility.MessageSenderUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 
 /**
  * The Class MessageNotificationServiceImplTest.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ MessageSenderUtil.class, JsonUtils.class })
+@PrepareForTest({ Utilities.class, JsonUtils.class, IOUtils.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class MessageNotificationServiceImplTest {
 
 	/** The message notification service impl. */
 	@InjectMocks
-	MessageNotificationService<SmsResponseDto, ResponseDto, MultipartFile[]> messageNotificationServiceImpl = new MessageNotificationServiceImpl();
+	private MessageNotificationService<SmsResponseDto, ResponseDto, MultipartFile[]> messageNotificationServiceImpl = new MessageNotificationServiceImpl();
 
 	/** The adapter. */
 	@Mock
-	private FileSystemAdapter<InputStream, Boolean> adapter;
+	private FileSystemAdapter adapter;
 
 	/** The template generator. */
 	@Mock
@@ -75,11 +77,11 @@ public class MessageNotificationServiceImplTest {
 
 	/** The utility. */
 	@Mock
-	private MessageSenderUtil utility;
+	private Utilities utility;
 
 	/** The rest client service. */
 	@Mock
-	RegistrationProcessorRestClientService<Object> restClientService;
+	private RegistrationProcessorRestClientService<Object> restClientService;
 
 	/** The rest api client. */
 	@Mock
@@ -88,6 +90,9 @@ public class MessageNotificationServiceImplTest {
 	/** The env. */
 	@Mock
 	private Environment env;
+	
+	@Mock
+	private StringWriter writer;
 
 	/** The attributes. */
 	private Map<String, Object> attributes = new HashMap<>();
@@ -168,14 +173,17 @@ public class MessageNotificationServiceImplTest {
 				+ "		\"cnienumber\": {\r\n" + "			\"value\" : \"CNIENumber\"\r\n" + "		},\r\n"
 				+ "		\"city\": {\r\n" + "			\"value\" : \"city\"\r\n" + "		}\r\n" + "	}\r\n" + "} ";
 
-		PowerMockito.mockStatic(MessageSenderUtil.class);
-		PowerMockito.when(MessageSenderUtil.class, "getJson", anyString(), anyString()).thenReturn(value);
+		PowerMockito.mockStatic(Utilities.class);
+		PowerMockito.when(Utilities.class, "getJson", anyString(), anyString()).thenReturn(value);
 
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
-
+		
 		String artifact = "Hi Alok, Your UIN is generated";
-
-		Mockito.when(templateGenerator.getTemplate(any(), any(), any())).thenReturn(artifact);
+		InputStream in  = IOUtils.toInputStream("Hi Alok, Your UIN is generated", "UTF-8");
+		Mockito.when(templateGenerator.getTemplate(any(), any(), any())).thenReturn(in);
+		
+		Mockito.when(writer.toString()).thenReturn(artifact);
+		
 	}
 
 	/**
@@ -195,7 +203,7 @@ public class MessageNotificationServiceImplTest {
 				.thenReturn(smsResponseDto);
 
 		SmsResponseDto resultResponse = messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345",
-				IdType.UIN, attributes);
+				IdType.RID, attributes);
 		assertEquals("Test for SMS Notification Success", "Success", resultResponse.getMessage());
 	}
 
@@ -213,7 +221,7 @@ public class MessageNotificationServiceImplTest {
 		Mockito.when(restApiClient.postApi(any(), any(), any())).thenReturn(responseDto);
 
 		ResponseDto resultResponse = messageNotificationServiceImpl.sendEmailNotification("RPR_UIN_GEN_EMAIL", "12345",
-				IdType.UIN, attributes, mailCc, subject, null);
+				IdType.RID, attributes, mailCc, subject, null);
 		assertEquals("Test for Email Notification Success", "Success", resultResponse.getStatus());
 	}
 
@@ -232,7 +240,7 @@ public class MessageNotificationServiceImplTest {
 		InputStream inputStream = new FileInputStream(demographicJsonFile);
 		Mockito.when(adapter.getFile(any(), any())).thenReturn(inputStream);
 
-		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.UIN, attributes);
+		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.RID, attributes);
 
 	}
 
@@ -249,7 +257,7 @@ public class MessageNotificationServiceImplTest {
 		InputStream inputStream = new FileInputStream(demographicJsonFile);
 		Mockito.when(adapter.getFile(any(), any())).thenReturn(inputStream);
 
-		messageNotificationServiceImpl.sendEmailNotification("RPR_UIN_GEN_EMAIL", "12345", IdType.UIN, attributes,
+		messageNotificationServiceImpl.sendEmailNotification("RPR_UIN_GEN_EMAIL", "12345", IdType.RID, attributes,
 				mailCc, subject, null);
 	}
 
@@ -266,7 +274,7 @@ public class MessageNotificationServiceImplTest {
 		Mockito.when(templateGenerator.getTemplate("RPR_UIN_GEN_SMS", attributes, "eng"))
 				.thenThrow(new TemplateNotFoundException());
 
-		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.UIN, attributes);
+		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.RID, attributes);
 	}
 
 	/**
@@ -280,7 +288,7 @@ public class MessageNotificationServiceImplTest {
 		Mockito.when(templateGenerator.getTemplate("RPR_UIN_GEN_EMAIL", attributes, "eng"))
 				.thenThrow(new TemplateNotFoundException());
 
-		messageNotificationServiceImpl.sendEmailNotification("RPR_UIN_GEN_EMAIL", "12345", IdType.UIN, attributes,
+		messageNotificationServiceImpl.sendEmailNotification("RPR_UIN_GEN_EMAIL", "12345", IdType.RID, attributes,
 				mailCc, subject, null);
 	}
 

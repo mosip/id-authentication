@@ -32,6 +32,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.AuditLogControlDAO;
+import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.entity.RegistrationAuditDates;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -65,6 +66,8 @@ public class PacketCreationServiceTest {
 	private JsonValidator jsonValidator;
 	@Mock
 	private AuditLogControlDAO auditLogControlDAO;
+	@Mock
+	private MachineMappingDAO machineMappingDAO;
 	private static RegistrationDTO registrationDTO;
 	private RegistrationAuditDates registrationAuditDates;
 
@@ -99,7 +102,7 @@ public class PacketCreationServiceTest {
 	@Test
 	public void testCreatePacket() throws Exception {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList())).thenReturn("cbeffXML".getBytes());
@@ -107,6 +110,7 @@ public class PacketCreationServiceTest {
 				.thenReturn(new ValidationReport());
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(null);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
+		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}
@@ -114,9 +118,10 @@ public class PacketCreationServiceTest {
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testException() throws RegBaseCheckedException {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
+		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		packetCreationServiceImpl.create(null);
 	}
@@ -125,12 +130,13 @@ public class PacketCreationServiceTest {
 	@Test(expected = RegBaseCheckedException.class)
 	public void testCBEFFException() throws Exception {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList())).thenThrow(new Exception("Invalid BIR"));
 		when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(new ValidationReport());
+		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}
@@ -139,12 +145,13 @@ public class PacketCreationServiceTest {
 	@Test(expected =  RegBaseCheckedException.class)
 	public void testJsonValidationException() throws Exception {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList())).thenReturn("cbeffXML".getBytes());
 		when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new JsonValidationProcessingException("errorCode", "errorMessage"));
+		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}
@@ -153,7 +160,7 @@ public class PacketCreationServiceTest {
 	@Test
 	public void testPacketCreationWithLatestRegistration() throws Exception {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList())).thenReturn("cbeffXML".getBytes());
@@ -161,7 +168,8 @@ public class PacketCreationServiceTest {
 				.thenReturn(new ValidationReport());
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
-		ApplicationContext.getInstance().map().put(RegistrationConstants.CBEFF_ONLY_UNIQUE_TAGS, "N");
+		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
+		ApplicationContext.map().put(RegistrationConstants.CBEFF_ONLY_UNIQUE_TAGS, "N");
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}
@@ -185,7 +193,7 @@ public class PacketCreationServiceTest {
 			}
 		};
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList())).thenReturn("cbeffXML".getBytes());

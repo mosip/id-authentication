@@ -8,26 +8,27 @@ import static io.mosip.registration.exception.RegistrationExceptionConstants.REG
 import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.DeviceTypes;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.entity.CenterMachine;
-import io.mosip.registration.entity.DeviceType;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.RegCenterDevice;
 import io.mosip.registration.entity.RegCentreMachineDevice;
+import io.mosip.registration.entity.RegDeviceMaster;
+import io.mosip.registration.entity.RegDeviceType;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
-import io.mosip.registration.entity.UserMachineMappingID;
+import io.mosip.registration.entity.id.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.CenterMachineRepository;
@@ -111,10 +112,10 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 				"getStationID() macAddress --> " + macAddress);
 
 		try {
-			MachineMaster machineMaster = machineMasterRepository.findByMacAddress(macAddress);
+			MachineMaster machineMaster = machineMasterRepository.findByIsActiveTrueAndMacAddress(macAddress);
 
-			if (machineMaster != null && machineMaster.getId() != null) {
-				return machineMaster.getId();
+			if (machineMaster != null && machineMaster.getRegMachineSpecId().getId() != null) {
+				return machineMaster.getRegMachineSpecId().getId();
 			} else {
 				throw new RegBaseCheckedException(REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE.getErrorCode(),
 						REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE.getErrorMessage());
@@ -138,7 +139,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 				"getCenterID() stationID --> " + stationID);
 
 		try {
-			CenterMachine centerMachine = centerMachineRepository.findByCenterMachineIdId(stationID);
+			CenterMachine centerMachine = centerMachineRepository.findByIsActiveTrueAndCenterMachineIdId(stationID);
 			if (centerMachine != null && centerMachine.getCenterMachineId().getCentreId() != null) {
 				return centerMachine.getCenterMachineId().getCentreId();
 			} else {
@@ -256,7 +257,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 * @see io.mosip.registration.dao.MachineMappingDAO#getAllDeviceTypes()
 	 */
 	@Override
-	public List<DeviceType> getAllDeviceTypes() {
+	public List<RegDeviceType> getAllDeviceTypes() {
 		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				" getAllDeviceTypes() method is started");
 
@@ -277,7 +278,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 
 		return registrationCenterDeviceRepository
 				.findByRegCenterDeviceIdRegCenterIdAndIsActiveTrueAndRegDeviceMasterValidityEndDtimesGreaterThanEqual(
-						centerId, Timestamp.valueOf(LocalDate.now().atStartOfDay()));
+						centerId, Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 
 	}
 
@@ -339,13 +340,32 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 		LOGGER.info("REGISTRATION - COMMON REPOSITORY ", APPLICATION_NAME, APPLICATION_ID,
 				" isValidDevice DAO Method called");
 
-		return deviceMasterRepository.countBySerialNumberAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(serialNo,
-				deviceType.getDeviceType(), new Timestamp(System.currentTimeMillis())) > 0 ? true : false;
+		return deviceMasterRepository.countBySerialNumAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(serialNo,
+				deviceType.getDeviceType(), Timestamp.valueOf(DateUtils.getUTCCurrentDateTime())) > 0 ? true : false;
 	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.MachineMappingDAO#getUserMappingDetails(java.lang.String)
+	 */
 	@Override
 	public List<UserMachineMapping> getUserMappingDetails(String machineId)
 	{
-		return machineMappingRepository.findByUserMachineMappingIdMachineID(machineId);
+		return machineMappingRepository.findByIsActiveTrueAndUserMachineMappingIdMachineID(machineId);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.MachineMappingDAO#getDevicesMappedToRegCenter(java.
+	 * lang.String)
+	 */
+	@Override
+	public List<RegDeviceMaster> getDevicesMappedToRegCenter(String langCode) {
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"Fetch all the devices mapped to the registration center");
+
+		return deviceMasterRepository.findByRegMachineSpecIdLangCode(langCode);
 	}
 
 }

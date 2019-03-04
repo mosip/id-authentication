@@ -4,7 +4,7 @@ import java.util.List;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.entity.UserBiometric;
-import io.mosip.registration.entity.UserBiometricId;
+import io.mosip.registration.entity.id.UserBiometricId;
 
 public interface UserBiometricRepository extends BaseRepository<UserBiometric, UserBiometricId>{
 

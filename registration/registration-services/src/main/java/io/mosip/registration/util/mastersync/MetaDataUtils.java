@@ -1,17 +1,16 @@
 package io.mosip.registration.util.mastersync;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.entity.mastersync.MasterSyncBaseEntity;
+import io.mosip.registration.entity.RegistrationCommonFields;
 
 /**
  * MetaDataUtils class provide methods to copy values from DTO to entity along
@@ -46,7 +45,7 @@ public class MetaDataUtils {
 	 * @throws DataAccessLayerException if any error occurs while mapping values
 	 * @see MapperUtils#map(Object, Object, Boolean)
 	 */
-	public static <S, D extends MasterSyncBaseEntity> D setUpdateMetaData(final S source, D destination,
+	public static <S, D extends RegistrationCommonFields> D setUpdateMetaData(final S source, D destination,
 			Boolean mapNullvalues) {
 
 		String contextUser = SessionContext.userContext().getUserId();
@@ -70,8 +69,8 @@ public class MetaDataUtils {
 	 * @throws DataAccessLayerException if any error occurs while mapping values
 	 * @see MapperUtils#map(Object, Class)
 	 */
-	public static <T, D extends MasterSyncBaseEntity> D setCreateMetaData(final T source,
-			Class<? extends MasterSyncBaseEntity> destinationClass) {
+	public static <T, D extends RegistrationCommonFields> D setCreateMetaData(final T source,
+			Class<? extends RegistrationCommonFields> destinationClass) {
 
 		String contextUser = SessionContext.userContext().getUserId();
 
@@ -81,14 +80,14 @@ public class MetaDataUtils {
 		return entity;
 	}
 
-	public static <T, D extends MasterSyncBaseEntity> List<D> setCreateMetaData(final Collection<T> dtoList,
-			Class<? extends MasterSyncBaseEntity> entityClass) {
+	public static <T, D extends RegistrationCommonFields> List<D> setCreateMetaData(final Collection<T> dtoList,
+			Class<? extends RegistrationCommonFields> entityClass) {
 
 		String contextUser = SessionContext.userContext().getUserId();
 
 		List<D> entities = new ArrayList<>();
 
-		if (null!=dtoList && !dtoList.isEmpty()) {
+		if (null != dtoList && !dtoList.isEmpty()) {
 			dtoList.forEach(dto -> {
 				D entity = (D) MapperUtils.map(dto, entityClass);
 				setCreatedDateTime(contextUser, entity);
@@ -100,14 +99,14 @@ public class MetaDataUtils {
 
 	}
 
-	private static <D extends MasterSyncBaseEntity> void setCreatedDateTime(String contextUser, D entity) {
-		entity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-		entity.setCreatedBy(contextUser);
+	private static <D extends RegistrationCommonFields> void setCreatedDateTime(String contextUser, D entity) {
+		entity.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+		entity.setCrBy(contextUser);
 	}
 
-	private static <D extends MasterSyncBaseEntity> void setUpdatedDateTime(String contextUser, D entity) {
-		entity.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-		entity.setUpdatedBy(contextUser);
+	private static <D extends RegistrationCommonFields> void setUpdatedDateTime(String contextUser, D entity) {
+		entity.setUpdDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+		entity.setUpdBy(contextUser);
 	}
 
 }

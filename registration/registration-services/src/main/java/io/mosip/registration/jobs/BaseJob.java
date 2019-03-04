@@ -3,6 +3,7 @@ package io.mosip.registration.jobs;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
@@ -55,6 +57,9 @@ public abstract class BaseJob extends QuartzJobBean {
 
 	protected ResponseDTO responseDTO;
 
+	private static  Map<String,String> completedJobMap = new HashMap<>();
+	
+	
 	/**
 	 * LOGGER for logging
 	 */
@@ -86,7 +91,8 @@ public abstract class BaseJob extends QuartzJobBean {
 	 * 
 	 * @param currentJobID
 	 *            current job executing
-	 * @param jobMap is a job's map
+	 * @param jobMap
+	 *            is a job's map
 	 */
 	public synchronized void executeChildJob(String currentJobID, Map<String, SyncJobDef> jobMap) {
 
@@ -116,7 +122,8 @@ public abstract class BaseJob extends QuartzJobBean {
 		} catch (NoSuchBeanDefinitionException noSuchBeanDefinitionException) {
 			LOGGER.error(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					noSuchBeanDefinitionException.getMessage());
+					noSuchBeanDefinitionException.getMessage()
+							+ ExceptionUtils.getStackTrace(noSuchBeanDefinitionException));
 
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
 					noSuchBeanDefinitionException.getMessage());
@@ -127,7 +134,7 @@ public abstract class BaseJob extends QuartzJobBean {
 
 	}
 
-	 public synchronized ResponseDTO syncTransactionUpdate(ResponseDTO responseDTO, String triggerPoint,
+	public synchronized ResponseDTO syncTransactionUpdate(ResponseDTO responseDTO, String triggerPoint,
 			String syncJobId) {
 
 		try {
@@ -138,10 +145,11 @@ public abstract class BaseJob extends QuartzJobBean {
 						RegistrationConstants.JOB_EXECUTION_SUCCESS, RegistrationConstants.JOB_EXECUTION_SUCCESS,
 						triggerPoint, syncJobId);
 
+				addToCompletedJobMap(syncJobId, RegistrationConstants.JOB_EXECUTION_SUCCESS);
 				/* Insert Sync Control transaction */
 				syncManager.createSyncControlTransaction(syncTransaction);
 
-				Map<String, Object> attributes = new HashMap<>();
+				Map<String, Object> attributes = new WeakHashMap<>();
 				attributes.put(RegistrationConstants.SYNC_TRANSACTION, syncTransaction);
 
 				SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
@@ -152,14 +160,14 @@ public abstract class BaseJob extends QuartzJobBean {
 				/* Insert Sync Transaction of executed with failure */
 				syncManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_FAILURE,
 						RegistrationConstants.JOB_EXECUTION_FAILURE, triggerPoint, syncJobId);
-
+				addToCompletedJobMap(syncJobId, RegistrationConstants.JOB_EXECUTION_FAILURE);
 			}
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 
 			LOGGER.error(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					regBaseUncheckedException.getMessage());
-			if(responseDTO==null) {
+					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
+			if (responseDTO == null) {
 				responseDTO = new ResponseDTO();
 			}
 			LinkedList<ErrorResponseDTO> errorResponseDTOs = new LinkedList<>();
@@ -185,8 +193,8 @@ public abstract class BaseJob extends QuartzJobBean {
 			 * Get Application Context from JobExecutionContext's job detail and set
 			 * application_Context
 			 */
-			setApplicationContext(
-					(ApplicationContext) context.getJobDetail().getJobDataMap().get(RegistrationConstants.APPLICATION_CONTEXT));
+			setApplicationContext((ApplicationContext) context.getJobDetail().getJobDataMap()
+					.get(RegistrationConstants.APPLICATION_CONTEXT));
 
 			/* Sync Transaction Manager */
 			syncManager = this.applicationContext.getBean(SyncManager.class);
@@ -205,13 +213,15 @@ public abstract class BaseJob extends QuartzJobBean {
 		} catch (NoSuchBeanDefinitionException | RegBaseUncheckedException exception) {
 
 			LOGGER.error(LoggerConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, exception.getMessage());
+					RegistrationConstants.APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
-					exception.getMessage());
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 		} catch (NullPointerException nullPointerException) {
 
 			LOGGER.error(LoggerConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, nullPointerException.getMessage());
+					RegistrationConstants.APPLICATION_ID,
+					nullPointerException.getMessage() + ExceptionUtils.getStackTrace(nullPointerException));
 
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NULL_POINTER_EXCEPTION,
 					nullPointerException.getMessage());
@@ -228,4 +238,20 @@ public abstract class BaseJob extends QuartzJobBean {
 			this.applicationContext = applicationContext;
 		}
 	}
+	
+	public void addToCompletedJobMap(String jobId,String status) {
+		completedJobMap.put(jobId, status);
+	}
+	
+	public static Map<String,String> getCompletedJobMap(){
+		return completedJobMap;
+	}
+	public static void clearCompletedJobMap(){
+		completedJobMap.clear();
+	}
+	
+	public static void removeCompletedJobInMap(String jobId){
+		completedJobMap.remove(jobId);
+	}
+
 }

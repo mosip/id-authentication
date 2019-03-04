@@ -34,7 +34,10 @@ public class RegistrationCenterDeviceHistoryDto {
 	 * Field for is active
 	 */
 	private Boolean isActive;
-
+	/**
+	 * Field for is active
+	 */
+	private String langCode;
 	/**
 	 * Field to hold Effective Date and time
 	 */

@@ -46,11 +46,11 @@ public class RegistrationCenterDAOImpl implements RegistrationCenterDAO {
 				APPLICATION_ID, "Fetching Registration Center details");
 
 		Optional<RegistrationCenter> registrationCenter = registrationCenterRepository
-				.findByCenterIdAndIsActiveTrue(centerId);
+				.findByRegistartionCenterIdIdAndIsActiveTrue(centerId);
 		RegistrationCenterDetailDTO registrationCenterDetailDTO = new RegistrationCenterDetailDTO();
 		if (registrationCenter.isPresent()) {
 			registrationCenterDetailDTO
-					.setRegistrationCenterId(registrationCenter.get().getCenterId());
+					.setRegistrationCenterId(registrationCenter.get().getRegistartionCenterId().getId());
 			registrationCenterDetailDTO.setRegistrationCenterName(registrationCenter.get().getCenterName());
 			registrationCenterDetailDTO.setRegsitrationCenterTypeCode(registrationCenter.get().getCntrTypCode());
 			registrationCenterDetailDTO.setRegistrationCenterAddrLine1(registrationCenter.get().getAddrLine1());

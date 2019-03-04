@@ -2,7 +2,7 @@
 -- schema 		: master	    	- Master reference Module
 -- table 		: machine_master_h	- HISTORY : Master List of Machines used for registration 
 -- table alias  : machm_h
- 
+  
 -- schema section -------------------------------------------------
  
 -- create schema if master schema for Master reference Module is not exists
@@ -39,14 +39,10 @@ create table master.machine_master_h (
 ;
 
 -- keys section -------------------------------------------------
- alter table master.machine_master_h add constraint pk_machm_h_id primary key (id, eff_dtimes)
+ alter table master.machine_master_h add constraint pk_machm_h_id primary key (id, lang_code, eff_dtimes)
  ;
 
 -- indexes section -------------------------------------------------
 -- create index idx_machm_h_<colX> on master.machine_master_h (colX )
 -- ;
-
--- comments section ------------------------------------------------- 
-comment on table master.machine_master_h is 'History table :  Table to store master list of machines like desktop, laptop, notebook...etc used at registration centers for individual registration'
-;
 

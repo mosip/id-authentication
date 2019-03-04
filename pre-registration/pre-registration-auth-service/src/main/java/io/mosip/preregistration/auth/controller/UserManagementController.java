@@ -24,7 +24,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
-@RequestMapping("/v0.1/pre-registration")
+@RequestMapping("/v0.1")
 @Api(tags = "User Management")
 @CrossOrigin("*")
 public class UserManagementController {

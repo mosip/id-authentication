@@ -1,0 +1,10 @@
+{
+  "timestamp": 1549880908824,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-AUD-001",
+      "errorMessage": "CreatedBy must not be null"
+    }
+  ]
+}

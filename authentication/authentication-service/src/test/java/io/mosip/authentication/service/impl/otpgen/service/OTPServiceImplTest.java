@@ -27,6 +27,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpIdentityDTO;
@@ -337,5 +338,41 @@ public class OTPServiceImplTest {
 		String uniqueID = otpRequestDto.getIdentity().getUin();
 //		String uniqueID = otpRequestDto.getIdvId();
 		ReflectionTestUtils.invokeMethod(idAuthService, "getIdRepoByVID", uniqueID, false);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestPhoneNoorEmailNotRegistered() throws IdAuthenticationBusinessException {
+		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(10);
+		otpServiceImpl.generateOtp(getOtpRequestDTO());
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestOtpFlooded() throws IdAuthenticationBusinessException {
+		Mockito.when(idInfoHelper.getEntityInfoAsString(Mockito.any(), Mockito.any())).thenReturn("1234567890");
+		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(10);
+		otpServiceImpl.generateOtp(getOtpRequestDTO());
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestParseExceptioncreateAuthTxn() throws Throwable {
+		Mockito.when(idInfoHelper.getUTCTime(Mockito.any())).thenReturn("2019-02-18T18:17:48.923+05:30");
+
+		try {
+			ReflectionTestUtils.invokeMethod(otpServiceImpl, "createAuthTxn", "", "", "",
+					"2019-02-18T18:17:48.923+05:30", "", "", "", RequestType.OTP_REQUEST);
+		} catch (Exception e) {
+			throw e.getCause();
+		}
+	}
+
+	@Test
+	public void TestOtpFloodedException() throws Throwable {
+		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
+		otpRequestDto.setReqTime("2019-02-18T18:17:48.923+05:30");
+		try {
+			ReflectionTestUtils.invokeMethod(otpServiceImpl, "isOtpFlooded", otpRequestDto);
+		} catch (Exception e) {
+			throw e.getCause();
+		}
 	}
 }

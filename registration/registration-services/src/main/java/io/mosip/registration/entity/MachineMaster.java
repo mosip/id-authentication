@@ -1,11 +1,18 @@
 package io.mosip.registration.entity;
 
-import java.sql.Timestamp;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import io.mosip.registration.entity.id.RegMachineSpecId;
 
 /**
  * Machine master entity details
@@ -15,136 +22,163 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(schema = "reg", name = "machine_master")
-public class MachineMaster extends RegistrationCommonFields {
+public class MachineMaster extends RegistrationCommonFields implements Serializable {
 
-	@Id
-	@Column(name = "id")
-	private String id;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5585825705521742941L;
+
+	/**
+	 * Field for machine ID
+	 */
+	@EmbeddedId
+	private RegMachineSpecId regMachineSpecId;
+
+	/**
+	 * Field for machine name
+	 */
 	@Column(name = "name")
 	private String name;
-	@Column(name = "mac_address")
-	private String macAddress;
+
+	/**
+	 * Field for machine serial number
+	 */
 	@Column(name = "serial_num")
 	private String serialNum;
+
+	/**
+	 * Field for machine ip address
+	 */
 	@Column(name = "ip_address")
 	private String ipAddress;
+	/**
+	 * Field for machine mac address
+	 */
+	@Column(name = "mac_address")
+	private String macAddress;
+
+	/**
+	 * Field for machine specific id
+	 */
 	@Column(name = "mspec_id")
-	private String mspecId;
-	@Column(name = "lang_code")
-	private String langCode;
-	@Column(name = "is_deleted")
-	private Boolean isDeleted;
-	@Column(name = "del_dtimes")
-	private Timestamp deletedDateTime;
-	
+	private String machineSpecId;
+
 	/**
-	 * @return the id
+	 * Field for validity end Date and Time for machine
 	 */
-	public String getId() {
-		return id;
-	}
+	@Column(name = "validity_end_dtimes")
+	private LocalDateTime validityDateTime;
+
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumns({ @JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	private RegMachineSpec machineSpecification;
+
 	/**
-	 * @param id the id to set
+	 * @return the regMachineSpecId
 	 */
-	public void setId(String id) {
-		this.id = id;
+	public RegMachineSpecId getRegMachineSpecId() {
+		return regMachineSpecId;
 	}
+
+	/**
+	 * @param regMachineSpecId the regMachineSpecId to set
+	 */
+	public void setRegMachineSpecId(RegMachineSpecId regMachineSpecId) {
+		this.regMachineSpecId = regMachineSpecId;
+	}
+
 	/**
 	 * @return the name
 	 */
 	public String getName() {
 		return name;
 	}
+
 	/**
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-	/**
-	 * @return the macAddress
-	 */
-	public String getMacAddress() {
-		return macAddress;
-	}
-	/**
-	 * @param macAddress the macAddress to set
-	 */
-	public void setMacAddress(String macAddress) {
-		this.macAddress = macAddress;
-	}
+
 	/**
 	 * @return the serialNum
 	 */
 	public String getSerialNum() {
 		return serialNum;
 	}
+
 	/**
 	 * @param serialNum the serialNum to set
 	 */
 	public void setSerialNum(String serialNum) {
 		this.serialNum = serialNum;
 	}
+
 	/**
 	 * @return the ipAddress
 	 */
 	public String getIpAddress() {
 		return ipAddress;
 	}
+
 	/**
 	 * @param ipAddress the ipAddress to set
 	 */
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
 	}
+
 	/**
-	 * @return the mspecId
+	 * @return the macAddress
 	 */
-	public String getMspecId() {
-		return mspecId;
+	public String getMacAddress() {
+		return macAddress;
 	}
+
 	/**
-	 * @param mspecId the mspecId to set
+	 * @param macAddress the macAddress to set
 	 */
-	public void setMspecId(String mspecId) {
-		this.mspecId = mspecId;
+	public void setMacAddress(String macAddress) {
+		this.macAddress = macAddress;
 	}
+
 	/**
-	 * @return the langCode
+	 * @return the machineSpecId
 	 */
-	public String getLangCode() {
-		return langCode;
+	public String getMachineSpecId() {
+		return machineSpecId;
 	}
+
 	/**
-	 * @param langCode the langCode to set
+	 * @param machineSpecId the machineSpecId to set
 	 */
-	public void setLangCode(String langCode) {
-		this.langCode = langCode;
+	public void setMachineSpecId(String machineSpecId) {
+		this.machineSpecId = machineSpecId;
 	}
+
 	/**
-	 * @return the isDeleted
+	 * @return the validityDateTime
 	 */
-	public Boolean getIsDeleted() {
-		return isDeleted;
+	public LocalDateTime getValidityDateTime() {
+		return validityDateTime;
 	}
+
 	/**
-	 * @param isDeleted the isDeleted to set
+	 * @param validityDateTime the validityDateTime to set
 	 */
-	public void setIsDeleted(Boolean isDeleted) {
-		this.isDeleted = isDeleted;
+	public void setValidityDateTime(LocalDateTime validityDateTime) {
+		this.validityDateTime = validityDateTime;
 	}
-	/**
-	 * @return the deletedDateTime
-	 */
-	public Timestamp getDeletedDateTime() {
-		return deletedDateTime;
+
+	public RegMachineSpec getMachineSpecification() {
+		return machineSpecification;
 	}
-	/**
-	 * @param deletedDateTime the deletedDateTime to set
-	 */
-	public void setDeletedDateTime(Timestamp deletedDateTime) {
-		this.deletedDateTime = deletedDateTime;
+
+	public void setMachineSpecification(RegMachineSpec machineSpecification) {
+		this.machineSpecification = machineSpecification;
 	}
-	
-		
+
 }

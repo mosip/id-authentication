@@ -1,7 +1,5 @@
 package io.mosip.registration.service.config;
 
-import org.springframework.context.ApplicationContext;
-
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -24,12 +22,10 @@ public interface JobConfigurationService {
 	/**
 	 * Start the jobs with sheduled Time
 	 * 
-	 * @param applicationContext
-	 *            to get the beans
 	 * @return responseDTO for start jobs
 	 * @throws RegBaseCheckedException
 	 */
-	ResponseDTO startScheduler(ApplicationContext applicationContext);
+	ResponseDTO startScheduler();
 
 	/**
 	 * Stop the jobs manually
@@ -48,27 +44,46 @@ public interface JobConfigurationService {
 	/**
 	 * execute the specified job
 	 * 
-	 * @param applicationContext
-	 *            is a spring framework's application context used here to give
-	 *            beans
 	 * @param jobId
 	 *            the job id
+	 * @Param triggerPoint where (User/System) the job was triggered
 	 * @return responseDTO for execute job
 	 */
-	ResponseDTO executeJob(ApplicationContext applicationContext, String jobId);
-	
+	ResponseDTO executeJob(String jobId, String triggerPoint);
+
 	/**
 	 * Get Last Completed Sync Jobs from Sync Control
 	 * 
 	 * @return responseDTO for last completedJobs
 	 */
 	ResponseDTO getLastCompletedSyncJobs();
-	
+
 	/**
 	 * Get history of Sync Jobs from Sync Transaction
 	 * 
 	 * @return responseDTO for last transaction of each syncJob
 	 */
 	ResponseDTO getSyncJobsTransaction();
+
+	/**
+	 * Run all the jobs
+	 * 
+	 * @return response of job
+	 */
+	ResponseDTO executeAllJobs();
+
+	/**
+	 * Is Application to be restart
+	 * 
+	 * @return response
+	 */
+	ResponseDTO isRestart();
+
+	/**
+	 * Get restart time
+	 * 
+	 * @return response
+	 */
+	ResponseDTO getRestartTime();
 
 }

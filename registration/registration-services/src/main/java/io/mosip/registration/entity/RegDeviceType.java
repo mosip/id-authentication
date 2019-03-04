@@ -7,6 +7,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import io.mosip.registration.entity.id.RegDeviceTypeId;
+
 /**
  * RegDeviceType entity details
  * 
@@ -17,8 +19,10 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "device_type", schema = "reg")
 public class RegDeviceType extends RegistrationCommonFields {
+
 	@EmbeddedId
-	RegDeviceTypeId regDeviceTypeId;
+	private RegDeviceTypeId regDeviceTypeId;
+
 	@Column(name = "name")
 	private String name;
 	@Column(name = "descr")
@@ -36,8 +40,7 @@ public class RegDeviceType extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param regDeviceTypeId
-	 *            the regDeviceTypeId to set
+	 * @param regDeviceTypeId the regDeviceTypeId to set
 	 */
 	public void setRegDeviceTypeId(RegDeviceTypeId regDeviceTypeId) {
 		this.regDeviceTypeId = regDeviceTypeId;
@@ -51,8 +54,7 @@ public class RegDeviceType extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param name
-	 *            the name to set
+	 * @param name the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -66,8 +68,7 @@ public class RegDeviceType extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param description
-	 *            the description to set
+	 * @param description the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -81,8 +82,7 @@ public class RegDeviceType extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param isDeleted
-	 *            the isDeleted to set
+	 * @param isDeleted the isDeleted to set
 	 */
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
@@ -96,8 +96,7 @@ public class RegDeviceType extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param deletedTime
-	 *            the deletedTime to set
+	 * @param deletedTime the deletedTime to set
 	 */
 	public void setDeletedTime(Timestamp deletedTime) {
 		this.deletedTime = deletedTime;

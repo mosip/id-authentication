@@ -1,7 +1,7 @@
 package io.mosip.registration.jobs.impl;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -24,23 +24,23 @@ public class JobManagerImpl implements JobManager {
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(JobManagerImpl.class);
 
-	synchronized public String getJobId(JobExecutionContext context) {
+	 public synchronized String getJobId(JobExecutionContext context) {
 
 		return getJobId(context.getJobDetail());
 	}
 
-	synchronized public String getJobId(JobDetail jobDetail) {
+	public synchronized String getJobId(JobDetail jobDetail) {
 
 		return jobDetail.getKey().getName();
 	}
 
 	@Override
-	synchronized public String getJobId(Trigger trigger) {
+	public synchronized String getJobId(Trigger trigger) {
 		return getJobId((JobDetail) trigger.getJobDataMap().get(RegistrationConstants.JOB_DETAIL));
 	}
 
 	@Override
-	synchronized public Map<String, SyncJobDef> getChildJobs(final JobExecutionContext context) {
+	public synchronized Map<String, SyncJobDef> getChildJobs(final JobExecutionContext context) {
 
 		LOGGER.info(LoggerConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Get Job started");
@@ -48,7 +48,7 @@ public class JobManagerImpl implements JobManager {
 		// Get Job Map
 		JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
 
-		Map<String, SyncJobDef> syncjobMap = new HashMap<>();
+		Map<String, SyncJobDef> syncjobMap = new WeakHashMap<>();
 
 		jobDataMap.forEach((key, value) -> {
 

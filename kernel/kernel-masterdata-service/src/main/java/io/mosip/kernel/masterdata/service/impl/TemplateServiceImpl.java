@@ -2,6 +2,8 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Template;
+import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -127,7 +130,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * kernel.masterdata.dto.TemplateDto)
 	 */
 	@Override
-	public IdResponseDto createTemplate(TemplateDto template) {
+	public IdAndLanguageCodeID createTemplate(TemplateDto template) {
 		Template entity = MetaDataUtils.setCreateMetaData(template, Template.class);
 		Template templateEntity;
 		try {
@@ -138,10 +141,10 @@ public class TemplateServiceImpl implements TemplateService {
 					TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 
-		IdResponseDto idResponseDto = new IdResponseDto();
-		MapperUtils.map(templateEntity, idResponseDto);
+		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
+		MapperUtils.map(templateEntity, idAndLanguageCodeID);
 
-		return idResponseDto;
+		return idAndLanguageCodeID;
 	}
 
 	/*
@@ -152,14 +155,16 @@ public class TemplateServiceImpl implements TemplateService {
 	 * kernel.masterdata.dto.TemplateDto)
 	 */
 	@Override
-	public IdResponseDto updateTemplates(TemplateDto template) {
-		IdResponseDto idResponseDto = new IdResponseDto();
+	public IdAndLanguageCodeID updateTemplates(TemplateDto template) {
+		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		try {
-			Template entity = templateRepository.findTemplateByIDAndIsDeletedFalseOrIsDeletedIsNull(template.getId());
+			Template entity = templateRepository.findTemplateByIDAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
+					template.getId(), template.getLangCode());
 			if (!EmptyCheckUtils.isNullEmpty(entity)) {
 				MetaDataUtils.setUpdateMetaData(template, entity, false);
 				templateRepository.update(entity);
-				idResponseDto.setId(entity.getId());
+				idAndLanguageCodeID.setId(entity.getId());
+				idAndLanguageCodeID.setLangCode(entity.getLangCode());
 			} else {
 				throw new RequestException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 						TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
@@ -168,7 +173,7 @@ public class TemplateServiceImpl implements TemplateService {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_UPDATE_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
-		return idResponseDto;
+		return idAndLanguageCodeID;
 	}
 
 	/*
@@ -178,24 +183,23 @@ public class TemplateServiceImpl implements TemplateService {
 	 * io.mosip.kernel.masterdata.service.TemplateService#deleteTemplates(java.lang.
 	 * String)
 	 */
+	@Transactional
 	@Override
 	public IdResponseDto deleteTemplates(String id) {
-		IdResponseDto idResponseDto = new IdResponseDto();
 		try {
-			Template entity = templateRepository.findTemplateByIDAndIsDeletedFalseOrIsDeletedIsNull(id);
-			if (!EmptyCheckUtils.isNullEmpty(entity)) {
-				MetaDataUtils.setDeleteMetaData(entity);
-				templateRepository.update(entity);
-				idResponseDto.setId(entity.getId());
-			} else {
+			int updatedRows = templateRepository.deleteTemplate(id, MetaDataUtils.getCurrentDateTime(),
+					MetaDataUtils.getContextUser());
+			if (updatedRows < 1) {
 				throw new RequestException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 						TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 			}
+
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_DELETE_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_DELETE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
-
+		IdResponseDto idResponseDto = new IdResponseDto();
+		idResponseDto.setId(id);
 		return idResponseDto;
 	}
 }

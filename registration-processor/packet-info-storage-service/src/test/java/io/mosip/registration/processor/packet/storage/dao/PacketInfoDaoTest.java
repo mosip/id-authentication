@@ -1,25 +1,23 @@
 package io.mosip.registration.processor.packet.storage.dao;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
-import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
@@ -124,15 +122,15 @@ public class PacketInfoDaoTest {
 		byte[] docStore = docValue.getBytes();
 		applicantPhotoEntity.setExcpPhotoStore(docStore);
 		applicantPhotoEntity.setImageStore(docStore);
-		
+
 		applicantphotoArray[0] = applicantPhotoEntity;
 
 		List<Object[]> applicantInfo = new ArrayList<>();
 		applicantInfo.add(applicantphotoArray);
 		applicantInfo.add(dedupeArray);
 
-		Mockito.when(qcuserRegRepositary.findByUserId(ArgumentMatchers.anyString())).thenReturn(assignedPackets);
-		Mockito.when(qcuserRegRepositary.getApplicantInfo(ArgumentMatchers.anyString())).thenReturn(applicantInfo);
+		Mockito.when(qcuserRegRepositary.findByUserId(anyString())).thenReturn(assignedPackets);
+		Mockito.when(qcuserRegRepositary.getApplicantInfo(anyString())).thenReturn(applicantInfo);
 
 		List<ApplicantInfoDto> applicantInfoList = packetInfodao.getPacketsforQCUser("2018782130000224092018121229");
 
@@ -160,14 +158,13 @@ public class PacketInfoDaoTest {
 		regOsiEntity.setOfficerHashedPin("58086E976BA47A9F1A52099412665D8AF3FC587D946817553697E06A352D88E3");
 		osiEntityList.add(regOsiEntity);
 
-		Mockito.when(regOsiRepository.findByRegOsiId(ArgumentMatchers.anyString())).thenReturn(osiEntityList);
+		Mockito.when(regOsiRepository.findByRegOsiId(anyString())).thenReturn(osiEntityList);
 
 		RegOsiDto regOsiDto = packetInfodao.getEntitiesforRegOsi("2018782130000224092018121229");
 
 		assertEquals("2018782130000224092018121229", regOsiDto.getRegId());
 
 	}
-
 
 	/**
 	 * Gets the all demo with UIN test.
@@ -179,8 +176,7 @@ public class PacketInfoDaoTest {
 		dedupeEntity.setUin("1234");
 		List<IndividualDemographicDedupeEntity> dedupeList = new ArrayList<>();
 		dedupeList.add(dedupeEntity);
-		Mockito.when(demographicDedupeRepository.createQuerySelect(ArgumentMatchers.any(), ArgumentMatchers.any()))
-				.thenReturn(dedupeList);
+		Mockito.when(demographicDedupeRepository.createQuerySelect(any(), any())).thenReturn(dedupeList);
 		List<DemographicInfoDto> duplicateUin = packetInfodao.getAllDemographicInfoDtos("A125", "male", null, "ar");
 		assertEquals("1234", duplicateUin.get(0).getUin());
 
@@ -194,8 +190,7 @@ public class PacketInfoDaoTest {
 		List<IndividualDemographicDedupeEntity> demographicDedupeEntityList = new ArrayList<>();
 		demographicDedupeEntityList.add(dedupeEntity);
 
-		Mockito.when(demographicDedupeRepository.findDemoById(ArgumentMatchers.anyString()))
-				.thenReturn(demographicDedupeEntityList);
+		Mockito.when(demographicDedupeRepository.findDemoById(anyString())).thenReturn(demographicDedupeEntityList);
 
 		List<DemographicInfoDto> demographicDedupeDtoList = packetInfodao.findDemoById("2018782130000224092018121229");
 		assertEquals("2018782130000224092018121229", demographicDedupeDtoList.get(0).getRegId());
@@ -210,8 +205,7 @@ public class PacketInfoDaoTest {
 	public void getApplicantIrisImageNameByIdTest() {
 		List<String> irisImageList = new ArrayList<>();
 		irisImageList.add("leftEye");
-		Mockito.when(demographicDedupeRepository.getApplicantIrisImageNameById(ArgumentMatchers.anyString()))
-				.thenReturn(irisImageList);
+		Mockito.when(demographicDedupeRepository.getApplicantIrisImageNameById(anyString())).thenReturn(irisImageList);
 
 		List<String> result = packetInfodao.getApplicantIrisImageNameById("2018782130000224092018121229");
 		assertEquals("leftEye", result.get(0));
@@ -227,7 +221,7 @@ public class PacketInfoDaoTest {
 	public void getApplicantFingerPrintImageNameByIdTest() {
 		List<String> applicantFingerPrint = new ArrayList<>();
 		applicantFingerPrint.add("leftThumb");
-		Mockito.when(demographicDedupeRepository.getApplicantIrisImageNameById(ArgumentMatchers.anyString()))
+		Mockito.when(demographicDedupeRepository.getApplicantIrisImageNameById(anyString()))
 				.thenReturn(applicantFingerPrint);
 
 		List<String> result = packetInfodao.getApplicantIrisImageNameById("2018782130000224092018121229");

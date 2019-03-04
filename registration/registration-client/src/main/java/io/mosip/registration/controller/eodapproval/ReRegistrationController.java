@@ -16,6 +16,7 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.ProcessNames;
@@ -57,9 +58,6 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 */
 	@Autowired
 	private ReRegistrationService reRegistrationServiceImpl;
-
-	@Autowired
-	private EODController eodController;
 
 	/**
 	 * Table to display the created packets
@@ -162,10 +160,10 @@ public class ReRegistrationController extends BaseController implements Initiali
 				imageView.setImage(new Image(file));
 			} catch (FileNotFoundException fileNotFoundException) {
 				LOGGER.error("RE_REGISTRATION_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
-						APPLICATION_NAME, APPLICATION_ID, fileNotFoundException.getMessage());
+						APPLICATION_NAME, APPLICATION_ID, ExceptionUtils.getStackTrace(fileNotFoundException));
 			} catch (IOException ioException) {
 				LOGGER.error("RE_REGISTRATION_CONTROLLER - FAILED_WHILE_READING_ACKNOWLEDGEMENT", APPLICATION_NAME,
-						APPLICATION_ID, ioException.getMessage());
+						APPLICATION_ID, ExceptionUtils.getStackTrace(ioException));
 			}
 
 		}
@@ -202,21 +200,20 @@ public class ReRegistrationController extends BaseController implements Initiali
 			showAuthenticatePage(primarystage);
 			authenticationController.init(this, ProcessNames.EOD.getType());
 
-		} catch (IOException e) {
+		} catch (IOException ioException) {
 			LOGGER.error("RE_REGISTRATION_CONTROLLER - AUTHENTICATE_USER_FAILED", APPLICATION_NAME, APPLICATION_ID,
-					e.getMessage());
-		} catch (RegBaseCheckedException e) {
+					ioException.getMessage()+ExceptionUtils.getStackTrace(ioException));
+		} catch (RegBaseCheckedException regBaseCheckedException) {
 			primarystage.close();
 			LOGGER.error("RE_REGISTRATION_CONTROLLER - AUTHENTICATE_USER_FAILED", APPLICATION_NAME, APPLICATION_ID,
-					"No of authentication modes is empty");
+					"No of authentication modes is empty"+ExceptionUtils.getStackTrace(regBaseCheckedException));
 		}
 	}
 
 	private void showAuthenticatePage(Stage primarystage) throws IOException {
 		AnchorPane authRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_AUTHENTICATION));
 		Scene scene = new Scene(authRoot);
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+		scene.getStylesheets().add(ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 		primarystage.initStyle(StageStyle.UNDECORATED);
 		primarystage.setScene(scene);
 		primarystage.initModality(Modality.WINDOW_MODAL);
@@ -256,10 +253,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 			ObservableList<PacketStatusDTO> observableList = FXCollections
 					.observableArrayList(reRegistrationPacketsList);
 			table.setItems(observableList);
-			eodController.getReRegisterTitledPane().setText(
-					RegistrationUIConstants.REREGISTER_TITLEPANE + "( " + reRegistrationPacketsList.size() + " )");
 		} else {
-			eodController.getReRegisterTitledPane().setText(RegistrationUIConstants.REREGISTER_TITLEPANE);
 			reRegistrationRootPane.disableProperty().set(true);
 			table.getItems().clear();
 		}

@@ -22,7 +22,7 @@ import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
-import io.mosip.registration.dto.demographic.Identity;
+import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.impl.ZipCreationServiceImpl;
@@ -86,20 +86,11 @@ public class ZipCreationServiceTest {
 		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
 		documentDetailsResidenceDTO.setType("PoA");
-		documentDetailsResidenceDTO.setFormat("passport");
-		documentDetailsResidenceDTO.setValue("aaa");
+		documentDetailsResidenceDTO.setFormat("jpg");
+		documentDetailsResidenceDTO.setValue("ProofOfRelationship");
 		documentDetailsResidenceDTO.setOwner("hof");
-		registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
-				.setProofOfAddress(documentDetailsResidenceDTO);
-
-		documentDetailsResidenceDTO = new DocumentDetailsDTO();
-		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsResidenceDTO.setType("PoA");
-		documentDetailsResidenceDTO.setFormat("passport");
-		documentDetailsResidenceDTO.setValue("aaa");
-		documentDetailsResidenceDTO.setOwner("hof");
-		registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
-				.setProofOfIdentity(documentDetailsResidenceDTO);
+		registrationDTO.getDemographicDTO().getApplicantDocumentDTO().getDocuments()
+				.put("doc", documentDetailsResidenceDTO);
 
 		zipCreationService.createPacket(registrationDTO, filesGeneratedForPacket);
 	}
@@ -115,7 +106,7 @@ public class ZipCreationServiceTest {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 		DemographicDTO demographicDTO = new DemographicDTO();
 		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
-		demographicInfoDTO.setIdentity(new Identity());
+		demographicInfoDTO.setIdentity(new MoroccoIdentity());
 		demographicDTO.setDemographicInfoDTO(demographicInfoDTO);
 		registrationDTO.setDemographicDTO(demographicDTO);
 		BiometricDTO biometricDTO = new BiometricDTO();

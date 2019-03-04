@@ -1,0 +1,11 @@
+{
+  "documentcategories": [
+    {
+      "code": "POA",
+      "name": "Proof of Address",
+      "description": "Address Proof",
+      "langCode": "eng",
+      "isActive": true
+    }
+  ]
+}

@@ -9,17 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * @author Abhishek Kumar
- * @since 1.0.0
- */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
 public class BaseEntity {
 
-	@Column(name = "is_active")
+	@Column(name = "is_active", nullable = false)
 	private Boolean isActive;
 
 	@Column(name = "cr_by", nullable = false, length = 24)

@@ -1,0 +1,14 @@
+{
+    "timestamp": 1549974782154,
+    "status": 200,
+    "errors": [
+        {
+            "errorCode": "KER-OTV-003",
+            "errorMessage": "OTP can't be empty or null."
+        },
+        {
+            "errorCode": "KER-OTV-004",
+            "errorMessage": "OTP consists of only numeric characters. No other characters is allowed."
+        }
+    ]
+}

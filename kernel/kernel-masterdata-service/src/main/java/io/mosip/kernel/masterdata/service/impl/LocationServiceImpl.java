@@ -13,11 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
@@ -405,6 +407,28 @@ public class LocationServiceImpl implements LocationService {
 			throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.LocationService#validateLocationName(java.lang.String)
+	 */
+	@Override
+	public StatusResponseDto validateLocationName(String locationName) {
+		StatusResponseDto statusResponseDto = null;
+		boolean isPresent = false;
+		try {
+			statusResponseDto = new StatusResponseDto();
+			statusResponseDto.setStatus(MasterDataConstant.INVALID);
+			isPresent = locationRepository.isLocationNamePresent(locationName);
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
+		}
+		if (isPresent) {
+			statusResponseDto.setStatus(MasterDataConstant.VALID);
+		}
+		return statusResponseDto;
 	}
 
 }

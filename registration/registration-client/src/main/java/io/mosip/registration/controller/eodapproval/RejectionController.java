@@ -5,10 +5,10 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +18,18 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
-import io.mosip.registration.dto.mastersync.MasterReasonListDto;
+import io.mosip.registration.dto.mastersync.ReasonListDto;
 import io.mosip.registration.service.MasterSyncService;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 /**
@@ -63,12 +63,6 @@ public class RejectionController extends BaseController implements Initializable
 	@FXML
 	private Button rejectionSubmit;
 
-	/**
-	 * HyperLink for Exit
-	 */
-	@FXML
-	private Hyperlink rejectionExit;
-
 	/** The rejectionmap list. */
 	private List<Map<String, String>> rejectionmapList;
 
@@ -79,6 +73,9 @@ public class RejectionController extends BaseController implements Initializable
 	private TableView<RegistrationApprovalDTO> regRejectionTable;
 
 	private String controllerName;
+	
+	@FXML
+	private Button closeButton;
 
 	/*
 	 * (non-Javadoc)
@@ -91,9 +88,8 @@ public class RejectionController extends BaseController implements Initializable
 		LOGGER.info(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
 		rejectionSubmit.disableProperty().set(true);
 		rejectionComboBox.getItems().clear();
-
-		List<MasterReasonListDto> reasonList = masterSyncService.getAllReasonsList(applicationContext.getApplicationLanguage());
-		
+		List<ReasonListDto> reasonList = masterSyncService.getAllReasonsList(applicationContext.getApplicationLanguage());
+		closeButton.setGraphic(new ImageView(new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 20, 20, true, true)));
 		rejectionComboBox.setItems(FXCollections
 				.observableArrayList(reasonList.stream().map(list -> list.getName()).collect(Collectors.toList())));
 
@@ -135,7 +131,7 @@ public class RejectionController extends BaseController implements Initializable
 			}
 		}
 
-		Map<String, String> map = new HashMap<>();
+		Map<String, String> map = new WeakHashMap<>();
 		map.put("registrationID", rejRegData.getId());
 		map.put("statusCode", RegistrationClientStatusCode.REJECTED.getCode());
 		map.put("statusComment", rejectionComboBox.getSelectionModel().getSelectedItem());

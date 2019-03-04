@@ -7,7 +7,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.syncdata.constant.RolesErrorCode;
-import io.mosip.kernel.syncdata.constant.SyncConfigDetailsErrorCode;
 import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
@@ -59,7 +58,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 					RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorCode(),
 					RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorMessage());
 		}
-
+       
 		return rolesDtos;
 
 	}

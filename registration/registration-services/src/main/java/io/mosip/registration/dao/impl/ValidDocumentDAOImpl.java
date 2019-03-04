@@ -36,10 +36,18 @@ public class ValidDocumentDAOImpl implements ValidDocumentDAO {
 	 */
 	@Override
 	public List<ValidDocument> getValidDocuments() {
-		LOGGER.info("REGISTRATION-PACKET_CREATION-VALIDDOCUMENTDAO", APPLICATION_NAME,
-				APPLICATION_ID, "fetching the validdocuments");
+		LOGGER.info("REGISTRATION-PACKET_CREATION-VALIDDOCUMENTDAO", APPLICATION_NAME, APPLICATION_ID,
+				"fetching the validdocuments");
 
 		return validDocumentRepository.findAll();
+	}
+
+	@Override
+	public List<ValidDocument> getValidDocuments(String applicantType, String docCategoryCode, String langCode) {
+
+		return validDocumentRepository.findByApplicantTypeAndDocCategoryCodeAndLangCode(applicantType, docCategoryCode,
+				langCode);
+
 	}
 
 }

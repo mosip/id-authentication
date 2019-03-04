@@ -34,25 +34,29 @@ public class Initialization extends Application {
 
 	private static ApplicationContext applicationContext;
 
+	private static Stage primaryStage;
+
 	@Override
 	public void start(Stage primaryStage) throws RegBaseCheckedException {
 		LOGGER.info("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
 				APPLICATION_ID, "Login screen initilization "
 						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
-		
+
+		this.primaryStage = primaryStage;
 		LoginController loginController = applicationContext.getBean(LoginController.class);
 		loginController.loadInitialScreen(primaryStage);
-		
+
 		LOGGER.info("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
 				APPLICATION_ID, "Login screen loaded"
 						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
 	}
 
 	public static void main(String[] args) {
+
 		System.setProperty("java.net.useSystemProxies", "true");
 		System.setProperty("file.encoding", "UTF-8");
 		applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
-		
+
 		launch(args);
 
 		LOGGER.info("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
@@ -69,4 +73,13 @@ public class Initialization extends Application {
 	public static ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}
+
+	public static void setApplicationContext(ApplicationContext applicationContext) {
+		Initialization.applicationContext = applicationContext;
+	}
+	
+	public static Stage getPrimaryStage() {
+		return primaryStage;
+	}
+
 }

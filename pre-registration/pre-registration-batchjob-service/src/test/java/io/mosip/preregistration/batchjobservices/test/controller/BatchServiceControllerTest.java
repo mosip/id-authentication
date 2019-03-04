@@ -36,7 +36,7 @@ public class BatchServiceControllerTest {
 		MainResponseDTO<String> response = new MainResponseDTO<>();
 		Mockito.when(consumedService.demographicConsumedStatus()).thenReturn(response);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.put("/v0.1/pre-registration/batch/state/consumedStatus")
+				.put("/consumedStatus")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -47,7 +47,7 @@ public class BatchServiceControllerTest {
 		MainResponseDTO<String> response = new MainResponseDTO<>();
 		Mockito.when(consumedService.demographicConsumedStatus()).thenReturn(response);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.put("/v0.1/pre-registration/batch/state/expiredStatus")
+				.put("/expiredStatus")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());

@@ -1,7 +1,6 @@
 package io.mosip.registration.test.dao.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -34,7 +33,7 @@ import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
-import io.mosip.registration.dto.demographic.Identity;
+import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.dto.demographic.ValuesDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationTransaction;
@@ -91,7 +90,7 @@ public class RegistrationDAOTest {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 		DemographicDTO demographicDTO = new DemographicDTO();
 		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
-		Identity identity = new Identity();
+		MoroccoIdentity identity = new MoroccoIdentity();
 		List<ValuesDTO> fullNames = new ArrayList<>();
 		ValuesDTO valuesDTO = new ValuesDTO();
 		valuesDTO.setLanguage("eng");
@@ -119,8 +118,9 @@ public class RegistrationDAOTest {
 		List<Registration> packetLists = new ArrayList<>();
 		Registration reg = new Registration();
 		packetLists.add(reg);
-		List<String> packetNames = Arrays.asList("PUSHED","EXPORTED", "resend", "E");
-		Mockito.when(registrationRepository.findByStatusCodes("PUSHED","EXPORTED", "resend", "E")).thenReturn(packetLists);
+		List<String> packetNames = Arrays.asList("PUSHED", "EXPORTED", "resend", "E");
+		Mockito.when(registrationRepository.findByStatusCodes("PUSHED", "EXPORTED", "resend", "E"))
+				.thenReturn(packetLists);
 		assertEquals(packetLists, registrationDAOImpl.getRegistrationByStatus(packetNames));
 	}
 
@@ -219,14 +219,6 @@ public class RegistrationDAOTest {
 	}
 
 	@Test
-	public void getRegistrationsToBeDeletedTest() {
-		List<Registration> registrations = null;
-		when(registrationRepository.findByCrDtimeBefore(new Timestamp(Mockito.anyLong()))).thenReturn(registrations);
-		assertNull(registrationDAOImpl.getRegistrationsToBeDeleted(new Timestamp(Mockito.anyLong())));
-
-	}
-
-	@Test
 	public void getAllReRegistrationPacketsTest() {
 		List<Registration> registrations = new LinkedList<>();
 		String[] status = { "Approved", "Rejected" };
@@ -252,7 +244,7 @@ public class RegistrationDAOTest {
 		List<Registration> registration = new LinkedList<>();
 		List<String> statusCodes = new LinkedList<>();
 
-		when(registrationRepository.findByClientStatusCodeIn(statusCodes)).thenReturn(registration);
+		when(registrationRepository.findByClientStatusCodeInOrderByUpdDtimesDesc(statusCodes)).thenReturn(registration);
 
 		registrationDAOImpl.getPacketsToBeSynched(statusCodes);
 	}
@@ -277,27 +269,28 @@ public class RegistrationDAOTest {
 		SessionContext.destroySession();
 		ApplicationContext.getInstance().setApplicationMap(null);
 	}
-	
+
 	@Test
 	public void getRegistrationByIdTest() {
-		Registration registration=new Registration();
-		Mockito.when(registrationRepository.findByClientStatusCodeAndId(Mockito.anyString(), Mockito.anyString())).thenReturn(registration);
-		assertSame(registration, registrationDAOImpl.getRegistrationById("PROCESSED","REG123456"));
-		
+		Registration registration = new Registration();
+		Mockito.when(registrationRepository.findByClientStatusCodeAndId(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(registration);
+		assertSame(registration, registrationDAOImpl.getRegistrationById("PROCESSED", "REG123456"));
+
 	}
-	
+
 	@Test
 	public void getRegistrationsTest() {
-		List<String> ids=new  LinkedList<>();
+		List<String> ids = new LinkedList<>();
 		ids.add("REG123456");
-		List<Registration> registrations=new LinkedList<>();
-		
-		Registration registration=new Registration();
+		List<Registration> registrations = new LinkedList<>();
+
+		Registration registration = new Registration();
 		registrations.add(registration);
-		
+
 		Mockito.when(registrationRepository.findAllById(ids)).thenReturn(registrations);
 		assertSame(registrations, registrationDAOImpl.get(ids));
-		
+
 	}
 
 }

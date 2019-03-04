@@ -1,12 +1,11 @@
 package io.mosip.registration.processor.stages.utils;
 
-import java.io.InputStream;
 import java.util.List;
 
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 /**
@@ -21,7 +20,7 @@ public class FilesValidation {
 	public static final String BIOMETRIC = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR;
 
 	/** The adapter. */
-	private FileSystemAdapter<InputStream, Boolean> adapter;
+	private FileSystemAdapter adapter;
 
 	/** The registration status dto. */
 	InternalRegistrationStatusDto registrationStatusDto;
@@ -34,8 +33,7 @@ public class FilesValidation {
 	 * @param registrationStatusDto
 	 *            the registration status dto
 	 */
-	public FilesValidation(FileSystemAdapter<InputStream, Boolean> adapter,
-			InternalRegistrationStatusDto registrationStatusDto) {
+	public FilesValidation(FileSystemAdapter adapter, InternalRegistrationStatusDto registrationStatusDto) {
 		this.registrationStatusDto = registrationStatusDto;
 		this.adapter = adapter;
 	}
@@ -52,7 +50,7 @@ public class FilesValidation {
 	public boolean filesValidation(String registrationId, Identity identity) {
 		boolean filesValidated = false;
 
-		List<FieldValueArray> hashSequence = identity.getHashSequence();
+		List<FieldValueArray> hashSequence = identity.getHashSequence1();
 		filesValidated = validateHashSequence(registrationId, hashSequence);
 
 		if (!filesValidated)

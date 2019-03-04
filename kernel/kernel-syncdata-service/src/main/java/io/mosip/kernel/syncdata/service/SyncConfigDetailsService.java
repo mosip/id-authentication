@@ -21,7 +21,7 @@ public interface SyncConfigDetailsService {
 	 * 
 	 * @return JSONObject - config synced data
 	 */
-	public JSONObject getConfigDetails();
+	public ConfigDto getConfigDetails();
 
 	/**
 	 * This service will fetch all Global Configaration details available from

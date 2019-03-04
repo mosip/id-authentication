@@ -3,13 +3,17 @@ package io.mosip.registration.entity;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
+
+import io.mosip.registration.entity.id.RegMachineSpecId;
 
 /**
  * RegDeviceMaster entity details
@@ -21,29 +25,64 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "device_master", schema = "reg")
 public class RegDeviceMaster extends RegistrationCommonFields {
-	@Id
-	@Column(name = "id")
-	private String id;
+
+	@EmbeddedId
+	private RegMachineSpecId regMachineSpecId;
+
 	@Column(name = "name")
 	private String name;
 	@Column(name = "mac_address")
-	private String macAdress;
+	private String macAddress;
 	@Column(name = "serial_num")
-	private String serialNumber;
+	private String serialNum;
 	@Column(name = "ip_address")
 	private String ipAddress;
-	@Column(name = "lang_code")
-	private String languageCode;
+	@Column(name = "dspec_id")
+	private String deviceSpecId;
 	@Column(name = "is_deleted")
 	@Type(type = "true_false")
 	private Boolean isDeleted;
 	@Column(name = "del_dtimes")
 	private Timestamp deletedTime;
+	
+
 	@ManyToOne
-	@JoinColumn(name = "dspec_id")
+	@JoinColumns({ @JoinColumn(name = "dspec_id", referencedColumnName = "id", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	private RegDeviceSpec regDeviceSpec;
+	
+	
+
+	/**
+	 * @return the regMachineSpecId
+	 */
+	public RegMachineSpecId getRegMachineSpecId() {
+		return regMachineSpecId;
+	}
+
+	/**
+	 * @param regMachineSpecId the regMachineSpecId to set
+	 */
+	public void setRegMachineSpecId(RegMachineSpecId regMachineSpecId) {
+		this.regMachineSpecId = regMachineSpecId;
+	}
+
 	@Column(name = " validity_end_dtimes")
 	private Timestamp validityEndDtimes;
+
+	/**
+	 * @return the deviceSpecId
+	 */
+	public String getDeviceSpecId() {
+		return deviceSpecId;
+	}
+
+	/**
+	 * @param deviceSpecId the deviceSpecId to set
+	 */
+	public void setDeviceSpecId(String deviceSpecId) {
+		this.deviceSpecId = deviceSpecId;
+	}
 
 	/**
 	 * @return the validityEndDtimes
@@ -53,8 +92,7 @@ public class RegDeviceMaster extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param validityEndDtimes
-	 *            the validityEndDtimes to set
+	 * @param validityEndDtimes the validityEndDtimes to set
 	 */
 	public void setValidityEndDtimes(Timestamp validityEndDtimes) {
 		this.validityEndDtimes = validityEndDtimes;
@@ -68,26 +106,10 @@ public class RegDeviceMaster extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param regDeviceSpec
-	 *            the regDeviceSpec to set
+	 * @param regDeviceSpec the regDeviceSpec to set
 	 */
 	public void setRegDeviceSpec(RegDeviceSpec regDeviceSpec) {
 		this.regDeviceSpec = regDeviceSpec;
-	}
-
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	/**
@@ -98,41 +120,38 @@ public class RegDeviceMaster extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param name
-	 *            the name to set
+	 * @param name the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * @return the macAdress
+	 * @return the macAddress
 	 */
-	public String getMacAdress() {
-		return macAdress;
+	public String getMacAddress() {
+		return macAddress;
 	}
 
 	/**
-	 * @param macAdress
-	 *            the macAdress to set
+	 * @param macAddress the macAddress to set
 	 */
-	public void setMacAdress(String macAdress) {
-		this.macAdress = macAdress;
+	public void setMacAddress(String macAddress) {
+		this.macAddress = macAddress;
 	}
 
 	/**
-	 * @return the serialNumber
+	 * @return the serialNum
 	 */
-	public String getSerialNumber() {
-		return serialNumber;
+	public String getSerialNum() {
+		return serialNum;
 	}
 
 	/**
-	 * @param serialNumber
-	 *            the serialNumber to set
+	 * @param serialNum the serialNum to set
 	 */
-	public void setSerialNumber(String serialNumber) {
-		this.serialNumber = serialNumber;
+	public void setSerialNum(String serialNum) {
+		this.serialNum = serialNum;
 	}
 
 	/**
@@ -143,26 +162,10 @@ public class RegDeviceMaster extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param ipAddress
-	 *            the ipAddress to set
+	 * @param ipAddress the ipAddress to set
 	 */
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
-	}
-
-	/**
-	 * @return the languageCode
-	 */
-	public String getLanguageCode() {
-		return languageCode;
-	}
-
-	/**
-	 * @param languageCode
-	 *            the languageCode to set
-	 */
-	public void setLanguageCode(String languageCode) {
-		this.languageCode = languageCode;
 	}
 
 	/**
@@ -173,8 +176,7 @@ public class RegDeviceMaster extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param isDeleted
-	 *            the isDeleted to set
+	 * @param isDeleted the isDeleted to set
 	 */
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
@@ -188,8 +190,7 @@ public class RegDeviceMaster extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param deletedTime
-	 *            the deletedTime to set
+	 * @param deletedTime the deletedTime to set
 	 */
 	public void setDeletedTime(Timestamp deletedTime) {
 		this.deletedTime = deletedTime;

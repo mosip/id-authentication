@@ -19,12 +19,14 @@ import java.util.zip.ZipInputStream;
 import javax.crypto.SecretKey;
 
 import org.apache.commons.io.IOUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
@@ -42,7 +44,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.RegistrationDTO;
-import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -62,9 +63,8 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 	@Value("${PRE_REG_PACKET_LOCATION}")
 	private String preRegPacketLocation;
-
-	@Value("${packet.location.dateFormat}")
-	private String preRegLocationDateFormat;
+	@Value("${mosip.registration.identity-class-name}")
+	private String identityClassName;
 
 	@Autowired
 	private JsonValidator jsonValidator;
@@ -96,29 +96,10 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 					parseDemographicJson(bufferedReader, zipEntry);
 				} else if (fileName.contains("_")) {
 					documentDetailsDTO = new DocumentDetailsDTO();
-
-					switch (fileName.substring(0, fileName.indexOf("_")).toUpperCase()) {
-					case RegistrationConstants.POA_DOCUMENT:
-						getIdentityDto().setProofOfAddress(documentDetailsDTO);
-						attachDocument(documentDetailsDTO, zipInputStream, fileName,
-								RegistrationConstants.POA_DOCUMENT);
-						break;
-					case RegistrationConstants.POI_DOCUMENT:
-						getIdentityDto().setProofOfIdentity(documentDetailsDTO);
-						attachDocument(documentDetailsDTO, zipInputStream, fileName,
-								RegistrationConstants.POI_DOCUMENT);
-						break;
-					case RegistrationConstants.POR_DOCUMENT:
-						getIdentityDto().setProofOfRelationship(documentDetailsDTO);
-						attachDocument(documentDetailsDTO, zipInputStream, fileName,
-								RegistrationConstants.POR_DOCUMENT);
-						break;
-					case RegistrationConstants.DOB_DOCUMENT:
-						getIdentityDto().setProofOfDateOfBirth(documentDetailsDTO);
-						attachDocument(documentDetailsDTO, zipInputStream, fileName,
-								RegistrationConstants.DOB_DOCUMENT);
-						break;
-					}
+					String docCategoryCode = fileName.substring(0, fileName.indexOf("_"));
+					getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocuments()
+							.put(docCategoryCode, documentDetailsDTO);
+					attachDocument(documentDetailsDTO, zipInputStream, fileName, docCategoryCode);
 
 				}
 			}
@@ -127,12 +108,13 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			}
 		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, exception.getMessage());
+					RegistrationConstants.APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
 		} catch (RuntimeException exception) {
 			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					exception.getMessage());
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ZIP_CREATION, exception.getMessage());
 		}
 		return registrationDTO;
@@ -168,25 +150,35 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			if (!StringUtils.isEmpty(jsonString)) {
 				/* validate id json schema */
 				jsonValidator.validateJson(jsonString.toString(), "mosip-identity-json-schema.json");
-				getRegistrationDtoContent().getDemographicDTO().setDemographicInfoDTO(
-						new ObjectMapper().readValue(jsonString.toString(), DemographicInfoDTO.class));
+				getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
+						.setIdentity(validateJSONAndConvertToIdentity(jsonString));
 			}
 		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, exception.getMessage());
+					RegistrationConstants.APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
 		} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException
-				| FileIOException jsonValidationException) {
+				| FileIOException | JSONException | ClassNotFoundException jsonValidationException) {
 			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorMessage()
-							+ jsonValidationException.getMessage());
+							+ jsonValidationException.getMessage() + ExceptionUtils.getStackTrace(jsonValidationException));
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorCode(),
 					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorMessage(),
 					jsonValidationException);
 		}
 
+	}
+
+	@SuppressWarnings("unchecked")
+	private Identity validateJSONAndConvertToIdentity(StringBuilder jsonString)
+			throws IOException, JSONException, ClassNotFoundException {
+		Class<? extends Identity> identityClass = (Class<? extends Identity>) Class.forName(identityClassName);
+		
+		return new ObjectMapper().readValue(new JSONObject(jsonString.toString()).get("identity").toString(),
+				identityClass);
 	}
 
 	/**
@@ -245,13 +237,16 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			return filePath;
 		} catch (io.mosip.kernel.core.exception.IOException exception) {
 			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, exception.getMessage());
-			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), REG_IO_EXCEPTION.getErrorMessage());
+					RegistrationConstants.APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(),
+					REG_IO_EXCEPTION.getErrorMessage() + ExceptionUtils.getStackTrace(exception));
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			throw new RegBaseUncheckedException(RegistrationConstants.ENCRYPTED_PACKET_STORAGE,
-					runtimeException.toString());
+					runtimeException.toString(), runtimeException);
 		}
 	}
 
@@ -265,10 +260,6 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	private RegistrationDTO getRegistrationDtoContent() {
 		return (RegistrationDTO) SessionContext.map()
 				.get(RegistrationConstants.REGISTRATION_DATA);
-	}
-
-	private Identity getIdentityDto() {
-		return getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity();
 	}
 
 }

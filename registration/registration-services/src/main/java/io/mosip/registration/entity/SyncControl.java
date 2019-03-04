@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import io.mosip.kernel.core.util.DateUtils;
 /**
  * The Entity class for SyncControl.
  * @author Mahesh Kumar
@@ -93,7 +94,7 @@ public class SyncControl extends RegistrationCommonFields {
 	 * @param lastSyncDtimes the lastSyncDtimes to set
 	 */
 	public void setLastSyncDtimes(Timestamp lastSyncDtimes) {
-		this.lastSyncDtimes = lastSyncDtimes;
+		this.lastSyncDtimes = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 	}
 	/**
 	 * @return the synctrnId
@@ -141,6 +142,6 @@ public class SyncControl extends RegistrationCommonFields {
 	 * @param delDtime the delDtime to set
 	 */
 	public void setDelDtime(Timestamp delDtime) {
-		this.delDtime = delDtime;
+		this.delDtime = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 	}
 }

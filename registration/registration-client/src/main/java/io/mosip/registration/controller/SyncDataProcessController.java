@@ -103,7 +103,7 @@ public class SyncDataProcessController extends BaseController implements Initial
 					.observableArrayList(dataProcessDTOs);
 
 			syncDataTableViewId.setItems(syncDataProcessDTOsObservableList);
-		} else  if(responseDTO.getErrorResponseDTOs()!=null) {
+		} else if (responseDTO.getErrorResponseDTOs() != null) {
 
 			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
 			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
@@ -126,7 +126,7 @@ public class SyncDataProcessController extends BaseController implements Initial
 					.observableArrayList(dataProcessDTOs);
 
 			syncDataTableViewId.setItems(syncDataProcessDTOsObservableList);
-		} else if(responseDTO.getErrorResponseDTOs()!=null){
+		} else if (responseDTO.getErrorResponseDTOs() != null) {
 			ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
 			generateAlert(errorResponseDTO.getMessage());
 		}
@@ -147,7 +147,7 @@ public class SyncDataProcessController extends BaseController implements Initial
 					.observableArrayList(dataProcessDTOs);
 
 			syncDataTableViewId.setItems(syncDataProcessDTOsObservableList);
-		} else  if( responseDTO.getErrorResponseDTOs()!=null){
+		} else if (responseDTO.getErrorResponseDTOs() != null) {
 			ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
 			generateAlert(errorResponseDTO.getMessage());
 		}
@@ -157,12 +157,12 @@ public class SyncDataProcessController extends BaseController implements Initial
 	@FXML
 	public void start(ActionEvent event) {
 
-		ResponseDTO responseDTO = jobConfigurationService.startScheduler(Initialization.getApplicationContext());
+		ResponseDTO responseDTO = jobConfigurationService.startScheduler();
 
 		if (responseDTO.getErrorResponseDTOs() != null) {
 			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
 			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
-		} else  if(responseDTO.getSuccessResponseDTO()!=null) {
+		} else if (responseDTO.getSuccessResponseDTO() != null) {
 			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 			generateAlert(successResponseDTO.getCode(), successResponseDTO.getMessage());
 		}

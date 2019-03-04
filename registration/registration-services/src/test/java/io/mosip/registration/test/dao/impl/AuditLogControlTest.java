@@ -1,5 +1,10 @@
 package io.mosip.registration.test.dao.impl;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -21,11 +26,6 @@ import io.mosip.registration.entity.AuditLogControl;
 import io.mosip.registration.entity.RegistrationAuditDates;
 import io.mosip.registration.repositories.AuditLogControlRepository;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
-
 public class AuditLogControlTest {
 
 	@Rule
@@ -34,7 +34,7 @@ public class AuditLogControlTest {
 	public AuditLogControlDAOImpl auditLogControlDAOImpl;
 	@Mock
 	public AuditLogControlRepository auditLogControlRepository;
-	
+
 	@Mock
 	AuditDAO auditDAO;
 
@@ -75,25 +75,31 @@ public class AuditLogControlTest {
 
 		auditLogControlDAOImpl.save(expectedAuditLogControl);
 	}
-	
+
 	@Test
 	public void deleteTest() {
-		
-		AuditLogControl auditLogControl =new AuditLogControl();
+
+		AuditLogControl auditLogControl = new AuditLogControl();
 		auditLogControl.setAuditLogFromDateTime(new Timestamp(System.currentTimeMillis()));
 		auditLogControl.setAuditLogToDateTime(new Timestamp(System.currentTimeMillis()));
-		
-		
+
 		Mockito.doNothing().when(auditDAO).deleteAll(Mockito.any(), Mockito.any());
 		Mockito.doNothing().when(auditLogControlRepository).delete(Mockito.any());
 		auditLogControlDAOImpl.delete(auditLogControl);
 	}
 
-	
 	@Test
 	public void getTest() {
-		List<AuditLogControl> audits=new LinkedList<>();
-		Mockito.when(auditLogControlRepository.findByCrDtimeBefore(new Timestamp(Mockito.anyLong()))).thenReturn(audits);
+		List<AuditLogControl> audits = new LinkedList<>();
+		Mockito.when(auditLogControlRepository.findByCrDtimeBefore(new Timestamp(Mockito.anyLong())))
+				.thenReturn(audits);
 		assertSame(audits, auditLogControlDAOImpl.get(new Timestamp(System.currentTimeMillis())));
+	}
+
+	@Test
+	public void getByRegIdTest() {
+		AuditLogControl audit = new AuditLogControl();
+		Mockito.when(auditLogControlRepository.findById(AuditLogControl.class, "REG1234")).thenReturn(audit);
+		assertSame(audit, auditLogControlDAOImpl.get("REG1234"));
 	}
 }

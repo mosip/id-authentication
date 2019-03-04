@@ -6,44 +6,42 @@ import static io.mosip.registration.constants.RegistrationConstants.DEVICE_MAPPI
 import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS;
 import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE;
 import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_LOGGER_TITLE;
-import static io.mosip.registration.constants.RegistrationConstants.REGISTRATION_ID;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dto.DeviceDTO;
-import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.UserMachineMappingDTO;
 import io.mosip.registration.entity.RegCenterDevice;
 import io.mosip.registration.entity.RegCentreMachineDevice;
-import io.mosip.registration.entity.RegCentreMachineDeviceId;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
-import io.mosip.registration.entity.UserMachineMappingID;
+import io.mosip.registration.entity.id.RegCentreMachineDeviceId;
+import io.mosip.registration.entity.id.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.mapping.MapMachineService;
-import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 /**
  * This service implementation updates the mapping of users and devices to the
@@ -55,7 +53,7 @@ import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecke
  *
  */
 @Service
-public class MapMachineServiceImpl implements MapMachineService {
+public class MapMachineServiceImpl extends BaseService implements MapMachineService {
 	/**
 	 * instance of {@code instance of AuditFactory}
 	 */
@@ -101,8 +99,8 @@ public class MapMachineServiceImpl implements MapMachineService {
 
 			if (user != null) {
 				/* if user already exists */
-				user.setUpdBy(SessionContext.userContext().getUserId());
-				user.setUpdDtimes(new Timestamp(System.currentTimeMillis()));
+				user.setUpdBy(getUserIdFromSession());
+				user.setUpdDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				user.setIsActive(isActive);
 
 				user.setIsActive(isActive);
@@ -112,23 +110,21 @@ public class MapMachineServiceImpl implements MapMachineService {
 				user = new UserMachineMapping();
 				user.setUserMachineMappingId(userID);
 				user.setIsActive(isActive);
-				user.setCrBy(SessionContext.userContext().getUserId());
-				user.setCrDtime(new Timestamp(System.currentTimeMillis()));
-				user.setUpdBy(SessionContext.userContext().getUserId());
-				user.setUpdDtimes(new Timestamp(System.currentTimeMillis()));
+				user.setCrBy(getUserIdFromSession());
+				user.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+				user.setUpdBy(getUserIdFromSession());
+				user.setUpdDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 
 				machineMappingDAO.save(user);
 			}
 			/* create success response */
-			SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-			successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
-			successResponseDTO.setMessage(RegistrationConstants.MACHINE_MAPPING_SUCCESS_MESSAGE);
-			responseDTO.setSuccessResponseDTO(successResponseDTO);
+			setSuccessResponse(responseDTO, RegistrationConstants.MACHINE_MAPPING_SUCCESS_MESSAGE, null);
+
 			LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "Success Response created");
 		} catch (RegBaseUncheckedException exception) {
-			responseDTO = getErrorResponse(responseDTO, RegistrationConstants.MACHINE_MAPPING_ERROR_MESSAGE);
-			LOGGER.error(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "Error Response created");
+			LOGGER.error(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "Error Response created" + ExceptionUtils.getStackTrace(exception));
 
+			setErrorResponse(responseDTO, RegistrationConstants.MACHINE_MAPPING_ERROR_MESSAGE, null);
 		}
 		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Service saveOrUpdate method ended");
@@ -148,36 +144,25 @@ public class MapMachineServiceImpl implements MapMachineService {
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		try {
-			/* get mac address */
-			String machineID = RegistrationSystemPropertiesChecker.getMachineId();
-			/* get station ID */
-			String stationID = machineMappingDAO.getStationID(machineID);
+
 			/* get center id */
-			String centerID = machineMappingDAO.getCenterID(stationID);
+			String centerID = getCenterId();
 			/* get user list */
 			List<UserDetail> userDetails = machineMappingDAO.getUsers(centerID);
 
 			if (userDetails != null && !userDetails.isEmpty()) {
 				/* create success response */
-				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-				successResponseDTO.setMessage(MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE);
-				successResponseDTO
-						.setOtherAttributes(constructDTOs(machineID, stationID, centerID, userDetails));
-
-				responseDTO.setSuccessResponseDTO(successResponseDTO);
+				setSuccessResponse(responseDTO, MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE,
+						constructDTOs(getMacAddress(), getStationId(getMacAddress()), centerID, userDetails));
 				LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 						"View Method Success Response created");
 			} else {
-				getErrorResponse(responseDTO, MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS);
+				setErrorResponse(responseDTO, MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS, null);
 			}
-		} catch (RegBaseUncheckedException regBaseUncheckedException) {
-			responseDTO = getErrorResponse(responseDTO, regBaseUncheckedException.getMessage());
+		} catch (RegBaseUncheckedException | RegBaseCheckedException exception) {
 			LOGGER.error(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-					"View() Method Error " + regBaseUncheckedException.getMessage());
-		} catch (RegBaseCheckedException regBaseCheckedException) {
-			responseDTO = getErrorResponse(responseDTO, regBaseCheckedException.getMessage());
-			LOGGER.error(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-					"Exception Method Response created" + regBaseCheckedException.getMessage());
+					"View Method Error " + exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+			setErrorResponse(responseDTO, RegistrationConstants.DEVICE_MAPPING_ERROR_MESSAGE, null);
 		}
 
 		return responseDTO;
@@ -195,17 +180,15 @@ public class MapMachineServiceImpl implements MapMachineService {
 	private Map<String, Object> constructDTOs(String machineID, String stationID, String centreID,
 			List<UserDetail> userDetails) {
 		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "constructDTOs() method called");
-		Map<String, Object> userDetailMap = new HashMap<>();
+		Map<String, Object> userDetailMap = new WeakHashMap<>();
 		try {
-			List<UserMachineMappingDTO> userMachineMappingDTOs = userDetails.stream()
-					.map(registrationUserDetail -> {
-						UserMachineMappingDTO userMachineMappingDTO = null;
-						if (registrationUserDetail != null) {
-							userMachineMappingDTO = constructDTO(registrationUserDetail, machineID, stationID,
-									centreID);
-						}
-						return userMachineMappingDTO;
-					}).collect(Collectors.toList());
+			List<UserMachineMappingDTO> userMachineMappingDTOs = userDetails.stream().map(registrationUserDetail -> {
+				UserMachineMappingDTO userMachineMappingDTO = null;
+				if (registrationUserDetail != null) {
+					userMachineMappingDTO = constructDTO(registrationUserDetail, machineID, stationID, centreID);
+				}
+				return userMachineMappingDTO;
+			}).collect(Collectors.toList());
 			userDetailMap.put(RegistrationConstants.USER_MACHINE_MAPID, userMachineMappingDTOs);
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
@@ -223,8 +206,8 @@ public class MapMachineServiceImpl implements MapMachineService {
 	 * @param registrationUserDetails
 	 * @return
 	 */
-	private UserMachineMappingDTO constructDTO(UserDetail userDetail, String machineID,
-			String stationID, String centreID) {
+	private UserMachineMappingDTO constructDTO(UserDetail userDetail, String machineID, String stationID,
+			String centreID) {
 		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "constructDTO() method called");
 		String userID = userDetail.getId();
 		String userName = userDetail.getName();
@@ -234,8 +217,8 @@ public class MapMachineServiceImpl implements MapMachineService {
 
 		if (!userDetail.getUserRole().isEmpty()) {
 			/* List of roles with comma separated */
-			userDetail.getUserRole().forEach(registrationUserRole -> role
-					.append(registrationUserRole.getUserRoleID().getRoleCode() + ","));
+			userDetail.getUserRole().forEach(
+					registrationUserRole -> role.append(registrationUserRole.getUserRoleID().getRoleCode() + ","));
 			if (role.length() > 0) {
 				roleCode = role.substring(0, role.lastIndexOf(","));
 			}
@@ -250,30 +233,6 @@ public class MapMachineServiceImpl implements MapMachineService {
 		}
 
 		return new UserMachineMappingDTO(userID, userName, roleCode, status, centreID, stationID, machineID);
-	}
-
-	/**
-	 * Common method to prepare error response
-	 * 
-	 * @param response
-	 * @param message
-	 * @return
-	 */
-	private ResponseDTO getErrorResponse(ResponseDTO response, final String message) {
-		/* Create list of Error Response */
-		LinkedList<ErrorResponseDTO> errorResponses = new LinkedList<>();
-
-		/* Error response */
-		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
-		errorResponse.setInfoType(RegistrationConstants.ERROR);
-		errorResponse.setMessage(message);
-
-		errorResponses.add(errorResponse);
-
-		/* Assing list of error responses to response */
-		response.setErrorResponseDTOs(errorResponses);
-		return response;
-
 	}
 
 	/*
@@ -314,7 +273,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 		LOGGER.info(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"getDeviceMappingList(String,String) method is strarted");
 
-		Map<String, List<DeviceDTO>> map = new HashMap<>();
+		Map<String, List<DeviceDTO>> map = new WeakHashMap<>();
 
 		try {
 			List<DeviceDTO> availableDeviceDTOs = new ArrayList<>();
@@ -325,7 +284,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 
 			for (RegCentreMachineDevice regCenterMachineDevice : devicesMapped) {
 				DeviceDTO deviceDTO = new DeviceDTO();
-				deviceDTO.setSerialNo(regCenterMachineDevice.getRegDeviceMaster().getSerialNumber());
+				deviceDTO.setSerialNo(regCenterMachineDevice.getRegDeviceMaster().getSerialNum());
 				deviceDTO
 						.setManufacturerName(regCenterMachineDevice.getRegDeviceMaster().getRegDeviceSpec().getBrand());
 				deviceDTO.setModelName(regCenterMachineDevice.getRegDeviceMaster().getRegDeviceSpec().getModel());
@@ -343,7 +302,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 			List<RegCenterDevice> availableDevices = machineMappingDAO.getAllValidDevicesByCenterId(centerId);
 			for (RegCenterDevice regCenterDevice : availableDevices) {
 				DeviceDTO deviceDTO = new DeviceDTO();
-				deviceDTO.setSerialNo(regCenterDevice.getRegDeviceMaster().getSerialNumber());
+				deviceDTO.setSerialNo(regCenterDevice.getRegDeviceMaster().getSerialNum());
 				deviceDTO.setManufacturerName(regCenterDevice.getRegDeviceMaster().getRegDeviceSpec().getBrand());
 				deviceDTO.setModelName(regCenterDevice.getRegDeviceMaster().getRegDeviceSpec().getModel());
 				deviceDTO.setDeviceType(regCenterDevice.getRegDeviceMaster().getRegDeviceSpec().getRegDeviceType()
@@ -420,50 +379,27 @@ public class MapMachineServiceImpl implements MapMachineService {
 				regCentreMachineDevice.setRegCentreMachineDeviceId(regCentreMachineDeviceId);
 				regCentreMachineDevice.setIsActive(true);
 				regCentreMachineDevice.setCrBy(SessionContext.userContext().getUserId());
-				regCentreMachineDevice.setCrDtime(new Timestamp(new Date().getTime()));
+				regCentreMachineDevice.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 
 				regCentreMachineDevices.add(regCentreMachineDevice);
 			}
 			machineMappingDAO.addedMappedDevice(regCentreMachineDevices);
 
 			auditFactory.audit(AuditEvent.DEVICE_MAPPING_SUCCESS, Components.DEVICE_MAPPING,
-					"Device mapped successfully", REGISTRATION_ID, "refIdType");
+					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 			// Add the Success Response
-			SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-			successResponseDTO.setCode(RegistrationConstants.DEVICE_MAPPING_SUCCESS_CODE);
-			successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
-			successResponseDTO.setMessage(RegistrationConstants.DEVICE_MAPPING_SUCCESS_MESSAGE);
-			responseDTO.setSuccessResponseDTO(successResponseDTO);
+			setSuccessResponse(responseDTO, RegistrationConstants.DEVICE_MAPPING_SUCCESS_MESSAGE, null);
 
 			LOGGER.info(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 					"getDeviceMappedDevice(List,List) method is ended");
 		} catch (RuntimeException runtimeException) {
 			// Add the Error Response
-			responseDTO = buildErrorRespone(responseDTO, RegistrationConstants.DEVICE_MAPPING_ERROR_MESSAGE);
-
+			setErrorResponse(responseDTO, RegistrationConstants.DEVICE_MAPPING_ERROR_MESSAGE, null);
 			LOGGER.error(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "Error Response created");
 		}
 
 		return responseDTO;
-	}
-
-	private ResponseDTO buildErrorRespone(ResponseDTO response, final String message) {
-		/* Create list of Error Response */
-		LinkedList<ErrorResponseDTO> errorResponses = new LinkedList<>();
-
-		/* Error response */
-		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
-		errorResponse.setCode(RegistrationConstants.DEVICE_MAPPING_ERROR_CODE);
-		errorResponse.setInfoType(RegistrationConstants.ERROR);
-		errorResponse.setMessage(message);
-
-		errorResponses.add(errorResponse);
-
-		/* Adding list of error responses to response */
-		response.setErrorResponseDTOs(errorResponses);
-
-		return response;
 	}
 
 }

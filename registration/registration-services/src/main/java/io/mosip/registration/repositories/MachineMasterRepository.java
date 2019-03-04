@@ -1,6 +1,7 @@
 package io.mosip.registration.repositories;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.entity.MachineMaster;
+import io.mosip.registration.entity.id.RegMachineSpecId;
 
 /**
  * The repository interface for {@link MachineMaster} entity
@@ -8,14 +9,14 @@ import io.mosip.registration.entity.MachineMaster;
  * @since 1.0.0
  *
  */
-public interface MachineMasterRepository extends BaseRepository<MachineMaster, String>{
+public interface MachineMasterRepository extends BaseRepository<MachineMaster, RegMachineSpecId>{
 	
 	/**
 	 * Find the station id based on macAddress
 	 * @param macAddress macAddress to get {@link MachineMaster}
 	 * @return
 	 */
-	MachineMaster findByMacAddress(String macAddress);
+	MachineMaster findByIsActiveTrueAndMacAddress(String macAddress);
 
 	
 }

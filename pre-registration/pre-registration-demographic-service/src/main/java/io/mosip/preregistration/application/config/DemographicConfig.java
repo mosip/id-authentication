@@ -96,7 +96,7 @@ public class DemographicConfig {
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration").select()
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.application.controller"))
-				.paths(PathSelectors.ant("/v0.1/pre-registration/*")).build();
+				.paths(PathSelectors.ant("/*")).build();
 
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);

@@ -8,9 +8,9 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +20,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -89,14 +90,14 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		try {
 
 			validatingRegisteredPacketCountAndDuration(errorResponseDTOList);
-			validatingSyncJobsConfigAndYetToExportPacketCount(errorResponseDTOList);
+			validatingSyncJobsConfigAndYetToExportPacketCountAndDuration(errorResponseDTOList);
 			validatingCenterToMachineDistance(errorResponseDTOList);
 
 			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 					"Validating the sync status ended");
 
 			auditFactory.audit(AuditEvent.SYNC_INFO_VALIDATE, Components.SYNC_VALIDATE,
-					"Validating the sync status ended successfully", "refId", "refIdType");
+					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.SYNC_STATUS_VALIDATE,
@@ -131,7 +132,8 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	 *
 	 * @param errorResponseDTOList the error response DTO list
 	 */
-	private void validatingSyncJobsConfigAndYetToExportPacketCount(List<ErrorResponseDTO> errorResponseDTOList) {
+	private void validatingSyncJobsConfigAndYetToExportPacketCountAndDuration(
+			List<ErrorResponseDTO> errorResponseDTOList) {
 
 		Map<String, String> map = getSyncJobId();
 
@@ -156,19 +158,26 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 						&& Integer.parseInt(map.get(syncControl.getSyncJobId())) <= getActualDays(lastSyncDate)) {
 
 					syncFailureCount++;
-
-					if (RegistrationConstants.OPT_TO_REG_LER_J00009.equals(syncControl.getSyncJobId().trim())) {
-						getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_002,
-								RegistrationConstants.OPT_TO_REG_TIME_EXPORT_EXCEED, RegistrationConstants.ERROR,
-								errorResponseDTOList);
-
-					}
 				}
 			}
 
 			if (syncFailureCount > 0) {
-				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_001,
+				getErrorResponse(RegistrationConstants.ICS_CODE_ONE,
 						RegistrationConstants.OPT_TO_REG_TIME_SYNC_EXCEED, RegistrationConstants.ERROR,
+						errorResponseDTOList);
+			}
+		}
+
+		List<Registration> lastExportedRegistrations = syncJobInfo.getLastExportRegistrationList();
+		if (!lastExportedRegistrations.isEmpty()) {
+			Date lastSyncDate = new Date(
+					lastExportedRegistrations.get(RegistrationConstants.PARAM_ZERO).getUpdDtimes().getTime());
+			if (getGlobalConfigValueOf(RegistrationConstants.OPT_TO_REG_LAST_EXPORT_REG_PKTS_TIME) != null
+					&& Integer.parseInt(getGlobalConfigValueOf(
+							RegistrationConstants.OPT_TO_REG_LAST_EXPORT_REG_PKTS_TIME)) <= getActualDays(
+									lastSyncDate)) {
+				getErrorResponse(RegistrationConstants.ICS_CODE_TWO,
+						RegistrationConstants.OPT_TO_REG_TIME_EXPORT_EXCEED, RegistrationConstants.ERROR,
 						errorResponseDTOList);
 			}
 		}
@@ -180,9 +189,9 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 					"Checking the yet to export packets frequency with the configured limit count");
 
 			auditFactory.audit(AuditEvent.SYNC_PKT_COUNT_VALIDATE, Components.SYNC_VALIDATE,
-					"Validating yet to export packets frequency with the configured limit count", "refId", "refIdType");
+					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
-			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_003,
+			getErrorResponse(RegistrationConstants.ICS_CODE_THREE,
 					RegistrationConstants.OPT_TO_REG_REACH_MAX_LIMIT, RegistrationConstants.ERROR,
 					errorResponseDTOList);
 		}
@@ -203,7 +212,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 				"Validating the count of packets of status Registered with configured value");
 
 		auditFactory.audit(AuditEvent.PENDING_PKT_CNT_VALIDATE, Components.SYNC_VALIDATE,
-				"Validating the count of packets of status Registered with configured value", "refId", "refIdType");
+				RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 		if (registrationDetails.size() >= Integer
 				.parseInt(String.valueOf(getGlobalConfigValueOf(RegistrationConstants.REG_PAK_MAX_CNT_APPRV_LIMIT)))) {
@@ -215,16 +224,14 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 					"Generating Error Response if count of packets of status Registered is greater than configured value");
 
 			auditFactory.audit(AuditEvent.PENDING_PKT_CNT_VALIDATE, Components.SYNC_VALIDATE,
-					"Generating Error Response if count of packets of status Registered is greater than configured value",
-					"refId", "refIdType");
+					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 		}
 
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Validating the Duration of oldest packet of status Registered with configured duration");
 
 		auditFactory.audit(AuditEvent.PENDING_PKT_DUR_VALIDATE, Components.SYNC_VALIDATE,
-				"Validating the Duration of oldest packet of status Registered with configured duration", "refId",
-				"refIdType");
+				RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 		if (getDifference(!registrationDetails.isEmpty() ? registrationDetails.get(RegistrationConstants.PARAM_ZERO)
 				: null) < 0) {
@@ -237,8 +244,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 					"Generating Error Response if Duration of oldest packet of status Registered is greater than configured value");
 
 			auditFactory.audit(AuditEvent.PENDING_PKT_DUR_VALIDATE, Components.SYNC_VALIDATE,
-					"Generating Error Response if Duration of oldest packet of status Registered is greater than configured value",
-					"refId", "refIdType");
+					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 		}
 	}
 
@@ -290,7 +296,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 				if (Double.parseDouble(getGlobalConfigValueOf(RegistrationConstants.DIST_FRM_MACHN_TO_CENTER)) <= Double
 						.parseDouble(gpsMapDetails.get(RegistrationConstants.GPS_DISTANCE).toString())) {
 
-					getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_004,
+					getErrorResponse(RegistrationConstants.ICS_CODE_FOUR,
 							RegistrationConstants.OPT_TO_REG_OUTSIDE_LOCATION, RegistrationConstants.ERROR,
 							errorResponseDTOList);
 				} else {
@@ -299,16 +305,16 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 				}
 			} else if (RegistrationConstants.GPS_CAPTURE_FAILURE_MSG
 					.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
-				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_006, RegistrationConstants.OPT_TO_REG_WEAK_GPS,
+				getErrorResponse(RegistrationConstants.ICS_CODE_SIX, RegistrationConstants.OPT_TO_REG_WEAK_GPS,
 						RegistrationConstants.ERROR, errorResponseDTOList);
 			} else if (RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE_ERRO_MSG
 					.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))
 					|| RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE
 							.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
-				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_005, RegistrationConstants.OPT_TO_REG_INSERT_GPS,
+				getErrorResponse(RegistrationConstants.ICS_CODE_FIVE, RegistrationConstants.OPT_TO_REG_INSERT_GPS,
 						RegistrationConstants.ERROR, errorResponseDTOList);
 			} else {
-				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_007,
+				getErrorResponse(RegistrationConstants.ICS_CODE_SEVEN,
 						RegistrationConstants.OPT_TO_REG_GPS_PORT_MISMATCH, RegistrationConstants.ERROR,
 						errorResponseDTOList);
 			}
@@ -318,7 +324,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 				"Validating the geo location of machine w.r.t registration center ended");
 
 		auditFactory.audit(AuditEvent.SYNC_GEO_VALIDATE, Components.SYNC_VALIDATE,
-				"Validating the geo information ended successfully", "refId", "refIdType");
+				RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 	}
 
@@ -387,7 +393,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching Job ID's from sync_job_def table using API name started");
 
-		Map<String, String> jobsMap = new HashMap<>();
+		Map<String, String> jobsMap = new WeakHashMap<>();
 		List<SyncJobDef> syncJobDefs = jobConfigDAO.getAll();
 		for (SyncJobDef syncJobDef : syncJobDefs) {
 			if (syncJobDef.getApiName() != null) {

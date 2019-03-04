@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.web.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
@@ -8,33 +9,63 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="approveRegistrationRoot" prefHeight="298.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.eodapproval.RegistrationApprovalController">
+<AnchorPane fx:id="approveRegistrationRoot" styleClass="parentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.eodapproval.RegistrationApprovalController">
    <children>
-      <AnchorPane fx:id="approveRegistrationRootSubPane" prefHeight="269.0" prefWidth="900.0" styleClass="anchorPanebgColor">
+      <AnchorPane fx:id="approveRegistrationRootSubPane" layoutY="51.0" styleClass="approveRegistrationRootSubPane">
          <children>
-            <AnchorPane fx:id="imageAnchorPane" layoutX="409.0" layoutY="10.0" prefHeight="246.0" prefWidth="490.0" styleClass="imageAnchorPaneStyle">
+            <AnchorPane fx:id="imageAnchorPane" layoutX="450.0" layoutY="14.0" styleClass="imageAnchorPaneStyle">
                <children>
-                  <ImageView fx:id="imageView" fitHeight="251.0" fitWidth="488.0" layoutX="2.0" layoutY="4.0" onMouseClicked="#openAckForm" pickOnBounds="true" preserveRatio="true" />
-                  <ToggleButton fx:id="approvalBtn" layoutX="314.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateStatus" prefHeight="20.0" prefWidth="80.0" text="%approve">
-                  </ToggleButton>
-                  <ToggleButton fx:id="rejectionBtn" layoutX="402.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateStatus" prefHeight="20.0" prefWidth="80.0" text="%reject">
-                  </ToggleButton>
+                  <WebView fx:id="webView" layoutY="-3.0" />
                </children>
             </AnchorPane>
-            <TableView fx:id="table" layoutY="10.0" prefHeight="257.0" prefWidth="409.0">
+            <TableView fx:id="table" layoutX="15.0" layoutY="14.0" styleClass="approvalTable">
                <columns>
-                  <TableColumn fx:id="id" prefWidth="245.0" text="%registrationid" />
-                  <TableColumn fx:id="acknowledgementFormPath" prefWidth="199.0" text="%registrtionid" visible="false" />
-                  <TableColumn fx:id="statusComment" prefWidth="163.0" text="%status" />
+                  <TableColumn fx:id="id" styleClass="pendingApprovalTableId" text="%registrationid" />
+                  <TableColumn fx:id="acknowledgementFormPath" text="%registrtionid" visible="false" />
+                  <TableColumn fx:id="statusComment" styleClass="pendingApprovalStatus" text="%status" />
                </columns>
             </TableView>
          </children>
       </AnchorPane>
-      <ToggleButton fx:id="authenticateBtn" layoutX="245.0" layoutY="273.0" mnemonicParsing="false" onAction="#updateStatus" prefHeight="20.0" prefWidth="140.0" text="%authenticate">
-      </ToggleButton>
-      <Label layoutX="385.0" layoutY="272.0" prefHeight="20.0" prefWidth="425.0" text="%approved/rejected">
-         <font>
-            <Font size="10.0" />
-         </font></Label>
+      <AnchorPane layoutY="619.0" styleClass="pendingApprovalFooter">
+         <children>
+            <Label layoutX="636.0" layoutY="12.0" text="%approved/rejected">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <ToggleButton fx:id="authenticateBtn" layoutX="1110.0" layoutY="6.0" mnemonicParsing="false" onAction="#updateStatus" styleClass="approveButton" text="%authenticate">
+               <graphic>
+                  <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/Authenticate.png" />
+                     </image>
+                  </ImageView>
+               </graphic></ToggleButton>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="-2.0" layoutY="2.0" styleClass="pendingApprovalHeader">
+         <children>
+            <ToggleButton fx:id="rejectionBtn" layoutX="1011.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateStatus" styleClass="rejectButton" text="%reject">
+               <graphic>
+                  <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/Reject.png" />
+                     </image>
+                  </ImageView>
+               </graphic></ToggleButton>
+            <ToggleButton fx:id="approvalBtn" layoutX="1123.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateStatus" styleClass="approveButton" text="%approve">
+               <graphic>
+                  <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/Approve.png" />
+                     </image>
+                  </ImageView>
+               </graphic></ToggleButton>
+            <Label layoutX="561.0" layoutY="6.0" styleClass="mainHeader" text="%pendingapproval" />
+            <Button layoutY="11.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+            <Text layoutX="61.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/pendingapproval" styleClass="headerLabel"/>
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

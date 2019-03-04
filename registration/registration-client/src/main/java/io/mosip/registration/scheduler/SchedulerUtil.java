@@ -2,10 +2,7 @@ package io.mosip.registration.scheduler;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_UI_SHEDULER_ARG_EXCEPTION;
-import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_UI_SHEDULER_STATE_EXCEPTION;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Optional;
@@ -13,23 +10,19 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.exception.RegBaseUncheckedException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 
 /**
@@ -37,7 +30,7 @@ import javafx.scene.layout.BorderPane;
  *
  */
 @Component
-public class SchedulerUtil {
+public class SchedulerUtil extends BaseController {
 
 	/**
 	 * Instance of {@link Logger}
@@ -62,9 +55,9 @@ public class SchedulerUtil {
 	 * @throws RegistrationBaseCheckedException
 	 */
 	public void startSchedulerUtil() throws RegBaseCheckedException {
-		alert = new Alert(AlertType.WARNING);
 		LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
 				"Timer has been called " + new SimpleDateFormat("HH:mm:ss").format(System.currentTimeMillis()));
+		alert = new Alert(AlertType.WARNING);		
 		timer = new Timer("Timer");
 		refreshTime = TimeUnit.SECONDS.toMillis(SessionContext.refreshedLoginTime());
 		sessionTimeOut = TimeUnit.SECONDS.toMillis(SessionContext.idealTime());
@@ -78,7 +71,7 @@ public class SchedulerUtil {
 	 * 
 	 * @throws RegistrationBaseCheckedException
 	 */
-	private static void startTimerForSession() throws RegBaseCheckedException {
+	private void startTimerForSession() {
 		try {
 			TimerTask task = new TimerTask() {
 				public void run() {
@@ -93,7 +86,7 @@ public class SchedulerUtil {
 											+ TimeUnit.MILLISECONDS.toSeconds(endTime - startTime));
 							alert();
 							if (res.isPresent())
-								if(res.get().getText().equals("OK")) {
+								if (res.get().getText().equals("OK")) {
 									startTime = System.currentTimeMillis();
 									alert.close();
 									res = Optional.empty();
@@ -106,32 +99,16 @@ public class SchedulerUtil {
 							stopScheduler();
 							// to clear the session object
 							SessionContext.destroySession();
-							try {
-								content = BaseController.load(getClass().getResource("/fxml/RegistrationLogin.fxml"));
-								String loginModeFXMLpath = "/fxml/LoginWithCredentials.fxml";
-								AnchorPane loginType = BaseController.load(getClass().getResource(loginModeFXMLpath));
-								content.setCenter(loginType);
-								getScene().setRoot(content);
-							} catch (IOException ioException) {
-								LOGGER.error("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
-							}
+							// load login screen
+							loadLoginScreen();
 						}
 					});
 				}
 			};
 			timer.schedule(task, 1000, findPeriod(refreshTime, sessionTimeOut));
-		}catch (IllegalArgumentException illegalArgumentException) {
-			LOGGER.error("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID, illegalArgumentException.getMessage());
-			throw new RegBaseCheckedException(REG_UI_SHEDULER_ARG_EXCEPTION.getErrorCode(),
-					REG_UI_SHEDULER_ARG_EXCEPTION.getErrorMessage());
-		} catch (IllegalStateException illegalStateException) {
-			LOGGER.error("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID, illegalStateException.getMessage());
-			throw new RegBaseCheckedException(REG_UI_SHEDULER_STATE_EXCEPTION.getErrorCode(),
-					REG_UI_SHEDULER_STATE_EXCEPTION.getErrorMessage());
-		}catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage());
-			throw new RegBaseUncheckedException(RegistrationConstants.REG_UI_SHEDULER_RUNTIME_EXCEPTION,
-			runtimeException.getMessage());
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
 
@@ -161,10 +138,11 @@ public class SchedulerUtil {
 			res = alert.showAndWait();
 		}
 	}
-	
+
 	public static void setCurrentTimeToStartTime() {
 		startTime = System.currentTimeMillis();
 	}
+
 	/**
 	 * stop the scheduler
 	 */
@@ -172,14 +150,5 @@ public class SchedulerUtil {
 		if (timer != null) {
 			timer.cancel();
 		}
-	} 
-	
-	private static Scene getScene() throws IOException {
-		BorderPane loginRoot = BaseController.load(BaseController.class.getResource(RegistrationConstants.INITIAL_PAGE),
-				ApplicationContext.applicationMessagesBundle());
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		Scene scene = new Scene(loginRoot, 950, 630);
-		scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-		return scene;
 	}
 }

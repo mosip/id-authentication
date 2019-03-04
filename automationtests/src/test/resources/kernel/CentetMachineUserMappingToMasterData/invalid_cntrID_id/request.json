@@ -1,0 +1,13 @@
+{
+  "id": "string",
+  "ver": "string",
+  "timestamp": "2019-02-05T12:00:00.000Z",
+  "request": [
+      {
+      "cntrId": "1000",
+      "isActive": true,
+      "machineId": "10001",
+      "usrId": "110001"
+    }
+  ]
+}

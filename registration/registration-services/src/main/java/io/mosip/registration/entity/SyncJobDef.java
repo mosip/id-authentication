@@ -7,8 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Type;
-
+import io.mosip.kernel.core.util.DateUtils;
 /**
  * Entity class for sync_job_def
  * 
@@ -109,7 +108,7 @@ public class SyncJobDef extends RegistrationCommonFields {
 	}
 
 	public void setDeletedDateTime(Timestamp deletedDateTime) {
-		this.deletedDateTime = deletedDateTime;
+		this.deletedDateTime = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 	}
 
 }

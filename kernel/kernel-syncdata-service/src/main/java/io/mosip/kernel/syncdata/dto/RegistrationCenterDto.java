@@ -45,8 +45,6 @@ public class RegistrationCenterDto extends BaseDto{
 
 	private String workingHours;
 
-	private String languageCode;
-
 	private Short numberOfKiosks;
 
 	private LocalTime perKioskProcessTime;
@@ -62,7 +60,5 @@ public class RegistrationCenterDto extends BaseDto{
 	private LocalTime lunchStartTime;
 
 	private LocalTime lunchEndTime;
-
-	private Boolean isActive;
 
 }

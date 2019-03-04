@@ -13,10 +13,12 @@ package io.mosip.preregistration.booking.service.util;
  *
  */
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -69,6 +71,7 @@ import io.mosip.preregistration.booking.exception.BookingTimeSlotNotSeletectedEx
 import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.exception.DemographicStatusUpdationException;
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
+import io.mosip.preregistration.booking.exception.OperationNotAllowedException;
 import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.booking.exception.TimeSpanException;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
@@ -80,6 +83,7 @@ import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
 
 /**
  * This class provides the utility methods for Booking application.
@@ -111,9 +115,9 @@ public class BookingServiceUtil {
 	String holidayListUrl;
 
 	/**
-	 * Reference for ${preRegResourceUrl} from property file
+	 * Reference for ${demographic.resource.url} from property file
 	 */
-	@Value("${preRegResourceUrl}")
+	@Value("${demographic.resource.url}")
 	private String preRegResourceUrl;
 	
 	@Value("${timeSpanCheck}")
@@ -299,6 +303,34 @@ public class BookingServiceUtil {
 	 * @param preId
 	 * @return status code
 	 */
+	/**
+	 * @param preId
+	 * @return
+	 */
+	/**
+	 * @param preId
+	 * @return
+	 */
+	/**
+	 * @param preId
+	 * @return
+	 */
+	/**
+	 * @param preId
+	 * @return
+	 */
+	/**
+	 * @param preId
+	 * @return
+	 */
+	/**
+	 * @param preId
+	 * @return
+	 */
+	/**
+	 * @param preId
+	 * @return
+	 */
 	public boolean callGetStatusForCancelRestService(String preId) {
 		log.info("sessionId", "idType", "id", "In callGetStatusForCancelRestService method of Booking Service Util");
 		try {
@@ -320,16 +352,9 @@ public class BookingServiceUtil {
 						.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class);
 
 				String statusCode = preRegResponsestatusDto.getStatusCode().trim();
-
-				Date createdDateTime=preRegResponsestatusDto.getCreatedDateTime();
-				
-				if (statusCode.equals(StatusCodes.PENDING_APPOINTMENT.getCode())) {
+				if (!statusCode.equals(StatusCodes.BOOKED.getCode())&&!statusCode.equals(StatusCodes.EXPIRED.getCode())) {
 					throw new AppointmentCannotBeCanceledException(ErrorCodes.PRG_BOOK_RCI_018.getCode(),
 							ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.getMessage());
-				}
-				if(!timeSpanCheck(createdDateTime)) {
-					throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
-							ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED_BEFORE.getMessage()+" "+timeSpanCheck+" hrs");
 				}
 			} else {
 				throw new DemographicGetStatusException(respEntity.getBody().getErr().getErrorCode(),
@@ -344,12 +369,10 @@ public class BookingServiceUtil {
 		}
 		return true;
 	}
-	public boolean timeSpanCheck(Date createdDateTime) {
-		
-		Date current=new Date();
-		long difference=current.getTime()-createdDateTime.getTime();
-		long timeDifference=difference /(60*60*1000);
-		if(timeDifference>timeSpanCheck) return true;
+	public boolean timeSpanCheck(LocalDateTime bookedDateTime) {
+		LocalDateTime current = LocalDateTime.now();
+        long hours=ChronoUnit.MINUTES.between(current, bookedDateTime);
+		if(Math.abs(hours)>=timeSpanCheck) return true;
 		else return false;
 	}
 
@@ -677,6 +700,7 @@ public class BookingServiceUtil {
 		entity.setBookingPK(
 				new RegistrationBookingPK(preRegistrationId, DateUtils.parseDateToLocalDateTime(new Date())));
 		entity.setRegistrationCenterId(bookingRegistrationDTO.getRegistrationCenterId());
+		entity.setId(UUIDGeneratorUtil.generateId());
 		entity.setStatusCode(StatusCodes.BOOKED.getCode());
 		entity.setLangCode("12L");
 		entity.setCrBy("987654321");
@@ -686,5 +710,4 @@ public class BookingServiceUtil {
 		entity.setSlotToTime(LocalTime.parse(bookingRegistrationDTO.getSlotToTime()));
 		return entity;
 	}
-	
 }

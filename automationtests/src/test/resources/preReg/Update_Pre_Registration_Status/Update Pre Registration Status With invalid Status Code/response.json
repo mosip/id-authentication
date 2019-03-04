@@ -1,0 +1,9 @@
+{
+    "err": {
+        "errorCode": "PRG_PAM_APP_005",
+        "message": "INVALID_STATUS_CODE"
+    },
+    "status": false,
+    "resTime": "2019-02-13T11:06:43.151Z",
+    "response": null
+}

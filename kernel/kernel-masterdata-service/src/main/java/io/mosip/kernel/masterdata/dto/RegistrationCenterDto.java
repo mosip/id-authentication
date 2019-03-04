@@ -59,7 +59,7 @@ public class RegistrationCenterDto {
 	private String workingHours;
 
 	@ValidLangCode
-	private String languageCode;
+	private String langCode;
 
 	private Short numberOfKiosks;
 

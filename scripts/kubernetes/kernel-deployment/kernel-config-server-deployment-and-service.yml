@@ -19,6 +19,11 @@ spec:
       containers:
       - name: kernel-config-server
         image: docker-registry.mosip.io:5000/kernel-config-server
+        env:
+        - name: git_url_env
+          value: git@github.com:mosip/mosip.git
+        - name: git_config_folder_env
+          value: config
         ports:
         - containerPort: 51000
         volumeMounts:

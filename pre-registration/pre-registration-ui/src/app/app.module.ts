@@ -14,9 +14,6 @@ import { CoreModule } from './core/core.module';
 import { AuthModule } from './auth/auth.module';
 import { SharedModule } from './shared/shared.module';
 
-import { AcknowledgementComponent } from './feature/components/acknowledgement/acknowledgement.component';
-import { PreviewComponent } from './feature/components/preview/preview.component';
-
 const appInitialization = (appConfig: AppConfigService) => {
   return () => {
     return appConfig.loadAppConfig();
@@ -24,7 +21,7 @@ const appInitialization = (appConfig: AppConfigService) => {
 };
 
 @NgModule({
-  declarations: [AppComponent, AcknowledgementComponent, PreviewComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     HttpClientModule,

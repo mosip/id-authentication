@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
@@ -30,9 +31,9 @@ import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.CenterMachine;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.UserBiometric;
-import io.mosip.registration.entity.UserBiometricId;
 import io.mosip.registration.entity.UserMachineMapping;
-import io.mosip.registration.entity.UserMachineMappingID;
+import io.mosip.registration.entity.id.UserBiometricId;
+import io.mosip.registration.entity.id.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.CenterMachineRepository;
@@ -50,7 +51,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 	@Autowired
 	private UserBiometricRepository userBiometricRepository;
-	
+
 	/**
 	 * centerMachineRepository instance creation using autowired annotation
 	 */
@@ -62,13 +63,13 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 	 */
 	@Autowired
 	private MachineMasterRepository machineMasterRepository;
-	
+
 	/**
 	 * machineMapping instance creation using autowired annotation
 	 */
 	@Autowired
 	private MachineMappingDAO machineMappingDAO;
-	
+
 	/**
 	 * logger for logging
 	 */
@@ -83,17 +84,16 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 	 */
 	@Override
 	public String insert(BiometricDTO biometricDTO) {
-		
-		LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
-				"Entering insert method");
+
+		LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "Entering insert method");
 
 		String response = RegistrationConstants.EMPTY;
-		
+
 		try {
-			
+
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"Biometric information insertion into table");
-			
+
 			List<UserBiometric> bioMetricsList = new ArrayList<>();
 
 			List<FingerprintDetailsDTO> fingerPrint = biometricDTO.getOperatorBiometricDTO().getFingerprintDetailsDTO()
@@ -106,14 +106,15 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 				biometricId.setBioAttributeCode(fingerPrintData.getFingerprintImageName());
 				biometricId.setBioTypeCode(fingerPrintData.getFingerType());
-				biometricId.setUsrId(SessionContext.userContext().getUserId());				
-				bioMetrics.setBioMinutia(new FingerprintTemplate().convert(fingerPrintData.getFingerPrint()).serialize());
+				biometricId.setUsrId(SessionContext.userContext().getUserId());
+				bioMetrics
+						.setBioMinutia(new FingerprintTemplate().convert(fingerPrintData.getFingerPrint()).serialize());
 				bioMetrics.setNumberOfRetry(fingerPrintData.getNumRetry());
 				bioMetrics.setUserBiometricId(biometricId);
 				Double qualitySocre = fingerPrintData.getQualityScore();
 				bioMetrics.setQualityScore(qualitySocre.intValue());
 				bioMetrics.setCrBy(SessionContext.userContext().getUserId());
-				bioMetrics.setCrDtime(new Timestamp(System.currentTimeMillis()));
+				bioMetrics.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				bioMetrics.setIsActive(true);
 
 				bioMetricsList.add(bioMetrics);
@@ -134,7 +135,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 				Double qualitySocre = iries.getQualityScore();
 				bioMetrics.setQualityScore(qualitySocre.intValue());
 				bioMetrics.setCrBy(SessionContext.userContext().getUserId());
-				bioMetrics.setCrDtime(new Timestamp(System.currentTimeMillis()));
+				bioMetrics.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				bioMetrics.setIsActive(true);
 
 				bioMetricsList.add(bioMetrics);
@@ -155,47 +156,45 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 			Double qualitySocre = biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO().getQualityScore();
 			bioMetrics.setQualityScore(qualitySocre.intValue());
 			bioMetrics.setCrBy(SessionContext.userContext().getUserId());
-			bioMetrics.setCrDtime(new Timestamp(System.currentTimeMillis()));
+			bioMetrics.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 			bioMetrics.setIsActive(true);
 
 			bioMetricsList.add(bioMetrics);
 
 			userBiometricRepository.saveAll(bioMetricsList);
-			
+
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"Biometric information insertion succesful");
 
 			// find user
-			
+
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"Fetching User and machine information to insertion");
-			
+
 			UserMachineMapping user = new UserMachineMapping();
 			UserMachineMappingID userID = new UserMachineMappingID();
 			userID.setUserID(SessionContext.userContext().getUserId());
-			userID.setCentreID(SessionContext.userContext().getRegistrationCenterDetailDTO()
-					.getRegistrationCenterId());
+			userID.setCentreID(SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
 			userID.setMachineID(SessionContext.map().get(RegistrationConstants.USER_STATION_ID).toString());
 
 			user.setUserMachineMappingId(userID);
 			user.setCrBy(SessionContext.userContext().getUserId());
-			user.setCrDtime(new Timestamp(System.currentTimeMillis()));
+			user.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 			user.setUpdBy(SessionContext.userContext().getUserId());
-			user.setUpdDtimes(new Timestamp(System.currentTimeMillis()));
+			user.setUpdDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 			user.setIsActive(true);
 
 			machineMappingDAO.save(user);
-			
+
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"User and machine information insertion sucessful");
 
-			response = RegistrationConstants.success;
-			
-			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
-					"Leaving insert method");
+			response = RegistrationConstants.SUCCESS;
+
+			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "Leaving insert method");
 
 		} catch (RuntimeException runtimeException) {
-			
+
 			LOGGER.error(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage());
 			response = RegistrationConstants.USER_ON_BOARDING_ERROR_RESPONSE;
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_ON_BOARDING_EXCEPTION + response,
@@ -221,11 +220,11 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "fetching mac address....");
 
-			MachineMaster macAddressOfMachineMaster = machineMasterRepository.findByMacAddress(macAdres);
+			MachineMaster macAddressOfMachineMaster = machineMasterRepository.findByIsActiveTrueAndMacAddress(macAdres);
 
-			if (macAddressOfMachineMaster != null && macAddressOfMachineMaster.getId() != null) {
+			if (macAddressOfMachineMaster != null && macAddressOfMachineMaster.getRegMachineSpecId().getId() != null) {
 
-				return macAddressOfMachineMaster.getId();
+				return macAddressOfMachineMaster.getRegMachineSpecId().getId();
 
 			} else {
 
@@ -252,23 +251,24 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 				"getCenterID() stationID --> " + stationId);
 
 		try {
-			
-			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "fetching center details from reposiotry....");
-			
-			CenterMachine regCenterMachineDtls = centerMachineRepository.findByCenterMachineIdId(stationId);
-			
+
+			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+					"fetching center details from reposiotry....");
+
+			CenterMachine regCenterMachineDtls = centerMachineRepository.findByIsActiveTrueAndCenterMachineIdId(stationId);
+
 			if (regCenterMachineDtls != null && regCenterMachineDtls.getCenterMachineId().getCentreId() != null) {
-				
+
 				return regCenterMachineDtls.getCenterMachineId().getCentreId();
-				
+
 			} else {
-				
+
 				throw new RegBaseCheckedException(REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE.getErrorCode(),
 						REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE.getErrorMessage());
 			}
-			
+
 		} catch (RuntimeException runtimeException) {
-			
+
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_ON_BOARDING_EXCEPTION,
 					runtimeException.getMessage());
 		}

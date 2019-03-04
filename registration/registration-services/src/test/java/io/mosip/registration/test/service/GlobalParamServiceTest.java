@@ -60,7 +60,7 @@ public class GlobalParamServiceTest {
 	public void getGlobalParamsTest() { 
 		
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
 		
 		Map<String,Object> globalParamMap = new LinkedHashMap<>();
 		Mockito.when(globalContextParamDAOImpl.getGlobalParams()).thenReturn(globalParamMap);

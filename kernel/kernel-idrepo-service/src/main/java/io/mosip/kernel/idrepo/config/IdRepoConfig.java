@@ -1,17 +1,12 @@
 package io.mosip.kernel.idrepo.config;
 
-import java.security.cert.X509Certificate;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
@@ -32,8 +27,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zaxxer.hikari.HikariDataSource;
 
+import io.mosip.kernel.core.idrepo.constant.IdRepoConstants;
 import io.mosip.kernel.core.idrepo.spi.ShardDataSourceResolver;
 import io.mosip.kernel.core.logger.spi.Logger;
 
@@ -50,10 +46,6 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoConfig.class);
 
-	/** The mapper. */
-	@Autowired
-	private ObjectMapper mapper;
-
 	/** The env. */
 	@Autowired
 	private Environment env;
@@ -69,7 +61,9 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	private List<String> status;
 
 	/** The allowed bio types. */
-	private List<String> allowedBioTypes;
+	private List<String> allowedBioAttributes;
+	
+	private List<String> bioAttributes;
 
 	private List<String> allowedTypes;
 
@@ -138,8 +132,8 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	 *
 	 * @return the allowed bio types
 	 */
-	public List<String> getAllowedBioTypes() {
-		return allowedBioTypes;
+	public List<String> getAllowedBioAttributes() {
+		return allowedBioAttributes;
 	}
 
 	/**
@@ -148,8 +142,16 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	 * @param allowedBioTypes
 	 *            the new allowed bio types
 	 */
-	public void setAllowedBioTypes(List<String> allowedBioTypes) {
-		this.allowedBioTypes = allowedBioTypes;
+	public void setAllowedBioAttributes(List<String> allowedBioAttributes) {
+		this.allowedBioAttributes = allowedBioAttributes;
+	}
+
+	public List<String> getBioAttributes() {
+		return bioAttributes;
+	}
+
+	public void setBioAttributes(List<String> bioAttributes) {
+		this.bioAttributes = bioAttributes;
 	}
 
 	public List<String> getAllowedTypes() {
@@ -165,9 +167,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	 */
 	@PostConstruct
 	public void setup() {
-		status.add(env.getProperty("mosip.kernel.idrepo.status.registered"));
-		mapper.setDateFormat(new SimpleDateFormat(env.getProperty("mosip.kernel.idrepo.datetime.pattern")));
-		mapper.setTimeZone(TimeZone.getTimeZone(env.getProperty("mosip.kernel.idrepo.datetime.timezone")));
+		status.add(env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()));
 	}
 
 	/**
@@ -200,8 +200,13 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	 * @return the list
 	 */
 	@Bean
-	public List<String> allowedBioTypes() {
-		return Collections.unmodifiableList(allowedBioTypes);
+	public List<String> allowedBioAttributes() {
+		return Collections.unmodifiableList(allowedBioAttributes);
+	}
+	
+	@Bean
+	public List<String> bioAttributes() {
+		return Collections.unmodifiableList(bioAttributes);
 	}
 
 	@Bean
@@ -276,32 +281,11 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	 * @return the data source
 	 */
 	private DataSource buildDataSource(Map<String, String> dataSourceValues) {
-		DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
-		driverManagerDataSource.setUrl(dataSourceValues.get("url"));
-		driverManagerDataSource.setUsername(dataSourceValues.get("username"));
-		driverManagerDataSource.setPassword(dataSourceValues.get("password"));
-		driverManagerDataSource.setDriverClassName(dataSourceValues.get("driverClassName"));
-		return driverManagerDataSource;
+		DriverManagerDataSource dataSource = new DriverManagerDataSource(dataSourceValues.get("url"));
+		dataSource.setUsername(dataSourceValues.get("username"));
+		dataSource.setPassword(dataSourceValues.get("password"));
+		dataSource.setDriverClassName(dataSourceValues.get("driverClassName"));
+		return dataSource;
 	}
-
-	/** The unquestioning trust manager. */
-	private TrustManager[] UNQUESTIONING_TRUST_MANAGER = new TrustManager[] { new X509TrustManager() {
-		public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-			return null;
-		}
-
-		@Override
-		public void checkClientTrusted(X509Certificate[] arg0, String arg1)
-				throws java.security.cert.CertificateException {
-
-		}
-
-		@Override
-		public void checkServerTrusted(X509Certificate[] arg0, String arg1)
-				throws java.security.cert.CertificateException {
-
-		}
-
-	} };
 
 }

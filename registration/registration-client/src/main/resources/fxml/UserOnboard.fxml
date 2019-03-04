@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="onboardUser" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="onboardUserParenrPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UserOnboardController">
+   <children>
+      <Label fx:id="operatorName" layoutX="280.0" layoutY="210.0" styleClass="useronBoardLinkDesc" />
+      <AnchorPane layoutX="800.0" layoutY="185.0" onMouseClicked="#initUserOnboard" styleClass="onboardUserPaneStyle">
+         <children>
+            <Label layoutX="72.0" layoutY="28.0" styleClass="useronBoardLink" text="%getOnboarded" />
+            <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
+             		 <image>
+                        <Image url="@../images/GetOnboarded.png" />
+                     </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

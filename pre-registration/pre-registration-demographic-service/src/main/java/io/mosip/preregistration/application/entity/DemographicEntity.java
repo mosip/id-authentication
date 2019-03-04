@@ -37,7 +37,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @NamedQuery(name = "DemographicEntity.findByCreatedBy", query = "SELECT e FROM DemographicEntity e  WHERE e.createdBy=:userId and e.statusCode <>:statusCode ")
-@NamedQuery(name = "DemographicEntity.noOfGroupIds", query = "SELECT DISTINCT groupId  FROM DemographicEntity where crAppuserId=:userId")
 @NamedQuery(name = "DemographicEntity.findBypreRegistrationId", query = "SELECT r FROM DemographicEntity r  WHERE r.preRegistrationId=:preRegId")
 public class DemographicEntity implements Serializable {
 
@@ -49,9 +48,6 @@ public class DemographicEntity implements Serializable {
 	@Id
 	private String preRegistrationId;
 
-	/** The group id. */
-	@Column(name = "group_id", nullable = false)
-	private String groupId;
 
 	/** The JSON */
 	@Column(name = "demog_detail")
@@ -84,14 +80,7 @@ public class DemographicEntity implements Serializable {
 	/** The update date time. */
 	@Column(name = "upd_dtimes")
 	private LocalDateTime updateDateTime;
-
-	/** The is deleted. */
-	@Column(name = "is_deleted")
-	private Boolean isDeleted;
-
-	/** The deleted date time. */
-	@Column(name = "del_dtimes")
-	private LocalDateTime deletedDateTime;
+	
 	
 	/**
 	 * Encrypted Date Time
@@ -99,10 +88,6 @@ public class DemographicEntity implements Serializable {
 	@Column(name = "encrypted_dtimes")
 	private LocalDateTime encryptedDateTime;
 	
-	/**
-	 * Consumed Flag
-	 */
-	@Column(name = "consumed")
-	private Boolean consumed;
-
+@Column(name="demog_detail_hash")
+private String demogDetailHash;
 }

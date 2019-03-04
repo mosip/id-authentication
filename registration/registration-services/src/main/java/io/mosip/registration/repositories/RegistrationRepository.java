@@ -46,7 +46,7 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	 *            the status codes
 	 * @return List of registration packets
 	 */
-	List<Registration> findByClientStatusCodeIn(List<String> statusCodes);
+	List<Registration> findByClientStatusCodeInOrderByUpdDtimesDesc(List<String> statusCodes);
 
 	/**
 	 * Fetching all the re registration records
@@ -83,4 +83,12 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	 * @return the registration
 	 */
 	Registration findByClientStatusCodeAndId(String clientStatusCode,String id);
+	
+	/**
+	 * Find by CrDtimes and client status code
+	 * @param crDtimes the date upto packets to be deleted
+	 * @param clientStatus status of resgistrationPacket
+	 * @return list of registrations
+	 */
+	List<Registration> findByCrDtimeBeforeAndClientStatusCode(Timestamp crDtimes, String clientStatus);
 }

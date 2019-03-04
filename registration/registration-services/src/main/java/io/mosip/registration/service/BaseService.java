@@ -4,7 +4,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.text.ParseException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +11,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.DeviceTypes;
@@ -64,7 +64,7 @@ public class BaseService {
 	 * @return ResponseDTO returns the responseDTO after creating appropriate error
 	 *         response and mapping to it
 	 */
-	protected ResponseDTO getErrorResponse(final ResponseDTO response, final String message) {
+	protected ResponseDTO getErrorResponse(final ResponseDTO response, final String message, Map<String, Object> attributes) {
 
 		/** Create list of Error Response */
 		List<ErrorResponseDTO> errorResponses = (response.getErrorResponseDTOs() != null)
@@ -76,9 +76,7 @@ public class BaseService {
 
 		errorResponse.setCode(RegistrationConstants.ERROR);
 		errorResponse.setMessage(message);
-
-		Map<String, Object> otherAttributes = new HashMap<>();
-		otherAttributes.put("registration", null);
+		errorResponse.setOtherAttributes(attributes);
 
 		errorResponses.add(errorResponse);
 
@@ -188,7 +186,7 @@ public class BaseService {
 			stationId = userOnboardDAO.getStationID(macAddress);
 		} catch (RegBaseCheckedException baseCheckedException) {
 			LOGGER.error("REGISTRATION_BASE_SERVICE", APPLICATION_NAME, APPLICATION_ID,
-					baseCheckedException.getMessage());
+					baseCheckedException.getMessage() + ExceptionUtils.getStackTrace(baseCheckedException));
 
 		}
 		return stationId;
@@ -217,7 +215,7 @@ public class BaseService {
 				centerId = userOnboardDAO.getCenterID(stationId);
 			} catch (RegBaseCheckedException baseCheckedException) {
 				LOGGER.error("REGISTRATION_BASE_SERVICE", APPLICATION_NAME, APPLICATION_ID,
-						baseCheckedException.getMessage());
+						baseCheckedException.getMessage() + ExceptionUtils.getStackTrace(baseCheckedException));
 
 			}
 		}

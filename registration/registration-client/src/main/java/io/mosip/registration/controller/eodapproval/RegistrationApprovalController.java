@@ -5,19 +5,22 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.REG_UI_LOGIN_LOADER_EXCEPTION;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.WeakHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.ProcessNames;
@@ -42,14 +45,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -71,9 +75,6 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	@Autowired
 	private RegistrationApprovalService registration;
-
-	@Autowired
-	private EODController eodController;
 
 	/** The view ack controller. */
 	@Autowired
@@ -120,7 +121,7 @@ public class RegistrationApprovalController extends BaseController implements In
 	private ToggleButton authenticateBtn;
 	/** The image view. */
 	@FXML
-	private ImageView imageView;
+	private WebView webView;
 
 	/** The approve registration root sub pane. */
 	@FXML
@@ -156,6 +157,24 @@ public class RegistrationApprovalController extends BaseController implements In
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		reloadTableView();
+		tableCellColorChangeListener();
+	}
+
+	private void tableCellColorChangeListener() {
+		statusComment.setCellFactory(column -> {
+			return new TableCell<RegistrationApprovalDTO, String>() {
+				@Override
+				public void updateItem(String item, boolean empty) {
+					super.updateItem(item, empty);
+					setText(item);
+					if (item != null && item.equals(RegistrationConstants.APPROVED)) {
+						setTextFill(Color.GREEN);
+					} else if (item != null && item.equals(RegistrationConstants.REJECTED)) {
+						setTextFill(Color.RED);
+					}
+				}
+			};
+		});
 	}
 
 	/**
@@ -163,7 +182,6 @@ public class RegistrationApprovalController extends BaseController implements In
 	 */
 	private void reloadTableView() {
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
-
 		approvalmapList = new ArrayList<>(5);
 		authenticateBtn.setDisable(true);
 		approvalBtn.setVisible(false);
@@ -197,7 +215,7 @@ public class RegistrationApprovalController extends BaseController implements In
 				authenticateBtn.setDisable(false);
 			}
 
-			imageView.setImage(null);
+			webView.getEngine().loadContent("");
 
 			approvalBtn.setSelected(false);
 			rejectionBtn.setSelected(false);
@@ -221,10 +239,18 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			try (FileInputStream file = new FileInputStream(
 					new File(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath()))) {
-				imageView.setImage(new Image(file));
+				BufferedReader bufferedReader = new BufferedReader(
+						new InputStreamReader(file, RegistrationConstants.TEMPLATE_ENCODING));
+				StringBuilder acknowledgementContent = new StringBuilder();
+				String line;
+				while ((line = bufferedReader.readLine()) != null) {
+					acknowledgementContent.append(line);
+				}
+				webView.getEngine().loadContent(acknowledgementContent.toString());
 			} catch (IOException ioException) {
 				LOGGER.error("REGISTRATION_APPROVAL_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
-						APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+						APPLICATION_NAME, APPLICATION_ID,
+						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			}
 
 		}
@@ -252,12 +278,10 @@ public class RegistrationApprovalController extends BaseController implements In
 		listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
 
 		if (!listData.isEmpty()) {
-			eodController.getPendingApprovalTitledPane()
-					.setText(RegistrationUIConstants.PENDING_APPROVAL + "(" + listData.size() + ")");
+
 			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
 			table.setItems(oList);
 		} else {
-			eodController.getPendingApprovalTitledPane().setText(RegistrationUIConstants.PENDING_APPROVAL);
 			approveRegistrationRootSubPane.disableProperty().set(true);
 			table.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
 			table.getItems().clear();
@@ -292,7 +316,7 @@ public class RegistrationApprovalController extends BaseController implements In
 				}
 			}
 
-			Map<String, String> map = new HashMap<>();
+			Map<String, String> map = new WeakHashMap<>();
 			map.put(RegistrationConstants.REGISTRATIONID,
 					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId());
 			map.put(RegistrationConstants.STATUSCODE, RegistrationClientStatusCode.APPROVED.getCode());
@@ -341,7 +365,8 @@ public class RegistrationApprovalController extends BaseController implements In
 						"No of Authentication modes is empty");
 
 			} catch (RuntimeException runtimeException) {
-				LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage());
+				LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			}
 		}
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
@@ -362,8 +387,7 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			AnchorPane authRoot = BaseController.load(getClass().getResource(fxmlPath));
 			Scene scene = new Scene(authRoot);
-			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+			scene.getStylesheets().add(ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			primarystage.initStyle(StageStyle.UNDECORATED);
 			primarystage.setScene(scene);
 			primarystage.initModality(Modality.WINDOW_MODAL);
@@ -373,10 +397,16 @@ public class RegistrationApprovalController extends BaseController implements In
 			this.primaryStage = primarystage;
 
 		} catch (IOException ioException) {
+			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
 					RegistrationExceptionConstants.REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
-
 		} catch (RuntimeException runtimeException) {
+
+			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+
 			throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION, runtimeException.getMessage());
 		}
 		return primarystage;
@@ -411,9 +441,17 @@ public class RegistrationApprovalController extends BaseController implements In
 				}
 			}
 		} catch (RegBaseCheckedException checkedException) {
-			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Error in packet sync and upload");
-		}catch (RegBaseUncheckedException unCheckedException) {
-			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Error in packet sync and upload");
+			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+					"Error in sync and upload of packets" + checkedException.getMessage()
+							+ ExceptionUtils.getStackTrace(checkedException));
+
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.ERROR_IN_SYNC_AND_UPLOAD);
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+					"unable to sync and upload of packets" + runtimeException.getMessage()
+							+ ExceptionUtils.getStackTrace(runtimeException));
+
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_SYNC_AND_UPLOAD);
 		}
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status ended");

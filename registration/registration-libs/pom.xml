@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.registration</groupId>
 		<artifactId>registration-parent</artifactId>
-		<version>0.8.8</version>
+		<version>0.8.15</version>
 	</parent>
 
 	<artifactId>registration-libs</artifactId>
@@ -32,6 +32,10 @@
 		</dependency>
 		<!-- Mockito -->
 		<dependency>
+				<groupId>org.apache.derby</groupId>
+				<artifactId>derby</artifactId>
+			</dependency>
+		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
 			<scope>test</scope>
@@ -46,17 +50,18 @@
 				<version>1.1.1</version>
 				<executions>
 					<execution>
-						<phase>package</phase>
+						<phase>install</phase>
 						<goals>
 							<goal>java</goal>
 						</goals>
 						<configuration>
 							<mainClass>io.mosip.registration.cipher.ClientJarEncryption</mainClass>
 							<arguments>
-								<argument>${main.basedir}/registration-client/target/registration-client.jar</argument>
+								<argument>${main.basedir}/registration-client/target/registration-client-${project.version}.jar</argument>
 								<argument>${main.basedir}/registration-client/target/registration-client-${project.version}-shaded.jar</argument>
-								<argument>fdHPgbFn5LZjPE8fX5S0UQ==</argument>
+								<argument>bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4=</argument>
 								<argument>${project.version}</argument>
+								<argument>${main.basedir}/registration-libs/target/</argument>
 							</arguments>
 						</configuration>
 					</execution>

@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -22,36 +23,38 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
+import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dto.DeviceDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.UserMachineMappingDTO;
-import io.mosip.registration.entity.DeviceType;
 import io.mosip.registration.entity.RegCenterDevice;
-import io.mosip.registration.entity.RegCenterDeviceId;
 import io.mosip.registration.entity.RegCentreMachineDevice;
-import io.mosip.registration.entity.RegCentreMachineDeviceId;
 import io.mosip.registration.entity.RegDeviceMaster;
 import io.mosip.registration.entity.RegDeviceSpec;
 import io.mosip.registration.entity.RegDeviceType;
-import io.mosip.registration.entity.RegDeviceTypeId;
 import io.mosip.registration.entity.UserDetail;
-import io.mosip.registration.entity.UserRole;
-import io.mosip.registration.entity.UserRoleID;
 import io.mosip.registration.entity.UserMachineMapping;
-import io.mosip.registration.entity.UserMachineMappingID;
+import io.mosip.registration.entity.UserRole;
+import io.mosip.registration.entity.id.RegCenterDeviceId;
+import io.mosip.registration.entity.id.RegCentreMachineDeviceId;
+import io.mosip.registration.entity.id.RegDeviceTypeId;
+import io.mosip.registration.entity.id.UserMachineMappingID;
+import io.mosip.registration.entity.id.UserRoleID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.mapping.impl.MapMachineServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
+@Ignore
 public class UserClientMachineMappingServiceTest {
 
 	@Mock
@@ -61,12 +64,16 @@ public class UserClientMachineMappingServiceTest {
 	@InjectMocks
 	MapMachineServiceImpl mapMachineServiceImpl;
 	@Mock
+	private UserOnboardDAO userOnboardDAO;
+	@Mock
 	private AuditFactoryImpl auditFactory;
 
 	@Before
 	public void initialize() throws IOException, URISyntaxException {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+				Mockito.anyString(), Mockito.anyString());
+		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
+		SessionContext.getInstance().userContext().setUserId("mosip");
 	}
 
 	@Test
@@ -201,24 +208,28 @@ public class UserClientMachineMappingServiceTest {
 
 	@Test
 	public void getAllDeviceTypesTest() {
+		
 		// Add Device Types
-		List<DeviceType> deviceTypes = new ArrayList<>();
-		DeviceType deviceType = new DeviceType();
+		List<RegDeviceType> deviceTypes = new ArrayList<>();
+		RegDeviceType deviceType = new RegDeviceType();
 		RegDeviceTypeId deviceTypeId = new RegDeviceTypeId();
 
-		deviceTypeId.setCode("Fingerprint");
+		deviceTypeId.setCode("FRS");
+		deviceTypeId.setLangCode("eng");
 		deviceType.setRegDeviceTypeId(deviceTypeId);
 		deviceTypes.add(deviceType);
 
-		deviceType = new DeviceType();
+		deviceType = new RegDeviceType();
 		deviceTypeId = new RegDeviceTypeId();
-		deviceTypeId.setCode("Iris");
+		deviceTypeId.setCode("IRS");
+		deviceTypeId.setLangCode("eng");
 		deviceType.setRegDeviceTypeId(deviceTypeId);
 		deviceTypes.add(deviceType);
 
-		deviceType = new DeviceType();
+		deviceType = new RegDeviceType();
 		deviceTypeId = new RegDeviceTypeId();
-		deviceTypeId.setCode("Camera");
+		deviceTypeId.setCode("SCN");
+		deviceTypeId.setLangCode("eng");
 		deviceType.setRegDeviceTypeId(deviceTypeId);
 		deviceTypes.add(deviceType);
 
@@ -227,7 +238,7 @@ public class UserClientMachineMappingServiceTest {
 
 		List<String> types = mapMachineServiceImpl.getAllDeviceTypes();
 
-		Assert.assertThat(Arrays.asList("Fingerprint", "Iris", "Camera"), is(types));
+		Assert.assertThat(Arrays.asList("FRS", "IRS", "CMR"), is(types));
 	}
 
 	@Test(expected = RegBaseUncheckedException.class)
@@ -260,11 +271,11 @@ public class UserClientMachineMappingServiceTest {
 		RegCentreMachineDeviceId centreMachineDeviceId = new RegCentreMachineDeviceId();
 
 		deviceTypeId.setCode("Fingerprint");
-		deviceType.setRegDeviceTypeId(deviceTypeId);
+		//deviceType.setRegDeviceTypeId(deviceTypeId);
 		regDeviceSpec.setRegDeviceType(deviceType);
 		regDeviceSpec.setBrand("BrandA");
 		regDeviceSpec.setModel("BM001");
-		regDeviceMaster.setSerialNumber("S001");
+		regDeviceMaster.setSerialNum("S001");
 		regDeviceMaster.setRegDeviceSpec(regDeviceSpec);
 		centreMachineDeviceId.setDeviceId("D001");
 		centreMachineDeviceId.setMachineId("M001");

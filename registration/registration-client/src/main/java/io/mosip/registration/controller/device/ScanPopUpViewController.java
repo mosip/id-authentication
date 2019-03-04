@@ -10,6 +10,7 @@ import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -85,8 +86,7 @@ public class ScanPopUpViewController extends BaseController {
 			popupStage.setResizable(false);
 			popupTitle.setText(title);
 			Scene scene = new Scene(scanPopup);
-			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+			scene.getStylesheets().add(ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			popupStage.setScene(scene);
 			popupStage.initModality(Modality.WINDOW_MODAL);
 			popupStage.initOwner(fXComponents.getStage());
@@ -107,7 +107,8 @@ public class ScanPopUpViewController extends BaseController {
 			LOGGER.error(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format(
 							"%s -> Exception while Opening pop-up screen to capture in user registration  %s -> %s",
-							RegistrationConstants.USER_REG_SCAN_EXP, ioException.getMessage(), ioException.getCause()));
+							RegistrationConstants.USER_REG_SCAN_EXP, ioException.getMessage(),
+							ExceptionUtils.getStackTrace(ioException)));
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_SCAN_POPUP);
 		}
@@ -149,9 +150,9 @@ public class ScanPopUpViewController extends BaseController {
 			DocumentScanController documentScanController = (DocumentScanController) baseController;
 			try {
 				documentScanController.attachScannedDocument(popupStage);
-			} catch (IOException e) {
-				LOGGER.error(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, e.getMessage());
-				generateAlert(RegistrationConstants.ERROR, e.getMessage());
+			} catch (IOException ioException) {
+				LOGGER.error(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, ExceptionUtils.getStackTrace(ioException));
+				generateAlert(RegistrationConstants.ERROR, ioException.getMessage());
 			}
 		}
 

@@ -6,8 +6,11 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import io.mosip.registration.entity.id.RegCenterDeviceId;
 
 /**
  * RegCenterDevice entity details
@@ -19,15 +22,41 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "reg_center_device", schema = "reg")
 public class RegCenterDevice extends RegistrationCommonFields {
+
 	@EmbeddedId
 	private RegCenterDeviceId regCenterDeviceId;
+
+	/** The reg device master. */
 	@ManyToOne
-	@JoinColumn(name = "device_id", insertable = false, updatable = false)
+	@JoinColumns({ @JoinColumn(name = "device_id", referencedColumnName = "id", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	private RegDeviceMaster regDeviceMaster;
+
+	/** The is deleted. */
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
+
+	/** The deleted time. */
 	@Column(name = "del_dtimes")
 	private Timestamp deletedTime;
+
+	/** The lang code. */
+	@Column(name = "lang_code")
+	private String langCode;
+
+	/**
+	 * @return the langCode
+	 */
+	public String getLangCode() {
+		return langCode;
+	}
+
+	/**
+	 * @param langCode the langCode to set
+	 */
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
+	}
 
 	/**
 	 * @return the regCenterDeviceId
@@ -37,8 +66,7 @@ public class RegCenterDevice extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param regCenterDeviceId
-	 *            the regCenterDeviceId to set
+	 * @param regCenterDeviceId the regCenterDeviceId to set
 	 */
 	public void setRegCenterDeviceId(RegCenterDeviceId regCenterDeviceId) {
 		this.regCenterDeviceId = regCenterDeviceId;
@@ -52,8 +80,7 @@ public class RegCenterDevice extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param regDeviceMaster
-	 *            the regDeviceMaster to set
+	 * @param regDeviceMaster the regDeviceMaster to set
 	 */
 	public void setRegDeviceMaster(RegDeviceMaster regDeviceMaster) {
 		this.regDeviceMaster = regDeviceMaster;
@@ -67,8 +94,7 @@ public class RegCenterDevice extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param isDeleted
-	 *            the isDeleted to set
+	 * @param isDeleted the isDeleted to set
 	 */
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
@@ -82,8 +108,7 @@ public class RegCenterDevice extends RegistrationCommonFields {
 	}
 
 	/**
-	 * @param deletedTime
-	 *            the deletedTime to set
+	 * @param deletedTime the deletedTime to set
 	 */
 	public void setDeletedTime(Timestamp deletedTime) {
 		this.deletedTime = deletedTime;

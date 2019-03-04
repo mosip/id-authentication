@@ -6,17 +6,16 @@ package io.mosip.registration.service.audit.impl;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.AuditLogControlDAO;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -73,7 +72,7 @@ public class AuditServiceImpl extends BaseService implements AuditService {
 
 				/* Get Calendar instance */
 				Calendar cal = Calendar.getInstance();
-				cal.setTime(new Timestamp(System.currentTimeMillis()));
+				cal.setTime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				cal.add(Calendar.DATE, -auditDeletionConfiguredDays);
 
 				/* To-Date */
