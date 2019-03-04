@@ -59,7 +59,6 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 	synchronized public ResponseDTO fetchPolicy() {
 		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"synch the public key is started");
-
 		KeyStore keyStore = null;
 		ResponseDTO responseDTO = new ResponseDTO();
 		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
@@ -131,7 +130,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 
 	}
 
-	// @Override
+	@Override
 	public ResponseDTO checkKeyValidation() {
 
 		LOGGER.info("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, "Key Validation is started");
