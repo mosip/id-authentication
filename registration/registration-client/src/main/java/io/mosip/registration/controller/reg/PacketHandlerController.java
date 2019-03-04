@@ -46,6 +46,7 @@ import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.service.PolicySyncService;
 import io.mosip.registration.service.packet.PacketHandlerService;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.packet.ReRegistrationService;
@@ -153,6 +154,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@Autowired
 	private PacketUploadService packetUploadService;
+	@Autowired
+	private PolicySyncService policySyncService;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -188,40 +191,44 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * acknowledgement form
 	 */
 	public void createPacket() {
+		if (isKeyValid()) {
+			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creating of Registration Starting.");
+			try {
+				auditFactory.audit(AuditEvent.NAV_NEW_REG, Components.NAVIGATION,
+						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creating of Registration Starting.");
-		try {
-			auditFactory.audit(AuditEvent.NAV_NEW_REG, Components.NAVIGATION, SessionContext.userContext().getUserId(),
-					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				Parent createRoot = BaseController.load(
+						getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
+						applicationContext.getApplicationLanguageBundle());
+				LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+						APPLICATION_ID, "Validating Create Packet screen for specific role");
 
-			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
-					applicationContext.getApplicationLanguageBundle());
-			LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, "Validating Create Packet screen for specific role");
-
-			if (!validateScreenAuthorization(createRoot.getId())) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
-			} else {
-				StringBuilder errorMessage = new StringBuilder();
-				ResponseDTO responseDTO;
-				responseDTO = validateSyncStatus();
-				List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
-				if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
-					for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-						errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
-					}
-					generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
-
+				if (!validateScreenAuthorization(createRoot.getId())) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 				} else {
-					getScene(createRoot).setRoot(createRoot);
+					StringBuilder errorMessage = new StringBuilder();
+					ResponseDTO responseDTO;
+					responseDTO = validateSyncStatus();
+					List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
+					if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
+						for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
+							errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
+						}
+						generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
+
+					} else {
+						getScene(createRoot).setRoot(createRoot);
+					}
 				}
+
+			} catch (IOException ioException) {
+				LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
+						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 			}
-
-		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
+		} else {
+			generateAlert(RegistrationUIConstants.INVALID_KEY);
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creating of Registration ended.");
 	}
@@ -336,43 +343,47 @@ public class PacketHandlerController extends BaseController implements Initializ
 	}
 
 	public void updateUIN() {
+		if (isKeyValid()) {
 
-		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen started.");
-		try {
-			auditFactory.audit(AuditEvent.NAV_UIN_UPDATE, Components.NAVIGATION,
-					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen started.");
+			try {
+				auditFactory.audit(AuditEvent.NAV_UIN_UPDATE, Components.NAVIGATION,
+						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
+				Parent root = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
 
-			LOGGER.info("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, "updating UIN");
+				LOGGER.info("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+						APPLICATION_ID, "updating UIN");
 
-			if (!validateScreenAuthorization(root.getId())) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
-			} else {
-
-				StringBuilder errorMessage = new StringBuilder();
-				ResponseDTO responseDTO;
-				responseDTO = validateSyncStatus();
-				List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
-				if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
-					for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-						errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
-					}
-					generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
-
+				if (!validateScreenAuthorization(root.getId())) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 				} else {
-					ObservableList<Node> nodes = homeController.getMainBox().getChildren();
-					IntStream.range(1, nodes.size()).forEach(index -> {
-						nodes.get(index).setVisible(false);
-						nodes.get(index).setManaged(false);
-					});
-					nodes.add(root);
+
+					StringBuilder errorMessage = new StringBuilder();
+					ResponseDTO responseDTO;
+					responseDTO = validateSyncStatus();
+					List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
+					if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
+						for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
+							errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
+						}
+						generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
+
+					} else {
+						ObservableList<Node> nodes = homeController.getMainBox().getChildren();
+						IntStream.range(1, nodes.size()).forEach(index -> {
+							nodes.get(index).setVisible(false);
+							nodes.get(index).setManaged(false);
+						});
+						nodes.add(root);
+					}
 				}
+			} catch (IOException ioException) {
+				LOGGER.error("REGISTRATION - UI- UIN Update", APPLICATION_NAME, APPLICATION_ID,
+						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			}
-		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - UI- UIN Update", APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+		} else {
+			generateAlert(RegistrationUIConstants.INVALID_KEY);
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen ended.");
 	}
@@ -624,5 +635,11 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Sync and Upload of created Packet ended");
+	}
+
+	private boolean isKeyValid() {
+
+		return policySyncService.checkKeyValidation().getSuccessResponseDTO() != null;
+
 	}
 }
