@@ -118,7 +118,7 @@ public class TemplateGenerator extends BaseService {
 			MoroccoIdentity moroccoIdentity = (MoroccoIdentity) registration.getDemographicDTO().getDemographicInfoDTO()
 					.getIdentity();
 
-			String dob = getValue(moroccoIdentity.getDateOfBirth(), null);
+			String dob = getValue(moroccoIdentity.getDateOfBirth());
 
 			templateValues.put(RegistrationConstants.TEMPLATE_DATE_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("date"));
@@ -162,7 +162,7 @@ public class TemplateGenerator extends BaseService {
 				qrCodeString.append(applicationLanguageProperties.getString("age/dob")).append(" : ");
 
 				if (dob == "") {
-					qrCodeString.append(getValue(moroccoIdentity.getAge(), null));
+					qrCodeString.append(getValue(moroccoIdentity.getAge()));
 				} else {
 					qrCodeString.append(DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
 				}
@@ -433,15 +433,15 @@ public class TemplateGenerator extends BaseService {
 				templateValues.put(RegistrationConstants.TEMPLATE_DOB,
 						DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));				
 			} else {
-				templateValues.put(RegistrationConstants.TEMPLATE_DOB, getValue(moroccoIdentity.getAge(), null));
+				templateValues.put(RegistrationConstants.TEMPLATE_DOB, getValue(moroccoIdentity.getAge()));
 			}
 			templateValues.put(RegistrationConstants.TEMPLATE_AGE_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("ageField"));
 			templateValues.put(RegistrationConstants.TEMPLATE_AGE_LOCAL_LANG_LABEL,
 					localProperties.getString("ageField"));
-			templateValues.put(RegistrationConstants.TEMPLATE_AGE, getValue(moroccoIdentity.getAge(), null));
+			templateValues.put(RegistrationConstants.TEMPLATE_AGE, getValue(moroccoIdentity.getAge()));
 
-			if (!getValue(moroccoIdentity.getAge(), null).isEmpty()) {
+			if (!getValue(moroccoIdentity.getAge()).isEmpty()) {
 				templateValues.put(RegistrationConstants.TEMPLATE_YEARS_USER_LANG,
 						applicationLanguageProperties.getString("years"));
 				templateValues.put(RegistrationConstants.TEMPLATE_YEARS_LOCAL_LANG, localProperties.getString("years"));
@@ -495,26 +495,26 @@ public class TemplateGenerator extends BaseService {
 			templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG_LABEL,
 					localProperties.getString("localAdminAuthority"));
 			templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY,
-					getValue(moroccoIdentity, platformLanguageCode));
+					getValue(moroccoIdentity.getLocalAdministrativeAuthority(), platformLanguageCode));
 			templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG,
 					getValue(moroccoIdentity.getLocalAdministrativeAuthority(), localLanguageCode));
 			templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("mobileNo"));
 			templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_LOCAL_LANG_LABEL,
 					localProperties.getString("mobileNo"));
-			templateValues.put(RegistrationConstants.TEMPLATE_MOBILE, getValue(moroccoIdentity.getPhone(), null));
+			templateValues.put(RegistrationConstants.TEMPLATE_MOBILE, getValue(moroccoIdentity.getPhone()));
 			templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("postalCode"));
 			templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE_LOCAL_LANG_LABEL,
 					localProperties.getString("postalCode"));
 			templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE,
-					getValue(moroccoIdentity.getPostalCode(), null));
+					getValue(moroccoIdentity.getPostalCode()));
 			templateValues.put(RegistrationConstants.TEMPLATE_EMAIL_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("emailId"));
 			templateValues.put(RegistrationConstants.TEMPLATE_EMAIL_LOCAL_LANG_LABEL,
 					localProperties.getString("emailId"));
 
-			String email = getValue(moroccoIdentity.getEmail(), null);
+			String email = getValue(moroccoIdentity.getEmail());
 			if (email != null && !email.isEmpty()) {
 				templateValues.put(RegistrationConstants.TEMPLATE_EMAIL, email);				
 			} else {
@@ -526,7 +526,7 @@ public class TemplateGenerator extends BaseService {
 			templateValues.put(RegistrationConstants.TEMPLATE_CNIE_LOCAL_LANG_LABEL,
 					localProperties.getString("cniOrPinNumber"));
 			templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER,
-					getValue(moroccoIdentity.getCnieNumber(), null));
+					getValue(moroccoIdentity.getCnieNumber()));
 
 			if (RegistrationConstants.ENABLE.equalsIgnoreCase(documentDisableFlag)) {
 				templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_USER_LANG_LABEL,
@@ -937,10 +937,10 @@ public class TemplateGenerator extends BaseService {
 			values.put(RegistrationConstants.TEMPLATE_DATE, currentDate);
 			values.put(RegistrationConstants.TEMPLATE_FULL_NAME,
 					getValue(moroccoIdentity.getFullName(), applicationLanguageCode));
-			String dob = getValue(moroccoIdentity.getDateOfBirth(), null);
+			String dob = getValue(moroccoIdentity.getDateOfBirth());
 
 			if (dob == null || dob == "") {
-				values.put(RegistrationConstants.TEMPLATE_DOB, getValue(moroccoIdentity.getAge(), null));
+				values.put(RegistrationConstants.TEMPLATE_DOB, getValue(moroccoIdentity.getAge()));
 			} else {
 				values.put(RegistrationConstants.TEMPLATE_DOB,
 						DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
@@ -956,10 +956,10 @@ public class TemplateGenerator extends BaseService {
 					getValue(moroccoIdentity.getProvince(), applicationLanguageCode));
 			values.put(RegistrationConstants.TEMPLATE_REGION,
 					getValue(moroccoIdentity.getRegion(), applicationLanguageCode));
-			values.put(RegistrationConstants.TEMPLATE_POSTAL_CODE, getValue(moroccoIdentity.getPostalCode(), null));
-			values.put(RegistrationConstants.TEMPLATE_MOBILE, getValue(moroccoIdentity.getPhone(), null));
+			values.put(RegistrationConstants.TEMPLATE_POSTAL_CODE, getValue(moroccoIdentity.getPostalCode()));
+			values.put(RegistrationConstants.TEMPLATE_MOBILE, getValue(moroccoIdentity.getPhone()));
 
-			String email = getValue(moroccoIdentity.getEmail(), null);
+			String email = getValue(moroccoIdentity.getEmail());
 			if (email == null || email.isEmpty()) {
 				values.put(RegistrationConstants.TEMPLATE_EMAIL, RegistrationConstants.EMPTY);
 			} else {
