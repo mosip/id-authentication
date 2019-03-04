@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idrepo.constant.IdRepoConstants;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
@@ -44,9 +45,6 @@ import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 @RestControllerAdvice
 public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
-	/** The Constant APPLICATION_VERSION. */
-	private static final String APPLICATION_VERSION = "mosip.kernel.idrepo.application.version";
-
 	/** The Constant ID_REPO_EXCEPTION_HANDLER. */
 	private static final String ID_REPO_EXCEPTION_HANDLER = "IdRepoExceptionHandler";
 
@@ -55,9 +53,6 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "sessionId";
-
-	/** The Constant DATETIME_PATTERN. */
-	private static final String DATETIME_PATTERN = "mosip.utc-datetime-pattern";
 
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoExceptionHandler.class);
@@ -187,9 +182,10 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 			response.setErrors(errors);
 		}
 
-		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		response.setTimestamp(
+				DateUtils.getUTCCurrentDateTimeString(env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
 
-		response.setVersion(env.getProperty(APPLICATION_VERSION));
+		response.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
 
 		mapper.setFilterProvider(new SimpleFilterProvider().addFilter("responseFilter",
 				SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response")));

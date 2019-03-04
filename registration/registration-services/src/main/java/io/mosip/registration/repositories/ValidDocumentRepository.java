@@ -15,8 +15,6 @@ public interface ValidDocumentRepository extends BaseRepository<ValidDocument, S
 
 	List<ValidDocument> findByIsActiveTrueAndDocCategoryCodeAndLangCode(String docCategoryCode, String langCode);
 
-	List<ValidDocument> findByDocCategoryCodeAndLangCode(String docCategoryCode, String langCode);
-
 	List<ValidDocument> findByApplicantTypeAndDocCategoryCodeAndLangCode(String applicantType, String docCategoryCode,
 			String langCode);
 }

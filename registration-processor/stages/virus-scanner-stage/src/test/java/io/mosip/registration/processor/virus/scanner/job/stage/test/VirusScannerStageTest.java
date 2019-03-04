@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.virus.scanner.job.stage.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -102,7 +101,7 @@ public class VirusScannerStageTest {
 
 		entry.setRegistrationId("1000");
 		entry.setRetryCount(0);
-		entry.setStatusComment("Landing");
+		entry.setStatusComment("virus scan");
 
 		when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(entry);
 		when(env.getProperty(DirectoryPathDto.VIRUS_SCAN.toString())).thenReturn("src/test/resources/");
@@ -146,8 +145,7 @@ public class VirusScannerStageTest {
 		virusScannerStage.process(dto);
 
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.contains(
-						Tuple.tuple(Level.INFO, "SESSIONID - REGISTRATIONID - 1000 - File is successfully scanned."));
+				.contains(Tuple.tuple(Level.INFO, "SESSIONID - REGISTRATIONID - 1000 - File is successfully scanned."));
 
 	}
 

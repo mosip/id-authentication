@@ -6,15 +6,16 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
@@ -26,6 +27,8 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.PacketStatusDTO;
+import io.mosip.registration.dto.RegistrationPacketSyncDTO;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SyncRegistrationDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -54,7 +57,7 @@ public class PacketUploadController extends BaseController {
 
 	@Autowired
 	private PacketUploadService packetUploadService;
-	
+
 	@FXML
 	private TableColumn<PacketStatusDTO, String> fileNameColumn;
 
@@ -64,7 +67,6 @@ public class PacketUploadController extends BaseController {
 	@FXML
 	private TableView<PacketStatusDTO> table;
 
-	
 	@Autowired
 	private PacketSynchService packetSynchService;
 
@@ -139,7 +141,8 @@ public class PacketUploadController extends BaseController {
 
 			List<Registration> packetsToBeSynched = packetSynchService.fetchPacketsToBeSynched();
 			List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
-			Object response = null;
+			List<Registration> synchedPackets = new ArrayList<>();
+			ResponseDTO responseDTO = new ResponseDTO();
 			if (!packetsToBeSynched.isEmpty()) {
 				for (Registration packetToBeSynch : packetsToBeSynched) {
 					SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
@@ -151,41 +154,48 @@ public class PacketUploadController extends BaseController {
 					syncDto.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
 					syncDtoList.add(syncDto);
 				}
-				response = packetSynchService.syncPacketsToServer(syncDtoList);
+				RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
+				registrationPacketSyncDTO.setRequestTimestamp(DateUtils.getUTCCurrentDateTimeString());
+				registrationPacketSyncDTO.setSyncRegistrationDTOs(syncDtoList);
+				registrationPacketSyncDTO.setId(RegistrationConstants.PACKET_SYNC_STATUS_ID);
+				registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
+				responseDTO = packetSynchService.syncPacketsToServer(registrationPacketSyncDTO);
 			}
-			if (response != null) {
-				packetsToBeSynched.forEach(registration -> {
-					if (registration.getServerStatusCode() != null) {
-						if (registration.getServerStatusCode()
+			if (responseDTO != null && responseDTO.getSuccessResponseDTO() != null) {
+
+				for (Registration registration : packetsToBeSynched) {
+					String status = (String) responseDTO.getSuccessResponseDTO().getOtherAttributes()
+							.get(registration.getId());
+					if (status != null && status.equalsIgnoreCase(RegistrationConstants.SUCCESS)) {
+
+						registration.setClientStatusCode(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
+
+						if (registration.getServerStatusCode() != null && registration.getServerStatusCode()
 								.equals(RegistrationClientStatusCode.RE_REGISTER.getCode())) {
+
 							String ackFileName = registration.getAckFilename();
 							int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
 							String packetPath = ackFileName.substring(0, lastIndex);
 							File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
 							if (packet.exists() && packet.delete()) {
 								registration.setClientStatusCode(RegistrationClientStatusCode.DELETED.getCode());
-							} else {
-								registration.setClientStatusCode(
-										RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
 							}
 						}
-					} else {
-						registration.setClientStatusCode(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
+						synchedPackets.add(registration);
 					}
-				});
-				packetSynchService.updateSyncStatus(packetsToBeSynched);
+				}
+				packetSynchService.updateSyncStatus(synchedPackets);
 			}
-		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException | URISyntaxException exception) {
+		} catch (RegBaseCheckedException | JsonProcessingException | URISyntaxException exception) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, "Error while Synching packets to the server" + ExceptionUtils.getStackTrace(exception));
-			if (exception instanceof RegBaseUncheckedException) {
+					APPLICATION_ID,
+					"Error while Synching packets to the server" + ExceptionUtils.getStackTrace(exception));
 
-				throw new RegBaseCheckedException(
-						RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
-						RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorMessage());
-			} else {
-				syncErrorStatus = exception.getMessage();
-			}
+			syncErrorStatus = exception.getMessage();
+
+		} catch (RegBaseUncheckedException regBaseUncheckedException) {
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorMessage());
 		}
 		return syncErrorStatus;
 	}
@@ -216,7 +226,7 @@ public class PacketUploadController extends BaseController {
 					List<Registration> synchedPackets = packetUploadService.getSynchedPackets();
 					List<Registration> packetUploadList = new ArrayList<>();
 					String status = "";
-					Map<String, String> tableMap = new HashMap<>();
+					Map<String, String> tableMap = new WeakHashMap<>();
 					if (!synchedPackets.isEmpty()) {
 						auditFactory.audit(AuditEvent.PACKET_UPLOAD, Components.PACKET_UPLOAD,
 								SessionContext.userContext().getUserId(), RegistrationConstants.PACKET_UPLOAD_REF_ID);
@@ -231,7 +241,7 @@ public class PacketUploadController extends BaseController {
 							File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
 							try {
 								if (packet.exists()) {
-									if ((("resend".equals(synchedPacket.getServerStatusCode())
+									if ((("RESEND".equals(synchedPacket.getServerStatusCode())
 											&& synchedPacket.getServerStatusTimestamp()
 													.compareTo(synchedPacket.getUploadTimestamp()) == 1)
 											|| RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode()
@@ -240,9 +250,9 @@ public class PacketUploadController extends BaseController {
 													.equals(synchedPacket.getClientStatusCode())
 											|| "E".equals(synchedPacket.getFileUploadStatus())) && packet.exists()) {
 
-										Object response = packetUploadService.pushPacket(packet);
-										String responseCode = response.toString();
-										if (responseCode.equals("PACKET_UPLOADED_TO_VIRUS_SCAN")) {
+										ResponseDTO response = packetUploadService.pushPacket(packet);
+										if (response.getSuccessResponseDTO() != null) {
+
 											synchedPacket.setClientStatusCode(
 													RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
 											synchedPacket.setFileUploadStatus(
@@ -251,19 +261,25 @@ public class PacketUploadController extends BaseController {
 											tableMap.put(synchedPacket.getId(),
 													RegistrationConstants.PACKET_UPLOAD_SUCCESS);
 
-										} else if (responseCode.contains(RegistrationConstants.PACKET_DUPLICATE)) {
-											tableMap.put(synchedPacket.getId(), "Error(Duplicate Packet)");
-											synchedPacket.setClientStatusCode(
-													RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
-											synchedPacket.setFileUploadStatus(
-													RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
-											packetUploadList.add(synchedPacket);
-										} else {
-											synchedPacket.setFileUploadStatus(
-													RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
-											packetUploadList.add(synchedPacket);
-											tableMap.put(synchedPacket.getId(), "Error");
+										} else if (response.getErrorResponseDTOs() != null) {
+											String errMessage = response.getErrorResponseDTOs().get(0).getMessage();
+											if (errMessage.contains(RegistrationConstants.PACKET_DUPLICATE)) {
+
+												tableMap.put(synchedPacket.getId(), "Error(Duplicate Packet)");
+												synchedPacket.setClientStatusCode(
+														RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
+												synchedPacket.setFileUploadStatus(
+														RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
+												packetUploadList.add(synchedPacket);
+
+											} else {
+												synchedPacket.setFileUploadStatus(
+														RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+												packetUploadList.add(synchedPacket);
+												tableMap.put(synchedPacket.getId(), "Error");
+											}
 										}
+
 									}
 								} else {
 									tableMap.put(synchedPacket.getId(), "Error(Packet not available)");
@@ -332,19 +348,20 @@ public class PacketUploadController extends BaseController {
 				"Exporting the Synched the packets");
 
 		List<Registration> exportedPackets = packetExportController.packetExport();
-		Map<String, String> exportedPacketMap = new HashMap<>();
+		Map<String, String> exportedPacketMap = new WeakHashMap<>();
 		exportedPackets.forEach(regPacket -> {
 			exportedPacketMap.put(regPacket.getId(), RegistrationClientStatusCode.EXPORT.getCode());
 		});
 		displayData(populateTableData(exportedPacketMap));
 	}
-	
+
 	/**
 	 * To display the Uploaded packet details in UI
 	 * 
 	 * @param tableData
 	 */
 	private void displayData(List<PacketStatusDTO> tableData) {
+		
 		LOGGER.info("REGISTRATION - DISPLAY_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"To display all the ui data");
 		fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("fileName"));
@@ -353,7 +370,7 @@ public class PacketUploadController extends BaseController {
 		ObservableList<PacketStatusDTO> list = FXCollections.observableArrayList(tableData);
 		table.setItems(list);
 	}
-	
+
 	/**
 	 * To populate the data for the UI table
 	 * 

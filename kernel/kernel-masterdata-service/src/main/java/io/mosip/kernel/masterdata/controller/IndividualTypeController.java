@@ -27,6 +27,9 @@ public class IndividualTypeController {
 	@Autowired
 	private IndividualTypeService individualTypeService;
 
+	/**
+	 * @return the all active individual type.
+	 */
 	@GetMapping
 	@ApiOperation(value = "get value from Caretory for the given id", notes = "get value from Category for the given id", response = IndividualTypeResponseDto.class)
 	public ResponseEntity<IndividualTypeResponseDto> getAllIndividualTypes() {

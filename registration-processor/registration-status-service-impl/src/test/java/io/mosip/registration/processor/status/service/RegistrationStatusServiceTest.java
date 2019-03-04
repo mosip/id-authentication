@@ -1,12 +1,11 @@
 /*package io.mosip.registration.processor.status.service;
 
 import static org.junit.Assert.assertEquals;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,9 +17,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.test.context.ContextConfiguration;
+
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
-import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -42,13 +43,7 @@ public class RegistrationStatusServiceTest {
 	private List<RegistrationStatusEntity> entities;
 	private static final int threshholdTime = 48;
 	@InjectMocks
-	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService = new RegistrationStatusServiceImpl() {
-		@Override
-		public int getThreshholdTime() {
-			return threshholdTime;
-		}
-
-	};
+	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService = new RegistrationStatusServiceImpl();
 
 	@Mock
 	TransactionService<TransactionDto> transcationStatusService;
@@ -56,95 +51,56 @@ public class RegistrationStatusServiceTest {
 	private RegistrationStatusDao registrationStatusDao;
 
 	@Mock
-	private AuditLogRequestBuilder auditLogRequestBuilder ;
-	
+	private AuditLogRequestBuilder auditLogRequestBuilder;
+
 	@Mock
 	private RegistrationStatusMapUtil registrationStatusMapUtil;
 
 	List<RegistrationStatusDto> registrations = new ArrayList<>();
-	
-	
+
 	@Before
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		registrationStatusDto = new InternalRegistrationStatusDto();
 		registrationStatusDto.setIsActive(true);
-		registrationStatusDto.setStatusCode("PACKET_UPLOADED_TO_LANDING_ZONE");
+		registrationStatusDto.setStatusCode("PACKET_UPLOADED_TO_VIRUS_SCAN");
 		registrationStatusDto.setCreateDateTime(LocalDateTime.now());
 		registrationStatusDto.setRegistrationId("1000");
 
 		registrationStatusEntity = new RegistrationStatusEntity();
 		registrationStatusEntity.setIsActive(true);
-		registrationStatusEntity.setStatusCode("PACKET_UPLOADED_TO_LANDING_ZONE");
+		registrationStatusEntity.setStatusCode("PACKET_UPLOADED_TO_VIRUS_SCAN");
 		registrationStatusEntity.setRetryCount(2);
-		
+
 		entities = new ArrayList<>();
 		entities.add(registrationStatusEntity);
 
 		Mockito.when(registrationStatusDao.findById(ArgumentMatchers.any())).thenReturn(registrationStatusEntity);
-		Mockito.when(registrationStatusDao.findbyfilesByThreshold("PACKET_UPLOADED_TO_LANDING_ZONE", 48))
-				.thenReturn(entities);
 
 		TransactionEntity transactionEntity = new TransactionEntity();
-		transactionEntity.setStatusCode("PACKET_UPLOADED_TO_LANDING_ZONE");
+		transactionEntity.setStatusCode("PACKET_UPLOADED_TO_VIRUS_SCAN");
 		transactionEntity.setId("1001");
 		Mockito.when(transcationStatusService.addRegistrationTransaction(ArgumentMatchers.any()))
 				.thenReturn(transactionEntity);
-		
-		
-Mockito.when(registrationStatusMapUtil.getExternalStatus(ArgumentMatchers.any(),ArgumentMatchers.any())).thenReturn(RegistrationExternalStatusCode.RESEND);
-		
-		
-//		AuditResponseDto auditResponseDto=new AuditResponseDto();
-//		auditResponseDto.setStatus(true);
-//		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder("test case description",EventId.RPR_401.toString(),EventName.ADD.toString(),EventType.BUSINESS.toString(), "1234testcase");
 
-
-		//Mockito.when(auditHandler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
-		//AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
-		//AuditRequestDto auditRequest1 = new AuditRequestDto();
-
-	//	Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
-	//	f.setAccessible(true);
-	//	f.set(auditLogRequestBuilder, auditRequestBuilder);
-	//	Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
-	//	f1.setAccessible(true);
-	//	f1.set(auditRequestBuilder, auditRequest1);
-
+		Mockito.when(registrationStatusMapUtil.getExternalStatus(ArgumentMatchers.any(), ArgumentMatchers.any()))
+				.thenReturn(RegistrationExternalStatusCode.RESEND);
 	}
 
 	@Test
 	public void testGetRegistrationStatusSuccess() {
 
 		InternalRegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
-		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", dto.getStatusCode());
+		assertEquals("PACKET_UPLOADED_TO_VIRUS_SCAN", dto.getStatusCode());
 
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
 	public void getRegistrationStatusFailureTest() throws TablenotAccessibleException {
-		DataAccessLayerException exp = new DataAccessLayerException(
-				HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
-				new Exception());
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+				"errorMessage", new Exception());
 		Mockito.when(registrationStatusDao.findById(ArgumentMatchers.any())).thenThrow(exp);
 		registrationStatusService.getRegistrationStatus("1001");
-	}
-
-	@Test
-	public void findbyfilesByThresholdSuccessTest() {
-		List<InternalRegistrationStatusDto> list = registrationStatusService
-				.findbyfilesByThreshold("PACKET_UPLOADED_TO_LANDING_ZONE");
-		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", list.get(0).getStatusCode());
-	}
-
-	@Test(expected = TablenotAccessibleException.class)
-	public void findbyfilesByThresholdFailureTest() {
-		DataAccessLayerException exp = new DataAccessLayerException(
-				HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
-				new Exception());
-		Mockito.when(registrationStatusDao.findbyfilesByThreshold("PACKET_UPLOADED_TO_LANDING_ZONE", 48))
-				.thenThrow(exp);
-		registrationStatusService.findbyfilesByThreshold("PACKET_UPLOADED_TO_LANDING_ZONE");
 	}
 
 	@Test
@@ -152,14 +108,13 @@ Mockito.when(registrationStatusMapUtil.getExternalStatus(ArgumentMatchers.any(),
 
 		registrationStatusService.addRegistrationStatus(registrationStatusDto);
 		InternalRegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
-		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", dto.getStatusCode());
+		assertEquals("PACKET_UPLOADED_TO_VIRUS_SCAN", dto.getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
 	public void addRegistrationFailureTest() {
-		DataAccessLayerException exp = new DataAccessLayerException(
-				HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
-				new Exception());
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+				"errorMessage", new Exception());
 		Mockito.when(registrationStatusDao.save(ArgumentMatchers.any())).thenThrow(exp);
 		registrationStatusService.addRegistrationStatus(registrationStatusDto);
 	}
@@ -169,14 +124,13 @@ Mockito.when(registrationStatusMapUtil.getExternalStatus(ArgumentMatchers.any(),
 		registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
 		InternalRegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
-		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", dto.getStatusCode());
+		assertEquals("PACKET_UPLOADED_TO_VIRUS_SCAN", dto.getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
 	public void updateRegistrationStatusFailureTest() {
-		DataAccessLayerException exp = new DataAccessLayerException(
-				HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
-				new Exception());
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+				"errorMessage", new Exception());
 
 		Mockito.when(registrationStatusDao.save(ArgumentMatchers.any())).thenThrow(exp);
 		registrationStatusService.updateRegistrationStatus(registrationStatusDto);
@@ -186,33 +140,31 @@ Mockito.when(registrationStatusMapUtil.getExternalStatus(ArgumentMatchers.any(),
 	public void testGetByStatusSuccess() {
 		Mockito.when(registrationStatusDao.getEnrolmentStatusByStatusCode(ArgumentMatchers.any())).thenReturn(entities);
 		List<InternalRegistrationStatusDto> list = registrationStatusService
-				.getByStatus("PACKET_UPLOADED_TO_LANDING_ZONE");
-		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", list.get(0).getStatusCode());
+				.getByStatus("PACKET_UPLOADED_TO_VIRUS_SCAN");
+		assertEquals("PACKET_UPLOADED_TO_VIRUS_SCAN", list.get(0).getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
 	public void getByStatusFailureTest() {
-		DataAccessLayerException exp = new DataAccessLayerException(
-				HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
-				new Exception());
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+				"errorMessage", new Exception());
 		Mockito.when(registrationStatusDao.getEnrolmentStatusByStatusCode(ArgumentMatchers.any())).thenThrow(exp);
-		registrationStatusService.getByStatus("PACKET_UPLOADED_TO_LANDING_ZONE");
+		registrationStatusService.getByStatus("PACKET_UPLOADED_TO_VIRUS_SCAN");
 	}
 
 	@Test
 	public void testGetByIdsSuccess() {
-		
+
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenReturn(entities);
-		
+
 		List<RegistrationStatusDto> list = registrationStatusService.getByIds("1001,1000");
 		assertEquals("RESEND", list.get(0).getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
 	public void getByIdsFailureTest() {
-		DataAccessLayerException exp = new DataAccessLayerException(
-				HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
-				new Exception());
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+				"errorMessage", new Exception());
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenThrow(exp);
 		registrationStatusService.getByIds("1001,1000");
 	}

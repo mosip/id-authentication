@@ -2,13 +2,12 @@ package io.mosip.registration.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.Table;
+
+import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 
 /*
 * Entity class for IdType.
@@ -19,7 +18,6 @@ import javax.persistence.Table;
 */
 @Entity
 @Table(name = "id_type", schema = "reg")
-@IdClass(CodeAndLanguageCodeID.class)
 public class IdType extends RegistrationCommonFields implements Serializable {
 
 	/**
@@ -27,18 +25,22 @@ public class IdType extends RegistrationCommonFields implements Serializable {
 	 */
 	private static final long serialVersionUID = -97767928612692201L;
 
-	@Id
-	@AttributeOverrides({ @AttributeOverride(name = "code", column = @Column(name = "code")),
-			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code")) })
-	/**
-	 * The idtype code.
-	 */
-	private String code;
+	@EmbeddedId
+	private CodeAndLanguageCodeID codeAndLanguageCodeID;
 
 	/**
-	 * The idtype language code.
+	 * @return the codeAndLanguageCodeID
 	 */
-	private String langCode;
+	public CodeAndLanguageCodeID getCodeAndLanguageCodeID() {
+		return codeAndLanguageCodeID;
+	}
+
+	/**
+	 * @param codeAndLanguageCodeID the codeAndLanguageCodeID to set
+	 */
+	public void setCodeAndLanguageCodeID(CodeAndLanguageCodeID codeAndLanguageCodeID) {
+		this.codeAndLanguageCodeID = codeAndLanguageCodeID;
+	}
 
 	/**
 	 * The idtype name.
@@ -51,34 +53,6 @@ public class IdType extends RegistrationCommonFields implements Serializable {
 	 */
 	@Column(name = "descr")
 	private String descr;
-
-	/**
-	 * @return the code
-	 */
-	public String getCode() {
-		return code;
-	}
-
-	/**
-	 * @param code the code to set
-	 */
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	/**
-	 * @return the langCode
-	 */
-	public String getLangCode() {
-		return langCode;
-	}
-
-	/**
-	 * @param langCode the langCode to set
-	 */
-	public void setLangCode(String langCode) {
-		this.langCode = langCode;
-	}
 
 	/**
 	 * @return the name

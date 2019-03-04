@@ -18,8 +18,10 @@ import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.RestartController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
@@ -96,6 +98,9 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	private RegistrationPacketVirusScanService registrationPacketVirusScanService;
+	
+	@Autowired
+	private RestartController restartController;
 
 	/**
 	 * Mapping Registration Officer details
@@ -180,16 +185,24 @@ public class HeaderController extends BaseController {
 			if (responseDTO.getSuccessResponseDTO() != null) {
 				generateAlert(RegistrationUIConstants.SYNC_SUCCESS);
 			} else if (responseDTO.getErrorResponseDTOs() != null) {
-				generateAlert(RegistrationUIConstants.SYNC_FAILURE);
+				generateAlert(RegistrationUIConstants.SYNC_FAILURE,
+						responseDTO.getErrorResponseDTOs().get(0).getMessage());
 			}
 
-			syncData = BaseController.load(getClass().getResource(RegistrationConstants.SYNC_DATA));
+			while (restartController.isToBeRestarted()) {
+				restartController.restart();
+			}
 
-			VBox pane = (VBox) menu.getParent().getParent().getParent();
-			Object parent = pane.getChildren().get(0);
-			pane.getChildren().clear();
-			pane.getChildren().add((Node) parent);
-			pane.getChildren().add(syncData);
+			if ("Y".equalsIgnoreCase((String) ApplicationContext.getInstance().getApplicationMap()
+					.get(RegistrationConstants.UI_SYNC_DATA))) {
+				syncData = BaseController.load(getClass().getResource(RegistrationConstants.SYNC_DATA));
+
+				VBox pane = (VBox) menu.getParent().getParent().getParent();
+				Object parent = pane.getChildren().get(0);
+				pane.getChildren().clear();
+				pane.getChildren().add((Node) parent);
+				pane.getChildren().add(syncData);
+			}
 
 		} catch (IOException ioException) {
 			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,

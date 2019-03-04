@@ -46,7 +46,7 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	 *            the status codes
 	 * @return List of registration packets
 	 */
-	List<Registration> findByClientStatusCodeIn(List<String> statusCodes);
+	List<Registration> findByClientStatusCodeInOrderByUpdDtimesDesc(List<String> statusCodes);
 
 	/**
 	 * Fetching all the re registration records

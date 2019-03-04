@@ -7,6 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import io.mosip.registration.entity.id.UserRoleID;
 import lombok.Getter;
 import lombok.Setter;
 

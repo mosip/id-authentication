@@ -3,14 +3,16 @@ package io.mosip.registration.entity;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
+
+import io.mosip.registration.entity.id.RegMachineSpecId;
 
 /**
  * RegDeviceSpec entity details
@@ -22,9 +24,10 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "device_spec", schema = "reg")
 public class RegDeviceSpec extends RegistrationCommonFields {
-	@Id
-	@Column(name = "id")
-	private String id;
+	
+	@EmbeddedId
+	private RegMachineSpecId regMachineSpecId;
+
 	@Column(name = "name")
 	private String name;
 	@Column(name = "brand")
@@ -35,8 +38,6 @@ public class RegDeviceSpec extends RegistrationCommonFields {
 	private String minDriverversion;
 	@Column(name = "descr")
 	private String description;
-	@Column(name = "lang_code")
-	private String langCode;
 	@Column(name = "dtyp_code")
 	private String deviceTypeCode;
 	@Column(name = "is_deleted")
@@ -45,9 +46,25 @@ public class RegDeviceSpec extends RegistrationCommonFields {
 	@Column(name = "del_dtimes")
 	private Timestamp deletedTime;
 	@ManyToOne
-	@JoinColumns({ @JoinColumn(name = "dtyp_code", insertable = false, updatable = false),
-			@JoinColumn(name = "lang_code", insertable = false, updatable = false) })
+	@JoinColumns({ @JoinColumn(name = "dtyp_code", referencedColumnName="code",insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code",referencedColumnName="lang_code",insertable = false, updatable = false) })
 	private RegDeviceType regDeviceType;
+	
+	
+
+	/**
+	 * @return the regMachineSpecId
+	 */
+	public RegMachineSpecId getRegMachineSpecId() {
+		return regMachineSpecId;
+	}
+
+	/**
+	 * @param regMachineSpecId the regMachineSpecId to set
+	 */
+	public void setRegMachineSpecId(RegMachineSpecId regMachineSpecId) {
+		this.regMachineSpecId = regMachineSpecId;
+	}
 
 	/**
 	 * @return the deviceTypeCode
@@ -61,20 +78,6 @@ public class RegDeviceSpec extends RegistrationCommonFields {
 	 */
 	public void setDeviceTypeCode(String deviceTypeCode) {
 		this.deviceTypeCode = deviceTypeCode;
-	}
-
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	/**
@@ -145,20 +148,6 @@ public class RegDeviceSpec extends RegistrationCommonFields {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	/**
-	 * @return the langCode
-	 */
-	public String getLangCode() {
-		return langCode;
-	}
-
-	/**
-	 * @param langCode the langCode to set
-	 */
-	public void setLangCode(String langCode) {
-		this.langCode = langCode;
 	}
 
 	/**

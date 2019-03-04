@@ -32,6 +32,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.AuditLogControlDAO;
+import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.entity.RegistrationAuditDates;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -65,6 +66,8 @@ public class PacketCreationServiceTest {
 	private JsonValidator jsonValidator;
 	@Mock
 	private AuditLogControlDAO auditLogControlDAO;
+	@Mock
+	private MachineMappingDAO machineMappingDAO;
 	private static RegistrationDTO registrationDTO;
 	private RegistrationAuditDates registrationAuditDates;
 
@@ -107,6 +110,7 @@ public class PacketCreationServiceTest {
 				.thenReturn(new ValidationReport());
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(null);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
+		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}
@@ -117,6 +121,7 @@ public class PacketCreationServiceTest {
 				Mockito.anyString(), Mockito.anyString());
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
+		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		packetCreationServiceImpl.create(null);
 	}
@@ -131,6 +136,7 @@ public class PacketCreationServiceTest {
 		when(cbeffI.createXML(Mockito.anyList())).thenThrow(new Exception("Invalid BIR"));
 		when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(new ValidationReport());
+		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}
@@ -145,6 +151,7 @@ public class PacketCreationServiceTest {
 		when(cbeffI.createXML(Mockito.anyList())).thenReturn("cbeffXML".getBytes());
 		when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new JsonValidationProcessingException("errorCode", "errorMessage"));
+		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}
@@ -161,7 +168,8 @@ public class PacketCreationServiceTest {
 				.thenReturn(new ValidationReport());
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
-		ApplicationContext.getInstance().map().put(RegistrationConstants.CBEFF_ONLY_UNIQUE_TAGS, "N");
+		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
+		ApplicationContext.map().put(RegistrationConstants.CBEFF_ONLY_UNIQUE_TAGS, "N");
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}

@@ -88,9 +88,9 @@ public class RegistrationConstants {
 	public static final String FP_IMG_PATH = "/images/fingerprint.jpg";
 	public static final String IRIS_IMG_PATH = "/images/iris.jpg";
 	public static final String FACE_IMG_PATH = "/images/face.jpg";
-	public static final String LEFTPALM_IMG_PATH = "/images/leftHand.PNG";
-	public static final String RIGHTPALM_IMG_PATH = "/images/rightHand.PNG";
-	public static final String THUMB_IMG_PATH = "/images/thumbs.PNG";
+	public static final String LEFTPALM_IMG_PATH = "/images/leftHand.png";
+	public static final String RIGHTPALM_IMG_PATH = "/images/rightHand.png";
+	public static final String THUMB_IMG_PATH = "/images/thumbs.png";
 	public static final String RIGHT_IRIS_IMG_PATH = "/images/Eye.png";
 	public static final String LEFT_IRIS_IMG_PATH = "/images/Eye.png";
 	public static final String VIEW = "/images/View.png";
@@ -171,8 +171,8 @@ public class RegistrationConstants {
 
 	public static final String UIN_UPDATE_ISUINUPDATE = "isUINUpdate";
 	public static final String LOCAL_LANGUAGE = "LocalLanguage";
-	public static final String PRIMARY_LANGUAGE = "primary";
-	public static final String SECONDARY_LANGUAGE = "secondary";
+	public static final String PRIMARY_LANGUAGE = "mosip.primary-language";
+	public static final String SECONDARY_LANGUAGE = "mosip.secondary-language";
 	public static final String LANGUAGE_ENGLISH = "english";
 	public static final String LANGUAGE_ARABIC = "arabic";
 
@@ -525,8 +525,8 @@ public class RegistrationConstants {
 
 	// logos for new registration
 	public static final String DEMOGRAPHIC_DETAILS_LOGO = "file:src/main/resources/images/Pre-Registration.png";
-	public static final String APPLICANT_BIOMETRICS_LOGO = "file:src/main/resources/images/ApplicantBiometrics.PNG";
-	public static final String OPERATOR_AUTHENTICATION_LOGO = "file:src/main/resources/images/OperatorAuthentication.PNG";
+	public static final String APPLICANT_BIOMETRICS_LOGO = "file:src/main/resources/images/ApplicantBiometrics.png";
+	public static final String OPERATOR_AUTHENTICATION_LOGO = "file:src/main/resources/images/OperatorAuthentication.png";
 
 	// Exception Code for Components
 	public static final String PACKET_CREATION_EXP_CODE = "PCC-";
@@ -538,10 +538,6 @@ public class RegistrationConstants {
 	public static final String USER_REG_FINGERPRINT_CAPTURE_EXP_CODE = "FPC-";
 	public static final String USER_REGISTRATION_EXP_CODE = "REG-";
 	public static final String USER_REG_SCAN_EXP_CODE = "SCN-";
-
-	// Constants for Audits
-	public static final String INTERNAL_SERVER_ERROR = "Internal error while creating packet";
-	public static final String REGISTRATION_ID = "RID";
 
 	// USER CLIENT MACHINE MAPPING
 	public static final String MACHINE_MAPPING_CREATED = "created";
@@ -564,7 +560,7 @@ public class RegistrationConstants {
 
 	// Upload Packet
 
-	public static final List<String> PACKET_UPLOAD_STATUS=Arrays.asList("SYNCED", "EXPORTED", "resend", "E" );
+	public static final List<String> PACKET_UPLOAD_STATUS=Arrays.asList("SYNCED", "EXPORTED", "RESEND", "E" );
 
 	public static final String PACKET_UPLOAD = "packet_upload";
 	public static final String PACKET_DUPLICATE = "duplicate";
@@ -575,17 +571,17 @@ public class RegistrationConstants {
 
 	// opt to register constants
 	public static final String OPT_TO_REG_GEO_CAP_FREQ = "GEO_CAP_FREQ";
-	public static final String OPT_TO_REG_ICS‌_001 = "REG-ICS‌-001";
-	public static final String OPT_TO_REG_ICS‌_002 = "REG-ICS‌-002";
-	public static final String OPT_TO_REG_ICS‌_003 = "REG-ICS‌-003";
-	public static final String OPT_TO_REG_ICS‌_004 = "REG-ICS‌-004";
+	public static final String ICS_CODE_ONE = "REG-ICS‌-001";
+	public static final String ICS_CODE_TWO = "REG-ICS‌-002";
+	public static final String ICS_CODE_THREE = "REG-ICS‌-003";
+	public static final String ICS_CODE_FOUR = "REG-ICS‌-004";
 	public static final String OPT_TO_REG_PAK_MAX_CNT_OFFLINE_FREQ = "REG_PAK_MAX_CNT_OFFLINE_FREQ";
 	public static final double OPT_TO_REG_EARTH_RADIUS = 6371000;
 	public static final double OPT_TO_REG_METER_CONVERSN = 1609.00;
 	public static final String OPT_TO_REG_DIST_FRM_MACHN_TO_CENTER = "DIST_FRM_MACHN_TO_CENTER";
-	public static final String OPT_TO_REG_ICS‌_005 = "REG-ICS‌-005";
-	public static final String OPT_TO_REG_ICS‌_006 = "REG-ICS‌-006";
-	public static final String OPT_TO_REG_ICS‌_007 = "REG-ICS‌-007";
+	public static final String ICS_CODE_FIVE = "REG-ICS‌-005";
+	public static final String ICS_CODE_SIX = "REG-ICS‌-006";
+	public static final String ICS_CODE_SEVEN = "REG-ICS‌-007";
 	public static final String PAK_APPRVL_MAX_CNT = "REG-ICS‌-008";
 	public static final String PAK_APPRVL_MAX_TIME = "REG-ICS‌-009";
 	public static final String OPT_TO_REG_LAST_CAPTURED_TIME = "lastCapturedTime";
@@ -611,10 +607,14 @@ public class RegistrationConstants {
 	/** Packet Status Sync Constants */
 	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
 	public static final String PACKET_STATUS_SYNC_SERVICE_NAME = "packet_status";
-	public static final String PACKET_STATUS_SYNC_URL_PARAMETER = "registrationIds";
-	public static final String PACKET_STATUS_SYNC_REGISTRATION_ID = "registrationId";
-	public static final String PACKET_STATUS_SYNC_STATUS_CODE = "statusCode";
+	public static final String PACKET_STATUS_READER_URL_PARAMETER = "request";
+	public static final String PACKET_STATUS_READER_RESPONSE = "response";
+	public static final String PACKET_STATUS_READER_REGISTRATION_ID = "registrationId";
+	public static final String PACKET_STATUS_READER_STATUS_CODE = "statusCode";
 	public static final String PACKET_STATUS_CODE_PROCESSED = "processed";
+	public static final String PACKET_STATUS_READER_ID = "mosip.registration.status";
+	public static final String PACKET_SYNC_STATUS_ID="mosip.registration.sync";
+	public static final String PACKET_SYNC_VERSION="1.0";
 
 	public static final String BIOMETRIC_IMAGE = "Image";
 	public static final String BIOMETRIC_TYPE = "Type";
@@ -994,6 +994,7 @@ public class RegistrationConstants {
 
 	public static final String POLICY_SYNC_SERVICE = "policysync";
 	public static final String KEY_NAME = "KEY_POLICY_SYNC_THRESHOLD_VALUE";
+	public static final String OPT_TO_REG_LAST_EXPORT_REG_PKTS_TIME = "mosip.registration.last_export_registration_config_time";
 
 	// Reg Deletion
 	public static final String REGISTRATION_DELETION_BATCH_JOBS_SUCCESS = "Registartion Packets Deletion Successful ";
@@ -1055,9 +1056,9 @@ public class RegistrationConstants {
 		fieldToExclude.add("preRegistrationId");
 		fieldToExclude.add("virtualKeyboard");
 		fieldToExclude.add("docPageNumber");
-		fieldToExclude.add("cniOrPinNumber");
-		fieldToExclude.add("cniOrPinNumberLocalLanguage");
 		fieldToExclude.add("residence");
+		fieldToExclude.add("national");
+		fieldToExclude.add("foreigner");
 		fieldToExclude.add("residenceLocalLanguage");
 		fieldToExclude.add("updateUinId");
 
@@ -1085,5 +1086,19 @@ public class RegistrationConstants {
 	// Key-Policy Key validation
 	public static final String VALID_KEY = "VALID KEY";
 	public static final String INVALID_KEY = "Please sync to get latest key from the server before proceeding with this registration.";
+
+	public static final String JOB_ID = "JOB_ID";
+	
+	public static final String SYNC_DATA_FREQ = "SYNC_DATA_FREQ";
+
+	public static final String LABEL = "Label";
+	public static final Object UI_SYNC_DATA = "UI_SYNC_DATA";
+	public static final String MESSAGE = "Message";
+	public static final String HASH = "#";
+	public static final String DOB_MESSAGE = "dobMessage";
+	public static final String DD = "dd";
+	public static final String MM = "mm";
+	public static final String YYYY = "yyyy";
+	public static final String DOB = "dob";
 
 }

@@ -35,6 +35,9 @@ public class RegistrationPacketVirusScanTest {
 	public void Initialize() {
 		ReflectionTestUtils.setField(registrationPacketVirusScanServiceImpl, "packetStoreLocation", "..//PacketStore");
 		ReflectionTestUtils.setField(registrationPacketVirusScanServiceImpl, "preRegPacketLocation", "..//PreRegPacketStore");
+		ReflectionTestUtils.setField(registrationPacketVirusScanServiceImpl, "logPath", "..//PreRegPacketStore");
+		ReflectionTestUtils.setField(registrationPacketVirusScanServiceImpl, "dbPath", "..//PreRegPacketStore");
+		ReflectionTestUtils.setField(registrationPacketVirusScanServiceImpl, "clientPath", "..//PreRegPacketStore");
 	}
 	
 	@Test

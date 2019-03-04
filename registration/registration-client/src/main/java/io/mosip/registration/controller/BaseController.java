@@ -132,16 +132,16 @@ public class BaseController {
 
 	@Value("${USERNAME_PWD_LENGTH}")
 	private int usernamePwdLength;
-	
+
 	@Value("${DOCUMENT_DISABLE_FLAG}")
 	protected String documentDisableFlag;
-	
+
 	@Value("${FINGERPRINT_DISABLE_FLAG}")
 	protected String fingerprintDisableFlag;
-	
+
 	@Value("${IRIS_DISABLE_FLAG}")
 	protected String irisDisableFlag;
-	
+
 	@Value("${FACE_DISABLE_FLAG}")
 	protected String faceDisableFlag;
 
@@ -179,7 +179,6 @@ public class BaseController {
 	}
 
 	protected Scene getScene(Parent borderPane) {
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		scene = fXComponents.getScene();
 		if (scene == null) {
 			scene = new Scene(borderPane);
@@ -187,7 +186,7 @@ public class BaseController {
 		}
 		scene.setRoot(borderPane);
 		fXComponents.getStage().setScene(scene);
-		scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+		scene.getStylesheets().add(ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 		return scene;
 	}
 
@@ -270,11 +269,11 @@ public class BaseController {
 	 */
 	protected void generateAlert(AnchorPane parentPane, String id, String context, String isConsolidated,
 			StringBuilder validationMessage) {
-		if(id.equals("dd") || id.equals("mm") || id.equals("yyyy")) {
-			id="dob";
+		if (RegistrationConstants.DD.equalsIgnoreCase(id) || RegistrationConstants.MM.equalsIgnoreCase(id) || RegistrationConstants.YYYY.equalsIgnoreCase(id)) {
+			id = RegistrationConstants.DOB;
 		}
-		if (isConsolidated.equals(RegistrationConstants.DISABLE)) {
-			Label label = ((Label) (parentPane.lookup("#" + id + "Message")));
+		if (RegistrationConstants.DISABLE.equalsIgnoreCase(isConsolidated)) {
+			Label label = ((Label) (parentPane.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
 			if (!label.isVisible()) {
 				label.setText(context);
 				label.setVisible(true);
@@ -323,8 +322,8 @@ public class BaseController {
 	}
 
 	/**
-	 * {@code autoCloseStage} is to close the stage automatically by itself for
-	 * a configured amount of time
+	 * {@code autoCloseStage} is to close the stage automatically by itself for a
+	 * configured amount of time
 	 * 
 	 * @param stage
 	 */
@@ -371,10 +370,28 @@ public class BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 		}
 	}
+	
+	
+	/**
+	 * 
+	 * Opens the home page screen
+	 * 
+	 * @throws ioException
+	 * 
+	 */
+	public void loadLoginScreen() {
+		try {
+			Parent root = load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
+			getStage().setScene(getScene(root));
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - REDIRECLOGIN - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+		}
+	}
 
 	/**
-	 * This method is used clear all the new registration related mapm values
-	 * and navigates to the home page
+	 * This method is used clear all the new registration related mapm values and
+	 * navigates to the home page
 	 * 
 	 * 
 	 */
@@ -400,6 +417,7 @@ public class BaseController {
 		SessionContext.map().remove("mm");
 		SessionContext.map().remove("yyyy");
 		SessionContext.map().remove("toggleAgeOrDob");
+		SessionContext.map().remove("operatorAuthenticationPane");
 		SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
 		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
 
@@ -447,8 +465,8 @@ public class BaseController {
 	}
 
 	/**
-	 * This method is for saving the Applicant Image and Exception Image which
-	 * are captured using webcam
+	 * This method is for saving the Applicant Image and Exception Image which are
+	 * captured using webcam
 	 * 
 	 * @param capturedImage
 	 *            BufferedImage that is captured using webcam
@@ -477,8 +495,7 @@ public class BaseController {
 	}
 
 	/**
-	 * it will wait for the mentioned time to get the capture image from Bio
-	 * Device.
+	 * it will wait for the mentioned time to get the capture image from Bio Device.
 	 * 
 	 * @param count
 	 * @param waitTimeInSec
@@ -566,8 +583,7 @@ public class BaseController {
 	 * to validate the password and send appropriate message to display
 	 * 
 	 * @param authenticationValidatorDTO
-	 *            - DTO which contains the username and password entered by the
-	 *            user
+	 *            - DTO which contains the username and password entered by the user
 	 * @return appropriate message after validation
 	 */
 	private String validatePassword(AuthenticationValidatorDTO authenticationValidatorDTO) {
@@ -625,7 +641,7 @@ public class BaseController {
 					// get the data for notification template
 					String notificationTemplate = templateService
 							.getHtmlTemplate(RegistrationConstants.NOTIFICATION_TEMPLATE);
-					if (!notificationTemplate.isEmpty()) {
+					if (notificationTemplate != null && !notificationTemplate.isEmpty()) {
 						// generate the notification template
 						writeNotificationTemplate = templateGenerator.generateNotificationTemplate(notificationTemplate,
 								registrationDTO, templateManagerBuilder);
@@ -697,8 +713,10 @@ public class BaseController {
 	 *            - Id of current Anchorpane
 	 * @param action
 	 *            - action to be performed previous/next
-	 * @param currentPage - Id of current Anchorpane
-	 * @param action      - action to be performed previous/next
+	 * @param currentPage
+	 *            - Id of current Anchorpane
+	 * @param action
+	 *            - action to be performed previous/next
 	 * 
 	 * @return id of next Anchorpane
 	 */
@@ -721,8 +739,10 @@ public class BaseController {
 	 *            - Id of current Anchorpane
 	 * @param action
 	 *            - action to be performed previous/next
-	 * @param currentPage - Id of current Anchorpane
-	 * @param action      - action to be performed previous/next
+	 * @param currentPage
+	 *            - Id of current Anchorpane
+	 * @param action
+	 *            - action to be performed previous/next
 	 * 
 	 * @return id of next Anchorpane
 	 */
@@ -754,9 +774,12 @@ public class BaseController {
 	 *            - Id of current Anchorpane
 	 * @param action
 	 *            - action to be performed previous/next
-	 * @param pageList    - List of Anchorpane Ids
-	 * @param currentPage - Id of current Anchorpane
-	 * @param action      - action to be performed previous/next
+	 * @param pageList
+	 *            - List of Anchorpane Ids
+	 * @param currentPage
+	 *            - Id of current Anchorpane
+	 * @param action
+	 *            - action to be performed previous/next
 	 * 
 	 * @return id of next Anchorpane
 	 */
@@ -836,9 +859,12 @@ public class BaseController {
 	 *            - Id of Anchorpane which has to be hidden
 	 * @param show
 	 *            - Id of Anchorpane which has to be shown
-	 * @param pageId     - Parent Anchorpane where other panes are included
-	 * @param notTosShow - Id of Anchorpane which has to be hidden
-	 * @param show       - Id of Anchorpane which has to be shown
+	 * @param pageId
+	 *            - Parent Anchorpane where other panes are included
+	 * @param notTosShow
+	 *            - Id of Anchorpane which has to be hidden
+	 * @param show
+	 *            - Id of Anchorpane which has to be shown
 	 * 
 	 */
 	protected void getCurrentPage(AnchorPane pageId, String notTosShow, String show) {
@@ -860,7 +886,8 @@ public class BaseController {
 	 * 
 	 * @param imageType
 	 *            the type of image that is selected to capture
-	 * @param imageType the type of image that is selected to capture
+	 * @param imageType
+	 *            the type of image that is selected to capture
 	 */
 	public void calculateRecaptureTime(String imageType) {
 		// will be implemented in the derived class.
@@ -904,6 +931,31 @@ public class BaseController {
 		primaryStage.initModality(Modality.WINDOW_MODAL);
 		primaryStage.initOwner(fXComponents.getStage());
 		primaryStage.show();
+	}
+
+	/**
+	 * Create alert with given title, header and context
+	 * 
+	 * @param alertType
+	 *            type of alert
+	 * @param title
+	 *            alert's title
+	 * @param header
+	 *            alert's header
+	 * @param context
+	 *            alert's context
+	 * @return alert
+	 */
+	protected Alert createAlert(AlertType alertType, String title, String header, String context) {
+		Alert alert = new Alert(alertType);
+		alert.setTitle(title);
+		alert.setHeaderText(header);
+		alert.setContentText(context);
+		alert.setGraphic(null);
+		alert.setResizable(true);
+		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+
+		return alert;
 	}
 
 }

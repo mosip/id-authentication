@@ -56,6 +56,12 @@ public final class PlatformErrorConstants {
 
 	/** The Constant RPR_BIO_DEDUPE_SERVICE_MODULE. */
 	public static final String RPR_BIO_DEDUPE_SERVICE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "BDD-";
+	
+	/** The Constant RPR_PRINTING_MODULE. */
+	public static final String RPR_PRINTING_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PRT-";
+	
+	/** The Constant RPR_MOSIP_QUEUE_MODULE */
+	public static final String RPR_MOSIP_QUEUE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "MQI-";
 
 	public static final String RPR_PACKET_VALIDATOR_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PVM-";
 

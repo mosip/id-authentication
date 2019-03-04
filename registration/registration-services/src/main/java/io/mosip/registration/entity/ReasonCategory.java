@@ -13,6 +13,8 @@ import javax.persistence.IdClass;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
+
 /**
  * @author Sreekar chukka
  * @since 1.0.0

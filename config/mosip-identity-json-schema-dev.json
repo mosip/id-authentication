@@ -149,7 +149,7 @@
 				"type": {
 					"type": "string"
 				},
-				"fileReference": {
+				"value": {
 					"type": "string"
 				}
 			},
@@ -164,7 +164,7 @@
 				"version": {
 					"type": "number"
 				},
-				"fileReference": {
+				"value": {
 					"type": "string"
 				}
 			},

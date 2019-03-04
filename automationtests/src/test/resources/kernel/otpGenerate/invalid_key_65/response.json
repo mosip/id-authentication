@@ -1,10 +1,10 @@
 {
-  "timestamp": 1548842887637,
+  "timestamp": 1551167841523,
   "status": 200,
   "errors": [
     {
       "errorCode": "KER-OTG-001",
-      "errorMessage": "Key can't be empty, null, and length should be in the range of 3-64."
+      "errorMessage": "key: length should be in the range of 3-64"
     }
   ]
 }

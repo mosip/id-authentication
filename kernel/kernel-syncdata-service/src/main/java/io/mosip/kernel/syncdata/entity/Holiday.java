@@ -2,9 +2,6 @@ package io.mosip.kernel.syncdata.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-
 //github.com/mosip/mosip.git
 
 import javax.persistence.Column;
@@ -35,14 +32,9 @@ public class Holiday extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1329042436883315822L;
 
 	@EmbeddedId
-	@AttributeOverrides({
-			@AttributeOverride(name = "locationCode", column = @Column(name = "location_code", nullable = false, length = 36)),
-			@AttributeOverride(name = "holidayDate", column = @Column(name = "holiday_date", nullable = false)),
-			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)),
-			@AttributeOverride(name = "holidayName", column = @Column(name = "holiday_name", nullable = false, length = 64)) })
 	private HolidayID holidayId;
 
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(name = "id", nullable = false)
 	private int id;
 
 	@Column(name = "holiday_desc", length = 128)

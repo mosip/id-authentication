@@ -49,10 +49,10 @@
                                           <Label fx:id="ageFieldLabel" layoutX="2.0" styleClass="demoGraphicFieldLabel" text="%ageField" visible="false" />
                                        </children>
                                     </AnchorPane>
-                                    <AnchorPane layoutX="237.0" layoutY="38.0">
+                                    <AnchorPane layoutX="200.0" layoutY="38.0">
                                        <children>
-                                          <Label id="toggleLabel1" fx:id="toggleLabel1" prefHeight="15.0" prefWidth="9.1" text="" />
-                                          <Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="10.0" prefHeight="15.0" prefWidth="9.0" text="" />
+                                          <Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="0.0" layoutY="2.0" text="" />
+                                          <Label id="toggleLabel1" fx:id="toggleLabel1" layoutX="0.0" layoutY="0.0" text="" />
                                        </children>
                                     </AnchorPane>
                                  </children>
@@ -154,7 +154,7 @@
                                     <TextField fx:id="cniOrPinNumber" layoutY="17.0" prefHeight="35.0" prefWidth="161.0" promptText="%cniOrPinNumber" styleClass="demoGraphicTextFieldTypeSecond" />
                                  </children>
                               </AnchorPane>
-                              <AnchorPane fx:id="childSpecificFields" disable="true" layoutX="10.0" layoutY="760.0" visible="true">
+                              <AnchorPane fx:id="childSpecificFields" disable="true" layoutX="10.0" layoutY="760.0" visible="false">
                                  <children>
                                     <Label fx:id="parentNameLabel" layoutX="5.0" layoutY="1.0" styleClass="demoGraphicFieldLabel" text="%parentName" visible="false" />
                                     <TextField fx:id="parentName" layoutX="5.0" layoutY="21.0" promptText="%parentName" styleClass="demoGraphicTextField" />
@@ -168,8 +168,8 @@
                               <AnchorPane fx:id="residentStatus" layoutX="14.0" layoutY="225.0">
                                  <children>
                                     <Label layoutX="1.0" layoutY="2.0" styleClass="demographicMiscTexts" text="%residence" />
-                                    <Button fx:id="national" layoutX="124.0" layoutY="-3.0" mnemonicParsing="false" styleClass="selectedResidence" text="%national" />
-                                    <Button fx:id="foreigner" layoutX="206.0" layoutY="-3.0" mnemonicParsing="false" styleClass="residence" text="%foreigner" />
+                                    <Button fx:id="national" id="National" layoutX="124.0" layoutY="-3.0" mnemonicParsing="false" styleClass="selectedResidence" text="%national" />
+                                    <Button fx:id="foreigner" id="Foreigner" layoutX="206.0" layoutY="-3.0" mnemonicParsing="false" styleClass="residence" text="%foreigner" />
                                     <TextField fx:id="residence" layoutX="14.0" layoutY="10.0" styleClass="demographicMiscTexts" visible="false" />
                                  </children>
                               </AnchorPane>
@@ -213,9 +213,9 @@
                                           <Label fx:id="ageFieldLocalLanguageLabel" layoutX="2.0" styleClass="demoGraphicFieldLabel" text="%ageField" visible="false" />
                                        </children>
                                     </AnchorPane>
-                                    <AnchorPane layoutX="240.0" layoutY="40.0">
+                                    <AnchorPane layoutX="200.0" layoutY="38.0">
                                        <children>
-                                          <Label id="toggleLabel2" fx:id="toggleLabel2LocalLanguage" layoutX="10.0" text="" />
+                                          <Label id="toggleLabel2" fx:id="toggleLabel2LocalLanguage" layoutY="2.0" text="" />
                                           <Label id="toggleLabel1" fx:id="toggleLabel1LocalLanguage" text="" />
                                        </children>
                                     </AnchorPane>
@@ -332,7 +332,7 @@
                                     <Label fx:id="cniOrPinNumberLocalLanguageMessage" layoutY="52.00" styleClass="demoGraphicFieldMessageLabel" text="cniOrPinNumber message" visible="false" />
                                  </children>
                               </AnchorPane>
-                              <AnchorPane fx:id="childSpecificFieldsLocal" disable="true" layoutX="84.0" layoutY="760.0" visible="true">
+                              <AnchorPane fx:id="childSpecificFieldsLocal" disable="true" layoutX="84.0" layoutY="760.0" visible="false">
                                  <children>
                                     <Label fx:id="parentNameLocalLanguageLabel" layoutX="29.0" layoutY="1.0" styleClass="demoGraphicFieldLabel" text="%parentName" visible="false" />
                                      <Label fx:id="parentNameLocalLanguageMessage" layoutX="29.0" layoutY="60.0" styleClass="demoGraphicFieldMessageLabel" text="parentName message" visible="false" />

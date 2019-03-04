@@ -4,12 +4,13 @@ import java.sql.Time;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import io.mosip.registration.entity.id.RegistartionCenterId;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,9 +26,9 @@ import lombok.Setter;
 @Setter
 public class RegistrationCenter extends RegistrationCommonFields {
 
-	@Id
-	@Column(name = "id")
-	private String centerId;
+	@EmbeddedId
+	private RegistartionCenterId registartionCenterId;
+	
 	@Column(name = "name")
 	private String centerName;
 	@Column(name = "cntrtyp_code")
@@ -66,14 +67,12 @@ public class RegistrationCenter extends RegistrationCommonFields {
 	private String timeZone;
 	@Column(name = "holiday_loc_code")
 	private String holidayLocCode;
-	@Column(name = "lang_code")
-	private String langCode;
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 	@Column(name = "del_dtimes")
 	private Timestamp delDtimes;
-	
-	@OneToOne(fetch = FetchType.EAGER, mappedBy = "userDetail")
+
+	@OneToOne(fetch = FetchType.EAGER, mappedBy = "registrationCenter")
 	private RegCenterUser regCenterUser;
 
 }

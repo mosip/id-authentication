@@ -3,6 +3,8 @@
  */
 package io.mosip.kernel.core.cbeffutil.entity;
 
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SBInfoType;
+
 /**
  * @author Ramadurai Pandian
  *
@@ -42,6 +44,20 @@ public class SBInfo {
 		public SBInfo build() {
 			return new SBInfo(this);
 		}
+	}
+	
+	public SBInfoType toSBInfoType()
+	{
+		SBInfoType sBInfoType = new SBInfoType();
+		if(getFormatType()>0)
+		{
+			sBInfoType.setFormatType(getFormatType());
+		}
+		if(getFormatOwner()>0)
+		{
+			sBInfoType.setFormatOwner(getFormatOwner());
+		}
+		return sBInfoType;
 	}
 
 }

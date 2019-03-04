@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -59,7 +60,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		try {
 			LOGGER.info(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID, "Save Registartion had been started");
 
-			Timestamp time = new Timestamp(System.currentTimeMillis());
+			Timestamp time = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 
 			Registration registration = new Registration();
 			registration.setId(registrationDTO.getRegistrationId());
@@ -70,9 +71,9 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registration.setStatusTimestamp(time);
 			registration.setAckFilename(zipFileName + "_Ack." + RegistrationConstants.ACKNOWLEDGEMENT_FORMAT);
 			registration.setClientStatusCode(RegistrationClientStatusCode.CREATED.getCode());
-			registration.setUploadCount((short) 1);
-			registration.setRegCntrId(SessionContext.userContext().getRegistrationCenterDetailDTO()
-					.getRegistrationCenterId());
+			registration.setUploadCount((short) 0);
+			registration.setRegCntrId(
+					SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
 			registration.setIsActive(true);
 			registration.setCrBy(SessionContext.userContext().getUserId());
 			registration.setCrDtime(time);
@@ -112,7 +113,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			LOGGER.info("REGISTRATION - UPDATE_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 					"Packet updation has been started");
 
-			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			Timestamp timestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 			Registration registration = registrationRepository.getOne(registrationID);
 			registration.setStatusCode(clientStatusCode);
 			registration.setStatusTimestamp(timestamp);
@@ -169,7 +170,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 * List)
 	 */
 	public List<Registration> getPacketsToBeSynched(List<String> statusCodes) {
-		return registrationRepository.findByClientStatusCodeIn(statusCodes);
+		return registrationRepository.findByClientStatusCodeInOrderByUpdDtimesDesc(statusCodes);
 	}
 
 	/*
@@ -184,7 +185,8 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		LOGGER.info("REGISTRATION - GET_PACKET_DETAILS_BY_ID - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"got the packet details by id");
 
-		return registrationRepository.findByStatusCodes(packetStatus.get(0), packetStatus.get(1), packetStatus.get(2), packetStatus.get(3));
+		return registrationRepository.findByStatusCodes(packetStatus.get(0), packetStatus.get(1), packetStatus.get(2),
+				packetStatus.get(3));
 	}
 
 	/*
@@ -197,7 +199,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		LOGGER.info("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the packet details in the Registation table");
 
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		Timestamp timestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 
 		Registration reg = registrationRepository.getOne(registrationPacket.getId());
 		reg.setClientStatusCode(registrationPacket.getClientStatusCode());
@@ -209,6 +211,8 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		reg.setClientStatusTimestamp(timestamp);
 		reg.setRegistrationTransaction(buildRegistrationTransaction(reg));
 		reg.setClientStatusComments(registrationPacket.getClientStatusComments());
+		reg.setUpdDtimes(timestamp);
+		reg.setUpdBy(SessionContext.userContext().getUserId());
 		return registrationRepository.update(reg);
 	}
 
@@ -223,7 +227,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		LOGGER.info("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the packet details in the Registation table");
 
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		Timestamp timestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 		Registration reg = registrationRepository.getOne(packet.getId());
 		reg.setStatusCode(packet.getClientStatusCode());
 		reg.setClientStatusCode(packet.getClientStatusCode());
@@ -236,22 +240,21 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	/**
 	 * Builds the registration transaction.
 	 *
-	 * @param registrationPacket
-	 *            the registration packet
+	 * @param registrationPacket the registration packet
 	 * @return the list
 	 */
 	private List<RegistrationTransaction> buildRegistrationTransaction(Registration registrationPacket) {
 		LOGGER.info("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Packet encryption had been ended");
 
-		Timestamp time = new Timestamp(System.currentTimeMillis());
+		Timestamp time = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 		RegistrationTransaction regTransaction = new RegistrationTransaction();
 		regTransaction.setId(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
 		regTransaction.setRegId(registrationPacket.getId());
 		regTransaction.setTrnTypeCode(RegistrationTransactionType.UPDATED.getCode());
 		regTransaction.setStatusCode(registrationPacket.getClientStatusCode());
 		regTransaction.setLangCode("ENG");
-		regTransaction.setCrBy("mosip");
+		regTransaction.setCrBy(SessionContext.userContext().getUserId());
 		regTransaction.setCrDtime(time);
 		regTransaction.setStatusComment(registrationPacket.getClientStatusComments());
 		List<RegistrationTransaction> registrationTransaction = registrationPacket.getRegistrationTransaction();
@@ -276,23 +279,6 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * io.mosip.registration.dao.RegistrationDAO#getRegistrationsToBeDeleted(java.
-	 * sql.Timestamp, java.lang.String)
-	 */
-	@Override
-	public List<Registration> getRegistrationsToBeDeleted(Timestamp crDtimes) {
-
-		LOGGER.info("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
-				"Retriving Registrations based on crDtime and status");
-
-		return registrationRepository.findByCrDtimeBefore(crDtimes);
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see io.mosip.registration.dao.RegistrationDAO#getRegistrationById(java.lang.
 	 * String)
 	 */
@@ -309,19 +295,22 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				"Get Registrations based on reg Ids started");
 
 		Iterable<String> iterableRegIds = regIds;
-		
+
 		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Get Registration based on reg Ids completed");
 
 		return registrationRepository.findAllById(iterableRegIds);
 	}
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.dao.RegistrationDAO#get(java.sql.Timestamp, java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.dao.RegistrationDAO#get(java.sql.Timestamp,
+	 * java.lang.String)
 	 */
 	@Override
 	public List<Registration> get(Timestamp crDtimes, String clientStatus) {
-		
+
 		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Retriving Registrations based on crDtime and status");
 

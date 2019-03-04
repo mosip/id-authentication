@@ -99,7 +99,7 @@ public class RegistrationSyncExceptionHandler {
 
 			List<ErrorDTO> errors = errorTexts.parallelStream().map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct().collect(Collectors.toList());
 
-			response.setError(errors.get(0));
+			response.setErrors(errors);
 		}
 		if (e instanceof BaseUncheckedException) {
 			List<String> errorCodes = ((BaseUncheckedException) e).getCodes();
@@ -109,13 +109,13 @@ public class RegistrationSyncExceptionHandler {
 					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
 					.collect(Collectors.toList());
 
-			response.setError(errors.get(0));
+			response.setErrors(errors);
 		}
 
-		response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		response.setVersion(env.getProperty(REG_SYNC_APPLICATION_VERSION));
 		response.setResponse(null);
-		Gson gson = new GsonBuilder().serializeNulls().create();
+		Gson gson = new GsonBuilder().create();
 		return gson.toJson(response);
 	}
 

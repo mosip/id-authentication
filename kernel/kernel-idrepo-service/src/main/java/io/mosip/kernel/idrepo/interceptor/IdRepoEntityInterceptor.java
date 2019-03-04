@@ -10,7 +10,6 @@ import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
@@ -73,7 +72,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 			}
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_ENTITY_INTERCEPTOR, "onSave",
-					"\n" + ExceptionUtils.getStackTrace(e));
+					"\n" + e.getMessage());
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 		return super.onSave(entity, id, state, propertyNames, types);
@@ -103,7 +102,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 			}
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_ENTITY_INTERCEPTOR, "onLoad",
-					"\n" + ExceptionUtils.getStackTrace(e));
+					"\n" + e.getMessage());
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 		return super.onLoad(entity, id, state, propertyNames, types);
@@ -123,7 +122,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 			}
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_ENTITY_INTERCEPTOR, "onSave",
-					"\n" + ExceptionUtils.getStackTrace(e));
+					"\n" + e.getMessage());
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 		return super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);

@@ -46,9 +46,9 @@ public class ApplicantTypeServiceImpl implements ApplicantTypeService {
 					ApplicantTypeErrorCode.NO_APPLICANT_FOUND_EXCEPTION.getErrorMessage());
 		}
 		response.setResponse(appDto);
-		response.setId(dto.getId());
+		/*response.setId(dto.getId());
 		response.setVer(dto.getVer());
-		response.setTimestamp(dto.getTimestamp());
+		response.setTimestamp(dto.getTimestamp());*/
 		return response;
 	}
 

@@ -42,16 +42,9 @@ public class RegistrationStatusDaoTest {
 	}
 
 	@Test
-	public void findbyfilesByThresholdTest() {
-		List<RegistrationStatusEntity> rEntityList = registrationStatusDao
-				.findbyfilesByThreshold(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString(), 48);
-		assertEquals(list, rEntityList);
-	}
-
-	@Test
 	public void getEnrolmentStatusByStatusCodeTest() {
 		List<RegistrationStatusEntity> rEntityList = registrationStatusDao
-				.getEnrolmentStatusByStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
+				.getEnrolmentStatusByStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString());
 		assertEquals(list, rEntityList);
 	}
 

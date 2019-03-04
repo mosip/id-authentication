@@ -24,6 +24,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
+import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.external.StorageService;
@@ -64,15 +65,15 @@ public class StorageServiceTest extends BaseIntegrationTest{
 			registrationDTO = mapper.readValue(new File("src/test/resources/testData/StorageServiceData/user.json"),
 					RegistrationDTO.class);
 			byte[] data = IOUtils.toByteArray(new FileInputStream(new File("src/test/resources/testData/StorageServiceData/PANStubbed.jpg")));
-			DemographicDTO documentDetails = registrationDTO.getDemographicDTO();
-			DocumentDetailsDTO documentDetailsDTO = documentDetails.getDemographicInfoDTO().getIdentity()
-					.getProofOfIdentity();
+			MoroccoIdentity identity = (MoroccoIdentity) registrationDTO.getDemographicDTO().getDemographicInfoDTO()
+					.getIdentity();
+			DocumentDetailsDTO documentDetailsDTO = identity.getProofOfIdentity();
 			documentDetailsDTO.setDocument(data);
-			documentDetailsDTO = documentDetails.getDemographicInfoDTO().getIdentity().getProofOfAddress();
+			documentDetailsDTO = identity.getProofOfAddress();
 			documentDetailsDTO.setDocument(data);
-			documentDetailsDTO = documentDetails.getDemographicInfoDTO().getIdentity().getProofOfRelationship();
+			documentDetailsDTO = identity.getProofOfRelationship();
 			documentDetailsDTO.setDocument(data);
-			documentDetailsDTO = documentDetails.getDemographicInfoDTO().getIdentity().getProofOfDateOfBirth();
+			documentDetailsDTO = identity.getProofOfDateOfBirth();
 			documentDetailsDTO.setDocument(data);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block

@@ -21,8 +21,8 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
+import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.packet.PacketHandlerService;
 
@@ -51,14 +51,14 @@ public class PacketHandlerServiceTest extends BaseIntegrationTest {
 		RegistrationDTO obj = mapper.readValue(new File("src/test/resources/testData/PacketHandlerServiceData/user.json"), RegistrationDTO.class);
 		byte[] data = IOUtils.toByteArray(
 				new FileInputStream(new File("src/test/resources/testData/PacketHandlerServiceData/PANStubbed.jpg")));
-		DemographicDTO documentDetails = obj.getDemographicDTO();
-		DocumentDetailsDTO documentDetailsDTO = documentDetails.getDemographicInfoDTO().getIdentity().getProofOfIdentity();
+		MoroccoIdentity identity = (MoroccoIdentity) obj.getDemographicDTO().getDemographicInfoDTO().getIdentity();
+		DocumentDetailsDTO documentDetailsDTO = identity.getProofOfIdentity();
 		documentDetailsDTO.setDocument(data);
-		documentDetailsDTO = documentDetails.getDemographicInfoDTO().getIdentity().getProofOfAddress();
+		documentDetailsDTO = identity.getProofOfAddress();
 		documentDetailsDTO.setDocument(data);
-		documentDetailsDTO = documentDetails.getDemographicInfoDTO().getIdentity().getProofOfRelationship();
+		documentDetailsDTO = identity.getProofOfRelationship();
 		documentDetailsDTO.setDocument(data);
-		documentDetailsDTO = documentDetails.getDemographicInfoDTO().getIdentity().getProofOfDateOfBirth();
+		documentDetailsDTO = identity.getProofOfDateOfBirth();
 		documentDetailsDTO.setDocument(data);
 		RegistrationCenterDetailDTO registrationCenter = new RegistrationCenterDetailDTO();
 		registrationCenter.setRegistrationCenterId("20916");

@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.WeakHashMap;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,15 +125,20 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 					getPreRegistration(responseDTO, preRegDetail.getKey(), syncJobId,
 							Timestamp.from(Instant.parse(preRegDetail.getValue())));
-					if (responseDTO.getErrorResponseDTOs() != null) {
+				/*	if (responseDTO.getErrorResponseDTOs() != null) {
 						break;
-					}
+					}*/
 				}
 			} else {
+				String errMsg = RegistrationConstants.PRE_REG_TO_GET_ID_ERROR;
+				if (mainResponseDTO != null && mainResponseDTO.getErr() != null
+						&& mainResponseDTO.getErr().getMessage() != null) {
+					errMsg += " : " + mainResponseDTO.getErr().getMessage();
+				}
 				LOGGER.error("PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, RegistrationConstants.PRE_REG_TO_GET_ID_ERROR);
+						RegistrationConstants.APPLICATION_ID, errMsg);
 
-				setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_ID_ERROR, null);
+				setErrorResponse(responseDTO, errMsg, null);
 			}
 
 		} catch (HttpClientErrorException | ResourceAccessException | HttpServerErrorException | RegBaseCheckedException
@@ -168,7 +174,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		/** Get Pre Registration Packet */
-		getPreRegistration(responseDTO, preRegistrationId, RegistrationConstants.JOB_TRIGGER_POINT_USER, null);
+		getPreRegistration(responseDTO, preRegistrationId, null, null);
 
 		LOGGER.info("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -205,6 +211,13 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		}
 
 		byte[] decryptedPacket = null;
+		
+		boolean isFetchFromUi = false;
+		if (syncJobId == null) {
+			isFetchFromUi = true;
+			syncJobId = RegistrationConstants.JOB_TRIGGER_POINT_USER;
+
+		}
 
 		boolean isJob = (!RegistrationConstants.JOB_TRIGGER_POINT_USER.equals(syncJobId));
 
@@ -282,7 +295,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		}
 
 		/* Only for Manual Trigger */
-		if (!isJob) {
+		if (isFetchFromUi) {
 			try {
 				if (isPacketFromLocal(preRegistration, decryptedPacket)) {
 					/*
@@ -354,7 +367,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 			/* create attributes */
 			RegistrationDTO registrationDTO = preRegZipHandlingService.extractPreRegZipFile(decryptedPacket);
 			registrationDTO.setPreRegistrationId(preRegistrationId);
-			Map<String, Object> attributes = new HashMap<>();
+			Map<String, Object> attributes = new WeakHashMap<>();
 			attributes.put("registrationDto", registrationDTO);
 			setSuccessResponse(responseDTO, RegistrationConstants.PRE_REG_SUCCESS_MESSAGE, attributes);
 		} catch (RegBaseCheckedException exception) {

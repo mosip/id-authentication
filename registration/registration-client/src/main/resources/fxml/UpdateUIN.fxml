@@ -30,10 +30,14 @@
                   </HBox>
                   <AnchorPane layoutX="182.0" layoutY="64.0">
                      <children>
-                        <Label fx:id="toggleLabel1" layoutX="70.0" />
-                        <Label fx:id="toggleLabel2" layoutX="80.0" />
-                        <Label layoutX="40.0" styleClass="uinUpdateLabelsTypeTwo" text="No" />
-                        <Label layoutX="100.0" styleClass="uinUpdateLabelsTypeTwo" text="Yes" />
+                        <AnchorPane layoutX="70.0">
+                           <children>
+                              <Label fx:id="toggleLabel1" />
+                              <Label fx:id="toggleLabel2" layoutX="0.0" layoutY="2.0" />
+                           </children>
+                        </AnchorPane>
+                        <Label layoutX="151.0" layoutY="1.0" styleClass="uinUpdateLabelsTypeTwo" text="%no" />
+                        <Label layoutX="20.0" layoutY="1.0" styleClass="uinUpdateLabelsTypeTwo" text="%yes" />
                      </children>
                   </AnchorPane>
                   <HBox fx:id="demographicHBox" layoutY="155.0" spacing="30" styleClass="updateUinCheckBoxCommon">
@@ -50,7 +54,7 @@
                   </CheckBox>
                         <CheckBox fx:id="parentOrGuardianDetails" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%parent/guardiandetails">
                   </CheckBox>
-                   		<CheckBox fx:id="foreigner" mnemonicParsing="false" text="%Foreigner/National" styleClass="updateUinCheckBox">
+                   		<CheckBox fx:id="foreigner" mnemonicParsing="false" styleClass="updateUinCheckBox" text="%Foreigner/National">
            		 </CheckBox>
                      </children>
                   </HBox>

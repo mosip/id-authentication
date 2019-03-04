@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.rest.client.config;
 
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,5 +25,10 @@ public class RestConfigBean {
 	@Bean 
 	public AuditLogRequestBuilder getAuditLogRequestBuilder() {
 		return new AuditLogRequestBuilder();
+	}
+	
+	@Bean
+	public RestTemplateBuilder getRestTemplateBuilder() {
+		return new RestTemplateBuilder();
 	}
 }

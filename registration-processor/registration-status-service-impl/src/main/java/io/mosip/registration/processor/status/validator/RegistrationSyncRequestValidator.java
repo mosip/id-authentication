@@ -46,7 +46,7 @@ public class RegistrationSyncRequestValidator implements Validator {
 	private static final String REGISTRATION_SERVICE = "RegistrationService";
 
 	/** The Constant TIMESTAMP. */
-	private static final String TIMESTAMP = "requestTimestamp";
+	private static final String TIMESTAMP = "requesttime";
 
 	/** The Constant ID_FIELD. */
 	private static final String ID_FIELD = "id";
@@ -90,7 +90,7 @@ public class RegistrationSyncRequestValidator implements Validator {
 		if(clazzType) {
 		RegistrationStatusRequestDTO request = (RegistrationStatusRequestDTO) target;
 		
-		validateReqTime(request.getRequestTimestamp(), errors);
+		validateReqTime(request.getRequesttime(), errors);
 
 		if (!errors.hasErrors()) {
 			validateId(request.getId(), errors);
@@ -98,7 +98,7 @@ public class RegistrationSyncRequestValidator implements Validator {
 		}
 		}else {
 			RegistrationSyncRequestDTO request = (RegistrationSyncRequestDTO) target;
-			validateReqTime(request.getRequestTimestamp(), errors);
+			validateReqTime(request.getRequesttime(), errors);
 
 			if (!errors.hasErrors()) {
 				validateId(request.getId(), errors);

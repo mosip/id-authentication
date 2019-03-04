@@ -4,9 +4,9 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_REG_USER_ONBOA
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -143,7 +143,7 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 	@Override
 	public Map<String, String> getMachineCenterId() {
 
-		Map<String, String> mapOfCenterId = new HashMap<>();
+		Map<String, String> mapOfCenterId = new WeakHashMap<>();
 
 		String stationId = RegistrationConstants.EMPTY;
 		String centerId = RegistrationConstants.EMPTY;

@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.status.dao;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
 
-/**	
+/**
  * The Class RegistrationStatusDao.
  *
  * @author Shashank Agrawal
@@ -100,36 +99,6 @@ public class RegistrationStatusDao {
 				.createQuerySelect(queryStr, params);
 
 		return !registrationStatusEntityList.isEmpty() ? registrationStatusEntityList.get(0) : null;
-	}
-
-	/**
-	 * Findbyfiles by threshold.
-	 *
-	 * @param statusCode
-	 *            the status code
-	 * @param threshholdTime
-	 *            the threshhold time
-	 * @return the list
-	 */
-	public List<RegistrationStatusEntity> findbyfilesByThreshold(String statusCode, int threshholdTime) {
-		Map<String, Object> params = new HashMap<>();
-		String className = RegistrationStatusEntity.class.getSimpleName();
-
-		String alias = RegistrationStatusEntity.class.getName().toLowerCase().substring(0, 1);
-		LocalDateTime localDateTime = LocalDateTime.now();
-
-		LocalDateTime expiredDateTime = localDateTime.minusMinutes(threshholdTime);
-		String queryStr = SELECT_DISTINCT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias
-				+ ".statusCode=:statusCode" + EMPTY_STRING + AND + EMPTY_STRING + alias + ".updateDateTime < :date"
-				+ EMPTY_STRING + AND + EMPTY_STRING + alias + ISACTIVE_COLON + ISACTIVE + EMPTY_STRING + AND
-				+ EMPTY_STRING + alias + ISDELETED_COLON + ISDELETED;
-
-		params.put("statusCode", statusCode);
-		params.put("date", expiredDateTime);
-		params.put(ISACTIVE, Boolean.TRUE);
-		params.put(ISDELETED, Boolean.FALSE);
-
-		return registrationStatusRepositary.createQuerySelect(queryStr, params);
 	}
 
 	/**

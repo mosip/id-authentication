@@ -68,7 +68,7 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 		} catch (RegBaseCheckedException exRegBaseCheckedException) {
 			LOGGER.error(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
 					exRegBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(exRegBaseCheckedException));
-			responseDTO = getErrorResponse(responseDTO, RegistrationConstants.ERROR);
+			responseDTO = getErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
 		}
 
 		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Leaving into user detail save method");

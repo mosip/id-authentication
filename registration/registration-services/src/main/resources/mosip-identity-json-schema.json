@@ -16,7 +16,8 @@
 					"type": "number"
 				},
 				"UIN": {
-					"type": "number"
+					"type": "integer",
+					"minimum": 0
 				},
 				"fullName": {
 					"$ref": "#/definitions/simpleType"
@@ -25,7 +26,8 @@
 					"$ref": "#/definitions/dateOfBirthType"
 				},
 				"age": {
-					"type": "number"
+					"type": "integer",
+					"minimum": 0
 				},
 				"gender": {
 					"$ref": "#/definitions/simpleType"
@@ -70,7 +72,8 @@
 					"$ref": "#/definitions/simpleType"
 				},
 				"parentOrGuardianRIDOrUIN": {
-					"type": "number"
+					"type": "integer",
+					"minimum": 0
 				},
 				"proofOfAddress": {
 					"$ref": "#/definitions/documentType"

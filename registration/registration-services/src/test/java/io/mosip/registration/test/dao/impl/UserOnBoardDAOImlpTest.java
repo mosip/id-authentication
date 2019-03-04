@@ -33,10 +33,11 @@ import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.CenterMachine;
-import io.mosip.registration.entity.CenterMachineId;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.entity.UserMachineMapping;
+import io.mosip.registration.entity.id.CenterMachineId;
+import io.mosip.registration.entity.id.RegMachineSpecId;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.CenterMachineRepository;
@@ -306,7 +307,7 @@ public class UserOnBoardDAOImlpTest {
 	
 	@Test(expected = RegBaseUncheckedException.class)
 	public void getStationIDRunException() throws RegBaseCheckedException {
-		Mockito.when(machineMasterRepository.findByMacAddress(Mockito.anyString()))
+		Mockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddress(Mockito.anyString()))
 				.thenThrow(new RegBaseUncheckedException());
 		userOnboardDAOImpl.getStationID("8C-16-45-88-E7-0B");
 	}
@@ -315,15 +316,18 @@ public class UserOnBoardDAOImlpTest {
 	public void getStationID() throws RegBaseCheckedException {
 		MachineMaster machineMaster = new MachineMaster();
 		machineMaster.setMacAddress("8C-16-45-88-E7-0C");
-		machineMaster.setId("StationID1947");
-		Mockito.when(machineMasterRepository.findByMacAddress(Mockito.anyString())).thenReturn(machineMaster);
+		RegMachineSpecId regMachineSpecId=new RegMachineSpecId();
+		regMachineSpecId.setId("100311");
+		regMachineSpecId.setLangCode("eng");
+		machineMaster.setRegMachineSpecId(regMachineSpecId);
+		Mockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddress(Mockito.anyString())).thenReturn(machineMaster);
 		String stationId = userOnboardDAOImpl.getStationID("8C-16-45-88-E7-0C");
-		Assert.assertSame("StationID1947", stationId);
+		Assert.assertSame("100311", stationId);
 	}
 
 	@Test(expected = RegBaseUncheckedException.class)
 	public void getCenterIDRunExceptionTest() throws RegBaseCheckedException {
-		Mockito.when(centerMachineRepository.findByCenterMachineIdId(Mockito.anyString()))
+		Mockito.when(centerMachineRepository.findByIsActiveTrueAndCenterMachineIdId(Mockito.anyString()))
 				.thenThrow(new RegBaseUncheckedException());
 		userOnboardDAOImpl.getCenterID("StationID1947");
 	}
@@ -337,7 +341,7 @@ public class UserOnBoardDAOImlpTest {
 		CenterMachine centerMachine = new CenterMachine();
 		centerMachine.setCenterMachineId(centerMachineId);
 
-		Mockito.when(centerMachineRepository.findByCenterMachineIdId(Mockito.anyString())).thenReturn(centerMachine);
+		Mockito.when(centerMachineRepository.findByIsActiveTrueAndCenterMachineIdId(Mockito.anyString())).thenReturn(centerMachine);
 		String stationId = userOnboardDAOImpl.getCenterID("StationID1947");
 		Assert.assertSame("CenterID1947", stationId);
 	}

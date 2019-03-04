@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -127,27 +126,27 @@ public class UpdateUINController extends BaseController implements Initializable
 			FXUtils fxUtils = FXUtils.getInstance();
 			listenerOnFields(fxUtils);
 			SessionContext.map().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.DISABLE);
-			fxUtils.validateOnType(uinUpdateRoot,uinId, validation);
+			fxUtils.validateOnType(uinUpdateRoot, uinId, validation);
 			biometricBox.getChildren().forEach(bio -> {
-				if (fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)
-						&& bio.getId().equals(RegistrationConstants.UIN_UPDATE_BIO_FP)) {
+				if (RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
+							&& RegistrationConstants.UIN_UPDATE_BIO_FP.equalsIgnoreCase(bio.getId())) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}
-				if (irisDisableFlag.equals(RegistrationConstants.DISABLE)
-						&& bio.getId().equals(RegistrationConstants.UIN_UPDATE_BIO_IRIS)) {
+				if (RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
+						&& RegistrationConstants.UIN_UPDATE_BIO_IRIS.equalsIgnoreCase(bio.getId())) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}
-				if (fingerprintDisableFlag.equals(RegistrationConstants.DISABLE)
-						&& irisDisableFlag.equals(RegistrationConstants.DISABLE)
-						&& bio.getId().equals(RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION)) {
+				if (RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
+						&& RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
+						&& RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION.equalsIgnoreCase(bio.getId())) {
 					bio.setVisible(false);
 					bio.setManaged(false);
 				}
 			});
-
 			updateUINFieldsConfiguration();
+
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
@@ -182,6 +181,23 @@ public class UpdateUINController extends BaseController implements Initializable
 						demographicNode.setManaged(false);
 					}
 				});
+			} else {
+				biometricBox.getChildren().forEach(demographicNode -> {
+					if (demographicNode.getId().equals(RegistrationConstants.UIN_UPDATE_BIO_FP)
+							&& RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)) {
+						demographicNode.setVisible(false);
+						demographicNode.setManaged(false);
+					} else if (demographicNode.getId().equals(RegistrationConstants.UIN_UPDATE_BIO_IRIS)
+							&& RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)) {
+						demographicNode.setVisible(false);
+						demographicNode.setManaged(false);
+					} else if (demographicNode.getId().equals(RegistrationConstants.UIN_UPDATE_BIO_EXCEPTION)
+							&& RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
+							&& RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)) {
+						demographicNode.setVisible(false);
+						demographicNode.setManaged(false);
+					}
+				});
 			}
 		}
 	}
@@ -208,14 +224,11 @@ public class UpdateUINController extends BaseController implements Initializable
 			LOGGER.info(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 					"Entering into toggle function for toggle label 1 and toggle level 2");
 
-			toggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
-			toggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 			switchedOn.addListener(new ChangeListener<Boolean>() {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
 					if (newValue) {
-						toggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
-						toggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
+						toggleLabel1.setLayoutX(30);
 						isChild = newValue;
 						biometricException.setDisable(true);
 						biometricFingerprint.setDisable(true);
@@ -225,8 +238,7 @@ public class UpdateUINController extends BaseController implements Initializable
 						biometricFingerprint.selectedProperty().set(false);
 						biometricIris.selectedProperty().set(false);
 					} else {
-						toggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
-						toggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
+						toggleLabel1.setLayoutX(0);
 						isChild = newValue;
 						parentOrGuardianDetails.setDisable(true);
 						biometricException.setDisable(false);

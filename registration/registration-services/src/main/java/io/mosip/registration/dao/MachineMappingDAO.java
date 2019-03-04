@@ -6,11 +6,12 @@ import io.mosip.registration.constants.DeviceTypes;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.RegCenterDevice;
 import io.mosip.registration.entity.RegCentreMachineDevice;
+import io.mosip.registration.entity.RegDeviceMaster;
 import io.mosip.registration.entity.RegDeviceType;
 import io.mosip.registration.entity.RegistrationCenter;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
-import io.mosip.registration.entity.UserMachineMappingID;
+import io.mosip.registration.entity.id.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
@@ -134,11 +135,22 @@ public interface MachineMappingDAO {
 	 * 		It returns true when record found for the device else false
 	 */
 	boolean isValidDevice(DeviceTypes deviceType,String serialNo);
+
 	/**
 	 * 
 	 * @param machineId
 	 * @return  It returns the list of users against the machine
 	 */       
 	List<UserMachineMapping> getUserMappingDetails(String machineId);
+
+	/**
+	 * Fetches all the devices mapped to the registration center based on the
+	 * language code
+	 * 
+	 * @param langCode
+	 *            the language code of the device
+	 * @return All the devices mapped to registration center
+	 */
+	List<RegDeviceMaster> getDevicesMappedToRegCenter(String langCode);
 
 }

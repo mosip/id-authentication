@@ -29,8 +29,8 @@ public enum IdAuthenticationErrorConstants {
 	UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated", "A0102"),
 	INVALID_VID("IDA-MLC-004", "Invalid VID", "A0103"), 
 	EXPIRED_VID("IDA-MLC-005", "Expired VID", "A0104"),
+	UNABLE_PROCESS("IDA-MLC-007","Request could not be processed. Please try again"),
 	VID_DEACTIVATED_UIN("IDA-MLC-012","VID corresponding to a deactivated UIN"),// Not
-																											// referenced
 	INACTIVE_VID("IDA-IDV-005", "Inactive VID"), 
 	AUTHENTICATION_FAILED("IDA-AUT-501", "Authentication failed"),
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
@@ -126,7 +126,12 @@ public enum IdAuthenticationErrorConstants {
 	VID_REGENERATION_FAILED("IDA-MLC-011","VID regeneration not allowed. Use existing VID"),
 	
 	// for No authentication type selected
-	NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST("IDA-MLC-008","No authentication type selected");
+	NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST("IDA-MLC-008","No authentication type selected"),
+	
+	//for Auth Type not supported for a country
+	AUTH_TYPE_NOT_SUPPORTED("IDA-MLC-013","Authentication Type not supported"),
+	
+	DEMO_MISMATCH("IDA-DEA-027","Demographic data %s did not match");
 
 	private final String errorCode;
 	private final String errorMessage;

@@ -5,12 +5,12 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
@@ -101,8 +101,7 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 			long maxPacketSizeInBytes = Long.parseLong((String) ApplicationContext.map()
 					.get(RegistrationConstants.MAX_REG_PACKET_SIZE_IN_MB)) * 1024 * 1024;
 			if (encryptedPacket.length > maxPacketSizeInBytes) {
-				throw new RegBaseCheckedException(
-						RegistrationExceptionConstants.REG_PACKET_SIZE_EXCEEDED_ERROR_CODE.getErrorCode(),
+				LOGGER.error(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 						RegistrationExceptionConstants.REG_PACKET_SIZE_EXCEEDED_ERROR_CODE.getErrorMessage());
 			}
 
@@ -120,16 +119,14 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
 					APPLICATION_ID, "Registration details persisted to database");
 
-			Timestamp currentTimestamp = Timestamp.valueOf(LocalDateTime.now());
-
 			auditLogControlDAO.save(Builder.build(AuditLogControl.class)
 					.with(auditLogControl -> auditLogControl
 							.setAuditLogFromDateTime(registrationDTO.getAuditLogStartTime()))
 					.with(auditLogControl -> auditLogControl
 							.setAuditLogToDateTime(registrationDTO.getAuditLogEndTime()))
 					.with(auditLogControl -> auditLogControl.setRegistrationId(registrationDTO.getRegistrationId()))
-					.with(auditLogControl -> auditLogControl.setAuditLogSyncDateTime(currentTimestamp))
-					.with(auditLogControl -> auditLogControl.setCrDtime(currentTimestamp))
+					.with(auditLogControl -> auditLogControl.setAuditLogSyncDateTime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime())))
+					.with(auditLogControl -> auditLogControl.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime())))
 					.with(auditLogControl -> auditLogControl
 							.setCrBy(SessionContext.userContext().getUserId()))
 					.get());

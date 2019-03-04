@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.Calendar;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
@@ -51,6 +50,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -70,11 +70,11 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	private Pane selectedPhoto;
 	@FXML
-	private Pane applicantImagePane;
+	private AnchorPane applicantImagePane;
 	@FXML
 	private ImageView applicantImage;
 	@FXML
-	private Pane exceptionImagePane;
+	private AnchorPane exceptionImagePane;
 	@FXML
 	private ImageView exceptionImage;
 	@FXML
@@ -91,10 +91,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	@Autowired
 	private UserOnboardParentController userOnboardParentController;
 
-	@Value("${capture_photo_using_device}")
-	public String capturePhotoUsingDevice;
-	
-	@Value("${RECAPTURE_TIME}")
+	@Value("${mosip.registration.face_recapture_time}")
 	private String configuredSecondsForRecapture;
 
 	private Timestamp lastPhotoCaptured;
@@ -111,8 +108,6 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private boolean applicantImageCaptured;
 	private boolean exceptionImageCaptured;
 
-	private Boolean toggleBiometricException = null;
-
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.info("REGISTRATION - UI - FACE_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
@@ -120,8 +115,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 		takePhoto.setDisable(true);
 		
-		if (capturePhotoUsingDevice.equals(RegistrationConstants.ENABLE)
-				|| (boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			// for applicant biometrics
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 
@@ -296,10 +290,12 @@ public class FaceCaptureController extends BaseController implements Initializab
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
 
 		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE)) {
+			
 			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
 			applicantImage.setImage(capture);
 			applicantBufferedImage = capturedImage;
 			applicantImageCaptured = true;
+			applicantImagePane.getStyleClass().add("photoCapturePanesSelected");
 			try {
 				if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -317,6 +313,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE)) {
 			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
 			exceptionImage.setImage(capture);
+			exceptionImagePane.getStyleClass().add("photoCapturePanesSelected");
 			exceptionBufferedImage = capturedImage;
 			exceptionImageCaptured = true;
 		}
@@ -373,7 +370,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "validating applicant biometrics");
 
-		toggleBiometricException = (Boolean) SessionContext.userContext().getUserMap()
+		Boolean toggleBiometricException = (Boolean) SessionContext.userContext().getUserMap()
 				.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 
 		boolean imageCaptured = false;
@@ -494,10 +491,6 @@ public class FaceCaptureController extends BaseController implements Initializab
 		if (lastPhoto == null) {
 			return true;
 		}
-		/* Get Calendar instance */
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(new Timestamp(System.currentTimeMillis()));
-		cal.add(Calendar.SECOND, -configuredSecs);
 
 		int diffSeconds = Seconds.secondsBetween(new DateTime(lastPhoto.getTime()), DateTime.now()).getSeconds();
 		if (diffSeconds >= configuredSecs) {

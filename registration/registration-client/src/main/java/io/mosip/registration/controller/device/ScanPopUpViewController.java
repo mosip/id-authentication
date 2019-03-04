@@ -86,8 +86,7 @@ public class ScanPopUpViewController extends BaseController {
 			popupStage.setResizable(false);
 			popupTitle.setText(title);
 			Scene scene = new Scene(scanPopup);
-			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+			scene.getStylesheets().add(ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			popupStage.setScene(scene);
 			popupStage.initModality(Modality.WINDOW_MODAL);
 			popupStage.initOwner(fXComponents.getStage());

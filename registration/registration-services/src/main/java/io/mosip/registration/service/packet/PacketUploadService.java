@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
@@ -23,7 +24,7 @@ public interface PacketUploadService {
 	 * @throws URISyntaxException
 	 * @throws RegBaseCheckedException
 	 */
-	Object pushPacket(File packet) throws URISyntaxException, RegBaseCheckedException;
+	ResponseDTO pushPacket(File packet) throws URISyntaxException, RegBaseCheckedException;
 	
 	/**
 	 * Update the Packet upload status to the local Database.	

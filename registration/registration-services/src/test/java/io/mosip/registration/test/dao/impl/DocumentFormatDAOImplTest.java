@@ -17,7 +17,7 @@ import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dao.impl.DocumentFormatDAOImpl;
 import io.mosip.registration.entity.DocumentFormat;
-import io.mosip.registration.entity.GenericId;
+import io.mosip.registration.entity.id.GenericId;
 import io.mosip.registration.repositories.DocumentFormatRepository;
 
 public class DocumentFormatDAOImplTest {

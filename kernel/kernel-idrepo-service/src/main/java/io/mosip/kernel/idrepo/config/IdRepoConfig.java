@@ -1,11 +1,9 @@
 package io.mosip.kernel.idrepo.config;
 
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -20,6 +18,7 @@ import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -28,9 +27,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaxxer.hikari.HikariDataSource;
 
+import io.mosip.kernel.core.idrepo.constant.IdRepoConstants;
 import io.mosip.kernel.core.idrepo.spi.ShardDataSourceResolver;
 import io.mosip.kernel.core.logger.spi.Logger;
 
@@ -44,18 +43,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @EnableTransactionManagement
 public class IdRepoConfig implements WebMvcConfigurer {
 
-	private static final String MOSIP_KERNEL_IDREPO_DATETIME_TIMEZONE = "mosip.kernel.idrepo.datetime.timezone";
-
-	private static final String MOSIP_KERNEL_IDREPO_STATUS_REGISTERED = "mosip.kernel.idrepo.status.registered";
-
-	private static final String MOSIP_KERNEL_IDREPO_DATETIME_PATTERN = "mosip.utc-datetime-pattern";
-
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoConfig.class);
-
-	/** The mapper. */
-	@Autowired
-	private ObjectMapper mapper;
 
 	/** The env. */
 	@Autowired
@@ -178,9 +167,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	 */
 	@PostConstruct
 	public void setup() {
-		status.add(env.getProperty(MOSIP_KERNEL_IDREPO_STATUS_REGISTERED));
-		mapper.setDateFormat(new SimpleDateFormat(env.getProperty(MOSIP_KERNEL_IDREPO_DATETIME_PATTERN)));
-		mapper.setTimeZone(TimeZone.getTimeZone(env.getProperty(MOSIP_KERNEL_IDREPO_DATETIME_TIMEZONE)));
+		status.add(env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()));
 	}
 
 	/**
@@ -294,8 +281,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	 * @return the data source
 	 */
 	private DataSource buildDataSource(Map<String, String> dataSourceValues) {
-		HikariDataSource dataSource = new HikariDataSource();
-		dataSource.setJdbcUrl(dataSourceValues.get("url"));
+		DriverManagerDataSource dataSource = new DriverManagerDataSource(dataSourceValues.get("url"));
 		dataSource.setUsername(dataSourceValues.get("username"));
 		dataSource.setPassword(dataSourceValues.get("password"));
 		dataSource.setDriverClassName(dataSourceValues.get("driverClassName"));

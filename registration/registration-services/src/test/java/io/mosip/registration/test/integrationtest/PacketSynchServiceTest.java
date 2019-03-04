@@ -2,29 +2,47 @@ package io.mosip.registration.test.integrationtest;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.poi.util.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
+import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dto.RegistrationCenterDetailDTO;
+import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.RegistrationPacketSyncDTO;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SyncRegistrationDTO;
+import io.mosip.registration.dto.demographic.DemographicDTO;
+import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
+import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.repositories.RegistrationRepository;
+import io.mosip.registration.service.packet.PacketHandlerService;
 import io.mosip.registration.service.sync.PacketSynchService;
 /**
  * @author Leona Mary S
@@ -33,10 +51,14 @@ import io.mosip.registration.service.sync.PacketSynchService;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PacketSynchServiceTest extends BaseIntegrationTest{
-		
+	@Autowired
+	private RegistrationRepository registrationRepository;
 		@Autowired
 		PacketSynchService PsyncService;
 	
+		@Autowired 
+		PacketHandlerService Phandlerservice;
+		
 		private static Properties prop = DBUtil.loadPropertiesFile();
 		static List<String> a=new ArrayList<String>(100);
 	
@@ -46,10 +68,11 @@ public class PacketSynchServiceTest extends BaseIntegrationTest{
 			DBUtil.createConnection();
 			a=DBUtil.get_selectQuery(prop.getProperty("GET_SYNC_PACKETIDs"));
 		}
-		
+	
 		@Test
 		public void validate_fetchPacketsToBeSynched_1()
 		{
+			
 			System.out.println("Test case 1");
 			List<String> actualres=a;
 			List<String> expectedres=new ArrayList<String>(100);
@@ -127,11 +150,11 @@ public class PacketSynchServiceTest extends BaseIntegrationTest{
 			public void zvalidate_syncPacketsToServer_6()
 				{
 				System.out.println("Test case 6");
-				List<SyncRegistrationDTO> dtoList=null;
+				RegistrationPacketSyncDTO dtoList=null;
 				String expectedmsg="success";
 				
 				try {
-					dtoList = testData("src/test/resources/testData/PacketSynchServiceData/PacketSyncService__syncPacketsToServer_syncDtoList_pos.json");
+					dtoList = (RegistrationPacketSyncDTO) testData("src/test/resources/testData/PacketSynchServiceData/PacketSyncService__syncPacketsToServer_syncDtoList_pos.json");
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -167,11 +190,11 @@ public class PacketSynchServiceTest extends BaseIntegrationTest{
 			public void zvalidate_syncPacketsToServer_5()
 				{
 				System.out.println("Test case 5");
-				List<SyncRegistrationDTO> dtoList=null;
+				RegistrationPacketSyncDTO dtoList=null;
 				String expectedmsg="Json Data Mapping Exception";
 				
 				try {
-					dtoList = testData("src/test/resources/testData/PacketSynchServiceData/PacketSyncService__syncPacketsToServer_syncDtoList.json");
+					dtoList = (RegistrationPacketSyncDTO) testData("src/test/resources/testData/PacketSynchServiceData/PacketSyncService__syncPacketsToServer_syncDtoList.json");
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -244,6 +267,39 @@ public class PacketSynchServiceTest extends BaseIntegrationTest{
 				}
 			    
 			}	
+			    
+			    
+			    public void testHandelPacket() throws JsonParseException, JsonMappingException, IOException {
+					ObjectMapper mapper = new ObjectMapper();
+					mapper.registerModule(new JSR310Module());
+					RegistrationDTO obj = mapper.readValue(new File("src/test/resources/testData/PacketHandlerServiceData/user.json"), RegistrationDTO.class);
+					byte[] data = IOUtils.toByteArray(
+							new FileInputStream(new File("src/test/resources/testData/PacketHandlerServiceData/PANStubbed.jpg")));
+					DemographicDTO documentDetails = obj.getDemographicDTO();
+					MoroccoIdentity moroccoIdentity = (MoroccoIdentity) documentDetails.getDemographicInfoDTO().getIdentity();
+					DocumentDetailsDTO documentDetailsDTO = moroccoIdentity.getProofOfIdentity();
+					documentDetailsDTO.setDocument(data);
+
+					documentDetailsDTO = moroccoIdentity.getProofOfAddress();
+					documentDetailsDTO.setDocument(data);
+					documentDetailsDTO = moroccoIdentity.getProofOfRelationship();
+					documentDetailsDTO.setDocument(data);
+					documentDetailsDTO = moroccoIdentity.getProofOfDateOfBirth();
+					documentDetailsDTO.setDocument(data);
+					RegistrationCenterDetailDTO registrationCenter = new RegistrationCenterDetailDTO();
+					registrationCenter.setRegistrationCenterId("20916");
+					SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(registrationCenter);
+					SessionContext.getInstance().getUserContext().setUserId("mosip");
+					SessionContext.getInstance().setMapObject(new HashMap<String, Object>());
+
+					ResponseDTO response = Phandlerservice.handle(obj);
+
+					String jsonInString = mapper.writeValueAsString(response);
+					System.out.println(jsonInString);
+					Assert.assertEquals(response.getSuccessResponseDTO().getCode().toString(), "0000");
+					Assert.assertEquals(response.getSuccessResponseDTO().getMessage().toString(), "Success");
+				}
+
 
 
 }

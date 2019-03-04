@@ -2,9 +2,7 @@ package io.mosip.registration.test.dao.impl;
 
 import static org.junit.Assert.assertEquals;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Rule;
@@ -16,8 +14,8 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dao.impl.ValidDocumentDAOImpl;
-import io.mosip.registration.entity.GenericId;
 import io.mosip.registration.entity.ValidDocument;
+import io.mosip.registration.entity.id.GenericId;
 import io.mosip.registration.repositories.ValidDocumentRepository;
 
 public class ValidDocumentDAOImplTest {

@@ -65,7 +65,7 @@ public class RegistrationStatusRequestValidator{
 		id.put("status", serviceId);
 		validateId(registrationStatusRequestDTO.getId());
 		validateVersion(registrationStatusRequestDTO.getVersion());
-		validateReqTime(registrationStatusRequestDTO.getRequestTimestamp());
+		validateReqTime(registrationStatusRequestDTO.getRequesttime());
 	}
 
 
@@ -99,7 +99,6 @@ public class RegistrationStatusRequestValidator{
 	 */
 	private void validateVersion(String ver) throws RegStatusAppException {
 		RegStatusValidationException exception = new RegStatusValidationException();
-		
 		if (Objects.isNull(ver)) {
 			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_MISSING_INPUT_PARAMETER_VERSION,exception);
 			

@@ -1,5 +1,8 @@
 package io.mosip.registration.service.packet.impl;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,8 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -29,6 +35,17 @@ public class RegistrationPacketVirusScanServiceImpl implements RegistrationPacke
 
 	@Value("${PRE_REG_PACKET_LOCATION}")
 	private String preRegPacketLocation;
+	
+	@Value("$(mosip.registration.logs_path)")
+	private String logPath;
+	
+	@Value("${mosip.registration.database_path}")
+	private String dbPath;
+	
+	@Value("${mosip.registration.client_path}")
+	private String clientPath;
+
+	private static final Logger LOGGER = AppConfig.getLogger(RegistrationPacketVirusScanServiceImpl.class);
 
 	/*
 	 * (non-Javadoc)
@@ -39,9 +56,12 @@ public class RegistrationPacketVirusScanServiceImpl implements RegistrationPacke
 	 */
 	@Override
 	public synchronized ResponseDTO scanPacket() {
+
+		LOGGER.info("REGISTRATION - PACKET_SCAN - REGISTRATION_PACKET_VIRUS_SCAN", APPLICATION_NAME, APPLICATION_ID,
+				"Scanning of Virus Packet start");
 		ResponseDTO responseDTO = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-		List<String> pathList = Arrays.asList(packetStoreLocation, preRegPacketLocation);
+		List<String> pathList = Arrays.asList(packetStoreLocation, preRegPacketLocation,logPath,dbPath,clientPath);
 		List<File> filesList = new ArrayList<>();
 		List<String> infectedFiles = new ArrayList<>();
 		List<ErrorResponseDTO> errorList = new ArrayList<>();
@@ -52,7 +72,9 @@ public class RegistrationPacketVirusScanServiceImpl implements RegistrationPacke
 			}
 
 			for (File fileToScan : filesList) {
+				
 				if (!virusScanner.scanDocument(fileToScan)) {
+
 					infectedFiles.add(fileToScan.getName());
 				}
 			}
@@ -66,18 +88,24 @@ public class RegistrationPacketVirusScanServiceImpl implements RegistrationPacke
 			}
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
 		} catch (VirusScannerException virusScannerException) {
+			LOGGER.error("REGISTRATION - PACKET_SCAN_EXCEPTION", APPLICATION_NAME, APPLICATION_ID,
+					virusScannerException.getMessage() + ExceptionUtils.getStackTrace(virusScannerException));
 			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 			errorResponseDTO.setCode("ServiceException");
 			errorResponseDTO.setMessage(RegistrationConstants.ANTIVIRUS_SERVICE_NOT_ACCESSIBLE);
 			errorList.add(errorResponseDTO);
 			responseDTO.setErrorResponseDTOs(errorList);
 		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - PACKET_SCAN_IOEXCEPTION", APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 			errorResponseDTO.setCode("IOException");
 			errorResponseDTO.setMessage("Error in reading the file");
 			errorList.add(errorResponseDTO);
 			responseDTO.setErrorResponseDTOs(errorList);
 		}
+		LOGGER.info("REGISTRATION - PACKET_SCAN_END - REGISTRATION_PACKET_VIRUS_SCAN", APPLICATION_NAME, APPLICATION_ID,
+				"Scanning of Virus Packet End");
 		return responseDTO;
 	}
 

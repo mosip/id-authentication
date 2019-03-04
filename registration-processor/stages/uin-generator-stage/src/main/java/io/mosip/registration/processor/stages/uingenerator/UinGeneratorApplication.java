@@ -2,6 +2,7 @@ package io.mosip.registration.processor.stages.uingenerator;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.stages.uingenerator.stage.UinGeneratorStage;
 
 public class UinGeneratorApplication {
@@ -27,6 +28,6 @@ public class UinGeneratorApplication {
 
 		UinGeneratorStage uinGeneratorStage = configApplicationContext.getBean(UinGeneratorStage.class);
 		uinGeneratorStage.deployVerticle();
+		
 	}
-
 }

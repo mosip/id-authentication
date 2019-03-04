@@ -1,0 +1,13 @@
+{
+  "biometricDTO" : null,
+  "demographicDTO" : null,
+  "registrationId" : null,
+  "registrationIdHash" : null,
+  "preRegistrationId" : null,
+  "registrationMetaDataDTO" : null,
+  "osiDataDTO" : null,
+  "auditDTOs" : null,
+  "selectionListDTO" : null,
+  "auditLogStartTime" : null,
+  "auditLogEndTime" : null
+}

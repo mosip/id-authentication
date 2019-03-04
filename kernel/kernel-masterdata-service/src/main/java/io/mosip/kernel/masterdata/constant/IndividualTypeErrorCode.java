@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.constant;
 
 /**
- * Constants for Language related errors.
+ * Constants for Individual type related errors.
  * 
  * @author Bal Vikash Sharma
  * @since 1.0.0
@@ -9,7 +9,7 @@ package io.mosip.kernel.masterdata.constant;
  */
 public enum IndividualTypeErrorCode {
 
-	NO_INDIVIDUAL_TYPE_FOUND_EXCEPTION("KER-MSD-XXXX", "Individual Type not found"), INDIVIDUAL_TYPE_FETCH_EXCEPTION("KER-MSD-XXXX",
+	NO_INDIVIDUAL_TYPE_FOUND_EXCEPTION("KER-MSD-151", "Individual Type not found"), INDIVIDUAL_TYPE_FETCH_EXCEPTION("KER-MSD-152",
 			"Error occured while fetching Individual Type");
 
 	private final String errorCode;

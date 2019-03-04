@@ -36,7 +36,7 @@ public class RegistrationStatusExceptionHandler {
 	private static final String REG_STATUS_APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	@Autowired
-	private static Environment env;
+	private Environment env;
 	
 
 
@@ -99,7 +99,7 @@ public class RegistrationStatusExceptionHandler {
 
 			List<ErrorDTO> errors = errorTexts.parallelStream().map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct().collect(Collectors.toList());
 
-			response.setError(errors.get(0));
+			response.setErrors(errors);
 		}
 		if (e instanceof BaseUncheckedException) {
 			List<String> errorCodes = ((BaseUncheckedException) e).getCodes();
@@ -109,13 +109,13 @@ public class RegistrationStatusExceptionHandler {
 					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
 					.collect(Collectors.toList());
 
-			response.setError(errors.get(0));
+			response.setErrors(errors);
 		}
 
-		response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		response.setVersion(env.getProperty(REG_STATUS_APPLICATION_VERSION));
 		response.setResponse(null);
-		Gson gson = new GsonBuilder().serializeNulls().create();
+		Gson gson = new GsonBuilder().create();
 		return gson.toJson(response);
 	}
 

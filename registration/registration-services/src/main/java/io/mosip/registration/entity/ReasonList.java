@@ -11,6 +11,8 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import io.mosip.registration.entity.id.CodeLangCodeAndRsnCatCodeID;
+
 /**
  * @author Sreekar chukka
  * @since 1.0.0

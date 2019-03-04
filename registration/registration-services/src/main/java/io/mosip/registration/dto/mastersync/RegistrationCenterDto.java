@@ -8,7 +8,7 @@ import java.time.LocalTime;
  *
  */
 
-public class RegistrationCenterDto extends MasterSyncBaseDto{
+public class RegistrationCenterDto extends MasterSyncBaseDto {
 
 	private String id;
 
@@ -36,7 +36,7 @@ public class RegistrationCenterDto extends MasterSyncBaseDto{
 
 	private String workingHours;
 
-	private String languageCode;
+	private String langCode;
 
 	private Short numberOfKiosks;
 
@@ -55,6 +55,20 @@ public class RegistrationCenterDto extends MasterSyncBaseDto{
 	private LocalTime lunchEndTime;
 
 	private Boolean isActive;
+
+	/**
+	 * @return the langCode
+	 */
+	public String getLangCode() {
+		return langCode;
+	}
+
+	/**
+	 * @param langCode the langCode to set
+	 */
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
+	}
 
 	/**
 	 * @return the id
@@ -239,20 +253,6 @@ public class RegistrationCenterDto extends MasterSyncBaseDto{
 	}
 
 	/**
-	 * @return the languageCode
-	 */
-	public String getLanguageCode() {
-		return languageCode;
-	}
-
-	/**
-	 * @param languageCode the languageCode to set
-	 */
-	public void setLanguageCode(String languageCode) {
-		this.languageCode = languageCode;
-	}
-
-	/**
 	 * @return the numberOfKiosks
 	 */
 	public Short getNumberOfKiosks() {
@@ -377,7 +377,5 @@ public class RegistrationCenterDto extends MasterSyncBaseDto{
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
 	}
-	
-	
 
 }

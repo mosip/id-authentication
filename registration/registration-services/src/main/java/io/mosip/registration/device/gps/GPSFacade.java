@@ -4,9 +4,9 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +74,7 @@ public class GPSFacade extends GPSBU343Connector {
 			serialPortConnected = serialPortLinuxConnected;
 		}
 
-		Map<String, Object> gpsResponseMap = new HashMap<>();
+		Map<String, Object> gpsResponseMap = new WeakHashMap<>();
 
 		try {
 
