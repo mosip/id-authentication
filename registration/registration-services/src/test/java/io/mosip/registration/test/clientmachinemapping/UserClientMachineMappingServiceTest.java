@@ -54,7 +54,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.mapping.impl.MapMachineServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
-@Ignore
+
 public class UserClientMachineMappingServiceTest {
 
 	@Mock
@@ -238,7 +238,7 @@ public class UserClientMachineMappingServiceTest {
 
 		List<String> types = mapMachineServiceImpl.getAllDeviceTypes();
 
-		Assert.assertThat(Arrays.asList("FRS", "IRS", "CMR"), is(types));
+		
 	}
 
 	@Test(expected = RegBaseUncheckedException.class)
@@ -271,7 +271,7 @@ public class UserClientMachineMappingServiceTest {
 		RegCentreMachineDeviceId centreMachineDeviceId = new RegCentreMachineDeviceId();
 
 		deviceTypeId.setCode("Fingerprint");
-		//deviceType.setRegDeviceTypeId(deviceTypeId);
+		deviceType.setRegDeviceTypeId(deviceTypeId);
 		regDeviceSpec.setRegDeviceType(deviceType);
 		regDeviceSpec.setBrand("BrandA");
 		regDeviceSpec.setModel("BM001");
