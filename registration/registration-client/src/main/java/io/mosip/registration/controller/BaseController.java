@@ -418,6 +418,7 @@ public class BaseController {
 		SessionContext.map().remove("mm");
 		SessionContext.map().remove("yyyy");
 		SessionContext.map().remove("toggleAgeOrDob");
+		SessionContext.map().remove("operatorAuthenticationPane");
 		SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
 		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
 

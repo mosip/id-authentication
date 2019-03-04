@@ -597,9 +597,8 @@ public class DemographicDetailController extends BaseController {
 						LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
 						dateOfBirth = Date
 								.from(currentYear.minusYears(age).atStartOfDay(ZoneId.systemDefault()).toInstant());
-						if (age <= minAge
-								&& !(getRegistrationDTOFromSession().getSelectionListDTO() != null
-										&& !getRegistrationDTOFromSession().getSelectionListDTO().isChild())) {
+						if (age <= minAge && !(getRegistrationDTOFromSession().getSelectionListDTO() != null
+								&& !getRegistrationDTOFromSession().getSelectionListDTO().isChild())) {
 							childSpecificFields.setVisible(true);
 							childSpecificFieldsLocal.setVisible(true);
 							childSpecificFields.setDisable(false);
@@ -893,8 +892,8 @@ public class DemographicDetailController extends BaseController {
 		BiometricInfoDTO introducerBiometric = getRegistrationDTOFromSession().getBiometricDTO()
 				.getIntroducerBiometricDTO();
 
-		return Builder.build(DemographicInfoDTO.class)
-				.with(demographicInfo -> demographicInfo.setIdentity((MoroccoIdentity) Builder.build(MoroccoIdentity.class)
+		return Builder.build(DemographicInfoDTO.class).with(demographicInfo -> demographicInfo.setIdentity(
+				(MoroccoIdentity) Builder.build(MoroccoIdentity.class)
 						.with(identity -> identity.setFullName(fullName.isDisabled() ? null
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
@@ -1079,27 +1078,28 @@ public class DemographicDetailController extends BaseController {
 
 			dateAnchorPane.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAge());
 			dateAnchorPaneLocalLanguage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAge());
+			dobLocalLanguage.setDisable(getRegistrationDTOFromSession().getSelectionListDTO().isAge());
+			ageFieldLocalLanguage.setDisable(getRegistrationDTOFromSession().getSelectionListDTO().isAge());
 
 			gender.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isGender());
 			genderLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isGender());
-			genderLocalLanguage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isGender());
-			genderLocalLanguageLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isGender());
 
 			applicationLanguageAddressAnchorPane
 					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
 			localLanguageAddressAnchorPane
 					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			regionLocalLanguage.setDisable(getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			provinceLocalLanguage.setDisable(getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			cityLocalLanguage.setDisable(getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			localAdminAuthorityLocalLanguage
+					.setDisable(getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
+			postalCodeLocalLanguage.setDisable(getRegistrationDTOFromSession().getSelectionListDTO().isAddress());
 
 			mobileNo.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
 			mobileNoLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
-			mobileNoLocalLanguage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
-			mobileNoLocalLanguageLabel
-					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
+			
 			emailId.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
 			emailIdLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
-			emailIdLocalLanguage.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
-			emailIdLocalLanguageLabel
-					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isContactDetails());
 
 			residentStatus.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isForeigner());
 			residentStatusLocalLanguage
@@ -1107,10 +1107,7 @@ public class DemographicDetailController extends BaseController {
 
 			cniOrPinNumber.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isCnieNumber());
 			cniOrPinNumberLabel.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isCnieNumber());
-			cniOrPinNumberLocalLanguage
-					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isCnieNumber());
-			cniOrPinNumberLocalLanguageLabel
-					.setDisable(!getRegistrationDTOFromSession().getSelectionListDTO().isCnieNumber());
+			
 			switchedOn.set(true);
 			if (!isChild)
 				isChild = getRegistrationDTOFromSession().getSelectionListDTO().isChild()
@@ -1406,9 +1403,7 @@ public class DemographicDetailController extends BaseController {
 			saveDetail();
 			SessionContext.map().put("demographicDetail", false);
 			SessionContext.map().put("documentScan", true);
-//			if (!isEditPage()) {
-				documentScanController.populateDocumentCategories();
-//			}
+			documentScanController.populateDocumentCategories();
 
 			auditFactory.audit(AuditEvent.REG_DEMO_NEXT, Components.REG_DEMO_DETAILS, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -1417,12 +1412,6 @@ public class DemographicDetailController extends BaseController {
 					getPageDetails(RegistrationConstants.DEMOGRAPHIC_DETAIL, RegistrationConstants.NEXT));
 		}
 
-	}
-
-	private Boolean isEditPage() {
-		if (SessionContext.map().get(RegistrationConstants.REGISTRATION_ISEDIT) != null)
-			return (Boolean) SessionContext.map().get(RegistrationConstants.REGISTRATION_ISEDIT);
-		return false;
 	}
 
 	public boolean validateThisPane() {
