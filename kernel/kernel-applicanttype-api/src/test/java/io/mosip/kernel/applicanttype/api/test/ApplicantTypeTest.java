@@ -47,7 +47,7 @@ public class ApplicantTypeTest {
 		final String pre = "test-combination-";
 		for (int i = 1; i <= 16; i++) {
 			String[] arr = env.getProperty(pre + i).split(",");
-			Map<String, String> map = new HashMap<>();
+			Map<String, Object> map = new HashMap<>();
 			map.put("individualTypeCode", arr[0]);
 			map.put("dateofbirth", DateUtils.formatToISOString(getDobDate(arr[2])));
 			map.put("genderCode", arr[1]);
@@ -59,7 +59,7 @@ public class ApplicantTypeTest {
 
 	@Test(expected = InvalidApplicantArgumentException.class)
 	public void testInvalidApplicantArgumentException() throws Exception {
-		Map<String, String> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("individualTypeCode", null);
 		map.put("dateofbirth", null);
 		map.put("genderCode", null);
@@ -70,7 +70,7 @@ public class ApplicantTypeTest {
 
 	@Test(expected = InvalidApplicantArgumentException.class)
 	public void testInvalidApplicantArgumentExceptionAge() throws Exception {
-		Map<String, String> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("individualTypeCode", "FR");
 		map.put("dateofbirth", "sfhdsfdsugfdsfuygDS");
 		map.put("genderCode", "MLE");

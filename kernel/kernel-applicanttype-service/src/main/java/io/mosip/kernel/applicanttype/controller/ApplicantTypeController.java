@@ -38,7 +38,7 @@ public class ApplicantTypeController {
 		request.getRequest().put("individualTypeCode", individualTypeCode);
 		request.getRequest().put("genderCode", genderCode);
 		request.getRequest().put("dateofbirth", dateofbirth);
-		request.getRequest().put("biometricAvailable", biometricAvailable.toString());
+		request.getRequest().put("biometricAvailable", biometricAvailable);
 		dto.setRequest(request);
 		return new ResponseEntity<>(applicantTypeService.getApplicantType(dto), HttpStatus.OK);
 	}
