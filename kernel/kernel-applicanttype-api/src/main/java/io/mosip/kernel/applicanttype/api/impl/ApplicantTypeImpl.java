@@ -48,7 +48,7 @@ public class ApplicantTypeImpl implements ApplicantType {
 	 * io.mosip.kernel.core.applicanttype.spi.ApplicantCodeService#getApplicantType(
 	 * java.util.Map)
 	 */
-	public String getApplicantType(Map<String, String> map) throws InvalidApplicantArgumentException {
+	public String getApplicantType(Map<String, Object> map) throws InvalidApplicantArgumentException {
 		// queries to be check
 		String itc = null;// Individual Type Code
 		String dob = null;
@@ -56,15 +56,16 @@ public class ApplicantTypeImpl implements ApplicantType {
 		boolean isBioExPresent = false;// Biometric Exception Type
 
 		// insert the values for queries
-		for (Entry<String, String> entry : map.entrySet()) {
-			if (entry.getKey().equals(ATTR_INDIVIDUAL_TYPE)) {
-				itc = entry.getValue();
-			} else if (entry.getKey().equals(ATTR_DATE_OF_BIRTH)) {
-				dob = entry.getValue();
-			} else if (entry.getKey().equals(ATTR_GENDER_TYPE)) {
-				genderType = entry.getValue();
-			} else if (entry.getKey().equals(ATTR_BIOMETRIC_EXCEPTION_TYPE)) {
-				isBioExPresent = Boolean.parseBoolean(entry.getValue());
+		for (Entry<String, Object> entry : map.entrySet()) {
+			if (entry.getKey().equals(ATTR_INDIVIDUAL_TYPE) && entry.getValue() instanceof String) {
+				itc = (String) entry.getValue();
+			} else if (entry.getKey().equals(ATTR_DATE_OF_BIRTH) && entry.getValue() instanceof String) {
+				dob = (String) entry.getValue();
+			} else if (entry.getKey().equals(ATTR_GENDER_TYPE) && entry.getValue() instanceof String) {
+				genderType = (String) entry.getValue();
+			} else if (entry.getKey().equals(ATTR_BIOMETRIC_EXCEPTION_TYPE) && entry.getValue() != null
+					&& entry.getValue() instanceof Boolean) {
+				isBioExPresent = (boolean) entry.getValue();
 			}
 		}
 

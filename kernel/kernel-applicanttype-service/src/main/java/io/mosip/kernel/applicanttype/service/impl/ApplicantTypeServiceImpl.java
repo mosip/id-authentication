@@ -32,7 +32,7 @@ public class ApplicantTypeServiceImpl implements ApplicantTypeService {
 	@Override
 	public ResponseDTO getApplicantType(RequestDTO dto) {
 		KeyValues keyValues = dto.getRequest();
-		Map<String, String> map = keyValues.getRequest();
+		Map<String, Object> map = keyValues.getRequest();
 		ResponseDTO response = new ResponseDTO();
 		ApplicantTypeCodeDTO appDto = new ApplicantTypeCodeDTO();
 		try {
@@ -46,9 +46,10 @@ public class ApplicantTypeServiceImpl implements ApplicantTypeService {
 					ApplicantTypeErrorCode.NO_APPLICANT_FOUND_EXCEPTION.getErrorMessage());
 		}
 		response.setResponse(appDto);
-		/*response.setId(dto.getId());
-		response.setVer(dto.getVer());
-		response.setTimestamp(dto.getTimestamp());*/
+		/*
+		 * response.setId(dto.getId()); response.setVer(dto.getVer());
+		 * response.setTimestamp(dto.getTimestamp());
+		 */
 		return response;
 	}
 
