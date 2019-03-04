@@ -229,6 +229,13 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 			// getting template and placing original values
 			InputStream uinArtifact = templateGenerator.getTemplate(UIN_CARD_TEMPLATE, attributes, langCode);
+			if (uinArtifact == null) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), uin,
+						PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name());
+				throw new TemplateProcessingFailureException(
+						PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
+			}
 
 			// generating pdf
 			ByteArrayOutputStream pdf = uinCardGenerator.generateUinCard(uinArtifact, UinCardType.PDF);
@@ -389,6 +396,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			File qrCode = new File("QrCode.png");
 			FileUtils.writeByteArrayToFile(qrCode, qrCodeBytes);
 			isQRCodeSet = true;
+			qrCode.deleteOnExit();
 		}
 
 		return isQRCodeSet;
@@ -407,6 +415,9 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		String value = null;
 		boolean isPhotoSet = false;
 
+		if (response == null || response.getResponse() == null) {
+			return Boolean.FALSE;
+		}
 		List<Documents> documents = response.getResponse().getDocuments();
 		for (Documents doc : documents) {
 			if (doc.getCategory().equals(INDIVIDUAL_BIOMETRICS)) {

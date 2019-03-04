@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.print.stage;
 
+import java.io.File;
 import java.util.Map;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -160,7 +161,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.UNABLE_TO_SENT_FOR_PRINTING.toString());
 				registrationStatusDto.setStatusComment(description);
 			}
-
+			
+			fileCleanUp();
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
@@ -207,6 +209,14 @@ public class PrintStage extends MosipVerticleAPIManager {
 		}
 
 		return object;
+	}
+
+	private void fileCleanUp() {
+		File qrCode = new File("QrCode.png");
+		qrCode.delete();
+		File applicantPhoto = new File("ApplicantPhoto.png");
+		applicantPhoto.delete();
+		
 	}
 
 	private boolean sendToQueue(MosipQueue queue, Map<String, byte[]> documentBytesMap, int count) {
