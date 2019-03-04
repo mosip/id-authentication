@@ -20,11 +20,17 @@ A Machine ID can be generated for various machines in the MOSIP platform. Once a
 
 
 
-![Module Diagram](_images/kernel-MachineIDGenerator.jpg)
+![Module Diagram](_images/kernel-idgenerator-machineid.jpg)
 
+
+**Class diagram**
+
+
+
+![Class Diagram](_images/kernel-idgenerator-cd.png)
 
 
 ## Implementation
 
 
-**kernel-machineidgenerator** [README](../../kernel/kernel-idgenerator-machineid/README.md)
+**kernel-machineidgenerator** [README](../../../kernel/kernel-idgenerator-machineid/README.md)
