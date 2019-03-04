@@ -2,7 +2,7 @@
 -- schema 		: master  - Master Reference schema
 -- table 		: module_detail  - Master module_detail list
 -- table alias  : moddtl	
- 
+  
 -- schemas section ---------------------------------------------------------------
 
 -- create schema if master reference schema not exists
@@ -30,14 +30,10 @@ create schema if not exists master
 		
 
 -- keys section -------------------------------------------------------------------------------
-alter table master.module_detail add constraint pk_moddtl_code primary key (id)
+alter table master.module_detail add constraint pk_moddtl_code primary key (id, lang_code)
  ;
 
 -- indexes section -----------------------------------------------------------------------
 -- create index idx_moddtl_<col> on master.module_detail (col)
 -- ;
-
--- comments section -------------------------------------------------------------------------- 
-comment on table master.module_detail is 'Master module detail table'
-;
 

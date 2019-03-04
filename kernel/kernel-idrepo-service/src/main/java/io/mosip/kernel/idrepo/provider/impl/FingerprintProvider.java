@@ -65,6 +65,12 @@ public class FingerprintProvider implements MosipFingerprintProvider<BIRType, BI
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * Filter timestamp.
+	 *
+	 * @param listOfBIR the list of BIR
+	 * @return the map
+	 */
 	private Map<String, LocalDateTime> filterTimestamp(List<BIRType> listOfBIR) {
 		Map<String, LocalDateTime> latestcreationDate = new HashMap<>();
 		listOfBIR.stream()

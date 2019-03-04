@@ -43,7 +43,11 @@ import io.mosip.kernel.core.util.UUIDUtils;
  */
 @Service
 public class OTPServiceImpl implements OTPService {
-	
+
+	private static final String OTP_REQUEST_MAX_COUNT = "otp.request.max-count";
+
+	private static final String OTP_REQUEST_ADD_MINUTES = "otp.request.add-minutes";
+
 	private static final String DATETIME_PATTERN = "datetime.pattern";
 
 	/** The Constant SESSION_ID. */
@@ -73,14 +77,14 @@ public class OTPServiceImpl implements OTPService {
 
 	@Autowired
 	private NotificationService notificationService;
-	
+
 	/** The otp manager. */
 	@Autowired
 	private OTPManager otpManager;
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPServiceImpl.class);
-	
+
 	/**
 	 * Generate OTP, store the OTP request details for success/failure. And send OTP
 	 * notification by sms(on mobile)/mail(on email-id).
@@ -104,7 +108,13 @@ public class OTPServiceImpl implements OTPService {
 		String txnId = otpRequestDto.getTxnID();
 		String tspID = otpRequestDto.getTspID();
 		Map<String, Object> idResDTO = idAuthService.processIdType(idvIdType, idvId, false);
+		Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
+		mobileNumber = getMobileNumber(idInfo);
+		email = getEmail(idInfo);
 		String uin = String.valueOf(idResDTO.get("uin"));
+		if (!checkIsEmptyorNull(email) && !checkIsEmptyorNull(mobileNumber)) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED);
+		}
 		if (isOtpFlooded(otpRequestDto)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
@@ -135,15 +145,12 @@ public class OTPServiceImpl implements OTPService {
 			otpResponseDTO.setTxnID(txnId);
 			status = "Y";
 			comment = "OTP_GENERATED";
-			Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
-			mobileNumber = getMobileNumber(idInfo);
-			email = getEmail(idInfo);
 			String responseTime = formatDate(new Date(), env.getProperty(DATETIME_PATTERN));
 			otpResponseDTO.setResTime(responseTime);
-			if (email != null && !email.isEmpty() && email.length() > 0) {
+			if (checkIsEmptyorNull(email)) {
 				otpResponseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
 			}
-			if (mobileNumber != null && !mobileNumber.isEmpty() && mobileNumber.length() > 0) {
+			if (checkIsEmptyorNull(mobileNumber)) {
 				otpResponseDTO.setMaskedMobile(MaskUtil.maskMobile(mobileNumber));
 			}
 			notificationService.sendOtpNotification(otpRequestDto, otp, uin, email, mobileNumber, idInfo);
@@ -153,6 +160,16 @@ public class OTPServiceImpl implements OTPService {
 		}
 		return otpResponseDTO;
 
+	}
+
+	/**
+	 * Check is emptyor null.
+	 *
+	 * @param data the data
+	 * @return true, if successful
+	 */
+	private static boolean checkIsEmptyorNull(String data) {
+		return data != null && !data.isEmpty() && data.trim().length() > 0;
 	}
 
 	/**
@@ -189,7 +206,7 @@ public class OTPServiceImpl implements OTPService {
 			// FIXME
 			autnTxn.setLangCode(env.getProperty("mosip.primary.lang-code"));
 			return autnTxn;
-		} catch (ParseException e) {
+		} catch (ParseException | java.time.format.DateTimeParseException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
 					e);
@@ -229,10 +246,12 @@ public class OTPServiceImpl implements OTPService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
 					e);
 		}
-		//TODO make minutes and value configurable
-		Date addMinutesInOtpRequestDTime = addMinutes(requestTime, -1);
+		// TODO make minutes and value configurable
+		int addMinutes = Integer.parseInt(env.getProperty(OTP_REQUEST_ADD_MINUTES));
+		Date addMinutesInOtpRequestDTime = addMinutes(requestTime, -addMinutes);
 		LocalDateTime addMinutesInOtpRequestDTimes = DateUtils.parseDateToLocalDateTime(addMinutesInOtpRequestDTime);
-		if (autntxnrepository.countRequestDTime(reqTime, addMinutesInOtpRequestDTimes, uniqueID) > 3) {
+		int maxCount = Integer.parseInt(env.getProperty(OTP_REQUEST_MAX_COUNT));
+		if (autntxnrepository.countRequestDTime(reqTime, addMinutesInOtpRequestDTimes, uniqueID) > maxCount) {
 			isOtpFlooded = true;
 		}
 
@@ -284,13 +303,14 @@ public class OTPServiceImpl implements OTPService {
 	private String getMobileNumber(Map<String, List<IdentityInfoDTO>> idInfo) throws IdAuthenticationBusinessException {
 		return idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
 	}
-	
+
 	/**
 	 * Generate otp.
 	 *
 	 * @param otpKey the otp key
 	 * @return the string
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	private String generateOtp(String otpKey) throws IdAuthenticationBusinessException {
 		String otp = null;
@@ -303,10 +323,9 @@ public class OTPServiceImpl implements OTPService {
 
 			if (otp == null || otp.trim().isEmpty()) {
 				mosipLogger.error("NA", "NA", "NA", "generated OTP is: " + otp);
-				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
 			}
-			
+
 			mosipLogger.info("NA", "NA", "NA", " generated OTP is: " + otp);
 		}
 

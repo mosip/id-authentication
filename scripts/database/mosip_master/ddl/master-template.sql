@@ -3,7 +3,7 @@
 -- schema 		: master		- Master Reference schema
 -- table 		: template      - Templates to store all templates files used across the mosip modules
 -- table alias  : tmplt	
- 
+  
 -- schemas section -----------------------------------------------------------------------------------------------------------------
 
 -- create schema if master schema for Master reference tables is not exists
@@ -39,21 +39,10 @@ create table master.template (
 ;
 
 -- keys section -----------------------------------------------------------------------------------------------------------------------
-alter table master.template add constraint pk_tmplt_id primary key (id)
+alter table master.template add constraint pk_tmplt_id primary key (id, lang_code)
  ;
 
 -- indexes section --------------------------------------------------------------------------------------------------------------------
 -- create index idx_tmplt_<colx> on master.template (<colx>)
 -- ;
-
--- comments section ------------------------------------------------------------------------------------------------------------------- 
-comment on table master.template is 'To store templated used by all the modules for acknowledgements, receipts, Notifications..etc.'
-;
-comment on column master.template.file_format_code is 'Template formats like xml, html, xslt...etc.'
-;
-comment on column master.template.module_id is 'Modules like pre-registration, registration, registration processor, authontication...etc'
-;
-comment on column master.template.model is 'eg: velocity, free maker, jasper report....etc'
-;
-
 

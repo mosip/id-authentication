@@ -4,7 +4,7 @@
 -- table alias  : regcntr	
 
 -- schemas section ---------------------------------------------------------------
-
+ 
 -- create schema if master reference schema not exists
 create schema if not exists master
 ;
@@ -56,14 +56,11 @@ create table master.registration_center (
 ;
 
 -- keys section -------------------------------------------------------------------------------
-alter table master.registration_center add constraint pk_regcntr_code primary key (id)
+alter table master.registration_center add constraint pk_regcntr_code primary key (id, lang_code)
  ;
 
 -- indexes section -----------------------------------------------------------------------
 -- create index idx_regcntr_name on master.registration_center (name)
 -- ;
 
--- comments section -------------------------------------------------------------------------- 
-comment on table master.registration_center is 'Master registration_center table'
-;
 

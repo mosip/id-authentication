@@ -2,7 +2,7 @@
 -- schema 		: master	   			 		- Master reference Module
 -- table 		: reg_center_machine_device_h	- HISTORY :  MOSIP Registration center, User and device mapping
 -- table alias  : cntrmdev_h	
-
+ 
 -- schemas section -------------------------------------------------
  
 -- create schema if master reference schema not exists
@@ -15,6 +15,8 @@ create table master.reg_center_machine_device_h (
 	regcntr_id character varying (10) not null, -- master.registration_center.id
 	machine_id  character varying (10) not null, -- master.machine_master.id
 	device_id   character varying (36) not null, -- master.device_master.id
+
+	lang_code 	character varying (3) not null ,  -- master.language.code
 
 	is_active 	boolean not null,
 	cr_by 		character varying (32) not null,
@@ -36,7 +38,3 @@ create table master.reg_center_machine_device_h (
 -- indexes section -------------------------------------------------
 -- create index idx_cntrmdev_h_<colX> on master.reg_center_machine_device_h (colX )
 -- ;
-
--- comments section ------------------------------------------------- 
-comment on table master.reg_center_machine_device_h is 'History table :  Table to store all MOSIP registration centers, machines and their mapped devices'
-;

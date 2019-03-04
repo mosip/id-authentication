@@ -2,7 +2,7 @@
 -- schema 		: master  - Master Reference schema
 -- table 		: machine_spec  - Master machine_spec list
 -- table alias  : mspec	
-  
+   
 -- schemas section -----------------------------------------------------------------
  
 -- create schema if master reference schema not exists
@@ -37,13 +37,10 @@ create schema if not exists master
 ;
 
 -- keys section ---------------------------------------------------------------------------
-alter table master.machine_spec add constraint pk_mspec_code primary key (id)
+alter table master.machine_spec add constraint pk_mspec_code primary key (id, lang_code)
  ;
 
 -- indexes section ------------------------------------------------------------------------
 -- create index idx_mspec_<col> on master.machine_spec (col)
 -- ;
 
--- comments section -----------------------------------------------------------------------
-comment on table master.machine_spec is 'Master machine_spec table'
-;

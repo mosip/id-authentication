@@ -2,6 +2,7 @@ package io.mosip.authentication.core.spi.indauth.match;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -25,7 +26,7 @@ public interface IdMapping {
 	 *
 	 * @return the mapping function
 	 */
-	public Function<MappingConfig, List<String>> getMappingFunction();
+	public BiFunction<MappingConfig, MatchType, List<String>> getMappingFunction();
 
 	/**
 	 * Method to get ID Mapping.

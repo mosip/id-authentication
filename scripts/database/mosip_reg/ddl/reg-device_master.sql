@@ -36,14 +36,10 @@ create table reg.device_master (
 ;
 
 -- keys section -------------------------------------------------
- alter table reg.device_master add constraint pk_devicem_id primary key (id)
+ alter table reg.device_master add constraint pk_devicem_id primary key (id, lang_code)
  ;
 
 -- indexes section -------------------------------------------------
 -- create index idx_devicem_<colX> on reg.device_master (colX )
--- ;
-
--- comments section ------------------------------------------------- 
--- comment on table reg.device_master is 'Table to store master list of device like fingerprint scanner, iris scanner, scanner...etc used at registration centers for individual registration'
 -- ;
 

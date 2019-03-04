@@ -2,9 +2,6 @@ package io.mosip.authentication.service.filter;
 
 import java.util.Map;
 
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -17,10 +14,10 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
  */
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
-
+	
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -29,22 +26,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * java.util.Map)
 	 */
 	@Override
-	protected Map<String, Object> setResponseParam(Map<String, Object> requestBody, Map<String, Object> responseBody)
+	protected Map<String, Object> setResponseParams(Map<String, Object> requestBody, Map<String, Object> responseBody)
 			throws IdAuthenticationAppException {
-		return setAuthResponseParam(requestBody, responseBody);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.service.filter.BaseAuthFilter#init(javax.servlet.
-	 * FilterConfig)
-	 */
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-		super.init(filterConfig);
-
+		Map<String, Object> responseParams = super.setResponseParams(requestBody, responseBody);
+		return setAuthResponseParam(requestBody, responseParams);
 	}
 
 	/*
@@ -55,7 +40,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * util.Map)
 	 */
 	@Override
-	protected Map<String, Object> decodedRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
+	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
 			requestBody.replace(REQUEST, decode((String) requestBody.get(REQUEST)));
 			if (null != requestBody.get(REQUEST)) {
@@ -68,19 +53,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 		}
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.service.filter.BaseAuthFilter#encodedResponse(java.
-	 * util.Map)
-	 */
-	@Override
-	protected Map<String, Object> encodedResponse(Map<String, Object> responseBody)
-			throws IdAuthenticationAppException {
-			return responseBody;
-		}
 
 	/*
 	 * (non-Javadoc)

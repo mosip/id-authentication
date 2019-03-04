@@ -91,7 +91,7 @@ public class MessageNotificationServiceImpl
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(MessageNotificationServiceImpl.class);
 
 	/** The primary language. */
-	@Value("${mosip.primary-language}")
+	@Value("${primary.language}")
 	private String langCode;
 
 	/** The env. */
@@ -412,8 +412,7 @@ public class MessageNotificationServiceImpl
 					(String) regProcessorTemplateJson.getIdentity().getLocalAdministrativeAuthority().getValue());
 			template.setIdSchemaVersion((Double) demographicIdentity
 					.get(regProcessorTemplateJson.getIdentity().getIdschemaversion().getValue()));
-			template.setCnieNumber(
-					(Long) demographicIdentity.get(regProcessorTemplateJson.getIdentity().getCnienumber().getValue()));
+			template.setCnieNumber((String)demographicIdentity.get(regProcessorTemplateJson.getIdentity().getCnienumber().getValue()));
 
 		} catch (ParseException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

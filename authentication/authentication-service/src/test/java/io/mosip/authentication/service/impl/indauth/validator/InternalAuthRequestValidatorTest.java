@@ -388,7 +388,7 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setTxnID("1234567890");
 //		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		// authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setPersonalIdentity(true);
 		// authTypeDTO.setFace(true);
 		// authTypeDTO.setFingerPrint(true);
 		// authTypeDTO.setIris(true);
@@ -407,6 +407,7 @@ public class InternalAuthRequestValidatorTest {
 		reqDTO.setIdentity(idDTO);
 		// authRequestDTO.setAuthType(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
