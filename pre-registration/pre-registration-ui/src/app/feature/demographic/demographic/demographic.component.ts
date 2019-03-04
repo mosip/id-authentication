@@ -658,12 +658,13 @@ export class DemographicComponent implements OnInit, OnDestroy {
       this.step,
       new UserModel(this.preRegId, request, this.regService.getUserFiles(this.step), this.codeValue)
     );
-    // this.sharedService.updateNameList(this.step, {
-    //   ...this.sharedService.getNameList(),
-    //   fullName: this.userForm.controls[this.formControlNames.fullName].value,
-    //   fullNameSecondaryLang: this.formControlValues.fullNameSecondary,
-    //   preRegId: this.preRegId
-    // });
+    this.sharedService.updateNameList(this.step, {
+      fullName: this.userForm.controls[this.formControlNames.fullName].value,
+      fullNameSecondaryLang: this.formControlValues.fullNameSecondary,
+      preRegId: this.preRegId,
+      postalCode: this.formControlValues.postalCode,
+      regDto: this.sharedService.getNameList()[0].regDto
+    });
 
     console.log('NMAE LIST ', this.sharedService.getNameList());
   }
@@ -674,7 +675,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.sharedService.addNameList({
       fullName: this.userForm.controls[this.formControlNames.fullName].value,
       fullNameSecondaryLang: this.formControlValues.fullNameSecondary,
-      preRegId: this.preRegId
+      preRegId: this.preRegId,
+      postalCode: this.formControlValues.postalCode
     });
   }
 
