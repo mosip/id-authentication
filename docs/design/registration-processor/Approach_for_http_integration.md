@@ -1,5 +1,5 @@
 
-# In Progress Add HTTP stage 
+# Add HTTP stage 
 
 **Background**
 Technical stack used in Registration Processor gives ability to add or change order/sequence of stages/route in the flow. Most of the stages works in isolation, can be deployed independently and does not depend on the previous or next stage in the flow. This design helps support team with the steps to create and add or remove HTTP apache camel route/stage.
@@ -23,17 +23,17 @@ All the vertx stages in registration process are arranged in a particular sequen
 4.	Exception handling
 
 
-###Solution
+**Solution**
 
 ------------
 
-#####Apache Camel HTTP end points: 
+**Apache Camel HTTP end points: **
 
 - This will be the simplest approach as apache camel capability will be used to connect to HTTP external system. 
 - An apache converter will be used to fetch details from database which then will be send to HTTP system.
 - Apache camel bridge need to be deployed.
 
-#####The key solution considerations are -
+**The key solution considerations are -**
 1.	HTTP End point:
 - 	
 
