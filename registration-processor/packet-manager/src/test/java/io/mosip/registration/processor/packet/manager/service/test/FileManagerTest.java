@@ -26,8 +26,9 @@ import io.mosip.registration.processor.packet.manager.config.PacketManagerConfig
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 
 /**
- * @author M1022006
+ * The Class FileManagerTest.
  *
+ * @author M1022006
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -35,20 +36,30 @@ import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 @ContextConfiguration(classes = PacketManagerConfigTest.class)
 public class FileManagerTest {
 
+	/** The file manager. */
 	@Autowired
 	private FileManager<DirectoryPathDto, InputStream> fileManager;
 
+	/** The file. */
 	private File file;
 
+	/** The env. */
 	@MockBean
 	private Environment env;
 
+	/** The virus scan enc. */
 	@Value("${VIRUS_SCAN_ENC}")
 	private String virusScanEnc;
 
+	/** The virus scan dec. */
 	@Value("${VIRUS_SCAN_DEC}")
 	private String virusScanDec;
 
+	/**
+	 * Sets the up.
+	 *
+	 * @throws Exception the exception
+	 */
 	@Before
 	public void setUp() throws Exception {
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -57,6 +68,12 @@ public class FileManagerTest {
 		when(env.getProperty(DirectoryPathDto.VIRUS_SCAN_DEC.toString())).thenReturn(virusScanDec);
 	}
 
+	/**
+	 * Gets the put and if file exists and copy method check.
+	 *
+	 * @return the put and if file exists and copy method check
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	@Test
 	public void getPutAndIfFileExistsAndCopyMethodCheck() throws IOException {
 		String fileName = file.getName();
