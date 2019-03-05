@@ -55,6 +55,13 @@
     "action_back": "الى الخلف",
     "action_continue": "استمر",
     "action_preview": "معاينة",
+    "consent": {
+      "title": "الأحكام والشروط",
+      "subtitle": "موافقتك",
+      "message": "لتوفير الموافقة على تخزين واستخدام المعلومات الشخصية على النحو الوارد",
+      "checkCondition": "انقر لقبول الشروط والأحكام",
+      "acceptButton": "قبول"
+    },
     "validation": {
       "name_required": "الإسم الكامل ضروري",
       "age_validation": "يجب أن يكون العمر أقل من 150",

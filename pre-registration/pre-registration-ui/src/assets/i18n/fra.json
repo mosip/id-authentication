@@ -56,6 +56,14 @@
     "action_back": "RETOUR",
     "action_continue": "CONTINUER",
     "action_preview": "APERÇU",
+    "consent": {
+      "title": "Termes et conditions",
+      "subtitle": "Votre accord",
+      "message": "Donner son ement pour le stockage et l'utilisation des informations personnelles telles qu'elles sont données",
+      "checkCondition": "Cliquez pour accepter les termes et conditions",
+      "acceptButton": "Acceptez"
+    },
+
     "validation": {
       "name_required": "Le nom complet est requis",
       "age_validation": "L'âge devrait être inférieur à 150",
