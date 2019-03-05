@@ -3,13 +3,10 @@ package io.mosip.authentication.service.impl.indauth.service;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -25,10 +22,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.core.dto.indauth.AdditionalFactorsDTO;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.PinInfo;
+import io.mosip.authentication.core.dto.indauth.IdentityDTO;
+import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.entity.StaticPin;
@@ -38,7 +37,6 @@ import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.StaticPinRepository;
-import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
 
 @RunWith(SpringRunner.class)
@@ -116,15 +114,14 @@ public class PinAuthServiceImplTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setPin(true);
-		authRequestDTO.setAuthType(authType);
-		authRequestDTO.setIdvId("284169042058");
-		authRequestDTO.setIdvIdType("D");
-		PinInfo pinInfo = new PinInfo();
-		pinInfo.setType("pin");
-		pinInfo.setValue("12345");
-		List<PinInfo> pinInfoList = new ArrayList<PinInfo>();
-		pinInfoList.add(pinInfo);
-		authRequestDTO.setPinInfo(pinInfoList);
+		authRequestDTO.setRequestedAuth(authType);
+		IdentityDTO identityDTO = new IdentityDTO();
+		identityDTO.setUin("284169042058");
+		AdditionalFactorsDTO additionalFactorsDTO = new AdditionalFactorsDTO();
+		additionalFactorsDTO.setStaticPin("12345");
+		RequestDTO requestDTO = new RequestDTO();
+		requestDTO.setAdditionalFactors(additionalFactorsDTO);
+		authRequestDTO.setRequest(requestDTO);
 		return authRequestDTO;
 	}
 }

@@ -3,6 +3,7 @@ package io.mosip.authentication.service.impl.indauth.service.pin;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -11,7 +12,6 @@ import java.util.stream.Stream;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
@@ -25,18 +25,42 @@ import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
  */
 public enum PinAuthType implements AuthType {
 
-	SPIN("pin", setOf(PinMatchType.SPIN), AuthTypeDTO::isPin, "PIN"),
+	SPIN("pin", setOf(PinMatchType.SPIN), AuthTypeDTO::isPin, "PIN") {
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#
+		 * isAuthTypeInfoAvailable(io.mosip.authentication.core.dto.indauth.
+		 * AuthRequestDTO)
+		 */
+		@Override
+		public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
+			return Objects.nonNull(authRequestDTO.getRequest().getAdditionalFactors().getStaticPin());
+		}
+	},
 	OTP("otp", setOf(PinMatchType.OTP), AuthTypeDTO::isOtp, "OTP") {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
 			Map<String, Object> valueMap = new HashMap<>();
-			authRequestDTO.getPinInfo().stream().filter(pininfo -> pininfo.getType().equalsIgnoreCase(this.getType()))
-					.forEach((PinInfo pininfovalue) -> {
-						ValidateOtpFunction func = idInfoFetcher
-								.getValidateOTPFunction();
-						valueMap.put(ValidateOtpFunction.class.getSimpleName(), func);
-					});
+			if(authRequestDTO.getRequestedAuth().isOtp()) {
+				ValidateOtpFunction func = idInfoFetcher
+						.getValidateOTPFunction();
+				valueMap.put(ValidateOtpFunction.class.getSimpleName(), func);
+			}
 			return valueMap;
+		}
+		
+		
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#
+		 * isAuthTypeInfoAvailable(io.mosip.authentication.core.dto.indauth.
+		 * AuthRequestDTO)
+		 */
+		@Override
+		public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
+			return Objects.nonNull(authRequestDTO.getRequest().getAdditionalFactors().getTotp());
 		}
 	};
 
@@ -126,19 +150,6 @@ public enum PinAuthType implements AuthType {
 		return Collections.unmodifiableSet(associatedMatchTypes);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#
-	 * isAuthTypeInfoAvailable(io.mosip.authentication.core.dto.indauth.
-	 * AuthRequestDTO)
-	 */
-	@Override
-	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
-		return Optional.ofNullable(authRequestDTO.getPinInfo()).flatMap(
-				list -> list.stream().filter(pinInfo -> pinInfo.getType().equalsIgnoreCase(getType())).findAny())
-				.isPresent();
-	}
 
 	/**
 	 * Returns the set of given match types
