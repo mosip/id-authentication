@@ -69,7 +69,14 @@
                 <tr>
                   <td>{{ 'dashboard.card.text_status' | translate }}</td>
                   <td id="status" [ngStyle]="{ color: getColor(user.status) }">
-                    {{ user.status }}
+                    {{
+                      (user.status === 'Booked'
+                        ? 'dashboard.status.booked'
+                        : user.status === 'Expired'
+                        ? 'dashboard.status.expired'
+                        : 'dashboard.status.pendingAppointment') | translate
+                    }}
+
                     <mat-icon
                       class="icon"
                       matTooltip="{{
