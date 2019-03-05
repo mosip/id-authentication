@@ -181,17 +181,18 @@ public class FXUtils {
 			}
 			field.requestFocus();
 		});
-
-		localField.textProperty().addListener((obsValue, oldValue, newValue) -> {
-			try {
-				((Label) parentPane.lookup(RegistrationConstants.HASH + localField.getId() + RegistrationConstants.LABEL)).setVisible(true);
-				promptText = ((TextField) parentPane.lookup(RegistrationConstants.HASH + localField.getId())).getPromptText();
-				((TextField) parentPane.lookup(RegistrationConstants.HASH + localField.getId())).setPromptText(null);
-			}  catch (RuntimeException runtimeException) {
-				LOGGER.info("ID NOT FOUND", APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-			}
-		});
+			
+			if(localField!=null)
+			localField.textProperty().addListener((obsValue, oldValue, newValue) -> {
+				try {
+					((Label) parentPane.lookup(RegistrationConstants.HASH + localField.getId() + RegistrationConstants.LABEL)).setVisible(true);
+					promptText = ((TextField) parentPane.lookup(RegistrationConstants.HASH + localField.getId())).getPromptText();
+					((TextField) parentPane.lookup(RegistrationConstants.HASH + localField.getId())).setPromptText(null);
+				}  catch (RuntimeException runtimeException) {
+					LOGGER.info("ID NOT FOUND", APPLICATION_NAME,
+							RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+				}
+			});
 
 	}
 
