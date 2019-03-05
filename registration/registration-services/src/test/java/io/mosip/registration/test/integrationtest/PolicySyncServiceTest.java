@@ -18,6 +18,7 @@ public class PolicySyncServiceTest extends BaseIntegrationTest {
 	GlobalParamService globalParamService;
 	@Autowired
 	PolicySyncService policySyncService;
+
 	@Before
 	public void setUp() {
 		ApplicationContext applicationContext = ApplicationContext.getInstance();
@@ -26,13 +27,13 @@ public class PolicySyncServiceTest extends BaseIntegrationTest {
 		applicationContext.setLocalLanguageProperty();
 		applicationContext.setLocalMessagesBundle();
 		applicationContext.setApplicationMap(globalParamService.getGlobalParams());
-		
+
 	}
-	
+
 	@Test
 	public void getPolicyTest() {
-		ResponseDTO response=policySyncService.fetchPolicy();
+		ResponseDTO response = policySyncService.fetchPolicy();
 		assertEquals(response.getSuccessResponseDTO().getCode(), "INFORMATION");
-		//assertEquals(response.getSuccessResponseDTO().getCode(), "REG-MDS‌-001");
+		// assertEquals(response.getSuccessResponseDTO().getCode(), "REG-MDS‌-001");
 	}
 }

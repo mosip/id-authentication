@@ -70,9 +70,7 @@ public class GlobalParamServiceTest {
 	@Test
 	public void syncConfigDataTest() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException { 
 		
-		//getGlobalParamsTest();
-//		Mockito.when(registrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
-//		Mockito.when(registrationSystemPropertiesChecker.getMachineId()).thenReturn("abc123");
+
 		Mockito.when(onboardDAO.getCenterID(Mockito.anyString())).thenReturn("STN123");
 		Mockito.when(onboardDAO.getCenterID(Mockito.anyString())).thenReturn("abc123");
 		
@@ -109,19 +107,7 @@ public class GlobalParamServiceTest {
 		gloablContextParamServiceImpl.synchConfigData();
 	}
 	
-	//@Test
-	public void syncConfigDataTest2() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException { 
-		
-			Mockito.when(onboardDAO.getCenterID(Mockito.anyString())).thenReturn("STN123");
-		Mockito.when(onboardDAO.getCenterID(Mockito.anyString())).thenReturn("abc123");
-		
-		
-		
-		Map<String,Object> globalParamMap = new LinkedHashMap<>();
-		Mockito.when(globalContextParamDAOImpl.getGlobalParams()).thenReturn(globalParamMap);
-		
-		gloablContextParamServiceImpl.synchConfigData();
-	}
+
 
 
 }
