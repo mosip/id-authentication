@@ -140,7 +140,7 @@ public class Validations extends BaseController {
 			MasterSyncService masterSync) {
 		this.blackListedWords = masterSync.getAllBlackListedWords(ApplicationContext.applicationLanguage()).stream()
 				.map(b -> b.getWord()).collect(Collectors.toList());
-		isConsolidated = AppConfig.getApplicationProperty(RegistrationConstants.IS_CONSOLIDATED);
+		isConsolidated = "N";
 		return validateTheFields(pane, notTovalidate, isValid, isConsolidated);
 	}
 
