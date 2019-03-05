@@ -114,7 +114,8 @@ public class TokenValidator {
 
 	private MosipUserDto buildDto(Claims claims) {
 		MosipUserDto mosipUserDto = new MosipUserDto();
-		mosipUserDto.setName(claims.getSubject());
+		mosipUserDto.setUserId(claims.getSubject());
+		mosipUserDto.setName((String)claims.get("name"));
 		mosipUserDto.setRole((String)claims.get("role"));
 		mosipUserDto.setMail((String)claims.get("mail"));
 		mosipUserDto.setMobile((String)claims.get("mobile"));
