@@ -44,7 +44,7 @@ import net.minidev.json.parser.ParseException;
 /**
  * Booking Controller Test
  * 
- * @author Sanober Noor
+ * @author Kishan Rathore
  *
  */
 @RunWith(SpringRunner.class)

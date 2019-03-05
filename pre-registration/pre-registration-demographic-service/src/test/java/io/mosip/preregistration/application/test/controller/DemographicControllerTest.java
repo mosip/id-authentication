@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,11 +29,11 @@ import io.mosip.preregistration.application.controller.DemographicController;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
-import io.mosip.preregistration.application.dto.UpdateResponseDTO;
 import io.mosip.preregistration.application.service.DemographicService;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import net.minidev.json.parser.JSONParser;
@@ -258,11 +257,11 @@ public class DemographicControllerTest {
 	 */
 	@Test
 	public void updateApplicationStatusTest() throws Exception {
-		UpdateResponseDTO<String> response = new UpdateResponseDTO<>();
+		MainResponseDTO<String> response = new MainResponseDTO<>();
 		response.setErr(null);
 		response.setResponse("Status Updated sucessfully");
-		response.setResTime(new Timestamp(System.currentTimeMillis()));
-		response.setStatus("true");
+		//response.setResTime(new Timestamp(System.currentTimeMillis()));
+		response.setStatus(true);
 
 		Mockito.when(preRegistrationService.updatePreRegistrationStatus("1234", "Booked")).thenReturn(response);
 

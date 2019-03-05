@@ -127,10 +127,10 @@ public class BookingDAO {
 	 * @param statusCode
 	 * @return RegistrationBookingEntity based on Pre registration id and status code.
 	 */
-	public RegistrationBookingEntity findPreIdAndStatusCode(String preregistrationId, String statusCode) {
+	public RegistrationBookingEntity findByPreRegistrationId(String preregistrationId) {
 		RegistrationBookingEntity entity = null;
 		try {
-			entity = registrationBookingRepository.findPreIdAndStatusCode(preregistrationId, statusCode);
+			entity = registrationBookingRepository.getPreRegId(preregistrationId);
 			if (entity == null) {
 				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
 						ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
@@ -148,7 +148,7 @@ public class BookingDAO {
 	 * @param statusCode
 	 * @return RegistrationBookingEntity based on Pre registration id and status code.
 	 */
-	public RegistrationBookingEntity findBookingByPreIdAndStatusCode(String preregistrationId, String statusCode) {
+	/*public RegistrationBookingEntity findBookingByPreIdAndStatusCode(String preregistrationId, String statusCode) {
 		RegistrationBookingEntity entity = null;
 		try {
 			entity = registrationBookingRepository.findBookingByPreIdAndStatusCode(preregistrationId, statusCode);
@@ -161,7 +161,7 @@ public class BookingDAO {
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
 		}
 		return entity;
-	}
+	}*/
 
 	/**
 	 * @param bookingEnity
@@ -225,11 +225,10 @@ public class BookingDAO {
 	 * @param statusCode
 	 * @return List of RegistrationBookingEntity
 	 */
-	public List<RegistrationBookingEntity> findByRegistrationCenterIdAndStatusCode(String registrationCenterId,
-			String statusCode) {
+	public List<RegistrationBookingEntity> findByRegistrationCenterId(String registrationCenterId) {
 		List<RegistrationBookingEntity> entityList = new ArrayList<>();
 		try {
-			entityList=registrationBookingRepository.findByRegistrationCenterIdAndStatusCode(registrationCenterId, statusCode);
+			entityList=registrationBookingRepository.findByRegistrationCenterId(registrationCenterId);
 			if (entityList.isEmpty()) {
 				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
 						ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());

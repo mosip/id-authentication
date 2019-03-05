@@ -39,7 +39,7 @@ public class RegistrationCenterDto {
 
 	private String workingHours;
 
-	private String languageCode;
+	private String langCode;
 
 	private Short numberOfKiosks;
 
