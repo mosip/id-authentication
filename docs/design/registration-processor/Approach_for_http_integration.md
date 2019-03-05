@@ -35,13 +35,46 @@ All the vertx stages in registration process are arranged in a particular sequen
 
 **The key solution considerations are -**
 1.	HTTP End point:
-- 	
+- Create sample HTTP rest service using spring boot, which will be used to post packet details and send response 
 
 2.	Apache Camel Changes:
-- 	
+- 	Update apache camel DSL xml file:
+Add additional route in DSL xml file with the apache HTTP end point 
 
-
-3.	
+```html
+	<route id="packet-validator-->osi-validator route">
+		<from uri="vertx:packet-validator-bus-out" />
+		<log
+			message="packet-validator-->osi-validator route ${bodyAs(String)}" />
+		<choice>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
+				<to uri="bean:packetDetailsRequestHandler"/>
+				<setHeader headerName="CamelHttpMethod">
+			      <constant>GET</constant>
+			    </setHeader>
+				<to uri="http://domain.name/registration/packetdetails" />
+				<to uri="bean:packetDetailResponseHandler"/>
+				<to uri="vertx:osi-validator-bus-in" />
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":false'</simple>
+				<to uri="vertx:message-sender-bus" />
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
+				<to uri="vertx:retry" />
+			</when>
+			<otherwise>
+				<to uri="vertx:error" />
+			</otherwise>
+		</choice>
+	</route>
+```
+-		 Add packetDetailsRequestHandler and packetDetailsResponseHandler spring bean. packetDetailsRequestHandler will fetch packet details using request id and packetDetailsResponseHandler handle response and send vertx event with MessageDTO to OSI validator as shown below:
+```html
+	<to uri="vertx:packet-validator-bus-in" />
+	```
 
 **Logical Architecture Diagram**
 
