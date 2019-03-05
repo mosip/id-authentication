@@ -108,6 +108,15 @@ public class JobConfigurationServiceTest {
 		syncJob.setSyncFrequency("0/5 * * * * ?");
 		syncJob.setIsActive(true);
 		syncJobList.add(syncJob);
+		
+		SyncJobDef mdsJob = new SyncJobDef();
+		mdsJob.setId("MDS_J00001");
+
+		mdsJob.setApiName("packetSyncStatusJob");
+		mdsJob.setSyncFrequency("0/5 * * * * ?");
+		mdsJob.setIsActive(true);
+		mdsJob.setName("Master Data Sync");
+		syncJobList.add(mdsJob);
 
 		syncJobList.forEach(job -> {
 			jobMap.put(job.getId(), job);
@@ -312,7 +321,6 @@ public class JobConfigurationServiceTest {
 
 	}
 
-	@Ignore
 	@Test
 	public void isRestartTestSuccess() {
 		initiateJobTest();
