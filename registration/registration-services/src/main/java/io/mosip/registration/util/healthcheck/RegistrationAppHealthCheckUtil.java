@@ -57,12 +57,11 @@ public class RegistrationAppHealthCheckUtil {
 		try {
 			HttpURLConnection connection = null;
 			//System.setProperty("java.net.useSystemProxies", "true");
-			int timeout = Integer.parseInt(AppConfig.getApplicationProperty("ONLINE_CONNECT_URL_TIMEOUT"));
-			URL url = new URL(AppConfig.getApplicationProperty("ONLINE_CONNECT_URL"));
+			URL url = new URL("https://www.mosip.io/");
 			List<Proxy> proxyList = ProxySelector.getDefault().select(new URI(url.toString()));
 			Proxy proxy = proxyList.get(0);
 			connection = (HttpURLConnection) url.openConnection(proxy);
-			connection.setConnectTimeout(timeout);
+			connection.setConnectTimeout(10000);
 			connection.connect();
 			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 				isNWAvailable = true;
