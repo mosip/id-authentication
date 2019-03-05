@@ -67,17 +67,19 @@ export class CenterSelectionComponent implements OnInit {
       console.log(this.locationTypes);
     });
     this.users = this.service.getNameList();
-    //    this.getRecommendedCenters();
+    this.getRecommendedCenters();
   }
 
   getRecommendedCenters() {
     const pincodes = [];
     this.users.forEach(user => {
-      const pincode = this.getUserDemographic(user).then(() => {
-        pincodes.push(pincode);
-        console.log(pincodes);
-      });
+      pincodes.push(user['postalCode']);
     });
+    this.dataService.recommendedCenters(localStorage.getItem('langCode'), 4, pincodes).subscribe(response => {
+      console.log(response);
+      if (!response['errors'])
+        this.displayResults(response);
+    })
   }
 
   async getUserDemographic(user) {
@@ -123,12 +125,8 @@ export class CenterSelectionComponent implements OnInit {
         .subscribe(
           response => {
             console.log(response);
-            if (response['registrationCenters'].length !== 0) {
-              REGISTRATION_CENTRES = response['registrationCenters'];
-              this.dataSource.data = REGISTRATION_CENTRES;
-              this.showTable = true;
-              this.selectedRow(REGISTRATION_CENTRES[0]);
-              this.dispatchCenterCoordinatesList();
+            if (!response['errors']) {
+              this.displayResults(response);
             } else {
               this.showMessage = true;
             }
@@ -162,12 +160,7 @@ export class CenterSelectionComponent implements OnInit {
           response => {
             console.log(response);
             if (response['errors'].length === 0 && response['registrationCenters'].length !== 0) {
-              REGISTRATION_CENTRES = response['registrationCenters'];
-              this.dataSource.data = REGISTRATION_CENTRES;
-              console.log(this.dataSource.data);
-              this.showTable = true;
-              this.selectedRow(REGISTRATION_CENTRES[0]);
-              this.dispatchCenterCoordinatesList();
+              this.displayResults(response);
             } else {
               this.showMessage = true;
             }
@@ -237,5 +230,14 @@ export class CenterSelectionComponent implements OnInit {
       // this.router.navigate([routeParams[1], 'summary', 'preview']);
     }
     this.router.navigateByUrl(url);
+  }
+
+  displayResults(response: any) {
+    REGISTRATION_CENTRES = response['registrationCenters'];
+    this.dataSource.data = REGISTRATION_CENTRES;
+    console.log(this.dataSource.data);
+    this.showTable = true;
+    this.selectedRow(REGISTRATION_CENTRES[0]);
+    this.dispatchCenterCoordinatesList();
   }
 }
