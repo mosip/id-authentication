@@ -3,7 +3,7 @@
 **Background**
 
 
-This library can be used to facilitate data mapping between objects. It contain a series of methods that accept following parameters:
+This application can be used to facilitate data mapping between objects. It contain a series of methods that accept following parameters:
 
 
 -	Source Object
@@ -55,4 +55,4 @@ This library can be used to facilitate data mapping between objects. It contain 
 ## Implementation
 
 
-**kernel-datamapper-orika** [README](../../../kernel/kernel-datamapper-orika/README.md)
+**kernel-datamapper-orika** [README](../../kernel/kernel-datamapper-orika/README.md)
