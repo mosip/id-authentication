@@ -22,7 +22,7 @@ The key **requirements** are
 -   Based on the service context invoke the auth service with right user id / client id.  
       
     
-**Solution**  
+**Solution:**  
 
 1.  Write an REST service Interceptor which is invoked before invoking any web service call.  
 2.  This interceptor should check whether the invoking REST service should required authentication. If yes then invoke the auth service to get the token.  
