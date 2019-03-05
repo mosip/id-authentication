@@ -30,6 +30,9 @@ The key **requirements** are
     -  User and Pwd Context : /authenticate/useridPwd - invoke this url and pass the client user id and hashed password to get the auth token.  
     -  User and OTP : /authenticate/useridOTP - invoke this url to get the OTP validated along with the auth token.  
 
+3. If the token is about to expire then invoke the '/authorize/refreshToken' service to get the new auth token by passing the old token id and update the same in ApplicationContext.    
+4. when user clicks on 'Logoff' button then invoke the '/authorize/invalidateToken' service to invalidate the token and remove from ApplicationContext.  
+
    Once the token received by any one of the mode the token [auth and refresh] would be assigned to the request. 
    Before invoking the actual service call from RestTemplate component, the token would be attached.  
 
