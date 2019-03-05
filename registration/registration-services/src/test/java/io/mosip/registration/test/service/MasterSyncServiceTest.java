@@ -68,7 +68,7 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ RegistrationAppHealthCheckUtil.class, UriComponentsBuilder.class, URI.class })
 public class MasterSyncServiceTest {
-
+//java test
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@InjectMocks
