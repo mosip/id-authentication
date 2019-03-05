@@ -90,6 +90,13 @@ public class DocumentScannerServiceTest {
 		assertNotNull(data);
 
 	}
+	
+	@Test
+	public void getImageBytesFromBufferedImageTest() throws java.io.IOException {
+		intializeValues();
+		byte[] data = documentScannerServiceImpl.getImageBytesFromBufferedImage(bufferedImage);
+		assertNotNull(data);
+	}
 	private void intializeValues() {
 		ReflectionTestUtils.setField(documentScannerServiceImpl, "scannerDpi", 300);
 		ReflectionTestUtils.setField(documentScannerServiceImpl, "scannerhost", "192.168.43.253");

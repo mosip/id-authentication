@@ -14,11 +14,7 @@ This service can be used to send sms through configured SMS gateway. Service has
 - Create a project which provides REST service to send SMS.
 
 
-- Service can send SMS request to SMS Gateway asynchronously and responds immediately. 
-
-
 - REST service can be used by any MOSIP module to send SMS through HTTP client.
-
 
 
 - Request body model for POST **/notifier/sms**
@@ -54,4 +50,4 @@ HttpStatus: 202 Accepted
 ## Implementation
 
 
-**kernel-smsnotification-service** [README](../../../kernel/kernel-smsnotification-service/README.md)
+**kernel-smsnotification-service** [README](../../kernel/kernel-smsnotification-service/README.md)

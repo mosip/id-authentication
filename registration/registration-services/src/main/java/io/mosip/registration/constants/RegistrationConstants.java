@@ -257,7 +257,6 @@ public class RegistrationConstants {
 	public static final String INDIVIDUAL = "INDIVIDUAL";
 	public static final String INTRODUCER = "INTRODUCER";
 	public static final String CBEFF_BIR_UUIDS_MAP_NAME = "CBEFF_BIR_UUIDS";
-	public static final String RSA = "mosip.kernel.keygenerator.asymmetric-algorithm-name";
 	public static final String XML_FILE_FORMAT = ".xml";
 	public static final String CBEFF_FILE_FORMAT = "cbeff";
 
