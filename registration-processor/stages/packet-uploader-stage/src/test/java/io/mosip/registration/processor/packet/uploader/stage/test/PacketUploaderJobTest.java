@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.packet.uploader.stage.test;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -66,7 +67,8 @@ public class PacketUploaderJobTest {
 		}
 
 		@Override
-		public void consumeAndSend(MosipEventBus mosipEventBus, MessageBusAddress fromAddress,MessageBusAddress toAddress) {
+		public void consumeAndSend(MosipEventBus mosipEventBus, MessageBusAddress fromAddress,
+				MessageBusAddress toAddress) {
 		}
 	};
 	@Mock
@@ -208,7 +210,6 @@ public class PacketUploaderJobTest {
 		Mockito.when(adapter.storePacket("1001", file)).thenReturn(Boolean.TRUE);
 		Mockito.when(adapter.isPacketPresent("1001")).thenReturn(Boolean.TRUE);
 		Mockito.doNothing().when(adapter).unpackPacket("1001");
-
 		packetUploaderStage.process(dto);
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
 				.contains(Tuple.tuple(Level.ERROR,
@@ -264,7 +265,7 @@ public class PacketUploaderJobTest {
 		Mockito.when(adapter.isPacketPresent("1001")).thenReturn(Boolean.FALSE);
 		Mockito.doThrow(FSAdapterException.class).when(adapter).storePacket(anyString(), any(InputStream.class));
 		packetUploaderStage.process(dto);
-		
+
 		Assertions.assertThatExceptionOfType(FSAdapterException.class);
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
 				.contains(Tuple.tuple(Level.ERROR,
@@ -277,8 +278,27 @@ public class PacketUploaderJobTest {
 		fooLogger.addAppender(listAppender);
 		Mockito.doThrow(IOException.class).when(packetArchiver).archivePacket(any());
 		packetUploaderStage.process(dto);
-		
+
 		Assertions.assertThatIOException();
 	}
 
+	@Test
+	public void retryFailure() {
+
+		listAppender.start();
+		fooLogger.addAppender(listAppender);
+		Mockito.doNothing().when(registrationStatusService)
+				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
+		dto.setRid("1001");
+		entry.setRegistrationId("1001");
+		entry.setRetryCount(5);
+		entry.setStatusComment("virus scan");
+		when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(entry);
+		Mockito.doNothing().when(registrationStatusService)
+				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
+
+		MessageDTO object = packetUploaderStage.process(dto);
+		assertTrue("Expecting Internal error to be true if Retry count is greater than Max Retry count",
+				object.getInternalError());
+	}
 }
