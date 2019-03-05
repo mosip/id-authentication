@@ -1,0 +1,24 @@
+Sprint 6 - Client Demo Comments
+
+1. Appication Look & Feel:
+	application to occupy whole screen
+2. Sync Pre-Reg Data
+	if we upload docs later like after downloaded pre reg data in registration, check the downloaded one is updated or not?
+	if it is online - check it is updated or not; if exists pull data
+	if it is offline - submit docs to scan manually; if it is not downloaded applicant will submit details and consider as new registration
+	if it is downloaded already check it is updated or not.
+	It may be configurable for 0days also [For PRe-Reg Id]
+3. Virtual Keyboard
+	esc/backspace in english for all languages - to confirm?
+	symbols required for keyboard in arabic language for esc, backspace etc.,
+4. Local Dedupe
+	local dedupe is it happening through SDK?
+5. Fingerprint and Iris Capture screens
+	iris is not getting deleted if it is less than quality score? maintain consistency for fingerprint and iris.....to display image and message
+	Can we show how many retries happend like no. of attempts in iris and fingerprint?
+6. Biometric Exception Screen
+	why biometric exception is not getting displayed after it is checked? immedaitely it has to display what is the exception after checked the button - future scope
+7. Calendar icon in UI
+	Is calendar required?
+8. Supervisor Authentication Screen
+	supervisor name should be in dropdown

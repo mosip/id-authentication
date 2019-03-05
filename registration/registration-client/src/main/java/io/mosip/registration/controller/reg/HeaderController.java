@@ -25,6 +25,7 @@ import io.mosip.registration.controller.RestartController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.config.JobConfigurationService;
@@ -98,7 +99,7 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	private RegistrationPacketVirusScanService registrationPacketVirusScanService;
-	
+
 	@Autowired
 	private RestartController restartController;
 
@@ -190,6 +191,10 @@ public class HeaderController extends BaseController {
 			}
 
 			while (restartController.isToBeRestarted()) {
+				/* Clear the completed job map */
+				BaseJob.clearCompletedJobMap();
+
+				/* Restart the application */
 				restartController.restart();
 			}
 
