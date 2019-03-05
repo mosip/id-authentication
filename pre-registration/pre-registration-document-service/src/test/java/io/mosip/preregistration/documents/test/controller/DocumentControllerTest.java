@@ -4,12 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -35,7 +29,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
-import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.documents.code.DocumentStatusMessages;
 import io.mosip.preregistration.documents.controller.DocumentController;
@@ -48,11 +41,10 @@ import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
 
 /**
  * Test class to test the DocumentUploader Controller methods
- * 
+ * @author Sanober Noor
  * @author Rajath KR
  * @author Tapaswini Bahera
  * @author Jagadishwari S
- * @author Kishan Rathore
  * @since 1.0.0
  * 
  */
@@ -78,6 +70,9 @@ public class DocumentControllerTest {
 
 	@MockBean
 	private DocumentServiceUtil serviceutil;
+	
+	@Autowired
+	private ObjectMapper mapper;
 
 	/**
 	 * Creating Mock Bean for FilesystemCephAdapterImpl
@@ -107,7 +102,7 @@ public class DocumentControllerTest {
 	public void setUp() throws IOException {
 
 		documentDto = new DocumentRequestDTO("59276903416082", "POA", "address", "pdf", "Pending-Appoinment",
-				new Date(), "ENG", "Kishan");
+				new Date(), "ENG", "sanober");
 
 		json = "{\r\n" + "	\"id\": \"osip.pre-registration.document.upload\",\r\n" + "	\"ver\": \"1.0\",\r\n"
 				+ "	\"reqTime\": \"2018-10-17T07:22:57.086Z\",\r\n" + "	\"request\": {\r\n"
@@ -143,7 +138,22 @@ public class DocumentControllerTest {
 		responseMain.setStatus(true);
 		responseMain.setResponse(docResponseDtos);
 	}
-
+  //  @Test
+//	public void successFileupload() throws Exception {
+//		String stringjson = mapper.writeValueAsString(documentDto);
+//		ClassLoader classLoader = getClass().getClassLoader();
+//		File file = new File(classLoader.getResource("Doc.pdf").getFile());
+//		MockMultipartFile multipartFile = new MockMultipartFile
+//				("file", "Doc.pdf", "application/pdf", new FileInputStream(file));
+//				Mockito.when(service.uploadDocument(null, stringjson)).thenReturn(responseMain);
+//				
+//				mockMvc.perform(MockMvcRequestBuilders.multipart("/documents")
+//						.file(new MockMultipartFile("Document request",stringjson,
+//								"application/json",stringjson.getBytes(Charset.forName("UTF-8") ))).
+//						file(new MockMultipartFile("file",file,
+//								"application/json",multipartFile.getBytes(Charset.forName("UTF-8") 
+//										 )))).andExpect(status().isOk());
+//	}
 	/*@Test
 	public void successSave() throws Exception {
 		ClassLoader classLoader = getClass().getClassLoader();

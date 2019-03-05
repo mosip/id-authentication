@@ -122,7 +122,7 @@ public class DemographicServiceUtil {
 		demographicEntity.setCreateDateTime(DateUtils
 				.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
 		demographicEntity.setStatusCode(statuscode);
-		demographicEntity.setDemogDetailHash(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson()).toString());
+		demographicEntity.setDemogDetailHash(new String(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson())));
 		try {
 			if (entityType.equals(RequestCodes.SAVE.getCode())) {
 				if (!isNull(demographicRequest.getCreatedBy()) && !isNull(demographicRequest.getCreatedDateTime())

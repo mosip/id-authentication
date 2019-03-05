@@ -311,7 +311,7 @@ public class DemographicService {
 				
 				
 				if (demographicEntity != null) {
-String hashString = new String(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson()));
+       String hashString = new String(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson()));
 					
 					if (demographicEntity.getDemogDetailHash()
 							.equals(hashString)) {
@@ -573,7 +573,18 @@ String hashString = new String(HashUtill.hashUtill(demographicEntity.getApplican
 		List<String> preIds = new ArrayList<>();
 		if (demographicEntityList != null && !demographicEntityList.isEmpty()) {
 			for (DemographicEntity entity : demographicEntityList) {
-				preIds.add(entity.getPreRegistrationId());
+				if(entity.getDemogDetailHash().equals(new String
+						(HashUtill.hashUtill(entity.getApplicantDetailJson())))) {
+					preIds.add(entity.getPreRegistrationId());
+				}
+				else {
+
+					log.error("sessionId", "idType", "id", "In dtoSetter method of document service - " +
+				io.mosip.preregistration.core.errorcodes.ErrorMessages.HASHING_FAILED.name());
+					throw new HashingException(io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_010.name(),
+							io.mosip.preregistration.core.errorcodes.ErrorMessages.HASHING_FAILED.name());
+				}
+				
 			}
 		} else {
 			throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.toString(),
