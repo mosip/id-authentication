@@ -53,9 +53,9 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
 
-	// @Value("${registration.processor.uploader.max.retry.count}")
-	// private int maxRetryCount;
-	private int maxRetryCount = 5;
+	@Value("${registration.processor.uploader.max.retry.count}")
+	private int maxRetryCount;
+
 	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
 
