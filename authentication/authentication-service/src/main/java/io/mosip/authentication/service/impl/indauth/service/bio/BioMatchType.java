@@ -127,16 +127,18 @@ public enum BioMatchType implements MatchType {
 		this.identityInfoFunction = (IdentityDTO identityDTO) -> {
 			Optional<String> valueOpt = identityDTO.getBiometrics()
 						.stream()
-						.filter(bioId -> {
-							if(bioId.getType().equalsIgnoreCase(CbeffDocType.FMR.getType().name())) {
-								return  bioId.getSubType().equalsIgnoreCase(subType.name()+"_"+singleSubtype.name());
-							} else if(bioId.getType().equalsIgnoreCase(CbeffDocType.IRIS.getType().name())) {
+					.filter(bioId -> {
+						if (bioId.getType().equalsIgnoreCase(cbeffDocType.getType().name())) {
+							if (bioId.getType().equalsIgnoreCase(CbeffDocType.FMR.getType().name())) {
+								return bioId.getSubType().equalsIgnoreCase(subType.name() + "_" + singleSubtype.name());
+							} else if (bioId.getType().equalsIgnoreCase(CbeffDocType.IRIS.getType().name())) {
 								return bioId.getSubType().equalsIgnoreCase(subType.name());
-							} else if(bioId.getType().equalsIgnoreCase(CbeffDocType.FACE.getType().name())) {
+							} else if (bioId.getType().equalsIgnoreCase(CbeffDocType.FACE.getType().name())) {
 								return true;
 							}
-							return false;
-						})
+						}
+						return false;
+					})
 						.map(BioIdentityInfoDTO::getValue)
 						.findAny();
 			if(valueOpt.isPresent()) {
