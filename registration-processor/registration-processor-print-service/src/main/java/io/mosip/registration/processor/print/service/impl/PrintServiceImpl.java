@@ -3,6 +3,7 @@ package io.mosip.registration.processor.print.service.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
@@ -239,8 +240,15 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 			// generating pdf
 			ByteArrayOutputStream pdf = uinCardGenerator.generateUinCard(uinArtifact, UinCardType.PDF);
-
-			byteMap.put(UIN_CARD_PDF, pdf.toByteArray());
+			
+			File pdfFile = new File(attributes.get(UINCardConstant.UIN).toString() + ".pdf");
+			FileOutputStream op = new FileOutputStream(pdfFile);
+			op.write(pdf.toByteArray());
+			InputStream fileStream = new FileInputStream(pdfFile);
+			byteMap.put(UIN_CARD_PDF, IOUtils.toByteArray(fileStream));
+			if(op != null) {
+				op.close();
+			}
 
 			byte[] textFileByte = createTextFile();
 			byteMap.put(UIN_TEXT_FILE, textFileByte);
@@ -396,7 +404,6 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			File qrCode = new File("QrCode.png");
 			FileUtils.writeByteArrayToFile(qrCode, qrCodeBytes);
 			isQRCodeSet = true;
-			qrCode.deleteOnExit();
 		}
 
 		return isQRCodeSet;
@@ -418,11 +425,13 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		if (response == null || response.getResponse() == null) {
 			return Boolean.FALSE;
 		}
-		List<Documents> documents = response.getResponse().getDocuments();
-		for (Documents doc : documents) {
-			if (doc.getCategory().equals(INDIVIDUAL_BIOMETRICS)) {
-				value = doc.getValue();
-				break;
+		if (response.getResponse().getDocuments() != null) {
+			List<Documents> documents = response.getResponse().getDocuments();
+			for (Documents doc : documents) {
+				if (doc.getCategory().equals(INDIVIDUAL_BIOMETRICS)) {
+					value = doc.getValue();
+					break;
+				}
 			}
 		}
 		if (value != null) {

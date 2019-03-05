@@ -1,6 +1,9 @@
 package io.mosip.registration.processor.print.stage;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Map;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -34,6 +37,7 @@ import io.mosip.registration.processor.message.sender.exception.TemplateProcessi
 import io.mosip.registration.processor.print.exception.PrintGlobalExceptionHandler;
 import io.mosip.registration.processor.print.exception.QueueConnectionNotFound;
 import io.mosip.registration.processor.print.service.impl.PrintPostServiceImpl;
+import io.mosip.registration.processor.print.service.dto.PrintQueueDTO;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -243,12 +247,21 @@ public class PrintStage extends MosipVerticleAPIManager {
 		
 	}
 
-	private boolean sendToQueue(MosipQueue queue, Map<String, byte[]> documentBytesMap, int count) {
-		boolean isPdfAddedtoQueue = false;
-		boolean isTextFileAddedToQueue = false;
+	private boolean sendToQueue(MosipQueue queue, Map<String, byte[]> documentBytesMap, int count) throws IOException {
+		boolean isAddedToQueue = false;
 		try {
-			isPdfAddedtoQueue = mosipQueueManager.send(queue, documentBytesMap.get(UIN_CARD_PDF), address);
-			isTextFileAddedToQueue = mosipQueueManager.send(queue, documentBytesMap.get(UIN_TEXT_FILE), address);
+			PrintQueueDTO queueDto = new PrintQueueDTO();
+			queueDto.setPdfBytes(documentBytesMap.get(UIN_CARD_PDF));
+			queueDto.setTextBytes(documentBytesMap.get(UIN_TEXT_FILE));
+			
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		    ObjectOutputStream oos = new ObjectOutputStream(bos);
+		    oos.writeObject(queueDto);
+		    oos.flush();
+		    byte[] printQueueBytes = bos.toByteArray();
+			
+			isAddedToQueue = mosipQueueManager.send(queue, printQueueBytes, address);
+			
 		} catch (QueueConnectionNotFound e) {
 			if (count < 5) {
 				sendToQueue(queue, documentBytesMap, count + 1);
@@ -261,7 +274,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			}
 		}
 
-		return isPdfAddedtoQueue && isTextFileAddedToQueue ? Boolean.TRUE : Boolean.FALSE;
+		return isAddedToQueue;
 	}
 
 	/**
