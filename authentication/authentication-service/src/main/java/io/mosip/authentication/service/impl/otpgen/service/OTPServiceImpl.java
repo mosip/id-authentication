@@ -102,16 +102,16 @@ public class OTPServiceImpl implements OTPService {
 		String email = null;
 		String comment = null;
 		String status = null;
-		String idvId = otpRequestDto.getIdvId();
-		String idvIdType = otpRequestDto.getIdvIdType();
+//		String idvId = otpRequestDto.getIdvId();
+//		String idvIdType = otpRequestDto.getIdvIdType();
 		String reqTime = otpRequestDto.getRequestTime();
 		String txnId = otpRequestDto.getTransactionID();
 		String tspID = otpRequestDto.getPartnerID();
-		Map<String, Object> idResDTO = idAuthService.processIdType(idvIdType, idvId, false);
-		Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
-		mobileNumber = getMobileNumber(idInfo);
-		email = getEmail(idInfo);
-		String uin = String.valueOf(idResDTO.get("uin"));
+//		Map<String, Object> idResDTO = idAuthService.processIdType(idvIdType, idvId, false);
+//		Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
+//		mobileNumber = getMobileNumber(idInfo);
+//		email = getEmail(idInfo);
+//		String uin = String.valueOf(idResDTO.get("uin"));
 		if (!checkIsEmptyorNull(email) && !checkIsEmptyorNull(mobileNumber)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED);
 		}
@@ -119,7 +119,7 @@ public class OTPServiceImpl implements OTPService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
 			String productid = env.getProperty("application.id");
-			otpKey = OTPUtil.generateKey(productid, uin, txnId, tspID);
+//			otpKey = OTPUtil.generateKey(productid, uin, txnId, tspID);
 			try {
 				otp = generateOtp(otpKey);
 			} catch (IdAuthenticationBusinessException e) {
@@ -131,9 +131,9 @@ public class OTPServiceImpl implements OTPService {
 		if (otp == null || otp.trim().isEmpty()) {
 			status = "N";
 			comment = "OTP_GENERATION_FAILED";
-			AutnTxn authTxn = createAuthTxn(idvId, idvIdType, uin, reqTime, txnId, status, comment,
-					RequestType.OTP_REQUEST);
-			idAuthService.saveAutnTxn(authTxn);
+//			AutnTxn authTxn = createAuthTxn(idvId, idvIdType, uin, reqTime, txnId, status, comment,
+//					RequestType.OTP_REQUEST);
+//			idAuthService.saveAutnTxn(authTxn);
 			mosipLogger.error(SESSION_ID, this.getClass().getName(), this.getClass().getName(),
 					"OTP Generation failed");
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
@@ -153,10 +153,10 @@ public class OTPServiceImpl implements OTPService {
 			if (checkIsEmptyorNull(mobileNumber)) {
 				otpResponseDTO.setMaskedMobile(MaskUtil.maskMobile(mobileNumber));
 			}
-			notificationService.sendOtpNotification(otpRequestDto, otp, uin, email, mobileNumber, idInfo);
-			AutnTxn authTxn = createAuthTxn(idvId, idvIdType, uin, reqTime, txnId, status, comment,
-					RequestType.OTP_REQUEST);
-			idAuthService.saveAutnTxn(authTxn);
+//			notificationService.sendOtpNotification(otpRequestDto, otp, uin, email, mobileNumber, idInfo);
+//			AutnTxn authTxn = createAuthTxn(idvId, idvIdType, uin, reqTime, txnId, status, comment,
+//					RequestType.OTP_REQUEST);
+//			idAuthService.saveAutnTxn(authTxn);
 		}
 		return otpResponseDTO;
 
@@ -235,7 +235,7 @@ public class OTPServiceImpl implements OTPService {
 	 */
 	private boolean isOtpFlooded(OtpRequestDTO otpRequestDto) throws IdAuthenticationBusinessException {
 		boolean isOtpFlooded = false;
-		String uniqueID = otpRequestDto.getIdvId();
+//		String uniqueID = otpRequestDto.getIdvId();
 		Date requestTime;
 		LocalDateTime reqTime;
 		try {
@@ -251,9 +251,9 @@ public class OTPServiceImpl implements OTPService {
 		Date addMinutesInOtpRequestDTime = addMinutes(requestTime, -addMinutes);
 		LocalDateTime addMinutesInOtpRequestDTimes = DateUtils.parseDateToLocalDateTime(addMinutesInOtpRequestDTime);
 		int maxCount = Integer.parseInt(env.getProperty(OTP_REQUEST_MAX_COUNT));
-		if (autntxnrepository.countRequestDTime(reqTime, addMinutesInOtpRequestDTimes, uniqueID) > maxCount) {
-			isOtpFlooded = true;
-		}
+//		if (autntxnrepository.countRequestDTime(reqTime, addMinutesInOtpRequestDTimes, uniqueID) > maxCount) {
+//			isOtpFlooded = true;
+//		}
 
 		return isOtpFlooded;
 	}

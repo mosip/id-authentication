@@ -76,11 +76,11 @@ public enum IdaIdMapping implements IdMapping {
 	
 
 	private static List<String> getCbeffMapping(MatchType matchType) {
-		if (matchType instanceof BioMatchType) {
-			BioMatchType bioMatchType = (BioMatchType) matchType;
-			return getCbeffMapping(bioMatchType.getCbeffDocType().getType(), bioMatchType.getSubType(),
-					bioMatchType.getSingleSubtype(), bioMatchType);
-		}
+//		if (matchType instanceof BioMatchType) {
+//			BioMatchType bioMatchType = (BioMatchType) matchType;
+//			return getCbeffMapping(bioMatchType.getCbeffDocType().getType(), bioMatchType.getSubType(),
+//					bioMatchType.getSingleSubtype(), bioMatchType);
+//		}
 		return Collections.emptyList();
 	}
 

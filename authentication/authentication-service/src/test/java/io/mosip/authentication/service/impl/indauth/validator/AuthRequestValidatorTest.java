@@ -39,6 +39,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
 import io.mosip.authentication.service.integration.MasterDataManager;
@@ -88,20 +89,20 @@ public class AuthRequestValidatorTest {
 	@InjectMocks
 	private AuthRequestValidator authRequestValidator;
 
-	@InjectMocks
-	IdInfoHelper idinfoHelper;
+	@Mock
+	private IdInfoHelper idinfoHelper;
 
 	@Mock
 	private MasterDataManager masterDataManager;
+
+	@InjectMocks
+	private IDAMappingConfig idMappingConfig;
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "emailValidatorImpl", emailValidatorImpl);
 		ReflectionTestUtils.setField(authRequestValidator, "phoneValidatorImpl", phoneValidatorImpl);
-		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idinfoHelper);
-		ReflectionTestUtils.setField(idinfoHelper, "environment", env);
-
 	}
 
 	@Test
@@ -1080,6 +1081,7 @@ public class AuthRequestValidatorTest {
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
+		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}

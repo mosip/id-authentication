@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.constant.AuditEvents;
@@ -36,7 +37,8 @@ import io.mosip.kernel.idgenerator.vid.impl.VidGeneratorImpl;
  * 
  * @author Arun Bose
  */
-public class VIDServiceImpl implements VIDService {	
+@Component
+public class VIDServiceImpl implements VIDService {
 
 	private static final String VID_GENERATION_REQUEST = "VID generation request";
 
@@ -75,80 +77,83 @@ public class VIDServiceImpl implements VIDService {
 	@Autowired
 	Environment env;
 
-		/* (non-Javadoc)
-		 * @see io.mosip.authentication.core.spi.spin.service.StaticPinService#generateVID(java.lang.String)
-		 */
-		// @Override
-		public VIDResponseDTO generateVID(String uin) throws IdAuthenticationBusinessException {
-			Map<String, Object> uinMap = idAuthService.processIdType(IdType.UIN.getType(), uin, false);
-			VIDEntity vidEntityObj = null;
-			VIDResponseDTO vidResponseDTO = new VIDResponseDTO();
-			vidResponseDTO.setId(MOSIP_IDENTITY_VID);
-			vidResponseDTO.setVersion(version);	
-			if (Objects.nonNull(uinMap) && !uinMap.isEmpty()) { 
-				List<VIDEntity> vidEntityList = vidRepository.findByUIN(uin, PageRequest.of(0, 1));
-				if (vidEntityList.isEmpty()) {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.core.spi.spin.service.StaticPinService#generateVID(
+	 * java.lang.String)
+	 */
+	// @Override
+	public VIDResponseDTO generateVID(String uin) throws IdAuthenticationBusinessException {
+		Map<String, Object> uinMap = idAuthService.processIdType(IdType.UIN.getType(), uin, false);
+		VIDEntity vidEntityObj = null;
+		VIDResponseDTO vidResponseDTO = new VIDResponseDTO();
+		vidResponseDTO.setId(MOSIP_IDENTITY_VID);
+		vidResponseDTO.setVersion(version);
+		if (Objects.nonNull(uinMap) && !uinMap.isEmpty()) {
+			List<VIDEntity> vidEntityList = vidRepository.findByUIN(uin, PageRequest.of(0, 1));
+			if (vidEntityList.isEmpty()) {
+				try {
+					vidEntityObj = generateVIDEntity(uin);
+					vidRepository.save(vidEntityObj);
+				} catch (DataAccessException ex) {
+					logger.error(SESSION_ID, this.getClass().getName(), ex.getClass().getName(), ex.getMessage());
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VID_GENERATION_FAILED,
+							ex);
+				}
+				vidResponseDTO.setVid(vidEntityObj.getId());
+				vidResponseDTO.setError(Collections.emptyList());
+			} else {
+				vidEntityObj = vidEntityList.get(0);
+				if (vidEntityObj.isActive()
+						&& vidEntityObj.getExpiryDate().isAfter(DateUtils.getUTCCurrentDateTime())) {
+					vidResponseDTO.setVid(vidEntityObj.getId());
+					List<AuthError> listAuthError = new ArrayList<>();
+					AuthError authError = new AuthError();
+					authError.setErrorCode(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED.getErrorCode());
+					authError.setErrorMessage(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED.getErrorMessage());
+					listAuthError.add(authError);
+					vidResponseDTO.setError(listAuthError);
+				}
+
+				else if (!vidEntityObj.isActive()
+						|| vidEntityObj.getExpiryDate().isBefore(DateUtils.getUTCCurrentDateTime())) {
 					try {
 						vidEntityObj = generateVIDEntity(uin);
 						vidRepository.save(vidEntityObj);
 					} catch (DataAccessException ex) {
 						logger.error(SESSION_ID, this.getClass().getName(), ex.getClass().getName(), ex.getMessage());
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VID_GENERATION_FAILED,
-								ex);
+						throw new IdAuthenticationBusinessException(
+								IdAuthenticationErrorConstants.VID_GENERATION_FAILED, ex);
 					}
 					vidResponseDTO.setVid(vidEntityObj.getId());
 					vidResponseDTO.setError(Collections.emptyList());
 				}
-				else {
-					vidEntityObj = vidEntityList.get(0);
-					if (vidEntityObj.isActive()
-							&& vidEntityObj.getExpiryDate().isAfter(DateUtils.getUTCCurrentDateTime())) {
-						vidResponseDTO.setVid(vidEntityObj.getId());
-						List<AuthError> listAuthError=new ArrayList<>();
-						AuthError authError=new AuthError();
-						authError.setErrorCode(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED.getErrorCode());
-						authError.setErrorMessage(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED.getErrorMessage());
-						listAuthError.add(authError);
-						vidResponseDTO.setError(listAuthError);
-					}
-
-					else if (!vidEntityObj.isActive()
-							|| vidEntityObj.getExpiryDate().isBefore(DateUtils.getUTCCurrentDateTime())) {
-						try {
-							 vidEntityObj = generateVIDEntity(uin);
-							vidRepository.save(vidEntityObj);
-						} catch (DataAccessException ex) {
-							logger.error(SESSION_ID, this.getClass().getName(), ex.getClass().getName(), ex.getMessage());
-							throw new IdAuthenticationBusinessException(
-									IdAuthenticationErrorConstants.VID_GENERATION_FAILED, ex);
-						}
-						vidResponseDTO.setVid(vidEntityObj.getId());
-						vidResponseDTO.setError(Collections.emptyList());
-					}
-				}
 			}
-			
-			else {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN);
-			}
-			vidResponseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
-			auditHelper.audit(AuditModules.VID_GENERATION_REQUEST, AuditEvents.VID_GENERATE_REQUEST_RESPONSE,
-					IdType.UIN.getType(), IdType.UIN, VID_GENERATION_REQUEST);
-			return vidResponseDTO;
 		}
 
-		private VIDEntity generateVIDEntity(String uin) {
-			VIDEntity vidEntityObj;
-			vidEntityObj = new VIDEntity();
-			vidEntityObj.setId((String) vidGenerator.generateId());
-			vidEntityObj.setUin(uin);
-			vidEntityObj.setActive(true);
-			vidEntityObj.setCreatedBy(IDA);
-			vidEntityObj.setCreatedDTimes(DateUtils.getUTCCurrentDateTime());
-			vidEntityObj.setExpiryDate(DateUtils.getUTCCurrentDateTime()
-					.plusHours(env.getProperty("mosip.vid.validity.hours", Long.class)));
-			vidEntityObj.setGeneratedOn(DateUtils.getUTCCurrentDateTime());
-			vidEntityObj.setDeleted(false);
-			return vidEntityObj;
+		else {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN);
 		}
+		vidResponseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		auditHelper.audit(AuditModules.VID_GENERATION_REQUEST, AuditEvents.VID_GENERATE_REQUEST_RESPONSE,
+				IdType.UIN.getType(), IdType.UIN, VID_GENERATION_REQUEST);
+		return vidResponseDTO;
+	}
+
+	private VIDEntity generateVIDEntity(String uin) {
+		VIDEntity vidEntityObj;
+		vidEntityObj = new VIDEntity();
+		vidEntityObj.setId((String) vidGenerator.generateId());
+		vidEntityObj.setUin(uin);
+		vidEntityObj.setActive(true);
+		vidEntityObj.setCreatedBy(IDA);
+		vidEntityObj.setCreatedDTimes(DateUtils.getUTCCurrentDateTime());
+		vidEntityObj.setExpiryDate(
+				DateUtils.getUTCCurrentDateTime().plusHours(env.getProperty("mosip.vid.validity.hours", Long.class)));
+		vidEntityObj.setGeneratedOn(DateUtils.getUTCCurrentDateTime());
+		vidEntityObj.setDeleted(false);
+		return vidEntityObj;
+	}
 }

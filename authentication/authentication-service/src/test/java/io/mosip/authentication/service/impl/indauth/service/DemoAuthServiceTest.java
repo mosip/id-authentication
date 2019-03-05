@@ -33,15 +33,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.AuthSecureDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.BioType;
-import io.mosip.authentication.core.dto.indauth.DeviceInfo;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.MatchInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
@@ -119,10 +116,10 @@ public class DemoAuthServiceTest {
 		infoList.add(identityInfoDTO);
 		identityDTO.setFullAddress(infoList);
 		requestDTO.setIdentity(identityDTO);
-		AuthSecureDTO authSecureDTO = new AuthSecureDTO();
-		authSecureDTO.setPublicKeyCert("1234567890");
-		authSecureDTO.setSessionKey("1234567890");
-		authRequestDTO.setKey(authSecureDTO);
+////		AuthSecureDTO authSecureDTO = new AuthSecureDTO();
+//		authSecureDTO.setPublicKeyCert("1234567890");
+//		authSecureDTO.setSessionKey("1234567890");
+//		authRequestDTO.setKey(authSecureDTO);
 		authRequestDTO.setPartnerID("1234567890");
 //		authRequestDTO.setReqHmac("string");
 		authRequestDTO.setRequestTime("2018-10-30T11:02:22.778+0000");
@@ -138,7 +135,7 @@ public class DemoAuthServiceTest {
 		Map<String, Object> matchProperties = new HashMap<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
-		DeviceInfo deviceInfo1 = null;
+//		DeviceInfo deviceInfo1 = null;
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR, MatchingStrategyType.PARTIAL.getType(),
 				60, matchProperties, "fre"));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
@@ -178,15 +175,15 @@ public class DemoAuthServiceTest {
 		infoList.add(identityInfoDTO);
 		identityDTO.setFullAddress(infoList);
 		requestDTO.setIdentity(identityDTO);
-		AuthSecureDTO authSecureDTO = new AuthSecureDTO();
-		authSecureDTO.setPublicKeyCert("1234567890");
-		authSecureDTO.setSessionKey("1234567890");
-		authRequestDTO.setKey(authSecureDTO);
-		MatchInfo matchInfo = new MatchInfo();
-		matchInfo.setAuthType("address");
-		matchInfo.setLanguage("fre");
-		matchInfo.setMatchingStrategy(MatchingStrategyType.EXACT.getType());
-		matchInfo.setMatchingThreshold(100);
+//		AuthSecureDTO authSecureDTO = new AuthSecureDTO();
+////		authSecureDTO.setPublicKeyCert("1234567890");
+////		authSecureDTO.setSessionKey("1234567890");
+////		authRequestDTO.setKey(authSecureDTO);
+////		MatchInfo matchInfo = new MatchInfo();
+//		matchInfo.setAuthType("address");
+//		matchInfo.setLanguage("fre");
+//		matchInfo.setMatchingStrategy(MatchingStrategyType.EXACT.getType());
+//		matchInfo.setMatchingThreshold(100);
 		authRequestDTO.setPartnerID("1234567890");
 //		authRequestDTO.setReqHmac("string");
 		authRequestDTO.setRequestTime("2018-10-30T11:02:22.778+0000");
@@ -235,7 +232,6 @@ public class DemoAuthServiceTest {
 		// authRequestDTO.setVer("1.0");
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
-		DeviceInfo deviceInfo1 = null;
 		Map<String, Object> matchProperties = new HashMap<>();
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE1,
 				MatchingStrategyType.EXACT.getType(), 100, matchProperties, "fre"));
@@ -290,10 +286,6 @@ public class DemoAuthServiceTest {
 		nameList.add(nameInfoDTO);
 		identityDTO.setName(nameList);
 		requestDTO.setIdentity(identityDTO);
-		AuthSecureDTO authSecureDTO = new AuthSecureDTO();
-		authSecureDTO.setPublicKeyCert("1234567890");
-		authSecureDTO.setSessionKey("1234567890");
-		authRequestDTO.setKey(authSecureDTO);
 		authRequestDTO.setRequestTime("2018-10-30T11:02:22.778+0000");
 		RequestDTO request = new RequestDTO();
 		request.setIdentity(identityDTO);
@@ -303,7 +295,6 @@ public class DemoAuthServiceTest {
 		// authRequestDTO.setVer("1.0");
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
-		DeviceInfo deviceInfo1 = null;
 		Map<String, Object> matchProperties = new HashMap<>();
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.NAME, MatchingStrategyType.EXACT.getType(),
 				100, matchProperties, "fre"));
@@ -426,10 +417,6 @@ public class DemoAuthServiceTest {
 		nameList.add(nameInfoDTO);
 		identityDTO.setName(nameList);
 		requestDTO.setIdentity(identityDTO);
-		AuthSecureDTO authSecureDTO = new AuthSecureDTO();
-		authSecureDTO.setPublicKeyCert("1234567890");
-		authSecureDTO.setSessionKey("1234567890");
-		authRequestDTO.setKey(authSecureDTO);
 		authRequestDTO.setPartnerID("1234567890");
 		authRequestDTO.setRequestTime("2018-10-30T11:02:22.778+0000");
 		RequestDTO request = new RequestDTO();
@@ -474,7 +461,6 @@ public class DemoAuthServiceTest {
 		authTypeDTO.setPin(false);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
-		authRequestDTO.setKey(new AuthSecureDTO());
 		BioInfo bioinfo = new BioInfo();
 		bioinfo.setBioType(BioType.FGRIMG.getType());
 		authRequestDTO.setPartnerID("1234567890");
@@ -539,7 +525,6 @@ public class DemoAuthServiceTest {
 		authTypeDTO.setPin(false);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
-		authRequestDTO.setKey(new AuthSecureDTO());
 		authRequestDTO.setPartnerID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
