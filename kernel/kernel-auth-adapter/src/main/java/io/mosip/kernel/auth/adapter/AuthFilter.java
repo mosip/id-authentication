@@ -2,7 +2,6 @@ package io.mosip.kernel.auth.adapter;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -77,7 +76,7 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
             }
             }
         if (token == null) {
-            throw new RuntimeException("Invalid Token");
+            throw new RuntimeException(AuthAdapterConstant.AUTH_INVALID_TOKEN);
         }
 
         AuthToken authToken = new AuthToken(token);
