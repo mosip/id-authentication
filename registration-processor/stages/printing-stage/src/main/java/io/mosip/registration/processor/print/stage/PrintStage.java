@@ -4,6 +4,9 @@ import java.io.File;
 import java.util.Map;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -30,6 +33,7 @@ import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.print.exception.PrintGlobalExceptionHandler;
 import io.mosip.registration.processor.print.exception.QueueConnectionNotFound;
+import io.mosip.registration.processor.print.service.impl.PrintPostServiceImpl;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -94,6 +98,10 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 	@Autowired
 	private PrintService<Map<String, byte[]>> printService;
+	
+	/** The print post service. */
+	@Autowired
+	private PrintPostServiceImpl printPostService;
 
 	@Value("${registration.processor.queue.username}")
 	private String username;
@@ -131,7 +139,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 		object.setInternalError(Boolean.FALSE);
 		String description = null;
 		String regId = object.getRid();
-
+		
 		try {
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(regId);
@@ -147,7 +155,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 			}
 
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0);
-
+			printPostService.generatePrintandPostal(regId);
+			
 			if (isAddedToQueue) {
 				object.setIsValid(Boolean.TRUE);
 				isTransactionSuccessful = true;
@@ -165,6 +174,19 @@ public class PrintStage extends MosipVerticleAPIManager {
 			fileCleanUp();
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			
+			if (consumeResponseFromQueue(regId)) {
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.PRINT_AND_POST_COMPLETED.toString());
+				registrationStatusDto.setStatusComment("Print and Post Completed for the regId " + regId);
+				registrationStatusDto.setUpdatedBy(USER);
+				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			} else {
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.RESEND_UIN_CARD_FOR_PRINTING.toString());
+				registrationStatusDto.setStatusComment("Re-Send uin card with regId " + regId + " for printing");
+				registrationStatusDto.setUpdatedBy(USER);
+				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+				object.setIsValid(Boolean.FALSE);
+			}
 
 		} catch (PDFGeneratorException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -298,6 +320,41 @@ public class PrintStage extends MosipVerticleAPIManager {
 			this.setResponse(ctx, "Cought internal error in messageDto");
 		}
 
+	}
+	
+	/**
+	 * Consume response from queue.
+	 *
+	 * @param regId the reg id
+	 * @return true, if successful
+	 */
+	private boolean consumeResponseFromQueue(String regId) {
+		boolean result = false;
+		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(regId);
+
+		MosipQueue queue = mosipConnectionFactory.createConnection(typeOfQueue, username, password, url);
+
+		// Consuming the response from the third party service provider
+		byte[] responseFromQueue = mosipQueueManager.consume(queue, "provider-response");
+		String response = new String(responseFromQueue);
+		JSONParser parser = new JSONParser();
+		JSONObject identityJson = null;
+		try {
+			identityJson = (JSONObject) parser.parse(response);
+			String uinFieldCheck = (String) identityJson.get("Status");
+			if (uinFieldCheck.equals("Success")) {				
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.PRINT_AND_POST_COMPLETED.toString());
+				registrationStatusDto.setStatusComment("Print and Post Completed for the regId " + regId);
+				registrationStatusDto.setUpdatedBy(USER);
+				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+				result = true;
+			}
+		} catch (ParseException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId, PlatformErrorMessages.RPR_PRT_PRINT_POST_ACK_FAILED.name() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+		}
+		return result;
 	}
 
 }

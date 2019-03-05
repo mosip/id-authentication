@@ -487,6 +487,9 @@ public enum PlatformErrorMessages {
 	/** The rpr prt idrepo documents absent*/
 	RPR_PRT_IDREPO_DOCUMENT_ABSENT(PlatformErrorConstants.RPR_PRINTING_MODULE + "009", "ID Repo response has no documents"),
 	
+	/** The print and postal acknowledment generation failed. */
+	RPR_PRT_PRINT_POST_ACK_FAILED(PlatformErrorConstants.RPR_PRINTING_MODULE + "010", "Error while getting response from Print and Postal Service Provider"),
+	
 	/** The rpr rgs registration connector not accessible. */
 	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),
 

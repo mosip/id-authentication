@@ -26,6 +26,7 @@ import io.mosip.kernel.qrcode.generator.zxing.QrcodeGeneratorImpl;
 import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerator;
+import io.mosip.registration.processor.print.service.impl.PrintPostServiceImpl;
 import io.mosip.registration.processor.print.service.impl.PrintServiceImpl;
 import io.mosip.registration.processor.print.service.utility.UinCardGeneratorImpl;
 
@@ -131,6 +132,16 @@ public class PrintServiceConfig {
 	@Primary
 	public CbeffUtil getCbeffUtil() {
 		return new CbeffImpl();
+	}
+	
+	/**
+	 * Gets the print & post service impl.
+	 *
+	 * @return the print & post service impl
+	 */
+	@Bean
+	public PrintPostServiceImpl getPrintPostServiceImpl() {
+		return new PrintPostServiceImpl();
 	}
 
 }
