@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -14,7 +15,6 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
@@ -33,13 +33,13 @@ public enum PinMatchType implements MatchType {
 
 	/** Primary Pin Match Type. */
 	SPIN(IdaIdMapping.PIN, setOf(PinMatchingStrategy.EXACT), authReqDTO -> {
-		return authReqDTO.getPinInfo().stream().filter(type -> type.getType().equalsIgnoreCase(PinAuthType.SPIN.getType())).findFirst()
-				.map(PinInfo::getValue).orElse("");
+		String staticPin = authReqDTO.getRequest().getAdditionalFactors().getStaticPin();
+		return Objects.nonNull(staticPin)? staticPin : "";
 	}, AuthUsageDataBit.USED_STATIC_PIN, AuthUsageDataBit.MATCHED_STATIC_PIN),
 	OTP(IdaIdMapping.OTP, setOf(OtpMatchingStrategy.EXACT), 
 		authReqDTO -> {
-			return authReqDTO.getPinInfo().stream().filter(type -> type.getType().equalsIgnoreCase(PinAuthType.OTP.getType())).findFirst()
-					.map(PinInfo::getValue).orElse("");
+			String tOtp = authReqDTO.getRequest().getAdditionalFactors().getTotp();
+			return Objects.nonNull(tOtp)? tOtp : "";
 		}, AuthUsageDataBit.USED_OTP, AuthUsageDataBit.MATCHED_OTP);
 
 	/** The allowed matching strategy. */

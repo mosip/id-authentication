@@ -41,7 +41,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.KycInfo;
+import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
@@ -116,7 +116,7 @@ public class KycServiceImplTest {
 			deleteBootStrapFile();
 			prepareMap(idInfo);
 			Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any())).thenReturn("test");
-			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, true, false, idInfo);
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, "ara", idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -127,7 +127,7 @@ public class KycServiceImplTest {
 	public void validUIN1() {
 		try {
 			deleteBootStrapFile();
-			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, false, true, idInfo);
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, "ara", idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -149,7 +149,7 @@ public class KycServiceImplTest {
 	public void validUIN2() {
 		try {
 			prepareMap(idInfo);
-			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, true, true, idInfo);
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, "ara", idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -160,7 +160,7 @@ public class KycServiceImplTest {
 	public void validUIN3() {
 		try {
 			prepareMap(idInfo);
-			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.FULL, true, false, idInfo);
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.FULL, "ara", idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -171,7 +171,7 @@ public class KycServiceImplTest {
 	public void validUIN4() {
 		try {
 			prepareMap(idInfo);
-			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.FULL, true, false, idInfo);
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.FULL, "ara", idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -182,7 +182,7 @@ public class KycServiceImplTest {
 	public void validUIN5() throws IdAuthenticationDaoException {
 		try {
 			prepareMap(idInfo);
-			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.FULL, true, true, idInfo);
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.FULL, "ara", idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -193,7 +193,7 @@ public class KycServiceImplTest {
 	public void validUIN6() throws IdAuthenticationDaoException, IOException, IdAuthenticationBusinessException {
 		MockEnvironment environment = new MockEnvironment();
 		ReflectionTestUtils.setField(kycServiceImpl, "env", environment);
-		KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.FULL, true, true, idInfo);
+		kycServiceImpl.retrieveKycInfo("12232323121", KycType.FULL, "ara", idInfo);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -203,7 +203,7 @@ public class KycServiceImplTest {
 		environment.setProperty("ekyc.type.fullkyc",
 				"fullName,firstName,middleName,lastName,dateOfBirth,gender,phone,email,addressLine1,addressLine2,addressLine3,city,province,region,postalCode,face");
 		ReflectionTestUtils.setField(kycServiceImpl, "env", environment);
-		kycServiceImpl.retrieveKycInfo("12232323121", KycType.FULL, true, true, idInfo);
+		kycServiceImpl.retrieveKycInfo("12232323121", KycType.FULL, "ara", idInfo);
 	}
 
 	@Test
