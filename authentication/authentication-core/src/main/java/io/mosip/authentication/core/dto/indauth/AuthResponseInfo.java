@@ -23,13 +23,6 @@ public class AuthResponseInfo {
 	 */
 	private String reqTime;
 	
-	/**
-	 * List of all match informations used in different authentication types such as
-	 * Demo Auth, Bio Auth, etc...
-	 */
-	private List<MatchInfo> matchInfos;
-	
-	private List<BioInfo> bioInfos;
 	
 	/**
 	 * The 16 digit Hexa decimal data that encodes the authentication types that are 
