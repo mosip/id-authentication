@@ -16,6 +16,8 @@ export default class Utils {
     }
     urlSegments.push(nextRoute);
     const url = urlSegments.join('/');
+    console.log(url);
+
     return url;
   }
 }

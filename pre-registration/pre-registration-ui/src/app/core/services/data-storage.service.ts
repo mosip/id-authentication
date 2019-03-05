@@ -26,7 +26,6 @@ export class DataStorageService {
   COPY_DOCUMENT_URL = this.BASE_URL + this.PRE_REG_URL + 'document/copyDocuments';
   QR_CODE_URL = this.BASE_URL + this.PRE_REG_URL + 'notification/generateQRCode';
   NOTIFICATION_URL = this.BASE_URL + this.PRE_REG_URL + 'notification/notify';
-  LANGUAGE_CODE = localStorage.getItem('langCode');
   DISTANCE = 2000;
 
   getUsers(value: string) {
@@ -49,9 +48,9 @@ export class DataStorageService {
     return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.gender);
   }
 
-  getResidenceDetails() {
-    return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.resident);
-  }
+  // getResidenceDetails() {
+  //   return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.resident);
+  // }
 
   getTransliteration(request: any) {
     const obj = {
@@ -110,7 +109,7 @@ export class DataStorageService {
     return this.httpClient.get(
       this.MASTER_DATA_URL +
         'getcoordinatespecificregistrationcenters/' +
-        this.LANGUAGE_CODE +
+        localStorage.getItem('langCode') +
         '/' +
         coords.longitude +
         '/' +
@@ -122,12 +121,12 @@ export class DataStorageService {
 
   getRegistrationCentersByName(locType: string, text: string) {
     return this.httpClient.get(
-      this.MASTER_DATA_URL + 'registrationcenters/' + this.LANGUAGE_CODE + '/' + locType + '/' + text
+      this.MASTER_DATA_URL + 'registrationcenters/' + localStorage.getItem('langCode') + '/' + locType + '/' + text
     );
   }
 
   getLocationTypeData() {
-    return this.httpClient.get(this.MASTER_DATA_URL + 'locations/' + this.LANGUAGE_CODE);
+    return this.httpClient.get(this.MASTER_DATA_URL + 'locations/' + localStorage.getItem('langCode'));
   }
 
   getAvailabilityData(registrationCenterId) {
@@ -198,8 +197,7 @@ export class DataStorageService {
     //   const options = new RequestOptions({
     //     params: params,
     //   });
-    const url =
-      this.COPY_DOCUMENT_URL + '?catCode=POA&destinationPreId=' + destinationId + '&sourcePrId=' + sourceId;
+    const url = this.COPY_DOCUMENT_URL + '?catCode=POA&destinationPreId=' + destinationId + '&sourcePrId=' + sourceId;
     console.log('copy document URL', url);
     return this.httpClient.post(url, '');
   }

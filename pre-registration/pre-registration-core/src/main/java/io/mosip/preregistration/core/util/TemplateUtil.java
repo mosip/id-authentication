@@ -53,6 +53,12 @@ public class TemplateUtil {
 	@Autowired
 	private TemplateManager templateManager;
 
+	/**
+	 * This method is used for getting template
+	 * @param langCode
+	 * @param templatetypecode
+	 * @return
+	 */
 	public String getTemplate(String langCode,String templatetypecode)  {
 		
 		

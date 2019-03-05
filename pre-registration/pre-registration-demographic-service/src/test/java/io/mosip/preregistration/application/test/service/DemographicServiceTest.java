@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
@@ -58,6 +59,7 @@ import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
+import io.mosip.preregistration.application.exception.InvalidDateFormatException;
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
@@ -81,6 +83,7 @@ import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.CryptoUtil;
+import io.mosip.preregistration.core.util.HashUtill;
 
 /**
  * Test class to test the PreRegistration Service methods
@@ -174,7 +177,9 @@ public class DemographicServiceTest {
 
 	String fromDate = "";
 	String toDate = "";
-
+	
+	JSONArray fullname;
+	LocalDateTime encryptionDateTime = DateUtils.getUTCCurrentDateTime();
 	/**
 	 * @throws ParseException
 	 * @throws FileNotFoundException
@@ -209,8 +214,12 @@ public class DemographicServiceTest {
 		preRegistrationEntity.setCreatedBy("9988905444");
 		preRegistrationEntity.setStatusCode("Pending_Appointment");
 		preRegistrationEntity.setUpdateDateTime(times);
-		preRegistrationEntity.setApplicantDetailJson(jsonTestObject.toJSONString().getBytes());
+		
+		byte[] encryptedDemographicDetails = cryptoUtil
+				.encrypt(jsonTestObject.toJSONString().getBytes(), encryptionDateTime);
+		//preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		preRegistrationEntity.setPreRegistrationId("98746563542672");
+		preRegistrationEntity.setDemogDetailHash(HashUtill.hashUtill(jsonTestObject.toJSONString().getBytes()).toString());
 		userEntityDetails.add(preRegistrationEntity);
 
 		logger.info("Entity " + preRegistrationEntity);
@@ -274,6 +283,12 @@ public class DemographicServiceTest {
 	 */
 	@Test
 	public void successSaveImplTest() throws Exception {
+		
+		byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
+		
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(),Mockito.any())).thenReturn(encryptedDemographicDetails);
+		
+		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		Mockito.when(pridGenerator.generateId()).thenReturn("67547447647457");
 		Mockito.when(jsonValidator.validateJson(jsonObject.toString(), "mosip-prereg-identity-json-schema.json"))
 				.thenReturn(null);
@@ -287,6 +302,7 @@ public class DemographicServiceTest {
 		createPreRegistrationDTO = new DemographicRequestDTO();
 		createPreRegistrationDTO.setDemographicDetails(jsonObject);
 		createPreRegistrationDTO.setPreRegistrationId("");
+		
 		createPreRegistrationDTO.setCreatedBy("9988905444");
 		createPreRegistrationDTO.setCreatedDateTime(serviceUtil.getLocalDateString(times));
 		demographicRequestDTO.setRequest(createPreRegistrationDTO);
@@ -306,6 +322,11 @@ public class DemographicServiceTest {
 	public void saveFailureCheck() throws Exception {
 		DataAccessLayerException exception = new DataAccessLayerException(ErrorCodes.PRG_PAM_APP_002.toString(),
 				ErrorMessages.PRE_REGISTRATION_TABLE_NOT_ACCESSIBLE.toString(), null);
+byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
+		
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(),Mockito.any())).thenReturn(encryptedDemographicDetails);
+		
+		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		Mockito.when(jsonValidator.validateJson(jsonObject.toString(), "mosip-prereg-identity-json-schema.json"))
 				.thenReturn(null);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
@@ -321,6 +342,12 @@ public class DemographicServiceTest {
 
 	@Test
 	public void successUpdateTest() throws Exception {
+byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
+		
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(),Mockito.any())).thenReturn(encryptedDemographicDetails);
+		
+		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
+		preRegistrationEntity.setDemogDetailHash(new String(HashUtill.hashUtill(preRegistrationEntity.getApplicantDetailJson())));
 		Mockito.when(jsonValidator.validateJson(jsonTestObject.toString(), "mosip-prereg-identity-json-schema.json"))
 				.thenReturn(null);
 		Mockito.when(demographicRepository.findBypreRegistrationId("98746563542672")).thenReturn(preRegistrationEntity);
@@ -343,6 +370,11 @@ public class DemographicServiceTest {
 	public void updateFailureCheck() throws Exception {
 		HttpRequestException exception = new HttpRequestException(ErrorCodes.PRG_PAM_APP_007.name(),
 				ErrorMessages.JSON_PARSING_FAILED.name());
+byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
+		
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(),Mockito.any())).thenReturn(encryptedDemographicDetails);
+		
+		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		Mockito.when(jsonValidator.validateJson(jsonTestObject.toString(), "mosip-prereg-identity-json-schema.json"))
 				.thenReturn(null);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
@@ -410,7 +442,11 @@ public class DemographicServiceTest {
 
 	@Test
 	public void getApplicationDetailsTest() throws ParseException {
-
+byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
+		
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(),Mockito.any())).thenReturn(encryptedDemographicDetails);
+		
+		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		String userId = "9988905444";
@@ -420,13 +456,12 @@ public class DemographicServiceTest {
 
 		viewDto = new PreRegistrationViewDTO();
 		viewDto.setPreRegistrationId("98746563542672");
-		viewDto.setFullname("rupika");
 		viewDto.setStatusCode(preRegistrationEntity.getStatusCode());
 		viewDto.setBookingRegistrationDTO(bookingRegistrationDTO);
 
 		viewList.add(viewDto);
 		response.setResponse(viewList);
-		response.setStatus(Boolean.TRUE);
+		response.setStatus(Boolean.FALSE);
 		MainResponseDTO<BookingRegistrationDTO> bookingResultDto = new MainResponseDTO<>();
 		BookingRegistrationDTO bookingResponse= new BookingRegistrationDTO();
 		bookingResponse.setRegDate("12/01/2018");
@@ -464,6 +499,12 @@ public class DemographicServiceTest {
 	@Test
 	public void getApplicationStatusTest() {
 		String preId = "98746563542672";
+byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
+		
+		//Mockito.when(cryptoUtil.encrypt(Mockito.any(),Mockito.any())).thenReturn(encryptedDemographicDetails);
+		
+		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
+		preRegistrationEntity.setDemogDetailHash(new String(HashUtill.hashUtill(preRegistrationEntity.getApplicantDetailJson())));
 		MainListResponseDTO<PreRegistartionStatusDTO> response = new MainListResponseDTO<>();
 		List<PreRegistartionStatusDTO> statusList = new ArrayList<PreRegistartionStatusDTO>();
 		PreRegistartionStatusDTO statusDto = new PreRegistartionStatusDTO();
@@ -634,7 +675,7 @@ public class DemographicServiceTest {
 		String preRegId = "98746563542672";
 		preRegistrationEntity.setCreateDateTime(times);
 		preRegistrationEntity.setCreatedBy("9988905444");
-		preRegistrationEntity.setStatusCode("Pending_Appointment");
+		preRegistrationEntity.setStatusCode("Booked");
 		preRegistrationEntity.setUpdateDateTime(times);
 		preRegistrationEntity.setApplicantDetailJson(jsonTestObject.toJSONString().getBytes());
 		preRegistrationEntity.setPreRegistrationId("98746563542672");
@@ -701,6 +742,12 @@ public class DemographicServiceTest {
 
 	@Test
 	public void getPreRegistrationTest() {
+		byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
+		
+		//Mockito.when(cryptoUtil.encrypt(Mockito.any(),Mockito.any())).thenReturn(encryptedDemographicDetails);
+		
+		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
+		preRegistrationEntity.setDemogDetailHash(new String(HashUtill.hashUtill(preRegistrationEntity.getApplicantDetailJson())));
 		Mockito.when(demographicRepository.findBypreRegistrationId("98746563542672")).thenReturn(preRegistrationEntity);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
 		MainListResponseDTO<DemographicResponseDTO> res = preRegistrationService.getDemographicData("98746563542672");
@@ -797,8 +844,12 @@ public class DemographicServiceTest {
 
 	}
 
-
-
+@Test(expected=InvalidDateFormatException.class)
+public void getPreRegistrationByDateExceptionTest() {
+	String fromDate = "20-12-06 09:49:29";
+	String toDate = "2018-12-06 12:59:29";
+	preRegistrationService.getPreRegistrationByDate(fromDate, toDate);
+}
 	/**
 	 * @throws Exception
 	 */
@@ -864,7 +915,11 @@ public class DemographicServiceTest {
 	
 	@Test
 	public void callGetAppointmentDetailsRestServiceTest() throws ParseException {
-
+byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
+		
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(),Mockito.any())).thenReturn(encryptedDemographicDetails);
+		
+		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		String userId = "9988905444";
@@ -874,13 +929,12 @@ public class DemographicServiceTest {
 
 		viewDto = new PreRegistrationViewDTO();
 		viewDto.setPreRegistrationId("98746563542672");
-		viewDto.setFullname("rupika");
 		viewDto.setStatusCode(preRegistrationEntity.getStatusCode());
 		viewDto.setBookingRegistrationDTO(bookingRegistrationDTO);
 
 		viewList.add(viewDto);
 		response.setResponse(viewList);
-		response.setStatus(Boolean.TRUE);
+		response.setStatus(Boolean.FALSE);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(userEntityDetails.get(0).getApplicantDetailJson());
 		Mockito.when(demographicRepository.findByCreatedBy(userId, "Consumed")).thenReturn(userEntityDetails);
 		BookingRegistrationDTO bookingRegistrationDTO = null;

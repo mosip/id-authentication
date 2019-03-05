@@ -7,7 +7,6 @@ package io.mosip.preregistration.application.exception.util;
 
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
@@ -21,6 +20,7 @@ import io.mosip.preregistration.application.exception.BookingDeletionFailedExcep
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.InvalidDateFormatException;
 import io.mosip.preregistration.application.exception.MissingRequestParameterException;
+import io.mosip.preregistration.application.exception.OperationNotAllowedException;
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
@@ -30,6 +30,7 @@ import io.mosip.preregistration.application.exception.system.JsonValidationExcep
 import io.mosip.preregistration.application.exception.system.SystemFileIOException;
 import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
+import io.mosip.preregistration.core.exception.HashingException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
@@ -38,6 +39,7 @@ import io.mosip.preregistration.core.exception.TableNotAccessibleException;
  * pre-registration
  * 
  * @author Ravi C Balaji
+ * 
  * @since 1.0.0
  *
  */
@@ -92,6 +94,10 @@ public class DemographicExceptionCatcher {
 					((InvalidDateFormatException) ex).getErrorText());
 		}else if (ex instanceof BookingDeletionFailedException) {
 			throw new BookingDeletionFailedException(((BookingDeletionFailedException) ex).getErrorCode(),((BookingDeletionFailedException) ex).getErrorText());
+		}else if (ex instanceof HashingException) {
+			throw new HashingException(((HashingException) ex).getErrorCode(),((HashingException) ex).getErrorText());
+		}else if (ex instanceof OperationNotAllowedException) {
+			throw new OperationNotAllowedException(((OperationNotAllowedException) ex).getErrorCode(),((OperationNotAllowedException) ex).getErrorText());
 		}
 	}
 

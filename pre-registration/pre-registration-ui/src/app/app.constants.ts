@@ -31,7 +31,7 @@ export const APPEND_URL = {
   applicants: 'demographic/applications',
   location: 'masterdata/',
   gender: 'masterdata/v1.0/gendertypes',
-  resident: 'masterdata/v1.0/residenttypes',
+  // resident: 'masterdata/v1.0/residenttypes',
   transliteration: 'translitration/translitrate'
 };
 
@@ -56,7 +56,8 @@ export const DASHBOARD_RESPONSE_KEYS = {
   applicant: {
     preId: 'preRegistrationId',
     fullname: 'fullname',
-    statusCode: 'statusCode'
+    statusCode: 'statusCode',
+    postalCode: 'postalCode'
   }
 };
 
@@ -99,4 +100,3 @@ export const DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY = 'file';
 export const DOCUMENT_UPLOAD_REQUEST_DTO_KEY = 'Document request';
 
 export const PREVIEW_DATA_APPEND_URL = 'demographic/v0.1/applicationData';
-// "BASE_URL": "https://dev.mosip.io/"

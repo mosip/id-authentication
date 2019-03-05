@@ -25,6 +25,7 @@ import io.mosip.preregistration.application.exception.system.SystemIllegalArgume
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
+import io.mosip.preregistration.core.exception.HashingException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.GenericUtil;
@@ -302,6 +303,23 @@ public class DemographicExceptionHandler {
 	 */
 	@ExceptionHandler(BookingDeletionFailedException.class)
 	public ResponseEntity<MainListResponseDTO> bookingDeletionFailedException(final BookingDeletionFailedException e,
+			WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
+		errorRes.setErr(errorDetails);
+		errorRes.setStatus(Boolean.FALSE);
+		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for SystemFileIOException
+	 */
+	@ExceptionHandler(HashingException.class)
+	public ResponseEntity<MainListResponseDTO> HashingException(final HashingException e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();

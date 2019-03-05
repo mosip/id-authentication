@@ -40,7 +40,7 @@
         <hr />
       </mat-card-content>
       <mat-card-footer id="guidelines-container" class="ack__guidelines-container">
-        <h4>{{'acknowledgement.container_guideline'|translate}}</h4>
+        <h4>{{'acknowledgement.container_guideline'|translate}} </h4>
         <ul>
           <li *ngFor="let guideline of guidelines">
             {{guideline}}
@@ -54,7 +54,7 @@
     <mat-card class="ack__button-container">
       <!-- <button mat-button (click)="navigateBack()" class="user-back-btn">{{'preview.action_back'| translate}}</button> -->
       <span class="spacer"></span>
-      <button matTooltip="Info about the action" mat-button (click)="sendAcknowledgement()" class="ack-book_later-btn">{{'acknowledgement.action_send'|translate}}</button>
+      <button matTooltip="{{'helpText.send_email/sms' | translate}}" mat-button (click)="sendAcknowledgement()" class="ack-book_later-btn">{{'acknowledgement.action_send'|translate}}</button>
       <button mat-button (click)="download()" class="ack-book_later-btn">{{'acknowledgement.action_download'|translate}}</button>
       <button mat-button [printStyle]="{'#message-container': {'display': 'none'}, '#body-container': {'display': 'flex', 'flex-wrap': 'wrap', 'width': '100%'}, '#table-container table tr td': {'padding': '10px'}}" printSectionId="print-section" ngxPrint class="ack-continue-btn">{{'acknowledgement.action_print'|translate}}</button>
     </mat-card>
