@@ -95,7 +95,7 @@ public class AuthServiceImpl implements AuthService {
 		if (basicTokenDto != null) {
 			authNResponseDto = new AuthNResponseDto();
 			authNResponseDto.setToken(basicTokenDto.getAuthToken());
-			authNResponseDto.setUserId(mosipUser.getUserName());
+			authNResponseDto.setUserId(mosipUser.getUserId());
 			authNResponseDto.setRefreshToken(basicTokenDto.getRefreshToken());
 			authNResponseDto.setExpiryTime(basicTokenDto.getExpiryTime());
 			authNResponseDto.setMessage(AuthConstant.USERPWD_SUCCESS_MESSAGE);
@@ -146,7 +146,7 @@ public class AuthServiceImpl implements AuthService {
 		authNResponseDto.setMessage(AuthConstant.OTP_VALIDATION_MESSAGE);
 		authNResponseDto.setToken(mosipToken.getToken());
 		authNResponseDto.setRefreshToken(mosipToken.getRefreshToken());
-		authNResponseDto.setUserId(mosipToken.getMosipUserDto().getUserName());
+		authNResponseDto.setUserId(mosipToken.getMosipUserDto().getUserId());
 		return authNResponseDto;
 	}
 
@@ -171,7 +171,7 @@ public class AuthServiceImpl implements AuthService {
 		if (basicTokenDto != null) {
 			authNResponseDto = new AuthNResponseDto();
 			authNResponseDto.setToken(basicTokenDto.getAuthToken());
-			authNResponseDto.setUserId(mosipUser.getUserName());
+			authNResponseDto.setUserId(mosipUser.getUserId());
 			authNResponseDto.setRefreshToken(basicTokenDto.getRefreshToken());
 			authNResponseDto.setExpiryTime(basicTokenDto.getExpiryTime());
 			authNResponseDto.setMessage(AuthConstant.CLIENT_SECRET_SUCCESS_MESSAGE);

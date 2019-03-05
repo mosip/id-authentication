@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -37,7 +38,7 @@ public class Initialization extends Application {
 	private static Stage primaryStage;
 
 	@Override
-	public void start(Stage primaryStage) throws RegBaseCheckedException {
+	public void start(Stage primaryStage) {
 		LOGGER.info("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
 				APPLICATION_ID, "Login screen initilization "
 						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
@@ -52,22 +53,37 @@ public class Initialization extends Application {
 	}
 
 	public static void main(String[] args) {
+		try {
+			System.setProperty("java.net.useSystemProxies", "true");
+			System.setProperty("file.encoding", "UTF-8");
+			applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
 
-		System.setProperty("java.net.useSystemProxies", "true");
-		System.setProperty("file.encoding", "UTF-8");
-		applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
+			launch(args);
 
-		launch(args);
-
-		LOGGER.info("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
-				APPLICATION_ID, "Application Initilization"
-						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
+			LOGGER.info("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
+					APPLICATION_ID, "Application Initilization"
+							+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
+		} catch (Exception exception) {
+			LOGGER.error("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
+					APPLICATION_ID,
+					"Application Initilization Error"
+							+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis())
+							+ ExceptionUtils.getStackTrace(exception));
+		}
 	}
 
 	@Override
-	public void stop() throws Exception {
-		super.stop();
-		System.exit(0);
+	public void stop() {
+		try {
+			super.stop();
+			System.exit(0);
+		} catch (Exception exception) {
+			LOGGER.error("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
+					APPLICATION_ID,
+					"Application Initilization Error"
+							+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis())
+							+ ExceptionUtils.getStackTrace(exception));
+		}
 	}
 
 	public static ApplicationContext getApplicationContext() {
@@ -77,7 +93,7 @@ public class Initialization extends Application {
 	public static void setApplicationContext(ApplicationContext applicationContext) {
 		Initialization.applicationContext = applicationContext;
 	}
-	
+
 	public static Stage getPrimaryStage() {
 		return primaryStage;
 	}
