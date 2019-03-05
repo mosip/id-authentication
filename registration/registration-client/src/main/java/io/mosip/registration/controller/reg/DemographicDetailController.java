@@ -575,8 +575,6 @@ public class DemographicDetailController extends BaseController {
 				}
 				int age = 0;
 				if (newValue.matches("\\d{1,3}")) {
-					int maxAge = Integer.parseInt(AppConfig.getApplicationProperty("max_age"));
-					int minAge = Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"));
 					if (getRegistrationDTOFromSession().getSelectionListDTO() != null
 							&& getRegistrationDTOFromSession().getSelectionListDTO().isChild())
 						maxAge = 5;
