@@ -4,17 +4,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.time.Instant;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -34,10 +30,6 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.IdType;
-import io.mosip.authentication.core.dto.indauth.PinDTO;
-import io.mosip.authentication.core.dto.indauth.PinInfo;
-import io.mosip.authentication.core.dto.indauth.PinType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
@@ -118,7 +110,6 @@ public class OTPAuthServiceTest {
 		authreqdto.setTransactionID("1234567890");
 		authreqdto.setPartnerID("1234567890");
 		authreqdto.setRequestTime("2019-02-18T18:17:48.923+05:30");
-		List<PinInfo> pinInfolist = new ArrayList<>();
 		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
 		AutnTxn authtxn = new AutnTxn();
 		authtxn.setId("test");
@@ -242,9 +233,6 @@ public class OTPAuthServiceTest {
 		otpAuthRequestDTO.setId("mosip.identity.auth");
 		otpAuthRequestDTO.getRequest().getIdentity().setUin("1234567890");
 		otpAuthRequestDTO.setPartnerID("TST0000001");
-		PinInfo pinInfo = new PinInfo();
-		pinInfo.setType(PinType.OTP.getType());
-		pinInfo.setValue("23232323");
 		ZoneOffset offset = ZoneOffset.MAX;
 		otpAuthRequestDTO.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		AuthTypeDTO authType = new AuthTypeDTO();

@@ -120,9 +120,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				} else {
 					// TODO Missing UIN/VID
 				}
-
-				// validateTspId(authRequestDto.getTspID(),errors);
-
 				validateBioMetadataDetails(authRequestDto, errors);
 				if (!errors.hasErrors()) {
 					checkAuthRequest(authRequestDto, errors);
