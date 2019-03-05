@@ -255,7 +255,7 @@ public class DocumentScanController extends BaseController {
 						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			}
 
-			if (documentCategoryDtos != null && documentCategoryDtos.size() > 0) {
+			if (documentCategoryDtos != null && !documentCategoryDtos.isEmpty()) {
 				HBox hBox = new HBox();
 
 				ComboBox<DocumentCategoryDto> comboBox = new ComboBox<>();
@@ -750,7 +750,7 @@ public class DocumentScanController extends BaseController {
 
 			FXUtils fxUtils = FXUtils.getInstance();
 
-			if (documentComboBoxes != null) {
+			if (documentComboBoxes != null && !documentComboBoxes.isEmpty()) {
 
 				Map<String, DocumentDetailsDTO> documentsMap = getDocumentsMapFromSession();
 				for (String docCategoryKey : documentsMap.keySet()) {
