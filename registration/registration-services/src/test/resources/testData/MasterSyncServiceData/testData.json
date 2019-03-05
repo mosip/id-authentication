@@ -6,6 +6,7 @@
 "invalidlangCode":"123abc$#",
 "code":"RSK",
 "invalidcode":"123abc$#",
-"invaliddocCode":"123abc$#"
+"invaliddocCode":"123abc$#",
+"masterSyncDetails":"MDS_J00001"
 }
 ]

@@ -56,7 +56,7 @@ public class RegistrationAppHealthCheckUtil {
 		boolean isNWAvailable = false;
 		try {
 			HttpURLConnection connection = null;
-			//System.setProperty("java.net.useSystemProxies", "true");
+			System.setProperty("java.net.useSystemProxies", "true");
 			URL url = new URL("https://www.mosip.io/");
 			List<Proxy> proxyList = ProxySelector.getDefault().select(new URI(url.toString()));
 			Proxy proxy = proxyList.get(0);
