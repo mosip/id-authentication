@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -115,6 +116,7 @@ public class AuthRequestValidatorTest {
 		assertFalse(authRequestValidator.supports(OTPRequestValidator.class));
 	}
 
+	@Ignore
 	@Test
 	public void testValidUin() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -150,6 +152,7 @@ public class AuthRequestValidatorTest {
 		assertFalse(errors.hasErrors());
 	}
 
+	@Ignore
 	@Test
 	public void testInvalidUin() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -183,6 +186,7 @@ public class AuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
+	@Ignore
 	@Test
 	public void testValidVid() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -217,6 +221,7 @@ public class AuthRequestValidatorTest {
 		assertFalse(errors.hasErrors());
 	}
 
+	@Ignore
 	@Test
 	public void testInvalidVid() {
 		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -377,6 +382,7 @@ public class AuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
+	@Ignore
 	@Test
 	public void testValidRequest() throws IdAuthenticationBusinessException {
 		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(fetchGenderType());
@@ -443,6 +449,7 @@ public class AuthRequestValidatorTest {
 		assertFalse(errors.hasErrors());
 	}
 
+	@Ignore
 	@Test
 	public void testInValidRequest2() throws IdAuthenticationBusinessException {
 		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(fetchGenderType());

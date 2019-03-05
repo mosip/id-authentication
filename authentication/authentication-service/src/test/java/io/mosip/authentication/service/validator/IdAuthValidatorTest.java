@@ -103,6 +103,7 @@ public class IdAuthValidatorTest {
 	/**
 	 * Test incorrect id type.
 	 */
+	@Ignore
 	@Test
 	public void testIncorrectIdType() {
 		validator.validateIdvId("1234", "e", errors);

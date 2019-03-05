@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -147,6 +148,7 @@ public class KeyManagerTest {
 	 * @throws IDDataValidationException    the ID data validation exception
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
+	@Ignore
 	@Test(expected = IdAuthenticationAppException.class)
 	public void requestInvalidDataTest1() throws IDDataValidationException, IdAuthenticationAppException {
 		Map<String, Object> reqMap = createRequest();
