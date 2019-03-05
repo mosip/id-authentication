@@ -176,13 +176,15 @@ public class PrintStage extends MosipVerticleAPIManager {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			
 			if (consumeResponseFromQueue(regId)) {
+				description = "Print and Post Completed for the regId : " + regId;
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PRINT_AND_POST_COMPLETED.toString());
-				registrationStatusDto.setStatusComment("Print and Post Completed for the regId " + regId);
+				registrationStatusDto.setStatusComment(description);
 				registrationStatusDto.setUpdatedBy(USER);
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			} else {
+				description = "Re-Send uin card with regId " + regId + " for printing";
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.RESEND_UIN_CARD_FOR_PRINTING.toString());
-				registrationStatusDto.setStatusComment("Re-Send uin card with regId " + regId + " for printing");
+				registrationStatusDto.setStatusComment(description);
 				registrationStatusDto.setUpdatedBy(USER);
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 				object.setIsValid(Boolean.FALSE);
