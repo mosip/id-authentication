@@ -1,7 +1,8 @@
 /**
  * 
  */
-package io.mosip.kernel.auth.exception;
+package io.mosip.kernel.auth.adapter;
+
 
 /**
  * @author M1049825
