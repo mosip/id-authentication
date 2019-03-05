@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.packet.manager.service.test;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -11,11 +10,12 @@ import java.io.InputStream;
 
 import org.apache.commons.io.FilenameUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
@@ -40,21 +40,24 @@ public class FileManagerTest {
 
 	private File file;
 
-	private Environment env = mock(Environment.class);
+	@MockBean
+	private Environment env;
 
-	@Autowired
-	private Environment testEnvironment;
+	@Value("${VIRUS_SCAN_ENC}")
+	private String virusScanEnc;
+
+	@Value("${VIRUS_SCAN_DEC}")
+	private String virusScanDec;
 
 	@Before
 	public void setUp() throws Exception {
 		ClassLoader classLoader = getClass().getClassLoader();
 		file = new File(classLoader.getResource("1001.zip").getFile());
-		when(env.getProperty("VIRUS_SCAN_ENC")).thenReturn(testEnvironment.getProperty("VIRUS_SCAN_ENC"));
-		when(env.getProperty("VIRUS_SCAN_DEC")).thenReturn(testEnvironment.getProperty("VIRUS_SCAN_DEC"));
+		when(env.getProperty(DirectoryPathDto.VIRUS_SCAN_ENC.toString())).thenReturn(virusScanEnc);
+		when(env.getProperty(DirectoryPathDto.VIRUS_SCAN_DEC.toString())).thenReturn(virusScanDec);
 	}
 
 	@Test
-	@Ignore
 	public void getPutAndIfFileExistsAndCopyMethodCheck() throws IOException {
 		String fileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
