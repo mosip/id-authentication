@@ -42,4 +42,3 @@ The key **requirements** are
 
 ![Service Auth Class Diagram](_images/service_auth_class_sequence_diagram.png)  
 
-
