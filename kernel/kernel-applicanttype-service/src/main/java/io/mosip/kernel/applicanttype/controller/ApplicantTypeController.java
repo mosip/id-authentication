@@ -32,7 +32,7 @@ public class ApplicantTypeController {
 	@ApiOperation(value = "Get applicant type for provided queries", notes = "Get applicant type for matching queries", response = String.class)
 	public ResponseEntity<ResponseDTO> getApplicantType(@RequestParam("individualTypeCode") String individualTypeCode,
 			@RequestParam("genderCode") String genderCode, @RequestParam("dateofbirth") String dateofbirth,
-			@RequestParam(value = "biometricAvailable", required = false) String biometricAvailable) {
+			@RequestParam(value = "biometricAvailable", required = false, defaultValue = "false") Boolean biometricAvailable) {
 		RequestDTO dto = new RequestDTO();
 		KeyValues request = new KeyValues();
 		request.getRequest().put("individualTypeCode", individualTypeCode);
