@@ -25,7 +25,7 @@ public class TokenGenerator {
         claims.put("mobile", mosipUser.getMobile());
         claims.put("mail", mosipUser.getMail());
         claims.put("role", mosipUser.getRole());
-
+        claims.put("name", mosipUser.getName());
         return claims;
     }
 
@@ -94,6 +94,7 @@ public class TokenGenerator {
 	        claims.put("mail", mosipUser.getMail());
 	        claims.put("role", mosipUser.getRole());
 	        claims.put("lang", mosipUser.getLangCode());
+	        claims.put("name", mosipUser.getName());
 	        TimeToken token = getToken(claims);
 	        String refreshToken = buildRefreshToken(claims);
 	        basicTokenDto.setAuthToken(token.getToken());
@@ -108,6 +109,7 @@ public class TokenGenerator {
 	        claims.put("mail", mosipUser.getMail());
 	        claims.put("role", mosipUser.getRole());
 	        claims.put("lang", mosipUser.getLangCode());
+	        claims.put("name", mosipUser.getName());
 	        claims.put("isOtpRequired", true);
 	        claims.put("isOtpVerified", otpVerified);
 	        TimeToken token = getToken(claims);
@@ -171,6 +173,7 @@ public class TokenGenerator {
 	        claims.put("mail", mosipUser.getMail());
 	        claims.put("role", mosipUser.getRole());
 	        claims.put("lang", mosipUser.getLangCode());
+	        claims.put("name", mosipUser.getName());
 		return buildRefreshToken(claims);
 	}
 	
