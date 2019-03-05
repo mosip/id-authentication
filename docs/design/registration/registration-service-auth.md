@@ -25,8 +25,7 @@ The key **requirements** are
 **Solution**  
 
 1.  Write an REST service Interceptor which is invoked before invoking any web service call.  
-2.  This interceptor should check whether the invoking REST service should required authentication. if yes then 
-    invoke the auth service to get the token.  
+2.  This interceptor should check whether the invoking REST service should required authentication. If yes then invoke the auth service to get the token.  
     -  Batch process : /authenticate/clientidsecretkey - invoke this url and pass the client id and client secret key from property file.  
     -  User and Pwd Context : /authenticate/useridPwd - invoke this url and pass the client user id and hashed password to get the auth token.  
     -  User and OTP : /authenticate/useridOTP - invoke this url to get the OTP validated along with the auth token.  
