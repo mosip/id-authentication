@@ -62,6 +62,7 @@ public class CustomObjectMapperTest {
 		assertEquals(expectedIdentity.getRegion().get(0).getValue(), actualIdentity.getRegion().get(0).getValue());
 		assertEquals(expectedIdentity.getProvince().get(0).getValue(), actualIdentity.getProvince().get(0).getValue());
 		assertEquals(expectedIdentity.getCity().get(0).getValue(), actualIdentity.getCity().get(0).getValue());
+		assertEquals(expectedIdentity.getResidenceStatus().get(0).getValue(), actualIdentity.getResidenceStatus().get(0).getValue());
 		assertEquals(expectedIdentity.getEmail(), actualIdentity.getEmail());
 		assertEquals(expectedIdentity.getPhone(), actualIdentity.getPhone());
 	}

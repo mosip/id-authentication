@@ -133,7 +133,8 @@ public class FXUtils {
 	}
 
 	private void focusAction(AnchorPane parentPane, TextField field) {
-		field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
+		if(field!=null) {
+			field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (newValue) {
 				try {
 					((Label) parentPane.lookup(RegistrationConstants.HASH + field.getId() + RegistrationConstants.LABEL)).setVisible(true);
@@ -161,7 +162,7 @@ public class FXUtils {
 			}
 
 		});
-	}
+	}}
 
 	/**
 	 * Populate the local field value based on the application field.
