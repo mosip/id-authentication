@@ -1,6 +1,5 @@
 package io.mosip.preregistration.tests;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -40,17 +39,18 @@ import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 /**
- * Test Class to perform Document Upload related Positive and Negative test cases
+ * Test Class to perform Sync Master data related Positive and Negative test cases
  * 
  * @author Lavanya R
  * @since 1.0.0
  */
 
-public class DocumentUpload extends BaseTestCase implements ITest {
+public class SyncMasterData extends BaseTestCase implements ITest {
 	/**
 	 *  Declaration of all variables
 	 **/
-	static String folder = "preReg";
+	 
+	
 	static 	String preId="";
 	static SoftAssert softAssert=new SoftAssert();
 	protected static String testCaseName = "";
@@ -63,18 +63,19 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 	static Response Actualresponse = null;
 	static JSONObject Expectedresponse = null;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static String preReg_URI ;
 	private static CommonLibrary commonLibrary = new CommonLibrary();
+	private static String preReg_URI ;
 	static String dest = "";
 	static String configPaths="";
-	static String folderPath = "preReg/DocumentUpload";
-	static String outputFile = "DocumentUploadOutput.json";
-	static String requestKeyFile = "DocumentUploadRequest.json";
+	static String folderPath = "preReg/SyncMasterData";
+	static String outputFile = "SyncMasterDataOutput.json";
+	static String requestKeyFile = "SyncMasterDataRequest.json";
 	String testParam=null;
 	boolean status_val = false;
 	PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
 	
-	public DocumentUpload() {
+	/*implement,IInvokedMethodListener*/
+	public SyncMasterData() {
 
 	}
 	
@@ -87,7 +88,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	@DataProvider(name = "documentUpload")
+	@DataProvider(name = "SyncMasterData")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
 		  testParam = context.getCurrentXmlTest().getParameter("testType");
 		 switch ("smoke") {
@@ -103,7 +104,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@Test(dataProvider = "documentUpload")
+	@Test(dataProvider = "SyncMasterData")
 	public void bookingAppointment(String testSuite, Integer i, JSONObject object) throws Exception {
 	
 		List<String> outerKeys = new ArrayList<String>();
@@ -114,52 +115,17 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		String testCase = object.get("testCaseName").toString();
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
-		if(testCase.contains("smoke"))
-		{
-			//Creating the Pre-Registration Application
-			Response createApplicationResponse = preRegLib.CreatePreReg();
-			
-			//Document Upload for created application
-			Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
-			
-			
-			//PreId of Uploaded document
-			preId=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
-			
-			
-			
-			
-			outerKeys.add("resTime");
-			innerKeys.add("updatedDateTime");
-			innerKeys.add("createdDateTime");
-			innerKeys.add("preRegistrationId");
-			innerKeys.add("documnetId");
-			
-			status = AssertResponses.assertResponses(docUploadResponse, Expectedresponse, outerKeys, innerKeys);
-			
-			}
-		else
-	{
-		try 
-		{
 		
-			
-			testSuite = "DocumentUpload/DocumentUpload_smoke";
-			
-			String configPath = "src/test/resources/" + folder + "/" + testSuite;
-			String fileName = "ProofOfAddress.PDF";
-			File file = new File(configPath + "/"+fileName);
-			
-			Actualresponse =applicationLibrary.putFileAndJson(preReg_URI, actualRequest, file);
+			/*Sync Masterdata*/			
+			Response syncMasterDataRes = preRegLib.syncMasterData();
 			
 			
-			
-		} catch (Exception e) {
-			logger.info(e);
-		}
-				
-				status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);		
-			}
+			/*removing the keys for assertion*/
+			outerKeys.add("resTime");
+			status = AssertResponses.assertResponses(syncMasterDataRes, Expectedresponse, outerKeys, innerKeys);
+		
+		
+		
 		
 		if (status) {
 			finalStatus="Pass";		
@@ -180,9 +146,6 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		
 		
 		
-		
-	            
-	           
 	}
 	/**
 	 * Writing output into configpath
@@ -208,8 +171,10 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		String source = "src/test/resources/" + folderPath + "/";
 		CommonLibrary.backUpFiles(source, folderPath);
 		
-		//Add generated PreRegistrationId to list to be Deleted from DB AfterSuite 
+		/*Add generated PreRegistrationId to list to be Deleted from DB AfterSuite */
+		
 		preIds.add(preId);
+		
 	}
 	/**
 	 * Writing test case name into testng
@@ -224,22 +189,27 @@ public class DocumentUpload extends BaseTestCase implements ITest {
                 BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
                 Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
                 f.setAccessible(true);
-                f.set(baseTestMethod, DocumentUpload.testCaseName);
+                f.set(baseTestMethod, SyncMasterData.testCaseName);
           } catch (Exception e) {
                 Reporter.log("Exception : " + e.getMessage());
           }
     }
+	
+	/**
+	 * Declaring the Booking Appointment Resource URI and getting the test case name
+	 * @param result
+	 */
     @BeforeMethod
     public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
           JSONObject object = (JSONObject) testdata[2];
           testCaseName = object.get("testCaseName").toString();
           
-
           /**
-           * Document Upload Resource URI            
+           * Booking Appointment Resource URI            
            */
           
-          preReg_URI = commonLibrary.fetch_IDRepo("preReg_DocumentUploadURI");
+          preReg_URI = commonLibrary.fetch_IDRepo("preReg_SyncMasterDataURI");
+          
           
     }
 	@Override

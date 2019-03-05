@@ -40,13 +40,13 @@ import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 /**
- * Test Class to perform Document Upload related Positive and Negative test cases
+ * Test Class to perform Trigger notification related Positive and Negative test cases
  * 
  * @author Lavanya R
  * @since 1.0.0
  */
 
-public class DocumentUpload extends BaseTestCase implements ITest {
+public class TriggerNotification extends BaseTestCase implements ITest {
 	/**
 	 *  Declaration of all variables
 	 **/
@@ -67,14 +67,14 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	static String dest = "";
 	static String configPaths="";
-	static String folderPath = "preReg/DocumentUpload";
-	static String outputFile = "DocumentUploadOutput.json";
-	static String requestKeyFile = "DocumentUploadRequest.json";
+	static String folderPath = "preReg/TriggerNotification";
+	static String outputFile = "TriggerNotificationRequestOutput.json";
+	static String requestKeyFile = "TriggerNotificationRequest.json";
 	String testParam=null;
 	boolean status_val = false;
 	PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
 	
-	public DocumentUpload() {
+	public TriggerNotification() {
 
 	}
 	
@@ -87,7 +87,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	@DataProvider(name = "documentUpload")
+	@DataProvider(name = "TriggerNotification")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
 		  testParam = context.getCurrentXmlTest().getParameter("testType");
 		 switch ("smoke") {
@@ -103,7 +103,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@Test(dataProvider = "documentUpload")
+	@Test(dataProvider = "TriggerNotification")
 	public void bookingAppointment(String testSuite, Integer i, JSONObject object) throws Exception {
 	
 		List<String> outerKeys = new ArrayList<String>();
@@ -116,29 +116,30 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		
 		if(testCase.contains("smoke"))
 		{
-			//Creating the Pre-Registration Application
+			   
+			/*Creating the Pre-Registration Application*/			
 			Response createApplicationResponse = preRegLib.CreatePreReg();
 			
-			//Document Upload for created application
-			Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
+			Response triggerNotifyResponse = preRegLib.TriggerNotification(createApplicationResponse);
 			
-			
-			//PreId of Uploaded document
-			preId=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
-			
-			
+			System.out.println("triggerNotifyResponse:"+triggerNotifyResponse.asString());
 			
 			
 			outerKeys.add("resTime");
+			status = AssertResponses.assertResponses(triggerNotifyResponse, Expectedresponse, outerKeys, innerKeys);
+			
+			
+			
+			/*outerKeys.add("resTime");
 			innerKeys.add("updatedDateTime");
 			innerKeys.add("createdDateTime");
 			innerKeys.add("preRegistrationId");
-			innerKeys.add("documnetId");
+			innerKeys.add("documnetId");*/
 			
-			status = AssertResponses.assertResponses(docUploadResponse, Expectedresponse, outerKeys, innerKeys);
+			//status = AssertResponses.assertResponses(docUploadResponse, Expectedresponse, outerKeys, innerKeys);
 			
 			}
-		else
+		/*else
 	{
 		try 
 		{
@@ -159,7 +160,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		}
 				
 				status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);		
-			}
+			}*/
 		
 		if (status) {
 			finalStatus="Pass";		
@@ -224,7 +225,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
                 BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
                 Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
                 f.setAccessible(true);
-                f.set(baseTestMethod, DocumentUpload.testCaseName);
+                f.set(baseTestMethod, TriggerNotification.testCaseName);
           } catch (Exception e) {
                 Reporter.log("Exception : " + e.getMessage());
           }
@@ -239,7 +240,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
            * Document Upload Resource URI            
            */
           
-          preReg_URI = commonLibrary.fetch_IDRepo("preReg_DocumentUploadURI");
+          preReg_URI = commonLibrary.fetch_IDRepo("preReg_NotifyURI");
           
     }
 	@Override
