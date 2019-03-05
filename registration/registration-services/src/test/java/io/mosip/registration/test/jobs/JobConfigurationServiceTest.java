@@ -108,6 +108,15 @@ public class JobConfigurationServiceTest {
 		syncJob.setSyncFrequency("0/5 * * * * ?");
 		syncJob.setIsActive(true);
 		syncJobList.add(syncJob);
+		
+		SyncJobDef mdsJob = new SyncJobDef();
+		mdsJob.setId("SCD_J00011");
+
+		mdsJob.setApiName("packetSyncStatusJob");
+		mdsJob.setSyncFrequency("0/5 * * * * ?");
+		mdsJob.setIsActive(true);
+		mdsJob.setName("Master Data Sync");
+		syncJobList.add(mdsJob);
 
 		syncJobList.forEach(job -> {
 			jobMap.put(job.getId(), job);
@@ -312,12 +321,11 @@ public class JobConfigurationServiceTest {
 
 	}
 
-	@Ignore
 	@Test
 	public void isRestartTestSuccess() {
 		initiateJobTest();
 		HashMap<String, String> completedJobMap = new HashMap<>();
-		completedJobMap.put("MDS_J00001", RegistrationConstants.JOB_EXECUTION_SUCCESS);
+		completedJobMap.put("SCD_J00011", RegistrationConstants.JOB_EXECUTION_SUCCESS);
 
 		PowerMockito.mockStatic(BaseJob.class);
 

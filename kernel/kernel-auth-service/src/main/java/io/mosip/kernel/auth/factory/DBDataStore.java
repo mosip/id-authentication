@@ -110,7 +110,7 @@ public class DBDataStore implements IDataStore {
 					mosipUserDto.setRole(rs.getString("code"));
 					mosipUserDto.setMail(rs.getString("email"));
 					mosipUserDto.setMobile(rs.getString("mobile"));
-					mosipUserDto.setUserName(rs.getString("id"));
+					mosipUserDto.setUserId(rs.getString("id"));
 					return mosipUserDto;
 				}
 				return null;

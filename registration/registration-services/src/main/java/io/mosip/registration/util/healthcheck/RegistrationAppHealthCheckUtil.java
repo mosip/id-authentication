@@ -57,7 +57,7 @@ public class RegistrationAppHealthCheckUtil {
 		try {
 			HttpURLConnection connection = null;
 			System.setProperty("java.net.useSystemProxies", "true");
-			URL url = new URL("https://www.mosip.io/");
+			URL url = new URL("http://www.mosip.io/");
 			List<Proxy> proxyList = ProxySelector.getDefault().select(new URI(url.toString()));
 			Proxy proxy = proxyList.get(0);
 			connection = (HttpURLConnection) url.openConnection(proxy);
