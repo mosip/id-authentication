@@ -221,4 +221,14 @@ export class DataStorageService {
     console.log(url);
     return this.httpClient.get(url);
   }
+
+  getRegistrationCenterByIdAndLangCode(id: string, langCode: string) {
+    const url = this.MASTER_DATA_URL + 'registrationcenters/' + id + '/' + langCode;
+    return this.httpClient.get(url);
+  }
+
+  getGuidelineTemplate() {
+    const url = this.MASTER_DATA_URL + 'templates/' + localStorage.getItem('langCode') + '/' + 'Onscreen-Acknowledgement';
+    return this.httpClient.get(url);
+  }
 }

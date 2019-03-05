@@ -55,14 +55,14 @@
       </ng-template>
 
       <div class="centers-list" *ngIf="dataSource.data">
-          <span *ngIf="showMessage" style="margin-left:24px;" class="center_selection-center-available-text">
+          <span *ngIf="showMessage && !searchClick" style="margin-left:24px;" class="center_selection-center-available-text">
             {{ 'centerSelection.text_found' | translate }} 
             {{ dataSource.data.length }} 
             {{ 'centerSelection.text_centers' | translate }}
           </span>
         <ul>
           <li *ngFor="let center of dataSource.data; let i = index;">
-            <mat-card class="center-card">
+            <mat-card [ngClass]="selectedCentre === center ? 'center-card center-card-selected' : 'center-card'">
               <input type="radio" [value]="center" [(ngModel)]="selectedCentre" (click)="selectedRow(center)" name="center" />
               <div>
                 <div>

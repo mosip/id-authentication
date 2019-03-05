@@ -12,6 +12,7 @@ import { SharedService } from '../booking.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { TranslateService } from '@ngx-translate/core';
 import Utils from 'src/app/app.util';
+import * as appConstants from '../../../app.constants';
 
 @Component({
   selector: 'app-time-selection',
@@ -31,8 +32,6 @@ export class TimeSelectionComponent implements OnInit {
   availabilityData = [];
   cutoff = 1;
   days = 7;
-  MONTHS = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   enableBookButton = false;
   activeTab = 'morning';
   bookingDataList = [];
@@ -135,10 +134,10 @@ export class TimeSelectionComponent implements OnInit {
       element.displayDate =
         element.date.split('-')[2] +
         ' ' +
-        this.MONTHS[Number(element.date.split('-')[1])] +
+        appConstants.MONTHS[Number(element.date.split('-')[1])] +
         ', ' +
         element.date.split('-')[0];
-      element.displayDay = this.DAYS[new Date(Date.parse(element.date)).getDay()];
+      element.displayDay = appConstants.DAYS[new Date(Date.parse(element.date)).getDay()];
       if (!element.inActive) {
         this.availabilityData.push(element);
       }
@@ -222,15 +221,7 @@ export class TimeSelectionComponent implements OnInit {
             this.temp.forEach(name => {
               this.sharedService.addNameList(name);
               const booking = this.bookingDataList.filter(element => element.preRegistrationId === name.preRegId);
-              const date = booking[0].newBookingDetails.appointment_date.split('-');
-              let appointmentDateTime = date[2] + ' ' + this.MONTHS[Number(date[1])] + ', ' + date[0];
-              const time = booking[0].newBookingDetails.time_slot_from.split(':');
-              appointmentDateTime +=
-                ', ' +
-                (Number(time[0]) > 12 ? Number(time[0]) - 12 : Number(time[0])) +
-                ':' +
-                time[1] +
-                (Number(time[0]) > 12 ? ' PM' : ' AM');
+              const appointmentDateTime = Utils.getBookingDateTime(booking[0].newBookingDetails.appointment_date, booking[0].newBookingDetails.time_slot_from);
               this.sharedService.updateBookingDetails(name.preRegId, appointmentDateTime);
             });
             const arr = this.router.url.split('/');
