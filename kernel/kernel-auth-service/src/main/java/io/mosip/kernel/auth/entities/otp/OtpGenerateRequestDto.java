@@ -1,6 +1,5 @@
 package io.mosip.kernel.auth.entities.otp;
 
-import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 
 public class OtpGenerateRequestDto {
@@ -8,7 +7,7 @@ public class OtpGenerateRequestDto {
     
     public OtpGenerateRequestDto(MosipUserDto mosipUserDto)
     {
-    	this.key = mosipUserDto.getUserName();
+    	this.key = mosipUserDto.getUserId();
     }
 
     public String getKey() {

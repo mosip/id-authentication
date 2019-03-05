@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MosipUserDto {
-    private String userName;
+    private String userId;
     private String mobile;
     private String mail;
     private String langCode;
