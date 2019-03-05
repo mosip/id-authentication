@@ -1024,9 +1024,9 @@ public class DemographicDetailController extends BaseController {
 								getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getUin() == null ? null
 										: new BigInteger(
 												getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getUin())))
-						.with(identity -> identity.setIndividualBiometrics(!applicantBiometric
+						.with(identity -> identity.setIndividualBiometrics(applicantBiometric
 								.getFingerprintDetailsDTO().isEmpty()
-								|| !applicantBiometric.getIrisDetailsDTO().isEmpty()
+								&& applicantBiometric.getIrisDetailsDTO().isEmpty()
 										? null
 										: (CBEFFFilePropertiesDTO) Builder.build(CBEFFFilePropertiesDTO.class)
 												.with(cbeffProperties -> cbeffProperties
@@ -1036,9 +1036,9 @@ public class DemographicDetailController extends BaseController {
 																.replace(RegistrationConstants.XML_FILE_FORMAT,
 																		RegistrationConstants.EMPTY)))
 												.with(cbeffProperty -> cbeffProperty.setVersion(1.0)).get()))
-						.with(identity -> identity.setParentOrGuardianBiometrics(!introducerBiometric
+						.with(identity -> identity.setParentOrGuardianBiometrics(introducerBiometric
 								.getFingerprintDetailsDTO().isEmpty()
-								|| !introducerBiometric.getIrisDetailsDTO().isEmpty()
+								&& introducerBiometric.getIrisDetailsDTO().isEmpty()
 										? null
 										: (CBEFFFilePropertiesDTO) Builder.build(CBEFFFilePropertiesDTO.class)
 												.with(cbeffProperties -> cbeffProperties
