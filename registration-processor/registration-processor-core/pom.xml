@@ -33,18 +33,18 @@
 		</dependency>
 		<dependency>
 			<groupId>io.vertx</groupId>
-			<artifactId>vertx-ignite</artifactId>
-			<version>${vertx.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertx</groupId>
 			<artifactId>vertx-camel-bridge</artifactId>
 			<version>${vertx.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.vertx</groupId>
-			<artifactId>vertx-ignite</artifactId>
+			<artifactId>vertx-hazelcast</artifactId>
 			<version>${vertx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.hazelcast</groupId>
+			<artifactId>hazelcast-kubernetes</artifactId>
+			<version>${hazelcast.kubernetes.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
