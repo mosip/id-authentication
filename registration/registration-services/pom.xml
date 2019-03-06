@@ -8,7 +8,6 @@
 		<artifactId>registration-parent</artifactId>
 		<version>0.9.1</version>
 	</parent>
-
 	<artifactId>registration-services</artifactId>
 	<name>registration-services</name>
 	<description>Maven project of MOSIP Registration Service</description>

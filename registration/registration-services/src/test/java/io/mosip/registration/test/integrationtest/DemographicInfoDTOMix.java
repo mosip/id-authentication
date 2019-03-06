@@ -1,6 +1,9 @@
-package io.mosip.registration.dto.demographic;
+package io.mosip.registration.test.integrationtest;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.mosip.registration.dto.BaseDTO;
+import io.mosip.registration.dto.demographic.Identity;
 
 /**
  * This class used to capture the Demographic details of the Individual
@@ -9,10 +12,10 @@ import io.mosip.registration.dto.BaseDTO;
  * @author Balaji Sridharan
  * @since 1.0.0
  */
-public class DemographicInfoDTO extends BaseDTO {
+public class DemographicInfoDTOMix extends BaseDTO {
 
 	/** The identity. */
-	
+	@JsonIgnore
 	private Identity identity;
 
 	/**
