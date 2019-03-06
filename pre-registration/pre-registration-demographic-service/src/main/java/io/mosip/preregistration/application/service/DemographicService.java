@@ -245,10 +245,10 @@ public class DemographicService {
 					for (DemographicEntity demographicEntity : demographicEntityList) {
 						byte[] decryptedString = cryptoUtil.decrypt(demographicEntity.getApplicantDetailJson(),
 								DateUtils.getUTCCurrentDateTime());
-						JSONArray identityValue = serviceUtil.getValueFromIdentity(decryptedString,
-								RequestCodes.FULLNAME.getCode());
 						String postalcode = serviceUtil.getPostalCode(decryptedString,
 								RequestCodes.POSTAL_CODE.getCode());
+						JSONArray identityValue = serviceUtil.getValueFromIdentity(decryptedString,
+								RequestCodes.FULLNAME.getCode());
 						viewDto = new PreRegistrationViewDTO();
 						viewDto.setPreRegistrationId(demographicEntity.getPreRegistrationId());
 						viewDto.setFullname(identityValue);

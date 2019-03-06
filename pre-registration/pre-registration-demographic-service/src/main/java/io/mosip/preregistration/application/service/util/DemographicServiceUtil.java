@@ -187,7 +187,7 @@ public class DemographicServiceUtil {
 	 *            pass demographicData
 	 * @param identityKey
 	 *            pass identityKey
-	 * @return values from JSON
+	 * @return values from JSON based on key
 	 * 
 	 * @throws ParseException
 	 *             On json Parsing Failed
@@ -215,7 +215,7 @@ public class DemographicServiceUtil {
 	 * 
 	 */
 	public String getPostalCode(byte[] demographicData, String postalcode) throws ParseException {
-		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pre-registration service util ");
+		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pre-registration service util to get postalcode ");
 		JSONParser jsonParser = new JSONParser();
 		JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(demographicData));
 		JSONObject identityObj = (JSONObject) jsonObj.get(RequestCodes.IDENTITY.getCode());
