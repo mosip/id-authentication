@@ -90,11 +90,11 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	private static final String VALUE = "value";
 
 	/** The primary lang. */
-	@Value("${mosip.primary-language}")
+	@Value("${primary.language}")
 	private String primaryLang;
 
 	/** The secondary lang. */
-	@Value("${mosip.secondary-language}")
+	@Value("${secondary.language}")
 	private String secondaryLang;
 
 	/** The Constant UIN_CARD_TEMPLATE. */
@@ -347,7 +347,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		String queryParamValue = "all";
 
 		IdResponseDTO response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOSITORY, pathsegments,
-				"", "", IdResponseDTO.class);
+				queryParamName, queryParamValue, IdResponseDTO.class);
 
 		if (response == null || response.getResponse() == null) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

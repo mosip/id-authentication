@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.print.stage;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Map;
@@ -39,8 +38,8 @@ import io.mosip.registration.processor.message.sender.exception.TemplateProcessi
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.print.exception.PrintGlobalExceptionHandler;
 import io.mosip.registration.processor.print.exception.QueueConnectionNotFound;
-import io.mosip.registration.processor.print.service.impl.PrintPostServiceImpl;
 import io.mosip.registration.processor.print.service.dto.PrintQueueDTO;
+import io.mosip.registration.processor.print.service.impl.PrintPostServiceImpl;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -65,8 +64,10 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
+	/** The Constant UIN_CARD_PDF. */
 	private static final String UIN_CARD_PDF = "uinPdf";
 
+	/** The Constant UIN_TEXT_FILE. */
 	private static final String UIN_TEXT_FILE = "textFile";
 
 	/** The reg proc logger. */
@@ -94,37 +95,46 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The is transactional. */
 	private boolean isTransactionSuccessful = false;
 
+	/** The registration status service. */
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	/** The mosip queue manager. */
 	@Autowired
 	private MosipQueueManager<MosipQueue, byte[]> mosipQueueManager;
 
+	/** The mosip connection factory. */
 	@Autowired
 	private MosipQueueConnectionFactory<MosipQueue> mosipConnectionFactory;
 
+	/** The print service. */
 	@Autowired
 	private PrintService<Map<String, byte[]>> printService;
-	
+
 	/** The print post service. */
 	@Autowired
 	private PrintPostServiceImpl printPostService;
 
+	/** The username. */
 	@Value("${registration.processor.queue.username}")
 	private String username;
 
+	/** The password. */
 	@Value("${registration.processor.queue.password}")
 	private String password;
 
+	/** The url. */
 	@Value("${registration.processor.queue.url}")
 	private String url;
 
+	/** The type of queue. */
 	@Value("${registration.processor.queue.typeOfQueue}")
 	private String typeOfQueue;
 
+	/** The address. */
 	@Value("${registration.processor.queue.address}")
 	private String address;
-	
+
 	/** The packet info manager. */
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
@@ -150,11 +160,11 @@ public class PrintStage extends MosipVerticleAPIManager {
 		object.setInternalError(Boolean.FALSE);
 		String description = null;
 		String regId = object.getRid();
-		
+
 		try {
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(regId);
-			
+
 			String uin = packetInfoManager.getUINByRid(regId).get(0);
 
 			Map<String, byte[]> documentBytesMap = printService.getPdf(IdType.RID, regId);
@@ -169,7 +179,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, uin);
 			printPostService.generatePrintandPostal(regId, queue);
-			
+
 			if (isAddedToQueue) {
 				object.setIsValid(Boolean.TRUE);
 				isTransactionSuccessful = true;
@@ -183,10 +193,10 @@ public class PrintStage extends MosipVerticleAPIManager {
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.UNABLE_TO_SENT_FOR_PRINTING.toString());
 				registrationStatusDto.setStatusComment(description);
 			}
-			
+
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-			
+
 			if (consumeResponseFromQueue(regId)) {
 				description = "Print and Post Completed for the regId : " + regId;
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PRINT_AND_POST_COMPLETED.toString());
@@ -247,21 +257,37 @@ public class PrintStage extends MosipVerticleAPIManager {
 		return object;
 	}
 
-	private boolean sendToQueue(MosipQueue queue, Map<String, byte[]> documentBytesMap, int count, String uin) throws IOException {
+	/**
+	 * Send to queue.
+	 *
+	 * @param queue
+	 *            the queue
+	 * @param documentBytesMap
+	 *            the document bytes map
+	 * @param count
+	 *            the count
+	 * @param uin
+	 *            the uin
+	 * @return true, if successful
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	private boolean sendToQueue(MosipQueue queue, Map<String, byte[]> documentBytesMap, int count, String uin)
+			throws IOException {
 		boolean isAddedToQueue = false;
 		try {
 			PrintQueueDTO queueDto = new PrintQueueDTO();
 			queueDto.setPdfBytes(documentBytesMap.get(UIN_CARD_PDF));
 			queueDto.setTextBytes(documentBytesMap.get(UIN_TEXT_FILE));
 			queueDto.setUin(uin);
-			
+
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		    ObjectOutputStream oos = new ObjectOutputStream(bos);
-		    oos.writeObject(queueDto);
-		    oos.flush();
-		    byte[] printQueueBytes = bos.toByteArray();
+			ObjectOutputStream oos = new ObjectOutputStream(bos);
+			oos.writeObject(queueDto);
+			oos.flush();
+			byte[] printQueueBytes = bos.toByteArray();
 			isAddedToQueue = mosipQueueManager.send(queue, printQueueBytes, address);
-			
+
 		} catch (QueueConnectionNotFound e) {
 			if (count < 5) {
 				sendToQueue(queue, documentBytesMap, count + 1, uin);
@@ -336,11 +362,12 @@ public class PrintStage extends MosipVerticleAPIManager {
 		}
 
 	}
-	
+
 	/**
 	 * Consume response from queue.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 * @return true, if successful
 	 */
 	private boolean consumeResponseFromQueue(String regId) {
@@ -357,7 +384,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 		try {
 			identityJson = (JSONObject) parser.parse(response);
 			String uinFieldCheck = (String) identityJson.get("Status");
-			if (uinFieldCheck.equals("Success")) {				
+			if (uinFieldCheck.equals("Success")) {
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PRINT_AND_POST_COMPLETED.toString());
 				registrationStatusDto.setStatusComment("Print and Post Completed for the regId " + regId);
 				registrationStatusDto.setUpdatedBy(USER);
