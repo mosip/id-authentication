@@ -64,7 +64,7 @@
                </graphic></ToggleButton>
             <Label layoutX="561.0" layoutY="6.0" styleClass="mainHeader" text="%pendingapproval" />
             <Button layoutY="11.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
-            <Text layoutX="61.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/pendingapproval" styleClass="headerLabel"/>
+            <Text layoutX="81.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerLabel" text="%/pendingapproval" />
          </children>
       </AnchorPane>
    </children>

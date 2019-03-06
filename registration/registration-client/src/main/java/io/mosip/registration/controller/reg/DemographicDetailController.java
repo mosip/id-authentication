@@ -730,10 +730,11 @@ public class DemographicDetailController extends BaseController {
 			vk.changeControlOfKeyboard(addressLine2LocalLanguage);
 			vk.changeControlOfKeyboard(addressLine3LocalLanguage);
 			vk.changeControlOfKeyboard(parentNameLocalLanguage);
-			vk.focusListener(fullNameLocalLanguage, 120.00, keyboardNode);
-			vk.focusListener(addressLine1LocalLanguage, 270, keyboardNode);
-			vk.focusListener(addressLine2LocalLanguage, 320.00, keyboardNode);
-			vk.focusListener(addressLine3LocalLanguage, 375.00, keyboardNode);
+			vk.focusListener(fullNameLocalLanguage, 175.00, keyboardNode);
+			vk.focusListener(addressLine1LocalLanguage, 465.00, keyboardNode);
+			vk.focusListener(addressLine2LocalLanguage, 530.00, keyboardNode);
+			vk.focusListener(addressLine3LocalLanguage, 595.00, keyboardNode);
+			vk.focusListener(parentNameLocalLanguage, 930.00, keyboardNode);
 		} catch (NullPointerException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
@@ -1313,27 +1314,27 @@ public class DemographicDetailController extends BaseController {
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE1)) {
 				addressLine1LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(450.00);
+				keyboardNode.setLayoutY(465.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE2)) {
 				addressLine2LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(520.00);
+				keyboardNode.setLayoutY(530.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE3)) {
 				addressLine3LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(585.00);
+				keyboardNode.setLayoutY(595.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.FULL_NAME)) {
 				fullNameLocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(165.00);
+				keyboardNode.setLayoutY(175.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.PARENT_NAME)) {
 				parentNameLocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(920.00);
+				keyboardNode.setLayoutY(930.00);
 			}
 			keyboardNode.setVisible(!keyboardNode.isVisible());
 

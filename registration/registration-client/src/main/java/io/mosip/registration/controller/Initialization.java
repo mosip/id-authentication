@@ -14,7 +14,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.auth.LoginController;
-import io.mosip.registration.exception.RegBaseCheckedException;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -34,22 +33,29 @@ public class Initialization extends Application {
 	private static final Logger LOGGER = AppConfig.getLogger(Initialization.class);
 
 	private static ApplicationContext applicationContext;
-
-	private static Stage primaryStage;
+	private static Stage applicationPrimaryStage;
 
 	@Override
 	public void start(Stage primaryStage) {
-		LOGGER.info("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
-				APPLICATION_ID, "Login screen initilization "
-						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
+		try {
+			LOGGER.info("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
+					APPLICATION_ID, "Login screen initilization "
+							+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
 
-		this.primaryStage = primaryStage;
-		LoginController loginController = applicationContext.getBean(LoginController.class);
-		loginController.loadInitialScreen(primaryStage);
+			setPrimaryStage(primaryStage);
+			LoginController loginController = applicationContext.getBean(LoginController.class);
+			loginController.loadInitialScreen(primaryStage);
 
-		LOGGER.info("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
-				APPLICATION_ID, "Login screen loaded"
-						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
+			LOGGER.info("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
+					APPLICATION_ID, "Login screen loaded"
+							+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
+		} catch (Exception exception) {
+			LOGGER.error("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
+					APPLICATION_ID,
+					"Application Initilization Error"
+							+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis())
+							+ ExceptionUtils.getStackTrace(exception));
+		}
 	}
 
 	public static void main(String[] args) {
@@ -95,7 +101,11 @@ public class Initialization extends Application {
 	}
 
 	public static Stage getPrimaryStage() {
-		return primaryStage;
+		return applicationPrimaryStage;
+	}
+	
+	public static void setPrimaryStage(Stage primaryStage) {
+		applicationPrimaryStage =  primaryStage;
 	}
 
 }

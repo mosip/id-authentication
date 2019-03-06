@@ -43,7 +43,7 @@ public class MosipBridgeFactory extends AbstractVerticle {
 	 */
 	public static void getEventBus() {
 		String igniteFileName = BridgeUtil.getPropertyFromConfigServer("ignite.cluster.manager.file.name");
-		String igniteUrl = PropertyFileUtil.getProperty(MosipBridgeFactory.class, "bootstrap.properties", "config.server.url");
+		String igniteUrl = BridgeUtil.getCloudConfigUri();
 		igniteUrl = igniteUrl + "/*/" + BridgeUtil.getActiveProfile() + "/" + BridgeUtil.getCloudConfigLabel() + "/"
 				+ igniteFileName;
 		URL url = null;
@@ -74,7 +74,7 @@ public class MosipBridgeFactory extends AbstractVerticle {
 		vertxComponent.setVertx(vertx);
 		RestTemplate restTemplate = new RestTemplate();
 		String camelRoutesFileName = BridgeUtil.getPropertyFromConfigServer("camel.routes.file.name");
-		String camelRoutesUrl = PropertyFileUtil.getProperty(MosipBridgeFactory.class, "bootstrap.properties", "config.server.url");
+		String camelRoutesUrl = BridgeUtil.getCloudConfigUri();
 		camelRoutesUrl = camelRoutesUrl + "/*/" + BridgeUtil.getActiveProfile() + "/" + BridgeUtil.getCloudConfigLabel()
 				+ "/" + camelRoutesFileName;
 		ResponseEntity<Resource> responseEntity = restTemplate.exchange(camelRoutesUrl, HttpMethod.GET, null,
