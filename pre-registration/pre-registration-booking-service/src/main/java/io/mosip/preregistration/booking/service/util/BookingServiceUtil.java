@@ -178,7 +178,6 @@ public class BookingServiceUtil {
 		log.info("sessionId", "idType", "id", "In callGetHolidayListRestService method of Booking Service Util");
 		List<String> holidaylist = null;
 		try {
-			System.out.println("Regitratio centerDto ::::" + regDto);
 			RestTemplate restTemplate = restTemplateBuilder.build();
 			String holidayUrl = holidayListUrl + regDto.getLangCode() + "/" + regDto.getId() + "/"
 					+ LocalDate.now().getYear();
@@ -691,7 +690,6 @@ public class BookingServiceUtil {
 				new RegistrationBookingPK(preRegistrationId, DateUtils.parseDateToLocalDateTime(new Date())));
 		entity.setRegistrationCenterId(bookingRegistrationDTO.getRegistrationCenterId());
 		entity.setId(UUIDGeneratorUtil.generateId());
-		// entity.setStatusCode(StatusCodes.BOOKED.getCode());
 		entity.setLangCode("12L");
 		entity.setCrBy("987654321");
 		entity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));

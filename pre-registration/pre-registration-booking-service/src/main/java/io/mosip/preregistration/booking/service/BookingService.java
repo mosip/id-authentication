@@ -214,8 +214,8 @@ public class BookingService {
 						} else if (preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
 
 							/* Concatenating Booking date and slot from time */
-							RegistrationBookingEntity bookingEntity = bookingDAO.findByPreRegistrationId(
-									bookingRequestDTO.getPreRegistrationId());
+							RegistrationBookingEntity bookingEntity = bookingDAO
+									.findByPreRegistrationId(bookingRequestDTO.getPreRegistrationId());
 
 							String str = bookingEntity.getRegDate() + " " + bookingEntity.getSlotFromTime();
 							DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -275,7 +275,7 @@ public class BookingService {
 				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_030.getCode(),
 						ErrorMessages.CANNOT_GET_DETAILS_FOR + "_" + preRegStatusCode.toUpperCase() + "_STATUS");
 			}
- 			bookingRegistrationDTO.setRegDate(entity.getRegDate().toString());
+			bookingRegistrationDTO.setRegDate(entity.getRegDate().toString());
 			bookingRegistrationDTO.setRegistrationCenterId(entity.getRegistrationCenterId());
 			bookingRegistrationDTO.setSlotFromTime(entity.getSlotFromTime().toString());
 			bookingRegistrationDTO.setSlotToTime(entity.getSlotToTime().toString());
@@ -335,10 +335,11 @@ public class BookingService {
 				String regCenterId = requestDTO.getRequest().getRegistrationCenterId();
 				List<RegistrationBookingEntity> bookingEntities = bookingDAO
 						.findByRegistrationCenterId(regCenterId.trim());
-				Iterator<RegistrationBookingEntity> iterate=bookingEntities.iterator();
-				while(iterate.hasNext()) {
-					String preRegStatusCode = serviceUtil.callGetStatusRestService(iterate.next().getBookingPK().getPreregistrationId());
-					if(!preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
+				Iterator<RegistrationBookingEntity> iterate = bookingEntities.iterator();
+				while (iterate.hasNext()) {
+					String preRegStatusCode = serviceUtil
+							.callGetStatusRestService(iterate.next().getBookingPK().getPreregistrationId());
+					if (!preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
 						bookingEntities.remove(bookingEntities.indexOf(iterate.next()));
 					}
 				}
@@ -376,7 +377,6 @@ public class BookingService {
 	 * @param bookingRegistrationDTO
 	 * @return BookingStatusDTO
 	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
 	public BookingStatusDTO book(String preRegistrationId, BookingRegistrationDTO bookingRegistrationDTO) {
 		log.info("sessionId", "idType", "id", "In book method of Booking Service");
 		BookingStatusDTO bookingStatusDTO = new BookingStatusDTO();
@@ -404,9 +404,8 @@ public class BookingService {
 					availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() - 1);
 					bookingDAO.updateAvailibityEntity(availableEntity);
 				}
-				
+
 			}
-			
 
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In book method of Booking Service- " + ex.getMessage());
@@ -422,9 +421,6 @@ public class BookingService {
 	 * @param cancelBookingDTO
 	 * @return response with status code
 	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = { DataAccessException.class,
-			AppointmentBookingFailedException.class, BookingTimeSlotAlreadyBooked.class,
-			AvailablityNotFoundException.class, AppointmentCannotBeBookedException.class })
 	public CancelBookingResponseDTO cancelBooking(CancelBookingDTO cancelBookingDTO) {
 		log.info("sessionId", "idType", "id", "In cancelBooking method of Booking Service");
 		CancelBookingResponseDTO cancelBookingResponseDTO = new CancelBookingResponseDTO();
@@ -437,21 +433,15 @@ public class BookingService {
 							LocalTime.parse(cancelBookingDTO.getSlotToTime()),
 							LocalDate.parse(cancelBookingDTO.getRegDate()), cancelBookingDTO.getRegistrationCenterId());
 					/* Getting Status From Demographic */
-					String preRegStatusCode = serviceUtil
-							.callGetStatusRestService(cancelBookingDTO.getPreRegistrationId());
+					serviceUtil.callGetStatusRestService(cancelBookingDTO.getPreRegistrationId());
 
-					RegistrationBookingEntity bookingEntity = bookingDAO.findByPreRegistrationId(
-							cancelBookingDTO.getPreRegistrationId());
+					RegistrationBookingEntity bookingEntity = bookingDAO
+							.findByPreRegistrationId(cancelBookingDTO.getPreRegistrationId());
 
 					String str = bookingEntity.getRegDate() + " " + bookingEntity.getSlotFromTime();
 					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 					LocalDateTime bookedDateTime = LocalDateTime.parse(str, formatter);
 
-					if (!preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
-						throw new CancelAppointmentFailedException(ErrorCodes.PRG_BOOK_RCI_029.getCode(),
-								ErrorMessages.APPONIMENT_CANNOT_BE_CANCELED.getMessage() + "_FOR_"
-										+ preRegStatusCode.toUpperCase());
-					}
 					if (!serviceUtil.timeSpanCheckForCancle(bookedDateTime)) {
 						throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
 								ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
