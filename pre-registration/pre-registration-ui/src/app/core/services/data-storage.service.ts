@@ -452,16 +452,16 @@ export class DataStorageService {
     return this.httpClient.get(url);
   }
 
-<<<<<<< Updated upstream
   getRegistrationCenterByIdAndLangCode(id: string, langCode: string) {
     const url = this.MASTER_DATA_URL + 'registrationcenters/' + id + '/' + langCode;
     return this.httpClient.get(url);
   }
 
   getGuidelineTemplate() {
-    const url = this.MASTER_DATA_URL + 'templates/' + localStorage.getItem('langCode') + '/' + 'Onscreen-Acknowledgement';
+    const url =
+      this.MASTER_DATA_URL + 'templates/' + localStorage.getItem('langCode') + '/' + 'Onscreen-Acknowledgement';
     return this.httpClient.get(url);
-=======
+  }
   getApplicantType() {
     return this.httpClient.get(this.APPLICANNT_TYPE_URL, {
       params: new HttpParams()
@@ -477,6 +477,5 @@ export class DataStorageService {
       params: new HttpParams().append('languages', localStorage.getItem('langCode'))
       // params: new HttpParams().append('languages', 'eng')
     });
->>>>>>> Stashed changes
   }
 }
