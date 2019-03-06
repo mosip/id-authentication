@@ -31,10 +31,9 @@ import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
-
+import com.google.common.base.Verify;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.google.common.base.Verify;
 
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
@@ -44,7 +43,6 @@ import io.mosip.util.RidGenerator;
 import io.mosip.util.TestCaseReader;
 import io.mosip.util.TestDataGenerator;
 import io.restassured.response.Response;
-
 /**
  * @author Arjun chandramohan
  *
@@ -124,7 +122,7 @@ public class StoreIdData extends BaseTestCase implements ITest {
 	 * 
 	 */
 
-	@SuppressWarnings("unchecked")
+/*	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "FetchData", alwaysRun = true)
 	public void validatingTestCases(String testcaseName, JSONObject object)
 			throws JsonParseException, JsonMappingException, IOException, ParseException, IllegalAccessException,
@@ -134,9 +132,9 @@ public class StoreIdData extends BaseTestCase implements ITest {
 		object.put("Test case Name", testcaseName);
 		object.put("Jira ID", jiraID);
 
-		/*
+		
 		 * calling the uin generator rest api and storing as JSON object
-		 * */
+		 * 
 		JSONObject uin = (JSONObject) new JSONParser()
 				.parse(applicationLibrary.GetRequestNoParameter(service_URI_uin).asString());
 
@@ -262,7 +260,7 @@ public class StoreIdData extends BaseTestCase implements ITest {
 			setFinalStatus = true;
 		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
-	}
+	}*/
 
 	@Override
 	public String getTestName() {
