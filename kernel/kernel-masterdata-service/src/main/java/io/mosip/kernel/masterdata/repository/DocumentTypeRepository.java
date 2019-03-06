@@ -30,7 +30,7 @@ public interface DocumentTypeRepository extends BaseRepository<DocumentType, Cod
 	 *            the language code.
 	 * @return object of {@link DocumentType}.
 	 */
-	@Query(value = "select dt.code, dt.name, dt.descr , dt.lang_code , dt.is_active ,dt.cr_by ,dt.cr_dtimes ,dt.upd_by ,dt.upd_dtimes ,dt.is_deleted ,dt.del_dtimes from master.valid_document vd , master.doc_type dt , master.doc_category dc where vd.doctyp_code = dt.code and vd.doccat_code = dc.code and dc.code = ?1 and dc.lang_code = ?2 and (dt.is_deleted = false or dt.is_deleted is null)", nativeQuery = true)
+	@Query(value = "select dt.code, dt.name, dt.descr , dt.lang_code , dt.is_active ,dt.cr_by ,dt.cr_dtimes ,dt.upd_by ,dt.upd_dtimes ,dt.is_deleted ,dt.del_dtimes from master.valid_document vd , master.doc_type dt where vd.doctyp_code = dt.code and dt.lang_code=?2 and vd.doccat_code =?1 and (dt.is_deleted = false or dt.is_deleted is null)", nativeQuery = true)
 	List<DocumentType> findByCodeAndLangCodeAndIsDeletedFalse(String code, String langCode);
 
 	/**

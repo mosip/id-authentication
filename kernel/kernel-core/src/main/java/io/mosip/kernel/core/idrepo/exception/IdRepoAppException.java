@@ -13,18 +13,6 @@ public class IdRepoAppException extends BaseCheckedException {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6748760277721155095L;
 
-	/** The id. */
-	private String id;
-
-	/**
-	 * Gets the id.
-	 *
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
-
 	/**
 	 * Instantiates a new id repo app exception.
 	 */
@@ -52,19 +40,6 @@ public class IdRepoAppException extends BaseCheckedException {
 	public IdRepoAppException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}
-	
-	/**
-	 * Instantiates a new id repo app exception.
-	 *
-	 * @param errorCode the error code
-	 * @param errorMessage the error message
-	 * @param rootCause the root cause
-	 * @param id the id
-	 */
-	public IdRepoAppException(String errorCode, String errorMessage, Throwable rootCause, String id) {
-		super(errorCode, errorMessage, rootCause);
-		this.id = id;
-	}
 
 	/**
 	 * Instantiates a new id repo app exception.
@@ -83,29 +58,6 @@ public class IdRepoAppException extends BaseCheckedException {
 	 */
 	public IdRepoAppException(IdRepoErrorConstants exceptionConstant, Throwable rootCause) {
 		this(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage(), rootCause);
-	}
-
-	/**
-	 * Instantiates a new id repo app exception.
-	 *
-	 * @param exceptionConstant the exception constant
-	 * @param id the id
-	 */
-	public IdRepoAppException(IdRepoErrorConstants exceptionConstant, String id) {
-		this(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage());
-		this.id = id;
-	}
-
-	/**
-	 * Instantiates a new id repo app exception.
-	 *
-	 * @param exceptionConstant the exception constant
-	 * @param rootCause the root cause
-	 * @param id the id
-	 */
-	public IdRepoAppException(IdRepoErrorConstants exceptionConstant, Throwable rootCause, String id) {
-		this(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage(), rootCause);
-		this.id = id;
 	}
 
 }

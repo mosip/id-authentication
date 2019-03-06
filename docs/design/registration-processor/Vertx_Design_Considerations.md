@@ -49,6 +49,32 @@ Message sends can fail for other reasons, including there are no handlers availa
 
 4. Threading
 
-5. Scheduler
+5. 	Scheduler
+In MOSIP there are various requirement where Vertx need to perform an action after a delay, or periodically.In standard verticles you can’t just make the thread sleep to introduce a delay, as that will block the event loop thread.
 
-6. Deployment
+	1. One-shot Timers:
+		A one shot timer calls an event handler after a certain delay, expressed in milliseconds. In MOSIP there is requirement to do some action at some period of time (Retry scenerio) which is done as below:
+
+		```java
+		long timerID = vertx.setTimer(1000, id -> {
+		  System.out.println("And one second later this is printed");
+		});
+
+		System.out.println("First this is printed");
+		```
+	2. Time scheduling using RxHelper:
+RxHelper is a popular library for composing asynchronous and event based programs using observable sequences for the Java VM.
+It is very basic scheduler which which work on the time deplay provided. 
+
+	3. Time scheduling using Chime:
+		Chime scheduling is similar to cron-style which provides:
+		- scheduling with cron-style, interval, union or custom timers:
+		- at a certain time of day (to the second)
+		- on certain days of the week, month or year
+		- with a given time interval
+		- with nearly any combination of all of above
+		- repeating a given number of times
+		- repeating until a given time / date
+		- repeating infinite
+
+6.  Deployment

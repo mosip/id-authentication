@@ -68,7 +68,7 @@ public class prereg_dbread {
 		{
 			boolean flag=false;
 		
-			factory = new Configuration().configure("prereg.cfg.xml")
+			factory = new Configuration().configure("prereginteg.cfg.xml")
 		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 			session = factory.getCurrentSession();
 			session.beginTransaction();
@@ -156,7 +156,7 @@ public class prereg_dbread {
 		boolean flag=false;
 		//String preId;
 		
-		factory = new Configuration().configure("prereg.cfg.xml")
+		factory = new Configuration().configure("prereginteg.cfg.xml")
 				.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 		
 		
@@ -211,7 +211,7 @@ public class prereg_dbread {
 		boolean flag=false;
 		//String preId;
 		
-		factory = new Configuration().configure("prereg.cfg.xml")
+		factory = new Configuration().configure("prereginteg.cfg.xml")
 				.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 		
 	
