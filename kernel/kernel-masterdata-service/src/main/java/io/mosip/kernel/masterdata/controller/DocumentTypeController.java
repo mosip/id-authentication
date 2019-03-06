@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -73,7 +73,7 @@ public class DocumentTypeController {
 	@PostMapping("/v1.0/documenttypes")
 	@ApiOperation(value = "Service to create document type", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentType(
-			@Valid @RequestBody RequestDto<DocumentTypeDto> types) {
+			@Valid @RequestBody RequestWrapper<DocumentTypeDto> types) {
 		return new ResponseEntity<>(documentTypeService.createDocumentType(types), HttpStatus.OK);
 	}
 
@@ -87,7 +87,7 @@ public class DocumentTypeController {
 	@PutMapping("/v1.0/documenttypes")
 	@ApiOperation(value = "Service to update document type", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeAndLanguageCodeID> updateDocumentType(
-			@ApiParam("Document Type DTO to update") @Valid @RequestBody RequestDto<DocumentTypeDto> types) {
+			@ApiParam("Document Type DTO to update") @Valid @RequestBody RequestWrapper<DocumentTypeDto> types) {
 		return new ResponseEntity<>(documentTypeService.updateDocumentType(types), HttpStatus.OK);
 	}
 

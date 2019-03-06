@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.IdTypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -71,7 +71,7 @@ public class IdTypeController {
 			@ApiResponse(code = 400, message = "When input request has null or invalid values."),
 			@ApiResponse(code = 500, message = "Error occured while creating id type.") })
 	public ResponseEntity<CodeAndLanguageCodeID> createIdType(
-			@Valid @RequestBody RequestDto<IdTypeDto> idTypeRequestDto) {
+			@Valid @RequestBody RequestWrapper<IdTypeDto> idTypeRequestDto) {
 		return new ResponseEntity<>(idService.createIdType(idTypeRequestDto), HttpStatus.OK);
 	}
 }

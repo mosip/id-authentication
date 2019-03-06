@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -180,7 +180,7 @@ public class RegistrationCenterController {
 	 */
 	@PostMapping("/v1.0/registrationcenters")
 	public ResponseEntity<IdResponseDto> createRegistrationCenter(
-			@RequestBody @Valid RequestDto<RegistrationCenterDto> registrationCenterDto) {
+			@RequestBody @Valid RequestWrapper<RegistrationCenterDto> registrationCenterDto) {
 		return new ResponseEntity<>(registrationCenterService.createRegistrationCenter(registrationCenterDto),
 				HttpStatus.OK);
 	}
@@ -194,7 +194,7 @@ public class RegistrationCenterController {
 	 */
 	@PutMapping("/v1.0/registrationcenters")
 	public ResponseEntity<IdAndLanguageCodeID> updateRegistrationCenter(
-			@RequestBody @Valid RequestDto<RegistrationCenterDto> registrationCenterDto) {
+			@RequestBody @Valid RequestWrapper<RegistrationCenterDto> registrationCenterDto) {
 		return new ResponseEntity<>(registrationCenterService.updateRegistrationCenter(registrationCenterDto),
 				HttpStatus.OK);
 

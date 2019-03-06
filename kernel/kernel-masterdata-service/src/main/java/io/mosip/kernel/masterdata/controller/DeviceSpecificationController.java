@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceSpecificationResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -111,7 +111,7 @@ public class DeviceSpecificationController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Device Specification any error occured") })
 	public ResponseEntity<IdAndLanguageCodeID> createDeviceSpecification(
-			@Valid @RequestBody RequestDto<DeviceSpecificationDto> deviceSpecification) {
+			@Valid @RequestBody RequestWrapper<DeviceSpecificationDto> deviceSpecification) {
 
 		return new ResponseEntity<>(deviceSpecificationService.createDeviceSpecification(deviceSpecification),
 				HttpStatus.OK);
@@ -125,7 +125,7 @@ public class DeviceSpecificationController {
 			@ApiResponse(code = 404, message = "When No device specification found"),
 			@ApiResponse(code = 500, message = "While updating device specification any error occured") })
 	public ResponseEntity<IdAndLanguageCodeID> updateDeviceSpecification(
-			@Valid @RequestBody RequestDto<DeviceSpecificationDto> deviceSpecification) {
+			@Valid @RequestBody RequestWrapper<DeviceSpecificationDto> deviceSpecification) {
 		return new ResponseEntity<>(deviceSpecificationService.updateDeviceSpecification(deviceSpecification),
 				HttpStatus.OK);
 	}

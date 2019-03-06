@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDeviceHistory;
@@ -50,12 +50,12 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 	/**
 	 * (non-Javadoc)
 	 * 
-	 * @see RegistrationCenterDeviceService#createRegistrationCenterAndDevice(RequestDto)
+	 * @see RegistrationCenterDeviceService#createRegistrationCenterAndDevice(RequestWrapper)
 	 */
 	@Override
 	@Transactional
 	public ResponseRegistrationCenterDeviceDto createRegistrationCenterAndDevice(
-			RequestDto<RegistrationCenterDeviceDto> requestDto) {
+			RequestWrapper<RegistrationCenterDeviceDto> requestDto) {
 		ResponseRegistrationCenterDeviceDto registrationCenterDeviceDto = null;
 		try {
 			RegistrationCenterDevice registrationCenterDevice = MetaDataUtils.setCreateMetaData(requestDto.getRequest(),

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -89,7 +89,7 @@ public class DocumentCategoryController {
 	@PostMapping("/v1.0/documentcategories")
 	@ApiOperation(value = "Service to create document category", notes = "Create document category and return composite id", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentCategory(
-			@ApiParam("Document category DTO to create") @Valid @RequestBody RequestDto<DocumentCategoryDto> category) {
+			@ApiParam("Document category DTO to create") @Valid @RequestBody RequestWrapper<DocumentCategoryDto> category) {
 		return new ResponseEntity<>(documentCategoryService.createDocumentCategory(category), HttpStatus.OK);
 	}
 
@@ -103,7 +103,7 @@ public class DocumentCategoryController {
 	@PutMapping("/v1.0/documentcategories")
 	@ApiOperation(value = "Service to update document category", notes = "Update document category and return composite id", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeAndLanguageCodeID> updateDocumentCategory(
-			@ApiParam("Document category DTO to update") @Valid @RequestBody RequestDto<DocumentCategoryDto> category) {
+			@ApiParam("Document category DTO to update") @Valid @RequestBody RequestWrapper<DocumentCategoryDto> category) {
 		return new ResponseEntity<>(documentCategoryService.updateDocumentCategory(category), HttpStatus.OK);
 	}
 

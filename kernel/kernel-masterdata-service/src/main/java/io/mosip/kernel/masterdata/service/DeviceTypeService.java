@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -23,6 +23,6 @@ public interface DeviceTypeService {
 	 *             if any error occurred while saving Device Type
 	 * 
 	 */
-	public CodeAndLanguageCodeID createDeviceType(RequestDto<DeviceTypeDto> deviceTypes);
+	public CodeAndLanguageCodeID createDeviceType(RequestWrapper<DeviceTypeDto> deviceTypes);
 
 }

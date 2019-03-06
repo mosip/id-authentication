@@ -15,7 +15,7 @@ import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.BlacklistedWordsErrorCode;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
@@ -121,7 +121,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	 * (io.mosip.kernel.masterdata.dto.BlackListedWordsRequestDto)
 	 */
 	@Override
-	public WordAndLanguageCodeID createBlackListedWord(RequestDto<BlacklistedWordsDto> blackListedWordsRequestDto) {
+	public WordAndLanguageCodeID createBlackListedWord(RequestWrapper<BlacklistedWordsDto> blackListedWordsRequestDto) {
 		BlacklistedWords entity = MetaDataUtils.setCreateMetaData(blackListedWordsRequestDto.getRequest(),
 				BlacklistedWords.class);
 		BlacklistedWords blacklistedWords;
@@ -144,7 +144,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	 * updateBlackListedWord(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public WordAndLanguageCodeID updateBlackListedWord(RequestDto<BlacklistedWordsDto> blackListedWordsRequestDto) {
+	public WordAndLanguageCodeID updateBlackListedWord(RequestWrapper<BlacklistedWordsDto> blackListedWordsRequestDto) {
 		WordAndLanguageCodeID id = null;
 		BlacklistedWords wordEntity = null;
 		BlacklistedWordsDto wordDto = blackListedWordsRequestDto.getRequest();
