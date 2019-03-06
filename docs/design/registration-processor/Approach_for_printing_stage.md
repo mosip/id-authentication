@@ -54,7 +54,7 @@ Text File Content:
  ```html
  { 
  
- 	"id":"mosip.registration.print.send",			
+	"id":"mosip.registration.print.send",			
 	"version":"1.0",	
 	"requesttime":"2007-12-03T10:15:30Z",
 	"metadata" : {
