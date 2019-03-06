@@ -1023,10 +1023,10 @@ public class RegistrationConstants {
 	public static final String USER_ON_BOARD_THRESHOLD_LIMIT = "USER_ON_BOARD_THRESHOLD_LIMIT";
 
 	// Configuration Constants
-	public static final String AUDIT_LOG_DELETION_CONFIGURED_DAYS = "AUDIT_LOG_DELETION_CONFIGURED_DAYS";
-	public static final String SYNC_TRANSACTION_NO_OF_DAYS_LIMIT = "SYNC_TRANSACTION_NO_OF_DAYS_LIMIT";
-	public static final String REG_DELETION_CONFIGURED_DAYS = "REG_DELETION_CONFIGURED_DAYS";
-	public static final String PRE_REG_DELETION_CONFIGURED_DAYS = "PRE_REG_DELETION_CONFIGURED_DAYS";
+	public static final String AUDIT_LOG_DELETION_CONFIGURED_DAYS = "mosip.registration.AUDIT_LOG_DELETION_CONFIGURED_DAYS";
+	public static final String SYNC_TRANSACTION_NO_OF_DAYS_LIMIT = "mosip.registration.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT";
+	public static final String REG_DELETION_CONFIGURED_DAYS = "mosip.registration.REG_DELETION_CONFIGURED_DAYS";
+	public static final String PRE_REG_DELETION_CONFIGURED_DAYS = "mosip.registration.PRE_REG_DELETION_CONFIGURED_DAYS";
 
 	// Audit Constants
 	public static final String AUDIT_LOGS_DELETION_SUCESS_MSG = "Audit Logs Deleted Successfully";
@@ -1088,10 +1088,10 @@ public class RegistrationConstants {
 
 	public static final String JOB_ID = "JOB_ID";
 	
-	public static final String SYNC_DATA_FREQ = "SYNC_DATA_FREQ";
+	public static final String SYNC_DATA_FREQ = "mosip.registration.SYNC_DATA_FREQ";
 
 	public static final String LABEL = "Label";
-	public static final Object UI_SYNC_DATA = "UI_SYNC_DATA";
+	public static final Object UI_SYNC_DATA = "mosip.registration.UI_SYNC_DATA";
 	public static final String MESSAGE = "Message";
 	public static final String HASH = "#";
 	public static final String DOB_MESSAGE = "dobMessage";
