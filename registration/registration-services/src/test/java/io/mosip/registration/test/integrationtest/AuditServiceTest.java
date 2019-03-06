@@ -46,7 +46,7 @@ public class AuditServiceTest extends BaseIntegrationTest{
 		applicationContext.setApplicationMap(globalParamService.getGlobalParams());
 	}
 	
-	public void setupData() {
+	public void setupData() throws JsonParseException, JsonMappingException, IOException {
 //		PacketHandlerServiceTest packet = new PacketHandlerServiceTest();
 //		packet.testHandelPacket();
 		updateDB("3");
@@ -66,7 +66,7 @@ public class AuditServiceTest extends BaseIntegrationTest{
 	}
 	
 	@Test
-	public void auditLogsDeleteNoLogs() throws JsonProcessingException {
+	public void auditLogsDeleteTestConfiguredDaysNull() throws JsonProcessingException {
 		setGlobalConfig();
 		/**
 		 * Create backup of value
@@ -87,7 +87,7 @@ public class AuditServiceTest extends BaseIntegrationTest{
 	}
 	
 	@Test
-	public void testAuditLogsDelete() throws JsonProcessingException {
+	public void testAuditLogsDelete() throws IOException {
 		setGlobalConfig();
 		setupData();
 		ResponseDTO responseDTO = auditServiceImpl.deleteAuditLogs();
