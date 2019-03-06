@@ -1,7 +1,5 @@
 package io.mosip.authentication.service.filter;
 
-import java.io.IOException;
-import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +12,6 @@ import javax.crypto.SecretKey;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -56,12 +53,11 @@ public class KycAuthFilter extends IdAuthFilter {
 	}
 
 	private void encryptKycResponse(Map<String, Object> response) throws JsonProcessingException {
-		Object kycDetail = response.get(RESPONSE);
 		byte[] symmetricDataEncrypt = null;
 		byte[] asymmetricKeyEncrypt = null;
-		if (Objects.nonNull(kycDetail)) {
+		if (Objects.nonNull(response)) {
 			SecretKey symmetricKey = keyManager.getSymmetricKey();
-			symmetricDataEncrypt = encryptor.symmetricEncrypt(symmetricKey, toJsonString(kycDetail).getBytes());
+			symmetricDataEncrypt = encryptor.symmetricEncrypt(symmetricKey, toJsonString(response).getBytes());
 			asymmetricKeyEncrypt = encryptor.asymmetricPublicEncrypt(publicKey, symmetricKey.getEncoded());
 		}
 
@@ -133,21 +129,6 @@ public class KycAuthFilter extends IdAuthFilter {
 					
 				}));
 		
-	}
-
-
-	protected Object decodeToMap(String stringToDecode) throws IdAuthenticationAppException {
-		try {
-			if (Objects.nonNull(stringToDecode)) {
-				return mapper.readValue(Base64.getDecoder().decode(stringToDecode),
-						new TypeReference<Map<String, Object>>() {
-						});
-			} else {
-				return stringToDecode;
-			}
-		} catch (IllegalArgumentException | IOException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
-		}
 	}
 
 	@Override
