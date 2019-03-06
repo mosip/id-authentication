@@ -83,7 +83,7 @@ public class read_otpTransactiondb {
 	{
 		boolean flag=false;
 		
-		factory = new Configuration().configure("masterdata.cfg.xml").addAnnotatedClass(Gender.class).buildSessionFactory();	
+		factory = new Configuration().configure("masterdatainteg.cfg.xml").addAnnotatedClass(Gender.class).buildSessionFactory();	
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 		flag=validateGenderCode(session, code);
