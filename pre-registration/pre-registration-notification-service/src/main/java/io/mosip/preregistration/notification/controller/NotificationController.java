@@ -1,10 +1,13 @@
 package io.mosip.preregistration.notification.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,6 +67,16 @@ public class NotificationController {
 	public ResponseEntity<MainResponseDTO<QRCodeResponseDTO>> generateQRCode(@RequestBody String data) {
 		
 		return  new ResponseEntity<>( notificationService.generateQRCode(data),HttpStatus.OK);
+		
+	}
+	
+	/**
+	 *
+	 * @return the response entity
+	 */
+	@GetMapping(path="/config")
+	public ResponseEntity<MainResponseDTO<Map<String,String>>> configParams() {
+		return  new ResponseEntity<>( notificationService.getConfig(),HttpStatus.OK);
 		
 	}
 }
