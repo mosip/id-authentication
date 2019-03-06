@@ -449,6 +449,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		 * creating preRegistration and fetching created pre registration by user id.
 		 */
 		Response createPreRegResponse = lib.CreatePreReg(createPregRequest);
+		createdBy=createPreRegResponse.jsonPath().get("response[0].createdBy").toString();
 		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser(createdBy);
 		/**
 		 * adding assertion
@@ -468,6 +469,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response preRegResponse1 = lib.CreatePreReg(createPregRequest);
 		Response preRegResponse2 = lib.CreatePreReg(createPregRequest);
+		createdBy=preRegResponse1.jsonPath().get("response[0].createdBy").toString();
 		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser(createdBy);
 		try {
 			if (fetchResponse.jsonPath().get("status").toString().equalsIgnoreCase("true")) {
@@ -494,6 +496,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		createdBy=createResponse.jsonPath().get("response[0].createdBy").toString();
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
@@ -519,6 +522,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
+		createdBy=createResponse.jsonPath().get("response[0].createdBy").toString();
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
@@ -584,12 +588,12 @@ public class IntegrationScenarios extends BaseTestCase {
 		lib.BookExpiredAppointment(documentResponse, avilibityResponse, preID);
 		Response FetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
 		lib.expiredStatus();
+		createdBy=createResponse.jsonPath().get("response[0].createdBy").toString();
 		Response updateResponse = lib.updatePreReg(preID, createdBy);
 		String updatePreId = updateResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		lib.compareValues(updatePreId, preID);
 		lib.CancelBookingAppointment(FetchAppointmentDetailsResponse, preID);
 	}
-
 	/**
 	 * @author Ashish Copy document for discarded application.(discard source pre
 	 *         id)
@@ -653,6 +657,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		 * creating preRegistration and fetching created pre registration by user id.
 		 */
 		Response createPreRegResponse = lib.CreatePreReg(createPregRequest);
+		createdBy=createPreRegResponse.jsonPath().get("response[0].createdBy").toString();
 		preID = createPreRegResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		lib.discardApplication(preID);
 		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser(createdBy);
@@ -769,6 +774,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
+		createdBy=createResponse.jsonPath().get("response[0].createdBy").toString();
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
 		Response discardResponse = lib.discardApplication(preID);
 		Assert.assertEquals(preID, discardResponse.jsonPath().get("response[0].preRegistrationId").toString());
@@ -777,7 +783,6 @@ public class IntegrationScenarios extends BaseTestCase {
 		Assert.assertEquals(getPreRegistrationDataResponse.jsonPath().get("err.message").toString(),
 				"UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
 	}
-
 	/**
 	 * @author Ashish get pre registration data for pending appointment application
 	 *         application
