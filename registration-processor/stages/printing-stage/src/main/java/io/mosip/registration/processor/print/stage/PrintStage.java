@@ -196,8 +196,10 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-
-			if (consumeResponseFromQueue(regId)) {
+						
+			Thread.sleep(60000);
+			
+			if (consumeResponseFromQueue(regId,queue)) {
 				description = "Print and Post Completed for the regId : " + regId;
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PRINT_AND_POST_COMPLETED.toString());
 				registrationStatusDto.setStatusComment(description);
@@ -370,12 +372,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 	 *            the reg id
 	 * @return true, if successful
 	 */
-	private boolean consumeResponseFromQueue(String regId) {
+	private boolean consumeResponseFromQueue(String regId, MosipQueue queue) {
 		boolean result = false;
-		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(regId);
-
-		MosipQueue queue = mosipConnectionFactory.createConnection(typeOfQueue, username, password, url);
-
+		
 		// Consuming the response from the third party service provider
 		byte[] responseFromQueue = mosipQueueManager.consume(queue, "provider-response");
 		String response = new String(responseFromQueue);
@@ -384,11 +383,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 		try {
 			identityJson = (JSONObject) parser.parse(response);
 			String uinFieldCheck = (String) identityJson.get("Status");
-			if (uinFieldCheck.equals("Success")) {
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.PRINT_AND_POST_COMPLETED.toString());
-				registrationStatusDto.setStatusComment("Print and Post Completed for the regId " + regId);
-				registrationStatusDto.setUpdatedBy(USER);
-				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			if (uinFieldCheck.equals("Success")) {				
 				result = true;
 			}
 		} catch (ParseException e) {
