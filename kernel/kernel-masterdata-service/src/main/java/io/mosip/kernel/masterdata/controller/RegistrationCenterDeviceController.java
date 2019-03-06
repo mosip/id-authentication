@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceService;
@@ -44,7 +44,7 @@ public class RegistrationCenterDeviceController {
 			@ApiResponse(code = 400, message = "When Request body passed  is invalid"),
 			@ApiResponse(code = 500, message = "While mapping registration center and device") })
 	public ResponseEntity<ResponseRegistrationCenterDeviceDto> createRegistrationCenterAndDevice(
-			@Valid @RequestBody RequestWrapper<RegistrationCenterDeviceDto> requestDto) {
+			@Valid @RequestBody RequestDto<RegistrationCenterDeviceDto> requestDto) {
 		return new ResponseEntity<>(registrationCenterDeviceService.createRegistrationCenterAndDevice(requestDto),
 				HttpStatus.OK);
 	}

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.BioTypeCodeAndLangCodeAndAttributeCode;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricAttributeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
@@ -69,7 +69,7 @@ public class BiometricAttributeController {
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
 	public ResponseEntity<CodeAndLanguageCodeID> createBiometricAttribute(
-			@Valid @RequestBody RequestWrapper<BiometricAttributeDto> biometricAttribute) {
+			@Valid @RequestBody RequestDto<BiometricAttributeDto> biometricAttribute) {
 		return new ResponseEntity<>(biometricAttributeService.createBiometricAttribute(biometricAttribute.getRequest()),
 				HttpStatus.OK);
 	}

@@ -12,7 +12,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.GenderTypeErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
@@ -110,7 +110,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID saveGenderType(RequestWrapper<GenderTypeDto> genderRequestDto) {
+	public CodeAndLanguageCodeID saveGenderType(RequestDto<GenderTypeDto> genderRequestDto) {
 		Gender entity = MetaDataUtils.setCreateMetaData(genderRequestDto.getRequest(), Gender.class);
 		Gender gender;
 		try {
@@ -134,7 +134,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	 */
 	@Transactional
 	@Override
-	public CodeAndLanguageCodeID updateGenderType(RequestWrapper<GenderTypeDto> gender) {
+	public CodeAndLanguageCodeID updateGenderType(RequestDto<GenderTypeDto> gender) {
 		GenderTypeDto genderTypeDto = gender.getRequest();
 		CodeAndLanguageCodeID genderTypeId = new CodeAndLanguageCodeID();
 		MapperUtils.mapFieldValues(genderTypeDto, genderTypeId);

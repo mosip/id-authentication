@@ -3,7 +3,7 @@ package io.mosip.kernel.masterdata.service;
 import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 
@@ -39,7 +39,7 @@ public interface BlacklistedWordsService {
 	 *            the request dto of blacklisted word to be added.
 	 * @return the response.
 	 */
-	public WordAndLanguageCodeID createBlackListedWord(RequestWrapper<BlacklistedWordsDto> blackListedWordsRequestDto);
+	public WordAndLanguageCodeID createBlackListedWord(RequestDto<BlacklistedWordsDto> blackListedWordsRequestDto);
 
 	/**
 	 * Method to update blacklisted words.
@@ -48,7 +48,7 @@ public interface BlacklistedWordsService {
 	 *            the request dto of blacklisted word to be updated.
 	 * @return the response.
 	 */
-	public WordAndLanguageCodeID updateBlackListedWord(RequestWrapper<BlacklistedWordsDto> blackListedWordsRequestDto);
+	public WordAndLanguageCodeID updateBlackListedWord(RequestDto<BlacklistedWordsDto> blackListedWordsRequestDto);
 
 	/**
 	 * Method to delete blacklisted words.

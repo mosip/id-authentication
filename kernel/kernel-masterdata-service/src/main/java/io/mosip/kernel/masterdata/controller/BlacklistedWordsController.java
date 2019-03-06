@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
@@ -84,7 +84,7 @@ public class BlacklistedWordsController {
 	 */
 	@PostMapping
 	public ResponseEntity<WordAndLanguageCodeID> createBlackListedWord(
-			@RequestBody @Valid RequestWrapper<BlacklistedWordsDto> blackListedWordsRequestDto) {
+			@RequestBody @Valid RequestDto<BlacklistedWordsDto> blackListedWordsRequestDto) {
 		return new ResponseEntity<>(blacklistedWordsService.createBlackListedWord(blackListedWordsRequestDto),
 				HttpStatus.OK);
 	}
@@ -100,7 +100,7 @@ public class BlacklistedWordsController {
 	@PutMapping
 	@ApiOperation(value = "update the blacklisted word", response = WordAndLanguageCodeID.class)
 	public WordAndLanguageCodeID updateBlackListedWord(
-			@Valid @RequestBody RequestWrapper<BlacklistedWordsDto> blackListedWordsRequestDto) {
+			@Valid @RequestBody RequestDto<BlacklistedWordsDto> blackListedWordsRequestDto) {
 		return blacklistedWordsService.updateBlackListedWord(blackListedWordsRequestDto);
 	}
 

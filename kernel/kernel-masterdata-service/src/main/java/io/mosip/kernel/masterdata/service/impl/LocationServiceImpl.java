@@ -15,7 +15,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.LocationDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
@@ -158,7 +158,7 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	@Override
 	@Transactional
-	public PostLocationCodeResponseDto createLocationHierarchy(RequestWrapper<LocationDto> locationRequestDto) {
+	public PostLocationCodeResponseDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto) {
 
 		Location location = null;
 		Location locationResultantEntity = null;
@@ -188,7 +188,7 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	@Override
 	@Transactional
-	public PostLocationCodeResponseDto updateLocationDetails(RequestWrapper<LocationDto> locationRequestDto) {
+	public PostLocationCodeResponseDto updateLocationDetails(RequestDto<LocationDto> locationRequestDto) {
 		LocationDto locationDto = locationRequestDto.getRequest();
 		PostLocationCodeResponseDto postLocationCodeResponseDto = new PostLocationCodeResponseDto();
 		CodeAndLanguageCodeID locationId = new CodeAndLanguageCodeID();

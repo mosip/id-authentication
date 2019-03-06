@@ -16,7 +16,7 @@ import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayIDDto;
 import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
 import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -138,7 +138,7 @@ public class HolidayServiceImpl implements HolidayService {
 	 * .masterdata.dto.RequestDto)
 	 */
 	@Override
-	public HolidayIDDto saveHoliday(RequestWrapper<HolidayDto> holidayDto) {
+	public HolidayIDDto saveHoliday(RequestDto<HolidayDto> holidayDto) {
 		Holiday entity = MetaDataUtils.setCreateMetaData(holidayDto.getRequest(), Holiday.class);
 		Holiday holiday;
 		try {
@@ -160,7 +160,7 @@ public class HolidayServiceImpl implements HolidayService {
 	 * kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public HolidayIDDto updateHoliday(RequestWrapper<HolidayUpdateDto> holidayDto) {
+	public HolidayIDDto updateHoliday(RequestDto<HolidayUpdateDto> holidayDto) {
 		HolidayIDDto idDto = null;
 		HolidayUpdateDto dto = holidayDto.getRequest();
 		Map<String, Object> params = bindDtoToMap(dto);
@@ -187,7 +187,7 @@ public class HolidayServiceImpl implements HolidayService {
 	 * kernel.masterdata.entity.id.HolidayID)
 	 */
 	@Override
-	public HolidayIdDeleteDto deleteHoliday(RequestWrapper<HolidayIdDeleteDto> request) {
+	public HolidayIdDeleteDto deleteHoliday(RequestDto<HolidayIdDeleteDto> request) {
 		HolidayIdDeleteDto idDto = request.getRequest();
 		try {
 			int affectedRows = holidayRepository.deleteHolidays(LocalDateTime.now(ZoneId.of("UTC")),

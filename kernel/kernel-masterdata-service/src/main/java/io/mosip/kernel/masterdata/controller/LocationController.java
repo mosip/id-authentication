@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.LocationDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
@@ -60,7 +60,7 @@ public class LocationController {
 
 	@PostMapping()
 	public ResponseEntity<PostLocationCodeResponseDto> createLocationHierarchyDetails(
-			@Valid @RequestBody RequestWrapper<LocationDto> locationRequestDto) {
+			@Valid @RequestBody RequestDto<LocationDto> locationRequestDto) {
 
 		return new ResponseEntity<>(locationHierarchyService.createLocationHierarchy(locationRequestDto),
 				HttpStatus.OK);
@@ -106,7 +106,7 @@ public class LocationController {
 	 */
 	@PutMapping()
 	public PostLocationCodeResponseDto updateLocationHierarchyDetails(
-			@Valid @RequestBody RequestWrapper<LocationDto> locationRequestDto) {
+			@Valid @RequestBody RequestDto<LocationDto> locationRequestDto) {
 
 		return locationHierarchyService.updateLocationDetails(locationRequestDto);
 	}

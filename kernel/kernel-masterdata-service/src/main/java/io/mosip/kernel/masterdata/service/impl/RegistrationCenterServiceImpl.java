@@ -27,7 +27,7 @@ import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -341,7 +341,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * createRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdResponseDto createRegistrationCenter(RequestWrapper<RegistrationCenterDto> registrationCenterDto) {
+	public IdResponseDto createRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto) {
 		try {
 			if (!EmptyCheckUtils.isNullEmpty(registrationCenterDto.getRequest().getLatitude())
 					&& !EmptyCheckUtils.isNullEmpty(registrationCenterDto.getRequest().getLongitude())) {
@@ -452,7 +452,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 */
 	@Transactional
 	@Override
-	public IdAndLanguageCodeID updateRegistrationCenter(RequestWrapper<RegistrationCenterDto> registrationCenter) {
+	public IdAndLanguageCodeID updateRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenter) {
 		RegistrationCenter updRegistrationCenter = null;
 		try {
 

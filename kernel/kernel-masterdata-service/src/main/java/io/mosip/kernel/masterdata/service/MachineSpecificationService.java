@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -27,7 +27,7 @@ public interface MachineSpecificationService {
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while saving Machine Specification
 	 */
-	public IdAndLanguageCodeID createMachineSpecification(RequestWrapper<MachineSpecificationDto> machineSpecification);
+	public IdAndLanguageCodeID createMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification);
 
 	/**
 	 * Abstract method to update Machine Specification Details to the Database
@@ -44,7 +44,7 @@ public interface MachineSpecificationService {
 	 *             if any error occurred while updating Machine Specification
 	 *
 	 */
-	public IdAndLanguageCodeID updateMachineSpecification(RequestWrapper<MachineSpecificationDto> machineSpecification);
+	public IdAndLanguageCodeID updateMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification);
 
 	/**
 	 * Abstract method to delete Machine Specification Details to the Database

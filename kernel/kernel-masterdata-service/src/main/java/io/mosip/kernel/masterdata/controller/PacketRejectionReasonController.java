@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PacketRejectionReasonResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.entity.id.CodeLangCodeAndRsnCatCodeID;
@@ -42,7 +42,7 @@ public class PacketRejectionReasonController {
 	 * @return CodeAndLanguageCodeId
 	 */
 	@PostMapping("/reasoncategory")
-	public ResponseEntity<CodeAndLanguageCodeID> createReasonCategories(@Valid@RequestBody RequestWrapper<PostReasonCategoryDto> requestDto) {
+	public ResponseEntity<CodeAndLanguageCodeID> createReasonCategories(@Valid@RequestBody RequestDto<PostReasonCategoryDto> requestDto) {
                 
 		return new ResponseEntity<>(reasonService.createReasonCategories(requestDto),HttpStatus.OK);
 	}
@@ -53,7 +53,7 @@ public class PacketRejectionReasonController {
 	 * @return CodeLangCodeAndRsnCatCodeId
 	 */
 	@PostMapping("/reasonlist")
-	public ResponseEntity<CodeLangCodeAndRsnCatCodeID> createReasonLists(@Valid@RequestBody RequestWrapper<ReasonListDto> requestDto) {
+	public ResponseEntity<CodeLangCodeAndRsnCatCodeID> createReasonLists(@Valid@RequestBody RequestDto<ReasonListDto> requestDto) {
                 
 		return new ResponseEntity<>(reasonService.createReasonList(requestDto),HttpStatus.OK);
 	}

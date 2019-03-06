@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -91,7 +91,7 @@ public class TemplateController {
 	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = IdAndLanguageCodeID.class),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
-	public ResponseEntity<IdAndLanguageCodeID> createTemplate(@Valid @RequestBody RequestWrapper<TemplateDto> template) {
+	public ResponseEntity<IdAndLanguageCodeID> createTemplate(@Valid @RequestBody RequestDto<TemplateDto> template) {
 		return new ResponseEntity<>(templateService.createTemplate(template.getRequest()), HttpStatus.OK);
 	}
 
@@ -107,7 +107,7 @@ public class TemplateController {
 	@ApiResponses({ @ApiResponse(code = 200, message = " successfully updated", response = IdAndLanguageCodeID.class),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = " creating any error occured") })
-	public ResponseEntity<IdAndLanguageCodeID> updateTemplate(@Valid @RequestBody RequestWrapper<TemplateDto> template) {
+	public ResponseEntity<IdAndLanguageCodeID> updateTemplate(@Valid @RequestBody RequestDto<TemplateDto> template) {
 		return new ResponseEntity<>(templateService.updateTemplates(template.getRequest()), HttpStatus.OK);
 	}
 

@@ -1,20 +1,18 @@
 package io.mosip.kernel.otpmanager.controller;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.otpmanager.spi.OtpGenerator;
 import io.mosip.kernel.otpmanager.dto.OtpGeneratorRequestDto;
 import io.mosip.kernel.otpmanager.dto.OtpGeneratorResponseDto;
+import io.mosip.kernel.otpmanager.dto.GenerationDTOValidationLevels;
 
 /**
  * This class provides controller methods for OTP generation.
@@ -41,10 +39,9 @@ public class OtpGeneratorController {
 	 * @return The generated OTP as DTO response.
 	 */
 
-	@ResponseFilter
 	@PostMapping(value = "/v1.0/otp/generate")
-	public ResponseEntity<OtpGeneratorResponseDto> generateOtp(
-			@Valid @RequestBody RequestWrapper<OtpGeneratorRequestDto> otpDto) {
-		return new ResponseEntity<>(otpGeneratorService.getOtp(otpDto.getRequest()), HttpStatus.OK);
+	public ResponseEntity<OtpGeneratorResponseDto> generateOtp(@Validated({
+			GenerationDTOValidationLevels.ValidationLevel.class }) @RequestBody OtpGeneratorRequestDto otpDto) {
+		return new ResponseEntity<>(otpGeneratorService.getOtp(otpDto), HttpStatus.OK);
 	}
 }

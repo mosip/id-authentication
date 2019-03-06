@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Machine;
@@ -163,7 +163,7 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@Override
 	@Transactional
-	public IdAndLanguageCodeID createMachine(RequestWrapper<MachineDto> machine) {
+	public IdAndLanguageCodeID createMachine(RequestDto<MachineDto> machine) {
 		Machine crtMachine = null;
 		Machine entity = MetaDataUtils.setCreateMetaData(machine.getRequest(), Machine.class);
 		MachineHistory entityHistory = MetaDataUtils.setCreateMetaData(machine.getRequest(), MachineHistory.class);
@@ -192,7 +192,7 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@Override
 	@Transactional
-	public IdAndLanguageCodeID updateMachine(RequestWrapper<MachineDto> machine) {
+	public IdAndLanguageCodeID updateMachine(RequestDto<MachineDto> machine) {
 		Machine updMachine = null;
 		try {
 			Machine renmachine = machineRepository.findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(

@@ -39,7 +39,7 @@ import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceHistoryDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
@@ -132,8 +132,8 @@ public class MasterDataServiceTest {
 	private List<Application> applicationList;
 	private ApplicationDto applicationDto;
 
-	private RequestWrapper<ApplicationDto> applicationRequestDto;
-	private RequestWrapper<DocumentCategoryDto> documentCategoryRequestDto;
+	private RequestDto<ApplicationDto> applicationRequestDto;
+	private RequestDto<DocumentCategoryDto> documentCategoryRequestDto;
 
 	private RegistrationCenterMachineDeviceHistoryDto registrationCenterMachimeDeviceHistoryDto;
 
@@ -230,7 +230,7 @@ public class MasterDataServiceTest {
 	Location locationHierarchy1 = null;
 	LocationDto locationDtos = null;
 
-	RequestWrapper<LocationDto> requestLocationDto = null;
+	RequestDto<LocationDto> requestLocationDto = null;
 
 	@MockBean
 	private TemplateRepository templateRepository;
@@ -243,7 +243,7 @@ public class MasterDataServiceTest {
 
 	private TemplateFileFormat templateFileFormat;
 
-	private RequestWrapper<TemplateFileFormatDto> templateFileFormatRequestDto;
+	private RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto;
 
 	@Autowired
 	private TemplateService templateService;
@@ -278,7 +278,7 @@ public class MasterDataServiceTest {
 	@Autowired
 	DeviceHistoryService deviceHistoryService;
 
-	private RequestWrapper<BiometricTypeDto> biometricTypeRequestDto;
+	private RequestDto<BiometricTypeDto> biometricTypeRequestDto;
 
 	private BiometricTypeDto biometricTypeDto;
 
@@ -382,7 +382,7 @@ public class MasterDataServiceTest {
 		locationDto.setLangCode("FRA");
 		locationDto.setParentLocCode("IND");
 		locationDto.setIsActive(true);
-		requestLocationDto = new RequestWrapper<>();
+		requestLocationDto = new RequestDto<>();
 		requestLocationDto.setRequest(locationDto);
 
 	}
@@ -454,7 +454,7 @@ public class MasterDataServiceTest {
 		documentCategoryList.add(documentCategory1);
 		documentCategoryList.add(documentCategory2);
 
-		documentCategoryRequestDto = new RequestWrapper<DocumentCategoryDto>();
+		documentCategoryRequestDto = new RequestDto<DocumentCategoryDto>();
 		DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
 		documentCategoryDto.setCode("102");
 		documentCategoryDto.setName("POR");
@@ -535,7 +535,7 @@ public class MasterDataServiceTest {
 		biometricTypeList.add(biometricType1);
 		biometricTypeList.add(biometricType2);
 
-		biometricTypeRequestDto = new RequestWrapper<BiometricTypeDto>();
+		biometricTypeRequestDto = new RequestDto<BiometricTypeDto>();
 		// BiometricTypeData request = new BiometricTypeData();
 		biometricTypeDto = new BiometricTypeDto();
 		biometricTypeDto.setCode("1");
@@ -586,7 +586,7 @@ public class MasterDataServiceTest {
 		applicationList.add(application1);
 		applicationList.add(application2);
 
-		applicationRequestDto = new RequestWrapper<ApplicationDto>();
+		applicationRequestDto = new RequestDto<ApplicationDto>();
 		// ApplicationData request = new ApplicationData();
 		applicationDto = new ApplicationDto();
 		applicationDto.setCode("101");
@@ -602,7 +602,7 @@ public class MasterDataServiceTest {
 		templateFileFormat.setCode("xml");
 		templateFileFormat.setLangCode("ENG");
 
-		templateFileFormatRequestDto = new RequestWrapper<TemplateFileFormatDto>();
+		templateFileFormatRequestDto = new RequestDto<TemplateFileFormatDto>();
 		TemplateFileFormatDto templateFileFormatDto = new TemplateFileFormatDto();
 		templateFileFormatDto.setCode("xml");
 		templateFileFormatDto.setLangCode("ENG");

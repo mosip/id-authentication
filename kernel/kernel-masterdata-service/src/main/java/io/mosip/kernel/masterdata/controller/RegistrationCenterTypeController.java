@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterTypeService;
@@ -46,7 +46,7 @@ public class RegistrationCenterTypeController {
 	 */
 	@PostMapping("/v1.0/registrationcentertypes")
 	public ResponseEntity<CodeAndLanguageCodeID> createRegistrationCenterType(
-			@Valid @RequestBody RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {
+			@Valid @RequestBody RequestDto<RegistrationCenterTypeDto> registrationCenterTypeDto) {
 		return new ResponseEntity<>(
 				registrationCenterTypeService.createRegistrationCenterType(registrationCenterTypeDto),
 				HttpStatus.OK);
@@ -62,7 +62,7 @@ public class RegistrationCenterTypeController {
 	 */
 	@PutMapping("/v1.0/registrationcentertypes")
 	public ResponseEntity<CodeAndLanguageCodeID> updateRegistrationCenterType(
-			@Valid @RequestBody RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {
+			@Valid @RequestBody RequestDto<RegistrationCenterTypeDto> registrationCenterTypeDto) {
 		return new ResponseEntity<>(
 				registrationCenterTypeService.updateRegistrationCenterType(registrationCenterTypeDto), HttpStatus.OK);
 

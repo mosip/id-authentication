@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MachineTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -41,7 +41,7 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID createDeviceType(RequestWrapper<DeviceTypeDto> deviceType) {
+	public CodeAndLanguageCodeID createDeviceType(RequestDto<DeviceTypeDto> deviceType) {
 		DeviceType renDeviceType = null;
 
 		DeviceType entity = MetaDataUtils.setCreateMetaData(deviceType.getRequest(), DeviceType.class);

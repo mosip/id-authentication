@@ -15,7 +15,7 @@ import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.constant.DocumentTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
@@ -93,7 +93,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID createDocumentType(RequestWrapper<DocumentTypeDto> documentTypeDto) {
+	public CodeAndLanguageCodeID createDocumentType(RequestDto<DocumentTypeDto> documentTypeDto) {
 		DocumentType entity = MetaDataUtils.setCreateMetaData(documentTypeDto.getRequest(), DocumentType.class);
 		DocumentType documentType;
 		try {
@@ -118,7 +118,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID updateDocumentType(RequestWrapper<DocumentTypeDto> documentTypeDto) {
+	public CodeAndLanguageCodeID updateDocumentType(RequestDto<DocumentTypeDto> documentTypeDto) {
 		try {
 			DocumentType documentType = documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
 					documentTypeDto.getRequest().getCode(), documentTypeDto.getRequest().getLangCode());

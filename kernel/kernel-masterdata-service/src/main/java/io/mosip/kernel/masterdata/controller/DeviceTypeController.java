@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DeviceTypeService;
 import io.swagger.annotations.Api;
@@ -52,7 +52,7 @@ public class DeviceTypeController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Device Type any error occured") })
 	public ResponseEntity<CodeAndLanguageCodeID> createDeviceType(
-			@Valid @RequestBody RequestWrapper<DeviceTypeDto> deviceTypes) {
+			@Valid @RequestBody RequestDto<DeviceTypeDto> deviceTypes) {
 		return new ResponseEntity<>(deviceTypeService.createDeviceType(deviceTypes), HttpStatus.OK);
 	}
 	 

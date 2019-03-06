@@ -12,7 +12,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -126,7 +126,7 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Override
 	@Transactional
-	public IdAndLanguageCodeID createDevice(RequestWrapper<DeviceDto> deviceDto) {
+	public IdAndLanguageCodeID createDevice(RequestDto<DeviceDto> deviceDto) {
 		Device device = null;
 
 		Device entity = MetaDataUtils.setCreateMetaData(deviceDto.getRequest(), Device.class);
@@ -160,7 +160,7 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Override
 	@Transactional
-	public IdAndLanguageCodeID updateDevice(RequestWrapper<DeviceDto> deviceRequestDto) {
+	public IdAndLanguageCodeID updateDevice(RequestDto<DeviceDto> deviceRequestDto) {
 		Device entity = null;
 		Device updatedDevice = null;
 		try {

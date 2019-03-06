@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.BiometricType;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -83,7 +83,7 @@ public class BiometricTypeController {
 	 */
 	@PostMapping
 	public ResponseEntity<CodeAndLanguageCodeID> createBiometricType(
-			@Valid @RequestBody RequestWrapper<BiometricTypeDto> biometricType) {
+			@Valid @RequestBody RequestDto<BiometricTypeDto> biometricType) {
 		return new ResponseEntity<>(biometricTypeService.createBiometricType(biometricType), HttpStatus.OK);
 	}
 }

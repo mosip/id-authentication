@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.MachineDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -120,7 +120,7 @@ public class MachineController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While creating Machine any error occured") })
-	public ResponseEntity<IdAndLanguageCodeID> createMachine(@Valid @RequestBody RequestWrapper<MachineDto> machine) {
+	public ResponseEntity<IdAndLanguageCodeID> createMachine(@Valid @RequestBody RequestDto<MachineDto> machine) {
 		return new ResponseEntity<>(machineService.createMachine(machine), HttpStatus.OK);
 	}
 
@@ -140,7 +140,7 @@ public class MachineController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While updating Machine any error occured") })
-	public ResponseEntity<IdAndLanguageCodeID> updateMachine(@Valid @RequestBody RequestWrapper<MachineDto> machine) {
+	public ResponseEntity<IdAndLanguageCodeID> updateMachine(@Valid @RequestBody RequestDto<MachineDto> machine) {
 		return new ResponseEntity<>(machineService.updateMachine(machine), HttpStatus.OK);
 	}
 

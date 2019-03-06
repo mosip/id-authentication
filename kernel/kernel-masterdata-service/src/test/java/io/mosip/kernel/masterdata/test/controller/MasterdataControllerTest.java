@@ -42,7 +42,7 @@ import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricAttributeResponseDto;
@@ -318,9 +318,9 @@ public class MasterdataControllerTest {
 		locationCodeDto = new PostLocationCodeResponseDto();
 		locationCodeDto.setCode("TN");
 		locationCodeDto.setLangCode("eng");
-		RequestWrapper<LocationDto> requestDto = new RequestWrapper<>();
+		RequestDto<LocationDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.create.location");
-		requestDto.setVersion("1.0.0");
+		requestDto.setVer("1.0.0");
 		requestDto.setRequest(locationDto);
 
 		try {
