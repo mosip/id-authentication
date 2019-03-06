@@ -71,16 +71,16 @@ public class TemplateGenerator extends BaseService {
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(TemplateGenerator.class);
 
-	@Value("${DOCUMENT_DISABLE_FLAG}")
+	@Value("${mosip.registration.document_disable_flag}")
 	private String documentDisableFlag;
 
-	@Value("${FINGERPRINT_DISABLE_FLAG}")
+	@Value("${mosip.registration.fingerprint_disable_flag}")
 	private String fingerprintDisableFlag;
 
-	@Value("${IRIS_DISABLE_FLAG}")
+	@Value("${mosip.registration.iris_disable_flag}")
 	private String irisDisableFlag;
 
-	@Value("${FACE_DISABLE_FLAG}")
+	@Value("${mosip.registration.face_disable_flag}")
 	private String faceDisableFlag;
 
 	@Autowired
