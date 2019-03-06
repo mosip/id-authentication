@@ -12,6 +12,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
+import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.service.AuthenticationService;
 import io.mosip.registration.service.device.impl.FingerPrintCaptureServiceImpl;
@@ -39,14 +42,19 @@ public class FingerPrintServiceTest extends BaseIntegrationTest
 	@Autowired
 	private AuthenticationService authenticationService;
 	
+	@Before
+	public void setvalue()
+	{
+	SessionContext.getInstance().getUserContext().setUserId(IntegrationTestConstants.userId_val);
+	}
+	
 	@Test
 	public void Validate_FingerPrintService_positive() throws JsonParseException, JsonMappingException, IOException, ParseException {
           
 		//Verify the positive flow for FingerPrintService
-		String testDataPath="src/test/resources/testData/FingerPrintCaptureServiceData/Non_matchDB.json";
+		String testDataPath=IntegrationTestConstants.FP_Path_10_FP_NotMatchWithDB;
 		List<FingerprintDetailsDTO> data=FingerPrintServiceTest.testData(testDataPath);
 		boolean actualValue=fingerprintservice.validateFingerprint(data);
-		System.out.println("=== Result of Finger Print Service===  "+actualValue);
 		assertEquals(false, actualValue);
 	}	
 	
@@ -54,7 +62,7 @@ public class FingerPrintServiceTest extends BaseIntegrationTest
 	public void Validate_FingerPrintService_Negative() throws JsonParseException, JsonMappingException, IOException, ParseException {
           
 		//Verify the Negative flow for FingerPrintService
-		String testDataPath="src/test/resources/testData/FingerPrintCaptureServiceData/right_index_matchDB.json";
+		String testDataPath=IntegrationTestConstants.FpPath_10_FP_Match_RightIndex_WithDB;
 		List<FingerprintDetailsDTO> data=FingerPrintServiceTest.testData(testDataPath);
 		Map<String, Object> mapObject=new HashMap<>();
 		SessionContext.getInstance().setMapObject(mapObject);
@@ -65,10 +73,10 @@ public class FingerPrintServiceTest extends BaseIntegrationTest
 	
 
 	@Test
-	public void Validate_FingerPrintService_Positive_6prints() throws JsonParseException, JsonMappingException, IOException, ParseException {
+	public void Validate_FingerPrintService_Positive_6FP() throws JsonParseException, JsonMappingException, IOException, ParseException {
           
 		//Verify the Negative flow for FingerPrintService
-		String testDataPath="src/test/resources/testData/FingerPrintCaptureServiceData/Non_matchDB_6.json";
+		String testDataPath=IntegrationTestConstants.FpPath_6_FP_NotMatchWithDB;
 		List<FingerprintDetailsDTO> data=FingerPrintServiceTest.testData(testDataPath);
 		Map<String, Object> mapObject=new HashMap<>();
 		SessionContext.getInstance().setMapObject(mapObject);
@@ -77,10 +85,10 @@ public class FingerPrintServiceTest extends BaseIntegrationTest
 	}
 	
 	@Test
-	public void Validate_FingerPrintService_Negative_6prints() throws JsonParseException, JsonMappingException, IOException, ParseException {
+	public void Validate_FingerPrintService_Negative_6FP() throws JsonParseException, JsonMappingException, IOException, ParseException {
           
 		//Verify the Negative flow for FingerPrintService
-		String testDataPath="src/test/resources/testData/FingerPrintCaptureServiceData/matchDB_6.json";
+		String testDataPath=IntegrationTestConstants.FpPath_6_FP_Match_RightIndex_WithDB;
 		List<FingerprintDetailsDTO> data=FingerPrintServiceTest.testData(testDataPath);
 		Map<String, Object> mapObject=new HashMap<>();
 		SessionContext.getInstance().setMapObject(mapObject);
@@ -90,14 +98,14 @@ public class FingerPrintServiceTest extends BaseIntegrationTest
 	}
 	
 	@Test
-	public void Validate_FingerPrintSingleAuth_false() throws IOException, ParseException
+	public void Validate_SingleFP_Auth_Negative() throws IOException, ParseException
 	{
 	
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-		String testDataPath="src/test/resources/testData/FingerPrintCaptureServiceData/SingleAuth_NonmatchDB.json";
+		String testDataPath=IntegrationTestConstants.FpPath_Single_FP_Auth_Not_matchWithDB;
 		List<FingerprintDetailsDTO> data=FingerPrintServiceTest.testData(testDataPath);
 		authenticationValidatorDTO.setFingerPrintDetails(data);
-		authenticationValidatorDTO.setUserId("mosip");
+		authenticationValidatorDTO.setUserId(IntegrationTestConstants.userId_val);
 		authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
 		boolean actualValue=authenticationService.authValidator(RegistrationConstants.FINGERPRINT,
 				authenticationValidatorDTO);
@@ -106,14 +114,14 @@ public class FingerPrintServiceTest extends BaseIntegrationTest
 	
 	
 	@Test
-	public void Validate_FingerPrintSingleAuth_true() throws IOException, ParseException
+	public void Validate_SingleFP_Auth_Positive() throws IOException, ParseException
 	{
 	
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-		String testDataPath="src/test/resources/testData/FingerPrintCaptureServiceData/SingleAuth_matchDB.json";
+		String testDataPath=IntegrationTestConstants.FpPath_Single_FP_Auth_Match_WithDB;
 		List<FingerprintDetailsDTO> data=FingerPrintServiceTest.testData(testDataPath);
 		authenticationValidatorDTO.setFingerPrintDetails(data);
-		authenticationValidatorDTO.setUserId("mosip");
+		authenticationValidatorDTO.setUserId(IntegrationTestConstants.userId_val);
 		authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
 		boolean actualValue=authenticationService.authValidator(RegistrationConstants.FINGERPRINT,
 				authenticationValidatorDTO);

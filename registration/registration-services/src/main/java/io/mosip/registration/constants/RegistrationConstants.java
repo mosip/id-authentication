@@ -654,17 +654,9 @@ public class RegistrationConstants {
 	public static final String MODE_OF_COMMUNICATION = "mosip.registration.mode_of_communication";
 
 	// Global configuration parameters
-	public static final String INVALID_LOGIN_COUNT = "INVALID_LOGIN_COUNT";
-	public static final String INVALID_LOGIN_TIME = "INVALID_LOGIN_TIME";
 	public static final String REGISTARTION_CENTER = "REGISTARTION_CENTER";
 	public static final String CBEFF_ONLY_UNIQUE_TAGS = "CBEFF_ONLY_UNIQUE_TAGS";
-	public static final String GLOBAL_CONFIG_TRUE_VALUE = "Y";
-	public static final String REG_PAK_MAX_CNT_APPRV_LIMIT = "REG_PAK_MAX_CNT_APPRV_LIMIT";
-	public static final String REG_PAK_MAX_TIME_APPRV_LIMIT = "REG_PAK_MAX_TIME_APPRV_LIMIT";
-	public static final String FINGERPRINT_DISABLE_FLAG = "FINGERPRINT_DISABLE_FLAG";
-	public static final String IRIS_DISABLE_FLAG = "IRIS_DISABLE_FLAG";
-	public static final String FACE_DISABLE_FLAG = "FACE_DISABLE_FLAG";
-	public static final String DOCUMENT_DISABLE_FLAG = "DOCUMENT_DISABLE_FLAG";
+	public static final String GLOBAL_CONFIG_TRUE_VALUE = "Y";	
 
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
