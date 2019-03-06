@@ -33,6 +33,7 @@ public class Initialization extends Application {
 	private static final Logger LOGGER = AppConfig.getLogger(Initialization.class);
 
 	private static ApplicationContext applicationContext;
+	private static Stage applicationPrimaryStage;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -41,7 +42,7 @@ public class Initialization extends Application {
 					APPLICATION_ID, "Login screen initilization "
 							+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
 
-			getPrimaryStage(primaryStage);
+			setPrimaryStage(primaryStage);
 			LoginController loginController = applicationContext.getBean(LoginController.class);
 			loginController.loadInitialScreen(primaryStage);
 
@@ -99,8 +100,12 @@ public class Initialization extends Application {
 		Initialization.applicationContext = applicationContext;
 	}
 
-	public static Stage getPrimaryStage(Stage primaryStage) {
-		return primaryStage;
+	public static Stage getPrimaryStage() {
+		return applicationPrimaryStage;
+	}
+	
+	public static void setPrimaryStage(Stage primaryStage) {
+		applicationPrimaryStage =  primaryStage;
 	}
 
 }
