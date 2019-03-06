@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,10 +45,7 @@ import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ActiveProfiles("test")
-@ConfigurationProperties("mosip.kernel.idrepo")
 public class IdRepoControllerTest {
-
-	private Map<String, String> id;
 
 	@Mock
 	private IdRepoService<IdRequestDTO, IdResponseDTO> idRepoService;
@@ -65,7 +61,6 @@ public class IdRepoControllerTest {
 
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(controller, "id", id);
 		ReflectionTestUtils.setField(controller, "allowedTypes", Lists.newArrayList("bio", "demo", "all"));
 	}
 
@@ -248,13 +243,5 @@ public class IdRepoControllerTest {
 				new BeanPropertyBindingResult(request, "IdRequestDTO"));
 		assertEquals(response, responseEntity.getBody());
 		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-	}
-
-	public Map<String, String> getId() {
-		return id;
-	}
-
-	public void setId(Map<String, String> id) {
-		this.id = id;
 	}
 }
