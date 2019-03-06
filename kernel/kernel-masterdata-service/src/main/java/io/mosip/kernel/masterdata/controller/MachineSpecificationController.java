@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.MachineSpecificationService;
@@ -55,7 +55,7 @@ public class MachineSpecificationController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Machine Specification any error occured") })
 	public ResponseEntity<IdAndLanguageCodeID> createMachineSpecification(
-			@Valid @RequestBody RequestDto<MachineSpecificationDto> machineSpecification) {
+			@Valid @RequestBody RequestWrapper<MachineSpecificationDto> machineSpecification) {
 
 		return new ResponseEntity<>(machineSpecificationService.createMachineSpecification(machineSpecification),
 				HttpStatus.OK);
@@ -76,7 +76,7 @@ public class MachineSpecificationController {
 			@ApiResponse(code = 404, message = "When No Machine Specification found"),
 			@ApiResponse(code = 500, message = "While updating Machine Specification any error occured") })
 	public ResponseEntity<IdAndLanguageCodeID> updateMachineSpecification(
-			@Valid @RequestBody RequestDto<MachineSpecificationDto> machineSpecification) {
+			@Valid @RequestBody RequestWrapper<MachineSpecificationDto> machineSpecification) {
 
 		return new ResponseEntity<>(machineSpecificationService.updateMachineSpecification(machineSpecification),
 				HttpStatus.OK);

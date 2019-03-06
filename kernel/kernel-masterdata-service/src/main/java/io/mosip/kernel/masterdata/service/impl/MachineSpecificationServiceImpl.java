@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MachineSpecificationErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
@@ -53,7 +53,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	 * createMachineSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdAndLanguageCodeID createMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification) {
+	public IdAndLanguageCodeID createMachineSpecification(RequestWrapper<MachineSpecificationDto> machineSpecification) {
 
 		MachineSpecification renMachineSpecification = new MachineSpecification();
 
@@ -82,7 +82,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	 * updateMachineSpecification(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public IdAndLanguageCodeID updateMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification) {
+	public IdAndLanguageCodeID updateMachineSpecification(RequestWrapper<MachineSpecificationDto> machineSpecification) {
 		MachineSpecification updMachineSpecification = null;
 
 		try {

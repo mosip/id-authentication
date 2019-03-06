@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
@@ -70,7 +70,7 @@ public class TitleController {
 	 * @return primary key of entered row
 	 */
 	@PostMapping("/v1.0/title")
-	public ResponseEntity<CodeAndLanguageCodeID> saveTitle(@Valid @RequestBody RequestDto<TitleDto> title) {
+	public ResponseEntity<CodeAndLanguageCodeID> saveTitle(@Valid @RequestBody RequestWrapper<TitleDto> title) {
 		return new ResponseEntity<>(titleService.saveTitle(title), HttpStatus.OK);
 
 	}
@@ -90,7 +90,7 @@ public class TitleController {
 			@ApiResponse(code = 404, message = "When No title found"),
 			@ApiResponse(code = 500, message = "While updating title any error occured") })
 	public ResponseEntity<CodeAndLanguageCodeID> updateTitle(
-			@ApiParam("Title DTO to update") @Valid @RequestBody RequestDto<TitleDto> titles) {
+			@ApiParam("Title DTO to update") @Valid @RequestBody RequestWrapper<TitleDto> titles) {
 		return new ResponseEntity<>(titleService.updateTitle(titles), HttpStatus.OK);
 	}
 

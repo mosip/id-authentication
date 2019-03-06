@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.service.LanguageService;
@@ -57,7 +57,7 @@ public class LanguageController {
 			@ApiResponse(code = 201, message = "When Language successfully created", response = CodeResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Language any error occured") })
-	public ResponseEntity<CodeResponseDto> saveLanguage(@Valid @RequestBody RequestDto<LanguageDto> language) {
+	public ResponseEntity<CodeResponseDto> saveLanguage(@Valid @RequestBody RequestWrapper<LanguageDto> language) {
 		return new ResponseEntity<>(languageService.saveLanguage(language), HttpStatus.OK);
 	}
 
@@ -68,7 +68,7 @@ public class LanguageController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Language found"),
 			@ApiResponse(code = 500, message = "While updating Language any error occured") })
-	public ResponseEntity<CodeResponseDto> updateLanguage(@Valid @RequestBody RequestDto<LanguageDto> language) {
+	public ResponseEntity<CodeResponseDto> updateLanguage(@Valid @RequestBody RequestWrapper<LanguageDto> language) {
 		return new ResponseEntity<>(languageService.updateLanguage(language), HttpStatus.OK);
 	}
 

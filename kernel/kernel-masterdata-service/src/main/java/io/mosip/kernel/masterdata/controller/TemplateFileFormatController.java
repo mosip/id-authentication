@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -49,7 +49,7 @@ public class TemplateFileFormatController {
 	 */
 	@PostMapping
 	public ResponseEntity<CodeAndLanguageCodeID> createTemplateFileFormat(
-			@Valid @RequestBody RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto) {
+			@Valid @RequestBody RequestWrapper<TemplateFileFormatDto> templateFileFormatRequestDto) {
 		return new ResponseEntity<>(templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto),
 				HttpStatus.OK);
 
@@ -72,7 +72,7 @@ public class TemplateFileFormatController {
 			@ApiResponse(code = 404, message = "When TemplateFileFormat is not found"),
 			@ApiResponse(code = 500, message = "While updating TemplateFileFormat any error occured") })
 	public ResponseEntity<CodeAndLanguageCodeID> updateDevice(
-			@Valid @RequestBody RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto) {
+			@Valid @RequestBody RequestWrapper<TemplateFileFormatDto> templateFileFormatRequestDto) {
 
 		return new ResponseEntity<>(templateFileFormatService.updateTemplateFileFormat(templateFileFormatRequestDto),
 				HttpStatus.OK);

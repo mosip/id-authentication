@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.MachineTypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.MachineTypeService;
 import io.swagger.annotations.Api;
@@ -54,7 +54,7 @@ public class MachineTypeController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Machine Type any error occured") })
 	public ResponseEntity<CodeAndLanguageCodeID> createMachineType(
-			@Valid @RequestBody RequestDto<MachineTypeDto> machineType) {
+			@Valid @RequestBody RequestWrapper<MachineTypeDto> machineType) {
 		return new ResponseEntity<>(machinetypeService.createMachineType(machineType), HttpStatus.OK);
 	}
 

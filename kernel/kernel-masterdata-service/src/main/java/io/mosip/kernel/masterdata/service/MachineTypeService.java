@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.MachineTypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -26,6 +26,6 @@ public interface MachineTypeService {
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while saving Machine Type
 	 */
-	public CodeAndLanguageCodeID createMachineType(RequestDto<MachineTypeDto> machineType);
+	public CodeAndLanguageCodeID createMachineType(RequestWrapper<MachineTypeDto> machineType);
 
 }

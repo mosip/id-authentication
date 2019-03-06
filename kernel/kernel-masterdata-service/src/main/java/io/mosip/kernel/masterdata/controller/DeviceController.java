@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DeviceDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -105,7 +105,7 @@ public class DeviceController {
 			@ApiResponse(code = 201, message = "When Device successfully created", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating device any error occured") })
-	public ResponseEntity<IdAndLanguageCodeID> createDevice(@Valid @RequestBody RequestDto<DeviceDto> deviceRequestDto) {
+	public ResponseEntity<IdAndLanguageCodeID> createDevice(@Valid @RequestBody RequestWrapper<DeviceDto> deviceRequestDto) {
 
 		return new ResponseEntity<>(deviceService.createDevice(deviceRequestDto), HttpStatus.OK);
 	}
@@ -126,7 +126,7 @@ public class DeviceController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When Device is not found"),
 			@ApiResponse(code = 500, message = "While updating device any error occured") })
-	public ResponseEntity<IdAndLanguageCodeID> updateDevice(@Valid @RequestBody RequestDto<DeviceDto> deviceRequestDto) {
+	public ResponseEntity<IdAndLanguageCodeID> updateDevice(@Valid @RequestBody RequestWrapper<DeviceDto> deviceRequestDto) {
 
 		return new ResponseEntity<>(deviceService.updateDevice(deviceRequestDto), HttpStatus.OK);
 	}

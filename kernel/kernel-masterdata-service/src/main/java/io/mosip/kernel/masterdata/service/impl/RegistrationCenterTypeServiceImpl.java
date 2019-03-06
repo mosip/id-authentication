@@ -14,7 +14,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
@@ -59,7 +59,7 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 	 */
 	@Override
 	public CodeAndLanguageCodeID createRegistrationCenterType(
-			RequestDto<RegistrationCenterTypeDto> registrationCenterTypeRequestDto) {
+			RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeRequestDto) {
 		RegistrationCenterType entity = MetaDataUtils.setCreateMetaData(registrationCenterTypeRequestDto.getRequest(),
 				RegistrationCenterType.class);
 		RegistrationCenterType registrationCenterType;
@@ -83,7 +83,7 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 	 */
 	@Override
 	public CodeAndLanguageCodeID updateRegistrationCenterType(
-			RequestDto<RegistrationCenterTypeDto> registrationCenterTypeDto) {
+			RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {
 		RegistrationCenterTypeDto registrationCenterType = registrationCenterTypeDto.getRequest();
 		CodeAndLanguageCodeID registrationCenterTypeId = new CodeAndLanguageCodeID();
 		MapperUtils.mapFieldValues(registrationCenterType, registrationCenterTypeId);

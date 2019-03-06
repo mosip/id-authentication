@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterMachineErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineHistory;
@@ -55,7 +55,7 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 	@Override
 	@Transactional
 	public ResponseRrgistrationCenterMachineDto createRegistrationCenterAndMachine(
-			RequestDto<RegistrationCenterMachineDto> requestDto) {
+			RequestWrapper<RegistrationCenterMachineDto> requestDto) {
 		ResponseRrgistrationCenterMachineDto responseRrgistrationCenterMachineDto = null;
 
 		try {

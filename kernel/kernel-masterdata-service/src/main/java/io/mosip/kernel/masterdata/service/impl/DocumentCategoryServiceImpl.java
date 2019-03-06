@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
-import io.mosip.kernel.masterdata.dto.RequestDto;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
@@ -159,7 +159,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * createDocumentCategory(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID createDocumentCategory(RequestDto<DocumentCategoryDto> category) {
+	public CodeAndLanguageCodeID createDocumentCategory(RequestWrapper<DocumentCategoryDto> category) {
 		DocumentCategory entity = MetaDataUtils.setCreateMetaData(category.getRequest(), DocumentCategory.class);
 		DocumentCategory documentCategory;
 		try {
@@ -184,7 +184,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	 * updateDocumentCategory(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID updateDocumentCategory(RequestDto<DocumentCategoryDto> category) {
+	public CodeAndLanguageCodeID updateDocumentCategory(RequestWrapper<DocumentCategoryDto> category) {
 
 		DocumentCategoryDto categoryDto = category.getRequest();
 
