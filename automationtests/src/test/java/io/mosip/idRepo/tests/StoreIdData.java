@@ -31,9 +31,10 @@ import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
-import com.google.common.base.Verify;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.google.common.base.Verify;
 
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;

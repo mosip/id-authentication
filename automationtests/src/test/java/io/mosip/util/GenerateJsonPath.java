@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import org.json.JSONException;
-
 /**
  * @author Arjun Chandramohan
  *
@@ -16,13 +14,12 @@ public class GenerateJsonPath {
 	 * @param modulename
 	 * @param apiname
 	 * @param requestjsonname
-	 * @throws JSONException 
 	 */
-	public void generatePath(String modulename, String apiname, String requestjsonname) throws JSONException {
+	public void generatePath(String modulename, String apiname, String requestjsonname) {
 		String inputFilePath = "src/test/resources/" + modulename + "/" + apiname + "/" + requestjsonname + ".json";
-		JsonPathGenerationIDRepo jsonPath;
+		JsonPathGen jsonPath;
 		try {
-			jsonPath = new JsonPathGenerationIDRepo(new String(Files.readAllBytes(Paths.get(inputFilePath))));
+			jsonPath = new JsonPathGen(new String(Files.readAllBytes(Paths.get(inputFilePath))));
 			jsonPath.generateJsonMappingDic("src/test/resources/" + modulename + "/" + apiname + "/" + requestjsonname
 					+ "Path" + ".properties");
 		} catch (IOException e) {
@@ -30,9 +27,5 @@ public class GenerateJsonPath {
 		}
 
 	}
-	public static void main(String args[]) throws JSONException {
-		new GenerateJsonPath().generatePath("IdRepo", "StoreIdData", "RequestMasterJsonStructure");
-	}
-	
 
 }

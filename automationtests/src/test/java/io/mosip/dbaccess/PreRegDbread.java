@@ -14,7 +14,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import io.mosip.dbentity.OtpEntity;
-import io.mosip.service.BaseTestCase;
 import io.mosip.util.PreRegistrationLibrary;
 
 public class PreRegDbread {
@@ -27,15 +26,8 @@ public class PreRegDbread {
 	public static boolean prereg_dbconnectivityCheck() {
 		boolean flag = false;
 		try {
-			if(BaseTestCase.environment.equalsIgnoreCase("integration"))				
-				factory = new Configuration().configure("prereginteg.cfg.xml").addAnnotatedClass(OtpEntity.class)
-						.buildSessionFactory();
-				else
-				{
-					if(BaseTestCase.environment.equalsIgnoreCase("qa"))				
-						factory = new Configuration().configure("prereginteg.cfg.xml").addAnnotatedClass(OtpEntity.class)
-								.buildSessionFactory();
-				}
+			factory = new Configuration().configure("prereg.cfg.xml").addAnnotatedClass(OtpEntity.class)
+					.buildSessionFactory();
 			session = factory.getCurrentSession();
 			session.beginTransaction();
 			logger.info("Session value is :" + session);

@@ -12,7 +12,6 @@ import org.hibernate.cfg.Configuration;
 import com.fasterxml.classmate.AnnotationConfiguration;
 
 import io.mosip.dbentity.OtpEntity;
-import io.mosip.service.BaseTestCase;
 
 
 
@@ -31,16 +30,8 @@ public class KernelMasterDataR {
 	{
 		boolean flag=false;
 		try {	
-			if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-				factory = new Configuration().configure("masterDatainteg.cfg.xml")
-			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-					else
-					{
-						if(BaseTestCase.environment.equalsIgnoreCase("qa"))
-							factory = new Configuration().configure("masterDatainteg.cfg.xml")
-						.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-					}
-		
+		factory = new Configuration().configure("masterData.cfg.xml")
+	.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 		

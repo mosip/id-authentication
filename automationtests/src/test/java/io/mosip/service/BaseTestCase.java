@@ -44,7 +44,7 @@ public class BaseTestCase {
 	// GLOBAL CLASS VARIABLES
 	private Properties prop;
 	public static String ApplnURI;
-	public static String environment;
+	
 	
 	public static String SEPRATOR="";
 	public  static String getOSType(){
@@ -82,15 +82,7 @@ public class BaseTestCase {
 			InputStream inputStream = new FileInputStream("src"+BaseTestCase.SEPRATOR+"config"+BaseTestCase.SEPRATOR+"test.properties");
 			prop.load(inputStream);
 			logger.info("Setting test configs/TestEnvironment from " +  "src/config/test.properties");
-		//	ApplnURI = prop.getProperty("testEnvironment");
-			environment = System.getProperty("env.user");
-			logger.info("Environemnt is  ==== :" +environment);
-			if (environment.equalsIgnoreCase("integration"))
-				ApplnURI="https://integ.mosip.io";
-			if (environment.equalsIgnoreCase("qa"))
-				ApplnURI="https://integ.mosip.io";
-			else
-				ApplnURI="https://integ.mosip.io";
+			ApplnURI = prop.getProperty("testEnvironment");
 			logger.info("Configs from properties file are set.");
 			
 

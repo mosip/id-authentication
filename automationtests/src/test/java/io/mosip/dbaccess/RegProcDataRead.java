@@ -13,7 +13,6 @@ import org.testng.Assert;
 
 import io.mosip.dbentity.OtpEntity;
 import io.mosip.dbentity.RegistrationStatusEntity;
-import io.mosip.service.BaseTestCase;
 import io.mosip.dbdto.SyncRegistrationDto;
 import io.mosip.dbdto.SyncStatusDto;
 import io.mosip.dbdto.SyncTypeDto;
@@ -30,15 +29,8 @@ public class RegProcDataRead {
 	{
 		boolean flag=false;
 		try {	
-			if(BaseTestCase.environment.equalsIgnoreCase("integration"))	
-				factory = new Configuration().configure("regprocinteg.cfg.xml")
-						.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-				else
-				{
-					if(BaseTestCase.environment.equalsIgnoreCase("qa"))	
-						factory = new Configuration().configure("regprocinteg.cfg.xml")
-								.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
-				}
+			factory = new Configuration().configure("regproc.cfg.xml")
+					.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 			session = factory.getCurrentSession();
 			session.beginTransaction();
 			logger.info("Session value is :" +session);
