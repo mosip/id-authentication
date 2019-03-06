@@ -98,9 +98,6 @@ public class IdRequestValidator implements Validator {
 	/** The Constant STATUS_FIELD. */
 	private static final String STATUS_FIELD = "status";
 
-	/** The Constant ID_FIELD. */
-	private static final String ID_FIELD = "id";
-
 	/** The env. */
 	@Autowired
 	private Environment env;
@@ -147,7 +144,6 @@ public class IdRequestValidator implements Validator {
 		validateReqTime(request.getTimestamp(), errors);
 
 		if (!errors.hasErrors()) {
-			validateId(request.getId(), errors);
 			validateVersion(request.getVersion(), errors);
 		}
 
@@ -162,24 +158,6 @@ public class IdRequestValidator implements Validator {
 			validateRegId(request.getRegistrationId(), errors);
 		}
 
-	}
-
-	/**
-	 * Validate id.
-	 *
-	 * @param id
-	 *            the id
-	 * @param errors
-	 *            the errors
-	 */
-	private void validateId(String id, Errors errors) {
-		if (Objects.isNull(id)) {
-			errors.rejectValue(ID_FIELD, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), ID_FIELD));
-		} else if (!this.id.containsValue(id)) {
-			errors.rejectValue(ID_FIELD, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), ID_FIELD));
-		}
 	}
 
 	/**

@@ -2,6 +2,7 @@ package io.mosip.kernel.idrepo.controller;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Resource;
@@ -54,6 +55,12 @@ public class IdRepoController {
 
 	/** The Constant ID_REPO_SERVICE. */
 	private static final String ID_REPO_SERVICE = "IdRepoService";
+	
+	/** The Constant CREATE. */
+	private static final String CREATE = "create";
+
+	/** The Constant CREATE. */
+	private static final String UPDATE = "update";
 
 	/** The Constant ALL. */
 	private static final String ALL = "all";
@@ -69,6 +76,13 @@ public class IdRepoController {
 
 	/** The Constant UPDATE_IDENTITY. */
 	private static final String UPDATE_IDENTITY = "updateIdentity";
+
+	/** The Constant ID_FIELD. */
+	private static final String ID_FIELD = "id";
+
+	/** The id. */
+	@Resource
+	private Map<String, String> id;
 
 	/** The allowed types. */
 	@Resource
@@ -111,8 +125,9 @@ public class IdRepoController {
 			@Validated @RequestBody IdRequestDTO request, @ApiIgnore Errors errors) throws IdRepoAppException {
 		try {
 			IdRepoLogger.setUin(uin);
-			uinValidatorImpl.validateId(uin);
+			validateId(request.getId(), errors, CREATE);
 			DataValidationUtil.validate(errors);
+			uinValidatorImpl.validateId(uin);
 			return new ResponseEntity<>(idRepoService.addIdentity(request, uin), HttpStatus.CREATED);
 		} catch (InvalidIDException e) {
 			mosipLogger.error(uin, ID_REPO_CONTROLLER, ADD_IDENTITY,
@@ -194,8 +209,9 @@ public class IdRepoController {
 			@Validated @RequestBody IdRequestDTO request, @ApiIgnore Errors errors) throws IdRepoAppException {
 		try {
 			IdRepoLogger.setUin(uin);
-			uinValidatorImpl.validateId(uin);
+			validateId(request.getId(), errors, UPDATE);
 			DataValidationUtil.validate(errors);
+			uinValidatorImpl.validateId(uin);
 			return new ResponseEntity<>(idRepoService.updateIdentity(request, uin), HttpStatus.OK);
 		} catch (InvalidIDException e) {
 			mosipLogger.error(uin, ID_REPO_CONTROLLER, UPDATE_IDENTITY,
@@ -209,6 +225,16 @@ public class IdRepoController {
 			mosipLogger.error(uin, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY,
 					e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
+		}
+	}
+	
+	private void validateId(String id, Errors errors, String operation) {
+		if (Objects.isNull(id)) {
+			errors.rejectValue(ID_FIELD, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), ID_FIELD));
+		} else if (!this.id.get(operation).equals(id)) {
+			errors.rejectValue(ID_FIELD, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), ID_FIELD));
 		}
 	}
 
