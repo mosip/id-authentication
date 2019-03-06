@@ -30,6 +30,7 @@ import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.dto.ErrorDTO;
 import io.mosip.kernel.idrepo.dto.IdResponseDTO;
@@ -77,6 +78,8 @@ public class IdRepoFilter extends OncePerRequestFilter {
 	/** The id. */
 	@Resource
 	private Map<String, String> id;
+	
+	String uin;
 
 	/**
 	 * Allowed end points.
@@ -117,11 +120,12 @@ public class IdRepoFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 
 		Instant requestTime = Instant.now();
-		mosipLogger.debug(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Request Received at: " + requestTime);
-		mosipLogger.debug(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Request URL: " + request.getRequestURL());
-
+		uin = StringUtils.substringAfter(request.getRequestURL().toString(), "v1.0/");
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(request);
-		mosipLogger.debug(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Request received");
+		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request Received at: " + requestTime);
+		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request URL: " + request.getRequestURL());
+
+		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request received");
 
 		if (request.getMethod().equals(GET) && (request.getParameterMap().size() > 1
 				|| (request.getParameterMap().size() == 1 && !request.getParameterMap().containsKey(TYPE)))) {
@@ -130,14 +134,14 @@ public class IdRepoFilter extends OncePerRequestFilter {
 			CharResponseWrapper responseWrapper = new CharResponseWrapper(response);
 
 			filterChain.doFilter(requestWrapper, responseWrapper);
-			mosipLogger.debug(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Response body : \n" + responseWrapper.toString());
+			mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Response body : \n" + responseWrapper.toString());
 			response.getWriter().write(responseWrapper.toString());
 		}
 
 		Instant responseTime = Instant.now();
-		mosipLogger.debug(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Response sent at: " + responseTime);
+		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Response sent at: " + responseTime);
 		long duration = Duration.between(requestTime, responseTime).toMillis();
-		mosipLogger.debug(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Time taken to respond in ms: " + duration
+		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Time taken to respond in ms: " + duration
 				+ ". Time difference between request and response in Seconds: " + ((double) duration / 1000)
 				+ " for url : " + request.getRequestURL() + " method: " + request.getMethod());
 	}
@@ -161,7 +165,7 @@ public class IdRepoFilter extends OncePerRequestFilter {
 					SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response")));
 			return mapper.writeValueAsString(response);
 		} catch (IOException e) {
-			mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_FILTER, "\n" + ExceptionUtils.getStackTrace(e));
+			mosipLogger.error(uin, ID_REPO, ID_REPO_FILTER, "\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.UNKNOWN_ERROR);
 		}
 	}
