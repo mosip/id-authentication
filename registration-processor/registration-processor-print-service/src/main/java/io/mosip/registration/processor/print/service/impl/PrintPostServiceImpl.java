@@ -53,13 +53,13 @@ public class PrintPostServiceImpl {
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	@SuppressWarnings("unchecked")
-	public boolean generatePrintandPostal(String regId) {
+	public boolean generatePrintandPostal(String regId, MosipQueue queue) {
 
 		JSONObject response = null;
 
 		String uin = packetInfoManager.getUINByRid(regId).get(0);
 
-		checkFromTrusted();
+		checkFromTrusted(queue);
 
 		if (!uin.isEmpty()) {
 			response = new JSONObject();
@@ -71,8 +71,6 @@ public class PrintPostServiceImpl {
 			response.put("Status", "Failure");
 		}
 
-		MosipQueue queue = mosipConnectionFactory.createConnection(typeOfQueue, username, password, url);
-
 		boolean isPdfAddedtoQueue = false;
 		try {
 			isPdfAddedtoQueue = mosipQueueManager.send(queue, response.toString().getBytes("UTF-8"),
@@ -83,9 +81,8 @@ public class PrintPostServiceImpl {
 		return isPdfAddedtoQueue;
 	}
 
-	public boolean checkFromTrusted() {
+	public boolean checkFromTrusted(MosipQueue queue) {
 		boolean result = false;
-		MosipQueue queue = mosipConnectionFactory.createConnection(typeOfQueue, username, password, url);
 
 		try {
 			byte[] isPdfAddedtoQueue = mosipQueueManager.consume(queue, address);

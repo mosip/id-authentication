@@ -28,12 +28,15 @@ import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
 import io.mosip.registration.processor.core.queue.impl.exception.ConnectionUnavailableException;
+import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.print.exception.PrintGlobalExceptionHandler;
 import io.mosip.registration.processor.print.exception.QueueConnectionNotFound;
 import io.mosip.registration.processor.print.service.impl.PrintPostServiceImpl;
@@ -121,6 +124,10 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 	@Value("${registration.processor.queue.address}")
 	private String address;
+	
+	/** The packet info manager. */
+	@Autowired
+	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	/**
 	 * Deploy verticle.
@@ -147,6 +154,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 		try {
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(regId);
+			
+			String uin = packetInfoManager.getUINByRid(regId).get(0);
 
 			Map<String, byte[]> documentBytesMap = printService.getPdf(IdType.RID, regId);
 
@@ -158,8 +167,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 				throw new QueueConnectionNotFound(PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.getCode());
 			}
 
-			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0);
-			printPostService.generatePrintandPostal(regId);
+			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, uin);
+			printPostService.generatePrintandPostal(regId, queue);
 			
 			if (isAddedToQueue) {
 				object.setIsValid(Boolean.TRUE);
@@ -175,7 +184,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 				registrationStatusDto.setStatusComment(description);
 			}
 			
-			fileCleanUp();
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			
@@ -239,32 +247,24 @@ public class PrintStage extends MosipVerticleAPIManager {
 		return object;
 	}
 
-	private void fileCleanUp() {
-		File qrCode = new File("QrCode.png");
-		qrCode.delete();
-		File applicantPhoto = new File("ApplicantPhoto.png");
-		applicantPhoto.delete();
-		
-	}
-
-	private boolean sendToQueue(MosipQueue queue, Map<String, byte[]> documentBytesMap, int count) throws IOException {
+	private boolean sendToQueue(MosipQueue queue, Map<String, byte[]> documentBytesMap, int count, String uin) throws IOException {
 		boolean isAddedToQueue = false;
 		try {
 			PrintQueueDTO queueDto = new PrintQueueDTO();
 			queueDto.setPdfBytes(documentBytesMap.get(UIN_CARD_PDF));
 			queueDto.setTextBytes(documentBytesMap.get(UIN_TEXT_FILE));
+			queueDto.setUin(uin);
 			
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		    ObjectOutputStream oos = new ObjectOutputStream(bos);
 		    oos.writeObject(queueDto);
 		    oos.flush();
 		    byte[] printQueueBytes = bos.toByteArray();
-			
 			isAddedToQueue = mosipQueueManager.send(queue, printQueueBytes, address);
 			
 		} catch (QueueConnectionNotFound e) {
 			if (count < 5) {
-				sendToQueue(queue, documentBytesMap, count + 1);
+				sendToQueue(queue, documentBytesMap, count + 1, uin);
 			} else {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "",

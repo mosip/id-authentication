@@ -12,4 +12,6 @@ public class PrintQueueDTO implements Serializable{
 	private byte[] pdfBytes;
 	
 	private byte[] textBytes;
+	
+	private String uin;
 }

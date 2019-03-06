@@ -377,4 +377,12 @@ public class PrintServiceImplTest {
 		printService.getPdf(IdType.UIN, uin ).get("uinPdf");
 	}
 	
+	@Test(expected = TemplateProcessingFailureException.class)
+	public void testTemplateFailure() throws ApisResourceAccessException, IOException {
+		Mockito.when(templateGenerator.getTemplate(any(), any(), anyString())).thenReturn(null);
+		
+		String uin = "2046958192";
+		printService.getPdf(IdType.UIN, uin ).get("uinPdf");
+	}
+	
 }

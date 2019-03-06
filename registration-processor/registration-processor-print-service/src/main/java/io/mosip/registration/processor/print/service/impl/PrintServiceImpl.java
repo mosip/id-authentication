@@ -62,6 +62,7 @@ import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundExc
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
+import io.mosip.registration.processor.print.service.exception.IDRepoResponseNull;
 import io.mosip.registration.processor.print.service.exception.UINNotFoundInDatabase;
 import io.mosip.registration.processor.print.service.kernel.dto.Documents;
 import io.mosip.registration.processor.print.service.kernel.dto.IdResponseDTO;
@@ -232,7 +233,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			InputStream uinArtifact = templateGenerator.getTemplate(UIN_CARD_TEMPLATE, attributes, langCode);
 			if (uinArtifact == null) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), uin,
+						LoggerFileConstant.REGISTRATIONID.toString(), idValue,
 						PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name());
 				throw new TemplateProcessingFailureException(
 						PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
@@ -241,15 +242,9 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			// generating pdf
 			ByteArrayOutputStream pdf = uinCardGenerator.generateUinCard(uinArtifact, UinCardType.PDF);
 			
-			File pdfFile = new File(attributes.get(UINCardConstant.UIN).toString() + ".pdf");
-			FileOutputStream op = new FileOutputStream(pdfFile);
-			op.write(pdf.toByteArray());
-			InputStream fileStream = new FileInputStream(pdfFile);
-			byteMap.put(UIN_CARD_PDF, IOUtils.toByteArray(fileStream));
-			if(op != null) {
-				op.close();
-			}
-
+			InputStream pdfStream = getpdfStream(pdf);
+			byteMap.put(UIN_CARD_PDF, IOUtils.toByteArray(pdfStream));
+			
 			byte[] textFileByte = createTextFile();
 			byteMap.put(UIN_TEXT_FILE, textFileByte);
 
@@ -257,27 +252,27 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 		} catch (QrcodeGenerationException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					uin, PlatformErrorMessages.RPR_PRT_QRCODE_NOT_GENERATED.name() + e.getMessage()
+					idValue, PlatformErrorMessages.RPR_PRT_QRCODE_NOT_GENERATED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 		} catch (UINNotFoundInDatabase e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					uin, PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.name() + e.getMessage()
+					idValue, PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 		} catch (TemplateProcessingFailureException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					uin, PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage()
+					idValue, PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw new TemplateProcessingFailureException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
 
 		} catch (PDFGeneratorException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					uin, PlatformErrorMessages.RPR_PRT_PDF_NOT_GENERATED.name() + e.getMessage()
+					idValue, PlatformErrorMessages.RPR_PRT_PDF_NOT_GENERATED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
@@ -285,14 +280,14 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		} catch (ApisResourceAccessException | IOException | ParseException
 				| io.mosip.kernel.core.exception.IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					uin, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
+					idValue, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 		} catch (Exception ex) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					uin, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + ex.getMessage()
+					idValue, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + ex.getMessage()
 							+ ExceptionUtils.getStackTrace(ex));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					ex.getMessage() + ExceptionUtils.getStackTrace(ex));
@@ -319,6 +314,22 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		return byteMap;
 	}
 
+	private InputStream getpdfStream(ByteArrayOutputStream pdf) {
+		File pdfFile = new File(attributes.get(UINCardConstant.UIN).toString() + ".pdf");
+		InputStream fileStream = null;
+		try(FileOutputStream op = new FileOutputStream(pdfFile);) {
+			op.write(pdf.toByteArray());
+			fileStream = new FileInputStream(pdfFile);
+		} catch(IOException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					null, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
+					e.getMessage() + ExceptionUtils.getStackTrace(e));
+		}
+		return fileStream;
+	}
+
 	/**
 	 * Gets the id repo response.
 	 *
@@ -336,11 +347,12 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		String queryParamValue = "all";
 
 		IdResponseDTO response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOSITORY, pathsegments,
-				queryParamName, queryParamValue, IdResponseDTO.class);
+				"", "", IdResponseDTO.class);
 
 		if (response == null || response.getResponse() == null) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					uin, PlatformErrorMessages.RPR_PRT_IDREPO_RESPONSE_NULL.name());
+			throw new IDRepoResponseNull(PlatformErrorMessages.RPR_PRT_IDREPO_RESPONSE_NULL.getCode());
 		}
 
 		return response;
