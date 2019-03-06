@@ -349,8 +349,8 @@ public class DataSyncServiceUtil {
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
 					httpEntity, MainListResponseDTO.class);
 			if (!respEntity.getBody().isStatus()) {
-				throw new DocumentGetDetailsException(respEntity.getBody().getErr().getErrorCode(),
-						respEntity.getBody().getErr().getMessage());
+				log.info("sessionId", "idType", "id",
+						"In callGetDocRestService method of datasync service util - Document not found for the pre_registration_id");
 			} else {
 				for (Object obj : respEntity.getBody().getResponse()) {
 					responsestatusDto.add(mapper.convertValue(obj, DocumentMultipartResponseDTO.class));
