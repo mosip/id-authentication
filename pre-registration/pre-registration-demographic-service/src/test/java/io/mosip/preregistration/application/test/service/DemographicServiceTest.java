@@ -296,14 +296,14 @@ public class DemographicServiceTest {
 		demographicResponseDTO.setDemographicDetails(jsonObject);
 		demographicResponseDTO.setPreRegistrationId("");
 		demographicResponseDTO.setCreatedBy("9988905444");
-		demographicResponseDTO.setCreatedDateTime(serviceUtil.getLocalDateString(times));
+		demographicResponseDTO.setCreatedDateTime(serviceUtil.getLocalDateString(LocalDateTime.now(ZoneId.of("UTC"))));
 		demographicResponseDTO.setStatusCode("Pending_Appointment");
 		createPreRegistrationDTO = new DemographicRequestDTO();
 		createPreRegistrationDTO.setDemographicDetails(jsonObject);
 		createPreRegistrationDTO.setPreRegistrationId("");
 		
 		createPreRegistrationDTO.setCreatedBy("9988905444");
-		createPreRegistrationDTO.setCreatedDateTime(serviceUtil.getLocalDateString(times));
+		createPreRegistrationDTO.setCreatedDateTime(serviceUtil.getLocalDateString(LocalDateTime.now(ZoneId.of("UTC"))));
 		demographicRequestDTO.setRequest(createPreRegistrationDTO);
 		List<DemographicResponseDTO> listOfCreatePreRegistrationDTO = new ArrayList<>();
 		listOfCreatePreRegistrationDTO.add(demographicResponseDTO);

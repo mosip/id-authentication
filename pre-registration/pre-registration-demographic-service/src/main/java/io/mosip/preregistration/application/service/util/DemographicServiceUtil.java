@@ -131,8 +131,7 @@ public class DemographicServiceUtil {
 						&& isNull(demographicRequest.getUpdatedBy()) && isNull(demographicEntity.getUpdateDateTime())) {
 					
 					demographicEntity.setUpdatedBy(null);
-					demographicEntity.setUpdateDateTime(DateUtils
-							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
+					demographicEntity.setUpdateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 					demographicEntity.setEncryptedDateTime(encryptionDateTime);
 					
 				} else {
@@ -144,8 +143,7 @@ public class DemographicServiceUtil {
 						&& !isNull(demographicRequest.getUpdatedBy())
 						&& !isNull(demographicRequest.getUpdatedDateTime())) {
 					demographicEntity.setUpdatedBy(demographicRequest.getUpdatedBy());
-					demographicEntity.setUpdateDateTime(DateUtils
-							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getUpdatedDateTime())));
+					demographicEntity.setUpdateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 					demographicEntity.setEncryptedDateTime(encryptionDateTime);
 					
 					
