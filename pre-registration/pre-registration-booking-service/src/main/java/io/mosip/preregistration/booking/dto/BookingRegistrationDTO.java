@@ -57,23 +57,30 @@ public class BookingRegistrationDTO implements Serializable{
 		if (regDate == null) {
 			if (other.regDate != null)
 				return false;
-		} else if (!regDate.equals(other.regDate))
+		} else if (!regDate.equals(other.regDate)) {
 			return false;
+		}
 		if (registrationCenterId == null) {
 			if (other.registrationCenterId != null)
 				return false;
-		} else if (!registrationCenterId.equals(other.registrationCenterId))
+		} else if (!registrationCenterId.equals(other.registrationCenterId)) {
 			return false;
+		}
+			
 		if (slotFromTime == null) {
 			if (other.slotFromTime != null)
 				return false;
-		} else if (!slotFromTime.equals(other.slotFromTime))
+		} else if (!slotFromTime.equals(other.slotFromTime)) {
 			return false;
+		}
+			
 		if (slotToTime == null) {
 			if (other.slotToTime != null)
 				return false;
-		} else if (!slotToTime.equals(other.slotToTime))
+		} else if (!slotToTime.equals(other.slotToTime)) {
 			return false;
+		}
+			
 		return true;
 	}
 }

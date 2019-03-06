@@ -64,6 +64,7 @@ import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
 import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
 import io.mosip.preregistration.booking.exception.AppointmentCannotBeBookedException;
 import io.mosip.preregistration.booking.exception.BookingDataNotFoundException;
+import io.mosip.preregistration.booking.exception.CancelAppointmentFailedException;
 import io.mosip.preregistration.booking.exception.TimeSpanException;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
 import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
@@ -671,6 +672,7 @@ public class BookingServiceTest {
 
 	}
 
+
 	@Test
 	public void getAppointmentDetailsTest() {
 		MainListRequestDTO<BookingRequestDTO> reBookingMainDto = new MainListRequestDTO<>();
@@ -737,6 +739,17 @@ public class BookingServiceTest {
 				Mockito.eq(MainListResponseDTO.class))).thenReturn(respEntity);
 		MainResponseDTO<BookingRegistrationDTO> responseDto = service.getAppointmentDetails("12345678909876");
 		assertEquals("1", responseDto.getResponse().getRegistrationCenterId());
+	}
+	@Test(expected=BookingDataNotFoundException.class)
+	public void getAppointmentDetailsTestFail() {
+		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785"))
+				.thenReturn(bookingEntity);
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		ResponseEntity<MainListResponseDTO> respEntity = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(MainListResponseDTO.class))).thenReturn(respEntity);
+		MainResponseDTO<BookingRegistrationDTO> responseDto = service.getAppointmentDetails("23587986034785");
 	}
 
 	

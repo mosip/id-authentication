@@ -109,10 +109,6 @@ public class BookingExceptionCatcher {
 			throw new AppointmentCannotBeCanceledException(((AppointmentCannotBeCanceledException) ex).getErrorCode(),
 					((AppointmentCannotBeCanceledException) ex).getErrorText());
 		}
-		else if (ex instanceof AvailablityNotFoundException) {
-			throw new AvailablityNotFoundException(((AvailablityNotFoundException) ex).getErrorCode(),
-					((AvailablityNotFoundException) ex).getErrorText());
-		}
 		else if (ex instanceof DemographicGetStatusException) {
 			throw new DemographicGetStatusException(((DemographicGetStatusException) ex).getErrorCode(),
 					((DemographicGetStatusException) ex).getErrorText());
