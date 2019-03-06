@@ -80,9 +80,9 @@ public class GetApplicantType extends BaseTestCase implements ITest{
 	 */
 	@DataProvider(name = "GetApplicantType")
 	public static Object[][] readData1(ITestContext context) throws Exception {
-		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
+		
 		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":

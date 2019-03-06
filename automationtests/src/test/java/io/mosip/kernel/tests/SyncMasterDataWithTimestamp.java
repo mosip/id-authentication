@@ -94,7 +94,7 @@ public class SyncMasterDataWithTimestamp extends BaseTestCase implements ITest{
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
 	@Test(dataProvider="SyncMasterDataWithTimestamp")
-	public void getAllConfiguration(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
+	public void syncMasterDataWithTimestamp(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
 	
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);

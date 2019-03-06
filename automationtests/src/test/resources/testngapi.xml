@@ -36,8 +36,11 @@
 				<class name="io.mosip.kernel.tests.FetchRejectionReason" />
 				<class name="io.mosip.kernel.tests.FetchTemplate" />	    	
 				<class name="io.mosip.kernel.tests.FetchTitle" />	
+				<class name="io.mosip.kernel.tests.GetApplicantType" />
 				<class name="io.mosip.kernel.tests.GetDeviceHistory" />
+				<class name="io.mosip.kernel.tests.GetDocType_DocCatByAppID" />
 				<class name="io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode" />
+				<class name="io.mosip.kernel.tests.GetIndividualType" />
 				<class name="io.mosip.kernel.tests.GetListOfRoles" />
 				<class name="io.mosip.kernel.tests.GetRegCenterByIDTimestamp" />		
 				<class name="io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory" />
@@ -57,25 +60,8 @@
 			</classes>
 		</test> 
 		
-			
 	
-	<!-- 	<test name="GetDeviceHistory">
-			<parameter name="testType" value="smoke" />
-			<classes>
-				<class name="io.mosip.kernel.tests.GetDeviceHistory" />
-			</classes>
-		</test> 
-		
-            <test name="GetImmediateChildrenByLocCodeAndLangCode">
-			<parameter name="testType" value="smoke" />
-
-			<classes>
-				<class name="io.mosip.kernel.tests.FetchGenderType" />
-			</classes>
-		</test> 
-		
- -->		
-	 <test name="PreRegistration Tests">
+	<!--  <test name="PreRegistration Tests">
 
 		<parameter name="testType" value="smoke" />
 
@@ -117,7 +103,7 @@
     </classes>
   </test> 
 		
-
+ -->
 	
 
 		
