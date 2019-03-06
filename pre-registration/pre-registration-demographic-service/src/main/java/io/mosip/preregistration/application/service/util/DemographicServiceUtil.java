@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
@@ -121,7 +122,7 @@ public class DemographicServiceUtil {
 		demographicEntity.setLangCode(demographicRequest.getLangCode());
 		demographicEntity.setCrAppuserId(requestId);
 		demographicEntity.setCreatedBy(demographicRequest.getCreatedBy());
-		demographicEntity.setCreateDateTime(DateUtils.parseToLocalDateTime(DateUtils.getUTCCurrentDateTimeString(dateTimeFormat)));
+		demographicEntity.setCreateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		demographicEntity.setStatusCode(statuscode);
 		demographicEntity.setDemogDetailHash(new String(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson())));
 		try {
