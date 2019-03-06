@@ -3,6 +3,7 @@ package io.mosip.registration.audit;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -63,7 +64,7 @@ public class AuditFactoryImpl implements AuditFactory {
 		}
 
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
-		auditRequestBuilder.setActionTimeStamp(LocalDateTime.now())
+		auditRequestBuilder.setActionTimeStamp(LocalDateTime.now(ZoneOffset.UTC))
 				.setApplicationId(environment.getProperty(RegistrationConstants.AUDIT_APPLICATION_ID))
 				.setApplicationName(environment.getProperty(RegistrationConstants.AUDIT_APPLICATION_NAME))
 				.setCreatedBy(SessionContext.userName()).setDescription(auditEventEnum.getDescription())

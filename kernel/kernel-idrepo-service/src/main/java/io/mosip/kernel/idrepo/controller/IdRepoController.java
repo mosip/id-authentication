@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
@@ -131,15 +129,15 @@ public class IdRepoController {
 			return new ResponseEntity<>(idRepoService.addIdentity(request, uin), HttpStatus.CREATED);
 		} catch (InvalidIDException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, ADD_IDENTITY,
-					"\n" + ExceptionUtils.getStackTrace(e));
+					e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e, id.get(CREATE));
 		} catch (IdRepoDataValidationException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, ADD_IDENTITY,
-					"\n" + ExceptionUtils.getStackTrace(e));
+					e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e, id.get(CREATE));
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY,
-					"\n" + ExceptionUtils.getStackTrace(e));
+					e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e, id.get(CREATE));
 		}
 	}
@@ -155,17 +153,13 @@ public class IdRepoController {
 	 */
 	@GetMapping(path = "/identity/v1.0/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> retrieveIdentity(@PathVariable String uin,
-			@RequestParam(name = TYPE, required = false) @Nullable String type, @Nullable HttpServletRequest request)
-			throws IdRepoAppException {
-		if (request.getParameterMap().size() > 1
-				|| (request.getParameterMap().size() == 1 && !request.getParameterMap().containsKey(TYPE))) {
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST, id.get(READ));
-		}
-
+			@RequestParam(name = TYPE, required = false) @Nullable String type) throws IdRepoAppException {
 		try {
 			if (Objects.nonNull(type)) {
 				List<String> typeList = Arrays.asList(StringUtils.split(type.toLowerCase(), ','));
 				if (typeList.size() == 1 && !allowedTypes.containsAll(typeList)) {
+					mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY,
+							IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage() + typeList);
 					throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
 				} else {
@@ -173,6 +167,8 @@ public class IdRepoController {
 							.filter(allowedType -> !allowedType.equals(ALL)).allMatch(typeList::contains)) {
 						type = ALL;
 					} else if (!allowedTypes.containsAll(typeList)) {
+						mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY,
+								IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage() + typeList);
 						throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 								String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
 					}
@@ -183,11 +179,11 @@ public class IdRepoController {
 			return new ResponseEntity<>(idRepoService.retrieveIdentity(uin, type), HttpStatus.OK);
 		} catch (InvalidIDException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY,
-					"\n" + ExceptionUtils.getStackTrace(e));
+					e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e, id.get(READ));
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY,
-					"\n" + ExceptionUtils.getStackTrace(e));
+					e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e, id.get(READ));
 		}
 	}
@@ -214,15 +210,15 @@ public class IdRepoController {
 			return new ResponseEntity<>(idRepoService.updateIdentity(request, uin), HttpStatus.OK);
 		} catch (InvalidIDException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, UPDATE_IDENTITY,
-					"\n" + ExceptionUtils.getStackTrace(e));
+					e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e, id.get(UPDATE));
 		} catch (IdRepoDataValidationException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, UPDATE_IDENTITY,
-					"\n" + ExceptionUtils.getStackTrace(e));
+					e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e, id.get(UPDATE));
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY,
-					"\n" + ExceptionUtils.getStackTrace(e));
+					e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e, id.get(UPDATE));
 		}
 	}

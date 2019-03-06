@@ -19,10 +19,11 @@ import java.util.zip.ZipInputStream;
 import javax.crypto.SecretKey;
 
 import org.apache.commons.io.IOUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -43,8 +44,8 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.RegistrationDTO;
-import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
+import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
@@ -62,6 +63,8 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 	@Value("${PRE_REG_PACKET_LOCATION}")
 	private String preRegPacketLocation;
+	@Value("${mosip.registration.identity-class-name}")
+	private String identityClassName;
 
 	@Autowired
 	private JsonValidator jsonValidator;
@@ -147,8 +150,8 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			if (!StringUtils.isEmpty(jsonString)) {
 				/* validate id json schema */
 				jsonValidator.validateJson(jsonString.toString(), "mosip-identity-json-schema.json");
-				getRegistrationDtoContent().getDemographicDTO().setDemographicInfoDTO(
-						new ObjectMapper().readValue(jsonString.toString(), DemographicInfoDTO.class));
+				getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
+						.setIdentity(validateJSONAndConvertToIdentity(jsonString));
 			}
 		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
@@ -156,7 +159,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
 		} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException
-				| FileIOException jsonValidationException) {
+				| FileIOException | JSONException | ClassNotFoundException jsonValidationException) {
 			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorMessage()
@@ -167,6 +170,15 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 					jsonValidationException);
 		}
 
+	}
+
+	@SuppressWarnings("unchecked")
+	private Identity validateJSONAndConvertToIdentity(StringBuilder jsonString)
+			throws IOException, JSONException, ClassNotFoundException {
+		Class<? extends Identity> identityClass = (Class<? extends Identity>) Class.forName(identityClassName);
+		
+		return new ObjectMapper().readValue(new JSONObject(jsonString.toString()).get("identity").toString(),
+				identityClass);
 	}
 
 	/**

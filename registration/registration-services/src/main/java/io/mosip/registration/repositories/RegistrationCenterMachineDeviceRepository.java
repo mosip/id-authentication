@@ -5,8 +5,8 @@ import java.util.List;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.RegCentreMachineDevice;
-import io.mosip.registration.entity.RegCentreMachineDeviceId;
 import io.mosip.registration.entity.RegistrationCenter;
+import io.mosip.registration.entity.id.RegCentreMachineDeviceId;
 
 /**
  * This repository interface for {@link RegCentreMachineDevice} entity

@@ -14,6 +14,22 @@ public class RegistrationCenterDeviceDto extends MasterSyncBaseDto {
 
 	private Boolean isActive;
 
+	private String langCode;
+
+	/**
+	 * @return the langCode
+	 */
+	public String getLangCode() {
+		return langCode;
+	}
+
+	/**
+	 * @param langCode the langCode to set
+	 */
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
+	}
+
 	/**
 	 * @return the regCenterId
 	 */

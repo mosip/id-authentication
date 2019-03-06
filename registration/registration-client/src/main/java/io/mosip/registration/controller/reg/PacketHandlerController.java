@@ -43,9 +43,10 @@ import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
-import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.dto.demographic.LocationDTO;
+import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.service.PolicySyncService;
 import io.mosip.registration.service.packet.PacketHandlerService;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.packet.ReRegistrationService;
@@ -130,7 +131,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	@Autowired
 	private PacketHandlerService packetHandlerService;
 
-	@Value("${SAVE_ACKNOWLEDGEMENT_INSIDE_PACKET}")
+	@Value("${mosip.registration.save_ack_inside_packet}")
 	private String saveAck;
 
 	@Value("${PACKET_STORE_LOCATION}")
@@ -153,6 +154,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@Autowired
 	private PacketUploadService packetUploadService;
+	@Autowired
+	private PolicySyncService policySyncService;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -188,40 +191,44 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * acknowledgement form
 	 */
 	public void createPacket() {
+		if (isKeyValid()) {
+			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creating of Registration Starting.");
+			try {
+				auditFactory.audit(AuditEvent.NAV_NEW_REG, Components.NAVIGATION,
+						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creating of Registration Starting.");
-		try {
-			auditFactory.audit(AuditEvent.NAV_NEW_REG, Components.NAVIGATION, SessionContext.userContext().getUserId(),
-					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				Parent createRoot = BaseController.load(
+						getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
+						applicationContext.getApplicationLanguageBundle());
+				LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+						APPLICATION_ID, "Validating Create Packet screen for specific role");
 
-			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
-					applicationContext.getApplicationLanguageBundle());
-			LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, "Validating Create Packet screen for specific role");
-
-			if (!validateScreenAuthorization(createRoot.getId())) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
-			} else {
-				StringBuilder errorMessage = new StringBuilder();
-				ResponseDTO responseDTO;
-				responseDTO = validateSyncStatus();
-				List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
-				if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
-					for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-						errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
-					}
-					generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
-
+				if (!validateScreenAuthorization(createRoot.getId())) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 				} else {
-					getScene(createRoot).setRoot(createRoot);
+					StringBuilder errorMessage = new StringBuilder();
+					ResponseDTO responseDTO;
+					responseDTO = validateSyncStatus();
+					List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
+					if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
+						for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
+							errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
+						}
+						generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
+
+					} else {
+						getScene(createRoot).setRoot(createRoot);
+					}
 				}
+
+			} catch (IOException ioException) {
+				LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
+						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 			}
-
-		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
+		} else {
+			generateAlert(RegistrationUIConstants.INVALID_KEY);
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creating of Registration ended.");
 	}
@@ -233,31 +240,34 @@ public class PacketHandlerController extends BaseController implements Initializ
 					.get(RegistrationConstants.REGISTRATION_DATA);
 			ackReceiptController.setRegistrationData(registrationDTO);
 			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
-			ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText, registrationDTO,
-					templateManagerBuilder, RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
-			if (templateResponse != null && templateResponse.getSuccessResponseDTO() != null) {
-				Writer stringWriter = (Writer) templateResponse.getSuccessResponseDTO().getOtherAttributes()
-						.get(RegistrationConstants.TEMPLATE_NAME);
-				ackReceiptController.setStringWriter(stringWriter);
-				ResponseDTO packetCreationResponse = savePacket(stringWriter, registrationDTO);
-				if (packetCreationResponse.getSuccessResponseDTO() != null) {
-					Parent createRoot = BaseController.load(
-							getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH),
-							applicationContext.getApplicationLanguageBundle());
-					getScene(createRoot).setRoot(createRoot);
-				} else {
+			if (ackTemplateText != null && !ackTemplateText.isEmpty()) {
+				ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText, registrationDTO,
+						templateManagerBuilder, RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
+				if (templateResponse != null && templateResponse.getSuccessResponseDTO() != null) {
+					Writer stringWriter = (Writer) templateResponse.getSuccessResponseDTO().getOtherAttributes()
+							.get(RegistrationConstants.TEMPLATE_NAME);
+					ackReceiptController.setStringWriter(stringWriter);
+					ResponseDTO packetCreationResponse = savePacket(stringWriter, registrationDTO);
+					if (packetCreationResponse.getSuccessResponseDTO() != null) {
+						Parent createRoot = BaseController.load(
+								getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH),
+								applicationContext.getApplicationLanguageBundle());
+						getScene(createRoot).setRoot(createRoot);
+					} else {
+						clearRegistrationData();
+						createPacket();
+					}
+				} else if (templateResponse != null && templateResponse.getErrorResponseDTOs() != null) {
+					generateAlert(RegistrationConstants.ERROR,
+							RegistrationUIConstants.UNABLE_LOAD_ACKNOWLEDGEMENT_PAGE);
 					clearRegistrationData();
 					createPacket();
 				}
-			} else if (templateResponse != null && templateResponse.getErrorResponseDTOs() != null) {
+			} else {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_ACKNOWLEDGEMENT_PAGE);
 				clearRegistrationData();
 				createPacket();
 			}
-
-		} catch (RegBaseCheckedException regBaseCheckedException) {
-			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - CREATE PACKET", APPLICATION_NAME, APPLICATION_ID,
-					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
@@ -333,43 +343,47 @@ public class PacketHandlerController extends BaseController implements Initializ
 	}
 
 	public void updateUIN() {
+		if (isKeyValid()) {
 
-		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen started.");
-		try {
-			auditFactory.audit(AuditEvent.NAV_UIN_UPDATE, Components.NAVIGATION,
-					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen started.");
+			try {
+				auditFactory.audit(AuditEvent.NAV_UIN_UPDATE, Components.NAVIGATION,
+						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
+				Parent root = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
 
-			LOGGER.info("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, "updating UIN");
+				LOGGER.info("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+						APPLICATION_ID, "updating UIN");
 
-			if (!validateScreenAuthorization(root.getId())) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
-			} else {
-
-				StringBuilder errorMessage = new StringBuilder();
-				ResponseDTO responseDTO;
-				responseDTO = validateSyncStatus();
-				List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
-				if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
-					for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-						errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
-					}
-					generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
-
+				if (!validateScreenAuthorization(root.getId())) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 				} else {
-					ObservableList<Node> nodes = homeController.getMainBox().getChildren();
-					IntStream.range(1, nodes.size()).forEach(index -> {
-						nodes.get(index).setVisible(false);
-						nodes.get(index).setManaged(false);
-					});
-					nodes.add(root);
+
+					StringBuilder errorMessage = new StringBuilder();
+					ResponseDTO responseDTO;
+					responseDTO = validateSyncStatus();
+					List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
+					if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
+						for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
+							errorMessage.append(errorResponseDTO.getMessage() + "\n\n");
+						}
+						generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
+
+					} else {
+						ObservableList<Node> nodes = homeController.getMainBox().getChildren();
+						IntStream.range(1, nodes.size()).forEach(index -> {
+							nodes.get(index).setVisible(false);
+							nodes.get(index).setManaged(false);
+						});
+						nodes.add(root);
+					}
 				}
+			} catch (IOException ioException) {
+				LOGGER.error("REGISTRATION - UI- UIN Update", APPLICATION_NAME, APPLICATION_ID,
+						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			}
-		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - UI- UIN Update", APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+		} else {
+			generateAlert(RegistrationUIConstants.INVALID_KEY);
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen ended.");
 	}
@@ -377,7 +391,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	/**
 	 * Sync data through batch jobs.
 	 *
-	 * @param event the event
+	 * @param event
+	 *            the event
 	 */
 	public void syncData() {
 
@@ -433,7 +448,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	/**
 	 * change On-Board user Perspective
 	 * 
-	 * @param event is an action event
+	 * @param event
+	 *            is an action event
 	 * @throws IOException
 	 */
 	public void onBoardUser() {
@@ -491,8 +507,11 @@ public class PacketHandlerController extends BaseController implements Initializ
 		if (response.getSuccessResponseDTO() != null
 				&& response.getSuccessResponseDTO().getMessage().equals(RegistrationConstants.SUCCESS)) {
 
-			String mobile = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity().getPhone();
-			String email = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity().getEmail();
+			MoroccoIdentity moroccoIdentity = (MoroccoIdentity) registrationDTO.getDemographicDTO()
+					.getDemographicInfoDTO().getIdentity();
+
+			String mobile = moroccoIdentity.getPhone();
+			String email = moroccoIdentity.getEmail();
 			sendEmailNotification(email);
 			sendSMSNotification(mobile);
 
@@ -529,16 +548,15 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			if (registrationDTO.getSelectionListDTO() == null) {
 
-				Identity identity = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity();
 				AddressDTO addressDTO = Builder.build(AddressDTO.class)
-						.with(address -> address.setAddressLine1(identity.getAddressLine1().get(0).getValue()))
-						.with(address -> address.setAddressLine2(identity.getAddressLine2().get(0).getValue()))
-						.with(address -> address.setLine3(identity.getAddressLine3().get(0).getValue()))
+						.with(address -> address.setAddressLine1(moroccoIdentity.getAddressLine1().get(0).getValue()))
+						.with(address -> address.setAddressLine2(moroccoIdentity.getAddressLine2().get(0).getValue()))
+						.with(address -> address.setLine3(moroccoIdentity.getAddressLine3().get(0).getValue()))
 						.with(address -> address.setLocationDTO(Builder.build(LocationDTO.class)
-								.with(location -> location.setCity(identity.getCity().get(0).getValue()))
-								.with(location -> location.setProvince(identity.getProvince().get(0).getValue()))
-								.with(location -> location.setRegion(identity.getRegion().get(0).getValue()))
-								.with(location -> location.setPostalCode(identity.getPostalCode())).get()))
+								.with(location -> location.setCity(moroccoIdentity.getCity().get(0).getValue()))
+								.with(location -> location.setProvince(moroccoIdentity.getProvince().get(0).getValue()))
+								.with(location -> location.setRegion(moroccoIdentity.getRegion().get(0).getValue()))
+								.with(location -> location.setPostalCode(moroccoIdentity.getPostalCode())).get()))
 						.get();
 
 				SessionContext.map().put(RegistrationConstants.ADDRESS_KEY, addressDTO);
@@ -601,7 +619,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	/**
 	 * Sync and upload packet.
 	 *
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private void syncAndUploadPacket() throws RegBaseCheckedException {
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Sync and Upload of created Packet started");
@@ -616,5 +635,11 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Sync and Upload of created Packet ended");
+	}
+
+	private boolean isKeyValid() {
+
+		return policySyncService.checkKeyValidation().getSuccessResponseDTO() != null;
+
 	}
 }

@@ -7,6 +7,7 @@ import java.io.File;
 import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -24,6 +25,9 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.RegistrationDAO;
+import io.mosip.registration.dto.ErrorResponseDTO;
+import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -59,7 +63,6 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	 * 
 	 * @see io.mosip.registration.service.PacketUploadService#getSynchedPackets()
 	 */
-	@SuppressWarnings("unchecked")
 	public List<Registration> getSynchedPackets() {
 		LOGGER.info("REGISTRATION - GET_SYNCHED_PACKETS - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching synched packets from the database");
@@ -72,15 +75,30 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	 * @see
 	 * io.mosip.registration.service.PacketUploadService#pushPacket(java.io.File)
 	 */
-	public Object pushPacket(File packet) throws URISyntaxException, RegBaseCheckedException {
+	@SuppressWarnings("unchecked")
+	public ResponseDTO pushPacket(File packet) throws URISyntaxException, RegBaseCheckedException {
 		LOGGER.info("REGISTRATION - PUSH_PACKET - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Push packets to the server");
 
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		map.add(RegistrationConstants.PACKET_TYPE, new FileSystemResource(packet));
-		Object response = null;
+		LinkedHashMap<String, Object> response = new LinkedHashMap<>();
+		ResponseDTO responseDTO = new ResponseDTO();
+		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
 		try {
-			response = serviceDelegateUtil.post(RegistrationConstants.PACKET_UPLOAD, map);
+			response = (LinkedHashMap<String, Object>) serviceDelegateUtil.post(RegistrationConstants.PACKET_UPLOAD,
+					map);
+			if (response.get("response") != null && response.get("error") == null) {
+				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
+				successResponseDTO.setCode(RegistrationConstants.SUCCESS);
+				responseDTO.setSuccessResponseDTO(successResponseDTO);
+			} else if (response.get("error") != null) {
+				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+				errorResponseDTO.setCode(RegistrationConstants.ERROR);
+				errorResponseDTO.setMessage(((LinkedHashMap<String, String>) response.get("error")).get("message"));
+				erResponseDTOs.add(errorResponseDTO);
+				responseDTO.setErrorResponseDTOs(erResponseDTOs);
+			}
 		} catch (HttpClientErrorException clientException) {
 			LOGGER.error("REGISTRATION - PUSH_PACKET_CLIENT_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID,
@@ -109,7 +127,7 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 					(socketTimeoutException.getMessage() + ExceptionUtils.getStackTrace(socketTimeoutException)),
 					socketTimeoutException.getLocalizedMessage());
 		}
-		return response;
+		return responseDTO;
 
 	}
 
@@ -166,16 +184,26 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 					File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
 					try {
 						if (packet.exists()) {
-							Object response = pushPacket(packet);
+							ResponseDTO response = pushPacket(packet);
 
-							String responseCode = response.toString();
-							if (responseCode.equals("PACKET_UPLOADED_TO_VIRUS_SCAN")) {
+							if (response.getSuccessResponseDTO() != null) {
 								syncedPacket.setClientStatusCode(
 										RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
 								syncedPacket.setFileUploadStatus(
 										RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
 								packetUploadList.add(syncedPacket);
 
+							} else if (response.getErrorResponseDTOs() != null) {
+								String errMessage = response.getErrorResponseDTOs().get(0).getMessage();
+								if (errMessage.contains(RegistrationConstants.PACKET_DUPLICATE)) {
+
+									syncedPacket.setClientStatusCode(
+											RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
+									syncedPacket.setFileUploadStatus(
+											RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
+									packetUploadList.add(syncedPacket);
+
+								}
 							} else {
 								syncedPacket.setFileUploadStatus(
 										RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());

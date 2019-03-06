@@ -5,6 +5,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Comparator;
+
+import javax.ws.rs.client.Invocation;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -22,6 +25,8 @@ import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
+
+import com.google.common.collect.Ordering;
 
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
@@ -95,7 +100,7 @@ public class UINGeneration extends BaseTestCase implements ITest{
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
 	
-	@Test(dataProvider="UINValidator")
+	@Test(dataProvider="UINValidator",invocationCount=1)
 	public void getUIN(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
 		
@@ -113,44 +118,38 @@ public class UINGeneration extends BaseTestCase implements ITest{
 		 String first_half=uin.substring(0, uin_length/2);
 		 String second_half=uin.substring(uin_length/2);
 		 String rev_half="";
-		 for(int j=second_half.length()-1;j>=0;j--)
-		 {
+		 for(int j=second_half.length()-1;j>=0;j--){
 			 rev_half=rev_half+second_half.charAt(j);
 		 }
-		if(uin_length==10)
-           {
-        	   if(first_half.equals(second_half))
-        	   { finalStatus="fail";
-        	   }
-        	   else {
-        		   if(first_half.equals(rev_half))
-        		   {
+		if(uin_length==10){
+        	   if(first_half.equals(second_half)){ 
+        		   finalStatus="fail";
+        	   }else {
+        		   if(first_half.equals(rev_half)){
         			   finalStatus="fail";
-        		   }
-        	  
-        		   else
-        		   {
+        		   }else{
         			   String first2=uin.substring(0,1);int count =1;
-        				for(int k=2;k<uin.length();k++)
-        				{
-        					if(first2.equals(uin.substring(k, i+k)))
-        					{
+        				for(int k=2;k<uin.length();k++){
+        					if(first2.equals(uin.substring(k, i+k))){
         						count++;
         					}
-        				}
-        				if(count==5)
+        				}if(count==5)
         					finalStatus="fail";
         				else
         					finalStatus="pass";
         		   }
-           }
+           }   
+        	boolean isAscending = UINGeneration.ascendingMethod(uin);
+        	boolean isDescending = UINGeneration.ascendingMethod(uin);
+        	   if(isAscending&&isDescending)
+        		   finalStatus="fail";
+   				else
+   					finalStatus="pass";   
            }
 		else
 			finalStatus="fail";
         		   
-           
-     
-		
+
 		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
@@ -187,12 +186,51 @@ public class UINGeneration extends BaseTestCase implements ITest{
 		
 		@AfterClass
 		public void updateOutput() throws IOException {
-			String configPath = "src/test/resources/kernel/UINValidator/UINGenerationOutput.json";
+			String configPath = "src/test/resources/kernel/UINGeneration/UINGenerationOutput.json";
 			try (FileWriter file = new FileWriter(configPath)) {
 				file.write(arr.toString());
 				logger.info("Successfully updated Results to UINGenerationOutput.json file.......................!!");
 			}
 		}
-	
+
+		
+		public static boolean ascendingMethod(String uin){
+		 	   char first_char=uin.charAt(0); 
+		 	   String latest_uin="";
+		 	   for(int i=0;i<uin.length();i++){
+		 		   if(first_char>'9'){
+		 			  first_char='0';
+		 		   }
+		 		   
+		 		   
+		 		  latest_uin=latest_uin+first_char;
+		 	 	   first_char++;
+		 	   }
+		 	   
+		 	   if(uin.equals(latest_uin)){
+		 		   return true;
+		 	   }else{
+		 		   return false;
+		 	   }
+			}
+		public static boolean descendingMethod(String uin){
+		 	   char first_char=uin.charAt(0); 
+		 	   String latest_uin="";
+		 	   for(int i=0;i<uin.length();i++){
+		 		   if(first_char<'0'){
+		 			  first_char='9';
+		 		   }
+		 		   
+		 		   
+		 		  latest_uin=latest_uin+first_char;
+		 	 	   first_char--;
+		 	   }
+		 	   
+		 	   if(uin.equals(latest_uin)){
+		 		   return true;
+		 	   }else{
+		 		   return false;
+		 	   }
+			}
 	
 }

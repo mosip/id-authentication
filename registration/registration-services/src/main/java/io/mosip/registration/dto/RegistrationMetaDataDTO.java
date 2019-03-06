@@ -22,6 +22,7 @@ public class RegistrationMetaDataDTO extends BaseDTO {
 	private String consentOfApplicant;
 	private String parentOrGuardianUINOrRID;
 	private String deviceId;
+	private String applicantTypeCode;
 
 	/**
 	 * @return the consentOfApplicant
@@ -186,4 +187,19 @@ public class RegistrationMetaDataDTO extends BaseDTO {
 		this.deviceId = deviceId;
 	}
 
+	/**
+	 * @return the applicantTypeCode
+	 */
+	public String getApplicantTypeCode() {
+		return applicantTypeCode;
+	}
+
+	/**
+	 * @param applicantTypeCode the applicantTypeCode to set
+	 */
+	public void setApplicantTypeCode(String applicantTypeCode) {
+		this.applicantTypeCode = applicantTypeCode;
+	}
+
+	
 }

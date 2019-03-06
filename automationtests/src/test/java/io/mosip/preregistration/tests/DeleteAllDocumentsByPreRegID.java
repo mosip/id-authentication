@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
+import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -66,7 +67,7 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 	PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
 	private static String preReg_URI ;
 	private static CommonLibrary commonLibrary = new CommonLibrary();
-	
+	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	
 	public DeleteAllDocumentsByPreRegID() {
 
@@ -86,7 +87,7 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 		
 		
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -101,10 +102,15 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 	
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
-		
+		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 	
+		
+
+		if(testCaseName.contains("smoke"))
+		{
+		
 		//Creating the Pre-Registration Application
 		Response createApplicationResponse = preRegLib.CreatePreReg();
 		
@@ -122,6 +128,18 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 		
 		
 		status = AssertResponses.assertResponses(delAllDocByPreId, Expectedresponse, outerKeys, innerKeys);
+		
+		
+		}
+		else
+		{
+			 
+			 Actualresponse = applicationLibrary.deleteRequest(preReg_URI, actualRequest);
+			 outerKeys.add("resTime");
+			 status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys); 
+			   
+		}
+		
 		if (status) {
 			finalStatus="Pass";		
 		softAssert.assertAll();
@@ -131,14 +149,13 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 		else {
 			finalStatus="Fail";
 		}
+		
 		boolean setFinalStatus=false;
-        if(finalStatus.equals("Fail"))
-              setFinalStatus=false;
-        else if(finalStatus.equals("Pass"))
-              setFinalStatus=true;
+		
+		setFinalStatus = finalStatus.equals("Pass") ? true : false ;
+		
         Verify.verify(setFinalStatus);
         softAssert.assertAll();
-		
 		
 	}
 

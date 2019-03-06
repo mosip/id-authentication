@@ -1,7 +1,6 @@
 package io.mosip.registration.util.mastersync;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.entity.RegistrationCommonFields;
 
@@ -100,12 +100,12 @@ public class MetaDataUtils {
 	}
 
 	private static <D extends RegistrationCommonFields> void setCreatedDateTime(String contextUser, D entity) {
-		entity.setCrDtime(Timestamp.valueOf(LocalDateTime.now()));
+		entity.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 		entity.setCrBy(contextUser);
 	}
 
 	private static <D extends RegistrationCommonFields> void setUpdatedDateTime(String contextUser, D entity) {
-		entity.setUpdDtimes(Timestamp.valueOf(LocalDateTime.now()));
+		entity.setUpdDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 		entity.setUpdBy(contextUser);
 	}
 

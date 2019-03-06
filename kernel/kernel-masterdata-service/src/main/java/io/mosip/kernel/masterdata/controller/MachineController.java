@@ -17,6 +17,7 @@ import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.MachineService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -119,7 +120,7 @@ public class MachineController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While creating Machine any error occured") })
-	public ResponseEntity<IdResponseDto> createMachine(@Valid @RequestBody RequestDto<MachineDto> machine) {
+	public ResponseEntity<IdAndLanguageCodeID> createMachine(@Valid @RequestBody RequestDto<MachineDto> machine) {
 		return new ResponseEntity<>(machineService.createMachine(machine), HttpStatus.OK);
 	}
 
@@ -139,7 +140,7 @@ public class MachineController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While updating Machine any error occured") })
-	public ResponseEntity<IdResponseDto> updateMachine(@Valid @RequestBody RequestDto<MachineDto> machine) {
+	public ResponseEntity<IdAndLanguageCodeID> updateMachine(@Valid @RequestBody RequestDto<MachineDto> machine) {
 		return new ResponseEntity<>(machineService.updateMachine(machine), HttpStatus.OK);
 	}
 

@@ -6,9 +6,8 @@ import static org.junit.Assert.assertTrue;
 import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -26,6 +25,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.dao.RegistrationDAO;
+import io.mosip.registration.dto.RegistrationPacketSyncDTO;
 import io.mosip.registration.dto.SyncRegistrationDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -68,10 +68,18 @@ public class PacketSynchServiceImplTest {
 	public void testSyncPacketsToServer() throws RegBaseCheckedException, JsonProcessingException, URISyntaxException,
 			HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
+		LinkedHashMap<String, Object> respObj = new LinkedHashMap<>();
+		LinkedHashMap<String, Object> msg = new LinkedHashMap<>();
+		msg.put("registrationId", "123456789");
+		msg.put("status", "Success");
+		List<LinkedHashMap<String, Object>> mapList = new ArrayList<>();
+		mapList.add(msg);
+		respObj.put("response", mapList);
+		RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
 		syncDtoList.add(new SyncRegistrationDTO());
-		Object respObj = new Object();
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyString())).thenReturn(respObj);
-		assertEquals(respObj, packetSynchServiceImpl.syncPacketsToServer(syncDtoList));
+		assertEquals("Success", packetSynchServiceImpl.syncPacketsToServer(registrationPacketSyncDTO)
+				.getSuccessResponseDTO().getOtherAttributes().get("123456789"));
 	}
 
 	@Test
@@ -88,10 +96,11 @@ public class PacketSynchServiceImplTest {
 			HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
 		syncDtoList.add(new SyncRegistrationDTO());
+		RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
 		Object respObj = new Object();
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new HttpClientErrorException(HttpStatus.ACCEPTED));
-		assertEquals(respObj, packetSynchServiceImpl.syncPacketsToServer(syncDtoList));
+		assertEquals(respObj, packetSynchServiceImpl.syncPacketsToServer(registrationPacketSyncDTO));
 	}
 
 	@Test(expected = RegBaseUncheckedException.class)
@@ -100,9 +109,10 @@ public class PacketSynchServiceImplTest {
 		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
 		syncDtoList.add(new SyncRegistrationDTO());
 		Object respObj = new Object();
+		RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new RuntimeException());
-		assertEquals(respObj, packetSynchServiceImpl.syncPacketsToServer(syncDtoList));
+		assertEquals(respObj, packetSynchServiceImpl.syncPacketsToServer(registrationPacketSyncDTO));
 	}
 
 	@Test
@@ -113,9 +123,9 @@ public class PacketSynchServiceImplTest {
 		reg.setId("123456789");
 		synchedPackets.add(reg);
 
-		Map<String, Object> respObj = new HashMap<>();
 		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(), Mockito.anyString())).thenReturn(reg);
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyString())).thenReturn(respObj);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(new LinkedHashMap<>());
 		Mockito.when(registrationDAO.updatePacketSyncStatus(reg)).thenReturn(new Registration());
 		packetSynchServiceImpl.packetSync("123456789");
 		assertEquals("SYNCED", reg.getClientStatusCode());
@@ -126,7 +136,6 @@ public class PacketSynchServiceImplTest {
 			HttpClientErrorException, ResourceAccessException, SocketTimeoutException {
 		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
 		syncDtoList.add(new SyncRegistrationDTO());
-		Object respObj = new Object();
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new RuntimeException());
 		packetSynchServiceImpl.packetSync("123456789");
@@ -148,8 +157,9 @@ public class PacketSynchServiceImplTest {
 		syncDtoList.add(new SyncRegistrationDTO());
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new HttpClientErrorException(HttpStatus.ACCEPTED));
+		RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
 		packetSynchServiceImpl.packetSync("123456789");
-		assertEquals(respObj, packetSynchServiceImpl.syncPacketsToServer(syncDtoList));
+		assertEquals(respObj, packetSynchServiceImpl.syncPacketsToServer(registrationPacketSyncDTO));
 	}
 
 	@Test
@@ -162,13 +172,13 @@ public class PacketSynchServiceImplTest {
 		reg.setId("123456789");
 		synchedPackets.add(reg);
 
-		Map<String, Object> respObj = new HashMap<>();
-		Mockito.when(registrationDAO.get(Mockito.anyList())).thenReturn(synchedPackets);
+		Mockito.when(registrationDAO.get(idlist)).thenReturn(synchedPackets);
 
 		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
 		syncDtoList.add(new SyncRegistrationDTO());
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyString())).thenReturn(respObj);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(new LinkedHashMap<>());
 		packetSynchServiceImpl.syncEODPackets(idlist);
-		assertEquals(respObj, packetSynchServiceImpl.syncPacketsToServer(syncDtoList));
+		assertEquals("SYNCED", reg.getClientStatusCode());
 	}
 }

@@ -19,6 +19,6 @@ public class RegStatusResponseDTO extends BaseRestResponseDTO {
 	private List<RegistrationStatusDto> response;
 	
 	/** The error. */
-	private ErrorDTO error;
+	private List<ErrorDTO> errors;
 	
 }

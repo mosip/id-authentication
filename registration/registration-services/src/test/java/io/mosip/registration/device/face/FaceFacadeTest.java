@@ -13,7 +13,7 @@ import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
-import io.mosip.registration.entity.UserBiometricId;
+import io.mosip.registration.entity.id.UserBiometricId;
 
 public class FaceFacadeTest {
 	

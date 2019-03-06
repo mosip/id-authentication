@@ -11,8 +11,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 
 public class ApplicationContext {
 
-	
-
 	/**
 	 * Instance of {@link Logger}
 	 */
@@ -40,44 +38,34 @@ public class ApplicationContext {
 	 * Loading resource bundle
 	 */
 	public void loadResourceBundle() {
-		String primaryLanguage = "";
-		String secondaryLanguage = "";
 		try {
-			primaryLanguage = (String) applicationMap.get(RegistrationConstants.PRIMARY_LANGUAGE);
-			secondaryLanguage = (String) applicationMap.get(RegistrationConstants.SECONDARY_LANGUAGE);
+			applicationLanguge = (String) applicationMap.get(RegistrationConstants.PRIMARY_LANGUAGE);
+			localLanguage = (String) applicationMap.get(RegistrationConstants.SECONDARY_LANGUAGE);
 		} catch (RuntimeException exception) {
-			LOGGER.error("Application Context","", RegistrationConstants.APPLICATION_ID,
-					exception.getMessage());
+			LOGGER.error("Application Context", RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 		}
-		if (RegistrationConstants.EMPTY.equals(primaryLanguage)) {
-			primaryLanguage = RegistrationConstants.LANGUAGE_ENGLISH;
+		if (applicationLanguge == null || RegistrationConstants.EMPTY.equals(applicationLanguge)) {
+			applicationLanguge = RegistrationConstants.LANGUAGE_ENGLISH;
 		}
-		if (RegistrationConstants.EMPTY.equals(secondaryLanguage)) {
-			secondaryLanguage = RegistrationConstants.LANGUAGE_ARABIC;
+		if (localLanguage == null || RegistrationConstants.EMPTY.equals(localLanguage)) {
+			localLanguage = RegistrationConstants.LANGUAGE_ARABIC;
 		}
+		
+		Locale applicationLanguageLocale = new Locale(applicationLanguge.substring(0, 2));
+		Locale secondaryLanguageLocale = new Locale(localLanguage.substring(0, 2));
 
-		if (primaryLanguage == null) {
-			primaryLanguage = RegistrationConstants.LANGUAGE_ENGLISH;
-		}
-		if (secondaryLanguage == null) {
-			secondaryLanguage = RegistrationConstants.LANGUAGE_ARABIC;
-		}
-
-		applicationLanguge = primaryLanguage.substring(0, 3);
-		localLanguage = secondaryLanguage.substring(0, 3);
-
-		applicationLanguageBundle = ResourceBundle.getBundle("labels", new Locale(applicationLanguge.substring(0, 2)));
-		localLanguageBundle = ResourceBundle.getBundle("labels", new Locale(localLanguage.substring(0, 2)));
-		applicationMessagesBundle = ResourceBundle.getBundle("messages",
-				new Locale(applicationLanguge.substring(0, 2)));
-		localMessagesBundle = ResourceBundle.getBundle("messages", new Locale(localLanguage.substring(0, 2)));
-		applicationLanguagevalidationBundle = ResourceBundle.getBundle("validations",
-				new Locale(applicationLanguge.substring(0, 2)));
+		applicationLanguageBundle = ResourceBundle.getBundle("labels", applicationLanguageLocale);
+		localLanguageBundle = ResourceBundle.getBundle("labels", secondaryLanguageLocale);
+		applicationMessagesBundle = ResourceBundle.getBundle("messages", applicationLanguageLocale);
+		localMessagesBundle = ResourceBundle.getBundle("messages", secondaryLanguageLocale);
+		applicationLanguagevalidationBundle = ResourceBundle.getBundle("validations", applicationLanguageLocale);
 	}
 
 	public void setApplicationLanguagevalidationBundle(ResourceBundle applicationLanguagevalidationBundle) {
 		this.applicationLanguagevalidationBundle = applicationLanguagevalidationBundle;
 	}
+	
 
 	public static ApplicationContext getInstance() {
 		if (applicationContext == null) {
@@ -94,6 +82,20 @@ public class ApplicationContext {
 
 	public static String applicationLanguage() {
 		return applicationContext.getApplicationLanguage();
+	}
+	
+	/*
+	 * To return the local language code with two letter
+	 */
+	public static String secondaryLanguageLocal() {
+		return applicationContext.getLocalLanguage().substring(0,2);
+	}
+	
+	/*
+	 * To return the application language code with two letter
+	 */		
+	public static String primaryLanguageLocal() {
+		return applicationContext.getApplicationLanguage().substring(0,2);
 	}
 
 	public static String localLanguage() {

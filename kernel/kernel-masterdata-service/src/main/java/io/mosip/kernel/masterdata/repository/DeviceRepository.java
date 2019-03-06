@@ -27,7 +27,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * @return the device detail
 	 */
 	@Query("FROM Device d where d.id = ?1 AND (d.isDeleted is null or d.isDeleted = false)")
-	Device findByIdAndIsDeletedFalseOrIsDeletedIsNull(String id);
+	List<Device> findByIdAndIsDeletedFalseOrIsDeletedIsNull(String id);
 
 	/**
 	 * This method trigger query to fetch the Device detail for the given language
@@ -55,7 +55,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * @return List Device Details fetched from database
 	 * 
 	 */
-	@Query(value = "select d.id, d.name, d.mac_address, d.serial_num, d.ip_address, d.dspec_id, d.lang_code, d.is_active, d.validity_end_dtimes, s.dtyp_code from master.device_master  d, master.device_spec s where  d.dspec_id = s.id  and  d.lang_code = ?1 and s.dtyp_code = ?2 and (d.is_deleted is null or d.is_deleted = false)", nativeQuery = true)
+	@Query(value = "select d.id, d.name, d.mac_address, d.serial_num, d.ip_address, d.dspec_id, d.lang_code, d.is_active, d.validity_end_dtimes, s.dtyp_code from master.device_master  d, master.device_spec s where  d.dspec_id = s.id  and d.lang_code = s.lang_code and d.lang_code = ?1 and s.dtyp_code = ?2 and (d.is_deleted is null or d.is_deleted = false)", nativeQuery = true)
 	List<Object[]> findByLangCodeAndDtypeCode(String langCode, String deviceTypeCode);
 
 	/**
@@ -69,5 +69,18 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 
 	@Query("FROM Device d where d.deviceSpecId = ?1 and (d.isDeleted is null or d.isDeleted = false)")
 	List<Device> findDeviceByDeviceSpecIdAndIsDeletedFalseorIsDeletedIsNull(String deviceSpecId);
+	
+	/**
+	 * This method trigger query to fetch the Device detail for the given id and language code.
+	 * 
+	 * @param id
+	 *            the id of device
+	 * @param langCode
+	 *            language code from user
+	 * @return the device detail
+	 */
+	@Query("FROM Device d where d.id = ?1 and d.langCode = ?2 AND (d.isDeleted is null or d.isDeleted = false)")
+	Device findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String id, String langCode);
+	
 
 }

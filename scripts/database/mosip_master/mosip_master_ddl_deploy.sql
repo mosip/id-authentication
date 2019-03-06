@@ -7,6 +7,7 @@
 \ir ddl/master-app_role_priority.sql
 \ir ddl/master-authentication_method.sql
 \ir ddl/master-authentication_type.sql
+\ir ddl/master-applicant_valid_document.sql
 \ir ddl/master-biometric_attribute.sql
 \ir ddl/master-biometric_type.sql
 \ir ddl/master-blacklisted_words.sql
@@ -20,6 +21,7 @@
 \ir ddl/master-gender.sql
 \ir ddl/master-global_param.sql
 \ir ddl/master-id_type.sql
+\ir ddl/master-individual_type.sql
 \ir ddl/master-introducer_type.sql
 \ir ddl/master-language.sql
 \ir ddl/master-licensekey_list.sql

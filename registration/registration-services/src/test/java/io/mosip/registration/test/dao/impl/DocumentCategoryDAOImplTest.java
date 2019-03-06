@@ -16,7 +16,7 @@ import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dao.impl.DocumentCategoryDAOImpl;
 import io.mosip.registration.entity.DocumentCategory;
-import io.mosip.registration.entity.GenericId;
+import io.mosip.registration.entity.id.GenericId;
 import io.mosip.registration.repositories.DocumentCategoryRepository;
 
 public class DocumentCategoryDAOImplTest {

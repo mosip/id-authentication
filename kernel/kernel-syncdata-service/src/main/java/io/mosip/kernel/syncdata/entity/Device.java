@@ -3,13 +3,22 @@ package io.mosip.kernel.syncdata.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import io.mosip.kernel.syncdata.entity.id.IdAndLanguageCodeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -17,24 +26,32 @@ import lombok.NoArgsConstructor;
  * Entity for Device Details
  * 
  */
+/**
+ * @author Sidhant Agarwal
+ * @author Megha Tanga
+ * @since 1.0.1
+ *
+ */
+
+@EqualsAndHashCode(callSuper = true)
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "device_master", schema = "master")
-public class Device  implements Serializable {
+@IdClass(IdAndLanguageCodeID.class)
+public class Device extends BaseEntity implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5585825705521742941L;
 
-	/**
-	 * Field for device ID
-	 */
 	@Id
-	@Column(name = "id", unique = true, nullable = false, length = 36)
+	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id", nullable = false, length = 36)),
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 	private String id;
+	private String langCode;
 
 	/**
 	 * Field for device name
@@ -66,39 +83,12 @@ public class Device  implements Serializable {
 	@Column(name = "dspec_id", nullable = false, length = 36)
 	private String deviceSpecId;
 
-	/**
-	 * Field for language code
-	 */
-	@Column(name = "lang_code", nullable = false, length = 3)
-	private String langCode;
+	@Column(name = "validity_end_dtimes")
+	private LocalDateTime validityDateTime;
 
-
-	
-	/**
-	 * Field to hold date and time for Validity of the Device
-	 */
-	@Column(name="validity_end_dtimes")
-	private LocalDateTime validityEndDateTime; 
-	
-	@Column(name = "is_active")
-	private Boolean isActive;
-
-	@Column(name = "cr_by", nullable = false, length = 24)
-	private String createdBy;
-
-	@Column(name = "cr_dtimes", nullable = false)
-	private LocalDateTime createdDateTime;
-
-	@Column(name = "upd_by")
-	private String updatedBy;
-
-	@Column(name = "upd_dtimes")
-	private LocalDateTime updatedDateTime;
-
-	@Column(name = "is_deleted")
-	private Boolean isDeleted;
-
-	@Column(name = "del_dtimes")
-	private LocalDateTime deletedDateTime;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumns({ @JoinColumn(name = "dspec_id", referencedColumnName = "id", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	private DeviceSpecification deviceSpecification;
 
 }

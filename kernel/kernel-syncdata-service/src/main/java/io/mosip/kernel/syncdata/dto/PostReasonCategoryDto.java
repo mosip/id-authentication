@@ -24,8 +24,4 @@ public class PostReasonCategoryDto extends BaseDto implements Serializable {
 
 	private String description;
 
-	private String langCode;
-
-	private Boolean isActive;
-
 }

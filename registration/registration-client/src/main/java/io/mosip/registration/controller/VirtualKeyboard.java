@@ -12,6 +12,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.VirtualKeyboardKeys;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.reg.RegistrationController;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -60,7 +61,7 @@ public class VirtualKeyboard {
 	private StringBuilder vkType=new StringBuilder();
 
 	private final ResourceBundle keyboard = ResourceBundle.getBundle("keyboards.keyboard",
-			new Locale(AppConfig.getApplicationProperty("local_language")));
+			new Locale(ApplicationContext.secondaryLanguageLocal()));
 
 	private String getKey(String keyCode) {
 

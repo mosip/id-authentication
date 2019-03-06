@@ -18,6 +18,8 @@ import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.ReasonListDto;
 import io.mosip.registration.service.MasterSyncService;
+import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
+
 
 public class MasterSyncServiceTest extends BaseIntegrationTest {
 	
@@ -37,7 +39,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		ResponseDTO result = mastersyncservice.getMasterSync("MDS_J00001");
 		System.out.println(RegistrationConstants.MASTER_SYNC_OFFLINE_FAILURE_MSG);
 		System.out.println(result.getErrorResponseDTOs().get(0).getMessage());
-		assertEquals(RegistrationConstants.MASTER_SYNC_OFFLINE_FAILURE_MSG,
+		assertEquals(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO,
 				result.getErrorResponseDTOs().get(0).getMessage());
 
 	}
@@ -50,9 +52,12 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		// mastersyncservice.getMasterSync(masterSyncDetails);
 		ResponseDTO result = mastersyncservice.getMasterSync("MDS_J00001");
 		System.out.println(RegistrationConstants.MASTER_SYNC_SUCCESS);
+		
 		System.out.println(result.getSuccessResponseDTO().getMessage());
 		assertEquals(RegistrationConstants.MASTER_SYNC_SUCCESS,
 				result.getSuccessResponseDTO().getMessage());
+		
+		System.out.println("********"+RegistrationAppHealthCheckUtil.isNetworkAvailable());
 
 	}
 	

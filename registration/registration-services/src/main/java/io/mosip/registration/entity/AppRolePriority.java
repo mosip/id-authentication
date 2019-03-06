@@ -5,6 +5,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import io.mosip.registration.entity.id.AppRolePriorityId;
 import lombok.Getter;
 import lombok.Setter;
 

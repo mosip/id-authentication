@@ -29,16 +29,18 @@ public class FileNotFoundInDestinationExceptionTest {
 	public void TestFileNotFoundInDestinationException() {
 		String fileName = "sample.zip";
 
-		FileNotFoundInDestinationException ex = new FileNotFoundInDestinationException(PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION.getMessage());
-		doThrow(ex).when(fileManager).cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileName);
+		FileNotFoundInDestinationException ex = new FileNotFoundInDestinationException(
+				PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION.getMessage());
+		doThrow(ex).when(fileManager).cleanUpFile(DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC,
+				fileName);
 		try {
-			fileManager.cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileName);
+			fileManager.cleanUpFile(DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC, fileName);
 			fail();
 		} catch (FileNotFoundInDestinationException e) {
-			assertThat("Should throw File Not Found In Destination Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION.getCode()));
-			assertThat("Should throw File Not Found In Destination Exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION.getMessage()));
+			assertThat("Should throw File Not Found In Destination Exception with correct error codes", e.getErrorCode()
+					.equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION.getCode()));
+			assertThat("Should throw File Not Found In Destination Exception with correct messages", e.getErrorText()
+					.equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION.getMessage()));
 
 		}
 

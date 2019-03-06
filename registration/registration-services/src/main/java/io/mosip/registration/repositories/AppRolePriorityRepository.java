@@ -6,7 +6,7 @@ import java.util.Set;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.dao.AppRolePriorityDetails;
 import io.mosip.registration.entity.AppRolePriority;
-import io.mosip.registration.entity.AppRolePriorityId;
+import io.mosip.registration.entity.id.AppRolePriorityId;
 
 /**
  * The repository interface for {@link AppRolePriority} entity

@@ -14,6 +14,7 @@ import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
@@ -165,7 +166,9 @@ public enum BioMatchType implements MatchType {
 				}
 
 				return compositeIrisMap;
-			});
+			}),
+	FACE(IdaIdMapping.FACE, Collections.emptySet(), IdentityDTO::getFace,
+			AuthUsageDataBit.USED_BIO_FACE, AuthUsageDataBit.MATCHED_BIO_FACE, CbeffDocType.FACE);
 
 	/** The allowed matching strategy. */
 	private Set<MatchingStrategy> allowedMatchingStrategy;
@@ -206,7 +209,6 @@ public enum BioMatchType implements MatchType {
 		this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
 		this.usedBit = usedBit;
 		this.matchedBit = matchedBit;
-		this.cbeffDocType = cbeffDocType;
 	}
 
 	/**
@@ -263,6 +265,12 @@ public enum BioMatchType implements MatchType {
 	@Override
 	public Map<String, Entry<String, List<IdentityInfoDTO>>> mapEntityInfo(Map<String, List<IdentityInfoDTO>> idEntity,
 			IdInfoFetcher idinfoFetcher) throws IdAuthenticationBusinessException {
-		return idinfoFetcher.getCbeffValues(idEntity, cbeffDocType.toString());
+		return idinfoFetcher.getCbeffValues(idEntity, cbeffDocType, this);
 	}
+
+	public CbeffDocType getCbeffDocType() {
+		return cbeffDocType;
+	}
+	
+	
 }

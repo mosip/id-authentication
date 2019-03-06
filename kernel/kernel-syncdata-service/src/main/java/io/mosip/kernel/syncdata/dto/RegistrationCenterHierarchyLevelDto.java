@@ -34,8 +34,6 @@ public class RegistrationCenterHierarchyLevelDto extends BaseDto{
 	
 	private String centerTypeCode;
 	
-	private Boolean isActive;
-	
 	private String workingHours;
 	
 	private String contactPhone;

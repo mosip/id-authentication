@@ -136,6 +136,8 @@ public class RegistrationUIConstants {
 	public static final String STOP_SCHEDULER_ERROR_MESSAGE = bundle.getString("STOP_SCHEDULER_ERROR_MESSAGE");
 	public static final String CURRENT_JOB_DETAILS_ERROR_MESSAGE = bundle
 			.getString("CURRENT_JOB_DETAILS_ERROR_MESSAGE");
+	public static final String SYNC_SUCCESS = bundle.getString("SYNC_SUCCESS");
+	public static final String SYNC_FAILURE = bundle.getString("SYNC_FAILURE"); 
 
 	// MACHINE MAPPING
 	public static final String MACHINE_MAPPING_SUCCESS_MESSAGE = bundle.getString("MACHINE_MAPPING_SUCCESS_MESSAGE");
@@ -211,4 +213,8 @@ public class RegistrationUIConstants {
 	public static final String VIRUS_SCAN_SUCCESS = bundle.getString("VIRUS_SCAN_SUCCESS");
 	
 	public static final String INVALID_KEY = bundle.getString("INVALID_KEY");
+	
+	public static final String RESTART_APPLICATION = bundle.getString("RESTART_APPLICATION");
+	
+	
 }

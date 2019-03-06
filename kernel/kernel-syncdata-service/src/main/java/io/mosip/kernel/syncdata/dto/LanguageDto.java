@@ -3,6 +3,8 @@ package io.mosip.kernel.syncdata.dto;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -21,6 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(value = "Language", description = "Language resource representation")
+@JsonIgnoreProperties("langCode")
 public class LanguageDto extends BaseDto{
 
 	/**
@@ -53,11 +56,6 @@ public class LanguageDto extends BaseDto{
 	@ApiModelProperty(value = "Language Native Name", dataType = "java.lang.String")
 	private String nativeName;
 
-	/**
-	 * Field for the status of data.
-	 */
-	@NotNull
-	@ApiModelProperty(value = "Language isActive status", required = true, dataType = "java.lang.Boolean")
-	private Boolean isActive;
+	
 
 }

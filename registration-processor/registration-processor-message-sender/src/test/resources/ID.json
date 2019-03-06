@@ -108,6 +108,6 @@
     },
     "IDSchemaVersion" : 1.0,
     "UIN" : null,
-    "CNIENumber" : 1234567890
+    "CNIENumber" : "1234567890"
   }
 }

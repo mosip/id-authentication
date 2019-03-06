@@ -26,11 +26,5 @@ public class GenderDto extends BaseDto {
 	@Size(min = 1, max = 64)
 	private String genderName;
 
-	@NotNull
-	@Size(min = 1, max = 3)
-	private String langCode;
-
-	@NotNull
-	private Boolean isActive;
-
+	
 }

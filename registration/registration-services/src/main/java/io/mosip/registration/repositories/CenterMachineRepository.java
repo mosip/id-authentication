@@ -2,7 +2,7 @@ package io.mosip.registration.repositories;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.entity.CenterMachine;
-import io.mosip.registration.entity.CenterMachineId;
+import io.mosip.registration.entity.id.CenterMachineId;
 
 /**
  * To get the Center id based on station id
@@ -18,5 +18,5 @@ public interface CenterMachineRepository extends BaseRepository<CenterMachine, C
 	 * @param id
 	 * @return center id
 	 */
-	CenterMachine findByCenterMachineIdId(String userId);
+	CenterMachine findByIsActiveTrueAndCenterMachineIdId(String userId);
 }

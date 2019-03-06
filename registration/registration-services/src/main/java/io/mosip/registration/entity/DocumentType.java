@@ -9,6 +9,8 @@ import javax.persistence.IdClass;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
+
 @Entity
 @Table(schema = "reg", name = "doc_type")
 @IdClass(CodeAndLanguageCodeID.class)

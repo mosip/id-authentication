@@ -1,8 +1,7 @@
 package io.mosip.registration.processor.connector.stage;
 
 import org.springframework.beans.factory.annotation.Value;
-
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -15,13 +14,14 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
 /**
- * ConnectorStage 
+ * This is the class to send the message to packet-validator stage to begin processing
+ * the new packet arrived in file system
  * @author Jyoti Prakash Nayak
  *
  */
-@Component("connectorStage")
+@Service
 public class ConnectorStage extends MosipVerticleAPIManager{
-	
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(ConnectorStage.class);
 	/**
 	 * vertx Cluster Manager Url
 	 */
@@ -68,7 +68,7 @@ public class ConnectorStage extends MosipVerticleAPIManager{
 		router.post("/registration-connector/registration-processor/connector/v1.0").handler(ctx -> {
 			processURL(ctx);
 		}).failureHandler(failureHandler -> {
-			this.setResponse(failureHandler, failureHandler.failure().getMessage());
+			this.setResponse(failureHandler, failureHandler.failure().getMessage());	
 		});
 		
 		router.get("/registration-connector/health").handler(ctx -> {
@@ -93,6 +93,7 @@ public class ConnectorStage extends MosipVerticleAPIManager{
 		
 		sendMessage( messageDTO);
 		this.setResponse(ctx, "Packet with registrationId '"+obj.getString("rid")+"' has been forwarded to Packet validation stage");
+		regProcLogger.info(obj.getString("rid"), "Packet with registrationId '"+obj.getString("rid")+"' has been forwarded to Packet validation stage", null, null);
 	}
 
 	/**

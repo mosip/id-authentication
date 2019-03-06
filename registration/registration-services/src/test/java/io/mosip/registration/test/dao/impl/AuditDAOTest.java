@@ -1,5 +1,8 @@
 package io.mosip.registration.test.dao.impl;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.when;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,9 +25,6 @@ import io.mosip.registration.dao.impl.AuditDAOImpl;
 import io.mosip.registration.entity.RegistrationAuditDates;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegAuditRepository;
-
-import static org.mockito.Mockito.when;
-import static org.hamcrest.CoreMatchers.is;
 
 public class AuditDAOTest {
 

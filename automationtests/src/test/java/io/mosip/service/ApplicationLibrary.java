@@ -54,7 +54,13 @@ public class ApplicationLibrary extends BaseTestCase{
     public Response getRequestPathPara(String Resource_URI, HashMap<String, String> valueMap) {
         return commonLibrary.get_Request_pathParameters(ApplnURI + Resource_URI , valueMap);
       
-  } 
+  }
+    
+    
+    public Response get_RequestWithoutBody(String Resource_URI) {
+    	return commonLibrary.get_RequestWithoutBody(ApplnURI+Resource_URI,MediaType.APPLICATION_JSON,MediaType.APPLICATION_JSON);
+    }
+    
     /** Author Arjun
      * @param Resource_URI
      * @param valueMap
@@ -95,6 +101,16 @@ public class ApplicationLibrary extends BaseTestCase{
     	return commonLibrary.put_RequestWithoutBody(ApplnURI+Resource_URI,MediaType.APPLICATION_JSON,MediaType.APPLICATION_JSON);
     }
 
+    
+    //Notify
+    public Response putFileAndJsonParam(String Resource_Uri,Object body,File file) {
+    	//return commonLibrary.Post_JSONwithFile(body, file, ApplnURI+Resource_Uri,MediaType.MULTIPART_FORM_DATA);
+    System.out.println("My lang code body:"+body);
+    	//return commonLibrary.Post_JSONwithFileParam(body, file, ApplnURI+Resource_Uri, MediaType.MULTIPART_FORM_DATA, param);
+    	return commonLibrary.Post_JSONwithFileParam(body, file, ApplnURI+Resource_Uri, MediaType.MULTIPART_FORM_DATA);
+        
+    }
+    
     
 }
 

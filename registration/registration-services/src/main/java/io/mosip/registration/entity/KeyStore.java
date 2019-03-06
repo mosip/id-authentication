@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import io.mosip.kernel.core.util.DateUtils;
+
 /**
  * 
  * @author Brahmananda Reddy
@@ -159,7 +161,7 @@ public class KeyStore {
 	 *            the createdDtimes to set
 	 */
 	public void setCreatedDtimes(Timestamp createdDtimes) {
-		this.createdDtimes = createdDtimes;
+		this.createdDtimes = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 	}
 
 	/**
@@ -189,7 +191,7 @@ public class KeyStore {
 	 *            the updatedTimes to set
 	 */
 	public void setUpdatedTimes(Timestamp updatedTimes) {
-		this.updatedTimes = updatedTimes;
+		this.updatedTimes = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 	}
 
 	/**
@@ -219,7 +221,7 @@ public class KeyStore {
 	 *            the deletedTimes to set
 	 */
 	public void setDeletedTimes(Timestamp deletedTimes) {
-		this.deletedTimes = deletedTimes;
+		this.deletedTimes = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 	}
 
 }

@@ -19,6 +19,7 @@ import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceSpecificationResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -109,7 +110,7 @@ public class DeviceSpecificationController {
 			@ApiResponse(code = 201, message = "When Device Specification successfully created", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Device Specification any error occured") })
-	public ResponseEntity<IdResponseDto> createDeviceSpecification(
+	public ResponseEntity<IdAndLanguageCodeID> createDeviceSpecification(
 			@Valid @RequestBody RequestDto<DeviceSpecificationDto> deviceSpecification) {
 
 		return new ResponseEntity<>(deviceSpecificationService.createDeviceSpecification(deviceSpecification),
@@ -123,7 +124,7 @@ public class DeviceSpecificationController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No device specification found"),
 			@ApiResponse(code = 500, message = "While updating device specification any error occured") })
-	public ResponseEntity<IdResponseDto> updateDeviceSpecification(
+	public ResponseEntity<IdAndLanguageCodeID> updateDeviceSpecification(
 			@Valid @RequestBody RequestDto<DeviceSpecificationDto> deviceSpecification) {
 		return new ResponseEntity<>(deviceSpecificationService.updateDeviceSpecification(deviceSpecification),
 				HttpStatus.OK);

@@ -2,6 +2,7 @@ package io.mosip.registration.processor.stages.uingenerator.idrepo.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * The Class ErrorDTO.
@@ -10,11 +11,13 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ErrorDTO {
 
+
 	/** The err code. */
-	private String errCode;
+	private String errorCode;
 	
 	/** The err message. */
-	private String errMessage;
+	private String errorMessage;
 }

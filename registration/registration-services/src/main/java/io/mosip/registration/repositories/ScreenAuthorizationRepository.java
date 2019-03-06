@@ -6,7 +6,7 @@ import java.util.Set;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.dao.ScreenAuthorizationDetails;
 import io.mosip.registration.entity.ScreenAuthorization;
-import io.mosip.registration.entity.ScreenAuthorizationId;
+import io.mosip.registration.entity.id.ScreenAuthorizationId;
 
 /**
  * The repository interface for {@link ScreenAuthorization} entity

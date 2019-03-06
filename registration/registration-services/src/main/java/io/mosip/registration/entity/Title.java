@@ -11,6 +11,8 @@ import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.Table;
 
+import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
+
 
 /**
  * Entity class mapping title to master data

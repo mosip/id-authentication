@@ -25,7 +25,7 @@ public class RegistrationStatusConfig {
 	public Docket registrationStatusBean() {
 		return new Docket(DocumentationType.SWAGGER_2).groupName("Registration status").select()
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.registration.processor.status.api.controller"))
-				.paths(PathSelectors.ant("/v0.1/registration-processor/registration-status/*")).build();
+				.paths(PathSelectors.ant("/registration-processor/*/*")).build();
 	}
 
 }

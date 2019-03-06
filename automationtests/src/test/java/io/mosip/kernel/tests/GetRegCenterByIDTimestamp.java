@@ -27,9 +27,10 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
+import io.mosip.dbaccess.KernelMasterDataR;
+import io.mosip.dbdto.RegistrationCenterDto;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
-import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -131,12 +132,14 @@ public class GetRegCenterByIDTimestamp extends BaseTestCase implements ITest{
 		
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
-//	             String id= (actualRequest.get("id").toString());
-//	             System.out.println("id------------>"+id);
-//	             String queryStr = "SELECT * FROM master.registration_center WHERE id='"+id+"'";
-//					boolean valid = KernelMasterDataR.masterDataDBConnection(RegistrationCenterDto.class,queryStr);
-//					System.out.println("status------>"+valid);
-			if(status)
+    	  
+    	  if(testCaseName.contains("smoke"))
+    	  {
+    		  String id= (actualRequest.get("id").toString());
+	             String queryStr = "SELECT master.registration_center.* FROM master.registration_center WHERE id='"+id+"'";
+				boolean valid = KernelMasterDataR.masterDataDBConnection(RegistrationCenterDto.class,queryStr);
+				System.out.println("status------>"+valid);
+			if(valid)
 					{
 						finalStatus ="Pass";
 					}
@@ -145,7 +148,7 @@ public class GetRegCenterByIDTimestamp extends BaseTestCase implements ITest{
 		 				finalStatus ="Fail";
 						//break;
 					}
-	            
+    	  }else	            
 				finalStatus = "Pass";
 			}	
 		

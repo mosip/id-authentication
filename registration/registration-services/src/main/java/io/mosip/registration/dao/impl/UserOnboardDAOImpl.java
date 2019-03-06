@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
@@ -30,9 +31,9 @@ import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.CenterMachine;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.UserBiometric;
-import io.mosip.registration.entity.UserBiometricId;
 import io.mosip.registration.entity.UserMachineMapping;
-import io.mosip.registration.entity.UserMachineMappingID;
+import io.mosip.registration.entity.id.UserBiometricId;
+import io.mosip.registration.entity.id.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.CenterMachineRepository;
@@ -113,7 +114,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 				Double qualitySocre = fingerPrintData.getQualityScore();
 				bioMetrics.setQualityScore(qualitySocre.intValue());
 				bioMetrics.setCrBy(SessionContext.userContext().getUserId());
-				bioMetrics.setCrDtime(new Timestamp(System.currentTimeMillis()));
+				bioMetrics.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				bioMetrics.setIsActive(true);
 
 				bioMetricsList.add(bioMetrics);
@@ -134,7 +135,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 				Double qualitySocre = iries.getQualityScore();
 				bioMetrics.setQualityScore(qualitySocre.intValue());
 				bioMetrics.setCrBy(SessionContext.userContext().getUserId());
-				bioMetrics.setCrDtime(new Timestamp(System.currentTimeMillis()));
+				bioMetrics.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				bioMetrics.setIsActive(true);
 
 				bioMetricsList.add(bioMetrics);
@@ -155,7 +156,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 			Double qualitySocre = biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO().getQualityScore();
 			bioMetrics.setQualityScore(qualitySocre.intValue());
 			bioMetrics.setCrBy(SessionContext.userContext().getUserId());
-			bioMetrics.setCrDtime(new Timestamp(System.currentTimeMillis()));
+			bioMetrics.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 			bioMetrics.setIsActive(true);
 
 			bioMetricsList.add(bioMetrics);
@@ -178,9 +179,9 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 			user.setUserMachineMappingId(userID);
 			user.setCrBy(SessionContext.userContext().getUserId());
-			user.setCrDtime(new Timestamp(System.currentTimeMillis()));
+			user.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 			user.setUpdBy(SessionContext.userContext().getUserId());
-			user.setUpdDtimes(new Timestamp(System.currentTimeMillis()));
+			user.setUpdDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 			user.setIsActive(true);
 
 			machineMappingDAO.save(user);
@@ -219,11 +220,11 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "fetching mac address....");
 
-			MachineMaster macAddressOfMachineMaster = machineMasterRepository.findByMacAddress(macAdres);
+			MachineMaster macAddressOfMachineMaster = machineMasterRepository.findByIsActiveTrueAndMacAddress(macAdres);
 
-			if (macAddressOfMachineMaster != null && macAddressOfMachineMaster.getId() != null) {
+			if (macAddressOfMachineMaster != null && macAddressOfMachineMaster.getRegMachineSpecId().getId() != null) {
 
-				return macAddressOfMachineMaster.getId();
+				return macAddressOfMachineMaster.getRegMachineSpecId().getId();
 
 			} else {
 
@@ -254,7 +255,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"fetching center details from reposiotry....");
 
-			CenterMachine regCenterMachineDtls = centerMachineRepository.findByCenterMachineIdId(stationId);
+			CenterMachine regCenterMachineDtls = centerMachineRepository.findByIsActiveTrueAndCenterMachineIdId(stationId);
 
 			if (regCenterMachineDtls != null && regCenterMachineDtls.getCenterMachineId().getCentreId() != null) {
 

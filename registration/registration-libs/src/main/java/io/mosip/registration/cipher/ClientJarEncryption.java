@@ -52,8 +52,8 @@ public class ClientJarEncryption {
 		// Generate AES Session Key
 		SecretKey symmetricKey = new SecretKeySpec(encodedString, AES_ALGORITHM);
 
-		return Base64.getEncoder().encode(SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING,
-				symmetricKey, data, Cipher.ENCRYPT_MODE));
+		return SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING,
+				symmetricKey, data, Cipher.ENCRYPT_MODE);
 	}
 
 	/**
@@ -98,6 +98,7 @@ public class ClientJarEncryption {
 				// Adding lib files into map
 				for (File files : listOfJars.listFiles()) {
 
+					
 					if (files.getName().contains(REGISTRATION)) {
 						byte[] encryptedRegFileBytes = aes.encyrpt(FileUtils.readFileToByteArray(files),
 								Base64.getDecoder().decode(args[2].getBytes()));

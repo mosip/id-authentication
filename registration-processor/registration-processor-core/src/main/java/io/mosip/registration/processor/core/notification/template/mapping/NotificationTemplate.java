@@ -179,6 +179,6 @@ public class NotificationTemplate {
 
 	private Double idSchemaVersion;
 
-	private Long cnieNumber;
+	private String cnieNumber;
 
 }

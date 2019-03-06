@@ -38,13 +38,9 @@ create schema if not exists reg
 
 
 -- keys section -------------------------------------------------------------------------------
-alter table reg.device_spec add constraint pk_dspec_code primary key (id)
+alter table reg.device_spec add constraint pk_dspec_code primary key (id, lang_code)
  ;
 
 -- indexes section -----------------------------------------------------------------------
 -- create index idx_dspec_<col> on reg.device_spec (col)
 -- ;
-
--- comments section -------------------------------------------------------------------------- 
-comment on table reg.device_spec is 'reg device_spec table'
-;

@@ -10,7 +10,5 @@ import io.mosip.registration.dto.ResponseDTO;
  */
 public interface PolicySyncService {
 	ResponseDTO fetchPolicy();
-
-	/*ResponseDTO updatePolicy(PolicyDTO policyDTO);*/
-
+	ResponseDTO checkKeyValidation() ;
 }

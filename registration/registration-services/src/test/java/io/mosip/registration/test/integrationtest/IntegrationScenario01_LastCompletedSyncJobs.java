@@ -1,0 +1,84 @@
+package io.mosip.registration.test.integrationtest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.dto.AuthenticationValidatorDTO;
+import io.mosip.registration.dto.LoginUserDTO;
+import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SyncDataProcessDTO;
+import io.mosip.registration.entity.UserDetail;
+import io.mosip.registration.service.LoginService;
+import io.mosip.registration.service.config.GlobalParamService;
+import io.mosip.registration.service.config.JobConfigurationService;
+
+public class IntegrationScenario01_LastCompletedSyncJobs extends BaseIntegrationTest {
+
+	@Autowired
+	LoginService loginService;
+	@Autowired
+	JobConfigurationService jobConfigurationService;
+	@Autowired
+	private GlobalParamService globalParamService;
+	
+	
+	
+	//this integration flow gives the list of completed sync jobs
+	//integration flow for checking last successful jobs: login-->getLastCompletedSyncJobs()
+	
+	public void login() {
+		// Get user Details
+		UserDetail userDetail = loginService.getUserDetail("mosip");
+		
+		
+				// Password check for login Check if Password is same
+				String hashPassword = null;
+				String password = "mosip";
+				byte[] bytePassword = password.getBytes();
+				hashPassword = HMACUtils.digestAsPlainText(HMACUtils.generateHash(bytePassword));
+
+				AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+				authenticationValidatorDTO.setUserId("mosip");
+				authenticationValidatorDTO.setPassword(hashPassword);
+
+//			     userDetail = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
+			     String passwordCheck="";
+				if (userDetail.getUserPassword().getPwd().equals(authenticationValidatorDTO.getPassword())) {
+					passwordCheck=RegistrationConstants.PWD_MATCH;
+					
+				} else {
+					passwordCheck=RegistrationConstants.PWD_MISMATCH;
+				}
+				assertEquals(RegistrationConstants.PWD_MATCH, passwordCheck);
+	}
+	@Test
+	public void testLoginIntegration() throws InterruptedException {
+		login();
+		//ResponseDTO responseDTO=jobConfigurationService.getLastCompletedSyncJobs();
+		 //List<SyncDataProcessDTO> syncData=(List<SyncDataProcessDTO>) responseDTO.getSuccessResponseDTO().getOtherAttributes().get("SYNC-DATA DTO");
+		
+		// System.out.println("********"+syncData);
+		jobConfigurationService.initiateJobs();
+		ResponseDTO responsedto = jobConfigurationService.executeAllJobs();
+		Thread.sleep(5000);
+		
+		System.out.println("**********"+responsedto.getSuccessResponseDTO().getMessage());
+		
+	
+	
+	}
+
+}

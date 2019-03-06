@@ -2,7 +2,7 @@
 -- schema 		: master  - Master Reference schema
 -- table 		: device_spec  - Master device_spec list
 -- table alias  : dspec	
- 
+  
 -- schemas section ---------------------------------------------------------------
 
 -- create schema if master reference schema not exists
@@ -38,13 +38,9 @@ create schema if not exists master
 		
 
 -- keys section -------------------------------------------------------------------------------
-alter table master.device_spec add constraint pk_dspec_code primary key (id)
+alter table master.device_spec add constraint pk_dspec_code primary key (id, lang_code)
  ;
 
 -- indexes section -----------------------------------------------------------------------
 -- create index idx_dspec_<col> on master.device_spec (col)
 -- ;
-
--- comments section -------------------------------------------------------------------------- 
-comment on table master.device_spec is 'Master device_spec table'
-;

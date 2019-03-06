@@ -1,13 +1,17 @@
 package io.mosip.kernel.auth.jwtBuilder;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureException;
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.entities.AuthToken;
 import io.mosip.kernel.auth.entities.MosipUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserDtoToken;
 import io.mosip.kernel.auth.entities.MosipUserWithToken;
+import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.service.CustomTokenServices;
 
 import java.util.Date;
@@ -47,27 +51,34 @@ public class TokenValidator {
         );
     }
 
-    private Claims getClaims(String token) {
+    private Claims getClaims(String token) throws Exception{
         String token_base = mosipEnvironment.getTokenBase();
         String secret = mosipEnvironment.getJwtSecret();
+        Claims claims = null;
 
         if (token == null || !token.startsWith(token_base)) {
             throw new NonceExpiredException("Invalid Token");
         }
-
-        try {
-            Claims claims = Jwts.parser()
+        try
+        {
+            claims = Jwts.parser()
                     .setSigningKey(secret)
                     .parseClaimsJws(token.substring(token_base.length()))
                     .getBody();
-
-            return claims;
-        } catch (Exception e) {
-            throw new RuntimeException("Invalid Token");
+ 
+        }catch(SignatureException e)
+        {
+        	throw new AuthManagerException("401",e.getMessage());
         }
+        catch(JwtException e)
+        {
+        	throw new AuthManagerException("401",e.getMessage());
+        }
+        return claims;
     }
+    
 
-    public MosipUserWithToken validateForOtpVerification(String token) {
+    public MosipUserWithToken validateForOtpVerification(String token) throws Exception {
         Claims claims = getClaims(token);
         Boolean isOtpRequired = (Boolean) claims.get("isOtpRequired");
         if (isOtpRequired) {
@@ -78,7 +89,7 @@ public class TokenValidator {
         }
     }
 
-    public MosipUserWithToken basicValidate(String token) {
+    public MosipUserWithToken basicValidate(String token) throws Exception{
         Claims claims = getClaims(token);
         Boolean isOtpValid = validateOtpDetails(claims);
         if (isOtpValid) {
@@ -89,7 +100,7 @@ public class TokenValidator {
         }
     }
 
-	public MosipUserDtoToken validateToken(String token) {
+	public MosipUserDtoToken validateToken(String token) throws Exception{
 		Claims claims = getClaims(token);
 		
 		MosipUserDto mosipUserDto = buildDto(claims);
@@ -98,7 +109,7 @@ public class TokenValidator {
 		{
 			return true;
 		}*/
-		return new MosipUserDtoToken(mosipUserDto,token,null);
+		return new MosipUserDtoToken(mosipUserDto,token,null,0,null);
 	}
 
 	private MosipUserDto buildDto(Claims claims) {
@@ -110,18 +121,18 @@ public class TokenValidator {
 		return mosipUserDto;
 	}
 
-	public MosipUserDtoToken validateOTP(String otp) {
+	public MosipUserDtoToken validateOTP(String otp) throws Exception{
         Claims claims = getClaims(otp);
         Boolean isOtpRequired = (Boolean) claims.get("isOtpRequired");
         if (isOtpRequired) {
         	MosipUserDto mosipUserDto = buildDto(claims);
-            return new MosipUserDtoToken(mosipUserDto, otp,null);
+            return new MosipUserDtoToken(mosipUserDto, otp,null,0,null);
         } else {
             throw new RuntimeException("Invalid Token");
         }
     }
 
-	public boolean validateExpiry(String token) {
+	public boolean validateExpiry(String token) throws Exception{
 		Claims claims = getClaims(token);
 		if(claims!=null)
 		{

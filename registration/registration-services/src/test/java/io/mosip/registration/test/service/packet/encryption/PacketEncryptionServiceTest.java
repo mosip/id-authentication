@@ -121,7 +121,7 @@ public class PacketEncryptionServiceTest {
 		packetEncryptionServiceImpl.encrypt(new RegistrationDTO(), "PacketZip".getBytes());
 	}
 	
-	@Test(expected = RegBaseCheckedException.class)
+	@Test
 	public void packetSizeExceededTets() throws RegBaseCheckedException {
 		byte[] encryptedData = new byte[1050576];
 		when(aesEncryptionService.encrypt(Mockito.anyString().getBytes())).thenReturn(encryptedData);

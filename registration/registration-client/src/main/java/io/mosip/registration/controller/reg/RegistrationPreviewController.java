@@ -25,7 +25,6 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import javafx.event.ActionEvent;
@@ -90,8 +89,11 @@ public class RegistrationPreviewController extends BaseController {
 	}
 
 	public void setUpPreviewContent() {
-		try {
-			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
+		LOGGER.info("REGISTRATION - UI - REGISTRATION_PREVIEW_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Setting up preview content has been started");
+
+		String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
+		if (ackTemplateText != null && !ackTemplateText.isEmpty()) {
 			ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText,
 					getRegistrationDTOFromSession(), templateManagerBuilder, RegistrationConstants.TEMPLATE_PREVIEW);
 			if (templateResponse != null && templateResponse.getSuccessResponseDTO() != null) {
@@ -105,13 +107,17 @@ public class RegistrationPreviewController extends BaseController {
 				clearRegistrationData();
 				goToHomePageFromRegistration();
 			}
-		} catch (RegBaseCheckedException regBaseCheckedException) {
-			LOGGER.error("REGISTRATION - UI - PREVIEW", APPLICATION_NAME, APPLICATION_ID,
-					regBaseCheckedException.getMessage());
+		} else {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_PREVIEW_PAGE);
+			clearRegistrationData();
+			goToHomePageFromRegistration();
 		}
 	}
 
 	private void listenToButton(Document document) {
+		LOGGER.info("REGISTRATION - UI - REGISTRATION_PREVIEW_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Button click action happened on preview content");
+
 		if (document == null) {
 			return;
 		}
@@ -128,6 +134,9 @@ public class RegistrationPreviewController extends BaseController {
 	}
 
 	private void modifyElement(String element) {
+		LOGGER.info("REGISTRATION - UI - REGISTRATION_PREVIEW_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Modifying Registration Information");
+
 		if (element.equals(RegistrationConstants.MODIFY_DEMO_INFO)) {
 			modifyDemographicInfo();
 		} else if (element.equals(RegistrationConstants.MODIFY_DOCUMENTS)) {
@@ -138,6 +147,9 @@ public class RegistrationPreviewController extends BaseController {
 	}
 
 	public void modifyDemographicInfo() {
+		LOGGER.info("REGISTRATION - UI - REGISTRATION_PREVIEW_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Modifying Demographic Information");
+
 		auditFactory.audit(AuditEvent.REG_PREVIEW_DEMO_EDIT, Components.REG_PREVIEW, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
@@ -147,6 +159,9 @@ public class RegistrationPreviewController extends BaseController {
 	}
 
 	public void modifyDocuments() {
+		LOGGER.info("REGISTRATION - UI - REGISTRATION_PREVIEW_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Modifying Documents");
+
 		auditFactory.audit(AuditEvent.REG_PREVIEW_DOC_EDIT, Components.REG_PREVIEW, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
@@ -156,6 +171,9 @@ public class RegistrationPreviewController extends BaseController {
 	}
 
 	public void modifyBiometrics() {
+		LOGGER.info("REGISTRATION - UI - REGISTRATION_PREVIEW_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Modifying Biometrics Information");
+
 		auditFactory.audit(AuditEvent.REG_PREVIEW_BIO_EDIT, Components.REG_PREVIEW, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 

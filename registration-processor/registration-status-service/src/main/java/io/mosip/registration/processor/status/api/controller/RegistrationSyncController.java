@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -40,7 +44,7 @@ import io.mosip.registration.processor.status.dto.RegistrationSyncRequestDTO;
  */
 @RefreshScope
 @RestController
-@RequestMapping("/v0.1/registration-processor/registration-status")
+@RequestMapping("/registration-processor")
 @Api(tags = "Registration Status")
 public class RegistrationSyncController {
 
@@ -77,7 +81,7 @@ public class RegistrationSyncController {
 	 * @return the response entity
 	 * @throws RegStatusAppException 
 	 */
-	@PostMapping(path = "/sync", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/sync/v1.0", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the synchronizing registration entity", response = RegistrationStatusCode.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Synchronizing Registration Entity successfully fetched") })
@@ -93,18 +97,18 @@ public class RegistrationSyncController {
 	}
 
 
-	public RegSyncResponseDTO buildRegistrationSyncResponse(List<SyncResponseDto> syncResponseDtoList) {
+	public String buildRegistrationSyncResponse(List<SyncResponseDto> syncResponseDtoList) {
 
 		RegSyncResponseDTO response = new RegSyncResponseDTO();
 		if (Objects.isNull(response.getId())) {
 			response.setId(env.getProperty(REG_SYNC_SERVICE_ID));
 		}
-		response.setError(null);
-		response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		response.setVersion(env.getProperty(REG_SYNC_APPLICATION_VERSION));
 		response.setResponse(syncResponseDtoList);
-		response.setError(null);
-		return response;
+		response.setErrors(null);
+		Gson gson = new GsonBuilder().create();
+		return gson.toJson(response);
 	}
 
 }

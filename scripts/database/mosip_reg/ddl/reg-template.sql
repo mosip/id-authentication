@@ -39,21 +39,9 @@ create table reg.template (
 ;
 
 -- keys section -----------------------------------------------------------------------------------------------------------------------
-alter table reg.template add constraint pk_tmplt_id primary key (id)
+alter table reg.template add constraint pk_tmplt_id primary key (id, lang_code)
  ;
 
 -- indexes section --------------------------------------------------------------------------------------------------------------------
 -- create index idx_tmplt_<colx> on reg.template (<colx>)
 -- ;
-
--- comments section ------------------------------------------------------------------------------------------------------------------- 
--- comment on table reg.template is 'To store templated used by all the modules for acknowledgements, receipts, Notifications..etc.'
--- ;
--- comment on column reg.template.file_format_code is 'Template formats like xml, html, xslt...etc.'
--- ;
--- comment on column reg.template.module_id is 'Modules like pre-registration, registration, registration processor, authontication...etc'
--- ;
--- comment on column reg.template.model is 'eg: velocity, free maker, jasper report....etc'
--- ;
-
-

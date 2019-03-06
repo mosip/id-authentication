@@ -139,4 +139,27 @@ public class PolicySyncServiceTest {
 		assertNotNull(policySyncServiceImpl.fetchPolicy());
 	}
 
+	@Test
+	public void checkKeyValidationExpiryTest() {
+		KeyStore keyStore = new KeyStore();
+		keyStore.setValidTillDtimes(Timestamp.valueOf(LocalDateTime.now()));
+		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
+		policySyncServiceImpl.checkKeyValidation();
+	}
+
+	@Test
+	public void checkKeyValidationTest() {
+		KeyStore keyStore = new KeyStore();
+		keyStore.setValidTillDtimes(Timestamp.valueOf(("2019-03-28 13:00:57.172")));
+		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
+		policySyncServiceImpl.checkKeyValidation();
+	}
+
+	@Test
+	public void checkKeyValidationTestFailure() {
+		KeyStore keyStore = new KeyStore();
+		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
+		policySyncServiceImpl.checkKeyValidation();
+	}
+
 }
