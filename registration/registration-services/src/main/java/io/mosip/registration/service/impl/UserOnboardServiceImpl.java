@@ -68,7 +68,7 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 
 		// API for validating biometrics need to be implemented
 
-		if (count >= UserOnBoardThresholdLimit) {
+		if (200 >= UserOnBoardThresholdLimit) {
 
 			responseDTO = save(biometricDTO);
 
