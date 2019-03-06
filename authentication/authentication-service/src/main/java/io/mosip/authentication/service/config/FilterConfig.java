@@ -83,7 +83,7 @@ public class FilterConfig {
     public FilterRegistrationBean<DefaultIDAFilter> getStaticPinStoreFilter() {
 	FilterRegistrationBean<DefaultIDAFilter> registrationBean = new FilterRegistrationBean<>();
 	registrationBean.setFilter(new DefaultIDAFilter());
-	registrationBean.addUrlPatterns("/0.8/static-pin","/0.8/vid/*");
+	registrationBean.addUrlPatterns("/0.8/static-pin");
 
 	return registrationBean;
     }

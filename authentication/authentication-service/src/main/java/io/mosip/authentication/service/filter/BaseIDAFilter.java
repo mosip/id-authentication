@@ -343,7 +343,8 @@ public abstract class BaseIDAFilter implements Filter {
 	
 	protected Map<String, Object> getRequestBody(InputStream inputStream) throws IdAuthenticationAppException {
 		try {
-			return mapper.readValue(IOUtils.toString(inputStream, Charset.defaultCharset()),
+			String reqStr = IOUtils.toString(inputStream, Charset.defaultCharset());
+			return reqStr.isEmpty() ? null : mapper.readValue(reqStr,
 					new TypeReference<Map<String, Object>>() {
 					});
 		} catch (IOException | ClassCastException e) {
