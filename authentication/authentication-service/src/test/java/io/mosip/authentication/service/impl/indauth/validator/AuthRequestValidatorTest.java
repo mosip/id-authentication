@@ -935,7 +935,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setRequest(reqDTO);
 		authRequestDTO.setPinInfo(pinInfo);
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertFalse(errors.hasErrors());
+		assertTrue(errors.hasErrors());
 	}
 
 	@Test
