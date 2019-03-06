@@ -21,7 +21,7 @@ spec:
       - name: registration-processor-uin-generator-stage
         image: docker-registry.mosip.io:5000/uin-generator-stage
         ports:
-          - name: verticle-port
+          - name: eventbus-port
             containerPort: 5711
         ports:
           - name: hazelcast-port

@@ -21,7 +21,7 @@ spec:
       - name: registration-processor-manual-verification-stage
         image: docker-registry.mosip.io:5000/manual-verification-stage
         ports:
-          - name: verticle-port
+          - name: eventbus-port
             containerPort: 5711
         ports:
           - name: hazelcast-port
