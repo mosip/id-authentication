@@ -17,6 +17,7 @@ import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dao.ValidDocumentDAO;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.ValidDocument;
+import io.mosip.registration.entity.id.ValidDocumentId;
 import io.mosip.registration.service.impl.ValidDocumentServiceImpl;
 
 public class ValidDocumentServiceImplTest {
@@ -38,6 +39,11 @@ public class ValidDocumentServiceImplTest {
 
 		List<ValidDocument> validDocuments = new ArrayList<>();
 		ValidDocument validDocument = new ValidDocument();
+		ValidDocumentId validDocumentId=new ValidDocumentId();
+		validDocumentId.setApplicantCode("007");
+		validDocumentId.setDocCategoryCode("POA");
+		validDocumentId.setDocTypeCode("DocType");
+		validDocument.setValidDocumentId(validDocumentId);
 
 		validDocuments.add(validDocument);
 

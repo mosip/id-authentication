@@ -29,7 +29,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 
 		List<String> validDocuments = new ArrayList<>();
 		masterValidDocuments.forEach(docs -> {
-			validDocuments.add(docs.getDocumentCategory().getName());
+			validDocuments.add(docs.getValidDocumentId().getDocCategoryCode());
 		});
 
 		List<DocumentCategoryDto> documentsDTO = new ArrayList<>();
