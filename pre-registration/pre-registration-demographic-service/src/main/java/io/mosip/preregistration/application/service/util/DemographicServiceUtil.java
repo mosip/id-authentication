@@ -20,6 +20,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -51,8 +52,9 @@ import io.mosip.preregistration.core.util.HashUtill;
  */
 @Component
 public class DemographicServiceUtil {
-
-	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	
+	@Value("${mosip.utc-datetime-pattern}")
+	private String dateTimeFormat ;
 
 	/**
 	 * Logger instance
@@ -119,8 +121,7 @@ public class DemographicServiceUtil {
 		demographicEntity.setLangCode(demographicRequest.getLangCode());
 		demographicEntity.setCrAppuserId(requestId);
 		demographicEntity.setCreatedBy(demographicRequest.getCreatedBy());
-		demographicEntity.setCreateDateTime(DateUtils
-				.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
+		demographicEntity.setCreateDateTime(DateUtils.parseToLocalDateTime(DateUtils.getUTCCurrentDateTimeString(dateTimeFormat)));
 		demographicEntity.setStatusCode(statuscode);
 		demographicEntity.setDemogDetailHash(new String(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson())));
 		try {

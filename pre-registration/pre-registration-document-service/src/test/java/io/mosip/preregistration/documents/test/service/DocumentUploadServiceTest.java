@@ -338,7 +338,6 @@ public class DocumentUploadServiceTest {
 		copyDcoResDto.setSourceDocumnetId("1");
 		copyDcoResDto.setDestPreRegId("48690172097499");
 		copyDcoResDto.setDestDocumnetId("2");
-		System.out.println("DocumentCopyDTO " + copyDcoResDto);
 		docCopyList.add(copyDcoResDto);
 
 		responseCopy.setStatus(true);
@@ -355,8 +354,10 @@ public class DocumentUploadServiceTest {
 		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(entity);
 		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(copyEntity);
+		InputStream sourceFile = new FileInputStream(file);
 		Mockito.doReturn(true).when(fs).copyFile(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString());
+		Mockito.doReturn(sourceFile).when(fs).getFile(Mockito.anyString(), Mockito.anyString());
 		MainListResponseDTO<DocumentCopyResponseDTO> responseDto = documentUploadService.copyDocument("POA",
 				"48690172097498", "48690172097499");
 		assertEquals(responseDto.getResponse().get(0).getDestDocumnetId(),
@@ -364,7 +365,7 @@ public class DocumentUploadServiceTest {
 	}
 
 	@Test(expected = DocumentNotFoundException.class)
-	public void documentCopyFailureTest1() {
+	public void documentCopyFailureTest1() throws FileNotFoundException {
 		MainListResponseDTO restRes = new MainListResponseDTO<>();
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
@@ -373,12 +374,15 @@ public class DocumentUploadServiceTest {
 		ResponseEntity<MainListResponseDTO> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(MainListResponseDTO.class))).thenReturn(rescenter);
+		InputStream sourceFile = new FileInputStream(file);
+		
+		Mockito.doReturn(sourceFile).when(fs).getFile(Mockito.anyString(), Mockito.anyString());
 		Mockito.when(documentRepository.findSingleDocument("48690172097498", "POA")).thenReturn(null);
 		documentUploadService.copyDocument("POA", "48690172097498", "48690172097499");
 	}
 
 	@Test(expected = DocumentFailedToCopyException.class)
-	public void documentCopyFailureTest2() {
+	public void documentCopyFailureTest2() throws FileNotFoundException {
 		MainListResponseDTO restRes = new MainListResponseDTO<>();
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
@@ -388,12 +392,15 @@ public class DocumentUploadServiceTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(MainListResponseDTO.class))).thenReturn(rescenter);
 		Mockito.when(documentRepository.findSingleDocument("48690172097498", "POA")).thenReturn(entity);
+		InputStream sourceFile = new FileInputStream(file);
+		
+		Mockito.doReturn(sourceFile).when(fs).getFile(Mockito.anyString(), Mockito.anyString());
 		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(null);
 		documentUploadService.copyDocument("POA", "48690172097498", "48690172097499");
 	}
 
 	@Test(expected = TableNotAccessibleException.class)
-	public void documentCopyFailureTest3() {
+	public void documentCopyFailureTest3() throws FileNotFoundException {
 		MainListResponseDTO restRes = new MainListResponseDTO<>();
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
@@ -403,6 +410,9 @@ public class DocumentUploadServiceTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(MainListResponseDTO.class))).thenReturn(rescenter);
 		Mockito.when(documentRepository.findSingleDocument("48690172097498", "POA")).thenReturn(entity);
+		InputStream sourceFile = new FileInputStream(file);
+		
+		Mockito.doReturn(sourceFile).when(fs).getFile(Mockito.anyString(), Mockito.anyString());
 		Mockito.when(documentRepository.save(Mockito.any())).thenThrow(DataAccessLayerException.class);
 		documentUploadService.copyDocument("POA", "48690172097498", "48690172097499");
 	}
@@ -423,7 +433,7 @@ public class DocumentUploadServiceTest {
 	}
 
 	@Test(expected = FSServerException.class)
-	public void documentCopyFailureTest4() {
+	public void documentCopyFailureTest4() throws FileNotFoundException {
 		MainListResponseDTO restRes = new MainListResponseDTO<>();
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
@@ -435,6 +445,9 @@ public class DocumentUploadServiceTest {
 		Mockito.doReturn(false).when(fs).copyFile(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString());
 		Mockito.when(documentRepository.findSingleDocument("48690172097498", "POA")).thenReturn(entity);
+		InputStream sourceFile = new FileInputStream(file);
+		
+		Mockito.doReturn(sourceFile).when(fs).getFile(Mockito.anyString(), Mockito.anyString());
 		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(copyEntity);
 		documentUploadService.copyDocument("POA", "48690172097498", "48690172097499");
 	}
