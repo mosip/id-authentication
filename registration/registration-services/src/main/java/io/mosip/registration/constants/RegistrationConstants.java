@@ -94,7 +94,7 @@ public class RegistrationConstants {
 	public static final String RIGHT_IRIS_IMG_PATH = "/images/Eye.png";
 	public static final String LEFT_IRIS_IMG_PATH = "/images/Eye.png";
 	public static final String VIEW = "/images/View.png";
-	public static final String SCAN = "/images/Scan.png";
+	public static final String SCAN = "/images/scan.png";
 
 	// Authentication
 	public static final String SUPERVISOR_VERIFICATION = "Supervisor Login";

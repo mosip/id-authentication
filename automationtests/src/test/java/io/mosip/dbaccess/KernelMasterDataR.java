@@ -31,13 +31,16 @@ public class KernelMasterDataR {
 	{
 		boolean flag=false;
 		try {	
+			/*
+			 * Based on the environemnt configuration file is set
+			 */
 			if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-				factory = new Configuration().configure("masterDatainteg.cfg.xml")
+				factory = new Configuration().configure("masterdatainteg.cfg.xml")
 			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					else
 					{
 						if(BaseTestCase.environment.equalsIgnoreCase("qa"))
-							factory = new Configuration().configure("masterDatainteg.cfg.xml")
+							factory = new Configuration().configure("masterdatainteg.cfg.xml")
 						.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					}
 		
@@ -71,7 +74,7 @@ public class KernelMasterDataR {
 	{
 		boolean flag=false;
 		
-		factory = new Configuration().configure("masterData.cfg.xml")
+		factory = new Configuration().configure("masterdatainteg.cfg.xml")
 	.addAnnotatedClass(dtoClass).buildSessionFactory();	
 		session = factory.getCurrentSession();
 		session.beginTransaction();
@@ -111,7 +114,7 @@ public class KernelMasterDataR {
 		{
 			boolean flag=false;
 			
-			factory = new Configuration().configure("masterdata.cfg.xml")                      
+			factory = new Configuration().configure("masterdatainteg.cfg.xml")                      
 					.addAnnotatedClass(dtoClass).buildSessionFactory();	
 			session = factory.getCurrentSession();
 			session.beginTransaction();
@@ -161,7 +164,7 @@ public class KernelMasterDataR {
 		{
 			boolean flag=false;
 			
-			factory = new Configuration().configure("masterdata.cfg.xml")                      
+			factory = new Configuration().configure("masterdatainteg.cfg.xml")                      
 					.addAnnotatedClass(dtoClass).buildSessionFactory();	
 			session = factory.getCurrentSession();
 			Transaction txn=session.beginTransaction();
