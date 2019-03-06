@@ -855,7 +855,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 	public Response deleteAllDocumentByDocId(String documentId) {
 
-		testSuite = "DeleteDocumentByDocId/DeleteDocumentByDocId_smoke";
+		testSuite = "DeleteDocumentByDocId/DeleteDocumentByDocmentId_smoke";
 		String configPath = "src/test/resources/" + folder + "/" + testSuite;
 		// preReg_URI = commonLibrary.fetch_IDRepo("deleteDocumentByDocId_URI");
 		File folder = new File(configPath);
@@ -899,7 +899,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 		return response;
 	}
-
 	public Response FetchCentre(String regCenterID) {
 		testSuite = "FetchAvailabilityDataOfRegCenters/FetchAvailabilityDataOfRegCenters_smoke";
 		String configPath = "src/test/resources/" + folder + "/" + testSuite;
@@ -1448,10 +1447,10 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		 * "10025","54321","10007","10003", "10027");
 		 */
 
-		List<String> givenList = Lists.newArrayList("10002", "10020", "10040", "10014", "10010", "10016", "10006",
+		List<String> givenList = Lists.newArrayList("10002", "10020", "10027", "10014", "10010", "10016", "10006",
 				"10024", "10111", "10019", "10017", "10023", "10045", "10037", "10042", "10005", "10029", "10026",
-				"10038", "10009", "10044", "10030", "10039", "10013", "10015", "10021", "10004", "10035", "10034",
-				"10011", "10008", "10032", "10041", "10018", "10001", "10022", "10012", "10033", "10025", "10007",
+				"10038", "10009",  "10030", "10013", "10015", "10021", "10004", "10035", "10034",
+				"10011", "10008", "10032",  "10018", "10001", "10022", "10012", "10033", "10025", "10007",
 				"10003");
 		String s = null;
 

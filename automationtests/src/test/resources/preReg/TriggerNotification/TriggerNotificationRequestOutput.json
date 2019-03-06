@@ -1,1 +1,1 @@
-[{"NotificationDTO":"valid","jiraId":"MOS-1002","testType":"smoke","testCaseName":"TriggerNotification_smoke","status":"Pass"}]
+[{"testType":"smoke","testCaseName":"TriggerNotification_smoke","jiraId":"MOS-1002","NotificationDTO":"valid","status":""}]
