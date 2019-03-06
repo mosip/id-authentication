@@ -60,25 +60,25 @@ public class BiometricExceptionController extends BaseController implements Init
 	@FXML
 	private AnchorPane irisPane;
 	@FXML
-	private ImageView rightLittleFinger;
+	private ImageView rightLittle;
 	@FXML
-	private ImageView rightRingFinger;
+	private ImageView rightRing;
 	@FXML
-	private ImageView rightMiddleFinger;
+	private ImageView rightMiddle;
 	@FXML
-	private ImageView rightIndexFinger;
+	private ImageView rightIndex;
 	@FXML
-	private ImageView rightThumbFinger;
+	private ImageView rightThumb;
 	@FXML
-	private ImageView leftLittleFinger;
+	private ImageView leftLittle;
 	@FXML
-	private ImageView leftRingFinger;
+	private ImageView leftRing;
 	@FXML
-	private ImageView leftMiddleFinger;
+	private ImageView leftMiddle;
 	@FXML
-	private ImageView leftIndexFinger;
+	private ImageView leftIndex;
 	@FXML
-	private ImageView leftThumbFinger;
+	private ImageView leftThumb;
 	@FXML
 	private Label employeeCode;
 	@FXML
@@ -128,7 +128,7 @@ public class BiometricExceptionController extends BaseController implements Init
 
 	@Autowired
 	private FingerPrintCaptureController fingerPrintCaptureController;
-	
+
 	@Autowired
 	private IrisCaptureController irisCaptureController;
 
@@ -139,21 +139,22 @@ public class BiometricExceptionController extends BaseController implements Init
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		setExceptionImage();
-		fingerExceptionListener(rightLittleFinger);
-		fingerExceptionListener(rightRingFinger);
-		fingerExceptionListener(rightMiddleFinger);
-		fingerExceptionListener(rightIndexFinger);
-		fingerExceptionListener(rightThumbFinger);
-		fingerExceptionListener(leftLittleFinger);
-		fingerExceptionListener(leftRingFinger);
-		fingerExceptionListener(leftMiddleFinger);
-		fingerExceptionListener(leftIndexFinger);
-		fingerExceptionListener(leftThumbFinger);
+		fingerExceptionListener(rightLittle);
+		fingerExceptionListener(rightRing);
+		fingerExceptionListener(rightMiddle);
+		fingerExceptionListener(rightIndex);
+		fingerExceptionListener(rightThumb);
+		fingerExceptionListener(leftLittle);
+		fingerExceptionListener(leftRing);
+		fingerExceptionListener(leftMiddle);
+		fingerExceptionListener(leftIndex);
+		fingerExceptionListener(leftThumb);
 		irisExceptionListener(leftEye);
 		irisExceptionListener(rightEye);
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			employeeName.setText(SessionContext.userContext().getName());
-			regCenterID.setText(SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
+			regCenterID
+					.setText(SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
 			employeeCode.setText(SessionContext.userContext().getUserId());
 			if (!((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.ONBOARD_MAP))
 					.get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.FINGER_PANE)) {
@@ -221,7 +222,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			 * java.lang.Object, java.lang.Object)
 			 */
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-			
+
 				if (newValue && !fingerList.contains(fingerImage.getId())) {
 					fingerList.add(fingerImage.getId());
 					fingerImage.setOpacity(1.0);
@@ -452,7 +453,7 @@ public class BiometricExceptionController extends BaseController implements Init
 					rightHandPane.getStyleClass().add(RegistrationConstants.ADD_BORDER);
 					ImageView fingerImage = (ImageView) rightHandPane.lookup("#" + bioException.getMissingBiometric());
 					fingerImage.setOpacity(1.0);
-				
+
 				} else if (bioException.getMissingBiometric().contains("Eye")) {
 					irisList.add(bioException.getMissingBiometric());
 					Pane irisPane = (Pane) biometricException.lookup("#" + bioException.getMissingBiometric() + "Pane");
@@ -461,16 +462,16 @@ public class BiometricExceptionController extends BaseController implements Init
 				}
 			});
 		} else {
-			rightLittleFinger.setOpacity(0.0);
-			rightRingFinger.setOpacity(0.0);
-			rightMiddleFinger.setOpacity(0.0);
-			rightIndexFinger.setOpacity(0.0);
-			rightThumbFinger.setOpacity(0.0);
-			leftLittleFinger.setOpacity(0.0);
-			leftRingFinger.setOpacity(0.0);
-			leftMiddleFinger.setOpacity(0.0);
-			leftIndexFinger.setOpacity(0.0);
-			leftThumbFinger.setOpacity(0.0);
+			rightLittle.setOpacity(0.0);
+			rightRing.setOpacity(0.0);
+			rightMiddle.setOpacity(0.0);
+			rightIndex.setOpacity(0.0);
+			rightThumb.setOpacity(0.0);
+			leftLittle.setOpacity(0.0);
+			leftRing.setOpacity(0.0);
+			leftMiddle.setOpacity(0.0);
+			leftIndex.setOpacity(0.0);
+			leftThumb.setOpacity(0.0);
 			leftHandPane.getStyleClass().clear();
 			rightHandPane.getStyleClass().clear();
 			leftEyePane.getStyleClass().clear();
