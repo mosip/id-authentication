@@ -775,7 +775,7 @@ public class LoginController extends BaseController implements Initializable {
 			userContext.setName(userDetail.getName());
 			userContext.setRoles(roleList);
 			userContext.setRegistrationCenterDetailDTO(loginService
-					.getRegistrationCenterDetails(userDetail.getRegCenterUser().getRegCenterUserId().getRegcntrId()));
+					.getRegistrationCenterDetails(userDetail.getRegCenterUser().getRegCenterUserId().getRegcntrId(),ApplicationContext.applicationLanguage()));
 			userContext.setAuthorizationDTO(loginService.getScreenAuthorizationDetails(roleList));
 			userContext.setUserMap(new HashMap<String, Object>());
 			result = true;

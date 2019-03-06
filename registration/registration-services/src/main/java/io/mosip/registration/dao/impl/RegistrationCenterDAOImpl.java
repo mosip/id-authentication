@@ -40,13 +40,13 @@ public class RegistrationCenterDAOImpl implements RegistrationCenterDAO {
 	 * org.mosip.registration.dao.RegistrationCenterDAO#getRegistrationCenterDetails
 	 * (java.lang.String)
 	 */
-	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId) {
+	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId,String langCode) {
 
 		LOGGER.info("REGISTRATION - CENTER_NAME - REGISTRATION_CENTER_DAO_IMPL", APPLICATION_NAME,
 				APPLICATION_ID, "Fetching Registration Center details");
 
 		Optional<RegistrationCenter> registrationCenter = registrationCenterRepository
-				.findByRegistartionCenterIdIdAndIsActiveTrue(centerId);
+				.findByIsActiveTrueAndRegistartionCenterIdIdAndRegistartionCenterIdLangCode(centerId,langCode);
 		RegistrationCenterDetailDTO registrationCenterDetailDTO = new RegistrationCenterDetailDTO();
 		if (registrationCenter.isPresent()) {
 			registrationCenterDetailDTO
