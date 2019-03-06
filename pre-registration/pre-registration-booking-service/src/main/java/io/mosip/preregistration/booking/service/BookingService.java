@@ -273,9 +273,9 @@ public class BookingService {
 			entity = bookingDAO.findByPreRegistrationId(preRegID);
 			if (!preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
 				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_030.getCode(),
-						ErrorMessages.CANNOT_GET_DETAILS_FOR + "_" + preRegStatusCode + "_STATUS");
+						ErrorMessages.CANNOT_GET_DETAILS_FOR + "_" + preRegStatusCode.toUpperCase() + "_STATUS");
 			}
-			bookingRegistrationDTO.setRegDate(entity.getRegDate().toString());
+ 			bookingRegistrationDTO.setRegDate(entity.getRegDate().toString());
 			bookingRegistrationDTO.setRegistrationCenterId(entity.getRegistrationCenterId());
 			bookingRegistrationDTO.setSlotFromTime(entity.getSlotFromTime().toString());
 			bookingRegistrationDTO.setSlotToTime(entity.getSlotToTime().toString());
@@ -338,8 +338,8 @@ public class BookingService {
 				Iterator<RegistrationBookingEntity> iterate=bookingEntities.iterator();
 				while(iterate.hasNext()) {
 					String preRegStatusCode = serviceUtil.callGetStatusRestService(iterate.next().getBookingPK().getPreregistrationId());
-					if(preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
-						bookingEntities.remove(bookingEntities.indexOf(iterate));
+					if(!preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
+						bookingEntities.remove(bookingEntities.indexOf(iterate.next()));
 					}
 				}
 				List<String> preRegIdList = requestDTO.getRequest().getPreRegistrationIds();
