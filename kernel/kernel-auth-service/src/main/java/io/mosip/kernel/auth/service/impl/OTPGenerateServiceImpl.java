@@ -30,7 +30,7 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 	 * @see io.mosip.kernel.auth.service.OTPGenerateService#generateOTP(io.mosip.kernel.auth.entities.MosipUserDto, java.lang.String)
 	 */
 	@Override
-	public OtpGenerateResponseDto generateOTP(MosipUserDto mosipUserDto, String channel) {
+	public OtpGenerateResponseDto generateOTP(MosipUserDto mosipUserDto) {
 		try {
 			OtpGenerateRequestDto otpGenerateRequestDto = new OtpGenerateRequestDto(mosipUserDto);
 			final String url = mosipEnvironment.getOtpManagerSvcUrl() + mosipEnvironment.getGenerateOtpApi();
