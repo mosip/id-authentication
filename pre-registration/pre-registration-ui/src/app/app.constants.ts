@@ -32,7 +32,10 @@ export const APPEND_URL = {
   location: 'masterdata/',
   gender: 'masterdata/v1.0/gendertypes',
   // resident: 'masterdata/v1.0/residenttypes',
-  transliteration: 'translitration/translitrate'
+  transliteration: 'translitration/translitrate',
+  applicantType: 'applicanttype/v1.0/applicanttype/',
+  validDocument: 'v1.0/applicanttype/',
+  getApplicantType: 'getApplicantType'
 };
 
 export const PARAMS_KEYS = {
