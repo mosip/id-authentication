@@ -38,13 +38,8 @@ import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUti
  */
 @Component
 public class RegistrationStatusServiceImpl
-implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
+		implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
 
-	/** The threshhold time. */
-	@Value("${registration.processor.landingZone_To_VirusScan_Interval_Threshhold_time}")
-
-	private int threshholdTime;
-	
 	@Value("${registration.processor.threshold}")
 	private int threshold;
 
@@ -55,7 +50,7 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	/** The transcation status service. */
 	@Autowired
 	private TransactionService<TransactionDto> transcationStatusService;
-	
+
 	@Autowired
 	private RegistrationStatusMapUtil registrationStatusMapUtil;
 
@@ -121,48 +116,6 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationId);
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * io.mosip.registration.processor.status.service.RegistrationStatusService#
-	 * findbyfilesByThreshold(java.lang.String)
-	 */
-	@Override
-	public List<InternalRegistrationStatusDto> findbyfilesByThreshold(String statusCode) {
-		boolean isTransactionSuccessful = false;
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "RegistrationStatusServiceImpl::findbyfilesByThreshold()::entry");
-		try {
-			List<RegistrationStatusEntity> entities = registrationStatusDao.findbyfilesByThreshold(statusCode,
-					getThreshholdTime());
-			isTransactionSuccessful = true;
-			description =  "Find files by threshold time and statuscode is successful";
-
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-					"", "RegistrationStatusServiceImpl::findbyfilesByThreshold()::exit");
-			return convertEntityListToDtoList(entities);
-		} catch (DataAccessLayerException e) {
-			description = "DataAccessLayerException while Finding files by threshold time and statuscode" + "::" + e.getMessage();
-
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
-			throw new TablenotAccessibleException(
-					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
-		} finally {
-
-			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
-			eventName = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString()
-					: EventName.EXCEPTION.toString();
-			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
-					: EventType.SYSTEM.toString();
-
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
-
 		}
 	}
 
@@ -385,10 +338,11 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	private RegistrationStatusDto convertEntityToDtoAndGetExternalStatus(RegistrationStatusEntity entity) {
 		RegistrationStatusDto registrationStatusDto = new RegistrationStatusDto();
 		registrationStatusDto.setRegistrationId(entity.getId());
-		String statusCode=entity.getStatusCode();
-		Integer retryCount=entity.getRetryCount()!=null?entity.getRetryCount():0;
+		String statusCode = entity.getStatusCode();
+		Integer retryCount = entity.getRetryCount() != null ? entity.getRetryCount() : 0;
 		// get the mapped value for the entity StatusCode
-		RegistrationExternalStatusCode mappedValue = registrationStatusMapUtil.getExternalStatus(statusCode,retryCount);			
+		RegistrationExternalStatusCode mappedValue = registrationStatusMapUtil.getExternalStatus(statusCode,
+				retryCount);
 		registrationStatusDto.setRetryCount(retryCount);
 		registrationStatusDto.setStatusCode(mappedValue.toString());
 		return registrationStatusDto;
@@ -479,15 +433,6 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 		RegistrationStatusEntity entity = registrationStatusDao.findById(registrationId);
 		return entity != null ? entity.getLatestRegistrationTransactionId() : null;
 
-	}
-
-	/**
-	 * Gets the threshhold time.
-	 *
-	 * @return the threshhold time
-	 */
-	public int getThreshholdTime() {
-		return this.threshholdTime;
 	}
 
 	/**

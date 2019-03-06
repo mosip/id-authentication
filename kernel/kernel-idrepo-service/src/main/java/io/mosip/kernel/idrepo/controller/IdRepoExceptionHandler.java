@@ -44,6 +44,7 @@ import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 @RestControllerAdvice
 public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
+	/** The Constant APPLICATION_VERSION. */
 	private static final String APPLICATION_VERSION = "mosip.kernel.idrepo.application.version";
 
 	/** The Constant ID_REPO_EXCEPTION_HANDLER. */
@@ -106,7 +107,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 					IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage());
 
 			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.OK);
-			} else {
+		} else {
 			return handleAllExceptions(ex, request);
 		}
 	}
@@ -158,32 +159,13 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
 		IdResponseDTO response = new IdResponseDTO();
 
-		Throwable e = ex;
-		while (e != null) {
-			if (e instanceof IdRepoAppException && Objects.nonNull(((IdRepoAppException) e).getId())) {
-				response.setId(((IdRepoAppException) e).getId());
-			} else if (e instanceof IdRepoAppUncheckedException
-					&& Objects.nonNull(((IdRepoAppUncheckedException) e).getId())) {
-				response.setId(((IdRepoAppUncheckedException) e).getId());
-			} else {
-				break;
-			}
-
-			if (Objects.nonNull(e.getCause()) && (e.getCause() instanceof IdRepoAppException
-					|| e.getCause() instanceof IdRepoAppUncheckedException)) {
-				e = e.getCause();
-			} else {
-				break;
-			}
-		}
+		Throwable e = getRootCause(ex, response);
 
 		if (Objects.isNull(response.getId())) {
 			response.setId("mosip.id.error");
 		}
 
-		if (e instanceof BaseCheckedException)
-
-		{
+		if (e instanceof BaseCheckedException) {
 			List<String> errorCodes = ((BaseCheckedException) e).getCodes();
 			List<String> errorTexts = ((BaseCheckedException) e).getErrorTexts();
 
@@ -213,5 +195,34 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 				SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response")));
 
 		return response;
+	}
+
+	/**
+	 * Gets the root cause.
+	 *
+	 * @param ex the ex
+	 * @param response the response
+	 * @return the root cause
+	 */
+	private Throwable getRootCause(Exception ex, IdResponseDTO response) {
+		Throwable e = ex;
+		while (e != null) {
+			if (e instanceof IdRepoAppException && Objects.nonNull(((IdRepoAppException) e).getId())) {
+				response.setId(((IdRepoAppException) e).getId());
+			} else if (e instanceof IdRepoAppUncheckedException
+					&& Objects.nonNull(((IdRepoAppUncheckedException) e).getId())) {
+				response.setId(((IdRepoAppUncheckedException) e).getId());
+			} else {
+				break;
+			}
+
+			if (Objects.nonNull(e.getCause()) && (e.getCause() instanceof IdRepoAppException
+					|| e.getCause() instanceof IdRepoAppUncheckedException)) {
+				e = e.getCause();
+			} else {
+				break;
+			}
+		}
+		return e;
 	}
 }

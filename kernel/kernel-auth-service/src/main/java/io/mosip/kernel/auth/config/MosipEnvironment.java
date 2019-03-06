@@ -25,7 +25,8 @@ public class MosipEnvironment implements EnvironmentAware {
 	private final String generateOtpApi = "otp.manager.api.generate";
 	private final String verifyOtpUserApi = "otp.manager.api.verify";
 
-	private final String otpSenderSvcUrl = "otp.sender.svc.url";
+	private final String otpSenderEmailSvcUrl = "otp.sender.svc.url";
+	private final String otpSenderSmsSvcUrl = "otp.sender.svc.url";
 	private final String otpSenderEmailApi = "otp.sender.api.email.send";
 	private final String otpSenderSmsApi = "otp.sender.api.sms.send";
 
@@ -124,10 +125,13 @@ public class MosipEnvironment implements EnvironmentAware {
 		return environment.getProperty(verifyOtpUserApi);
 	}
 
-	public String getOtpSenderSvcUrl() {
-		return environment.getProperty(otpSenderSvcUrl);
+	public String getOtpSenderEmailSvcUrl() {
+		return environment.getProperty(otpSenderEmailSvcUrl);
 	}
 
+	public String getOtpSenderSmsSvcUrl() {
+		return environment.getProperty(otpSenderSmsSvcUrl);
+	}
 	public String getOtpSenderEmailApi() {
 		return environment.getProperty(otpSenderEmailApi);
 	}

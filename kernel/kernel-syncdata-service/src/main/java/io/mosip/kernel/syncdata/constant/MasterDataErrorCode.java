@@ -38,9 +38,12 @@ public enum MasterDataErrorCode {
 	REG_CENTER_USER_FETCH_EXCEPTION("KER-SYNC-133","Error occurred while fetching Registration Center User"),
 	MACHINE_ID_NOT_FOUND_EXCEPTION("KER-SNC-134","Machine id not found"),
 	INTERNAL_SERVER_ERROR("KER-SYNC-500","Internal server error"),
-	INVALID_TIMESTAMP_EXCEPTION("KER-SNC-135","Timestamp cannot be future date");
-	
-
+	INVALID_TIMESTAMP_EXCEPTION("KER-SNC-135","Timestamp cannot be future date"),
+	REG_CENTER_USER_HISTORY_FETCH_EXCEPTION("KER-SNC-136","Error occurred while fetching Registration Center User History"),
+	REG_CENTER_MACHINE_USER_HISTORY_FETCH_EXCEPTION("KER-SYNC-137","Error occurred while fetching Registration Center Machine User History"),
+	REG_CENTER_DEVICE_HISTORY_FETCH_EXCEPTION("KER-SYNC-138","Error occurred while fetching Registration Center Device History"),
+	REG_CENTER_MACHINE_HISTORY_FETCH_EXCEPTION("KER-SYNC-139","Error occurred while fetching Registration Center Machine History"),
+	REG_CENTER_MACHINE_DEVICE_HISTORY_FETCH_EXCEPTION("KER-SYNC-140","Error occurred while fetching Registration Center Machine Device History");
 	private final String errorCode;
 	private final String errorMessage;
 

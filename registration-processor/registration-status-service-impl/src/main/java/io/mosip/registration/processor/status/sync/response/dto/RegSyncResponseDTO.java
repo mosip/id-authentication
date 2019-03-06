@@ -19,6 +19,6 @@ public class RegSyncResponseDTO extends BaseRestResponseDTO {
 	private List<SyncResponseDto> response;
 	
 	/** The error. */
-	private ErrorDTO error;
+	private List<ErrorDTO> errors;
 	
 }

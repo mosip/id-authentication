@@ -24,12 +24,5 @@ public class BlacklistedWordsDto extends BaseDto{
 	 * The description of the word.
 	 */
 	private String description;
-	/**
-	 * The language code of the word.
-	 */
-	private String langCode;
-	/**
-	 * variable that sets the word is active or not.
-	 */
-	private Boolean isActive;
+	
 }

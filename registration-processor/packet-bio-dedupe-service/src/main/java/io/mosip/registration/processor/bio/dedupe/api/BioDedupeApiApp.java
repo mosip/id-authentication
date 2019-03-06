@@ -8,6 +8,7 @@ import org.springframework.context.annotation.FilterType;
 
 import io.mosip.registration.processor.core.config.CoreConfigBean;
 import io.mosip.registration.processor.core.dto.config.GlobalConfig;
+import io.mosip.registration.processor.core.kernel.beans.KernelConfig;
 import io.mosip.registration.processor.packet.storage.config.PacketStorageBeanConfig;
 import io.mosip.registration.processor.rest.client.config.RestConfigBean;
 
@@ -19,7 +20,8 @@ import io.mosip.registration.processor.rest.client.config.RestConfigBean;
 		"io.mosip.registration.processor.packet.storage.*", "io.mosip.registration.processor.rest.client.*",
 		"io.mosip.registration.processor.bio.dedupe.*",
 		"io.mosip.registration.processor.core.*" }, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
-				GlobalConfig.class, RestConfigBean.class, CoreConfigBean.class, PacketStorageBeanConfig.class }))
+				GlobalConfig.class, RestConfigBean.class, CoreConfigBean.class, PacketStorageBeanConfig.class,
+				KernelConfig.class }))
 
 public class BioDedupeApiApp {
 

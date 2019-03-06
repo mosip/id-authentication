@@ -9,10 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * @author Abhishek Kumar
- * @since 1.0.0
- */
 @Embeddable
 @Data
 @NoArgsConstructor
@@ -29,5 +25,7 @@ public class ValidDocumentID implements Serializable {
 
 	@Column(name = "doccat_code", nullable = false, length = 36)
 	private String docCategoryCode;
+	
+
 
 }

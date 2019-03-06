@@ -5,6 +5,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -61,7 +62,7 @@ public interface DeviceService {
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while saving Device
 	 */
-	public IdResponseDto createDevice(RequestDto<DeviceDto> deviceRequestDto);
+	public IdAndLanguageCodeID createDevice(RequestDto<DeviceDto> deviceRequestDto);
 
 	/**
 	 * This method is used to update an existing Device to master data
@@ -73,7 +74,7 @@ public interface DeviceService {
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while updating Device
 	 */
-	public IdResponseDto updateDevice(RequestDto<DeviceDto> deviceRequestDto);
+	public IdAndLanguageCodeID updateDevice(RequestDto<DeviceDto> deviceRequestDto);
 
 	/**
 	 * This method is used to delete an existing Device of master data

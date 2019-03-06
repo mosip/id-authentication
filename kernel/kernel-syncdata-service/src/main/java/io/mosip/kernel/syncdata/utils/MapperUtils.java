@@ -18,6 +18,7 @@ import javax.persistence.Entity;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.syncdata.dto.BaseDto;
 import io.mosip.kernel.syncdata.dto.HolidayDto;
 import io.mosip.kernel.syncdata.dto.UserDetailDto;
 import io.mosip.kernel.syncdata.dto.UserDetailMapDto;
@@ -40,10 +41,10 @@ public class MapperUtils {
 			LocalDate date = holiday.getHolidayId().getHolidayDate();
 			HolidayID holidayId = holiday.getHolidayId();
 			HolidayDto dto = new HolidayDto();
-			dto.setHolidayId(String.valueOf(holidayId.getId()));
+			dto.setHolidayId(String.valueOf(holiday.getId()));
 			dto.setHolidayDate(String.valueOf(date));
-			dto.setHolidayName(holiday.getHolidayName());
-			dto.setLanguageCode(holidayId.getLangCode());
+			dto.setHolidayName(holidayId.getHolidayName());
+			dto.setLangCode(holidayId.getLangCode());
 			dto.setHolidayYear(String.valueOf(date.getYear()));
 			dto.setHolidayMonth(String.valueOf(date.getMonth().getValue()));
 			dto.setHolidayDay(String.valueOf(date.getDayOfWeek().getValue()));
@@ -246,6 +247,24 @@ public class MapperUtils {
 		String destinationSupername = destination.getClass().getSuperclass().getName();// super class of destination
 																						// object
 		String baseEntityClassName = BaseEntity.class.getName();// base entity fully qualified name
+		String baseDtoClassName = BaseDto.class.getName();// base entity fully qualified name
+
+		if (sourceSupername.equals(baseEntityClassName) && destinationSupername.equals(baseDtoClassName)) {
+			Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
+			Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
+			mapFieldValues(source, destination, sourceFields, destinationFields);
+			sourceFields = source.getClass().getDeclaredFields();
+			mapFieldValues(source, destination, sourceFields, destinationFields);
+			return;
+		}
+		if (sourceSupername.equals(baseDtoClassName) && destinationSupername.equals(baseEntityClassName)) {
+			Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
+			Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
+			mapFieldValues(source, destination, sourceFields, destinationFields);
+			destinationFields = destination.getClass().getDeclaredFields();
+			mapFieldValues(source, destination, sourceFields, destinationFields);
+			return;
+		}
 
 		// if source is an entity
 		if (sourceSupername.equals(baseEntityClassName)) {
@@ -304,7 +323,7 @@ public class MapperUtils {
 		ef.setAccessible(false);
 	}
 
-		public static List<UserDetailMapDto> mapUserDetailsToUserDetailMap(List<UserDetailDto> userDetails) {
+	public static List<UserDetailMapDto> mapUserDetailsToUserDetailMap(List<UserDetailDto> userDetails) {
 		List<UserDetailMapDto> userDetailMapDtoList = new ArrayList<>();
 
 		for (UserDetailDto userDetail : userDetails) {

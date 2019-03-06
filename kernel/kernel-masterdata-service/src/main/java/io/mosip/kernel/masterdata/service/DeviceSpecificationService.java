@@ -5,6 +5,7 @@ import java.util.List;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -63,7 +64,7 @@ public interface DeviceSpecificationService {
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while saving device Specification
 	 */
-	public IdResponseDto createDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecification);
+	public IdAndLanguageCodeID createDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecification);
 
 	/**
 	 * Function to update Device Specification
@@ -76,7 +77,7 @@ public interface DeviceSpecificationService {
 	 *             if any error occurred while updating device Specification
 	 */
 
-	public IdResponseDto updateDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecification);
+	public IdAndLanguageCodeID updateDeviceSpecification(RequestDto<DeviceSpecificationDto> deviceSpecification);
 
 	/**
 	 * Function to delete Device Specification

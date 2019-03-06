@@ -33,7 +33,7 @@ public class ManualVerificationConfigBean {
 	@Bean ManualVerificationService getManualVerificationService() {
 		return new ManualVerificationServiceImpl();
 	}
-	
+
 	@Bean
 	ManualVerificationRequestValidator getManualVerificationRequestValidator() {
 		return new ManualVerificationRequestValidator();
@@ -48,8 +48,7 @@ public class ManualVerificationConfigBean {
 	ManualVerificationResponseBuilder getManualVerificationResponseBuilder() {
 		return new ManualVerificationResponseBuilder();
 	}
-	
-	
+
 	@Bean
 	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env) throws IOException {
 

@@ -194,7 +194,7 @@ public class ManualVerificationExceptionHandler {
 				List<String> errorCodes = ((BaseCheckedException) e).getCodes();
 				List<String> errorTexts = ((BaseCheckedException) e).getErrorTexts();
 				List<ErrorDTO> errors = errorTexts.parallelStream().map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct().collect(Collectors.toList());
-				response.setError(errors.get(0));
+				response.setErrors(errors);
 			}
 			if (e instanceof BaseUncheckedException) {
 				List<String> errorCodes = ((BaseUncheckedException) e).getCodes();
@@ -204,13 +204,13 @@ public class ManualVerificationExceptionHandler {
 						.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
 						.collect(Collectors.toList());
 
-				response.setError(errors.get(0));
+				response.setErrors(errors);
 			}
 
-			response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+			response.setResponsetime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 			response.setVersion("1.0");
 			response.setResponse(null);
-			Gson gson = new GsonBuilder().serializeNulls().create();
+			Gson gson = new GsonBuilder().create();
 			return gson.toJson(response);
 		}else {
 			ManualVerificationBioDemoResponseDTO response = new ManualVerificationBioDemoResponseDTO();
@@ -224,7 +224,7 @@ public class ManualVerificationExceptionHandler {
 				List<String> errorCodes = ((BaseCheckedException) e).getCodes();
 				List<String> errorTexts = ((BaseCheckedException) e).getErrorTexts();
 				List<ErrorDTO> errors = errorTexts.parallelStream().map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct().collect(Collectors.toList());
-				response.setError(errors.get(0));
+				response.setErrors(errors);
 			}
 			if (e instanceof BaseUncheckedException) {
 				List<String> errorCodes = ((BaseUncheckedException) e).getCodes();
@@ -234,13 +234,13 @@ public class ManualVerificationExceptionHandler {
 						.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
 						.collect(Collectors.toList());
 
-				response.setError(errors.get(0));
+				response.setErrors(errors);
 			}
 
-			response.setResponseTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+			response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 			response.setVersion(env.getProperty(APPLICATION_VERSION));
 			response.setFile(null);
-			Gson gson = new GsonBuilder().serializeNulls().create();
+			Gson gson = new GsonBuilder().create();
 			return gson.toJson(response);
 		}
 

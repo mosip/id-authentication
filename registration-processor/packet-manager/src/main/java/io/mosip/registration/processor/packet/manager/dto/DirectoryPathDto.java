@@ -5,15 +5,9 @@ package io.mosip.registration.processor.packet.manager.dto;
  * 
  * @author M1039303
  *
- */	
+ */
 public enum DirectoryPathDto {
-	/** The landing zone. */
-	LANDING_ZONE {
-		@Override
-		public String toString() {
-			return "registration.processor.LANDING_ZONE";
-		}
-	},
+
 	/** The virus scan. */
 	VIRUS_SCAN {
 		@Override

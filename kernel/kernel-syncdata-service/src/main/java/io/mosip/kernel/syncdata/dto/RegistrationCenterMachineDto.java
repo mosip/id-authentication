@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegistrationCenterMachineDto extends BaseDto{
+public class RegistrationCenterMachineDto extends BaseDto {
 
 	@NotNull
 	@Size(min = 1, max = 36)
@@ -27,6 +27,4 @@ public class RegistrationCenterMachineDto extends BaseDto{
 	@Size(min = 1, max = 36)
 	private String machineId;
 
-	@NotNull
-	private Boolean isActive;
 }

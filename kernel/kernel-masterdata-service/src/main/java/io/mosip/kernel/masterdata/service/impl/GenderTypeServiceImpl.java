@@ -53,7 +53,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 		List<Gender> genderType = null;
 
 		try {
-			genderType = genderTypeRepository.findAll(Gender.class);
+			genderType = genderTypeRepository.findAllByIsActiveAndIsDeleted();
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));

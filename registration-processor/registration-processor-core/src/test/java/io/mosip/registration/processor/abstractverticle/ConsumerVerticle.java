@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.abstractverticle;
 
+import java.net.URL;
+
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
@@ -34,8 +36,14 @@ public class ConsumerVerticle extends MosipVerticleManager {
 	}
 
 	public MosipEventBus deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(),"http://104.211.212.28:51000/*/dev/DEV/ignite.xml");
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(),this.findUrl().toString());
 		return mosipEventBus;
+	}
+	public URL findUrl()
+	{
+		ClassLoader loader=getClass().getClassLoader();
+		URL url=loader.getResource("ignite-dev.xml");
+		return url;
 	}
 
 }

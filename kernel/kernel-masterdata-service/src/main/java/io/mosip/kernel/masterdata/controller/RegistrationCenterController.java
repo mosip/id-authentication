@@ -22,6 +22,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.swagger.annotations.Api;
 
@@ -163,10 +164,10 @@ public class RegistrationCenterController {
 	 *            - timestamp based on the format YYYY-MM-ddTHH:mm:ss.SSSZ
 	 * @return RegistrationCenterStatusResponseDto
 	 */
-	@GetMapping("/v1.0/registrationcenters/validate/{id}/{timestamp}")
+	@GetMapping("/v1.0/registrationcenters/validate/{id}/{langCode}/{timestamp}")
 	public ResgistrationCenterStatusResponseDto validateTimestamp(@PathVariable("id") String regId,
-			@PathVariable("timestamp") String timeStamp) {
-		return registrationCenterService.validateTimeStampWithRegistrationCenter(regId, timeStamp);
+			@PathVariable("langCode") String langCode, @PathVariable("timestamp") String timeStamp) {
+		return registrationCenterService.validateTimeStampWithRegistrationCenter(regId, langCode, timeStamp);
 
 	}
 
@@ -192,7 +193,7 @@ public class RegistrationCenterController {
 	 * @return the response i.e. the id of the registration center updated.
 	 */
 	@PutMapping("/v1.0/registrationcenters")
-	public ResponseEntity<IdResponseDto> updateRegistrationCenter(
+	public ResponseEntity<IdAndLanguageCodeID> updateRegistrationCenter(
 			@RequestBody @Valid RequestDto<RegistrationCenterDto> registrationCenterDto) {
 		return new ResponseEntity<>(registrationCenterService.updateRegistrationCenter(registrationCenterDto),
 				HttpStatus.OK);

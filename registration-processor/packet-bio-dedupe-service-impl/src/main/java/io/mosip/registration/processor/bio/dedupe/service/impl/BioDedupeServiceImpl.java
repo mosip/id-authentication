@@ -273,7 +273,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 			packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 					PacketMetaInfo.class);
 
-			List<FieldValueArray> hashSequence = packetMetaInfo.getIdentity().getHashSequence();
+			List<FieldValueArray> hashSequence = packetMetaInfo.getIdentity().getHashSequence1();
 			List<String> hashList = identityIteratorUtil.getHashSequence(hashSequence,
 					JsonConstant.APPLICANTBIOMETRICSEQUENCE);
 			if (hashList != null)

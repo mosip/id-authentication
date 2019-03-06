@@ -648,15 +648,12 @@ public class OSIValidator {
 		InternalRegistrationStatusDto introducerRegistrationStatusDto = registrationStatusService
 				.getRegistrationStatus(introducerRid);
 		if (introducerRegistrationStatusDto != null) {
-			TransactionDto transactionDto = transcationStatusService.getTransactionByRegIdAndStatusCode(introducerRid,
-					RegistrationStatusCode.UIN_GENERATED.toString());
-			if (transactionDto != null) {
-				return true;
-			} else {
-				registrationStatusDto.setStatusComment(StatusMessage.PACKET_IS_ON_HOLD);
-				return false;
-			}
-
+			List<String> introducerUINList = packetInfoManager.getUINByRid(introducerRid);
+			if(!introducerUINList.isEmpty()) {
+						return true;
+					}
+			registrationStatusDto.setStatusComment(StatusMessage.PACKET_IS_ON_HOLD);
+			return false;
 		} else {
 			registrationStatusDto.setStatusComment(StatusMessage.PARENT_RID_NOT_IN_REGISTRATION_TABLE + registrationId);
 			return false;
@@ -710,7 +707,7 @@ public class OSIValidator {
 	private String getHashSequenceValue(String registrationId, String field) throws UnsupportedEncodingException {
 
 		Identity identity = getIdentity(registrationId);
-		List<FieldValueArray> hashSequence = identity.getHashSequence();
+		List<FieldValueArray> hashSequence = identity.getHashSequence1();
 		List<String> hashList = identityIteratorUtil.getHashSequence(hashSequence, field);
 		if (hashList != null)
 			return hashList.get(0).toUpperCase();
