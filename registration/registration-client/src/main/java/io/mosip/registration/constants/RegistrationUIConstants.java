@@ -165,6 +165,7 @@ public class RegistrationUIConstants {
 
 	// Individual Registartion - Iris Capture
 	public static final String UNABLE_LOAD_IRIS_SCAN_POPUP = bundle.getString("UNABLE_LOAD_IRIS_SCAN_POPUP");
+	public static final String IRIS_SUCCESS_MSG = bundle.getString("IRIS_SUCCESS_MSG");
 	public static final String IRIS_NAVIGATE_NEXT_SECTION_ERROR = bundle.getString("IRIS_NAVIGATE_NEXT_SECTION_ERROR");
 	public static final String IRIS_NAVIGATE_PREVIOUS_SECTION_ERROR = bundle
 			.getString("IRIS_NAVIGATE_PREVIOUS_SECTION_ERROR");

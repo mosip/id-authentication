@@ -255,7 +255,7 @@ public class IrisCaptureController extends BaseController {
 			// Display the Scanned Iris Image in the Scan pop-up screen
 			scanPopUpViewController.getScanImage().setImage(convertBytesToImage(irisDetailsDTO.getIris()));
 
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, "Iris captured successfully");
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
 
 			if (irisType.equals(RegistrationConstants.LEFT)) {
 				leftIrisImage.setImage(convertBytesToImage(irisDetailsDTO.getIris()));
