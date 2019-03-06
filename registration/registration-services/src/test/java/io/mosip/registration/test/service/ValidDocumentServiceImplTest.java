@@ -38,9 +38,6 @@ public class ValidDocumentServiceImplTest {
 
 		List<ValidDocument> validDocuments = new ArrayList<>();
 		ValidDocument validDocument = new ValidDocument();
-		validDocument.setApplicantType("007");
-		validDocument.setDocCategoryCode("POA");
-		validDocument.setDocTypeCode("DocType");
 
 		validDocuments.add(validDocument);
 

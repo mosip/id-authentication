@@ -4,6 +4,7 @@ import java.util.List;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.entity.ValidDocument;
+import io.mosip.registration.entity.id.ValidDocumentId;
 
 /**
  * 
@@ -11,10 +12,12 @@ import io.mosip.registration.entity.ValidDocument;
  *
  */
 
-public interface ValidDocumentRepository extends BaseRepository<ValidDocument, String> {
+public interface ValidDocumentRepository extends BaseRepository<ValidDocument, ValidDocumentId> {
 
-	List<ValidDocument> findByIsActiveTrueAndDocCategoryCodeAndLangCode(String docCategoryCode, String langCode);
-
-	List<ValidDocument> findByApplicantTypeAndDocCategoryCodeAndLangCode(String applicantType, String docCategoryCode,
+	List<ValidDocument> findByIsActiveTrueAndDocumentCategoryCodeAndDocumentCategoryLangCode(String docCategoryCode,
 			String langCode);
+
+	List<ValidDocument> findByValidDocumentIdApplicantCodeAndDocumentCategoryCodeAndLangCode(
+			String applicantType, String docCategoryCode, String langCode);
+	
 }

@@ -700,7 +700,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	 */
 	@Override
 	public List<ValidDocument> getValidDocumets(String docCategoryCode, String langCode) {
-		return validDocumentRepository.findByIsActiveTrueAndDocCategoryCodeAndLangCode(docCategoryCode, langCode);
+		return validDocumentRepository.findByIsActiveTrueAndDocumentCategoryCodeAndDocumentCategoryLangCode(docCategoryCode, langCode);
 	}
 
 }

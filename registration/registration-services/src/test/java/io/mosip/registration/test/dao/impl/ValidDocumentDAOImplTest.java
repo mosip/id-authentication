@@ -16,6 +16,7 @@ import org.mockito.junit.MockitoRule;
 import io.mosip.registration.dao.impl.ValidDocumentDAOImpl;
 import io.mosip.registration.entity.ValidDocument;
 import io.mosip.registration.entity.id.GenericId;
+import io.mosip.registration.entity.id.ValidDocumentId;
 import io.mosip.registration.repositories.ValidDocumentRepository;
 
 public class ValidDocumentDAOImplTest {
@@ -31,12 +32,16 @@ public class ValidDocumentDAOImplTest {
 	public void test() {
 
 		ValidDocument validDocument = new ValidDocument();
+		ValidDocumentId validDocumentId=new ValidDocumentId();
+		validDocumentId.setDocCategoryCode("D101");
+		validDocumentId.setDocTypeCode("DC101");
+		validDocumentId.setApplicantCode("007");
+		validDocument.setValidDocumentId(validDocumentId);
 		//validDocument.setDescription("description");
-		validDocument.setDocTypeCode("name");
 		//validDocument.setCreatedTimesZone(new Timestamp(new Date().getTime()));
 		validDocument.setCrBy("createdBy");
 		//validDocument.setDeletedTimesZone(new Timestamp(new Date().getTime()));
-		validDocument.setLangCode("languageCode");
+		validDocument.setLangCode("langCode");
 		GenericId genericId = new GenericId();
 		genericId.setActive(true);
 		genericId.setCode("code");

@@ -92,6 +92,7 @@ import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 import io.mosip.registration.entity.id.HolidayID;
 import io.mosip.registration.entity.id.RegDeviceTypeId;
 import io.mosip.registration.entity.id.RegMachineSpecId;
+import io.mosip.registration.entity.id.ValidDocumentId;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.ApplicationRepository;
@@ -718,8 +719,11 @@ public class MasterSyncDaoImplTest {
 		// validDocuments
 		List<ValidDocument> validDocuments = new ArrayList<>();
 		ValidDocument MasterValidDocuments = new ValidDocument();
-		MasterValidDocuments.setDocCategoryCode("D101");
-		MasterValidDocuments.setDocTypeCode("DC101");
+		ValidDocumentId validDocumentId=new ValidDocumentId();
+		validDocumentId.setDocCategoryCode("D101");
+		validDocumentId.setDocTypeCode("DC101");
+		validDocumentId.setApplicantCode("007");
+		MasterValidDocuments.setValidDocumentId(validDocumentId);
 		MasterValidDocuments.setLangCode("ENG");
 		validDocuments.add(MasterValidDocuments);
 		// biometric Attributes
@@ -1672,7 +1676,11 @@ public class MasterSyncDaoImplTest {
 
 		List<ValidDocument> docList = new ArrayList<>();
 		ValidDocument docs = new ValidDocument();
-		docs.setDocTypeCode("POA");
+		ValidDocumentId validDocumentId=new ValidDocumentId();
+		validDocumentId.setDocCategoryCode("D101");
+		validDocumentId.setDocTypeCode("DC101");
+		validDocumentId.setApplicantCode("007");
+		docs.setValidDocumentId(validDocumentId);
 		docs.setLangCode("eng");
 		docList.add(docs);
 

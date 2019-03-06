@@ -45,7 +45,7 @@ public class ValidDocumentDAOImpl implements ValidDocumentDAO {
 	@Override
 	public List<ValidDocument> getValidDocuments(String applicantType, String docCategoryCode, String langCode) {
 
-		return validDocumentRepository.findByApplicantTypeAndDocCategoryCodeAndLangCode(applicantType, docCategoryCode,
+		return validDocumentRepository.findByValidDocumentIdApplicantCodeAndDocumentCategoryCodeAndLangCode(applicantType, docCategoryCode,
 				langCode);
 
 	}

@@ -2,19 +2,16 @@ package io.mosip.registration.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import io.mosip.registration.entity.id.ValidDocumentID;
+import io.mosip.registration.entity.id.ValidDocumentId;
 
 /**
  * Entity class for valid document.
@@ -24,22 +21,13 @@ import io.mosip.registration.entity.id.ValidDocumentID;
  *
  */
 @Entity
-@Table(name = "valid_document", schema = "reg")
-@IdClass(ValidDocumentID.class)
+@Table(name = "applicant_valid_document", schema = "reg")
 public class ValidDocument extends RegistrationCommonFields implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3111581667845281498L;
 
-	@Id
-	@AttributeOverrides({ @AttributeOverride(name = "docTypeCode", column = @Column(name = "doctyp_code")),
-			@AttributeOverride(name = "docCategoryCode", column = @Column(name = "doccat_code")) })
-
-	private String docTypeCode;
-
-	private String docCategoryCode;
+	@EmbeddedId
+	private ValidDocumentId validDocumentId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
@@ -52,39 +40,22 @@ public class ValidDocument extends RegistrationCommonFields implements Serializa
 			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	DocumentType documentType;
 
+	/**
+	 * @return the validDocumentId
+	 */
+	public ValidDocumentId getValidDocumentId() {
+		return validDocumentId;
+	}
+
+	/**
+	 * @param validDocumentId the validDocumentId to set
+	 */
+	public void setValidDocumentId(ValidDocumentId validDocumentId) {
+		this.validDocumentId = validDocumentId;
+	}
+
 	@Column(name = "lang_code")
 	private String langCode;
-	
-	@Column(name = "applicant_type")
-	private String applicantType;
-
-	/**
-	 * @return the docTypeCode
-	 */
-	public String getDocTypeCode() {
-		return docTypeCode;
-	}
-
-	/**
-	 * @param docTypeCode the docTypeCode to set
-	 */
-	public void setDocTypeCode(String docTypeCode) {
-		this.docTypeCode = docTypeCode;
-	}
-
-	/**
-	 * @return the docCategoryCode
-	 */
-	public String getDocCategoryCode() {
-		return docCategoryCode;
-	}
-
-	/**
-	 * @param docCategoryCode the docCategoryCode to set
-	 */
-	public void setDocCategoryCode(String docCategoryCode) {
-		this.docCategoryCode = docCategoryCode;
-	}
 
 	/**
 	 * @return the documentCategory
@@ -128,19 +99,4 @@ public class ValidDocument extends RegistrationCommonFields implements Serializa
 		this.langCode = langCode;
 	}
 
-	/**
-	 * @return the applicantType
-	 */
-	public String getApplicantType() {
-		return applicantType;
-	}
-
-	/**
-	 * @param applicantType the applicantType to set
-	 */
-	public void setApplicantType(String applicantType) {
-		this.applicantType = applicantType;
-	}
-
-	
 }
