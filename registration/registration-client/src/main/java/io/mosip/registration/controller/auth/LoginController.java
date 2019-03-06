@@ -157,6 +157,12 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Value("${PROVIDER_NAME}")
 	private String deviceName;
+	
+	@Value("${mosip.registration.invalid_login_count}")
+	private int invalidLoginCount;
+	
+	@Value("${mosip.registration.invalid_login_time}")
+	private int invalidLoginTime;
 
 	@Autowired
 	private LoginService loginService;
@@ -955,12 +961,6 @@ public class LoginController extends BaseController implements Initializable {
 				: 0;
 
 		Timestamp loginTime = userDetail.getUserlockTillDtimes();
-
-		int invalidLoginCount = Integer.parseInt(
-				String.valueOf(ApplicationContext.map().get(RegistrationConstants.INVALID_LOGIN_COUNT)));
-
-		int invalidLoginTime = Integer.parseInt(
-				String.valueOf(ApplicationContext.map().get(RegistrationConstants.INVALID_LOGIN_TIME)));
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"validating invalid login params");
