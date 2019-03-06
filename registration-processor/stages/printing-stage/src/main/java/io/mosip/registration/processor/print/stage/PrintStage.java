@@ -360,7 +360,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 		if (responceMessageDto.getIsValid()) {
 			this.setResponse(ctx, RegistrationStatusCode.DOCUMENT_RESENT_TO_CAMEL_QUEUE);
 		} else {
-			this.setResponse(ctx, "Cought internal error in messageDto");
+			this.setResponse(ctx, "Caught internal error in messageDto");
 		}
 
 	}

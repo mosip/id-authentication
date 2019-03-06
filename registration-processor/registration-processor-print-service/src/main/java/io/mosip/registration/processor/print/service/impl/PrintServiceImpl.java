@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
@@ -34,6 +35,7 @@ import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
 import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.pdfgenerator.itext.constant.PDFGeneratorExceptionCodeConstant;
 import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
@@ -62,6 +64,8 @@ import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundExc
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
+import io.mosip.registration.processor.print.service.dto.JsonFileDTO;
+import io.mosip.registration.processor.print.service.dto.JsonRequestDTO;
 import io.mosip.registration.processor.print.service.exception.IDRepoResponseNull;
 import io.mosip.registration.processor.print.service.exception.UINNotFoundInDatabase;
 import io.mosip.registration.processor.print.service.kernel.dto.Documents;
@@ -364,32 +368,41 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 * @return the byte[]
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws io.mosip.kernel.core.exception.IOException 
 	 */
-	private byte[] createTextFile() throws IOException {
+	private byte[] createTextFile() throws IOException, io.mosip.kernel.core.exception.IOException {
 		byte[] jsonTextFileBytes = null;
-		Map<String, Object> textMap = new LinkedHashMap<>();
-		textMap.put(UINCardConstant.NAME_ENG, attributes.get(UINCardConstant.NAME_ENG));
-		textMap.put(UINCardConstant.NAME_ARA, attributes.get(UINCardConstant.NAME_ARA));
-		textMap.put(UINCardConstant.PHONENUMBER, attributes.get(UINCardConstant.PHONENUMBER));
-		textMap.put(UINCardConstant.ADDRESSLINE1_ENG, attributes.get(UINCardConstant.ADDRESSLINE1_ENG));
-		textMap.put(UINCardConstant.ADDRESSLINE1_ARA, attributes.get(UINCardConstant.ADDRESSLINE1_ARA));
-		textMap.put(UINCardConstant.ADDRESSLINE2_ENG, attributes.get(UINCardConstant.ADDRESSLINE2_ENG));
-		textMap.put(UINCardConstant.ADDRESSLINE2_ARA, attributes.get(UINCardConstant.ADDRESSLINE2_ARA));
-		textMap.put(UINCardConstant.ADDRESSLINE3_ENG, attributes.get(UINCardConstant.ADDRESSLINE3_ENG));
-		textMap.put(UINCardConstant.ADDRESSLINE3_ARA, attributes.get(UINCardConstant.ADDRESSLINE3_ARA));
-		textMap.put(UINCardConstant.REGION_ENG, attributes.get(UINCardConstant.REGION_ENG));
-		textMap.put(UINCardConstant.REGION_ARA, attributes.get(UINCardConstant.REGION_ARA));
-		textMap.put(UINCardConstant.PROVINCE_ENG, attributes.get(UINCardConstant.PROVINCE_ENG));
-		textMap.put(UINCardConstant.PROVINCE_ARA, attributes.get(UINCardConstant.REGION_ARA));
-		textMap.put(UINCardConstant.CITY_ENG, attributes.get(UINCardConstant.CITY_ENG));
-		textMap.put(UINCardConstant.CITY_ARA, attributes.get(UINCardConstant.CITY_ARA));
-		textMap.put(UINCardConstant.POSTALCODE, attributes.get(UINCardConstant.POSTALCODE));
-
-		ObjectMapper mapper = new ObjectMapper();
+		JsonFileDTO jsonDto = new JsonFileDTO();
+		jsonDto.setId("mosip.registration.print.send");
+		jsonDto.setVersion("1.0");
+		jsonDto.setRequestTime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") );
+		
+		JsonRequestDTO request = new JsonRequestDTO();
+		request.setNameAra((String)attributes.get(UINCardConstant.NAME_ARA));
+		request.setNameEng((String)attributes.get(UINCardConstant.NAME_ENG));
+		request.setPhoneNumber((String)attributes.get(UINCardConstant.PHONENUMBER));
+		request.setAddressLine1Ara((String)attributes.get(UINCardConstant.ADDRESSLINE1_ARA));
+		request.setAddressLine1Eng((String)attributes.get(UINCardConstant.ADDRESSLINE1_ENG));
+		request.setAddressLine2Ara((String)attributes.get(UINCardConstant.ADDRESSLINE2_ARA));
+		request.setAddressLine2Eng((String)attributes.get(UINCardConstant.ADDRESSLINE2_ENG));
+		request.setAddressLine3Ara((String)attributes.get(UINCardConstant.ADDRESSLINE3_ARA));
+		request.setAddressLine3Eng((String)attributes.get(UINCardConstant.ADDRESSLINE3_ENG));
+		request.setRegionAra((String)attributes.get(UINCardConstant.REGION_ARA));
+		request.setRegionEng((String)attributes.get(UINCardConstant.REGION_ENG));
+		request.setProvinceAra((String)attributes.get(UINCardConstant.PROVINCE_ARA));
+		request.setProvinceEng((String)attributes.get(UINCardConstant.PROVINCE_ENG));
+		request.setCityAra((String)attributes.get(UINCardConstant.CITY_ARA));
+		request.setCityEng((String)attributes.get(UINCardConstant.CITY_ENG));
+		request.setPostalCode((String)attributes.get(UINCardConstant.POSTALCODE));
+	
+		jsonDto.setRequest(request);
 
 		File jsonText = new File(attributes.get(UINCardConstant.UIN).toString() + ".txt");
-		mapper.writeValue(jsonText, textMap);
-
+		
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(SerializationFeature.INDENT_OUTPUT, true); 
+		mapper.writeValue(jsonText, jsonDto);
+	
 		InputStream fileStream = new FileInputStream(jsonText);
 		jsonTextFileBytes = IOUtils.toByteArray(fileStream);
 
