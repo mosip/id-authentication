@@ -67,14 +67,14 @@ RxHelper is a popular library for composing asynchronous and event based program
 It is very basic scheduler which which work on the time deplay provided. 
 
 	3. Time scheduling using Chime:
-Chime scheduling is similar to cron-style which provides:
-- scheduling with cron-style, interval, union or custom timers:
-- at a certain time of day (to the second)
-- on certain days of the week, month or year
-- with a given time interval
-- with nearly any combination of all of above
-- repeating a given number of times
-- repeating until a given time / date
-- repeating infinite
+		Chime scheduling is similar to cron-style which provides:
+		- scheduling with cron-style, interval, union or custom timers:
+		- at a certain time of day (to the second)
+		- on certain days of the week, month or year
+		- with a given time interval
+		- with nearly any combination of all of above
+		- repeating a given number of times
+		- repeating until a given time / date
+		- repeating infinite
 
 6.  Deployment
