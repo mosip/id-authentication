@@ -517,7 +517,8 @@ public class IdaScriptsUtil {
 	public void createBatFileForDemoApp() {
 		try {
 			String javaHome = System.getenv("JAVA_HOME");
-			String demoAppJarPath = System.getProperty("user.dir") + "/src/test/resources/demoApp.jar";
+			String jarPath="C:/Users/"+System.getProperty("user.name")+"/.m2/repository/io/mosip/Testing/demoApp/testing-demoApp.jar";
+			String demoAppJarPath = jarPath;
 			String content = '"' + javaHome + "/bin/java" + '"'
 					+ " -Dspring.profiles.active=local -Djava.net.useSystemProxies=true -agentlib:jdwp=transport=dt_socket,server=y,address=4000,suspend=n -jar "
 					+ '"' + demoAppJarPath.toString() + '"';
@@ -552,6 +553,14 @@ public class IdaScriptsUtil {
 		} catch (Exception e) {
 			logger.error("Execption in quitting demoApp application" + e.getMessage());
 		}
+	}
+	
+	public static void main(String arg[])
+	{
+		IdaScriptsUtil obj = new IdaScriptsUtil();
+		obj.createBatFileForDemoApp();
+		obj.batDemoAppRunner();
+		obj.exitDemoAppRunner();
 	}
 
 } 
