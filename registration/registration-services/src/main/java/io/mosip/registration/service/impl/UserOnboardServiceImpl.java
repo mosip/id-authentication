@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -37,6 +38,15 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 
 	@Autowired
 	private UserOnboardDAO userOnBoardDao;
+	
+	@Value("${FINGERPRINT_DISABLE_FLAG}")
+	protected String fingerprintDisableFlag;
+
+	@Value("${IRIS_DISABLE_FLAG}")
+	protected String irisDisableFlag;
+
+	@Value("${FACE_DISABLE_FLAG}")
+	protected String faceDisableFlag;
 
 	/**
 	 * logger for logging
@@ -67,15 +77,20 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 		count = count + (photoDetails == null ? 0 : 1);
 
 		// API for validating biometrics need to be implemented
-
-		if (200 >= UserOnBoardThresholdLimit) {
-
-			responseDTO = save(biometricDTO);
+		
+		if (RegistrationConstants.ENABLE.equalsIgnoreCase(fingerprintDisableFlag)
+				|| RegistrationConstants.ENABLE.equalsIgnoreCase(irisDisableFlag)
+				|| RegistrationConstants.ENABLE.equalsIgnoreCase(faceDisableFlag)) {
+			
+			if (count >= UserOnBoardThresholdLimit) {
+				responseDTO = save(biometricDTO);
+			} else {
+				responseDTO = errorRespone(RegistrationConstants.USER_ON_BOARDING_THRESHOLD_NOT_MET_CODE,
+						RegistrationConstants.USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG);
+			}
 
 		} else {
-
-			responseDTO = errorRespone(RegistrationConstants.USER_ON_BOARDING_THRESHOLD_NOT_MET_CODE,
-					RegistrationConstants.USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG);
+			responseDTO = save(biometricDTO);
 		}
 
 		return responseDTO;
