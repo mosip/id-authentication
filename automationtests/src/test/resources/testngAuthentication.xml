@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="idaTestSuite">
-  <test name="CreateUINData">
+ <test name="CreateUINData">
    <parameter name="testDatPath" value="ida\\TestData\\UINData\\CreateTestData\\"/>
    <parameter name="testDataFileName" value="testdata.ida.UINData.CreateTestData.mapping.yml"/>
     <classes>
@@ -15,13 +15,13 @@
        <class name="io.mosip.authentication.tests.UpdateUinRecord"/>
     </classes>
   </test>
-  <test name="GenerateVID">
+   <test name="GenerateVID">
    <parameter name="testDatPath" value="ida\\TestData\\UINData"/>
    <parameter name="testDataFileName" value="dummy.dummy"/>
     <classes>
        <class name="io.mosip.authentication.tests.CreateVID"/>
     </classes>
-  </test>
+  </test> 
   <test name="Bio.IrisAuthentication">
    <parameter name="testDatPath" value="ida\\TestData\\Bio\\Iris\\"/>
     <parameter name="testDataFileName" value="testdata.ida.bio.AuthWithIris.mapping.yml"/>
@@ -126,14 +126,14 @@
        <class name="io.mosip.authentication.tests.DemoAuthentication"/>
     </classes>
   </test>
-   <test name="demo.DateOfBirthAuthentication">
+ <test name="demo.DateOfBirthAuthentication">
    <parameter name="testDatPath" value="ida\\TestData\\Demo\\DateOfBirth\\"/>
     <parameter name="testDataFileName" value="testdata.ida.Demo.AuthWithDateOfBirth.mapping.yml"/>
     <parameter name="testType" value="smokeandregression"/>
     <classes>
        <class name="io.mosip.authentication.tests.DemoAuthentication"/>
     </classes>
-  </test> 
+  </test>
    <test name="demo.GenderAuthentication">
    <parameter name="testDatPath" value="ida\\TestData\\Demo\\Gender\\"/>
     <parameter name="testDataFileName" value="testdata.ida.Demo.AuthWithGender.mapping.yml"/>
@@ -173,7 +173,7 @@
     <classes>
        <class name="io.mosip.authentication.tests.StaticPinAuthentication"/>
     </classes>
-  </test>
+  </test> 
   <test name="StaticPin.EkycWithStaticPinAuthentication">
    <parameter name="testDatPath" value="ida\\TestData\\StaticPin\\eKYCWithStaticPin\\"/>
     <parameter name="testDataFileName" value="testdata.ida.StaticPin.eKYCWithStaticPin.mapping.yml"/>
