@@ -15,7 +15,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import io.mosip.kernel.core.util.DateUtils;
 
 import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
-import io.mosip.registration.processor.packet.service.context.SessionContext;
+
 import io.mosip.registration.processor.packet.service.dto.BaseDTO;
 import io.mosip.registration.processor.packet.service.dto.RegistrationDTO;
 import io.mosip.registration.processor.packet.service.dto.RegistrationMetaDataDTO;
@@ -287,7 +287,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 	private BiometricDetails getBiometric(BaseDTO biometricDTO, String language, String biometricType,
 			String personType) {
 		BiometricDetails biometricDetails = null;
-		if (biometricDTO != null) {
+		/*if (biometricDTO != null) {
 			if (biometricDTO instanceof FingerprintDetailsDTO) {
 				FingerprintDetailsDTO fingerprint = (FingerprintDetailsDTO) biometricDTO;
 				biometricDetails = buildBiometric("label", language, biometricType,
@@ -299,7 +299,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 						getBIRUUID(personType, iris.getIrisType()), iris.getQualityScore(), iris.getNumOfIrisRetry(),
 						iris.isForceCaptured());
 			}
-		}
+		}*/
 		return biometricDetails;
 	}
 
@@ -420,25 +420,10 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		List<FieldValue> osiData = new LinkedList<>();
 		// Add Operator ID
 		osiData.add(buildFieldValue("officerId", registrationDTO.getOsiDataDTO().getOperatorID()));
-		// Add Officer CBEFF File
-		if (((Map<String, String>) SessionContext.map().get(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME)).keySet()
-				.stream().anyMatch(key -> key.startsWith(RegistrationConstants.OFFICER.toLowerCase()))) {
-			osiData.add(buildFieldValue("officerBiometricFileName",
-					removeFileExt(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME)));
-		} else {
-			osiData.add(buildFieldValue("officerBiometricFileName", null));
-		}
-
+		
 		// Add Supervisor ID
 		osiData.add(buildFieldValue("supervisorId", registrationDTO.getOsiDataDTO().getSupervisorID()));
-		// Add Officer CBEFF File
-		if (((Map<String, String>) SessionContext.map().get(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME)).keySet()
-				.stream().anyMatch(key -> key.startsWith(RegistrationConstants.SUPERVISOR.toLowerCase()))) {
-			osiData.add(buildFieldValue("supervisorBiometricFileName",
-					removeFileExt(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME)));
-		} else {
-			osiData.add(buildFieldValue("supervisorBiometricFileName", null));
-		}
+		
 
 		// Add Supervisor Password
 		osiData.add(buildFieldValue("supervisorPassword",
@@ -472,7 +457,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		String fingerprintImageName = null;
 		String irisImageName = null;
 
-		if (officerBiometric != null) {
+		/*if (officerBiometric != null) {
 			FingerprintDetailsDTO fingerprint = (FingerprintDetailsDTO) getObjectAt(
 					officerBiometric.getFingerprintDetailsDTO(), 0);
 			if (fingerprint != null) {
@@ -490,7 +475,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 				}
 			}
 		}
-
+*/
 		officer.add(buildFieldValue(officerType + "Fingerprint" + field, fingerprintImageName));
 		officer.add(buildFieldValue(officerType + "Iris" + field, irisImageName));
 
@@ -527,10 +512,5 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		return fileName;
 	}
 
-	@SuppressWarnings("unchecked")
-	private String getBIRUUID(String personType, String biometricType) {
-		return ((Map<String, String>) SessionContext.map().get(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME))
-				.get(personType.concat(biometricType).toLowerCase());
-	}
-
+	
 }

@@ -30,7 +30,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
-import io.mosip.registration.processor.packet.service.context.ApplicationContext;
+
 import io.mosip.registration.processor.packet.service.dto.LoginUserDTO;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.packet.service.exception.RegistrationExceptionConstants;
@@ -96,8 +96,8 @@ public class ServiceDelegateUtil {
 
 		if (authRequired) {
 			// TODO - if batch get secrete key , normal login get user from session context
-			LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
-			authHeader = getAuthTokenId(userDTO);
+			/*LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
+			authHeader = getAuthTokenId(userDTO);*/
 
 		}
 
@@ -177,8 +177,8 @@ public class ServiceDelegateUtil {
 
 		if (authRequired) {
 			// TODO - if batch get secrete key , normal login get user from session context
-			LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
-			authHeader = getAuthTokenId(userDTO);
+			/*LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
+			authHeader = getAuthTokenId(userDTO);*/
 
 		}
 

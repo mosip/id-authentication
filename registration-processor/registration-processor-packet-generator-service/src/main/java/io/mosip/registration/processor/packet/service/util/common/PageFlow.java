@@ -12,7 +12,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 
 import io.mosip.registration.processor.packet.service.constants.LoggerConstants;
 import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
-import io.mosip.registration.processor.packet.service.context.ApplicationContext;
+
 
 /**
  * This class will give the Page Flow 
@@ -100,10 +100,10 @@ public class PageFlow {
 		updateRegMap(registrationMap, RegistrationConstants.APPLICATION_NAME);
 		updateRegMap(onboardMap, RegistrationConstants.ONBOARD);
 		
-		ApplicationContext.map().put(RegistrationConstants.ONBOARD_LIST, getOnboardPageList(onboardMap));
-		ApplicationContext.map().put(RegistrationConstants.ONBOARD_MAP, onboardMap);
-		ApplicationContext.map().put(RegistrationConstants.REGISTRATION_MAP, registrationMap);
-		ApplicationContext.map().put("biometricExceptionFlow", registrationMap.get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.VISIBILITY));
+		//ApplicationContext.map().put(RegistrationConstants.ONBOARD_LIST, getOnboardPageList(onboardMap));
+		////ApplicationContext.map().put(RegistrationConstants.ONBOARD_MAP, onboardMap);
+		//ApplicationContext.map().put(RegistrationConstants.REGISTRATION_MAP, registrationMap);
+		//ApplicationContext.map().put("biometricExceptionFlow", registrationMap.get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.VISIBILITY));
 		
 		//LOGGER.info(LoggerConstants.LOG_REG_PAGE_FLOW, RegistrationConstants.APPLICATION_NAME,
 			//	RegistrationConstants.APPLICATION_ID, "Updating Map and storing in Application Context");

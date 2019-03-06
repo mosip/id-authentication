@@ -24,8 +24,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 
-import io.mosip.registration.processor.packet.service.constants.AuditEvent;
-import io.mosip.registration.processor.packet.service.constants.AuditReferenceIdTypes;
+
 import io.mosip.registration.processor.packet.service.constants.Components;
 import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
 import io.mosip.registration.processor.packet.service.dto.ErrorResponseDTO;
@@ -34,7 +33,7 @@ import io.mosip.registration.processor.packet.service.dto.ResponseDTO;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.packet.service.exception.RegBaseUncheckedException;
 import io.mosip.registration.processor.service.packet.PacketCreationService;
-import io.mosip.registration.processor.service.packet.PacketEncryptionService;
+
 import io.mosip.registration.processor.service.packet.PacketHandlerService;
 
 /**
@@ -53,14 +52,7 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 	@Autowired
 	private PacketCreationService packetCreationService;
 
-	/**
-	 * Class to encrypt the packet data
-	 */
-	@Autowired
-	private PacketEncryptionService packetEncryptionService;
-	/**
-	 * Instance of {@link Logger}
-	 */
+
 
 
 	/**
@@ -107,7 +99,7 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 				//LOGGER.info(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
 					//	"Registration Packet had been created successfully");
 
-				responseDTO = packetEncryptionService.encrypt(registrationDTO, inMemoryZipFile);
+				//responseDTO = packetEncryptionService.encrypt(registrationDTO, inMemoryZipFile);
 			} else {
 				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 				errorResponseDTO.setCode(REG_PACKET_CREATION_ERROR_CODE.getErrorCode());
