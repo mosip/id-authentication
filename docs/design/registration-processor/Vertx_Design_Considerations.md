@@ -14,15 +14,41 @@ The key solution considerations are -
 1.	Event Loop Instances
 	Vertx is single threaded event loop which delivers events to all handlers as they arrive. Vertx instance maintains several event loops, number of event loop depends on the number of cores available.
 	
+2.	Running blocking code
+	There could be scenerio where single threaded event loop could be blocked in which case stages will grind to a complete halt!
+	
 	If you have a single event loop, and you want to handle 10000 http requests per second, then it’s clear that each request can’t take more than 0.1 ms to process, so you can’t block for any more time than that.
 	
 	The best way to handle blocking code which could be opertations like long lived database operation and waiting for a result, complex calculations which take significant amount of time etc. is allow this code to execute in another thread. Vertx provides API to handle such blocking code which can be done by using executeBlocking as shown below:
 	
-2.	Running blocking code
-	There could be scenerio where single threaded event loop could be blocked in which case stages will grind to a complete halt!
+```java
+vertx.executeBlocking(future -> {
+  //Call some blocking API that takes a significant amount of time to return
+  	String result = someAPI.blockingMethod("hello");
+  	future.complete(result);
+}, res -> {
+  	System.out.println("The result is: " + res.result());
+});
+```
 
-3.  Threading
+4. The Event Bus
+The event bus is the nervous system of Vert.x. There is a single event bus instance for every Vert.x instance and it is obtained using the method eventBus.
+The event bus supports publish/subscribe, point-to-point, and request-response messaging.
 
-4. 	Scheduler
+Publish / subscribe messaging:
+Messages are published to an address. Publishing means delivering the message to all handlers that are registered at that address.
 
-5.  Deployment
+Point-to-point and Request-Response messaging:
+Messages are sent to an address. Vert.x will then route them to just one of the handlers registered at that address.
+If there is more than one handler registered at the address, one will be chosen using a non-strict round-robin algorithm.
+
+Currently in MOSIP Point-to-point messaing is used in which case message will be send to consume in non-strict round-robin algorithm.
+
+Send Failures:
+Message sends can fail for other reasons, including there are no handlers available to send the message to. In this case the reply handler is sending message about non availability of handler. Alert message will be send in this case notifying support team about this issue.
+
+4. Threading
+
+5. Scheduler
+
+6. Deployment
