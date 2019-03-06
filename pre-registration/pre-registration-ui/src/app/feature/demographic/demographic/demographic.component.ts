@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormGroup, FormControl, Validators, NgForm, FormControlName } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatSelectChange, MatButtonToggleChange, MatSlideToggleChange, MatDialog } from '@angular/material';
 import { DatePipe } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
@@ -148,8 +148,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
     // this.message$ = this.regService.currentMessage;
     // this.message$.subscribe(message => (this.message = message));
-    console.log(this.message);
-
     if (this.message['modifyUser'] === 'true' || this.message['modifyUserFromPreview'] === 'true') {
       this.dataModification = true;
       this.step = this.regService.getUsers().length - 1;
@@ -273,7 +271,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
     this.setLocations();
     this.setGender();
-    // this.setResidentStatus();
   }
 
   private async setLocations() {
@@ -308,12 +305,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.filterOnLangCode(this.secondaryLang, this.secondaryGender, this.genders);
   }
 
-  // private async setResidentStatus() {
-  //   await this.getResidenceDetails();
-  //   this.filterOnLangCode(this.primaryLang, this.primaryResidenceStatus, this.residenceStatus);
-  //   this.filterOnLangCode(this.secondaryLang, this.secondaryResidenceStatus, this.residenceStatus);
-  // }
-
   private setFormControlValues() {
     if (!this.dataModification) {
       this.formControlValues = {
@@ -345,7 +336,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     } else {
       let index = 0;
       let secondaryIndex = 1;
-      console.log(this.user.request.demographicDetails.identity.fullName[0].language);
+
       if (this.user.request.demographicDetails.identity.fullName[0].language !== this.primaryLang) {
         index = 1;
         secondaryIndex = 0;
@@ -397,15 +388,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
       });
     });
   }
-
-  // private getResidenceDetails() {
-  //   return new Promise((resolve, reject) => {
-  //     this.dataStorageService.getResidenceDetails().subscribe(response => {
-  //       this.residenceStatus = response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.residentTypes];
-  //       resolve(true);
-  //     });
-  //   });
-  // }
 
   private filterOnLangCode(langCode: string, genderEntity = [], entityArray: any) {
     entityArray.filter((element: any) => {
@@ -484,8 +466,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getLocationImmediateHierearchy(languageCode, parentLocationCode).subscribe(
         response => {
-          console.log(response);
-
           response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations].forEach(element => {
             let codeValueModal: CodeValueModal = {
               valueCode: element.code,
@@ -604,8 +584,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
       // this.transUserForm.controls[toControl].patchValue('dummyValue');
       this.dataStorageService.getTransliteration(request).subscribe(
         response => {
-          console.log('response data', response);
-
           if (!response[appConstants.NESTED_ERROR])
             this.transUserForm.controls[toControl].patchValue(response[appConstants.RESPONSE].to_field_value);
           else this.transUserForm.controls[toControl].patchValue('can not be transliterated');
@@ -665,8 +643,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
       postalCode: this.formControlValues.postalCode,
       regDto: this.sharedService.getNameList()[0].regDto
     });
-
-    console.log('NMAE LIST ', this.sharedService.getNameList());
   }
 
   private onAddition(response: any, request: RequestModel) {
