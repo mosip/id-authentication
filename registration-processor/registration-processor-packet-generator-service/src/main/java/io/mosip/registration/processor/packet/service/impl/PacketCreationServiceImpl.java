@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.service.packet.impl;
+package io.mosip.registration.processor.packet.service.impl;
 
 import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
 import static io.mosip.registration.processor.packet.service.constants.RegistrationConstants.DEMOGRPAHIC_JSON_NAME;
@@ -22,6 +22,7 @@ import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingExce
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
+import io.mosip.registration.processor.packet.service.PacketCreationService;
 import io.mosip.registration.processor.packet.service.builder.Builder;
 import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
 import io.mosip.registration.processor.packet.service.dto.RegistrationDTO;
@@ -34,9 +35,8 @@ import io.mosip.registration.processor.packet.service.dto.json.metadata.PacketMe
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.packet.service.exception.RegBaseUncheckedException;
 import io.mosip.registration.processor.packet.service.exception.RegistrationExceptionConstants;
+import io.mosip.registration.processor.packet.service.external.ZipCreationService;
 import io.mosip.registration.processor.packet.service.util.hmac.HMACGeneration;
-import io.mosip.registration.processor.service.external.ZipCreationService;
-import io.mosip.registration.processor.service.packet.PacketCreationService;
 
 /**
  * Class for creating the Resident Registration
@@ -53,6 +53,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 	@Autowired
 	private JsonValidator jsonValidator;
+
 	private static Random random = new Random(5000);
 	// @Autowired
 	// private AuditFactory auditFactory;

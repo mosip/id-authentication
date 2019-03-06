@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.service.external;
+package io.mosip.registration.processor.packet.service.external;
 
 import java.util.Map;
 

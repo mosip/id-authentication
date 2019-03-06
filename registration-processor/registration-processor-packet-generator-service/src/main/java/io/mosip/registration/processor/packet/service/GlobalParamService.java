@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.service.config;
+package io.mosip.registration.processor.packet.service;
 
 import java.util.Map;
 

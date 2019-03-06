@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.service.packet.impl;
+package io.mosip.registration.processor.packet.service.impl;
 
 import static io.mosip.registration.processor.packet.service.constants.LoggerConstants.LOG_PKT_HANLDER;
 import static io.mosip.registration.processor.packet.service.constants.RegistrationConstants.APPLICATION_ID;
@@ -22,9 +22,8 @@ import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-
-
-
+import io.mosip.registration.processor.packet.service.PacketCreationService;
+import io.mosip.registration.processor.packet.service.PacketHandlerService;
 import io.mosip.registration.processor.packet.service.constants.Components;
 import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
 import io.mosip.registration.processor.packet.service.dto.ErrorResponseDTO;
@@ -32,9 +31,6 @@ import io.mosip.registration.processor.packet.service.dto.RegistrationDTO;
 import io.mosip.registration.processor.packet.service.dto.ResponseDTO;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.packet.service.exception.RegBaseUncheckedException;
-import io.mosip.registration.processor.service.packet.PacketCreationService;
-
-import io.mosip.registration.processor.service.packet.PacketHandlerService;
 
 /**
  * The class to handle the enrollment data and create packet out of it

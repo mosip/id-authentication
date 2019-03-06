@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.service.external.impl;
+package io.mosip.registration.processor.packet.service.external.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import io.mosip.registration.processor.packet.service.dto.demographic.Demographi
 import io.mosip.registration.processor.packet.service.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.packet.service.exception.RegBaseUncheckedException;
-import io.mosip.registration.processor.service.external.ZipCreationService;
+import io.mosip.registration.processor.packet.service.external.ZipCreationService;
 
 import static io.mosip.registration.processor.packet.service.constants.LoggerConstants.LOG_ZIP_CREATION;
 import static io.mosip.registration.processor.packet.service.constants.RegistrationConstants.APPLICATION_ID;

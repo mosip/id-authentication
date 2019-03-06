@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.service.packet;
+package io.mosip.registration.processor.packet.service;
 
 import io.mosip.registration.processor.packet.service.dto.RegistrationDTO;
 import io.mosip.registration.processor.packet.service.dto.ResponseDTO;
