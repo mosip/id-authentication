@@ -74,11 +74,11 @@ public class FilterConfig {
 
 	return registrationBean;
     }
-    /**
+   /* *//**
      * Gets the Static Pin Store Filter.
      *
      * @return Static Pin Store Filter
-     */
+     *//*
     @Bean
     public FilterRegistrationBean<DefaultIDAFilter> getStaticPinStoreFilter() {
 	FilterRegistrationBean<DefaultIDAFilter> registrationBean = new FilterRegistrationBean<>();
@@ -86,6 +86,6 @@ public class FilterConfig {
 	registrationBean.addUrlPatterns("/0.8/static-pin","/0.8/vid/*");
 
 	return registrationBean;
-    }
+    }*/
 
 }
