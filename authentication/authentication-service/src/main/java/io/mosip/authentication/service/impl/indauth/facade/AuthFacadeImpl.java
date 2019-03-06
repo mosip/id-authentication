@@ -64,6 +64,8 @@ import io.mosip.kernel.core.util.UUIDUtils;
 @Service
 public class AuthFacadeImpl implements AuthFacade {
 
+	private static final String STATIC_TOKEN_ENABLE = "static.token.enable";
+		
 	private static final String FAILED = "N";
 
 	/** The Constant UTC. */
@@ -159,11 +161,14 @@ public class AuthFacadeImpl implements AuthFacade {
 			idInfo = idInfoService.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTxnID()).setIdType(authRequestDTO.getIdvIdType())
 					.setReqTime(authRequestDTO.getReqTime());
-			String staticTokenId = tokenIdGenerator.generateId(tspId, uin);
+			Boolean staticTokenRequired = env.getProperty(STATIC_TOKEN_ENABLE, Boolean.class);
+			String staticTokenId = staticTokenRequired ? tokenIdGenerator.generateId(tspId, uin) : "";
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId);
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
 			// Set static token
-			authResponseBuilder.setStaticTokenId(staticTokenId);
+			if(staticTokenRequired) {
+				authResponseBuilder.setStaticTokenId(staticTokenId);
+			}
 		} finally {
 			authResponseDTO = authResponseBuilder.build();
 			logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE,
