@@ -54,7 +54,6 @@ import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
-import io.mosip.preregistration.application.dto.UpdateResponseDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
@@ -763,7 +762,7 @@ byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
 	@Test
 	public void updatePreRegistrationStatusTest() {
 		Mockito.when(demographicRepository.findBypreRegistrationId("98746563542672")).thenReturn(preRegistrationEntity);
-		UpdateResponseDTO<String> res = preRegistrationService.updatePreRegistrationStatus("98746563542672", "Booked");
+		MainResponseDTO<String> res = preRegistrationService.updatePreRegistrationStatus("98746563542672", "Booked");
 	}
 
 	@Test(expected = RecordNotFoundException.class)

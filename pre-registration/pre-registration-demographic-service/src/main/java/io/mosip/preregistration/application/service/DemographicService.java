@@ -5,7 +5,6 @@
 package io.mosip.preregistration.application.service;
 
 import java.net.URLDecoder;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,7 +39,6 @@ import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
-import io.mosip.preregistration.application.dto.UpdateResponseDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
@@ -185,7 +183,7 @@ public class DemographicService {
 		requiredRequestMap.put("id", id);
 		requiredRequestMap.put("ver", ver);
 	}
-	
+
 	@Autowired
 	CryptoUtil cryptoUtil;
 
@@ -251,11 +249,12 @@ public class DemographicService {
 						StatusCodes.CONSUMED.getCode());
 				if (!serviceUtil.isNull(demographicEntityList)) {
 					for (DemographicEntity demographicEntity : demographicEntityList) {
-						byte[] decryptedString = cryptoUtil.decrypt(demographicEntity.getApplicantDetailJson(), DateUtils.getUTCCurrentDateTime());
-						JSONArray identityValue = serviceUtil.getValueFromIdentity(
-								decryptedString, RequestCodes.FULLNAME.getCode());
-						String postalcode = serviceUtil.getPostalCode(
-								decryptedString, RequestCodes.POSTAL_CODE.getCode());
+						byte[] decryptedString = cryptoUtil.decrypt(demographicEntity.getApplicantDetailJson(),
+								DateUtils.getUTCCurrentDateTime());
+						String postalcode = serviceUtil.getPostalCode(decryptedString,
+								RequestCodes.POSTAL_CODE.getCode());
+						JSONArray identityValue = serviceUtil.getValueFromIdentity(decryptedString,
+								RequestCodes.FULLNAME.getCode());
 						viewDto = new PreRegistrationViewDTO();
 						viewDto.setPreRegistrationId(demographicEntity.getPreRegistrationId());
 						viewDto.setFullname(identityValue);
@@ -314,32 +313,28 @@ public class DemographicService {
 			requestParamMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preRegId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
-				
-				
+
 				if (demographicEntity != null) {
-       String hashString = new String(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson()));
-					
-					if (demographicEntity.getDemogDetailHash()
-							.equals(hashString)) {
-					statusdto.setPreRegistartionId(demographicEntity.getPreRegistrationId());
-					statusdto.setStatusCode(demographicEntity.getStatusCode());
-					statusList.add(statusdto);
-					response.setResponse(statusList);
-					response.setResTime(serviceUtil.getCurrentResponseTime());
-					response.setStatus(Boolean.TRUE);
-				} 
-					else {
-						throw new HashingException(io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_010.name(),
+					String hashString = new String(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson()));
+
+					if (demographicEntity.getDemogDetailHash().equals(hashString)) {
+						statusdto.setPreRegistartionId(demographicEntity.getPreRegistrationId());
+						statusdto.setStatusCode(demographicEntity.getStatusCode());
+						statusList.add(statusdto);
+						response.setResponse(statusList);
+						response.setResTime(serviceUtil.getCurrentResponseTime());
+						response.setStatus(Boolean.TRUE);
+					} else {
+						throw new HashingException(
+								io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_010.name(),
 								io.mosip.preregistration.core.errorcodes.ErrorMessages.HASHING_FAILED.name());
-						
+
 					}
-				}
-				else {
+				} else {
 					throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
 							ErrorMessages.INVALID_PRE_REGISTRATION_ID.name());
 
-				
-			}
+				}
 			}
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
@@ -429,19 +424,17 @@ public class DemographicService {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
 				if (demographicEntity != null) {
 					String hashString = new String(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson()));
-					
-					if (demographicEntity.getDemogDetailHash()
-							.equals(hashString)) {
 
-					DemographicResponseDTO createDto = serviceUtil.setterForCreateDTO(demographicEntity);
-					createDtos.add(createDto);
-					response.setResponse(createDtos);
-					}
-					else {
-						throw new HashingException(io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_010.name(),
+					if (demographicEntity.getDemogDetailHash().equals(hashString)) {
+
+						DemographicResponseDTO createDto = serviceUtil.setterForCreateDTO(demographicEntity);
+						createDtos.add(createDto);
+						response.setResponse(createDtos);
+					} else {
+						throw new HashingException(
+								io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_010.name(),
 								io.mosip.preregistration.core.errorcodes.ErrorMessages.HASHING_FAILED.name());
-						
-					
+
 					}
 				} else {
 					throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
@@ -470,9 +463,9 @@ public class DemographicService {
 	 * 
 	 * 
 	 */
-	public UpdateResponseDTO<String> updatePreRegistrationStatus(String preRegId, String status) {
+	public MainResponseDTO<String> updatePreRegistrationStatus(String preRegId, String status) {
 		log.info("sessionId", "idType", "id", "In updatePreRegistrationStatus method of pre-registration service ");
-		UpdateResponseDTO<String> response = new UpdateResponseDTO<>();
+		MainResponseDTO<String> response = new MainResponseDTO<>();
 		Map<String, String> requestParamMap = new HashMap<>();
 		try {
 			requestParamMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preRegId);
@@ -487,8 +480,8 @@ public class DemographicService {
 			new DemographicExceptionCatcher().handle(ex);
 		}
 		response.setResponse("STATUS_UPDATED_SUCESSFULLY");
-		response.setResTime(new Timestamp(System.currentTimeMillis()));
-		response.setStatus("true");
+		response.setResTime(serviceUtil.getCurrentResponseTime());
+		response.setStatus(true);
 		return response;
 	}
 
@@ -579,18 +572,18 @@ public class DemographicService {
 		List<String> preIds = new ArrayList<>();
 		if (demographicEntityList != null && !demographicEntityList.isEmpty()) {
 			for (DemographicEntity entity : demographicEntityList) {
-				if(entity.getDemogDetailHash().equals(new String
-						(HashUtill.hashUtill(entity.getApplicantDetailJson())))) {
+				if (entity.getDemogDetailHash()
+						.equals(new String(HashUtill.hashUtill(entity.getApplicantDetailJson())))) {
 					preIds.add(entity.getPreRegistrationId());
-				}
-				else {
+				} else {
 
-					log.error("sessionId", "idType", "id", "In dtoSetter method of document service - " +
-				io.mosip.preregistration.core.errorcodes.ErrorMessages.HASHING_FAILED.name());
-					throw new HashingException(io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_010.name(),
+					log.error("sessionId", "idType", "id", "In dtoSetter method of document service - "
+							+ io.mosip.preregistration.core.errorcodes.ErrorMessages.HASHING_FAILED.name());
+					throw new HashingException(
+							io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_010.name(),
 							io.mosip.preregistration.core.errorcodes.ErrorMessages.HASHING_FAILED.name());
 				}
-				
+
 			}
 		} else {
 			throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.toString(),

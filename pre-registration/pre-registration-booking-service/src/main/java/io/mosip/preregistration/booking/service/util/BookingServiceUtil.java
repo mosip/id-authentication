@@ -117,13 +117,11 @@ public class BookingServiceUtil {
 	@Value("${demographic.resource.url}")
 	private String preRegResourceUrl;
 
-	
 	@Value("${timeSpanCheckForCancel}")
 	private long timeSpanCheckForCancel;
-	
+
 	@Value("${timeSpanCheckForRebook}")
 	private long timeSpanCheckForRebook;
-
 
 	private Logger log = LoggerConfiguration.logConfig(BookingServiceUtil.class);
 
@@ -181,7 +179,7 @@ public class BookingServiceUtil {
 		List<String> holidaylist = null;
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
-			String holidayUrl = holidayListUrl + regDto.getLanguageCode() + "/" + regDto.getId() + "/"
+			String holidayUrl = holidayListUrl + regDto.getLangCode() + "/" + regDto.getId() + "/"
 					+ LocalDate.now().getYear();
 			UriComponentsBuilder builder2 = UriComponentsBuilder.fromHttpUrl(holidayUrl);
 			HttpHeaders headers = new HttpHeaders();
@@ -344,17 +342,23 @@ public class BookingServiceUtil {
 		}
 		return true;
 	}
+
 	public boolean timeSpanCheckForCancle(LocalDateTime bookedDateTime) {
 		LocalDateTime current = LocalDateTime.now();
-        long hours=ChronoUnit.HOURS.between(current, bookedDateTime);
-		if(Math.abs(hours)>=timeSpanCheckForCancel) return true;
-		else return false;
+		long hours = ChronoUnit.HOURS.between(current, bookedDateTime);
+		if (Math.abs(hours) >= timeSpanCheckForCancel)
+			return true;
+		else
+			return false;
 	}
+
 	public boolean timeSpanCheckForRebook(LocalDateTime bookedDateTime) {
 		LocalDateTime current = LocalDateTime.now();
-        long hours=ChronoUnit.HOURS.between(current, bookedDateTime);
-		if(Math.abs(hours)>=timeSpanCheckForRebook) return true;
-		else return false;
+		long hours = ChronoUnit.HOURS.between(current, bookedDateTime);
+		if (Math.abs(hours) >= timeSpanCheckForRebook)
+			return true;
+		else
+			return false;
 
 	}
 
@@ -686,7 +690,6 @@ public class BookingServiceUtil {
 				new RegistrationBookingPK(preRegistrationId, DateUtils.parseDateToLocalDateTime(new Date())));
 		entity.setRegistrationCenterId(bookingRegistrationDTO.getRegistrationCenterId());
 		entity.setId(UUIDGeneratorUtil.generateId());
-		entity.setStatusCode(StatusCodes.BOOKED.getCode());
 		entity.setLangCode("12L");
 		entity.setCrBy("987654321");
 		entity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
@@ -695,5 +698,5 @@ public class BookingServiceUtil {
 		entity.setSlotToTime(LocalTime.parse(bookingRegistrationDTO.getSlotToTime()));
 		return entity;
 	}
-	
+
 }

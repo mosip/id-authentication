@@ -5,6 +5,7 @@
 package io.mosip.preregistration.booking.repository;
 
 import java.util.List;
+
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,16 +30,6 @@ public interface RegistrationBookingRepository extends BaseRepository<Registrati
 
 	public static final String preIdQuery = "SELECT u FROM RegistrationBookingEntity u WHERE u.bookingPK.preregistrationId = ?1";
 	public static final String deletePreIdQuery="delete from RegistrationBookingEntity u where u.bookingPK.preregistrationId = ?1";
-	public static final String preIdAndStatusQuery = "SELECT u FROM RegistrationBookingEntity u WHERE u.bookingPK.preregistrationId = ?1 and u.statusCode=?2";
-	/**
-	 * @param preregistrationId
-	 * @param statusCode
-	 * @return RegistrationBookingEntity based on Pre-registration-Id and status code
-	 */
-	public RegistrationBookingEntity findPreIdAndStatusCode(String preregistrationId, String statusCode);
-	
-	@Query(preIdAndStatusQuery)
-	public RegistrationBookingEntity findBookingByPreIdAndStatusCode(String preregistrationId, String statusCode);
 	 
 	@Query(preIdQuery)
 	RegistrationBookingEntity getPreRegId(@Param("preRegId") String preRegId);
@@ -48,7 +39,7 @@ public interface RegistrationBookingRepository extends BaseRepository<Registrati
 	 * @param statusCode
 	 * @return List RegistrationBookingEntity based on Registration center id and status code
  	 */
-	public List<RegistrationBookingEntity> findByRegistrationCenterIdAndStatusCode(@Param("regcntr_id")String registrationCenterId, @Param("status_code")String statusCode);
+	public List<RegistrationBookingEntity> findByRegistrationCenterId(@Param("regcntr_id")String registrationCenterId);
 	
 	@Query(preIdQuery)
 	public List<RegistrationBookingEntity> findBypreregistrationId(String preId);
