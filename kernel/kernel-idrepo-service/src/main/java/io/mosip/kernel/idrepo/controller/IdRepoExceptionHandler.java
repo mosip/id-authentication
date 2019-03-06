@@ -1,21 +1,25 @@
 package io.mosip.kernel.idrepo.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -53,6 +57,15 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "sessionId";
+	
+	/** The Constant READ. */
+	private static final String READ = "read";
+
+	/** The Constant CREATE. */
+	private static final String CREATE = "create";
+
+	/** The Constant UPDATE. */
+	private static final String UPDATE = "update";
 
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoExceptionHandler.class);
@@ -64,6 +77,9 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
+	
+	@Resource
+	private Map<String, String> id;
 
 	/**
 	 * Handle all exceptions.
@@ -76,10 +92,12 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
-		mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleAllExceptions - \n" + ExceptionUtils.getStackTrace(ex));
 		IdRepoUnknownException e = new IdRepoUnknownException(IdRepoErrorConstants.UNKNOWN_ERROR);
-		return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e), HttpStatus.OK);
+		return new ResponseEntity<>(
+				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod()),
+				HttpStatus.OK);
 	}
 
 	/*
@@ -94,14 +112,15 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object errorMessage,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleExceptionInternal - \n" + ExceptionUtils.getStackTrace(ex));
 		if (ex instanceof ServletException || ex instanceof BeansException
 				|| ex instanceof HttpMessageConversionException) {
 			ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(),
 					IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage());
 
-			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.OK);
+			return new ResponseEntity<>(buildExceptionResponse(ex, ((ServletWebRequest) request).getHttpMethod()),
+					HttpStatus.OK);
 		} else {
 			return handleAllExceptions(ex, request);
 		}
@@ -119,10 +138,11 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(IdRepoAppException.class)
 	protected ResponseEntity<Object> handleIdAppException(IdRepoAppException ex, WebRequest request) {
 
-		mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleIdAppException - \n" + ExceptionUtils.getStackTrace(ex));
 
-		return new ResponseEntity<>(buildExceptionResponse((Exception) ex), HttpStatus.OK);
+		return new ResponseEntity<>(
+				buildExceptionResponse((Exception) ex, ((ServletWebRequest) request).getHttpMethod()), HttpStatus.OK);
 	}
 
 	/**
@@ -137,10 +157,11 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(IdRepoAppUncheckedException.class)
 	protected ResponseEntity<Object> handleIdAppUncheckedException(IdRepoAppUncheckedException ex, WebRequest request) {
 
-		mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleIdAppUncheckedException - \n" + ExceptionUtils.getStackTrace(ex));
 
-		return new ResponseEntity<>(buildExceptionResponse((Exception) ex), HttpStatus.OK);
+		return new ResponseEntity<>(
+				buildExceptionResponse((Exception) ex, ((ServletWebRequest) request).getHttpMethod()), HttpStatus.OK);
 	}
 
 	/**
@@ -148,16 +169,21 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	 *
 	 * @param ex
 	 *            the exception occurred
+	 * @param httpMethod 
 	 * @return Object .
 	 */
-	private Object buildExceptionResponse(Exception ex) {
+	private Object buildExceptionResponse(Exception ex, HttpMethod httpMethod) {
 
 		IdResponseDTO response = new IdResponseDTO();
 
-		Throwable e = getRootCause(ex, response);
-
-		if (Objects.isNull(response.getId())) {
-			response.setId("mosip.id.error");
+		Throwable e = getRootCause(ex);
+		
+		if (httpMethod.compareTo(HttpMethod.GET) == 0) {
+			response.setId(id.get(READ));
+		} else if (httpMethod.compareTo(HttpMethod.POST) == 0) {
+			response.setId(id.get(CREATE));
+		} else if (httpMethod.compareTo(HttpMethod.PATCH) == 0) {
+			response.setId(id.get(UPDATE));
 		}
 
 		if (e instanceof BaseCheckedException) {
@@ -200,18 +226,9 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @param response the response
 	 * @return the root cause
 	 */
-	private Throwable getRootCause(Exception ex, IdResponseDTO response) {
+	private Throwable getRootCause(Exception ex) {
 		Throwable e = ex;
 		while (e != null) {
-			if (e instanceof IdRepoAppException && Objects.nonNull(((IdRepoAppException) e).getId())) {
-				response.setId(((IdRepoAppException) e).getId());
-			} else if (e instanceof IdRepoAppUncheckedException
-					&& Objects.nonNull(((IdRepoAppUncheckedException) e).getId())) {
-				response.setId(((IdRepoAppUncheckedException) e).getId());
-			} else {
-				break;
-			}
-
 			if (Objects.nonNull(e.getCause()) && (e.getCause() instanceof IdRepoAppException
 					|| e.getCause() instanceof IdRepoAppUncheckedException)) {
 				e = e.getCause();
