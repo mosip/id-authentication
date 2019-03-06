@@ -73,7 +73,11 @@
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-web</artifactId>
 </dependency>
-			
+			<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-dataaccess-hibernate</artifactId>
+			<version>${kernel.dataaccess.hibernate.version}</version>
+		</dependency>
   </dependencies>
    <build>
 		<plugins>

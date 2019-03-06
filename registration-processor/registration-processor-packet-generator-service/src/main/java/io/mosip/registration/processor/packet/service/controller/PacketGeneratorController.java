@@ -21,7 +21,7 @@ import io.swagger.annotations.ApiResponses;
 public class PacketGeneratorController {
 
 	@GetMapping(path = "/{uin}/{registrationType}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "", response = String.class)
+	@ApiOperation(value = "Get the status of packet", response = String.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Get the status of packet "),
 			@ApiResponse(code = 400, message = "Unable to fetch the status "),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
