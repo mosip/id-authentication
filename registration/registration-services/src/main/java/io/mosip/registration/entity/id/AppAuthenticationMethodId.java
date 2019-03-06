@@ -1,4 +1,4 @@
-package io.mosip.registration.entity;
+package io.mosip.registration.entity.id;
 
 import java.io.Serializable;
 

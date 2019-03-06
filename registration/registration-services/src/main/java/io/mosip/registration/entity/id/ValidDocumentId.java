@@ -1,4 +1,4 @@
-package io.mosip.registration.entity;
+package io.mosip.registration.entity.id;
 
 import java.io.Serializable;
 
@@ -10,7 +10,7 @@ import javax.persistence.Embeddable;
  * @since 1.0.0
  */
 @Embeddable
-public class ValidDocumentID implements Serializable {
+public class ValidDocumentId implements Serializable {
 
 	/**
 	 * 
@@ -22,6 +22,23 @@ public class ValidDocumentID implements Serializable {
 
 	@Column(name = "doccat_code")
 	private String docCategoryCode;
+
+	@Column(name = "apptyp_code")
+	private String applicantCode;
+
+	/**
+	 * @return the applicantCode
+	 */
+	public String getApplicantCode() {
+		return applicantCode;
+	}
+
+	/**
+	 * @param applicantCode the applicantCode to set
+	 */
+	public void setApplicantCode(String applicantCode) {
+		this.applicantCode = applicantCode;
+	}
 
 	/**
 	 * @return the docTypeCode
@@ -50,7 +67,5 @@ public class ValidDocumentID implements Serializable {
 	public void setDocCategoryCode(String docCategoryCode) {
 		this.docCategoryCode = docCategoryCode;
 	}
-	
-	
 
 }
