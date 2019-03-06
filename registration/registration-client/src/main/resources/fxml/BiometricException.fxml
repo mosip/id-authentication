@@ -26,10 +26,10 @@
                   <Image url="@../images/UserOnboardExceptionTracker.png" />
                </image>
             </ImageView>
-            <Label layoutX="36.0" layoutY="0.0" styleClass="currentTracker" text="Exception" />
-            <Label layoutX="36.0" layoutY="67.0" styleClass="uncompleteTracker" text="Fingerprints" />
-            <Label layoutX="36.0" layoutY="122.0" styleClass="uncompleteTracker" text="Iris" />
-            <Label layoutX="36.0" layoutY="177.0" styleClass="uncompleteTracker" text="Photo" />
+            <Label layoutX="36.0" layoutY="0.0" styleClass="currentTracker" text="%exception" />
+            <Label layoutX="36.0" layoutY="67.0" styleClass="uncompleteTracker" text="%fingerprints" />
+            <Label layoutX="36.0" layoutY="122.0" styleClass="uncompleteTracker" text="%iris" />
+            <Label layoutX="36.0" layoutY="177.0" styleClass="uncompleteTracker" text="%image" />
          </children>
       </AnchorPane>
       <AnchorPane fx:id="operatorExceptionHeader" layoutX="1.0" styleClass="userOnboardHeader">

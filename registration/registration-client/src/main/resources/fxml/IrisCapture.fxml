@@ -27,9 +27,9 @@
                <children>
                  <Label layoutX="90.0" styleClass="qualityBoxLabel" text="%leftIris" />
                   <Label layoutY="30.0" styleClass="threshHoldLabel" text="%threshold" />
-                  <Label fx:id="leftIrisThreshold" layoutX="30.0" layoutY="60.0" styleClass="threshHoldLabel" />
+                  <Label fx:id="leftIrisThreshold" layoutX="5.0" layoutY="60.0" styleClass="threshHoldLabel" />
                   <Label layoutX="161.0" layoutY="30.0" styleClass="qualityLabel" text="%quality" />
-                  <Label fx:id="leftIrisQualityScore" layoutX="180.0" layoutY="60.0" styleClass="qualityLabel" text="-" />
+                  <Label fx:id="leftIrisQualityScore" layoutX="170.0" layoutY="60.0" styleClass="qualityLabel" text="-" />
                   <Label layoutY="80.0" styleClass="attemptsLabel" text="%attempts" />
                   <Label layoutX="180.0" layoutY="110.0" styleClass="attemptsLabel" text="-" />
                   <Label layoutX="30.0" layoutY="110.0" styleClass="exceptionLabel" text="-" />
@@ -49,9 +49,9 @@
                <children>
                    <Label layoutX="80.0" styleClass="qualityBoxLabel" text="%rightIris" />
                   <Label layoutY="30.0" styleClass="threshHoldLabel" text="%threshold" />
-                  <Label fx:id="rightIrisThreshold" layoutX="30.0" layoutY="60.0" styleClass="threshHoldLabel" />
+                  <Label fx:id="rightIrisThreshold" layoutX="5.0" layoutY="60.0" styleClass="threshHoldLabel" />
                   <Label layoutX="162.0" layoutY="30.0" styleClass="qualityLabel" text="%quality" />
-                  <Label fx:id="rightIrisQualityScore" layoutX="180.0" layoutY="60.0" styleClass="qualityLabel" text="-" />
+                  <Label fx:id="rightIrisQualityScore" layoutX="170.0" layoutY="60.0" styleClass="qualityLabel" text="-" />
                   <Label layoutY="80.0" styleClass="attemptsLabel" text="%attempts" />
                   <Label layoutX="30.0" layoutY="110.0" styleClass="attemptsLabel" text="-" />
                   <Label layoutX="150.0" layoutY="80.0" styleClass="exceptionLabel" text="%exceptions" />

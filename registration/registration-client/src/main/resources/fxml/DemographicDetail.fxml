@@ -168,8 +168,8 @@
                               <AnchorPane fx:id="residentStatus" layoutX="14.0" layoutY="225.0">
                                  <children>
                                     <Label layoutX="1.0" layoutY="2.0" styleClass="demographicMiscTexts" text="%residence" />
-                                    <Button id="National" fx:id="national" layoutX="124.0" layoutY="-3.0" mnemonicParsing="false" styleClass="selectedResidence" text="%national" />
-                                    <Button id="Foreigner" fx:id="foreigner" layoutX="206.0" layoutY="-3.0" mnemonicParsing="false" styleClass="residence" text="%foreigner" />
+                                    <Button id="National" fx:id="national" layoutX="174.0" layoutY="-3.0" mnemonicParsing="false" styleClass="selectedResidence" text="%national" />
+                                    <Button id="Foreigner" fx:id="foreigner" layoutX="256.0" layoutY="-3.0" mnemonicParsing="false" styleClass="residence" text="%foreigner" />
                                     <TextField fx:id="residence" layoutX="14.0" layoutY="10.0" styleClass="demographicMiscTexts" visible="false" />
                                  </children>
                               </AnchorPane>

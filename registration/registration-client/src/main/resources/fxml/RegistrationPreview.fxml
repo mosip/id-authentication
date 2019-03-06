@@ -38,7 +38,7 @@
                   <WebView fx:id="webView" layoutY="-1.0" prefHeight="545.0" prefWidth="912.0" />
                   <AnchorPane layoutY="543.0" prefHeight="27.0" prefWidth="911.0" styleClass="consent">
                      <children>
-                        <CheckBox fx:id="consentOfApplicant" layoutX="47.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="595.0" text="I provide my consent for storage and utilization of my personal data." />
+                        <CheckBox fx:id="consentOfApplicant" layoutX="47.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="595.0" text="%consent" />
                      </children>
                   </AnchorPane>
                </children>
