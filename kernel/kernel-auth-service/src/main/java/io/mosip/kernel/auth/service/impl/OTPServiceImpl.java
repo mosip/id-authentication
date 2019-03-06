@@ -59,12 +59,12 @@ public class OTPServiceImpl implements OTPService {
 	OTPGenerateService oTPGenerateService;
 
 	@Override
-	public AuthNResponseDto sendOTP(MosipUserDto mosipUserDto, String channel, String appId) {
+	public AuthNResponseDto sendOTP(MosipUserDto mosipUserDto, List<String> channel, String appId) {
 		AuthNResponseDto authNResponseDto = null;
 		OtpEmailSendResponseDto otpEmailSendResponseDto = null;
 		OtpSmsSendResponseDto otpSmsSendResponseDto = null;
-		OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUserDto, channel);
-		if (channel.equals(AuthConstant.EMAIL)) {
+		OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUserDto);
+		if (channel.contains(AuthConstant.EMAIL)) {
 			String message = getOtpEmailMessage(otpGenerateResponseDto,appId);
 			otpEmailSendResponseDto = sendOtpByEmail(message, mosipUserDto.getMail());
 		} else {
@@ -93,7 +93,7 @@ public class OTPServiceImpl implements OTPService {
 			List<OtpTemplateDto> otpTemplateList = otpTemplateResponseDto.getTemplates();
 			for(OtpTemplateDto otpTemplateDto : otpTemplateList)
 			{
-				if(otpTemplateDto.getId().equals(appId))
+				if(otpTemplateDto.getId().toLowerCase().equals(appId.toLowerCase()))
 				{
 				template = otpTemplateDto.getFileText();
 				
@@ -118,7 +118,7 @@ public class OTPServiceImpl implements OTPService {
 			List<OtpTemplateDto> otpTemplateList = otpTemplateResponseDto.getTemplates();
 			for(OtpTemplateDto otpTemplateDto : otpTemplateList)
 			{
-				if(otpTemplateDto.getId().equals(appId))
+				if(otpTemplateDto.getId().toLowerCase().equals(appId.toLowerCase()))
 				{
 				template = otpTemplateDto.getFileText();
 				
@@ -160,9 +160,6 @@ public class OTPServiceImpl implements OTPService {
 	public MosipUserDtoToken validateOTP(MosipUserDto mosipUser, String otp) {
 		String key = new OtpGenerateRequestDto(mosipUser).getKey();
 		MosipUserDtoToken mosipUserDtoToken = null;
-		String verified_token = null;
-		String refresh_token = null;
-
 		final String url = mosipEnvironment.getOtpManagerSvcUrl() + mosipEnvironment.getVerifyOtpUserApi();
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url).queryParam("key", key).queryParam("otp",
 				otp);
@@ -171,8 +168,6 @@ public class OTPServiceImpl implements OTPService {
 				OtpValidateResponseDto.class);
 		if (otpValidateResponseDto != null) {
 			BasicTokenDto basicToken = tokenGenerator.basicGenerateOTPToken(mosipUser, true);
-			//verified_token = tokenGenerator.generateForOtp(mosipUser, true);
-			//refresh_token = tokenGenerator.refreshTokenForOTP(mosipUser);
 			mosipUserDtoToken = new MosipUserDtoToken(mosipUser, basicToken.getAuthToken(),basicToken.getRefreshToken(),basicToken.getExpiryTime(), otpValidateResponseDto.getMessage());
 		}
 		return mosipUserDtoToken;

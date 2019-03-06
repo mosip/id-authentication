@@ -19,9 +19,9 @@ public class AuthConstant {
 
 	public static final String LDAP = "ldap";
 
-	public static final String EMAIL = "EMAIL";
+	public static final String EMAIL = "email";
 	
-	public static final String PHONE = "MOBILENUMBER";
+	public static final String PHONE = "mobile";
 
 	public static final String OTP_SENT_MESSAGE = "OTP Sent Successfully";
 	
