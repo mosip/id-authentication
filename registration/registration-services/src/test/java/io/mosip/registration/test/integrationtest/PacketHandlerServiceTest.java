@@ -53,22 +53,31 @@ public class PacketHandlerServiceTest extends BaseIntegrationTest {
 
 		RegistrationDTO obj = mapper.readValue(new File("src/test/resources/testData/PacketHandlerServiceData/user.json"), RegistrationDTO.class);
 		MoroccoIdentity identity = mapper.readValue(new File("src/test/resources/testData/PacketHandlerServiceData/identity.json"), MoroccoIdentity.class);
+		
 		byte[] data = IOUtils.toByteArray(
 				new FileInputStream(new File("src/test/resources/testData/PacketHandlerServiceData/PANStubbed.jpg")));
 		DocumentDetailsDTO documentDetailsDTOIdentity = new DocumentDetailsDTO();
 		documentDetailsDTOIdentity.setType("POI");
-		identity.setProofOfIdentity(documentDetailsDTOIdentity);
+		documentDetailsDTOIdentity.setFormat("format");
+		documentDetailsDTOIdentity.setOwner("owner");
+		
 		
 		DocumentDetailsDTO documentDetailsDTOAddress = new DocumentDetailsDTO();
-		documentDetailsDTOIdentity.setType("POA");
-		identity.setProofOfIdentity(documentDetailsDTOIdentity);
+		documentDetailsDTOAddress.setType("POA");
+		documentDetailsDTOAddress.setFormat("format");
+		documentDetailsDTOAddress.setOwner("owner");
+		
 		
 		DocumentDetailsDTO documentDetailsDTORelationship = new DocumentDetailsDTO();
-		documentDetailsDTOIdentity.setType("POR");
-		identity.setProofOfIdentity(documentDetailsDTOIdentity);
+		documentDetailsDTORelationship.setType("POR");
+		documentDetailsDTORelationship.setFormat("format");
+		documentDetailsDTORelationship.setOwner("owner");
+		
 		
 		DocumentDetailsDTO documentDetailsDTODOB = new DocumentDetailsDTO();
-		documentDetailsDTOIdentity.setType("PODOB");
+		documentDetailsDTODOB.setType("PODOB");
+		documentDetailsDTODOB.setFormat("format");
+		documentDetailsDTODOB.setOwner("owner");
 		identity.setProofOfIdentity(documentDetailsDTOIdentity);
 		identity.setProofOfAddress(documentDetailsDTOAddress);
 		identity.setProofOfRelationship(documentDetailsDTORelationship);
@@ -77,11 +86,13 @@ public class PacketHandlerServiceTest extends BaseIntegrationTest {
 		DocumentDetailsDTO documentDetailsDTO = identity.getProofOfIdentity();
 		documentDetailsDTO.setDocument(data);
 		documentDetailsDTO = identity.getProofOfAddress();
+		
 		documentDetailsDTO.setDocument(data);
 		documentDetailsDTO = identity.getProofOfRelationship();
 		documentDetailsDTO.setDocument(data);
 		documentDetailsDTO = identity.getProofOfDateOfBirth();
 		documentDetailsDTO.setDocument(data);
+		obj.getDemographicDTO().getDemographicInfoDTO().setIdentity(identity);
 		RegistrationCenterDetailDTO registrationCenter = new RegistrationCenterDetailDTO();
 		registrationCenter.setRegistrationCenterId("20916");
 		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(registrationCenter);
