@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -62,15 +63,15 @@ public class SyncManagerImpl extends BaseService implements SyncManager {
 			syncControl.setLangCode(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANUAGE));
 
 			syncControl.setCrBy(syncTransaction.getCrBy());
-			syncControl.setCrDtime(new Timestamp(System.currentTimeMillis()));
+			syncControl.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 
 		} else {
 			syncControl.setUpdBy(syncTransaction.getCrBy());
-			syncControl.setUpdDtimes(new Timestamp(System.currentTimeMillis()));
+			syncControl.setUpdDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 
 		}
 		syncControl.setSynctrnId(syncTransaction.getId());
-		syncControl.setLastSyncDtimes(new Timestamp(System.currentTimeMillis()));
+		syncControl.setLastSyncDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 
 		if (isNotCreated) {
 			syncControl = syncJobDAO.save(syncControl);
@@ -98,7 +99,7 @@ public class SyncManagerImpl extends BaseService implements SyncManager {
 
 			syncTransaction.setSyncJobId(syncJobId);
 
-			syncTransaction.setSyncDateTime(new Timestamp(System.currentTimeMillis()));
+			syncTransaction.setSyncDateTime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 			syncTransaction.setStatusCode(status);
 			syncTransaction.setStatusComment(statusComment);
 
@@ -117,7 +118,7 @@ public class SyncManagerImpl extends BaseService implements SyncManager {
 			syncTransaction.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM.equals(triggerPoint) ? triggerPoint
 					: getUserIdFromSession());
 
-			syncTransaction.setCrDtime(new Timestamp(System.currentTimeMillis()));
+			syncTransaction.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 
 			syncTransaction = jobTransactionDAO.save(syncTransaction);
 

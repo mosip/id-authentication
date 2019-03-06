@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import io.mosip.kernel.core.util.DateUtils;
 /**
  * The enity class for Registration Transaction
  * 
@@ -200,7 +201,7 @@ public class RegistrationTransaction {
 	 *            the crDtime to set
 	 */
 	public void setCrDtime(Timestamp crDtime) {
-		this.crDtime = crDtime;
+		this.crDtime = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 	}
 
 	/**
@@ -230,7 +231,7 @@ public class RegistrationTransaction {
 	 *            the updDtimes to set
 	 */
 	public void setUpdDtimes(Timestamp updDtimes) {
-		this.updDtimes = updDtimes;
+		this.updDtimes = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 	}
 
 }

@@ -29,6 +29,7 @@ import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.Identity;
+import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.dto.demographic.ValuesDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.util.kernal.RIDGenerator;
@@ -218,7 +219,7 @@ public class DataProvider {
 		String localLanguageCode = "ar";
 
 		DemographicInfoDTO demographicInfoDTO = Builder.build(DemographicInfoDTO.class)
-				.with(demographicInfo -> demographicInfo.setIdentity((Identity)Builder.build(Identity.class)
+				.with(demographicInfo -> demographicInfo.setIdentity((MoroccoIdentity)Builder.build(MoroccoIdentity.class)
 						.with(identity -> identity.setFullName((List<ValuesDTO>)Builder.build(LinkedList.class)
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(platformLanguageCode))
@@ -284,6 +285,14 @@ public class DataProvider {
 										.with(value -> value.setLanguage(localLanguageCode))
 										.with(value -> value.setValue("City")).get()))
 								.get()))
+						.with(identity -> identity.setResidenceStatus((List<ValuesDTO>)Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue("National")).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue("National")).get()))
+								.get()))
 						.with(identity -> identity.setPostalCode("605110"))
 						.with(identity -> identity.setPhone("8889992233"))
 						.with(identity -> identity.setEmail("john.lawerence@gmail.com"))
@@ -328,6 +337,8 @@ public class DataProvider {
 
 	private static void getDocumentDetailsDTO(Identity identity, Map<String, DocumentDetailsDTO> documents) throws RegBaseCheckedException {
 
+		MoroccoIdentity moroccoIdentity = (MoroccoIdentity) identity;
+
 		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
 		documentDetailsDTO.setType("Passport");
@@ -335,7 +346,7 @@ public class DataProvider {
 		documentDetailsDTO.setValue("ProofOfIdentity");
 		documentDetailsDTO.setOwner("Self");
 		
-		identity.setProofOfIdentity(documentDetailsDTO);
+		moroccoIdentity.setProofOfIdentity(documentDetailsDTO);
 		documents.put("POI", documentDetailsDTO);
 
 		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
@@ -345,7 +356,7 @@ public class DataProvider {
 		documentDetailsResidenceDTO.setValue("ProofOfAddress");
 		documentDetailsResidenceDTO.setOwner("hof");
 		
-		identity.setProofOfAddress(documentDetailsResidenceDTO);
+		moroccoIdentity.setProofOfAddress(documentDetailsResidenceDTO);
 		documents.put("POA", documentDetailsResidenceDTO);
 
 		documentDetailsDTO = new DocumentDetailsDTO();
@@ -355,7 +366,7 @@ public class DataProvider {
 		documentDetailsDTO.setValue("ProofOfRelationship");
 		documentDetailsDTO.setOwner("Self");
 		
-		identity.setProofOfRelationship(documentDetailsDTO);
+		moroccoIdentity.setProofOfRelationship(documentDetailsDTO);
 		documents.put("POR", documentDetailsDTO);
 
 		documentDetailsResidenceDTO = new DocumentDetailsDTO();
@@ -365,7 +376,7 @@ public class DataProvider {
 		documentDetailsResidenceDTO.setValue("DateOfBirthProof");
 		documentDetailsResidenceDTO.setOwner("hof");
 		
-		identity.setProofOfDateOfBirth(documentDetailsResidenceDTO);
+		moroccoIdentity.setProofOfDateOfBirth(documentDetailsResidenceDTO);
 		documents.put("POB", documentDetailsResidenceDTO);
 	}
 

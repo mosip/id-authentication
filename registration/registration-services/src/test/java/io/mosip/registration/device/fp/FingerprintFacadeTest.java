@@ -3,7 +3,6 @@ package io.mosip.registration.device.fp;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.awt.image.BufferedImage;
@@ -17,10 +16,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,12 +41,10 @@ import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
-import io.mosip.registration.entity.UserBiometricId;
+import io.mosip.registration.entity.id.UserBiometricId;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.test.util.datastub.DataProvider;
-//import javafx.scene.image.WritableImage;
-import javafx.scene.image.WritableImage;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ImageIO.class, IOUtils.class, FingerprintTemplate.class })

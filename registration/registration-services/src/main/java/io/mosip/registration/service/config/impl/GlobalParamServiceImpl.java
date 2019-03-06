@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +19,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
@@ -31,11 +31,10 @@ import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.GlobalParam;
-import io.mosip.registration.entity.GlobalParamId;
+import io.mosip.registration.entity.id.GlobalParamId;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.GlobalParamService;
-import io.mosip.registration.service.impl.LoginServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
@@ -52,7 +51,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	/**
 	 * Instance of LOGGER
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(LoginServiceImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(GlobalParamServiceImpl.class);
 
 	/**
 	 * Instance of {@code AuditFactory}
@@ -129,11 +128,11 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 				GlobalParam globalParam = globalParamDAO.get(key.getKey());
 
-		 		if (globalParam != null) {
+				if (globalParam != null) {
 					globalParam.setVal(globalParamMap.get(key.getKey()));
 
 					globalParam.setUpdBy(getUserIdFromSession());
-					globalParam.setUpdDtimes(Timestamp.valueOf(LocalDateTime.now()));
+					globalParam.setUpdDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 
 				} else {
 					globalParam = new GlobalParam();
@@ -145,7 +144,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 					globalParam.setTyp("CONFIGURATION");
 					globalParam.setIsActive(true);
 					globalParam.setCrBy("brahma");
-					globalParam.setCrDtime(Timestamp.valueOf(LocalDateTime.now()));
+					globalParam.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 					globalParam.setVal(globalParamMap.get(key.getKey()));
 				}
 
@@ -159,8 +158,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 		} catch (HttpServerErrorException | HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException
 				| ClassCastException | ResourceAccessException exception) {
-
-			setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
 			LOGGER.error("REGISTRATION_SYNCH_CONFIG_DATA", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 		}
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,

@@ -1,7 +1,5 @@
 package io.mosip.registration.service.template;
 
-import io.mosip.registration.exception.RegBaseCheckedException;
-
 /**
  * This is the interface for TemplateServcie
  *
@@ -16,8 +14,7 @@ public interface TemplateService {
 	 *            to define the template name
 	 * 
 	 * @return String which contains the template data
-	 * @throws RegBaseCheckedException
 	 */
-	public String getHtmlTemplate(String templateName) throws RegBaseCheckedException;
+	public String getHtmlTemplate(String templateName);
 	
 }

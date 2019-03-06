@@ -2,13 +2,12 @@ package io.mosip.registration.entity;
 
 import java.sql.Timestamp;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.Table;
+
+import io.mosip.registration.entity.id.RegDeviceTypeId;
 
 /**
  * RegDeviceType entity details
@@ -19,14 +18,10 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "device_type", schema = "reg")
-@IdClass(RegDeviceTypeId.class)
 public class RegDeviceType extends RegistrationCommonFields {
-	@Id
-	@AttributeOverrides({ @AttributeOverride(name = "code", column = @Column(name = "code")),
-			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code")) })
 
-	private String code;
-	private String langCode;
+	@EmbeddedId
+	private RegDeviceTypeId regDeviceTypeId;
 
 	@Column(name = "name")
 	private String name;
@@ -37,20 +32,18 @@ public class RegDeviceType extends RegistrationCommonFields {
 	@Column(name = "del_dtimes")
 	private Timestamp deletedTime;
 
-	public String getCode() {
-		return code;
+	/**
+	 * @return the regDeviceTypeId
+	 */
+	public RegDeviceTypeId getRegDeviceTypeId() {
+		return regDeviceTypeId;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public String getLangCode() {
-		return langCode;
-	}
-
-	public void setLangCode(String langCode) {
-		this.langCode = langCode;
+	/**
+	 * @param regDeviceTypeId the regDeviceTypeId to set
+	 */
+	public void setRegDeviceTypeId(RegDeviceTypeId regDeviceTypeId) {
+		this.regDeviceTypeId = regDeviceTypeId;
 	}
 
 	/**

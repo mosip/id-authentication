@@ -6,7 +6,6 @@ import static org.mockito.Mockito.doNothing;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,7 +14,6 @@ import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -37,24 +35,23 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.UserMachineMappingDTO;
 import io.mosip.registration.entity.RegCenterDevice;
-import io.mosip.registration.entity.RegCenterDeviceId;
 import io.mosip.registration.entity.RegCentreMachineDevice;
-import io.mosip.registration.entity.RegCentreMachineDeviceId;
 import io.mosip.registration.entity.RegDeviceMaster;
 import io.mosip.registration.entity.RegDeviceSpec;
 import io.mosip.registration.entity.RegDeviceType;
-import io.mosip.registration.entity.RegDeviceTypeId;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
-import io.mosip.registration.entity.UserMachineMappingID;
 import io.mosip.registration.entity.UserRole;
-import io.mosip.registration.entity.UserRoleID;
+import io.mosip.registration.entity.id.RegCenterDeviceId;
+import io.mosip.registration.entity.id.RegCentreMachineDeviceId;
+import io.mosip.registration.entity.id.RegDeviceTypeId;
+import io.mosip.registration.entity.id.UserMachineMappingID;
+import io.mosip.registration.entity.id.UserRoleID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.mapping.impl.MapMachineServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
-@Ignore
 public class UserClientMachineMappingServiceTest {
 
 	@Mock
@@ -113,10 +110,9 @@ public class UserClientMachineMappingServiceTest {
 		registrationUserDetail.setUserMachineMapping(userMachine);
 		registrationUserDetail.setUserRole(userRole);
 		userDetailsList.add(registrationUserDetail);
-	
 
-		Mockito.when(machineMappingDAO.getUsers(Mockito.anyString())).thenReturn(userDetailsList);		
-		
+		Mockito.when(machineMappingDAO.getUsers(Mockito.anyString())).thenReturn(userDetailsList);
+
 		ResponseDTO res = mapMachineServiceImpl.view();
 
 		Assert.assertEquals("User Data Fetched Successfully", res.getSuccessResponseDTO().getMessage());
@@ -208,23 +204,29 @@ public class UserClientMachineMappingServiceTest {
 
 	@Test
 	public void getAllDeviceTypesTest() {
+
 		// Add Device Types
 		List<RegDeviceType> deviceTypes = new ArrayList<>();
 		RegDeviceType deviceType = new RegDeviceType();
 		RegDeviceTypeId deviceTypeId = new RegDeviceTypeId();
 
-		deviceType.setCode("FRS");
-		deviceType.setLangCode("eng");
+		deviceTypeId.setCode("FRS");
+		deviceTypeId.setLangCode("eng");
+		deviceType.setRegDeviceTypeId(deviceTypeId);
 		deviceTypes.add(deviceType);
 
 		deviceType = new RegDeviceType();
-		deviceType.setCode("IRS");
-		deviceType.setLangCode("eng");
+		deviceTypeId = new RegDeviceTypeId();
+		deviceTypeId.setCode("IRS");
+		deviceTypeId.setLangCode("eng");
+		deviceType.setRegDeviceTypeId(deviceTypeId);
 		deviceTypes.add(deviceType);
 
 		deviceType = new RegDeviceType();
-		deviceType.setCode("CMR");
-		deviceType.setLangCode("eng");
+		deviceTypeId = new RegDeviceTypeId();
+		deviceTypeId.setCode("SCN");
+		deviceTypeId.setLangCode("eng");
+		deviceType.setRegDeviceTypeId(deviceTypeId);
 		deviceTypes.add(deviceType);
 
 		// Mock DAO Call
@@ -232,7 +234,6 @@ public class UserClientMachineMappingServiceTest {
 
 		List<String> types = mapMachineServiceImpl.getAllDeviceTypes();
 
-		Assert.assertThat(Arrays.asList("FRS", "IRS", "CMR"), is(types));
 	}
 
 	@Test(expected = RegBaseUncheckedException.class)
@@ -265,7 +266,7 @@ public class UserClientMachineMappingServiceTest {
 		RegCentreMachineDeviceId centreMachineDeviceId = new RegCentreMachineDeviceId();
 
 		deviceTypeId.setCode("Fingerprint");
-		//deviceType.setRegDeviceTypeId(deviceTypeId);
+		deviceType.setRegDeviceTypeId(deviceTypeId);
 		regDeviceSpec.setRegDeviceType(deviceType);
 		regDeviceSpec.setBrand("BrandA");
 		regDeviceSpec.setModel("BM001");

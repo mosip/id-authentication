@@ -4,7 +4,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
-import io.mosip.registration.dto.SyncRegistrationDTO;
+import io.mosip.registration.dto.RegistrationPacketSyncDTO;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
@@ -27,7 +28,7 @@ public interface PacketSynchService {
 	 * @throws URISyntaxException
 	 * @throws MosipJsonProcessingException
 	 */
-	Object syncPacketsToServer(List<SyncRegistrationDTO> syncDtoList)
+	ResponseDTO syncPacketsToServer(RegistrationPacketSyncDTO syncDtoList)
 			throws RegBaseCheckedException, URISyntaxException, JsonProcessingException;
 
 	/**

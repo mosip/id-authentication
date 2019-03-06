@@ -62,7 +62,7 @@ public class PreRegDbread {
 	public static boolean prereg_dbDataPersistenceCheck(String preId) {
 		boolean flag = false;
 
-		factory = new Configuration().configure("prereg.cfg.xml").addAnnotatedClass(OtpEntity.class)
+		factory = new Configuration().configure("prereginteg.cfg.xml").addAnnotatedClass(OtpEntity.class)
 				.buildSessionFactory();
 		session = factory.getCurrentSession();
 		session.beginTransaction();
@@ -141,7 +141,7 @@ public class PreRegDbread {
 		boolean flag = false;
 		// String preId;
 
-		factory = new Configuration().configure("prereg.cfg.xml").addAnnotatedClass(OtpEntity.class)
+		factory = new Configuration().configure("prereginteg.cfg.xml").addAnnotatedClass(OtpEntity.class)
 				.buildSessionFactory();
 
 		for (String preId : preIds)
@@ -192,7 +192,7 @@ public class PreRegDbread {
 		boolean flag = false;
 		// String preId;
 
-		factory = new Configuration().configure("prereg.cfg.xml").addAnnotatedClass(OtpEntity.class)
+		factory = new Configuration().configure("prereginteg.cfg.xml").addAnnotatedClass(OtpEntity.class)
 				.buildSessionFactory();
 
 		session = factory.getCurrentSession();

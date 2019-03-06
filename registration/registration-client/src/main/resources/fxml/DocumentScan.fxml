@@ -28,9 +28,15 @@
       </AnchorPane>
       <AnchorPane fx:id="exceptionPane" layoutX="199.0" layoutY="540.0">
          <children>
-            <Label id="toggleLabel2" fx:id="bioExceptionToggleLabel1" layoutX="342.0" layoutY="10.0" styleClass="toggleButton" text="" />
-            <Label id="toggleLabel1" fx:id="bioExceptionToggleLabel2" layoutX="350.0" layoutY="10.0" styleClass="toggleButton" text="" />
-            <Label layoutX="12.0" layoutY="8.0" text="%biometricexception" styleClass="biometricEceptionLabel"/>
+            <AnchorPane layoutX="342.0" layoutY="12.0">
+               <children>
+ 	              <Label id="toggleLabel1" fx:id="bioExceptionToggleLabel1" layoutY="0.0" styleClass="toggleButton" text="" />
+                  <Label id="toggleLabel2" fx:id="bioExceptionToggleLabel2" layoutX="0.0" layoutY="2.0" styleClass="toggleButton" text="" />
+               </children>
+            </AnchorPane>
+            <Label layoutX="12.0" layoutY="8.0" styleClass="biometricEceptionLabel" text="%biometricexceptionrequired" />
+            <Label layoutX="300.0" layoutY="15.0" styleClass="uinUpdateLabelsTypeTwo" text="%no" />
+            <Label layoutX="425.0" layoutY="15.0" styleClass="uinUpdateLabelsTypeTwo" text="%yes" />
          </children>
       </AnchorPane>
       <AnchorPane fx:id="RegistrationHeader">
@@ -40,7 +46,7 @@
                   <AnchorPane layoutX="1.0" layoutY="6.0">
                      <children>
                         <Button layoutY="2.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
-                        <Label layoutX="56.0" layoutY="5.0" text="%/registration" />
+                        <Label layoutX="76.0" layoutY="5.0" text="%/registration" />
                      </children>
                   </AnchorPane>
                </children>
@@ -98,7 +104,7 @@
       </ImageView>
       <AnchorPane layoutY="624.0" styleClass="registrationFooter">
          <children>
-            <Button layoutX="176.0" layoutY="5.0" mnemonicParsing="false" onAction="#back" styleClass="backButton" text="Back">
+            <Button layoutX="176.0" layoutY="5.0" mnemonicParsing="false" onAction="#back" styleClass="backButton" text="%back">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -107,8 +113,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button layoutX="887.0" layoutY="8.0" mnemonicParsing="false" onAction="#skip" styleClass="backButton" text="Skip" />
-            <Button layoutX="1026.0" layoutY="5.0" mnemonicParsing="false" onAction="#next" styleClass="contiuneButton" text="Continue">
+            <Button layoutX="1026.0" layoutY="5.0" mnemonicParsing="false" onAction="#next" styleClass="contiuneButton" text="%continue">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                      <image>

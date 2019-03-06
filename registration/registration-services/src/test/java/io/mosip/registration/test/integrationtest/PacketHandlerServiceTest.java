@@ -21,8 +21,9 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.demographic.DemographicDTO;
+import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
+import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.packet.PacketHandlerService;
 
@@ -48,18 +49,50 @@ public class PacketHandlerServiceTest extends BaseIntegrationTest {
 	public void testHandelPacket() throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JSR310Module());
+		mapper.addMixInAnnotations(DemographicInfoDTO.class, DemographicInfoDTOMix.class);
+
 		RegistrationDTO obj = mapper.readValue(new File("src/test/resources/testData/PacketHandlerServiceData/user.json"), RegistrationDTO.class);
+		MoroccoIdentity identity = mapper.readValue(new File("src/test/resources/testData/PacketHandlerServiceData/identity.json"), MoroccoIdentity.class);
+		
 		byte[] data = IOUtils.toByteArray(
 				new FileInputStream(new File("src/test/resources/testData/PacketHandlerServiceData/PANStubbed.jpg")));
-		DemographicDTO documentDetails = obj.getDemographicDTO();
-		DocumentDetailsDTO documentDetailsDTO = documentDetails.getDemographicInfoDTO().getIdentity().getProofOfIdentity();
+		DocumentDetailsDTO documentDetailsDTOIdentity = new DocumentDetailsDTO();
+		documentDetailsDTOIdentity.setType("POI");
+		documentDetailsDTOIdentity.setFormat("format");
+		documentDetailsDTOIdentity.setOwner("owner");
+		
+		
+		DocumentDetailsDTO documentDetailsDTOAddress = new DocumentDetailsDTO();
+		documentDetailsDTOAddress.setType("POA");
+		documentDetailsDTOAddress.setFormat("format");
+		documentDetailsDTOAddress.setOwner("owner");
+		
+		
+		DocumentDetailsDTO documentDetailsDTORelationship = new DocumentDetailsDTO();
+		documentDetailsDTORelationship.setType("POR");
+		documentDetailsDTORelationship.setFormat("format");
+		documentDetailsDTORelationship.setOwner("owner");
+		
+		
+		DocumentDetailsDTO documentDetailsDTODOB = new DocumentDetailsDTO();
+		documentDetailsDTODOB.setType("PODOB");
+		documentDetailsDTODOB.setFormat("format");
+		documentDetailsDTODOB.setOwner("owner");
+		identity.setProofOfIdentity(documentDetailsDTOIdentity);
+		identity.setProofOfAddress(documentDetailsDTOAddress);
+		identity.setProofOfRelationship(documentDetailsDTORelationship);
+		identity.setProofOfDateOfBirth(documentDetailsDTODOB);
+		
+		DocumentDetailsDTO documentDetailsDTO = identity.getProofOfIdentity();
 		documentDetailsDTO.setDocument(data);
-		documentDetailsDTO = documentDetails.getDemographicInfoDTO().getIdentity().getProofOfAddress();
+		documentDetailsDTO = identity.getProofOfAddress();
+		
 		documentDetailsDTO.setDocument(data);
-		documentDetailsDTO = documentDetails.getDemographicInfoDTO().getIdentity().getProofOfRelationship();
+		documentDetailsDTO = identity.getProofOfRelationship();
 		documentDetailsDTO.setDocument(data);
-		documentDetailsDTO = documentDetails.getDemographicInfoDTO().getIdentity().getProofOfDateOfBirth();
+		documentDetailsDTO = identity.getProofOfDateOfBirth();
 		documentDetailsDTO.setDocument(data);
+		obj.getDemographicDTO().getDemographicInfoDTO().setIdentity(identity);
 		RegistrationCenterDetailDTO registrationCenter = new RegistrationCenterDetailDTO();
 		registrationCenter.setRegistrationCenterId("20916");
 		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(registrationCenter);

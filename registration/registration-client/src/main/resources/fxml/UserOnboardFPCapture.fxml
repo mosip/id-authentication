@@ -48,7 +48,7 @@
                      <children>
                         <ImageView fx:id="rightHandPalmImageview" fitHeight="160.0" fitWidth="180.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../images/rightHand.PNG" />
+                              <Image url="@../images/rightHand.png" />
                            </image>
                         </ImageView>
                      </children>

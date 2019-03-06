@@ -13,6 +13,6 @@ import io.mosip.registration.entity.ReasonList;
  */
 public interface ReasonListRepository extends BaseRepository<ReasonList, String> {
 
-	List<ReasonList> findByLangCodeAndReasonCategoryCodeIn(String langCode, List<String> resonCatog);
+	List<ReasonList> findByIsActiveTrueAndLangCodeAndReasonCategoryCodeIn(String langCode, List<String> resonCatog);
 
 }

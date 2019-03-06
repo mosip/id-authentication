@@ -1,9 +1,14 @@
 package io.mosip.registration.entity;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
+
+import io.mosip.registration.entity.id.TemplateId;
 
 /**
  * Template entity details
@@ -12,26 +17,31 @@ import javax.persistence.Table;
  * @since 1.0.0
  */
 @Entity
+@IdClass(TemplateId.class)
 @Table(schema = "reg", name = "TEMPLATE")
 public class Template extends TemplateCommonFields {
 
 	@Id
+	@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "id")),
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code")) })
+
 	private String id;
+	private String langCode;
+
+	@Column(name = "name")
 	private String name;
-	@Column(name="file_format_code")
+	@Column(name = "file_format_code")
 	private String fileFormatCode;
 	private String model;
-	@Column(name="file_txt")
+	@Column(name = "file_txt")
 	private byte[] fileTxt;
-	@Column(name="module_id")
+	@Column(name = "module_id")
 	private String moduleId;
-	@Column(name="module_name")
+	@Column(name = "module_name")
 	private String moduleName;
-	@Column(name="template_typ_code")
+	@Column(name = "template_typ_code")
 	private String templateTypCode;
-	@Column(name="lang_code")
-	private String langCode;
-	
+
 	public String getId() {
 		return id;
 	}
@@ -43,7 +53,7 @@ public class Template extends TemplateCommonFields {
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -103,7 +113,6 @@ public class Template extends TemplateCommonFields {
 	public void setLangCode(String langCode) {
 		this.langCode = langCode;
 	}
-
 
 	@Override
 	public int hashCode() {
@@ -178,7 +187,6 @@ public class Template extends TemplateCommonFields {
 		return true;
 	}
 
-	
 	@Override
 	public String toString() {
 		return "Template [id=" + id + ", name=" + name + ", descr=" + descr + ", file_format_code=" + fileFormatCode

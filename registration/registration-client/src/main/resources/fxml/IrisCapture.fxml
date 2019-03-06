@@ -82,7 +82,7 @@
                   <AnchorPane layoutX="1.0" layoutY="6.0">
                      <children>
                         <Button layoutY="2.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
-                        <Label layoutX="56.0" layoutY="5.0" text="%/registration" />
+                        <Label layoutX="76.0" layoutY="5.0" text="%/registration" />
                      </children>
                   </AnchorPane>
                </children>
@@ -135,8 +135,8 @@
       </AnchorPane>
       <AnchorPane layoutY="624.0" styleClass="registrationFooter">
          <children>
-            <Button layoutX="117.0" layoutY="4.0" mnemonicParsing="false" onAction="#previousSection" styleClass="backButton" text="Back" />
-            <Button layoutX="1015.0" layoutY="5.0" mnemonicParsing="false" onAction="#nextSection" styleClass="contiuneButton" text="Continue" />
+            <Button layoutX="117.0" layoutY="4.0" mnemonicParsing="false" onAction="#previousSection" styleClass="backButton" text="%back" />
+            <Button layoutX="1015.0" layoutY="5.0" mnemonicParsing="false" onAction="#nextSection" styleClass="contiuneButton" text="%continue" />
          </children>
       </AnchorPane>
       <ImageView fx:id="trackerImage" fitHeight="25.0" fitWidth="194.0" layoutX="697.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true" y="1.0">

@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
@@ -57,13 +59,11 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 	synchronized public ResponseDTO fetchPolicy() {
 		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"synch the public key is started");
-
 		KeyStore keyStore = null;
 		ResponseDTO responseDTO = new ResponseDTO();
 		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 			LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, "user is not in online");
-			 setErrorResponse(responseDTO,
-					RegistrationConstants.POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE, null);
+			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE, null);
 		} else {
 			keyStore = policySyncDAO.findByMaxExpireTime();
 
@@ -72,18 +72,16 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 				long difference = ChronoUnit.DAYS.between(new Date().toInstant(), validDate.toInstant());
 				if (Integer
 						.parseInt((String) ApplicationContext.map().get(RegistrationConstants.KEY_NAME)) < difference) {
-					 setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE,
-							null);
+					setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
 				} else {
 
 					try {
-						 getPublicKey(responseDTO);
+						getPublicKey(responseDTO);
 					} catch (KeyManagementException | IOException | java.security.NoSuchAlgorithmException exception) {
 						LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 								exception.getMessage());
 
-						setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE,
-								null);
+						setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
 
 					}
 				}
@@ -93,7 +91,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 				} catch (KeyManagementException | IOException | java.security.NoSuchAlgorithmException exception) {
 					LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 							exception.getMessage());
-					 setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+					setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
 
 				}
 
@@ -118,7 +116,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 			keyStore.setValidFromDtimes(Timestamp.valueOf(publicKeyResponse.getIssuedAt()));
 			keyStore.setValidTillDtimes(Timestamp.valueOf(publicKeyResponse.getExpiryAt()));
 			keyStore.setCreatedBy(getUserIdFromSession());
-			keyStore.setCreatedDtimes(Timestamp.valueOf(LocalDateTime.now()));
+			keyStore.setCreatedDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 			policySyncDAO.updatePolicy(keyStore);
 			responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
 			LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
@@ -126,10 +124,50 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 
 		} catch (HttpClientErrorException | RegBaseCheckedException exception) {
 			LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
-			 setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
 
 		}
-		
 
 	}
+
+	@Override
+	public ResponseDTO checkKeyValidation() {
+
+		LOGGER.info("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, "Key Validation is started");
+
+		ResponseDTO responseDTO = new ResponseDTO();
+
+		try {
+
+			KeyStore keyStore = policySyncDAO.findByMaxExpireTime();
+
+			String val = getGlobalConfigValueOf(RegistrationConstants.KEY_NAME);
+			if (val != null) {
+
+				/* Get Calendar instance */
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(new Timestamp(System.currentTimeMillis()));
+				cal.add(Calendar.DATE, +Integer.parseInt(val));
+
+				/* Compare Key Validity Date with currentDate+configuredDays */
+				if (keyStore.getValidTillDtimes().after(new Timestamp(cal.getTimeInMillis()))) {
+					setSuccessResponse(responseDTO, RegistrationConstants.VALID_KEY, null);
+				} else {
+					setErrorResponse(responseDTO, RegistrationConstants.INVALID_KEY, null);
+				}
+
+			}
+		} catch (RuntimeException runtimeException) {
+
+			LOGGER.info("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+			setErrorResponse(responseDTO, RegistrationConstants.INVALID_KEY, null);
+		}
+
+		LOGGER.info("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, "Key Validation is started");
+
+		return responseDTO;
+
+	}
+
 }

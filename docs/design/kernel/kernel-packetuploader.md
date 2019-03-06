@@ -2,7 +2,7 @@
 
 #### Background
 
-This library can be used as a SFTP client to upload files/packets to SFTP server. It has series of operations to perform as:
+This application can be used as a SFTP client to upload files/packets to SFTP server. It has series of operations to perform as:
 
 - Creating SFTP channel providing SFTP server details
 
@@ -39,4 +39,4 @@ This library can be used as a SFTP client to upload files/packets to SFTP server
 ## Implementation
 
 
-**kernel-packetuploader-sftp** [README](../../../kernel/kernel-packetuploader-sftp/README.md)
+**kernel-packetuploader-sftp** [README](../../kernel/kernel-packetuploader-sftp/README.md)

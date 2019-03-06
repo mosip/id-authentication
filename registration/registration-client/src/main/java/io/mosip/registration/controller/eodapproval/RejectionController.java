@@ -5,10 +5,10 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,7 +131,7 @@ public class RejectionController extends BaseController implements Initializable
 			}
 		}
 
-		Map<String, String> map = new HashMap<>();
+		Map<String, String> map = new WeakHashMap<>();
 		map.put("registrationID", rejRegData.getId());
 		map.put("statusCode", RegistrationClientStatusCode.REJECTED.getCode());
 		map.put("statusComment", rejectionComboBox.getSelectionModel().getSelectedItem());

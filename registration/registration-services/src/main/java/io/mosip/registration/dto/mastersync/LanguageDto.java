@@ -38,6 +38,27 @@ public class LanguageDto extends MasterSyncBaseDto{
 	 */
 	
 	private Boolean isActive;
+	
+	/**
+	 * Field for language code
+	 */
+	
+	private String langCode;
+	
+
+	/**
+	 * @return the langCode
+	 */
+	public String getLangCode() {
+		return langCode;
+	}
+
+	/**
+	 * @param langCode the langCode to set
+	 */
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
+	}
 
 	/**
 	 * @return the code

@@ -4,7 +4,7 @@ import java.util.List;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.entity.UserMachineMapping;
-import io.mosip.registration.entity.UserMachineMappingID;
+import io.mosip.registration.entity.id.UserMachineMappingID;
 
 /**
  * The reposistory interface for {@link UserMachineMapping} entity
@@ -16,6 +16,6 @@ import io.mosip.registration.entity.UserMachineMappingID;
 
 public interface UserMachineMappingRepository extends BaseRepository<UserMachineMapping, UserMachineMappingID> {
 	
-	List<UserMachineMapping>findByUserMachineMappingIdMachineID(String machineId);
+	List<UserMachineMapping>findByIsActiveTrueAndUserMachineMappingIdMachineID(String machineId);
 
 }

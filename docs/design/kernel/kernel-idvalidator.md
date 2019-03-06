@@ -2,7 +2,7 @@
 
 #### Background
 
-This library can be used to validate several IDs such as UIN,VID,PRID,TSPId etc based on configured business rules.
+This application can be used to validate several IDs such as UIN,VID,PRID,TokenId etc based on configured business rules.
 
 
 #### Solution
@@ -38,4 +38,4 @@ This library can be used to validate several IDs such as UIN,VID,PRID,TSPId etc 
 ## Implementation
 
 
-**kernel-idvalidator** [README](../../../kernel/kernel-idvalidator/README.md)
+**kernel-idvalidator** [README](../../kernel/kernel-idvalidator/README.md)

@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import io.mosip.kernel.core.util.DateUtils;
 /**
  * Registration entity details
  * 
@@ -137,7 +138,7 @@ public class Registration extends RegistrationCommonFields {
 	}
 
 	public void setStatusTimestamp(Timestamp statusTimestamp) {
-		this.statusTimestamp = statusTimestamp;
+		this.statusTimestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 	}
 
 	public String getAckFilename() {
@@ -169,7 +170,7 @@ public class Registration extends RegistrationCommonFields {
 	}
 
 	public void setClientStatusTimestamp(Timestamp clientStatusTimestamp) {
-		this.clientStatusTimestamp = clientStatusTimestamp;
+		this.clientStatusTimestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 	}
 
 	public Timestamp getServerStatusTimestamp() {
@@ -177,7 +178,7 @@ public class Registration extends RegistrationCommonFields {
 	}
 
 	public void setServerStatusTimestamp(Timestamp serverStatusTimestamp) {
-		this.serverStatusTimestamp = serverStatusTimestamp;
+		this.serverStatusTimestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 	}
 
 	public String getClientStatusComments() {
@@ -249,7 +250,7 @@ public class Registration extends RegistrationCommonFields {
 	}
 
 	public void setUploadTimestamp(Timestamp uploadTimestamp) {
-		this.uploadTimestamp = uploadTimestamp;
+		this.uploadTimestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 	}
 
 	public String getLatestRegTrnId() {
@@ -289,7 +290,7 @@ public class Registration extends RegistrationCommonFields {
 	}
 
 	public void setLatestRegTrnTimestamp(Timestamp latestRegTrnTimestamp) {
-		this.latestRegTrnTimestamp = latestRegTrnTimestamp;
+		this.latestRegTrnTimestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 	}
 
 	public UserDetail getUserdetail() {

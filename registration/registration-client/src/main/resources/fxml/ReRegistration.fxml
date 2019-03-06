@@ -39,7 +39,7 @@
             </AnchorPane>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="-2.0" layoutY="2.0" styleClass="pendingApprovalHeader">
+      <AnchorPane fx:id="reRegistrationHeader" layoutX="-2.0" layoutY="2.0">
          <children>
             <ToggleButton fx:id="notInformedBtn" layoutX="1050.0" layoutY="10.0" mnemonicParsing="false" onAction="#notInformedToUser" styleClass="reRegToggle" text="%cantinformed">
                <toggleGroup>
@@ -63,6 +63,13 @@
                </graphic>
                
             </ToggleButton>
+            <AnchorPane layoutY="-10.0">
+               <children>
+                  <Button layoutY="14.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+                  <Label layoutX="80.0" layoutY="16.0" styleClass="headerLabel" text="%/reRegistration" />
+               </children>
+            </AnchorPane>
+            <Label layoutX="590.0" styleClass="mainHeader" text="%reRegistration" />
          </children>
       </AnchorPane>
    </children>

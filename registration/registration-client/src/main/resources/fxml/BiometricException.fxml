@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import java.lang.*?>
@@ -85,7 +86,7 @@
                                     <Image url="@../images/rightIndexFinger.png" />
                                  </image>
                               </ImageView>
-                              <ImageView fx:id="rightThumbFinger" fitHeight="29.0" fitWidth="36.0" layoutX="79.0" layoutY="63.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="rightThumbFinger" fitHeight="29.0" fitWidth="36.0" layoutX="81.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../images/rightThumbFinger.png" />
                                  </image>
@@ -165,8 +166,8 @@
             <AnchorPane layoutX="147.0" layoutY="360.0" prefHeight="50.0" prefWidth="449.0">
                <children>
                   <Label layoutX="24.0" layoutY="6.0" styleClass="onboardInfoDetails" text="%clicktomarktheparticular" />
-                  <Label layoutX="167.0" layoutY="6.0" styleClass="onboardInfoDetailsName" text="%finger/Iris" />
-                  <Label layoutX="231.0" layoutY="6.0" styleClass="onboardInfoDetails" text="%asException" />
+                  <Label layoutX="258.0" layoutY="6.0" styleClass="onboardInfoDetailsName" text="%finger/Iris" />
+                  <Label layoutX="421.0" layoutY="6.0" styleClass="onboardInfoDetails" text="%asException" />
                   <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/infoSymbol.png" />
@@ -213,7 +214,7 @@
             </Button>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="registrationFooter" layoutY="554.0" styleClass="registrationFooter">
+      <AnchorPane fx:id="registrationFooter" layoutY="624.0" styleClass="registrationFooter">
          <children>
             <Button layoutX="124.0" layoutY="3.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back">
                <graphic>
@@ -237,12 +238,12 @@
       </AnchorPane>
       <AnchorPane fx:id="registrationExceptionHeader">
          <children>
-            <AnchorPane fx:id="RegistrationHeader" layoutY="0.0">
+            <AnchorPane fx:id="biometricExceptionHeader" layoutY="0.0">
                <children>
                   <AnchorPane>
                      <children>
-                        <Button layoutY="2.0" mnemonicParsing="false" text="%home" />
-                        <Label layoutX="65.0" layoutY="7.0" text="/  Registration" />
+                        <Button layoutY="5.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+                        <Label layoutX="75.0" layoutY="7.0" styleClass="headerLabel" text="%/biometricException" />
                      </children>
                   </AnchorPane>
                </children>
@@ -293,9 +294,9 @@
             </AnchorPane>
          </children>
       </AnchorPane>
-      <ImageView fx:id="trackerImage" fitHeight="25.0" fitWidth="194.0" layoutX="710.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="trackerImage" fitHeight="25.0" fitWidth="194.0" layoutX="710.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/DemographicpageTracker.PNG" />
+            <Image url="@../images/DemographicpageTracker.png" />
          </image>
       </ImageView>
    </children>

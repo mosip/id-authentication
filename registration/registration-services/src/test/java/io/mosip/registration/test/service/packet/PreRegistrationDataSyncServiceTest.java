@@ -38,7 +38,6 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
 import io.mosip.registration.dto.MainResponseDTO;
 import io.mosip.registration.dto.PreRegistrationDTO;
-import io.mosip.registration.dto.PreRegistrationResponseDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -69,9 +68,6 @@ public class PreRegistrationDataSyncServiceTest {
 
 	@Mock
 	private PreRegistrationDataSyncDAO preRegistrationDAO;
-
-	@Mock
-	private PreRegistrationResponseDTO preRegistrationResponseDTO;
 
 	@Mock
 	SyncTransaction syncTransaction;

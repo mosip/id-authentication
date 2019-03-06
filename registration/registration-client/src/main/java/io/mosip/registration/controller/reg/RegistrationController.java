@@ -19,10 +19,10 @@ import javax.imageio.stream.ImageOutputStream;
 
 import org.openimaj.image.FImage;
 import org.openimaj.image.ImageUtilities;
+import org.openimaj.image.processing.face.detection.CLMDetectedFace;
+import org.openimaj.image.processing.face.detection.CLMFaceDetector;
 import org.openimaj.image.processing.face.detection.DetectedFace;
-import org.openimaj.image.processing.face.detection.HaarCascadeDetector;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -112,9 +112,6 @@ public class RegistrationController extends BaseController {
 	@Autowired
 	private AuthenticationController authenticationController;
 
-	@Value("${capture_photo_using_device}")
-	public String capturePhotoUsingDevice;
-
 	@Autowired
 	private RidGenerator<String> ridGeneratorImpl;
 
@@ -177,14 +174,14 @@ public class RegistrationController extends BaseController {
 	 */
 	private BufferedImage detectApplicantFace(BufferedImage applicantImage) {
 		BufferedImage detectedFace = null;
-		HaarCascadeDetector detector = new HaarCascadeDetector();
-		List<DetectedFace> faces = null;
+		CLMFaceDetector detector = new CLMFaceDetector();
+		List<CLMDetectedFace> faces = null;
 		faces = detector.detectFaces(ImageUtilities.createFImage(applicantImage));
 		if (!faces.isEmpty()) {
 			if (faces.size() > 1) {
 				return null;
 			} else {
-				Iterator<DetectedFace> dfi = faces.iterator();
+				Iterator<CLMDetectedFace> dfi = faces.iterator();
 				while (dfi.hasNext()) {
 					DetectedFace face = dfi.next();
 					FImage image1 = face.getFacePatch();

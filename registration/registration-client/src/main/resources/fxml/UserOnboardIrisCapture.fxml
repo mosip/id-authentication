@@ -36,7 +36,7 @@
                   <Label layoutX="70.0" layoutY="48.0" text="%iris" styleClass="onboardPageBioTitle" />
                   <AnchorPane layoutX="160.0" layoutY="68.0" styleClass="onboardIrisPanes">
                      <children>
-                        <Pane id="leftIrisPane" fx:id="leftIrisPane" onMouseClicked="#enableScan" styleClass="onboardIrisPanes">
+                        <AnchorPane id="leftIrisPane" fx:id="leftIrisPane" onMouseClicked="#enableScan" styleClass="onboardIrisPanes">
                            <children>
                               <ImageView fx:id="leftIrisImage" fitHeight="156.0" fitWidth="176.0" layoutX="2.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -44,12 +44,12 @@
                                  </image>
                               </ImageView>
                            </children>
-                        </Pane>
+                        </AnchorPane>
                      </children>
                   </AnchorPane>
                   <AnchorPane layoutX="560.0" layoutY="68.0" styleClass="onboardIrisPanes">
                      <children>
-                        <Pane id="rightIrisPane" fx:id="rightIrisPane" onMouseClicked="#enableScan" styleClass="onboardIrisPanes">
+                        <AnchorPane id="rightIrisPane" fx:id="rightIrisPane" onMouseClicked="#enableScan" styleClass="onboardIrisPanes">
                            <children>
                               <ImageView fx:id="rightIrisImage" fitHeight="156.0" fitWidth="176.0" layoutX="2.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -57,7 +57,7 @@
                                  </image>
                               </ImageView>
                            </children>
-                        </Pane>
+                        </AnchorPane>
                      </children>
                   </AnchorPane>
                   <AnchorPane layoutX="160.0" layoutY="250.0">

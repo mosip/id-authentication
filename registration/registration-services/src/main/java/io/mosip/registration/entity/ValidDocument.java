@@ -14,6 +14,8 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import io.mosip.registration.entity.id.ValidDocumentID;
+
 /**
  * Entity class for valid document.
  * 

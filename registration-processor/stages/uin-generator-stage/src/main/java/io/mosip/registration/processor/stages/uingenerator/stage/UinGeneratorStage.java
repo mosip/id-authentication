@@ -200,9 +200,9 @@ public class UinGeneratorStage extends MosipVerticleManager {
 						String.class);
 				Gson gsonObj = new Gson();
 				uinResponseDto = gsonObj.fromJson(test, UinResponseDto.class);
-				long uinInLong = Long.parseLong("8205469571");
+				long uinInLong = Long.parseLong(uinResponseDto.getUin());
 				demographicIdentity.put("UIN", uinInLong);
-				idResponseDTO = sendIdRepoWithUin(registrationId, "8205469571");
+				idResponseDTO = sendIdRepoWithUin(registrationId, uinResponseDto.getUin());
 
 				Gson gson = new GsonBuilder().create();
 				String idResponse = gson.toJson(idResponseDTO);

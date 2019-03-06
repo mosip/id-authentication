@@ -15,14 +15,14 @@
          <children>
             <AnchorPane fx:id="imageAnchorPane" layoutX="450.0" layoutY="14.0" styleClass="imageAnchorPaneStyle">
                <children>
-                  <WebView fx:id="webView" layoutY="-3.0"/>
+                  <WebView fx:id="webView" layoutY="-3.0" />
                </children>
             </AnchorPane>
             <TableView fx:id="table" layoutX="15.0" layoutY="14.0" styleClass="approvalTable">
                <columns>
-                  <TableColumn fx:id="id" text="%registrationid" styleClass="pendingApprovalTableId" />
+                  <TableColumn fx:id="id" styleClass="pendingApprovalTableId" text="%registrationid" />
                   <TableColumn fx:id="acknowledgementFormPath" text="%registrtionid" visible="false" />
-                  <TableColumn fx:id="statusComment" text="%status" styleClass="pendingApprovalStatus" />
+                  <TableColumn fx:id="statusComment" styleClass="pendingApprovalStatus" text="%status" />
                </columns>
             </TableView>
          </children>
@@ -62,10 +62,9 @@
                      </image>
                   </ImageView>
                </graphic></ToggleButton>
-            <Text layoutX="24.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%home" />
-            <Text layoutX="74.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%pendingapproval" />
-            <Text layoutX="67.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/" />
-            <Label layoutX="561.0" layoutY="6.0" styleClass="heading" text="%pendingapproval" />
+            <Label layoutX="561.0" layoutY="6.0" styleClass="mainHeader" text="%pendingapproval" />
+            <Button layoutY="11.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+            <Text layoutX="81.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerLabel" text="%/pendingapproval" />
          </children>
       </AnchorPane>
    </children>

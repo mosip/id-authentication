@@ -9,11 +9,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.auth.LoginController;
-import io.mosip.registration.exception.RegBaseCheckedException;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -33,40 +33,79 @@ public class Initialization extends Application {
 	private static final Logger LOGGER = AppConfig.getLogger(Initialization.class);
 
 	private static ApplicationContext applicationContext;
+	private static Stage applicationPrimaryStage;
 
 	@Override
-	public void start(Stage primaryStage) throws RegBaseCheckedException {
-		LOGGER.info("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
-				APPLICATION_ID, "Login screen initilization "
-						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
-		
-		LoginController loginController = applicationContext.getBean(LoginController.class);
-		loginController.loadInitialScreen(primaryStage);
-		
-		LOGGER.info("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
-				APPLICATION_ID, "Login screen loaded"
-						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
+	public void start(Stage primaryStage) {
+		try {
+			LOGGER.info("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
+					APPLICATION_ID, "Login screen initilization "
+							+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
+
+			setPrimaryStage(primaryStage);
+			LoginController loginController = applicationContext.getBean(LoginController.class);
+			loginController.loadInitialScreen(primaryStage);
+
+			LOGGER.info("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
+					APPLICATION_ID, "Login screen loaded"
+							+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
+		} catch (Exception exception) {
+			LOGGER.error("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
+					APPLICATION_ID,
+					"Application Initilization Error"
+							+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis())
+							+ ExceptionUtils.getStackTrace(exception));
+		}
 	}
 
 	public static void main(String[] args) {
-		System.setProperty("java.net.useSystemProxies", "true");
-		System.setProperty("file.encoding", "UTF-8");
-		applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
-		
-		launch(args);
+		try {
+			System.setProperty("java.net.useSystemProxies", "true");
+			System.setProperty("file.encoding", "UTF-8");
+			applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
 
-		LOGGER.info("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
-				APPLICATION_ID, "Application Initilization"
-						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
+			launch(args);
+
+			LOGGER.info("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
+					APPLICATION_ID, "Application Initilization"
+							+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
+		} catch (Exception exception) {
+			LOGGER.error("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
+					APPLICATION_ID,
+					"Application Initilization Error"
+							+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis())
+							+ ExceptionUtils.getStackTrace(exception));
+		}
 	}
 
 	@Override
-	public void stop() throws Exception {
-		super.stop();
-		System.exit(0);
+	public void stop() {
+		try {
+			super.stop();
+			System.exit(0);
+		} catch (Exception exception) {
+			LOGGER.error("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
+					APPLICATION_ID,
+					"Application Initilization Error"
+							+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis())
+							+ ExceptionUtils.getStackTrace(exception));
+		}
 	}
 
 	public static ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}
+
+	public static void setApplicationContext(ApplicationContext applicationContext) {
+		Initialization.applicationContext = applicationContext;
+	}
+
+	public static Stage getPrimaryStage() {
+		return applicationPrimaryStage;
+	}
+	
+	public static void setPrimaryStage(Stage primaryStage) {
+		applicationPrimaryStage =  primaryStage;
+	}
+
 }

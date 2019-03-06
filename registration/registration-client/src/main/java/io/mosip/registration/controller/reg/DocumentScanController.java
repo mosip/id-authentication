@@ -32,8 +32,7 @@ import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.device.FaceCaptureController;
 import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
-import io.mosip.registration.dto.demographic.Identity;
-import io.mosip.registration.dto.demographic.ValuesDTO;
+import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.entity.DocumentCategory;
 import io.mosip.registration.service.impl.DocumentCategoryService;
@@ -102,6 +101,9 @@ public class DocumentScanController extends BaseController {
 
 	@Autowired
 	private DocumentScanFacade documentScanFacade;
+	
+	@Autowired
+	private DemographicDetailController demographicDetailController;
 
 	@FXML
 	protected AnchorPane documentScan;
@@ -183,24 +185,27 @@ public class DocumentScanController extends BaseController {
 		documentComboBoxes.clear();
 		documentVBoxes.clear();
 		initializePreviewSection();
-		
-		Identity identityDto = getIdentityDto();
+
+		MoroccoIdentity identityDto = getIdentityDto();
+		String applicantType = null;
 		String gender = null;
-		for (ValuesDTO valuesDTO : identityDto.getGender()) {
-			if (valuesDTO.getLanguage().equalsIgnoreCase(ApplicationContext.applicationLanguage())) {
-				gender = valuesDTO.getValue();
-				break;
-			}
+		if (demographicDetailController.getSelectedGenderCode() != null) {
+			gender = demographicDetailController.getSelectedGenderCode();
 		}
 		Integer age = identityDto.getAge();
 		String individualType = null;
-		for (ValuesDTO valuesDTO : identityDto.getResidenceStatus()) {
-			if (valuesDTO.getLanguage().equalsIgnoreCase(ApplicationContext.applicationLanguage())) {
-				individualType = valuesDTO.getValue();
-				break;
-			}
+		if (demographicDetailController.getSelectedNationalityCode() != null) {
+			individualType = demographicDetailController.getSelectedNationalityCode();
 		}
-		String applicantType = findApplicantType(gender, age, individualType);
+		if (gender != null && age != null && individualType != null) {
+			applicantType = findApplicantType(gender, age, individualType);
+			getRegistrationDTOFromSession().getRegistrationMetaDataDTO().setApplicantTypeCode(applicantType);
+		}
+		else {
+			/* TODO - to be removed after the clarification of UIN update */
+			applicantType = "007";
+			getRegistrationDTOFromSession().getRegistrationMetaDataDTO().setApplicantTypeCode(null);
+		}
 
 		if (applicantType != null) {
 			List<DocumentCategory> documentCategories = documentCategoryService
@@ -224,8 +229,7 @@ public class DocumentScanController extends BaseController {
 					addDocumentsToScreen(documentDetailsDTO.getValue(), documentDetailsDTO.getFormat(),
 							documentVBoxes.get(docCategoryKey));
 			}
-		}
-		else if (documentVBoxes.isEmpty() && documentsMap != null) {
+		} else if (documentVBoxes.isEmpty() && documentsMap != null) {
 			documentsMap.clear();
 		}
 	}
@@ -251,7 +255,7 @@ public class DocumentScanController extends BaseController {
 						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			}
 
-			if (documentCategoryDtos != null && documentCategoryDtos.size() > 0) {
+			if (documentCategoryDtos != null && !documentCategoryDtos.isEmpty()) {
 				HBox hBox = new HBox();
 
 				ComboBox<DocumentCategoryDto> comboBox = new ComboBox<>();
@@ -305,16 +309,18 @@ public class DocumentScanController extends BaseController {
 
 	private String findApplicantType(String gender, Integer age, String individualType) {
 		String applicantType = null;
+		String male = "MLE";
+		String female = "FLE";
 		if ("National".equalsIgnoreCase(individualType)) {
 
-			if ("Male".equalsIgnoreCase(gender)) {
+			if (male.equalsIgnoreCase(gender)) {
 				if (isChild(age)) {
 					applicantType = "005";
 				} else {
 					applicantType = "006";
 				}
 
-			} else if ("Female".equalsIgnoreCase(gender)) {
+			} else if (female.equalsIgnoreCase(gender)) {
 				if (isChild(age)) {
 					applicantType = "008";
 				} else {
@@ -323,14 +329,14 @@ public class DocumentScanController extends BaseController {
 			}
 		} else {
 
-			if ("Male".equalsIgnoreCase(gender)) {
+			if (male.equalsIgnoreCase(gender)) {
 				if (isChild(age)) {
 					applicantType = "001";
 				} else {
 					applicantType = "002";
 				}
 
-			} else if ("Female".equalsIgnoreCase(gender)) {
+			} else if (female.equalsIgnoreCase(gender)) {
 				if (isChild(age)) {
 					applicantType = "003";
 				} else {
@@ -346,8 +352,9 @@ public class DocumentScanController extends BaseController {
 		return age <= Integer.valueOf(minAge);
 	}
 
-	private Identity getIdentityDto() {
-		return getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO().getIdentity();
+	private MoroccoIdentity getIdentityDto() {
+		return (MoroccoIdentity) getRegistrationDTOFromSession().getDemographicDTO().getDemographicInfoDTO()
+				.getIdentity();
 	}
 
 	/**
@@ -743,7 +750,7 @@ public class DocumentScanController extends BaseController {
 
 			FXUtils fxUtils = FXUtils.getInstance();
 
-			if (documentComboBoxes != null) {
+			if (documentComboBoxes != null && !documentComboBoxes.isEmpty()) {
 
 				Map<String, DocumentDetailsDTO> documentsMap = getDocumentsMapFromSession();
 				for (String docCategoryKey : documentsMap.keySet()) {
@@ -823,15 +830,14 @@ public class DocumentScanController extends BaseController {
 						.get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION)
 								.put(RegistrationConstants.VISIBILITY, true);
 
-				bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
-				bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
+				bioExceptionToggleLabel1.setLayoutX(30);
+
 			} else {
 				((Map<String, Map<String, Boolean>>) ApplicationContext.map()
 						.get(RegistrationConstants.REGISTRATION_MAP)).get(RegistrationConstants.BIOMETRIC_EXCEPTION)
 								.put(RegistrationConstants.VISIBILITY, false);
 
-				bioExceptionToggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
-				bioExceptionToggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
+				bioExceptionToggleLabel1.setLayoutX(0);
 			}
 
 			switchedOnForBiometricException.addListener(new ChangeListener<Boolean>() {
@@ -839,8 +845,7 @@ public class DocumentScanController extends BaseController {
 				public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
 					clearAllValues();
 					if (newValue) {
-						bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
-						bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
+						bioExceptionToggleLabel1.setLayoutX(30);
 						toggleBiometricException = true;
 						((Map<String, Map<String, Boolean>>) ApplicationContext.map()
 								.get(RegistrationConstants.REGISTRATION_MAP))
@@ -848,8 +853,8 @@ public class DocumentScanController extends BaseController {
 										.put(RegistrationConstants.VISIBILITY, true);
 
 					} else {
-						bioExceptionToggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
-						bioExceptionToggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
+						bioExceptionToggleLabel1.setLayoutX(0);
+
 						toggleBiometricException = false;
 						faceCaptureController.clearExceptionImage();
 						((Map<String, Map<String, Boolean>>) ApplicationContext.map()
@@ -934,9 +939,8 @@ public class DocumentScanController extends BaseController {
 				registrationController.showUINUpdateCurrentPage();
 
 			}
-			registrationController.showUINUpdateCurrentPage();
 		} else {
-			if (documentDisableFlag.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+			if (RegistrationConstants.ENABLE.equalsIgnoreCase(documentDisableFlag)) {
 				if (registrationController.validateDemographicPane(documentScanPane)) {
 					registrationController.showCurrentPage(RegistrationConstants.DOCUMENT_SCAN,
 							getPageDetails(RegistrationConstants.DOCUMENT_SCAN, RegistrationConstants.NEXT));

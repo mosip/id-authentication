@@ -4,13 +4,15 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import io.mosip.registration.entity.id.RegMachineSpecId;
 
 /**
  * Machine master entity details
@@ -30,9 +32,8 @@ public class MachineMaster extends RegistrationCommonFields implements Serializa
 	/**
 	 * Field for machine ID
 	 */
-	@Id
-	@Column(name = "id")
-	private String id;
+	@EmbeddedId
+	private RegMachineSpecId regMachineSpecId;
 
 	/**
 	 * Field for machine name
@@ -64,33 +65,28 @@ public class MachineMaster extends RegistrationCommonFields implements Serializa
 	private String machineSpecId;
 
 	/**
-	 * Field for language code
-	 */
-	@Column(name = "lang_code")
-	private String langCode;
-
-	/**
 	 * Field for validity end Date and Time for machine
 	 */
 	@Column(name = "validity_end_dtimes")
 	private LocalDateTime validityDateTime;
 
-	@ManyToOne
-	@JoinColumns({ @JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false) })
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumns({ @JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	private RegMachineSpec machineSpecification;
 
 	/**
-	 * @return the id
+	 * @return the regMachineSpecId
 	 */
-	public String getId() {
-		return id;
+	public RegMachineSpecId getRegMachineSpecId() {
+		return regMachineSpecId;
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param regMachineSpecId the regMachineSpecId to set
 	 */
-	public void setId(String id) {
-		this.id = id;
+	public void setRegMachineSpecId(RegMachineSpecId regMachineSpecId) {
+		this.regMachineSpecId = regMachineSpecId;
 	}
 
 	/**
@@ -161,20 +157,6 @@ public class MachineMaster extends RegistrationCommonFields implements Serializa
 	 */
 	public void setMachineSpecId(String machineSpecId) {
 		this.machineSpecId = machineSpecId;
-	}
-
-	/**
-	 * @return the langCode
-	 */
-	public String getLangCode() {
-		return langCode;
-	}
-
-	/**
-	 * @param langCode the langCode to set
-	 */
-	public void setLangCode(String langCode) {
-		this.langCode = langCode;
 	}
 
 	/**

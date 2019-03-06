@@ -2,7 +2,7 @@
 
 #### Background
 
-This library can be used to scan files and folders for virus. It contains two methods for virus scanning separately for file and folder .
+This application can be used to scan files and folders for virus. It contains two methods for virus scanning separately for file and folder .
 
 
 #### Solution
@@ -32,4 +32,4 @@ This library can be used to scan files and folders for virus. It contains two me
 ## Implementation
 
 
-**kernel-virusscanner-clamav** [README](../../../kernel/kernel-virusscanner-clamav/README.md)
+**kernel-virusscanner-clamav** [README](../../kernel/kernel-virusscanner-clamav/README.md)

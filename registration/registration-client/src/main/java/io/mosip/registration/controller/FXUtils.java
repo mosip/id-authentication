@@ -46,7 +46,8 @@ public class FXUtils {
 
 	private Transliteration<String> transliteration;
 	private static FXUtils fxUtils = null;
-	private static String promptText="";
+	private static String promptText = RegistrationConstants.EMPTY;
+
 	public static FXUtils getInstance() {
 		if (fxUtils == null)
 			fxUtils = new FXUtils();
@@ -58,12 +59,12 @@ public class FXUtils {
 	 * Listener to change the style when field is selected for
 	 */
 	public void listenOnSelectedCheckBox(CheckBox field) {
-	
-		field.selectedProperty().addListener((obsValue, oldValue, newValue)->{
-			if(newValue) {
+
+		field.selectedProperty().addListener((obsValue, oldValue, newValue) -> {
+			if (newValue) {
 				field.getStyleClass().remove("updateUinCheckBox");
 				field.getStyleClass().add("updateUinCheckBoxSelected");
-			}else {
+			} else {
 				field.getStyleClass().remove("updateUinCheckBoxSelected");
 				field.getStyleClass().add("updateUinCheckBox");
 			}
@@ -71,7 +72,7 @@ public class FXUtils {
 	}
 
 	private FXUtils() {
-		
+
 	}
 
 	/**
@@ -93,34 +94,32 @@ public class FXUtils {
 			}
 		});
 	}
-	
+
 	public void populateLocalComboBox(AnchorPane parentPane, ComboBox<?> applicationField, ComboBox<?> localField) {
-		applicationField.getSelectionModel().selectedItemProperty().addListener(
-				(options, oldValue, newValue) ->{
-					selectComboBoxValueByCode(localField, applicationField.getValue());
-					((Label)parentPane.lookup("#"+applicationField.getId()+"Label")).setVisible(true);
-					((Label)parentPane.lookup("#"+localField.getId()+"Label")).setVisible(true);
-					((Label)parentPane.lookup("#"+applicationField.getId()+"Message")).setVisible(false);
-					((Label)parentPane.lookup("#"+localField.getId()+"Message")).setVisible(false);
-				});
+		applicationField.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+			selectComboBoxValueByCode(localField, applicationField.getValue());
+			((Label) parentPane.lookup(RegistrationConstants.HASH + applicationField.getId() + RegistrationConstants.LABEL)).setVisible(true);
+			((Label) parentPane.lookup(RegistrationConstants.HASH + localField.getId() + RegistrationConstants.LABEL)).setVisible(true);
+			((Label) parentPane.lookup(RegistrationConstants.HASH + applicationField.getId() + RegistrationConstants.MESSAGE)).setVisible(false);
+			((Label) parentPane.lookup(RegistrationConstants.HASH + localField.getId() + RegistrationConstants.MESSAGE)).setVisible(false);
+		});
 	}
 
 	/**
 	 * Validator method for field during onType and the local field population
 	 */
 	public void validateOnType(AnchorPane parentPane, TextField field, Validations validation, TextField localField) {
-		
+
 		focusUnfocusListener(parentPane, field, localField);
-		
+
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (!validation.validateTextField(parentPane, field, field.getId() + "_ontype",
 					(String) SessionContext.map().get(RegistrationConstants.IS_CONSOLIDATED))) {
 				field.setText(oldValue);
 			} else {
-				if(localField!=null) {
+				if (localField != null) {
 					localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
 							ApplicationContext.localLanguage(), field.getText()));
-					localField.requestFocus();
 				}
 			}
 			field.requestFocus();
@@ -129,86 +128,87 @@ public class FXUtils {
 	}
 
 	public void focusUnfocusListener(AnchorPane parentPane, TextField field, TextField localField) {
-		field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
-			if(newValue) {
-				try {
-				((Label)parentPane.lookup("#"+field.getId()+"Label")).setVisible(true);
-				promptText=((TextField)parentPane.lookup("#"+field.getId())).getPromptText();
-				((TextField)parentPane.lookup("#"+field.getId())).setPromptText(null);
-				if(field.getId().matches("dd|mm|yyyy")) {
-					((Label)parentPane.lookup("#"+"dobMessage")).setVisible(false);
-				}else {
-					((Label)parentPane.lookup("#"+field.getId()+"Message")).setVisible(false);
-				}
-				}catch(NullPointerException exception) {
-				}
-			}else {
-				((TextField)parentPane.lookup("#"+field.getId())).setPromptText(promptText);
-					if(!(field.getText().length()>0)) {
-						try {
-							((Label)parentPane.lookup("#"+field.getId()+"Label")).setVisible(false);
-						}catch(NullPointerException exception) {
-						}
-					}
-			}
-			
-			
-		});
-		
-		localField.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
-			if(newValue) {
-				try {
-				promptText=((TextField)parentPane.lookup("#"+localField.getId())).getPromptText();
-				((TextField)parentPane.lookup("#"+localField.getId())).setPromptText(null);
-				((Label)parentPane.lookup("#"+localField.getId()+"Label")).setVisible(true);
-				((Label)parentPane.lookup("#"+localField.getId()+"Message")).setVisible(false);
-				}catch(NullPointerException exception) {
-				}
-			}else {
-				((TextField)parentPane.lookup("#"+localField.getId())).setPromptText(promptText);
-					if(!(localField.getText().length()>0)) {
-						try {
-							((Label)parentPane.lookup("#"+localField.getId()+"Label")).setVisible(false);
-						}catch(NullPointerException exception) {
-						}
-					}
-			}
-		});
+		focusAction(parentPane, field);
+		focusAction(parentPane, localField);
 	}
 
+	private void focusAction(AnchorPane parentPane, TextField field) {
+		if(field!=null) {
+			field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
+			if (newValue) {
+				try {
+					((Label) parentPane.lookup(RegistrationConstants.HASH + field.getId() + RegistrationConstants.LABEL)).setVisible(true);
+					promptText = ((TextField) parentPane.lookup(RegistrationConstants.HASH + field.getId())).getPromptText();
+					((TextField) parentPane.lookup(RegistrationConstants.HASH + field.getId())).setPromptText(null);
+					if (field.getId().matches("dd|mm|yyyy")) {
+						((Label) parentPane.lookup(RegistrationConstants.HASH + RegistrationConstants.DOB_MESSAGE)).setVisible(false);
+					} else {
+						((Label) parentPane.lookup(RegistrationConstants.HASH + field.getId() + RegistrationConstants.MESSAGE)).setVisible(false);
+					}
+				} catch (RuntimeException runtimeException) {
+					LOGGER.info("ID NOT FOUND ", APPLICATION_NAME,
+							RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+				}
+			} else {
+				((TextField) parentPane.lookup(RegistrationConstants.HASH + field.getId())).setPromptText(promptText);
+				if (!(field.getText().length() > 0)) {
+					try {
+						((Label) parentPane.lookup(RegistrationConstants.HASH + field.getId() + RegistrationConstants.LABEL)).setVisible(false);
+					}  catch (RuntimeException runtimeException) {
+						LOGGER.info("ID NOT FOUND", APPLICATION_NAME,
+								RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+					}
+				}
+			}
+
+		});
+	}}
+
 	/**
-	 * Populate the local field value based on the application field. Transliteration will not done for these fields
+	 * Populate the local field value based on the application field.
+	 * Transliteration will not done for these fields
 	 */
-	public void populateLocalFieldOnType(AnchorPane parentPane,TextField field, Validations validation, TextField localField) {
+	public void populateLocalFieldOnType(AnchorPane parentPane, TextField field, Validations validation,
+			TextField localField) {
 		focusUnfocusListener(parentPane, field, localField);
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
-			field.requestFocus();
 			if (!validation.validateTextField(parentPane, field, field.getId() + "_ontype",
 					(String) SessionContext.map().get(RegistrationConstants.IS_CONSOLIDATED))) {
 				field.setText(oldValue);
 			} else {
-				if(localField!=null) {
+				if (localField != null) {
 					localField.setText(field.getText());
-					localField.requestFocus();
-
 				}
 			}
+			field.requestFocus();
 		});
+			
+			if(localField!=null)
+			localField.textProperty().addListener((obsValue, oldValue, newValue) -> {
+				try {
+					((Label) parentPane.lookup(RegistrationConstants.HASH + localField.getId() + RegistrationConstants.LABEL)).setVisible(true);
+					promptText = ((TextField) parentPane.lookup(RegistrationConstants.HASH + localField.getId())).getPromptText();
+					((TextField) parentPane.lookup(RegistrationConstants.HASH + localField.getId())).setPromptText(null);
+				}  catch (RuntimeException runtimeException) {
+					LOGGER.info("ID NOT FOUND", APPLICATION_NAME,
+							RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+				}
+			});
 
 	}
 
-	public void dobListener(TextField field, TextField fieldToPopulate,String regex) {
+	public void dobListener(TextField field, TextField fieldToPopulate, String regex) {
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (field.getText().matches(regex)) {
 				int year = Integer.parseInt(field.getText());
 				int age = LocalDate.now().getYear() - year;
-				if(age>=0&&age<=118) {
-					fieldToPopulate.setText("" + age);
+				if (age >= 0 && age <= 118) {
+					fieldToPopulate.setText(RegistrationConstants.EMPTY + age);
 				}
 			}
 		});
 	}
-	
+
 	/**
 	 * To display the selected date in the date picker in specific
 	 * format("dd-mm-yyyy").
@@ -228,7 +228,7 @@ public class FXUtils {
 
 				@Override
 				public String toString(LocalDate date) {
-					return date != null ? dateFormatter.format(date) : "";
+					return date != null ? dateFormatter.format(date) : RegistrationConstants.EMPTY;
 				}
 
 				@Override
