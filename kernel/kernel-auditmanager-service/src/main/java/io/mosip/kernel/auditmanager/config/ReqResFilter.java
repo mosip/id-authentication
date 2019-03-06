@@ -1,4 +1,4 @@
-package io.mosip.kernel.otpmanager.config;
+package io.mosip.kernel.auditmanager.config;
 
 import java.io.IOException;
 
