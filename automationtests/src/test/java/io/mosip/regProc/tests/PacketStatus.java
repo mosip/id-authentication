@@ -145,7 +145,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 						Iterator<Object> iterator = expectedResponse.iterator();
 						while(iterator.hasNext()){
 							JSONObject jsonObject = (JSONObject) iterator.next();
-							System.out.println("regidtrationId" + ":" + jsonObject.get("registrationId"));
+							logger.info("regidtrationId" + ":" + jsonObject.get("registrationId"));
 							String expectedRegId = jsonObject.get("registrationId").toString().trim();
 							logger.info("expectedRegId: "+expectedRegId);
 							

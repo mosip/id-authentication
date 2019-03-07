@@ -1,6 +1,7 @@
 package io.mosip.service;
 
 import java.io.IOException;
+import org.apache.log4j.Logger;
 import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.List;
@@ -20,6 +21,7 @@ import com.google.gson.Gson;
 import io.restassured.response.Response;
 
 public class AssertPreReg {
+	protected static Logger logger = Logger.getLogger(AssertPreReg.class);
 	ObjectMapper oMapper = new ObjectMapper();
 	static JSONObject jsonObject = new JSONObject();
 	static JSONArray jsonArray = new JSONArray();
@@ -29,14 +31,14 @@ public class AssertPreReg {
 
 		JSONObject obj1 = AssertPreReg.getComparableBody(response.asString(), outerKeys, innerKeys);
 		JSONObject obj2 = AssertPreReg.getComparableBody(object.toString(), outerKeys, innerKeys);
-		System.out.println(obj1);
-		System.out.println(obj2);
+		logger.info(obj1);
+		logger.info(obj2);
 		Gson g = new Gson();
 		Type mapType = new TypeToken<Map<String, Object>>() {
 		}.getType();
 		Map<String, Object> firstMap = g.fromJson(obj1.toJSONString(), mapType);
 		Map<String, Object> secondMap = g.fromJson(obj2.toJSONString(), mapType);
-		System.out.println(com.google.common.collect.Maps.difference(firstMap, secondMap));
+		logger.info(com.google.common.collect.Maps.difference(firstMap, secondMap));
 		try {
 			if (obj1.hashCode() == obj2.hashCode()) {
 				Assert.assertEquals(obj1, obj2);
@@ -45,7 +47,7 @@ public class AssertPreReg {
 				return false;
 			}
 		} catch (AssertionError e) {
-			System.out.println("Assertion fails");
+			logger.info("Assertion fails");
 			return false;
 		}
 	}

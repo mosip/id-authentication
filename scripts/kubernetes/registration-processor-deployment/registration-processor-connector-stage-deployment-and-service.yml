@@ -22,7 +22,7 @@ spec:
         image: docker-registry.mosip.io:5000/registration-processor-connector-stage
         ports:
           - name: eventbus-port
-            containerPort: 5711
+            containerPort: 5713
         ports:
           - name: hazelcast-port
             containerPort: 5701

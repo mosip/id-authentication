@@ -178,13 +178,13 @@ public class prereg_dbread {
          query = session.createSQLQuery(queryString);*/
         
          Query query = session.createSQLQuery(queryString);
-         System.out.println("Query after replacing PreId =================== :" +query);
+         logger.info("Query after replacing PreId =================== :" +query);
         query.setParameter("preId_value", preId);
 
          int res=query.executeUpdate();
          session.getTransaction().commit();
           
-          System.out.println("Result size is ============: " +res);
+         logger.info("Result size is ============: " +res);
           if(res==1)
           {
         	  logger.info("Data Deleted Successfully ======");
@@ -226,13 +226,13 @@ public class prereg_dbread {
          int size=0;         
         
          Query query = session.createSQLQuery(queryString);
-         System.out.println("Query after replacing PreId =================== :" +query);
+        logger.info("Query after replacing PreId =================== :" +query);
         query.setParameter("preId_value", preId);
 
          int res=query.executeUpdate();
          session.getTransaction().commit();
           
-          System.out.println("Result size is ============: " +res);
+         logger.info("Result size is ============: " +res);
           if(res==1)
           {
         	  logger.info("Data Updated Successfully ======");
