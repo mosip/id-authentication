@@ -22,6 +22,7 @@ import io.mosip.registration.dto.SelectionListDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
+import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
@@ -32,7 +33,6 @@ import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.dto.demographic.ValuesDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.util.kernal.RIDGenerator;
 
 public class DataProvider {
 
@@ -66,7 +66,7 @@ public class DataProvider {
 		registrationDTO.setOsiDataDTO(DataProvider.getOsiDataDTO());
 		registrationDTO.setRegistrationMetaDataDTO(DataProvider.getRegistrationMetaDataDTO());
 		registrationDTO.setPreRegistrationId("PEN1345T");
-		registrationDTO.setRegistrationId(RIDGenerator.nextRID());
+		registrationDTO.setRegistrationId("10011100110016320190307151917");
 
 		registrationDTO.setDemographicDTO(DataProvider.getDemographicDTO());
 		registrationDTO.setBiometricDTO(DataProvider.getBiometricDTO());
@@ -96,8 +96,14 @@ public class DataProvider {
 			biometricInfoDTO.setBiometricExceptionDTO(DataProvider.getExceptionIrisDetailsDTO());
 		} else if (persontype.equalsIgnoreCase("officer")) {
 			biometricInfoDTO.setIrisDetailsDTO(DataProvider.getIrisDetailsDTO());
+			FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();
+			faceDetailsDTO.setFace("face".getBytes());
+			faceDetailsDTO.setNumOfRetries(0);
+			faceDetailsDTO.setQualityScore(0);
+			biometricInfoDTO.setFaceDetailsDTO(faceDetailsDTO);
 		} else {
 			biometricInfoDTO.setFingerprintDetailsDTO(DataProvider.getFingerprintDetailsDTO(persontype));
+			biometricInfoDTO.setFaceDetailsDTO(new FaceDetailsDTO());
 		}
 		return biometricInfoDTO;
 	}
@@ -215,8 +221,8 @@ public class DataProvider {
 
 	@SuppressWarnings("unchecked")
 	private static DemographicInfoDTO getDemoInLocalLang() {
-		String platformLanguageCode = "en";
-		String localLanguageCode = "ar";
+		String platformLanguageCode = "eng";
+		String localLanguageCode = "ara";
 
 		DemographicInfoDTO demographicInfoDTO = Builder.build(DemographicInfoDTO.class)
 				.with(demographicInfo -> demographicInfo.setIdentity((MoroccoIdentity)Builder.build(MoroccoIdentity.class)
