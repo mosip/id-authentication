@@ -1,4 +1,4 @@
-package io.mosip.kernel.otpmanager.config;
+package io.mosip.kernel.keymanagerservice.config;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
