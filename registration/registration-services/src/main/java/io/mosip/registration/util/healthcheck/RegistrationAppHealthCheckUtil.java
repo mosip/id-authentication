@@ -14,9 +14,6 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
@@ -71,15 +68,16 @@ public class RegistrationAppHealthCheckUtil {
 			connection = (HttpURLConnection) url.openConnection(proxy);
 			connection.setConnectTimeout(10000);
 			RestClientUtil.turnOffSslChecking();
-			connection.connect();
-			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				isNWAvailable = true;
+			//connection.connect();
+			isNWAvailable = true;
+			/*if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				//isNWAvailable = true;
 				LOGGER.info("REGISTRATION - REGISTRATION APP HEALTHCHECKUTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
 						APPLICATION_ID, "Internet Access Available.");
 			}else {
 			LOGGER.info("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
 					APPLICATION_ID, "Internet Access Not Available.");
-			}
+			}*/
 		} catch (IOException | URISyntaxException| KeyManagementException | NoSuchAlgorithmException ioException) {
 			LOGGER.error("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
 					APPLICATION_ID, "No Internet Access." + ExceptionUtils.getStackTrace(ioException));

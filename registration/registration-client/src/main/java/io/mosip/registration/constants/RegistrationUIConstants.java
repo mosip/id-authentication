@@ -217,5 +217,14 @@ public class RegistrationUIConstants {
 	
 	public static final String RESTART_APPLICATION = bundle.getString("RESTART_APPLICATION");
 	
+	public static final String PRE_REG_TO_GET_ID_ERROR = bundle.getString("PRE_REG_TO_GET_ID_ERROR");
+	public static final String PRE_REG_TO_GET_PACKET_ERROR = bundle.getString("PRE_REG_TO_GET_PACKET_ERROR");
+	public static final String PRE_REG_PACKET_NETWORK_ERROR = bundle.getString("PRE_REG_PACKET_NETWORK_ERROR");
+	public static final String PRE_REG_SUCCESS_MESSAGE = bundle.getString("PRE_REG_SUCCESS_MESSAGE");
+	
+	// PRE-REG DELETE JOB
+		public static final String PRE_REG_DELETE_SUCCESS = bundle.getString("PRE_REG_DELETE_SUCCESS");
+		public static final String PRE_REG_DELETE_FAILURE = bundle.getString("PRE_REG_DELETE_FAILURE");
+
 	
 }
