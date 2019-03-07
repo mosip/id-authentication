@@ -30,14 +30,11 @@ import io.mosip.authentication.core.dto.indauth.BioType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.InternalAuthType;
-import io.mosip.authentication.core.dto.indauth.PinInfo;
-import io.mosip.authentication.core.dto.indauth.PinType;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
-import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioMatchType;
@@ -1006,7 +1003,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors
 	 */
 	protected void validateAllowedAuthTypes(AuthRequestDTO requestDTO, Errors errors,String configKey) {
-		AuthTypeDTO authTypeDTO = requestDTO.getAuthType();
+		AuthTypeDTO authTypeDTO = requestDTO.getRequestedAuth();
 		if (authTypeDTO != null) {
 			Set<String> allowedAuthType = getAllowedAuthTypes(configKey);			
 			validateAuthType(requestDTO, errors, authTypeDTO, allowedAuthType);
@@ -1032,7 +1029,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		
 		if(authTypeDTO.isBio()) {
 			if(allowedAuthType.contains(InternalAuthType.BIO.getType())) {
-				validateBioDetails(requestDTO, errors);
+				validateBioMetadataDetails(requestDTO, errors);
 			} else {
 				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
@@ -1051,7 +1048,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void checkAllowedAuthType(AuthRequestDTO requestDTO, Errors errors, AuthTypeDTO authTypeDTO,
 			Set<String> allowedAuthType) {
-		if((authTypeDTO.isPersonalIdentity() || authTypeDTO.isFullAddress() || authTypeDTO.isAddress())) {
+		if(authTypeDTO.isDemo()) {
 			if(allowedAuthType.contains(InternalAuthType.DEMO.getType())) {
 				checkDemoAuth(requestDTO, errors);
 			} else {
@@ -1071,7 +1068,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		
 		if(authTypeDTO.isPin()) {
 			if(allowedAuthType.contains(InternalAuthType.SPIN.getType())) {
-				validatePinDetails(requestDTO, errors);
+				validateAdditionalFactorsDetails(requestDTO, errors);
 			} else {
 				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
