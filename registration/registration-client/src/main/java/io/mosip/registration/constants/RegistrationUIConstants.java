@@ -114,6 +114,9 @@ public class RegistrationUIConstants {
 	public static final String PRE_REG_ID_NOT_VALID = bundle.getString("PRE_REG_ID_NOT_VALID");
 	public static final String REG_ID_JSON_VALIDATION_FAILED = bundle.getString("REG_ID_JSON_VALIDATION_FAILED");
 	public static final String SCAN = bundle.getString("SCAN");
+	public static final String PLEASE_SELECT = bundle.getString("PLEASE_SELECT");
+	public static final String DOCUMENT = bundle.getString("DOCUMENT");
+
 
 	// OPT TO REGISTER
 	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = bundle.getString("OPT_TO_REG_TIME_SYNC_EXCEED");

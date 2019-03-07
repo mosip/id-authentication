@@ -36,18 +36,18 @@ public class XmlPathGen
         //Get XPath
         XPathFactory xpf = XPathFactory.newInstance();
         XPath xpath = xpf.newXPath();
-        System.out.println(xpath);
+       // logger.info(xpath);
          
         //Get first match
        // String name = (String) xpath.evaluate("/employees/employee/firstName", xml, XPathConstants.STRING);
          
-        //System.out.println(name);   //Lokesh
+        //logger.info(name);   //Lokesh
          
         //Get all matches
         //NodeList nodes = (NodeList) xpath.evaluate("/employees/employee/@id", xml, XPathConstants.NODESET);
          
        // for (int i = 0; i < nodes.getLength(); i++) {
-        //    System.out.println(nodes.item(i).getNodeValue());   //1 2
+        //    logger.info(nodes.item(i).getNodeValue());   //1 2
         //}
     }
 } 

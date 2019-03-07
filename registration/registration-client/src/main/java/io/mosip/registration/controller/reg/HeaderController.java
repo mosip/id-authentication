@@ -316,23 +316,4 @@ public class HeaderController extends BaseController {
 		packetHandlerController.uploadPacket();
 	}
 
-	public void virusScan() {
-		auditFactory.audit(AuditEvent.VIRUS_SCAN_REG_PACKETS, Components.VIRUS_SCAN,
-				SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-		ResponseDTO responseDTO = registrationPacketVirusScanService.scanPacket();
-
-		SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-		if (successResponseDTO != null) {
-			if (successResponseDTO.getMessage().equals(RegistrationConstants.SUCCESS)) {
-				generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.VIRUS_SCAN_SUCCESS);
-			} else {
-				generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.VIRUS_SCAN_ERROR_FIRST_PART
-						+ successResponseDTO.getMessage() + RegistrationUIConstants.VIRUS_SCAN_ERROR_SECOND_PART);
-			}
-		} else if (responseDTO.getErrorResponseDTOs() != null) {
-			ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-			generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.VIRUS_SCAN_ERROR_FIRST_PART
-					+ errorResponseDTO.getMessage() + RegistrationUIConstants.VIRUS_SCAN_ERROR_SECOND_PART);		}
-	}
 }

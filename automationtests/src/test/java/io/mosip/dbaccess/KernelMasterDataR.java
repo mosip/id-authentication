@@ -181,7 +181,7 @@ public class KernelMasterDataR {
 //			q.setParameter("n","CIN");  
 //			  
 //			int status=q.executeUpdate();  
-//			System.out.println(status);  
+//		 
 //			tx.commit();  
 //			return flag;
 		}
@@ -193,7 +193,7 @@ public class KernelMasterDataR {
 			Query query = session.createQuery(queryString); 
 		   // query.setParameter(columnName, value);
 		    int result = query.executeUpdate();
-			System.out.println("update completed");
+			logger.info("update completed");
 			session.getTransaction().commit();
 		    return true;
 			
@@ -207,7 +207,7 @@ public class KernelMasterDataR {
 			Query query = session.createQuery(queryString); 
 		   // query.setParameter(columnName, value);
 		    int result = query.executeUpdate();
-			System.out.println("update completed");
+			logger.info("update completed");
 			session.getTransaction().commit();
 		    return true;
 			
