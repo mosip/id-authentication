@@ -11,94 +11,9 @@ import java.util.List;
  */
 public class Identity {
 
-	private Biometric biometric;
-	private List<BiometricException> exceptionBiometrics;
-	private Photograph applicantPhotograph;
-	private Photograph exceptionPhotograph;
-	private List<Document> documents;
 	private List<FieldValue> metaData;
-	private List<FieldValue> osiData;
 	private List<FieldValueArray> hashSequence1;
 	private List<FieldValueArray> hashSequence2;
-	private List<FieldValue> capturedRegisteredDevices;
-	private List<FieldValue> capturedNonRegisteredDevices;
-	private List<FieldValue> checkSum;
-	private List<String> uinUpdatedFields;
-
-	/**
-	 * @return the biometric
-	 */
-	public Biometric getBiometric() {
-		return biometric;
-	}
-
-	/**
-	 * @param biometric
-	 *            the biometric to set
-	 */
-	public void setBiometric(Biometric biometric) {
-		this.biometric = biometric;
-	}
-
-	/**
-	 * @return the exceptionBiometrics
-	 */
-	public List<BiometricException> getExceptionBiometrics() {
-		return exceptionBiometrics;
-	}
-
-	/**
-	 * @param exceptionBiometrics
-	 *            the exceptionBiometrics to set
-	 */
-	public void setExceptionBiometrics(List<BiometricException> exceptionBiometrics) {
-		this.exceptionBiometrics = exceptionBiometrics;
-	}
-
-	/**
-	 * @return the applicantPhotograph
-	 */
-	public Photograph getApplicantPhotograph() {
-		return applicantPhotograph;
-	}
-
-	/**
-	 * @param applicantPhotograph
-	 *            the applicantPhotograph to set
-	 */
-	public void setApplicantPhotograph(Photograph applicantPhotograph) {
-		this.applicantPhotograph = applicantPhotograph;
-	}
-
-	/**
-	 * @return the exceptionPhotograph
-	 */
-	public Photograph getExceptionPhotograph() {
-		return exceptionPhotograph;
-	}
-
-	/**
-	 * @param exceptionPhotograph
-	 *            the exceptionPhotograph to set
-	 */
-	public void setExceptionPhotograph(Photograph exceptionPhotograph) {
-		this.exceptionPhotograph = exceptionPhotograph;
-	}
-
-	/**
-	 * @return the documents
-	 */
-	public List<Document> getDocuments() {
-		return documents;
-	}
-
-	/**
-	 * @param documents
-	 *            the documents to set
-	 */
-	public void setDocuments(List<Document> documents) {
-		this.documents = documents;
-	}
 
 	/**
 	 * @return the metaData
@@ -113,21 +28,6 @@ public class Identity {
 	 */
 	public void setMetaData(List<FieldValue> metaData) {
 		this.metaData = metaData;
-	}
-
-	/**
-	 * @return the osiData
-	 */
-	public List<FieldValue> getOsiData() {
-		return osiData;
-	}
-
-	/**
-	 * @param osiData
-	 *            the osiData to set
-	 */
-	public void setOsiData(List<FieldValue> osiData) {
-		this.osiData = osiData;
 	}
 
 	/**
@@ -153,67 +53,11 @@ public class Identity {
 	}
 
 	/**
-	 * @param hashSequence2 the hashSequence2 to set
+	 * @param hashSequence2
+	 *            the hashSequence2 to set
 	 */
 	public void setHashSequence2(List<FieldValueArray> hashSequence2) {
 		this.hashSequence2 = hashSequence2;
-	}
-
-	/**
-	 * @return the capturedRegisteredDevices
-	 */
-	public List<FieldValue> getCapturedRegisteredDevices() {
-		return capturedRegisteredDevices;
-	}
-
-	/**
-	 * @param capturedRegisteredDevices the capturedRegisteredDevices to set
-	 */
-	public void setCapturedRegisteredDevices(List<FieldValue> capturedRegisteredDevices) {
-		this.capturedRegisteredDevices = capturedRegisteredDevices;
-	}
-
-	/**
-	 * @return the capturedNonRegisteredDevices
-	 */
-	public List<FieldValue> getCapturedNonRegisteredDevices() {
-		return capturedNonRegisteredDevices;
-	}
-
-	/**
-	 * @param capturedNonRegisteredDevices the capturedNonRegisteredDevices to set
-	 */
-	public void setCapturedNonRegisteredDevices(List<FieldValue> capturedNonRegisteredDevices) {
-		this.capturedNonRegisteredDevices = capturedNonRegisteredDevices;
-	}
-
-	/**
-	 * @return the checkSum
-	 */
-	public List<FieldValue> getCheckSum() {
-		return checkSum;
-	}
-
-	/**
-	 * @param checkSum
-	 *            the checkSum to set
-	 */
-	public void setCheckSum(List<FieldValue> checkSum) {
-		this.checkSum = checkSum;
-	}
-
-	/**
-	 * @return the uinUpdatedFields
-	 */
-	public List<String> getUinUpdatedFields() {
-		return uinUpdatedFields;
-	}
-
-	/**
-	 * @param uinUpdatedFields the uinUpdatedFields to set
-	 */
-	public void setUinUpdatedFields(List<String> uinUpdatedFields) {
-		this.uinUpdatedFields = uinUpdatedFields;
 	}
 
 }

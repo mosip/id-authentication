@@ -21,7 +21,7 @@ public class PacketGeneratorConfig {
 	public Docket packetGeneratorBean() {
 		return new Docket(DocumentationType.SWAGGER_2).groupName("PacketGenerator").select()
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.registration.processor.packet.service.controller"))
-				.paths(PathSelectors.ant("/v0.1/registration-processor/packet-generator/*/*")).build();
+				.paths(PathSelectors.ant("/v0.1/registration-processor/packet-generator/*/*/*/*")).build();
 	}
 
 }

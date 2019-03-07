@@ -10,8 +10,7 @@ import java.time.LocalDateTime;
  *
  */
 public class AuditDTO extends BaseDTO {
-	protected String uuid;
-	protected LocalDateTime createdAt;
+
 	protected String eventId;
 	protected String eventName;
 	protected String eventType;
@@ -28,6 +27,8 @@ public class AuditDTO extends BaseDTO {
 	protected String moduleName;
 	protected String moduleId;
 	protected String description;
+	protected String uuid;
+	protected LocalDateTime createdAt;
 
 	/**
 	 * @return the uuid
@@ -299,4 +300,3 @@ public class AuditDTO extends BaseDTO {
 		this.description = description;
 	}
 }
-

@@ -3,7 +3,6 @@ package io.mosip.registration.processor.packet.service.dto;
 import java.sql.Timestamp;
 import java.util.List;
 
-import io.mosip.registration.processor.packet.service.dto.biometric.BiometricDTO;
 import io.mosip.registration.processor.packet.service.dto.demographic.DemographicDTO;
 
 /**
@@ -16,32 +15,14 @@ import io.mosip.registration.processor.packet.service.dto.demographic.Demographi
  */
 public class RegistrationDTO extends BaseDTO {
 
-	private BiometricDTO biometricDTO;
 	private DemographicDTO demographicDTO;
 	private String registrationId;
 	private String registrationIdHash;
-	private String preRegistrationId;
+
 	private RegistrationMetaDataDTO registrationMetaDataDTO;
-	private OSIDataDTO osiDataDTO;
 	private List<AuditDTO> auditDTOs;
-	private SelectionListDTO selectionListDTO;
 	private Timestamp auditLogStartTime;
 	private Timestamp auditLogEndTime;
-
-	/**
-	 * @return the biometricDTO
-	 */
-	public BiometricDTO getBiometricDTO() {
-		return biometricDTO;
-	}
-
-	/**
-	 * @param biometricDTO
-	 *            the biometricDTO to set
-	 */
-	public void setBiometricDTO(BiometricDTO biometricDTO) {
-		this.biometricDTO = biometricDTO;
-	}
 
 	/**
 	 * @return the demographicDTO
@@ -82,21 +63,6 @@ public class RegistrationDTO extends BaseDTO {
 	}
 
 	/**
-	 * @return the preRegistrationId
-	 */
-	public String getPreRegistrationId() {
-		return preRegistrationId;
-	}
-
-	/**
-	 * @param preRegistrationId
-	 *            the preRegistrationId to set
-	 */
-	public void setPreRegistrationId(String preRegistrationId) {
-		this.preRegistrationId = preRegistrationId;
-	}
-
-	/**
 	 * @return the registrationMetaDataDTO
 	 */
 	public RegistrationMetaDataDTO getRegistrationMetaDataDTO() {
@@ -109,21 +75,6 @@ public class RegistrationDTO extends BaseDTO {
 	 */
 	public void setRegistrationMetaDataDTO(RegistrationMetaDataDTO registrationMetaDataDTO) {
 		this.registrationMetaDataDTO = registrationMetaDataDTO;
-	}
-
-	/**
-	 * @return the osiDataDTO
-	 */
-	public OSIDataDTO getOsiDataDTO() {
-		return osiDataDTO;
-	}
-
-	/**
-	 * @param osiDataDTO
-	 *            the osiDataDTO to set
-	 */
-	public void setOsiDataDTO(OSIDataDTO osiDataDTO) {
-		this.osiDataDTO = osiDataDTO;
 	}
 
 	/**
@@ -142,20 +93,6 @@ public class RegistrationDTO extends BaseDTO {
 	}
 
 	/**
-	 * @return the selectionListDTO
-	 */
-	public SelectionListDTO getSelectionListDTO() {
-		return selectionListDTO;
-	}
-
-	/**
-	 * @param selectionListDTO the selectionListDTO to set
-	 */
-	public void setSelectionListDTO(SelectionListDTO selectionListDTO) {
-		this.selectionListDTO = selectionListDTO;
-	}
-
-	/**
 	 * @return the auditLogStartTime
 	 */
 	public Timestamp getAuditLogStartTime() {
@@ -163,7 +100,8 @@ public class RegistrationDTO extends BaseDTO {
 	}
 
 	/**
-	 * @param auditLogStartTime the auditLogStartTime to set
+	 * @param auditLogStartTime
+	 *            the auditLogStartTime to set
 	 */
 	public void setAuditLogStartTime(Timestamp auditLogStartTime) {
 		this.auditLogStartTime = auditLogStartTime;
@@ -177,7 +115,8 @@ public class RegistrationDTO extends BaseDTO {
 	}
 
 	/**
-	 * @param auditLogEndTime the auditLogEndTime to set
+	 * @param auditLogEndTime
+	 *            the auditLogEndTime to set
 	 */
 	public void setAuditLogEndTime(Timestamp auditLogEndTime) {
 		this.auditLogEndTime = auditLogEndTime;

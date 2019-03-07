@@ -38,26 +38,12 @@ public class HMACGeneration {
 	 * 
 	 * @return hash byte array
 	 */
-	public static byte[] generatePacketDTOHash(final RegistrationDTO registrationDTO, final Map<String, byte[]> filesGeneratedForPacket,
-			HashSequence sequence) {
-		// generates packet biometric hash which may includes applicant and introducer
-		if (registrationDTO.getBiometricDTO() != null) {
-			generateHash(filesGeneratedForPacket.get(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME),
-					RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME,
-					sequence.getBiometricSequence().getApplicant());
-			generateHash(filesGeneratedForPacket.get(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME),
-					RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME,
-					sequence.getBiometricSequence().getIntroducer());
-		}
+	public static byte[] generatePacketDTOHash(final RegistrationDTO registrationDTO,
+			final Map<String, byte[]> filesGeneratedForPacket, HashSequence sequence) {
 
 		// Demographic json hash
 		generateHash(filesGeneratedForPacket.get(RegistrationConstants.DEMOGRPAHIC_JSON_NAME),
 				RegistrationConstants.DEMOGRPAHIC_JSON_NAME, sequence.getDemographicSequence().getApplicant());
-
-		// generates demographic hash
-		if (registrationDTO.getDemographicDTO() != null) {
-			generateDemographicHash(registrationDTO.getDemographicDTO(), sequence.getDemographicSequence());
-		}
 
 		// generated hash
 		return HMACUtils.digestAsPlainText(HMACUtils.updatedHash()).getBytes();
@@ -69,8 +55,7 @@ public class HMACGeneration {
 		generateApplicantDocumentHash(demographicDTO, demographicSequence.getApplicant());
 	}
 
-	private static void generateApplicantDocumentHash(final DemographicDTO demographicDTO,
-			List<String> hashOrder) {
+	private static void generateApplicantDocumentHash(final DemographicDTO demographicDTO, List<String> hashOrder) {
 		byte[] applicantPhotoBytes = demographicDTO.getApplicantDocumentDTO().getPhoto();
 		byte[] applicantExceptionPhotoBytes = demographicDTO.getApplicantDocumentDTO().getExceptionPhoto();
 		byte[] registrationAck = demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceipt();
@@ -79,31 +64,37 @@ public class HMACGeneration {
 				.getDocuments().entrySet()) {
 			generateHash(documentCategory.getValue().getDocument(), documentCategory.getValue().getValue(), hashOrder);
 		}
-		
-		/*DocumentDetailsDTO documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity()
-				.getProofOfIdentity();
 
-		if (documentDetailsDTO != null) {
-			generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(), hashOrder);
-		}
-
-		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfAddress();
-
-		if (documentDetailsDTO != null) {
-			generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(), hashOrder);
-		}
-
-		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfRelationship();
-
-		if (documentDetailsDTO != null) {
-			generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(), hashOrder);
-		}
-
-		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfDateOfBirth();
-
-		if (documentDetailsDTO != null) {
-			generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(), hashOrder);
-		}*/
+		/*
+		 * DocumentDetailsDTO documentDetailsDTO =
+		 * demographicDTO.getDemographicInfoDTO().getIdentity() .getProofOfIdentity();
+		 * 
+		 * if (documentDetailsDTO != null) {
+		 * generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(),
+		 * hashOrder); }
+		 * 
+		 * documentDetailsDTO =
+		 * demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfAddress();
+		 * 
+		 * if (documentDetailsDTO != null) {
+		 * generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(),
+		 * hashOrder); }
+		 * 
+		 * documentDetailsDTO =
+		 * demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfRelationship()
+		 * ;
+		 * 
+		 * if (documentDetailsDTO != null) {
+		 * generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(),
+		 * hashOrder); }
+		 * 
+		 * documentDetailsDTO =
+		 * demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfDateOfBirth();
+		 * 
+		 * if (documentDetailsDTO != null) {
+		 * generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(),
+		 * hashOrder); }
+		 */
 
 		// hash for applicant photo
 		if (applicantPhotoBytes != null) {

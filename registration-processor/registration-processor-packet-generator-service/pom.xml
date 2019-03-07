@@ -81,7 +81,12 @@
 			<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-jsonvalidator</artifactId>
-				<version>${kernel.core.version}</version>
+			<version>${kernel.core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idgenerator-rid</artifactId>
+			<version>${kernel.core.version}</version>
 		</dependency>
   </dependencies>
    <build>

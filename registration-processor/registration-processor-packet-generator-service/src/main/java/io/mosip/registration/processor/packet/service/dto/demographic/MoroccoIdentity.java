@@ -29,7 +29,7 @@ public class MoroccoIdentity extends Identity {
 
 	/** The gender. */
 	private List<ValuesDTO> gender;
-	
+
 	/** The full name. */
 	private List<ValuesDTO> residenceStatus;
 
@@ -85,12 +85,6 @@ public class MoroccoIdentity extends Identity {
 	/** The date of birth proof. */
 	private DocumentDetailsDTO proofOfDateOfBirth;
 
-	/** The individual biometrics. */
-	private CBEFFFilePropertiesDTO individualBiometrics;
-
-	/** The parent or guardian biometrics. */
-	private CBEFFFilePropertiesDTO parentOrGuardianBiometrics;
-
 	/**
 	 * @return the uin
 	 */
@@ -129,7 +123,8 @@ public class MoroccoIdentity extends Identity {
 	}
 
 	/**
-	 * @param residenceStatus the residenceStatus to set
+	 * @param residenceStatus
+	 *            the residenceStatus to set
 	 */
 	public void setResidenceStatus(List<ValuesDTO> residenceStatus) {
 		this.residenceStatus = residenceStatus;
@@ -314,7 +309,7 @@ public class MoroccoIdentity extends Identity {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+
 	/**
 	 * @return the cnieNumber
 	 */
@@ -323,7 +318,8 @@ public class MoroccoIdentity extends Identity {
 	}
 
 	/**
-	 * @param cnieNumber the cnieNumber to set
+	 * @param cnieNumber
+	 *            the cnieNumber to set
 	 */
 	public void setCnieNumber(String cnieNumber) {
 		this.cnieNumber = cnieNumber;
@@ -432,36 +428,6 @@ public class MoroccoIdentity extends Identity {
 	 */
 	public void setProofOfDateOfBirth(DocumentDetailsDTO proofOfDateOfBirth) {
 		this.proofOfDateOfBirth = proofOfDateOfBirth;
-	}
-
-	/**
-	 * @return the individualBiometrics
-	 */
-	public CBEFFFilePropertiesDTO getIndividualBiometrics() {
-		return individualBiometrics;
-	}
-
-	/**
-	 * @param individualBiometrics
-	 *            the individualBiometrics to set
-	 */
-	public void setIndividualBiometrics(CBEFFFilePropertiesDTO individualBiometrics) {
-		this.individualBiometrics = individualBiometrics;
-	}
-
-	/**
-	 * @return the parentOrGuardianBiometrics
-	 */
-	public CBEFFFilePropertiesDTO getParentOrGuardianBiometrics() {
-		return parentOrGuardianBiometrics;
-	}
-
-	/**
-	 * @param parentOrGuardianBiometrics
-	 *            the parentOrGuardianBiometrics to set
-	 */
-	public void setParentOrGuardianBiometrics(CBEFFFilePropertiesDTO parentOrGuardianBiometrics) {
-		this.parentOrGuardianBiometrics = parentOrGuardianBiometrics;
 	}
 
 }
