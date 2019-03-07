@@ -101,12 +101,14 @@ public class RegPacketStatusServiceImplTest {
 		
 		ResponseDTO responseDTO = regPacketStatusServiceImpl.deleteRegistrationPackets();
 		ObjectMapper mapper = new ObjectMapper();
-		
 		System.out.println(mapper.writer().writeValueAsString(responseDTO));
+		assertEquals(responseDTO.getSuccessResponseDTO().getMessage(),"Registartion Packets Deletion Successful ");
 		
-		assertEquals(regPacketStatusServiceImpl.deleteRegistrationPackets().getSuccessResponseDTO().getMessage(),"Registartion Packets Deletion Successful ");
+		responseDTO = regPacketStatusServiceImpl.packetSyncStatus();
+		System.out.println(mapper.writer().writeValueAsString(responseDTO));
 		assertEquals(RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, 
-				regPacketStatusServiceImpl.packetSyncStatus().getErrorResponseDTOs().get(0).getMessage());
+				responseDTO.getErrorResponseDTOs().get(0).getMessage());
+		
 		registrationRepository.saveAll(listRegistration);
 		auditLogControlRepository.deleteAll();
 		regTransactionRepository.deleteAll();

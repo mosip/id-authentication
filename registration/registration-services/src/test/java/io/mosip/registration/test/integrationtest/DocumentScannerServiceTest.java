@@ -53,7 +53,7 @@ public class DocumentScannerServiceTest {
 	@Test
 	public void scanDocumentTest() {
 		intializeValues();
-		documentScannerServiceImpl.scan();
+		bufferedImage = documentScannerServiceImpl.scan();
 		Assert.assertNotNull(bufferedImage);
 	}
 	
