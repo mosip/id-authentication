@@ -121,30 +121,6 @@ public class IdRequestValidatorTest {
 	}
 
 	@Test
-	public void testValidateIdNullId() {
-		ReflectionTestUtils.invokeMethod(validator, "validateId", null, errors);
-		assertTrue(errors.hasErrors());
-		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "id"),
-					error.getDefaultMessage());
-			assertEquals("id", ((FieldError) error).getField());
-		});
-	}
-
-	@Test
-	public void testValidateIdInvalidId() {
-		ReflectionTestUtils.invokeMethod(validator, "validateId", "abc", errors);
-		assertTrue(errors.hasErrors());
-		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "id"),
-					error.getDefaultMessage());
-			assertEquals("id", ((FieldError) error).getField());
-		});
-	}
-
-	@Test
 	public void testValidateStatusInvalidStatus() {
 		ReflectionTestUtils.invokeMethod(validator, "validateStatus", "1234", errors, "update");
 		assertTrue(errors.hasErrors());

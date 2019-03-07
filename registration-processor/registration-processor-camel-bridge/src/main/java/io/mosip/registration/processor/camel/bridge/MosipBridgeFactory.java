@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.camel.bridge;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.IOException;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.vertx.VertxComponent;
@@ -12,9 +11,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import com.hazelcast.config.Config;
+import com.hazelcast.config.UrlXmlConfig;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.camel.bridge.util.BridgeUtil;
-import io.mosip.registration.processor.camel.bridge.util.PropertyFileUtil;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.vertx.camel.CamelBridge;
@@ -24,12 +25,14 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.spi.cluster.ClusterManager;
-import io.vertx.spi.cluster.ignite.IgniteClusterManager;
+import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
 
 /**
- * This class provides.
+ * This class starts Vertx camel bridge.
  *
  * @author Mukul Puspam
+ * @author Pranav kumar
+ * @since 0.0.1
  */
 public class MosipBridgeFactory extends AbstractVerticle {
 
@@ -42,17 +45,17 @@ public class MosipBridgeFactory extends AbstractVerticle {
 	 * @return the event bus
 	 */
 	public static void getEventBus() {
-		String igniteFileName = BridgeUtil.getPropertyFromConfigServer("ignite.cluster.manager.file.name");
-		String igniteUrl = PropertyFileUtil.getProperty(MosipBridgeFactory.class, "bootstrap.properties", "config.server.url");
-		igniteUrl = igniteUrl + "/*/" + BridgeUtil.getActiveProfile() + "/" + BridgeUtil.getCloudConfigLabel() + "/"
-				+ igniteFileName;
-		URL url = null;
+		String clusterFileName = BridgeUtil.getPropertyFromConfigServer("cluster.manager.file.name");
+		String clusterUrl = BridgeUtil.getCloudConfigUri();
+		clusterUrl = clusterUrl + "/*/" + BridgeUtil.getActiveProfile() + "/" + BridgeUtil.getCloudConfigLabel() + "/"
+				+ clusterFileName;
+		Config config = null;
 		try {
-			url = new URL(igniteUrl);
-		} catch (MalformedURLException e1) {
-			regProcLogger.error("", "", "", e1.getMessage());
+			config = new UrlXmlConfig(clusterUrl);
+		} catch (IOException e) {
+			regProcLogger.error("", "", "", e.getMessage());
 		}
-		ClusterManager clusterManager = new IgniteClusterManager(url);
+		ClusterManager clusterManager = new HazelcastClusterManager(config);
 		VertxOptions options = new VertxOptions().setClusterManager(clusterManager).setHAEnabled(true)
 				.setClustered(true);
 
@@ -74,7 +77,7 @@ public class MosipBridgeFactory extends AbstractVerticle {
 		vertxComponent.setVertx(vertx);
 		RestTemplate restTemplate = new RestTemplate();
 		String camelRoutesFileName = BridgeUtil.getPropertyFromConfigServer("camel.routes.file.name");
-		String camelRoutesUrl = PropertyFileUtil.getProperty(MosipBridgeFactory.class, "bootstrap.properties", "config.server.url");
+		String camelRoutesUrl = BridgeUtil.getCloudConfigUri();
 		camelRoutesUrl = camelRoutesUrl + "/*/" + BridgeUtil.getActiveProfile() + "/" + BridgeUtil.getCloudConfigLabel()
 				+ "/" + camelRoutesFileName;
 		ResponseEntity<Resource> responseEntity = restTemplate.exchange(camelRoutesUrl, HttpMethod.GET, null,

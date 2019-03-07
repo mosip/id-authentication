@@ -1,5 +1,7 @@
 package io.mosip.kernel.syncdata.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -43,6 +45,11 @@ public class DeviceDto extends BaseDto{
 	 * Field for device ip address
 	 */
 	private String ipAddress;
+	
+	/**
+	 * Valdity timestamp
+	 */
+	private LocalDateTime validityDateTime;
 	
 
 }

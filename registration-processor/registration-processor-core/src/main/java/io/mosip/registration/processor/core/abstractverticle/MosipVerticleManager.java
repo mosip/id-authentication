@@ -1,9 +1,15 @@
 package io.mosip.registration.processor.core.abstractverticle;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+
+import org.springframework.beans.factory.annotation.Value;
+
+import com.hazelcast.config.Config;
+import com.hazelcast.config.UrlXmlConfig;
 
 import io.mosip.registration.processor.core.exception.DeploymentFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -13,11 +19,12 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import io.vertx.core.eventbus.EventBusOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.spi.cluster.ClusterManager;
-import io.vertx.spi.cluster.ignite.IgniteClusterManager;
+import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
 	
 
 /**
@@ -35,6 +42,9 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 
 	/** The logger. */
 	private Logger logger = LoggerFactory.getLogger(MosipVerticleManager.class);
+	
+	@Value("${eventbus.port}")
+	private String eventBusPort;
 
 	/*
 	 * (non-Javadoc)
@@ -47,19 +57,26 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 	public MosipEventBus getEventBus(Class<?> verticleName, String clusterManagerUrl) {
 		CompletableFuture<Vertx> eventBus = new CompletableFuture<>();
 		MosipEventBus mosipEventBus = null;
-		URL url = null;
+		Config config;
 		try {
-			url = new URL(clusterManagerUrl);
-		} catch (MalformedURLException e1) {
+			config = new UrlXmlConfig(clusterManagerUrl);
+		} catch (IOException e1) {
 			throw new DeploymentFailureException(PlatformErrorMessages.RPR_CMB_MALFORMED_URL_EXCEPTION.getMessage());
 		}
-		ClusterManager clusterManager = new IgniteClusterManager(url);
+		ClusterManager clusterManager = new HazelcastClusterManager(config);
+		String address = null;
+		try {
+			address = InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		VertxOptions options = new VertxOptions().setClustered(true).setClusterManager(clusterManager)
-				.setHAEnabled(true);
+				.setHAEnabled(false).setEventBusOptions(new EventBusOptions().setPort(getEventBusPort()).setHost(address));
 		Vertx.clusteredVertx(options, result -> {
 			if (result.succeeded()) {
 				result.result().deployVerticle(verticleName.getName(),
-						new DeploymentOptions().setHa(true).setWorker(true));
+						new DeploymentOptions().setHa(false).setWorker(true));
 				eventBus.complete(result.result());
 				logger.debug(verticleName + " deployed successfully");
 			} else {
@@ -81,19 +98,26 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 	public MosipEventBus getEventBus(Object verticleName, String clusterManagerUrl) {
 		CompletableFuture<Vertx> eventBus = new CompletableFuture<>();
 		MosipEventBus mosipEventBus = null;
-		URL url = null;
+		Config config;
 		try {
-			url = new URL(clusterManagerUrl);
-		} catch (MalformedURLException e1) {
+			config = new UrlXmlConfig(clusterManagerUrl);
+		} catch (IOException e1) {
 			throw new DeploymentFailureException(PlatformErrorMessages.RPR_CMB_MALFORMED_URL_EXCEPTION.getMessage());
 		}
-		ClusterManager clusterManager = new IgniteClusterManager(url);
+		ClusterManager clusterManager = new HazelcastClusterManager(config);
+		String address = null;
+		try {
+			address = InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		VertxOptions options = new VertxOptions().setClustered(true).setClusterManager(clusterManager)
-				.setHAEnabled(true);
+				.setHAEnabled(false).setEventBusOptions(new EventBusOptions().setPort(getEventBusPort()).setHost(address));
 		Vertx.clusteredVertx(options, result -> {
 			if (result.succeeded()) {
 				result.result().deployVerticle((Verticle)verticleName,
-						new DeploymentOptions().setHa(true).setWorker(true));
+						new DeploymentOptions().setHa(false).setWorker(true));
 				eventBus.complete(result.result());
 				logger.debug(verticleName + " deployed successfully");
 			} else {
@@ -178,6 +202,10 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 				}
 			});
 		});
+	}
+	
+	public Integer getEventBusPort() {
+		return Integer.parseInt(eventBusPort);
 	}
 
 }

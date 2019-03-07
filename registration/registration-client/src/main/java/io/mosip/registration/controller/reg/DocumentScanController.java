@@ -153,9 +153,6 @@ public class DocumentScanController extends BaseController {
 
 	@Value("${DOCUMENT_SCANNER_DOCTYPE}")
 	private String scannerDocType;
-
-	@Value("${DOCUMENT_DISABLE_FLAG}")
-	private String documentDisableFlag;
 	
 	@Value("${mosip.registration.age_limit_for_child}")
 	private int minAge;

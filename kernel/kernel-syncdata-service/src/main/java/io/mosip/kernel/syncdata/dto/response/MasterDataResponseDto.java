@@ -2,6 +2,7 @@ package io.mosip.kernel.syncdata.dto.response;
 
 import java.util.List;
 
+import io.mosip.kernel.syncdata.dto.ApplicantValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.ApplicationDto;
 import io.mosip.kernel.syncdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.syncdata.dto.BiometricTypeDto;
@@ -14,6 +15,7 @@ import io.mosip.kernel.syncdata.dto.DocumentTypeDto;
 import io.mosip.kernel.syncdata.dto.GenderDto;
 import io.mosip.kernel.syncdata.dto.HolidayDto;
 import io.mosip.kernel.syncdata.dto.IdTypeDto;
+import io.mosip.kernel.syncdata.dto.IndividualTypeDto;
 import io.mosip.kernel.syncdata.dto.LanguageDto;
 import io.mosip.kernel.syncdata.dto.LocationDto;
 import io.mosip.kernel.syncdata.dto.MachineDto;
@@ -77,6 +79,9 @@ public class MasterDataResponseDto {
 	private List<TitleDto> titles;
 	private List<GenderDto> genders;
 	private List<LanguageDto> languages;
+	private List<ApplicantValidDocumentDto> applicantValidDocuments;
+	private List<IndividualTypeDto> individualTypes;
+	
 	
 	private List<RegistrationCenterMachineDto> registrationCenterMachines;
 	private List<RegistrationCenterDeviceDto> registrationCenterDevices;
