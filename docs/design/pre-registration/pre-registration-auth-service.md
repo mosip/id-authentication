@@ -101,7 +101,7 @@ refer : https://github.com/mosip/mosip/wiki/AuthN-&-AuthZ-APIs
 
 Component Name | Module Name | Description | 
 -----|----------|-------------|
-  Authentication Service    |   Kernel        |    To send and validate OTP.
+  Authentication Service    |   Kernel        |    To send/validate OTP and invalidate token.
   Exception Manager  |  Kernel     |       To prepare the user defined exception and render to the user.
   Log        |          Kernel         |   To log the process.
 
