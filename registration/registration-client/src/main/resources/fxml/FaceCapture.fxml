@@ -20,7 +20,7 @@
                <children>
                   <Label layoutX="91.0" layoutY="31.0" styleClass="qualityLabel" text="%quality" />
                   <Line endX="100.0" layoutX="332.0" layoutY="40.0" startX="-100.0" />
-                  <Button fx:id="takePhoto" disable="true" layoutX="520.0" layoutY="27.0" mnemonicParsing="false" onAction="#takePhoto" styleClass="documentContentButton" text="Take Photo">
+                  <Button fx:id="takePhoto" disable="true" layoutX="520.0" layoutY="27.0" mnemonicParsing="false" onAction="#takePhoto" styleClass="documentContentButton" text="%takePhoto">
                      <graphic>
                         <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                            <image>

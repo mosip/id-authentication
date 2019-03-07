@@ -60,7 +60,7 @@
             </AnchorPane>
             <AnchorPane layoutX="130.0" layoutY="441.0" styleClass="onboardProgressPane">
                <children>
-                  <Button fx:id="scanIris" layoutX="620.0" layoutY="25.0" mnemonicParsing="false" onAction="#scan" styleClass="onboardScanBtn" text="Scan">
+                  <Button fx:id="scanIris" layoutX="620.0" layoutY="25.0" mnemonicParsing="false" onAction="#scan" styleClass="onboardScanBtn" text="%scan">
                      <graphic>
                         <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                            <image>
