@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -178,6 +179,7 @@ public class RegistrationCenterController {
 	 *            the request DTO for creating registration center.
 	 * @return the response i.e. the id of the registration center created.
 	 */
+	@ResponseFilter
 	@PostMapping("/v1.0/registrationcenters")
 	public ResponseEntity<IdResponseDto> createRegistrationCenter(
 			@RequestBody @Valid RequestWrapper<RegistrationCenterDto> registrationCenterDto) {
@@ -192,6 +194,7 @@ public class RegistrationCenterController {
 	 *            the request DTO for updating registration center.
 	 * @return the response i.e. the id of the registration center updated.
 	 */
+	@ResponseFilter
 	@PutMapping("/v1.0/registrationcenters")
 	public ResponseEntity<IdAndLanguageCodeID> updateRegistrationCenter(
 			@RequestBody @Valid RequestWrapper<RegistrationCenterDto> registrationCenterDto) {

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.MachineSpecificationService;
@@ -48,6 +49,7 @@ public class MachineSpecificationController {
 	 * @return ResponseEntity Machine Specification ID which is successfully
 	 *         inserted
 	 */
+	@ResponseFilter
 	@PostMapping("/v1.0/machinespecifications")
 	@ApiOperation(value = "Service to save Machine Specification", notes = "Saves Machine Spacification and return Machine Spacification ID ", response = IdResponseDto.class)
 	@ApiResponses({
@@ -68,6 +70,7 @@ public class MachineSpecificationController {
 	 *            input Machine specification DTO from user
 	 * @return ResponseEntity Machine Specification ID which is successfully updated
 	 */
+	@ResponseFilter
 	@PutMapping("/v1.0/machinespecifications")
 	@ApiOperation(value = "Service to update Machine Specification", notes = "update Machine Spacification and return Machine Spacification ID ", response = IdResponseDto.class)
 	@ApiResponses({

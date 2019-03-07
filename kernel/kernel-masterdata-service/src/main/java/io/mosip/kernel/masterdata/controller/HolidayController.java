@@ -19,6 +19,7 @@ import io.mosip.kernel.masterdata.dto.HolidayIDDto;
 import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
 import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.service.HolidayService;
 import io.swagger.annotations.Api;
@@ -85,6 +86,7 @@ public class HolidayController {
 	 *            input values to add a new row of data
 	 * @return primary key of inserted Holiday data
 	 */
+	@ResponseFilter
 	@PostMapping
 	public ResponseEntity<HolidayIDDto> saveHoliday(@Valid @RequestBody RequestWrapper<HolidayDto> holiday) {
 		return new ResponseEntity<>(holidayService.saveHoliday(holiday), HttpStatus.OK);
@@ -98,6 +100,7 @@ public class HolidayController {
 	 *            input values to update the data
 	 * @return id of updated Holiday data
 	 */
+	@ResponseFilter
 	@PutMapping
 	@ApiOperation(value = "to update a holiday", response = HolidayIDDto.class)
 	public HolidayIDDto updateHoliday(@Valid @RequestBody RequestWrapper<HolidayUpdateDto> holiday) {

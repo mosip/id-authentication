@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
@@ -69,6 +70,7 @@ public class TitleController {
 	 *            input from user
 	 * @return primary key of entered row
 	 */
+	@ResponseFilter
 	@PostMapping("/v1.0/title")
 	public ResponseEntity<CodeAndLanguageCodeID> saveTitle(@Valid @RequestBody RequestWrapper<TitleDto> title) {
 		return new ResponseEntity<>(titleService.saveTitle(title), HttpStatus.OK);
@@ -82,6 +84,7 @@ public class TitleController {
 	 *            input DTO for updated row
 	 * @return composite primary key of updated row
 	 */
+	@ResponseFilter
 	@PutMapping("/v1.0/title")
 	@ApiOperation(value = "Service to update title", notes = "Update title and return composite id", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({

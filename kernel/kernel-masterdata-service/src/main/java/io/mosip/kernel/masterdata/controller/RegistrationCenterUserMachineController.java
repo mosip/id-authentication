@@ -17,6 +17,7 @@ import io.mosip.kernel.masterdata.dto.RegCenterMachineUserReqDto;
 import io.mosip.kernel.masterdata.dto.RegCenterMachineUserResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineUserService;
 import io.swagger.annotations.Api;
@@ -51,6 +52,7 @@ public class RegistrationCenterUserMachineController {
 	 *            {@link RegistrationCenterUserMachineMappingDto} request
 	 * @return {@link RegistrationCenterMachineUserID} as response
 	 */
+	@ResponseFilter
 	@ApiOperation(value = "Create a mapping of registration center,user,and machine", response = RegistrationCenterMachineUserID.class)
 	@PostMapping("/v1.0/registrationmachineusermappings")
 	public ResponseEntity<RegistrationCenterMachineUserID> createRegistrationCentersMachineUserMapping(
@@ -87,6 +89,7 @@ public class RegistrationCenterUserMachineController {
 	 *            {@link RegCenterMachineUserReqDto} request
 	 * @return {@link RegCenterMachineUserResponseDto} as response
 	 */
+	@ResponseFilter
 	@ApiOperation(value = "Create or update a mapping of registration center,user,and machine", response = RegCenterMachineUserResponseDto.class)
 	@PutMapping("/v1.0/registrationmachineusermappings")
 	public ResponseEntity<RegCenterMachineUserResponseDto> createOrUpdateRegistrationCentersMachineUserMapping(

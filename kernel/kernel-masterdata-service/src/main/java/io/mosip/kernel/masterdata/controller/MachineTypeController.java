@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.MachineTypeDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.MachineTypeService;
 import io.swagger.annotations.Api;
@@ -46,7 +47,7 @@ public class MachineTypeController {
 	 *         successfully inserted
 	 * 
 	 */
-
+	@ResponseFilter
 	@PostMapping("/v1.0/machinetypes")
 	@ApiOperation(value = "Service to save Machine Type", notes = "Saves MachineType and return  code and Languge Code", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({

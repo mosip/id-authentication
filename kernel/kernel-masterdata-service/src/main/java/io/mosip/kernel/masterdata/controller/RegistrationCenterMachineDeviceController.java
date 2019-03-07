@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineDeviceService;
@@ -36,6 +37,7 @@ public class RegistrationCenterMachineDeviceController {
 	@Autowired
 	private RegistrationCenterMachineDeviceService registrationCenterMachineDeviceService;
 
+	@ResponseFilter
 	@PostMapping
 	@ApiOperation(value = "Map provided registration center, machine and device", notes = "Map provided registration center id, machine id and device id", response = ResponseRegistrationCenterMachineDeviceDto.class)
 	@ApiResponses({

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DeviceTypeService;
 import io.swagger.annotations.Api;
@@ -45,6 +46,7 @@ public class DeviceTypeController {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 
+	@ResponseFilter
 	@PostMapping("/v1.0/devicetypes")
 	@ApiOperation(value = "Service to save Device Type", notes = "Saves Device Type and return Device Code and Languge Code", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({

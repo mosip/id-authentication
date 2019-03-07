@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
 import io.mosip.kernel.masterdata.dto.postresponse.DocCategoryAndTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
@@ -43,6 +44,7 @@ public class ValidDocumentController {
 	 *            the DTO for valid document.
 	 * @return ValidDocumentID.
 	 */
+	@ResponseFilter
 	@PostMapping("/v1.0/validdocuments")
 	@ApiOperation(value = "Service to create valid document", notes = "Create valid document and return composite id", response = ValidDocumentID.class)
 	public ResponseEntity<ValidDocumentID> createValidDocument(

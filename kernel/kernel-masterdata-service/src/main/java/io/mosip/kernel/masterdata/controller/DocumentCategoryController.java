@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -86,6 +87,7 @@ public class DocumentCategoryController {
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
+	@ResponseFilter
 	@PostMapping("/v1.0/documentcategories")
 	@ApiOperation(value = "Service to create document category", notes = "Create document category and return composite id", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentCategory(
@@ -100,6 +102,7 @@ public class DocumentCategoryController {
 	 *            is of type {@link DocumentCategoryDto}
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
+	@ResponseFilter
 	@PutMapping("/v1.0/documentcategories")
 	@ApiOperation(value = "Service to update document category", notes = "Update document category and return composite id", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeAndLanguageCodeID> updateDocumentCategory(

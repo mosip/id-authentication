@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.service.LanguageService;
@@ -51,6 +52,7 @@ public class LanguageController {
 		return languageService.getAllLaguages();
 	}
 
+	@ResponseFilter
 	@PostMapping
 	@ApiOperation(value = "Service to save Language", notes = "Saves Language and return Language code", response = CodeResponseDto.class)
 	@ApiResponses({
@@ -61,6 +63,7 @@ public class LanguageController {
 		return new ResponseEntity<>(languageService.saveLanguage(language), HttpStatus.OK);
 	}
 
+	@ResponseFilter
 	@PutMapping
 	@ApiOperation(value = "Service to update Language", notes = "Update Language and return Language code", response = CodeResponseDto.class)
 	@ApiResponses({

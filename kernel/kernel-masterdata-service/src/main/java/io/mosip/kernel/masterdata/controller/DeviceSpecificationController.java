@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceSpecificationResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -104,6 +105,7 @@ public class DeviceSpecificationController {
 	 * 
 	 * @return {@link IdResponseDto}
 	 */
+	@ResponseFilter
 	@PostMapping("/v1.0/devicespecifications")
 	@ApiOperation(value = "Service to save Device Specification", notes = "Saves Device Specification and return Device Specification ID", response = IdResponseDto.class)
 	@ApiResponses({
@@ -117,6 +119,7 @@ public class DeviceSpecificationController {
 				HttpStatus.OK);
 	}
 
+	@ResponseFilter
 	@PutMapping("/v1.0/devicespecifications")
 	@ApiOperation(value = "Service to update device specification", notes = "update Device Specification and return Device Specification ID", response = IdResponseDto.class)
 	@ApiResponses({

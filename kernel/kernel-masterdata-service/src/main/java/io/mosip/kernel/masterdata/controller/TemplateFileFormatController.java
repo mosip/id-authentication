@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -47,6 +48,7 @@ public class TemplateFileFormatController {
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
+	@ResponseFilter
 	@PostMapping
 	public ResponseEntity<CodeAndLanguageCodeID> createTemplateFileFormat(
 			@Valid @RequestBody RequestWrapper<TemplateFileFormatDto> templateFileFormatRequestDto) {
@@ -64,6 +66,7 @@ public class TemplateFileFormatController {
 	 * @return ResponseEntity TemplateFileFormat Code and LangCode which is updated
 	 *         successfully {@link ResponseEntity}
 	 */
+	@ResponseFilter
 	@PutMapping
 	@ApiOperation(value = "Service to update TemplateFileFormat", notes = "Update TemplateFileFormat and return TemplateFileFormat id", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({

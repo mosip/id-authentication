@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.masterdata.dto.BioTypeCodeAndLangCodeAndAttributeCode;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricAttributeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
@@ -63,6 +64,7 @@ public class BiometricAttributeController {
 	 *            Input from user Biometric Attribute DTO
 	 * @return {@link BioTypeCodeAndLangCodeAndAttributeCode}
 	 */
+	@ResponseFilter
 	@PostMapping("/v1.0/biometricattributes")
 	@ApiOperation(value = "Service to create Biometric Attributes", notes = "create Biometric Attributes  and return  code and LangCode", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = CodeAndLanguageCodeID.class),

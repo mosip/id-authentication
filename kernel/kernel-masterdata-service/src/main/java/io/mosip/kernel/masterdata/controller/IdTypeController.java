@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.IdTypeDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -64,6 +65,7 @@ public class IdTypeController {
 	 *            the request of idtype to be added.
 	 * @return the response.
 	 */
+	@ResponseFilter
 	@PostMapping("/v1.0/idtypes")
 	@ApiOperation(value = "Service to create id type.", notes = "Create Id Type.", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({

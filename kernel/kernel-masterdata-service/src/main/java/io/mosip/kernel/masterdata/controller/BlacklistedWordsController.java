@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
@@ -62,6 +63,7 @@ public class BlacklistedWordsController {
 	 * @return Valid if word does not belongs to black listed word and Invalid if
 	 *         word belongs to black listed word
 	 */
+	@ResponseFilter
 	@PostMapping(path = "/words", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.ALL_VALUE)
 	@ApiOperation(value = "Black listed word validation")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Valid Word"),
@@ -82,6 +84,7 @@ public class BlacklistedWordsController {
 	 * @return the response entity i.e. the word and language code of the word
 	 *         added.
 	 */
+	@ResponseFilter
 	@PostMapping
 	public ResponseEntity<WordAndLanguageCodeID> createBlackListedWord(
 			@RequestBody @Valid RequestWrapper<BlacklistedWordsDto> blackListedWordsRequestDto) {
@@ -97,6 +100,7 @@ public class BlacklistedWordsController {
 	 * @return the response entity i.e. the word and language code of the word
 	 *         updated.
 	 */
+	@ResponseFilter
 	@PutMapping
 	@ApiOperation(value = "update the blacklisted word", response = WordAndLanguageCodeID.class)
 	public WordAndLanguageCodeID updateBlackListedWord(

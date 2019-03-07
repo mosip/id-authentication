@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.TemplateTypeDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.TemplateTypeService;
@@ -39,6 +40,7 @@ public class TemplateTypeController {
 	 *            the request dto.
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
+	@ResponseFilter
 	@PostMapping("/v1.0/templatetypes")
 	@ApiOperation(value = "Service to create template type", notes = "create TemplateType  and return  code and LangCode", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = CodeAndLanguageCodeID.class),
