@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
@@ -20,6 +21,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -51,8 +53,9 @@ import io.mosip.preregistration.core.util.HashUtill;
  */
 @Component
 public class DemographicServiceUtil {
-
-	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	
+	@Value("${mosip.utc-datetime-pattern}")
+	private String dateTimeFormat ;
 
 	/**
 	 * Logger instance
@@ -119,8 +122,7 @@ public class DemographicServiceUtil {
 		demographicEntity.setLangCode(demographicRequest.getLangCode());
 		demographicEntity.setCrAppuserId(requestId);
 		demographicEntity.setCreatedBy(demographicRequest.getCreatedBy());
-		demographicEntity.setCreateDateTime(DateUtils
-				.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
+		demographicEntity.setCreateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		demographicEntity.setStatusCode(statuscode);
 		demographicEntity.setDemogDetailHash(new String(HashUtill.hashUtill(demographicEntity.getApplicantDetailJson())));
 		try {
@@ -129,8 +131,7 @@ public class DemographicServiceUtil {
 						&& isNull(demographicRequest.getUpdatedBy()) && isNull(demographicEntity.getUpdateDateTime())) {
 					
 					demographicEntity.setUpdatedBy(null);
-					demographicEntity.setUpdateDateTime(DateUtils
-							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
+					demographicEntity.setUpdateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 					demographicEntity.setEncryptedDateTime(encryptionDateTime);
 					
 				} else {
@@ -142,8 +143,7 @@ public class DemographicServiceUtil {
 						&& !isNull(demographicRequest.getUpdatedBy())
 						&& !isNull(demographicRequest.getUpdatedDateTime())) {
 					demographicEntity.setUpdatedBy(demographicRequest.getUpdatedBy());
-					demographicEntity.setUpdateDateTime(DateUtils
-							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getUpdatedDateTime())));
+					demographicEntity.setUpdateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 					demographicEntity.setEncryptedDateTime(encryptionDateTime);
 					
 					

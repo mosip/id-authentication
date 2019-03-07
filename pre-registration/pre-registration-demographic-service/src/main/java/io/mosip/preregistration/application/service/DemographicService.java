@@ -156,6 +156,12 @@ public class DemographicService {
 	 */
 	@Value("${schemaName}")
 	private String schemaName;
+	
+	/**
+	 * Reference for ${mosip.utc-datetime-pattern} from property file
+	 */
+	@Value("${mosip.utc-datetime-pattern}")
+	private String dateFormat;
 
 	/**
 	 * Response status

@@ -117,10 +117,10 @@ public class BookingServiceUtil {
 	@Value("${demographic.resource.url}")
 	private String preRegResourceUrl;
 
-	@Value("${timeSpanCheckForCancel}")
+	@Value("${preregistration.cancel.timespan}")
 	private long timeSpanCheckForCancel;
 
-	@Value("${timeSpanCheckForRebook}")
+	@Value("${preregistration.rebook.timespan}")
 	private long timeSpanCheckForRebook;
 
 	private Logger log = LoggerConfiguration.logConfig(BookingServiceUtil.class);

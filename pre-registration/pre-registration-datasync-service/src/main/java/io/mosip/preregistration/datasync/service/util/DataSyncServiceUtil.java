@@ -141,23 +141,23 @@ public class DataSyncServiceUtil {
 		String userId = dataSyncRequest.getUserId();
 		String format = "dd-MM-yyyy HH:mm:ss";
 
-		if (regId == null || isNull(regId)) {
+		if (isNull(regId)) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_009.toString(),
 					ErrorMessages.INVALID_REGISTRATION_CENTER_ID.toString());
 		}
 
-		if (fromDate == null || isNull(fromDate) || !parseDate(fromDate, format)) {
+		if (isNull(fromDate) || !parseDate(fromDate, format)) {
 
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
 					ErrorMessages.INVALID_REQUESTED_DATE.toString());
 		}
 
-		if (toDate != null && !isNull(toDate) && !parseDate(toDate, format)) {
+		if (!isNull(toDate) && !parseDate(toDate, format)) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
 					ErrorMessages.INVALID_REQUESTED_DATE.toString());
 		}
 
-		if (userId == null || isNull(userId)) {
+		if (isNull(userId)) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_003.toString(),
 					ErrorMessages.INVALID_USER_ID.toString());
 		}
@@ -349,8 +349,8 @@ public class DataSyncServiceUtil {
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
 					httpEntity, MainListResponseDTO.class);
 			if (!respEntity.getBody().isStatus()) {
-				throw new DocumentGetDetailsException(respEntity.getBody().getErr().getErrorCode(),
-						respEntity.getBody().getErr().getMessage());
+				log.info("sessionId", "idType", "id",
+						"In callGetDocRestService method of datasync service util - Document not found for the pre_registration_id");
 			} else {
 				for (Object obj : respEntity.getBody().getResponse()) {
 					responsestatusDto.add(mapper.convertValue(obj, DocumentMultipartResponseDTO.class));

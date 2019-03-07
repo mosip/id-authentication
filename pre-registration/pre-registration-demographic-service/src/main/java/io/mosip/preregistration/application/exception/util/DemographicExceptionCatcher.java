@@ -30,6 +30,8 @@ import io.mosip.preregistration.application.exception.system.JsonValidationExcep
 import io.mosip.preregistration.application.exception.system.SystemFileIOException;
 import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
+import io.mosip.preregistration.core.exception.DecryptionFailedException;
+import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.HashingException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
@@ -98,6 +100,10 @@ public class DemographicExceptionCatcher {
 			throw new HashingException(((HashingException) ex).getErrorCode(),((HashingException) ex).getErrorText());
 		}else if (ex instanceof OperationNotAllowedException) {
 			throw new OperationNotAllowedException(((OperationNotAllowedException) ex).getErrorCode(),((OperationNotAllowedException) ex).getErrorText());
+		}else if (ex instanceof EncryptionFailedException) {
+			throw new EncryptionFailedException(((EncryptionFailedException) ex).getErrorCode(),((EncryptionFailedException) ex).getErrorText());
+		}else if (ex instanceof DecryptionFailedException) {
+			throw new DecryptionFailedException(((DecryptionFailedException) ex).getErrorCode(),((DecryptionFailedException) ex).getErrorText());
 		}
 	}
 
