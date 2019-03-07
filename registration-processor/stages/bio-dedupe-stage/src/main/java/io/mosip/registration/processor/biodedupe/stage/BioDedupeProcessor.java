@@ -55,6 +55,8 @@ public class BioDedupeProcessor {
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
+	private static final String BIO = "BIO";
+	
 	/** The registration status service. */
 	@Autowired
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
@@ -181,7 +183,7 @@ public class BioDedupeProcessor {
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIOMETRIC_POTENTIAL_MATCH);
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_POTENTIAL_MATCH.toString());
 			description = registrationStatusDto.getStatusComment() + registrationId;
-			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationId);
+			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationId,BIO);
 		} else {
 			object.setIsValid(Boolean.TRUE);
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIODEDUPE_SUCCESS);

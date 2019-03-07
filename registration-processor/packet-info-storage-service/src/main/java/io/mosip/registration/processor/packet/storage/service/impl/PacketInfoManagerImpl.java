@@ -824,7 +824,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * saveManualAdjudicationData(java.util.Set, java.lang.String)
 	 */
 	@Override
-	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId) {
+	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId,String Source) {
 		boolean isTransactionSuccessful = false;
 
 		try {
@@ -847,7 +847,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 				manualVerificationEntity.setIsActive(true);
 				manualVerificationEntity.setIsDeleted(false);
 				manualVerificationEntity.setCrBy("SYSTEM");
-
+				//TO-DO uncomment once DB team add source column
+				//manualVerificationEntity.setSource(source);
 				manualVerficationRepository.save(manualVerificationEntity);
 				isTransactionSuccessful = true;
 				description = "Manual Adjudication data saved successfully";

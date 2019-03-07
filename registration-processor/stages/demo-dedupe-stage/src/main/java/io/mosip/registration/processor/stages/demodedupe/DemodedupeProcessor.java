@@ -62,6 +62,8 @@ public class DemodedupeProcessor {
 
 	/** The Constant MATCHED_REFERENCE_TYPE. */
 	private static final String MATCHED_REFERENCE_TYPE = "uin";
+	
+	private static final String DEMO = "DEMO";
 
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
@@ -116,7 +118,7 @@ public class DemodedupeProcessor {
 					description = "Potential duplicate packet found for registration id : " + registrationId;
 
 					// Saving potential duplicates in reg_manual_verification table
-					packetInfoManager.saveManualAdjudicationData(uniqueMatchedRefIdList, registrationId);
+					packetInfoManager.saveManualAdjudicationData(uniqueMatchedRefIdList, registrationId,DEMO);
 				}
 
 			} else {

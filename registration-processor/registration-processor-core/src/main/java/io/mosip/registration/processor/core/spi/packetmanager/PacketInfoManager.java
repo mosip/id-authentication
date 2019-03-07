@@ -112,7 +112,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @param registrationId
 	 *            the registration id
 	 */
-	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId);
+	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId,String Source);
 
 	/**
 	 * Save abis ref.
@@ -154,5 +154,6 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the UIN by rid
 	 */
 	public List<String> getUINByRid(String Rid);
+
 
 }

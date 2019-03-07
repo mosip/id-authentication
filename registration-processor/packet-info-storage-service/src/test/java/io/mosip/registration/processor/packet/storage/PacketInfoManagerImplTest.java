@@ -888,7 +888,7 @@ public class PacketInfoManagerImplTest {
 	public void testSaveManualAdjudicationDataSuccess() {
 		String registrationId = "1234";
 		List<String> uniqueMatchedRefIds = Arrays.asList("123av", "124abc", "125abcd");
-		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId);
+		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId,"DEMO");
 	}
 
 	/**
@@ -899,7 +899,7 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(manualVerficationRepository.save(any())).thenThrow(exp);
 		String registrationId = "1234";
 		List<String> uniqueMatchedRefIds = Arrays.asList("123av", "124abc", "125abcd");
-		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId);
+		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId,"DEMO");
 	}
 
 	/**
