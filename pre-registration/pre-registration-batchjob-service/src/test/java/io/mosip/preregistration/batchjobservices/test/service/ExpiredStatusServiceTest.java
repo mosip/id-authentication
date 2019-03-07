@@ -59,7 +59,6 @@ public class ExpiredStatusServiceTest {
 
 		bookingPK.setPreregistrationId("12345678909876");
 		bookingEntity.setBookingPK(bookingPK);
-		bookingEntity.setStatusCode(StatusCodes.BOOKED.getCode());
 		bookedPreIdList.add(bookingEntity);
 		logger.info("demographicEntity " + demographicEntity);
 		logger.info("bookingEntity " + bookingEntity);

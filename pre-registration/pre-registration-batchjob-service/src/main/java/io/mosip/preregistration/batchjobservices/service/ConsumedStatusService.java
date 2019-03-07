@@ -10,15 +10,21 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
+import io.mosip.preregistration.batchjobservices.entity.DemographicEntityConsumed;
+import io.mosip.preregistration.batchjobservices.entity.DocumentEntity;
+import io.mosip.preregistration.batchjobservices.entity.DocumentEntityConsumed;
 import io.mosip.preregistration.batchjobservices.entity.ProcessedPreRegEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
+import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntityConsumed;
 import io.mosip.preregistration.batchjobservices.exceptions.util.BatchServiceExceptionCatcher;
 import io.mosip.preregistration.batchjobservices.repository.dao.BatchServiceDAO;
+import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 
 /**
@@ -47,7 +53,7 @@ public class ConsumedStatusService {
 	 */
 	@Autowired
 	private BatchServiceDAO batchServiceDAO;
-	
+
 	/**
 	 * @return Response DTO
 	 */
@@ -60,33 +66,41 @@ public class ConsumedStatusService {
 			preRegList = batchServiceDAO.getAllConsumedPreIds(STATUS_COMMENTS);
 
 			preRegList.forEach(iterate -> {
-				String status = iterate.getStatusCode();
 				String preRegId = iterate.getPreRegistrationId();
 
+				DemographicEntityConsumed demographicEntityConsumed = new DemographicEntityConsumed();
+				DocumentEntityConsumed documentEntityConsumed = new DocumentEntityConsumed();
+				RegistrationBookingEntityConsumed bookingEntityConsumed = new RegistrationBookingEntityConsumed();
+				
 				DemographicEntity demographicEntity = batchServiceDAO.getApplicantDemographicDetails(preRegId);
-				if(!(demographicEntity==null)) {
-					demographicEntity.setStatusCode(status);
-					batchServiceDAO.updateApplicantDemographic(demographicEntity);
-					LOGGER.info(LOGDISPLAY, "Update the status successfully into Applicant demographic table");
+				if (demographicEntity != null) {
+
+					BeanUtils.copyProperties(demographicEntity, demographicEntityConsumed);
+					demographicEntityConsumed.setStatusCode(StatusCodes.CONSUMED.getCode());
+					batchServiceDAO.updateConsumedDemographic(demographicEntityConsumed);
+
+					DocumentEntity documentEntity = batchServiceDAO.getDocumentDetails(preRegId);
+					BeanUtils.copyProperties(documentEntity, documentEntityConsumed);
+					batchServiceDAO.updateConsumedDocument(documentEntityConsumed);
+
+					RegistrationBookingEntity bookingEntity = batchServiceDAO.getPreRegId(preRegId);
+					BeanUtils.copyProperties(bookingEntity, bookingEntityConsumed);
+					batchServiceDAO.updateConsumedBooking(bookingEntityConsumed);
+
+					batchServiceDAO.deleteBooking(bookingEntity);
+					batchServiceDAO.deleteDocument(documentEntity);
+					batchServiceDAO.deleteDemographic(demographicEntity);
+					LOGGER.info(LOGDISPLAY, "Update the status successfully into Consumed tables Pre-Registration");
 				}
-				RegistrationBookingEntity bookingEntity=batchServiceDAO.getPreRegId(preRegId);
-				if(!(bookingEntity==null)) {
-					bookingEntity.setStatusCode(status);
-					batchServiceDAO.updateBooking(bookingEntity);
-					LOGGER.info(LOGDISPLAY, "Update the status successfully into Booking table");
-				}
-				
-				
-				
+
 				iterate.setStatusComments(NEW_STATUS_COMMENTS);
 				batchServiceDAO.updateProcessedList(iterate);
 				LOGGER.info(LOGDISPLAY, "Update the comment successfully into Processed PreId List table");
-				
 
 			});
 
 		} catch (Exception e) {
-			 new BatchServiceExceptionCatcher().handle(e);
+			new BatchServiceExceptionCatcher().handle(e);
 		}
 		response.setResTime(getCurrentResponseTime());
 		response.setStatus(true);

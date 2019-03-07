@@ -79,7 +79,6 @@ public class ConsumedStatusServiceTest {
 		demographicEntity.setStatusCode("Consumed");
 		Mockito.when(demographicRepository.save(demographicEntity)).thenReturn(demographicEntity);
 		Mockito.when(regAppointmentRepository.getPreRegId("12345678909876")).thenReturn(bookingEntity);
-		bookingEntity.setStatusCode("Consumed");
 		Mockito.when(regAppointmentRepository.save(bookingEntity)).thenReturn(bookingEntity);
 
 		Mockito.when(preIdRepository.save(Mockito.any())).thenReturn(processedEntity);
