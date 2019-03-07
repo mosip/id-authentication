@@ -15,7 +15,7 @@ public class AuthAdapterConstant {
 	
 	public static final String AUTH_TOKEN_EXPIRED="JWT expired";
 	
-	public static final String AUTH_REFRESH_TOKEN_EXPIRED="Refresh token expired";
+	public static final String AUTH_TOKEN_EXPIRATION_MESSAGE="Token expired";
 	
 	public static final String AUTH_SIGNATURE_TEXT="JWT signature";
 	
