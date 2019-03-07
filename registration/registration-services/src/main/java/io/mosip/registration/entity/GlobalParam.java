@@ -18,7 +18,7 @@ import lombok.Setter;
  * @since 1.0.0
  */
 @Entity
-@Table(schema = "master", name = "global_param")
+@Table(schema = "reg", name = "global_param")
 @Getter
 @Setter
 public class GlobalParam extends RegistrationCommonFields {
