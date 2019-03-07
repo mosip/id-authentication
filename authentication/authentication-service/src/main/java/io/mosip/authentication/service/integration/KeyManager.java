@@ -138,7 +138,7 @@ public class KeyManager {
 							Map<String, Object> idrepoMap = (Map<String, Object>) responseBody.get();
 							if (idrepoMap.containsKey("errors")) {
 								List<Map<String, Object>> idRepoerrorList = (List<Map<String, Object>>) idrepoMap.get("errors");
-								String keyExpErrorCode="KER-KMS-003";
+								String keyExpErrorCode="KER-KMS-003"; //TODO FIXME integrate with kernel error constant
 								if (!idRepoerrorList.isEmpty() && idRepoerrorList.stream().anyMatch(
 										map -> map.containsKey("errCode") && ((String)map.get("errCode")).equalsIgnoreCase(keyExpErrorCode))) {
 									throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MOSIP_PUBLICKEYEXP);
