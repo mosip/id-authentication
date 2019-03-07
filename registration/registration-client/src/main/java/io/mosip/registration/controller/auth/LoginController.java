@@ -208,10 +208,10 @@ public class LoginController extends BaseController implements Initializable {
 
 		ResponseDTO responseDTO = getSyncConfigData();
 
-		if (responseDTO.getErrorResponseDTOs() != null) {
+		/*if (responseDTO.getErrorResponseDTOs() != null) {
 			ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
 			generateAlert(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
-		} else {
+		} else {*/
 
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME,
 					APPLICATION_ID, "Retrieve Login mode");
@@ -246,7 +246,7 @@ public class LoginController extends BaseController implements Initializable {
 
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
 			}
-		}
+		//}
 	}
 
 	/**
@@ -418,7 +418,7 @@ public class LoginController extends BaseController implements Initializable {
 		// TODO for temporary fix , but later userDto should be getting from session
 		ApplicationContext.map().put("userDTO", userDTO);
 
-		boolean serverStatus = getConnectionCheck(userDTO);
+		boolean serverStatus = false;//getConnectionCheck(userDTO);
 		boolean offlineStatus = false;
 
 		if (!serverStatus) {

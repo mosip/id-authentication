@@ -255,7 +255,7 @@ public class DocumentScanController extends BaseController {
 						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			}
 
-			if (documentCategoryDtos != null && documentCategoryDtos.size() > 0) {
+			if (documentCategoryDtos != null && !documentCategoryDtos.isEmpty()) {
 				HBox hBox = new HBox();
 
 				ComboBox<DocumentCategoryDto> comboBox = new ComboBox<>();
@@ -278,7 +278,7 @@ public class DocumentScanController extends BaseController {
 				documentVBoxes.put(docCategoryCode, documentVBox);
 
 				Button scanButton = new Button();
-				scanButton.setText("  Scan");
+				scanButton.setText(RegistrationUIConstants.SCAN);
 				scanButton.setId(docCategoryCode);
 				scanButton.getStyleClass().add("documentContentButton");
 				scanButton.setGraphic(new ImageView(new Image(
@@ -294,7 +294,7 @@ public class DocumentScanController extends BaseController {
 						Button clickedBtn = (Button) event.getSource();
 						clickedBtn.getId();
 						scanDocument(comboBox, documentVBox, documentCategory.getCode(),
-								"Please select " + documentCategory.getCode() + " Document");
+								RegistrationUIConstants.PLEASE_SELECT +" "+ documentCategory.getCode() + " "+RegistrationUIConstants.DOCUMENT);
 					}
 				});
 
@@ -750,7 +750,7 @@ public class DocumentScanController extends BaseController {
 
 			FXUtils fxUtils = FXUtils.getInstance();
 
-			if (documentComboBoxes != null) {
+			if (documentComboBoxes != null && !documentComboBoxes.isEmpty()) {
 
 				Map<String, DocumentDetailsDTO> documentsMap = getDocumentsMapFromSession();
 				for (String docCategoryKey : documentsMap.keySet()) {

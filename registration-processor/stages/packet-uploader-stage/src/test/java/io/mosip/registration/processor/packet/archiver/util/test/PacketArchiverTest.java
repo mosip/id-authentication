@@ -137,7 +137,7 @@ public class PacketArchiverTest {
 			NoSuchFieldException, SecurityException, PacketNotFoundException {
 		InputStream in = IOUtils.toInputStream(source, "UTF-8");
 		Mockito.when(auditLogRequestBuilder.createAuditRequestBuilder("description", "eventId", "eventName",
-				"eventType", registrationId)).thenReturn(auditResponseDto);
+				"eventType", registrationId, ApiName.DMZAUDIT)).thenReturn(auditResponseDto);
 		// Mockito.when(filesystemAdapterImpl.getPacket(registrationId)).thenReturn(in);
 		Mockito.doNothing().when(filemanager).put(any(), any(), any());
 

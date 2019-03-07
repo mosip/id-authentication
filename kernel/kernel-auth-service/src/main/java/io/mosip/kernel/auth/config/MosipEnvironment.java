@@ -22,16 +22,12 @@ public class MosipEnvironment implements EnvironmentAware {
 	private final String ldapAuthenticate = "ldap.api.authenticate";
 	private final String ldapVerifyOtpUser = "ldap.api.otp.user.verify";
 
-	private final String otpManagerSvcUrl = "otp.manager.svc.url";
 	private final String generateOtpApi = "otp.manager.api.generate";
 	private final String verifyOtpUserApi = "otp.manager.api.verify";
 
-	private final String otpSenderEmailSvcUrl = "otp.sender.svc.url";
-	private final String otpSenderSmsSvcUrl = "otp.sender.svc.url";
 	private final String otpSenderEmailApi = "otp.sender.api.email.send";
 	private final String otpSenderSmsApi = "otp.sender.api.sms.send";
 
-	private final String masterDataUrl = "masterdata.svc.url";
 	private final String masterDataTemplateApi = "masterdata.api.template";
 	private final String masterDataOtpTemplate = "masterdata.api.template.otp";
 
@@ -123,11 +119,7 @@ public class MosipEnvironment implements EnvironmentAware {
 	public String getLdapVerifyOtpUser() {
 		return environment.getProperty(ldapVerifyOtpUser);
 	}
-
-	public String getOtpManagerSvcUrl() {
-		return environment.getProperty(otpManagerSvcUrl);
-	}
-
+	
 	public String getGenerateOtpApi() {
 		return environment.getProperty(generateOtpApi);
 	}
@@ -136,23 +128,12 @@ public class MosipEnvironment implements EnvironmentAware {
 		return environment.getProperty(verifyOtpUserApi);
 	}
 
-	public String getOtpSenderEmailSvcUrl() {
-		return environment.getProperty(otpSenderEmailSvcUrl);
-	}
-
-	public String getOtpSenderSmsSvcUrl() {
-		return environment.getProperty(otpSenderSmsSvcUrl);
-	}
 	public String getOtpSenderEmailApi() {
 		return environment.getProperty(otpSenderEmailApi);
 	}
 
 	public String getOtpSenderSmsApi() {
 		return environment.getProperty(otpSenderSmsApi);
-	}
-
-	public String getMasterDataUrl() {
-		return environment.getProperty(masterDataUrl);
 	}
 
 	public String getMasterDataTemplateApi() {

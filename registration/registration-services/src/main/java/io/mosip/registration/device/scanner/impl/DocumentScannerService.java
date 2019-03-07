@@ -103,9 +103,9 @@ public abstract class DocumentScannerService implements IMosipDocumentScannerSer
 			document.open();
 
 			PdfContentByte pdfPage = new PdfContentByte(writer);
-
 			for (BufferedImage bufferedImage : bufferedImages) {
 				Image image = Image.getInstance(pdfPage, bufferedImage, 1);
+				image.scaleToFit(600, 750);
 				document.add(image);
 			}
 

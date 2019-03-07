@@ -43,7 +43,9 @@ public enum MasterDataErrorCode {
 	REG_CENTER_MACHINE_USER_HISTORY_FETCH_EXCEPTION("KER-SYNC-137","Error occurred while fetching Registration Center Machine User History"),
 	REG_CENTER_DEVICE_HISTORY_FETCH_EXCEPTION("KER-SYNC-138","Error occurred while fetching Registration Center Device History"),
 	REG_CENTER_MACHINE_HISTORY_FETCH_EXCEPTION("KER-SYNC-139","Error occurred while fetching Registration Center Machine History"),
-	REG_CENTER_MACHINE_DEVICE_HISTORY_FETCH_EXCEPTION("KER-SYNC-140","Error occurred while fetching Registration Center Machine Device History");
+	REG_CENTER_MACHINE_DEVICE_HISTORY_FETCH_EXCEPTION("KER-SYNC-140","Error occurred while fetching Registration Center Machine Device History"),
+	APPLICANT_VALID_DOCUMENT_FETCH_EXCEPTION("KER-SNC-136","Error occurred while fetching ApplicantValidDocument"),
+	INDIVIDUAL_TYPE_FETCH_EXCEPTION("KER-SNC-137","Error occurred while fetching Individual types");
 	private final String errorCode;
 	private final String errorMessage;
 
