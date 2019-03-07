@@ -258,7 +258,7 @@ public class PrintServiceImpl implements PrintService<byte[]> {
 				eventName = EventName.EXCEPTION.toString();
 				eventType = EventType.SYSTEM.toString();
 			}
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, uin);
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, uin, ApiName.AUDIT);
 		}
 
 		return pdfBytes;
