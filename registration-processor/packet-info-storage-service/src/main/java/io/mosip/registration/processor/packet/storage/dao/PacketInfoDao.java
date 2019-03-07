@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.packet.storage.dao;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -203,12 +205,17 @@ public class PacketInfoDao {
 	 */
 	private DemographicInfoDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
 		DemographicInfoDto demo = new DemographicInfoDto();
+		try {
 		demo.setRegId(object.getId().getRegId());
 		demo.setUin(object.getUin());
 		demo.setLangCode(object.getId().getLangCode());
 		demo.setName(object.getName());
 		demo.setGenderCode(object.getGender());
-		demo.setDob(object.getDob());
+		demo.setDob(new SimpleDateFormat("yyyy/MM/dd").parse(object.getDob()));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		return demo;
 	}

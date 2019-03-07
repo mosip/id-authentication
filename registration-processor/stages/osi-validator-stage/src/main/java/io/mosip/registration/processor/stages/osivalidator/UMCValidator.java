@@ -323,7 +323,8 @@ public class UMCValidator {
 				registrationId, "UMCValidator::isValidUMC()::entry");
 		RegistrationCenterMachineDto rcmDto = getCenterMachineDto(registrationId);
 
-		RegOsiDto regOsi = packetInfoManager.getOsi(registrationId);
+		Identity identity = getIdentity(registrationId);
+		RegOsiDto regOsi = new OSIValidator().getOSIDetailsFromMetaInfo(registrationId, identity);
 		boolean umc = false;
 
 		if (rcmDto.getLatitude() == null || rcmDto.getLongitude() == null || rcmDto.getLatitude().trim().isEmpty()

@@ -94,4 +94,10 @@ public class RegOsiDto {
 
 	/** The is deleted. */
 	private Boolean isDeleted;
+	
+	private String supervisorOTPAuthentication;
+	
+	private String officerOTPAuthentication;
+	
+	private String supervisorBiometricFileName;
 }

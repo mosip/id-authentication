@@ -1,17 +1,20 @@
 package io.mosip.registration.processor.stages.demodedupe;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -19,12 +22,15 @@ import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
@@ -40,6 +46,8 @@ public class DemodedupeProcessor {
 
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(DemodedupeProcessor.class);
 
+	public static final String FILE_SEPARATOR = "\\";
+	
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
@@ -64,7 +72,15 @@ public class DemodedupeProcessor {
 
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+	
+	/** The adapter. */
+	@Autowired
+	private FileSystemAdapter adapter;
 
+	InputStream demographicInfoStream = null;
+	
+	byte[] bytesArray = null;
+	
 	public MessageDTO process(MessageDTO object) {
 
 		object.setMessageBusAddress(MessageBusAddress.DEMO_DEDUPE_BUS_IN);
@@ -78,6 +94,19 @@ public class DemodedupeProcessor {
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(registrationId);
 
+			if(registrationStatusDto.getRegistrationType().equals("NEW")) {
+				InputStream packetMetaInfoStream = adapter.getFile(registrationId,
+						PacketFiles.PACKET_META_INFO.name());
+				PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil
+						.inputStreamtoJavaObject(packetMetaInfoStream, PacketMetaInfo.class);
+				demographicInfoStream = adapter.getFile(registrationId,
+						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
+				bytesArray = IOUtils.toByteArray(demographicInfoStream);
+				packetInfoManager.saveDemographicInfoJson(bytesArray,
+						packetMetaInfo.getIdentity().getMetaData());
+			}
+			
+			
 			// Potential Duplicate Ids after performing demo dedupe
 			List<DemographicInfoDto> duplicateDtos = demoDedupe.performDedupe(registrationId);
 			Set<String> uniqueUins = new HashSet<>();

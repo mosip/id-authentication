@@ -10,8 +10,9 @@ import java.util.Optional;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -507,20 +508,20 @@ public class PacketInfoMapper {
 			String applicantName = null;
 			if (demoDto.getName() != null)
 				applicantName = getJsonValues(demoDto.getName(), languageArray[i]);
-			entity.setName(applicantName);
+			entity.setName(getHMACHashCode(applicantName));
 
 			if (demoDto.getDateOfBirth() != null) {
 				try {
 					Date date = new SimpleDateFormat("yyyy/MM/dd").parse(demoDto.getDateOfBirth());
 
-					entity.setDob(date);
+					entity.setDob(getHMACHashCode(demoDto.getDateOfBirth()));
 				} catch (ParseException e) {
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 							regId, e.getMessage() + ExceptionUtils.getStackTrace(e));
 					throw new DateParseException(PlatformErrorMessages.RPR_SYS_PARSING_DATE_EXCEPTION.getMessage(), e);
 				}
 			}
-			entity.setGender(getJsonValues(demoDto.getGender(), languageArray[i]));
+			entity.setGender(getHMACHashCode(getJsonValues(demoDto.getGender(), languageArray[i])));
 			demogrphicDedupeEntities.add(entity);
 
 		}
@@ -556,4 +557,8 @@ public class PacketInfoMapper {
 		return applicantDemographicDataEntity;
 	}
 
+	public static String getHMACHashCode(String value) {
+		return  CryptoUtil.encodeBase64(HMACUtils.generateHash(value.getBytes()));
+		
+	}
 }

@@ -162,20 +162,16 @@ public class PacketValidateProcessor {
 						if (isFilesValidated && isCheckSumValidated && isApplicantDocumentValidation) {
 							object.setIsValid(Boolean.TRUE);
 							registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
-							registrationStatusDto
-									.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
+							registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
 							packetInfoManager.savePacketData(packetMetaInfo.getIdentity());
-							demographicInfoStream = adapter.getFile(registrationId,
-									PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
+							demographicInfoStream = adapter.getFile(registrationId,PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 							bytesArray = IOUtils.toByteArray(demographicInfoStream);
-							packetInfoManager.saveDemographicInfoJson(bytesArray,
-									packetMetaInfo.getIdentity().getMetaData());
+							packetInfoManager.saveDemographicInfoJson(bytesArray,packetMetaInfo.getIdentity().getMetaData());
 							packetInfoManager.saveDocuments(documentList);
 							// ReverseDataSync
 							
 							IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
-							 preRegId = identityIteratorUtil.getFieldValue(
-									packetMetaInfo.getIdentity().getMetaData(), JsonConstant.PREREGISTRATIONID);
+							 preRegId = identityIteratorUtil.getFieldValue(packetMetaInfo.getIdentity().getMetaData(), JsonConstant.PREREGISTRATIONID);
 							 object.setRid(registrationStatusDto.getRegistrationId());
 								isTransactionSuccessful = true;
 								description = "Structural validation success for registrationId " + registrationId;
@@ -186,18 +182,13 @@ public class PacketValidateProcessor {
 
 						} else {
 							object.setIsValid(Boolean.FALSE);
-							
-							int retryCount = registrationStatusDto.getRetryCount() != null
-									? registrationStatusDto.getRetryCount() + 1
-									: 1;
+							int retryCount = registrationStatusDto.getRetryCount() != null? registrationStatusDto.getRetryCount() + 1: 1;
 							description = "File validation(" + isFilesValidated + ")/Checksum validation("
 									+ isCheckSumValidated + ")/Applicant Document Validation("
 									+ isApplicantDocumentValidation + ") failed for registrationId " + registrationId;
 							isTransactionSuccessful = false;
 							registrationStatusDto.setRetryCount(retryCount);
-
-							registrationStatusDto
-									.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
+							registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
 							registrationStatusDto.setStatusComment(description);
 
 						}
@@ -312,8 +303,7 @@ public class PacketValidateProcessor {
 					reverseDataSyncRequestDto.setUpdateBy(CREATED_BY);
 					mainRequestDto.setRequest(reverseDataSyncRequestDto);
 
-					mainResponseDto = (MainResponseDTO) restClientService.postApi(ApiName.REVERSEDATASYNC, "", "",
-							mainRequestDto, MainResponseDTO.class);
+					mainResponseDto = (MainResponseDTO) restClientService.postApi(ApiName.REVERSEDATASYNC, "", "",mainRequestDto, MainResponseDTO.class);
 					isTransactionSuccessful = true;
 
 				} 
