@@ -1,9 +1,13 @@
-[
-  {
-    "registrationId": "Test1234",
-    "status": "FAILURE",
-    "message": "RegistrationId Length Must Be 29",
-    "parentRegistrationId": null,
-    "errorCode": "RPR-RGS-009"
-  }
-]
+{
+  "response": [
+    {
+      "errorCode": "RPR-RGS-008",
+      "registrationId": "209161001100abcd0190218154630",
+      "status": "FAILURE",
+      "message": "RegistrationId Must Be Numeric Only"
+    }
+  ],
+  "id": "mosip.registration.sync",
+  "version": "1.0",
+  "responsetime": "2019-03-07T06:57:57.106Z"
+}

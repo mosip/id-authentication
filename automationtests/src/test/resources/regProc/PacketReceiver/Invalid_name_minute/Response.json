@@ -1,7 +1,10 @@
 {
-  "timestamp": "2019-01-16T08:38:10.086+0000",
-  "status": 500,
-  "error": "Internal Server Error",
-  "message": "RPR-PKR-005 --> The request received is a duplicate request to upload a Packet",
-  "path": "/packetreceiver/v0.1/registration-processor/packet-receiver/registrationpackets"
+    "response": null,
+    "error": {
+        "errorcode": "RPR-PKR-001",
+        "message": "Registration packet is not in Sync with Sync table"
+    },
+    "id": "mosip.registration.packet",
+    "version": "1.0",
+    "responseTimestamp": "2019-02-28T10:22:55.894Z"
 }
