@@ -37,6 +37,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
+import io.mosip.authentication.service.impl.indauth.service.bio.BioMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
@@ -191,7 +192,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	protected void validateAdditionalFactorsDetails(AuthRequestDTO authRequestDTO, Errors errors) {
 		AuthTypeDTO authTypeDTO = authRequestDTO.getRequestedAuth();
 
-		if ((authTypeDTO != null && authTypeDTO.isPin())) {
+		if ((authTypeDTO != null && authTypeDTO.isPin() && isMatchtypeEnabled(PinMatchType.SPIN))) {
 
 			Optional<String> pinOpt = Optional.ofNullable(authRequestDTO.getRequest())
 					.map(RequestDTO::getAdditionalFactors).map(AdditionalFactorsDTO::getStaticPin);
@@ -204,7 +205,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			} else {
 				checkAdditionalFactorsValue(pinOpt, PIN_VALUE, errors);
 			}
-		} else if ((authTypeDTO != null && authTypeDTO.isOtp())) {
+		} else if ((authTypeDTO != null && authTypeDTO.isOtp() && isMatchtypeEnabled(PinMatchType.OTP))) {
 			Optional<String> otp = Optional.ofNullable(authRequestDTO.getRequest())
 					.map(RequestDTO::getAdditionalFactors).map(AdditionalFactorsDTO::getTotp);
 
@@ -260,7 +261,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				if (isAuthtypeEnabled(BioAuthType.IRIS_IMG, BioAuthType.IRIS_COMP_IMG)) {
 					validateIris(authRequestDTO, bioInfo, errors);
 				}
-				if (isAuthtypeEnabled(BioAuthType.FACE_IMG)) {
+				if (isMatchtypeEnabled(BioMatchType.FACE)) {
 					validateFace(authRequestDTO, bioInfo, errors);
 				}
 
@@ -609,7 +610,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		for (AuthType authType : authTypes) {
 			if (authType.isAuthTypeEnabled(authRequest, idInfoHelper)) {
 				Set<MatchType> associatedMatchTypes = authType.getAssociatedMatchTypes();
-
 				for (MatchType matchType : associatedMatchTypes) {
 					if (isMatchtypeEnabled(matchType)) {
 						List<IdentityInfoDTO> identityInfos = matchType
@@ -688,7 +688,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			validatePhone(authRequest, errors);
 		}
 
-		if (isMatchtypeEnabled(DemoMatchType.ADDR)) {
+		if (isAuthtypeEnabled(DemoAuthType.ADDRESS, DemoAuthType.FULL_ADDRESS)) {
 			validateAdAndFullAd(availableAuthTypeInfos, errors);
 		}
 
