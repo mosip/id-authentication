@@ -47,22 +47,9 @@ public class AuditServiceTest extends BaseIntegrationTest{
 	}
 	
 	public void setupData() throws JsonParseException, JsonMappingException, IOException {
-//		PacketHandlerServiceTest packet = new PacketHandlerServiceTest();
-//		packet.testHandelPacket();
+		PacketHandlerServiceTest packet = new PacketHandlerServiceTest();
+		packet.testHandelPacket();
 		updateDB("3");
-//		AuditLogControl data = new AuditLogControl();
-//		Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
-//	
-//		data.setRegistrationId("20916100110005020190130161624");
-//		data.setAuditLogFromDateTime(Timestamp.valueOf(LocalDateTime.now().minusHours(3)));
-//		data.setAuditLogToDateTime(Timestamp.valueOf(LocalDateTime.now().minusMinutes(10)));
-//		data.setAuditLogSyncDateTime(currentTimestamp);
-//		data.setAuditLogPurgeDateTime(currentTimestamp);
-//		data.setCrBy("TestUser");
-//		data.setCrDtime(currentTimestamp);
-//		data.setUpdBy("TestUser");
-//		data.setUpdDtimes(currentTimestamp);
-//		repo.save(data);
 	}
 	
 	@Test
