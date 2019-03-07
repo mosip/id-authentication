@@ -390,7 +390,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			List<Gender> masterGenderDtoEntity = MetaDataUtils.setCreateMetaData(masterGenderDto, Gender.class);
 			genderRepository.saveAll(masterGenderDtoEntity);
 
-			/*List<Holiday> masterHolidaysDtoEntity = MetaDataUtils.setCreateMetaData(masterHolidaysDto, Holiday.class);*/
+			//List<Holiday> masterHolidaysDtoEntity = MetaDataUtils.setCreateMetaData(masterHolidaysDto, Holiday.class);
 			// holidayRepository.saveAll(masterHolidaysDtoEntity);
 
 			List<IdType> masterIdTypeDtoEntity = MetaDataUtils.setCreateMetaData(masterIdTypeDto, IdType.class);
