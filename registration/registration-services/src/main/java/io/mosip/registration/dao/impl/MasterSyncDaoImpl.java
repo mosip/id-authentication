@@ -320,7 +320,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 		List<HolidayDto> masterHolidaysDto = masterSyncDto.getHolidays();
 		List<DocumentCategoryDto> masterDocumnetCategoryDto = masterSyncDto.getDocumentCategories();
 		List<DocumentTypeDto> masterDocumnetTypeDto = masterSyncDto.getDocumentTypes();
-		List<ValidDocumentDto> masterValidDocumnetsDto = masterSyncDto.getValidDocumentMapping();
+		//List<ValidDocumentDto> masterValidDocumnetsDto = masterSyncDto.getValidDocumentMapping();
 		List<TemplateDto> masterTemplateDto = masterSyncDto.getTemplates();
 		List<TemplateTypeDto> masterTemplateTypeDto = masterSyncDto.getTemplatesTypes();
 		List<TemplateFileFormatDto> masterTemplateFileDto = masterSyncDto.getTemplateFileFormat();
@@ -390,7 +390,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			List<Gender> masterGenderDtoEntity = MetaDataUtils.setCreateMetaData(masterGenderDto, Gender.class);
 			genderRepository.saveAll(masterGenderDtoEntity);
 
-			List<Holiday> masterHolidaysDtoEntity = MetaDataUtils.setCreateMetaData(masterHolidaysDto, Holiday.class);
+			/*List<Holiday> masterHolidaysDtoEntity = MetaDataUtils.setCreateMetaData(masterHolidaysDto, Holiday.class);*/
 			// holidayRepository.saveAll(masterHolidaysDtoEntity);
 
 			List<IdType> masterIdTypeDtoEntity = MetaDataUtils.setCreateMetaData(masterIdTypeDto, IdType.class);
@@ -407,8 +407,8 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 					RegMachineSpec.class);
 			machineSpecificationRepository.saveAll(masterMachineSpecDtoEntity);
 
-			List<MachineMaster> masterMachineDtoEntity = MetaDataUtils.setCreateMetaData(masterMachineDto,
-					MachineMaster.class);
+			/*List<MachineMaster> masterMachineDtoEntity = MetaDataUtils.setCreateMetaData(masterMachineDto,
+					MachineMaster.class);*/
 			// machineRepository.saveAll(masterMachineDtoEntity);
 
 			List<ReasonCategory> masterReasonCategoryDtoEntity = MetaDataUtils
