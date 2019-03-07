@@ -23,7 +23,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.auditmanager.constant.AuditErrorCode;
 import io.mosip.kernel.auditmanager.constant.AuditErrorCodes;
-import io.mosip.kernel.core.exception.ErrorResponse;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -32,6 +31,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
  * Class for handling API exceptions
  * 
  * @author Dharmesh Khandelwal
+ * @author Bal Vikash Sharma
  * @since 1.0.0
  *
  */
@@ -49,32 +49,31 @@ public class ApiExceptionHandler {
 	 * @param e
 	 *            the exception
 	 * @return the response entity.
+	 * @throws IOException
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ErrorResponse<ServiceError>> methodArgumentNotValidException(
-			final MethodArgumentNotValidException e) {
-		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+	public ResponseEntity<ResponseWrapper<ServiceError>> methodArgumentNotValidException(
+			HttpServletRequest httpServletRequest, final MethodArgumentNotValidException e) throws IOException {
+		ResponseWrapper<ServiceError> responseWrapper = setErrors(httpServletRequest);
 		BindingResult bindingResult = e.getBindingResult();
 		final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 		fieldErrors.forEach(x -> {
 			ServiceError error = new ServiceError(AuditErrorCodes.HANDLEREXCEPTION.getErrorCode(),
 					Character.toUpperCase(x.getField().charAt(0)) + x.getField().substring(1) + WHITESPACE
 							+ x.getDefaultMessage());
-			errorResponse.getErrors().add(error);
+			responseWrapper.getErrors().add(error);
 		});
-		errorResponse.setStatus(HttpStatus.OK.value());
-		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
 
 	}
 
 	@ExceptionHandler(HttpMessageNotReadableException.class)
-	public ResponseEntity<ErrorResponse<ServiceError>> onHttpMessageNotReadable(
-			final HttpMessageNotReadableException e) {
-		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(HttpServletRequest httpServletRequest,
+			final HttpMessageNotReadableException e) throws IOException {
+		ResponseWrapper<ServiceError> responseWrapper = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(AuditErrorCode.INVALIDFORMAT.getErrorCode(), e.getMessage());
-		errorResponse.getErrors().add(error);
-		errorResponse.setStatus(HttpStatus.OK.value());
-		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+		responseWrapper.getErrors().add(error);
+		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
 	}
 
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })

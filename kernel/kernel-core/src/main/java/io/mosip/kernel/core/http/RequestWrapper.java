@@ -16,7 +16,7 @@ public class RequestWrapper<T> {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime requesttime;
 	
-	private T metadata;
+	private Object metadata;
 	
 	@NotNull
 	@Valid

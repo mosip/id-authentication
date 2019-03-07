@@ -18,7 +18,7 @@ public class ResponseWrapper<T> {
 	private String version;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime responsetime;
-	private T metadata;
+	private Object metadata;
 	@NotNull
 	@Valid
 	private T response;
