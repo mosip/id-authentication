@@ -69,8 +69,8 @@ public class AuditControllerTest {
 		request.setRequest(auditRequestDto);
 
 		mockMvc.perform(post("/v1.0/audits").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request))).andExpect(status().isOk());
-
+				.content(objectMapper.writeValueAsString(request))).andExpect(status().isOk())
+				.andExpect(jsonPath("$.response.status", is(true)));
 	}
 
 }
