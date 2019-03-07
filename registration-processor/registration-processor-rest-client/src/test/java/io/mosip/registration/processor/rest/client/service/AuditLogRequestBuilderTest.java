@@ -19,6 +19,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -44,7 +45,7 @@ public class AuditLogRequestBuilderTest {
 		dto=new AuditResponseDto();
 		dto.setStatus(true);
 		Mockito.when(registrationProcessorRestService.postApi(any(), any(), any(), any(), any())).thenReturn(dto);
-		assertTrue(auditLogRequestBuilder.createAuditRequestBuilder("abcde", "200", "ADD", "ADD", "123456789").isStatus());
+		assertTrue(auditLogRequestBuilder.createAuditRequestBuilder("abcde", "200", "ADD", "ADD", "123456789", ApiName.AUDIT).isStatus());
 		
 	}
 	
@@ -57,7 +58,7 @@ public class AuditLogRequestBuilderTest {
 		ApisResourceAccessException exp = new ApisResourceAccessException("errorMessage");
 		Mockito.when(registrationProcessorRestService.postApi(any(), any(), any(), any(), any())).thenThrow(exp);
 		
-		auditLogRequestBuilder.createAuditRequestBuilder("abcde", "200", "ADD", "ADD", "123456789");
+		auditLogRequestBuilder.createAuditRequestBuilder("abcde", "200", "ADD", "ADD", "123456789", ApiName.AUDIT);
 		Assertions.assertThat(listAppender.list)
         .extracting( ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
 		.containsExactly(Tuple.tuple( Level.ERROR, "RPR-RCT-001 --> errorMessage")); 

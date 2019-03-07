@@ -2,6 +2,7 @@ package io.mosip.authentication.service.filter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -340,12 +341,13 @@ public abstract class BaseIDAFilter implements Filter {
 	
 	protected Map<String, Object> getRequestBody(InputStream inputStream) throws IdAuthenticationAppException {
 		try {
-			return mapper.readValue(inputStream,
+			String reqStr = IOUtils.toString(inputStream, Charset.defaultCharset());
+			return reqStr.isEmpty() ? null : mapper.readValue(reqStr,
 					new TypeReference<Map<String, Object>>() {
 					});
 		} catch (IOException | ClassCastException e) {
-			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 		}
 	}
 	

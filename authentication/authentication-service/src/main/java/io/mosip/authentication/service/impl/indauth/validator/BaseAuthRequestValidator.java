@@ -29,6 +29,9 @@ import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.BioType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.InternalAuthType;
+import io.mosip.authentication.core.dto.indauth.PinInfo;
+import io.mosip.authentication.core.dto.indauth.PinType;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -142,6 +145,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/** The Constant AUTH_TYPE. */
 	private static final String AUTH_TYPE = "requestedAuth";
+	
+	/** The Final Constant For allowed Internal auth  type*/
+	private static final String INTERNAL_ALLOWED_AUTH_TYPE = "internal.allowed.auth.type";
 
 	/** email Validator */
 	@Autowired
@@ -989,5 +995,99 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 					IdAuthenticationErrorConstants.NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST.getErrorCode(),
 					IdAuthenticationErrorConstants.NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST.getErrorMessage());
 		}
+	}
+	protected void validateRequest(AuthRequestDTO requestDTO, Errors errors) {
+		validateAllowedAuthTypes(requestDTO, errors,INTERNAL_ALLOWED_AUTH_TYPE) ;
+	}
+	/**
+	 * Method to validate auth type
+	 * 
+	 * @param requestDTO
+	 * @param errors
+	 */
+	protected void validateAllowedAuthTypes(AuthRequestDTO requestDTO, Errors errors,String configKey) {
+		AuthTypeDTO authTypeDTO = requestDTO.getAuthType();
+		if (authTypeDTO != null) {
+			Set<String> allowedAuthType = getAllowedAuthTypes(configKey);			
+			validateAuthType(requestDTO, errors, authTypeDTO, allowedAuthType);
+		}else {
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
+		}
+		
+		
+	}
+
+	/**
+	 * Validate auth type.
+	 *
+	 * @param requestDTO the request DTO
+	 * @param errors the errors
+	 * @param authTypeDTO the auth type DTO
+	 * @param allowedAuthType the allowed auth type
+	 */
+	private void validateAuthType(AuthRequestDTO requestDTO, Errors errors, AuthTypeDTO authTypeDTO,
+			Set<String> allowedAuthType) {
+		checkAllowedAuthType(requestDTO, errors, authTypeDTO, allowedAuthType);
+		
+		if(authTypeDTO.isBio()) {
+			if(allowedAuthType.contains(InternalAuthType.BIO.getType())) {
+				validateBioDetails(requestDTO, errors);
+			} else {
+				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			}
+			
+		}
+	}
+
+	/**
+	 * Check allowed auth type.
+	 *
+	 * @param requestDTO the request DTO
+	 * @param errors the errors
+	 * @param authTypeDTO the auth type DTO
+	 * @param allowedAuthType the allowed auth type
+	 */
+	private void checkAllowedAuthType(AuthRequestDTO requestDTO, Errors errors, AuthTypeDTO authTypeDTO,
+			Set<String> allowedAuthType) {
+		if((authTypeDTO.isPersonalIdentity() || authTypeDTO.isFullAddress() || authTypeDTO.isAddress())) {
+			if(allowedAuthType.contains(InternalAuthType.DEMO.getType())) {
+				checkDemoAuth(requestDTO, errors);
+			} else {
+				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			}
+		} 
+		
+		if(authTypeDTO.isOtp()) {
+			if(allowedAuthType.contains(InternalAuthType.OTP.getType())) {
+				checkOTPAuth(requestDTO, errors);
+			} else {
+				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			}
+		}
+		
+		if(authTypeDTO.isPin()) {
+			if(allowedAuthType.contains(InternalAuthType.SPIN.getType())) {
+				validatePinDetails(requestDTO, errors);
+			} else {
+				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			}
+		}
+	}
+
+	/**
+	 * Extract auth info.
+	 *
+	 * @return the sets the
+	 */
+	private Set<String> getAllowedAuthTypes(String configKey) {
+		String intAllowedAuthType = env.getProperty(configKey);
+		return Stream.of(intAllowedAuthType.split(","))
+				.filter(str -> !str.isEmpty())
+				.collect(Collectors.toSet());
 	}
 }

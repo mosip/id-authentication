@@ -3,19 +3,15 @@ package io.mosip.authentication.service.impl.indauth.validator;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
-import io.mosip.authentication.core.dto.indauth.InternalAuthType;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.util.DateUtils;
@@ -81,104 +77,7 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 		}
 	}
 
-	/**
-	 * Method to validate auth type
-	 * 
-	 * @param requestDTO
-	 * @param errors
-	 */
-	private void validateRequest(AuthRequestDTO requestDTO, Errors errors) {
-		AuthTypeDTO authTypeDTO = requestDTO.getRequestedAuth();
-		if (authTypeDTO != null) {
-			Set<String> allowedAuthType = extractAuthInfo();			
-			validateAuthType(requestDTO, errors, authTypeDTO, allowedAuthType);
-		}else {
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
-		}
-		
-		
-	}
-
-	/**
-	 * Validate auth type.
-	 *
-	 * @param requestDTO the request DTO
-	 * @param errors the errors
-	 * @param authTypeDTO the auth type DTO
-	 * @param allowedAuthType the allowed auth type
-	 */
-	private void validateAuthType(AuthRequestDTO requestDTO, Errors errors, AuthTypeDTO authTypeDTO,
-			Set<String> allowedAuthType) {
-		checkAllowedAuthType(requestDTO, errors, authTypeDTO, allowedAuthType);
-		
-		if(authTypeDTO.isBio()) {
-			if(allowedAuthType.contains(InternalAuthType.BIO.getType())) {
-				validateBioMetadataDetails(requestDTO, errors);
-			} else {
-				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
-			}
-			
-		}
-	}
-
-	/**
-	 * Check allowed auth type.
-	 *
-	 * @param requestDTO the request DTO
-	 * @param errors the errors
-	 * @param authTypeDTO the auth type DTO
-	 * @param allowedAuthType the allowed auth type
-	 */
-	private void checkAllowedAuthType(AuthRequestDTO requestDTO, Errors errors, AuthTypeDTO authTypeDTO,
-			Set<String> allowedAuthType) {
-		if(authTypeDTO.isDemo()) {
-			if(allowedAuthType.contains(InternalAuthType.DEMO.getType())) {
-				checkDemoAuth(requestDTO, errors);
-			} else {
-				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
-			}
-		} 
-		
-		if(authTypeDTO.isOtp()) {
-			if(allowedAuthType.contains(InternalAuthType.OTP.getType())) {
-				checkOTPAuth(requestDTO, errors);
-			} else {
-				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
-			}
-		}
-		
-		if(authTypeDTO.isPin()) {
-			if(allowedAuthType.contains(InternalAuthType.SPIN.getType())) {
-				validateAdditionalFactorsDetails(requestDTO, errors);
-			} else {
-				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
-			}
-		}
-	}
-
-	/**
-	 * Extract auth info.
-	 *
-	 * @return the sets the
-	 */
-	private Set<String> extractAuthInfo() {
-		Set<String> allowedAuthType = new HashSet<>();
-		String intAllowedAuthType = env.getProperty(INTERNAL_ALLOWED_AUTH_TYPE);
-		if (null!=intAllowedAuthType && intAllowedAuthType.contains(",")) {
-			String value[] = intAllowedAuthType.split(",");
-			for (int i = 0; i < value.length; i++) {
-				allowedAuthType.add(value[i]);				
-			}
-		}else {
-			allowedAuthType.add(intAllowedAuthType);
-		}
-		return allowedAuthType;
-	}
+	
 
 	/**
 	 *  Validation for DateTime.
