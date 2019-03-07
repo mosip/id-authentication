@@ -50,9 +50,6 @@ public class AuthProvider extends AbstractUserDetailsAuthenticationProvider {
 	@Value("${auth.server.validate.url}")
 	private String validateUrl;
 
-	@Value("${auth.server.refreshToken.url}")
-	private String refreshTokenUrl;
-
 	@Override
 	protected void additionalAuthenticationChecks(UserDetails userDetails,
 			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
@@ -88,46 +85,24 @@ public class AuthProvider extends AbstractUserDetailsAuthenticationProvider {
 		return response;
 	}
 
-	private ResponseEntity<MosipUserDto> getNewToken(String token)
-			throws RestClientException, KeyManagementException, KeyStoreException, NoSuchAlgorithmException {
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
-		HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-		ResponseEntity<MosipUserDto> response = getRestTemplate().exchange(refreshTokenUrl, HttpMethod.POST, entity,
-				MosipUserDto.class);
-		return response;
-	}
-
 	@Override
 	protected UserDetails retrieveUser(String userName,
 			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
 		ResponseEntity<MosipUserDto> response = null;
+		String message = null;
 		try {
 			response = getResponseEntity(usernamePasswordAuthenticationToken, null);
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
-			String message = getMessage(e.getResponseBodyAsString());
-			AuthToken authToken = (AuthToken) usernamePasswordAuthenticationToken;
+			message = getMessage(e.getResponseBodyAsString());
 			if (message.contains(AuthAdapterConstant.AUTH_TOKEN_EXPIRED)) {
-				try {
-					response = getNewToken(authToken.getToken());
-				} catch (HttpClientErrorException | HttpServerErrorException exp) {
-					String refreshMessage = getMessage(e.getResponseBodyAsString());
-					if (refreshMessage.contains(AuthAdapterConstant.AUTH_TOKEN_EXPIRED)) {
-						throw new AuthException(AuthAdapterConstant.AUTH_REFRESH_TOKEN_EXPIRED);
-					} else {
-						throw new AuthException(refreshMessage);
-					}
-
-				} catch (KeyManagementException | KeyStoreException | NoSuchAlgorithmException exp) {
-					throw new AuthException(e.getMessage());
-				}
+				throw new AuthException(AuthAdapterConstant.AUTH_SIGNATURE_MESSAGE);
 			} else if (message.contains(AuthAdapterConstant.AUTH_SIGNATURE_TEXT)) {
 				throw new AuthException(AuthAdapterConstant.AUTH_SIGNATURE_MESSAGE);
 			} else {
 				throw new AuthException(message);
 			}
-		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
-			throw new AuthException(e.getMessage());
+		} catch (KeyManagementException | KeyStoreException | NoSuchAlgorithmException exp) {
+			throw new AuthException(exp.getMessage());
 		}
 		MosipUserDto mosipUserDto = response.getBody();
 		if (mosipUserDto == null) {

@@ -683,8 +683,11 @@ public class DemographicDetailController extends BaseController {
 			ResourceBundle localProperties = applicationContext.getLocalLanguageProperty();
 			fullNameLocalLanguageLabel.setText(localProperties.getString("fullName"));
 			addressLine1LocalLanguageLabel.setText(localProperties.getString("addressLine1"));
+			addressLine1LocalLanguage.setPromptText(localProperties.getString("addressLine1"));
 			addressLine2LocalLanguageLabel.setText(localProperties.getString("addressLine2"));
+			addressLine2LocalLanguage.setPromptText(localProperties.getString("addressLine2"));
 			addressLine3LocalLanguageLabel.setText(localProperties.getString("addressLine3"));
+			addressLine3LocalLanguage.setPromptText(localProperties.getString("addressLine3"));
 			ageFieldLocalLanguageLabel.setText(localProperties.getString("ageField"));
 			genderLocalLanguageLabel.setText(localProperties.getString("gender"));
 			regionLocalLanguageLabel.setText(localProperties.getString("region"));

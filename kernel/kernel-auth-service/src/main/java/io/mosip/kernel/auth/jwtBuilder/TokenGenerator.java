@@ -96,9 +96,9 @@ public class TokenGenerator {
 	        claims.put("lang", mosipUser.getLangCode());
 	        claims.put("name", mosipUser.getName());
 	        TimeToken token = getToken(claims);
-	        String refreshToken = buildRefreshToken(claims);
+	        //String refreshToken = buildRefreshToken(claims);
 	        basicTokenDto.setAuthToken(token.getToken());
-	        basicTokenDto.setRefreshToken(refreshToken);
+	        //basicTokenDto.setRefreshToken(refreshToken);
 	        basicTokenDto.setExpiryTime(token.getExpTime());
 		return basicTokenDto;
 	}
@@ -113,34 +113,10 @@ public class TokenGenerator {
 	        claims.put("isOtpRequired", true);
 	        claims.put("isOtpVerified", otpVerified);
 	        TimeToken token = getToken(claims);
-	        String refreshToken = buildRefreshToken(claims);
 	        basicTokenDto.setAuthToken(token.getToken());
-	        basicTokenDto.setRefreshToken(refreshToken);
 	        basicTokenDto.setExpiryTime(token.getExpTime());
 		return basicTokenDto;
 	}
-
-	private String buildToken(Claims claims, long exptime) {
-        String secret = mosipEnvironment.getJwtSecret();
-        String token_base = mosipEnvironment.getTokenBase();
-        int token_expiry = mosipEnvironment.getTokenExpiry();
-
-        long currentTimeInMs = System.currentTimeMillis();
-        Date currentDate = new Date(currentTimeInMs);
-
-        JwtBuilder builder = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(currentDate)
-                .signWith(SignatureAlgorithm.HS512, secret);
-
-
-        if (token_expiry >= 0) {
-        	exptime = currentTimeInMs + token_expiry;
-            builder.setExpiration(new Date(exptime));
-        }
-
-        return token_base.concat(builder.compact());
-    }
 	
 	private TimeToken getToken(Claims claims) {
 		TimeToken timeToken = new TimeToken();
