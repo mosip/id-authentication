@@ -408,7 +408,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 			if (syncJobDef.getApiName() != null) {
 				String configuredValue = getGlobalConfigValueOf(syncJobDef.getApiName());
 				if (configuredValue != null) {
-					jobsMap.put(syncJobDef.getId(), configuredValue);
+					jobsMap.put(syncJobDef.getId(), configuredValue.trim());
 				}
 			}
 		}

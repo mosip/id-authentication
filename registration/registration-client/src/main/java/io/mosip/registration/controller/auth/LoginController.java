@@ -418,7 +418,7 @@ public class LoginController extends BaseController implements Initializable {
 		// TODO for temporary fix , but later userDto should be getting from session
 		ApplicationContext.map().put("userDTO", userDTO);
 
-		boolean serverStatus = getConnectionCheck(userDTO);
+		boolean serverStatus = false;//getConnectionCheck(userDTO);
 		boolean offlineStatus = false;
 
 		if (!serverStatus) {

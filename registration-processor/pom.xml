@@ -101,10 +101,10 @@
 
 		<!-- local -->
 		<registration.status.service.version>0.9.0</registration.status.service.version>
-		<registration.processor.core.version>0.9.1</registration.processor.core.version>
+		<registration.processor.core.version>0.9.2</registration.processor.core.version>
 		<filesystem.adapter.ceph.version>0.9.0</filesystem.adapter.ceph.version>
 		<packet.manager.version>0.9.0</packet.manager.version>
-		<registration.processor.rest.client.version>0.9.0</registration.processor.rest.client.version>
+		<registration.processor.rest.client.version>0.9.2</registration.processor.rest.client.version>
 		<packet.info.storage.service.version>0.9.0</packet.info.storage.service.version>
 		<packet.bio.dedupe.service.impl.version>0.9.0</packet.bio.dedupe.service.impl.version>
 		<registration.processor.message.sender.version>0.9.0</registration.processor.message.sender.version>

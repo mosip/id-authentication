@@ -3,11 +3,16 @@
  */
 package io.mosip.kernel.auth.exception;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.mosip.kernel.core.exception.ServiceError;
+
 /**
  * @author M1049825
  *
  */
-public class AuthManagerException extends Exception{
+public class AuthManagerException extends RuntimeException{
 
 	/**
 	 * 
@@ -30,15 +35,24 @@ public class AuthManagerException extends Exception{
 	}
 
 	/**
-	 * Constructor the initialize Handler exception
-	 * 
-	 * @param errorCode
-	 *            The error code for this exception
-	 * @param errorMessage
-	 *            The error message for this exception
-	 * @param rootCause
-	 *            the specified cause
+	 * This variable holds the MosipErrors list.
 	 */
-	public AuthManagerException(String errorCode, String errorMessage, Throwable rootCause) {
+	private List<ServiceError> list = new ArrayList<>();
+
+	/**
+	 * @param list
+	 *            The error list.
+	 */
+	public AuthManagerException(List<ServiceError> list) {
+		this.list = list;
+	}
+
+	/**
+	 * Getter for error list.
+	 * 
+	 * @return The error list.
+	 */
+	public List<ServiceError> getList() {
+		return list;
 	}
 }

@@ -294,7 +294,7 @@ public class DocumentScanController extends BaseController {
 						Button clickedBtn = (Button) event.getSource();
 						clickedBtn.getId();
 						scanDocument(comboBox, documentVBox, documentCategory.getCode(),
-								"Please select " + documentCategory.getCode() + " Document");
+								RegistrationUIConstants.PLEASE_SELECT +" "+ documentCategory.getCode() + " "+RegistrationUIConstants.DOCUMENT);
 					}
 				});
 
