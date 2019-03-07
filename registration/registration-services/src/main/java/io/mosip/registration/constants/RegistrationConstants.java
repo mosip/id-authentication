@@ -260,6 +260,7 @@ public class RegistrationConstants {
 	public static final String CBEFF_BIR_UUIDS_MAP_NAME = "CBEFF_BIR_UUIDS";
 	public static final String XML_FILE_FORMAT = ".xml";
 	public static final String CBEFF_FILE_FORMAT = "cbeff";
+	public static final String FACE_EXCEPTION = "ExceptionFace";
 
 	// Validation Types
 	public static final String VALIDATION_TYPE_FP = "Fingerprint";

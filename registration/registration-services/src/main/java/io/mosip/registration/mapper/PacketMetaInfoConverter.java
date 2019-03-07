@@ -13,7 +13,6 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
@@ -81,12 +80,14 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			ApplicantDocumentDTO documentDTO = source.getDemographicDTO().getApplicantDocumentDTO();
 
 			// Set Photograph
-			identity.setApplicantPhotograph(buildPhotograph("label", language, documentDTO.getNumRetry(),
-					documentDTO.getPhotographName(), documentDTO.getQualityScore()));
+			identity.setApplicantPhotograph(
+					buildPhotograph(RegistrationConstants.LABEL, language, documentDTO.getNumRetry(),
+							getBIRUUID(RegistrationConstants.INDIVIDUAL, RegistrationConstants.VALIDATION_TYPE_FACE),
+							documentDTO.getQualityScore()));
 
 			// Set Exception Photograph
-			identity.setExceptionPhotograph(
-					buildPhotograph("label", language, 0, documentDTO.getExceptionPhotoName(), 0));
+			identity.setExceptionPhotograph(buildPhotograph(RegistrationConstants.LABEL, language, 0,
+					getBIRUUID(RegistrationConstants.INDIVIDUAL, RegistrationConstants.FACE_EXCEPTION), 0));
 
 			// Set Documents
 			identity.setDocuments(buildDocuments(source.getDemographicDTO()));
@@ -191,7 +192,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			setuinUpdatedFields(source, identity);
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_META_CONVERTOR,
-					runtimeException.toString());
+					runtimeException.getMessage(), runtimeException);
 		}
 		return packetMetaInfo;
 	}
@@ -291,12 +292,12 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		if (biometricDTO != null) {
 			if (biometricDTO instanceof FingerprintDetailsDTO) {
 				FingerprintDetailsDTO fingerprint = (FingerprintDetailsDTO) biometricDTO;
-				biometricDetails = buildBiometric("label", language, biometricType,
+				biometricDetails = buildBiometric(RegistrationConstants.LABEL, language, biometricType,
 						getBIRUUID(personType, fingerprint.getFingerType()), fingerprint.getQualityScore(),
 						fingerprint.getNumRetry(), fingerprint.isForceCaptured());
 			} else if (biometricDTO instanceof IrisDetailsDTO) {
 				IrisDetailsDTO iris = (IrisDetailsDTO) biometricDTO;
-				biometricDetails = buildBiometric("label", language, biometricType,
+				biometricDetails = buildBiometric(RegistrationConstants.LABEL, language, biometricType,
 						getBIRUUID(personType, iris.getIrisType()), iris.getQualityScore(), iris.getNumOfIrisRetry(),
 						iris.isForceCaptured());
 			}
@@ -501,7 +502,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 	private FieldValue buildFieldValue(String label, String value) {
 		FieldValue fieldValue = new FieldValue();
 		fieldValue.setLabel(label);
-		fieldValue.setValue(value);
+		fieldValue.setValue(value == null || value.isEmpty() ? null : value);
 		return fieldValue;
 	}
 
@@ -522,8 +523,8 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 	}
 
 	private String removeFileExt(String fileName) {
-		if (fileName.contains(".")) {
-			fileName = fileName.substring(0, fileName.lastIndexOf('.'));
+		if (fileName.contains(RegistrationConstants.DOT)) {
+			fileName = fileName.substring(0, fileName.lastIndexOf(RegistrationConstants.DOT));
 		}
 		return fileName;
 	}

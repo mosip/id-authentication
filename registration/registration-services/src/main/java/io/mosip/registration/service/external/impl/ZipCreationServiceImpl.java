@@ -140,9 +140,10 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 
 			return byteArrayOutputStream.toByteArray();
 		} catch (IOException exception) {
-			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
+			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getMessage(), exception);
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ZIP_CREATION, runtimeException.toString());
+			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ZIP_CREATION,
+					runtimeException.getMessage(), runtimeException);
 		}
 	}
 
