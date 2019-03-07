@@ -17,6 +17,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.audit.AuditFactory;
@@ -96,8 +97,8 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable() && getGlobalParams().isEmpty()) {
-			LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-					" Unable to synch config data");
+			LOGGER.error(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+					" Unable to synch config data as no internet connection and no data in DB");
 			return setErrorResponse(responseDTO, RegistrationConstants.GLOBAL_CONFIG_ERROR_MSG, null);
 		}
 
@@ -110,7 +111,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 			// get CenterID
 			centerID = userOnboardDAO.getCenterID(stationID);
 
-			Map<String, String> requestParamMap = new HashMap<String, String>();
+			Map<String, String> requestParamMap = new HashMap<>();
 			requestParamMap.put(RegistrationConstants.REGISTRATION_CENTER_ID, centerID);
 
 			/* REST CALL */
@@ -136,7 +137,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 					globalParam = new GlobalParam();
 					globalParam.setCode(key.getKey());
 					globalParam.setLangCode("ENG");
-					
+
 					/* TODO Need to Add Description not key (CODE) */
 					globalParam.setName(key.getKey());
 					globalParam.setTyp("CONFIGURATION");
@@ -157,7 +158,8 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		} catch (HttpServerErrorException | HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException
 				| ClassCastException | ResourceAccessException exception) {
 			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
-			LOGGER.error("REGISTRATION_SYNCH_CONFIG_DATA", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+			LOGGER.error("REGISTRATION_SYNCH_CONFIG_DATA", APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 		}
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"config data synch is completed");
