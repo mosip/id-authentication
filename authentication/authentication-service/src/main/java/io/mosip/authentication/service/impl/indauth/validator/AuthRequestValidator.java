@@ -51,9 +51,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/** The Constant VALIDATE. */
 	private static final String VALIDATE = "VALIDATE";
 
-	/** The Constant ID_AUTH_VALIDATOR. */
-	private static final String AUTH_REQUEST_VALIDATOR = "AUTH_REQUEST_VALIDATOR";
-
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
@@ -133,7 +130,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				}
 			}
 		} else {
-			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
 			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 		}
@@ -151,15 +148,15 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		try {
 			Instant reqTimeInstance = DateUtils.parseToDate(reqTime,env.getProperty("datetime.pattern")).toInstant();
 			Instant now = Instant.now();
-			mosipLogger.debug(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
+			mosipLogger.debug(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
 			Integer reqDateMaxTimeInt = env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Integer.class);
 			Long reqDateMaxTimeLong = env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Long.class);
 			if (null != reqDateMaxTimeInt && null != reqDateMaxTimeLong
 					&& Duration.between(reqTimeInstance, now).toHours() > reqDateMaxTimeInt) {
-				mosipLogger.debug(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
+				mosipLogger.debug(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
 						"Time difference in min : " + Duration.between(reqTimeInstance, now).toMinutes());
-				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
+				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
 						"INVALID_AUTH_REQUEST_TIMESTAMP -- " + String.format(
 								IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorMessage(),
 								Duration.between(reqTimeInstance, now).toMinutes() - reqDateMaxTimeLong));
@@ -169,7 +166,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 						IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorMessage());
 			}
 		} catch (DateTimeParseException | ParseException | java.text.ParseException e) {
-			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_REQUEST_TIMED_OUT,
 					INVALID_INPUT_PARAMETER + REQ_TIME);
 			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { REQ_TIME },
@@ -195,7 +192,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 					.anyMatch(Supplier<Boolean>::get);
 
 			if (!anyAuthType) {
-				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, INVALID_AUTH_REQUEST);
+				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, INVALID_AUTH_REQUEST);
 				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 						new Object[] { AUTH_TYPE },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
@@ -210,7 +207,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				validateBioMetadataDetails(authRequest, errors);
 			}
 		} else {
-			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + AUTH_TYPE);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + AUTH_TYPE);
 			errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { AUTH_TYPE },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());

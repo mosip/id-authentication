@@ -47,8 +47,10 @@ import io.mosip.kernel.core.util.DateUtils;
 @Service
 public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 
+
+
 	/** The Constant DEFAULT_SESSION_ID. */
-	private static final String DEFAULT_SESSION_ID = "sessionId";
+	private static final String DEFAULT_SESSION_ID = "SESSION_ID";
 
 	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 
@@ -163,14 +165,14 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 			try {
 				idResDTO = getIdRepoByUIN(idvId, isBio);
 			} catch (IdAuthenticationBusinessException e) {
-				logger.error("", "", e.getErrorCode(), e.getErrorText());
+				logger.error(DEFAULT_SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 				throw new IdAuthenticationBusinessException(e.getErrorCode(), e.getErrorText());
 			}
 		} else {
 			try {
 				idResDTO = getIdRepoByVID(idvId, isBio);
 			} catch (IdAuthenticationBusinessException e) {
-				logger.error("", "", "", e.getErrorText());
+				logger.error(DEFAULT_SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
 			}
 		}
@@ -217,7 +219,7 @@ public class IdAuthServiceImpl implements IdAuthService<AutnTxn> {
 			restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 					AuditResponseDto.class);
 		} catch (IDDataValidationException e) {
-			logger.error(DEFAULT_SESSION_ID, null, null, e.getErrorText());
+			logger.error(DEFAULT_SESSION_ID,this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
 		}
 

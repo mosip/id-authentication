@@ -47,7 +47,7 @@ public class InternalAuthController {
 	private static final String SESSION_ID = "sessionId";
 
 	/** The mosipLogger. */
-	private Logger mosipLogger = IdaLogger.getLogger(AuthController.class);
+	private Logger mosipLogger = IdaLogger.getLogger(InternalAuthController.class);
 
 	/**
 	 * Inits the binder.
@@ -81,10 +81,10 @@ public class InternalAuthController {
 			DataValidationUtil.validate(e);
 			authResponseDTO = authFacade.authenticateApplicant(authRequestDTO, false);
 		} catch (IDDataValidationException e1) {
-			mosipLogger.error(SESSION_ID, null, null, e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());
+			mosipLogger.error(SESSION_ID,  this.getClass().getSimpleName(), "authenticateApplicant", e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e1);
 		} catch (IdAuthenticationBusinessException e1) {
-			mosipLogger.error(SESSION_ID, null, null, e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());
+			mosipLogger.error(SESSION_ID,  this.getClass().getSimpleName(), "authenticateApplicant", e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e1);
 		}
 

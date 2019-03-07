@@ -51,9 +51,6 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	/** The Constant VALIDATE. */
 	private static final String VALIDATE = "VALIDATE";
 
-	/** The Constant ID_AUTH_VALIDATOR. */
-	private static final String KYC_REQUEST_VALIDATOR = "AUTH_REQUEST_VALIDATOR";
-
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
@@ -108,7 +105,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 			}
 
 		} else {
-			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
 			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), AUTH_REQUEST));
 		}
@@ -127,7 +124,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 				+ Optional.ofNullable(kycAuthRequestDTO).map(AuthRequestDTO::getPartnerID).orElse("");
 		String accesslevel = environment.getProperty(key);
 		if (accesslevel != null && accesslevel.equals(KycType.NONE.getType())) {
-			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
 			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.UNAUTHORISED_KUA.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.UNAUTHORISED_KUA.getErrorMessage(), AUTH_REQUEST));
 		}
@@ -158,7 +155,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 														.test(kycAuthRequestDTO.getRequestedAuth()));
 		boolean isValidAuthtype = noNotAllowedAuthTypeEnabled && anyAllowedAuthTypeEnabled;
 		if (!isValidAuthtype) {
-			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + REQUESTEDAUTH);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, INVALID_INPUT_PARAMETER + REQUESTEDAUTH);
 			errors.rejectValue(REQUESTEDAUTH, IdAuthenticationErrorConstants.INVALID_EKYC_AUTHTYPE.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_EKYC_AUTHTYPE.getErrorMessage(), REQUESTEDAUTH));
 		}

@@ -41,8 +41,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OTPAuthServiceImpl implements OTPAuthService {
 
-	/** The Constant METHOD_VALIDATE_OTP. */
-	private static final String METHOD_VALIDATE_OTP = "validateOtp";
+
+	private static final String AUTHENTICATE = "authenticate";
 
 	/** The Constant DEAFULT_SESSSION_ID. */
 	private static final String DEAFULT_SESSSION_ID = "sessionID";
@@ -92,16 +92,16 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 
 			boolean isValidRequest = validateTxnId(txnId, uin, vid, authRequestDTO.getRequestTime());
 			if (isValidRequest) {
-				mosipLogger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
+				mosipLogger.info("SESSION_ID", this.getClass().getSimpleName(), "Inside Validate Otp Request", "");
 				List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
 				List<MatchOutput> listMatchOutputs = constructMatchOutput(authRequestDTO, listMatchInputs, uin);
 				boolean isPinMatched = listMatchOutputs.stream().anyMatch(MatchOutput::isMatched);
 				return idInfoHelper.buildStatusInfo(isPinMatched, listMatchInputs, listMatchOutputs,
 						PinAuthType.values());
 			} else {
-				mosipLogger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside Invalid Txn ID",
+				mosipLogger.debug(DEAFULT_SESSSION_ID, this.getClass().getSimpleName(), "Inside Invalid Txn ID",
 						getClass().toString());
-				mosipLogger.error(DEAFULT_SESSSION_ID, "NA", "NA", "Key Invalid");
+				mosipLogger.error(DEAFULT_SESSSION_ID, this.getClass().getSimpleName(),AUTHENTICATE , "Key Invalid");
 				throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
 			}
 		} else {
