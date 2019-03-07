@@ -203,7 +203,7 @@ public class RegistrationConstants {
 	public static final String SECOND_TOGGLE_LABEL = "toggleLabel2";
 	public static final String PACKET_TYPE_UPDATE = "Update";
 	public static final String DOB_TOGGLE = "toggleAgeOrDob";
-	public static final String UIN_UPDATE_CONFIG_FLAG = "UIN_UPDATE_CONFIG_FLAG";
+	public static final String UIN_UPDATE_CONFIG_FLAG = "mosip.registration.uin_update_config_flag";
 	public static final String UIN_UPDATE_CONFIG_FIELDS_FROM_DB = "mosip.registration.uin.update.configured.fields";
 	public static final String UIN_UPDATE_NAME = "name";
 	public static final String UIN_UPDATE_AGE = "age";
@@ -232,7 +232,7 @@ public class RegistrationConstants {
 	public static final String APPROVED = "Marked for Approval";
 	public static final String REJECTED = "Marked for Rejection";
 	public static final String PENDING = "Pending";
-	public static final String EOD_PROCESS_CONFIG_FLAG = "EOD_PROCESS_CONFIG_FLAG";
+	public static final String EOD_PROCESS_CONFIG_FLAG = "mosip.registration.eod_process_config_flag";
 
 	// AES Encryption Constants
 	public static final String AES_KEY_CIPHER_SPLITTER = "aes.keySplitter";
@@ -601,9 +601,11 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_ADJ_J00012 = "ADJ_J00012";
 	public static final String OPT_TO_REG_DEL_001 = "DEL_001";
 	public static final String OPT_TO_REG_UDM_J00012 = "UDM_J00012";
-	public static final String GEO_CAP_FREQ = "GEO_CAP_FREQ";
-	public static final String DIST_FRM_MACHN_TO_CENTER = "DIST_FRM_MACHN_TO_CENTER";
-	public static final String REG_PAK_MAX_CNT_OFFLINE_FREQ = "REG_PAK_MAX_CNT_OFFLINE_FREQ";
+	public static final String GEO_CAP_FREQ = "mosip.registration.geo.capture.frequency";
+	public static final String DIST_FRM_MACHN_TO_CENTER = "mosip.registration.distance.from.machine.to.center";
+	public static final String REG_PAK_MAX_CNT_OFFLINE_FREQ = "mosip.registration.packet.maximum.count.offline.frequency";
+	public static final String MOSIP_REGISTRATION = "mosip.registration.";
+	public static final String FREQUENCY = "frequency";
 
 	/** Packet Status Sync Constants */
 	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
@@ -738,7 +740,7 @@ public class RegistrationConstants {
 	public static final String NEW_BIOMETRIC_EXCEPTION = "newBiometric";
 
 	// Iris & Fingerprint Capture for Individual Registration
-	public static final String IRIS_THRESHOLD = "IRIS_THRESHOLD";
+	public static final String IRIS_THRESHOLD = "mosip.registration.iris_threshold";
 	public static final String IMAGE_FORMAT_KEY = "imageFormat";
 	public static final String IMAGE_BYTE_ARRAY_KEY = "imageBytes";
 	public static final String IMAGE_SCORE_KEY = "imageScore";
@@ -759,11 +761,11 @@ public class RegistrationConstants {
 	public static final String LEFTHAND_SLAP_FINGERPRINT_PATH = "/fingerprints/leftSlap.jpg";
 	public static final String RIGHTHAND_SLAP_FINGERPRINT_PATH = "/fingerprints/rightSlap.jpg";
 	public static final String BOTH_THUMBS_FINGERPRINT_PATH = "/fingerprints/thumbs.jpg";
-	public static final String LEFTSLAP_FINGERPRINT_THRESHOLD = "LEFTSLAP_FINGERPRINT_THRESHOLD";
-	public static final String RIGHTSLAP_FINGERPRINT_THRESHOLD = "RIGHTSLAP_FINGERPRINT_THRESHOLD";
-	public static final String THUMBS_FINGERPRINT_THRESHOLD = "THUMBS_FINGERPRINT_THRESHOLD";
-	public static final String FINGERPRINT_RETRIES_COUNT = "NUM_OF_FINGERPRINT_RETRIES";
-	public static final String IRIS_RETRY_COUNT = "NUM_OF_IRIS_RETRIES";
+	public static final String LEFTSLAP_FINGERPRINT_THRESHOLD = "mosip.registration.leftslap_fingerprint_threshold";
+	public static final String RIGHTSLAP_FINGERPRINT_THRESHOLD = "mosip.registration.rightslap_fingerprint_threshold";
+	public static final String THUMBS_FINGERPRINT_THRESHOLD = "mosip.registration.thumbs_fingerprint_threshold";
+	public static final String FINGERPRINT_RETRIES_COUNT = "mosip.registration.num_of_fingerprint_retries";
+	public static final String IRIS_RETRY_COUNT = "mosip.registration.num_of_iris_retries";
 	public static final String[] LEFTHAND_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/lefthand/leftIndex/",
 			"/fingerprints/lefthand/leftLittle/", "/fingerprints/lefthand/leftMiddle/",
 			"/fingerprints/lefthand/leftRing/" };
@@ -1083,7 +1085,7 @@ public class RegistrationConstants {
 	public static final String INVALID_KEY = "Please sync to get latest key from the server before proceeding with this registration.";
 
 	public static final String JOB_ID = "JOB_ID";
-	
+
 	public static final String SYNC_DATA_FREQ = "mosip.registration.SYNC_DATA_FREQ";
 
 	public static final String LABEL = "Label";
@@ -1095,7 +1097,7 @@ public class RegistrationConstants {
 	public static final String MM = "mm";
 	public static final String YYYY = "yyyy";
 	public static final String DOB = "dob";
-	
+
 	public static final String ATTR_INDIVIDUAL_TYPE = "individualTypeCode";
 	public static final String ATTR_DATE_OF_BIRTH = "dateofbirth";
 	public static final String ATTR_GENDER_TYPE = "genderCode";

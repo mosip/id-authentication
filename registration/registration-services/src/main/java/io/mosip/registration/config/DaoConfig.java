@@ -39,9 +39,6 @@ public class DaoConfig extends HibernateDaoConfig {
 	@Autowired
 	private ApplicationContext applicationContext;
 
-	@Value("${IRIS_THRESHOLD}")
-	private String irisThreshold;
-
 	@Override
 	@Bean(name = "dataSource")
 	public DataSource dataSource() {

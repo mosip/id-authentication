@@ -178,8 +178,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		if (!reRegisterRegistrations.isEmpty()) {
 			reRegistrationCountLbl.setText(reRegisterRegistrations.size() + " " + RegistrationUIConstants.APPLICATIONS);
 		}
-		if (!ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FLAG)
-				.equals(RegistrationConstants.ENABLE)) {
+		if (!(String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FLAG))).equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 			uinUpdateBtn.setVisible(false);
 			uinUpdateImage.setVisible(false);
 		}
@@ -518,7 +517,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			try {
 
 				if (!String.valueOf(ApplicationContext.map().get(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG))
-						.equals(RegistrationConstants.ENABLE)) {
+						.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 					updatePacketStatus();
 					syncAndUploadPacket();
 				}
