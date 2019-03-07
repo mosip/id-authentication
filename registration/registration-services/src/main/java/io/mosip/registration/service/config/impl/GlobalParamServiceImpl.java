@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,6 @@ import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.GlobalParam;
-import io.mosip.registration.entity.id.GlobalParamId;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.GlobalParamService;
@@ -136,10 +134,10 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 				} else {
 					globalParam = new GlobalParam();
-					GlobalParamId globalParamId = new GlobalParamId();
-					globalParamId.setCode(UUID.randomUUID().toString());
-					globalParamId.setLangCode("ENG");
-					globalParam.setGlobalParamId(globalParamId);
+					globalParam.setCode(key.getKey());
+					globalParam.setLangCode("ENG");
+					
+					/* TODO Need to Add Description not key (CODE) */
 					globalParam.setName(key.getKey());
 					globalParam.setTyp("CONFIGURATION");
 					globalParam.setIsActive(true);
