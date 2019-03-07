@@ -162,12 +162,22 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 			}
 
 			if (syncFailureCount > 0) {
-				getErrorResponse(RegistrationConstants.ICS_CODE_ONE,
-						RegistrationConstants.OPT_TO_REG_TIME_SYNC_EXCEED, RegistrationConstants.ERROR,
-						errorResponseDTOList);
+				getErrorResponse(RegistrationConstants.ICS_CODE_ONE, RegistrationConstants.OPT_TO_REG_TIME_SYNC_EXCEED,
+						RegistrationConstants.ERROR, errorResponseDTOList);
 			}
 		}
 
+		validatingLastExportDurationAndYetToExportCount(errorResponseDTOList, syncJobInfo);
+	}
+
+	/**
+	 * Validating last export duration and yet to export count.
+	 *
+	 * @param errorResponseDTOList the error response DTO list
+	 * @param syncJobInfo          the sync job info
+	 */
+	private void validatingLastExportDurationAndYetToExportCount(List<ErrorResponseDTO> errorResponseDTOList,
+			SyncJobInfo syncJobInfo) {
 		List<Registration> lastExportedRegistrations = syncJobInfo.getLastExportRegistrationList();
 		if (!lastExportedRegistrations.isEmpty()) {
 			Date lastSyncDate = new Date(
@@ -191,9 +201,8 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 			auditFactory.audit(AuditEvent.SYNC_PKT_COUNT_VALIDATE, Components.SYNC_VALIDATE,
 					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
-			getErrorResponse(RegistrationConstants.ICS_CODE_THREE,
-					RegistrationConstants.OPT_TO_REG_REACH_MAX_LIMIT, RegistrationConstants.ERROR,
-					errorResponseDTOList);
+			getErrorResponse(RegistrationConstants.ICS_CODE_THREE, RegistrationConstants.OPT_TO_REG_REACH_MAX_LIMIT,
+					RegistrationConstants.ERROR, errorResponseDTOList);
 		}
 	}
 
