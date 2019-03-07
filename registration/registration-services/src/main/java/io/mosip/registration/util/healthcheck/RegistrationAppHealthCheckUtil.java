@@ -71,9 +71,10 @@ public class RegistrationAppHealthCheckUtil {
 			connection = (HttpURLConnection) url.openConnection(proxy);
 			connection.setConnectTimeout(10000);
 			RestClientUtil.turnOffSslChecking();
-			connection.connect();
+			//connection.connect();
+			isNWAvailable = true;
 			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				isNWAvailable = true;
+				//isNWAvailable = true;
 				LOGGER.info("REGISTRATION - REGISTRATION APP HEALTHCHECKUTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
 						APPLICATION_ID, "Internet Access Available.");
 			}else {
