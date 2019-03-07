@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class EncryptionRequestDto {
-	private String tspID;
+	
 	private Map<String, Object> identityRequest;
 
 }

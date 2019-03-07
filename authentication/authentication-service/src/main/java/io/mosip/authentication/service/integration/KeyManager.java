@@ -2,8 +2,7 @@ package io.mosip.authentication.service.integration;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.util.List;
 //import java.util.Base64;
 import java.util.Map;
 import java.util.Objects;
@@ -24,6 +23,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
@@ -34,7 +34,6 @@ import io.mosip.authentication.service.integration.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
 /**
@@ -79,6 +78,8 @@ public class KeyManager {
 
 	@Autowired
 	private Environment environment;
+	
+
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(KeyManager.class);
@@ -90,7 +91,9 @@ public class KeyManager {
 	 * @param mapper      the mapper
 	 * @return the map
 	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws IdAuthenticationBusinessException 
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> requestData(Map<String, Object> requestBody, ObjectMapper mapper)
 			throws IdAuthenticationAppException {
 		Map<String, Object> request = null;
@@ -117,9 +120,10 @@ public class KeyManager {
 
 				try {
 					cryptoManagerRequestDto.setApplicationId(appId);
-					cryptoManagerRequestDto.setReferenceId(tspId);
+					cryptoManagerRequestDto.setReferenceId(environment.getProperty("mosip.ida.publickey"));
 					cryptoManagerRequestDto.setTimeStamp(
 							DateUtils.getUTCCurrentDateTimeString(environment.getProperty("datetime.pattern")));
+					//cryptoManagerRequestDto.setTimeStamp("2031-03-07T12:58:41.762Z");
 					cryptoManagerRequestDto.setData(CryptoUtil.encodeBase64(
 							CryptoUtil.combineByteArray(encryptedRequest, encyptedSessionkey, keySplitter)));
 					restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.DECRYPTION_SERVICE,
@@ -127,11 +131,27 @@ public class KeyManager {
 					cryptomanagerResponseDto = restHelper.requestSync(restRequestDTO);
 					decryptedData = new String(Base64.decodeBase64(cryptomanagerResponseDto.getData()),
 							StandardCharsets.UTF_8);
-					logger.info("NA", "NA", "NA", "cryptomanagerResponseDto " + decryptedData);
+					logger.info("NA", "NA", "NA", "cryptomanagerResponseDto " + decryptedData);	
 				} catch (RestServiceException e) {
+					 Optional<Object> responseBody = e.getResponseBody();
+						if (responseBody.isPresent()) {
+							Map<String, Object> idrepoMap = (Map<String, Object>) responseBody.get();
+							if (idrepoMap.containsKey("errors")) {
+								List<Map<String, Object>> idRepoerrorList = (List<Map<String, Object>>) idrepoMap.get("errors");
+								String keyExpErrorCode="KER-KMS-003";
+								if (!idRepoerrorList.isEmpty() && idRepoerrorList.stream().anyMatch(
+										map -> map.containsKey("errCode") && ((String)map.get("errCode")).equalsIgnoreCase(keyExpErrorCode))) {
+									throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MOSIP_PUBLICKEYEXP);
+								} else {
+									throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_PROCESS);
+								}
+							}
+						}
+					
 					logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
 					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.SERVER_ERROR);
 				} catch (IDDataValidationException e) {
+					logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
 					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
 				}
 

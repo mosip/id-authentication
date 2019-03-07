@@ -131,7 +131,10 @@ public enum IdAuthenticationErrorConstants {
 	//for Auth Type not supported for a country
 	AUTH_TYPE_NOT_SUPPORTED("IDA-MLC-013","Authentication Type not supported"),
 	
-	DEMO_MISMATCH("IDA-DEA-027","Demographic data %s did not match");
+	DEMO_MISMATCH("IDA-DEA-027","Demographic data %s did not match"),
+	
+	//Public key Expired
+	MOSIP_PUBLICKEYEXP("IDA-MPA-005","MOSIP Public Key Expired");
 
 	private final String errorCode;
 	private final String errorMessage;
