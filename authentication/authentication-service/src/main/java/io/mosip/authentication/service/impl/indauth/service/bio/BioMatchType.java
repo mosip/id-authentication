@@ -122,39 +122,42 @@ public enum BioMatchType implements MatchType {
 
 	private CbeffDocType cbeffDocType;
 
-	private BioMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,CbeffDocType cbeffDocType, SingleAnySubtypeType subType, SingleAnySubtypeType singleSubtype) {
-		this(idMapping, allowedMatchingStrategy,cbeffDocType,subType,singleSubtype, null);
+	private SingleAnySubtypeType subType;
+
+	private SingleAnySubtypeType singleAnySubtype;
+
+	private BioMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy, CbeffDocType cbeffDocType,
+			SingleAnySubtypeType subType, SingleAnySubtypeType singleAnySubtype) {
+		this(idMapping, allowedMatchingStrategy, cbeffDocType, subType, singleAnySubtype, null);
 		this.identityInfoFunction = (IdentityDTO identityDTO) -> {
-			Optional<String> valueOpt = identityDTO.getBiometrics()
-						.stream()
-					.filter(bioId -> {
-						if (bioId.getType().equalsIgnoreCase(cbeffDocType.getType().name())) {
-							if (bioId.getType().equalsIgnoreCase(CbeffDocType.FMR.getType().name())) {
-								return bioId.getSubType().equalsIgnoreCase(subType.name() + "_" + singleSubtype.name());
-							} else if (bioId.getType().equalsIgnoreCase(CbeffDocType.IRIS.getType().name())) {
-								return bioId.getSubType().equalsIgnoreCase(subType.name());
-							} else if (bioId.getType().equalsIgnoreCase(CbeffDocType.FACE.getType().name())) {
-								return true;
-							}
-						}
-						return false;
-					})
-						.map(BioIdentityInfoDTO::getValue)
-						.findAny();
-			if(valueOpt.isPresent()) {
-				Map<String, List<IdentityInfoDTO>> valuesMap = new  HashMap<>();
+			Optional<String> valueOpt = identityDTO.getBiometrics().stream().filter(bioId -> {
+				if (bioId.getType().equalsIgnoreCase(cbeffDocType.getType().name())) {
+					if (bioId.getType().equalsIgnoreCase(CbeffDocType.FMR.getType().name())) {
+						return bioId.getSubType().equalsIgnoreCase(subType.name() + "_" + singleAnySubtype.name());
+					} else if (bioId.getType().equalsIgnoreCase(CbeffDocType.IRIS.getType().name())) {
+						return bioId.getSubType().equalsIgnoreCase(subType.name());
+					} else if (bioId.getType().equalsIgnoreCase(CbeffDocType.FACE.getType().name())) {
+						return true;
+					}
+				}
+				return false;
+			}).map(BioIdentityInfoDTO::getValue).findAny();
+			if (valueOpt.isPresent()) {
+				Map<String, List<IdentityInfoDTO>> valuesMap = new HashMap<>();
 				List<IdentityInfoDTO> values = Arrays.asList(new IdentityInfoDTO(null, valueOpt.get()));
-				valuesMap.put(idMapping.getIdname(), values );
+				valuesMap.put(idMapping.getIdname(), values);
 				return valuesMap;
 			}
 			return Collections.emptyMap();
 		};
 	}
 
-	private BioMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,CbeffDocType cbeffDocType, SingleAnySubtypeType subType, SingleAnySubtypeType singleSubtype,
+	private BioMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,CbeffDocType cbeffDocType, SingleAnySubtypeType subType, SingleAnySubtypeType singleAnySubtype,
 			Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> identityInfoFunction) {
 		this.idMapping = idMapping;
 		this.cbeffDocType = cbeffDocType;
+		this.subType = subType;
+		this.singleAnySubtype = singleAnySubtype;
 		this.identityInfoFunction = identityInfoFunction;
 		this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
 	}
@@ -230,6 +233,14 @@ public enum BioMatchType implements MatchType {
 			  		.collect(Collectors.toMap(Entry::getKey, Entry::getValue, 
 			  										(list1, list2) 
 			  											-> Stream.concat(list1.stream(), list1.stream()).collect(Collectors.toList())));	
+	}
+	
+	public SingleAnySubtypeType getSubType() {
+		return subType;
+	}
+	
+	public SingleAnySubtypeType getSingleAnySubtype() {
+		return singleAnySubtype;
 	}
 	
 	
