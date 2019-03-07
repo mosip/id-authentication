@@ -55,12 +55,6 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	/** Object forserialPortConnected. */
 	@Value("${GPS_DEVICE_ENABLE_FLAG}")
 	private String gpsEnableFlag;
-	
-	@Value("${mosip.registration.reg_pak_max_cnt_apprv_limit}")
-	private int maxCntApprvlLimit;
-	
-	@Value("${mosip.registration.reg_pak_max_time_apprv_limit}")
-	private int maxTimeApprvlLimit;
 
 	/** Object for SyncJobDAO class. */
 	@Autowired
@@ -168,12 +162,22 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 			}
 
 			if (syncFailureCount > 0) {
-				getErrorResponse(RegistrationConstants.ICS_CODE_ONE,
-						RegistrationConstants.OPT_TO_REG_TIME_SYNC_EXCEED, RegistrationConstants.ERROR,
-						errorResponseDTOList);
+				getErrorResponse(RegistrationConstants.ICS_CODE_ONE, RegistrationConstants.OPT_TO_REG_TIME_SYNC_EXCEED,
+						RegistrationConstants.ERROR, errorResponseDTOList);
 			}
 		}
 
+		validatingLastExportDurationAndYetToExportCount(errorResponseDTOList, syncJobInfo);
+	}
+
+	/**
+	 * Validating last export duration and yet to export count.
+	 *
+	 * @param errorResponseDTOList the error response DTO list
+	 * @param syncJobInfo          the sync job info
+	 */
+	private void validatingLastExportDurationAndYetToExportCount(List<ErrorResponseDTO> errorResponseDTOList,
+			SyncJobInfo syncJobInfo) {
 		List<Registration> lastExportedRegistrations = syncJobInfo.getLastExportRegistrationList();
 		if (!lastExportedRegistrations.isEmpty()) {
 			Date lastSyncDate = new Date(
@@ -197,9 +201,8 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 			auditFactory.audit(AuditEvent.SYNC_PKT_COUNT_VALIDATE, Components.SYNC_VALIDATE,
 					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
-			getErrorResponse(RegistrationConstants.ICS_CODE_THREE,
-					RegistrationConstants.OPT_TO_REG_REACH_MAX_LIMIT, RegistrationConstants.ERROR,
-					errorResponseDTOList);
+			getErrorResponse(RegistrationConstants.ICS_CODE_THREE, RegistrationConstants.OPT_TO_REG_REACH_MAX_LIMIT,
+					RegistrationConstants.ERROR, errorResponseDTOList);
 		}
 	}
 
@@ -220,7 +223,8 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		auditFactory.audit(AuditEvent.PENDING_PKT_CNT_VALIDATE, Components.SYNC_VALIDATE,
 				RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
-		if (registrationDetails.size() >= maxCntApprvlLimit) {
+		if (registrationDetails.size() >= Integer
+				.parseInt(String.valueOf(getGlobalConfigValueOf(RegistrationConstants.REG_PAK_MAX_CNT_APPRV_LIMIT)))) {
 
 			getErrorResponse(RegistrationConstants.PAK_APPRVL_MAX_CNT, RegistrationConstants.REG_PKT_APPRVL_CNT_EXCEED,
 					RegistrationConstants.ERROR, errorResponseDTOList);
@@ -357,7 +361,8 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		if (registration != null && registration.getCrDtime() != null) {
 
 			/* This will subtract configured number of days from current Date */
-			Date differDate = new Date(new Date().getTime() - (maxTimeApprvlLimit * 24
+			Date differDate = new Date(new Date().getTime() - (Long.parseLong(
+					String.valueOf(getGlobalConfigValueOf(RegistrationConstants.REG_PAK_MAX_TIME_APPRV_LIMIT))) * 24
 					* 3600 * 1000));
 
 			/* This will convert timestamp to Date */

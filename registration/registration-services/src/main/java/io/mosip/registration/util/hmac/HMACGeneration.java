@@ -79,31 +79,6 @@ public class HMACGeneration {
 				.getDocuments().entrySet()) {
 			generateHash(documentCategory.getValue().getDocument(), documentCategory.getValue().getValue(), hashOrder);
 		}
-		
-		/*DocumentDetailsDTO documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity()
-				.getProofOfIdentity();
-
-		if (documentDetailsDTO != null) {
-			generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(), hashOrder);
-		}
-
-		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfAddress();
-
-		if (documentDetailsDTO != null) {
-			generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(), hashOrder);
-		}
-
-		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfRelationship();
-
-		if (documentDetailsDTO != null) {
-			generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(), hashOrder);
-		}
-
-		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfDateOfBirth();
-
-		if (documentDetailsDTO != null) {
-			generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(), hashOrder);
-		}*/
 
 		// hash for applicant photo
 		if (applicantPhotoBytes != null) {

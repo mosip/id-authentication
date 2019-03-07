@@ -3,11 +3,10 @@ package io.mosip.registration.entity;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
-import io.mosip.registration.entity.id.GlobalParamId;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,14 +17,16 @@ import lombok.Setter;
  * @since 1.0.0
  */
 @Entity
-@Table(schema = "master", name = "global_param")
+@Table(schema = "reg", name = "global_param")
 @Getter
 @Setter
 public class GlobalParam extends RegistrationCommonFields {
 
-	@EmbeddedId
-	@Column(name = "pk_glbp_code")
-	private GlobalParamId globalParamId;
+	@Id
+	@Column(name = "code")
+	private String code;
+	@Column(name = "lang_code")
+	private String langCode;	
 
 	@Column(name = "name")
 	private String name;

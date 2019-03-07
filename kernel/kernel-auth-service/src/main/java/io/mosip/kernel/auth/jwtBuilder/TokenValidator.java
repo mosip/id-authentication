@@ -101,14 +101,8 @@ public class TokenValidator {
     }
 
 	public MosipUserDtoToken validateToken(String token) throws Exception{
-		Claims claims = getClaims(token);
-		
+		Claims claims = getClaims(token);	
 		MosipUserDto mosipUserDto = buildDto(claims);
-/*		long currentTime = new Date().getTime();
-		if(claims!=null && (currentTime<authToken.getExpirationTime()))
-		{
-			return true;
-		}*/
 		return new MosipUserDtoToken(mosipUserDto,token,null,0,null);
 	}
 

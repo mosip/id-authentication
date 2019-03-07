@@ -79,10 +79,7 @@
                        
                         <SeparatorMenuItem />
                         <MenuItem mnemonicParsing="false" onAction="#downloadPreRegData" text="%downloadpre-registrationdata"/>                        	
-                        
-                        <SeparatorMenuItem />
-                        <MenuItem mnemonicParsing="false" onAction="#onBoardDevice" text="%deviceonboarding"/>                        	
-                        
+             
                         <SeparatorMenuItem />
                         <MenuItem mnemonicParsing="false" onAction="#redirectHome" text="%home"/>                        	
                         

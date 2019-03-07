@@ -3,6 +3,7 @@ package io.mosip.registration.controller.reg;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.applicanttype.exception.InvalidApplicantArgumentException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.PridValidator;
@@ -682,19 +684,28 @@ public class DemographicDetailController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, "Loading label fields of local language");
 			ResourceBundle localProperties = applicationContext.getLocalLanguageProperty();
 			fullNameLocalLanguageLabel.setText(localProperties.getString("fullName"));
+			fullNameLocalLanguage.setPromptText(localProperties.getString("fullName"));
 			addressLine1LocalLanguageLabel.setText(localProperties.getString("addressLine1"));
+			addressLine1LocalLanguage.setPromptText(localProperties.getString("addressLine1"));
 			addressLine2LocalLanguageLabel.setText(localProperties.getString("addressLine2"));
+			addressLine2LocalLanguage.setPromptText(localProperties.getString("addressLine2"));
 			addressLine3LocalLanguageLabel.setText(localProperties.getString("addressLine3"));
+			addressLine3LocalLanguage.setPromptText(localProperties.getString("addressLine3"));
 			ageFieldLocalLanguageLabel.setText(localProperties.getString("ageField"));
+			ageFieldLocalLanguage.setPromptText(localProperties.getString("ageField"));
 			genderLocalLanguageLabel.setText(localProperties.getString("gender"));
 			regionLocalLanguageLabel.setText(localProperties.getString("region"));
 			cityLocalLanguageLabel.setText(localProperties.getString("city"));
 			provinceLocalLanguageLabel.setText(localProperties.getString("province"));
 			localAdminAuthorityLocalLanguageLabel.setText(localProperties.getString("localAdminAuthority"));
 			cniOrPinNumberLocalLanguageLabel.setText(localProperties.getString("cniOrPinNumber"));
+			cniOrPinNumberLocalLanguage.setPromptText(localProperties.getString("cniOrPinNumber"));
 			postalCodeLocalLanguageLabel.setText(localProperties.getString("postalCode"));
+			postalCodeLocalLanguage.setPromptText(localProperties.getString("postalCode"));
 			mobileNoLocalLanguageLabel.setText(localProperties.getString("mobileNo"));
+			mobileNoLocalLanguage.setPromptText(localProperties.getString("mobileNo"));
 			emailIdLocalLanguageLabel.setText(localProperties.getString("emailId"));
+			emailIdLocalLanguage.setPromptText(localProperties.getString("emailId"));
 			parentNameLocalLanguageLabel.setText(localProperties.getString("parentName"));
 			uinIdLocalLanguageLabel.setText(localProperties.getString("uinId"));
 			residenceLblLocalLanguage.setText(localProperties.getString("residence"));
@@ -1388,7 +1399,7 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	@FXML
-	private void next() {
+	private void next() throws InvalidApplicantArgumentException, ParseException {
 		if (validateThisPane()) {
 			if (!switchedOn.get()) {
 

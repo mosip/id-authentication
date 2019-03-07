@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
@@ -71,12 +70,21 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.dao.GlobalParamDAO#get(java.lang.String)
+	 */
 	@Override
-	public GlobalParam get(String name) {
-		return globalParamRepository.findByName(name);
+	public GlobalParam get(String code) {
+		LOGGER.info("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Get Global Param");
+		return globalParamRepository.findById(GlobalParam.class, code);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.mosip.registration.dao.GlobalParamDAO#getAll(java.util.List)
 	 */
 	@Override
@@ -86,5 +94,5 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 				RegistrationConstants.APPLICATION_ID, "Get All Global Params");
 
 		return globalParamRepository.findByNameIn(names);
-		}
+	}
 }

@@ -42,7 +42,8 @@ import io.mosip.registration.jobs.JobTriggerListener;
 @ComponentScan({ "io.mosip.registration", "io.mosip.kernel.core", "io.mosip.kernel.keygenerator",
 		"io.mosip.kernel.idvalidator", "io.mosip.kernel.ridgenerator", "io.mosip.kernel.qrcode",
 		"io.mosip.kernel.crypto", "io.mosip.kernel.jsonvalidator", "io.mosip.kernel.idgenerator",
-		"io.mosip.kernel.virusscanner", "io.mosip.kernel.transliteration" })
+		"io.mosip.kernel.virusscanner", "io.mosip.kernel.transliteration", "io.mosip.kernel.applicanttype",
+		"io.mosip.kernel.cbeffutil" })
 @PropertySource("classpath:spring.properties")
 public class AppConfig {
 

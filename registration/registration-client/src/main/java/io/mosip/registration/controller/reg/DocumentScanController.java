@@ -5,7 +5,10 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.applicanttype.exception.InvalidApplicantArgumentException;
+import io.mosip.kernel.core.applicanttype.spi.ApplicantType;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
@@ -158,6 +163,9 @@ public class DocumentScanController extends BaseController {
 	private int minAge;
 
 	private List<BufferedImage> docPages;
+	
+	@Autowired
+	private ApplicantType applicantTypeService;
 
 	@FXML
 	private void initialize() {
@@ -175,7 +183,7 @@ public class DocumentScanController extends BaseController {
 		}
 	}
 
-	protected <T> void populateDocumentCategories() {
+	protected <T> void populateDocumentCategories() throws InvalidApplicantArgumentException, ParseException {
 
 		/* clearing all the previously added fields */
 		docScanVbox.getChildren().clear();
@@ -189,13 +197,21 @@ public class DocumentScanController extends BaseController {
 		if (demographicDetailController.getSelectedGenderCode() != null) {
 			gender = demographicDetailController.getSelectedGenderCode();
 		}
-		Integer age = identityDto.getAge();
+		String dateOfBirth = identityDto.getDateOfBirth();
+		SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy/MM/dd");
+		SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		Date date = inputFormat.parse(dateOfBirth);
+		String formattedDob = outputFormat.format(date);
 		String individualType = null;
 		if (demographicDetailController.getSelectedNationalityCode() != null) {
 			individualType = demographicDetailController.getSelectedNationalityCode();
 		}
-		if (gender != null && age != null && individualType != null) {
-			applicantType = findApplicantType(gender, age, individualType);
+		if (gender != null && dateOfBirth != null && individualType != null) {
+			Map<String, Object> applicantTypeMap = new HashMap<>();
+			applicantTypeMap.put(RegistrationConstants.ATTR_INDIVIDUAL_TYPE, "NFR");
+			applicantTypeMap.put(RegistrationConstants.ATTR_DATE_OF_BIRTH, formattedDob);
+			applicantTypeMap.put(RegistrationConstants.ATTR_GENDER_TYPE, gender);
+			applicantType = applicantTypeService.getApplicantType(applicantTypeMap);
 			getRegistrationDTOFromSession().getRegistrationMetaDataDTO().setApplicantTypeCode(applicantType);
 		}
 		else {
@@ -275,7 +291,7 @@ public class DocumentScanController extends BaseController {
 				documentVBoxes.put(docCategoryCode, documentVBox);
 
 				Button scanButton = new Button();
-				scanButton.setText("  Scan");
+				scanButton.setText(RegistrationUIConstants.SCAN);
 				scanButton.setId(docCategoryCode);
 				scanButton.getStyleClass().add("documentContentButton");
 				scanButton.setGraphic(new ImageView(new Image(

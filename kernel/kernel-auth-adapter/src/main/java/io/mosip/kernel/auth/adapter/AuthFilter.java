@@ -27,7 +27,7 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 	private String[] allowedEndPoints() {
 		return new String[] { "/assets/**", "/icons/**", "/screenshots/**", "/favicon**", "/**/favicon**", "/css/**",
 				"/js/**", "/**/error**", "/**/webjars/**", "/**/v2/api-docs", "/**/configuration/ui",
-				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html" };
+				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html","/**/login/**" };
 	}
 
 	protected AuthFilter(RequestMatcher requiresAuthenticationRequestMatcher) {

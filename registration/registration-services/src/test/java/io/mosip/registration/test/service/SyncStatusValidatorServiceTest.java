@@ -130,8 +130,8 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("mosip.registration.last_export_registration_config_time", "1");
-		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
-		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
+		applicationMap.put("mosip.registration.reg_pak_max_cnt_apprv_limit", "5");
+		applicationMap.put("mosip.registration.reg_pak_max_time_apprv_limit", "5");
 		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
@@ -202,8 +202,8 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "N");
 		applicationMap.put("masterSyncJob", "20");
 		applicationMap.put("mosip.registration.last_export_registration_config_time", "20");
-		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
-		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
+		applicationMap.put("mosip.registration.reg_pak_max_cnt_apprv_limit", "5");
+		applicationMap.put("mosip.registration.reg_pak_max_time_apprv_limit", "5");
 		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
@@ -257,8 +257,8 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("mosip.registration.last_export_registration_config_time", "1");
-		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
-		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
+		applicationMap.put("mosip.registration.reg_pak_max_cnt_apprv_limit", "5");
+		applicationMap.put("mosip.registration.reg_pak_max_time_apprv_limit", "5");
 		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
@@ -328,8 +328,8 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("mosip.registration.last_export_registration_config_time", "1");
-		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
-		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
+		applicationMap.put("mosip.registration.reg_pak_max_cnt_apprv_limit", "5");
+		applicationMap.put("mosip.registration.reg_pak_max_time_apprv_limit", "5");
 		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
@@ -400,8 +400,8 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("mosip.registration.last_export_registration_config_time", "1");
-		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
-		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
+		applicationMap.put("mosip.registration.reg_pak_max_cnt_apprv_limit", "5");
+		applicationMap.put("mosip.registration.reg_pak_max_time_apprv_limit", "5");
 		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
@@ -471,8 +471,8 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("mosip.registration.last_export_registration_config_time", "1");
-		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
-		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
+		applicationMap.put("mosip.registration.reg_pak_max_cnt_apprv_limit", "5");
+		applicationMap.put("mosip.registration.reg_pak_max_time_apprv_limit", "5");
 		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
@@ -545,8 +545,8 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "N");
 		applicationMap.put("masterSyncJob", "20");
 		applicationMap.put("mosip.registration.last_export_registration_config_time", "20");
-		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "1");
-		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
+		applicationMap.put("mosip.registration.reg_pak_max_cnt_apprv_limit", "1");
+		applicationMap.put("mosip.registration.reg_pak_max_time_apprv_limit", "5");
 		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
@@ -603,8 +603,8 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "N");
 		applicationMap.put("masterSyncJob", "20");
 		applicationMap.put("mosip.registration.last_export_registration_config_time", "20");
-		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
-		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "0");
+		applicationMap.put("mosip.registration.reg_pak_max_cnt_apprv_limit", "5");
+		applicationMap.put("mosip.registration.reg_pak_max_time_apprv_limit", "0");
 		when(context.map()).thenReturn(applicationMap);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(listSyncJob);
@@ -677,8 +677,8 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("GEO_CAP_FREQ", "Y");
 		applicationMap.put("masterSyncJob", "1");
 		applicationMap.put("mosip.registration.last_export_registration_config_time", "1");
-		applicationMap.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "5");
-		applicationMap.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "5");
+		applicationMap.put("mosip.registration.reg_pak_max_cnt_apprv_limit", "5");
+		applicationMap.put("mosip.registration.reg_pak_max_time_apprv_limit", "5");
 		applicationMap.put("lastCapturedTime", Instant.now());
 		when(context.map()).thenReturn(applicationMap);
 

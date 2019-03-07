@@ -1,15 +1,13 @@
 package io.mosip.registration.test.mapper;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.ibm.icu.impl.UResource.Array;
-
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -38,13 +36,23 @@ public class PacketMetaInfoConverterTest {
 		HashMap<String, String> hashMap = new HashMap<>();
 		hashMap.put("officerLeftThumb", "yyqtyt-1gyu1210-1uu13hgziu1");
 		hashMap.put("supervisorLeftThumb", "13113-1gyu1210-1uu13hgziu1");
+		hashMap.put("individualface", "eweew-1gyu1210-1uu13hgziu1");
+		hashMap.put("individualexceptionface", "fgfgf-1gyu1210-1uu13hgziu1");
 		SessionContext.getInstance().setMapObject(new HashMap<>());
 		SessionContext.getInstance().getMapObject().put(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME, hashMap);
+		HashMap<String, Object> applicationMap = new HashMap<>();
+		applicationMap.put(RegistrationConstants.UIN_LENGTH, "10");
+		ApplicationContext.getInstance().setApplicationMap(applicationMap);
+
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
 		SelectionListDTO selectionListDTO=new SelectionListDTO();
 		selectionListDTO.setAge(true);
 		selectionListDTO.setGender(true);
 		registrationDTO.setSelectionListDTO(selectionListDTO);
+		registrationDTO.getRegistrationMetaDataDTO().setParentOrGuardianUINOrRID("10011100110015720190305142048");
+		mapperFacade.convert(registrationDTO, PacketMetaInfo.class, "packetMetaInfo");
+		registrationDTO.getRegistrationMetaDataDTO().setParentOrGuardianUINOrRID("5819320961");
+
 		PacketMetaInfo packetMetaInfo = mapperFacade.convert(registrationDTO, PacketMetaInfo.class, "packetMetaInfo");
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getBiometric().getApplicant().getLeftEye());
 		Assert.assertNull(packetMetaInfo.getIdentity().getBiometric().getApplicant().getRightEye());

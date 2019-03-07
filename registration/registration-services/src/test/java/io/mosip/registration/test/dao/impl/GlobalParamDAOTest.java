@@ -53,7 +53,7 @@ public class GlobalParamDAOTest {
 	{  
 		GlobalParam globalParam=new GlobalParam();
 		globalParam.setName("name");
-		Mockito.when(globalParamRepository.findByName(Mockito.anyString())).thenReturn(globalParam);
+		Mockito.when(globalParamRepository.findById(Mockito.any(),Mockito.anyString())).thenReturn(globalParam);
 		//globalContextParamDAOImpl.get("name");
 		assertEquals(globalParam.getName(), globalContextParamDAOImpl.get("name").getName());
 	}  
