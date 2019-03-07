@@ -88,7 +88,7 @@ public class GlobalParamServiceTest {
 		globalParamMap.put("ANY", "ANY");
 		Mockito.when(globalContextParamDAOImpl.getGlobalParams()).thenReturn(globalParamMap);
 		
-		gloablContextParamServiceImpl.synchConfigData();
+		gloablContextParamServiceImpl.synchConfigData(false);
 	}
 	
 	@Test
@@ -104,7 +104,7 @@ public class GlobalParamServiceTest {
 		
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(),Mockito.anyBoolean())).thenThrow(HttpClientErrorException.class);
 		
-		gloablContextParamServiceImpl.synchConfigData();
+		gloablContextParamServiceImpl.synchConfigData(false);
 	}
 	
 

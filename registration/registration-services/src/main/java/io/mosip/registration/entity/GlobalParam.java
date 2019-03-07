@@ -26,7 +26,7 @@ public class GlobalParam extends RegistrationCommonFields {
 	@Column(name = "code")
 	private String code;
 	@Column(name = "lang_code")
-	private String langCode;	
+	private String langCode;
 
 	@Column(name = "name")
 	private String name;

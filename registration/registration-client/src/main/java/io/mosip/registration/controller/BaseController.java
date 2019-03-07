@@ -186,7 +186,8 @@ public class BaseController {
 		}
 		scene.setRoot(borderPane);
 		fXComponents.getStage().setScene(scene);
-		scene.getStylesheets().add(ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+		scene.getStylesheets().add(
+				ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 		return scene;
 	}
 
@@ -269,11 +270,13 @@ public class BaseController {
 	 */
 	protected void generateAlert(AnchorPane parentPane, String id, String context, String isConsolidated,
 			StringBuilder validationMessage) {
-		if (RegistrationConstants.DD.equalsIgnoreCase(id) || RegistrationConstants.MM.equalsIgnoreCase(id) || RegistrationConstants.YYYY.equalsIgnoreCase(id)) {
+		if (RegistrationConstants.DD.equalsIgnoreCase(id) || RegistrationConstants.MM.equalsIgnoreCase(id)
+				|| RegistrationConstants.YYYY.equalsIgnoreCase(id)) {
 			id = RegistrationConstants.DOB;
 		}
 		if (RegistrationConstants.DISABLE.equalsIgnoreCase(isConsolidated)) {
-			Label label = ((Label) (parentPane.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
+			Label label = ((Label) (parentPane
+					.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
 			if (!label.isVisible()) {
 				label.setText(context);
 				label.setVisible(true);
@@ -347,7 +350,7 @@ public class BaseController {
 	 * @return Response DTO
 	 */
 	protected ResponseDTO getSyncConfigData() {
-		return globalParamService.synchConfigData();
+		return globalParamService.synchConfigData(false);
 	}
 
 	/**
@@ -370,8 +373,7 @@ public class BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 		}
 	}
-	
-	
+
 	/**
 	 * 
 	 * Opens the home page screen
