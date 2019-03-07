@@ -332,7 +332,7 @@ public class HeaderController extends BaseController {
 			}
 		} else if (responseDTO.getErrorResponseDTOs() != null) {
 			ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-			generateAlert(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
-		}
+			generateAlert(RegistrationConstants.INFO, RegistrationUIConstants.VIRUS_SCAN_ERROR_FIRST_PART
+					+ errorResponseDTO.getMessage() + RegistrationUIConstants.VIRUS_SCAN_ERROR_SECOND_PART);		}
 	}
 }

@@ -275,7 +275,7 @@ public class DocumentScanController extends BaseController {
 				documentVBoxes.put(docCategoryCode, documentVBox);
 
 				Button scanButton = new Button();
-				scanButton.setText("  Scan");
+				scanButton.setText(RegistrationUIConstants.SCAN);
 				scanButton.setId(docCategoryCode);
 				scanButton.getStyleClass().add("documentContentButton");
 				scanButton.setGraphic(new ImageView(new Image(

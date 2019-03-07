@@ -24,6 +24,7 @@ public class RegistrationConstants {
 
 	/*********** UI Constants **********/
 	// paths of FXML pages to be loaded
+	
 	public static final String ERROR_PAGE = "/fxml/ErrorPage.fxml";
 	public static final String INITIAL_PAGE = "/fxml/RegistrationLogin.fxml";
 	public static final String HOME_PAGE = "/fxml/RegistrationOfficerLayout.fxml";
@@ -716,10 +717,10 @@ public class RegistrationConstants {
 	public static final String REGISTRATION_CLIENT_ID = "10";
 	public static final String PRE_REGISTRATION_DUMMY_ID = "mosip.pre-registration.datasync";
 	public static final String VER = "1.0";
-	public static final String PRE_REG_TO_GET_ID_ERROR = "Unable to get Pre registartion id's";
-	public static final String PRE_REG_TO_GET_PACKET_ERROR = "The Pre-registration ID entered does not exist in the database. Please enter the correct Pre-registration ID.";
-	public static final String PRE_REG_PACKET_NETWORK_ERROR = "You must be connected to the internet to sync data.";
-	public static final String PRE_REG_SUCCESS_MESSAGE = "Pre-Registartion Data Synced successfully ";
+	public static final String PRE_REG_TO_GET_ID_ERROR = "PRE_REG_TO_GET_ID_ERROR";
+	public static final String PRE_REG_TO_GET_PACKET_ERROR ="PRE_REG_TO_GET_PACKET_ERROR";
+	public static final String PRE_REG_PACKET_NETWORK_ERROR = "PRE_REG_PACKET_NETWORK_ERROR";
+	public static final String PRE_REG_SUCCESS_MESSAGE = "PRE_REG_SUCCESS_MESSAGE";
 	public static final String IS_PRE_REG_SYNC = "PreRegSync";
 	public static final String PRE_REG_FILE_NAME = "fileName";
 	public static final String PRE_REG_FILE_CONTENT = "fileContent";
@@ -926,8 +927,8 @@ public class RegistrationConstants {
 	public static final String REG_USER_MAPPING_SYNC_JOB_TITLE = "registration user mapping sync job";
 
 	// PRE-REG DELETE JOB
-	public static final String PRE_REG_DELETE_SUCCESS = "Pre-Registration Records deleted";
-	public static final String PRE_REG_DELETE_FAILURE = "Error While Deleting the records";
+	public static final String PRE_REG_DELETE_SUCCESS = "PRE_REG_DELETE_SUCCESS";
+	public static final String PRE_REG_DELETE_FAILURE = "PRE_REG_DELETE_FAILURE";
 
 	// Connection Error
 	public static final String CONNECTION_ERROR = "Unable to establish the connection";

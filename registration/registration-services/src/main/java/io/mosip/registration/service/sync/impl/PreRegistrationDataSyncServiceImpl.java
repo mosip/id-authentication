@@ -206,7 +206,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		}
 
 		byte[] decryptedPacket = null;
-		
+
 		boolean isFetchFromUi = false;
 		if (syncJobId == null) {
 			isFetchFromUi = true;
@@ -389,8 +389,12 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 		PreRegistrationDataSyncRequestDTO preRegistrationDataSyncRequestDTO = new PreRegistrationDataSyncRequestDTO();
 		preRegistrationDataSyncRequestDTO.setFromDate(getFromDate(reqTime));
-		preRegistrationDataSyncRequestDTO.setRegClientId(
-				SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
+		if (SessionContext.isSessionContextAvailable()) {
+			preRegistrationDataSyncRequestDTO.setRegClientId(
+					SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
+		} else {
+			preRegistrationDataSyncRequestDTO.setRegClientId(getCenterId());
+		}
 		preRegistrationDataSyncRequestDTO.setToDate(getToDate(reqTime));
 		preRegistrationDataSyncRequestDTO.setUserId(getUserIdFromSession());
 
