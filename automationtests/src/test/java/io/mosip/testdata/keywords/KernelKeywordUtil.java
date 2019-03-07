@@ -148,7 +148,7 @@ public class KernelKeywordUtil extends KeywordUtil{
 				return false;
 			return true;
 		} catch (Exception e) {
-			System.out.println(e);
+			//logger.info(e);
 			return false;
 		}
 	}

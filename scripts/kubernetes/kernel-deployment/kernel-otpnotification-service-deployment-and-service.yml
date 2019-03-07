@@ -28,14 +28,6 @@ spec:
           value: http://104.211.212.28:51000
         ports:
         - containerPort: 8082
-        volumeMounts:
-        - mountPath: "/mosip"
-          name: volume
-        imagePullPolicy: Always
-      volumes:
-        - name: volume
-          persistentVolumeClaim:
-            claimName: azurefile
       imagePullSecrets:
       - name: pvt-reg-cred
 ---
