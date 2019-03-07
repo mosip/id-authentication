@@ -13,5 +13,5 @@ import lombok.Data;
 @Data
 public class KeyValues implements Serializable {
 	private static final long serialVersionUID = 877664400274091548L;
-	private Map<String, String> request = new HashMap<>();
+	private Map<String, Object> request = new HashMap<>();
 }

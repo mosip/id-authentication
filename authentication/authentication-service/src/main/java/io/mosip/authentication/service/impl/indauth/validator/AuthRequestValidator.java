@@ -34,6 +34,8 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class AuthRequestValidator extends BaseAuthRequestValidator {
 
+	private static final String ALLOWED_AUTH_TYPE = "allowed.auth.type";
+
 	/** The Constant AUTH_REQUEST. */
 	private static final String AUTH_REQUEST = "authRequest";
 
@@ -94,9 +96,15 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		AuthRequestDTO authRequestDto = (AuthRequestDTO) target;
 
 		if (authRequestDto != null) {
-			
+			if (!errors.hasErrors()) {
+				validateAllowedAuthTypes(authRequestDto, errors, ALLOWED_AUTH_TYPE);
+			}
+			if (!errors.hasErrors()) {
 			validateReqTime(authRequestDto.getRequestTime(), errors);
+			}
+			if (!errors.hasErrors()) {
 			validateTxnId(authRequestDto.getTransactionID(), errors);
+			}
 			if (!errors.hasErrors()) {
 				validateAuthType(authRequestDto.getRequestedAuth(), errors);
 			}

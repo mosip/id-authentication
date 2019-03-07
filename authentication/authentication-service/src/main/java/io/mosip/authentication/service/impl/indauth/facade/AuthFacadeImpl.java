@@ -62,6 +62,8 @@ import io.mosip.kernel.core.util.UUIDUtils;
 @Service
 public class AuthFacadeImpl implements AuthFacade {
 
+	private static final String STATIC_TOKEN_ENABLE = "static.token.enable";
+		
 	private static final String FAILED = "N";
 
 	/** The Constant UTC. */
@@ -104,7 +106,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	private Environment env;
 	/** The Id Info Service */
 	@Autowired
-	private IdAuthService idInfoService;
+	private IdAuthService<AutnTxn> idInfoService;
 	/** The Demo Auth Service */
 	@Autowired
 	private DemoAuthService demoAuthService;
@@ -149,7 +151,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		Optional<String> idvid=IdInfoHelper.getUinOrVid(authRequestDTO);
 		String idvIdType = idType.getType();
 		Map<String, Object> idResDTO = idAuthService.processIdType(idvIdType,
-				idvid.get(), authRequestDTO.getRequestedAuth().isBio());
+				idvid.orElse(""), authRequestDTO.getRequestedAuth().isBio());
 
 		AuthResponseDTO authResponseDTO;
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(env.getProperty(DATETIME_PATTERN));
@@ -159,11 +161,14 @@ public class AuthFacadeImpl implements AuthFacade {
 		try {
 			idInfo = idInfoService.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
-			String staticTokenId = tokenIdGenerator.generateId(tspId, uin);
+			Boolean staticTokenRequired = env.getProperty(STATIC_TOKEN_ENABLE, Boolean.class);
+			String staticTokenId = staticTokenRequired ? tokenIdGenerator.generateId(tspId, uin) : "";
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId);
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
 			// Set static token
-			authResponseBuilder.setStaticTokenId(staticTokenId);
+			if(staticTokenRequired) {
+				authResponseBuilder.setStaticTokenId(staticTokenId);
+			}
 		} finally {
 			authResponseDTO = authResponseBuilder.build();
 			logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE,

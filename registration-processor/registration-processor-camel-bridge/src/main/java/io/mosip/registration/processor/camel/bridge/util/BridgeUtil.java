@@ -94,4 +94,12 @@ public class BridgeUtil {
 		}
 		return label;
 	}
+	
+	public static String getCloudConfigUri() {
+		String label = System.getProperty("spring.cloud.config.uri");
+		if(label==null) {
+			label = PropertyFileUtil.getProperty(BridgeUtil.class, propertyFileName, "spring.cloud.config.uri");
+		}
+		return label;
+	}
 }

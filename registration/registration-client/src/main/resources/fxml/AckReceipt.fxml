@@ -13,7 +13,7 @@
 	<children>
 		<AnchorPane id="ackScreen-anchor-pane" layoutY="41.0" minHeight="0.0" minWidth="0.0" prefHeight="44.0" prefWidth="1282.0">
 			<children>
-				<Text fx:id="registrationNavLabel" layoutX="55.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/newregistration" wrappingWidth="154.2451171875" />
+				<Text fx:id="registrationNavLabel" layoutX="105.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/newregistration" wrappingWidth="154.2451171875" />
 				<Label layoutX="526.0" layoutY="11.0" styleClass="templateHeading" text="%registration" />
 						<Button fx:id="print" layoutX="1159.0" layoutY="3.0" mnemonicParsing="false" onAction="#printReceipt" styleClass="ackPageButton" text="%print">
                <graphic>
@@ -24,7 +24,7 @@
                   </ImageView>
                </graphic></Button>
             <Text layoutX="14.0" layoutY="31.0" onMouseClicked="#goToHomePageFromRegistration" strokeType="OUTSIDE" strokeWidth="0.0" text="%home" />
-            <Text layoutX="172.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/acknowledgement" />
+            <Text layoutX="232.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/acknowledgement" />
             <Button fx:id="sendNotification" layoutX="824.0" layoutY="3.0" mnemonicParsing="false" onAction="#sendNotification" prefHeight="39.0" prefWidth="167.0" styleClass="ackBackButton" text="%sendEmail" visible="false">
                <graphic>
                   <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">

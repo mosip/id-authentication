@@ -125,13 +125,8 @@ public class RestartController extends BaseController {
 		/* Create and Set newly created application context */
 		Initialization.setApplicationContext(new AnnotationConfigApplicationContext(AppConfig.class));
 
-		try {
-			/* create and set new java fx stage */
-			new Initialization().start(new Stage());
-		} catch (RegBaseCheckedException baseCheckedException) {
-			LOGGER.error("REGISTRATION - RESTART  - RESTARTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-					baseCheckedException + ExceptionUtils.getStackTrace(baseCheckedException));
-		}
+		/* create and set new java fx stage */
+		new Initialization().start(new Stage());
 
 		LOGGER.info("REGISTRATION - RESTART  - RESTART CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Restart completed");

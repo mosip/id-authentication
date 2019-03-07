@@ -36,7 +36,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 	public void masterSync_verify_getMasterSync_getErrorResponseDTOs() {
 //this test validates the message when sync is failed
 		// mastersyncservice.getMasterSync(masterSyncDetails);
-		ResponseDTO result = mastersyncservice.getMasterSync("MDS_J00001");
+		ResponseDTO result = mastersyncservice.getMasterSync(testdataparsejson.getDataFromJsonViaKey("masterSyncDetails"));
 		System.out.println(RegistrationConstants.MASTER_SYNC_OFFLINE_FAILURE_MSG);
 		System.out.println(result.getErrorResponseDTOs().get(0).getMessage());
 		assertEquals(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO,
@@ -50,7 +50,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		//defect MOS-15831
 //this test validates the message when sync is success
 		// mastersyncservice.getMasterSync(masterSyncDetails);
-		ResponseDTO result = mastersyncservice.getMasterSync("MDS_J00001");
+		ResponseDTO result = mastersyncservice.getMasterSync(testdataparsejson.getDataFromJsonViaKey("masterSyncDetails"));
 		System.out.println(RegistrationConstants.MASTER_SYNC_SUCCESS);
 		
 		System.out.println(result.getSuccessResponseDTO().getMessage());
@@ -61,7 +61,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 
 	}
 	
-	@Test
+@Test
 	public void masterSync_verify_findLocationByHierarchyCode_getCode()
 	{
 		//This test verifies if correct code is fetched from local database from table location
@@ -917,7 +917,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<GenderDto> result = mastersyncservice.getGenderDtls(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
-		list1.addAll(Arrays.asList("1","2","MLE","FLE"));
+		list1.addAll(Arrays.asList("1","2","MLE","FLE","OTH"));
 		
 		List<String> list2=new ArrayList<>();
 		
@@ -939,7 +939,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<GenderDto> result = mastersyncservice.getGenderDtls(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
-		list1.addAll(Arrays.asList("female","female","Male","Female"));
+		list1.addAll(Arrays.asList("female","female","Male","Female","Others"));
 		
 		List<String> list2=new ArrayList<>();
 		
@@ -961,7 +961,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<GenderDto> result = mastersyncservice.getGenderDtls(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
-		list1.addAll(Arrays.asList("true","true","true","true"));
+		list1.addAll(Arrays.asList("true","true","true","true","true"));
 		
 		List<String> list2=new ArrayList<>();
 		
@@ -983,7 +983,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<GenderDto> result = mastersyncservice.getGenderDtls(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
-		list1.addAll(Arrays.asList("eng","eng","eng","eng"));
+		list1.addAll(Arrays.asList("eng","eng","eng","eng","eng"));
 		
 		List<String> list2=new ArrayList<>();
 		
