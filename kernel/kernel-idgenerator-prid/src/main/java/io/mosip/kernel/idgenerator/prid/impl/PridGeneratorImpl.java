@@ -1,16 +1,27 @@
 package io.mosip.kernel.idgenerator.prid.impl;
 
-import javax.annotation.PostConstruct;
+import java.math.BigInteger;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.math3.random.RandomDataGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import javax.transaction.Transactional;
+
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
-import io.mosip.kernel.idgenerator.prid.constant.PridGeneratorConstants;
+import io.mosip.kernel.idgenerator.prid.entity.Prid;
+import io.mosip.kernel.idgenerator.prid.exception.PridException;
+import io.mosip.kernel.idgenerator.prid.repository.PridRepository;
 import io.mosip.kernel.idgenerator.prid.util.PridFilterUtils;
 
 /**
@@ -19,11 +30,19 @@ import io.mosip.kernel.idgenerator.prid.util.PridFilterUtils;
  * 
  * @author M1037462
  * @author Megha Tanga
+ * @author Ritesh Sinha
  * @since 1.0.0
  *
  */
 @Component
+@Transactional
 public class PridGeneratorImpl implements PridGenerator<String> {
+
+	@Autowired
+	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+
+	@Autowired
+	private PridRepository repository;
 
 	/**
 	 * Field to hold PridFilterUtils object
@@ -37,23 +56,6 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 	 */
 	@Value("${mosip.kernel.prid.length}")
 	private int pridLength;
-
-	private static final RandomDataGenerator RANDOM_DATA_GENERATOR = new RandomDataGenerator();
-
-	private int generatedIdLength;
-	private long lowerBound;
-	private long upperBound;
-
-	/**
-	 * Calculating PRID Length and lower Bound and upper Bound
-	 * 
-	 */
-	@PostConstruct
-	public void pridGeneratorPostConstruct() {
-		generatedIdLength = pridLength - 1;
-		lowerBound = Long.parseLong(StringUtils.repeat(PridGeneratorConstants.ZERO, generatedIdLength));
-		upperBound = Long.parseLong(StringUtils.repeat(PridGeneratorConstants.NINE, generatedIdLength));
-	}
 
 	/**
 	 * Generates a id and then validate a id
@@ -71,9 +73,9 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 	 * @return the PRID with checksum
 	 */
 	private String generatePrid() {
-		String generatedPrid = generateRandomId(generatedIdLength, lowerBound, upperBound);
+		String generatedPrid = generateRandomId();
 		while (!pridFilterUtils.isValidId(generatedPrid)) {
-			generatedPrid = generateRandomId(generatedIdLength, lowerBound, upperBound);
+			generatedPrid = generateRandomId();
 		}
 		return generatedPrid;
 	}
@@ -89,11 +91,65 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 	 *            The upperbound for generating id
 	 * @return the PRID with checksum
 	 */
-	private String generateRandomId(int generatedIdLength, long lowerBound, long upperBound) {
-		Long generatedID = RANDOM_DATA_GENERATOR.nextSecureLong(lowerBound, upperBound);
-		String id = String.valueOf(generatedID);
-		String verhoeffDigit = ChecksumUtils.generateChecksumDigit(id);
-		return appendChecksum(id, verhoeffDigit);
+	private String generateRandomId() {
+
+		String counterSecureRandom = null;
+
+		String random = RandomStringUtils.random(32, "1234567890");
+
+		String prid = null;
+
+		List<Prid> listOfEntity = null;
+
+		try {
+			listOfEntity = repository.findRandomValues();
+			
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new PridException("KER-PRID-001", "Error occur while fetching from db", e);
+		}
+		try {
+			Prid entity = new Prid();
+
+			if (listOfEntity.isEmpty()) {
+
+				counterSecureRandom = RandomStringUtils.random(32, "1234567890");
+
+				entity.setRandomValue(random);
+
+				entity.setSequenceCounter(counterSecureRandom);
+
+				repository.save(entity);
+
+			} else {
+
+				counterSecureRandom = listOfEntity.get(0).getSequenceCounter();
+
+				random = listOfEntity.get(0).getRandomValue();
+
+				repository.updateCounterValue(counterSecureRandom, random);
+
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new PridException("KER-PRID-002", "Error occur while updating database", e);
+		}
+
+		counterSecureRandom = new BigInteger(counterSecureRandom).add(BigInteger.ONE).toString();
+
+		SecretKey secretKey = new SecretKeySpec(counterSecureRandom.getBytes(), "AES");
+
+		byte[] encryptedData = encryptor.symmetricEncrypt(secretKey, random.getBytes());
+
+		BigInteger b = new BigInteger(encryptedData);
+
+		prid = String.valueOf(b.abs());
+
+		prid = prid.substring(0, pridLength - 1);
+
+		String verhoeffDigit = ChecksumUtils.generateChecksumDigit(prid);
+
+		return appendChecksum(prid, verhoeffDigit);
+
 	}
 
 	/**
