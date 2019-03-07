@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
@@ -69,6 +70,7 @@ public class GenderTypeController {
 	 *            input dto to enter a new gender data
 	 * @return primary key of entered row of gender
 	 */
+	@ResponseFilter
 	@PostMapping("/v1.0/gendertypes")
 	public ResponseEntity<CodeAndLanguageCodeID> saveGenderType(@Valid @RequestBody RequestWrapper<GenderTypeDto> gender) {
 		return new ResponseEntity<>(genderTypeService.saveGenderType(gender), HttpStatus.OK);
@@ -82,6 +84,7 @@ public class GenderTypeController {
 	 *            input dto to update a gender data
 	 * @return key of updated row
 	 */
+	@ResponseFilter
 	@ApiOperation(value = "Update Gender Type", response = CodeAndLanguageCodeID.class)
 	@PutMapping("/v1.0/gendertypes")
 	public ResponseEntity<CodeAndLanguageCodeID> updateGenderType(

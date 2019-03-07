@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -86,6 +87,7 @@ public class TemplateController {
 	 *            the template detail
 	 * @return {@link IdResponseDto}
 	 */
+	@ResponseFilter
 	@PostMapping
 	@ApiOperation(value = "Service to create template ", notes = "create Template  and return  code", response = IdAndLanguageCodeID.class)
 	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = IdAndLanguageCodeID.class),
@@ -102,6 +104,7 @@ public class TemplateController {
 	 *            the template detail
 	 * @return {@link IdResponseDto}
 	 */
+	@ResponseFilter
 	@PutMapping
 	@ApiOperation(value = "Service to update template ", notes = "update Template  and return  code ", response = IdAndLanguageCodeID.class)
 	@ApiResponses({ @ApiResponse(code = 200, message = " successfully updated", response = IdAndLanguageCodeID.class),

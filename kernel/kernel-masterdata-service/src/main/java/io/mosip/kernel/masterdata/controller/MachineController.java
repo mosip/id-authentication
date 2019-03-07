@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -113,6 +114,7 @@ public class MachineController {
 	 * @return ResponseEntity Machine Id which is inserted successfully
 	 *         {@link ResponseEntity}
 	 */
+	@ResponseFilter
 	@PostMapping("/v1.0/machines")
 	@ApiOperation(value = "Service to save Machine", notes = "Saves Machine Detail and return Machine id", response = IdResponseDto.class)
 	@ApiResponses({
@@ -133,6 +135,7 @@ public class MachineController {
 	 * @return ResponseEntity Machine Id which is update successfully
 	 *         {@link ResponseEntity}
 	 */
+	@ResponseFilter
 	@PutMapping("/v1.0/machines")
 	@ApiOperation(value = "Service to update Machine", notes = "update Machine Detail and return Machine id", response = IdResponseDto.class)
 	@ApiResponses({

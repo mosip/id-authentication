@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
@@ -58,6 +59,7 @@ public class LocationController {
 
 	}
 
+	@ResponseFilter
 	@PostMapping()
 	public ResponseEntity<PostLocationCodeResponseDto> createLocationHierarchyDetails(
 			@Valid @RequestBody RequestWrapper<LocationDto> locationRequestDto) {
@@ -88,7 +90,6 @@ public class LocationController {
 	 * @return list of location hierarchies
 	 */
 	@GetMapping(value = "/locationhierarchy/{hierarchyname}")
-
 	public LocationResponseDto getLocationDataByHierarchyName(
 			@PathVariable(value = "hierarchyname") String hierarchyName) {
 
@@ -104,7 +105,8 @@ public class LocationController {
 	 *            - location request DTO
 	 * @return PostLocationCodeResponseDto
 	 */
-	@PutMapping()
+	@ResponseFilter
+	@PutMapping
 	public PostLocationCodeResponseDto updateLocationHierarchyDetails(
 			@Valid @RequestBody RequestWrapper<LocationDto> locationRequestDto) {
 
@@ -147,6 +149,5 @@ public class LocationController {
 		return locationHierarchyService.validateLocationName(locationName);
 		
 	}
-
 
 }

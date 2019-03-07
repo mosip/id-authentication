@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterTypeService;
@@ -44,6 +45,7 @@ public class RegistrationCenterTypeController {
 	 *            be added.
 	 * @return the response dto.
 	 */
+	@ResponseFilter
 	@PostMapping("/v1.0/registrationcentertypes")
 	public ResponseEntity<CodeAndLanguageCodeID> createRegistrationCenterType(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {
@@ -60,6 +62,7 @@ public class RegistrationCenterTypeController {
 	 *            be updated.
 	 * @return the response dto.
 	 */
+	@ResponseFilter
 	@PutMapping("/v1.0/registrationcentertypes")
 	public ResponseEntity<CodeAndLanguageCodeID> updateRegistrationCenterType(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {

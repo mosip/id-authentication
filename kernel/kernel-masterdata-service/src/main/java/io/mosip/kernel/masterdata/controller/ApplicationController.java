@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.ApplicationService;
@@ -83,6 +84,7 @@ public class ApplicationController {
 	 * 
 	 * @return {@linkplain CodeAndLanguageCodeID}
 	 */
+	@ResponseFilter
 	@PostMapping
 	public ResponseEntity<CodeAndLanguageCodeID> createApplication(
 			@Valid @RequestBody RequestWrapper<ApplicationDto> application) {
