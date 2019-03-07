@@ -92,7 +92,7 @@ public class OTPServiceImpl implements OTPService {
 	private String getOtpEmailMessage(OtpGenerateResponseDto otpGenerateResponseDto, String appId) {
 		try {
 			String template = null;
-			final String url = mosipEnvironment.getMasterDataUrl() + mosipEnvironment.getMasterDataTemplateApi()
+			final String url = mosipEnvironment.getMasterDataTemplateApi()
 					+ mosipEnvironment.getPrimaryLanguage() + mosipEnvironment.getMasterDataOtpTemplate();
 
 			OtpTemplateResponseDto otpTemplateResponseDto = restTemplate.getForObject(url,
@@ -114,8 +114,8 @@ public class OTPServiceImpl implements OTPService {
 
 	private String getOtpSmsMessage(OtpGenerateResponseDto otpGenerateResponseDto, String appId) {
 		try {
-			final String url = mosipEnvironment.getMasterDataUrl() + mosipEnvironment.getMasterDataTemplateApi()
-					+ mosipEnvironment.getPrimaryLanguage() + mosipEnvironment.getMasterDataOtpTemplate();
+			final String url = mosipEnvironment.getMasterDataTemplateApi()
+					+"/"+ mosipEnvironment.getPrimaryLanguage() + mosipEnvironment.getMasterDataOtpTemplate();
 
 			OtpTemplateResponseDto otpTemplateResponseDto = restTemplate.getForObject(url,
 					OtpTemplateResponseDto.class);
@@ -138,7 +138,7 @@ public class OTPServiceImpl implements OTPService {
 	private OtpEmailSendResponseDto sendOtpByEmail(String message, String email) {
 		try {
 			OtpEmailSendRequestDto otpEmailSendRequestDto = new OtpEmailSendRequestDto(email, message);
-			String url = mosipEnvironment.getOtpSenderSvcUrl() + mosipEnvironment.getOtpSenderEmailApi();
+			String url = mosipEnvironment.getOtpSenderEmailApi();
 			OtpEmailSendResponseDto otpEmailSendResponseDto = restTemplate.postForObject(url, otpEmailSendRequestDto,
 					OtpEmailSendResponseDto.class);
 			return otpEmailSendResponseDto;
@@ -150,7 +150,7 @@ public class OTPServiceImpl implements OTPService {
 	private OtpSmsSendResponseDto sendOtpBySms(String message, String mobile) {
 		try {
 			OtpSmsSendRequestDto otpSmsSendRequestDto = new OtpSmsSendRequestDto(mobile, message);
-			String url = mosipEnvironment.getOtpSenderSvcUrl() + mosipEnvironment.getOtpSenderSmsApi();
+			String url = mosipEnvironment.getOtpSenderSmsApi();
 			OtpSmsSendResponseDto otpSmsSendResponseDto = restTemplate.postForObject(url, otpSmsSendRequestDto,
 					OtpSmsSendResponseDto.class);
 			return otpSmsSendResponseDto;
@@ -163,11 +163,12 @@ public class OTPServiceImpl implements OTPService {
 	public MosipUserDtoToken validateOTP(MosipUserDto mosipUser, String otp) {
 		String key = new OtpGenerateRequestDto(mosipUser).getKey();
 		MosipUserDtoToken mosipUserDtoToken = null;
-		final String url = mosipEnvironment.getOtpManagerSvcUrl() + mosipEnvironment.getVerifyOtpUserApi();
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url).queryParam("key", key).queryParam("otp",
+		final String url = mosipEnvironment.getVerifyOtpUserApi();
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("key", key).queryParam("otp",
 				otp);
-		ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, null,String.class);
-		
+		System.out.println(builder.toUriString());
+		//ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, null,String.class);
+		ResponseEntity<String> response = restTemplate.getForEntity(builder.toUriString(), String.class);
 		String responseBody = response.getBody();
 		List<ServiceError> validationErrorsList=null;
 		try {
