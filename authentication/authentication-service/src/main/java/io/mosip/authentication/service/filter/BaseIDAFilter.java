@@ -63,7 +63,7 @@ public abstract class BaseIDAFilter implements Filter {
 	private static final String RESPONSE = "response";
 
 	/** The Constant RES_TIME. */
-	private static final String RES_TIME = "resTime";
+	private static final String RES_TIME = "responseTime";
 
 	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "datetime.pattern";
@@ -183,7 +183,7 @@ public abstract class BaseIDAFilter implements Filter {
 		authResponseDTO.setResponseTime(resTime);
 		requestWrapper.resetInputStream();
 		authResponseDTO.setVersion(getVersionFromUrl(requestWrapper));
-		Map<String, Object> responseMap = mapper.convertValue(mapper.writeValueAsString(authResponseDTO), new TypeReference<Map<String, Object>>() {
+		Map<String, Object> responseMap = mapper.convertValue(authResponseDTO, new TypeReference<Map<String, Object>>() {
 		});
 		Map<String, Object> resultMap = new LinkedHashMap<>();
 		for(Map.Entry<String, Object> map : responseMap.entrySet()) {

@@ -120,6 +120,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		authenticateRequest(requestWrapper);
 		
 		try {
+			requestWrapper.resetInputStream();
 			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
 			Map<String, Object> decipherRequest = decipherRequest(requestBody);
 			ObjectWriter objectWriter = mapper.writerWithDefaultPrettyPrinter();
