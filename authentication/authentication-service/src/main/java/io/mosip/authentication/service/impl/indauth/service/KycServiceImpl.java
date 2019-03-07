@@ -30,6 +30,9 @@ import io.mosip.authentication.service.helper.IdInfoHelper;
 @Service
 public class KycServiceImpl implements KycService {
 
+	/** The Constant MOSIP_SECONDARY_LANG_CODE. */
+	private static final String MOSIP_SECONDARY_LANG_CODE = "mosip.secondary.lang-code";
+
 	/** The Constant UIN_MASKING_CHARCOUNT. */
 	private static final String UIN_MASKING_CHARCOUNT = "uin.masking.charcount";
 
@@ -123,12 +126,12 @@ public class KycServiceImpl implements KycService {
 		}
 		if (Objects.nonNull(identityInfo)) {
 			Set<String> allowedLang = idInfoHelper.extractAllowedLang();
-			String secondayLangCode = allowedLang.contains(secLangCode) ? secLangCode : null;
+			String secondayLangCode = allowedLang.contains(secLangCode) ? env.getProperty(MOSIP_SECONDARY_LANG_CODE) : null;
 			String primaryLanguage = env.getProperty(MOSIP_PRIMARY_LANG_CODE);
 			identityInfos = identityInfo.entrySet().stream()
 					.collect(Collectors.toMap(Map.Entry::getKey,
 							entry -> entry.getValue().stream()
-									.filter((IdentityInfoDTO info) -> Objects.nonNull(info.getLanguage())
+									.filter((IdentityInfoDTO info) -> Objects.isNull(info.getLanguage())
 											|| info.getLanguage().equalsIgnoreCase("null")
 											|| info.getLanguage().equalsIgnoreCase(primaryLanguage)
 											|| (secondayLangCode != null && info.getLanguage().equalsIgnoreCase(secondayLangCode)))

@@ -120,10 +120,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				} else {
 					// TODO Missing UIN/VID
 				}
-
-				// validateTspId(authRequestDto.getTspID(),errors);
-
-				validateBioMetadataDetails(authRequestDto, errors);
 				if (!errors.hasErrors()) {
 					checkAuthRequest(authRequestDto, errors);
 				}
@@ -200,6 +196,10 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				checkOTPAuth(authRequest, errors);
 			} else if (authType.isDemo()) {
 				checkDemoAuth(authRequest, errors);
+			} else if (authType.isPin() || authType.isOtp()) {
+				validateAdditionalFactorsDetails(authRequest, errors);
+			} else if (authType.isBio()) {
+				validateBioMetadataDetails(authRequest, errors);
 			}
 		} else {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + AUTH_TYPE);
