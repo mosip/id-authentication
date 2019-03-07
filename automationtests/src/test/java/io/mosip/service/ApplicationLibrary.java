@@ -105,7 +105,7 @@ public class ApplicationLibrary extends BaseTestCase{
     //Notify
     public Response putFileAndJsonParam(String Resource_Uri,Object body,File file) {
     	//return commonLibrary.Post_JSONwithFile(body, file, ApplnURI+Resource_Uri,MediaType.MULTIPART_FORM_DATA);
-    System.out.println("My lang code body:"+body);
+    logger.info("My lang code body:"+body);
     	//return commonLibrary.Post_JSONwithFileParam(body, file, ApplnURI+Resource_Uri, MediaType.MULTIPART_FORM_DATA, param);
     	return commonLibrary.Post_JSONwithFileParam(body, file, ApplnURI+Resource_Uri, MediaType.MULTIPART_FORM_DATA);
         

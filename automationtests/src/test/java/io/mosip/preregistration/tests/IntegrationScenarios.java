@@ -759,7 +759,7 @@ public class IntegrationScenarios extends BaseTestCase {
 
 		// Book Appointment
 		response = lib.bookAppointmentInvalidDate(response, fetchCenterResponse, preRegID);
-		System.out.println(response.jsonPath().get("response").toString());
+		logger.info(response.jsonPath().get("response").toString());
 
 		// Assert.assertNull(response.jsonPath().get("response"));
 		Assert.assertEquals("[]", response.jsonPath().get("response").toString());
@@ -1546,7 +1546,7 @@ public class IntegrationScenarios extends BaseTestCase {
 				Response fetchavaRes = lib.FetchCentre();
 
 				bookApp = lib.BookAppointment(docUploadResponse, fetchavaRes, preRegID);
-				System.out.println("My Book App det::" + bookApp.asString());
+				logger.info("My Book App det::" + bookApp.asString());
 
 			}
 

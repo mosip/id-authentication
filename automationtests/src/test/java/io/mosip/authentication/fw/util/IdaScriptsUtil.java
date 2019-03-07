@@ -114,7 +114,7 @@ public class IdaScriptsUtil {
 					if (responseJson.contains("Invalid UIN")) {
 						fos.flush();
 						fos.close();
-						System.out.println("******************Check********************");
+						logger.info("******************Check********************");
 						return false;
 					} else {
 						Reporter.log("<b><u>Actual Response Content: </u></b>(EndPointUrl: " + urlPath + ") <pre>"

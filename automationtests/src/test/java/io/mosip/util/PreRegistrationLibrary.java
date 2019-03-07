@@ -255,7 +255,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			while ((entry = zipStream.getNextEntry()) != null) {
 
 				String entryName = entry.getName();
-				System.out.println("ASHISH" + entryName);
+				logger.info("ASHISH" + entryName);
 				String path = folderName + "/" + folder + "/" + entryName;
 				FileOutputStream out = new FileOutputStream(path);
 
@@ -304,7 +304,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}
 		request.put("user_id", userId);
 		try {
-			System.out.println("=================================" + preReg_FetchAllApplicationCreatedByUserURI);
+			logger.info("=================================" + preReg_FetchAllApplicationCreatedByUserURI);
 			response = applnLib.getRequest(preReg_FetchAllApplicationCreatedByUserURI, GetHeader.getHeader(request));
 		} catch (Exception e) {
 			logger.info(e);
@@ -500,7 +500,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				JSONArray data = (JSONArray) resp.get("response");
 				JSONObject json = (JSONObject) data.get(0);
 				json.get("preRegistrationId");
-				System.out.println(preID);
+				logger.info(preID);
 				object.put("preRegistrationId", preID);
 				JSONObject innerData = new JSONObject();
 
@@ -712,7 +712,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 			}
 		}
-		System.out.println("Pre Reg Request::" + createPregRequest);
+		logger.info("Pre Reg Request::" + createPregRequest);
 		JSONObject object = null;
 		for (Object key : createPregRequest.keySet()) {
 			if (key.equals("request")) {
@@ -1188,7 +1188,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		String configPath = "src/test/resources/" + folder + "/" + testSuite;
 		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_FecthAppointmentDetailsURI");
 
-		// System.out.println("Fetch app det::" + preReg_URI);
+		// logger.info("Fetch app det::" + preReg_URI);
 
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();

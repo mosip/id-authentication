@@ -106,8 +106,8 @@ public class CommonLibrary {
 		String configPaths = "src/test/resources/" + module;
 
 		File folder = new File(configPaths);
-		System.out.println("Config Path is : " + configPaths);
-		System.out.println("Folder exists  : " + folder.exists());
+		logger.info("Config Path is : " + configPaths);
+		logger.info("Folder exists  : " + folder.exists());
 		File[] listOfFolders = folder.listFiles();
 		Map<String, String> jiraID = new HashMap<String, String>();
 		int id = 1000;
@@ -142,7 +142,7 @@ public class CommonLibrary {
 				input += data;
 			}
 			List<String> validInvalid = permutation.pack.Permutation.permutation(input);
-			System.out.println("--------------------------------->" + validInvalid);
+			logger.info("--------------------------------->" + validInvalid);
 			input = "";
 			for (String validInv : validInvalid) {
 				input += "{";
@@ -170,7 +170,7 @@ public class CommonLibrary {
 				input = "";
 			}
 		} else if (testType.toLowerCase().equals("smokeandregression")) {
-			System.out.println(
+			logger.info(
 					"in Smoke---------------------------------------------------------------------------------------------->");
 			input += "{";
 			input += "\"testType\":" + "\"smoke\",";
@@ -190,7 +190,7 @@ public class CommonLibrary {
 					input += "\"testType\":" + "\"smoke\",";
 				}
 			}
-			System.out.println(
+			logger.info(
 					"Scenario is ---------------------------------------------------------------------->" + scenario);
 			input = "";
 			int[] permutationValidInvalid = new int[requestKeys.size()];
@@ -199,7 +199,7 @@ public class CommonLibrary {
 				input += data;
 			}
 			List<String> validInvalid = permutation.pack.Permutation.permutation(input);
-			System.out.println("--------------------------------->" + validInvalid);
+			logger.info("--------------------------------->" + validInvalid);
 			input = "";
 			for (String validInv : validInvalid) {
 				input += "{";
@@ -236,7 +236,7 @@ public class CommonLibrary {
 			}
 		}
 
-		// System.out.println(scenario);
+
 
 		String configpath = "src/test/resources/" + module + "/" + ouputFile;
 
@@ -422,7 +422,7 @@ public class CommonLibrary {
 		cal.setTime(Date.from(Instant.now()));
 
 		String result = String.format("%1$tY-%1$tm-%1$td-%1$tk-%1$tS-%1$tp", cal);
-		// System.out.println(System.getProperty("APPDATA"));
+		// logger.info(System.getProperty("APPDATA"));
 		String filePath = "src/test/resources/APPDATA/MosipUtil/UtilFiles/" + destination + "/" + result;
 		File sourceFolder = new File(source);
 		File dest = new File(filePath);
