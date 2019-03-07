@@ -70,16 +70,21 @@ public enum ApiName {
 	/** The ReverseDataSync **/
 	REVERSEDATASYNC,
 
-    /** The Device history **/
+	/** The Device history **/
 	DEVICESHISTORIES,
 
-    /** The Reg center device history **/
+	/** The Reg center device history **/
 	REGISTRATIONCENTERDEVICEHISTORY,
 
-    /** The registration center timestamp **/
+	/** The registration center timestamp **/
 	REGISTRATIONCENTERTIMESTAMP,
-	
-	 /** The registration connector**/
-	REGISTRATIONCONNECTOR
+
+	/** The registration connector **/
+	REGISTRATIONCONNECTOR,
+
+	/** The gendertype. */
+	GENDERTYPE,
+	/** The location. */
+	LOCATION
 
 }
