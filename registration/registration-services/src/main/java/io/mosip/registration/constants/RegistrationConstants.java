@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Set;
-
-import io.mosip.registration.context.ApplicationContext;
 
 /**
  * Class contains the constants used in Registration application
@@ -27,7 +24,6 @@ public class RegistrationConstants {
 
 	/*********** UI Constants **********/
 	// paths of FXML pages to be loaded
-	public static final ResourceBundle bundle = ApplicationContext.applicationMessagesBundle();
 	
 	public static final String ERROR_PAGE = "/fxml/ErrorPage.fxml";
 	public static final String INITIAL_PAGE = "/fxml/RegistrationLogin.fxml";
@@ -727,10 +723,10 @@ public class RegistrationConstants {
 	public static final String REGISTRATION_CLIENT_ID = "10";
 	public static final String PRE_REGISTRATION_DUMMY_ID = "mosip.pre-registration.datasync";
 	public static final String VER = "1.0";
-	public static final String PRE_REG_TO_GET_ID_ERROR = bundle.getString("PRE_REG_TO_GET_ID_ERROR");
-	public static final String PRE_REG_TO_GET_PACKET_ERROR = bundle.getString("PRE_REG_TO_GET_PACKET_ERROR");
-	public static final String PRE_REG_PACKET_NETWORK_ERROR = bundle.getString("PRE_REG_PACKET_NETWORK_ERROR");
-	public static final String PRE_REG_SUCCESS_MESSAGE = bundle.getString("PRE_REG_SUCCESS_MESSAGE");
+	public static final String PRE_REG_TO_GET_ID_ERROR = "PRE_REG_TO_GET_ID_ERROR";
+	public static final String PRE_REG_TO_GET_PACKET_ERROR ="PRE_REG_TO_GET_PACKET_ERROR";
+	public static final String PRE_REG_PACKET_NETWORK_ERROR = "PRE_REG_PACKET_NETWORK_ERROR";
+	public static final String PRE_REG_SUCCESS_MESSAGE = "PRE_REG_SUCCESS_MESSAGE";
 	public static final String IS_PRE_REG_SYNC = "PreRegSync";
 	public static final String PRE_REG_FILE_NAME = "fileName";
 	public static final String PRE_REG_FILE_CONTENT = "fileContent";
@@ -937,8 +933,8 @@ public class RegistrationConstants {
 	public static final String REG_USER_MAPPING_SYNC_JOB_TITLE = "registration user mapping sync job";
 
 	// PRE-REG DELETE JOB
-	public static final String PRE_REG_DELETE_SUCCESS = bundle.getString("PRE_REG_DELETE_SUCCESS");
-	public static final String PRE_REG_DELETE_FAILURE = bundle.getString("PRE_REG_DELETE_FAILURE");
+	public static final String PRE_REG_DELETE_SUCCESS = "PRE_REG_DELETE_SUCCESS";
+	public static final String PRE_REG_DELETE_FAILURE = "PRE_REG_DELETE_FAILURE";
 
 	// Connection Error
 	public static final String CONNECTION_ERROR = "Unable to establish the connection";
