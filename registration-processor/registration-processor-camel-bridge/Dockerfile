@@ -19,7 +19,7 @@ ENV active_profile_env=${active_profile}
 ENV spring_config_label_env=${spring_config_label}
 
 # environment variable to pass github branch to pickup configuration from, at docker runtime
-ENV spring_config_label_env=${spring_config_label}
+ENV spring_config_url_env=${spring_config_label}
 
 # change volume to whichever storage directory you want to use for this container.
 VOLUME /home/logs
