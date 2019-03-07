@@ -240,7 +240,7 @@
                                  <children>
                                     <AnchorPane layoutX="25.0" layoutY="20.0">
                                        <children>
-                                          <Label fx:id="addressLine1LocalLanguageLabel" layoutX="30.0" layoutY="-2.0" styleClass="demoGraphicFieldLabel" text="%addressLine1" visible="false" />
+                                          <Label fx:id="addressLine1LocalLanguageLabel" layoutX="30.0" layoutY="-11.0" styleClass="demoGraphicFieldLabel" text="%addressLine1" visible="false" />
                                          <ImageView id="addressLine1" fitHeight="21.0" fitWidth="34.0" layoutY="25.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@../images/keyboard.png" />
@@ -253,7 +253,7 @@
                                     <AnchorPane layoutX="25.0" layoutY="90.0">
                                        <children>
                                           <TextField fx:id="addressLine2LocalLanguage" layoutX="30.0" layoutY="17.0" promptText="%addressLine2" styleClass="demoGraphicTextField" />
-                                          <Label fx:id="addressLine2LocalLanguageLabel" layoutX="30.0" layoutY="-5.0" styleClass="demoGraphicFieldLabel" text="%addressLine2" visible="false" />
+                                          <Label fx:id="addressLine2LocalLanguageLabel" layoutX="30.0" layoutY="-11.0" styleClass="demoGraphicFieldLabel" text="%addressLine2" visible="false" />
                                            <ImageView id="addressLine2" fitHeight="21.0" fitWidth="34.0" layoutY="25.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@../images/keyboard.png" />
@@ -269,7 +269,7 @@
                                                 <Image url="@../images/keyboard.png" />
                                              </image>
                                           </ImageView>
-                                          <Label fx:id="addressLine3LocalLanguageLabel" layoutX="27.0" layoutY="-4.0" styleClass="demoGraphicFieldLabel" text="%addressLine3" visible="false" />
+                                          <Label fx:id="addressLine3LocalLanguageLabel" layoutX="27.0" layoutY="-11.0" styleClass="demoGraphicFieldLabel" text="%addressLine3" visible="false" />
                                           <TextField fx:id="addressLine3LocalLanguage" layoutX="27.0" layoutY="18.0" promptText="%addressLine3" styleClass="demoGraphicTextField" />
                                           <Label fx:id="addressLine3LocalLanguageMessage" layoutX="27.0" layoutY="52.00" styleClass="demoGraphicFieldMessageLabel" text="addressLine3 message" visible="false" />
                                        </children>
@@ -375,7 +375,7 @@
             </ScrollPane>
             <AnchorPane layoutY="626.0" styleClass="registrationFooter">
                <children>
-                  <Button layoutX="123.0" layoutY="4.0" mnemonicParsing="false" onAction="#back" styleClass="backButton" text="Back">
+                  <Button layoutX="123.0" layoutY="4.0" mnemonicParsing="false" onAction="#back" styleClass="backButton" text="%back">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -384,7 +384,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button layoutX="1034.0" layoutY="3.0" mnemonicParsing="false" onAction="#next" styleClass="contiuneButton" text="Continue">
+                  <Button layoutX="1034.0" layoutY="3.0" mnemonicParsing="false" onAction="#next" styleClass="contiuneButton" text="%continue">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                            <image>
