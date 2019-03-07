@@ -134,6 +134,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The address. */
 	@Value("${registration.processor.queue.address}")
 	private String address;
+	
+	/** The print & postal service provider address. */
+	private String printPostalAddress = "print-postal-service";
 
 	/** The packet info manager. */
 	@Autowired
@@ -178,6 +181,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			}
 
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, uin);
+			Thread.sleep(60000);
 			printPostService.generatePrintandPostal(regId, queue);
 
 			if (isAddedToQueue) {
@@ -376,7 +380,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 		boolean result = false;
 		
 		// Consuming the response from the third party service provider
-		byte[] responseFromQueue = mosipQueueManager.consume(queue, "provider-response");
+		byte[] responseFromQueue = mosipQueueManager.consume(queue, printPostalAddress);
 		String response = new String(responseFromQueue);
 		JSONParser parser = new JSONParser();
 		JSONObject identityJson = null;
