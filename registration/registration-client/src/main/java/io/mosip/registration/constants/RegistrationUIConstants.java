@@ -113,6 +113,7 @@ public class RegistrationUIConstants {
 	public static final String PRE_REG_ID_EMPTY = bundle.getString("PRE_REG_ID_EMPTY");
 	public static final String PRE_REG_ID_NOT_VALID = bundle.getString("PRE_REG_ID_NOT_VALID");
 	public static final String REG_ID_JSON_VALIDATION_FAILED = bundle.getString("REG_ID_JSON_VALIDATION_FAILED");
+	public static final String SCAN = bundle.getString("SCAN");
 
 	// OPT TO REGISTER
 	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = bundle.getString("OPT_TO_REG_TIME_SYNC_EXCEED");
@@ -216,5 +217,14 @@ public class RegistrationUIConstants {
 	
 	public static final String RESTART_APPLICATION = bundle.getString("RESTART_APPLICATION");
 	
+	public static final String PRE_REG_TO_GET_ID_ERROR = bundle.getString("PRE_REG_TO_GET_ID_ERROR");
+	public static final String PRE_REG_TO_GET_PACKET_ERROR = bundle.getString("PRE_REG_TO_GET_PACKET_ERROR");
+	public static final String PRE_REG_PACKET_NETWORK_ERROR = bundle.getString("PRE_REG_PACKET_NETWORK_ERROR");
+	public static final String PRE_REG_SUCCESS_MESSAGE = bundle.getString("PRE_REG_SUCCESS_MESSAGE");
+	
+	// PRE-REG DELETE JOB
+		public static final String PRE_REG_DELETE_SUCCESS = bundle.getString("PRE_REG_DELETE_SUCCESS");
+		public static final String PRE_REG_DELETE_FAILURE = bundle.getString("PRE_REG_DELETE_FAILURE");
+
 	
 }

@@ -56,5 +56,5 @@ The key **requirements** are
 10. All events should be logged in the AUDIT table.
 
 **Sequence and Class Diagram**
-![Registered machine center changed class and sequence diagram](_images/packetDeletion_design.png)
+![Registered machine center changed  class and sequence diagram](_images/reg_center_machine_changed.png)
     

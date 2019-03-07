@@ -2,7 +2,6 @@ package io.mosip.kernel.masterdata.test.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -22,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.orm.hibernate5.HibernateObjectRetrievalFailureException;
@@ -108,6 +106,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  * @author Neha Sinha
  * @author tapaswini
  * @author srinivasan
+ * @author Uday Kumar
  * @since 1.0.0
  *
  * 
@@ -1444,7 +1443,7 @@ public class MasterDataServiceTest {
 
 	@Test
 	public void getAllValidDocumentTypeTest() {
-		String documentCategoryCode = "iric";
+		String documentCategoryCode = "POI";
 		String langCode = "eng";
 
 		Mockito.when(documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(documentCategoryCode, langCode))

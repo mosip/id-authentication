@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.entity.RegistrationCommonFields;
 
@@ -48,7 +49,12 @@ public class MetaDataUtils {
 	public static <S, D extends RegistrationCommonFields> D setUpdateMetaData(final S source, D destination,
 			Boolean mapNullvalues) {
 
-		String contextUser = SessionContext.userContext().getUserId();
+		String contextUser;
+		if(SessionContext.isSessionContextAvailable()) {
+			contextUser = SessionContext.userContext().getUserId();
+		}else {
+			contextUser=RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
+		}
 
 		D entity = MapperUtils.map(source, destination, mapNullvalues);
 
@@ -71,8 +77,12 @@ public class MetaDataUtils {
 	 */
 	public static <T, D extends RegistrationCommonFields> D setCreateMetaData(final T source,
 			Class<? extends RegistrationCommonFields> destinationClass) {
-
-		String contextUser = SessionContext.userContext().getUserId();
+		String contextUser;
+		if(SessionContext.isSessionContextAvailable()) {
+			contextUser = SessionContext.userContext().getUserId();
+		}else {
+			contextUser=RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
+		}
 
 		D entity = (D) MapperUtils.map(source, destinationClass);
 
@@ -83,16 +93,21 @@ public class MetaDataUtils {
 	public static <T, D extends RegistrationCommonFields> List<D> setCreateMetaData(final Collection<T> dtoList,
 			Class<? extends RegistrationCommonFields> entityClass) {
 
-		String contextUser = SessionContext.userContext().getUserId();
+		String contextUser;
+		if (SessionContext.isSessionContextAvailable()) {
+			contextUser = SessionContext.userContext().getUserId();
+		} else {
+			contextUser = RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
+		}
 
 		List<D> entities = new ArrayList<>();
 
 		if (null != dtoList && !dtoList.isEmpty()) {
-			dtoList.forEach(dto -> {
+			for (T dto : dtoList) {
 				D entity = (D) MapperUtils.map(dto, entityClass);
 				setCreatedDateTime(contextUser, entity);
 				entities.add(entity);
-			});
+			}
 		}
 
 		return entities;
