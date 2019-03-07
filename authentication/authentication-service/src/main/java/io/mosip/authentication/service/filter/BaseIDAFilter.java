@@ -2,6 +2,7 @@ package io.mosip.authentication.service.filter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -62,7 +63,7 @@ public abstract class BaseIDAFilter implements Filter {
 	private static final String RESPONSE = "response";
 
 	/** The Constant RES_TIME. */
-	private static final String RES_TIME = "resTime";
+	private static final String RES_TIME = "responseTime";
 
 	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "datetime.pattern";
@@ -182,7 +183,7 @@ public abstract class BaseIDAFilter implements Filter {
 		authResponseDTO.setResponseTime(resTime);
 		requestWrapper.resetInputStream();
 		authResponseDTO.setVersion(getVersionFromUrl(requestWrapper));
-		Map<String, Object> responseMap = mapper.convertValue(mapper.writeValueAsString(authResponseDTO), new TypeReference<Map<String, Object>>() {
+		Map<String, Object> responseMap = mapper.convertValue(authResponseDTO, new TypeReference<Map<String, Object>>() {
 		});
 		Map<String, Object> resultMap = new LinkedHashMap<>();
 		for(Map.Entry<String, Object> map : responseMap.entrySet()) {
@@ -340,7 +341,8 @@ public abstract class BaseIDAFilter implements Filter {
 	
 	protected Map<String, Object> getRequestBody(InputStream inputStream) throws IdAuthenticationAppException {
 		try {
-			return mapper.readValue(inputStream,
+			String reqStr = IOUtils.toString(inputStream, Charset.defaultCharset());
+			return reqStr.isEmpty() ? null : mapper.readValue(reqStr,
 					new TypeReference<Map<String, Object>>() {
 					});
 		} catch (IOException | ClassCastException e) {

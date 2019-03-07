@@ -43,8 +43,10 @@ public class KycAuthFilter extends IdAuthFilter {
 			throws IdAuthenticationAppException {
 		try {			
 			Map<String, Object> response = (Map<String, Object>) responseBody.get(RESPONSE);
-			if (Objects.nonNull(response)) {
+			if (Objects.nonNull(response) && Objects.nonNull(publicKey)) {
 					encryptKycResponse(response);
+			} else {
+				responseBody.put(RESPONSE, encode(toJsonString(response)));
 			}
 			return responseBody;
 		} catch (ClassCastException | JsonProcessingException e) {
@@ -84,15 +86,7 @@ public class KycAuthFilter extends IdAuthFilter {
 		Map<String, Object> responseParams = super.setResponseParams(requestBody, responseBody);
 		setKycParams(responseParams);
 		Object response = responseParams.get(RESPONSE);
-		try {
-			if (Objects.nonNull(response) && Objects.nonNull(publicKey)) {
-				responseParams = encipherResponse(responseParams);
-			} else {
-				responseParams.put(RESPONSE, encode(toJsonString(response)));
-			}
-		} catch (JsonProcessingException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
-		}
+		responseParams.put(RESPONSE, response);
 		return responseParams;
 	}
 
