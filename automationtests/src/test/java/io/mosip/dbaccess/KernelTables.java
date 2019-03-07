@@ -56,7 +56,7 @@ public class KernelTables {
 	{
 		boolean flag=false;
 		
-		factory = new Configuration().configure("kernel.cfg.xml")
+		factory = new Configuration().configure("kernelinteg.cfg.xml")
 	.addAnnotatedClass(dtoClass).buildSessionFactory();	
 		session = factory.getCurrentSession();
 		session.beginTransaction();
