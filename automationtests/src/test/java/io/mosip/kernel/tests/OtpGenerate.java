@@ -131,20 +131,6 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 		listOfElementToRemove.add("timestamp");
 		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
       if (status) {
-//	             String id= (actualRequest.get("id").toString());
-//	             System.out.println("id------------>"+id);
-//	             String queryStr = "SELECT * FROM master.registration_center WHERE id='"+id+"'";
-//					boolean valid = KernelMasterDataR.masterDataDBConnection(OtpEntity.class,queryStr);
-//					System.out.println("status------>"+valid);
-			if(status)
-					{
-						finalStatus ="Pass";
-					}
-					else
-					{
-		 				finalStatus ="Fail";
-						//break;
-					}
 	            
 				finalStatus = "Pass";
 			}	

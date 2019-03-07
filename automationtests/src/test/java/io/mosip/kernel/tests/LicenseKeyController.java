@@ -222,9 +222,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	    if(testCaseName.equals("smoke_MapLicenseKeyPermission"))
 	    {
 	    	actualRequest_map.put("tspId", tspId);
-			actualRequest_map.put("licenseKey", licenseKey);
-			System.out.println(licenseKey+"-------->"+tspId);
-		 
+			actualRequest_map.put("licenseKey", licenseKey);		 
 		  	
 		 Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
@@ -305,7 +303,6 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		{
 			actualRequest.put("tspId", tspId);
 			actualRequest.put("licenseKey", licenseKey);
-			System.out.println(licenseKey+"-------->"+tspId);
 		}
 		
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
@@ -320,18 +317,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("timestamp");
 		status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
-      if (status) {
-	            
-			if(status)
-					{
-						finalStatus ="Pass";
-					}
-					else
-					{
-		 				finalStatus ="Fail";
-						//break;
-					}
-	            
+      if (status) {	            
 				finalStatus = "Pass";
 			}	
 		
