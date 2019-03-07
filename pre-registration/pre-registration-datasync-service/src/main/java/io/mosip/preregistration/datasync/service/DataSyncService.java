@@ -90,7 +90,7 @@ public class DataSyncService {
 
 	public MainResponseDTO<PreRegistrationIdsDTO> retrieveAllPreRegIds(
 			MainRequestDTO<DataSyncRequestDTO> dataSyncRequest) {
-		PreRegistrationIdsDTO preRegistrationIdsDTO = new PreRegistrationIdsDTO();
+		PreRegistrationIdsDTO preRegistrationIdsDTO = null;
 		MainResponseDTO<PreRegistrationIdsDTO> responseDto = new MainResponseDTO<>();
 		List<String> preregIds;
 		log.info("sessionId", "idType", "id", "In retrieveAllPreRegIds method of datasync service ");
@@ -135,7 +135,7 @@ public class DataSyncService {
 	 */
 	public MainResponseDTO<PreRegArchiveDTO> getPreRegistrationData(String preId) {
 		MainResponseDTO<PreRegArchiveDTO> responseDto = new MainResponseDTO<>();
-		PreRegArchiveDTO preRegArchiveDTO = new PreRegArchiveDTO();
+		PreRegArchiveDTO preRegArchiveDTO = null;
 		log.info("sessionId", "idType", "id", "In getPreRegistrationData method of datasync service ");
 		boolean isRetrieveSuccess = false;
 		try {
@@ -173,7 +173,7 @@ public class DataSyncService {
 	public MainResponseDTO<ReverseDatasyncReponseDTO> storeConsumedPreRegistrations(
 			MainRequestDTO<ReverseDataSyncRequestDTO> reverseDataSyncRequest) {
 		MainResponseDTO<ReverseDatasyncReponseDTO> responseDto = new MainResponseDTO<>();
-		ReverseDatasyncReponseDTO reverseDatasyncReponse = new ReverseDatasyncReponseDTO();
+		ReverseDatasyncReponseDTO reverseDatasyncReponse = null;
 		log.info("sessionId", "idType", "id", "In storeConsumedPreRegistrations method of datasync service ");
 		boolean isSaveSuccess = false;
 		try {
