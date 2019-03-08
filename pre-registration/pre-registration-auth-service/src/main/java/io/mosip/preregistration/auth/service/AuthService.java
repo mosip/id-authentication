@@ -69,15 +69,6 @@ public class AuthService {
 		ResponseEntity<AuthNResponse> responseEntity = null;
 		String url=sendOtpResourceUrl+"/v1.0/authenticate/sendotp";
 		responseEntity=(ResponseEntity<AuthNResponse>) authCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON,userOtpRequest.getRequest(),AuthNResponse.class);
-		//RestTemplate restTemplate=restTemplateBuilder.build();
-//		UriComponentsBuilder uriBuilder = UriComponentsBuilder
-//			.fromHttpUrl(url);
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.setContentType(MediaType.APPLICATION_JSON);
-//		HttpEntity<OtpUserDTO> request = new HttpEntity<>(userOtpRequest.getRequest(), headers);
-//		String strUriBuilder = uriBuilder.build().encode().toUriString();
-//		responseEntity = restTemplate.exchange(url, HttpMethod.POST, request,AuthNResponse.class);
-		
 		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString());
 		response.setResponse(responseEntity.getBody());
 		}
@@ -140,5 +131,5 @@ public class AuthService {
 //		
 //		return response;
 //	}
-//	
+	
 }

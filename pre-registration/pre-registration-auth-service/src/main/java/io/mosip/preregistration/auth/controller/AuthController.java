@@ -1,5 +1,8 @@
 package io.mosip.preregistration.auth.controller;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
@@ -76,9 +79,12 @@ public class AuthController {
 		ResponseEntity<AuthNResponse> response=serviceResponse.getResponse();
 		responseBody.setResponse(response.getBody());
 		HttpHeaders headers=response.getHeaders();
+		System.out.println(headers.get("Set-Cookie").size());
 		String content=headers.get("Set-Cookie").get(0).replaceAll("Authorization=", "");
 		System.out.println("Cookie added : "+content);
-		Cookie cookie=createCookie(content,6000000);
+		List<String> contentArray=Arrays.asList(content.split(";"));
+		
+		Cookie cookie=createCookie(contentArray.get(0),6000000);
 		res.addCookie(cookie);
 		return ResponseEntity.status(HttpStatus.OK).body(responseBody);
 	}
