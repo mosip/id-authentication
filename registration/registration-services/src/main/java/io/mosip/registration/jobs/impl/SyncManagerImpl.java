@@ -37,14 +37,17 @@ public class SyncManagerImpl extends BaseService implements SyncManager {
 	@Autowired
 	private SyncJobControlDAO syncJobDAO;
 
-
 	/**
 	 * LOGGER for logging
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(SyncManagerImpl.class);
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.jobs.SyncManager#createSyncControlTransaction(io.mosip.registration.entity.SyncTransaction)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.jobs.SyncManager#createSyncControlTransaction(io.mosip.
+	 * registration.entity.SyncTransaction)
 	 */
 	@Override
 	public synchronized SyncControl createSyncControlTransaction(final SyncTransaction syncTransaction) {
@@ -82,8 +85,11 @@ public class SyncManagerImpl extends BaseService implements SyncManager {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.jobs.SyncManager#createSyncTransaction(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.jobs.SyncManager#createSyncTransaction(java.lang.
+	 * String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public synchronized SyncTransaction createSyncTransaction(final String status, final String statusComment,
