@@ -134,9 +134,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The address. */
 	@Value("${registration.processor.queue.address}")
 	private String address;
-	
+
 	/** The print & postal service provider address. */
-	private String printPostalAddress = "print-postal-service";
+	private String printPostalAddress = "postal-service";
 
 	/** The packet info manager. */
 	@Autowired
@@ -181,7 +181,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 			}
 
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, uin);
-			Thread.sleep(60000);
 			printPostService.generatePrintandPostal(regId, queue);
 
 			if (isAddedToQueue) {
@@ -200,10 +199,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-						
-			Thread.sleep(60000);
-			
-			if (consumeResponseFromQueue(regId,queue)) {
+
+			if (consumeResponseFromQueue(regId, queue)) {
 				description = "Print and Post Completed for the regId : " + regId;
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PRINT_AND_POST_COMPLETED.toString());
 				registrationStatusDto.setStatusComment(description);
@@ -378,7 +375,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 	 */
 	private boolean consumeResponseFromQueue(String regId, MosipQueue queue) {
 		boolean result = false;
-		
+
 		// Consuming the response from the third party service provider
 		byte[] responseFromQueue = mosipQueueManager.consume(queue, printPostalAddress);
 		String response = new String(responseFromQueue);
@@ -387,7 +384,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 		try {
 			identityJson = (JSONObject) parser.parse(response);
 			String uinFieldCheck = (String) identityJson.get("Status");
-			if (uinFieldCheck.equals("Success")) {				
+			if (uinFieldCheck.equals("Success")) {
 				result = true;
 			}
 		} catch (ParseException e) {

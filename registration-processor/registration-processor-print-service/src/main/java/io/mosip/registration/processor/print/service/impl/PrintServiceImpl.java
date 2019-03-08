@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONArray;
@@ -36,7 +37,6 @@ import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
 import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.pdfgenerator.itext.constant.PDFGeneratorExceptionCodeConstant;
 import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.registration.processor.core.code.ApiName;
@@ -216,7 +216,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 			boolean isPhotoSet = setApplicantPhoto(response);
 			if (!isPhotoSet) {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), uin,
 						PlatformErrorMessages.RPR_PRT_APPLICANT_PHOTO_NOT_SET.name());
 			}
@@ -228,7 +228,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 			boolean isQRcodeSet = setQrCode();
 			if (!isQRcodeSet) {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), uin,
 						PlatformErrorMessages.RPR_PRT_QRCODE_NOT_SET.name());
 			}
@@ -245,10 +245,10 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 			// generating pdf
 			ByteArrayOutputStream pdf = uinCardGenerator.generateUinCard(uinArtifact, UinCardType.PDF);
-			
+
 			InputStream pdfStream = getpdfStream(pdf);
 			byteMap.put(UIN_CARD_PDF, IOUtils.toByteArray(pdfStream));
-			
+
 			byte[] textFileByte = createTextFile();
 			byteMap.put(UIN_TEXT_FILE, textFileByte);
 
@@ -290,9 +290,9 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 		} catch (Exception ex) {
+			description = "Process stopped due to some internal error";
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					idValue, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + ex.getMessage()
-							+ ExceptionUtils.getStackTrace(ex));
+					idValue, description + ex.getMessage() + ExceptionUtils.getStackTrace(ex));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					ex.getMessage() + ExceptionUtils.getStackTrace(ex));
 
@@ -321,10 +321,10 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	private InputStream getpdfStream(ByteArrayOutputStream pdf) {
 		File pdfFile = new File(attributes.get(UINCardConstant.UIN).toString() + ".pdf");
 		InputStream fileStream = null;
-		try(FileOutputStream op = new FileOutputStream(pdfFile);) {
+		try (FileOutputStream op = new FileOutputStream(pdfFile);) {
 			op.write(pdf.toByteArray());
 			fileStream = new FileInputStream(pdfFile);
-		} catch(IOException e) {
+		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					null, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
@@ -368,41 +368,41 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 * @return the byte[]
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws io.mosip.kernel.core.exception.IOException
 	 */
-	private byte[] createTextFile() throws IOException, io.mosip.kernel.core.exception.IOException {
+	private byte[] createTextFile() throws IOException {
 		byte[] jsonTextFileBytes = null;
 		JsonFileDTO jsonDto = new JsonFileDTO();
 		jsonDto.setId("mosip.registration.print.send");
 		jsonDto.setVersion("1.0");
-		jsonDto.setRequestTime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") );
-		
+		jsonDto.setRequestTime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+
 		JsonRequestDTO request = new JsonRequestDTO();
-		request.setNameAra((String)attributes.get(UINCardConstant.NAME_ARA));
-		request.setNameEng((String)attributes.get(UINCardConstant.NAME_ENG));
-		request.setPhoneNumber((String)attributes.get(UINCardConstant.PHONENUMBER));
-		request.setAddressLine1Ara((String)attributes.get(UINCardConstant.ADDRESSLINE1_ARA));
-		request.setAddressLine1Eng((String)attributes.get(UINCardConstant.ADDRESSLINE1_ENG));
-		request.setAddressLine2Ara((String)attributes.get(UINCardConstant.ADDRESSLINE2_ARA));
-		request.setAddressLine2Eng((String)attributes.get(UINCardConstant.ADDRESSLINE2_ENG));
-		request.setAddressLine3Ara((String)attributes.get(UINCardConstant.ADDRESSLINE3_ARA));
-		request.setAddressLine3Eng((String)attributes.get(UINCardConstant.ADDRESSLINE3_ENG));
-		request.setRegionAra((String)attributes.get(UINCardConstant.REGION_ARA));
-		request.setRegionEng((String)attributes.get(UINCardConstant.REGION_ENG));
-		request.setProvinceAra((String)attributes.get(UINCardConstant.PROVINCE_ARA));
-		request.setProvinceEng((String)attributes.get(UINCardConstant.PROVINCE_ENG));
-		request.setCityAra((String)attributes.get(UINCardConstant.CITY_ARA));
-		request.setCityEng((String)attributes.get(UINCardConstant.CITY_ENG));
-		request.setPostalCode((String)attributes.get(UINCardConstant.POSTALCODE));
-	
+		request.setNameAra((String) attributes.get(UINCardConstant.NAME_ARA));
+		request.setNameEng((String) attributes.get(UINCardConstant.NAME_ENG));
+		request.setPhoneNumber((String) attributes.get(UINCardConstant.PHONENUMBER));
+		request.setAddressLine1Ara((String) attributes.get(UINCardConstant.ADDRESSLINE1_ARA));
+		request.setAddressLine1Eng((String) attributes.get(UINCardConstant.ADDRESSLINE1_ENG));
+		request.setAddressLine2Ara((String) attributes.get(UINCardConstant.ADDRESSLINE2_ARA));
+		request.setAddressLine2Eng((String) attributes.get(UINCardConstant.ADDRESSLINE2_ENG));
+		request.setAddressLine3Ara((String) attributes.get(UINCardConstant.ADDRESSLINE3_ARA));
+		request.setAddressLine3Eng((String) attributes.get(UINCardConstant.ADDRESSLINE3_ENG));
+		request.setRegionAra((String) attributes.get(UINCardConstant.REGION_ARA));
+		request.setRegionEng((String) attributes.get(UINCardConstant.REGION_ENG));
+		request.setProvinceAra((String) attributes.get(UINCardConstant.PROVINCE_ARA));
+		request.setProvinceEng((String) attributes.get(UINCardConstant.PROVINCE_ENG));
+		request.setCityAra((String) attributes.get(UINCardConstant.CITY_ARA));
+		request.setCityEng((String) attributes.get(UINCardConstant.CITY_ENG));
+		request.setPostalCode((String) attributes.get(UINCardConstant.POSTALCODE));
+
 		jsonDto.setRequest(request);
 
 		File jsonText = new File(attributes.get(UINCardConstant.UIN).toString() + ".txt");
-		
+
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.configure(SerializationFeature.INDENT_OUTPUT, true); 
+		mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 		mapper.writeValue(jsonText, jsonDto);
-	
+
 		InputStream fileStream = new FileInputStream(jsonText);
 		jsonTextFileBytes = IOUtils.toByteArray(fileStream);
 
@@ -420,8 +420,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	private boolean setQrCode()
-			throws QrcodeGenerationException, IOException, io.mosip.kernel.core.exception.IOException {
+	private boolean setQrCode() throws QrcodeGenerationException, IOException {
 		boolean isQRCodeSet = false;
 		byte[] qrCodeBytes = null;
 		qrCodeBytes = qrCodeGenerator.generateQrCode(qrString.toString(), QrVersion.V30);
@@ -480,8 +479,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	private boolean setPhoto(boolean isPhotoSet, List<BIRType> bIRTypeList)
-			throws io.mosip.kernel.core.exception.IOException {
+	private boolean setPhoto(boolean isPhotoSet, List<BIRType> bIRTypeList) throws IOException {
 		byte[] facebyte = null;
 		for (BIRType type : bIRTypeList) {
 			List<SingleType> singleTypeList = type.getBDBInfo().getType();

@@ -113,6 +113,7 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 			if (message != null) {
 				byte[] data = new byte[(int) message.getBodyLength()];
 				message.readBytes(data);
+				consumer.close();
 				return data;
 			} else {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
