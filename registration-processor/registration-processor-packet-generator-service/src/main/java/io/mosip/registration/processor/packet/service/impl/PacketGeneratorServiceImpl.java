@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.packet.service.impl;
 
+import java.io.File;
 import java.math.BigInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import io.mosip.registration.processor.packet.service.dto.demographic.Demographi
 import io.mosip.registration.processor.packet.service.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.packet.service.external.StorageService;
+import io.mosip.registration.processor.packet.upload.service.SyncUploadEncryptionService;
 
 @Service
 public class PacketGeneratorServiceImpl implements PacketGeneratorService {
@@ -28,6 +30,9 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	@Autowired
 	private StorageService storageService;
 
+	@Autowired
+	SyncUploadEncryptionService syncUploadEncryptionService;
+
 	@Override
 	public String createPacket(String uin, String registrationType, String applicantType, String reason) {
 		RegistrationDTO registrationDTO = createRegistrationDTOObject(uin, registrationType, applicantType);
@@ -37,6 +42,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 			String filePath = storageService.storeToDisk(registrationDTO.getRegistrationId(), packetZipBytes, false);
 			// encrypte the packet
 			// sync the packet and upload and return the status
+			File decryptedFile = new File(filePath);
+			syncUploadEncryptionService.uploadUinPacket(decryptedFile);
 		} catch (RegBaseCheckedException e) {
 
 			e.printStackTrace();
@@ -47,10 +54,10 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	private RegistrationDTO createRegistrationDTOObject(String uin, String registrationType, String applicantType) {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 		registrationDTO.setDemographicDTO(getDemographicDTO(uin));
-		RegistrationMetaDataDTO registrationMetaDataDTO = getRegistrationMetaDataDTO(registrationType, applicantType);
+		RegistrationMetaDataDTO registrationMetaDataDTO = getRegistrationMetaDataDTO(registrationType, applicantType,
+				uin);
 		String registrationId = ridGeneratorImpl.generateId(registrationMetaDataDTO.getCenterId(),
 				registrationMetaDataDTO.getMachineId());
-		// registrationDTO.setRegistrationId("10031100110025520190227153327");
 		registrationDTO.setRegistrationId(registrationId);
 		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
 		return registrationDTO;
@@ -68,14 +75,15 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		return demographicDTO;
 	}
 
-	private RegistrationMetaDataDTO getRegistrationMetaDataDTO(String registrationType, String applicantType) {
+	private RegistrationMetaDataDTO getRegistrationMetaDataDTO(String registrationType, String applicantType,
+			String uin) {
 		RegistrationMetaDataDTO registrationMetaDataDTO = new RegistrationMetaDataDTO();
 
 		registrationMetaDataDTO.setApplicationType(applicantType);
 		registrationMetaDataDTO.setCenterId("10031");
 		registrationMetaDataDTO.setMachineId("10011");
 		registrationMetaDataDTO.setRegistrationCategory(registrationType);
-		registrationMetaDataDTO.setUin(null);
+		registrationMetaDataDTO.setUin(uin);
 		return registrationMetaDataDTO;
 
 	}

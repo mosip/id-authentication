@@ -2,7 +2,6 @@ package io.mosip.registration.processor.packet.service.util.encryptor;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyFactory;
@@ -14,15 +13,17 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.crypto.SecretKey;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.google.gson.Gson;
+
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
@@ -34,6 +35,8 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.service.dto.PublicKeyResponseDto;
 import io.mosip.registration.processor.packet.service.exception.EncryptorBaseCheckedException;
+import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
+import io.mosip.registration.processor.packet.service.external.StorageService;
 
 @Component
 public class EncryptorUtil {
@@ -58,67 +61,56 @@ public class EncryptorUtil {
 	/** The registration processor rest client service. */
 	@Autowired
 	RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
-	
+
+	@Autowired
+	private StorageService storageService;
 
 	@Value("${mosip.kernel.rid.centerid-length}")
-	private int centerIdLength;	
+	private int centerIdLength;
 
-	
-	
-	
-	
-	public void encryptUinUpdatePacket(InputStream decryptedFile,String regId) throws IOException, ApisResourceAccessException, InvalidKeySpecException, JSONException, NoSuchAlgorithmException {
+	public String encryptUinUpdatePacket(InputStream decryptedFile, String regId)
+			throws IOException, ApisResourceAccessException, InvalidKeySpecException, JSONException,
+			NoSuchAlgorithmException, RegBaseCheckedException {
 		try (InputStream decryptedPacketStream = new BufferedInputStream(decryptedFile);
-				InputStream encryptPacketStream = encrypt(decryptedPacketStream,regId)) {// close input stream
-			
-			
-			File targetFile =new File("C:\\Users\\M1049387\\Desktop\\encrypted\\10031100110000220190307115748.zip");
-			
-			if(!(targetFile.exists())) {
-				targetFile.createNewFile();	
-			}
-			
-		    FileUtils.copyInputStreamToFile(encryptPacketStream, targetFile);
-			
-			//save input stream in decrypted folder.
-			
-			
-			
-			
-			
+				InputStream encryptPacketStream = encrypt(decryptedPacketStream, regId)) {// close input stream
+			byte[] bytes = IOUtils.toByteArray(encryptPacketStream);
+			String filePath = storageService.storeToDisk(regId, bytes, true);
+
+			return filePath;
 		}
 	}
 
-
-	
-	
-	
-	
 	/**
 	 * Encrypt.
 	 *
-	 * @param streamToEncrypt the stream to encrypt
+	 * @param streamToEncrypt
+	 *            the stream to encrypt
 	 * @return the input stream
-	 * @throws EncryptorBaseCheckedException the encryptor base checked exception
-	 * @throws ApisResourceAccessException the apis resource access exception
-	 * @throws JSONException the JSON exception
-	 * @throws InvalidKeySpecException the invalid key spec exception
-	 * @throws NoSuchAlgorithmException the no such algorithm exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws EncryptorBaseCheckedException
+	 *             the encryptor base checked exception
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws JSONException
+	 *             the JSON exception
+	 * @throws InvalidKeySpecException
+	 *             the invalid key spec exception
+	 * @throws NoSuchAlgorithmException
+	 *             the no such algorithm exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
-	public InputStream encrypt(final InputStream streamToEncrypt,String regId)
-			throws ApisResourceAccessException, JSONException, InvalidKeySpecException,
-			java.security.NoSuchAlgorithmException, IOException {
+	public InputStream encrypt(final InputStream streamToEncrypt, String regId) throws ApisResourceAccessException,
+			JSONException, InvalidKeySpecException, java.security.NoSuchAlgorithmException, IOException {
 
 		try {
-			
-			String centerId = regId.substring(0,centerIdLength); 
+
+			String centerId = regId.substring(0, centerIdLength);
 
 			byte[] dataToEncrypt = IOUtils.toByteArray(streamToEncrypt);
 
 			// Enable AES 256 bit encryption
 			Security.setProperty("crypto.policy", "unlimited");
-System.out.println("1");
+			System.out.println("1");
 			// Generate AES Session Key
 			final SecretKey symmetricKey = keyGenerator.getSymmetricKey();
 			System.out.println("2");
@@ -126,12 +118,12 @@ System.out.println("1");
 			final byte[] encryptedData = encryptor.symmetricEncrypt(symmetricKey, dataToEncrypt);
 			System.out.println("3");
 			// Encrypt the AES Session Key using RSA
-			final byte[] rsaEncryptedKey = encryptRSA(symmetricKey.getEncoded(),centerId);
+			final byte[] rsaEncryptedKey = encryptRSA(symmetricKey.getEncoded(), centerId);
 			System.out.println("4");
 			return new ByteArrayInputStream(CryptoUtil
 					.encodeBase64(CryptoUtil.combineByteArray(encryptedData, rsaEncryptedKey, AES_KEY_CIPHER_SPLITTER))
 					.getBytes());
-			
+
 		} catch (MosipInvalidDataException mosipInvalidDataException) {
 			throw new EncryptorBaseCheckedException(mosipInvalidDataException.getErrorCode(),
 					mosipInvalidDataException.getErrorText());
@@ -146,13 +138,17 @@ System.out.println("1");
 	/**
 	 * Encrypt RSA.
 	 *
-	 * @param sessionKey the session key
+	 * @param sessionKey
+	 *            the session key
 	 * @return the byte[]
-	 * @throws ApisResourceAccessException the apis resource access exception
-	 * @throws InvalidKeySpecException the invalid key spec exception
-	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws InvalidKeySpecException
+	 *             the invalid key spec exception
+	 * @throws NoSuchAlgorithmException
+	 *             the no such algorithm exception
 	 */
-	private byte[] encryptRSA(final byte[] sessionKey,String centerId)
+	private byte[] encryptRSA(final byte[] sessionKey, String centerId)
 			throws ApisResourceAccessException, InvalidKeySpecException, java.security.NoSuchAlgorithmException {
 		try {
 			System.out.println("5");
@@ -160,7 +156,7 @@ System.out.println("1");
 			List<String> pathsegments = new ArrayList<>();
 			System.out.println("6");
 			pathsegments.add(APPLICATION_ID);
-			System.out.println("7"+registrationProcessorRestClientService);
+			System.out.println("7" + registrationProcessorRestClientService);
 			String publicKeytest = (String) registrationProcessorRestClientService.getApi(ApiName.ENCRYPTIONSERVICE,
 					pathsegments, "timeStamp,referenceId", DateUtils.getUTCCurrentDateTimeString() + ',' + centerId,
 					String.class);

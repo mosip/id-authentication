@@ -72,7 +72,7 @@ public class StorageServiceImpl implements StorageService {
 			// LOGGER.info(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Encrypted
 			// packet saved");
 
-			return filePath;
+			return filePath.concat(RegistrationConstants.ZIP_FILE_EXTENSION);
 		} catch (IOException ioException) {
 			// throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(),
 			// REG_IO_EXCEPTION.getErrorMessage());
