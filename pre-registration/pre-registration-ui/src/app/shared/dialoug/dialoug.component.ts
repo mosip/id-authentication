@@ -4,6 +4,7 @@ import { Router } from "@angular/router";
 import { AuthService } from "src/app/auth/auth.service";
 import { Location } from "@angular/common";
 import { SharedService } from "src/app/feature/booking/booking.service";
+import { RegistrationService } from "src/app/core/services/registration.service";
 
 export interface DialogData {
   case: number;
@@ -16,10 +17,12 @@ export interface DialogData {
 })
 export class DialougComponent implements OnInit {
   input;
+  message = {};
   selectedOption = null;
   confirm = true;
   isChecked = true;
   applicantNumber;
+  checkCondition;
   applicantEmail;
   inputList = [];
   invalidApplicantNumber = false;
@@ -32,7 +35,7 @@ export class DialougComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private authService: AuthService,
     private location: Location,
-    private sharedService: SharedService
+    private regService: RegistrationService
   ) {}
 
   // tslint:disable-next-line:use-life-cycle-interface
@@ -89,16 +92,24 @@ export class DialougComponent implements OnInit {
     this.isChecked = !this.isChecked;
   }
 
-  loggingOut() {
-    if (localStorage.getItem("newApplicant") === "true"){
-      alert("you will be logged out, for not providing the consent...");
+  userRedirection() {
+    if (localStorage.getItem("newApplicant") === "true") {
+      alert(this.input.alertMessageFirst);
       this.authService.removeToken();
       this.location.back();
-    }
-    else{
-      alert("you will be moved back to demo page, for not providing consent..");
+    } else if (localStorage.getItem("newApplicant") === "false") {
+      this.regService.currentMessage.subscribe(
+        message => (this.message = message)
+      );
+      this.checkCondition = this.message["modifyUserFromPreview"];
+
+    if (this.checkCondition === "false") {
+      alert(this.input.alertMessageThird);
+      this.location.back();
+    } else {
+      alert(this.input.alertMessageSecond);
       this.location.back();
     }
-
   }
+}
 }
