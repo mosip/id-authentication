@@ -12,12 +12,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
@@ -99,7 +98,6 @@ public class LoginServiceTest extends BaseIntegrationTest {
 	 * 
 	 */
 	@Test
-	@Ignore
 	public void getUserDetailTest() {
 		String path = new ClassPathResource(
 				"src/test/resources/testData/LoginServiceData/LoginServiceTestResources.json").getPath();
@@ -113,7 +111,7 @@ public class LoginServiceTest extends BaseIntegrationTest {
 			for (int i = 0; i < array.size(); i++) {
 
 				UserDetail userDetail = loginServiceImpl.getUserDetail(array.get(i).toString());
-				assertTrue(userDetail.getName() != null);
+				assertTrue(userDetail.getId() != null);
 				
 			}
 
@@ -196,15 +194,39 @@ public class LoginServiceTest extends BaseIntegrationTest {
 		}
 
 	}
-	@Ignore
+
+	/**
+	 * This test is to check whether updateLoginParams method updates 
+	 * attributes of a UserDetail object	 * 
+	 * 
+	 */
 	@Test
-	public void updateLoginParams() {
+	public void updateLoginParamsTest() {
 
-		UserDetail userDetail = new UserDetail();
-		userDetail.setId("mosip");
-		userDetail.setLastLoginMethod("OTP");
-
+		UserDetail userDetail = loginServiceImpl.getUserDetail("mosip");
+		String newId="newId"+ System.currentTimeMillis();
+		userDetail.setId(newId);
 		loginServiceImpl.updateLoginParams(userDetail);
+		assertNotNull(loginServiceImpl.getUserDetail(newId));
+		
+		//clean up
+		userDetail = loginServiceImpl.getUserDetail(newId);
+		userDetail.setId("mosip");
+		loginServiceImpl.updateLoginParams(userDetail);	
+	}
+	
+	/**
+	 * This test checks whether DataIntegrityViolationException is thrown when trying to update 
+	 * a new user detail object
+	 * 
+	 * 
+	 */
+	@Test(expected=DataIntegrityViolationException.class)
+	public void updateLoginParamsExceptionTest() {
+		
+		UserDetail userDetail = new UserDetail();
+		userDetail.setId("newId");
+		loginServiceImpl.updateLoginParams(userDetail);			
 	}
 
 }

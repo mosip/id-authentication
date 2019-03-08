@@ -18,9 +18,9 @@
             <Label layoutX="94.0" layoutY="34.0" styleClass="paneHeader" text="%image" />
             <AnchorPane layoutX="180.0" layoutY="460.0" styleClass="onboardProgressPane">
                <children>
-                  <Label layoutX="91.0" layoutY="31.0" text="%quality" styleClass="qualityLabel"/>
+                  <Label layoutX="91.0" layoutY="31.0" styleClass="qualityLabel" text="%quality" />
                   <Line endX="100.0" layoutX="332.0" layoutY="40.0" startX="-100.0" />
-                  <Button fx:id="takePhoto" disable="true" layoutX="520.0" layoutY="27.0" mnemonicParsing="false" onAction="#takePhoto" styleClass="documentContentButton" text="Take Photo">
+                  <Button fx:id="takePhoto" disable="true" layoutX="520.0" layoutY="27.0" mnemonicParsing="false" onAction="#takePhoto" styleClass="documentContentButton" text="%takePhoto">
                      <graphic>
                         <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -79,7 +79,7 @@
       </AnchorPane>
       <AnchorPane layoutY="627.0" styleClass="registrationFooter">
          <children>
-            <Button fx:id="saveBiometricDetailsBtn" layoutX="991.0" layoutY="4.0" onAction="#saveBiometricDetails" styleClass="contiuneButton" text="Continue">
+            <Button fx:id="saveBiometricDetailsBtn" layoutX="991.0" layoutY="4.0" onAction="#saveBiometricDetails" styleClass="contiuneButton" text="%continue">
 			 <graphic>
                   	<ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -88,7 +88,7 @@
                                     </ImageView>
                   </graphic>            
             </Button>
-            <Button fx:id="biometricPrevBtn" layoutX="124.0" layoutY="3.0" onAction="#goToPreviousPane" styleClass="backButton" text="Back">
+            <Button fx:id="biometricPrevBtn" layoutX="124.0" layoutY="3.0" onAction="#goToPreviousPane" styleClass="backButton" text="%back">
              <graphic>
                   	<ImageView fitHeight="20.0" fitWidth="27.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -107,7 +107,7 @@
                   <AnchorPane layoutX="1.0" layoutY="6.0">
                      <children>
                         <Button layoutY="2.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
-                        <Label layoutX="56.0" layoutY="5.0" text="%/registration" />
+                        <Label layoutX="76.0" layoutY="5.0" text="%/registration" />
                      </children>
                   </AnchorPane>
                </children>

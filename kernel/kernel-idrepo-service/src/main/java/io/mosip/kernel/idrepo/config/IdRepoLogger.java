@@ -12,6 +12,8 @@ import io.mosip.kernel.logger.logback.factory.Logfactory;
  */
 public final class IdRepoLogger {
 	
+	private static String uin;
+	
 	private static RollingFileAppender mosipRollingFileAppender;
 	
 	static {
@@ -25,6 +27,14 @@ public final class IdRepoLogger {
 		mosipRollingFileAppender.setMaxHistory(3);
 		mosipRollingFileAppender.setPrudent(false);
 		mosipRollingFileAppender.setTotalCap("10mb");
+	}
+
+	public static String getUin() {
+		return uin;
+	}
+
+	public static void setUin(String uin) {
+		IdRepoLogger.uin = uin;
 	}
 
 	/**

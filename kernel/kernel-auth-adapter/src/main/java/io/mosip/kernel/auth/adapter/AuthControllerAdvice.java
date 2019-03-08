@@ -46,7 +46,7 @@ public class AuthControllerAdvice implements ResponseBodyAdvice<Object> {
                                   ServerHttpRequest request,
                                   ServerHttpResponse response) {
     	if(getAuthUserDetails()!=null)
-        response.getHeaders().add("Set-Cookie:", AuthAdapterConstant.AUTH_COOOKIE_HEADER+getAuthUserDetails().getToken());
+        response.getHeaders().add(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER+getAuthUserDetails().getToken());
         return body;
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -115,7 +116,7 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId);
+					registrationId, ApiName.AUDIT);
 		}
 	}
 
@@ -161,7 +162,7 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationStatusDto.getRegistrationId());
+					registrationStatusDto.getRegistrationId(), ApiName.AUDIT);
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationStatusDto.getRegistrationId(), "RegistrationStatusServiceImpl::addRegistrationStatus()::exit");
@@ -214,7 +215,7 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationStatusDto.getRegistrationId());
+					registrationStatusDto.getRegistrationId(), ApiName.AUDIT);
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
@@ -258,7 +259,7 @@ public class RegistrationStatusServiceImpl
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.MULTIPLE_ID.toString());
+					AuditLogConstant.MULTIPLE_ID.toString(), ApiName.AUDIT);
 		}
 
 	}
@@ -305,7 +306,7 @@ public class RegistrationStatusServiceImpl
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.MULTIPLE_ID.toString());
+					AuditLogConstant.MULTIPLE_ID.toString(), ApiName.AUDIT);
 		}
 	}
 
@@ -444,42 +445,4 @@ public class RegistrationStatusServiceImpl
 		return UUID.randomUUID().toString();
 	}
 
-	
-	@Override
-	public List<RegistrationStatusDto> getById(String requestId) {
-		boolean isTransactionSuccessful = false;
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "RegistrationStatusServiceImpl::getByIds()::entry");
-		try {
-			List<String> registrationIds =new ArrayList<>();
-			registrationIds.add(requestId);
-			List<RegistrationStatusEntity> registrationStatusEntityList = registrationStatusDao.getByIds(registrationIds);
-			isTransactionSuccessful = true;
-			description ="Get list of registration status by registration id successfully";
-
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-					"", "RegistrationStatusServiceImpl::getByIds()::exit");
-			return convertEntityListToDtoListAndGetExternalStatus(registrationStatusEntityList);
-
-		} catch (DataAccessLayerException e) {
-
-			description = "DataAccessLayerException while Geting list of registration status " + "::" + e.getMessage();
-
-
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
-			throw new TablenotAccessibleException(
-					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
-		} finally {
-
-			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
-			eventName = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString()
-					: EventName.EXCEPTION.toString();
-			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
-					: EventType.SYSTEM.toString();
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.MULTIPLE_ID.toString());
-		}
-	}
-	
 }

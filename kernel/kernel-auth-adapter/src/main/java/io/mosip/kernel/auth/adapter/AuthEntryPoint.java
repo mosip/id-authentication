@@ -21,10 +21,6 @@ public class AuthEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException {
-    	if(e instanceof NonceExpiredException)
-    	{
-    		System.out.println(e.getMessage());
-    	}
         httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "UNAUTHORIZED");
     }
 }

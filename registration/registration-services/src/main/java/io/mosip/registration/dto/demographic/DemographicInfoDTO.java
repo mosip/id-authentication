@@ -12,6 +12,7 @@ import io.mosip.registration.dto.BaseDTO;
 public class DemographicInfoDTO extends BaseDTO {
 
 	/** The identity. */
+	
 	private Identity identity;
 
 	/**

@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -253,7 +254,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"PacketInfoManagerImpl::savePacketData()::exit");
@@ -313,7 +314,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					qcUserId, "PacketInfoManagerImpl::getPacketsforQCUser()::exit");
 		}
@@ -431,7 +432,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", "PacketInfoManagerImpl::saveDocument()::exit");
 
@@ -679,7 +680,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
 
@@ -734,7 +735,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
@@ -869,7 +870,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
@@ -935,7 +936,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),

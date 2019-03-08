@@ -23,6 +23,6 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            the registration center id
 	 * @return the optional of {@link RegistrationCenter}
 	 */
-	Optional<RegistrationCenter> findByRegistartionCenterIdIdAndIsActiveTrue(String id);
+	Optional<RegistrationCenter> findByRegistartionCenterIdIdAndRegistartionCenterIdLangCodeAndIsActiveTrue(String id,String langCode);
 
 }

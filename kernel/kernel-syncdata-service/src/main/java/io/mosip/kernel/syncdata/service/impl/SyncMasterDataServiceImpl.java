@@ -10,6 +10,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
+import io.mosip.kernel.syncdata.dto.ApplicantValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.ApplicationDto;
 import io.mosip.kernel.syncdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.syncdata.dto.BiometricTypeDto;
@@ -22,6 +23,7 @@ import io.mosip.kernel.syncdata.dto.DocumentTypeDto;
 import io.mosip.kernel.syncdata.dto.GenderDto;
 import io.mosip.kernel.syncdata.dto.HolidayDto;
 import io.mosip.kernel.syncdata.dto.IdTypeDto;
+import io.mosip.kernel.syncdata.dto.IndividualTypeDto;
 import io.mosip.kernel.syncdata.dto.LanguageDto;
 import io.mosip.kernel.syncdata.dto.LocationDto;
 import io.mosip.kernel.syncdata.dto.MachineDto;
@@ -119,6 +121,8 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		CompletableFuture<List<DeviceTypeDto>> deviceTypes = null;
 		CompletableFuture<List<ValidDocumentDto>> validDocumentsMapping = null;
 		CompletableFuture<List<ReasonListDto>> reasonList = null;
+		CompletableFuture<List<ApplicantValidDocumentDto>> applicantValidDocumentList = null;
+		CompletableFuture<List<IndividualTypeDto>> individualTypeList = null;
 
 		CompletableFuture<List<RegistrationCenterMachineDto>> registrationCenterMachines = null;
 		CompletableFuture<List<RegistrationCenterDeviceDto>> registrationCenterDevices = null;
@@ -157,6 +161,8 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		deviceTypes = serviceHelper.getDeviceType(machineId, lastUpdated, currentTimeStamp);
 		validDocumentsMapping = serviceHelper.getValidDocuments(lastUpdated, currentTimeStamp);
 		reasonList = serviceHelper.getReasonList(lastUpdated, currentTimeStamp);
+		applicantValidDocumentList = serviceHelper.getApplicantValidDocument(lastUpdated, currentTimeStamp);
+		individualTypeList = serviceHelper.getIndividualType(lastUpdated, currentTimeStamp);
 
 		
 		//List<RegistrationCenterMachineDto> registrationCenterMachineDto = registrationCenterMachines.get();
@@ -189,7 +195,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 				registrationCenterMachineDevices, registrationCenterUserMachines, registrationCenterUsers,
 				registrationCenterUserHistoryList, registrationCenterUserMachineMappingHistoryList,
 				registrationCenterMachineDeviceHistoryList, registrationCenterDeviceHistoryList,
-				registrationCenterMachineHistoryList).join();
+				registrationCenterMachineHistoryList,applicantValidDocumentList,individualTypeList).join();
 
 		response.setMachineDetails(machineDetails.get());
 		response.setApplications(applications.get());
@@ -217,6 +223,8 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		response.setTemplatesTypes(templateTypes.get());
 		response.setDeviceTypes(deviceTypes.get());
 		response.setValidDocumentMapping(validDocumentsMapping.get());
+		response.setApplicantValidDocuments(applicantValidDocumentList.get());
+		response.setIndividualTypes(individualTypeList.get());
 
 		response.setRegistrationCenterMachines(registrationCenterMachines.get());
 		response.setRegistrationCenterDevices(registrationCenterDevices.get());

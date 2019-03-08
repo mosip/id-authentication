@@ -18,6 +18,7 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -50,7 +51,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	private static final String USER = "MOSIP_SYSTEM";
 
 	/** The cluster url. */
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	/** The mosip event bus. */
@@ -135,7 +136,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					this.registrationId);
+					this.registrationId, ApiName.DMZAUDIT);
 
 		}
 
@@ -184,7 +185,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId);
+					registrationId, ApiName.DMZAUDIT);
 
 		}
 		return object;
@@ -260,7 +261,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId);
+					registrationId, ApiName.DMZAUDIT);
 
 		}
 		return object;

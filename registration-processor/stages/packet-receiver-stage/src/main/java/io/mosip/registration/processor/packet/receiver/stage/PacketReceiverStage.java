@@ -43,7 +43,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketReceiverStage.class);
 	
 	/** vertx Cluster Manager Url. */
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	/** server port number. */

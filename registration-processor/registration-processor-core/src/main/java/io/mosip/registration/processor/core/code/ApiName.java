@@ -80,6 +80,12 @@ public enum ApiName {
 	REGISTRATIONCENTERTIMESTAMP,
 	
 	 /** The registration connector**/
-	REGISTRATIONCONNECTOR
+	REGISTRATIONCONNECTOR,
+	
+	 /** The decryption api from DMZ**/
+	DMZCRYPTOMANAGERDECRYPT,
+
+	/** The AUDIT api from DMZ**/
+	DMZAUDIT
 
 }
