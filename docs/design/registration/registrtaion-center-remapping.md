@@ -26,20 +26,20 @@ The key **requirements** are
 	
 **Solution**
 
-1.	As part of the Master sync using the machine ID , if the response contians the string whcih relavent to the 	center re-mapping or changed then we need to make the property[**'mosip.registrtaion.centermappedchanged'**] 	value as true. in the GLOBAL_PARAM table.
+1.	As part of the Master sync using the machine ID , if the response contains the string which relevant to the 	center re-mapping or changed then we need to 	make the property[**'mosip.registrtaion.centermappedchanged'**] 	value as true. in the GLOBAL_PARAM table.
 
 2. 	Create the CenterRemappingService - with processCenterMapped() method.
  
-3. 	Once the property turns true, the application needs to verify the stauts where the current state of the 	application for the [New Registration/UIN Update/Lost UIN].
+3. 	Once the property turns true, the application needs to verify the stauts where the current state of the 	application for the [New Registration/UIN 	Update/Lost UIN].
  
 4. 	Please maintains the status flag in the session context to identify the state.
  
-5. 	If the system is online and the operator is not in middle between any of the operations [New 	Registration/UIN Update/Lost UIN] then do the below process as sequence steps.
+5. 	If the system is online and the operator is not in middle between any of the operations [New 	Registration/UIN Update/Lost UIN] then do the below process as 	sequence steps.
 		1. If the EOD is off : 
 			i.  Freeze the New Registration/UIN Update /Lost UIN.
 			ii. Please sync the user on-boarding to the server.
 			iii. Upload the packets.
-			iv. Delete the all tables data except for the AUDIT table.
+			iv. Delete the all tables data except for the AUDIT table. [For Registration Packets consider only 'PROCESSING', 'PROCESSED' and 'RE-REGISTER' status]
 		2. If the EOD is on:
 			  Please wait until the EOD process is completed. Then repeat the above procedure.
 
@@ -54,6 +54,15 @@ The key **requirements** are
 	**registration-services** --> 	**src/main/resources**.
 	
 10. All events should be logged in the AUDIT table.
+
+Packet Status from server: 
+
+		**RECEIVED**   	:	Successfully uploaded the packet to server.Virus Scan and Decryption not yet started
+		**RE-SEND**    	:	Virus Scan or Decryption failed
+		**PROCESSING**	:	After Virus Scanner and Decryption successfully completed and until the UIN Generation.
+		**PROCESSED**		:	UIN Generated successfully.
+		**RE-REGISTER**	:	If any structural validation fails.
+
 
 **Sequence and Class Diagram**
 ![Registered machine center changed  class and sequence diagram](_images/reg_center_machine_changed.png)
