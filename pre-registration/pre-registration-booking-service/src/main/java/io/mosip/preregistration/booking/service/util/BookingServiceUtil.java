@@ -4,14 +4,6 @@
  */
 package io.mosip.preregistration.booking.service.util;
 
-/**
- * This class provides the utility methods for Booking application.
- * 
- * @author Kishan Rathore
- * @author Ravi C. Balaji
- * @since 1.0.0
- *
- */
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -88,6 +80,7 @@ import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
  * @author Kishan Rathore
  * @author Jagadishwari
  * @author Ravi C. Balaji
+ * @since 1.0.0
  *
  */
 @Component
@@ -117,10 +110,10 @@ public class BookingServiceUtil {
 	@Value("${demographic.resource.url}")
 	private String preRegResourceUrl;
 
-	@Value("${timeSpanCheckForCancel}")
+	@Value("${preregistration.cancel.timespan}")
 	private long timeSpanCheckForCancel;
 
-	@Value("${timeSpanCheckForRebook}")
+	@Value("${preregistration.rebook.timespan}")
 	private long timeSpanCheckForRebook;
 
 	private Logger log = LoggerConfiguration.logConfig(BookingServiceUtil.class);

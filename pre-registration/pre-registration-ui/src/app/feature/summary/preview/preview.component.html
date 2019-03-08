@@ -205,14 +205,14 @@
       matTooltip="{{ 'helpText.preview_continue' | translate }}"
       [matTooltipDisabled]="enableContinue()"
     >
-      <button mat-button 
-            [disabled]="!enableContinue()" 
-            (click)="navigateNext()" 
+      <button mat-button
+            [disabled]="!enableContinue()"
+            (click)="navigateNext()"
             class="user-continue-btn"
             >
       {{ 'preview.action_continue' | translate }}
     </button>
     </span>
-    
+
   </mat-card>
 </div>

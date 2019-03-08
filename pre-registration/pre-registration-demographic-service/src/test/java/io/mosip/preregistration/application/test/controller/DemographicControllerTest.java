@@ -280,14 +280,14 @@ public class DemographicControllerTest {
 	@Test
 	public void getAllApplicationByDateTest() throws Exception {
 
-		String fromDate = "2018-12-06 09:49:29";
-		String toDate = "2018-12-06 12:59:29";
+		String fromDate = "2018-12-06";
+		String toDate = "2018-12-06";
 		MainListResponseDTO<String> response = new MainListResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
 		preIds.add("1234");
 		response.setResponse(preIds);
 
-		Mockito.when(preRegistrationService.getPreRegistrationByDate(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(preRegistrationService.getPreRegistrationByDate(Mockito.any(), Mockito.any()))
 				.thenReturn(response);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applications/byDateTime/")

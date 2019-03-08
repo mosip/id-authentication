@@ -1,9 +1,11 @@
 package io.mosip.preregistration.notification.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.Charset;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -55,6 +57,8 @@ public class NotificationControllerTest {
 	private NotificationDTO notificationDTO;
 
 	MainResponseDTO<NotificationDTO> responseDTO = new MainResponseDTO<>();
+	
+	MainResponseDTO<Map<String,String>> configRes = new MainResponseDTO<>();
 
 	@Before
 	public void setUp() {
@@ -101,6 +105,18 @@ String langCode="eng";
 		
 		mockMvc.perform(post("/generateQRCode").contentType(MediaType.APPLICATION_JSON)
 			.content(stringjson)).andExpect(status().isOk());
+
+	}
+	
+	
+	/**
+	 * This test method is for success getConfigTest 
+	 * @throws Exception
+	 */
+	@Test
+	public void getConfigTest() throws Exception {
+		Mockito.when(service.getConfig()).thenReturn(configRes);
+		mockMvc.perform(get("/config").contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());
 
 	}
 }

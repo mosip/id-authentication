@@ -149,7 +149,7 @@ export class PreviewComponent implements OnInit {
     // sessionStorage.setItem('newApplicant', 'true');
     // this.router.navigate(['../demographic'], { relativeTo: this.route });
     localStorage.setItem('newApplicant', 'false');
-    this.registrationService.changeMessage({ modifyUser: 'false' });
+    this.registrationService.changeMessage({ modifyUserFromPreview: 'false' });
     const url = Utils.getURL(this.router.url, 'demographic', 2);
     this.router.navigateByUrl(url);
   }

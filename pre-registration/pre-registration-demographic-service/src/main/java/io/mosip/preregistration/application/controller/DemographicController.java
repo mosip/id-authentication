@@ -4,7 +4,10 @@
  */
 package io.mosip.preregistration.application.controller;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -189,7 +192,8 @@ public class DemographicController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully retrieved"),
 			@ApiResponse(code = 400, message = "Unable to get the Pre-Registration data") })
 	public ResponseEntity<MainListResponseDTO<String>> getApplicationByDate(
-			@RequestParam(value = "from_date") String fromDate, @RequestParam(value = "to_date") String toDate) {
+			@RequestParam(value = "from_date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate fromDate,
+			@RequestParam(value = "to_date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate toDate) {
 		log.info("sessionId", "idType", "id",
 				"In pre-registration controller for fetching all application from " + fromDate + " to " + toDate);
 		return ResponseEntity.status(HttpStatus.OK)

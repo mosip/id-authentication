@@ -8,11 +8,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -50,7 +50,6 @@ import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
-import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
@@ -58,7 +57,6 @@ import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
-import io.mosip.preregistration.application.exception.InvalidDateFormatException;
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
@@ -174,8 +172,8 @@ public class DemographicServiceTest {
 
 	private Map<String, String> reqDateRange = new HashMap<>();
 
-	String fromDate = "";
-	String toDate = "";
+	LocalDate fromDate =LocalDate.now();
+	LocalDate toDate = LocalDate.now();
 	
 	JSONArray fullname;
 	LocalDateTime encryptionDateTime = DateUtils.getUTCCurrentDateTime();
@@ -250,11 +248,10 @@ public class DemographicServiceTest {
 		requestMap.put("reqTime", demographicRequestDTO.getReqTime().toString());
 		requestMap.put("request", demographicRequestDTO.getRequest().toString());
 
-		fromDate = "2018-12-06 09:49:29";
-		toDate = "2018-12-06 12:59:29";
+		
 
-		requestMap.put(RequestCodes.FROM_DATE.getCode(), fromDate);
-		requestMap.put(RequestCodes.TO_DATE.getCode(), toDate);
+	//	requestMap.put(RequestCodes.FROM_DATE.getCode(), fromDate);
+		//requestMap.put(RequestCodes.TO_DATE.getCode(), toDate);
 
 		requiredRequestMap.put("id", idUrl);
 		requiredRequestMap.put("ver", versionUrl);
@@ -296,14 +293,14 @@ public class DemographicServiceTest {
 		demographicResponseDTO.setDemographicDetails(jsonObject);
 		demographicResponseDTO.setPreRegistrationId("");
 		demographicResponseDTO.setCreatedBy("9988905444");
-		demographicResponseDTO.setCreatedDateTime(serviceUtil.getLocalDateString(times));
+		demographicResponseDTO.setCreatedDateTime(serviceUtil.getLocalDateString(LocalDateTime.now(ZoneId.of("UTC"))));
 		demographicResponseDTO.setStatusCode("Pending_Appointment");
 		createPreRegistrationDTO = new DemographicRequestDTO();
 		createPreRegistrationDTO.setDemographicDetails(jsonObject);
 		createPreRegistrationDTO.setPreRegistrationId("");
 		
 		createPreRegistrationDTO.setCreatedBy("9988905444");
-		createPreRegistrationDTO.setCreatedDateTime(serviceUtil.getLocalDateString(times));
+		createPreRegistrationDTO.setCreatedDateTime(serviceUtil.getLocalDateString(LocalDateTime.now(ZoneId.of("UTC"))));
 		demographicRequestDTO.setRequest(createPreRegistrationDTO);
 		List<DemographicResponseDTO> listOfCreatePreRegistrationDTO = new ArrayList<>();
 		listOfCreatePreRegistrationDTO.add(demographicResponseDTO);
@@ -779,8 +776,8 @@ byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
 
 	@Test
 	public void getApplicationByDateTest() {
-		String fromDate = "2018-12-06 09:49:29";
-		String toDate = "2018-12-06 12:59:29";
+		LocalDate fromDate =LocalDate.now(); 
+		LocalDate toDate =LocalDate.now();
 		MainListResponseDTO<String> response = new MainListResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
 		List<DemographicEntity> details = new ArrayList<>();
@@ -794,19 +791,15 @@ byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
 
 		String dateFormat = "yyyy-MM-dd HH:mm:ss";
 		Date myFromDate;
-		try {
-			myFromDate = DateUtils.parseToDate(URLDecoder.decode(fromDate, "UTF-8"), dateFormat);
+			//myFromDate = DateUtils.parseToDate(URLDecoder.decode(fromDate, "UTF-8"), dateFormat);
 
-			Date myToDate = DateUtils.parseToDate(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
-
-			Mockito.when(demographicRepository.findBycreateDateTimeBetween(
-					DateUtils.parseDateToLocalDateTime(myFromDate), DateUtils.parseDateToLocalDateTime(myToDate)))
+			//Date myToDate = DateUtils.parseToDate(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
+LocalDateTime fromLocaldate=fromDate.atStartOfDay();
+			
+			LocalDateTime toLocaldate=toDate.atTime(23, 59, 59);
+			Mockito.when(demographicRepository.findBycreateDateTimeBetween(fromLocaldate,toLocaldate))
 					.thenReturn(details);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} catch (java.io.UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+		
 		MainListResponseDTO<String> actualRes = preRegistrationService.getPreRegistrationByDate(fromDate, toDate);
 		assertEquals(actualRes.isStatus(), response.isStatus());
 
@@ -814,8 +807,12 @@ byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
 
 	@Test(expected = RecordNotFoundException.class)
 	public void getApplicationByDateFailureTest() {
-		String fromDate = "2018-12-06 09:49:29";
-		String toDate = "2018-12-06 12:59:29";
+		
+		LocalDate fromDate = LocalDate.now();
+		LocalDate toDate = LocalDate.now();
+		LocalDateTime fromLocaldate=fromDate.atStartOfDay();
+		
+		LocalDateTime toLocaldate=toDate.atTime(23, 59, 59);
 		MainListResponseDTO<String> response = new MainListResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
 		DemographicEntity entity = new DemographicEntity();
@@ -826,27 +823,16 @@ byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
 
 		String dateFormat = "yyyy-MM-dd HH:mm:ss";
 		Date myFromDate;
-		try {
-			myFromDate = DateUtils.parseToDate(URLDecoder.decode(fromDate, "UTF-8"), dateFormat);
 
-			Date myToDate = DateUtils.parseToDate(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
-
-			Mockito.when(demographicRepository.findBycreateDateTimeBetween(
-					DateUtils.parseDateToLocalDateTime(myFromDate), DateUtils.parseDateToLocalDateTime(myToDate)))
+			Mockito.when(demographicRepository.findBycreateDateTimeBetween(fromLocaldate,toLocaldate))
 					.thenReturn(null);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} catch (java.io.UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
 		preRegistrationService.getPreRegistrationByDate(fromDate, toDate);
 
 	}
-
-@Test(expected=InvalidDateFormatException.class)
+@Test(expected=RecordNotFoundException.class)
 public void getPreRegistrationByDateExceptionTest() {
-	String fromDate = "20-12-06 09:49:29";
-	String toDate = "2018-12-06 12:59:29";
+	LocalDate fromDate = LocalDate.now();
+	LocalDate toDate = LocalDate.now();
 	preRegistrationService.getPreRegistrationByDate(fromDate, toDate);
 }
 	/**
@@ -857,6 +843,7 @@ public void getPreRegistrationByDateExceptionTest() {
 		SystemUnsupportedEncodingException exception = new SystemUnsupportedEncodingException(
 				ErrorCodes.PRG_PAM_APP_009.name(), ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.name());
 
+		
 		MainListResponseDTO<String> response = new MainListResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
 		List<DemographicEntity> details = new ArrayList<>();
@@ -869,12 +856,11 @@ public void getPreRegistrationByDateExceptionTest() {
 		String dateFormat = "yyyy-MM-dd HH:mm:ss";
 		Date myFromDate;
 		Date myToDate;
-		myFromDate = DateUtils.parseToDate(URLDecoder.decode(fromDate, "UTF-8"), dateFormat);
+LocalDateTime fromLocaldate=fromDate.atStartOfDay();
+		
+		LocalDateTime toLocaldate=toDate.atTime(23, 59, 59);
 
-		myToDate = DateUtils.parseToDate(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
-
-		Mockito.when(demographicRepository.findBycreateDateTimeBetween(DateUtils.parseDateToLocalDateTime(myFromDate),
-				DateUtils.parseDateToLocalDateTime(myToDate))).thenThrow(exception);
+		Mockito.when(demographicRepository.findBycreateDateTimeBetween(fromLocaldate,toLocaldate)).thenThrow(exception);
 		preRegistrationService.getPreRegistrationByDate(fromDate, toDate);
 
 	}
@@ -882,12 +868,11 @@ public void getPreRegistrationByDateExceptionTest() {
 	/**
 	 * @throws Exception
 	 */
-	@Test(expected = io.mosip.kernel.core.exception.ParseException.class)
+	@Test(expected = DateParseException.class)
 	public void getBydateFailureParseCheck() throws Exception {
 		DateParseException exception = new DateParseException(ErrorCodes.PRG_PAM_APP_011.name(),
 				ErrorMessages.UNSUPPORTED_DATE_FORMAT.name());
-		String fromDate = "2018-12-06 09:49:29";
-		String toDate = "2018-12-06 12:59:29";
+		
 		MainListResponseDTO<String> response = new MainListResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
 		List<DemographicEntity> details = new ArrayList<>();
@@ -898,16 +883,14 @@ public void getPreRegistrationByDateExceptionTest() {
 		preIds.add("98746563542672");
 		response.setResponse(preIds);
 
-		String dateFormat = "yyyy-MM-dd HH:mm:ss.SSS";
-		Date myFromDate;
-		Date myToDate;
+		
+LocalDateTime fromLocaldate=fromDate.atStartOfDay();
+		
+		LocalDateTime toLocaldate=toDate.atTime(23, 59, 59);
 
-		myFromDate = DateUtils.parseToDate(URLDecoder.decode(fromDate, "UTF-0"), dateFormat);
+		
 
-		myToDate = DateUtils.parseToDate(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
-
-		Mockito.when(demographicRepository.findBycreateDateTimeBetween(DateUtils.parseDateToLocalDateTime(myFromDate),
-				DateUtils.parseDateToLocalDateTime(myToDate))).thenThrow(exception);
+		Mockito.when(demographicRepository.findBycreateDateTimeBetween(fromLocaldate,toLocaldate)).thenThrow(exception);
 		preRegistrationService.getPreRegistrationByDate(fromDate, toDate);
 
 	}

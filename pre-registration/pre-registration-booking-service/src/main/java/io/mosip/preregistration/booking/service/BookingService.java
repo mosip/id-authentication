@@ -75,10 +75,16 @@ public class BookingService {
 	BookingServiceUtil serviceUtil;
 
 	/**
-	 * Reference for ${noOfDays} from property file
+	 * Reference for ${preregistration.availability.sync} from property file
 	 */
-	@Value("${noOfDays}")
-	int noOfDays;
+	@Value("${preregistration.availability.sync}")
+	int syncDays;
+	
+	/**
+	 * Reference for ${preregistration.availability.noOfDays} from property file
+	 */
+	@Value("${preregistration.availability.noOfDays}")
+	int availabilityOffset;
 
 	@Autowired
 	private BookingDAO bookingDAO;
@@ -109,7 +115,7 @@ public class BookingService {
 		log.info("sessionId", "idType", "id", "In addAvailability method of Booking Service");
 		MainResponseDTO<String> response = new MainResponseDTO<>();
 		try {
-			LocalDate endDate = LocalDate.now().plusDays(noOfDays);
+			LocalDate endDate = LocalDate.now().plusDays(syncDays);
 			List<RegistrationCenterDto> regCenter = serviceUtil.callRegCenterDateRestService();
 			for (RegistrationCenterDto regDto : regCenter) {
 				List<String> holidaylist = serviceUtil.callGetHolidayListRestService(regDto);
@@ -138,8 +144,8 @@ public class BookingService {
 	public MainResponseDTO<AvailabilityDto> getAvailability(String regID) {
 		log.info("sessionId", "idType", "id", "In getAvailability method of Booking Service");
 		MainResponseDTO<AvailabilityDto> response = new MainResponseDTO<>();
-		LocalDate endDate = LocalDate.now().plusDays(Math.addExact(noOfDays, 2));
-		LocalDate fromDate = LocalDate.now().plusDays(2);
+		LocalDate endDate = LocalDate.now().plusDays(syncDays);
+		LocalDate fromDate = LocalDate.now().plusDays(availabilityOffset);
 		AvailabilityDto availability = new AvailabilityDto();
 		try {
 			List<LocalDate> dateList = bookingDAO.findDate(regID, fromDate, endDate);

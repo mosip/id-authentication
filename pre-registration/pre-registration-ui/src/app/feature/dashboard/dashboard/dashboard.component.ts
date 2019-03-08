@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router } from '@angular/router';
 import { MatDialog, MatCheckboxChange } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -40,7 +40,6 @@ export class DashBoardComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     public dialog: MatDialog,
     private dataStorageService: DataStorageService,
     private regService: RegistrationService,
@@ -125,7 +124,6 @@ export class DashBoardComponent implements OnInit {
     const applicant: Applicant = {
       applicationID: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.preId],
       name: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][primaryIndex]['value'],
-      // name: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname],
       appointmentDateTime: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto]
         ? this.createAppointmentDateTime(applicantResponse)
         : '-',
@@ -197,7 +195,6 @@ export class DashBoardComponent implements OnInit {
                 dialogRef = this.openDialog(message, '250px');
                 const index = this.users.indexOf(element);
                 this.users.splice(index, 1);
-                // this.dataSource._updateChangeSubscription();
               },
               error => {
                 console.log(error);
@@ -282,8 +279,6 @@ export class DashBoardComponent implements OnInit {
       response => this.onModification(response, preId),
       error => {
         console.log('error', error);
-        // this.disableModifyDataButton = false;
-        // this.fetchedDetails = true;
         return this.router.navigate(['error']);
       }
     );
@@ -298,10 +293,6 @@ export class DashBoardComponent implements OnInit {
   }
 
   onSelectUser(user: Applicant, event: MatCheckboxChange) {
-    // if (!event && user) {
-    //   this.selectedUsers.length = 0;
-    //   this.selectedUsers.push(user);
-    // } else
     if (event && event.checked) {
       this.selectedUsers.push(user);
     } else {
@@ -349,10 +340,8 @@ export class DashBoardComponent implements OnInit {
   }
 
   setUserFiles(response) {
-    // console.log('user files fetched', response);
     this.userFile = response[appConstants.RESPONSE];
     this.userFiles.push(this.userFile);
-    // console.log('user files after pushing', this.userFiles);
   }
 
   getColor(value: string) {
