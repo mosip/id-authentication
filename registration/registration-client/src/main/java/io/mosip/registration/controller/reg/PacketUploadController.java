@@ -88,7 +88,7 @@ public class PacketUploadController extends BaseController {
 		service.reset();
 		try {
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-				String packetSyncStatus = packetSync();
+				String packetSyncStatus = packetSynchService.packetSync();
 
 				auditFactory.audit(AuditEvent.UPLOAD_PACKET, Components.UPLOAD_PACKET,
 						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -125,80 +125,7 @@ public class PacketUploadController extends BaseController {
 
 	}
 
-	/**
-	 * This method is used to synch the local packets with the server
-	 * 
-	 * @throws RegBaseCheckedException
-	 * 
-	 */
-	private String packetSync() throws RegBaseCheckedException {
-		LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
-				APPLICATION_ID, "Sync the packets to the server");
-		String syncErrorStatus = "";
-		try {
-			auditFactory.audit(AuditEvent.UPLOAD_PACKET, Components.UPLOAD_PACKET,
-					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-			List<Registration> packetsToBeSynched = packetSynchService.fetchPacketsToBeSynched();
-			List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
-			List<Registration> synchedPackets = new ArrayList<>();
-			ResponseDTO responseDTO = new ResponseDTO();
-			if (!packetsToBeSynched.isEmpty()) {
-				for (Registration packetToBeSynch : packetsToBeSynched) {
-					SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
-					syncDto.setLangCode("ENG");
-					syncDto.setStatusComment(packetToBeSynch.getClientStatusCode() + " " + "-" + " "
-							+ packetToBeSynch.getClientStatusComments());
-					syncDto.setRegistrationId(packetToBeSynch.getId());
-					syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
-					syncDto.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
-					syncDtoList.add(syncDto);
-				}
-				RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
-				registrationPacketSyncDTO.setRequestTimestamp(DateUtils.getUTCCurrentDateTimeString());
-				registrationPacketSyncDTO.setSyncRegistrationDTOs(syncDtoList);
-				registrationPacketSyncDTO.setId(RegistrationConstants.PACKET_SYNC_STATUS_ID);
-				registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
-				responseDTO = packetSynchService.syncPacketsToServer(registrationPacketSyncDTO);
-			}
-			if (responseDTO != null && responseDTO.getSuccessResponseDTO() != null) {
-
-				for (Registration registration : packetsToBeSynched) {
-					String status = (String) responseDTO.getSuccessResponseDTO().getOtherAttributes()
-							.get(registration.getId());
-					if (status != null && status.equalsIgnoreCase(RegistrationConstants.SUCCESS)) {
-
-						registration.setClientStatusCode(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
-
-						if (registration.getServerStatusCode() != null && registration.getServerStatusCode()
-								.equals(RegistrationClientStatusCode.RE_REGISTER.getCode())) {
-
-							String ackFileName = registration.getAckFilename();
-							int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
-							String packetPath = ackFileName.substring(0, lastIndex);
-							File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
-							if (packet.exists() && packet.delete()) {
-								registration.setClientStatusCode(RegistrationClientStatusCode.DELETED.getCode());
-							}
-						}
-						synchedPackets.add(registration);
-					}
-				}
-				packetSynchService.updateSyncStatus(synchedPackets);
-			}
-		} catch (RegBaseCheckedException | JsonProcessingException | URISyntaxException exception) {
-			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID,
-					"Error while Synching packets to the server" + ExceptionUtils.getStackTrace(exception));
-
-			syncErrorStatus = exception.getMessage();
-
-		} catch (RegBaseUncheckedException regBaseUncheckedException) {
-			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
-					RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorMessage());
-		}
-		return syncErrorStatus;
-	}
+	
 
 	/**
 	 * This anonymous service class will do the packet upload as well as the upload

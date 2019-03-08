@@ -4,6 +4,7 @@ import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.File;
 import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -21,9 +22,14 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
+import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.AuditReferenceIdTypes;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationPacketSyncDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -44,6 +50,9 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 
 	@Autowired
 	private ServiceDelegateUtil serviceDelegateUtil;
+	
+	@Autowired
+	protected AuditFactory auditFactory;
 
 	@Value("${PACKET_SYNC_URL}")
 	private String syncUrlPath;
@@ -58,6 +67,82 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 	 * )
 	 */
 
+	/**
+	 * This method is used to synch the local packets with the server
+	 * 
+	 * @throws RegBaseCheckedException
+	 * 
+	 */
+	@Override
+	public String packetSync() throws RegBaseCheckedException {
+		LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Sync the packets to the server");
+		String syncErrorStatus = "";
+		try {
+			auditFactory.audit(AuditEvent.UPLOAD_PACKET, Components.UPLOAD_PACKET,
+					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
+			List<Registration> packetsToBeSynched = fetchPacketsToBeSynched();
+			List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
+			List<Registration> synchedPackets = new ArrayList<>();
+			ResponseDTO responseDTO = new ResponseDTO();
+			if (!packetsToBeSynched.isEmpty()) {
+				for (Registration packetToBeSynch : packetsToBeSynched) {
+					SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
+					syncDto.setLangCode("ENG");
+					syncDto.setStatusComment(packetToBeSynch.getClientStatusCode() + " " + "-" + " "
+							+ packetToBeSynch.getClientStatusComments());
+					syncDto.setRegistrationId(packetToBeSynch.getId());
+					syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
+					syncDto.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
+					syncDtoList.add(syncDto);
+				}
+				RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
+				registrationPacketSyncDTO.setRequestTimestamp(DateUtils.getUTCCurrentDateTimeString());
+				registrationPacketSyncDTO.setSyncRegistrationDTOs(syncDtoList);
+				registrationPacketSyncDTO.setId(RegistrationConstants.PACKET_SYNC_STATUS_ID);
+				registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
+				responseDTO = syncPacketsToServer(registrationPacketSyncDTO);
+			}
+			if (responseDTO != null && responseDTO.getSuccessResponseDTO() != null) {
+
+				for (Registration registration : packetsToBeSynched) {
+					String status = (String) responseDTO.getSuccessResponseDTO().getOtherAttributes()
+							.get(registration.getId());
+					if (status != null && status.equalsIgnoreCase(RegistrationConstants.SUCCESS)) {
+
+						registration.setClientStatusCode(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
+
+						if (registration.getServerStatusCode() != null && registration.getServerStatusCode()
+								.equals(RegistrationClientStatusCode.RE_REGISTER.getCode())) {
+
+							String ackFileName = registration.getAckFilename();
+							int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
+							String packetPath = ackFileName.substring(0, lastIndex);
+							File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
+							if (packet.exists() && packet.delete()) {
+								registration.setClientStatusCode(RegistrationClientStatusCode.DELETED.getCode());
+							}
+						}
+						synchedPackets.add(registration);
+					}
+				}
+				updateSyncStatus(synchedPackets);
+			}
+		} catch (RegBaseCheckedException | JsonProcessingException | URISyntaxException exception) {
+			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID,
+					"Error while Synching packets to the server" + ExceptionUtils.getStackTrace(exception));
+
+			syncErrorStatus = exception.getMessage();
+
+		} catch (RegBaseUncheckedException regBaseUncheckedException) {
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorMessage());
+		}
+		return syncErrorStatus;
+	}
+	
 	@Override
 	public List<Registration> fetchPacketsToBeSynched() {
 		LOGGER.info("REGISTRATION - FETCH_PACKETS_TO_BE_SYNCHED - PACKET_SYNC_SERVICE", APPLICATION_NAME,
