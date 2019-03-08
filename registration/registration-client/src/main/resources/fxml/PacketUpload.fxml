@@ -16,10 +16,10 @@
             <AnchorPane layoutX="2.0" layoutY="-5.0">
                <children>
                   <Button layoutY="14.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
-                  <Label layoutX="60.0" layoutY="16.0" styleClass="headerLabel" text="%/uploadpacket" />
                </children>
             </AnchorPane>
             <Label layoutX="530.0" layoutY="2.0" styleClass="mainHeader" text="%uploadpacket" />
+            <Label layoutX="81.0" layoutY="11.0" styleClass="headerLabel" text="%/uploadpacket" />
          </children>
       </AnchorPane>
       <TableView fx:id="table" layoutX="52.0" layoutY="66.0" styleClass="packetUploadTable">

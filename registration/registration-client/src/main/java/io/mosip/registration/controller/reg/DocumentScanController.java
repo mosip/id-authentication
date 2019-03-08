@@ -278,7 +278,7 @@ public class DocumentScanController extends BaseController {
 				documentVBoxes.put(docCategoryCode, documentVBox);
 
 				Button scanButton = new Button();
-				scanButton.setText("  Scan");
+				scanButton.setText(RegistrationUIConstants.SCAN);
 				scanButton.setId(docCategoryCode);
 				scanButton.getStyleClass().add("documentContentButton");
 				scanButton.setGraphic(new ImageView(new Image(
@@ -294,7 +294,7 @@ public class DocumentScanController extends BaseController {
 						Button clickedBtn = (Button) event.getSource();
 						clickedBtn.getId();
 						scanDocument(comboBox, documentVBox, documentCategory.getCode(),
-								"Please select " + documentCategory.getCode() + " Document");
+								RegistrationUIConstants.PLEASE_SELECT +" "+ documentCategory.getCode() + " "+RegistrationUIConstants.DOCUMENT);
 					}
 				});
 

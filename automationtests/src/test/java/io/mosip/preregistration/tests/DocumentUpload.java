@@ -122,7 +122,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 			//Document Upload for created application
 			Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
 			
-			System.out.println("iuiuiuiuiu:"+docUploadResponse.asString());
+			
 			//PreId of Uploaded document
 			preId=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
 			
@@ -239,7 +239,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
            * Document Upload Resource URI            
            */
           
-          preReg_URI = commonLibrary.fetch_IDRepo("preReg_CopyDocumentsURI");
+          preReg_URI = commonLibrary.fetch_IDRepo("preReg_DocumentUploadURI");
           
     }
 	@Override

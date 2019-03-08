@@ -112,7 +112,7 @@ public class JsonPathGen {
 			}
 			prop.store(output, null);
 		} catch (Exception e) {
-			System.out.println(e);
+			//logger.info(e);
 		}
 	}
 

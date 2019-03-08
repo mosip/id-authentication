@@ -66,7 +66,7 @@
             <AnchorPane layoutY="-10.0">
                <children>
                   <Button layoutY="14.0" mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
-                  <Label layoutX="60.0" layoutY="16.0" styleClass="headerLabel" text="%/reRegistration" />
+                  <Label layoutX="80.0" layoutY="16.0" styleClass="headerLabel" text="%/reRegistration" />
                </children>
             </AnchorPane>
             <Label layoutX="590.0" styleClass="mainHeader" text="%reRegistration" />

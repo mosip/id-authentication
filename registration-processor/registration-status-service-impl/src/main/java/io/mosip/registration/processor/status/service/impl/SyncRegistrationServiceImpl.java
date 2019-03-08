@@ -15,6 +15,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.idvalidator.rid.constant.RidExceptionProperty;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -123,7 +124,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 				eventType = EventType.SYSTEM.toString();
 			}
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.MULTIPLE_ID.toString());
+					AuditLogConstant.MULTIPLE_ID.toString(), ApiName.AUDIT);
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				"", "SyncRegistrationServiceImpl::sync()::exit");

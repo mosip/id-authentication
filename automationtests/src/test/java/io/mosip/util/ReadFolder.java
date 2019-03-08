@@ -6,14 +6,16 @@ import java.io.IOException;
 
 import javax.swing.plaf.metal.MetalIconFactory.FolderIcon16;
 
+import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class ReadFolder {
+	private static Logger logger = Logger.getLogger(ReadFolder.class);
 
 	public static Object[][] readFolders(String folderName, String jsonFileName,String fieldFile,String testType) throws IOException, ParseException {
-		System.out.println(folderName);
+		logger.info(folderName);
 //		String cpyFolderName="";
 //		 for(int i=0;i<folderName.length();i++){
 //		    	if(folderName.charAt(i)=='\\')

@@ -23,6 +23,7 @@ import org.springframework.dao.DataAccessException;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -105,7 +106,7 @@ public class OSIValidatorStageTest {
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
-				EventType.BUSINESS.toString(), "1234testcase");
+				EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
 
 		dto.setRid("reg1234");
 		registrationStatusDto.setRegistrationId("reg1234");
