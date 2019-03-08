@@ -181,11 +181,18 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	/** The Constant INDIVIDUAL_BIOMETRICS. */
 	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 
+	private static final String RESOURCE = "src/main/resources/";
+
+	private static final String APPLICANT_PHOTO = "ApplicantPhoto.png";
+
+	private static final String QRCODE_PHOTO = "QrCode.png";
+
 	/** The cbeffutil. */
 	@Autowired
 	private CbeffUtil cbeffutil;
 
 	/*
+	 * 
 	 * (non-Javadoc)
 	 * 
 	 * @see
@@ -248,13 +255,18 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 			InputStream pdfStream = getpdfStream(pdf);
 			byteMap.put(UIN_CARD_PDF, IOUtils.toByteArray(pdfStream));
+			pdfStream.close();
 
 			byte[] textFileByte = createTextFile();
 			byteMap.put(UIN_TEXT_FILE, textFileByte);
 
+			byte[] uinbyte = attributes.get(UINCardConstant.UIN).toString().getBytes();
+			byteMap.put(UIN, uinbyte);
+
 			isTransactionSuccessful = true;
 
 		} catch (QrcodeGenerationException e) {
+			description = "Error while QR Code Generation";
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					idValue, PlatformErrorMessages.RPR_PRT_QRCODE_NOT_GENERATED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
@@ -262,6 +274,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 		} catch (UINNotFoundInDatabase e) {
+			description = "UIN not found in database for id" + idValue;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					idValue, PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
@@ -269,12 +282,14 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 		} catch (TemplateProcessingFailureException e) {
+			description = "Error while Template Processing";
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					idValue, PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw new TemplateProcessingFailureException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
 
 		} catch (PDFGeneratorException e) {
+			description = "Error while pdf generation";
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					idValue, PlatformErrorMessages.RPR_PRT_PDF_NOT_GENERATED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
@@ -283,6 +298,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 		} catch (ApisResourceAccessException | IOException | ParseException
 				| io.mosip.kernel.core.exception.IOException e) {
+			description = "Internal error occured while processing packet id" + idValue;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					idValue, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
@@ -319,7 +335,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	}
 
 	private InputStream getpdfStream(ByteArrayOutputStream pdf) {
-		File pdfFile = new File(attributes.get(UINCardConstant.UIN).toString() + ".pdf");
+		File pdfFile = new File(RESOURCE + attributes.get(UINCardConstant.UIN).toString() + ".pdf");
 		InputStream fileStream = null;
 		try (FileOutputStream op = new FileOutputStream(pdfFile);) {
 			op.write(pdf.toByteArray());
@@ -397,7 +413,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 		jsonDto.setRequest(request);
 
-		File jsonText = new File(attributes.get(UINCardConstant.UIN).toString() + ".txt");
+		File jsonText = new File(RESOURCE + attributes.get(UINCardConstant.UIN).toString() + ".txt");
 
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
@@ -405,6 +421,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 		InputStream fileStream = new FileInputStream(jsonText);
 		jsonTextFileBytes = IOUtils.toByteArray(fileStream);
+		fileStream.close();
 
 		return jsonTextFileBytes;
 	}
@@ -425,7 +442,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		byte[] qrCodeBytes = null;
 		qrCodeBytes = qrCodeGenerator.generateQrCode(qrString.toString(), QrVersion.V30);
 		if (qrCodeBytes != null) {
-			File qrCode = new File("QrCode.png");
+			File qrCode = new File(RESOURCE + QRCODE_PHOTO);
 			FileUtils.writeByteArrayToFile(qrCode, qrCodeBytes);
 			isQRCodeSet = true;
 		}
@@ -494,7 +511,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 				continue;
 			}
 
-			File applicantPhoto = new File("ApplicantPhoto.png");
+			File applicantPhoto = new File(RESOURCE + APPLICANT_PHOTO);
 			FileUtils.writeByteArrayToFile(applicantPhoto, facebyte);
 			isPhotoSet = true;
 		}

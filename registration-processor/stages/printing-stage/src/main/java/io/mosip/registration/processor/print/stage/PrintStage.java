@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -69,6 +70,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 	/** The Constant UIN_TEXT_FILE. */
 	private static final String UIN_TEXT_FILE = "textFile";
+	
+	private static final String RESOURCES = "src/main/resources/";
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PrintStage.class);
@@ -214,7 +217,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 				object.setIsValid(Boolean.FALSE);
 			}
-
+			
+			fileCleanup(documentBytesMap.get("UIN"));
+			
 		} catch (PDFGeneratorException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
@@ -258,6 +263,14 @@ public class PrintStage extends MosipVerticleAPIManager {
 		}
 
 		return object;
+	}
+
+	private void fileCleanup(byte[] bs) throws IOException {
+		String uin = new String(bs);
+		if(FileUtils.getFile(RESOURCES + uin + ".txt").exists())
+			FileUtils.forceDelete(FileUtils.getFile(RESOURCES + uin + ".txt"));
+		if(FileUtils.getFile(RESOURCES + uin + ".pdf").exists())
+			FileUtils.forceDelete(FileUtils.getFile(RESOURCES + uin + ".pdf"));
 	}
 
 	/**
