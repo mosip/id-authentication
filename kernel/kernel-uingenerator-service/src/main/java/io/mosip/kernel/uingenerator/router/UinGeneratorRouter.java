@@ -17,12 +17,16 @@ import io.mosip.kernel.uingenerator.exception.UinNotFoundException;
 import io.mosip.kernel.uingenerator.service.UinGeneratorService;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.BodyHandler;
 
 /**
  * Router for vertx server
  * 
  * @author Dharmesh Khandelwal
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
@@ -48,26 +52,68 @@ public class UinGeneratorRouter {
 	 *            vertx
 	 * @return Router
 	 */
+
 	public Router createRouter(Vertx vertx) {
 		Router router = Router.router(vertx);
-		router.get(environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + UinGeneratorConstant.V1_0_UIN)
-				.handler(routingContext -> {
-					UinResponseDto uin = new UinResponseDto();
-					try {
-						uin = uinGeneratorService.getUin();
-						routingContext.response().setStatusCode(200).end(Json.encode(uin));
-					} catch (UinNotFoundException e) {
-						ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
-								UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
-						ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
-						errorResponse.getErrors().add(error);
-						errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
-						routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
-					} finally {
-						checkAndGenerateUins(vertx);
-					}
-				});
+
+		router.get(environment.getProperty(UinGeneratorConstant.ISSUE_UIN_PATH) + UinGeneratorConstant.V1_0)
+				.handler(this::getRouter);
+
+		router.route().handler(BodyHandler.create());
+		router.put(environment.getProperty(UinGeneratorConstant.UPDATE_UIN_STATUS_PATH)).handler(this::updateRouter);
+
+		checkAndGenerateUins(vertx);
 		return router;
+	}
+
+	/**
+	 * get method to get one UIN from Database
+	 * 
+	 * @param vertx
+	 *            vertx
+	 * @return Router
+	 */
+	private void getRouter(RoutingContext routingContext) {
+		UinResponseDto uin = new UinResponseDto();
+		try {
+			uin = uinGeneratorService.getUin();
+			routingContext.response().setStatusCode(200).end(Json.encode(uin));
+		} catch (UinNotFoundException e) {
+			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
+					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
+			ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+			errorResponse.getErrors().add(error);
+			errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+			routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
+		}
+	}
+
+	/**
+	 * Creates router for status update vertricle
+	 * 
+	 * @param vertx
+	 *            vertx
+	 * @return Router
+	 */
+	private void updateRouter(RoutingContext routingContext) {
+		JsonObject uin = routingContext.getBodyAsJson();
+		UinResponseDto uinresponse = new UinResponseDto();
+		if (uin == null) {
+			routingContext.response().setStatusCode(400).end();
+			return;
+		}
+		try {
+			uinresponse = uinGeneratorService.updateUinStatus(uin);
+			routingContext.response().setStatusCode(200).end(Json.encode(uinresponse));
+		} catch (UinNotFoundException e) {
+			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
+					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
+			ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+			errorResponse.getErrors().add(error);
+			errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+			routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
+		}
+
 	}
 
 	/**

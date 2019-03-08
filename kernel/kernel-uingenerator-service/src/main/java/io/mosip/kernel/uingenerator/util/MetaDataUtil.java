@@ -12,6 +12,7 @@ import io.mosip.kernel.uingenerator.entity.BaseEntity;
  * Utility class for uingenerator
  * 
  * @author Dharmesh Khandelwal
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
@@ -33,7 +34,7 @@ public class MetaDataUtil {
 		entity.setIsDeleted(false);
 		return entity;
 	}
-	
+
 	public <T extends BaseEntity> T setMetaDataUpdate(T entity) {
 		String contextUser = UinGeneratorConstant.DEFAULTADMIN_MOSIP_IO;
 		LocalDateTime time = LocalDateTime.now(ZoneId.of(UinGeneratorConstant.UTC));

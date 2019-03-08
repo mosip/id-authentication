@@ -14,9 +14,12 @@ import io.mosip.kernel.uingenerator.exception.UinNotFoundException;
 import io.mosip.kernel.uingenerator.repository.UinRepository;
 import io.mosip.kernel.uingenerator.service.UinGeneratorService;
 import io.mosip.kernel.uingenerator.util.MetaDataUtil;
+import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonObject;
 
 /**
  * @author Dharmesh Khandelwal
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
@@ -28,13 +31,12 @@ public class UinGeneratorServiceImpl implements UinGeneratorService {
 	 */
 	@Autowired
 	UinRepository uinRepository;
-	
+
 	/**
 	 * instance of {@link MetaDataUtil}
 	 */
 	@Autowired
 	private MetaDataUtil metaDataUtil;
-	
 
 	/*
 	 * (non-Javadoc)
@@ -44,16 +46,31 @@ public class UinGeneratorServiceImpl implements UinGeneratorService {
 	@Override
 	public UinResponseDto getUin() {
 		UinResponseDto uinResponseDto = new UinResponseDto();
-		//UinEntity uinBean = uinRepository.findFirstByUsedIsFalse();
-		//UinEntity uinBean = uinRepository.findFirstByStatus("UNUSED");
 		UinEntity uinBean = uinRepository.findFirstByStatus(UinGeneratorConstant.UNUSED);
 		if (uinBean != null) {
-			//uinBean.setUsed(true);
-			//uinBean.setStatus("ISSUED");
-			uinBean.setStatus(UinGeneratorConstant.ISSUED );
+			uinBean.setStatus(UinGeneratorConstant.ISSUED);
 			metaDataUtil.setMetaDataUpdate(uinBean);
 			uinRepository.save(uinBean);
 			uinResponseDto.setUin(uinBean.getUin());
+		} else {
+			throw new UinNotFoundException(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
+					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
+		}
+		return uinResponseDto;
+	}
+
+	@Override
+	public UinResponseDto updateUinStatus(JsonObject uin) {
+		System.out.println("======updateUinStatus==== in service");
+		UinResponseDto uinResponseDto = new UinResponseDto();
+		final UinEntity uinEntity = Json.decodeValue(uin.toString(), UinEntity.class);
+		System.out.println("====uinEntity====" + uinEntity);
+		if (uinEntity != null) {
+			metaDataUtil.setMetaData(uinEntity);
+			uinEntity.setStatus(UinGeneratorConstant.ASSIGNED);
+			metaDataUtil.setMetaDataUpdate(uinEntity);
+			uinRepository.save(uinEntity);
+			uinResponseDto.setUin(uinEntity.getUin());
 		} else {
 			throw new UinNotFoundException(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());

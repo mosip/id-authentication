@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
  * Entity class for uin bean
  * 
  * @author Dharmesh Khandelwal
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
@@ -36,7 +37,7 @@ public class UinEntity extends BaseEntity {
 	/**
 	 * Field whether this uin is used
 	 */
-	//@Column(name = "is_used")
+	// @Column(name = "is_used")
 	@Column(name = "uin_status", nullable = false, length = 16)
 	private String status;
 
