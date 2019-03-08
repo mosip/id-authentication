@@ -134,7 +134,23 @@ public enum IdAuthenticationErrorConstants {
 	DEMO_MISMATCH("IDA-DEA-027","Demographic data %s did not match"),
 	
 	//Public key Expired
-	MOSIP_PUBLICKEYEXP("IDA-MPA-005","MOSIP Public Key Expired");
+	MOSIP_PUBLICKEYEXP("IDA-MPA-005","MOSIP Public Key Expired"),
+	
+	//LICENSE key Expired
+	MISP_LICENSEKEYEXP("IDA-MPA-016","License key of MISP has expired"),
+	
+	MISP_LKNOTREGISTER("IDA-MPA-015","License key does not belong to a registered MISP"),
+	
+	MISP_LKINACTIVE("IDA-MPA-020","License key of MISP is suspended"),
+	
+	PARTNER_NOTREGISTERED("IDA-MPA-017","Partner is not registered"),
+	
+	PARTNER_NOTACTIVE("IDA-MPA-021","Partner status is not active");
+	
+	/*PARTNER_NOTREGISTERED("IDA-MPA-017","Partner is not registered"),
+	
+	PARTNER_NOTREGISTERED("IDA-MPA-017",""),
+	*/
 
 	private final String errorCode;
 	private final String errorMessage;

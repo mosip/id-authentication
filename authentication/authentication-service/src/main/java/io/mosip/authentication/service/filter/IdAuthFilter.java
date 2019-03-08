@@ -4,8 +4,11 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import com.jayway.jsonpath.JsonPath;
+
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The Class IdAuthFilter.
@@ -64,6 +67,15 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
 		return true;
+	}
+	
+	private void licenseKeyMISPMapping(String licenseKey,String mispId) throws IdAuthenticationAppException {
+		String licensekeyMappingJson=env.getProperty("licensekey.mispmapping."+licenseKey+"."+mispId);
+		String expiryDt = JsonPath.read(licensekeyMappingJson, "expiryDt");
+		if(DateUtils.convertUTCToLocalDateTime(expiryDt).isBefore(DateUtils.getUTCCurrentDateTime())){
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISP_LICENSEKEYEXP);
+		}
+		
 	}
 
 }
