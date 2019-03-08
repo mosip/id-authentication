@@ -27,7 +27,6 @@
 				<class name="io.mosip.kernel.tests.FetchHolidays" />
 				<class name="io.mosip.kernel.tests.FetchIDlist" />
 				<class name="io.mosip.kernel.tests.FetchLocationHierarchy" />
-				<class name="io.mosip.kernel.tests.FetchMachineByIdLang" />
      			<class name="io.mosip.kernel.tests.FetchMachineHistory" />
 				<class name="io.mosip.kernel.tests.FetchRegCent" />		        
 				<class name="io.mosip.kernel.tests.FetchRegCentHistory" />
