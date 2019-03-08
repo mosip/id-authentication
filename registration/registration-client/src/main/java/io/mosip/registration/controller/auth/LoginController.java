@@ -214,7 +214,7 @@ public class LoginController extends BaseController implements Initializable {
 
 		ResponseDTO responseDTO = getSyncConfigData();
 
-		if (responseDTO.getSuccessResponseDTO() != null) {
+		if (responseDTO.getSuccessResponseDTO() == null) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SYNC_CONFIG_DATA_FAILURE);
 		} else {
 
