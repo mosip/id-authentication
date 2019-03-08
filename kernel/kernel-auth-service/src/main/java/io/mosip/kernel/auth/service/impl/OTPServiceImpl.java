@@ -82,11 +82,11 @@ public class OTPServiceImpl implements OTPService {
 		}
 		if (otpEmailSendResponseDto != null) {
 			authNResponseDto = new AuthNResponseDto();
-			authNResponseDto.setMessage(otpEmailSendResponseDto.getMessage());
+			authNResponseDto.setMessage(otpGenerateResponseDto.getOtp());
 		}
 		if (otpSmsSendResponseDto != null) {
 			authNResponseDto = new AuthNResponseDto();
-			authNResponseDto.setMessage(otpSmsSendResponseDto.getMessage());
+			authNResponseDto.setMessage(otpGenerateResponseDto.getOtp());
 		}
 		return authNResponseDto;
 	}
@@ -190,8 +190,7 @@ public class OTPServiceImpl implements OTPService {
 		responseBody = response.getBody();
 		}catch (HttpClientErrorException | HttpServerErrorException e) {
 			String message = e.getResponseBodyAsString();
-			System.out.println(message);
-		
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),message);
 		}
 		List<ServiceError> validationErrorsList=null;
 		try {
