@@ -1577,7 +1577,9 @@ public class MasterDataServiceTest {
 
 	@Test
 	public void getStatusOfWorkingDayRejectedTest() throws Exception {
-		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any(), Mockito.any()))
+		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.any(), Mockito.anyString()))
+				.thenReturn(registrationCenter);
+		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
 				.thenReturn(true);
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
 				.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-12T17:59:59.999Z");
@@ -1588,18 +1590,21 @@ public class MasterDataServiceTest {
 
 	@Test
 	public void getStatusOfWorkingDayTest() throws Exception {
-		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any(), Mockito.any()))
+		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.any(), Mockito.anyString()))
+				.thenReturn(registrationCenter);
+		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
 				.thenReturn(false);
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
 				.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-12T17:59:59.999Z");
 
 		Assert.assertEquals(MasterDataConstant.VALID, resgistrationCenterStatusResponseDto.getStatus());
-
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getStatusOfWorkingHoursServiceExceptionTest() throws Exception {
-		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any(), Mockito.any()))
+		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.any(), Mockito.anyString()))
+				.thenReturn(registrationCenter);
+		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-12T17:59:59.999Z");
 
@@ -1607,10 +1612,21 @@ public class MasterDataServiceTest {
 
 	@Test(expected = RequestException.class)
 	public void invalidDateFormatTest() throws Exception {
-		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any(), Mockito.any()))
+		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.any(), Mockito.anyString()))
+				.thenReturn(registrationCenter);
+		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
 				.thenReturn(false);
-
 		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-1217:59:59.999Z");
+
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void getStatusOfWorkingHoursDataNotFoundExceptionTest() throws Exception {
+		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
+				.thenReturn(false);
+		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString())).thenReturn(null);
+
+		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-12T17:59:59.999Z");
 
 	}
 
