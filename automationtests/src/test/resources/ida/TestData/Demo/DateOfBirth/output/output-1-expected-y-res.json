@@ -10,5 +10,5 @@
     "bioInfos": [],
     "usageData": "0x0200000002000000"
   },
-  "ver": "1.0"
+  "ver": "$version$"
 }

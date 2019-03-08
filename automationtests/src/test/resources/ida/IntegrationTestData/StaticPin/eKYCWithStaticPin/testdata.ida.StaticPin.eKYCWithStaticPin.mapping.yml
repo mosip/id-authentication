@@ -44,7 +44,6 @@ testdata:
       output.1.response.y.txnID: $input.staticPin-auth-data:StaticPinAuthReq.txnID$
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.response: '$DECODE$->output-2-expected-decoded-res.json'
-      output.1.response.y.ver: 1.0
     output.output-2-expected-decoded-res:
       output.2.res.auth: '$DECODE$->output-3-expected-decoded-auth-res.json'
       output.2.res.kyc: '$DECODE$->output-4-expected-decoded-kyc-res.json'

@@ -32,7 +32,7 @@ testdata:
       otpGenReq.txnID: $RANDOM:N:10$
       otpGenReq.tspID: TSP00001
     input.otp-auth-request:
-      otpAuthReq.idvId: 1234567890
+      otpAuthReq.idvId: $RANDOM:N:10$
       otpAuthReq.txnID: $input.otp-generate:otpGenReq.txnID$
       otpAuthReq.tspID: $input.otp-generate:otpGenReq.tspID$
       otpAuthReq.reqTime: $TIMESTAMP$

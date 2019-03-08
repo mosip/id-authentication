@@ -20,5 +20,5 @@
   "reqHmac": "string",
   "reqTime": "2019-01-29T10:00:17.078+05:30",
   "txnID": "1234567890",
-  "ver": "1.0"
+  "ver": "$version$"
 }

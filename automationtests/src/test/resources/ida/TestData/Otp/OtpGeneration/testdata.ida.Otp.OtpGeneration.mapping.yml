@@ -12,7 +12,6 @@ testdata:
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.y.res.maskedEmail: $REGEXP:XX.*XX.*$
       output.1.y.res.maskedMobile: $IGNORE$
-      output.1.n.res.ver: 1.0
       
   Otp_generate_for_valid_uin_verify_mask_mob_num_smoke_Pos:
     input.otp-generate-request:

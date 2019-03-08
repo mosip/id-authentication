@@ -12,4 +12,3 @@ testdata:
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.txnID$
       output.1.y.res.maskedEmail: $REGEXP:XX.*$
       output.1.y.res.maskedMobile: $REGEXP:XX.*XX.*$
-      output.1.n.res.ver: 1.0

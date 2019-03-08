@@ -5,5 +5,5 @@
   "maskedMobile": null,
   "maskedEmail": "XXvXXnXXhX@gmail.com",
   "txnID": "7404012868",
-  "ver": "1.0"
+  "ver": "$version$"
 }

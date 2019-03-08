@@ -9,5 +9,5 @@
 		"matchInfos": [],
 		"bioInfos": []
 	},
-	"ver": "1.0"
+	"ver": "$version$"
 }

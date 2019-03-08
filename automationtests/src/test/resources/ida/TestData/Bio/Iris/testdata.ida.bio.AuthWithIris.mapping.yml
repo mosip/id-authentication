@@ -237,8 +237,8 @@ testdata:
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: N
       output.1.response.n.err.resTime: $TIMESTAMP$
-      output.1.response.n.err.errorMessage: Invalid bioType - null
-      output.1.response.n.err.errorCode: IDA-BIA-013
+      output.1.response.n.err.errorMessage: Missing Input Parameter - biotype
+      output.1.response.n.err.errorCode: IDA-IDV-003
       #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
       
   Invalid_Null_BioType:   
@@ -255,8 +255,8 @@ testdata:
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: N
       output.1.response.n.err.resTime: $TIMESTAMP$
-      output.1.response.n.err.errorMessage: Invalid bioType -
-      output.1.response.n.err.errorCode: IDA-BIA-013
+      output.1.response.n.err.errorMessage: Missing Input Parameter - biotype
+      output.1.response.n.err.errorCode: IDA-IDV-003
       #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
       
   Invalid_BioType:   
@@ -399,10 +399,10 @@ testdata:
       output.1.response.n.err.errorCode: IDA-MLC-008
       #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
       
-  Invalid_Null_Bio_AuthType: 
+  Invalid_Null_Bio_AuthType:   
     input.bio-auth-request:
       bioAuthReq.idvId: $UIN$
-      bbioAuthReq.tspID: REF01
+      bioAuthReq.tspID: REF01
       bioAuthReq.reqTime: $TIMESTAMP$
       bioAuthReq.bio: ''
       bioAuthReq.txnID: $RANDOM:N:10$  
@@ -612,7 +612,7 @@ testdata:
       bioAuthReq.idvId: $UIN:WITH:EVEN$
       bioAuthReq.tspID: REF01
       bioAuthReq.reqTime: $TIMESTAMP$   
-      bioAuthReq.bioType: fgerImg
+      bioAuthReq.bioType: fgrImg
       bioAuthReq.txnID: $RANDOM:N:10$  
     input.identity-encrypt-data:
       identityReq.rightEye: $REMOVE$
@@ -621,7 +621,7 @@ testdata:
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: N
       output.1.response.n.err.resTime: $TIMESTAMP$
-      output.1.response.n.err.errorMessage: Invalid bioType - fgerImg
+      output.1.response.n.err.errorMessage: Invalid bioType - fgrImg
       output.1.response.n.err.errorCode: IDA-BIA-013
       #output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
       

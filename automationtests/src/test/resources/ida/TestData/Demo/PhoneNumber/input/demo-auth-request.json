@@ -16,5 +16,5 @@
   "reqTime": "2019-01-31T10:00:23.027+05:30",
   "request": "8J8HTwBoLudNF6orAyHNKv6GAsn1j2IZR4ZfIPhON2YbLpmwSpOKhPE2FPgwEax76XBSgepzjONjBBMyRAYgalfmtRjWz8VHWLkDm9-ji6w",
   "txnID": "1234567890",
-  "ver": "1.0"
+  "ver": "$version$"
 }

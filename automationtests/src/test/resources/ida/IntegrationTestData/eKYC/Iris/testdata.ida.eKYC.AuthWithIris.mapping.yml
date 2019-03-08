@@ -158,7 +158,7 @@ testdata:
       
   Invalid_econsreq:
     input.bio-auth-data:
-      bioAuthReq.idvId: $UIN:WITH:EVEN$
+      bioAuthReq.idvId: $UIN$
       bioAuthReq.tspID: $RANDOM:N:10$
       bioAuthReq.reqTime: $TIMESTAMP$   
       bioAuthReq.txnID: $RANDOM:N:10$
