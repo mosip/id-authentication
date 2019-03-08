@@ -86,10 +86,6 @@ public class Precondtion {
 					PropertyUtils.setProperty(jsonObj, getFieldHierarchy(propFileName).getProperty(map.getKey()),
 							map.getValue());
 			}
-			/*
-			 * if(jsonObj.toString().contains("ver"))
-			 * PropertyUtils.setProperty(jsonObj,"ver",RunConfig.getAuthVersion());
-			 */
 			mapper.writeValue(new FileOutputStream(outputFilePath), jsonObj);
 			String outputJson = new String(Files.readAllBytes(Paths.get(outputFilePath)), StandardCharsets.UTF_8);
 			// Replacing the version in request
