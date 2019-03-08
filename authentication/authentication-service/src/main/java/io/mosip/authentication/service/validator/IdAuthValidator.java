@@ -46,9 +46,6 @@ public abstract class IdAuthValidator implements Validator {
 	/** The Constant VALIDATE. */
 	private static final String VALIDATE = "VALIDATE";
 
-	/** The Constant ID_AUTH_VALIDATOR. */
-	private static final String ID_AUTH_VALIDATOR = "ID_AUTH_VALIDATOR";
-
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
@@ -94,8 +91,9 @@ public abstract class IdAuthValidator implements Validator {
 	 *            the errors
 	 */
 	public void validateId(String id, Errors errors) {
+		//TODO check id based on the request and add validation for version.
 		if (Objects.isNull(id) || id.isEmpty()) {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + " - id");
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + " - id");
 			errors.rejectValue(ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
@@ -118,7 +116,7 @@ public abstract class IdAuthValidator implements Validator {
 	 */
 	public void validateIdvId(String id, String idType, Errors errors, String idFieldName) {
 		if (Objects.isNull(id) || id.isEmpty()) {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID);
 			errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { REQUEST }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else {
@@ -136,11 +134,11 @@ public abstract class IdAuthValidator implements Validator {
 	 */
 	protected void validateTxnId(String txnID, Errors errors) {
 		if (Objects.isNull(txnID)) {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + TXN_ID);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + TXN_ID);
 			errors.rejectValue(TXN_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { TXN_ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else if (!A_Z0_9_10.matcher(txnID).matches()) {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE,
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"INVALID_INPUT_PARAMETER - txnID - value -> " + txnID);
 			errors.rejectValue(TXN_ID, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { TXN_ID }, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
@@ -158,7 +156,7 @@ public abstract class IdAuthValidator implements Validator {
 	protected void validateReqTime(String reqTime, Errors errors) {
 
 		if (Objects.isNull(reqTime)) {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + REQ_TIME);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + REQ_TIME);
 			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { REQ_TIME },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
@@ -181,7 +179,7 @@ public abstract class IdAuthValidator implements Validator {
 		try {
 			reqDateAndTime = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
 		} catch (ParseException | java.text.ParseException e) {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE,
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"ParseException : Invalid Date\n" + ExceptionUtils.getStackTrace(e));
 			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { REQ_TIME },
@@ -189,7 +187,7 @@ public abstract class IdAuthValidator implements Validator {
 		}
 
 		if (reqDateAndTime != null && DateUtils.after(reqDateAndTime, new Date())) {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "Invalid Date");
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Invalid Date");
 			errors.rejectValue(REQ_TIME,
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorCode(),
 					new Object[] { env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Integer.class) },
@@ -209,7 +207,7 @@ public abstract class IdAuthValidator implements Validator {
 	 */
 	private void validateIdtypeUinVid(String id, String idType, Errors errors, String idFieldName) {
 		if (Objects.isNull(idType)) {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID_TYPE);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID_TYPE);
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { REQUEST },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
@@ -217,7 +215,7 @@ public abstract class IdAuthValidator implements Validator {
 			try {
 				uinValidator.validateId(id);
 			} catch (InvalidIDException e) {
-				mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "InvalidIDException - " + e);
+				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "InvalidIDException - " + e);
 				errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_UIN.getErrorMessage());
 
@@ -226,12 +224,12 @@ public abstract class IdAuthValidator implements Validator {
 			try {
 				vidValidator.validateId(id);
 			} catch (InvalidIDException e) {
-				mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "InvalidIDException - " + e);
+				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "InvalidIDException - " + e);
 				errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.INVALID_VID.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_VID.getErrorMessage());
 			}
 		} else {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "INCORRECT_IDTYPE - " + idType);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "INCORRECT_IDTYPE - " + idType);
 			errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { IDV_ID_TYPE },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
@@ -248,7 +246,7 @@ public abstract class IdAuthValidator implements Validator {
 	 */
 	protected void validateTspId(String tspID, Errors errors) {
 		if (Objects.isNull(tspID)) {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + PARTNER_ID);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + PARTNER_ID);
 			errors.rejectValue(PARTNER_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { PARTNER_ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}

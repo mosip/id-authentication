@@ -42,6 +42,8 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 @Component
 public class KeyManager {
 
+	private static final String SESSION_ID = "SESSION_ID";
+
 	/** The Constant SESSION_KEY. */
 	private static final String SESSION_KEY = "sessionKey";
 
@@ -95,7 +97,7 @@ public class KeyManager {
 		try {
 			String tspId = (String) requestBody.get(TSP_ID);
 			if (Objects.isNull(tspId) || tspId.isEmpty()) {
-				logger.error("NA", "NA", IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+				logger.error(SESSION_ID, this.getClass().getSimpleName(), IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				throw new IdAuthenticationAppException(
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
@@ -127,10 +129,10 @@ public class KeyManager {
 							StandardCharsets.UTF_8);
 					logger.info("NA", "NA", "NA", "cryptomanagerResponseDto " + decryptedData);
 				} catch (RestServiceException e) {
-					logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
+					logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.SERVER_ERROR);
 				} catch (IDDataValidationException e) {
-					logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
+					logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
 				}
 
@@ -138,7 +140,7 @@ public class KeyManager {
 				});
 			}
 		} catch (IOException e) {
-			logger.error("NA", "NA", "", e.getMessage());
+			logger.error(SESSION_ID, this.getClass().getSimpleName(), "requestData", e.getMessage());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 		}

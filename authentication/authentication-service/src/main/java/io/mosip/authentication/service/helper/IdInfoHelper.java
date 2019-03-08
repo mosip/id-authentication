@@ -877,7 +877,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * @param authRequestDTO the auth request DTO
 	 * @return the uin or vid
 	 */
-	public static Optional<String> getUinOrVid(AuthRequestDTO authRequestDTO) {
+	public  Optional<String> getUinOrVid(AuthRequestDTO authRequestDTO) {
 		Optional<String> uin = Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
 				.map(IdentityDTO::getUin);
 		Optional<String> vid = Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
@@ -896,7 +896,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * @param authRequestDTO the auth request DTO
 	 * @return the uin or vid type
 	 */
-	public static IdType getUinOrVidType(AuthRequestDTO authRequestDTO) {
+	public IdType getUinOrVidType(AuthRequestDTO authRequestDTO) {
 		Optional<String> uin = Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
 				.map(IdentityDTO::getUin);
 		Optional<String> vid = Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)

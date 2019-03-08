@@ -116,14 +116,15 @@ public enum BioAuthType implements AuthType {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
-			Map<String, Object> valueMap = new HashMap<>();
+			Map<String, Object> valueMap = new HashMap<>(); 
+			IdInfoHelper idInfoHelper=null;
 			authRequestDTO.getBioMetadata().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
 						BiFunction<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
 								.getIrisProvider(bioinfovalue)::matchMultiImage;// TODO add provider
 						valueMap.put(IrisProvider.class.getSimpleName(), func);
 					});
-			valueMap.put("idvid",IdInfoHelper.getUinOrVid(authRequestDTO));
+			valueMap.put("idvid",idInfoHelper.getUinOrVid(authRequestDTO));
 			return valueMap;
 		}
 
@@ -152,13 +153,14 @@ public enum BioAuthType implements AuthType {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
 			Map<String, Object> valueMap = new HashMap<>();
+			IdInfoHelper idInfoHelper=null;
 			authRequestDTO.getBioMetadata().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
 						BiFunction<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
 								.getIrisProvider(bioinfovalue)::matchImage;// TODO add provider
 						valueMap.put(IrisProvider.class.getSimpleName(), func);
 					});
-			valueMap.put("idvid", IdInfoHelper.getUinOrVid(authRequestDTO));
+			valueMap.put("idvid", idInfoHelper.getUinOrVid(authRequestDTO));
 			return valueMap;
 		}
 

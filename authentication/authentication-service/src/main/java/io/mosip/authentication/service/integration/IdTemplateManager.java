@@ -34,6 +34,8 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 @Component
 public class IdTemplateManager {
 
+	private static final String SESSION_ID = "SESSION_ID";
+
 	private static final String NOTIFICATION_LANGUAGE_SUPPORT = "notification.language.support";
 
 	/** Class path. */
@@ -154,7 +156,7 @@ public class IdTemplateManager {
 			Objects.requireNonNull(template);
 			return pdfGenerator.generate(new ByteArrayInputStream(template.getBytes()));
 		} catch (IOException e) {
-			logger.error("NA", "Inside generatePDF >>>>>", e.getMessage(), e.getMessage());
+			logger.error(SESSION_ID, "Inside generatePDF >>>>>", e.getMessage(), e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PDF_NOT_GENERATED, e);
 		}
 

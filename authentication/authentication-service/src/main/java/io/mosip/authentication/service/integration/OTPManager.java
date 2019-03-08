@@ -36,6 +36,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class OTPManager {
 
+	private static final String SESSION_ID = "SESSION_ID";
+
 	private static final String VALIDATION_UNSUCCESSFUL = "VALIDATION_UNSUCCESSFUL";
 
 	private static final String OTP_EXPIRED = "OTP_EXPIRED";
@@ -74,7 +76,7 @@ public class OTPManager {
 					otpGeneratorRequestDto, OtpGeneratorResponseDto.class);
 			otpGeneratorResponsetDto = restHelper.requestSync(restRequestDTO);
 			response = otpGeneratorResponsetDto.getOtp();
-			logger.info("NA", "NA", "NA", "otpGeneratorResponsetDto " + response);
+			logger.info(SESSION_ID, this.getClass().getSimpleName(), "generateOTP", "otpGeneratorResponsetDto " + response);
 
 		} catch (RestServiceException e) {
 
@@ -94,7 +96,7 @@ public class OTPManager {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
 			}
 
-			logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
+			logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 
 		} catch (IDDataValidationException e) {
 			throw new IdAuthenticationBusinessException(
@@ -126,7 +128,7 @@ public class OTPManager {
 					.map(res -> String.valueOf(res.get("status")))
 					.filter(status -> status.equalsIgnoreCase(STATUS_SUCCESS)).isPresent();
 		} catch (RestServiceException e) {
-			logger.error("NA", "NA", e.getErrorCode() + e.getErrorText(), e.getResponseBodyAsString().orElse(""));
+			logger.error(SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode() + e.getErrorText(), e.getResponseBodyAsString().orElse(""));
 
 			Optional<Object> responseBody = e.getResponseBody();
 			if (responseBody.isPresent()) {
@@ -142,7 +144,7 @@ public class OTPManager {
 				}
 			}
 		} catch (IDDataValidationException e) {
-			logger.error("NA", "NA", "Inside validateOtp", null);
+			logger.error(SESSION_ID, this.getClass().getSimpleName(), "Inside validateOtp", null);
 			throw new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.KERNEL_OTP_VALIDATION_REQUEST_FAILED, e);
 		}
@@ -187,7 +189,7 @@ public class OTPManager {
 			try {
 				res = mapper.readValue(str, Map.class);
 			} catch (IOException e) {
-				logger.error("NA", "NA", "Error parsing response body", null);
+				logger.error(SESSION_ID, this.getClass().getSimpleName(), "Error parsing response body", null);
 			}
 			return res;
 		}).map(map -> map.get("errors")).filter(obj -> obj instanceof List).flatMap(obj -> ((List) obj).stream()

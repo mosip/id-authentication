@@ -27,6 +27,8 @@ public class NotificationManager {
 
 
 	
+	private static final String SESSION_ID = "SESSION_ID";
+
 	/** Rest Helper */
 	@Autowired
 	private RestHelper restHelper;
@@ -55,7 +57,7 @@ public class NotificationManager {
 					smsRequestDto, String.class);
 			restHelper.requestAsync(restRequestDTO);
 		} catch (IDDataValidationException e) {
-			logger.error("NA", "Inside SMS Notification >>>>>", e.getErrorCode(), e.getErrorText());
+			logger.error(SESSION_ID, "Inside SMS Notification >>>>>", e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
 		}
 	}
@@ -80,7 +82,7 @@ public class NotificationManager {
 					mailRequestDto, String.class);
 			restHelper.requestAsync(restRequestDTO);
 		} catch (IDDataValidationException e) {
-			logger.error("NA", "Inside Mail Notification >>>>>", e.getErrorCode(), e.getErrorText());
+			logger.error(SESSION_ID, "Inside Mail Notification >>>>>", e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
 		}
 	}
