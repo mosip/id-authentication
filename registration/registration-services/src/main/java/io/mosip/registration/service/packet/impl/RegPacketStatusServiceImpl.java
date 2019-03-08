@@ -334,8 +334,10 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	public void deleteRegistrations(final List<Registration> registrations) {
 		for (Registration registration : registrations) {
 
-			/* Delete Registration */
-			delete(registration);
+			if (registration.getStatusCode().equalsIgnoreCase(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED)) {
+				/* Delete Registration */
+				delete(registration);
+			}
 		}
 
 	}
@@ -355,7 +357,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 		}
 
-		/* Delete row from DB  */
+		/* Delete row from DB */
 		regPacketStatusDAO.delete(registration);
 	}
 
