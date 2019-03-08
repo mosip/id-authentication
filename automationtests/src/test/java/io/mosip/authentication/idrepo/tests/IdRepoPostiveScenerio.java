@@ -1,4 +1,4 @@
-package io.mosip.authentication.tests.idRepo;
+package io.mosip.authentication.idrepo.tests;
 
 import java.io.File;
 import java.io.FileReader;
