@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -233,10 +235,23 @@ public class DataSyncServiceUtil {
 			if (isNull(toDate)) {
 				toDate = assignDate(fromDate, toDate);
 			}
+			
+			SimpleDateFormat sdfmt1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			SimpleDateFormat sdfmt2= new SimpleDateFormat("yyyy-MM-dd");
+			java.util.Date dDate = sdfmt1.parse(fromDate);
+				String strOutput = sdfmt2.format(dDate);
+				
+				java.util.Date tDate = sdfmt1.parse(toDate);
+				String output = sdfmt2.format(tDate);
+
+			DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			LocalDate fromLocalDate=LocalDate.parse(strOutput);
+			LocalDate toLocalDate=LocalDate.parse(output);
+			
 			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder
 					.fromHttpUrl(demographicResourceUrl + "/applicationDataByDateTime")
-					.queryParam("from_date", fromDate).queryParam("to_date", toDate);
+					.queryParam("from_date", fromLocalDate).queryParam("to_date", toLocalDate);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<?>> httpEntity = new HttpEntity<>(headers);
@@ -255,7 +270,7 @@ public class DataSyncServiceUtil {
 					throw new RecordNotFoundForDateRange(ErrorMessages.RECORDS_NOT_FOUND_FOR_DATE_RANGE.toString());
 				}
 			}
-		} catch (RestClientException ex) {
+		} catch (RestClientException |ParseException ex) {
 			log.error("sessionId", "idType", "id",
 					"In callGetPreIdsRestService method of datasync service util - " + ex.getMessage());
 

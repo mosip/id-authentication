@@ -4,13 +4,10 @@
  */
 package io.mosip.preregistration.application.service.util;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +32,6 @@ import io.mosip.preregistration.application.exception.MissingRequestParameterExc
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
-import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
@@ -271,44 +267,44 @@ public class DemographicServiceUtil {
 	 *            pass Date format
 	 * @return map with formatted fromDate and toDate
 	 */
-	public Map<String, LocalDateTime> dateSetter(Map<String, String> dateMap, String format) {
-		log.info("sessionId", "idType", "id", "In dateSetter method of pre-registration service util ");
-		Map<String, LocalDateTime> localDateTimeMap = new HashMap<>();
-		try {
-			  
-			Date fromDate = DateUtils
-					.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.FROM_DATE.getCode()), "UTF-8"), format);
-          
-			Date toDate;
-			if (dateMap.get(RequestCodes.TO_DATE.getCode()) == null
-					|| isNull(dateMap.get(RequestCodes.TO_DATE.getCode()))) {
-				toDate = fromDate;
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(toDate);
-				cal.set(Calendar.HOUR_OF_DAY, 23);
-				cal.set(Calendar.MINUTE, 59);
-				cal.set(Calendar.SECOND, 59);
-				toDate = cal.getTime();
-			} else {
-				toDate = DateUtils.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.TO_DATE.getCode()), "UTF-8"),
-						format);
-			}
-			localDateTimeMap.put(RequestCodes.FROM_DATE.getCode(), DateUtils.parseDateToLocalDateTime(fromDate));
-			localDateTimeMap.put(RequestCodes.TO_DATE.getCode(), DateUtils.parseDateToLocalDateTime(toDate));
-
-		} catch (java.text.ParseException | io.mosip.kernel.core.exception.ParseException ex) {
-			log.error("sessionId", "idType", "id",
-					"In dateSetter method of pre-registration service- " + ex.getCause());
-			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
-					ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), ex.getCause());
-		} catch (UnsupportedEncodingException ex) {
-			log.error("sessionId", "idType", "id",
-					"In dateSetter method of pre-registration service- " + ex.getCause());
-			throw new SystemUnsupportedEncodingException(ErrorCodes.PRG_PAM_APP_009.toString(),
-					ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.toString(), ex.getCause());
-		}
-		return localDateTimeMap;
-	}
+//	public Map<String, LocalDateTime> dateSetter(Map<String, String> dateMap, String format) {
+//		log.info("sessionId", "idType", "id", "In dateSetter method of pre-registration service util ");
+//		Map<String, LocalDateTime> localDateTimeMap = new HashMap<>();
+//		try {
+//			  
+//			Date fromDate = DateUtils
+//					.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.FROM_DATE.getCode()), "UTF-8"), format);
+//          
+//			Date toDate;
+//			if (dateMap.get(RequestCodes.TO_DATE.getCode()) == null
+//					|| isNull(dateMap.get(RequestCodes.TO_DATE.getCode()))) {
+//				toDate = fromDate;
+//				Calendar cal = Calendar.getInstance();
+//				cal.setTime(toDate);
+//				cal.set(Calendar.HOUR_OF_DAY, 23);
+//				cal.set(Calendar.MINUTE, 59);
+//				cal.set(Calendar.SECOND, 59);
+//				toDate = cal.getTime();
+//			} else {
+//				toDate = DateUtils.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.TO_DATE.getCode()), "UTF-8"),
+//						format);
+//			}
+//			localDateTimeMap.put(RequestCodes.FROM_DATE.getCode(), DateUtils.parseDateToLocalDateTime(fromDate));
+//			localDateTimeMap.put(RequestCodes.TO_DATE.getCode(), DateUtils.parseDateToLocalDateTime(toDate));
+//
+//		} catch (java.text.ParseException | io.mosip.kernel.core.exception.ParseException ex) {
+//			log.error("sessionId", "idType", "id",
+//					"In dateSetter method of pre-registration service- " + ex.getCause());
+//			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
+//					ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), ex.getCause());
+//		} catch (UnsupportedEncodingException ex) {
+//			log.error("sessionId", "idType", "id",
+//					"In dateSetter method of pre-registration service- " + ex.getCause());
+//			throw new SystemUnsupportedEncodingException(ErrorCodes.PRG_PAM_APP_009.toString(),
+//					ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.toString(), ex.getCause());
+//		}
+//		return localDateTimeMap;
+//	}
 
 	public String getCurrentResponseTime() {
 		return DateUtils.formatDate(new Date(System.currentTimeMillis()), dateTimeFormat);
