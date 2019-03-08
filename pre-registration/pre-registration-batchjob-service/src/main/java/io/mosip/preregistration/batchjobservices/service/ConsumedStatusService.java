@@ -56,6 +56,9 @@ public class ConsumedStatusService {
 	private BatchServiceDAO batchServiceDAO;
 
 	/**
+	 * This method will copy demographic , document , booking details to the respective 
+	 * consumed table and delete from original table if status is consumed.
+	 * 
 	 * @return Response DTO
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)

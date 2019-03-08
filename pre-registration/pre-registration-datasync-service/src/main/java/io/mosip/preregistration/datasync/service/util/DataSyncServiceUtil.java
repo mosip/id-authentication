@@ -276,7 +276,7 @@ public class DataSyncServiceUtil {
 			cal.set(Calendar.SECOND, 59);
 			date = cal.getTime();
 			toDate = DateUtils.formatDate(date, "yyyy-MM-dd HH:mm:ss");
-		} catch (ParseException ex) {
+		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In assignDate method of datasync service util" + ex.getMessage());
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
 					ErrorMessages.INVALID_REQUESTED_DATE.toString());
