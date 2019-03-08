@@ -400,33 +400,11 @@ export class DataStorageService {
     });
   }
 
-  getPreviewData(preRegId: string) {
-    return this.httpClient.get(this.BASE_URL + appConstants.PREVIEW_DATA_APPEND_URL, {
-      observe: 'body',
-      responseType: 'json',
-      params: new HttpParams().append(appConstants.PARAMS_KEYS.getUser, preRegId)
-    });
-  }
-
   getSecondaryLanguageLabels(langCode: string) {
     return this.httpClient.get(`./assets/i18n/${langCode}.json`);
   }
 
   copyDocument(catCode: string, sourceId: string, destinationId: string) {
-    // return this.httpClient.post(this.COPY_DOCUMENT_URL, {
-    //   params: new HttpParams()
-    //     .append('catCode', catCode)
-    //     .append('destinationPreId', destinationId)
-    //     .append('sourcePrId', sourceId)
-    // });
-    // const params = new URLSearchParams();
-    //   params.set('catCode',catCode);
-    //   params.append('destinationPreId',destinationId);
-    //   params.append('sourcePrId',sourceId);
-
-    //   const options = new RequestOptions({
-    //     params: params,
-    //   });
     const url = this.COPY_DOCUMENT_URL + '?catCode=POA&destinationPreId=' + destinationId + '&sourcePrId=' + sourceId;
     console.log('copy document URL', url);
     return this.httpClient.post(url, '');
@@ -478,4 +456,9 @@ export class DataStorageService {
       // params: new HttpParams().append('languages', 'eng')
     });
   }
+
+  getConfig() {
+    return this.httpClient.get('./assets/configs.json');
+  }
+  
 }
