@@ -87,7 +87,7 @@ public class DemographicController {
 	 *            the pre reg id
 	 * @return the application data for a pre-id
 	 */
-	@GetMapping(path = "/applicationData", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/applications/details", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Pre-Registartion data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully retrieved"),
 			@ApiResponse(code = 400, message = "Unable to get the demographic data") })
@@ -147,7 +147,7 @@ public class DemographicController {
 	 *            the pre id
 	 * @return status of application
 	 */
-	@GetMapping(path = "/applicationStatus", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/applications/status", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Fetch the status of a application")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All applications status fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch application status ") })
@@ -187,7 +187,7 @@ public class DemographicController {
 	 *            the to date
 	 * @return the pre-ids for date range
 	 */
-	@GetMapping(path = "/applicationDataByDateTime", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/applications/byDateTime", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Pre-Registartion data By Date And Time")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully retrieved"),
 			@ApiResponse(code = 400, message = "Unable to get the Pre-Registration data") })

@@ -197,7 +197,7 @@ public class DemographicControllerTest {
 		response.setResponse(statusList);
 
 		Mockito.when(preRegistrationService.getApplicationStatus(Mockito.anyString())).thenReturn(response);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applicationStatus/")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applications/status/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", preId);
 
@@ -243,7 +243,7 @@ public class DemographicControllerTest {
 
 		Mockito.when(preRegistrationService.getDemographicData("1234")).thenReturn(response);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applicationData")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applications/details")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.param("pre_registration_id", createDto.getPreRegistrationId());
@@ -290,7 +290,7 @@ public class DemographicControllerTest {
 		Mockito.when(preRegistrationService.getPreRegistrationByDate(Mockito.any(), Mockito.any()))
 				.thenReturn(response);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applicationDataByDateTime/")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/applications/byDateTime/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("from_date", fromDate)
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("to_date", toDate);
