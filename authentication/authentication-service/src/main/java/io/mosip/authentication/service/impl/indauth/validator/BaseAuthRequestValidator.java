@@ -2,7 +2,6 @@ package io.mosip.authentication.service.impl.indauth.validator;
 
 import java.text.ParseException;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -115,15 +114,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/** The Constant iris. */
 	private static final String IRIS = "iris";
-
-	/** The Constant fullAddress. */
-	private static final String FULLADDRESS = "fullAddress";
-
-	/** The Constant Address. */
-	private static final String ADDRESS = "Address";
-
-	/** The Constant personalIdentity. */
-	private static final String PERSONALIDENTITY = "personalIdentity";
 
 	/** The Constant face. */
 	private static final String FACE = "face";
@@ -284,11 +274,16 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			availableAuthTypeInfos.add(authType.getType());
 		}
 		for (BioInfo bioInfos : bioInfo) {
-			if (!availableAuthTypeInfos.contains(bioInfos.getBioType())) {
+			if (bioInfos.getBioType() == null || bioInfos.getBioType().isEmpty()) {
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 						new Object[] { BIO_TYPE },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			} else if (!availableAuthTypeInfos.contains(bioInfos.getBioType())) {
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_BIOTYPE.getErrorCode(),
+						new Object[] { bioInfos.getBioType() },
+						IdAuthenticationErrorConstants.INVALID_BIOTYPE.getErrorMessage());
 			}
+			
 		}
 
 	}
@@ -439,7 +434,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void checkAtleastOneFingerRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
 
-		@SuppressWarnings("unchecked")
 		boolean isAtleastOneFingerRequestAvailable = checkAnyBioIdAvailable(authRequestDTO, "FINGER");
 		if (!isAtleastOneFingerRequestAvailable) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "finger request is not available");
@@ -462,7 +456,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors         the errors
 	 */
 	private void checkAtleastOneIrisRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
-		@SuppressWarnings("unchecked")
 		boolean isIrisRequestAvailable = checkAnyBioIdAvailable(authRequestDTO, "IRIS");
 		if (!isIrisRequestAvailable) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "iris request is not available");
@@ -955,23 +948,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 
-	}
-
-	/**
-	 * Extract allowed lang.
-	 *
-	 * @return the sets the
-	 */
-	private Set<String> extractAllowedLang() {
-		Set<String> allowedLang;
-		String languages = env.getProperty("mosip.supported-languages");
-		if (null != languages && languages.contains(",")) {
-			allowedLang = Arrays.stream(languages.split(",")).collect(Collectors.toSet());
-		} else {
-			allowedLang = new HashSet<>();
-			allowedLang.add(languages);
-		}
-		return allowedLang;
 	}
 
 	/**

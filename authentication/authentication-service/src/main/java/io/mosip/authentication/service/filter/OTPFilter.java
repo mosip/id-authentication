@@ -10,7 +10,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
  * @author Manoj SP
  */
 @Component
-public class OTPFilter extends BaseAuthFilter {
+public class OTPFilter extends IdAuthFilter {
 
 	@Override
 	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {

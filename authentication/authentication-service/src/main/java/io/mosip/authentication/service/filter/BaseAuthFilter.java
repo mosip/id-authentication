@@ -25,8 +25,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.fasterxml.jackson.databind.ObjectWriter;
-
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -123,8 +121,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 			requestWrapper.resetInputStream();
 			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
 			Map<String, Object> decipherRequest = decipherRequest(requestBody);
-			ObjectWriter objectWriter = mapper.writerWithDefaultPrettyPrinter();
-			String requestAsString = objectWriter.writeValueAsString(decipherRequest);
+			String requestAsString = mapper.writeValueAsString(decipherRequest);
 			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
 					"Input Request: \n" + requestAsString);
 			requestWrapper.replaceData(requestAsString.getBytes());

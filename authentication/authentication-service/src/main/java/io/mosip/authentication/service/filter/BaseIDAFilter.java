@@ -185,17 +185,28 @@ public abstract class BaseIDAFilter implements Filter {
 		authResponseDTO.setVersion(getVersionFromUrl(requestWrapper));
 		Map<String, Object> responseMap = mapper.convertValue(authResponseDTO, new TypeReference<Map<String, Object>>() {
 		});
-		Map<String, Object> resultMap = new LinkedHashMap<>();
-		for(Map.Entry<String, Object> map : responseMap.entrySet()) {
-			if(Objects.nonNull(map.getValue())) {
-				resultMap.put(map.getKey(), map.getValue());
-			}
-		}		
+		Map<String, Object> resultMap = constructResponse(responseMap);		
 		response.getWriter().write(mapper.writeValueAsString(resultMap));
 		responseWrapper.setResponse(response);
 		responseWrapper.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 		logTime(authResponseDTO.getResponseTime(), RESPONSE);
 		return responseWrapper;
+	}
+
+	/**
+	 * Construct response.
+	 *
+	 * @param responseMap the response map
+	 * @return the map
+	 */
+	private Map<String, Object> constructResponse(Map<String, Object> responseMap) {
+		Map<String, Object> resultMap = new LinkedHashMap<>();
+		for(Map.Entry<String, Object> map : responseMap.entrySet()) {
+			if(Objects.nonNull(map.getValue())) {
+				resultMap.put(map.getKey(), map.getValue());
+			}
+		}
+		return resultMap;
 	}
 	
 	/**
@@ -278,7 +289,8 @@ public abstract class BaseIDAFilter implements Filter {
 			Map<String, Object> responseMap = setResponseParams(getRequestBody(requestWrapper.getInputStream()),
 					getResponseBody(responseWrapper.toString()));
 			responseMap.put("version", getVersionFromUrl(requestWrapper));
-			String responseAsString = mapper.writeValueAsString(transformResponse(responseMap));
+			Map<String, Object> resultMap = constructResponse(responseMap);
+			String responseAsString = mapper.writeValueAsString(transformResponse(resultMap));
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), RESPONSE);
 			return responseAsString;
 		} catch (IdAuthenticationAppException | IOException e) {

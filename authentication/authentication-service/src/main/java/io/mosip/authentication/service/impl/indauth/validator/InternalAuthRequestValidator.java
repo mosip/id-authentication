@@ -24,17 +24,9 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Component
 public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
-	/** The Final Constant For allowed Internal auth  type*/
-	private static final String INTERNAL_ALLOWED_AUTH_TYPE = "internal.allowed.auth.type";
 
 	/** The Constant REQ_TIME. */
 	private static final String REQ_TIME = "requestTime";
-
-	/** The Constant REQUEST. */
-	private static final String REQUEST = "request";
-	
-	/** The Constant AUTH_TYPE. */
-	private static final String AUTH_TYPE = "requestedAuth";
 	
 	/** The Constant REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS. */
 	private static final String REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS = "authrequest.received-time-allowed.in-hours";
