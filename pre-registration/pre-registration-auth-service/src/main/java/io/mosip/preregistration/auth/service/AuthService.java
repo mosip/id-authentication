@@ -119,26 +119,26 @@ public class AuthService {
 		return response;
 	}
 
-	public MainResponseDTO<ResponseEntity<AuthNResponse>> invalidateToken(MainRequestDTO<?> invalidateTokenRequest){
-		log.info("sessionId", "idType", "id",
-				"In calluserIdOtp method of kernel service ");
-		MainResponseDTO<AuthNResponse> response  = null;
-		try {
-			response  =	(MainResponseDTO<AuthNResponse>) AuthCommonUtil.getMainResponseDto(invalidateTokenRequest);
-		ResponseEntity<AuthNResponse> responseEntity = null;
-		String url=sendOtpResourceUrl+"/v1.0/authenticate/invalidateToken";
-		responseEntity=(ResponseEntity<AuthNResponse>) authCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON_UTF8,null,AuthNResponse.class);
-		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString());
-		response.setResponse(responseEntity.getBody());
-		}
-		catch(HttpClientErrorException | HttpServerErrorException ex) {
-			System.out.println(ex.getResponseBodyAsString());
-			log.error("sessionId", "idType", "id",
-					"In calluserIdOtp method of kernel service- " + ex.getMessage());
-			new AuthExceptionCatcher().handle(ex,"userIdOtp");	
-		}
-		
-		return response;
-	}
-	
+//	public MainResponseDTO<ResponseEntity<AuthNResponse>> invalidateToken(MainRequestDTO<?> invalidateTokenRequest){
+//		log.info("sessionId", "idType", "id",
+//				"In calluserIdOtp method of kernel service ");
+//		MainResponseDTO<AuthNResponse> response  = null;
+//		try {
+//			response  =	(MainResponseDTO<AuthNResponse>) AuthCommonUtil.getMainResponseDto(invalidateTokenRequest);
+//		ResponseEntity<AuthNResponse> responseEntity = null;
+//		String url=sendOtpResourceUrl+"/v1.0/authenticate/invalidateToken";
+//		responseEntity=(ResponseEntity<AuthNResponse>) authCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON_UTF8,null,AuthNResponse.class);
+//		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString());
+//		response.setResponse(responseEntity.getBody());
+//		}
+//		catch(HttpClientErrorException | HttpServerErrorException ex) {
+//			System.out.println(ex.getResponseBodyAsString());
+//			log.error("sessionId", "idType", "id",
+//					"In calluserIdOtp method of kernel service- " + ex.getMessage());
+//			new AuthExceptionCatcher().handle(ex,"userIdOtp");	
+//		}
+//		
+//		return response;
+//	}
+//	
 }
