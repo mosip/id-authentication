@@ -82,11 +82,11 @@ public class OTPServiceImpl implements OTPService {
 		}
 		if (otpEmailSendResponseDto != null) {
 			authNResponseDto = new AuthNResponseDto();
-			authNResponseDto.setMessage(otpGenerateResponseDto.getOtp());
+			authNResponseDto.setMessage(otpGenerateResponseDto.getOtp()+" message ");
 		}
 		if (otpSmsSendResponseDto != null) {
 			authNResponseDto = new AuthNResponseDto();
-			authNResponseDto.setMessage(otpGenerateResponseDto.getOtp());
+			authNResponseDto.setMessage(otpGenerateResponseDto.getOtp()+" message ");
 		}
 		return authNResponseDto;
 	}
