@@ -79,7 +79,7 @@ public class AuthController {
 		ResponseEntity<AuthNResponse> response=serviceResponse.getResponse();
 		responseBody.setResponse(response.getBody());
 		HttpHeaders headers=response.getHeaders();
-		System.out.println(headers.get("Set-Cookie").size());
+		System.out.println(headers.get("Set-Cookie"));
 		String content=headers.get("Set-Cookie").get(0).replaceAll("Authorization=", "");
 		System.out.println("Cookie added : "+content);
 		List<String> contentArray=Arrays.asList(content.split(";"));
