@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
+import io.mosip.authentication.fw.dto.TokenIdDto;
 import io.mosip.authentication.fw.dto.UinDto;
 import io.mosip.authentication.fw.dto.UinStaticPinDto;
 import io.mosip.authentication.fw.dto.VidDto;
@@ -34,7 +35,17 @@ public class UinVidNumberUtil {
 		return "ida/" + RunConfig.getTestDataFolderName() + "/RunConfig/vidStaticPin.properties";
 	}
 	
-
+	public String getTokenIdPropertyPath() {
+		return "ida/" + RunConfig.getTestDataFolderName() + "/RunConfig/tokenId.properties";
+	}
+	
+	public String getTokenId(String uin, String tspid) {
+		getTokenIdPropertyValue(getTokenIdPropertyPath());
+		if (TokenIdDto.getTokenId().containsKey(uin + "." + tspid))
+			return TokenIdDto.getTokenId().get(uin + "." + tspid);
+		else
+			return "TOKENID:"+uin + "." + tspid;
+	}
 	
 	public String getRandomUINKey() {
 		getUinPropertyValue(getUinPropertyPath());
@@ -158,6 +169,16 @@ public class UinVidNumberUtil {
 			map.put(key, value);
 		}
 		VidDto.setVid(map);
+	}
+	
+	public void getTokenIdPropertyValue(String path) {
+		Properties prop = getPropertyData(path);
+		Map<String, String> map = new HashMap<String, String>();
+		for (String key : prop.stringPropertyNames()) {
+			String value = prop.getProperty(key);
+			map.put(key, value);
+		}
+		TokenIdDto.setTokenId(map);
 	}
 	
 	private Properties getPropertyData(String path) {

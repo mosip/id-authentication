@@ -98,7 +98,7 @@ public class IntegrationTesting extends IdaScriptsUtil implements ITest {
 	{
 		TestNG testng = new TestNG();
 		List<String> suites = Lists.newArrayList();
-		suites.add(RunConfig.getUserDirectory() + "/testngIntegrationTestingSuite.xml");
+		suites.add(RunConfig.getUserDirectory() + "/src/test/resources/testngAuthenticationIntegTestingSuite.xml");
 		testng.setTestSuites(suites);
 		testng.getReporters();
 		testng.run();

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;    
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -38,6 +39,7 @@ import org.testng.ITestContext;
 import org.testng.Reporter;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
+import org.yaml.snakeyaml.Yaml;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
@@ -47,6 +49,7 @@ import io.mosip.authentication.fw.client.RestClient;
 import io.mosip.authentication.fw.dbUtil.DbConnection;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.precon.JsonPrecondtion;
+import io.mosip.authentication.testdata.TestDataDto;
 import io.restassured.response.Response;
  
 /**
@@ -116,6 +119,33 @@ public class IdaScriptsUtil {
 		} catch (Exception e) {
 			logger.error("Exception " + e);
 			return false;
+		}
+	}
+	
+	protected String postAndGenOutFileAndReturnResponse(File[] listOfFiles, String urlPath, String keywordToFind,
+			String generateOutputFileKeyword, int code) {
+		try {
+			for (int j = 0; j < listOfFiles.length; j++) {
+				if (listOfFiles[j].getName().contains(keywordToFind)) {
+					FileOutputStream fos = new FileOutputStream(
+							listOfFiles[j].getParentFile() + "/" + generateOutputFileKeyword + ".json");
+					String responseJson = "";
+					if (code == 0)
+						responseJson = postRequest(listOfFiles[j].getAbsolutePath(), urlPath);
+					else
+						responseJson = postRequest(listOfFiles[j].getAbsolutePath(), urlPath, code);
+					Reporter.log("<b><u>Actual Response Content: </u></b>(EndPointUrl: " + urlPath + ") <pre>"
+							+ objReportUtil.getTextAreaJsonMsgHtml(responseJson) + "</pre>");
+					fos.write(responseJson.getBytes());
+					fos.flush();
+					fos.close();
+					return responseJson.toString();
+				}
+			}
+			return "NoResponse";
+		} catch (Exception e) {
+			logger.error("Exception " + e);
+			return e.getMessage();
 		}
 	}
 	
@@ -494,6 +524,24 @@ public class IdaScriptsUtil {
 		}
 	}
 	
+	public Map<String,String> getPropertyAsMap(String filepath) {
+		Properties prop = new Properties();
+		InputStream input = null;
+		Map<String,String> map = new HashMap<String,String>();
+		try {
+			input = new FileInputStream(filepath);
+			prop.load(input);
+			for(String key : prop.stringPropertyNames())
+			{
+				map.put(key, prop.getProperty(key));
+			}
+			return map;
+		} catch (Exception e) {
+			logger.error("Exception: " + e.getMessage());
+			return map;
+		}
+	}
+	
 	/**
 	 * After the entire test suite clean up rest assured
 	 */
@@ -506,7 +554,7 @@ public class IdaScriptsUtil {
 		objReportUtil.moveReport(currentModule);
 		exitDemoAppRunner();
 	}
-
+	
 	@BeforeSuite(alwaysRun = true)
 	public void wakeDemoApp() {
 		createBatFileForDemoApp();
@@ -553,14 +601,6 @@ public class IdaScriptsUtil {
 		} catch (Exception e) {
 			logger.error("Execption in quitting demoApp application" + e.getMessage());
 		}
-	}
-	
-	public static void main(String arg[])
-	{
-		IdaScriptsUtil obj = new IdaScriptsUtil();
-		obj.createBatFileForDemoApp();
-		obj.batDemoAppRunner();
-		obj.exitDemoAppRunner();
 	}
 
 } 

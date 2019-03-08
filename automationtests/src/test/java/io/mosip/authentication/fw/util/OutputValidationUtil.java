@@ -31,6 +31,7 @@ public class OutputValidationUtil extends IdaScriptsUtil{
 	private static FileUtil objFileUtil = new FileUtil();
 	private JsonPrecondtion objJsonPrecondtion = new JsonPrecondtion();
 	private static ReportUtil objReportUtil = new ReportUtil();
+	private UinVidNumberUtil objUinVidNumberUtil = new UinVidNumberUtil();
 	
 	public Map<String, List<OutputValidationDto>> doOutputValidation(String actualOutputFile, String expOutputFile) {
 		try {
@@ -91,6 +92,23 @@ public class OutputValidationUtil extends IdaScriptsUtil{
 						}
 					}else if (expEntry.getValue().equals("$TIMESTAMPZ$")) {
 						if (validateTimestampZ(actual.get(expEntry.getKey()))) {
+							objOpDto.setFieldName(expEntry.getKey());
+							objOpDto.setFiedlHierarchy(expEntry.getKey());
+							objOpDto.setActualValue(actual.get(expEntry.getKey()));
+							objOpDto.setExpValue(expEntry.getValue());
+							objOpDto.setStatus("PASS");
+						} else {
+							objOpDto.setFieldName(expEntry.getKey());
+							objOpDto.setFiedlHierarchy(expEntry.getKey());
+							objOpDto.setActualValue(actual.get(expEntry.getKey()));
+							objOpDto.setExpValue(expEntry.getValue());
+							objOpDto.setStatus("FAIL");
+						}
+					}else if (expEntry.getValue().contains("TOKENID:") && expEntry.getValue().contains(".")) {
+						String key = expEntry.getValue().replace("TOKENID:", "");
+						String[] keys= key.split(Pattern.quote("."));
+						String tokenid=objUinVidNumberUtil.getTokenId(keys[0], keys[1]);
+						if(tokenid.equals(actual.get(expEntry.getKey()))) {
 							objOpDto.setFieldName(expEntry.getKey());
 							objOpDto.setFiedlHierarchy(expEntry.getKey());
 							objOpDto.setActualValue(actual.get(expEntry.getKey()));

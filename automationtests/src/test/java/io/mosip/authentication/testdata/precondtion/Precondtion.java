@@ -28,6 +28,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+import io.mosip.authentication.fw.precon.JsonPrecondtion;
+import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.testdata.TestDataConfig;
 import io.mosip.authentication.testdata.keywords.IdaKeywordUtil;
 import io.mosip.authentication.testdata.keywords.KernelKeywordUtil;
@@ -59,21 +61,20 @@ public class Precondtion {
 			String outputFilePath, String propFileName) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			Object jsonObj = mapper.readValue(new String(Files.readAllBytes(Paths.get(inputFilePath)),StandardCharsets.UTF_8), Object.class);
-			fieldvalue = getObject(TestDataConfig.getModuleName()).precondtionKeywords(fieldvalue);// New Code . Need to add
+			Object jsonObj = mapper.readValue(
+					new String(Files.readAllBytes(Paths.get(inputFilePath)), StandardCharsets.UTF_8), Object.class);
+			fieldvalue = getObject(TestDataConfig.getModuleName()).precondtionKeywords(fieldvalue);// New Code . Need to
+																									// add
 			for (Entry<String, String> map : fieldvalue.entrySet()) {
-				if (map.getValue().contains("LONG:"))
-				{
-					String value=map.getValue().replace("LONG:", "");
+				if (map.getValue().contains("LONG:")) {
+					String value = map.getValue().replace("LONG:", "");
 					PropertyUtils.setProperty(jsonObj, getFieldHierarchy(propFileName).getProperty(map.getKey()),
 							Long.parseLong(value));
-				}
-				else if (map.getValue().contains("DOUBLE:")) {
+				} else if (map.getValue().contains("DOUBLE:")) {
 					String value = map.getValue().replace("DOUBLE:", "");
 					PropertyUtils.setProperty(jsonObj, getFieldHierarchy(propFileName).getProperty(map.getKey()),
 							Double.parseDouble(value));
-				}
-				else if (map.getValue().contains("BOOLEAN:")) {
+				} else if (map.getValue().contains("BOOLEAN:")) {
 					String value = map.getValue();
 					if (value.contains("true"))
 						PropertyUtils.setProperty(jsonObj, getFieldHierarchy(propFileName).getProperty(map.getKey()),
@@ -81,14 +82,21 @@ public class Precondtion {
 					if (value.contains("false"))
 						PropertyUtils.setProperty(jsonObj, getFieldHierarchy(propFileName).getProperty(map.getKey()),
 								false);
-				}
-				else
+				} else
 					PropertyUtils.setProperty(jsonObj, getFieldHierarchy(propFileName).getProperty(map.getKey()),
 							map.getValue());
 			}
+			/*
+			 * if(jsonObj.toString().contains("ver"))
+			 * PropertyUtils.setProperty(jsonObj,"ver",RunConfig.getAuthVersion());
+			 */
 			mapper.writeValue(new FileOutputStream(outputFilePath), jsonObj);
-			String outputJson = new String(Files.readAllBytes(Paths.get(outputFilePath)),StandardCharsets.UTF_8);
-			outputJson = removeObject(new JSONObject(outputJson));
+			String outputJson = new String(Files.readAllBytes(Paths.get(outputFilePath)), StandardCharsets.UTF_8);
+			// Replacing the version in request
+			outputJson = outputJson.replace("$version$", RunConfig.getAuthVersion());
+			outputJson = outputJson.replaceAll("$version$", RunConfig.getAuthVersion());
+			if (outputJson.contains("$REMOVE$"))
+				outputJson = removeObject(new JSONObject(outputJson));
 			writeFile(outputFilePath, outputJson);
 			logger.info("Updated json file location: " + outputJson.toString());
 			logger.info("Updated json file content: " + toPrettyFormat(outputJson.toString()));

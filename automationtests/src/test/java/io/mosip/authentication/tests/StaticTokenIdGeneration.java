@@ -31,6 +31,7 @@ import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.IdaScriptsUtil;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
+import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
@@ -58,6 +59,7 @@ public class StaticTokenIdGeneration extends IdaScriptsUtil implements ITest{
 	protected static String testCaseName = "";
 	private TestDataProcessor objTestDataProcessor = new TestDataProcessor();
 	private AuditValidUtil objAuditValidUtil = new AuditValidUtil();
+	private JsonPrecondtion objJsonPrecon = new JsonPrecondtion();
 
 	
 	@Parameters({ "testDatPath" , "testDataFileName" ,"testType"})
@@ -135,6 +137,12 @@ public class StaticTokenIdGeneration extends IdaScriptsUtil implements ITest{
 				+ " *******");
 		Assert.assertEquals(postAndGenOutFile(testCaseName.listFiles(),
 				RunConfig.getEndPointUrl() + RunConfig.getAuthPath(), "request", "output-1-actual-res",200), true);
+		String request=getContentFromFile(testCaseName.listFiles(),"staticTokenId-generation");
+		String response=getContentFromFile(testCaseName.listFiles(),"output-1-actual-res");
+		String uin=objJsonPrecon.getValueFromJson(request, "idvId");
+		String tspId=objJsonPrecon.getValueFromJson(request, "tspID");
+		String tokenId=objJsonPrecon.getValueFromJson(response, "staticToken");
+		performTokenIdOper(uin,tspId,tokenId);
 		Map<String, List<OutputValidationDto>> ouputValid = objOpValiUtil.doOutputValidation(
 				objFileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				objFileUtil.getFilePath(testCaseName, "output-1-expected").toString());
@@ -156,6 +164,22 @@ public class StaticTokenIdGeneration extends IdaScriptsUtil implements ITest{
 					.verifyAuditLog(testCaseName.listFiles(), "audit_log");
 			Reporter.log(objReportUtil.getOutputValiReport(auditLogValidation));
 			Assert.assertEquals(objOpValiUtil.publishOutputResult(auditLogValidation), true);
+		}
+	}
+	
+	public void performTokenIdOper(String uin, String tspId, String tokenId) {
+		File file = new File(RunConfig.getUserDirectory() + RunConfig.getSrcPath() + "/ida/"
+				+ RunConfig.getTestDataFolderName() + "/RunConfig/tokenId.properties");
+		if (file.exists()) {
+			if (!getProperty(file.getAbsolutePath()).containsKey(uin + "." + tspId)) {
+				Map<String, String> map = getPropertyAsMap(file.getAbsolutePath());
+				map.put(uin + "." + tspId, tokenId);
+				generateMappingDic(file.getAbsolutePath(), map);
+			}
+		} else {
+			Map<String, String> map = getPropertyAsMap(file.getAbsolutePath());
+			map.put(uin + "." + tspId, tokenId);
+			generateMappingDic(file.getAbsolutePath(), map);
 		}
 	}
 

@@ -128,6 +128,7 @@ public class RunConfig extends IdaScriptsUtil{
 	}
 	
 	public void setConfig(String testDataPath,String testDataFileName,String testType) {
+		setAuthVersion(getPropertyValue("authVersion"));
 		setEndPointUrl(getPropertyValue("endPointUrl"));
 		setEkycPath(getPropertyValue("ekycPath"));
 		setSrcPath(getPropertyValue("srcPath"));
@@ -167,7 +168,7 @@ public class RunConfig extends IdaScriptsUtil{
 		setDbKernelUrl(getPropertyValue("dbKernelUrl"));
 		setDbIdaUrl(getPropertyValue("dbIdaUrl"));
 		setDbAuditUrl(getPropertyValue("dbAuditUrl"));
-		setVidGenPath(getPropertyValue("vidGenPath"));
+		setVidGenPath(getPropertyValue("vidGenPath"));		
 	}
 	
 	private static String dbKernelTableName;
@@ -376,6 +377,13 @@ public class RunConfig extends IdaScriptsUtil{
 	}
 	public static void setTestDataFolderName(String testDataFolderName) {
 		RunConfig.testDataFolderName = testDataFolderName;
+	}
+	private static String authVersion;
+	public static String getAuthVersion() {
+		return authVersion;
+	}
+	public static void setAuthVersion(String authVersion) {
+		RunConfig.authVersion = authVersion;
 	}
 
 }

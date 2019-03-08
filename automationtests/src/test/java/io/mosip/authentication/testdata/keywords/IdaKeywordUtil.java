@@ -56,7 +56,15 @@ public class IdaKeywordUtil extends KeywordUtil{
 		Map<String, String> returnMap = map;
 		boolean flag=false;
 		for (Entry<String, String> entry : map.entrySet()) {
-			if (entry.getValue().equals("$TIMESTAMP$")) {
+			if (entry.getValue().contains("TOKENID") && entry.getValue().startsWith("$TOKENID")) {
+				String[] keys = entry.getValue().split(Pattern.quote("~"));
+				Map<String, String> tempmap = new HashMap<String, String>();
+				tempmap.put("uin", keys[1]);
+				tempmap.put("tspId", keys[2]);
+				Map<String, String> dic = precondtionKeywords(tempmap);
+				returnMap.put(entry.getKey(), objUinVidNumberUtil.getTokenId(dic.get("uin"), dic.get("tspId")));
+			}
+			else if (entry.getValue().equals("$TIMESTAMP$")) {
 				if (!entry.getKey().startsWith("output."))
 					returnMap.put(entry.getKey(), generateCurrentTimeStamp());
 				else
