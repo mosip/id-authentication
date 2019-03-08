@@ -8,13 +8,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.batchjobservices.code.ErrorCodes;
 import io.mosip.preregistration.batchjobservices.code.ErrorMessages;
 import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
@@ -32,7 +31,7 @@ import io.mosip.preregistration.batchjobservices.repository.DocumentRespository;
 import io.mosip.preregistration.batchjobservices.repository.ProcessedPreIdRepository;
 import io.mosip.preregistration.batchjobservices.repository.RegAppointmentConsumedRepository;
 import io.mosip.preregistration.batchjobservices.repository.RegAppointmentRepository;
-import io.mosip.preregistration.batchjobservices.service.ConsumedStatusService;
+import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
 /**
@@ -47,7 +46,7 @@ import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 public class BatchServiceDAO {
 
 	/** The Constant LOGGER. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(ConsumedStatusService.class);
+	private Logger log = LoggerConfiguration.logConfig(BatchServiceDAO.class);
 
 	/**
 	 * Autowired reference for {@link #demographicRepository}
@@ -98,6 +97,10 @@ public class BatchServiceDAO {
 	@Qualifier("documentConsumedRepository")
 	private DocumentConsumedRepository documentConsumedRepository;
 
+	/**
+	 * @param preRegId
+	 * @return Demographic details for preregId
+	 */
 	public DemographicEntity getApplicantDemographicDetails(String preRegId) {
 
 		DemographicEntity entity = null;
@@ -105,6 +108,7 @@ public class BatchServiceDAO {
 			entity = demographicRepository.findBypreRegistrationId(preRegId);
 			if (entity == null) {
 				processedPreIdRepository.deleteBypreRegistrationId(preRegId);
+				log.info("sessionId", "idType", "id", "Deleted Invalid Pre-Registration ID");
 			}
 
 		} catch (DataAccessLayerException e) {
@@ -114,12 +118,16 @@ public class BatchServiceDAO {
 		return entity;
 	}
 
+	/**
+	 * @param statusComment
+	 * @return List of ProcessedPreRegEntity for given statusComment
+	 */
 	public List<ProcessedPreRegEntity> getAllConsumedPreIds(String statusComment) {
 		List<ProcessedPreRegEntity> entityList = new ArrayList<>();
 		try {
 			entityList = processedPreIdRepository.findBystatusComments(statusComment);
 			if (entityList == null || entityList.isEmpty() ) {
-				LOGGER.info("There are currently no Pre-Registration-Ids to update status to consumed");
+				log.info("sessionId", "idType", "id", "There are currently no Pre-Registration-Ids to update status to consumed");
 				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_001.getCode(),
 						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());
 			}
@@ -131,12 +139,16 @@ public class BatchServiceDAO {
 		return entityList;
 	}
 
+	/**
+	 * @param currentdate
+	 * @return List of RegistrationBookingEntity based date less then currentDate
+	 */
 	public List<RegistrationBookingEntity> getAllOldDateBooking(LocalDate currentdate) {
 		List<RegistrationBookingEntity> entityList = new ArrayList<>();
 		try {
 			entityList = regAppointmentRepository.findByRegDateBefore(currentdate);
 			if (entityList == null ||entityList.isEmpty() )  {
-				LOGGER.info("There are currently no Pre-Registration-Ids which is expired");
+				log.info("sessionId", "idType", "id", "There are currently no Pre-Registration-Ids to update status to consumed");
 				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_001.getCode(),
 						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());
 			}
@@ -147,11 +159,16 @@ public class BatchServiceDAO {
 		return entityList;
 	}
 
+	/**
+	 * @param preRegId
+	 * @return RegistrationBookingEntity for given prereId 
+	 */
 	public RegistrationBookingEntity getPreRegId(String preRegId) {
 		RegistrationBookingEntity entity = null;
 		try {
 			entity = regAppointmentRepository.getPreRegId(preRegId);
 			if (entity == null) {
+				log.info("sessionId", "idType", "id", "Deleted Invalid Pre-Registration ID");
 				/*throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_003.getCode(),
 						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());*/
 				processedPreIdRepository.deleteBypreRegistrationId(preRegId);
@@ -164,21 +181,29 @@ public class BatchServiceDAO {
 
 	}
 	
+	/**
+	 * @param applicantDemographic
+	 * @return updated demographic details.
+	 */
 	public boolean updateApplicantDemographic(DemographicEntity applicantDemographic) {
 		return demographicRepository.save(applicantDemographic)!=null;
 	}
 	
+	/**
+	 * @param entity
+	 * @return updated ProcessedPreRegEntity.
+	 */
 	public boolean updateProcessedList(ProcessedPreRegEntity entity) {
 		 return processedPreIdRepository.save(entity)!=null;
 	}
 	
-	public boolean updateBooking(RegistrationBookingEntity entity) {
-		return regAppointmentRepository.save(entity)!=null;
-	}
+	
 	/** Deleting demographic the consumed demographic data. */
 	public void deleteDemographic(DemographicEntity demographicEntity) {
 		try {
 			demographicRepository.delete(demographicEntity);
+			log.info("sessionId", "idType", "id", "In deleteDemographic to delete consumed demographic details");
+			
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_004.getCode(),
 					ErrorMessages.DEMOGRAPHIC_TABLE_NOT_ACCESSIBLE.getMessage());
@@ -188,6 +213,7 @@ public class BatchServiceDAO {
 	public void deleteDocument(DocumentEntity documentEntity) {
 		try {
 			documentRespository.delete(documentEntity);
+			log.info("sessionId", "idType", "id", "In deleteDocument to delete consumed demographic details");
 		} catch (Exception e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_007.getCode(),
 					ErrorMessages.DOCUMENT_TABLE_NOT_ACCESSIBLE.getMessage());
@@ -198,23 +224,35 @@ public class BatchServiceDAO {
 	public void deleteBooking(RegistrationBookingEntity bookingEntity) {
 		try {
 			regAppointmentRepository.delete(bookingEntity);
+			log.info("sessionId", "idType", "id", "In deleteBooking to delete consumed demographic details");
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_005.getCode(),
 					ErrorMessages.REG_APPOINTMENT_TABLE_NOT_ACCESSIBLE.getMessage());
 		}
 	}
 	
+	/**
+	 * @param preregId
+	 * @return DocumentEntity for given prereId
+	 */
 	public DocumentEntity getDocumentDetails(String preregId) {
 		try {
-			return documentRespository.findBypreregId(preregId);
+			DocumentEntity documentEntity=documentRespository.findBypreregId(preregId);
+			log.info("sessionId", "idType", "id", "In getDocumentDetails to get document details");
+			return documentEntity;
 		} catch (Exception e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_007.getCode(),
 					ErrorMessages.DOCUMENT_TABLE_NOT_ACCESSIBLE.getMessage());
 		}
 	}
+	/**
+	 * @param bookingEntityConsumed
+	 * @return true if consumed table of booking updated.
+	 */
 	public boolean updateConsumedBooking(RegistrationBookingEntityConsumed bookingEntityConsumed) {
 		try {
 			appointmentConsumedRepository.save(bookingEntityConsumed);
+			log.info("sessionId", "idType", "id", "In updateConsumedBooking to update reg_appointment_consumed");
 			return true;
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_008.getCode(),
@@ -222,18 +260,28 @@ public class BatchServiceDAO {
 		}
 	}
 	
+	/**
+	 * @param entityConsumed
+	 * @return true if consumed table of demographic updated.
+	 */
 	public boolean updateConsumedDemographic(DemographicEntityConsumed entityConsumed){
 		try {
 			demographicConsumedRepository.save(entityConsumed);
+			log.info("sessionId", "idType", "id", "In updateConsumedDemographic to update applicant_demographic_consumed");
 			return true;
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_009.getCode(),
 					ErrorMessages.DEMOGRAPHIC_CONSUMED_TABLE_NOT_ACCESSIBLE.getMessage());
 		}
 	}
+	/**
+	 * @param entityConsumed
+	 * @return true if consumed of booking updated.
+	 */
 	public boolean updateConsumedDocument(DocumentEntityConsumed entityConsumed) {
 		try {
 			documentConsumedRepository.save(entityConsumed);
+			log.info("sessionId", "idType", "id", "In updateConsumedDemographic to update applicant_document_consumed");
 			return true;
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_010.getCode(),

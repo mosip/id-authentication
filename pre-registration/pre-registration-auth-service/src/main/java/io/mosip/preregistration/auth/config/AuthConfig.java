@@ -4,10 +4,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -17,7 +17,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
-public class UserManagementConfig {
+public class AuthConfig {
 	@Value("${application.env.local:false}")
 	private Boolean localEnv;
 
@@ -53,7 +53,7 @@ public class UserManagementConfig {
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration").select()
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.auth.controller"))
-				.paths(PathSelectors.ant("/v0.1/*")).build();
+				.paths(PathSelectors.ant("/*")).build();
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);
 			System.out.println("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");
@@ -66,6 +66,5 @@ public class UserManagementConfig {
 		protocols.add(proto);
 		return protocols;
 	}
-
 
 }

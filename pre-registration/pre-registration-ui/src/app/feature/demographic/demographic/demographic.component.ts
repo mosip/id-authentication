@@ -133,11 +133,22 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.initialization();
   }
 
-  ngOnInit() {
-    if (!this.dataModification) this.consentDeclaration();
+  async ngOnInit() {
     this.initForm();
+    await this.getPrimaryLabels();
     this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
       this.secondaryLanguagelabels = response['demographic'];
+    });
+    if (!this.dataModification) this.consentDeclaration();
+    console.log(this.primaryLanguagelabels);
+  }
+
+  private getPrimaryLabels() {
+    return new Promise((resolve, reject) => {
+      this.dataStorageService.getSecondaryLanguageLabels(this.primaryLang).subscribe(response => {
+        this.primaryLanguagelabels = response['demographic'];
+        resolve(true);
+      });
     });
   }
 
@@ -161,21 +172,20 @@ export class DemographicComponent implements OnInit, OnDestroy {
   }
 
   private consentDeclaration() {
-    if (this.secondaryLanguagelabels) {
+    if (this.primaryLanguagelabels) {
       const data = {
-        case: "CONSENTPOPUP",
+        case: 'CONSENTPOPUP',
         title: this.primaryLanguagelabels.consent.title,
         subtitle: this.primaryLanguagelabels.consent.subtitle,
         message: this.primaryLanguagelabels.consent.message,
         checkCondition: this.primaryLanguagelabels.consent.checkCondition,
         acceptButton: this.primaryLanguagelabels.consent.acceptButton,
-        alertMessageFirst:this.primaryLanguagelabels.consent.alertMessageFirst,
-        alertMessageSecond:this.primaryLanguagelabels.consent.alertMessageSecond,
-        alertMessageThird:this.primaryLanguagelabels.consent.alertMessageThird
-
-       };
+        alertMessageFirst: this.primaryLanguagelabels.consent.alertMessageFirst,
+        alertMessageSecond: this.primaryLanguagelabels.consent.alertMessageSecond,
+        alertMessageThird: this.primaryLanguagelabels.consent.alertMessageThird
+      };
       this.dialog.open(DialougComponent, {
-        width: "550px",
+        width: '550px',
         data: data,
         disableClose: true
       });
