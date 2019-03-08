@@ -16,6 +16,7 @@ import io.mosip.kernel.uingenerator.service.UinGeneratorService;
 import io.mosip.kernel.uingenerator.util.MetaDataUtil;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * @author Dharmesh Khandelwal
@@ -37,6 +38,12 @@ public class UinGeneratorServiceImpl implements UinGeneratorService {
 	 */
 	@Autowired
 	private MetaDataUtil metaDataUtil;
+	
+	@Value("${mosip.kernel.uin.status.unused}")
+	private String unused;
+	
+	@Value("${mosip.kernel.uin.status.issued}")
+	private String issued;
 
 	/*
 	 * (non-Javadoc)
@@ -46,9 +53,11 @@ public class UinGeneratorServiceImpl implements UinGeneratorService {
 	@Override
 	public UinResponseDto getUin() {
 		UinResponseDto uinResponseDto = new UinResponseDto();
-		UinEntity uinBean = uinRepository.findFirstByStatus(UinGeneratorConstant.UNUSED);
+		//UinEntity uinBean = uinRepository.findFirstByStatus(UinGeneratorConstant.UNUSED);
+		UinEntity uinBean = uinRepository.findFirstByStatus(unused);
 		if (uinBean != null) {
-			uinBean.setStatus(UinGeneratorConstant.ISSUED);
+			//uinBean.setStatus(UinGeneratorConstant.ISSUED);
+			uinBean.setStatus(issued);
 			metaDataUtil.setMetaDataUpdate(uinBean);
 			uinRepository.save(uinBean);
 			uinResponseDto.setUin(uinBean.getUin());
