@@ -53,6 +53,11 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 	 * The length of the uin
 	 */
 	private final int uinLength;
+	
+	/**
+	 * The uin default status
+	 */
+	private final String uinDefaultStatus;
 
 	/**
 	 * Constructor to set {@link #uinsCount} and {@link #uinLength}
@@ -63,9 +68,11 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 	 *            The length of the uin
 	 */
 	public UinGeneratorImpl(@Value("${mosip.kernel.uin.uins-to-generate}") long uinsCount,
-			@Value("${mosip.kernel.uin.length}") int uinLength) {
+			@Value("${mosip.kernel.uin.length}") int uinLength, @Value("${mosip.kernel.uin.status.unused}") String uinDefaultStatus) {
 		this.uinsCount = uinsCount;
 		this.uinLength = uinLength;
+		this.uinDefaultStatus = uinDefaultStatus;
+		System.out.println("===uinDefaultStatus=="+uinDefaultStatus);
 	}
 
 	private static final RandomDataGenerator RANDOM_DATA_GENERATOR = new RandomDataGenerator();
@@ -87,7 +94,8 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 		while (uins.size() < uinsCount) {
 			String generatedUIN = generateSingleId(generatedIdLength, lowerBound, upperBound);
 			if (uinFilterUtils.isValidId(generatedUIN)) {
-				UinEntity uinBean = new UinEntity(generatedUIN, UinGeneratorConstant.UNUSED);
+				//UinEntity uinBean = new UinEntity(generatedUIN, UinGeneratorConstant.UNUSED);
+				UinEntity uinBean = new UinEntity(generatedUIN, uinDefaultStatus);
 				uins.add(metaDataUtil.setMetaData(uinBean));
 			}
 		}

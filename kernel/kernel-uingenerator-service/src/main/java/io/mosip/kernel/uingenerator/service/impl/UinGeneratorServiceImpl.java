@@ -45,6 +45,8 @@ public class UinGeneratorServiceImpl implements UinGeneratorService {
 	@Value("${mosip.kernel.uin.status.issued}")
 	private String issued;
 
+	@Value("${mosip.kernel.uin.status.assigned}")
+	private String assigned;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -55,8 +57,10 @@ public class UinGeneratorServiceImpl implements UinGeneratorService {
 		UinResponseDto uinResponseDto = new UinResponseDto();
 		//UinEntity uinBean = uinRepository.findFirstByStatus(UinGeneratorConstant.UNUSED);
 		UinEntity uinBean = uinRepository.findFirstByStatus(unused);
+		System.out.println("===unused==="+unused);
 		if (uinBean != null) {
 			//uinBean.setStatus(UinGeneratorConstant.ISSUED);
+			System.out.println("===issued==="+issued);
 			uinBean.setStatus(issued);
 			metaDataUtil.setMetaDataUpdate(uinBean);
 			uinRepository.save(uinBean);
@@ -76,7 +80,9 @@ public class UinGeneratorServiceImpl implements UinGeneratorService {
 		System.out.println("====uinEntity====" + uinEntity);
 		if (uinEntity != null) {
 			metaDataUtil.setMetaData(uinEntity);
-			uinEntity.setStatus(UinGeneratorConstant.ASSIGNED);
+			//uinEntity.setStatus(UinGeneratorConstant.ASSIGNED);
+			System.out.println("====assigned===="+assigned);
+			uinEntity.setStatus(assigned);
 			metaDataUtil.setMetaDataUpdate(uinEntity);
 			uinRepository.save(uinEntity);
 			uinResponseDto.setUin(uinEntity.getUin());
