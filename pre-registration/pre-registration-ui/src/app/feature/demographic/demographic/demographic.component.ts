@@ -59,6 +59,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   user: UserModel;
   demodata: string[];
   secondaryLanguagelabels: any;
+  primaryLanguagelabels: any;
   uppermostLocationHierarchy: any;
   primaryGender = [];
   secondaryGender = [];
@@ -160,18 +161,25 @@ export class DemographicComponent implements OnInit, OnDestroy {
   }
 
   private consentDeclaration() {
-    const data = {
-      case: 'CONSENTPOPUP',
-      title: 'Terms and Conditions',
-      subtitle: 'Your Agreement',
-      message:
-        'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit... Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit... Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit... Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit... Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit... Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit... Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit... Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit... Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...'
-    };
-    this.dialog.open(DialougComponent, {
-      width: '550px',
-      data: data,
-      disableClose: true
-    });
+    if (this.secondaryLanguagelabels) {
+      const data = {
+        case: "CONSENTPOPUP",
+        title: this.primaryLanguagelabels.consent.title,
+        subtitle: this.primaryLanguagelabels.consent.subtitle,
+        message: this.primaryLanguagelabels.consent.message,
+        checkCondition: this.primaryLanguagelabels.consent.checkCondition,
+        acceptButton: this.primaryLanguagelabels.consent.acceptButton,
+        alertMessageFirst:this.primaryLanguagelabels.consent.alertMessageFirst,
+        alertMessageSecond:this.primaryLanguagelabels.consent.alertMessageSecond,
+        alertMessageThird:this.primaryLanguagelabels.consent.alertMessageThird
+
+       };
+      this.dialog.open(DialougComponent, {
+        width: "550px",
+        data: data,
+        disableClose: true
+      });
+    }
   }
 
   async initForm() {
