@@ -68,7 +68,7 @@ public class OtpValidatorServiceTest {
 		when(repository.findById(OtpEntity.class, "testKey")).thenReturn(entity);
 		MvcResult result = mockMvc
 				.perform(get("/v1.0/otp/validate?key=testKey&otp=5431").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable()).andReturn();
+				.andExpect(status().isOk()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
 		OtpValidatorResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
 				OtpValidatorResponseDto.class);
@@ -86,7 +86,7 @@ public class OtpValidatorServiceTest {
 		when(repository.findById(OtpEntity.class, "testKey")).thenReturn(entity);
 		MvcResult result = mockMvc
 				.perform(get("/v1.0/otp/validate?key=testKey&otp=5431").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable()).andReturn();
+				.andExpect(status().isOk()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
 		OtpValidatorResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
 				OtpValidatorResponseDto.class);
@@ -104,7 +104,7 @@ public class OtpValidatorServiceTest {
 		when(repository.findById(OtpEntity.class, "testKey")).thenReturn(entity);
 		MvcResult result = mockMvc
 				.perform(get("/v1.0/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable()).andReturn();
+				.andExpect(status().isOk()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
 		OtpValidatorResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
 				OtpValidatorResponseDto.class);
@@ -122,7 +122,7 @@ public class OtpValidatorServiceTest {
 		when(repository.findById(OtpEntity.class, "testKey")).thenReturn(entity);
 		MvcResult result = mockMvc
 				.perform(get("/v1.0/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable()).andReturn();
+				.andExpect(status().isOk()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
 		OtpValidatorResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
 				OtpValidatorResponseDto.class);
