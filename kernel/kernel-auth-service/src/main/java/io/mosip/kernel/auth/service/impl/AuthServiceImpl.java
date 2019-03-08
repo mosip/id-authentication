@@ -1,5 +1,6 @@
 package io.mosip.kernel.auth.service.impl;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,11 +72,20 @@ public class AuthServiceImpl implements AuthService {
 		long currentTime = new Date().getTime();
 		MosipUserDtoToken mosipUserDtoToken = tokenValidator.validateToken(token);
 		AuthToken authToken = customTokenServices.getTokenDetails(token);
+		long tenMinsExp = getExpiryTime(authToken.getExpirationTime());
 		if (mosipUserDtoToken != null && (currentTime < authToken.getExpirationTime())) {
 			return mosipUserDtoToken;
 		} else {
 			throw new NonceExpiredException(AuthConstant.AUTH_TOKEN_EXPIRED_MESSAGE);
 		}
+	}
+
+	private long getExpiryTime(long expirationTime) {
+		Calendar calendar = Calendar.getInstance();
+	    calendar.setTime(new Date(expirationTime));
+	    calendar.add(Calendar.MINUTE, -10);
+	    Date result = calendar.getTime();
+		return result.getTime();
 	}
 
 	/**
