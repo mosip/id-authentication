@@ -129,7 +129,7 @@ public class AuthServiceImpl implements AuthService {
 		} else {
 			mosipUser = userStoreFactory.getDataStoreBasedOnApp(otpUser.getAppId()).authenticateWithOtp(otpUser);
 			authNResponseDto = oTPService.sendOTP(mosipUser, otpUser.getOtpChannel(), otpUser.getAppId());
-			authNResponseDto.setMessage(AuthConstant.OTP_SENT_MESSAGE);
+			authNResponseDto.setMessage(authNResponseDto.getMessage());
 		}
 		return authNResponseDto;
 	}
