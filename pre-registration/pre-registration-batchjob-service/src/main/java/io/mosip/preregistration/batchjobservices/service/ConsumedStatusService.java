@@ -8,12 +8,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
 import io.mosip.preregistration.batchjobservices.entity.DemographicEntityConsumed;
@@ -22,10 +23,12 @@ import io.mosip.preregistration.batchjobservices.entity.DocumentEntityConsumed;
 import io.mosip.preregistration.batchjobservices.entity.ProcessedPreRegEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntityConsumed;
+import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingPKConsumed;
 import io.mosip.preregistration.batchjobservices.exceptions.util.BatchServiceExceptionCatcher;
 import io.mosip.preregistration.batchjobservices.repository.dao.BatchServiceDAO;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.config.LoggerConfiguration;
 
 /**
  * @author Kishan Rathore
@@ -37,10 +40,8 @@ import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 public class ConsumedStatusService {
 
 	/** The Constant LOGGER. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(ConsumedStatusService.class);
+	private Logger log = LoggerConfiguration.logConfig(ConsumedStatusService.class);
 
-	/** The Constant LOGDISPLAY. */
-	private static final String LOGDISPLAY = "{} - {}";
 
 	/** The Constant Status comments. */
 	private static final String STATUS_COMMENTS = "Processed by registration processor";
@@ -57,6 +58,7 @@ public class ConsumedStatusService {
 	/**
 	 * @return Response DTO
 	 */
+	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
 	public MainResponseDTO<String> demographicConsumedStatus() {
 
 		MainResponseDTO<String> response = new MainResponseDTO<>();
@@ -85,17 +87,21 @@ public class ConsumedStatusService {
 
 					RegistrationBookingEntity bookingEntity = batchServiceDAO.getPreRegId(preRegId);
 					BeanUtils.copyProperties(bookingEntity, bookingEntityConsumed);
+					RegistrationBookingPKConsumed consumedPk=new RegistrationBookingPKConsumed();
+					consumedPk.setBookingDateTime(bookingEntity.getBookingPK().getBookingDateTime());
+					consumedPk.setPreregistrationId(bookingEntity.getBookingPK().getPreregistrationId());
+					bookingEntityConsumed.setBookingPK(consumedPk);
 					batchServiceDAO.updateConsumedBooking(bookingEntityConsumed);
 
 					batchServiceDAO.deleteBooking(bookingEntity);
 					batchServiceDAO.deleteDocument(documentEntity);
 					batchServiceDAO.deleteDemographic(demographicEntity);
-					LOGGER.info(LOGDISPLAY, "Update the status successfully into Consumed tables Pre-Registration");
+					log.info("sessionId", "idType", "id", "Update the status successfully into Consumed tables Pre-Registration");
 				}
 
 				iterate.setStatusComments(NEW_STATUS_COMMENTS);
 				batchServiceDAO.updateProcessedList(iterate);
-				LOGGER.info(LOGDISPLAY, "Update the comment successfully into Processed PreId List table");
+				log.info("sessionId", "idType", "id", "Update the comment successfully into Processed PreId List table");
 
 			});
 
