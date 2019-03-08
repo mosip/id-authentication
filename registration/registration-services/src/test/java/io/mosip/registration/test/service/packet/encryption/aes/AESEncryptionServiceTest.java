@@ -16,14 +16,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.core.env.Environment;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.RSAEncryptionService;
@@ -44,15 +43,13 @@ public class AESEncryptionServiceTest {
 	@Mock
 	private AuditFactory auditFactory;
 	@Mock
-	private Environment environment;
-	@Mock
 	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
 
 	private String keySplitter = "#Key_Splitter#";
 
 	@Before
 	public void initialize() throws RegBaseCheckedException {
-		when(environment.getProperty(RegistrationConstants.AES_KEY_CIPHER_SPLITTER)).thenReturn(keySplitter);
+		ReflectionTestUtils.setField(aesEncryptionServiceImpl, "keySplitter", keySplitter);
 	}
 
 	@Test

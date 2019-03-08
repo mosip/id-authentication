@@ -2,8 +2,6 @@ package io.mosip.registration.test.service.packet.encryption;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -17,9 +15,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AuditEvent;
@@ -79,14 +77,8 @@ public class PacketEncryptionServiceTest {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString());
 		doNothing().when(auditLogControlDAO).save(Mockito.any(AuditLogControl.class));
-		
-		ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
-		PowerMockito.mockStatic(ApplicationContext.class);
-		
-		Map<String, Object> globalParams = new HashMap<>();
-		globalParams.put("MAX_REG_PACKET_SIZE", "1");
-		PowerMockito.when(applicationContext.map()).thenReturn(globalParams);
-		PowerMockito.when(ApplicationContext.map()).thenReturn(globalParams);
+
+		ReflectionTestUtils.setField(packetEncryptionServiceImpl, "maxPacketSize", 1);
 	}
 
 	@Test

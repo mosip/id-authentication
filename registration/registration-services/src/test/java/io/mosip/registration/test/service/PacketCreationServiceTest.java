@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.junit.AfterClass;
@@ -19,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.auditmanager.entity.Audit;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
@@ -96,10 +96,9 @@ public class PacketCreationServiceTest {
 			}
 		};
 		
-		Map<String, Object> applicationMap = new HashMap<>();
-		applicationMap.put(RegistrationConstants.CBEFF_ONLY_UNIQUE_TAGS,
+		ReflectionTestUtils.setField(packetCreationServiceImpl, "onlyUniqueRequiredInCBEFF",
 				RegistrationConstants.GLOBAL_CONFIG_TRUE_VALUE);
-		ApplicationContext.getInstance().setApplicationMap(applicationMap);
+		ApplicationContext.getInstance().setApplicationMap(new HashMap<>());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -184,7 +183,7 @@ public class PacketCreationServiceTest {
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
-		ApplicationContext.map().put(RegistrationConstants.CBEFF_ONLY_UNIQUE_TAGS, "N");
+		ReflectionTestUtils.setField(packetCreationServiceImpl, "onlyUniqueRequiredInCBEFF", "N");
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}
@@ -223,7 +222,6 @@ public class PacketCreationServiceTest {
 	@AfterClass
 	public static void destroy() {
 		SessionContext.destroySession();
-		ApplicationContext.getInstance().setApplicationMap(new HashMap<>());
 	}
 
 	private List<Audit> getAudits() {
