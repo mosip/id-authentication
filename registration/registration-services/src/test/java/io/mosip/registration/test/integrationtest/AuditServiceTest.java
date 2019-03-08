@@ -106,7 +106,7 @@ public class AuditServiceTest extends BaseIntegrationTest{
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 
 			con = DriverManager.getConnection("jdbc:derby:D:/Mosip_QA_080_build/mosip/registration/registration-services/reg;bootPassword=mosip12345", "", "");
-			pre = con.prepareStatement("update master.global_param set val='"+val+"' where code='AUDIT_LOG_DELETION_CONFIGURED_DAYS'");
+			pre = con.prepareStatement("update reg.global_param set val='"+val+"' where code='AUDIT_LOG_DELETION_CONFIGURED_DAYS'");
 			int count = pre.executeUpdate();
 
 			con.commit();

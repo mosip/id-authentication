@@ -11,9 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.IOException;
@@ -39,11 +37,10 @@ public class StorageServiceImpl implements StorageService {
 
 	private static final Logger LOGGER = AppConfig.getLogger(StorageServiceImpl.class);
 	
-	@Value("${PACKET_STORE_LOCATION}")
+	@Value("${mosip.registration.registration_packet_store_location:}")
 	private String packetStoreLocation;
-
-	@Autowired
-	private Environment environment;
+	@Value("${mosip.registration.packet_store_date_format:}")
+	private String storeDateFormat;
 
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.service.StorageService#storeToDisk(java.lang.String, byte[], byte[])
@@ -54,9 +51,8 @@ public class StorageServiceImpl implements StorageService {
 			// Generate the file path for storing the Encrypted Packet and Acknowledgement
 			// Receipt
 			String seperator="/";
-			String filePath = packetStoreLocation + seperator
-					+ formatDate(new Date(), environment.getProperty(RegistrationConstants.PACKET_STORE_DATE_FORMAT))
-							.concat(seperator).concat(registrationId);
+			String filePath = packetStoreLocation.concat(seperator).concat(formatDate(new Date(), storeDateFormat))
+					.concat(seperator).concat(registrationId);
 			// Storing the Encrypted Registration Packet as zip
 			FileUtils.copyToFile(new ByteArrayInputStream(CryptoUtil.encodeBase64(packet).getBytes()), new File(filePath.concat(ZIP_FILE_EXTENSION)));
 

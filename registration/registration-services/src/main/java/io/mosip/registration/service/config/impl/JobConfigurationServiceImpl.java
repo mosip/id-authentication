@@ -6,7 +6,6 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -75,7 +74,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	 * Scheduler factory bean which will take Job and Trigger details and run jobs
 	 * implicitly
 	 */
-	@Autowired
+	// @Autowired
 	private SchedulerFactoryBean schedulerFactoryBean;
 
 	/**
@@ -180,16 +179,27 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 			}
 
-			/* Check and Execute missed triggers */
-			executeMissedTriggers(syncActiveJobMap);
+			if (!syncActiveJobMap.isEmpty()) {
 
-			/* Start Scheduler */
-			startScheduler();
+				schedulerFactoryBean = AppConfig.getSchedulerFactoryBean(String.valueOf(syncActiveJobMap.size()));
+
+				/* Check and Execute missed triggers */
+				executeMissedTriggers(syncActiveJobMap);
+
+				/* Start Scheduler */
+				startScheduler();
+
+			}
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+
+		} catch (Exception exception) {
+			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
 		}
 

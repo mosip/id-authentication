@@ -234,12 +234,9 @@ public class RegistrationConstants {
 	public static final String PENDING = "Pending";
 	public static final String EOD_PROCESS_CONFIG_FLAG = "mosip.registration.eod_process_config_flag";
 
-	// AES Encryption Constants
-	public static final String AES_KEY_CIPHER_SPLITTER = "aes.keySplitter";
-
 	// Packet Store Location Constants
-	public static final String PACKET_STORE_LOCATION = "PACKET_STORE_LOCATION";
-	public static final String PACKET_STORE_DATE_FORMAT = "packet.location.dateFormat";
+	public static final String PACKET_STORE_LOCATION = "mosip.registration.registration_packet_store_location";
+	public static final String PACKET_STORE_DATE_FORMAT = "mosip.registration.packet_store_date_format";
 
 	// Packet Creation Constants
 	public static final String ZIP_FILE_EXTENSION = ".zip";
@@ -254,7 +251,6 @@ public class RegistrationConstants {
 	public static final String OFFICER_BIO_CBEFF_FILE_NAME = "officer_bio_CBEFF.xml";
 	public static final String SUPERVISOR_BIO_CBEFF_FILE_NAME = "supervisor_bio_CBEFF.xml";
 	public static final String INTRODUCER_BIO_CBEFF_FILE_NAME = "introducer_bio_CBEFF.xml";
-	public static final String MAX_REG_PACKET_SIZE_IN_MB = "MAX_REG_PACKET_SIZE";
 	public static final String INDIVIDUAL = "INDIVIDUAL";
 	public static final String INTRODUCER = "INTRODUCER";
 	public static final String CBEFF_BIR_UUIDS_MAP_NAME = "CBEFF_BIR_UUIDS";
@@ -295,13 +291,7 @@ public class RegistrationConstants {
 	public static final String APPLICATION_NAME = "REGISTRATION";
 
 	// Audit - Constants
-	public static final String AUDIT_APPLICATION_ID = "audit.applicationId";
-	public static final String AUDIT_APPLICATION_NAME = "audit.applicationName";
 	public static final String AUDIT_DEFAULT_USER = "NA";
-
-	// Default Host IP Address and Name for Audit Logs
-	public static final String HOST_IP = "audit.hostIP";
-	public static final String HOST_NAME = "audit.hostName";
 
 	// OnlineConnectivity check
 	public static final String URL = "http://localhost:8080/getTokenId";
@@ -659,7 +649,6 @@ public class RegistrationConstants {
 
 	// Global configuration parameters
 	public static final String REGISTARTION_CENTER = "REGISTARTION_CENTER";
-	public static final String CBEFF_ONLY_UNIQUE_TAGS = "CBEFF_ONLY_UNIQUE_TAGS";
 	public static final String GLOBAL_CONFIG_TRUE_VALUE = "Y";	
 	public static final String REG_PAK_MAX_CNT_APPRV_LIMIT = "mosip.registration.reg_pak_max_cnt_apprv_limit";
 	public static final String REG_PAK_MAX_TIME_APPRV_LIMIT = "mosip.registration.reg_pak_max_time_apprv_limit";

@@ -134,8 +134,10 @@ public class PacketHandlerController extends BaseController implements Initializ
 	@Value("${mosip.registration.save_ack_inside_packet}")
 	private String saveAck;
 
-	@Value("${PACKET_STORE_LOCATION}")
+	@Value("${mosip.registration.registration_packet_store_location:}")
 	private String packetStoreLocation;
+	@Value("${mosip.registration.packet_store_date_format:}")
+	private String storeDateFormat;
 
 	@Autowired
 	private Environment environment;
@@ -526,8 +528,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				// Receipt
 				String seperator = "/";
 				String filePath = packetStoreLocation + seperator
-						+ formatDate(new Date(),
-								environment.getProperty(RegistrationConstants.PACKET_STORE_DATE_FORMAT))
+						+ formatDate(new Date(), storeDateFormat)
 										.concat(seperator).concat(registrationDTO.getRegistrationId());
 
 				// Storing the Registration Acknowledge Receipt Image

@@ -30,7 +30,7 @@ public class RegistrationPacketVirusScanServiceImpl implements RegistrationPacke
 	@Autowired
 	private VirusScanner<Boolean, String> virusScanner;
 
-	@Value("${PACKET_STORE_LOCATION}")
+	@Value("${mosip.registration.registration_packet_store_location:}")
 	private String packetStoreLocation;
 
 	@Value("${PRE_REG_PACKET_LOCATION}")

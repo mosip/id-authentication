@@ -55,18 +55,6 @@ public class AppConfig {
 	@Qualifier("dataSource")
 	private DataSource datasource;
 
-	/**
-	 * Job processor
-	 */
-	@Autowired
-	private JobProcessListener jobProcessListener;
-
-	/**
-	 * Job Trigger
-	 */
-	@Autowired
-	private JobTriggerListener commonTriggerListener;
-
 	@Autowired
 	private SyncJobConfigDAO syncJobConfigDAO;
 
@@ -103,19 +91,21 @@ public class AppConfig {
 	}
 
 	/**
-	 * scheduler factory bean used to shedule the batch jobs
+	 * scheduler factory bean used to schedule the batch jobs
 	 * 
 	 * @return scheduler factory which includes job detail and trigger detail
+	 * @throws Exception 
 	 */
-	@Bean(name = "schedulerFactoryBean")
-	public SchedulerFactoryBean getSchedulerFactoryBean() {
+	public static SchedulerFactoryBean getSchedulerFactoryBean(String count) throws Exception {
+		JobProcessListener jobProcessListener = new JobProcessListener();
+		JobTriggerListener commonTriggerListener = new JobTriggerListener();
 		SchedulerFactoryBean schFactoryBean = new SchedulerFactoryBean();
 		schFactoryBean.setGlobalTriggerListeners(new TriggerListener[] { commonTriggerListener });
 		schFactoryBean.setGlobalJobListeners(new JobListener[] { jobProcessListener });
 		Properties quartzProperties = new Properties();
-		quartzProperties.put("org.quartz.threadPool.threadCount",
-				String.valueOf(syncJobConfigDAO.getActiveJobs().size()));
+		quartzProperties.put("org.quartz.threadPool.threadCount", count);
 		schFactoryBean.setQuartzProperties(quartzProperties);
+		schFactoryBean.afterPropertiesSet();
 		return schFactoryBean;
 	}
 
