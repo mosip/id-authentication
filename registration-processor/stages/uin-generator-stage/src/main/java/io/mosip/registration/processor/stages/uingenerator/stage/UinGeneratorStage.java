@@ -91,7 +91,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	private String localhost;
 
 	/** The cluster manager url. */
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	/** The id repo create. */

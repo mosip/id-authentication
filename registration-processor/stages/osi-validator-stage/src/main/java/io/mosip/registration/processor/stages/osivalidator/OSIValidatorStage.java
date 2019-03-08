@@ -58,7 +58,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	@Autowired
 	UMCValidator umcValidator;
 
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	private static final String OSI_VALIDATOR_FAILED = "OSI validation failed for registrationId ";

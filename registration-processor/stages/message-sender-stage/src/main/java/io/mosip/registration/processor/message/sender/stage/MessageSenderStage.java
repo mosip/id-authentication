@@ -73,7 +73,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 	private TransactionService<TransactionDto> transcationStatusService;
 
 	/** The cluster manager url. */
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	/** The core audit request builder. */

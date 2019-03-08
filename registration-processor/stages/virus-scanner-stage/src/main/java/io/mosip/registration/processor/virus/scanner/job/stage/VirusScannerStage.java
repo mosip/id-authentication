@@ -71,7 +71,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 	@Autowired
 	private Decryptor decryptor;
 
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	/** The Constant VIRUS_SCAN_FAILED. */

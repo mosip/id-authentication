@@ -51,7 +51,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	private static final String USER = "MOSIP_SYSTEM";
 
 	/** The cluster url. */
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	/** The mosip event bus. */
