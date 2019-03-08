@@ -57,7 +57,7 @@ public class SyncManagerImpl extends BaseService implements SyncManager {
 			syncControl.setId(UUID.randomUUID().toString());
 			syncControl.setSyncJobId(syncTransaction.getSyncJobId());
 			syncControl.setIsActive(true);
-			syncControl.setMachineId(getMacAddress());
+			syncControl.setMachineId(syncTransaction.getMachmId());
 
 			syncControl.setRegcntrId(syncTransaction.getCntrId());
 			syncControl.setLangCode(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANUAGE));
