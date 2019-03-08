@@ -28,7 +28,7 @@ import io.mosip.kernel.idgenerator.prid.util.PridFilterUtils;
  * PridGenerator to generate PRID and generated PRID after the validation from
  * IdFilter
  * 
- * @author M1037462
+ * @author Rupika
  * @author Megha Tanga
  * @author Ritesh Sinha
  * @since 1.0.0
@@ -103,7 +103,7 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 
 		try {
 			listOfEntity = repository.findRandomValues();
-			
+
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new PridException("KER-PRID-001", "Error occur while fetching from db", e);
 		}
