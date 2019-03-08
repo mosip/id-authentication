@@ -399,7 +399,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			 * date is not a holiday for that center
 			 *
 			 */
-			boolean isTrue = registrationCenterRepository.validateDateWithHoliday(localDate, id, langCode);
+			RegistrationCenter registrationCenter = registrationCenterRepository.findByIdAndLangCode(id, langCode);
+			if (registrationCenter == null) {
+				throw new DataNotFoundException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
+			boolean isTrue = registrationCenterRepository.validateDateWithHoliday(localDate,
+					registrationCenter.getHolidayLocationCode());
 			if (isTrue) {
 				resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.INVALID);
 			} else {
