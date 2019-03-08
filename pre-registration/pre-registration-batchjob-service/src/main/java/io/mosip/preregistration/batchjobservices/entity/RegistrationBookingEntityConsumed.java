@@ -30,11 +30,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "reg_appointment", schema = "prereg")
-public class RegistrationBookingEntity implements Serializable {
+@Table(name = "reg_appointment_consumed", schema = "prereg")
+public class RegistrationBookingEntityConsumed implements Serializable {
 
 	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 7886669943207769620L;
+	private static final long serialVersionUID = -7698541520991836493L;
 
 	/** Id. */
 	@Id
@@ -43,7 +43,7 @@ public class RegistrationBookingEntity implements Serializable {
 	
 	/** Booking primary Key. */
 	@Embedded
-	private RegistrationBookingPK bookingPK;
+	private RegistrationBookingPKConsumed bookingPK;
 
 	/** Registration center id. */
 	@Column(name = "regcntr_id")

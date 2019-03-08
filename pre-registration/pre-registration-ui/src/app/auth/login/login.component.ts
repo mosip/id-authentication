@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material';
 import { AuthService } from '../auth.service';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
+import { ConfigService } from 'src/app/core/services/config.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -49,7 +50,8 @@ export class LoginComponent implements OnInit {
     private translate: TranslateService,
     private dialog: MatDialog,
     private dataService: DataStorageService,
-    private regService: RegistrationService
+    private regService: RegistrationService,
+    private configService: ConfigService
   ) {
     const loggedOut = localStorage.getItem('loggedOut');
     this.loggedOutLang = localStorage.getItem('loggedOutLang');
@@ -74,6 +76,15 @@ export class LoginComponent implements OnInit {
       }
     }
     localStorage.setItem('loggedIn', 'false');
+    this.loadConfigs();
+  }
+
+  loadConfigs() {
+    this.dataService.getConfig().subscribe(response => {
+      this.configService.setConfig(response);
+    }, error => {
+      this.router.navigate(['error']);
+    });
   }
 
   showMessage() {
