@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="ID Repo API Automation Suite">
+
+	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
+		regression smokeAndRegression -->
+
+	<test name="ID Repo positve scenerio">
+		<parameter name="testType" value="smoke" />
+		<classes>
+			<class
+				name="io.mosip.authentication.tests.idRepo.IdRepoPostiveScenerio" />
+		</classes>
+	</test>
+
+	<test name="ID Repo store identity data negative scenerio">
+		<parameter name="testType" value="smoke" />
+		<classes>
+			<class
+				name="io.mosip.authentication.tests.idRepo.StoreIdentityDetailIDRepoNegativeScenario" />
+		</classes>
+	</test>
+	<test name="ID Repo Update identity data negative scenerio">
+		<parameter name="testType" value="smoke" />
+		<classes>
+			<class
+				name="io.mosip.authentication.tests.idRepo.UpdateIdentityDetailIDRepoNegativeScenario" />
+		</classes>
+	</test>
+</suite> 
+
