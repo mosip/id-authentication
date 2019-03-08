@@ -7,7 +7,7 @@ import java.security.Security;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.crypto.spi.Encryptor;
@@ -47,8 +47,6 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(AESEncryptionServiceImpl.class);
 	@Autowired
-	private Environment environment;
-	@Autowired
 	private RSAEncryptionService rsaEncryptionService;
 	@Autowired
 	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
@@ -60,6 +58,8 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 	/** The key generator. */
 	@Autowired
 	private KeyGenerator keyGenerator;
+	@Value("${mosip.kernel.data-key-splitter:}")
+	private String keySplitter;
 
 	/*
 	 * (non-Javadoc)
@@ -95,8 +95,7 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 			auditFactory.audit(AuditEvent.PACKET_AES_ENCRYPTED, Components.PACKET_AES_ENCRYPTOR,
 					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
-			return CryptoUtil.combineByteArray(encryptedData, rsaEncryptedKey,
-					environment.getProperty(RegistrationConstants.AES_KEY_CIPHER_SPLITTER));
+			return CryptoUtil.combineByteArray(encryptedData, rsaEncryptedKey, keySplitter);
 		} catch (MosipInvalidDataException mosipInvalidDataException) {
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_INVALID_DATA_ERROR_CODE.getErrorCode(),
 					RegistrationExceptionConstants.REG_INVALID_DATA_ERROR_CODE.getErrorMessage());

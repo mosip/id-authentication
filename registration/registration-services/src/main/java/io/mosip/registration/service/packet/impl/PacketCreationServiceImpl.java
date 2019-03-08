@@ -17,6 +17,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.auditmanager.entity.Audit;
@@ -104,6 +105,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private AuditDAO auditDAO;
 	@Autowired
 	private MachineMappingDAO machineMappingDAO;
+	@Value("${mosip.registration.cbeff_only_unique_tags:}")
+	private String onlyUniqueRequiredInCBEFF;
 
 	/*
 	 * (non-Javadoc)
@@ -303,27 +306,22 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			List<BIR> birs = new ArrayList<>();
 
-			boolean onlyUniqueRequiredInCBEFF = RegistrationConstants.GLOBAL_CONFIG_TRUE_VALUE
-					.equalsIgnoreCase(String.valueOf(ApplicationContext.map()
-							.get(RegistrationConstants.CBEFF_ONLY_UNIQUE_TAGS)));
 			BiometricInfoDTO biometricInfoDTO = getBiometricDataByActor(registrationDTO.getBiometricDTO(), personType);
 
 			if (biometricInfoDTO != null) {
 				// Add Fingerprint
-				createFingerprintsBIR(onlyUniqueRequiredInCBEFF, personType,
-						biometricInfoDTO.getFingerprintDetailsDTO(), birs, birUUIDs);
+				createFingerprintsBIR(personType, biometricInfoDTO.getFingerprintDetailsDTO(), birs, birUUIDs);
 
 				// Add Iris
 				if (isListNotEmpty(biometricInfoDTO.getIrisDetailsDTO())) {
 					for (IrisDetailsDTO iris : biometricInfoDTO.getIrisDetailsDTO()) {
-	
-						BIR bir = buildBIR(onlyUniqueRequiredInCBEFF, iris.getIris(), CbeffConstant.FORMAT_OWNER,
-								CbeffConstant.FORMAT_TYPE_IRIS, (int) Math.round(iris.getQualityScore()),
-								Arrays.asList(SingleType.IRIS),
-								Arrays.asList(
-										iris.getIrisType().equalsIgnoreCase("lefteye") ? SingleAnySubtypeType.LEFT.value()
-												: SingleAnySubtypeType.RIGHT.value()));
-	
+
+						BIR bir = buildBIR(iris.getIris(), CbeffConstant.FORMAT_OWNER, CbeffConstant.FORMAT_TYPE_IRIS,
+								(int) Math.round(iris.getQualityScore()), Arrays.asList(SingleType.IRIS),
+								Arrays.asList(iris.getIrisType().equalsIgnoreCase("lefteye")
+										? SingleAnySubtypeType.LEFT.value()
+										: SingleAnySubtypeType.RIGHT.value()));
+
 						birs.add(bir);
 						birUUIDs.put(personType.concat(iris.getIrisType()).toLowerCase(), bir.getBdbInfo().getIndex());
 					}
@@ -334,17 +332,15 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 					ApplicantDocumentDTO applicantDocumentDTO = registrationDTO.getDemographicDTO()
 							.getApplicantDocumentDTO();
 
-					createFaceBIR(personType, birUUIDs, birs, onlyUniqueRequiredInCBEFF,
-							applicantDocumentDTO.getPhoto(), (int) Math.round(applicantDocumentDTO.getQualityScore()),
+					createFaceBIR(personType, birUUIDs, birs, applicantDocumentDTO.getPhoto(),
+							(int) Math.round(applicantDocumentDTO.getQualityScore()),
 							RegistrationConstants.VALIDATION_TYPE_FACE);
 
-					createFaceBIR(personType, birUUIDs, birs, onlyUniqueRequiredInCBEFF,
-							applicantDocumentDTO.getExceptionPhoto(),
+					createFaceBIR(personType, birUUIDs, birs, applicantDocumentDTO.getExceptionPhoto(),
 							(int) Math.round(applicantDocumentDTO.getQualityScore()),
 							RegistrationConstants.FACE_EXCEPTION);
 				} else {
-					createFaceBIR(personType, birUUIDs, birs, onlyUniqueRequiredInCBEFF,
-							biometricInfoDTO.getFaceDetailsDTO().getFace(),
+					createFaceBIR(personType, birUUIDs, birs, biometricInfoDTO.getFaceDetailsDTO().getFace(),
 							(int) Math.round(biometricInfoDTO.getFaceDetailsDTO().getQualityScore()),
 							RegistrationConstants.VALIDATION_TYPE_FACE);
 				}
@@ -369,13 +365,11 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		}
 	}
 
-
-	private void createFaceBIR(String personType, Map<String, String> birUUIDs, List<BIR> birs,
-			boolean onlyUniqueRequiredInCBEFF, byte[] image, int qualityScore, String imageType) {
+	private void createFaceBIR(String personType, Map<String, String> birUUIDs, List<BIR> birs, byte[] image,
+			int qualityScore, String imageType) {
 		if (image != null) {
-			BIR bir = buildBIR(onlyUniqueRequiredInCBEFF, image, CbeffConstant.FORMAT_OWNER,
-					CbeffConstant.FORMAT_TYPE_FACE, qualityScore, Arrays.asList(SingleType.FACE),
-					Arrays.asList());
+			BIR bir = buildBIR(image, CbeffConstant.FORMAT_OWNER, CbeffConstant.FORMAT_TYPE_FACE, qualityScore,
+					Arrays.asList(SingleType.FACE), Arrays.asList());
 
 			birs.add(bir);
 			birUUIDs.put(personType.concat(imageType).toLowerCase(), bir.getBdbInfo().getIndex());
@@ -405,21 +399,20 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		return biometricInfoDTO;
 	}
 
-	private void createFingerprintsBIR(boolean onlyUniqueRequiredInCBEFF, String personType,
-			List<FingerprintDetailsDTO> fingerprints, List<BIR> birs, Map<String, String> birUUIDs) {
+	private void createFingerprintsBIR(String personType, List<FingerprintDetailsDTO> fingerprints, List<BIR> birs,
+			Map<String, String> birUUIDs) {
 		if (isListNotEmpty(fingerprints)) {
 			for (FingerprintDetailsDTO fingerprint : fingerprints) {
 				if (personType.equals(RegistrationConstants.INDIVIDUAL)
 						&& isListNotEmpty(fingerprint.getSegmentedFingerprints())) {
 					for (FingerprintDetailsDTO segmentedFingerprint : fingerprint.getSegmentedFingerprints()) {
-						BIR bir = buildFingerprintBIR(onlyUniqueRequiredInCBEFF, segmentedFingerprint,
-								segmentedFingerprint.getFingerPrint());
+						BIR bir = buildFingerprintBIR(segmentedFingerprint, segmentedFingerprint.getFingerPrint());
 						birs.add(bir);
 						birUUIDs.put(personType.concat(segmentedFingerprint.getFingerType()).toLowerCase(),
 								bir.getBdbInfo().getIndex());
 					}
 				} else {
-					BIR bir = buildFingerprintBIR(onlyUniqueRequiredInCBEFF, fingerprint, fingerprint.getFingerPrint());
+					BIR bir = buildFingerprintBIR(fingerprint, fingerprint.getFingerPrint());
 					birs.add(bir);
 					birUUIDs.put(personType.concat(fingerprint.getFingerType()).toLowerCase(),
 							bir.getBdbInfo().getIndex());
@@ -428,18 +421,16 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		}
 	}
 
-	private BIR buildFingerprintBIR(boolean onlyUniqueRequiredInCBEFF, FingerprintDetailsDTO fingerprint,
-			byte[] fingerprintImageInBytes) {
-		return buildBIR(onlyUniqueRequiredInCBEFF, fingerprintImageInBytes, CbeffConstant.FORMAT_OWNER,
-				CbeffConstant.FORMAT_TYPE_FINGER, (int) Math.round(fingerprint.getQualityScore()),
-				Arrays.asList(SingleType.FINGER), getFingerSubType(fingerprint.getFingerType()));
+	private BIR buildFingerprintBIR(FingerprintDetailsDTO fingerprint, byte[] fingerprintImageInBytes) {
+		return buildBIR(fingerprintImageInBytes, CbeffConstant.FORMAT_OWNER, CbeffConstant.FORMAT_TYPE_FINGER,
+				(int) Math.round(fingerprint.getQualityScore()), Arrays.asList(SingleType.FINGER),
+				getFingerSubType(fingerprint.getFingerType()));
 	}
 
-	private BIR buildBIR(boolean onlyUniqueRequiredInCBEFF, byte[] bdb, long isoFormatOwner, long formatType,
-			int qualityScore, List<SingleType> type, List<String> subType) {
+	private BIR buildBIR(byte[] bdb, long isoFormatOwner, long formatType, int qualityScore, List<SingleType> type,
+			List<String> subType) {
 
-		return new BIR.BIRBuilder().withBdb(bdb)
-				.withElement(Arrays.asList(getCBEFFTestTag(onlyUniqueRequiredInCBEFF, type.get(0))))
+		return new BIR.BIRBuilder().withBdb(bdb).withElement(Arrays.asList(getCBEFFTestTag(type.get(0))))
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(isoFormatOwner).withFormatType(formatType)
 						.withQuality(qualityScore).withType(type).withSubtype(subType).withPurpose(PurposeType.ENROLL)
@@ -448,16 +439,16 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				.build();
 	}
 
-	private JAXBElement<String> getCBEFFTestTag(boolean onlyUniqueRequiredInCBEFF, SingleType biometricType) {
+	private JAXBElement<String> getCBEFFTestTag(SingleType biometricType) {
 		String testTagType = null;
 		String testTagElementName = null;
 
-		if (onlyUniqueRequiredInCBEFF) {
+		if (RegistrationConstants.GLOBAL_CONFIG_TRUE_VALUE.equalsIgnoreCase(onlyUniqueRequiredInCBEFF)) {
 			testTagType = "Unique";
 		} else {
 			testTagType = random.nextInt() % 2 == 0 ? "Duplicate" : "Unique";
 		}
-		
+
 		if (biometricType.equals(SingleType.FINGER)) {
 			testTagElementName = "TestFinger";
 		} else if (biometricType.equals(SingleType.IRIS)) {
@@ -466,8 +457,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			testTagElementName = "TestFace";
 		}
 
-		return new JAXBElement<>(new QName("testschema", testTagElementName),
-				String.class, testTagType);
+		return new JAXBElement<>(new QName("testschema", testTagElementName), String.class, testTagType);
 	}
 
 	private List<String> getFingerSubType(String fingerType) {
