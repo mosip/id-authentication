@@ -97,6 +97,10 @@ public class BatchServiceDAO {
 	@Qualifier("documentConsumedRepository")
 	private DocumentConsumedRepository documentConsumedRepository;
 
+	/**
+	 * @param preRegId
+	 * @return Demographic details for preregId
+	 */
 	public DemographicEntity getApplicantDemographicDetails(String preRegId) {
 
 		DemographicEntity entity = null;
@@ -114,6 +118,10 @@ public class BatchServiceDAO {
 		return entity;
 	}
 
+	/**
+	 * @param statusComment
+	 * @return List of ProcessedPreRegEntity for given statusComment
+	 */
 	public List<ProcessedPreRegEntity> getAllConsumedPreIds(String statusComment) {
 		List<ProcessedPreRegEntity> entityList = new ArrayList<>();
 		try {
@@ -131,6 +139,10 @@ public class BatchServiceDAO {
 		return entityList;
 	}
 
+	/**
+	 * @param currentdate
+	 * @return List of RegistrationBookingEntity based date less then currentDate
+	 */
 	public List<RegistrationBookingEntity> getAllOldDateBooking(LocalDate currentdate) {
 		List<RegistrationBookingEntity> entityList = new ArrayList<>();
 		try {
@@ -147,6 +159,10 @@ public class BatchServiceDAO {
 		return entityList;
 	}
 
+	/**
+	 * @param preRegId
+	 * @return RegistrationBookingEntity for given prereId 
+	 */
 	public RegistrationBookingEntity getPreRegId(String preRegId) {
 		RegistrationBookingEntity entity = null;
 		try {
@@ -165,10 +181,18 @@ public class BatchServiceDAO {
 
 	}
 	
+	/**
+	 * @param applicantDemographic
+	 * @return updated demographic details.
+	 */
 	public boolean updateApplicantDemographic(DemographicEntity applicantDemographic) {
 		return demographicRepository.save(applicantDemographic)!=null;
 	}
 	
+	/**
+	 * @param entity
+	 * @return updated ProcessedPreRegEntity.
+	 */
 	public boolean updateProcessedList(ProcessedPreRegEntity entity) {
 		 return processedPreIdRepository.save(entity)!=null;
 	}
@@ -207,6 +231,10 @@ public class BatchServiceDAO {
 		}
 	}
 	
+	/**
+	 * @param preregId
+	 * @return DocumentEntity for given prereId
+	 */
 	public DocumentEntity getDocumentDetails(String preregId) {
 		try {
 			DocumentEntity documentEntity=documentRespository.findBypreregId(preregId);
@@ -217,6 +245,10 @@ public class BatchServiceDAO {
 					ErrorMessages.DOCUMENT_TABLE_NOT_ACCESSIBLE.getMessage());
 		}
 	}
+	/**
+	 * @param bookingEntityConsumed
+	 * @return true if consumed table of booking updated.
+	 */
 	public boolean updateConsumedBooking(RegistrationBookingEntityConsumed bookingEntityConsumed) {
 		try {
 			appointmentConsumedRepository.save(bookingEntityConsumed);
@@ -228,6 +260,10 @@ public class BatchServiceDAO {
 		}
 	}
 	
+	/**
+	 * @param entityConsumed
+	 * @return true if consumed table of demographic updated.
+	 */
 	public boolean updateConsumedDemographic(DemographicEntityConsumed entityConsumed){
 		try {
 			demographicConsumedRepository.save(entityConsumed);
@@ -238,6 +274,10 @@ public class BatchServiceDAO {
 					ErrorMessages.DEMOGRAPHIC_CONSUMED_TABLE_NOT_ACCESSIBLE.getMessage());
 		}
 	}
+	/**
+	 * @param entityConsumed
+	 * @return true if consumed of booking updated.
+	 */
 	public boolean updateConsumedDocument(DocumentEntityConsumed entityConsumed) {
 		try {
 			documentConsumedRepository.save(entityConsumed);
