@@ -20,13 +20,15 @@ public interface UinRepository extends JpaRepository<UinEntity, String> {
 	 * 
 	 * @return the number of free uins
 	 */
-	public long countByUsedIsFalse();
+	//public long countByUsedIsFalse();
+	public long countByStatus(String status);
 
 	/**
 	 * Finds an unused uin
 	 * 
 	 * @return an unused uin
 	 */
-	public UinEntity findFirstByUsedIsFalse();
+	//public UinEntity findFirstByUsedIsFalse();
+	public UinEntity findFirstByStatus(String status);
 
 }

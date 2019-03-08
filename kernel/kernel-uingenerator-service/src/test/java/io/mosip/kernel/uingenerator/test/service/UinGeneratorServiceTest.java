@@ -27,7 +27,8 @@ public class UinGeneratorServiceTest {
 	@Test(expected = UinNotFoundException.class)
 	public void uinServiceTest() {
 
-		Mockito.when(uinRepository.findFirstByUsedIsFalse()).thenReturn(null);
+		//Mockito.when(uinRepository.findFirstByUsedIsFalse()).thenReturn(null);
+		Mockito.when(uinRepository.findFirstByStatus("UNUSED")).thenReturn(null);
 		uinGeneratorServiceImpl.getUin();
 	}
 }

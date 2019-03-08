@@ -33,5 +33,14 @@ public class MetaDataUtil {
 		entity.setIsDeleted(false);
 		return entity;
 	}
+	
+	public <T extends BaseEntity> T setMetaDataUpdate(T entity) {
+		String contextUser = UinGeneratorConstant.DEFAULTADMIN_MOSIP_IO;
+		LocalDateTime time = LocalDateTime.now(ZoneId.of(UinGeneratorConstant.UTC));
+		entity.setUpdatedBy(contextUser);
+		entity.setUpdatedtimes(time);
+		entity.setIsDeleted(false);
+		return entity;
+	}
 
 }

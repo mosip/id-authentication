@@ -36,7 +36,8 @@ public class UinEntity extends BaseEntity {
 	/**
 	 * Field whether this uin is used
 	 */
-	@Column(name = "is_used")
-	private boolean used;
+	//@Column(name = "is_used")
+	@Column(name = "uin_status", nullable = false, length = 16)
+	private String status;
 
 }
