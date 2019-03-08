@@ -97,10 +97,6 @@ public class PrintServiceImpl implements PrintService<byte[]> {
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PrintServiceImpl.class);
 
-	/** The cluster manager url. */
-	@Value("${vertx.ignite.configuration}")
-	private String clusterManagerUrl;
-
 	/** The primary language. */
 	@Value("${primary.language}")
 	private String langCode;
@@ -258,7 +254,7 @@ public class PrintServiceImpl implements PrintService<byte[]> {
 				eventName = EventName.EXCEPTION.toString();
 				eventType = EventType.SYSTEM.toString();
 			}
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, uin);
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, uin, ApiName.AUDIT);
 		}
 
 		return pdfBytes;

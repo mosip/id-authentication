@@ -33,7 +33,7 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 	public OtpGenerateResponseDto generateOTP(MosipUserDto mosipUserDto) {
 		try {
 			OtpGenerateRequestDto otpGenerateRequestDto = new OtpGenerateRequestDto(mosipUserDto);
-			final String url = mosipEnvironment.getOtpManagerSvcUrl() + mosipEnvironment.getGenerateOtpApi();
+			final String url = mosipEnvironment.getGenerateOtpApi();
 			OtpGenerateResponseDto otpGenerateResponseDto = restTemplate.postForObject(url, otpGenerateRequestDto,
 					OtpGenerateResponseDto.class);
 			return otpGenerateResponseDto;

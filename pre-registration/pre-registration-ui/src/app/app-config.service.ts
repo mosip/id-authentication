@@ -14,7 +14,8 @@ export class AppConfigService {
       .get('./assets/config.json')
       .toPromise()
       .then(data => {
-        this.appConfig = data;
+      console.log(data);
+        this.appConfig = JSON.parse(data);
       });
   }
 

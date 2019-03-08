@@ -30,7 +30,7 @@ public class RetryStage extends MosipVerticleManager {
 	@Value("${registration.processor.wait.period}")
 	private int waitPeriod;
 
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	private MosipEventBus mosipEventBus;

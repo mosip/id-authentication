@@ -40,7 +40,7 @@ public class AuditLogRequestBuilder {
 	 * @return the audit response dto
 	 */
 	public AuditResponseDto createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,
-			String registrationId) {
+			String registrationId, ApiName apiname) {
 
 		AuditRequestDto auditRequestDto=null;
 		AuditResponseDto auditResponseDto=null;
@@ -64,7 +64,7 @@ public class AuditLogRequestBuilder {
 			auditRequestDto.setModuleName(null);
 			auditRequestDto.setSessionUserId(AuditLogConstant.SYSTEM.toString());
 			auditRequestDto.setSessionUserName(null);
-			auditResponseDto=(AuditResponseDto)registrationProcessorRestService.postApi(ApiName.AUDIT, "", "", auditRequestDto, AuditResponseDto.class);
+			auditResponseDto=(AuditResponseDto)registrationProcessorRestService.postApi(apiname, "", "", auditRequestDto, AuditResponseDto.class);
 
 		} catch (ApisResourceAccessException arae) {
 
