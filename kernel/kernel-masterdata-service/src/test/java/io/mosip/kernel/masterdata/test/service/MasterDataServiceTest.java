@@ -7,7 +7,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
@@ -1412,11 +1411,12 @@ public class MasterDataServiceTest {
 				Mockito.anyString(), Mockito.anyString())).thenReturn(templateList);
 		templateService.getAllTemplateByTemplateTypeCode("EMAIL");
 	}
-	
+
 	@Test(expected = MasterDataServiceException.class)
 	public void getAllTemplateByTemplateTypeCodeFetchExceptionTest() {
-		Mockito.when(templateRepository.findAllByTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(
-				 Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(
+				templateRepository.findAllByTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
 		templateService.getAllTemplateByTemplateTypeCode("EMAIL");
 	}
 
@@ -1576,21 +1576,9 @@ public class MasterDataServiceTest {
 	// ---------------------RegistrationCenterIntegrationTest-validatetimestamp----------------//
 
 	@Test
-	public void getStatusOfWorkingHoursRejectedTest() throws Exception {
-		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
+	public void getStatusOfWorkingDayRejectedTest() throws Exception {
+		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(true);
-		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
-				.thenReturn(registrationCenter);
-		LocalTime startTime = LocalTime.of(10, 00, 000);
-		LocalTime endTime = LocalTime.of(18, 00, 000);
-		registrationCenter.setCenterStartTime(startTime);
-		registrationCenter.setCenterEndTime(endTime);
-		/*
-		 * mockMvc.perform(get(
-		 * "/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
-		 * .andExpect(status().isOk());
-		 */
-
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
 				.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-12T17:59:59.999Z");
 
@@ -1599,24 +1587,11 @@ public class MasterDataServiceTest {
 	}
 
 	@Test
-	public void getStatusOfWorkingHoursTest() throws Exception {
-		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
+	public void getStatusOfWorkingDayTest() throws Exception {
+		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(false);
-		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.any(), Mockito.anyString()))
-				.thenReturn(registrationCenter);
-		LocalTime startTime = LocalTime.of(10, 00, 000);
-		LocalTime endTime = LocalTime.of(18, 00, 000);
-		registrationCenter.setCenterStartTime(startTime);
-		registrationCenter.setCenterEndTime(endTime);
-
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
 				.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-12T17:59:59.999Z");
-
-		/*
-		 * mockMvc.perform(get(
-		 * "/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
-		 * .andExpect(status().isOk());
-		 */
 
 		Assert.assertEquals(MasterDataConstant.VALID, resgistrationCenterStatusResponseDto.getStatus());
 
@@ -1624,60 +1599,16 @@ public class MasterDataServiceTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getStatusOfWorkingHoursServiceExceptionTest() throws Exception {
-		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
+		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
-				.thenReturn(registrationCenter);
-
 		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-12T17:59:59.999Z");
-
-	}
-
-	@Test(expected = DataNotFoundException.class)
-	public void getStatusOfWorkingHoursDataNotFoundExceptionTest() throws Exception {
-		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
-				.thenReturn(false);
-		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString())).thenReturn(null);
-
-		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-12T17:59:59.999Z");
-
-	}
-
-	@Test(expected = DataNotFoundException.class)
-	public void getStatusOfWorkingHoursDataNotFoundTest() throws Exception {
-		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
-				.thenReturn(false);
-		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
-				.thenReturn(registrationCenter);
-
-		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-12T17:59:59.999Z");
-
-	}
-
-	@Test
-	public void getStatusOfWorkingHoursRejectedWorkingHourTest() throws Exception {
-		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
-				.thenReturn(false);
-		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.any(), Mockito.anyString()))
-				.thenReturn(registrationCenter);
-		LocalTime startTime = LocalTime.of(10, 00, 000);
-		LocalTime endTime = LocalTime.of(15, 00, 000);
-		registrationCenter.setCenterStartTime(startTime);
-		registrationCenter.setCenterEndTime(endTime);
-
-		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
-				.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-12T17:59:59.999Z");
-
-		Assert.assertEquals(MasterDataConstant.INVALID, resgistrationCenterStatusResponseDto.getStatus());
 
 	}
 
 	@Test(expected = RequestException.class)
 	public void invalidDateFormatTest() throws Exception {
-		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
+		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(false);
-		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
-				.thenReturn(registrationCenter);
 
 		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-1217:59:59.999Z");
 
