@@ -188,7 +188,7 @@ public class DocumentControllerTest {
 	@Test
 	public void successDelete() throws Exception {
 		Mockito.when(service.deleteDocument(documentId)).thenReturn(responseCopy);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/deleteDocument")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/documents")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("documentId", documentId);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -200,7 +200,7 @@ public class DocumentControllerTest {
 	@Test
 	public void getAllDocumentforPreidTest() throws Exception {
 		Mockito.when(service.getAllDocumentForPreId("48690172097498")).thenReturn(responseCopy);
-		mockMvc.perform(get("/getDocument").contentType(MediaType.APPLICATION_JSON_VALUE)
+		mockMvc.perform(get("/documents").contentType(MediaType.APPLICATION_JSON_VALUE)
 				.param("pre_registration_id", "48690172097498")).andExpect(status().isOk());
 	}
 
@@ -210,7 +210,7 @@ public class DocumentControllerTest {
 	@Test
 	public void deletetAllDocumentByPreidTest() throws Exception {
 		Mockito.when(service.deleteAllByPreId("48690172097498")).thenReturn(responseDelete);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/deleteAllByPreRegId")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/documents/byPreRegId")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", "48690172097498");
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -222,7 +222,7 @@ public class DocumentControllerTest {
 	@Test
 	public void copyDocumentTest() throws Exception {
 		Mockito.when(service.copyDocument("POA", "48690172097498", "1234567891")).thenReturn(responseCopy);
-		mockMvc.perform(post("/copyDocuments").contentType(MediaType.APPLICATION_JSON_VALUE)
+		mockMvc.perform(post("/documents/copy").contentType(MediaType.APPLICATION_JSON_VALUE)
 				.param("catCode", "POA").param("sourcePrId", "48690172097498").param("destinationPreId", "1234567891"))
 				.andExpect(status().isOk());
 	}
@@ -233,7 +233,7 @@ public class DocumentControllerTest {
 	@Test(expected = Exception.class)
 	public void FailuregetAllDocumentforPreidTest() throws Exception {
 		Mockito.when(service.getAllDocumentForPreId("2")).thenThrow(Exception.class);
-		mockMvc.perform(get("/getDocument").contentType(MediaType.APPLICATION_JSON_VALUE)
+		mockMvc.perform(get("/documents").contentType(MediaType.APPLICATION_JSON_VALUE)
 				.param("preId", "2")).andExpect(status().isInternalServerError());
 
 	}
@@ -246,7 +246,7 @@ public class DocumentControllerTest {
 		Mockito.when(service.copyDocument(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(Exception.class);
 
-		mockMvc.perform(post("/copyDocuments").contentType(MediaType.APPLICATION_JSON_VALUE)
+		mockMvc.perform(post("/documents/copy").contentType(MediaType.APPLICATION_JSON_VALUE)
 				.param("catCype", Mockito.anyString()).param("sourcePrId", Mockito.anyString())
 				.param("destinationPreId", Mockito.anyString())).andExpect(status().isBadRequest());
 

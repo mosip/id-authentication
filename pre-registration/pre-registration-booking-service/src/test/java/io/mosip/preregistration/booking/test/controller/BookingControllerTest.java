@@ -29,8 +29,6 @@ import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
-import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdDTO;
-import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.booking.service.BookingService;
 import io.mosip.preregistration.booking.service.util.BookingServiceUtil;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
@@ -39,6 +37,8 @@ import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
+import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 /**
@@ -132,7 +132,7 @@ public class BookingControllerTest {
 	public void getAvailability() throws Exception {
 		MainResponseDTO<AvailabilityDto> response = new MainResponseDTO<>();
 		Mockito.when(service.getAvailability(Mockito.any())).thenReturn(response);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/availability")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/appointment/availability")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("registration_center_id", "1");
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -143,7 +143,7 @@ public class BookingControllerTest {
 		MainResponseDTO<String> response = new MainResponseDTO<>();
 		Mockito.when(service.addAvailability()).thenReturn(response);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.get("/masterSynchronization")
+				.get("/appointment/availability/sync")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -161,7 +161,7 @@ public class BookingControllerTest {
 
 		Mockito.when(service.bookAppointment(bookingDTO)).thenReturn(responseDto);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/book")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/appointment")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
 
@@ -176,7 +176,7 @@ public class BookingControllerTest {
 		bookingDTO.setRequest(null);
 		Mockito.when(service.bookAppointment(bookingDTO)).thenReturn(responseDto);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/book")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/appointment")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
 
@@ -196,7 +196,7 @@ public class BookingControllerTest {
 
 		Mockito.when(service.cancelAppointment(dto)).thenReturn(responseDto);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/book")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/appointment")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject1.toString());
 
@@ -211,7 +211,7 @@ public class BookingControllerTest {
 		dto.setRequest(null);
 		Mockito.when(service.cancelAppointment(dto)).thenReturn(responseDto);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/book")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/appointment")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject1.toString());
 
@@ -222,7 +222,7 @@ public class BookingControllerTest {
 	public void getAppointmentDetails() throws Exception {
 		MainResponseDTO<BookingRegistrationDTO> response=new MainResponseDTO<>();
 		Mockito.when(service.getAppointmentDetails("12345")).thenReturn(response);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/appointmentDetails")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/appointment")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", "12345");
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -239,7 +239,7 @@ response.setResTime(serviceUtil.getCurrentResponseTime());
 
 		Mockito.when(service.getPreIdsByRegCenterId(requestDTO)).thenReturn(response);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/bookedPreIdsByRegId")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/appointment/preIdsByRegId")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject1.toString());
 
@@ -259,7 +259,7 @@ response.setResTime(serviceUtil.getCurrentResponseTime());
 		response.setResponse(DeleteList);
 		Mockito.when(service.deleteBooking(preId)).thenReturn(response);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/deleteBooking")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/appointment")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", preId);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
