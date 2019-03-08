@@ -23,7 +23,7 @@ public class TestDataGenerator {
 	 * @param dataParam
 	 * @return
 	 */
-	/*	@SuppressWarnings("unchecked")
+		@SuppressWarnings("unchecked")
 	public String getYamlData(String modulename, String apiname, String testData, String dataParam) {
 		Yaml yaml = new Yaml();
 		String testdata = null;
@@ -35,11 +35,11 @@ public class TestDataGenerator {
 			obj.setYamlObject((Map<String, List<Object>>) yaml.load(inputStream));
 			List<Object> list = obj.getYamlObject().get(dataParam);
 			Random random = new Random();
-			testdata = (String) list.get(random.nextInt(list.size()));
+			testdata = (String) list.get(random.nextInt(list.size())).toString();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		return testdata;
 
-	}*/
+	}
 }
