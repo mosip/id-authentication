@@ -36,13 +36,13 @@ public class RegistrationPacketVirusScanServiceImpl implements RegistrationPacke
 	@Value("${PRE_REG_PACKET_LOCATION}")
 	private String preRegPacketLocation;
 	
-	@Value("$(mosip.registration.logs_path)")
+	@Value("$(mosip.registration.logs_path:)")
 	private String logPath;
 	
-	@Value("${mosip.registration.database_path}")
+	@Value("${mosip.registration.database_path:}")
 	private String dbPath;
 	
-	@Value("${mosip.registration.client_path}")
+	@Value("${mosip.registration.client_path:}")
 	private String clientPath;
 
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationPacketVirusScanServiceImpl.class);

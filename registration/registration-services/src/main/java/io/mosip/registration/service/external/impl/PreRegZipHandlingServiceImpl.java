@@ -63,7 +63,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 	@Value("${PRE_REG_PACKET_LOCATION}")
 	private String preRegPacketLocation;
-	@Value("${mosip.registration.identity-class-name}")
+	@Value("${mosip.registration.identity-class-name:}")
 	private String identityClassName;
 
 	@Autowired

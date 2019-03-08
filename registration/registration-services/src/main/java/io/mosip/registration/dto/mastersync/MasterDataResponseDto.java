@@ -23,7 +23,7 @@ public class MasterDataResponseDto {
 	private List<HolidayDto> holidays;
 	private List<DocumentCategoryDto> documentCategories;
 	private List<DocumentTypeDto> documentTypes;
-	private List<ValidDocumentDto> validDocumentMapping;
+	private List<ValidDocumentDto> applicantValidDocuments;
 	private List<TemplateDto> templates;
 	private List<TemplateTypeDto> templatesTypes;
 	private List<TemplateFileFormatDto> templateFileFormat;
@@ -271,18 +271,12 @@ public class MasterDataResponseDto {
 		this.documentTypes = documentTypes;
 	}
 
-	/**
-	 * @return the validDocumentMapping
-	 */
-	public List<ValidDocumentDto> getValidDocumentMapping() {
-		return validDocumentMapping;
+	public List<ValidDocumentDto> getApplicantValidDocuments() {
+		return applicantValidDocuments;
 	}
 
-	/**
-	 * @param validDocumentMapping the validDocumentMapping to set
-	 */
-	public void setValidDocumentMapping(List<ValidDocumentDto> validDocumentMapping) {
-		this.validDocumentMapping = validDocumentMapping;
+	public void setApplicantValidDocuments(List<ValidDocumentDto> applicantValidDocuments) {
+		this.applicantValidDocuments = applicantValidDocuments;
 	}
 
 	/**

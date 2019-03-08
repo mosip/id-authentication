@@ -57,7 +57,7 @@ public class SendNotificationController extends BaseController implements Initia
 	@FXML
 	private Button send;
 
-	@Value("${mosip.registration.mode_of_communication}")
+	@Value("${mosip.registration.mode_of_communication:}")
 	private String modeOfCommunication;
 
 	@Autowired

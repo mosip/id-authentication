@@ -379,10 +379,10 @@ public class DemographicDetailController extends BaseController {
 	@Autowired
 	private JsonValidator jsonValidator;
 
-	@Value("${mosip.registration.age_limit_for_child}")
+	@Value("${mosip.registration.age_limit_for_child:0}")
 	private int minAge;
 	
-	@Value("${mosip.registration.max_age}")
+	@Value("${mosip.registration.max_age:0}")
 	private int maxAge;
 	private FXUtils fxUtils;
 	private Date dateOfBirth;

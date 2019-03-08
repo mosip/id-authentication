@@ -21,51 +21,33 @@ public class ValidDocumentId implements Serializable {
 	private String docTypeCode;
 
 	@Column(name = "doccat_code")
-	private String docCategoryCode;
+	private String docCatCode;
 
 	@Column(name = "apptyp_code")
-	private String applicantCode;
+	private String appTypeCode;
 
-	/**
-	 * @return the applicantCode
-	 */
-	public String getApplicantCode() {
-		return applicantCode;
-	}
-
-	/**
-	 * @param applicantCode the applicantCode to set
-	 */
-	public void setApplicantCode(String applicantCode) {
-		this.applicantCode = applicantCode;
-	}
-
-	/**
-	 * @return the docTypeCode
-	 */
 	public String getDocTypeCode() {
 		return docTypeCode;
 	}
 
-	/**
-	 * @param docTypeCode the docTypeCode to set
-	 */
 	public void setDocTypeCode(String docTypeCode) {
 		this.docTypeCode = docTypeCode;
 	}
 
-	/**
-	 * @return the docCategoryCode
-	 */
-	public String getDocCategoryCode() {
-		return docCategoryCode;
+	public String getDocCatCode() {
+		return docCatCode;
 	}
 
-	/**
-	 * @param docCategoryCode the docCategoryCode to set
-	 */
-	public void setDocCategoryCode(String docCategoryCode) {
-		this.docCategoryCode = docCategoryCode;
+	public void setDocCatCode(String docCatCode) {
+		this.docCatCode = docCatCode;
+	}
+
+	public String getAppTypeCode() {
+		return appTypeCode;
+	}
+
+	public void setAppTypeCode(String appTypeCode) {
+		this.appTypeCode = appTypeCode;
 	}
 
 }

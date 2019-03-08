@@ -157,11 +157,11 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Value("${PROVIDER_NAME}")
 	private String deviceName;
-
-	@Value("${mosip.registration.invalid_login_count}")
+	
+	@Value("${mosip.registration.invalid_login_count:0}")
 	private int invalidLoginCount;
-
-	@Value("${mosip.registration.invalid_login_time}")
+	
+	@Value("${mosip.registration.invalid_login_time:0}")
 	private int invalidLoginTime;
 
 	@Autowired

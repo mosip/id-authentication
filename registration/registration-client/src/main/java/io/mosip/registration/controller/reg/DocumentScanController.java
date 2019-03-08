@@ -159,7 +159,7 @@ public class DocumentScanController extends BaseController {
 	@Value("${DOCUMENT_SCANNER_DOCTYPE}")
 	private String scannerDocType;
 	
-	@Value("${mosip.registration.age_limit_for_child}")
+	@Value("${mosip.registration.age_limit_for_child:0}")
 	private int minAge;
 
 	private List<BufferedImage> docPages;

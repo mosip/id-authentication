@@ -69,7 +69,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 	@Autowired
 	private SendNotificationController sendNotificationController;
 
-	@Value("${mosip.registration.send_notification_disable_flag}")
+	@Value("${mosip.registration.send_notification_disable_flag:}")
 	private String sendNotificationFlag;
 
 	public RegistrationDTO getRegistrationData() {

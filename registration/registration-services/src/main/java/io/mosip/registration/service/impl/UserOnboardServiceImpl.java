@@ -39,13 +39,13 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 	@Autowired
 	private UserOnboardDAO userOnBoardDao;
 	
-	@Value("${mosip.registration.fingerprint_disable_flag}")
+	@Value("${mosip.registration.fingerprint_disable_flag:}")
 	protected String fingerprintDisableFlag;
 
-	@Value("${mosip.registration.iris_disable_flag}")
+	@Value("${mosip.registration.iris_disable_flag:}")
 	protected String irisDisableFlag;
 
-	@Value("${mosip.registration.face_disable_flag}")
+	@Value("${mosip.registration.face_disable_flag:}")
 	protected String faceDisableFlag;
 
 	/**

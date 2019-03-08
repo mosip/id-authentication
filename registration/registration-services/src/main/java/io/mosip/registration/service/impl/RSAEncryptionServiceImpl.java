@@ -43,7 +43,7 @@ public class RSAEncryptionServiceImpl implements RSAEncryptionService {
 	private PolicySyncDAO policySyncDAO;
 	@Autowired
 	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
-	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-name}")
+	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-name:}")
 	private String asymmetricAlgorithmName;
 
 	/*

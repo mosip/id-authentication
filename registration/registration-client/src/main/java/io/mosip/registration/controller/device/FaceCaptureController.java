@@ -91,7 +91,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	@Autowired
 	private UserOnboardParentController userOnboardParentController;
 
-	@Value("${mosip.registration.face_recapture_time}")
+	@Value("${mosip.registration.face_recapture_time:}")
 	private String configuredSecondsForRecapture;
 
 	private Timestamp lastPhotoCaptured;

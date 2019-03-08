@@ -358,7 +358,7 @@ public class MasterSyncDaoImplTest {
 		masterSyncDto.setMachineDetails(masterMachineDto);
 
 		List<ValidDocumentDto> masterValidDocumnetsDto = new ArrayList<>();
-		masterSyncDto.setValidDocumentMapping(masterValidDocumnetsDto);
+		masterSyncDto.setApplicantValidDocuments(masterValidDocumnetsDto);
 
 		List<TemplateDto> masterTemplateDto = new ArrayList<>();
 		TemplateDto templet = new TemplateDto();
@@ -720,9 +720,9 @@ public class MasterSyncDaoImplTest {
 		List<ValidDocument> validDocuments = new ArrayList<>();
 		ValidDocument MasterValidDocuments = new ValidDocument();
 		ValidDocumentId validDocumentId=new ValidDocumentId();
-		validDocumentId.setDocCategoryCode("D101");
+		validDocumentId.setDocCatCode("D101");
 		validDocumentId.setDocTypeCode("DC101");
-		validDocumentId.setApplicantCode("007");
+		validDocumentId.setAppTypeCode("007");
 		MasterValidDocuments.setValidDocumentId(validDocumentId);
 		MasterValidDocuments.setLangCode("ENG");
 		validDocuments.add(MasterValidDocuments);
@@ -826,7 +826,7 @@ public class MasterSyncDaoImplTest {
 		masterSyncDto.setMachineDetails(masterMachineDto);
 
 		List<ValidDocumentDto> masterValidDocumnetsDto = new ArrayList<>();
-		masterSyncDto.setValidDocumentMapping(masterValidDocumnetsDto);
+		masterSyncDto.setApplicantValidDocuments(masterValidDocumnetsDto);
 
 		List<TemplateDto> masterTemplateDto = new ArrayList<>();
 		masterSyncDto.setTemplates(masterTemplateDto);
@@ -1009,7 +1009,7 @@ public class MasterSyncDaoImplTest {
 		masterSyncDto.setMachineDetails(masterMachineDto);
 
 		List<ValidDocumentDto> masterValidDocumnetsDto = new ArrayList<>();
-		masterSyncDto.setValidDocumentMapping(masterValidDocumnetsDto);
+		masterSyncDto.setApplicantValidDocuments(masterValidDocumnetsDto);
 
 		List<TemplateDto> masterTemplateDto = new ArrayList<>();
 		masterSyncDto.setTemplates(masterTemplateDto);
@@ -1193,7 +1193,7 @@ public class MasterSyncDaoImplTest {
 		masterSyncDto.setMachineDetails(masterMachineDto);
 
 		List<ValidDocumentDto> masterValidDocumnetsDto = new ArrayList<>();
-		masterSyncDto.setValidDocumentMapping(masterValidDocumnetsDto);
+		masterSyncDto.setApplicantValidDocuments(masterValidDocumnetsDto);
 
 		List<TemplateDto> masterTemplateDto = new ArrayList<>();
 		masterSyncDto.setTemplates(masterTemplateDto);
@@ -1377,7 +1377,7 @@ public class MasterSyncDaoImplTest {
 		masterSyncDto.setMachineDetails(masterMachineDto);
 
 		List<ValidDocumentDto> masterValidDocumnetsDto = new ArrayList<>();
-		masterSyncDto.setValidDocumentMapping(masterValidDocumnetsDto);
+		masterSyncDto.setApplicantValidDocuments(masterValidDocumnetsDto);
 
 		List<TemplateDto> masterTemplateDto = new ArrayList<>();
 		masterSyncDto.setTemplates(masterTemplateDto);
@@ -1677,9 +1677,9 @@ public class MasterSyncDaoImplTest {
 		List<ValidDocument> docList = new ArrayList<>();
 		ValidDocument docs = new ValidDocument();
 		ValidDocumentId validDocumentId=new ValidDocumentId();
-		validDocumentId.setDocCategoryCode("D101");
+		validDocumentId.setDocCatCode("D101");
 		validDocumentId.setDocTypeCode("DC101");
-		validDocumentId.setApplicantCode("007");
+		validDocumentId.setAppTypeCode("007");
 		docs.setValidDocumentId(validDocumentId);
 		docs.setLangCode("eng");
 		docList.add(docs);

@@ -33,9 +33,9 @@ public class ValidDocumentDAOImplTest {
 
 		ValidDocument validDocument = new ValidDocument();
 		ValidDocumentId validDocumentId=new ValidDocumentId();
-		validDocumentId.setDocCategoryCode("D101");
+		validDocumentId.setDocCatCode("D101");
 		validDocumentId.setDocTypeCode("DC101");
-		validDocumentId.setApplicantCode("007");
+		validDocumentId.setAppTypeCode("007");
 		validDocument.setValidDocumentId(validDocumentId);
 		//validDocument.setDescription("description");
 		//validDocument.setCreatedTimesZone(new Timestamp(new Date().getTime()));

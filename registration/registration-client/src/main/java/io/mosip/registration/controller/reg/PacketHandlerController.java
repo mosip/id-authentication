@@ -131,7 +131,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	@Autowired
 	private PacketHandlerService packetHandlerService;
 
-	@Value("${mosip.registration.save_ack_inside_packet}")
+	@Value("${mosip.registration.save_ack_inside_packet:}")
 	private String saveAck;
 
 	@Value("${mosip.registration.registration_packet_store_location:}")
