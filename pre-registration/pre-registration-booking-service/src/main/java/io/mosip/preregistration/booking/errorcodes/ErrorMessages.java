@@ -14,14 +14,6 @@ package io.mosip.preregistration.booking.errorcodes;
  * @since 1.0.0
  *
  */
-/**
- * @author M1043008
- *
- */
-/**
- * @author M1043008
- *
- */
 public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_BOOK_RCI_001
