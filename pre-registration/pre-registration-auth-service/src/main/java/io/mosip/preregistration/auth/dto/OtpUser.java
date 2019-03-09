@@ -2,6 +2,7 @@ package io.mosip.preregistration.auth.dto;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@AllArgsConstructor
 public class OtpUser {
 	private String userId;
     private String langCode;

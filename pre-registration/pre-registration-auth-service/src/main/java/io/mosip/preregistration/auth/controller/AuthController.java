@@ -22,7 +22,9 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.auth.dto.MainRequestDTO;
 import io.mosip.preregistration.auth.dto.MainResponseDTO;
 import io.mosip.preregistration.auth.dto.OtpUserDTO;
+import io.mosip.preregistration.auth.dto.Otp;
 import io.mosip.preregistration.auth.dto.UserOtpDTO;
+import io.mosip.preregistration.auth.dto.User;
 import io.mosip.preregistration.auth.service.AuthService;
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
@@ -55,7 +57,7 @@ public class AuthController {
 	@PostMapping(value = "/sendotp",produces=MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Send Otp to UserId")
 	@ResponseStatus(value = HttpStatus.OK)
-	public ResponseEntity<MainResponseDTO<AuthNResponse>> sendOTP(@RequestBody MainRequestDTO<OtpUserDTO> userOtpRequest ){
+	public ResponseEntity<MainResponseDTO<AuthNResponse>> sendOTP(@RequestBody MainRequestDTO<Otp> userOtpRequest ){
 		log.info("sessionId", "idType", "id",
 				"In sendOtp method of Auth controller for sending Otp ");
 		return ResponseEntity.status(HttpStatus.OK).body(authService.sendOTP(userOtpRequest));
@@ -69,7 +71,7 @@ public class AuthController {
 	@PostMapping(value="/useridotp",produces=MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Validate UserId and Otp")
 	@ResponseStatus(value=HttpStatus.OK)
-	public ResponseEntity<MainResponseDTO<AuthNResponse>> validateWithUserIdOtp(@RequestBody MainRequestDTO<UserOtpDTO> userIdOtpRequest,HttpServletResponse res){
+	public ResponseEntity<MainResponseDTO<AuthNResponse>> validateWithUserIdOtp(@RequestBody MainRequestDTO<User> userIdOtpRequest,HttpServletResponse res){
 		log.info("sessionId", "idType", "id",
 				"In validateWithUserIdotp method of Auth controller for validating user and Otp and providing the access token ");
 		MainResponseDTO<ResponseEntity<AuthNResponse>> serviceResponse=authService.validateWithUserIdOtp(userIdOtpRequest);
