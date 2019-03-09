@@ -32,7 +32,7 @@ export class DialougComponent implements OnInit {
   disableAddButton = true;
   constructor(
     public dialogRef: MatDialogRef<DialougComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData | any,
     private authService: AuthService,
     private location: Location,
     private regService: RegistrationService
@@ -70,22 +70,6 @@ export class DialougComponent implements OnInit {
     } else {
       this.invalidApplicantEmail = true;
     }
-  }
-
-  addToList() {
-    this.addedList.push(this.selectedName);
-    this.input.names.splice(this.input.names.indexOf(this.selectedName), 1);
-    this.selectedName = {};
-    this.disableAddButton = true;
-  }
-
-  itemDelete(item: any) {
-    this.input.names.push(item);
-    this.addedList.splice(this.addedList.indexOf(item), 1);
-  }
-
-  enableButton() {
-    this.disableAddButton = false;
   }
 
   onSelectCheckbox() {
