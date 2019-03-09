@@ -1,6 +1,11 @@
 package io.mosip.preregistration.auth.service;
 
-
+/**
+ * This class provides different methods for login called by the controller 
+ * 
+ * @author M1050360
+ * @since 1.0.0
+ */
 
 import java.util.List;
 
@@ -124,7 +129,6 @@ public class AuthService {
 		response.setResponse(responseEntity);
 		}
 		catch(HttpClientErrorException | HttpServerErrorException ex) {
-			System.out.println(ex.getResponseBodyAsString());
 			log.error("sessionId", "idType", "id",
 					"In calluserIdOtp method of kernel service- " + ex.getMessage());
 			new AuthExceptionCatcher().handle(ex,"userIdOtp");	
@@ -146,7 +150,7 @@ public class AuthService {
 		response.setResponse(responseEntity.getBody());
 		}
 		catch(HttpClientErrorException | HttpServerErrorException ex) {
-			System.out.println(ex.getResponseBodyAsString());
+			
 			log.error("sessionId", "idType", "id",
 					"In calluserIdOtp method of kernel service- " + ex.getMessage());
 			new AuthExceptionCatcher().handle(ex,"userIdOtp");	

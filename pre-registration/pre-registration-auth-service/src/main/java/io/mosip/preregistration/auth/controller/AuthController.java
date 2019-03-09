@@ -1,11 +1,13 @@
 package io.mosip.preregistration.auth.controller;
 
+import java.net.HttpCookie;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.coyote.http2.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -81,22 +83,24 @@ public class AuthController {
 		ResponseEntity<AuthNResponse> response=serviceResponse.getResponse();
 		responseBody.setResponse(response.getBody());
 		HttpHeaders headers=response.getHeaders();
-		System.out.println(headers.get("Set-Cookie"));
-		String content=headers.get("Set-Cookie").get(0).replaceAll("Authorization=", "");
-		System.out.println("Cookie added : "+content);
-		List<String> contentArray=Arrays.asList(content.split(";"));
-		
-		Cookie cookie=createCookie(contentArray.get(0),6000000);
-		res.addCookie(cookie);
+		String content=headers.get("Set-Cookie").get(0);
+		List<HttpCookie> httpCookies=HttpCookie.parse(content);
+		httpCookies.stream().forEach(httpCookie->res.addCookie(createCookie(httpCookie)));
 		return ResponseEntity.status(HttpStatus.OK).body(responseBody);
 	}
-	private Cookie createCookie(final String content, final int expirationTimeSeconds) {
-        final Cookie cookie = new Cookie("Authorization", content);
-        cookie.setMaxAge(expirationTimeSeconds);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        return cookie;
+	
+	/**
+	 * This method is used to create a cookie
+	 * @param cookie
+	 * @return cookie
+	 */
+	private Cookie createCookie(final HttpCookie cookie) {
+        final Cookie responseCookie = new Cookie(cookie.getName(),cookie.getValue());
+        responseCookie.setMaxAge((int) cookie.getMaxAge());
+        responseCookie.setHttpOnly(cookie.isHttpOnly());
+        responseCookie.setSecure(cookie.getSecure());
+        responseCookie.setPath(cookie.getPath());
+        return responseCookie;
   }
 
 }
