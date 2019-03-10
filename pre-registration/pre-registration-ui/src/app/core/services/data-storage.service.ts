@@ -257,6 +257,7 @@ export class DataStorageService {
   APPLICANT_VALID_DOCUMENTS_URL =
     this.BASE_URL2 + appConstants.APPEND_URL.location + appConstants.APPEND_URL.validDocument;
   DISTANCE = 2000;
+  AUTH_URL = this.BASE_URL + this.PRE_REG_URL + 'auth/'
 
   getUsers(value: string) {
     return this.httpClient.get<Applicant[]>(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants, {
@@ -462,20 +463,35 @@ export class DataStorageService {
     console.log(userId);
 
     const req = {
-      appId: 'preregistration',
-      langCode: 'fre',
-      otpChannel: ['mobile'],
+      langCode: localStorage.getItem('langCode'),
       userId: userId,
-      useridtype: 'userid'
     };
 
     const obj = {
       id: appConstants.IDS.newUser,
-      ver: appConstants.VERSION,
-      reqTime: Utils.getCurrentDate(),
+      version: appConstants.VERSION,
+      requesttime: Utils.getCurrentDate(),
       request: req
     };
 
-    return this.httpClient.post(this.BASE_URL + this.PRE_REG_URL + '/auth', obj);
+    return this.httpClient.post(this.AUTH_URL + 'sendotp', obj);
+  }
+
+  verifyOtp(userId: string, otp: string) {
+
+    const request = {
+      otp: otp,
+      userId: userId
+    }
+
+    const requestObj = {
+      id: appConstants.IDS.newUser,
+      version: appConstants.VERSION,
+      requesttime: Utils.getCurrentDate(),
+      request: request
+    }
+
+    return this.httpClient.post(this.AUTH_URL + 'useridotp', requestObj);
+
   }
 }

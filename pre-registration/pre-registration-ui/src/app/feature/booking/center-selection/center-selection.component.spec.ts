@@ -10,8 +10,9 @@ import { BookingModule } from '../booking.module';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { SharedService } from '../booking.service';
 
-describe('CenterSelectionComponent', () => {
+fdescribe('CenterSelectionComponent', () => {
   let component: CenterSelectionComponent;
   let locationData = [
     {
@@ -46,9 +47,21 @@ describe('CenterSelectionComponent', () => {
       "isActive": true
     }
   ];
+
+  let centers = {
+    registrationCenters: [center]
+  }
+
+
   let service: DataStorageService, mockService = {
     getLocationTypeData: jasmine.createSpy('getLocationTypeData').and.returnValue(of(locationData)),
-    recommendedCenters: jasmine.createSpy('recommendedCenters').and.returnValue(of(center))
+    recommendedCenters: jasmine.createSpy('recommendedCenters').and.returnValue(of(center)),
+    getRegistrationCentersByName: jasmine.createSpy('getRegistrationCentersByName').and.returnValue(of(centers))
+  }
+
+  let userService: SharedService, mockUsers = {
+    getNameList: jasmine.createSpy('getNameList').and.returnValue(of([{fullName: 'Agn', preId: '1234'}])),
+    changeCoordinates: jasmine.createSpy('changeCoordinates').and.returnValue(of([11.111, 11.11]))
   }
   let fixture: ComponentFixture<CenterSelectionComponent>;
 
@@ -71,6 +84,9 @@ describe('CenterSelectionComponent', () => {
       ], providers: [
         {
           provide: DataStorageService, useValue: mockService
+        },
+        {
+          provide: SharedService, useValue: mockUsers
         }
       ]
     })
@@ -85,5 +101,52 @@ describe('CenterSelectionComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should set search flag', () => {
+    component.setSearchClick(true);
+    fixture.detectChanges();
+    expect(component.searchClick).toBeTruthy();
+  });
+
+  it('should test onSubmit', () => {
+    component.searchText = 'hello';
+    component.onSubmit();
+    fixture.detectChanges();
+    expect(component.searchTextFlag).toBeTruthy();
+  });
+
+  it('should set the step', () => {
+    component.setStep(1);
+    fixture.detectChanges();
+    expect(component.step).toBe(1);
+  });
+
+  it('should increase step', () => {
+    component.setStep(2);
+    component.nextStep();
+    fixture.detectChanges();
+    expect(component.step).toBe(3);
+  });
+
+  it('should decrease step', () => {
+    component.setStep(2);
+    component.prevStep();
+    fixture.detectChanges();
+    expect(component.step).toBe(1);
+  });
+
+  it('should change time format', () => {
+    let x = component.changeTimeFormat('09:00');
+    console.log(x);
+    fixture.detectChanges();
+    expect(x).toBe('09:00 am');
+  });
+
+  it('should change time format for afternoon', () => {
+    let x = component.changeTimeFormat('17:00');
+    console.log(x);
+    fixture.detectChanges();
+    expect(x).toBe('5:00 pm');
   });
 });
