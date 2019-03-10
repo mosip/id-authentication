@@ -31,4 +31,4 @@ There are many webservices in MOSIP platform. All the webservices have the authe
 ## Implementation
 
 
-**kernel-KernelServicesAuthorization** [README](../../../kernel/KernelServicesAuthorization/README.md)
+**kernel-auth-service** [README](../../../kernel/kernel-auth-service/ReadMe.md)

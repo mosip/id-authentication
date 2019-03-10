@@ -35,4 +35,4 @@ COPY ./target/registration-processor-camel-bridge-*.jar registration-processor-c
 
 
 # running java jar
-CMD java -jar -Dspring.cloud.config.label=${spring_config_label_env} -Dspring.profiles.active=${active_profile_env} -Dspring.cloud.config.uri=${spring_config_url_env} -Dzone=${zone_env} registration-processor-camel-bridge.jar
+CMD java -jar -Dspring.cloud.config.label=${spring_config_label_env} -Dspring.profiles.active=${active_profile_env} -Dspring.cloud.config.uri=${spring_config_url_env} -Dregistration.processor.zone=${zone_env} registration-processor-camel-bridge.jar
