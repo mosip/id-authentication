@@ -262,7 +262,7 @@ public class BookingDAO {
 	
 	public int deleteByPreRegistrationId(String preId) {
 		int count=registrationBookingRepository.deleteByPreRegistrationId(preId);
-		if(count<0) {
+		if(count==0) {
 			throw new RecordFailedToDeleteException(ErrorCodes.PRG_BOOK_RCI_028.getCode(),
 					ErrorMessages.FAILED_TO_DELETE_THE_PRE_REGISTRATION_RECORD.getMessage());
 		}
