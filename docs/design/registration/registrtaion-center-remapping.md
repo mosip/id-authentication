@@ -27,7 +27,7 @@ The key **requirements** are
 **Solution**
 ***  
 1.As part of the Master sync using the machine ID/ Mac id + Center Id, if the response contains the string which relevant to the center re-mapping or changed : 
-   - Then we need to make the property[**'mosip.registrtaion.centermappedchanged'**] value as true. in the GLOBAL_PARAM table.  
+   - Then update the property[**'mosip.registrtaion.centermappedchanged'**] value as true in the GLOBAL_PARAM table.  
    - Display the alert message as 'You machine has been re-mapped to another center, kindly complete the pending activities' .  
    - Stop the auto sync process by updating the de-activation flag. Henceforth only manual sync process can only be performed until the machine mapping completed.  
    - Maintain this status flag in the session context to identify the 'Center Mapping' state.  
@@ -38,8 +38,7 @@ The key **requirements** are
 
 4.Create the CenterRemappingService - with processCenterMapped() method, which does the following functionalities.  
  
-5.If the system is online and the operator is not in middle between any of the operations [New Registration/UIN Update/Lost UIN] then do the below process as  sequence steps.  
-   
+4a.If the system is online and the operator is not in middle between any of the operations [New Registration/UIN Update/Lost UIN] then do the below process as  sequence steps.     
    **a.**Check for any pending packets to be uploaded to the server and waiting for 'PROCESSING' status.   
    **b.**Check for any packets to be approved/ rejected/ upload / sync to the server based on 'Server Status' flag.    
    **c.**Delete the packets and records in the table as below :  
@@ -54,16 +53,16 @@ The key **requirements** are
       - Enable the sync process.  
       - Display valid alert [information type] message to inform the user as process completed.  
  
-6.If the system is offline we should wait until the system is online and then only this process should initiate.  
+5.If the system is offline we should wait until the system is online and then only this process should initiate.  
 
-7.While doing this process we should display the alert stating  **'Upload is going on. Please don't close the application'**.   
+6.While doing this process we should display the alert stating  **'Upload is going on. Please don't close the application'**.   
 	
-8.Progress bar or uploading image should be displayed in the screen and the background should be fade out. 
+7.Progress bar or uploading image should be displayed in the screen and the background should be fade out. 
  
-9.Please create the **reg_machine_center_changed.sql** and added to the module
+8.Please create the **reg_machine_center_changed.sql** and added to the module
 	**registration-services** --> 	**src/main/resources**.
 	
-10.All events should be logged in the AUDIT table.    
+9.All events should be logged in the AUDIT table.    
 
 List of **Packet Status** from server:  
 
