@@ -11,11 +11,11 @@
     <div class="centers-wrapper">
       <!-- search container -->
       <div class="center_selection-intial-recommendation-container" *ngIf="searchClick; else elseBlock">
-        <div class="center_selection-center_recommendation-display">
+        <div *ngIf="REGISTRATION_CENTRES" class="center_selection-center_recommendation-display">
           <span matTooltip="{{ 'helpText.recommended_centers' | translate}}"><b>{{ 'centerSelection.display_recommended' | translate }}</b></span>
           <button matTooltip="{{ 'helpText.nearBy' | translate}}" mat-button class="center_selection-nearby-btn" (click)="getLocation()">
             {{ 'centerSelection.action_nearBy' | translate }}</button><br />
-          <span class="center_selection-center-available-text">{{ 'centerSelection.text_found' | translate }} {{ dataSource.data.length }} {{ 'centerSelection.text_centers' | translate }}
+          <span class="center_selection-center-available-text">{{ 'centerSelection.text_found' | translate }} {{ REGISTRATION_CENTRES.length }} {{ 'centerSelection.text_centers' | translate }}
           </span>
         </div>
         <span class="spacer"></span>
@@ -54,14 +54,14 @@
           }}</span>
       </ng-template>
 
-      <div class="centers-list" *ngIf="dataSource.data">
+      <div class="centers-list" *ngIf="REGISTRATION_CENTRES">
           <span *ngIf="showMessage && !searchClick" style="margin-left:24px;" class="center_selection-center-available-text">
             {{ 'centerSelection.text_found' | translate }} 
-            {{ dataSource.data.length }} 
+            {{ REGISTRATION_CENTRES.length }} 
             {{ 'centerSelection.text_centers' | translate }}
           </span>
         <ul>
-          <li *ngFor="let center of dataSource.data; let i = index;">
+          <li *ngFor="let center of REGISTRATION_CENTRES; let i = index;">
             <mat-card [ngClass]="selectedCentre === center ? 'center-card center-card-selected' : 'center-card'">
               <input type="radio" [value]="center" [(ngModel)]="selectedCentre" (click)="selectedRow(center)" name="center" />
               <div>

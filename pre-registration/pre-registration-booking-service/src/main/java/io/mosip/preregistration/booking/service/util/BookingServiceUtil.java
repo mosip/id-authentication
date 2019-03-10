@@ -227,6 +227,7 @@ public class BookingServiceUtil {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainResponseDTO<String>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
+			log.info("sessionId", "idType", "id", "Call Update Status in demographic URL : "+uriBuilder);
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<MainResponseDTO> bookingResponse = restTemplate.exchange(uriBuilder, HttpMethod.PUT,
 					httpEntity, MainResponseDTO.class);
@@ -264,6 +265,7 @@ public class BookingServiceUtil {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<PreRegistartionStatusDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
+			log.info("sessionId", "idType", "id", "Call Get Status from demographic URL : "+uriBuilder);
 			@SuppressWarnings({ "rawtypes" })
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
 					httpEntity, MainListResponseDTO.class);

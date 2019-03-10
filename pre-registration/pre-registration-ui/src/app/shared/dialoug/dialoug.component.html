@@ -63,33 +63,6 @@
     >
   </div>
 </div>
-<div *ngIf="input.case === 'SLOTS'">
-  <h1 mat-dialog-title>{{ input.title }}</h1>
-  <div mat-dialog-content>
-    <span>
-      <mat-form-field>
-        <mat-select [(ngModel)]="selectedName" (selectionChange)="enableButton()" placeholder="Select Names">
-          <mat-option *ngFor="let name of input.names" [value]="name">
-            {{name.fullName}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </span>
-  <span class="button-placer">
-      <button mat-raised-button [disabled]="disableAddButton" (click)="addToList()">{{ 'dialog.action_add' | translate }}</button>
-  </span>
-  <span>
-    <ul>
-      <li *ngFor="let addedItem of addedList">
-        {{addedItem.fullName}}<i (click)="itemDelete(addedItem)" class="material-icons close-button-sizing">{{ 'dialog.action_close' | translate }}</i>
-      </li>
-    </ul>
-  </span>
-  </div>
-  <div mat-dialog-actions>
-    <button mat-button [mat-dialog-close]="addedList" cdkFocusInitial>{{ 'dialog.action_add_to_slot' | translate }}</button>
-  </div>
-</div>
 
 <div class="consent-popup-parent" *ngIf="input.case === 'CONSENTPOPUP'">
   <button class="consent-popup-cross" mat-dialog-actions  (click)="onNoClick(); userRedirection()" cdkFocusInitial>x</button>

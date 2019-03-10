@@ -24,20 +24,19 @@ export const LANGUAGE_CODE = {
   secondaryKeyboardLang: 'ar'
 };
 
-export const APPEND_URL = {
-  location_metadata: 'v1.0/locations/locationhierarchy/',
-  location_immediate_children: 'v1.0/locations/immediatechildren/',
-  get_applicant: 'demographic/applicationData',
-  applicants: 'demographic/applications',
-  location: 'masterdata/',
-  gender: 'masterdata/v1.0/gendertypes',
-  // resident: 'masterdata/v1.0/residenttypes',
-  transliteration: 'translitration/translitrate',
-  applicantType: 'applicanttype/v1.0/applicanttype/',
-  validDocument: 'v1.0/applicanttype/',
-  getApplicantType: 'getApplicantType'
-};
-
+export const APPEND_URL = {
+  location_metadata: 'v1.0/locations/locationhierarchy/',
+  location_immediate_children: 'v1.0/locations/immediatechildren/',
+  get_applicant: 'demographic/applications/details',
+  applicants: 'demographic/applications',
+  location: 'masterdata/',
+  gender: 'masterdata/v1.0/gendertypes',
+  transliteration: 'translitration/translitrate',
+  applicantType: 'applicanttype/v1.0/applicanttype/',
+  validDocument: 'v1.0/applicanttype/',
+  getApplicantType: 'getApplicantType'
+  }; 
+   
 export const PARAMS_KEYS = {
   getUsers: 'user_id',
   getUser: PRE_REGISTRATION_ID,

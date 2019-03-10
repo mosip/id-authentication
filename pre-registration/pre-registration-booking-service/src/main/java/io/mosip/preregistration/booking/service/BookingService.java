@@ -37,6 +37,7 @@ import io.mosip.preregistration.booking.entity.AvailibityEntity;
 import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
 import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
+import io.mosip.preregistration.booking.exception.AvailablityNotFoundException;
 import io.mosip.preregistration.booking.exception.BookingDataNotFoundException;
 import io.mosip.preregistration.booking.exception.TimeSpanException;
 import io.mosip.preregistration.booking.exception.util.BookingExceptionCatcher;
@@ -79,7 +80,7 @@ public class BookingService {
 	 */
 	@Value("${preregistration.availability.sync}")
 	int syncDays;
-	
+
 	/**
 	 * Reference for ${preregistration.availability.noOfDays} from property file
 	 */
@@ -510,28 +511,56 @@ public class BookingService {
 
 	public void checkSlotAvailability(BookingRegistrationDTO newBookingRegistrationDTO) {
 
-		bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
-				LocalTime.parse(newBookingRegistrationDTO.getSlotFromTime()),
-				LocalTime.parse(newBookingRegistrationDTO.getSlotToTime()),
-				LocalDate.parse(newBookingRegistrationDTO.getRegDate()),
-				newBookingRegistrationDTO.getRegistrationCenterId());
+		try {
+			AvailibityEntity entity = bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
+					LocalTime.parse(newBookingRegistrationDTO.getSlotFromTime()),
+					LocalTime.parse(newBookingRegistrationDTO.getSlotToTime()),
+					LocalDate.parse(newBookingRegistrationDTO.getRegDate()),
+					newBookingRegistrationDTO.getRegistrationCenterId());
+			log.info("sessionId", "idType", "id", "In checkSlotAvailability method of Booking Service");
+			if (entity.getAvailableKiosks() < 1) {
+				throw new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_002.toString(),
+						ErrorMessages.AVAILABILITY_NOT_FOUND_FOR_THE_SELECTED_TIME.toString());
+			}
+
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id",
+					"In checkSlotAvailability method of Booking Service for Exception- " + ex.getMessage());
+			new BookingExceptionCatcher().handle(ex);
+		}
 
 	}
 
 	public boolean deleteOldBooking(String preId) {
-		int count = bookingDAO.deleteByPreRegistrationId(preId);
-		if (count > 0)
-			return true;
-		else
-			return false;
+		try {
+			int count = bookingDAO.deleteByPreRegistrationId(preId);
+			if (count > 0) {
+				log.info("sessionId", "idType", "id", "In deleteOldBooking method of Booking Service");
+				return true;
+			}
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id",
+					"In deleteOldBooking method of Booking Service for Exception- " + ex.getMessage());
+			new BookingExceptionCatcher().handle(ex);
+		}
+		return false;
+
 	}
 
 	public boolean increaseAvailability(BookingRegistrationDTO bookingDto) {
-		AvailibityEntity availableEntity;
-		availableEntity = bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
-				LocalTime.parse(bookingDto.getSlotFromTime()), LocalTime.parse(bookingDto.getSlotToTime()),
-				LocalDate.parse(bookingDto.getRegDate()), bookingDto.getRegistrationCenterId());
-		availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() + 1);
+		try {
+			AvailibityEntity availableEntity;
+			availableEntity = bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
+					LocalTime.parse(bookingDto.getSlotFromTime()), LocalTime.parse(bookingDto.getSlotToTime()),
+					LocalDate.parse(bookingDto.getRegDate()), bookingDto.getRegistrationCenterId());
+			availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() + 1);
+			log.info("sessionId", "idType", "id", "In increaseAvailability method of Booking Service");
+
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id",
+					"In increaseAvailability method of Booking Service for Exception- " + ex.getMessage());
+			new BookingExceptionCatcher().handle(ex);
+		}
 		return true;
 
 	}

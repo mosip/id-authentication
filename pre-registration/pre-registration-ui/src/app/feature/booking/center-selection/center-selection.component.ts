@@ -12,20 +12,19 @@ import { RegistrationService } from 'src/app/core/services/registration.service'
 import { TranslateService } from '@ngx-translate/core';
 import Utils from 'src/app/app.util';
 
-let REGISTRATION_CENTRES: RegistrationCentre[] = [];
-
 @Component({
   selector: 'app-center-selection',
   templateUrl: './center-selection.component.html',
   styleUrls: ['./center-selection.component.css']
 })
 export class CenterSelectionComponent implements OnInit {
-  @ViewChild(TimeSelectionComponent)
-  timeSelectionComponent: TimeSelectionComponent;
+  // @ViewChild(TimeSelectionComponent)
+  // timeSelectionComponent: TimeSelectionComponent;
 
-  displayedColumns: string[] = ['select', 'name', 'addressLine1', 'contactPerson', 'centerTypeCode', 'contactPhone'];
-  dataSource = new MatTableDataSource<RegistrationCentre>(REGISTRATION_CENTRES);
-  selection = new SelectionModel<RegistrationCentre>(true, []);
+  REGISTRATION_CENTRES: RegistrationCentre[] = [];
+ // displayedColumns: string[] = ['select', 'name', 'addressLine1', 'contactPerson', 'centerTypeCode', 'contactPhone'];
+ // dataSource = new MatTableDataSource<RegistrationCentre>(REGISTRATION_CENTRES);
+ // selection = new SelectionModel<RegistrationCentre>(true, []);
   searchClick: boolean = true;
 
   locationTypes = [];
@@ -58,8 +57,8 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   ngOnInit() {
-    REGISTRATION_CENTRES = [];
-    this.dataSource.data = REGISTRATION_CENTRES;
+    this.REGISTRATION_CENTRES = [];
+   // this.dataSource.data = REGISTRATION_CENTRES;
     this.selectedCentre = null;
     //  this.getLocation();
     this.dataService.getLocationTypeData().subscribe(response => {
@@ -80,13 +79,6 @@ export class CenterSelectionComponent implements OnInit {
       if (!response['errors'])
         this.displayResults(response);
     })
-  }
-
-  async getUserDemographic(user) {
-    this.dataService.getUser(user.preRegId).subscribe(response => {
-      console.log(response);
-      return response['response'][0].demographicDetails.identity.postalCode;
-    });
   }
 
   setSearchClick(flag: boolean) {
@@ -151,7 +143,8 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   getLocation() {
-    this.dataSource.data = [];
+  //  this.dataSource.data = [];
+    this.REGISTRATION_CENTRES = [];
     if (navigator.geolocation) {
       this.showMap = false;
       navigator.geolocation.getCurrentPosition(position => {
@@ -191,7 +184,7 @@ export class CenterSelectionComponent implements OnInit {
 
   dispatchCenterCoordinatesList() {
     const coords = [];
-    REGISTRATION_CENTRES.forEach(centre => {
+    this.REGISTRATION_CENTRES.forEach(centre => {
       const data = {
         id: centre.id,
         latitude: Number(centre.latitude),
@@ -213,7 +206,8 @@ export class CenterSelectionComponent implements OnInit {
 
   routeDashboard() {
     // const routeParams = this.router.url.split('/');
-    this.router.navigate(['dashboard']);
+    const url = Utils.getURL(this.router.url, 'dashboard', 3);
+    this.router.navigateByUrl(url);
   }
 
   routeBack() {
@@ -233,11 +227,11 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   displayResults(response: any) {
-    REGISTRATION_CENTRES = response['registrationCenters'];
-    this.dataSource.data = REGISTRATION_CENTRES;
-    console.log(this.dataSource.data);
+    this.REGISTRATION_CENTRES = response['registrationCenters'];
+    // this.dataSource.data = REGISTRATION_CENTRES;
+    // console.log(this.dataSource.data);
     this.showTable = true;
-    this.selectedRow(REGISTRATION_CENTRES[0]);
+    this.selectedRow(this.REGISTRATION_CENTRES[0]);
     this.dispatchCenterCoordinatesList();
   }
 }

@@ -206,47 +206,55 @@ export class TimeSelectionComponent implements OnInit {
     this.dataService.makeBooking(request).subscribe(
       response => {
         console.log(response);
-        const data = {
-          case: 'MESSAGE',
-          title: this.secondaryLanguagelabels.title_success,
-          message: this.secondaryLanguagelabels.msg_success
-        };
-        const dialogRef = this.dialog
-          .open(DialougComponent, {
-            width: '350px',
-            data: data
-          })
-          .afterClosed()
-          .subscribe(() => {
-            this.temp.forEach(name => {
-              this.sharedService.addNameList(name);
-              const booking = this.bookingDataList.filter(element => element.preRegistrationId === name.preRegId);
-              const appointmentDateTime = Utils.getBookingDateTime(booking[0].newBookingDetails.appointment_date, booking[0].newBookingDetails.time_slot_from);
-              this.sharedService.updateBookingDetails(name.preRegId, appointmentDateTime);
+        if (!response['err']) {
+          const data = {
+            case: 'MESSAGE',
+            title: this.secondaryLanguagelabels.title_success,
+            message: this.secondaryLanguagelabels.msg_success
+          };
+          const dialogRef = this.dialog
+            .open(DialougComponent, {
+              width: '350px',
+              data: data
+            })
+            .afterClosed()
+            .subscribe(() => {
+              this.temp.forEach(name => {
+                this.sharedService.addNameList(name);
+                const booking = this.bookingDataList.filter(element => element.preRegistrationId === name.preRegId);
+                const appointmentDateTime = Utils.getBookingDateTime(booking[0].newBookingDetails.appointment_date, booking[0].newBookingDetails.time_slot_from);
+                this.sharedService.updateBookingDetails(name.preRegId, appointmentDateTime);
+              });
+              const arr = this.router.url.split('/');
+              arr.pop();
+              arr.pop();
+              arr.push('summary');
+              arr.push('acknowledgement');
+              const url = arr.join('/');
+              this.router.navigateByUrl(url);
+              // this.router.navigate(['../acknowledgement'], { relativeTo: this.route });
             });
-            const arr = this.router.url.split('/');
-            arr.pop();
-            arr.pop();
-            arr.push('summary');
-            arr.push('acknowledgement');
-            const url = arr.join('/');
-            this.router.navigateByUrl(url);
-            // this.router.navigate(['../acknowledgement'], { relativeTo: this.route });
-          });
+        } else {
+          this.showError()
+        }
       },
       error => {
         console.log(error);
-        const data = {
-          case: 'MESSAGE',
-          title: this.secondaryLanguagelabels.title_failure,
-          message: this.secondaryLanguagelabels.msg_failure
-        };
-        const dialogRef = this.dialog.open(DialougComponent, {
-          width: '350px',
-          data: data
-        });
+        this.showError();
       }
     );
+  }
+
+  showError() {
+    const data = {
+      case: 'MESSAGE',
+      title: this.secondaryLanguagelabels.title_failure,
+      message: this.secondaryLanguagelabels.msg_failure
+    };
+    const dialogRef = this.dialog.open(DialougComponent, {
+      width: '350px',
+      data: data
+    });
   }
 
   navigateDashboard() {

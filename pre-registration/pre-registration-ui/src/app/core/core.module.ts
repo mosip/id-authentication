@@ -16,6 +16,6 @@ import { AuthInterceptorService } from '../shared/auth-interceptor.service';
   imports: [CommonModule, AppRoutingModule, SharedModule],
   declarations: [HeaderComponent, FooterComponent, AboutUsComponent, FaqComponent, ContactComponent],
   exports: [HeaderComponent, FooterComponent, SharedModule],
-  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }]
+//  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }]
 })
 export class CoreModule {}

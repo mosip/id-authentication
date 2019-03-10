@@ -130,7 +130,7 @@ export class LoginComponent implements OnInit {
   }
 
   showVerifyBtn() {
-    if (this.inputOTP.length > 3) {
+    if (this.inputOTP.length === 6) {
       this.showVerify = true;
       this.showResend = false;
     } else {
@@ -186,14 +186,25 @@ export class LoginComponent implements OnInit {
         this.timer = setInterval(timerFn, 1000);
       }
 
+      this.dataService.sendOtp(this.inputContactDetails).subscribe(response => {
+        console.log(response);
+      })
+
       // dynamic update of button text for Resend and Verify
     } else if (this.showVerify) {
-      clearInterval(this.timer);
-      localStorage.setItem('loggedIn', 'true');
-      this.authService.setToken();
+      this.dataService.verifyOtp(this.inputContactDetails, this.inputOTP).subscribe(response => {
+        console.log(response);
+        if (!response['errors']) {
+          clearInterval(this.timer);
+          localStorage.setItem('loggedIn', 'true');
+          this.authService.setToken();
 
-      this.regService.setLoginId(this.inputContactDetails);
-      this.router.navigate(['dashboard']);
+          this.regService.setLoginId(this.inputContactDetails);
+          this.router.navigate(['dashboard']);
+        } else {
+          console.log(response['error']);
+        }
+      });
     }
   }
 }
