@@ -1,7 +1,7 @@
 package io.mosip.registration.dto;
 
 public class ApplicantValidDocumentDto {
-	
+
 	private String appTypeCode;
 
 	private String docTypeCode;
@@ -9,6 +9,38 @@ public class ApplicantValidDocumentDto {
 	private String docCatCode;
 
 	private String langCode;
+
+	private Boolean isDeleted;
+
+	private Boolean isActive;
+
+	/**
+	 * @return the isDeleted
+	 */
+	public Boolean getIsDeleted() {
+		return isDeleted;
+	}
+
+	/**
+	 * @param isDeleted the isDeleted to set
+	 */
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
+	/**
+	 * @return the isActive
+	 */
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	/**
+	 * @param isActive the isActive to set
+	 */
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
 
 	/**
 	 * @return the appTypeCode
