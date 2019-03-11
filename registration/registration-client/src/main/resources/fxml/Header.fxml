@@ -70,10 +70,7 @@
                      </graphic>
                      <items>
                        <MenuItem mnemonicParsing="false" onAction="#uploadPacketToServer" text="%uploadpacket"/>
-						
-                        <SeparatorMenuItem />
-                        <MenuItem fx:id="virusScan" mnemonicParsing="false" onAction="#virusScan" text="%virusscan"/>                        	
-                     
+				    
                         <SeparatorMenuItem />
                         <MenuItem mnemonicParsing="false" onAction="#syncData" text="%syncdata"/>                        	
                        

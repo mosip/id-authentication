@@ -15,17 +15,10 @@ spec:
     metadata:
       labels:
         app: registration-processor-packet-bio-dedupe-service
-        component: service-hazelcast-server
     spec:
       containers:
       - name: registration-processor-packet-bio-dedupe-service
         image: docker-registry.mosip.io:5000/packet-bio-dedupe-service
-        ports:
-          - name: eventbus-port
-            containerPort: 5711
-        ports:
-          - name: hazelcast-port
-            containerPort: 5701
         ports:
           - name: verticle-port
             containerPort: 9097

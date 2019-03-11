@@ -1,6 +1,7 @@
 package io.mosip.service;
 
 import java.io.IOException;
+import org.apache.log4j.Logger;
 import java.util.ArrayList;
 
 import org.json.simple.JSONObject;
@@ -18,6 +19,7 @@ import io.restassured.response.Response;
  *
  */
 public class AssertKernel {
+	protected static Logger logger = Logger.getLogger(AssertKernel.class);
 
 	/**
 	 * this method accepts expected and actual response and return boolean value
@@ -59,16 +61,16 @@ public class AssertKernel {
 			JsonNode responseJson = mapper.readTree(resObj.toString());
 			JsonNode diffJson = JsonDiff.asJson(requestJson, responseJson);
 
-			System.err.println("======" + diffJson + "==========");
+			logger.info("======" + diffJson + "==========");
 			if (diffJson.toString().equals("[]")) {
-				System.out.println("equal");
+				logger.info("equal");
 				return true;
 			}
 
 			for (int i = 0; i < diffJson.size(); i++) {
 				JsonNode operation = diffJson.get(i);
 				if (!operation.get("op").toString().equals("\"move\"")) {
-					System.out.println("not equal");
+					logger.info("not equal");
 					return false;
 				}
 			}
@@ -76,7 +78,7 @@ public class AssertKernel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("equal");
+		logger.info("equal");
 		return true;
 
 	}

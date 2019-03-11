@@ -36,11 +36,13 @@ public class DBDataStore implements IDataStore {
 	
 	private static final String GET_USER="select use.id,use.name,use.email,use.mobile,use.lang_code,role.code from iam.user_detail use left outer join iam.user_role userrole on use.id=userrole.usr_id left outer join iam.role_list role on role.code =userrole.role_code where use.id like :userName ";
 	
-	private static final String GET_PASSWORD="select pwd from iam.user_pwd where usr_id = :userName ";
+	private static final String GET_PASSWORD="select pwd from iam.user_pwd where usr_id like :userName ";
 	
-	private static final String NEW_ROLE_OTP="insert into iam.role_list(code,descr,lang_code,cr_dtimes,is_active,cr_by) values(:role,:description,'eng',NOW(),true,'Admin')";
+	private static final String GET_ROLE="select code from iam.role_list where code like :role ";
 	
-	private static final String USER_ROLE_MAPPING="insert into iam.user_role(role_code,usr_id,lang_code,cr_dtimes,is_active,cr_by) values(:roleId,':userId,'eng',NOW(),true,'Admin');";
+	private static final String NEW_ROLE_OTP="insert into iam.role_list(code,descr,lang_code,cr_dtimes,is_active,cr_by) values(:role,:description,:langCode,NOW(),true,'Admin')";
+	
+	private static final String USER_ROLE_MAPPING="insert into iam.user_role(role_code,usr_id,lang_code,cr_dtimes,is_active,cr_by) values(:roleId,:userId,'eng',NOW(),true,'Admin');";
 	
 	
 	public DBDataStore()
@@ -82,6 +84,21 @@ public class DBDataStore implements IDataStore {
 		}
 	}
 
+	private String getRole(String role) {
+		return jdbcTemplate.query(GET_ROLE,new MapSqlParameterSource().addValue("role", role),new ResultSetExtractor<String>()
+				{
+
+					@Override
+					public String extractData(ResultSet rs) throws SQLException, DataAccessException {
+						while(rs.next())
+						{
+							return rs.getString("code");
+						}
+						return null;
+					}
+			
+				});
+	}
 	private byte[] getPassword(String userName) {
 		return jdbcTemplate.query(GET_PASSWORD,new MapSqlParameterSource().addValue("userName", userName),new ResultSetExtractor<byte[]>()
 				{
@@ -125,10 +142,15 @@ public class DBDataStore implements IDataStore {
 	@Override
 	public MosipUserDto authenticateWithOtp(OtpUser otpUser) throws Exception {
 		MosipUserDto mosipUserDto = getUser(otpUser.getUserId());
+		String roleId=null;
 		if(mosipUserDto==null)
 		{
 			String userId =createUser(otpUser);
-			String roleId=createRole(userId,otpUser);
+			roleId = getRole("individual");
+			if(roleId==null)
+			{
+				roleId=createRole(userId,otpUser);
+			}
 			createMapping(userId,roleId);
 		}
 		return getUser(otpUser.getUserId());
@@ -144,7 +166,8 @@ public class DBDataStore implements IDataStore {
 		jdbcTemplate.update(NEW_ROLE_OTP, 
 				new MapSqlParameterSource()
 				.addValue("role", "individual")
-				.addValue("description", "Individual User"));
+				.addValue("description", "Individual User")
+				.addValue("langCode", otpUser.getLangCode()));
 		return "individual";
 		
 	}
@@ -154,8 +177,8 @@ public class DBDataStore implements IDataStore {
 				new MapSqlParameterSource().addValue("userName", otpUser.getUserId())
 				.addValue("name", otpUser.getUserId())
 				.addValue("langcode", otpUser.getLangCode())
-				.addValue("email", AuthConstant.EMAIL.equals(otpUser.getOtpChannel())?otpUser.getUserId():"")
-				.addValue("phone", AuthConstant.PHONE.equals(otpUser.getOtpChannel())?otpUser.getUserId():""));
+				.addValue("email", AuthConstant.EMAIL.equals(otpUser.getOtpChannel().get(0))?otpUser.getUserId():"")
+				.addValue("phone", AuthConstant.PHONE.equals(otpUser.getOtpChannel().get(0))?otpUser.getUserId():""));
 		return otpUser.getUserId();
 	}
 
