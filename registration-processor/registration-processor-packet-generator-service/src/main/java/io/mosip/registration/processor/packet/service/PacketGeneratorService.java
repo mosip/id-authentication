@@ -1,7 +1,10 @@
 package io.mosip.registration.processor.packet.service;
 
+import io.mosip.registration.processor.packet.service.dto.PackerGeneratorResDto;
+import io.mosip.registration.processor.packet.service.dto.PacketGeneratorDto;
+
 public interface PacketGeneratorService {
 
-	public String createPacket(String uin, String registrationType, String applicantType, String reason);
+	public PackerGeneratorResDto createPacket(PacketGeneratorDto request);
 
 }

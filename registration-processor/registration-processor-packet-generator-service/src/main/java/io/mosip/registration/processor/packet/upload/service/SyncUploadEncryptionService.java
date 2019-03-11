@@ -2,8 +2,10 @@ package io.mosip.registration.processor.packet.upload.service;
 
 import java.io.File;
 
+import io.mosip.registration.processor.packet.service.dto.PackerGeneratorResDto;
+
 public interface SyncUploadEncryptionService {
 
-	String uploadUinPacket(File uinZipFile, String registrationId);
+	PackerGeneratorResDto uploadUinPacket(File uinZipFile, String registrationId, String creationTime);
 
 }
