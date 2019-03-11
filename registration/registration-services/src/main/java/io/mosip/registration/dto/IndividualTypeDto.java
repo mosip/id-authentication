@@ -1,12 +1,43 @@
 package io.mosip.registration.dto;
 
 public class IndividualTypeDto {
-	
+
 	private String code;
 
 	private String name;
 
 	private String langCode;
+
+	private Boolean isDeleted;
+	private Boolean isActive;
+
+	/**
+	 * @return the isDeleted
+	 */
+	public Boolean getIsDeleted() {
+		return isDeleted;
+	}
+
+	/**
+	 * @param isDeleted the isDeleted to set
+	 */
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
+	/**
+	 * @return the isActive
+	 */
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	/**
+	 * @param isActive the isActive to set
+	 */
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
 
 	/**
 	 * @return the code
@@ -49,6 +80,5 @@ public class IndividualTypeDto {
 	public void setLangCode(String langCode) {
 		this.langCode = langCode;
 	}
-	
-	
+
 }
