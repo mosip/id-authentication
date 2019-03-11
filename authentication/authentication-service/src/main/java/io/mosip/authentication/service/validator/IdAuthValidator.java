@@ -31,8 +31,6 @@ public abstract class IdAuthValidator implements Validator {
 
 	private static final String REQUEST = "request";
 
-	private static final String INDIVIDUAL_ID = "individualId";
-
 	/** The Constant TSP_ID. */
 	private static final String PARTNER_ID = "partnerID";
 
@@ -74,10 +72,9 @@ public abstract class IdAuthValidator implements Validator {
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthValidator.class);
-	
+
 	/** The Constant REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS. */
 	private static final String REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS = "authrequest.received-time-allowed.in-hours";
-
 
 	/** The uin validator. */
 	@Autowired
@@ -93,34 +90,29 @@ public abstract class IdAuthValidator implements Validator {
 	/**
 	 * Validate id - check whether id is null or not.
 	 *
-	 * @param id
-	 *            the id
-	 * @param errors
-	 *            the errors
+	 * @param id     the id
+	 * @param errors the errors
 	 */
 	public void validateId(String id, Errors errors) {
-		//TODO check id based on the request and add validation for version.
+		// TODO check id based on the request and add validation for version.
 		if (Objects.isNull(id) || id.isEmpty()) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + " - id");
 			errors.rejectValue(ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
-	
+
 	public void validateIdvId(String id, String idType, Errors errors) {
-		validateIdvId(id, idType, errors, INDIVIDUAL_ID);
+		validateIdvId(id, idType, errors, REQUEST);
 	}
 
 	/**
 	 * Validate individual's id - check whether id is null or not and if valid,
 	 * validates idType and UIN/VID.
 	 *
-	 * @param id
-	 *            the id
-	 * @param idType
-	 *            the id type
-	 * @param errors
-	 *            the errors
+	 * @param id     the id
+	 * @param idType the id type
+	 * @param errors the errors
 	 */
 	public void validateIdvId(String id, String idType, Errors errors, String idFieldName) {
 		if (Objects.isNull(id) || id.isEmpty()) {
@@ -135,10 +127,8 @@ public abstract class IdAuthValidator implements Validator {
 	/**
 	 * Validate txn id - check whether it is of length 10 and alphanumeric.
 	 *
-	 * @param txnID
-	 *            the txn ID
-	 * @param errors
-	 *            the errors
+	 * @param txnID  the txn ID
+	 * @param errors the errors
 	 */
 	protected void validateTxnId(String txnID, Errors errors) {
 		if (Objects.isNull(txnID)) {
@@ -156,15 +146,14 @@ public abstract class IdAuthValidator implements Validator {
 	/**
 	 * Validate req time.
 	 *
-	 * @param reqTime
-	 *            the req time
-	 * @param errors
-	 *            the errors
+	 * @param reqTime the req time
+	 * @param errors  the errors
 	 */
 	protected void validateReqTime(String reqTime, Errors errors) {
 
 		if (Objects.isNull(reqTime)) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + REQ_TIME);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+					MISSING_INPUT_PARAMETER + REQ_TIME);
 			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { REQ_TIME },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
@@ -176,10 +165,8 @@ public abstract class IdAuthValidator implements Validator {
 	/**
 	 * Check future req time.
 	 *
-	 * @param reqTime
-	 *            the req time
-	 * @param errors
-	 *            the errors
+	 * @param reqTime the req time
+	 * @param errors  the errors
 	 */
 	private void checkFutureReqTime(String reqTime, Errors errors) {
 
@@ -196,29 +183,25 @@ public abstract class IdAuthValidator implements Validator {
 
 		if (reqDateAndTime != null && DateUtils.after(reqDateAndTime, new Date())) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Invalid Date");
-			errors.rejectValue(REQ_TIME,
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorCode(),
+			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorCode(),
 					new Object[] { env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Integer.class) },
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorMessage());
 		}
 	}
-	
+
 	/**
 	 * Validate UIN, VID.
 	 *
-	 * @param id
-	 *            the id
-	 * @param idType
-	 *            the id type
-	 * @param errors
-	 *            the errors
+	 * @param id     the id
+	 * @param idType the id type
+	 * @param errors the errors
 	 */
 	private void validateIdtypeUinVid(String id, String idType, Errors errors, String idFieldName) {
 		if (Objects.isNull(idType)) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID_TYPE);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+					MISSING_INPUT_PARAMETER + IDV_ID_TYPE);
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { REQUEST },
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+					new Object[] { REQUEST }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else if (idType.equals(IdType.UIN.getType())) {
 			try {
 				uinValidator.validateId(id);
@@ -247,14 +230,13 @@ public abstract class IdAuthValidator implements Validator {
 	/**
 	 * Validation for TspId.
 	 *
-	 * @param tspID
-	 *            the tsp ID
-	 * @param errors
-	 *            the errors
+	 * @param tspID  the tsp ID
+	 * @param errors the errors
 	 */
 	protected void validateTspId(String tspID, Errors errors) {
 		if (Objects.isNull(tspID)) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + PARTNER_ID);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+					MISSING_INPUT_PARAMETER + PARTNER_ID);
 			errors.rejectValue(PARTNER_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { PARTNER_ID },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
