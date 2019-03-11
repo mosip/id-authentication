@@ -26,13 +26,6 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 @Service
 public class MasterDataValidation {
 
-	// @Autowired
-	// private Environment env;
-
-	// @Autowired
-	// private RegistrationProcessorRestClientService<Object>
-	// registrationProcessorRestService;
-
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(MasterDataValidation.class);
 
 	InternalRegistrationStatusDto registrationStatusDto;
@@ -57,11 +50,10 @@ public class MasterDataValidation {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"MasterDataValidation::validateMasterData::entry");
 
-		// if (getValue(list, "gender") &&
-		// (!validateGenderName(identity.getGender().getValue()))) {
-		// registrationStatusDto.setStatusComment(StatusMessage.GENDER_NAME_NOT_AVAILABLE);
-		// return false;
-		// }
+		if (getValue(list, "gender") && (!validateGenderName(identity.getGender().getValue()))) {
+			registrationStatusDto.setStatusComment(StatusMessage.GENDER_NAME_NOT_AVAILABLE);
+			return false;
+		}
 
 		if (getValue(list, "region") && (!validateLocationName(identity.getRegion().getValue()))) {
 			registrationStatusDto.setStatusComment(StatusMessage.REGION_NOT_AVAILABLE);
