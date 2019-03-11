@@ -36,6 +36,7 @@ import io.mosip.registration.processor.packet.storage.entity.IndividualDemograph
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -94,16 +95,14 @@ public class DemodedupeProcessor {
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(registrationId);
 
-			if(registrationStatusDto.getRegistrationType().equals("NEW")) {
-				InputStream packetMetaInfoStream = adapter.getFile(registrationId,
-						PacketFiles.PACKET_META_INFO.name());
-				PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil
-						.inputStreamtoJavaObject(packetMetaInfoStream, PacketMetaInfo.class);
-				demographicInfoStream = adapter.getFile(registrationId,
-						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
+			
+			// Persist Demographic packet Data if packet Registration type is NEW 
+			if(registrationStatusDto.getRegistrationType().equals(RegistrationType.NEW.name())) {
+				InputStream packetMetaInfoStream = adapter.getFile(registrationId,PacketFiles.PACKET_META_INFO.name());
+				PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream, PacketMetaInfo.class);
+				demographicInfoStream = adapter.getFile(registrationId,PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 				bytesArray = IOUtils.toByteArray(demographicInfoStream);
-				packetInfoManager.saveDemographicInfoJson(bytesArray,
-						packetMetaInfo.getIdentity().getMetaData());
+				packetInfoManager.saveDemographicInfoJson(bytesArray,packetMetaInfo.getIdentity().getMetaData());
 			}
 			
 			

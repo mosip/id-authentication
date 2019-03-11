@@ -59,7 +59,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
-
+	
 	private static final String OSI_VALIDATOR_FAILED = "OSI validation failed for registrationId ";
 
 	/**
@@ -96,6 +96,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 		osiValidator.registrationStatusDto = registrationStatusDto;
 		umcValidator.setRegistrationStatusDto(registrationStatusDto);
 		try {
+			//TODO mosip.workinghor.validation.required=true
 			isValidUMC = umcValidator.isValidUMC(registrationId);
 			if (isValidUMC) {
 				isValidOSI = osiValidator.isValidOSI(registrationId);
@@ -108,16 +109,13 @@ public class OSIValidatorStage extends MosipVerticleManager {
 				description = "OSI validation successful for registration id : " + registrationId;
 			} else {
 				object.setIsValid(Boolean.FALSE);
-				int retryCount = registrationStatusDto.getRetryCount() != null
-						? registrationStatusDto.getRetryCount() + 1
-						: 1;
+				int retryCount = registrationStatusDto.getRetryCount() != null? registrationStatusDto.getRetryCount() + 1: 1;
 				registrationStatusDto.setRetryCount(retryCount);
 
 				registrationStatusDto.setStatusComment(osiValidator.registrationStatusDto.getStatusComment());
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_FAILED.toString());
 
-				description = "OSI validation Failed for registrationId " + registrationId + "::" + "either UMC("
-						+ isValidUMC + ")/OSI(" + isValidOSI + ") is not valid";
+				description = "OSI validation Failed for registrationId " + registrationId + "::" + "either UMC("+ isValidUMC + ")/OSI(" + isValidOSI + ") is not valid";
 			}
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);

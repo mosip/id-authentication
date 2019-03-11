@@ -43,7 +43,12 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	 */
 	public void deployVerticle() {
 		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
-		this.consumeAndSend(mosipEventBus ,MessageBusAddress.PACKET_VALIDATOR_BUS_IN,MessageBusAddress.PACKET_VALIDATOR_BUS_OUT);
+		//this.consumeAndSend(mosipEventBus ,MessageBusAddress.PACKET_VALIDATOR_BUS_IN,MessageBusAddress.PACKET_VALIDATOR_BUS_OUT);
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("10011100110015620190305172945");
+		dto.setIsValid(false);
+		MessageDTO dto2= process(dto);
+		this.send(mosipEventBus ,MessageBusAddress.PACKET_VALIDATOR_BUS_OUT,dto2);
 	}
 
 

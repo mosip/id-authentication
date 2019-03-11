@@ -2,7 +2,6 @@ package io.mosip.registration.processor.stages.app;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.stages.osivalidator.OSIValidatorStage;
 
 /**
@@ -28,10 +27,10 @@ public class OSIValidatorApplication {
 		ctx.refresh();
 		OSIValidatorStage validatebean = ctx.getBean(OSIValidatorStage.class);
 		validatebean.deployVerticle();
-		MessageDTO dto = new MessageDTO();
+		/*MessageDTO dto = new MessageDTO();
 		dto.setRid("10011100110015620190305172945");
 		dto.setIsValid(false);
-		validatebean.process(dto);
+		validatebean.process(dto);*/
 		
 	}
 

@@ -2,6 +2,7 @@ package io.mosip.registration.processor.stages.app;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.stages.demodedupe.DemodedupeStage;
 
 public class DemodedupeApplication {
@@ -22,6 +23,9 @@ public class DemodedupeApplication {
 
 		DemodedupeStage demodedupeStage = configApplicationContext.getBean(DemodedupeStage.class);
 		demodedupeStage.deployVerticle();
-
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("10011100110015620190305172945");
+		dto.setIsValid(false);
+		demodedupeStage.process(dto);
 	}
 }

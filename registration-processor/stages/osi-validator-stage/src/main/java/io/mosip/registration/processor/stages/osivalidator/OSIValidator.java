@@ -18,8 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.auth.dto.AuthRequestDTO;
 import io.mosip.registration.processor.core.auth.dto.AuthTypeDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityDTO;
@@ -27,8 +27,8 @@ import io.mosip.registration.processor.core.auth.dto.IdentityInfoDTO;
 import io.mosip.registration.processor.core.auth.dto.PinInfo;
 import io.mosip.registration.processor.core.auth.dto.RequestDTO;
 import io.mosip.registration.processor.core.constant.JsonConstant;
-import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
@@ -42,10 +42,10 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.ApplicantType;
 import io.mosip.registration.processor.status.code.IntroducerType;
-import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
@@ -90,6 +90,9 @@ public class OSIValidator {
 	/** The env. */
 	@Autowired
 	private Environment env;
+	
+	@Autowired
+	private OSIUtils osiUtils;
 
 	/** The message. */
 	private String message = null;
@@ -135,62 +138,23 @@ public class OSIValidator {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::entry");
 		boolean isValidOsi = false;
-		Identity identity = getIdentity(registrationId);
-		/**RegOsiDto regOsi = packetInfoManager.getOsi(registrationId);*/
-		RegOsiDto regOsi = getOSIDetailsFromMetaInfo(registrationId,identity);
+		
+		Identity identity = osiUtils.getIdentity(registrationId);
+		/** Getting data from packet MetadataInfo*/
+		RegOsiDto regOsi = osiUtils.getOSIDetailsFromMetaInfo(registrationId,identity);
 		String officerId = regOsi.getOfficerId();
 		String supervisorId = regOsi.getSupervisorId();
 		if (officerId == null && supervisorId == null) {
-			registrationStatusDto
-					.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " Officer and Supervisor are null");
+			registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " Officer and Supervisor are null");
 			return false;
-
 		}
-		if (((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId)))
-				&& (isValidIntroducer(regOsi, registrationId)))
+		if (((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId))) && (isValidIntroducer(regOsi, registrationId)))
 			isValidOsi = true;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::exit");
 		return isValidOsi;
 	}
 
-	public RegOsiDto getOSIDetailsFromMetaInfo(String registrationId,Identity identity) throws UnsupportedEncodingException {
-		 
-		RegOsiDto regOsi = new RegOsiDto();
-		//regOsi.setIntroducerFingerpImageName(identity.getBiometric().getIntroducer().getIntroducerFingerprint().getImageName());
-		regOsi.setIntroducerFingerpType(getMetaDataValue(JsonConstant.INTRODUCERFINGERPRINTTYPE,identity));
-		regOsi.setIntroducerId("");// not found in json
-		//regOsi.setIntroducerIrisImageName(identity.getBiometric().getIntroducer().getIntroducerIris().getImageName());
-		regOsi.setIntroducerIrisType(getMetaDataValue(JsonConstant.INTRODUCERIRISTYPE,identity));
-		//regOsi.setIntroducerPhotoName(identity.getBiometric().getIntroducer().getIntroducerImage().getImageName());
-		regOsi.setIntroducerRegId(getMetaDataValue(JsonConstant.INTRODUCERRID,identity));
-		regOsi.setIntroducerTyp(getMetaDataValue(JsonConstant.INTRODUCERTYPE,identity));
-		regOsi.setIntroducerUin(getMetaDataValue(JsonConstant.INTRODUCERUIN,identity));
-		regOsi.setOfficerFingerpImageName(getOsiDataValue(JsonConstant.OFFICERFINGERPRINTIMAGE,identity));
-		regOsi.setOfficerfingerType(getMetaDataValue(JsonConstant.OFFICERFINGERPRINTTYPE,identity));
-		regOsi.setOfficerHashedPin(getMetaDataValue(JsonConstant.OFFICERPIN,identity));
-		regOsi.setOfficerHashedPwd(getOsiDataValue(JsonConstant.OFFICERPWR,identity));
-		regOsi.setOfficerId(getOsiDataValue(JsonConstant.OFFICERID,identity));
-		//regOsi.setOfficerIrisImageName("");  // not found in json
-		regOsi.setOfficerIrisType(getMetaDataValue(JsonConstant.OFFICERIRISTYPE,identity));
-		regOsi.setOfficerPhotoName(getOsiDataValue(JsonConstant.OFFICERPHOTONAME,identity));
-		regOsi.setOfficerOTPAuthentication(getOsiDataValue(JsonConstant.OFFICEROTPAUTHENTICATION,identity));
-		regOsi.setPreregId(getMetaDataValue(JsonConstant.PREREGISTRATIONID,identity));
-		regOsi.setRegId(getMetaDataValue(JsonConstant.REGISTRATIONID,identity));
-		//regOsi.setSupervisorFingerpImageName(""); // not found in json
-		regOsi.setSupervisorBiometricFileName(getOsiDataValue(JsonConstant.SUPERVISORBIOMETRICFILENAME,identity));
-		regOsi.setSupervisorFingerType(getMetaDataValue(JsonConstant.SUPERVISORFINGERPRINTTYPE,identity));
-		regOsi.setSupervisorHashedPin(getOsiDataValue(JsonConstant.OFFICERPHOTONAME,identity));
-		regOsi.setSupervisorHashedPwd(getOsiDataValue(JsonConstant.SUPERVISORPWR,identity));
-		regOsi.setSupervisorId(getOsiDataValue(JsonConstant.SUPERVISORID,identity));
-		regOsi.setSupervisorIrisImageName(""); // not found in json
-		regOsi.setSupervisorIrisType(getOsiDataValue(JsonConstant.SUPERVISORIRISTYPE,identity));
-		regOsi.setSupervisorPhotoName("");  // not found in json
-		regOsi.setSupervisorOTPAuthentication(getOsiDataValue(JsonConstant.SUPERVISOROTPAUTHENTICATION,identity));
-		
-		return regOsi;
-	}
-	
 	/**
 	 * Checks if is valid operator.
 	 *
@@ -290,12 +254,9 @@ public class OSIValidator {
 			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
 				boolean flag = validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication);
 				if (flag) {
-					registrationStatusDto
-							.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + StatusMessage.SUPERVISOR);
+					registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + StatusMessage.SUPERVISOR);
 				} else {
-					registrationStatusDto
-							.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.SUPERVISOR);
-
+					registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.SUPERVISOR);
 				}
 				return flag;
 			} else if ((validateUIN(supervisorId))
@@ -711,30 +672,6 @@ public class OSIValidator {
 			return demographicDedupeDtoList.get(0).getUin();
 		}
 		return null;
-	}
-
-	/**
-	 * Gets the osi data value.
-	 *
-	 * @param registrationId
-	 *            the registration id
-	 * @param label
-	 *            the label
-	 * @return the osi data value
-	 * @throws UnsupportedEncodingException
-	 *             the unsupported encoding exception
-	 */
-	private String getOsiDataValue(String label,Identity identity) throws UnsupportedEncodingException {
-		//Identity identity = getIdentity(registrationId);
-		List<FieldValue> osiData = identity.getOsiData();
-		return identityIteratorUtil.getMetadataLabelValue(osiData, label);
-
-	}
-	private String getMetaDataValue(String label,Identity identity) throws UnsupportedEncodingException {
-		//Identity identity = getIdentity(registrationId);
-		List<FieldValue> metadata = identity.getMetaData();
-		return identityIteratorUtil.getMetadataLabelValue(metadata, label);
-
 	}
 
 	/**

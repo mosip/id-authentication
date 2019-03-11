@@ -18,6 +18,7 @@ import org.springframework.core.io.support.ResourcePropertySource;
 import io.mosip.registration.processor.stages.osivalidator.OSIValidator;
 import io.mosip.registration.processor.stages.osivalidator.OSIValidatorStage;
 import io.mosip.registration.processor.stages.osivalidator.UMCValidator;
+import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 
 @PropertySource("classpath:bootstrap.properties")
 @Configuration
@@ -60,5 +61,10 @@ public class OSIConfigBean{
 	@Bean
 	public OSIValidatorStage getOSIValidatorStage() {
 		return new OSIValidatorStage();
+	}
+	
+	@Bean
+	public OSIUtils getOSIUtils() {
+		return new OSIUtils();
 	}
 }

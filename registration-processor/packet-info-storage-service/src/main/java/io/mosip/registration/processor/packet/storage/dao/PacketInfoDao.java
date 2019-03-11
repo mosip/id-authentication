@@ -205,17 +205,12 @@ public class PacketInfoDao {
 	 */
 	private DemographicInfoDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
 		DemographicInfoDto demo = new DemographicInfoDto();
-		try {
 		demo.setRegId(object.getId().getRegId());
 		demo.setUin(object.getUin());
 		demo.setLangCode(object.getId().getLangCode());
 		demo.setName(object.getName());
 		demo.setGenderCode(object.getGender());
-		demo.setDob(new SimpleDateFormat("yyyy/MM/dd").parse(object.getDob()));
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		demo.setDob(object.getDob());
 
 		return demo;
 	}
@@ -282,7 +277,7 @@ public class PacketInfoDao {
 	 * @return the all demographic entities
 	 */
 	private List<IndividualDemographicDedupeEntity> getAllDemographicEntities(String name, String gender,
-			Date dob, String langCode) {
+			String dob, String langCode) {
 		Map<String, Object> params = new HashMap<>();
 		String className = IndividualDemographicDedupeEntity.class.getSimpleName();
 		String alias = IndividualDemographicDedupeEntity.class.getName().toLowerCase().substring(0, 1);
@@ -320,7 +315,7 @@ public class PacketInfoDao {
 	 * @param langCode the lang code
 	 * @return the all demographic info dtos
 	 */
-	public List<DemographicInfoDto> getAllDemographicInfoDtos(String name, String gender, Date dob,
+	public List<DemographicInfoDto> getAllDemographicInfoDtos(String name, String gender, String dob,
 			String langCode) {
 
 		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();

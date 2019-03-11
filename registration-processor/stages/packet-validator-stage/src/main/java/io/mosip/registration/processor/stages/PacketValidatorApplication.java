@@ -28,11 +28,11 @@ public class PacketValidatorApplication {
 		ctx.refresh();
 		PacketValidatorStage packetValidatorStage = ctx.getBean(PacketValidatorStage.class);
 		packetValidatorStage.deployVerticle();
-		
+	/*	
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("10011100110015620190305172945");
 		dto.setIsValid(false);
-		packetValidatorStage.process(dto);
+		packetValidatorStage.process(dto);*/
 		
 	}
 }
