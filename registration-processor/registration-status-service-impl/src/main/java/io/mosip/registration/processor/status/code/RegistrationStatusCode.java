@@ -6,6 +6,10 @@ package io.mosip.registration.processor.status.code;
  *
  */
 public enum RegistrationStatusCode {
+	
+	/** Potential Match found in data base. */
+	
+	POTENTIAL_MATCH_FOUND,
 
     /** The packet uploaded to virus scan. */
     PACKET_UPLOADED_TO_VIRUS_SCAN,
@@ -56,13 +60,10 @@ public enum RegistrationStatusCode {
     PACKET_OSI_VALIDATION_FAILED,
 
     /** The packet demo dedupe successful. */
-    PACKET_DEMO_DEDUPE_SUCCESS,
-
-    /** The packet demo potential match. */
-    PACKET_DEMO_POTENTIAL_MATCH,
+    DEMO_DEDUPE_SUCCESS,
 
     /** The packet demo dedupe failed. */
-    PACKET_DEMO_DEDUPE_FAILED,
+    DEMO_DEDUPE_FAILED,
 
     /** The packet bio dedupe successful. */
     PACKET_BIO_DEDUPE_SUCCESS,
