@@ -5,6 +5,9 @@ import { FormControl, Validators } from '@angular/forms';
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 import { MatDialog } from '@angular/material';
 import { AuthService } from '../auth.service';
+import { DataStorageService } from 'src/app/core/services/data-storage.service';
+import { RegistrationService } from 'src/app/core/services/registration.service';
+import { ConfigService } from 'src/app/core/services/config.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -29,8 +32,9 @@ export class LoginComponent implements OnInit {
   showVerify = false;
   showContactDetails = true;
   showOTP = false;
-
+  secondaryLanguagelabels: any;
   email = new FormControl('', [Validators.required, Validators.email]);
+  loggedOutLang: string;
 
   getErrorMessage() {
     return this.email.hasError('required')
@@ -44,36 +48,61 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private translate: TranslateService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private dataService: DataStorageService,
+    private regService: RegistrationService,
+    private configService: ConfigService
   ) {
     const loggedOut = localStorage.getItem('loggedOut');
+    this.loggedOutLang = localStorage.getItem('loggedOutLang');
     localStorage.clear();
     translate.addLangs(['eng', 'fra', 'ara']);
-    translate.setDefaultLang('ara');
 
     // const browserLang = translate.getBrowserLang();
     // translate.use(browserLang.match(/eng|fra|ara/) ? browserLang : 'ara');
     localStorage.setItem('loggedOut', loggedOut);
     localStorage.setItem('langCode', this.langCode);
+
+    this.showMessage();
   }
 
   ngOnInit() {
     if (localStorage.getItem('langCode')) {
       this.langCode = localStorage.getItem('langCode');
-      this.translate.use(this.langCode);
-    }
-    if (localStorage.getItem('loggedOut') && localStorage.getItem('loggedOut') === 'true') {
-      localStorage.removeItem('loggedOut');
-      const data = {
-        case: 'MESSAGE',
-        message: 'Applicant has to login with same Mobile/Email to access the created applications'
-      };
-      this.dialog.open(DialougComponent, {
-        width: '350px',
-        data: data
-      });
+      if (this.loggedOutLang) {
+        this.translate.use(this.loggedOutLang);
+      } else {
+        this.translate.use('ara');
+      }
     }
     localStorage.setItem('loggedIn', 'false');
+    this.loadConfigs();
+  }
+
+  loadConfigs() {
+    this.dataService.getConfig().subscribe(response => {
+      this.configService.setConfig(response);
+    }, error => {
+      this.router.navigate(['error']);
+    });
+  }
+
+  showMessage() {
+    if (this.loggedOutLang) {
+      this.dataService.getSecondaryLanguageLabels(this.loggedOutLang).subscribe(async response => {
+        this.secondaryLanguagelabels = response['login']['logout_msg'];
+        localStorage.removeItem('loggedOutLang');
+        localStorage.removeItem('loggedOut');
+        const data = {
+          case: 'MESSAGE',
+          message: this.secondaryLanguagelabels
+        };
+        this.dialog.open(DialougComponent, {
+          width: '350px',
+          data: data
+        });
+      });
+    }
   }
 
   changeLanguage(): void {
@@ -101,7 +130,7 @@ export class LoginComponent implements OnInit {
   }
 
   showVerifyBtn() {
-    if (this.inputOTP.length > 3) {
+    if (this.inputOTP.length === 6) {
       this.showVerify = true;
       this.showResend = false;
     } else {
@@ -157,12 +186,25 @@ export class LoginComponent implements OnInit {
         this.timer = setInterval(timerFn, 1000);
       }
 
+      this.dataService.sendOtp(this.inputContactDetails).subscribe(response => {
+        console.log(response);
+      })
+
       // dynamic update of button text for Resend and Verify
     } else if (this.showVerify) {
-      clearInterval(this.timer);
-      localStorage.setItem('loggedIn', 'true');
-      // this.authService.setToken();
-      this.router.navigate(['dashboard', this.inputContactDetails]);
+      this.dataService.verifyOtp(this.inputContactDetails, this.inputOTP).subscribe(response => {
+        console.log(response);
+        if (!response['errors']) {
+          clearInterval(this.timer);
+          localStorage.setItem('loggedIn', 'true');
+          this.authService.setToken();
+
+          this.regService.setLoginId(this.inputContactDetails);
+          this.router.navigate(['dashboard']);
+        } else {
+          console.log(response['error']);
+        }
+      });
     }
   }
 }
