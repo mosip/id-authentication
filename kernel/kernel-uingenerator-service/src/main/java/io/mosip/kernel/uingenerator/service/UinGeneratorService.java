@@ -4,6 +4,7 @@
 package io.mosip.kernel.uingenerator.service;
 
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
+import io.mosip.kernel.uingenerator.dto.UinStatusUpdateReponseDto;
 import io.vertx.core.json.JsonObject;
 
 /**
@@ -26,6 +27,6 @@ public interface UinGeneratorService {
 	 * 
 	 * @return
 	 */
-	UinResponseDto updateUinStatus(JsonObject uin);
+	UinStatusUpdateReponseDto updateUinStatus(JsonObject uin);
 
 }

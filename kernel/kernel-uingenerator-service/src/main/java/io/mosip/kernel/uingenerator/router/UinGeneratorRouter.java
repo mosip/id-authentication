@@ -13,6 +13,7 @@ import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
+import io.mosip.kernel.uingenerator.dto.UinStatusUpdateReponseDto;
 import io.mosip.kernel.uingenerator.exception.UinNotFoundException;
 import io.mosip.kernel.uingenerator.exception.UinNotIssuedException;
 import io.mosip.kernel.uingenerator.exception.UinStatusNotFoundException;
@@ -99,7 +100,7 @@ public class UinGeneratorRouter {
 	 */
 	private void updateRouter(RoutingContext routingContext) {
 		JsonObject uin = routingContext.getBodyAsJson();
-		UinResponseDto uinresponse = new UinResponseDto();
+		UinStatusUpdateReponseDto uinresponse = new UinStatusUpdateReponseDto();
 		if (uin == null) {
 			routingContext.response().setStatusCode(400).end();
 			return;

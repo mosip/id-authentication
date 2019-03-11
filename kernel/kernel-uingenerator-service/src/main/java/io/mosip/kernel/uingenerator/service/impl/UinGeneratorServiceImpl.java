@@ -6,10 +6,10 @@ package io.mosip.kernel.uingenerator.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
+import io.mosip.kernel.uingenerator.dto.UinStatusUpdateReponseDto;
 import io.mosip.kernel.uingenerator.entity.UinEntity;
 import io.mosip.kernel.uingenerator.exception.UinNotFoundException;
 import io.mosip.kernel.uingenerator.exception.UinNotIssuedException;
@@ -36,7 +36,6 @@ public class UinGeneratorServiceImpl implements UinGeneratorService {
 	@Autowired
 	UinRepository uinRepository;
 
-	ObjectMapper mapper = new ObjectMapper();
 
 	/**
 	 * instance of {@link MetaDataUtil}
@@ -85,8 +84,8 @@ public class UinGeneratorServiceImpl implements UinGeneratorService {
 	 * vertx.core.json.JsonObject)
 	 */
 	@Override
-	public UinResponseDto updateUinStatus(JsonObject uin) {
-		UinResponseDto uinResponseDto = new UinResponseDto();
+	public UinStatusUpdateReponseDto updateUinStatus(JsonObject uin) {
+		UinStatusUpdateReponseDto uinResponseDto = new UinStatusUpdateReponseDto();
 		final UinEntity uinEntity = Json.decodeValue(uin.toString(), UinEntity.class);
 		UinEntity uinBean = uinRepository.findByUin(uinEntity.getUin());
 		if (uinBean != null) {
@@ -112,6 +111,7 @@ public class UinGeneratorServiceImpl implements UinGeneratorService {
 		}
 
 		uinResponseDto.setUin(uinBean.getUin());
+		uinResponseDto.setStatus(uinBean.getStatus());
 		return uinResponseDto;
 	}
 
