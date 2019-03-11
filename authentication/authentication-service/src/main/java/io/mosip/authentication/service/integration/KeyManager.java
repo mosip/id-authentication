@@ -54,7 +54,7 @@ public class KeyManager {
 	private static final String REQUEST = "request";
 
 	/** The Constant TSP_ID. */
-	private static final String TSP_ID = "tspID";
+	private static final String PARTNER_ID = "partnerID";
 
 	/** KeySplitter. */
 
@@ -95,7 +95,7 @@ public class KeyManager {
 			throws IdAuthenticationAppException {
 		Map<String, Object> request = null;
 		try {
-			String tspId = (String) requestBody.get(TSP_ID);
+			String tspId = (String) requestBody.get(PARTNER_ID);
 			if (Objects.isNull(tspId) || tspId.isEmpty()) {
 				logger.error(SESSION_ID, this.getClass().getSimpleName(), IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
