@@ -49,7 +49,7 @@ import io.mosip.kernel.pdfgenerator.itext.constant.PDFGeneratorExceptionCodeCons
 @Component
 public class PDFGeneratorImpl implements PDFGenerator {
 	private static final String OUTPUT_FILE_EXTENSION = ".pdf";
-	private static final String FILE_SEPERATOR = System.getProperty("file.separator");
+	//private static final String FILE_SEPERATOR = System.getProperty("file.separator");
 
 	/**
 	 * This method is used to convert Template obtained from an {@link InputStream}
@@ -117,7 +117,7 @@ public class PDFGeneratorImpl implements PDFGenerator {
 	 */
 	@Override
 	public void generate(String templatePath, String outpuFilePath, String outputFileName) throws IOException {
-		File outputFile = new File(outpuFilePath + FILE_SEPERATOR + outputFileName + OUTPUT_FILE_EXTENSION);
+		File outputFile = new File(outpuFilePath + outputFileName + OUTPUT_FILE_EXTENSION);
 
 		try {
 			HtmlConverter.convertToPdf(new File(templatePath), outputFile);

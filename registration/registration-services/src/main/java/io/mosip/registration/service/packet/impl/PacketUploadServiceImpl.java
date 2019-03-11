@@ -82,11 +82,10 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		map.add(RegistrationConstants.PACKET_TYPE, new FileSystemResource(packet));
-		LinkedHashMap<String, Object> response = new LinkedHashMap<>();
 		ResponseDTO responseDTO = new ResponseDTO();
 		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
 		try {
-			response = (LinkedHashMap<String, Object>) serviceDelegateUtil.post(RegistrationConstants.PACKET_UPLOAD,
+			LinkedHashMap<String, Object> response = (LinkedHashMap<String, Object>) serviceDelegateUtil.post(RegistrationConstants.PACKET_UPLOAD,
 					map);
 			if (response.get("response") != null && response.get("error") == null) {
 				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();

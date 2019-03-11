@@ -45,7 +45,7 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 
 		List<GlobalParamName> globalParams = globalParamRepository.findByIsActiveTrue();
 		Map<String, Object> globalParamMap = new LinkedHashMap<>();
-		globalParams.forEach(param -> globalParamMap.put(param.getName(), param.getVal()));
+		globalParams.forEach(param -> globalParamMap.put(param.getName(), param.getVal().trim()));
 
 		LOGGER.info("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "List of global params fetched successfully");

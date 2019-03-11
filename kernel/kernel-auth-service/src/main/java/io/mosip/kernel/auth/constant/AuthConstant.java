@@ -9,6 +9,10 @@ package io.mosip.kernel.auth.constant;
  */
 public class AuthConstant {
 	
+	public final static String APPTYPE_UIN = "UIN"; 
+	
+	public final static String APPTYPE_USER = "USERIDTYPE"; 
+	
 	public final static String USERPWD_SUCCESS_MESSAGE = "Username and password combination had been validated successfully";
 	
 	public final static String CLIENT_SECRET_SUCCESS_MESSAGE = "Clientid and Token combination had been validated successfully";
@@ -32,4 +36,6 @@ public class AuthConstant {
 	public static final String TOKEN_INVALID_MESSAGE = "Token has been invalidated successfully";
 	
 	public static final String AUTH_TOKEN_EXPIRED_MESSAGE = "Auth token expired ";
+
+	public static final String UIN_NOTIFICATION_MESSAGE = "UIN sent successfully for the channels";
 }

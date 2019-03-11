@@ -57,7 +57,7 @@ public class FtpScannerStage extends MosipVerticleManager {
 	@Autowired
 	private MessageDTO messageDto;
 
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	/** The Constant FTP_NOT_ACCESSIBLE. */
