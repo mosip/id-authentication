@@ -27,6 +27,7 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
+import io.mosip.registration.processor.packet.service.dto.PacketReceiverResponseDTO;
 import io.mosip.registration.processor.packet.service.dto.RegSyncResponseDTO;
 import io.mosip.registration.processor.packet.service.dto.RegistrationSyncRequestDTO;
 import io.mosip.registration.processor.packet.service.dto.SyncRegistrationDTO;
@@ -53,16 +54,11 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 		String syncStatus = "";
 		String encryptedFilePath = "";
 		InputStream decryptedFileStream = null;
-
+		String uploadStatus="";
 		try {
 			decryptedFileStream = new FileInputStream(decryptedUinZipFile);
 
 			encryptedFilePath = encryptorUtil.encryptUinUpdatePacket(decryptedFileStream, registartionId);
-
-			int pos = registartionId.lastIndexOf(".");
-			if (pos > 0) {
-				registartionId = registartionId.substring(0, pos);
-			}
 
 			RegSyncResponseDTO regSyncResponseDTO = packetSync(registartionId);
 			if (regSyncResponseDTO != null) {
@@ -75,20 +71,25 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 
 			}
 			if ("success".equalsIgnoreCase(syncStatus)) {
+				
+				PacketReceiverResponseDTO packetReceiverResponseDTO=null;
 				File enryptedUinZipFile = new File(encryptedFilePath);
-
 				LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 				map.add("file", new FileSystemResource(enryptedUinZipFile));
 				HttpHeaders headers = new HttpHeaders();
 				headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
 				HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<LinkedMultiValueMap<String, Object>>(
 						map, headers);
 
 				String result = null;
 				result = (String) restClientService.postApi(ApiName.PACKETRECEIVER, "", "", requestEntity,
 						String.class);
-				System.out.println("output....   " + result);
+				if(result != null) {
+				packetReceiverResponseDTO=gson.fromJson(result, PacketReceiverResponseDTO.class);
+				uploadStatus=packetReceiverResponseDTO.getResponse().getStatus();
+				
+				}
+			
 			}
 
 		} catch (FileNotFoundException e) {
@@ -107,7 +108,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 
 		}
 
-		return null;
+		return uploadStatus;
 
 	}
 
@@ -121,7 +122,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 			registrationSyncRequestDTO.setId("mosip.registration.sync");
 			registrationSyncRequestDTO.setVersion("1.0");
 			registrationSyncRequestDTO
-					.setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+			.setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 			SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
 			syncDto.setLangCode("ENG");
 			syncDto.setStatusComment("update UIN status");
