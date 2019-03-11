@@ -2,6 +2,7 @@ package io.mosip.kernel.syncdata.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.ApplicantValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.ApplicationDto;
@@ -49,11 +51,11 @@ import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
 import io.mosip.kernel.syncdata.dto.TitleDto;
 import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
-import io.mosip.kernel.syncdata.entity.Machine;
-import io.mosip.kernel.syncdata.exception.DataNotFoundException;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
-import io.mosip.kernel.syncdata.repository.MachineRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterMachineRepository;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
+import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 
 /**
@@ -70,7 +72,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	SyncMasterDataServiceHelper serviceHelper;
 
 	@Autowired
-	MachineRepository machineRepository;
+	RegistrationCenterMachineRepository registrationCenterMachineRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -81,19 +83,20 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	 */
 
 	@Override
-	public MasterDataResponseDto syncData(String machineId, LocalDateTime lastUpdated, LocalDateTime currentTimeStamp)
-			throws InterruptedException, ExecutionException {
-		List<Machine> machines = null;
-		try {
-			machines = machineRepository.findByMachineIdAndIsActive(machineId);
-		} catch (DataAccessException ex) {
-			throw new SyncDataServiceException(MasterDataErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
-					ex.getMessage());
+	public MasterDataResponseDto syncData(String regCenterId, String macAddress, String serialNum,
+			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp) throws InterruptedException, ExecutionException {
+		String machineId = null;
+		String regId = null;
+		RegistrationCenterMachineDto regCenterMachineDto = null;
+		if (regCenterId == null) {
+			regCenterMachineDto = getRegistationMachineMapping(macAddress, serialNum);
+		} else {
+
+			regCenterMachineDto = getRegCenterMachineMappingWithRegCenterId(regCenterId, macAddress, serialNum);
 		}
-		if (machines.isEmpty()) {
-			throw new DataNotFoundException(MasterDataErrorCode.MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorCode(),
-					MasterDataErrorCode.MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorMessage());
-		}
+
+		machineId = regCenterMachineDto.getMachineId();
+		regId = regCenterMachineDto.getRegCenterId();
 		MasterDataResponseDto response = new MasterDataResponseDto();
 		CompletableFuture<List<MachineDto>> machineDetails = null;
 		CompletableFuture<List<ApplicationDto>> applications = null;
@@ -164,12 +167,10 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		applicantValidDocumentList = serviceHelper.getApplicantValidDocument(lastUpdated, currentTimeStamp);
 		individualTypeList = serviceHelper.getIndividualType(lastUpdated, currentTimeStamp);
 
-		
-		//List<RegistrationCenterMachineDto> registrationCenterMachineDto = registrationCenterMachines.get();
+		// List<RegistrationCenterMachineDto> registrationCenterMachineDto =
+		// registrationCenterMachines.get();
 
-		String regId = getRegistrationCenterId(registrationCenters.get());
-		registrationCenterMachines = serviceHelper.getRegistrationCenterMachines(regId, lastUpdated,
-				currentTimeStamp);
+		registrationCenterMachines = serviceHelper.getRegistrationCenterMachines(regId, lastUpdated, currentTimeStamp);
 		registrationCenterDevices = serviceHelper.getRegistrationCenterDevices(regId, lastUpdated, currentTimeStamp);
 		registrationCenterMachineDevices = serviceHelper.getRegistrationCenterMachineDevices(regId, lastUpdated,
 				currentTimeStamp);
@@ -195,7 +196,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 				registrationCenterMachineDevices, registrationCenterUserMachines, registrationCenterUsers,
 				registrationCenterUserHistoryList, registrationCenterUserMachineMappingHistoryList,
 				registrationCenterMachineDeviceHistoryList, registrationCenterDeviceHistoryList,
-				registrationCenterMachineHistoryList,applicantValidDocumentList,individualTypeList).join();
+				registrationCenterMachineHistoryList, applicantValidDocumentList, individualTypeList).join();
 
 		response.setMachineDetails(machineDetails.get());
 		response.setApplications(applications.get());
@@ -240,11 +241,66 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		return response;
 	}
 
-	private static String getRegistrationCenterId(List<RegistrationCenterDto> registrationCenterDto) {
-		String regId = null;
-		if (registrationCenterDto != null && !registrationCenterDto.isEmpty()) {
-			regId = registrationCenterDto.get(0).getId();
+	/*
+	 * private static String getRegistrationCenterId(List<RegistrationCenterDto>
+	 * registrationCenterDto) { String regId = null; if (registrationCenterDto !=
+	 * null && !registrationCenterDto.isEmpty()) { regId =
+	 * registrationCenterDto.get(0).getId(); } return regId; }
+	 */
+
+	private RegistrationCenterMachineDto getRegistationMachineMapping(String macId, String serialNum) {
+		List<Object[]> machineList = null;
+		RegistrationCenterMachineDto regMachineDto = null;
+
+		try {
+			if (macId != null && serialNum != null) {
+				machineList = registrationCenterMachineRepository
+						.getRegistrationCenterMachineWithMacAddressAndSerialNum(macId, serialNum);
+			} else if (macId != null) {
+				machineList = registrationCenterMachineRepository.getRegistrationCenterMachineWithMacAddress(macId);
+			} else if (serialNum != null) {
+				machineList = registrationCenterMachineRepository
+						.getRegistrationCenterMachineWithSerialNumber(serialNum);
+			}
+
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorMessage());
 		}
-		return regId;
+
+		if (machineList.isEmpty()) {
+			throw new SyncDataServiceException(MasterDataErrorCode.INVALID_MAC_OR_SERIAL_NUMBER.getErrorCode(),
+					MasterDataErrorCode.INVALID_MAC_OR_SERIAL_NUMBER.getErrorMessage());
+		}
+		for (Object[] objects : machineList) {
+			regMachineDto = new RegistrationCenterMachineDto();
+			regMachineDto.setMachineId((String) objects[1]);
+			regMachineDto.setRegCenterId((String) objects[0]);
+		}
+		return regMachineDto;
+	}
+
+	private RegistrationCenterMachineDto getRegCenterMachineMappingWithRegCenterId(String regCenterId, String macId,
+			String searialNum) {
+		RegistrationCenterMachineDto regCenterMachine = getRegistationMachineMapping(macId, searialNum);
+		RegistrationCenterMachine registrationCenterMachine = null;
+		Objects.nonNull(regCenterMachine);
+		try {
+
+			registrationCenterMachine = registrationCenterMachineRepository
+					.getRegCenterIdWithRegIdAndMachineId(regCenterId, regCenterMachine.getMachineId());
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorMessage());
+		}
+
+		if (registrationCenterMachine == null) {
+			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_UPDATED.getErrorCode(),
+					MasterDataErrorCode.REG_CENTER_UPDATED.getErrorMessage());
+		}
+
+		MapperUtils.map(registrationCenterMachine, regCenterMachine);
+
+		return regCenterMachine;
 	}
 }
