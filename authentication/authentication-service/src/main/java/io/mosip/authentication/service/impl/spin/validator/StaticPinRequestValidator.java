@@ -27,6 +27,10 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 
 	/** The Constant ID_AUTH_VALIDATOR2. */
 	private static final String ID_AUTH_VALIDATOR2 = "IdAuthValidator";
+	
+	
+	/** The Constant IDV_ID_TYPE. */
+	private static final String IDV_ID_TYPE = "individualIdType";
 
 	/** The Constant STATIC_PIN_PATTERN. */
 	private static final Pattern STATIC_PIN_PATTERN = Pattern.compile("^[0-9]{6}");
@@ -113,7 +117,7 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 		} else {
 			mosipLogger.error(SESSION_ID,  this.getClass().getSimpleName(), "validateUinVidValue",MISSING_INPUT_PARAMETER + UIN_VID);
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { UIN_VID },
+					new Object[] { IDV_ID_TYPE },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 	}

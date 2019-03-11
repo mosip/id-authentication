@@ -41,7 +41,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OTPAuthServiceImpl implements OTPAuthService {
 
-
 	private static final String AUTHENTICATE = "authenticate";
 
 	/** The Constant DEAFULT_SESSSION_ID. */
@@ -101,7 +100,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 			} else {
 				mosipLogger.debug(DEAFULT_SESSSION_ID, this.getClass().getSimpleName(), "Inside Invalid Txn ID",
 						getClass().toString());
-				mosipLogger.error(DEAFULT_SESSSION_ID, this.getClass().getSimpleName(),AUTHENTICATE , "Key Invalid");
+				mosipLogger.error(DEAFULT_SESSSION_ID, this.getClass().getSimpleName(), AUTHENTICATE, "Key Invalid");
 				throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
 			}
 		} else {

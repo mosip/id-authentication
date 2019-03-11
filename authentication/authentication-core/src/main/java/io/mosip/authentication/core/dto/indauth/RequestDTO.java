@@ -9,8 +9,6 @@ import lombok.Data;
 @Data
 public class RequestDTO {
 
-	private String otp;
-
 	/** variable to hold identity value */
 	private IdentityDTO identity;
 

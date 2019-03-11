@@ -41,16 +41,16 @@ public class KycAuthFilter extends IdAuthFilter {
 	@Override
 	protected Map<String, Object> encipherResponse(Map<String, Object> responseBody)
 			throws IdAuthenticationAppException {
-		try {			
+		try {
 			Map<String, Object> response = (Map<String, Object>) responseBody.get(RESPONSE);
 			if (Objects.nonNull(response) && Objects.nonNull(publicKey)) {
-					encryptKycResponse(response);
+				encryptKycResponse(response);
 			} else {
 				responseBody.put(RESPONSE, encode(toJsonString(response)));
 			}
 			return responseBody;
 		} catch (ClassCastException | JsonProcessingException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_PROCESS, e);
 		}
 	}
 
@@ -90,7 +90,6 @@ public class KycAuthFilter extends IdAuthFilter {
 		return responseParams;
 	}
 
-
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> setKycParams(Map<String, Object> response) {
 		Object kyc = response.get(RESPONSE);
@@ -109,20 +108,17 @@ public class KycAuthFilter extends IdAuthFilter {
 
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> constructKycInfo(Map<String, Object> identity) {
-		return identity.entrySet().stream()
-				.filter(entry -> entry.getValue() instanceof List)
+		return identity.entrySet().stream().filter(entry -> entry.getValue() instanceof List)
 				.collect(Collectors.toMap(Entry::getKey, entry -> {
 					List<Map<String, Object>> listOfMap = (List<Map<String, Object>>) entry.getValue();
 					return listOfMap.stream()
-							 .map((Map<String, Object> map) -> 
-							 		map.entrySet()
-							 			.stream()
-							 			.filter(innerEntry -> innerEntry.getValue() != null)
-							 			.collect(Collectors.toMap(Entry::getKey, Entry::getValue, (map1, map2) -> map1, LinkedHashMap::new)))
-							 .collect(Collectors.toList());
-					
+							.map((Map<String, Object> map) -> map.entrySet().stream()
+									.filter(innerEntry -> innerEntry.getValue() != null).collect(Collectors.toMap(
+											Entry::getKey, Entry::getValue, (map1, map2) -> map1, LinkedHashMap::new)))
+							.collect(Collectors.toList());
+
 				}));
-		
+
 	}
 
 	@Override

@@ -18,6 +18,7 @@ import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.IdType;
+import io.mosip.authentication.core.dto.vid.ResponseDTO;
 import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -102,13 +103,17 @@ public class VIDServiceImpl implements VIDService {
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VID_GENERATION_FAILED,
 							ex);
 				}
-				vidResponseDTO.setVid(vidEntityObj.getId());
+				ResponseDTO responseDTO = new ResponseDTO();
+				responseDTO.setVid(vidEntityObj.getId());
+				vidResponseDTO.setResponse(responseDTO);
 				vidResponseDTO.setError(Collections.emptyList());
 			} else {
 				vidEntityObj = vidEntityList.get(0);
 				if (vidEntityObj.isActive()
 						&& vidEntityObj.getExpiryDate().isAfter(DateUtils.getUTCCurrentDateTime())) {
-					vidResponseDTO.setVid(vidEntityObj.getId());
+					ResponseDTO responseDTO = new ResponseDTO();
+					responseDTO.setVid(vidEntityObj.getId());
+					vidResponseDTO.setResponse(responseDTO);
 					List<AuthError> listAuthError = new ArrayList<>();
 					AuthError authError = new AuthError();
 					authError.setErrorCode(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED.getErrorCode());
@@ -127,7 +132,10 @@ public class VIDServiceImpl implements VIDService {
 						throw new IdAuthenticationBusinessException(
 								IdAuthenticationErrorConstants.VID_GENERATION_FAILED, ex);
 					}
-					vidResponseDTO.setVid(vidEntityObj.getId());
+
+					ResponseDTO responseDTO = new ResponseDTO();
+					responseDTO.setVid(vidEntityObj.getId());
+					vidResponseDTO.setResponse(responseDTO);
 					vidResponseDTO.setError(Collections.emptyList());
 				}
 			}

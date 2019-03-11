@@ -18,20 +18,19 @@ import lombok.Data;
  */
 @Data
 public class VIDResponseDTO {
-	
+
 	/** The id. */
 	private String id;
-	
+
 	/** The version. */
 	private String version;
-	
+
 	/** The response time. */
 	private String responseTime;
-	
-	/** The vid. */
-	private String vid;
-	
+
 	/** The error. */
 	private List<AuthError> error;
+
+	private ResponseDTO response;
 
 }
