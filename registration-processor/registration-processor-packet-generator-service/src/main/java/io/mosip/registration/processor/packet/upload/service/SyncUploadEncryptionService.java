@@ -4,6 +4,6 @@ import java.io.File;
 
 public interface SyncUploadEncryptionService {
 
-	String uploadUinPacket(File uinZipFile);
+	String uploadUinPacket(File uinZipFile, String registrationId);
 
 }
