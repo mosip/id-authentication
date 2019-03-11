@@ -28,7 +28,6 @@ import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -68,11 +67,12 @@ public class EncryptorUtil {
 	@Value("${mosip.kernel.rid.centerid-length}")
 	private int centerIdLength;
 
-	public String encryptUinUpdatePacket(InputStream decryptedFile, String regId)
+	public String encryptUinUpdatePacket(InputStream decryptedFile, String regId, String creationTime)
 			throws IOException, ApisResourceAccessException, InvalidKeySpecException, JSONException,
 			NoSuchAlgorithmException, RegBaseCheckedException {
 		try (InputStream decryptedPacketStream = new BufferedInputStream(decryptedFile);
-				InputStream encryptPacketStream = encrypt(decryptedPacketStream, regId)) {// close input stream
+				InputStream encryptPacketStream = encrypt(decryptedPacketStream, regId, creationTime)) {// close input
+																										// stream
 			byte[] bytes = IOUtils.toByteArray(encryptPacketStream);
 			String filePath = storageService.storeToDisk(regId, bytes, true);
 
@@ -99,8 +99,9 @@ public class EncryptorUtil {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public InputStream encrypt(final InputStream streamToEncrypt, String regId) throws ApisResourceAccessException,
-			JSONException, InvalidKeySpecException, java.security.NoSuchAlgorithmException, IOException {
+	public InputStream encrypt(final InputStream streamToEncrypt, String regId, String creationTime)
+			throws ApisResourceAccessException, JSONException, InvalidKeySpecException,
+			java.security.NoSuchAlgorithmException, IOException {
 
 		try {
 
@@ -118,7 +119,7 @@ public class EncryptorUtil {
 			final byte[] encryptedData = encryptor.symmetricEncrypt(symmetricKey, dataToEncrypt);
 			System.out.println("3");
 			// Encrypt the AES Session Key using RSA
-			final byte[] rsaEncryptedKey = encryptRSA(symmetricKey.getEncoded(), centerId);
+			final byte[] rsaEncryptedKey = encryptRSA(symmetricKey.getEncoded(), centerId, creationTime);
 			System.out.println("4");
 			return new ByteArrayInputStream(CryptoUtil
 					.encodeBase64(CryptoUtil.combineByteArray(encryptedData, rsaEncryptedKey, AES_KEY_CIPHER_SPLITTER))
@@ -148,7 +149,7 @@ public class EncryptorUtil {
 	 * @throws NoSuchAlgorithmException
 	 *             the no such algorithm exception
 	 */
-	private byte[] encryptRSA(final byte[] sessionKey, String centerId)
+	private byte[] encryptRSA(final byte[] sessionKey, String centerId, String creationTime)
 			throws ApisResourceAccessException, InvalidKeySpecException, java.security.NoSuchAlgorithmException {
 		try {
 			System.out.println("5");
@@ -158,8 +159,7 @@ public class EncryptorUtil {
 			pathsegments.add(APPLICATION_ID);
 			System.out.println("7" + registrationProcessorRestClientService);
 			String publicKeytest = (String) registrationProcessorRestClientService.getApi(ApiName.ENCRYPTIONSERVICE,
-					pathsegments, "timeStamp,referenceId", DateUtils.getUTCCurrentDateTimeString() + ',' + centerId,
-					String.class);
+					pathsegments, "timeStamp,referenceId", creationTime + ',' + centerId, String.class);
 			System.out.println("7");
 			Gson gsonObj = new Gson();
 			PublicKeyResponseDto publicKeyResponsedto = gsonObj.fromJson(publicKeytest, PublicKeyResponseDto.class);

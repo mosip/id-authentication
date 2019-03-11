@@ -27,6 +27,8 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
+import io.mosip.registration.processor.packet.service.dto.PackerGeneratorFailureDto;
+import io.mosip.registration.processor.packet.service.dto.PackerGeneratorResDto;
 import io.mosip.registration.processor.packet.service.dto.PacketReceiverResponseDTO;
 import io.mosip.registration.processor.packet.service.dto.RegSyncResponseDTO;
 import io.mosip.registration.processor.packet.service.dto.RegistrationSyncRequestDTO;
@@ -49,16 +51,17 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 
 	Gson gson = new GsonBuilder().create();
 
-	public String uploadUinPacket(File decryptedUinZipFile, String registartionId) {
+	public PackerGeneratorResDto uploadUinPacket(File decryptedUinZipFile, String registartionId, String creationTime) {
+		PackerGeneratorResDto packerGeneratorResDto = new PackerGeneratorResDto();
 
 		String syncStatus = "";
 		String encryptedFilePath = "";
 		InputStream decryptedFileStream = null;
-		String uploadStatus="";
+		String uploadStatus = "";
 		try {
 			decryptedFileStream = new FileInputStream(decryptedUinZipFile);
 
-			encryptedFilePath = encryptorUtil.encryptUinUpdatePacket(decryptedFileStream, registartionId);
+			encryptedFilePath = encryptorUtil.encryptUinUpdatePacket(decryptedFileStream, registartionId, creationTime);
 
 			RegSyncResponseDTO regSyncResponseDTO = packetSync(registartionId);
 			if (regSyncResponseDTO != null) {
@@ -71,8 +74,8 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 
 			}
 			if ("success".equalsIgnoreCase(syncStatus)) {
-				
-				PacketReceiverResponseDTO packetReceiverResponseDTO=null;
+
+				PacketReceiverResponseDTO packetReceiverResponseDTO = null;
 				File enryptedUinZipFile = new File(encryptedFilePath);
 				LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 				map.add("file", new FileSystemResource(enryptedUinZipFile));
@@ -84,31 +87,38 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 				String result = null;
 				result = (String) restClientService.postApi(ApiName.PACKETRECEIVER, "", "", requestEntity,
 						String.class);
-				if(result != null) {
-				packetReceiverResponseDTO=gson.fromJson(result, PacketReceiverResponseDTO.class);
-				uploadStatus=packetReceiverResponseDTO.getResponse().getStatus();
-				
+				if (result != null) {
+					packetReceiverResponseDTO = gson.fromJson(result, PacketReceiverResponseDTO.class);
+					uploadStatus = packetReceiverResponseDTO.getResponse().getStatus();
+					packerGeneratorResDto.setRegistrationId(registartionId);
+					packerGeneratorResDto.setStatus(uploadStatus);
+					packerGeneratorResDto.setMessage("Packet created and uploaded");
+					return packerGeneratorResDto;
 				}
-			
+
 			}
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			PackerGeneratorFailureDto dto = new PackerGeneratorFailureDto();
 			e.printStackTrace();
+			return dto;
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException | JSONException | IOException e) {
-			// TODO Auto-generated catch block
+			PackerGeneratorFailureDto dto = new PackerGeneratorFailureDto();
 			e.printStackTrace();
+			return dto;
 		} catch (ApisResourceAccessException e) {
-			// TODO Auto-generated catch block
+			PackerGeneratorFailureDto dto = new PackerGeneratorFailureDto();
 			e.printStackTrace();
+			return dto;
 		} catch (RegBaseCheckedException e) {
-			// TODO Auto-generated catch block
+			PackerGeneratorFailureDto dto = new PackerGeneratorFailureDto();
 			e.printStackTrace();
+			return dto;
 		} finally {
 
 		}
 
-		return uploadStatus;
+		return packerGeneratorResDto;
 
 	}
 
@@ -122,7 +132,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 			registrationSyncRequestDTO.setId("mosip.registration.sync");
 			registrationSyncRequestDTO.setVersion("1.0");
 			registrationSyncRequestDTO
-			.setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+					.setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 			SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
 			syncDto.setLangCode("ENG");
 			syncDto.setStatusComment("update UIN status");

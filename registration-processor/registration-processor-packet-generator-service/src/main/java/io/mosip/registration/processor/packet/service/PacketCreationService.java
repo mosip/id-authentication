@@ -20,4 +20,6 @@ public interface PacketCreationService {
 	 * @throws RegBaseCheckedException
 	 */
 	byte[] create(RegistrationDTO registrationDTO) throws RegBaseCheckedException;
+
+	String getCreationTime();
 }

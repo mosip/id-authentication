@@ -19,14 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
-import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
+import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.packet.service.PacketCreationService;
 import io.mosip.registration.processor.packet.service.builder.AuditRequestBuilder;
 import io.mosip.registration.processor.packet.service.builder.Builder;
@@ -64,6 +63,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private Environment environment;
 
 	private static Random random = new Random(5000);
+
+	private String creationTime = null;
 
 	/*
 	 * (non-Javadoc)
@@ -131,7 +132,13 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			// Generating Packet Meta-Info JSON as byte array
 			PacketMetaInfo packetInfo = MAPPER_FACADE.convert(registrationDTO, PacketMetaInfo.class, "packetMetaInfo");
+			List<FieldValue> metadata = packetInfo.getIdentity().getMetaData();
+			for (FieldValue field : metadata) {
+				if (field.getLabel().equalsIgnoreCase(JsonConstant.CREATIONDATE)) {
+					creationTime = field.getValue();
+				}
 
+			}
 			// Add HashSequence
 			packetInfo.getIdentity().setHashSequence(buildHashSequence(hashSequence));
 			List<String> hashsequence2List = new ArrayList<String>();
@@ -181,44 +188,10 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		return hashSequenceList;
 	}
 
-	private List<String> getFingerSubType(String fingerType) {
-		List<String> fingerSubTypes = new ArrayList<>();
+	@Override
+	public String getCreationTime() {
 
-		if (fingerType.startsWith(RegistrationConstants.LEFT.toLowerCase())) {
-			fingerSubTypes.add(SingleAnySubtypeType.LEFT.value());
-			fingerType = fingerType.replace(RegistrationConstants.LEFT.toLowerCase(), RegistrationConstants.EMPTY);
-		} else if (fingerType.startsWith(RegistrationConstants.RIGHT.toLowerCase())) {
-			fingerSubTypes.add(SingleAnySubtypeType.RIGHT.value());
-			fingerType = fingerType.replace(RegistrationConstants.RIGHT.toLowerCase(), RegistrationConstants.EMPTY);
-		}
-
-		if (fingerType.equalsIgnoreCase(RegistrationConstants.THUMB.toLowerCase())) {
-			fingerSubTypes.add(SingleAnySubtypeType.THUMB.value());
-		} else {
-			fingerSubTypes.add(SingleAnySubtypeType
-					.fromValue(StringUtils.capitalizeFirstLetter(fingerType).concat("Finger")).value());
-		}
-
-		return fingerSubTypes;
-	}
-
-	private List<FieldValue> getRegisteredDevices() {
-		// List<RegDeviceMaster> registeredDevices = machineMappingDAO
-		// .getDevicesMappedToRegCenter(ApplicationContext.applicationLanguage());
-
-		List<FieldValue> capturedRegisteredDevices = new ArrayList<>();
-		FieldValue capturedRegisteredDevice;
-
-		/*
-		 * if (registeredDevices != null) { for (RegDeviceMaster registeredDevice :
-		 * registeredDevices) { capturedRegisteredDevice = new FieldValue();
-		 * capturedRegisteredDevice.setLabel(registeredDevice.getRegDeviceSpec().
-		 * getRegDeviceType().getName());
-		 * capturedRegisteredDevice.setValue(registeredDevice.getRegMachineSpecId().
-		 * getId()); capturedRegisteredDevices.add(capturedRegisteredDevice); } }
-		 */
-
-		return capturedRegisteredDevices;
+		return creationTime;
 	}
 
 }

@@ -68,7 +68,8 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 /**
  * The Class UinGeneratorStage.
  * 
- * @author M1047487 M1049387
+ * @author Ranjitha Siddegowda
+ * @author Rishab Kesari
  */
 @Service
 public class UinGeneratorStage extends MosipVerticleManager {
