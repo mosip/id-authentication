@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
     private dialog: MatDialog,
     private dataService: DataStorageService,
     private regService: RegistrationService,
-    private configService: ConfigService
+    private configService: ConfigService,
   ) {
     const loggedOut = localStorage.getItem('loggedOut');
     this.loggedOutLang = localStorage.getItem('loggedOutLang');
@@ -203,8 +203,22 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['dashboard']);
         } else {
           console.log(response['error']);
+          this.showOtpMessage();
         }
       });
     }
+  }
+
+  showOtpMessage() {
+    this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+      const message = {
+        case: 'MESSAGE',
+        message: response['message']['login']['msg3']
+      };
+      const dialogRef = this.dialog.open(DialougComponent, {
+        width: '350px',
+        data: message
+      });
+    });
   }
 }

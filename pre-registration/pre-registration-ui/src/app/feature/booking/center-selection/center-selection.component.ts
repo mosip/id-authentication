@@ -1,9 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatDialog } from '@angular/material';
-import { SelectionModel } from '@angular/cdk/collections';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { RegistrationCentre } from './registration-center-details.model';
-import { TimeSelectionComponent } from '../time-selection/time-selection.component';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
@@ -132,13 +130,16 @@ export class CenterSelectionComponent implements OnInit {
 
   plotOnMap() {
     this.showMap = true;
-    this.service.changeCoordinates([Number(this.selectedCentre.longitude), Number(this.selectedCentre.latitude)]);
+    if (Object.keys(this.selectedCentre).length !== 0) {
+      console.log('length', Object.keys(this.selectedCentre).length);
+      this.service.changeCoordinates([Number(this.selectedCentre.longitude), Number(this.selectedCentre.latitude)]);
+    }
   }
 
   selectedRow(row) {
     this.selectedCentre = row;
     this.enableNextButton = true;
-    console.log(row);
+    console.log('row', row);
     this.plotOnMap();
   }
 
@@ -231,7 +232,9 @@ export class CenterSelectionComponent implements OnInit {
     // this.dataSource.data = REGISTRATION_CENTRES;
     // console.log(this.dataSource.data);
     this.showTable = true;
-    this.selectedRow(this.REGISTRATION_CENTRES[0]);
-    this.dispatchCenterCoordinatesList();
+    if (this.REGISTRATION_CENTRES) {
+      this.selectedRow(this.REGISTRATION_CENTRES[0]);
+      this.dispatchCenterCoordinatesList();
+    }
   }
 }

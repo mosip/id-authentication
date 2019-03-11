@@ -15,12 +15,6 @@ ARG encrypt_keyStore_alias
 # can be passed during Docker build as build time environment for  keystore secret for encryption
 ARG encrypt_keyStore_secret
 
-# can be passed during Docker build as build time environment for spring security username
-ARG spring_security_username
-
-# can be passed during Docker build as build time environment for spring security password
-ARG spring_security_password
-
 # environment variable to pass GIT URL at docker runtime
 ENV git_url_env=${git_url}
 
@@ -38,12 +32,6 @@ ENV encrypt_keyStore_alias_env=${encrypt_keyStore_alias}
 
 # environment variable to pass encryption keystore secret at docker runtime
 ENV encrypt_keyStore_secret_env=${encrypt_keyStore_secret}
-
-# environment variable to pass spring security username at docker runtime
-ENV spring_security_username_env=${spring_security_username}
-
-# environment variable to pass spring security password at docker runtime
-ENV spring_security_password_env=${spring_security_password}
 
 ADD execute-jar.sh execute-jar.sh
 
