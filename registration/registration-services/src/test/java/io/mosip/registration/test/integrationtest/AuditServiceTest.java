@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.AuditLogControlDAO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.audit.impl.AuditServiceImpl;
 import io.mosip.registration.service.config.GlobalParamService;
 
@@ -36,7 +38,10 @@ public class AuditServiceTest extends BaseIntegrationTest{
 	private   AuditLogControlDAO repo;
 	@Autowired
 	private  GlobalParamService globalParamService;
+	@Autowired
+	UserOnboardService userOBservice;
 	
+	@Before
 	public void setGlobalConfig() {
 		ApplicationContext applicationContext = ApplicationContext.getInstance();
 		applicationContext.setApplicationLanguageBundle();
