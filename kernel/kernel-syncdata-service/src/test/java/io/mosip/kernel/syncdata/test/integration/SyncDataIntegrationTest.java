@@ -270,6 +270,7 @@ public class SyncDataIntegrationTest {
 	private String syncDataUrlSerialNum = "/v1.0/masterdata?serialnumber=NM5328114630";
 	private String syncDataUrl = "/v1.0/masterdata?lastupdated=ssserialnumber=NM5328114630&macAddress=e1:01:2b:c2:1d:b0";
 	private String syncDataUrlWithRegId = "/v1.0/masterdata/{regcenterId}?serialnumber=NM532811463";
+	private String syncDataUrlWithoutMacAddressAndSno = "/v1.0/masterdata";
 
 	@Before
 	public void setup() {
@@ -494,6 +495,7 @@ public class SyncDataIntegrationTest {
 
 	private void mockSuccess() {
 
+		when(registrationCenterRepository.findRegistrationCenterByIdAndIsActiveIsTrue(Mockito.anyString())).thenReturn(registrationCenters);
 		when(registrationCenterMachineRepository.getRegCenterIdWithRegIdAndMachineId(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(registrationCenterMachines.get(0));
 		when(registrationCenterMachineRepository.getRegistrationCenterMachineWithMacAddress(Mockito.anyString()))
@@ -906,7 +908,7 @@ public class SyncDataIntegrationTest {
 		mockSuccess();
 		when(registrationCenterDeviceRepository.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(
 				Mockito.anyString(), Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "111"))
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastupdated=2018-11-01T12:10:01.021Z&macaddress=11:a1:b0:i87&serialnumber=NM123456BT", "111"))
 				.andExpect(status().isInternalServerError());
 	}
 
@@ -986,14 +988,14 @@ public class SyncDataIntegrationTest {
 		mockMvc.perform(get("/v1.0/registrationcenteruser/1")).andExpect(status().isNotFound());
 	}
 
-	@Test
+	/*@Test
 	public void IsMachineIdPresentServiceExceptionTest() throws Exception {
 		when(machineRepository.findByMachineIdAndIsActive(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 
 		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
 	}
-
+*/
 	@Test
 	public void findApplicantValidDocServiceExceptionTest() throws Exception {
 		mockSuccess();
@@ -1020,6 +1022,54 @@ public class SyncDataIntegrationTest {
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
 
+	}
+	
+	@Test
+	public void registrationCenterTest() throws Exception {
+	
+		mockSuccess();
+		when(registrationCenterRepository.findRegistrationCenterByIdAndIsActiveIsTrue(Mockito.anyString())).thenReturn(new ArrayList<RegistrationCenter>());
+		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isOk());
+		
+	}
+	
+	@Test
+	public void registrationCenterMachineExceptionTest() throws Exception {
+		mockSuccess();
+		when(registrationCenterMachineRepository.getRegCenterIdWithRegIdAndMachineId(Mockito.anyString(),
+				Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	public void registrationCenterMachineNullTest() throws Exception {
+		mockSuccess();
+		when(registrationCenterMachineRepository.getRegCenterIdWithRegIdAndMachineId(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(null);
+		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void noMacAddressAndNoSNoNumTest() throws Exception {
+		mockSuccess();
+		
+		mockMvc.perform(get(syncDataUrlWithoutMacAddressAndSno)).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void syncMasterdataWithServiceException() throws Exception {
+		mockSuccess();
+		when(registrationCenterMachineRepository.getRegistrationCenterMachineWithMacAddress(Mockito.anyString()))
+		.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get(syncDataUrlMacAdress,"10001")).andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	public void syncMasterdataWithMachineListEmptyException() throws Exception {
+		mockSuccess();
+		when(registrationCenterMachineRepository.getRegistrationCenterMachineWithMacAddress(Mockito.anyString()))
+		.thenReturn(new ArrayList<Object[]>());
+		mockMvc.perform(get(syncDataUrlMacAdress,"10001")).andExpect(status().isOk());
 	}
 
 }
