@@ -416,7 +416,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 
 		List<String> validDocuments = new ArrayList<>();
 		masterValidDocuments.forEach(docs -> {
-			validDocuments.add(docs.getDocumentCategory().getCode());
+			validDocuments.add(docs.getValidDocumentId().getDocTypeCode());
 		});
 
 		List<DocumentCategoryDto> documentsDTO = new ArrayList<>();
