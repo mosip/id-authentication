@@ -21,6 +21,8 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MasterSyncDao;
+import io.mosip.registration.dto.ApplicantValidDocumentDto;
+import io.mosip.registration.dto.IndividualTypeDto;
 import io.mosip.registration.dto.mastersync.ApplicationDto;
 import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.dto.mastersync.BiometricTypeDto;
@@ -52,7 +54,7 @@ import io.mosip.registration.dto.mastersync.TemplateDto;
 import io.mosip.registration.dto.mastersync.TemplateFileFormatDto;
 import io.mosip.registration.dto.mastersync.TemplateTypeDto;
 import io.mosip.registration.dto.mastersync.TitleDto;
-import io.mosip.registration.dto.mastersync.ValidDocumentDto;
+import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.entity.Application;
 import io.mosip.registration.entity.BiometricAttribute;
 import io.mosip.registration.entity.BiometricType;
@@ -63,9 +65,9 @@ import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.Gender;
 import io.mosip.registration.entity.Holiday;
 import io.mosip.registration.entity.IdType;
+import io.mosip.registration.entity.IndividualType;
 import io.mosip.registration.entity.Language;
 import io.mosip.registration.entity.Location;
-import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.MachineType;
 import io.mosip.registration.entity.ReasonCategory;
 import io.mosip.registration.entity.ReasonList;
@@ -85,7 +87,6 @@ import io.mosip.registration.entity.TemplateFileFormat;
 import io.mosip.registration.entity.TemplateType;
 import io.mosip.registration.entity.Title;
 import io.mosip.registration.entity.UserMachineMapping;
-import io.mosip.registration.entity.ValidDocument;
 import io.mosip.registration.entity.id.CenterMachineId;
 import io.mosip.registration.entity.id.RegCenterUserId;
 import io.mosip.registration.entity.id.RegCentreMachineDeviceId;
@@ -105,6 +106,7 @@ import io.mosip.registration.repositories.DocumentTypeRepository;
 import io.mosip.registration.repositories.GenderRepository;
 import io.mosip.registration.repositories.HolidayRepository;
 import io.mosip.registration.repositories.IdTypeRepository;
+import io.mosip.registration.repositories.IndividualTypeRepository;
 import io.mosip.registration.repositories.LanguageRepository;
 import io.mosip.registration.repositories.LocationRepository;
 import io.mosip.registration.repositories.MachineMasterRepository;
@@ -263,6 +265,10 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	@Autowired
 	private RegistrationCenterTypeRepository registrationCenterTypeRepository;
 
+	/** Object for Sync Individual type Repository. */
+	@Autowired
+	private IndividualTypeRepository individualTypeRepository;
+
 	/**
 	 * logger for logging
 	 */
@@ -320,7 +326,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 		List<HolidayDto> masterHolidaysDto = masterSyncDto.getHolidays();
 		List<DocumentCategoryDto> masterDocumnetCategoryDto = masterSyncDto.getDocumentCategories();
 		List<DocumentTypeDto> masterDocumnetTypeDto = masterSyncDto.getDocumentTypes();
-		//List<ValidDocumentDto> masterValidDocumnetsDto = masterSyncDto.getValidDocumentMapping();
+		List<ApplicantValidDocumentDto> masterValidDocumnetsDto = masterSyncDto.getApplicantValidDocuments();
 		List<TemplateDto> masterTemplateDto = masterSyncDto.getTemplates();
 		List<TemplateTypeDto> masterTemplateTypeDto = masterSyncDto.getTemplatesTypes();
 		List<TemplateFileFormatDto> masterTemplateFileDto = masterSyncDto.getTemplateFileFormat();
@@ -344,6 +350,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 		List<RegistrationCenterUserDto> registrationCenterUsers = masterSyncDto.getRegistrationCenterUsers();
 		List<RegistrationCenterDto> registrationCenter = masterSyncDto.getRegistrationCenter();
 		List<RegistrationCenterTypeDto> registrationCenterType = masterSyncDto.getRegistrationCenterTypes();
+		List<IndividualTypeDto> indiviualType = masterSyncDto.getIndividualTypes();
 		String sucessResponse = null;
 
 		try {
@@ -390,8 +397,8 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			List<Gender> masterGenderDtoEntity = MetaDataUtils.setCreateMetaData(masterGenderDto, Gender.class);
 			genderRepository.saveAll(masterGenderDtoEntity);
 
-			//List<Holiday> masterHolidaysDtoEntity = MetaDataUtils.setCreateMetaData(masterHolidaysDto, Holiday.class);
-			// holidayRepository.saveAll(masterHolidaysDtoEntity);
+			List<Holiday> masterHolidaysDtoEntity = MetaDataUtils.setCreateMetaData(masterHolidaysDto, Holiday.class);
+			holidayRepository.saveAll(masterHolidaysDtoEntity);
 
 			List<IdType> masterIdTypeDtoEntity = MetaDataUtils.setCreateMetaData(masterIdTypeDto, IdType.class);
 			idTypeRepository.saveAll(masterIdTypeDtoEntity);
@@ -407,8 +414,10 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 					RegMachineSpec.class);
 			machineSpecificationRepository.saveAll(masterMachineSpecDtoEntity);
 
-			/*List<MachineMaster> masterMachineDtoEntity = MetaDataUtils.setCreateMetaData(masterMachineDto,
-					MachineMaster.class);*/
+			/*
+			 * List<MachineMaster> masterMachineDtoEntity =
+			 * MetaDataUtils.setCreateMetaData(masterMachineDto, MachineMaster.class);
+			 */
 			// machineRepository.saveAll(masterMachineDtoEntity);
 
 			List<ReasonCategory> masterReasonCategoryDtoEntity = MetaDataUtils
@@ -428,9 +437,9 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				templFrmat.setPkTfftCode(commnFields);
 				templFrmat.setDescr(templateFrmat.getDescription());
 				templFrmat.setActive(templateFrmat.getIsActive());
-				if(SessionContext.isSessionContextAvailable()) {
+				if (SessionContext.isSessionContextAvailable()) {
 					templFrmat.setCrBy(SessionContext.userContext().getUserId());
-				}else {
+				} else {
 					templFrmat.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 				}
 				templFrmat.setCrDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
@@ -454,9 +463,9 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				templete.setModel(templet.getModel());
 				templete.setModuleId(templet.getModuleId());
 				templete.setLangCode(templet.getLangCode());
-				if(SessionContext.isSessionContextAvailable()) {
+				if (SessionContext.isSessionContextAvailable()) {
 					templete.setCrBy(SessionContext.userContext().getUserId());
-				}else {
+				} else {
 					templete.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 				}
 				templete.setCrDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
@@ -474,9 +483,9 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				tempType.setPkTmpltCode(commnFields);
 				tempType.setActive(templateType.getIsActive());
 				tempType.setDescr(templateType.getDescription());
-				if(SessionContext.isSessionContextAvailable()) {
+				if (SessionContext.isSessionContextAvailable()) {
 					tempType.setCrBy(SessionContext.userContext().getUserId());
-				}else {
+				} else {
 					tempType.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 				}
 				tempType.setCrDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
@@ -487,9 +496,13 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			List<Title> masterTitleDtoEntity = MetaDataUtils.setCreateMetaData(masterTitleDto, Title.class);
 			titleRepository.saveAll(masterTitleDtoEntity);
 
-//			List<ValidDocument> masterValidDocumnetsDtoEntity = MetaDataUtils.setCreateMetaData(masterValidDocumnetsDto,
-//					ValidDocument.class);
-//			validDocumentRepository.saveAll(masterValidDocumnetsDtoEntity);
+			List<ApplicantValidDocument> masterValidDocumnetsDtoEntity = MetaDataUtils
+					.setCreateMetaData(masterValidDocumnetsDto, ApplicantValidDocument.class);
+			validDocumentRepository.saveAll(masterValidDocumnetsDtoEntity);
+
+			List<IndividualType> masterIndividualType = MetaDataUtils.setCreateMetaData(indiviualType,
+					IndividualType.class);
+			individualTypeRepository.saveAll(masterIndividualType);
 
 			List<RegistrationCenter> regCentr = new ArrayList<>();
 			registrationCenter.forEach(regCenter -> {
@@ -517,9 +530,9 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				regCen.setNumberOfKiosks(regCenter.getNumberOfKiosks().intValue());
 				regCen.setPerKioskProcessTime(Time.valueOf(regCenter.getPerKioskProcessTime()));
 				regCen.setTimeZone(regCenter.getTimeZone());
-				if(SessionContext.isSessionContextAvailable()) {
+				if (SessionContext.isSessionContextAvailable()) {
 					regCen.setCrBy(SessionContext.userContext().getUserId());
-				}else {
+				} else {
 					regCen.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 				}
 				regCen.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
@@ -538,9 +551,9 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				regCentrType.setDescr(centerType.getDescr());
 				regCentrType.setLangCode(centerType.getLangCode());
 				regCentrType.setIsActive(centerType.getIsActive());
-				if(SessionContext.isSessionContextAvailable()) {
+				if (SessionContext.isSessionContextAvailable()) {
 					regCentrType.setCrBy(SessionContext.userContext().getUserId());
-				}else {
+				} else {
 					regCentrType.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 				}
 				regCentrType.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
@@ -561,9 +574,9 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				regMachDevId.setRegCentreId(centerMachDev.getRegCenterId());
 				regMachDev.setRegCentreMachineDeviceId(regMachDevId);
 				regMachDev.setIsActive(centerMachDev.getIsActive());
-				if(SessionContext.isSessionContextAvailable()) {
+				if (SessionContext.isSessionContextAvailable()) {
 					regMachDev.setCrBy(SessionContext.userContext().getUserId());
-				}else {
+				} else {
 					regMachDev.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 				}
 				regMachDev.setLangCode(centerMachDev.getLangCode());
@@ -580,9 +593,9 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				idMapping.setUserID(centerUserMac.getUsrId());
 				UserMachineMapping userMachine = new UserMachineMapping();
 				userMachine.setUserMachineMappingId(idMapping);
-				if(SessionContext.isSessionContextAvailable()) {
+				if (SessionContext.isSessionContextAvailable()) {
 					userMachine.setCrBy(SessionContext.userContext().getUserId());
-				}else {
+				} else {
 					userMachine.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 				}
 				userMachine.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
@@ -598,9 +611,9 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				RegCenterUser centerUsr = new RegCenterUser();
 				RegCenterUserId userIdMapping = new RegCenterUserId();
 				centerUsr.setIsActive(centerUser.getIsActive());
-				if(SessionContext.isSessionContextAvailable()) {
+				if (SessionContext.isSessionContextAvailable()) {
 					centerUsr.setCrBy(SessionContext.userContext().getUserId());
-				}else {
+				} else {
 					centerUsr.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 				}
 				centerUsr.setLangCode("eng");
@@ -620,9 +633,9 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				centerMachnId.setId(centerMachine.getMachineId());
 				centerMachn.setCenterMachineId(centerMachnId);
 				centerMachn.setIsActive(centerMachine.getIsActive());
-				if(SessionContext.isSessionContextAvailable()) {
+				if (SessionContext.isSessionContextAvailable()) {
 					centerMachn.setCrBy(SessionContext.userContext().getUserId());
-				}else {
+				} else {
 					centerMachn.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 				}
 				centerMachn.setLangCode(centerMachine.getLangCode());
@@ -735,8 +748,17 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	 * io.mosip.registration.dao.MasterSyncDao#getValidDocumets(java.lang.String)
 	 */
 	@Override
-	public List<ValidDocument> getValidDocumets(String docCategoryCode, String langCode) {
-		return validDocumentRepository.findByIsActiveTrueAndDocumentCategoryCodeAndDocumentCategoryLangCode(docCategoryCode, langCode);
+	public List<ApplicantValidDocument> getValidDocumets(String docCategoryCode, String langCode) {
+		return validDocumentRepository
+				.findByIsActiveTrueAndDocumentCategoryCodeAndDocumentCategoryLangCode(docCategoryCode, langCode);
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.MasterSyncDao#getIndividulType(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<IndividualType> getIndividulType(String code, String langCode) {
+		return individualTypeRepository.findByIndividualTypeIdCodeAndIndividualTypeIdLangCodeAndIsActiveTrue(code, langCode);
 	}
 
 }

@@ -30,6 +30,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.ErrorResponseDTO;
+import io.mosip.registration.dto.IndividualTypeDto;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
@@ -38,14 +39,15 @@ import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.dto.mastersync.ReasonListDto;
+import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.entity.BlacklistedWords;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.Gender;
+import io.mosip.registration.entity.IndividualType;
 import io.mosip.registration.entity.Location;
 import io.mosip.registration.entity.ReasonCategory;
 import io.mosip.registration.entity.ReasonList;
 import io.mosip.registration.entity.SyncControl;
-import io.mosip.registration.entity.ValidDocument;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.MasterSyncService;
@@ -410,7 +412,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	@Override
 	public List<DocumentCategoryDto> getDocumentCategories(String docCode, String langCode) {
 
-		List<ValidDocument> masterValidDocuments = masterSyncDao.getValidDocumets(docCode, langCode);
+		List<ApplicantValidDocument> masterValidDocuments = masterSyncDao.getValidDocumets(docCode, langCode);
 
 		List<String> validDocuments = new ArrayList<>();
 		masterValidDocuments.forEach(docs -> {
@@ -431,5 +433,19 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		});
 
 		return documentsDTO;
+	}
+
+	@Override
+	public List<IndividualTypeDto> getIndividualType(String code, String langCode) {
+		List<IndividualType> masterDocuments = masterSyncDao.getIndividulType(code, langCode);
+		List<IndividualTypeDto> listOfIndividualDTO = new ArrayList<>();
+		masterDocuments.forEach(individual->{
+			IndividualTypeDto individualDto=new IndividualTypeDto();
+			individualDto.setName(individual.getName());
+			individualDto.setCode(individual.getIndividualTypeId().getCode());
+			individualDto.setLangCode(individual.getIndividualTypeId().getLangCode());
+			listOfIndividualDTO.add(individualDto);
+		});
+		return listOfIndividualDTO;
 	}
 }

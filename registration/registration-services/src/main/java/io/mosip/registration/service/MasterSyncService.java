@@ -2,6 +2,7 @@ package io.mosip.registration.service;
 
 import java.util.List;
 
+import io.mosip.registration.dto.IndividualTypeDto;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
@@ -75,5 +76,14 @@ public interface MasterSyncService {
 	 * @return the gender dtls
 	 */
 	List<GenderDto> getGenderDtls(String langCode);
+	
+	/**
+	 * Gets the individual type.
+	 *
+	 * @param code the code
+	 * @param langCode the lang code
+	 * @return the individual type
+	 */
+	List<IndividualTypeDto> getIndividualType(String code,String langCode);
 
 }

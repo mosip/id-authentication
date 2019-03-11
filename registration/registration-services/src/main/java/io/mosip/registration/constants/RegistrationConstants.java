@@ -1090,5 +1090,7 @@ public class RegistrationConstants {
 	public static final String ATTR_INDIVIDUAL_TYPE = "individualTypeCode";
 	public static final String ATTR_DATE_OF_BIRTH = "dateofbirth";
 	public static final String ATTR_GENDER_TYPE = "genderCode";
+	public static final String ATTR_NON_FORINGER="NFR";
+	public static final String ATTR_FORINGER="FR";
 
 }

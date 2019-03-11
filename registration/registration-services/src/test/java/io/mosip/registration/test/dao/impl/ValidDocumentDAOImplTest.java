@@ -14,9 +14,9 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dao.impl.ValidDocumentDAOImpl;
-import io.mosip.registration.entity.ValidDocument;
+import io.mosip.registration.entity.ApplicantValidDocument;
+import io.mosip.registration.entity.id.ApplicantValidDocumentID;
 import io.mosip.registration.entity.id.GenericId;
-import io.mosip.registration.entity.id.ValidDocumentId;
 import io.mosip.registration.repositories.ValidDocumentRepository;
 
 public class ValidDocumentDAOImplTest {
@@ -31,8 +31,8 @@ public class ValidDocumentDAOImplTest {
 	@Test
 	public void test() {
 
-		ValidDocument validDocument = new ValidDocument();
-		ValidDocumentId validDocumentId=new ValidDocumentId();
+		ApplicantValidDocument validDocument = new ApplicantValidDocument();
+		ApplicantValidDocumentID validDocumentId=new ApplicantValidDocumentID();
 		validDocumentId.setDocCatCode("D101");
 		validDocumentId.setDocTypeCode("DC101");
 		validDocumentId.setAppTypeCode("007");
@@ -46,7 +46,7 @@ public class ValidDocumentDAOImplTest {
 		genericId.setActive(true);
 		genericId.setCode("code");
 		//validDocument.setGenericId(genericId);
-		List<ValidDocument> list = new ArrayList<>();
+		List<ApplicantValidDocument> list = new ArrayList<>();
 		list.add(validDocument);
 
 		Mockito.when(validDocumentRepository.findAll()).thenReturn(list);

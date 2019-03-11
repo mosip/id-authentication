@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.ValidDocumentDAO;
-import io.mosip.registration.entity.ValidDocument;
+import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.repositories.ValidDocumentRepository;
 
 /**
@@ -35,7 +35,7 @@ public class ValidDocumentDAOImpl implements ValidDocumentDAO {
 	 * @see io.mosip.registration.dao.ValidDocumentDAO#getValidDocuments()
 	 */
 	@Override
-	public List<ValidDocument> getValidDocuments() {
+	public List<ApplicantValidDocument> getValidDocuments() {
 		LOGGER.info("REGISTRATION-PACKET_CREATION-VALIDDOCUMENTDAO", APPLICATION_NAME, APPLICATION_ID,
 				"fetching the validdocuments");
 
@@ -43,10 +43,11 @@ public class ValidDocumentDAOImpl implements ValidDocumentDAO {
 	}
 
 	@Override
-	public List<ValidDocument> getValidDocuments(String applicantType, String docCategoryCode, String langCode) {
+	public List<ApplicantValidDocument> getValidDocuments(String applicantType, String docCategoryCode,
+			String langCode) {
 
-		return validDocumentRepository.findByValidDocumentIdAppTypeCodeAndDocumentCategoryCodeAndLangCode(applicantType, docCategoryCode,
-				langCode);
+		return validDocumentRepository.findByValidDocumentIdAppTypeCodeAndDocumentCategoryCodeAndLangCode(applicantType,
+				docCategoryCode, langCode);
 
 	}
 

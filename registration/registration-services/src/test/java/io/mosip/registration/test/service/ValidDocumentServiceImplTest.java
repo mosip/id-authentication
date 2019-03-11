@@ -15,9 +15,9 @@ import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dao.ValidDocumentDAO;
+import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.entity.DocumentType;
-import io.mosip.registration.entity.ValidDocument;
-import io.mosip.registration.entity.id.ValidDocumentId;
+import io.mosip.registration.entity.id.ApplicantValidDocumentID;
 import io.mosip.registration.service.impl.ValidDocumentServiceImpl;
 
 public class ValidDocumentServiceImplTest {
@@ -37,9 +37,9 @@ public class ValidDocumentServiceImplTest {
 	@Test
 	public void getDocumentCategoriesTest() {
 
-		List<ValidDocument> validDocuments = new ArrayList<>();
-		ValidDocument validDocument = new ValidDocument();
-		ValidDocumentId validDocumentId=new ValidDocumentId();
+		List<ApplicantValidDocument> validDocuments = new ArrayList<>();
+		ApplicantValidDocument validDocument = new ApplicantValidDocument();
+		ApplicantValidDocumentID validDocumentId=new ApplicantValidDocumentID();
 		validDocumentId.setAppTypeCode("007");
 		validDocumentId.setDocCatCode("POA");
 		validDocumentId.setDocTypeCode("DocType");

@@ -47,6 +47,7 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.VirtualKeyboard;
 import io.mosip.registration.dto.ErrorResponseDTO;
+import io.mosip.registration.dto.IndividualTypeDto;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.RegistrationMetaDataDTO;
@@ -388,6 +389,9 @@ public class DemographicDetailController extends BaseController {
 	private Date dateOfBirth;
 	ResourceBundle applicationLabelBundle;
 	ResourceBundle localLabelBundle;
+	
+	@Autowired
+	private MasterSyncService masterSyncService;
 
 	@FXML
 	private void initialize() {
@@ -414,9 +418,13 @@ public class DemographicDetailController extends BaseController {
 			toggleFunctionForResidence();
 			applicationLabelBundle = ApplicationContext.getInstance().getApplicationLanguageBundle();
 			localLabelBundle = ApplicationContext.getInstance().getLocalLanguageProperty();
-			residence.setText(applicationLabelBundle.getString("national"));
-			residence.setId("national");
-			residenceLocalLanguage.setText(localLabelBundle.getString("national"));
+			List<IndividualTypeDto> applicantType = masterSyncService.getIndividualType(
+					RegistrationConstants.ATTR_NON_FORINGER, ApplicationContext.applicationLanguage());
+			residence.setText(applicantType.get(0).getName());
+			residence.setId(applicantType.get(0).getCode());
+			List<IndividualTypeDto> applicantTypeLocal = masterSyncService
+					.getIndividualType(RegistrationConstants.ATTR_NON_FORINGER, ApplicationContext.localLanguage());
+			residenceLocalLanguage.setText(applicantTypeLocal.get(0).getName());
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
@@ -511,9 +519,13 @@ public class DemographicDetailController extends BaseController {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
 					if (newValue) {
-						residence.setText(applicationLabelBundle.getString("foreigner"));
-						residence.setId("foreigner");
-						residenceLocalLanguage.setText(localLabelBundle.getString("foreigner"));
+						List<IndividualTypeDto> applicantType = masterSyncService.getIndividualType(RegistrationConstants.ATTR_FORINGER,
+								ApplicationContext.applicationLanguage());
+						residence.setText(applicantType.get(0).getName());
+						residence.setId(applicantType.get(0).getCode());
+						List<IndividualTypeDto> applicantTypeLocal = masterSyncService.getIndividualType(
+								RegistrationConstants.ATTR_FORINGER, ApplicationContext.localLanguage());
+						residenceLocalLanguage.setText(applicantTypeLocal.get(0).getName());
 						national.getStyleClass().clear();
 						foreigner.getStyleClass().clear();
 						nationalLocalLanguage.getStyleClass().clear();
@@ -523,9 +535,13 @@ public class DemographicDetailController extends BaseController {
 						foreigner.getStyleClass().addAll("selectedResidence", "button");
 						national.getStyleClass().addAll("residence", "button");
 					} else {
-						residence.setText(applicationLabelBundle.getString("national"));
-						residence.setId("national");
-						residenceLocalLanguage.setText(localLabelBundle.getString("national"));
+						List<IndividualTypeDto> applicantType = masterSyncService.getIndividualType(
+								RegistrationConstants.ATTR_NON_FORINGER, ApplicationContext.applicationLanguage());
+						residence.setText(applicantType.get(0).getName());
+						residence.setId(applicantType.get(0).getCode());
+						List<IndividualTypeDto> applicantTypeLocal = masterSyncService.getIndividualType(
+								RegistrationConstants.ATTR_NON_FORINGER, ApplicationContext.localLanguage());
+						residenceLocalLanguage.setText(applicantTypeLocal.get(0).getName());
 						national.getStyleClass().clear();
 						foreigner.getStyleClass().clear();
 						nationalLocalLanguage.getStyleClass().clear();

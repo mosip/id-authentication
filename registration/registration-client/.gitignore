@@ -28,3 +28,4 @@ reg/README_DO_NOT_TOUCH_FILES.txt
 !jfxrt.jar
 /PacketStore/*
 /PreRegPacketStore/*
+/user.json

@@ -208,7 +208,7 @@ public class DocumentScanController extends BaseController {
 		}
 		if (gender != null && dateOfBirth != null && individualType != null) {
 			Map<String, Object> applicantTypeMap = new HashMap<>();
-			applicantTypeMap.put(RegistrationConstants.ATTR_INDIVIDUAL_TYPE, "NFR");
+			applicantTypeMap.put(RegistrationConstants.ATTR_INDIVIDUAL_TYPE, individualType);
 			applicantTypeMap.put(RegistrationConstants.ATTR_DATE_OF_BIRTH, formattedDob);
 			applicantTypeMap.put(RegistrationConstants.ATTR_GENDER_TYPE, gender);
 			applicantType = applicantTypeService.getApplicantType(applicantTypeMap);
