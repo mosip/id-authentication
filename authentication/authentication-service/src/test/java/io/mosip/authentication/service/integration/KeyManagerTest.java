@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,18 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.server.reactive.HttpHandler;
-import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.reactive.function.server.RequestPredicates;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -39,7 +31,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
@@ -48,8 +39,6 @@ import io.mosip.authentication.service.integration.dto.CryptomanagerRequestDto;
 import io.mosip.authentication.service.integration.dto.CryptomanagerResponseDto;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
-import reactor.core.publisher.Mono;
-import reactor.ipc.netty.http.server.HttpServer;
 
 // 
 /**
@@ -106,6 +95,7 @@ public class KeyManagerTest {
 	 * @throws IDDataValidationException    the ID data validation exception
 	 * @throws JsonProcessingException      the json processing exception
 	 */
+	@Ignore
 	@Test
 	public void requestDataTest()
 			throws IdAuthenticationAppException, IDDataValidationException, JsonProcessingException {
