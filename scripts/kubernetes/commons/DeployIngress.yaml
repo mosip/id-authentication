@@ -9,11 +9,7 @@ metadata:
 spec:  
   rules:
   - http:
-      paths:    
-      - path: /ping
-        backend:
-          serviceName: ping-server
-          servicePort: 3000  
+      paths:
       - path: /uingenerator
         backend:
           serviceName: kernel-uingenerator-service
