@@ -72,7 +72,6 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 		this.uinsCount = uinsCount;
 		this.uinLength = uinLength;
 		this.uinDefaultStatus = uinDefaultStatus;
-		System.out.println("===uinDefaultStatus=="+uinDefaultStatus);
 	}
 
 	private static final RandomDataGenerator RANDOM_DATA_GENERATOR = new RandomDataGenerator();
@@ -94,7 +93,6 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 		while (uins.size() < uinsCount) {
 			String generatedUIN = generateSingleId(generatedIdLength, lowerBound, upperBound);
 			if (uinFilterUtils.isValidId(generatedUIN)) {
-				//UinEntity uinBean = new UinEntity(generatedUIN, UinGeneratorConstant.UNUSED);
 				UinEntity uinBean = new UinEntity(generatedUIN, uinDefaultStatus);
 				uins.add(metaDataUtil.setMetaData(uinBean));
 			}

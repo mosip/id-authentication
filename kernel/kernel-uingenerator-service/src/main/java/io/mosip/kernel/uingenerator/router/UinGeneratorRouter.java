@@ -14,6 +14,8 @@ import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
 import io.mosip.kernel.uingenerator.exception.UinNotFoundException;
+import io.mosip.kernel.uingenerator.exception.UinNotIssuedException;
+import io.mosip.kernel.uingenerator.exception.UinStatusNotFoundException;
 import io.mosip.kernel.uingenerator.service.UinGeneratorService;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.Json;
@@ -89,7 +91,7 @@ public class UinGeneratorRouter {
 	}
 
 	/**
-	 * Creates router for status update vertricle
+	 * update router for update the status of the given UIN
 	 * 
 	 * @param vertx
 	 *            vertx
@@ -108,6 +110,21 @@ public class UinGeneratorRouter {
 		} catch (UinNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
+			ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+			errorResponse.getErrors().add(error);
+			errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+			routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
+		}catch (UinStatusNotFoundException e) {
+			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_STATUS_NOT_FOUND.getErrorCode(),
+					UinGeneratorErrorCode.UIN_STATUS_NOT_FOUND.getErrorMessage());
+			ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
+			errorResponse.getErrors().add(error);
+			errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+			routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
+		}
+		catch (UinNotIssuedException e) {
+			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_ISSUED.getErrorCode(),
+					UinGeneratorErrorCode.UIN_NOT_ISSUED.getErrorMessage());
 			ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 			errorResponse.getErrors().add(error);
 			errorResponse.setStatus(HttpStatus.NOT_FOUND.value());

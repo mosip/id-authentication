@@ -32,6 +32,9 @@ public class UinStatusUpdateVerticle extends AbstractVerticle {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see io.vertx.core.AbstractVerticle#start(io.vertx.core.Future)
+	 */
 	@Override
 	public void start(Future<Void> future) {
 		System.out.println("===== Update UIN status===");
