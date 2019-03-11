@@ -114,10 +114,12 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 			// getting Last Sync date from Data from sync table
 			masterSyncDetails = masterSyncDao.syncJobDetails(masterSyncDtls);
 
-			Timestamp lastSyncTime = masterSyncDetails.getLastSyncDtimes();
+			LocalDateTime masterLastSyncTime = null;
 
-			// Converting Time Stamp to LocalDateTime
-			LocalDateTime masterLastSyncTime = LocalDateTime.ofInstant(lastSyncTime.toInstant(), ZoneOffset.ofHours(0));
+			if (masterSyncDetails != null) {
+				masterLastSyncTime = LocalDateTime.ofInstant(masterSyncDetails.getLastSyncDtimes().toInstant(),
+						ZoneOffset.ofHours(0));
+			}
 
 			// Getting machineID from data base
 			Map<String, String> machineIdMap = UserOnboardService.getMachineCenterId();
@@ -154,6 +156,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 					responseDTO.setSuccessResponseDTO(sucessResponse);
 
 				} else {
+					
 					LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 							RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 					responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
@@ -161,6 +164,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 				}
 
 			} else {
+				
 				LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 						RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 				responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
@@ -435,6 +439,9 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		return documentsDTO;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.MasterSyncService#getIndividualType(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public List<IndividualTypeDto> getIndividualType(String code, String langCode) {
 		List<IndividualType> masterDocuments = masterSyncDao.getIndividulType(code, langCode);

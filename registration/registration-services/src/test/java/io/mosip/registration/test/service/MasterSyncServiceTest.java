@@ -36,7 +36,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.ErrorResponseDTO;
@@ -48,10 +47,12 @@ import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.entity.BlacklistedWords;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.Gender;
+import io.mosip.registration.entity.IndividualType;
 import io.mosip.registration.entity.Location;
 import io.mosip.registration.entity.ReasonCategory;
 import io.mosip.registration.entity.ReasonList;
 import io.mosip.registration.entity.SyncControl;
+import io.mosip.registration.entity.id.IndividualTypeId;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.UserOnboardService;
@@ -760,6 +761,25 @@ public class MasterSyncServiceTest {
 
 		masterSyncServiceImpl.getGenderDtls("ENG");
 
+	}
+
+	@Test
+	public void findIndividualType() {
+
+		List<IndividualType> masterIndividualType = new ArrayList<>();
+		IndividualType individualTypeEntity = new IndividualType();
+		IndividualTypeId individualTypeId = new IndividualTypeId();
+		individualTypeId.setCode("NFR");
+		individualTypeId.setLangCode("eng");
+		individualTypeEntity.setIndividualTypeId(individualTypeId);
+		individualTypeEntity.setName("National");
+		individualTypeEntity.setIsActive(true);
+		masterIndividualType.add(individualTypeEntity);
+
+		Mockito.when(masterSyncDao.getIndividulType(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(masterIndividualType);
+
+		assertEquals("NFR", masterSyncServiceImpl.getIndividualType("NFR", "eng").get(0).getCode());
 	}
 
 }

@@ -14,34 +14,26 @@ import io.mosip.registration.dao.ValidDocumentDAO;
 import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.repositories.ValidDocumentRepository;
 
+// TODO: Auto-generated Javadoc
 /**
- * implementation class of RegistrationValidDocumentDAO
- * 
+ * implementation class of RegistrationValidDocumentDAO.
+ *
  * @author Brahmanada Reddy
  * @since 1.0.0
- *
  */
 @Repository
 public class ValidDocumentDAOImpl implements ValidDocumentDAO {
-	/** instance of {@link ValidDocumentRepository} */
+	
+	/**  instance of {@link ValidDocumentRepository}. */
 	@Autowired
 	private ValidDocumentRepository validDocumentRepository;
-	/** instance of {@link Logger} */
+	
+	/**  instance of {@link Logger}. */
 	private static final Logger LOGGER = AppConfig.getLogger(ValidDocumentDAOImpl.class);
 
-	/**
-	 * (non-javadoc)
-	 * 
-	 * @see io.mosip.registration.dao.ValidDocumentDAO#getValidDocuments()
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.ValidDocumentDAO#getValidDocuments(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	@Override
-	public List<ApplicantValidDocument> getValidDocuments() {
-		LOGGER.info("REGISTRATION-PACKET_CREATION-VALIDDOCUMENTDAO", APPLICATION_NAME, APPLICATION_ID,
-				"fetching the validdocuments");
-
-		return validDocumentRepository.findAll();
-	}
-
 	@Override
 	public List<ApplicantValidDocument> getValidDocuments(String applicantType, String docCategoryCode,
 			String langCode) {
