@@ -1043,8 +1043,8 @@ public class RegistrationConstants {
 		fieldToExclude.add("virtualKeyboard");
 		fieldToExclude.add("docPageNumber");
 		fieldToExclude.add("residence");
-		fieldToExclude.add("national");
-		fieldToExclude.add("foreigner");
+		fieldToExclude.add("NFR");
+		fieldToExclude.add("FR");
 		fieldToExclude.add("residenceLocalLanguage");
 		fieldToExclude.add("updateUinId");
 
