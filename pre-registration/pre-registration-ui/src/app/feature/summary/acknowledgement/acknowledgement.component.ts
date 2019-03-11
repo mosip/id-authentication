@@ -6,6 +6,7 @@ import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 import { TranslateService } from '@ngx-translate/core';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { NotificationDtoModel } from 'src/app/shared/models/notification-model/notification-dto.model';
+import Utils from 'src/app/app.util';
 
 @Component({
   selector: 'app-acknowledgement',
@@ -27,8 +28,9 @@ export class AcknowledgementComponent implements OnInit {
   secondaryLanguagelabels: any;
   secondaryLang = localStorage.getItem('secondaryLangCode');
   usersInfo = [];
+  secondaryLanguageRegistrationCenter: any;
 
-  guidelines = ['Guidelines yet to be decided'];
+  guidelines = [];
 
   opt = {};
 
@@ -45,16 +47,50 @@ export class AcknowledgementComponent implements OnInit {
   
   ngOnInit() {
     this.usersInfo = this.sharedService.getNameList();
+    console.log('usersInfo', this.usersInfo);
+    if (!this.usersInfo[0].registrationCenter) {
+      this.getRegistrationCenterInPrimaryLanguage(this.usersInfo[0].regDto.registration_center_id, localStorage.getItem('langCode'));
+      this.getRegistrationCenterInSecondaryLanguage(this.usersInfo[0].regDto.registration_center_id, this.secondaryLang);
+    } else {
+      this.getRegistrationCenterInSecondaryLanguage(this.usersInfo[0].registrationCenter.id, this.secondaryLang);
+    }
+    if (!this.usersInfo[0].bookingData) {
+      this.usersInfo[0].bookingData = Utils.getBookingDateTime(this.usersInfo[0].regDto.appointment_date, this.usersInfo[0].regDto.time_slot_from);
+    }
     this.opt = {
       filename: this.usersInfo[0].preRegId + '.pdf',
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 1 },
       jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
     };
-    this.usersInfo.forEach(user =>  this.generateQRCode(user));
+    this.usersInfo.forEach(user => {
+      console.log(user);
+      this.generateQRCode(user);
+    });
     this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
       this.secondaryLanguagelabels = response['acknowledgement'];
     });
+    this.getTemplate();
+  }
+
+  getRegistrationCenterInSecondaryLanguage(centerId: string, langCode: string) {
+    this.dataStorageService.getRegistrationCenterByIdAndLangCode(centerId, langCode).subscribe(response => {
+      this.secondaryLanguageRegistrationCenter = response['registrationCenters'][0];
+      console.log(this.secondaryLanguageRegistrationCenter);
+    })
+  }
+
+  getRegistrationCenterInPrimaryLanguage(centerId: string, langCode: string) {
+    this.dataStorageService.getRegistrationCenterByIdAndLangCode(centerId, langCode).subscribe(response => {
+      this.usersInfo[0].registrationCenter = response['registrationCenters'][0];
+      console.log(this.usersInfo);
+    })
+  }
+
+  getTemplate() {
+    this.dataStorageService.getGuidelineTemplate().subscribe(response => {
+      this.guidelines = response['templates'][0].fileText.split('$');
+    })
   }
 
   download() {

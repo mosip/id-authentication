@@ -2,11 +2,15 @@ package io.mosip.registration.processor.status.code;
 
 /**
  * Valid Status codes for Registration status table.
- * 
+ *
  * @author Girish Yarru
  *
  */
 public enum RegistrationStatusCode {
+
+	/** Potential Match found in data base. */
+
+	POTENTIAL_MATCH_FOUND,
 
 	/** The packet uploaded to virus scan. */
 	PACKET_UPLOADED_TO_VIRUS_SCAN,
@@ -56,14 +60,11 @@ public enum RegistrationStatusCode {
 	/** The packet osi validation failed. */
 	PACKET_OSI_VALIDATION_FAILED,
 
-	/** The packet demo dedupe successful. */
-	PACKET_DEMO_DEDUPE_SUCCESS,
+    /** The packet demo dedupe successful. */
+    DEMO_DEDUPE_SUCCESS,
 
-	/** The packet demo potential match. */
-	PACKET_DEMO_POTENTIAL_MATCH,
-
-	/** The packet demo dedupe failed. */
-	PACKET_DEMO_DEDUPE_FAILED,
+    /** The packet demo dedupe failed. */
+    DEMO_DEDUPE_FAILED,
 
 	/** The packet bio dedupe successful. */
 	PACKET_BIO_DEDUPE_SUCCESS,

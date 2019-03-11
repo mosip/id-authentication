@@ -288,7 +288,7 @@ public class PacketValidateProcessor {
 							eventType = EventType.SYSTEM.toString();
 						}
 						auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-								registrationId);
+								registrationId, ApiName.AUDIT);
 
 					}
 				
@@ -373,7 +373,7 @@ public class PacketValidateProcessor {
 				eventType = EventType.SYSTEM.toString();
 			}
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId.trim().isEmpty() ? null : registrationId.toString());
+					registrationId.trim().isEmpty() ? null : registrationId.toString(), ApiName.AUDIT);
 		}
 
 		return object;

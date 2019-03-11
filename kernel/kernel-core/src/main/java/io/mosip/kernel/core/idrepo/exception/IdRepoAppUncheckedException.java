@@ -13,18 +13,6 @@ public class IdRepoAppUncheckedException extends BaseUncheckedException {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6748760277721155095L;
 
-	/** The id. */
-	private String id;
-
-	/**
-	 * Gets the id.
-	 *
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
-
 	/**
 	 * Instantiates a new id repo app unchecked exception.
 	 */
@@ -71,28 +59,4 @@ public class IdRepoAppUncheckedException extends BaseUncheckedException {
 	public IdRepoAppUncheckedException(IdRepoErrorConstants exceptionConstant, Throwable rootCause) {
 		this(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage(), rootCause);
 	}
-
-	/**
-	 * Instantiates a new id repo app unchecked exception.
-	 *
-	 * @param exceptionConstant the exception constant
-	 * @param id the id
-	 */
-	public IdRepoAppUncheckedException(IdRepoErrorConstants exceptionConstant, String id) {
-		this(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage());
-		this.id = id;
-	}
-
-	/**
-	 * Instantiates a new id repo app unchecked exception.
-	 *
-	 * @param exceptionConstant the exception constant
-	 * @param rootCause the root cause
-	 * @param id the id
-	 */
-	public IdRepoAppUncheckedException(IdRepoErrorConstants exceptionConstant, Throwable rootCause, String id) {
-		this(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage(), rootCause);
-		this.id = id;
-	}
-
 }

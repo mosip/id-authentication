@@ -2,6 +2,7 @@ package io.mosip.registration.test.jobs;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -13,17 +14,22 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
 import org.springframework.context.ApplicationContext;
 
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
@@ -39,6 +45,8 @@ import io.mosip.registration.jobs.impl.SyncManagerImpl;
 import io.mosip.registration.repositories.SyncTransactionRepository;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ io.mosip.registration.config.AppConfig.class })
 public class SyncManagerTest {
 
 	@Mock
@@ -110,6 +118,8 @@ public class SyncManagerTest {
 
 		Mockito.when(onboardDAO.getCenterID(Mockito.anyString())).thenReturn("CNTR123");
 		Mockito.when(onboardDAO.getStationID(Mockito.anyString())).thenReturn("MCHN123");
+		PowerMockito.mockStatic(io.mosip.registration.config.AppConfig.class);
+		when(io.mosip.registration.config.AppConfig.getApplicationProperty(Mockito.anyString())).thenReturn("Appli_Lang");
 
 	}
 
@@ -128,17 +138,17 @@ public class SyncManagerTest {
 		// TODO
 		syncTransaction.setTriggerPoint("User");
 
-		syncTransaction.setSyncFrom(RegistrationSystemPropertiesChecker.getMachineId());
+		syncTransaction.setSyncFrom("Machine");
 
 		// TODO
 		syncTransaction.setSyncTo("SERVER???");
 
-		syncTransaction.setMachmId(RegistrationSystemPropertiesChecker.getMachineId());
+		syncTransaction.setMachmId("MachID");
 
 		// TODO
 		syncTransaction.setLangCode("EN");
 
-		syncTransaction.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
+		syncTransaction.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
 		syncTransaction.setCrDtime(new Timestamp(System.currentTimeMillis()));
 		return syncTransaction;
@@ -154,10 +164,7 @@ public class SyncManagerTest {
 		Mockito.when(jobTransactionDAO.save(Mockito.any(SyncTransaction.class))).thenReturn(syncTransaction);
 		Mockito.when(machineMappingDAO.getStationID(RegistrationSystemPropertiesChecker.getMachineId()))
 				.thenReturn(Mockito.anyString());
-		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
-		centerDetailDTO.setRegistrationCenterId("CNTR123");
-		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
-
+		
 		
 		assertSame(syncTransaction.getSyncJobId(),
 				syncTransactionManagerImpl.createSyncTransaction("Completed", "Completed", "USER", "1").getSyncJobId());
@@ -173,6 +180,7 @@ public class SyncManagerTest {
 		assertNotNull(syncTransactionManagerImpl.createSyncControlTransaction(syncTransaction));
 	}
 
+	@Ignore
 	@Test(expected = RegBaseUncheckedException.class)
 	public void createSyncTransactionExceptionTest() {
 		SyncTransaction syncTransaction = null;

@@ -2,7 +2,6 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -400,40 +399,21 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			 * date is not a holiday for that center
 			 *
 			 */
-			boolean isTrue = registrationCenterRepository.validateDateWithHoliday(localDate, id);
+			RegistrationCenter registrationCenter = registrationCenterRepository.findByIdAndLangCode(id, langCode);
+			if (registrationCenter == null) {
+				throw new DataNotFoundException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
+			boolean isTrue = registrationCenterRepository.validateDateWithHoliday(localDate,
+					registrationCenter.getHolidayLocationCode());
 			if (isTrue) {
 				resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.INVALID);
 			} else {
-				RegistrationCenter registrationCenter = registrationCenterRepository.findByIdAndLangCode(id, langCode);
-				if (registrationCenter == null) {
-					throw new DataNotFoundException(
-							RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
-							RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
-				}
 
-				LocalTime startTime = registrationCenter.getCenterStartTime();
-				LocalTime endTime = registrationCenter.getCenterEndTime();
-				if (startTime != null && endTime != null) {
-					LocalTime localTime = localDateTime.toLocalTime();
-					boolean isAfterStartTime = localTime.isAfter(startTime);
-					boolean isBeforeEndTime = localTime.isBefore(endTime.plusHours(1));
-					/*
-					 * below is the validation to check if the time that is sent is between start
-					 * and end time
-					 */
-					if ((localTime.equals(startTime) || isAfterStartTime)
-							&& ((localTime.equals(endTime.plusHours(1))) || isBeforeEndTime)) {
-						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.VALID);
-					} else {
-						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.INVALID);
-					}
-
-				} else {
-					throw new DataNotFoundException(
-							RegistrationCenterErrorCode.DATA_TO_BE_VALIDATED_WITH_NOT_FOUND.getErrorCode(),
-							RegistrationCenterErrorCode.DATA_TO_BE_VALIDATED_WITH_NOT_FOUND.getErrorMessage());
-				}
+				resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.VALID);
 			}
+
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),

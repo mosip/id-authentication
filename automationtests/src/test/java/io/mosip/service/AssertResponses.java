@@ -34,22 +34,22 @@ public class AssertResponses {
 			throws JsonProcessingException, IOException, ParseException {
 		JSONObject obj1 = AssertResponses.getComparableBody(response.asString(), outerKeys, innerKeys);
 		JSONObject obj2 = AssertResponses.getComparableBody(object.toString(), outerKeys, innerKeys);
-		System.out.println(obj1);
-		System.out.println(obj2);
+		logger.info(obj1);
+		logger.info(obj2);
 		Gson g = new Gson(); 
 		Type mapType = new TypeToken<Map<String, Object>>() {
 		}.getType();
 		Map<String, Object> firstMap = g.fromJson(obj1.toJSONString(), mapType);
 		Map<String, Object> secondMap = g.fromJson(obj2.toJSONString(), mapType);
-		System.out.println(com.google.common.collect.Maps.difference(firstMap, secondMap));
+		logger.info(com.google.common.collect.Maps.difference(firstMap, secondMap));
 		if (obj1.hashCode() == obj2.hashCode()) {
-			System.out.println("both object are equal");
+			logger.info("both object are equal");
 			softAssert.assertTrue(obj1.equals(obj2));
 			softAssert.assertAll();
 			return true;
 
 		} else { 
-			System.out.println("both object are not equal");
+			logger.info("both object are not equal");
 			return false;
 		}
 
@@ -84,15 +84,15 @@ public class AssertResponses {
 				obj2 = AssertResponses.getComparableBody(objectArray.get(i-1).toString(), outerKeys, innerKeys);
 			}		
 			
-		System.out.println(obj1);
-		System.out.println(obj2);
+			logger.info(obj1);
+			logger.info(obj2);
 
 		Gson g = new Gson(); 
 		Type mapType = new TypeToken<Map<String, Object>>() {
 		}.getType();
 		Map<String, Object> firstMap = g.fromJson(obj1.toJSONString(), mapType);
 		Map<String, Object> secondMap = g.fromJson(obj2.toJSONString(), mapType);
-		System.out.println(com.google.common.collect.Maps.difference(firstMap, secondMap));
+		logger.info(com.google.common.collect.Maps.difference(firstMap, secondMap));
 		if (obj1.hashCode() == obj2.hashCode()) {
 			softAssert.assertTrue(obj1.equals(obj2));
 			softAssert.assertAll();

@@ -11,6 +11,8 @@ import { NameList } from 'src/app/shared/models/demographic-model/name-list.moda
 import { SharedService } from '../booking.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { TranslateService } from '@ngx-translate/core';
+import Utils from 'src/app/app.util';
+import * as appConstants from '../../../app.constants';
 
 @Component({
   selector: 'app-time-selection',
@@ -30,13 +32,13 @@ export class TimeSelectionComponent implements OnInit {
   availabilityData = [];
   cutoff = 1;
   days = 7;
-  MONTHS = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   enableBookButton = false;
   activeTab = 'morning';
   bookingDataList = [];
   temp: NameList[];
   registrationCenterLunchTime = [];
+  secondaryLang = localStorage.getItem('secondaryLangCode');
+  secondaryLanguagelabels: any;
 
   constructor(
     private sharedService: SharedService,
@@ -60,6 +62,10 @@ export class TimeSelectionComponent implements OnInit {
     console.log(this.registrationCenter);
     console.log('in onInit', this.names);
     this.getSlotsforCenter(this.registrationCenter);
+
+    this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+      this.secondaryLanguagelabels = response['timeSelection'].booking;
+    });
   }
 
   public scrollRight(): void {
@@ -128,10 +134,10 @@ export class TimeSelectionComponent implements OnInit {
       element.displayDate =
         element.date.split('-')[2] +
         ' ' +
-        this.MONTHS[Number(element.date.split('-')[1])] +
+        appConstants.MONTHS[Number(element.date.split('-')[1])] +
         ', ' +
         element.date.split('-')[0];
-      element.displayDay = this.DAYS[new Date(Date.parse(element.date)).getDay()];
+      element.displayDay = appConstants.DAYS[new Date(Date.parse(element.date)).getDay()];
       if (!element.inActive) {
         this.availabilityData.push(element);
       }
@@ -184,6 +190,7 @@ export class TimeSelectionComponent implements OnInit {
               slot.fromTime,
               slot.toTime
             );
+            console.log(name);
             const requestObject = {
               newBookingDetails: bookingData,
               oldBookingDetails: name.status ? (name.status.toLowerCase() !== 'booked' ? null : name.regDto) : null,
@@ -199,55 +206,55 @@ export class TimeSelectionComponent implements OnInit {
     this.dataService.makeBooking(request).subscribe(
       response => {
         console.log(response);
-        const data = {
-          case: 'MESSAGE',
-          title: 'Success',
-          message: 'Appointment Booking Successfully Completed'
-        };
-        const dialogRef = this.dialog
-          .open(DialougComponent, {
-            width: '350px',
-            data: data
-          })
-          .afterClosed()
-          .subscribe(() => {
-            this.temp.forEach(name => {
-              this.sharedService.addNameList(name);
-              const booking = this.bookingDataList.filter(element => element.preRegistrationId === name.preRegId);
-              const date = booking[0].newBookingDetails.appointment_date.split('-');
-              let appointmentDateTime = date[2] + ' ' + this.MONTHS[Number(date[1])] + ', ' + date[0];
-              const time = booking[0].newBookingDetails.time_slot_from.split(':');
-              appointmentDateTime +=
-                ', ' +
-                (Number(time[0]) > 12 ? Number(time[0]) - 12 : Number(time[0])) +
-                ':' +
-                time[1] +
-                (Number(time[0]) > 12 ? ' PM' : ' AM');
-              this.sharedService.updateBookingDetails(name.preRegId, appointmentDateTime);
+        if (!response['err']) {
+          const data = {
+            case: 'MESSAGE',
+            title: this.secondaryLanguagelabels.title_success,
+            message: this.secondaryLanguagelabels.msg_success
+          };
+          const dialogRef = this.dialog
+            .open(DialougComponent, {
+              width: '350px',
+              data: data
+            })
+            .afterClosed()
+            .subscribe(() => {
+              this.temp.forEach(name => {
+                this.sharedService.addNameList(name);
+                const booking = this.bookingDataList.filter(element => element.preRegistrationId === name.preRegId);
+                const appointmentDateTime = Utils.getBookingDateTime(booking[0].newBookingDetails.appointment_date, booking[0].newBookingDetails.time_slot_from);
+                this.sharedService.updateBookingDetails(name.preRegId, appointmentDateTime);
+              });
+              const arr = this.router.url.split('/');
+              arr.pop();
+              arr.pop();
+              arr.push('summary');
+              arr.push('acknowledgement');
+              const url = arr.join('/');
+              this.router.navigateByUrl(url);
+              // this.router.navigate(['../acknowledgement'], { relativeTo: this.route });
             });
-            const arr = this.router.url.split('/');
-            arr.pop();
-            arr.pop();
-            arr.push('summary');
-            arr.push('acknowledgement');
-            const url = arr.join('/');
-            this.router.navigateByUrl(url);
-            // this.router.navigate(['../acknowledgement'], { relativeTo: this.route });
-          });
+        } else {
+          this.showError()
+        }
       },
       error => {
         console.log(error);
-        const data = {
-          case: 'MESSAGE',
-          title: 'Failure',
-          message: 'Appointment Booking Failed'
-        };
-        const dialogRef = this.dialog.open(DialougComponent, {
-          width: '350px',
-          data: data
-        });
+        this.showError();
       }
     );
+  }
+
+  showError() {
+    const data = {
+      case: 'MESSAGE',
+      title: this.secondaryLanguagelabels.title_failure,
+      message: this.secondaryLanguagelabels.msg_failure
+    };
+    const dialogRef = this.dialog.open(DialougComponent, {
+      width: '350px',
+      data: data
+    });
   }
 
   navigateDashboard() {
@@ -256,7 +263,9 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   navigateBack() {
-    const routeParams = this.router.url.split('/');
-    this.router.navigate([routeParams[1], routeParams[2], 'booking', 'pick-center']);
+    const url = Utils.getURL(this.router.url, 'pick-center');
+    // const routeParams = this.router.url.split('/');
+    // this.router.navigate([routeParams[1], routeParams[2], 'booking', 'pick-center']);
+    this.router.navigateByUrl(url);
   }
 }
