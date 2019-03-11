@@ -28,6 +28,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterUserMappingHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
+import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 
 /**
  * Rest Controller Advice for Master Data
@@ -114,6 +115,9 @@ public class ApiExceptionHandler {
 		String requestBody = null;
 		if (httpServletRequest instanceof ContentCachingRequestWrapper) {
 			requestBody = new String(((ContentCachingRequestWrapper) httpServletRequest).getContentAsByteArray());
+		}
+		if(EmptyCheckUtils.isNullEmpty(requestBody)) {
+			return responseWrapper;
 		}
 		objectMapper.registerModule(new JavaTimeModule());
 		requestWrapper = objectMapper.readValue(requestBody, RequestWrapper.class);
