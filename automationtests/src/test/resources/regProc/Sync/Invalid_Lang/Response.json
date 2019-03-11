@@ -1,9 +1,0 @@
-[
-  {
-    "registrationId": "499965123002521234508094000",
-    "status": "FAILURE",
-    "message": "Language Code must be of three character",
-    "parentRegistrationId": null,
-    "errorCode": "RPR-RGS-004"
-  }
-]

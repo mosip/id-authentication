@@ -1,16 +1,19 @@
-[
-  {
-    "registrationId": "499965123002500004508094000",
-    "status": "FAILURE",
-    "message": "RegistrationId Length Must Be 29",
-    "parentRegistrationId": null,
-    "errorCode": "RPR-RGS-009"
-  },
-  {
-    "registrationId": "600000000fgbm190123211111ghjk",
-    "status": "FAILURE",
-    "message": "RegistrationId Must Be Numeric Only",
-    "parentRegistrationId": null,
-    "errorCode": "RPR-RGS-008"
-  }
-]
+{
+  "response": [
+    {
+      "errorCode": "RPR-RGS-008",
+      "registrationId": "20916100110014abcde0218154630",
+      "status": "FAILURE",
+      "message": "RegistrationId Must Be Numeric Only"
+    },
+    {
+      "errorCode": "RPR-RGS-009",
+      "registrationId": "209161000190218154630",
+      "status": "FAILURE",
+      "message": "RegistrationId Length Must Be 29"
+    }
+  ],
+  "id": "mosip.registration.sync",
+  "version": "1.0",
+  "responsetime": "2019-03-07T06:58:51.376Z"
+}

@@ -17,14 +17,19 @@ import java.util.stream.Collectors;
 
 public class AuthUserDetails implements UserDetails {
 
-    private String userName;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4068560701182593212L;
+	
+	private String userId;
     private String token;
     private String mail;
     private String mobile;
     private Collection<? extends GrantedAuthority> authorities;
 
     public AuthUserDetails(MosipUserDto mosipUserDto, String token) {
-        this.userName = mosipUserDto.getUserName();
+        this.userId = mosipUserDto.getUserId();
         this.token = token;
         this.mail = mosipUserDto.getMail();
         this.mobile = mosipUserDto.getMobile();
@@ -49,7 +54,7 @@ public class AuthUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userName;
+        return userId;
     }
 
     @Override
@@ -72,12 +77,12 @@ public class AuthUserDetails implements UserDetails {
         return true;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUserId() {
+        return userId;
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.userId = userName;
     }
 
     public String getToken() {

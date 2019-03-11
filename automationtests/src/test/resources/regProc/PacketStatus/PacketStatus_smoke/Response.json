@@ -1,6 +1,12 @@
-[
-  {
-    "registrationId": "51130282650000320190117144316",
-    "statusCode": "RESEND"
-  }
-]
+{
+  "response": [
+    {
+      "registrationId": "20916100110014920190218154630",
+      "statusCode": "RESEND",
+      "retryCount": 1
+    }
+  ],
+  "id": "mosip.registration.status",
+  "version": "1.0",
+  "responsetime": "2019-03-07T07:12:20.165Z"
+}

@@ -94,7 +94,7 @@ public class RegistrationConstants {
 	public static final String RIGHT_IRIS_IMG_PATH = "/images/Eye.png";
 	public static final String LEFT_IRIS_IMG_PATH = "/images/Eye.png";
 	public static final String VIEW = "/images/View.png";
-	public static final String SCAN = "/images/Scan.png";
+	public static final String SCAN = "/images/scan.png";
 
 	// Authentication
 	public static final String SUPERVISOR_VERIFICATION = "Supervisor Login";
@@ -257,7 +257,6 @@ public class RegistrationConstants {
 	public static final String INDIVIDUAL = "INDIVIDUAL";
 	public static final String INTRODUCER = "INTRODUCER";
 	public static final String CBEFF_BIR_UUIDS_MAP_NAME = "CBEFF_BIR_UUIDS";
-	public static final String RSA = "mosip.kernel.keygenerator.asymmetric-algorithm-name";
 	public static final String XML_FILE_FORMAT = ".xml";
 	public static final String CBEFF_FILE_FORMAT = "cbeff";
 

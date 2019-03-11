@@ -23,6 +23,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
+import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -60,21 +61,53 @@ public class StorageServiceTest extends BaseIntegrationTest{
 		String seperator = "/";
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JSR310Module());
+		mapper.addMixInAnnotations(DemographicInfoDTO.class, DemographicInfoDTOMix.class);
 		RegistrationDTO registrationDTO = null;
 		try {
-			registrationDTO = mapper.readValue(new File("src/test/resources/testData/StorageServiceData/user.json"),
-					RegistrationDTO.class);
-			byte[] data = IOUtils.toByteArray(new FileInputStream(new File("src/test/resources/testData/StorageServiceData/PANStubbed.jpg")));
-			MoroccoIdentity identity = (MoroccoIdentity) registrationDTO.getDemographicDTO().getDemographicInfoDTO()
-					.getIdentity();
+			
+			
+			registrationDTO = mapper.readValue(new File("src/test/resources/testData/PacketHandlerServiceData/user.json"), RegistrationDTO.class);
+			MoroccoIdentity identity = mapper.readValue(new File("src/test/resources/testData/PacketHandlerServiceData/identity.json"), MoroccoIdentity.class);
+			
+			byte[] data = IOUtils.toByteArray(
+					new FileInputStream(new File("src/test/resources/testData/PacketHandlerServiceData/PANStubbed.jpg")));
+			DocumentDetailsDTO documentDetailsDTOIdentity = new DocumentDetailsDTO();
+			documentDetailsDTOIdentity.setType("POI");
+			documentDetailsDTOIdentity.setFormat("format");
+			documentDetailsDTOIdentity.setOwner("owner");
+			
+			
+			DocumentDetailsDTO documentDetailsDTOAddress = new DocumentDetailsDTO();
+			documentDetailsDTOAddress.setType("POA");
+			documentDetailsDTOAddress.setFormat("format");
+			documentDetailsDTOAddress.setOwner("owner");
+			
+			
+			DocumentDetailsDTO documentDetailsDTORelationship = new DocumentDetailsDTO();
+			documentDetailsDTORelationship.setType("POR");
+			documentDetailsDTORelationship.setFormat("format");
+			documentDetailsDTORelationship.setOwner("owner");
+			
+			
+			DocumentDetailsDTO documentDetailsDTODOB = new DocumentDetailsDTO();
+			documentDetailsDTODOB.setType("PODOB");
+			documentDetailsDTODOB.setFormat("format");
+			documentDetailsDTODOB.setOwner("owner");
+			identity.setProofOfIdentity(documentDetailsDTOIdentity);
+			identity.setProofOfAddress(documentDetailsDTOAddress);
+			identity.setProofOfRelationship(documentDetailsDTORelationship);
+			identity.setProofOfDateOfBirth(documentDetailsDTODOB);
+			
 			DocumentDetailsDTO documentDetailsDTO = identity.getProofOfIdentity();
 			documentDetailsDTO.setDocument(data);
 			documentDetailsDTO = identity.getProofOfAddress();
+			
 			documentDetailsDTO.setDocument(data);
 			documentDetailsDTO = identity.getProofOfRelationship();
 			documentDetailsDTO.setDocument(data);
 			documentDetailsDTO = identity.getProofOfDateOfBirth();
 			documentDetailsDTO.setDocument(data);
+			registrationDTO.getDemographicDTO().getDemographicInfoDTO().setIdentity(identity);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

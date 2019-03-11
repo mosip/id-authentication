@@ -18,9 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.AuditLogControl;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationTransaction;
@@ -57,6 +60,12 @@ public class RegPacketStatusServiceImplTest {
 		context.setApplicationMap(map);
 
 	}
+	
+	@Test
+	public void packetSyncStatusTest() {
+		assertEquals(RegistrationConstants.PACKET_STATUS_SYNC_SUCCESS_MESSAGE, 
+				regPacketStatusServiceImpl.packetSyncStatus().getSuccessResponseDTO().getMessage());
+	}
 	/**
 	 * Test Case for verifying the deletion of RegPacket.
 	 * @throws IOException
@@ -89,7 +98,15 @@ public class RegPacketStatusServiceImplTest {
 		registrationRepository.save(sampleReg);
 		auditLogControlRepository.save(sampleAuditLog);
 		regTransactionRepository.save(sampleRegTransaction);
+		
+		ResponseDTO responseDTO = regPacketStatusServiceImpl.deleteRegistrationPackets();
+		ObjectMapper mapper = new ObjectMapper();
+		
+		System.out.println(mapper.writer().writeValueAsString(responseDTO));
+		
 		assertEquals(regPacketStatusServiceImpl.deleteRegistrationPackets().getSuccessResponseDTO().getMessage(),"Registartion Packets Deletion Successful ");
+		assertEquals(RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, 
+				regPacketStatusServiceImpl.packetSyncStatus().getErrorResponseDTOs().get(0).getMessage());
 		registrationRepository.saveAll(listRegistration);
 		auditLogControlRepository.deleteAll();
 		regTransactionRepository.deleteAll();

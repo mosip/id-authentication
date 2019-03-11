@@ -1,10 +1,15 @@
-[
-  {
-    "langCode": "english",
-    "parentRegistrationId": null,
-    "registrationId": "69896555530002520181208094000",
-    "statusComment": "test",
-    "syncStatus": "PRE_SYNC",
-    "syncType": "N"
-  }
-]
+{
+  "id" : "mosip.registration.sync",
+  "version" : "1.0",
+  "requesttime": "2019-02-14T12:40:59.768Z",
+  "request" : [
+	  {
+		"langCode": "english",
+		"parentRegistrationId": null,
+		"registrationId": "20916100110014920190218154630",
+		"statusComment": "string",
+		"syncStatus": "PRE_SYNC",
+		"syncType": "NEW_REGISTRATION"
+	  }
+	]
+}

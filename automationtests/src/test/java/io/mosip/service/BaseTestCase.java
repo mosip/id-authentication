@@ -82,7 +82,6 @@ public class BaseTestCase {
 			InputStream inputStream = new FileInputStream("src"+BaseTestCase.SEPRATOR+"config"+BaseTestCase.SEPRATOR+"test.properties");
 			prop.load(inputStream);
 			logger.info("Setting test configs/TestEnvironment from " +  "src/config/test.properties");
-		//	ApplnURI = prop.getProperty("testEnvironment");
 			environment = System.getProperty("env.user");
 			logger.info("Environemnt is  ==== :" +environment);
 			if (environment.equalsIgnoreCase("integration"))
