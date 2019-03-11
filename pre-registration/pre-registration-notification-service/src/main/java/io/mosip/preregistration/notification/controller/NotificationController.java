@@ -20,6 +20,8 @@ import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.notification.dto.QRCodeResponseDTO;
 import io.mosip.preregistration.notification.service.NotificationService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * Controller class for notification triggering.
@@ -74,7 +76,10 @@ public class NotificationController {
 	 *
 	 * @return the response entity
 	 */
-	@GetMapping(path="/config")
+	@GetMapping(path="/config" ,produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Get global and Pre-Registration config data")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "global and Pre-Registration config data successfully retrieved"),
+			@ApiResponse(code = 400, message = "Unable to get the global and Pre-Registration config data") })
 	public ResponseEntity<MainResponseDTO<Map<String,String>>> configParams() {
 		return  new ResponseEntity<>( notificationService.getConfig(),HttpStatus.OK);
 		

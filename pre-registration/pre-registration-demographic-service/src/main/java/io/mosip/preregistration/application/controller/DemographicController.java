@@ -6,6 +6,8 @@ package io.mosip.preregistration.application.controller;
 
 import java.time.LocalDate;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -134,9 +136,9 @@ public class DemographicController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All applications fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch applications ") })
 	public ResponseEntity<MainListResponseDTO<PreRegistrationViewDTO>> getAllApplications(
-			@RequestParam(value = "user_id", required = true) String userId) {
+			@RequestParam(value = "user_id", required = true) String userId , HttpServletRequest res) {
 		log.info("sessionId", "idType", "id",
-				"In pre-registration controller for fetching all applications with userId " + userId);
+				"In pre-registration controller for fetching all applications with userId " + userId +" Header "+res.getHeader("Authorization"));
 		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.getAllApplicationDetails(userId));
 	}
 
