@@ -850,7 +850,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 				manualVerificationEntity.setIsDeleted(false);
 				manualVerificationEntity.setCrBy("SYSTEM");
 				//TO-DO uncomment once DB team add source column
-				//manualVerificationEntity.setSource(source);
+				manualVerificationEntity.setSourceName(sourceName.toString());
 				manualVerficationRepository.save(manualVerificationEntity);
 				isTransactionSuccessful = true;
 				description = "Manual Adjudication data saved successfully";
