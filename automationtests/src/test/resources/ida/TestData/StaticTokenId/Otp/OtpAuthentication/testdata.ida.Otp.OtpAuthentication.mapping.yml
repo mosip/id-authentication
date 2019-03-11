@@ -73,7 +73,8 @@ testdata:
       output.1.y.res.maskedEmail: $IGNORE$
       output.1.y.res.maskedMobile: $IGNORE$
     output.output-2-expected-otp-auth-res:
-      output.2.y.res.status: N
+      output.2.y.res.status: Y
+      output.2.y.res.idType: V
       output.2.y.res.reqTime: $TIMESTAMP$
       output.2.y.res.resTime: $TIMESTAMP$
       output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
@@ -94,7 +95,7 @@ testdata:
       otpAuthReq.reqTime: $TIMESTAMP$
       otpAuthReq.valuepinInfo: '%$input.otp-generate:otpGenReq.txnID$_$input.otp-generate:otpGenReq.tspID$%_30'
     output.output-1-expected-otp-gen-res:
-      output.1.y.res.status: Y
+      output.1.y.res.status: N
       ##output.1.y.res.txnID: $IGNORE$
       ##output.1.y.res.txnID: $IGNORE$
       output.1.y.res.resTime: $TIMESTAMP$
@@ -105,5 +106,5 @@ testdata:
       output.2.y.res.resTime: $TIMESTAMP$
       #output.2.y.res.txnID: $input.otp-generate:otpGenReq.txnID$
       output.2.n.res.errorCode: IDA-MLC-004
-      output.2.n.res.errorMessage: Invalid UIN
+      output.2.n.res.errorMessage: Invalid VID
   

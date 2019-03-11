@@ -14,6 +14,7 @@ testdata:
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
       output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
+      #output.1.response.y.ver: 0.8
     audit.auth_transaction:
       refId: $input.bio-auth-request:bioAuthReq.idvId$
       txnId: $input.bio-auth-request:bioAuthReq.txnID$
@@ -47,6 +48,7 @@ testdata:
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
       output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
+      #output.1.response.y.ver: 0.8
     audit.auth_transaction:
       refId: $input.bio-auth-request:bioAuthReq.idvId$
       txnId: $input.bio-auth-request:bioAuthReq.txnID$
@@ -80,6 +82,7 @@ testdata:
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
       output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
+      #output.1.response.y.ver: 0.8
     audit.auth_transaction:
       refId: $input.bio-auth-request:bioAuthReq.idvId$
       txnId: $input.bio-auth-request:bioAuthReq.txnID$
@@ -115,6 +118,7 @@ testdata:
       output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
       output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
       output.1.response.y.idType: V
+      #output.1.response.y.ver: 0.8
     audit.auth_transaction:
       refId: $input.bio-auth-request:bioAuthReq.idvId$
       txnId: $input.bio-auth-request:bioAuthReq.txnID$
@@ -150,6 +154,7 @@ testdata:
       output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
       output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
       output.1.response.y.idType: V
+      #output.1.response.y.ver: 0.8
     audit.auth_transaction:
       refId: $input.bio-auth-request:bioAuthReq.idvId$
       txnId: $input.bio-auth-request:bioAuthReq.txnID$
@@ -185,6 +190,7 @@ testdata:
       output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
       output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
       output.1.response.y.idType: V
+      #output.1.response.y.ver: 0.8
     audit.auth_transaction:
       refId: $input.bio-auth-request:bioAuthReq.idvId$
       txnId: $input.bio-auth-request:bioAuthReq.txnID$
