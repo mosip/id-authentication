@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.stages.packet.validator;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -31,6 +30,7 @@ import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.idjson.Document;
@@ -55,10 +55,12 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
-
 @Service
 @Transactional
 public class PacketValidateProcessor {
+	
+	/** The identity iterator util. */
+	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
@@ -99,7 +101,7 @@ public class PacketValidateProcessor {
 	private String registrationId = "";
 	/** The description. */
 	private String description;
-	
+
 	/** The flag check for reg_type. */
 	private boolean regTypeCheck;
 
@@ -110,9 +112,9 @@ public class PacketValidateProcessor {
 	private static final String CREATED_BY = "MOSIP_SYSTEM";
 
 	public MessageDTO process(MessageDTO object) {
-		
-		String preRegId=null;
-		
+
+		String preRegId = null;
+
 		try {
 
 			object.setMessageBusAddress(MessageBusAddress.PACKET_VALIDATOR_BUS_IN);
@@ -120,193 +122,183 @@ public class PacketValidateProcessor {
 			object.setInternalError(Boolean.FALSE);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", "PacketValidatorStage::process()::entry");
-					this.registrationId = object.getRid();
-					regTypeCheck=(object.getReg_type().equalsIgnoreCase("ACTIVATE")|| object.getReg_type().equalsIgnoreCase("DEACTIVATE"));
-					description = "";
+			this.registrationId = object.getRid();
+			description = "";
+			isTransactionSuccessful = false;
+			InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
+			try {
+				registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
+				InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
+				PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
+						PacketMetaInfo.class);
+				List<FieldValue> metadataList=packetMetaInfo.getIdentity().getMetaData();
+				object.setReg_type(identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONTYPE));
+				regTypeCheck = (object.getReg_type().equalsIgnoreCase("ACTIVATE")
+						|| object.getReg_type().equalsIgnoreCase("DEACTIVATE"));
+				FilesValidation filesValidation = new FilesValidation(adapter, registrationStatusDto);
+				boolean isFilesValidated = filesValidation.filesValidation(registrationId,
+						packetMetaInfo.getIdentity());
+				boolean isCheckSumValidated = false;
+				boolean isApplicantDocumentValidation = false;
+				InputStream documentInfoStream = null;
+				InputStream demographicInfoStream = null;
+				byte[] bytesArray = null;
+				List<Document> documentList = null;
+				byte[] bytes = null;
+				if (isFilesValidated) {
+					documentInfoStream = adapter.getFile(registrationId,
+							PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
+					bytes = IOUtils.toByteArray(documentInfoStream);
+					if (!regTypeCheck) {
+						documentList = documentUtility.getDocumentList(bytes);
+					}
+					CheckSumValidation checkSumValidation = new CheckSumValidation(adapter, registrationStatusDto);
+					isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
+							packetMetaInfo.getIdentity());
+
+					if (isCheckSumValidated && !(regTypeCheck)) {
+						ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
+								registrationStatusDto);
+						isApplicantDocumentValidation = applicantDocumentValidation
+								.validateDocument(packetMetaInfo.getIdentity(), documentList, registrationId);
+
+					}
+
+				}
+
+				if (isFilesValidated && isCheckSumValidated && isApplicantDocumentValidation) {
+					object.setIsValid(Boolean.TRUE);
+					registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
+					packetInfoManager.savePacketData(packetMetaInfo.getIdentity());
+					demographicInfoStream = adapter.getFile(registrationId,
+							PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
+					bytesArray = IOUtils.toByteArray(demographicInfoStream);
+					packetInfoManager.saveDemographicInfoJson(bytesArray, packetMetaInfo.getIdentity().getMetaData());
+					packetInfoManager.saveDocuments(documentList);
+					// ReverseDataSync
+
+					IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
+					preRegId = identityIteratorUtil.getFieldValue(packetMetaInfo.getIdentity().getMetaData(),
+							JsonConstant.PREREGISTRATIONID);
+					object.setRid(registrationStatusDto.getRegistrationId());
+					isTransactionSuccessful = true;
+					description = "Structural validation success for registrationId " + registrationId;
+					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+							"PacketValidatorStage::process()::exit");
+					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
+
+				} else if (isFilesValidated && isCheckSumValidated && regTypeCheck) {
+					object.setIsValid(Boolean.TRUE);
+					registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
+					isTransactionSuccessful = true;
+
+				} else {
+					object.setIsValid(Boolean.FALSE);
+
+					int retryCount = registrationStatusDto.getRetryCount() != null
+							? registrationStatusDto.getRetryCount() + 1
+							: 1;
+					description = "File validation(" + isFilesValidated + ")/Checksum validation(" + isCheckSumValidated
+							+ ")/Applicant Document Validation(" + isApplicantDocumentValidation
+							+ ") failed for registrationId " + registrationId;
 					isTransactionSuccessful = false;
-					InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
-					try {
-						registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
-						InputStream packetMetaInfoStream = adapter.getFile(registrationId,
-								PacketFiles.PACKET_META_INFO.name());
-						PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil
-								.inputStreamtoJavaObject(packetMetaInfoStream, PacketMetaInfo.class);
+					registrationStatusDto.setRetryCount(retryCount);
 
-						FilesValidation filesValidation = new FilesValidation(adapter, registrationStatusDto);
-						boolean isFilesValidated = filesValidation.filesValidation(registrationId,
-								packetMetaInfo.getIdentity());
-						boolean isCheckSumValidated = false;
-						boolean isApplicantDocumentValidation = false;
-						InputStream documentInfoStream = null;
-						InputStream demographicInfoStream = null;
-						byte[] bytesArray = null;
-						List<Document> documentList = null;
-						byte[] bytes = null;
-						if (isFilesValidated) {
-							documentInfoStream = adapter.getFile(registrationId,
-									PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-							bytes = IOUtils.toByteArray(documentInfoStream);
-							if(!regTypeCheck)
-							{
-								documentList = documentUtility.getDocumentList(bytes);
-							}
-							CheckSumValidation checkSumValidation = new CheckSumValidation(adapter,
-									registrationStatusDto);
-				isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
-								packetMetaInfo.getIdentity());
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
+					registrationStatusDto.setStatusComment(description);
 
-							if (isCheckSumValidated && !(regTypeCheck)) {
-								ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
-										registrationStatusDto);
-								isApplicantDocumentValidation = applicantDocumentValidation
-										.validateDocument(packetMetaInfo.getIdentity(), documentList, registrationId);
+				}
 
-							}
+				registrationStatusDto.setUpdatedBy(USER);
 
-						}
+				setApplicant(packetMetaInfo.getIdentity(), registrationStatusDto);
 
-						if (isFilesValidated && isCheckSumValidated && isApplicantDocumentValidation) {
-							object.setIsValid(Boolean.TRUE);
-							registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
-							registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
-							packetInfoManager.savePacketData(packetMetaInfo.getIdentity());
-							demographicInfoStream = adapter.getFile(registrationId,
-									PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-							bytesArray = IOUtils.toByteArray(demographicInfoStream);
-							packetInfoManager.saveDemographicInfoJson(bytesArray,
-									packetMetaInfo.getIdentity().getMetaData());
-							packetInfoManager.saveDocuments(documentList);
-							// ReverseDataSync
-							
-							IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
-							 preRegId = identityIteratorUtil.getFieldValue(
-									packetMetaInfo.getIdentity().getMetaData(), JsonConstant.PREREGISTRATIONID);
-							 object.setRid(registrationStatusDto.getRegistrationId());
-								isTransactionSuccessful = true;
-								description = "Structural validation success for registrationId " + registrationId;
-								regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-										registrationId, "PacketValidatorStage::process()::exit");
-								regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-										registrationId,description);
+				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+				isTransactionSuccessful = true;
+			} catch (FSAdapterException e) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						PlatformErrorMessages.RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + e.getMessage());
+				object.setInternalError(Boolean.TRUE);
+				isTransactionSuccessful = false;
+				description = "FileSytem is not accessible for registration id " + registrationId;
+				isTransactionSuccessful = false;
+				object.setRid(registrationStatusDto.getRegistrationId());
+			} catch (DataAccessException e) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + e.getMessage()
+								+ ExceptionUtils.getStackTrace(e));
+				isTransactionSuccessful = false;
+				object.setInternalError(Boolean.TRUE);
+				description = "Data access exception for the packet with registrationId " + registrationId + "::"
+						+ e.getMessage();
+				isTransactionSuccessful = false;
+				object.setRid(registrationStatusDto.getRegistrationId());
 
-						} 
-						else if(isFilesValidated && isCheckSumValidated && regTypeCheck )
-						{
-						   	object.setIsValid(Boolean.TRUE);
-						   	registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
-						   	registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
-						   	isTransactionSuccessful = true;
-						   	
-						}
-						else {
-							object.setIsValid(Boolean.FALSE);
-							
-							int retryCount = registrationStatusDto.getRetryCount() != null
-									? registrationStatusDto.getRetryCount() + 1
-									: 1;
-							description = "File validation(" + isFilesValidated + ")/Checksum validation("
-									+ isCheckSumValidated + ")/Applicant Document Validation("
-									+ isApplicantDocumentValidation + ") failed for registrationId " + registrationId;
-							isTransactionSuccessful = false;
-							registrationStatusDto.setRetryCount(retryCount);
+			} catch (IOException exc) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + exc.getMessage()
+								+ ExceptionUtils.getStackTrace(exc));
+				object.setInternalError(Boolean.TRUE);
+				description = "Internal error occured while processing for the registrationId " + registrationId + "::"
+						+ exc.getMessage();
+				isTransactionSuccessful = false;
+				object.setRid(registrationStatusDto.getRegistrationId());
 
-							registrationStatusDto
-									.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
-							registrationStatusDto.setStatusComment(description);
+			} catch (Exception ex) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + ex.getMessage()
+								+ ExceptionUtils.getStackTrace(ex));
+				object.setInternalError(Boolean.TRUE);
+				description = "Internal error occured while processing for the registrationId " + registrationId + "::"
+						+ ex.getMessage();
 
-						}
+				object.setRid(registrationStatusDto.getRegistrationId());
 
-						registrationStatusDto.setUpdatedBy(USER);
+			} finally {
 
-						setApplicant(packetMetaInfo.getIdentity(), registrationStatusDto);
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
+				if (object.getInternalError()) {
+					registrationStatusDto.setUpdatedBy(USER);
+					int retryCount = registrationStatusDto.getRetryCount() != null
+							? registrationStatusDto.getRetryCount() + 1
+							: 1;
 
-						registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-						isTransactionSuccessful = true;
-					}
-					catch (FSAdapterException e) {
-						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-								PlatformErrorMessages.RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE.getMessage()
-										+ e.getMessage());
-						object.setInternalError(Boolean.TRUE);
-						isTransactionSuccessful = false;
-						description = "FileSytem is not accessible for registration id " + registrationId;
-						isTransactionSuccessful = false;
-						object.setRid(registrationStatusDto.getRegistrationId());
-					} catch (DataAccessException e) {
-						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-								PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + e.getMessage()
-										+ ExceptionUtils.getStackTrace(e));
-						isTransactionSuccessful = false;
-						object.setInternalError(Boolean.TRUE);
-						description = "Data access exception for the packet with registrationId " + registrationId
-								+ "::" + e.getMessage();
-						isTransactionSuccessful = false;
-						object.setRid(registrationStatusDto.getRegistrationId());
+					registrationStatusDto.setRetryCount(retryCount);
+					registrationStatusDto.setStatusComment(description);
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
+					registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
-					} catch (IOException exc) {
-						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-								PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + exc.getMessage()
-										+ ExceptionUtils.getStackTrace(exc));
-						object.setInternalError(Boolean.TRUE);
-						description = "Internal error occured while processing for the registrationId " + registrationId
-								+ "::" + exc.getMessage();
-						isTransactionSuccessful = false;
-						object.setRid(registrationStatusDto.getRegistrationId());
+				}
 
-					} catch (Exception ex) {
-						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-								PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + ex.getMessage()
-										+ ExceptionUtils.getStackTrace(ex));
-						object.setInternalError(Boolean.TRUE);
-						description = "Internal error occured while processing for the registrationId " + registrationId
-								+ "::" + ex.getMessage();
+				String eventId = "";
+				String eventName = "";
+				String eventType = "";
 
-						object.setRid(registrationStatusDto.getRegistrationId());
+				if (isTransactionSuccessful) {
+					description = "Packet uploaded to file system";
+					eventId = EventId.RPR_402.toString();
+					eventName = EventName.UPDATE.toString();
+					eventType = EventType.BUSINESS.toString();
+				} else {
 
-					} finally {
+					description = "Packet uploading to file system is unsuccessful";
+					eventId = EventId.RPR_405.toString();
+					eventName = EventName.EXCEPTION.toString();
+					eventType = EventType.SYSTEM.toString();
+				}
+				auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+						registrationId);
 
-						regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
-								LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
-						if (object.getInternalError()) {
-							registrationStatusDto.setUpdatedBy(USER);
-							int retryCount = registrationStatusDto.getRetryCount() != null
-									? registrationStatusDto.getRetryCount() + 1
-									: 1;
-							
-							registrationStatusDto.setRetryCount(retryCount);
-							registrationStatusDto.setStatusComment(description);
-							registrationStatusDto
-									.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
-								     registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-
-						}
-
-						String eventId = "";
-						String eventName = "";
-						String eventType = "";
-
-						if (isTransactionSuccessful) {
-							description = "Packet uploaded to file system";
-							eventId = EventId.RPR_402.toString();
-							eventName = EventName.UPDATE.toString();
-							eventType = EventType.BUSINESS.toString();
-						} else {
-
-							description = "Packet uploading to file system is unsuccessful";
-							eventId = EventId.RPR_405.toString();
-							eventName = EventName.EXCEPTION.toString();
-							eventType = EventType.SYSTEM.toString();
-						}
-						auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-								registrationId);
-
-					}
-				
-			
+			}
 
 			if (this.registrationId != null && this.registrationId.trim().isEmpty()) {
 				isTransactionSuccessful = false;
@@ -330,7 +322,7 @@ public class PacketValidateProcessor {
 							mainRequestDto, MainResponseDTO.class);
 					isTransactionSuccessful = true;
 
-				} 
+				}
 				if (mainResponseDto != null && mainResponseDto.getErr() != null) {
 					regProcLogger.error(LoggerFileConstant.REGISTRATIONID.toString(), registrationId.toString(),
 							PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage(),
