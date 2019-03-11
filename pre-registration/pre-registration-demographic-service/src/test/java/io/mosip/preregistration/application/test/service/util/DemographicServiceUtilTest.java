@@ -1,12 +1,8 @@
 package io.mosip.preregistration.application.test.service.util;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.io.FileReader;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.json.simple.JSONObject;
@@ -20,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.exception.MissingRequestParameterException;
@@ -101,6 +96,11 @@ public class DemographicServiceUtilTest {
 
 	@Test(expected = InvalidRequestParameterException.class)
 	public void prepareDemographicEntityFailureTest1() {
+byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
+		
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(),Mockito.any())).thenReturn(encryptedDemographicDetails);
+		
+		demographicEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
 		saveDemographicRequest.setCreatedBy(null);
 		demographicServiceUtil.prepareDemographicEntity(saveDemographicRequest, requestId,"save","Pending_Appointment");
@@ -109,6 +109,11 @@ public class DemographicServiceUtilTest {
 	@Test(expected = MissingRequestParameterException.class)
 	public void prepareDemographicEntityFailureTest2() {
 		String type = null;
+byte[] encryptedDemographicDetails= {1,0,1,0,1,0};
+		
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(),Mockito.any())).thenReturn(encryptedDemographicDetails);
+		
+		demographicEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
 		Mockito.when(demographicServiceUtil.prepareDemographicEntity(saveDemographicRequest, requestId, type,"Pending_Appointment"))
 				.thenThrow(MissingRequestParameterException.class);
@@ -128,24 +133,24 @@ public class DemographicServiceUtilTest {
 				.thenThrow(OperationNotAllowedException.class);
 	}
 
-	@Test(expected = DateParseException.class)
-	public void dateSetterEncodingTest2() throws Exception{
-		Map<String, String> dateMap = new HashMap<>();
-		dateMap.put(RequestCodes.FROM_DATE.getCode(),"2018-10-10");
-		String format = "yyyy-MM-dd HH:mm:ss";
-		demographicServiceUtil.dateSetter(dateMap, format);
-	}
+//	@Test(expected = DateParseException.class)
+//	public void dateSetterEncodingTest2() throws Exception{
+//		Map<String, String> dateMap = new HashMap<>();
+//		dateMap.put(RequestCodes.FROM_DATE.getCode(),"2018-10-10");
+//		String format = "yyyy-MM-dd HH:mm:ss";
+//		demographicServiceUtil.dateSetter(dateMap, format);
+//	}
 	
-	@Test
-	public void dateSetterEncodingSuccess() {
-		Map<String, String> dateMap = new HashMap<>();
-		Map<String, LocalDateTime> response = new HashMap<>();
-		dateMap.put(RequestCodes.FROM_DATE.getCode(), "2018-10-10 12:12:12");
-		dateMap.put(RequestCodes.TO_DATE.getCode(),"");
-		String format = "yyyy-MM-dd HH:mm:ss";
-		response=demographicServiceUtil.dateSetter(dateMap, format);
-		assertEquals("2018-10-10T12:12:12",response.get(RequestCodes.FROM_DATE.getCode()).toString());
-	}
+//	@Test
+//	public void dateSetterEncodingSuccess() {
+//		Map<String, String> dateMap = new HashMap<>();
+//		Map<String, LocalDateTime> response = new HashMap<>();
+//		dateMap.put(RequestCodes.FROM_DATE.getCode(), "2018-10-10 12:12:12");
+//		dateMap.put(RequestCodes.TO_DATE.getCode(),"");
+//		String format = "yyyy-MM-dd HH:mm:ss";
+//		response=demographicServiceUtil.dateSetter(dateMap, format);
+//		assertEquals("2018-10-10T12:12:12",response.get(RequestCodes.FROM_DATE.getCode()).toString());
+//	}
 	
 	@Test(expected = DateParseException.class)
 	public void getDateFromStringFailureTest() throws Exception {

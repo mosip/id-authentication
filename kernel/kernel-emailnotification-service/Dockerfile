@@ -12,6 +12,13 @@ ARG active_profile
 # can be passed during Docker build as build time environment for config server URL 
 ARG spring_config_url
 
+# can be passed during Docker build as build time environment for config server username 
+ARG spring_config_username
+
+# can be passed during Docker build as build time environment for config server password 
+ARG spring_config_password
+
+
 # environment variable to pass active profile such as DEV, QA etc at docker runtime
 ENV active_profile_env=${active_profile}
 
@@ -21,8 +28,15 @@ ENV spring_config_label_env=${spring_config_label}
 # environment variable to pass spring configuration url, at docker runtime
 ENV spring_config_url_env=${spring_config_url}
 
+# environment variable to pass spring configuration username, at docker runtime
+ENV spring_config_username_env=${spring_config_username}
+
+# environment variable to pass spring configuration password, at docker runtime
+ENV spring_config_password_env=${spring_config_password}
+
+
 COPY ./target/kernel-emailnotification-service-*.jar kernel-emailnotification-service.jar
 
 EXPOSE 8083
 
-CMD ["java", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-XX:MaxRAMFraction=1",  "-XX:+HeapDumpOnOutOfMemoryError",  "-XX:+UseG1GC", "-XX:+UseStringDeduplication","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","kernel-emailnotification-service.jar"]
+CMD ["java", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-XX:MaxRAMFraction=1",  "-XX:+HeapDumpOnOutOfMemoryError",  "-XX:+UseG1GC", "-XX:+UseStringDeduplication","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-Dspring.cloud.config.password=${spring_config_password_env}","-Dspring.cloud.config.username=${spring_config_username_env}","kernel-emailnotification-service.jar"]

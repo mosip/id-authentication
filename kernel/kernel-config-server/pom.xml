@@ -19,8 +19,18 @@
 			<version>${spring.boot.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+			<version>${spring.boot.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-config-server</artifactId>
+			<version>${spring-cloud-config.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
 			<version>${spring-cloud-config.version}</version>
 		</dependency>
 		<dependency>
@@ -36,8 +46,8 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>${spring.boot.version}</version>
-				<configuration>	
-					<executable>true</executable>	
+				<configuration>
+					<executable>true</executable>
 				</configuration>
 				<executions>
 					<execution>

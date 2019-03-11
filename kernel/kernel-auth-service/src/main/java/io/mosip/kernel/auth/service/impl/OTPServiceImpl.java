@@ -35,6 +35,7 @@ import io.mosip.kernel.auth.entities.otp.OtpSmsSendResponseDto;
 import io.mosip.kernel.auth.entities.otp.OtpTemplateDto;
 import io.mosip.kernel.auth.entities.otp.OtpTemplateResponseDto;
 import io.mosip.kernel.auth.entities.otp.SmsResponseDto;
+import io.mosip.kernel.auth.exception.AuthManagerErrorListException;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.jwtBuilder.TokenGenerator;
 import io.mosip.kernel.auth.service.OTPGenerateService;
@@ -81,15 +82,14 @@ public class OTPServiceImpl implements OTPService {
 		} else {
 			String message = getOtpSmsMessage(otpGenerateResponseDto, appId);
 			otpSmsSendResponseDto = sendOtpBySms(message, mosipUserDto.getMobile());
-			System.out.println(otpSmsSendResponseDto.getMessage());
 		}
 		if (otpEmailSendResponseDto != null) {
 			authNResponseDto = new AuthNResponseDto();
-			authNResponseDto.setMessage(otpGenerateResponseDto.getOtp());
+			authNResponseDto.setMessage(otpEmailSendResponseDto.getMessage());
 		}
 		if (otpSmsSendResponseDto != null) {
 			authNResponseDto = new AuthNResponseDto();
-			authNResponseDto.setMessage(otpGenerateResponseDto.getOtp());
+			authNResponseDto.setMessage(otpSmsSendResponseDto.getMessage());
 		}
 		return authNResponseDto;
 	}
@@ -191,8 +191,6 @@ public class OTPServiceImpl implements OTPService {
 		final String url = mosipEnvironment.getVerifyOtpUserApi();
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("key", key).queryParam("otp",
 				otp);
-		//esponseEntity<OtpValidatorResponseDto> response1 = restTemplate.getForEntity(builder.toUriString(), OtpValidatorResponseDto.class);
-		//ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, null,String.class);
 		try
 		{
 		response = restTemplate.getForEntity(builder.toUriString(), String.class);
@@ -209,7 +207,7 @@ public class OTPServiceImpl implements OTPService {
 		}
 		if(validationErrorsList!=null && validationErrorsList.size()>0)
 		{
-			throw new AuthManagerException(validationErrorsList);
+			throw new AuthManagerErrorListException(validationErrorsList);
 		}
 		if (response.getStatusCode().equals(HttpStatus.OK)) {
 			BasicTokenDto basicToken = tokenGenerator.basicGenerateOTPToken(mosipUser, true);

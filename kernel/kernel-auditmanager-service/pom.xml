@@ -33,6 +33,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+			<version>${spring.boot.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${swagger.version}</version>
@@ -105,6 +110,7 @@
 			<artifactId>kernel-logger-logback</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
 	</dependencies>
 	<build>
 		<plugins>

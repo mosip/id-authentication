@@ -84,7 +84,10 @@ public enum RequestCodes {
 	SAVE("save"),
 	
 	/* update */
-	UPDATE("update");
+	UPDATE("update"),
+	
+	/*postalCode*/
+	POSTAL_CODE("postalCode");
 	
 	/**
 	 * @param code

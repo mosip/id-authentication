@@ -9,11 +9,7 @@ metadata:
 spec:  
   rules:
   - http:
-      paths:    
-      - path: /ping
-        backend:
-          serviceName: ping-server
-          servicePort: 3000  
+      paths:
       - path: /uingenerator
         backend:
           serviceName: kernel-uingenerator-service
@@ -126,6 +122,10 @@ spec:
         backend:
           serviceName: registration-processor-abis
           servicePort: 9098
+      - path: /registration-connector
+        backend:
+          serviceName: registration-processor-connector-stage
+          servicePort: 8091 
       - path: /nginx
         backend:
           serviceName: sample-nginx

@@ -109,10 +109,13 @@ export class PreviewComponent implements OnInit {
   }
 
   modifyDemographic() {
-    const routeParams = this.router.url.split('/');
-    this.router.navigate([routeParams[1], routeParams[2], 'demographic']);
-    localStorage.setItem('newApplicant', 'false');
+    const url = Utils.getURL(this.router.url, 'demographic', 2);
     this.registrationService.changeMessage({ modifyUserFromPreview: 'true' });
+    this.router.navigateByUrl(url);
+    // const routeParams = this.router.url.split('/');
+
+    // this.router.navigate([routeParams[1], routeParams[2], 'demographic']);
+    // localStorage.setItem('newApplicant', 'false');
   }
 
   modifyDocument() {
@@ -146,7 +149,7 @@ export class PreviewComponent implements OnInit {
     // sessionStorage.setItem('newApplicant', 'true');
     // this.router.navigate(['../demographic'], { relativeTo: this.route });
     localStorage.setItem('newApplicant', 'false');
-    this.registrationService.changeMessage({ modifyUser: 'false' });
+    this.registrationService.changeMessage({ modifyUserFromPreview: 'false' });
     const url = Utils.getURL(this.router.url, 'demographic', 2);
     this.router.navigateByUrl(url);
   }
@@ -165,12 +168,7 @@ export class PreviewComponent implements OnInit {
   }
 
   navigateNext() {
-    // const arr = this.router.url.split('/');
-    // arr.pop();
-    // arr.push('booking/pick-center');
-    // const url = arr.join('/');
     const url = Utils.getURL(this.router.url, 'booking/pick-center', 2);
     this.router.navigateByUrl(url);
-    // this.router.navigate(['../booking/pick-center'], { relativeTo: this.route });
   }
 }

@@ -105,7 +105,7 @@ public class AuthProvider extends AbstractUserDetailsAuthenticationProvider {
 			throw new AuthException(exp.getMessage());
 		}
 		MosipUserDto mosipUserDto = response.getBody();
-		if (mosipUserDto == null) {
+		if (mosipUserDto.getUserId() == null) {
 			throw new AuthException(AuthAdapterConstant.AUTH_INVALID_TOKEN);
 		}
 		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
