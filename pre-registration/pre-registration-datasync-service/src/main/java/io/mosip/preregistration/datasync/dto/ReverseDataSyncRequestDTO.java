@@ -12,9 +12,6 @@ import lombok.Setter;
  * @author M1046129
  *
  */
-@Getter
-@Setter
-@NoArgsConstructor
 public class ReverseDataSyncRequestDTO implements Serializable {
 	
 	/**
@@ -47,4 +44,54 @@ public class ReverseDataSyncRequestDTO implements Serializable {
 	 * List to store the list of pre Ids
 	 */
 	private List<String> preRegistrationIds;
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getCreatedDateTime() {
+		return createdDateTime;
+	}
+
+	public void setCreatedDateTime(Date createdDateTime) {
+		this.createdDateTime = createdDateTime == null ? createdDateTime : new Date(createdDateTime.getTime());
+	}
+
+	public String getUpdateBy() {
+		return updateBy;
+	}
+
+	public void setUpdateBy(String updateBy) {
+		this.updateBy = updateBy;
+	}
+
+	public Date getUpdateDateTime() {
+		return updateDateTime;
+	}
+
+	public void setUpdateDateTime(Date updateDateTime) {
+		this.updateDateTime = updateDateTime == null ? updateDateTime : new Date(updateDateTime.getTime());
+	}
+
+	public String getLangCode() {
+		return langCode;
+	}
+
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
+	}
+
+	public List<String> getPreRegistrationIds() {
+		return preRegistrationIds;
+	}
+
+	public void setPreRegistrationIds(List<String> preRegistrationIds) {
+		this.preRegistrationIds = preRegistrationIds;
+	}
+	
+	
 }

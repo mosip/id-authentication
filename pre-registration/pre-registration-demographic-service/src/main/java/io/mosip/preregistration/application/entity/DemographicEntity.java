@@ -15,9 +15,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.stereotype.Component;
 
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * This entity class defines the database table details for PreRegistration.
@@ -33,8 +31,6 @@ import lombok.Setter;
 @Component
 @Entity
 @Table(name = "applicant_demographic", schema = "prereg")
-@Getter
-@Setter
 @NoArgsConstructor
 @NamedQuery(name = "DemographicEntity.findByCreatedBy", query = "SELECT e FROM DemographicEntity e  WHERE e.createdBy=:userId and e.statusCode <>:statusCode ")
 @NamedQuery(name = "DemographicEntity.findBypreRegistrationId", query = "SELECT r FROM DemographicEntity r  WHERE r.preRegistrationId=:preRegId")
@@ -47,7 +43,6 @@ public class DemographicEntity implements Serializable {
 	@Column(name = "prereg_id", nullable = false)
 	@Id
 	private String preRegistrationId;
-
 
 	/** The JSON */
 	@Column(name = "demog_detail")
@@ -80,14 +75,106 @@ public class DemographicEntity implements Serializable {
 	/** The update date time. */
 	@Column(name = "upd_dtimes")
 	private LocalDateTime updateDateTime;
-	
-	
+
 	/**
 	 * Encrypted Date Time
 	 */
 	@Column(name = "encrypted_dtimes")
 	private LocalDateTime encryptedDateTime;
-	
-@Column(name="demog_detail_hash")
-private String demogDetailHash;
+
+	@Column(name = "demog_detail_hash")
+	private String demogDetailHash;
+
+	public String getPreRegistrationId() {
+		return preRegistrationId;
+	}
+
+	public void setPreRegistrationId(String preRegistrationId) {
+		this.preRegistrationId = preRegistrationId;
+	}
+
+	public byte[] getApplicantDetailJson() {
+		return (byte[]) applicantDetailJson.clone();
+	}
+
+	public void setApplicantDetailJson(byte[] applicantDetailJson) {
+		this.applicantDetailJson = (byte[]) applicantDetailJson.clone();
+	}
+
+	public String getStatusCode() {
+		return statusCode;
+	}
+
+	public void setStatusCode(String statusCode) {
+		this.statusCode = statusCode;
+	}
+
+	public String getLangCode() {
+		return langCode;
+	}
+
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getCrAppuserId() {
+		return crAppuserId;
+	}
+
+	public void setCrAppuserId(String crAppuserId) {
+		this.crAppuserId = crAppuserId;
+	}
+
+	public LocalDateTime getCreateDateTime() {
+		return createDateTime;
+	}
+
+	public void setCreateDateTime(LocalDateTime createDateTime) {
+		this.createDateTime = createDateTime;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public LocalDateTime getUpdateDateTime() {
+		return updateDateTime;
+	}
+
+	public void setUpdateDateTime(LocalDateTime updateDateTime) {
+		this.updateDateTime = updateDateTime;
+	}
+
+	public LocalDateTime getEncryptedDateTime() {
+		return encryptedDateTime;
+	}
+
+	public void setEncryptedDateTime(LocalDateTime encryptedDateTime) {
+		this.encryptedDateTime = encryptedDateTime;
+	}
+
+	public String getDemogDetailHash() {
+		return demogDetailHash;
+	}
+
+	public void setDemogDetailHash(String demogDetailHash) {
+		this.demogDetailHash = demogDetailHash;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 }

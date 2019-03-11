@@ -19,8 +19,8 @@ public class PreRegIdsByRegCenterIdResponseDTO implements Serializable  {
 	/**
 	 * registration Center Id
 	 */
-	@JsonProperty("registartion_center_id")
-	@ApiModelProperty(value = "Registartion Center ID", position = 1)
+	@JsonProperty("registration_center_id")
+	@ApiModelProperty(value = "Registration Center ID", position = 1)
 	private String registrationCenterId;
 	/**
 	 * pre-registration id
