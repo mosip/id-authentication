@@ -51,22 +51,20 @@ public class ExpiredStatusService {
 			bookedPreIdList = batchServiceDAO.getAllOldDateBooking(currentDate);
 
 			bookedPreIdList.forEach(iterate -> {
-				String status = iterate.getStatusCode();
 				String preRegId = iterate.getBookingPK().getPreregistrationId();
-				if (status.equals(StatusCodes.BOOKED.getCode()) || status.equals(StatusCodes.CANCELED.getCode())) {
+				DemographicEntity demographicEntity = batchServiceDAO.getApplicantDemographicDetails(preRegId);
+				if (demographicEntity != null) {
 
-					iterate.setStatusCode(StatusCodes.EXPIRED.getCode());
-					
-					DemographicEntity demographicEntity = batchServiceDAO.getApplicantDemographicDetails(preRegId);
-					demographicEntity.setStatusCode(StatusCodes.EXPIRED.getCode());
-					batchServiceDAO.updateBooking(iterate);
-					batchServiceDAO.updateApplicantDemographic(demographicEntity);
-
+					if (demographicEntity.getStatusCode().equals(StatusCodes.BOOKED.getCode())) {
+						demographicEntity.setStatusCode(StatusCodes.EXPIRED.getCode());
+						batchServiceDAO.updateApplicantDemographic(demographicEntity);
+					}
 					LOGGER.info(LOGDISPLAY,
 							"Update the status successfully into Registration Appointment table and Demographic table");
+
 				}
 			});
-			
+
 		} catch (Exception e) {
 			new BatchServiceExceptionCatcher().handle(e);
 		}

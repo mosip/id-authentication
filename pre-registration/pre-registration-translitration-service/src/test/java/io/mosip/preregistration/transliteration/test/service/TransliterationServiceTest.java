@@ -28,7 +28,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.util.DateUtils;
-
 import io.mosip.preregistration.transliteration.dto.MainRequestDTO;
 import io.mosip.preregistration.transliteration.dto.MainResponseDTO;
 import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
@@ -94,10 +93,10 @@ public class TransliterationServiceTest {
 		idEntity.setToLang("Arabic");
 		
 		transliterationRequest=new TransliterationDTO();
-		transliterationRequest.setFromFieldLang("English");
+		transliterationRequest.setFromFieldLang("eng");
 		transliterationRequest.setFromFieldName("Name1");
 		transliterationRequest.setFromFieldValue("Kishan");
-		transliterationRequest.setToFieldLang("Arabic");
+		transliterationRequest.setToFieldLang("ara");
 		transliterationRequest.setToFieldName("Name2");
 		transliterationRequest.setToFieldValue("");
 		
@@ -150,7 +149,7 @@ public class TransliterationServiceTest {
 	@Test(expected=MandatoryFieldRequiredException.class)
 	public void mandatoryFieldFailTest() {
 		MandatoryFieldRequiredException exception=new MandatoryFieldRequiredException(ErrorCodes.PRG_TRL_APP_002.getCode()
-				, ErrorMessage.INCORRECT_MANDATORY_FIELDS.getCode());
+				, ErrorMessage.INCORRECT_MANDATORY_FIELDS.getMessage());
 		
 		Mockito.when(idRepository.findByFromLangAndToLang(Mockito.any(), Mockito.any())).thenReturn(idEntity);
 		

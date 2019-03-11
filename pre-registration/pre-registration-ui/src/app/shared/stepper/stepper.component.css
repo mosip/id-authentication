@@ -9,7 +9,7 @@
 }
 
 .progress-active {
-  border-top: 3px solid blue;
+  border-top: 3px solid #4da6ff;
 }
 
 .progress-complete {
@@ -42,7 +42,7 @@ p {
 }
 
 .inline-icon-background-active {
-  background: blue;
+  background: #4da6ff;
 }
 
 .inline-icon-background-complete {
@@ -55,7 +55,7 @@ p {
 }
 
 .active {
-  color: blue;
+  color: #4da6ff;
 }
 
 .complete {

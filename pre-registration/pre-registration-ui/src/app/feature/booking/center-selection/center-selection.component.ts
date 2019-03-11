@@ -10,8 +10,7 @@ import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
 import { SharedService } from '../booking.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { TranslateService } from '@ngx-translate/core';
-
-let REGISTRATION_CENTRES: RegistrationCentre[] = [];
+import Utils from 'src/app/app.util';
 
 @Component({
   selector: 'app-center-selection',
@@ -19,12 +18,13 @@ let REGISTRATION_CENTRES: RegistrationCentre[] = [];
   styleUrls: ['./center-selection.component.css']
 })
 export class CenterSelectionComponent implements OnInit {
-  @ViewChild(TimeSelectionComponent)
-  timeSelectionComponent: TimeSelectionComponent;
+  // @ViewChild(TimeSelectionComponent)
+  // timeSelectionComponent: TimeSelectionComponent;
 
-  displayedColumns: string[] = ['select', 'name', 'addressLine1', 'contactPerson', 'centerTypeCode', 'contactPhone'];
-  dataSource = new MatTableDataSource<RegistrationCentre>(REGISTRATION_CENTRES);
-  selection = new SelectionModel<RegistrationCentre>(true, []);
+  REGISTRATION_CENTRES: RegistrationCentre[] = [];
+ // displayedColumns: string[] = ['select', 'name', 'addressLine1', 'contactPerson', 'centerTypeCode', 'contactPhone'];
+ // dataSource = new MatTableDataSource<RegistrationCentre>(REGISTRATION_CENTRES);
+ // selection = new SelectionModel<RegistrationCentre>(true, []);
   searchClick: boolean = true;
 
   locationTypes = [];
@@ -57,33 +57,28 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   ngOnInit() {
-    REGISTRATION_CENTRES = [];
-    this.dataSource.data = REGISTRATION_CENTRES;
+    this.REGISTRATION_CENTRES = [];
+   // this.dataSource.data = REGISTRATION_CENTRES;
     this.selectedCentre = null;
-  //  this.getLocation();
+    //  this.getLocation();
     this.dataService.getLocationTypeData().subscribe(response => {
       this.locationTypes = response['locations'];
       console.log(this.locationTypes);
     });
     this.users = this.service.getNameList();
-//    this.getRecommendedCenters();
+    this.getRecommendedCenters();
   }
 
-getRecommendedCenters() {
+  getRecommendedCenters() {
     const pincodes = [];
     this.users.forEach(user => {
-      const pincode = this.getUserDemographic(user).then(() => {
-        pincodes.push(pincode);
-        console.log(pincodes);
-      });
+      pincodes.push(user['postalCode']);
     });
-  }
-
-async getUserDemographic(user) {
-  this.dataService.getUser(user.preRegId).subscribe(response => {
+    this.dataService.recommendedCenters(localStorage.getItem('langCode'), 4, pincodes).subscribe(response => {
       console.log(response);
-      return response['response'][0].demographicDetails.identity.postalCode;
-    });
+      if (!response['errors'])
+        this.displayResults(response);
+    })
   }
 
   setSearchClick(flag: boolean) {
@@ -117,23 +112,21 @@ async getUserDemographic(user) {
     console.log(this.locationType, this.searchText);
     if (this.locationType !== null && this.searchText !== null) {
       this.showMap = false;
-      this.dataService.getRegistrationCentersByName(this.locationType.locationHierarchylevel, this.searchText).subscribe(
-        response => {
-          console.log(response);
-          if (response['registrationCenters'].length !== 0) {
-            REGISTRATION_CENTRES = response['registrationCenters'];
-            this.dataSource.data = REGISTRATION_CENTRES;
-            this.showTable = true;
-            this.selectedRow(REGISTRATION_CENTRES[0]);
-            this.dispatchCenterCoordinatesList();
-          } else {
+      this.dataService
+        .getRegistrationCentersByName(this.locationType.locationHierarchylevel, this.searchText)
+        .subscribe(
+          response => {
+            console.log(response);
+            if (!response['errors']) {
+              this.displayResults(response);
+            } else {
+              this.showMessage = true;
+            }
+          },
+          error => {
             this.showMessage = true;
           }
-        },
-        error => {
-          this.showMessage = true;
-        }
-      );
+        );
     }
   }
 
@@ -150,7 +143,8 @@ async getUserDemographic(user) {
   }
 
   getLocation() {
-    this.dataSource.data = [];
+  //  this.dataSource.data = [];
+    this.REGISTRATION_CENTRES = [];
     if (navigator.geolocation) {
       this.showMap = false;
       navigator.geolocation.getCurrentPosition(position => {
@@ -159,12 +153,7 @@ async getUserDemographic(user) {
           response => {
             console.log(response);
             if (response['errors'].length === 0 && response['registrationCenters'].length !== 0) {
-              REGISTRATION_CENTRES = response['registrationCenters'];
-              this.dataSource.data = REGISTRATION_CENTRES;
-              console.log(this.dataSource.data);
-              this.showTable = true;
-              this.selectedRow(REGISTRATION_CENTRES[0]);
-              this.dispatchCenterCoordinatesList();
+              this.displayResults(response);
             } else {
               this.showMessage = true;
             }
@@ -195,7 +184,7 @@ async getUserDemographic(user) {
 
   dispatchCenterCoordinatesList() {
     const coords = [];
-    REGISTRATION_CENTRES.forEach(centre => {
+    this.REGISTRATION_CENTRES.forEach(centre => {
       const data = {
         id: centre.id,
         latitude: Number(centre.latitude),
@@ -216,18 +205,33 @@ async getUserDemographic(user) {
   }
 
   routeDashboard() {
-    const routeParams = this.router.url.split('/');
-    this.router.navigate(['dashboard', routeParams[2]]);
+    // const routeParams = this.router.url.split('/');
+    const url = Utils.getURL(this.router.url, 'dashboard', 3);
+    this.router.navigateByUrl(url);
   }
 
   routeBack() {
+    let url = '';
     if (this.registrationService.getUsers().length === 0) {
-      const routeParams = this.router.url.split('/');
-      console.log('route params', routeParams);
-      this.router.navigateByUrl(`dashboard/${routeParams[2]}`);
+      // const routeParams = this.router.url.split('/');
+      // console.log('route params', routeParams);
+      url = Utils.getURL(this.router.url, 'dashboard', 3);
+
+      // this.router.navigateByUrl(`dashboard`);
     } else {
-      const routeParams = this.router.url.split('/');
-      this.router.navigate([routeParams[1], routeParams[2], 'summary', 'preview']);
-    } 
+      // const routeParams = this.router.url.split('/');
+      url = Utils.getURL(this.router.url, 'summary/preview', 2);
+      // this.router.navigate([routeParams[1], 'summary', 'preview']);
+    }
+    this.router.navigateByUrl(url);
+  }
+
+  displayResults(response: any) {
+    this.REGISTRATION_CENTRES = response['registrationCenters'];
+    // this.dataSource.data = REGISTRATION_CENTRES;
+    // console.log(this.dataSource.data);
+    this.showTable = true;
+    this.selectedRow(this.REGISTRATION_CENTRES[0]);
+    this.dispatchCenterCoordinatesList();
   }
 }

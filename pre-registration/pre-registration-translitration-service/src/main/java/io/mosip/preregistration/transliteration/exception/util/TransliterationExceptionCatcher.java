@@ -17,6 +17,7 @@ import io.mosip.preregistration.transliteration.exception.IllegalParamException;
 import io.mosip.preregistration.transliteration.exception.JsonValidationException;
 import io.mosip.preregistration.transliteration.exception.MandatoryFieldRequiredException;
 import io.mosip.preregistration.transliteration.exception.MissingRequestParameterException;
+import io.mosip.preregistration.transliteration.exception.UnSupportedLanguageException;
 
 /**
  * This class is used to catch the exceptions that occur while creating the
@@ -38,16 +39,16 @@ public class TransliterationExceptionCatcher {
 	public void handle(Exception ex) {
 		if (ex instanceof HttpRequestException) {
 			throw new JsonValidationException(ErrorCodes.PRG_TRL_APP_004.getCode(),
-					ErrorMessage.JSON_HTTP_REQUEST_EXCEPTION.getCode(), ex.getCause());
+					ErrorMessage.JSON_HTTP_REQUEST_EXCEPTION.getMessage(), ex.getCause());
 		} else if (ex instanceof DataAccessLayerException) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_TRL_APP_005.getCode(),
-					ErrorMessage.PRE_REG_TRANSLITRATION_TABLE_NOT_ACCESSIBLE.getCode(), ex.getCause());
+					ErrorMessage.PRE_REG_TRANSLITRATION_TABLE_NOT_ACCESSIBLE.getMessage(), ex.getCause());
 		} else if (ex instanceof NullPointerException) {
 			throw new IllegalParamException(ErrorCodes.PRG_TRL_APP_002.toString(),
-					ErrorMessage.INCORRECT_MANDATORY_FIELDS.getCode(), ex.getCause());
+					ErrorMessage.INCORRECT_MANDATORY_FIELDS.getMessage(), ex.getCause());
 		} else if (ex instanceof ParseException) {
 			throw new io.mosip.preregistration.transliteration.exception.JsonParseException(
-					ErrorCodes.PRG_TRL_APP_006.getCode(), ErrorMessage.JSON_PARSING_FAILED.getCode(), ex.getCause());
+					ErrorCodes.PRG_TRL_APP_006.getCode(), ErrorMessage.JSON_PARSING_FAILED.getMessage(), ex.getCause());
 		} else if (ex instanceof InvalidRequestParameterException) {
 			throw new InvalidRequestParameterException(((InvalidRequestParameterException) ex).getErrorCode(),
 					((InvalidRequestParameterException) ex).getErrorText());
@@ -58,6 +59,10 @@ public class TransliterationExceptionCatcher {
 		else if (ex instanceof MandatoryFieldRequiredException) {
 			throw new MandatoryFieldRequiredException(((MandatoryFieldRequiredException) ex).getErrorCode(),
 					((MandatoryFieldRequiredException) ex).getErrorText());
+		}
+		else if (ex instanceof UnSupportedLanguageException) {
+			throw new UnSupportedLanguageException(((UnSupportedLanguageException) ex).getErrorCode(),
+					((UnSupportedLanguageException) ex).getErrorText());
 		}
 	}
 

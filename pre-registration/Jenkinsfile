@@ -5,7 +5,7 @@ node {
  def buildInfo
  def branch = env.NEXT_BRANCH_NAME
  def dockerImagesTagVersion = 'NaV'  //This will ensure that docker images tag should have 1-1 relation ship with project version
- def projectToBuild = 'pre-registration'
+ projectToBuild = 'pre-registration'
  def registryUrl = 'http://docker-registry.mosip.io:5000'
  def registryName = 'docker-registry.mosip.io:5000'
  def registryCredentials = '305c7f35-2eb5-44b4-b574-a0855ef70c26'
@@ -86,11 +86,6 @@ stage ('---------- build ---------------') {
    sh "${mvnHome}/bin/mvn -f '$branch/$projectToBuild/' sonar:sonar"
   }
  }
-
- stage('----------- Publish build info -------------') {
-  server.publishBuildInfo buildInfo
- }
-
  
  stage('----------- Publish build info -------------') {
   /*
