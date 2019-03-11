@@ -7,7 +7,9 @@ import java.util.Optional;
 
 import org.springframework.core.env.Environment;
 
+import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
+import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
@@ -95,5 +97,18 @@ public interface IdInfoFetcher {
 	 * @return
 	 */
 	public MasterDataFetcher getTitleFetcher();
+	/**
+	 * 
+	 * @param authRequestDTO
+	 * @return
+	 */
+	public  Optional<String> getUinOrVid(AuthRequestDTO authRequestDTO);
+	
+	/**
+	 * 
+	 * @param authRequestDTO
+	 * @return
+	 */
+	public IdType getUinOrVidType(AuthRequestDTO authRequestDTO);
 
 }

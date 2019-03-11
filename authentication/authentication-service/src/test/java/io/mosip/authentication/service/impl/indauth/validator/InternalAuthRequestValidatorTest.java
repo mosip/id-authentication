@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.AbstractEnvironment;
@@ -66,7 +66,7 @@ public class InternalAuthRequestValidatorTest {
 	@InjectMocks
 	private InternalAuthRequestValidator internalAuthRequestValidator;
 
-	@InjectMocks
+	@Mock
 	IdInfoHelper idinfoHelper;
 
 	@Mock
@@ -93,7 +93,7 @@ public class InternalAuthRequestValidatorTest {
 		assertTrue(internalAuthRequestValidator.supports(AuthRequestDTO.class));
 	}
 
-	@Ignore
+	@Test
 	public void testSupportFalse() {
 		assertFalse(internalAuthRequestValidator.supports(OtpRequestDTO.class));
 	}
@@ -108,7 +108,6 @@ public class InternalAuthRequestValidatorTest {
 		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setPartnerID("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
-//		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setDemo(true);
 		authTypeDTO.setOtp(true);
@@ -183,7 +182,6 @@ public class InternalAuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
-	@Ignore
 	@Test
 	public void testValidInternalAuthRequestValidator2() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -211,12 +209,12 @@ public class InternalAuthRequestValidatorTest {
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
+		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}
 
-	@Ignore
 	@Test
 	public void testinValiddata() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -245,12 +243,12 @@ public class InternalAuthRequestValidatorTest {
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
+		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
 
-	@Ignore
 	@Test
 	public void testValidInternalAuthRequestValidator() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -314,13 +312,13 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setBioMetadata(bioInfoList);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(requestDTO);
+		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		System.err.println(errors);
 		assertFalse(errors.hasErrors());
 	}
 
-	@Ignore
 	@Test
 	public void testValidInternalAuthRequestValidatorEmptyID() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -337,12 +335,12 @@ public class InternalAuthRequestValidatorTest {
 		reqDTO.setIdentity(identitydto);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
+		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
-//		assertTrue(errors.hasErrors());
+		assertTrue(errors.hasErrors());
 	}
 
-	@Ignore
 	@Test
 	public void testInvalidInternalAuthRequestValidator() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -370,12 +368,12 @@ public class InternalAuthRequestValidatorTest {
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
+		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
 
-	@Ignore
 	@Test
 	public void testInvalidDate() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -405,12 +403,12 @@ public class InternalAuthRequestValidatorTest {
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setRequest(reqDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
+		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
 
-	@Ignore
 	@Test
 	public void TestInvalidTimeFormat() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -419,6 +417,7 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setPartnerID("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setRequestTime("a2018-11-11");
+		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validateDate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
