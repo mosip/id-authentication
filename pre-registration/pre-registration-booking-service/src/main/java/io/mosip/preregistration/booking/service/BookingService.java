@@ -85,6 +85,12 @@ public class BookingService {
 	 * Reference for ${preregistration.availability.noOfDays} from property file
 	 */
 	@Value("${preregistration.availability.noOfDays}")
+	int displayDays;
+	
+	/**
+	 * Reference for ${preregistration.booking.offset} from property file
+	 */
+	@Value("${preregistration.booking.offset}")
 	int availabilityOffset;
 
 	@Autowired
@@ -145,7 +151,7 @@ public class BookingService {
 	public MainResponseDTO<AvailabilityDto> getAvailability(String regID) {
 		log.info("sessionId", "idType", "id", "In getAvailability method of Booking Service");
 		MainResponseDTO<AvailabilityDto> response = new MainResponseDTO<>();
-		LocalDate endDate = LocalDate.now().plusDays(syncDays);
+		LocalDate endDate = LocalDate.now().plusDays(displayDays+availabilityOffset);
 		LocalDate fromDate = LocalDate.now().plusDays(availabilityOffset);
 		AvailabilityDto availability = new AvailabilityDto();
 		try {
