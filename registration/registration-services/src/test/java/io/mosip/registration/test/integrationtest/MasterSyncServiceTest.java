@@ -575,7 +575,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POA_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
-		list1.addAll(Arrays.asList("Rental Agreement of address", "Proof of Resident"));
+		list1.addAll(Arrays.asList("Rental Agreement of address"));
 		
 		List<String> list2=new ArrayList<>();
 		
@@ -598,7 +598,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POI_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
-		list1.addAll(Arrays.asList("Moroccan National Electronic ID Card", "Proof of Idendity"));
+		list1.addAll(Arrays.asList("Moroccan National Electronic ID Card"));
 		
 		List<String> list2=new ArrayList<>();
 		
@@ -667,7 +667,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POA_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
-		list1.addAll(Arrays.asList("eng","eng"));
+		list1.addAll(Arrays.asList("eng"));
 		
 		List<String> list2=new ArrayList<>();
 		
@@ -691,7 +691,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POI_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
-		list1.addAll(Arrays.asList("eng","eng"));
+		list1.addAll(Arrays.asList("eng"));
 		
 		List<String> list2=new ArrayList<>();
 		
@@ -760,7 +760,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POA_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
-		list1.addAll(Arrays.asList("Rental contract","Certificate of residence"));
+		list1.addAll(Arrays.asList("Rental contract"));
 		
 		List<String> list2=new ArrayList<>();
 		
@@ -783,7 +783,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<DocumentCategoryDto> result = mastersyncservice.getDocumentCategories(RegistrationConstants.POI_DOCUMENT, testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
-		list1.addAll(Arrays.asList("CNIE card","Passport"));
+		list1.addAll(Arrays.asList("CNIE card"));
 		
 		List<String> list2=new ArrayList<>();
 		
@@ -917,7 +917,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<GenderDto> result = mastersyncservice.getGenderDtls(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
-		list1.addAll(Arrays.asList("1","2","MLE","FLE","OTH"));
+		list1.addAll(Arrays.asList("1","2","MLE","FLE","OTH","ABC"));
 		
 		List<String> list2=new ArrayList<>();
 		
@@ -939,7 +939,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<GenderDto> result = mastersyncservice.getGenderDtls(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
-		list1.addAll(Arrays.asList("female","female","Male","Female","Others"));
+		list1.addAll(Arrays.asList("female","female","Male","Female","Others","Male"));
 		
 		List<String> list2=new ArrayList<>();
 		
@@ -961,7 +961,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<GenderDto> result = mastersyncservice.getGenderDtls(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
-		list1.addAll(Arrays.asList("true","true","true","true","true"));
+		list1.addAll(Arrays.asList("true","true","true","true","true","true"));
 		
 		List<String> list2=new ArrayList<>();
 		
@@ -983,7 +983,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<GenderDto> result = mastersyncservice.getGenderDtls(testdataparsejson.getDataFromJsonViaKey("langCode"));
 		
 		List<String> list1=new ArrayList<>();
-		list1.addAll(Arrays.asList("eng","eng","eng","eng","eng"));
+		list1.addAll(Arrays.asList("eng","eng","eng","eng","eng","eng"));
 		
 		List<String> list2=new ArrayList<>();
 		
