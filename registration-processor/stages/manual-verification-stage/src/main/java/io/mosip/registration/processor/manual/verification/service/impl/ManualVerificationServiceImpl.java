@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -286,22 +287,13 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId);
+					registrationId,ApiName.AUDIT);
 		}
 		return manualVerificationDTO;
 
 	}
 
-	private boolean validateManualVerificationDTO(ManualVerificationDTO manualVerificationDTO) {
-		return !(manualVerificationDTO.getMvUsrId() != null || manualVerificationDTO.getMatchedRefId() != null
-				|| manualVerificationDTO.getMatchedRefType() != null || manualVerificationDTO.getReasonCode() != null
-				|| manualVerificationDTO.getRegId() != null || manualVerificationDTO.getStatusCode() != null ||
-
-				!(manualVerificationDTO.getMvUsrId() == "") || !manualVerificationDTO.getMatchedRefId().equals("")
-				|| !manualVerificationDTO.getMatchedRefType().equals("")
-				|| !manualVerificationDTO.getReasonCode().equals("") || !manualVerificationDTO.getRegId().equals("")
-				|| !manualVerificationDTO.getStatusCode().equals(""));
-	}
+	
 
 	/*
 	 * (non-Javadoc)

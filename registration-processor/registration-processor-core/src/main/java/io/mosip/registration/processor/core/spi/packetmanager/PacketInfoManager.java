@@ -113,15 +113,10 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @param registrationId
 	 *            the registration id
 	 */
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId,String Source);
-=======
+
+
 	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId, DedupeSourceName sourceName);
->>>>>>> Stashed changes
-=======
-	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId, DedupeSourceName sourceName);
->>>>>>> Stashed changes
+
 
 	/**
 	 * Save abis ref.

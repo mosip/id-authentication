@@ -888,15 +888,9 @@ public class PacketInfoManagerImplTest {
 	public void testSaveManualAdjudicationDataSuccess() {
 		String registrationId = "1234";
 		List<String> uniqueMatchedRefIds = Arrays.asList("123av", "124abc", "125abcd");
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId,"DEMO");
-=======
-		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId, null);
->>>>>>> Stashed changes
-=======
-		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId, null);
->>>>>>> Stashed changes
+
+		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId,null);
+
 	}
 
 	/**
@@ -907,15 +901,9 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(manualVerficationRepository.save(any())).thenThrow(exp);
 		String registrationId = "1234";
 		List<String> uniqueMatchedRefIds = Arrays.asList("123av", "124abc", "125abcd");
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId,"DEMO");
-=======
-		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId, null);
->>>>>>> Stashed changes
-=======
-		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId, null);
->>>>>>> Stashed changes
+
+		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId,null);
+
 	}
 
 	/**

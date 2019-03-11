@@ -15,15 +15,11 @@ import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
 import io.mosip.registration.processor.core.code.ApiName;
-=======
+
 import io.mosip.registration.processor.core.code.DedupeSourceName;
->>>>>>> Stashed changes
-=======
-import io.mosip.registration.processor.core.code.DedupeSourceName;
->>>>>>> Stashed changes
+
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -125,15 +121,9 @@ public class DemodedupeProcessor {
 					description = "Potential duplicate packet found for registration id : " + registrationId;
 
 					// Saving potential duplicates in reg_manual_verification table
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-					packetInfoManager.saveManualAdjudicationData(uniqueMatchedRefIdList, registrationId,DEMO);
-=======
+
 					packetInfoManager.saveManualAdjudicationData(uniqueMatchedRefIdList, registrationId, DedupeSourceName.DEMO);
->>>>>>> Stashed changes
-=======
-					packetInfoManager.saveManualAdjudicationData(uniqueMatchedRefIdList, registrationId, DedupeSourceName.DEMO);
->>>>>>> Stashed changes
+
 				}
 
 			} else {

@@ -25,6 +25,7 @@ import io.mosip.registration.processor.bio.dedupe.exception.UnableToServeRequest
 import io.mosip.registration.processor.bio.dedupe.exception.UnexceptedError;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.code.DedupeSourceName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -108,15 +109,9 @@ public class BioDedupeProcessorTest {
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.SUCCESS.name());
 		Mockito.when(bioDedupeService.performDedupe(anyString())).thenReturn(matchedRegIds);
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234","BIO");
-=======
-		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234", null);
->>>>>>> Stashed changes
-=======
-		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234", null);
->>>>>>> Stashed changes
+
+		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234",DedupeSourceName.BIO);
+
 
 		MessageDTO messageDto = bioDedupeProcessor.process(dto);
 
@@ -136,15 +131,9 @@ public class BioDedupeProcessorTest {
 		matchedRegIds.add("4567");
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.SUCCESS.name());
 		Mockito.when(bioDedupeService.performDedupe(anyString())).thenReturn(matchedRegIds);
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234","BIO");
-=======
-		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234", null);
->>>>>>> Stashed changes
-=======
-		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234", null);
->>>>>>> Stashed changes
+
+		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234",DedupeSourceName.BIO);
+
 
 		MessageDTO messageDto = bioDedupeProcessor.process(dto);
 
@@ -164,15 +153,9 @@ public class BioDedupeProcessorTest {
 		matchedRegIds.add("4567");
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.FAILURE.name());
 		Mockito.when(bioDedupeService.performDedupe(anyString())).thenReturn(matchedRegIds);
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234","BIO");
-=======
-		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234", null);
->>>>>>> Stashed changes
-=======
-		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234", null);
->>>>>>> Stashed changes
+
+		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234",DedupeSourceName.BIO);
+
 
 		MessageDTO messageDto = bioDedupeProcessor.process(dto);
 
