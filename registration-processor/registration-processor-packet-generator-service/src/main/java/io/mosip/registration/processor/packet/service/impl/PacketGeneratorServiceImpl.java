@@ -47,8 +47,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 			packetZipBytes = packetCreationService.create(registrationDTO);
 			String creationTime = packetCreationService.getCreationTime();
 			String filePath = storageService.storeToDisk(registrationDTO.getRegistrationId(), packetZipBytes, false);
-			// encrypte the packet
-			// sync the packet and upload and return the status
+
 			File decryptedFile = new File(filePath);
 
 			packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(decryptedFile,
