@@ -493,6 +493,62 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		return result;
 	}
 	
+	
+
+	private IdResponseDTO reActivateUin(String regId,String uin) throws ApisResourceAccessException {
+
+		IdResponseDTO result = getIdRepoDataByUIN(uin);
+
+		List<String> pathsegments = new ArrayList<>();
+		try {
+			if (result != null && result.getResponse() != null) {
+				
+				if(result.getStatus().equalsIgnoreCase("ACTIVATED")) {
+
+					return result;
+					
+				}else {
+
+					RequestDto requestDto = new RequestDto();
+					requestDto.setIdentity(result.getResponse().getIdentity());
+					requestDto.setDocuments(result.getResponse().getDocuments());
+
+					pathsegments.add(uin);
+
+					idRequestDTO.setId(idRepoUpdate);
+					idRequestDTO.setRegistrationId(regId);
+					idRequestDTO.setStatus("ACTIVATED");
+					idRequestDTO.setRequest(requestDto);
+					idRequestDTO.setTimestamp(DateUtils.formatToISOString(LocalDateTime.now()));
+					idRequestDTO.setVersion(idRepoApiVersion);
+					Gson gson = new GsonBuilder().create();
+					String idReq = gson.toJson(idResponseDTO);
+
+					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString() + regId, "Update Request to IdRepo API", "is : " + idReq);
+
+
+					result = (IdResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDREPOSITORY, pathsegments,
+							"", "", idRequestDTO, IdResponseDTO.class);
+					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString() + regId, "Updated Response from IdRepo API",
+							"is : " + result.toString());
+
+
+				}
+
+			}
+		} catch (ApisResourceAccessException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage()
+					+ ExceptionUtils.getStackTrace(e));
+		}
+		return result;
+	}
+
+	
+	
+	
 	private IdResponseDTO getIdRepoDataByUIN(String uin) throws ApisResourceAccessException{
 		IdResponseDTO response  = new IdResponseDTO();
 		
