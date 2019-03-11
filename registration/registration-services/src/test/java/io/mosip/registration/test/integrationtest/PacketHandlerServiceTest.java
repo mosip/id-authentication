@@ -105,7 +105,7 @@ public class PacketHandlerServiceTest extends BaseIntegrationTest {
 		SessionContext.getInstance().setMapObject(new HashMap<String, Object>());
 		obj.setRegistrationId(ridGeneratorImpl.generateId(
 				ApplicationContext.getInstance().map().get(RegistrationConstants.REGISTARTION_CENTER).toString(),
-				"10011"));
+				"20916"));
 		ResponseDTO response = packetHandlerService.handle(obj);
 
 		String jsonInString = mapper.writeValueAsString(response);
