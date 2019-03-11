@@ -12,13 +12,6 @@ ARG active_profile
 # can be passed during Docker build as build time environment for config server URL 
 ARG spring_config_url
 
-# can be passed during Docker build as build time environment for config server username 
-ARG spring_config_username
-
-# can be passed during Docker build as build time environment for config server password 
-ARG spring_config_password
-
-
 # environment variable to pass active profile such as DEV, QA etc at docker runtime
 ENV active_profile_env=${active_profile}
 
@@ -28,14 +21,8 @@ ENV spring_config_label_env=${spring_config_label}
 # environment variable to pass spring configuration url, at docker runtime
 ENV spring_config_url_env=${spring_config_url}
 
-# environment variable to pass spring configuration username, at docker runtime
-ENV spring_config_username_env=${spring_config_username}
-
-# environment variable to pass spring configuration password, at docker runtime
-ENV spring_config_password_env=${spring_config_password}
-
 COPY ./target/kernel-masterdata-service-*.jar kernel-masterdata-service.jar
 
 EXPOSE 8086
 
-CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-Dspring.cloud.config.password=${spring_config_password_env}","-Dspring.cloud.config.username=${spring_config_username_env}", "-Dcom.sun.management.jmxremote=true", "-Dcom.sun.management.jmxremote.rmi.port=8099" , "-Dcom.sun.management.jmxremote.port=8099", "-Dcom.sun.management.jmxremote.ssl=false" ,"-Dcom.sun.management.jmxremote.authenticate=false",  "-Dcom.sun.management.jmxremote.local.only=false", "-Djava.rmi.server.hostname=104.211.214.143" , "kernel-masterdata-service.jar", ">", "masterdata-service.log", "2>&1"]
+CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}", "-Dcom.sun.management.jmxremote=true", "-Dcom.sun.management.jmxremote.rmi.port=8099" , "-Dcom.sun.management.jmxremote.port=8099", "-Dcom.sun.management.jmxremote.ssl=false" ,"-Dcom.sun.management.jmxremote.authenticate=false",  "-Dcom.sun.management.jmxremote.local.only=false", "-Djava.rmi.server.hostname=104.211.214.143" , "kernel-masterdata-service.jar", ">", "masterdata-service.log", "2>&1"]
