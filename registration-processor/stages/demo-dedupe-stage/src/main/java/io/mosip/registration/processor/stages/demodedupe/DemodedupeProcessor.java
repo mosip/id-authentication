@@ -115,7 +115,7 @@ public class DemodedupeProcessor {
 					demographicDedupeRepository.updateIsActiveIfDuplicateFound(registrationId);
 
 				} else {
-					object.setIsValid(Boolean.FALSE);
+					object.setIsValid(Boolean.TRUE);
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_DEMO_POTENTIAL_MATCH);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DEMO_POTENTIAL_MATCH.toString());
 					description = "Potential duplicate packet found for registration id : " + registrationId;
