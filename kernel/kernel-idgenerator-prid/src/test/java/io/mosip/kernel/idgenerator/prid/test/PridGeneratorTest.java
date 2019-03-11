@@ -76,6 +76,7 @@ public class PridGeneratorTest {
 
 	@Test
 	public void notNullTest() {
+
 		when(repository.findRandomValues()).thenReturn(listOfEntity);
 
 		assertNotNull(pridGenerator.generateId());
