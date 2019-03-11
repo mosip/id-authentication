@@ -1,6 +1,6 @@
 {
   "id": "mosip.identity.vid",
-  "version": "1.0",
+  "version": "$version$",
   "responseTime": "2019-02-27T08:49:56.205Z",
   "vid": "2675071205649621",
   "error": []

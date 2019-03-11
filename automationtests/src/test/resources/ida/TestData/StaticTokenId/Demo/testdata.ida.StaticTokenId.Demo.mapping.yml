@@ -17,7 +17,8 @@ testdata:
       output.1.response.y.reqTime: $input.staticTokenId-generation-request:staticTokenIdGeneration.reqTime$
       output.1.response.y.txnID: $input.staticTokenId-generation-request:staticTokenIdGeneration.txnID$
       output.1.response.y.staticToken: $IGNORE$
-  
+      #output.1.response.y.ver: 0.8
+      
   Invalid_UIN_Neg_02:
     input.staticTokenId-generation-request:
       staticTokenIdGeneration.idvId: 1234567890
@@ -247,7 +248,6 @@ testdata:
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: N
       output.1.response.n.err.resTime: $TIMESTAMPZ$
-      output.1.response.n.err.ver: 1.0
       output.1.response.n.err.errorMessage: Missing Input Parameter - reqTime
       output.1.response.n.err.errorCode: IDA-IDV-003
       
@@ -287,8 +287,8 @@ testdata:
       output.1.response.n.err.status: N
       output.1.response.n.err.resTime: $TIMESTAMP$
       output.1.response.n.err.ver: $IGNORE$
-      output.1.response.n.err.errorMessage: Invalid Auth Request
-      output.1.response.n.err.errorCode: IDA-RQV-101
+      output.1.response.n.err.errorMessage: Missing Input Parameter - %s
+      output.1.response.n.err.errorCode: IDA-IDV-003
       
   StaticTokenId_Generation_smoke_For VID_Pos_16:
     input.staticTokenId-generation-request:
@@ -312,7 +312,8 @@ testdata:
       output.1.response.y.languagematchInfos0: $idrepo~$input.staticTokenId-generation-request:staticTokenIdGeneration.idvId$~languagefullName1$
       output.1.response.y.txnID: $input.staticTokenId-generation-request:staticTokenIdGeneration.txnID$
       output.1.response.y.staticToken: $IGNORE$
-  
+      output.1.response.y.ver: 0.8
+      
   Invalid_VID_Neg_17:
     input.staticTokenId-generation-request:
       staticTokenIdGeneration.idvId: 1234567890
@@ -549,7 +550,6 @@ testdata:
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: N
       output.1.response.n.err.resTime: $TIMESTAMPZ$
-      output.1.response.n.err.ver: 1.0
       output.1.response.n.err.errorMessage: Missing Input Parameter - reqTime
       output.1.response.n.err.errorCode: IDA-IDV-003
       
@@ -591,8 +591,8 @@ testdata:
       output.1.response.n.err.status: N
       output.1.response.n.err.resTime: $TIMESTAMP$
       output.1.response.n.err.ver: $IGNORE$
-      output.1.response.n.err.errorMessage: Invalid Auth Request
-      output.1.response.n.err.errorCode: IDA-RQV-101
+      output.1.response.n.err.errorMessage: Missing Input Parameter - %s
+      output.1.response.n.err.errorCode: IDA-IDV-003
   
   StaticTokenId_Generation_smoke_For Same UIN and tspID_Pos_31:
     input.staticTokenId-generation-request:
@@ -612,7 +612,8 @@ testdata:
       output.1.response.y.reqTime: $input.staticTokenId-generation-request:staticTokenIdGeneration.reqTime$
       output.1.response.y.txnID: $input.staticTokenId-generation-request:staticTokenIdGeneration.txnID$
       output.1.response.y.staticToken: $IGNORE$
-  
+      output.1.response.y.ver: 0.8
+      
   StaticTokenId_Generation_smoke_For Different UIN and tspID_Pos_32:
     input.staticTokenId-generation-request:
       staticTokenIdGeneration.idvId: $UIN$
@@ -631,6 +632,7 @@ testdata:
       output.1.response.y.reqTime: $input.staticTokenId-generation-request:staticTokenIdGeneration.reqTime$
       output.1.response.y.txnID: $input.staticTokenId-generation-request:staticTokenIdGeneration.txnID$
       output.1.response.y.staticToken: $IGNORE$
+      output.1.response.y.ver: 0.8
       
   StaticTokenId_Generation_smoke_For Same VID and tspID_Pos_33:
     input.staticTokenId-generation-request:
@@ -654,7 +656,8 @@ testdata:
       output.1.response.y.languagematchInfos0: $idrepo~$input.staticTokenId-generation-request:staticTokenIdGeneration.idvId$~languagefullName1$
       output.1.response.y.txnID: $input.staticTokenId-generation-request:staticTokenIdGeneration.txnID$
       output.1.response.y.staticToken: $IGNORE$
-  
+      output.1.response.y.ver: 0.8
+      
   StaticTokenId_Generation_smoke_For Different VID and tspID_Pos_34:
     input.staticTokenId-generation-request:
       staticTokenIdGeneration.idvId: $VID$
@@ -677,7 +680,8 @@ testdata:
       output.1.response.y.languagematchInfos0: $idrepo~$input.staticTokenId-generation-request:staticTokenIdGeneration.idvId$~languagefullName1$
       output.1.response.y.txnID: $input.staticTokenId-generation-request:staticTokenIdGeneration.txnID$
       output.1.response.y.staticToken: $IGNORE$
-  
+      output.1.response.y.ver: 0.8
+      
   Deactivated_For UIN_Neg_35:
     input.staticTokenId-generation-request:
       staticTokenIdGeneration.idvId: $UIN:WITH:Deactivated$
@@ -693,32 +697,10 @@ testdata:
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: N
       output.1.response.n.err.resTime: $TIMESTAMP$
-      output.1.response.n.err.ver: 1.0
       output.1.response.n.err.errorMessage: UIN has been deactivated
       output.1.response.n.err.errorCode: IDA-MLC-003
-      
-  StaticTokenId_Generation_smoke_For UIN_Pos_36:
-    input.staticTokenId-generation-request:
-      staticTokenIdGeneration.idvId: $UIN$
-      staticTokenIdGeneration.tspID: TSP00001
-      staticTokenIdGeneration.reqTime: $TIMESTAMP$
-      staticTokenIdGeneration.txnID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valuefullName1: $idrepo~$input.staticTokenId-generation-request:staticTokenIdGeneration.idvId$~valuefullName1$
-      identityReq.languagefullName1: $idrepo~$input.staticTokenId-generation-request:staticTokenIdGeneration.idvId$~languagefullName1$
-      identityReq.tspID: $input.staticTokenId-generation-request:staticTokenIdGeneration.tspID$      
-      identityReq.valuedob: $idrepo~$input.staticTokenId-generation-request:staticTokenIdGeneration.idvId$~valuedob$
-      identityReq.valuephoneNumber: $idrepo~$input.staticTokenId-generation-request:staticTokenIdGeneration.idvId$~valuephoneNumber$
-    output.output-1-expected-y-res:
-      output.1.response.y.status: Y
-      output.1.response.y.resTime: $TIMESTAMP$
-      output.1.response.y.reqTime: $input.staticTokenId-generation-request:staticTokenIdGeneration.reqTime$
-      output.1.response.y.txnID: $input.staticTokenId-generation-request:staticTokenIdGeneration.txnID$
-      output.1.response.y.staticToken: $IGNORE$
-      output.1.response.y.usageData : 0x6400000000000000
-                          
-    
-    StaticTokenId_Generation_Mismatch_For UIN_Pos_37:
+                            
+  StaticTokenId_Generation_Mismatch_For UIN_Pos_37:
     input.staticTokenId-generation-request:
       staticTokenIdGeneration.idvId: $UIN$
       staticTokenIdGeneration.tspID: TSP00001
@@ -731,8 +713,10 @@ testdata:
       identityReq.valuedob: 17/04/1992
       identityReq.valuephoneNumber: 9876543210
     output.output-1-expected-y-res:
-      output.1.response.y.status: Y
+      output.1.response.y.status: N
       output.1.response.y.resTime: $TIMESTAMP$
       output.1.response.y.reqTime: $input.staticTokenId-generation-request:staticTokenIdGeneration.reqTime$
       output.1.response.y.txnID: $input.staticTokenId-generation-request:staticTokenIdGeneration.txnID$
       output.1.response.y.staticToken: $IGNORE$
+      output.1.response.y.usageData: $IGNORE$
+      output.1.response.y.ver: 0.8

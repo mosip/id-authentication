@@ -1,7 +1,7 @@
 {
 	"idvId": "739041980174",
 	"idvIdType": "D",
-	"ver": "1.0",
+	"ver": "$version$",
 	"muaCode": "7404012868",
 	"tspID": "TSP00001",
 	"id": "mosip.identity.otp",
