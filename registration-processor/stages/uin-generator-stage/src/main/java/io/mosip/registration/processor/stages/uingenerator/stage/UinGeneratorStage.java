@@ -488,7 +488,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
-		}
+		} 
 
 		return result;
 	}
