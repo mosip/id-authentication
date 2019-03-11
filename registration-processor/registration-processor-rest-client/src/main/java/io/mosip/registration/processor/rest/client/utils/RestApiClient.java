@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.rest.client.utils;
 
+import java.net.URI;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -55,12 +56,12 @@ public class RestApiClient {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T getApi(String getURI, Class<?> responseType) throws Exception {
+	public <T> T getApi(URI uri, Class<?> responseType) throws Exception {
 		RestTemplate restTemplate;
 		T result = null;
 		try {
 			restTemplate = getRestTemplate();
-			result = (T) restTemplate.getForObject(getURI, responseType);
+			result = (T) restTemplate.getForObject(uri, responseType);
 
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
