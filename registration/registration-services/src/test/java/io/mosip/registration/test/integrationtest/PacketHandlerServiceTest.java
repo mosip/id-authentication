@@ -108,11 +108,6 @@ public class PacketHandlerServiceTest extends BaseIntegrationTest {
 		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(registrationCenter);
 		SessionContext.getInstance().getUserContext().setUserId("mosip");
 		SessionContext.getInstance().setMapObject(new HashMap<String, Object>());
-<<<<<<< HEAD
-		obj.setRegistrationId(ridGeneratorImpl.generateId(
-				ApplicationContext.getInstance().map().get(RegistrationConstants.REGISTARTION_CENTER).toString(),
-				"20916"));
-=======
 		String CenterID=null;
 		String StatinID=null;
 		Map<String,String> getres=userOBservice.getMachineCenterId();
@@ -130,7 +125,6 @@ public class PacketHandlerServiceTest extends BaseIntegrationTest {
         	}
         String RandomID=ridGeneratorImpl.generateId(CenterID,StatinID);
 		obj.setRegistrationId(RandomID);
->>>>>>> 7da8be0049cfb780a326fbc390eebe9efc0c0827
 		ResponseDTO response = packetHandlerService.handle(obj);
 
 		String jsonInString = mapper.writeValueAsString(response);
