@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import io.mosip.registration.entity.id.IndividualTypeId;
@@ -13,6 +14,7 @@ import io.mosip.registration.entity.id.IndividualTypeId;
  * @author Sreekar Chukka
  *
  */
+@Entity
 @Table(name = "individual_type", schema = "reg")
 public class IndividualType extends RegistrationCommonFields implements Serializable {
 
