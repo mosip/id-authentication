@@ -125,10 +125,10 @@ public class SyncStatusValidatorServiceTest {
 		map.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
 
 		Map<String, Object> applicationMap = new HashMap<>();
-		applicationMap.put("REG_PAK_MAX_CNT_OFFLINE_FREQ", "10");
-		applicationMap.put("DIST_FRM_MACHN_TO_CENTER", "100");
-		applicationMap.put("GEO_CAP_FREQ", "Y");
-		applicationMap.put("masterSyncJob", "1");
+		applicationMap.put("mosip.registration.packet.maximum.count.offline.frequency", "10");
+		applicationMap.put("mosip.registration.distance.from.machine.to.center", "100");
+		applicationMap.put("mosip.registration.geo.capture.frequency", "Y");
+		applicationMap.put("mosip.registration.masterSyncJob.frequency", "1");
 		applicationMap.put("mosip.registration.last_export_registration_config_time", "1");
 		applicationMap.put("mosip.registration.reg_pak_max_cnt_apprv_limit", "5");
 		applicationMap.put("mosip.registration.reg_pak_max_time_apprv_limit", "5");
@@ -197,10 +197,10 @@ public class SyncStatusValidatorServiceTest {
 		listSyncJob.add(syncJobDef1);
 
 		Map<String, Object> applicationMap = new HashMap<>();
-		applicationMap.put("REG_PAK_MAX_CNT_OFFLINE_FREQ", "100");
-		applicationMap.put("DIST_FRM_MACHN_TO_CENTER", "215");
-		applicationMap.put("GEO_CAP_FREQ", "N");
-		applicationMap.put("masterSyncJob", "20");
+		applicationMap.put("mosip.registration.packet.maximum.count.offline.frequency", "100");
+		applicationMap.put("mosip.registration.distance.from.machine.to.center", "215");
+		applicationMap.put("mosip.registration.geo.capture.frequency", "N");
+		applicationMap.put("mosip.registration.masterSyncJob.frequency", "20");
 		applicationMap.put("mosip.registration.last_export_registration_config_time", "20");
 		applicationMap.put("mosip.registration.reg_pak_max_cnt_apprv_limit", "5");
 		applicationMap.put("mosip.registration.reg_pak_max_time_apprv_limit", "5");
@@ -252,10 +252,10 @@ public class SyncStatusValidatorServiceTest {
 		listSyncJob.add(syncJobDef1);
 
 		Map<String, Object> applicationMap = new HashMap<>();
-		applicationMap.put("REG_PAK_MAX_CNT_OFFLINE_FREQ", "10");
-		applicationMap.put("DIST_FRM_MACHN_TO_CENTER", "100");
-		applicationMap.put("GEO_CAP_FREQ", "Y");
-		applicationMap.put("masterSyncJob", "1");
+		applicationMap.put("mosip.registration.packet.maximum.count.offline.frequency", "10");
+		applicationMap.put("mosip.registration.distance.from.machine.to.center", "100");
+		applicationMap.put("mosip.registration.geo.capture.frequency", "Y");
+		applicationMap.put("mosip.registration.masterSyncJob.frequency", "1");
 		applicationMap.put("mosip.registration.last_export_registration_config_time", "1");
 		applicationMap.put("mosip.registration.reg_pak_max_cnt_apprv_limit", "5");
 		applicationMap.put("mosip.registration.reg_pak_max_time_apprv_limit", "5");
@@ -323,10 +323,10 @@ public class SyncStatusValidatorServiceTest {
 		listSyncJob.add(syncJobDef1);
 
 		Map<String, Object> applicationMap = new HashMap<>();
-		applicationMap.put("REG_PAK_MAX_CNT_OFFLINE_FREQ", "10");
-		applicationMap.put("DIST_FRM_MACHN_TO_CENTER", "100");
-		applicationMap.put("GEO_CAP_FREQ", "Y");
-		applicationMap.put("masterSyncJob", "1");
+		applicationMap.put("mosip.registration.packet.maximum.count.offline.frequency", "10");
+		applicationMap.put("mosip.registration.distance.from.machine.to.center", "100");
+		applicationMap.put("mosip.registration.geo.capture.frequency", "Y");
+		applicationMap.put("mosip.registration.masterSyncJob.frequency", "1");
 		applicationMap.put("mosip.registration.last_export_registration_config_time", "1");
 		applicationMap.put("mosip.registration.reg_pak_max_cnt_apprv_limit", "5");
 		applicationMap.put("mosip.registration.reg_pak_max_time_apprv_limit", "5");
@@ -395,10 +395,10 @@ public class SyncStatusValidatorServiceTest {
 		listSyncJob.add(syncJobDef1);
 
 		Map<String, Object> applicationMap = new HashMap<>();
-		applicationMap.put("REG_PAK_MAX_CNT_OFFLINE_FREQ", "10");
-		applicationMap.put("DIST_FRM_MACHN_TO_CENTER", "100");
-		applicationMap.put("GEO_CAP_FREQ", "Y");
-		applicationMap.put("masterSyncJob", "1");
+		applicationMap.put("mosip.registration.packet.maximum.count.offline.frequency", "10");
+		applicationMap.put("mosip.registration.distance.from.machine.to.center", "100");
+		applicationMap.put("mosip.registration.geo.capture.frequency", "Y");
+		applicationMap.put("mosip.registration.masterSyncJob.frequency", "1");
 		applicationMap.put("mosip.registration.last_export_registration_config_time", "1");
 		applicationMap.put("mosip.registration.reg_pak_max_cnt_apprv_limit", "5");
 		applicationMap.put("mosip.registration.reg_pak_max_time_apprv_limit", "5");
@@ -466,10 +466,10 @@ public class SyncStatusValidatorServiceTest {
 		listSyncJob.add(syncJobDef1);
 
 		Map<String, Object> applicationMap = new HashMap<>();
-		applicationMap.put("REG_PAK_MAX_CNT_OFFLINE_FREQ", "10");
-		applicationMap.put("DIST_FRM_MACHN_TO_CENTER", "100");
-		applicationMap.put("GEO_CAP_FREQ", "Y");
-		applicationMap.put("masterSyncJob", "1");
+		applicationMap.put("mosip.registration.packet.maximum.count.offline.frequency", "10");
+		applicationMap.put("mosip.registration.distance.from.machine.to.center", "100");
+		applicationMap.put("mosip.registration.geo.capture.frequency", "Y");
+		applicationMap.put("mosip.registration.masterSyncJob.frequency", "1");
 		applicationMap.put("mosip.registration.last_export_registration_config_time", "1");
 		applicationMap.put("mosip.registration.reg_pak_max_cnt_apprv_limit", "5");
 		applicationMap.put("mosip.registration.reg_pak_max_time_apprv_limit", "5");
@@ -540,10 +540,10 @@ public class SyncStatusValidatorServiceTest {
 		listSyncJob.add(syncJobDef1);
 
 		Map<String, Object> applicationMap = new HashMap<>();
-		applicationMap.put("REG_PAK_MAX_CNT_OFFLINE_FREQ", "100");
-		applicationMap.put("DIST_FRM_MACHN_TO_CENTER", "215");
-		applicationMap.put("GEO_CAP_FREQ", "N");
-		applicationMap.put("masterSyncJob", "20");
+		applicationMap.put("mosip.registration.packet.maximum.count.offline.frequency", "100");
+		applicationMap.put("mosip.registration.distance.from.machine.to.center", "215");
+		applicationMap.put("mosip.registration.geo.capture.frequency", "N");
+		applicationMap.put("mosip.registration.masterSyncJob.frequency", "20");
 		applicationMap.put("mosip.registration.last_export_registration_config_time", "20");
 		applicationMap.put("mosip.registration.reg_pak_max_cnt_apprv_limit", "1");
 		applicationMap.put("mosip.registration.reg_pak_max_time_apprv_limit", "5");
@@ -598,10 +598,10 @@ public class SyncStatusValidatorServiceTest {
 		listSyncJob.add(syncJobDef1);
 
 		Map<String, Object> applicationMap = new HashMap<>();
-		applicationMap.put("REG_PAK_MAX_CNT_OFFLINE_FREQ", "100");
-		applicationMap.put("DIST_FRM_MACHN_TO_CENTER", "215");
-		applicationMap.put("GEO_CAP_FREQ", "N");
-		applicationMap.put("masterSyncJob", "20");
+		applicationMap.put("mosip.registration.packet.maximum.count.offline.frequency", "100");
+		applicationMap.put("mosip.registration.distance.from.machine.to.center", "215");
+		applicationMap.put("mosip.registration.geo.capture.frequency", "N");
+		applicationMap.put("mosip.registration.masterSyncJob.frequency", "20");
 		applicationMap.put("mosip.registration.last_export_registration_config_time", "20");
 		applicationMap.put("mosip.registration.reg_pak_max_cnt_apprv_limit", "5");
 		applicationMap.put("mosip.registration.reg_pak_max_time_apprv_limit", "0");
@@ -672,10 +672,10 @@ public class SyncStatusValidatorServiceTest {
 		listSyncJob.add(syncJobDef1);
 
 		Map<String, Object> applicationMap = new HashMap<>();
-		applicationMap.put("REG_PAK_MAX_CNT_OFFLINE_FREQ", "10");
-		applicationMap.put("DIST_FRM_MACHN_TO_CENTER", "100");
-		applicationMap.put("GEO_CAP_FREQ", "Y");
-		applicationMap.put("masterSyncJob", "1");
+		applicationMap.put("mosip.registration.packet.maximum.count.offline.frequency", "10");
+		applicationMap.put("mosip.registration.distance.from.machine.to.center", "100");
+		applicationMap.put("mosip.registration.geo.capture.frequency", "Y");
+		applicationMap.put("mosip.registration.masterSyncJob.frequency", "1");
 		applicationMap.put("mosip.registration.last_export_registration_config_time", "1");
 		applicationMap.put("mosip.registration.reg_pak_max_cnt_apprv_limit", "5");
 		applicationMap.put("mosip.registration.reg_pak_max_time_apprv_limit", "5");
