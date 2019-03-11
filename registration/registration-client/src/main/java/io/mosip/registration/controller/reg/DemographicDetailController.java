@@ -55,6 +55,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
+import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.CBEFFFilePropertiesDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
@@ -883,9 +884,6 @@ public class DemographicDetailController extends BaseController {
 
 			if (isChild) {
 				osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
-				registrationMetaDataDTO.setApplicationType(RegistrationConstants.CHILD);
-			} else {
-				registrationMetaDataDTO.setApplicationType(RegistrationConstants.ADULT);
 			}
 
 			registrationMetaDataDTO.setParentOrGuardianUINOrRID(uinId.getText());
@@ -917,6 +915,8 @@ public class DemographicDetailController extends BaseController {
 				.getApplicantBiometricDTO();
 		BiometricInfoDTO introducerBiometric = getRegistrationDTOFromSession().getBiometricDTO()
 				.getIntroducerBiometricDTO();
+		ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDTOFromSession().getDemographicDTO()
+				.getApplicantDocumentDTO();
 
 		return Builder.build(DemographicInfoDTO.class).with(demographicInfo -> demographicInfo.setIdentity(
 				(MoroccoIdentity) Builder.build(MoroccoIdentity.class)
@@ -1050,9 +1050,9 @@ public class DemographicDetailController extends BaseController {
 								getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getUin() == null ? null
 										: new BigInteger(
 												getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getUin())))
-						.with(identity -> identity.setIndividualBiometrics(applicantBiometric
-								.getFingerprintDetailsDTO().isEmpty()
-								&& applicantBiometric.getIrisDetailsDTO().isEmpty()
+						.with(identity -> identity.setIndividualBiometrics(applicantBiometric.getFingerprintDetailsDTO()
+								.isEmpty() && applicantBiometric.getIrisDetailsDTO().isEmpty()
+								&& applicantDocumentDTO.getPhoto() != null
 										? null
 										: (CBEFFFilePropertiesDTO) Builder.build(CBEFFFilePropertiesDTO.class)
 												.with(cbeffProperties -> cbeffProperties
