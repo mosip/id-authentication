@@ -136,7 +136,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	@Autowired
 	private JobTriggerListener commonTriggerListener;
 	@Autowired
-	private SchedulerFactoryBean schFactoryBean;
+	private JobProcessListener jobProcessListener;
 
 	/*
 	 * (non-Javadoc)
@@ -774,7 +774,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	 * @throws Exception
 	 */
 	private SchedulerFactoryBean getSchedulerFactoryBean(String count) throws Exception {
-		JobProcessListener jobProcessListener = new JobProcessListener();
+		SchedulerFactoryBean schFactoryBean = new SchedulerFactoryBean();
 		schFactoryBean.setGlobalTriggerListeners(new TriggerListener[] { commonTriggerListener });
 		schFactoryBean.setGlobalJobListeners(new JobListener[] { jobProcessListener });
 		Properties quartzProperties = new Properties();
