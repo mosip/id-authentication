@@ -1,5 +1,8 @@
 package io.mosip.registration.processor.camel.bridge;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -7,10 +10,6 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.component.vertx.VertxComponent;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.model.RoutesDefinition;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.camel.bridge.util.BridgeUtil;
@@ -72,14 +71,16 @@ public class MosipBridgeFactory extends AbstractVerticle {
 		CamelContext camelContext = new DefaultCamelContext();
 		VertxComponent vertxComponent = new VertxComponent();
 		vertxComponent.setVertx(vertx);
-		RestTemplate restTemplate = new RestTemplate();
-		String camelRoutesFileName = BridgeUtil.getPropertyFromConfigServer("camel.routes.file.name");
-		String camelRoutesUrl = PropertyFileUtil.getProperty(MosipBridgeFactory.class, "bootstrap.properties", "config.server.url");
-		camelRoutesUrl = camelRoutesUrl + "/*/" + BridgeUtil.getActiveProfile() + "/" + BridgeUtil.getCloudConfigLabel()
-				+ "/" + camelRoutesFileName;
-		ResponseEntity<Resource> responseEntity = restTemplate.exchange(camelRoutesUrl, HttpMethod.GET, null,
-				Resource.class);
-		RoutesDefinition routes = camelContext.loadRoutesDefinition(responseEntity.getBody().getInputStream());
+//		RestTemplate restTemplate = new RestTemplate();
+//		String camelRoutesFileName = BridgeUtil.getPropertyFromConfigServer("camel.routes.file.name");
+//		String camelRoutesUrl = PropertyFileUtil.getProperty(MosipBridgeFactory.class, "bootstrap.properties", "config.server.url");
+//		camelRoutesUrl = camelRoutesUrl + "/*/" + BridgeUtil.getActiveProfile() + "/" + BridgeUtil.getCloudConfigLabel()
+//				+ "/" + camelRoutesFileName;
+//		ResponseEntity<Resource> responseEntity = restTemplate.exchange(camelRoutesUrl, HttpMethod.GET, null,
+//				Resource.class);
+		File file=new File("C:\\registration-processor-camel-routes-dev.xml");
+		InputStream is=new FileInputStream(file);
+		RoutesDefinition routes = camelContext.loadRoutesDefinition(is);
 		camelContext.addRouteDefinitions(routes.getRoutes());
 		camelContext.addComponent("vertx", vertxComponent);
 		camelContext.start();

@@ -600,7 +600,7 @@ public class PacketValidateProcessorTest {
 
 	@Test
 	public void testPreRegIdsAreNull() {
-		// Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(null);
+		 //Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(null);
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
 		assertTrue(messageDto.getIsValid());
 

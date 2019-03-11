@@ -491,6 +491,36 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 		return result;
 	}
+	
+	private IdResponseDTO getIdRepoDataByUIN(String uin) throws ApisResourceAccessException{
+		IdResponseDTO response  = new IdResponseDTO();
+		
+		List<String> pathsegments = new ArrayList<>();
+		pathsegments.add(uin);
+		try {
+			response = (IdResponseDTO) registrationProcessorRestClientService.getApi(ApiName.IDREPOSITORY, pathsegments, "",
+					"", IdResponseDTO.class);
+		} catch (ApisResourceAccessException e) {
+			if (e.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+				description = UIN_GENERATION_FAILED + registrationId + "::"
+						+ httpClientException.getResponseBodyAsString();
+				throw new ApisResourceAccessException(httpClientException.getResponseBodyAsString(),
+						httpClientException);
+			} else if (e.getCause() instanceof HttpServerErrorException) {
+				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
+				description = UIN_GENERATION_FAILED + registrationId + "::"
+						+ httpServerException.getResponseBodyAsString();
+
+				throw new ApisResourceAccessException(httpServerException.getResponseBodyAsString(),
+						httpServerException);
+			} else {
+				description = UIN_GENERATION_FAILED + registrationId + "::" + e.getMessage();
+				throw new ApisResourceAccessException(UIN_GENERATION_FAILED, e);
+			}
+		}
+		return response;
+	}
 
 	/**
 	 * Deploy verticle.
