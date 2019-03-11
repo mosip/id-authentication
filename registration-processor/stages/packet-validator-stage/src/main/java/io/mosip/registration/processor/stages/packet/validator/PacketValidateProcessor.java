@@ -10,6 +10,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,6 +89,12 @@ public class PacketValidateProcessor {
 
 	@Autowired
 	RegistrationProcessorIdentity regProcessorIdentityJson;
+
+	@Autowired
+	private Environment env;
+
+	@Autowired
+	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 
 	/** The core audit request builder. */
 	@Autowired
@@ -168,7 +175,8 @@ public class PacketValidateProcessor {
 								.validateDocument(packetMetaInfo.getIdentity(), documentList, registrationId);
 
 						if (isApplicantDocumentValidation) {
-							MasterDataValidation masterDataValidation = new MasterDataValidation(registrationStatusDto);
+							MasterDataValidation masterDataValidation = new MasterDataValidation(registrationStatusDto,
+									env, registrationProcessorRestService);
 							isMasterDataValidated = masterDataValidation
 									.validateMasterData(registrationProcessorIdentity);
 						}
