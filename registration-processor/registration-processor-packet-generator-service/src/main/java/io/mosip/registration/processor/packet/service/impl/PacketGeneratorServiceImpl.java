@@ -20,21 +20,35 @@ import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedEx
 import io.mosip.registration.processor.packet.service.external.StorageService;
 import io.mosip.registration.processor.packet.upload.service.SyncUploadEncryptionService;
 
+/**
+ * The Class PacketGeneratorServiceImpl.
+ */
 @Service
 public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
+	/** The rid generator impl. */
 	@Autowired
 	private RidGenerator<String> ridGeneratorImpl;
 
+	/** The packet creation service. */
 	@Autowired
 	private PacketCreationService packetCreationService;
 
+	/** The storage service. */
 	@Autowired
 	private StorageService storageService;
 
+	/** The sync upload encryption service. */
 	@Autowired
 	SyncUploadEncryptionService syncUploadEncryptionService;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.processor.packet.service.PacketGeneratorService#
+	 * createPacket(io.mosip.registration.processor.packet.service.dto.
+	 * PacketGeneratorDto)
+	 */
 	@Override
 	public PackerGeneratorResDto createPacket(PacketGeneratorDto request) {
 		// To do master data validation for cetner id and machine id
@@ -60,6 +74,21 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		return packerGeneratorResDto;
 	}
 
+	/**
+	 * Creates the registration DTO object.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @param registrationType
+	 *            the registration type
+	 * @param applicantType
+	 *            the applicant type
+	 * @param centerId
+	 *            the center id
+	 * @param machineId
+	 *            the machine id
+	 * @return the registration DTO
+	 */
 	private RegistrationDTO createRegistrationDTOObject(String uin, String registrationType, String applicantType,
 			String centerId, String machineId) {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
@@ -74,6 +103,13 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
 	}
 
+	/**
+	 * Gets the demographic DTO.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @return the demographic DTO
+	 */
 	private DemographicDTO getDemographicDTO(String uin) {
 		DemographicDTO demographicDTO = new DemographicDTO();
 		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
@@ -85,6 +121,21 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		return demographicDTO;
 	}
 
+	/**
+	 * Gets the registration meta data DTO.
+	 *
+	 * @param registrationType
+	 *            the registration type
+	 * @param applicantType
+	 *            the applicant type
+	 * @param uin
+	 *            the uin
+	 * @param centerId
+	 *            the center id
+	 * @param machineId
+	 *            the machine id
+	 * @return the registration meta data DTO
+	 */
 	private RegistrationMetaDataDTO getRegistrationMetaDataDTO(String registrationType, String applicantType,
 			String uin, String centerId, String machineId) {
 		RegistrationMetaDataDTO registrationMetaDataDTO = new RegistrationMetaDataDTO();
