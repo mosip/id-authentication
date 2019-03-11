@@ -109,14 +109,14 @@ public class ApplicantTypeImpl implements ApplicantType {
 		}
 
 		// check and return the applicant id
-		return validateAndReturnApplicantType(itc, genderType, isBioExPresent, ageCode);
+		return findApplicantType(itc, genderType, isBioExPresent, ageCode);
 	}
 
 	private boolean isNullEmpty(String str) {
 		return str == null || str.trim().length() <= 0;
 	}
 
-	private String validateAndReturnApplicantType(String itc, String genderType, boolean isBioExPresent,
+	private String findApplicantType(String itc, String genderType, boolean isBioExPresent,
 			String ageCode) {
 		if (itc.equals(FOREIGNER) && genderType.equals(MALE) && ageCode.equals(CHILD) && !isBioExPresent) {
 			// 1
