@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.dto.otpgen;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 /**
@@ -18,18 +20,22 @@ public class OtpRequestDTO {
 	/** Variable to hold version */
 	private String version;
 
-	/** Variable to hold policyID */
-	private String policyID;
-
-	/** Variable to hold partnerID */
-	private String partnerID;
+	/** Variable to hold Transaction ID */
+	private String transactionID;
 
 	/** Variable to hold Request time */
 	private String requestTime;
 
-	/** Variable to hold Transaction ID */
-	private String transactionID;
+	/** Variable to hold individualID */
+	private String individualId;
 
-	private RequestInfoDTO request;
+	/** Variable to hold partnerID */
+	private String individualIdType;
+
+	private ChannelDTO otpChannel;
+
+	private String partnerID;
+
+	private String mispLicenseKey;
 
 }

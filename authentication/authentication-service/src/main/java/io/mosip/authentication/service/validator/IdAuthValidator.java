@@ -31,11 +31,16 @@ public abstract class IdAuthValidator implements Validator {
 
 	private static final String REQUEST = "request";
 
+	private static final String INDIVIDUAL_ID = "individualId";
+
 	/** The Constant TSP_ID. */
 	private static final String PARTNER_ID = "partnerID";
 
+	/** The Constant TSP_ID. */
+	private static final String MISP_LICENSE_KEY = "MISP License Key";
+
 	/** The Constant IDV_ID_TYPE. */
-	private static final String IDV_ID_TYPE = "idvIdType";
+	private static final String IDV_ID_TYPE = "individualIdType";
 
 	/** The Constant IDV_ID. */
 	private static final String IDV_ID = "idvId";
@@ -45,6 +50,9 @@ public abstract class IdAuthValidator implements Validator {
 
 	/** The Constant VALIDATE. */
 	private static final String VALIDATE = "VALIDATE";
+
+	/** The Constant ID_AUTH_VALIDATOR. */
+	private static final String ID_AUTH_VALIDATOR = "ID_AUTH_VALIDATOR";
 
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
@@ -100,7 +108,7 @@ public abstract class IdAuthValidator implements Validator {
 	}
 	
 	public void validateIdvId(String id, String idType, Errors errors) {
-		validateIdvId(id, idType, errors, REQUEST);
+		validateIdvId(id, idType, errors, INDIVIDUAL_ID);
 	}
 
 	/**
@@ -248,7 +256,18 @@ public abstract class IdAuthValidator implements Validator {
 		if (Objects.isNull(tspID)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + PARTNER_ID);
 			errors.rejectValue(PARTNER_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { PARTNER_ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+					new Object[] { PARTNER_ID },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		}
+
+	}
+
+	protected void validateLicenseKey(String misPlicenseKey, Errors errors) {
+		if (Objects.isNull(misPlicenseKey) || misPlicenseKey.isEmpty()) {
+			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + MISP_LICENSE_KEY);
+			errors.rejectValue(PARTNER_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { MISP_LICENSE_KEY },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 
 	}

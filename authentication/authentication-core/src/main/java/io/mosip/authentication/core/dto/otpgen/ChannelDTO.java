@@ -9,10 +9,10 @@ import lombok.Data;
  */
 @Data
 public class ChannelDTO {
-	
-	/** Variable to hold email*/
-	private String email;
-	
+
+	/** Variable to hold email */
+	private boolean email;
+
 	/** Variable to hold phone */
-	private String phone;
+	private boolean phone;
 }

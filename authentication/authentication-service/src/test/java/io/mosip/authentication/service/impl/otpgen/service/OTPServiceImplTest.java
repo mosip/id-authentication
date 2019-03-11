@@ -28,7 +28,6 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.otpgen.OtpIdentityDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -130,8 +129,7 @@ public class OTPServiceImplTest {
 		otpRequestDto.setPartnerID("2345678901234");
 		otpRequestDto.setRequestTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 		otpRequestDto.setTransactionID("2345678901234");
-		OtpIdentityDTO identityDTO = new OtpIdentityDTO();
-		identityDTO.setUin("2345678901234");
+		otpRequestDto.setIndividualId("2345678901234");
 //		otpRequestDto.setIdentity(identityDTO);
 //		otpRequestDto.setIdvId("2345678901234");
 		otpRequestDto.setRequestTime("2019-02-18T18:17:48.923+05:30");
@@ -141,8 +139,7 @@ public class OTPServiceImplTest {
 
 	private OtpResponseDTO getOtpResponseDTO() {
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
-		otpResponseDTO.setStatus("OTP_GENERATED");
-		otpResponseDTO.setResTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
+		otpResponseDTO.setResponseTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 
 		return otpResponseDTO;
 	}

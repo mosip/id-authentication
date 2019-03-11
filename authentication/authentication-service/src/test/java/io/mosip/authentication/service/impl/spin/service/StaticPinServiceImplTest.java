@@ -109,12 +109,11 @@ public class StaticPinServiceImplTest {
 		staticPinRequestDTO.setId("mosip.identity.static-pin");
 		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
 				.toString();
-		staticPinRequestDTO.setReqTime(reqTime);
-		staticPinRequestDTO.setVer("1.0");
+		staticPinRequestDTO.setRequestTime(reqTime);
+		staticPinRequestDTO.setVersion("1.0");
 		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
 		dto.setUin(uin);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
-		pinRequestDTO.setIdentity(dto);
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
@@ -149,12 +148,11 @@ public class StaticPinServiceImplTest {
 		staticPinRequestDTO.setId("mosip.identity.static-pin");
 		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
 				.toString();
-		staticPinRequestDTO.setReqTime(reqTime);
-		staticPinRequestDTO.setVer("1.0");
+		staticPinRequestDTO.setRequestTime(reqTime);
+		staticPinRequestDTO.setVersion("1.0");
 		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
 		dto.setUin(uin);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
-		pinRequestDTO.setIdentity(dto);
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
@@ -192,12 +190,11 @@ public class StaticPinServiceImplTest {
 		staticPinRequestDTO.setId("mosip.identity.static-pin");
 		String reqTime = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")))
 				.toString();
-		staticPinRequestDTO.setReqTime(reqTime);
-		staticPinRequestDTO.setVer("1.0");
+		staticPinRequestDTO.setRequestTime(reqTime);
+		staticPinRequestDTO.setVersion("1.0");
 		StaticPinIdentityDTO dto = new StaticPinIdentityDTO();
 		dto.setUin(uin);
 		PinRequestDTO pinRequestDTO = new PinRequestDTO();
-		pinRequestDTO.setIdentity(dto);
 		String pin = "123454";
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);

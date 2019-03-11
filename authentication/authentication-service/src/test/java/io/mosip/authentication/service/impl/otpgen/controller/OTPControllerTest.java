@@ -33,7 +33,6 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -105,7 +104,7 @@ public class OTPControllerTest {
 		Mockito.when(otpService.generateOtp(otpRequestDto)).thenReturn(otpResponseDTO);
 		OtpResponseDTO expactedresponse = otpController.generateOTP(otpRequestDto, result);
 
-		assertEquals(otpResponseDTO.getStatus(), expactedresponse.getStatus());
+//		assertEquals(otpResponseDTO.getStatus(), expactedresponse.getStatus());
 	}
 
 	@Ignore
@@ -200,16 +199,14 @@ public class OTPControllerTest {
 		otpRequestDto.setPartnerID("1234567890");
 		// otpRequestDto.setRequestTime(new Date());
 		otpRequestDto.setTransactionID("1234567890");
-		//otpRequestDto.setVer("1.0");
+		// otpRequestDto.setVer("1.0");
 
 		return otpRequestDto;
 	}
 
 	private OtpResponseDTO getOtpResponseDTO() {
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
-		otpResponseDTO.setStatus("OTP_GENERATED");
-		otpResponseDTO.setResTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
-
+		otpResponseDTO.setResponseTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 		return otpResponseDTO;
 	}
 }

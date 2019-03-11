@@ -53,8 +53,8 @@ public class OTPController {
 	 * send OtpRequestDTO request to generate OTP and received OtpResponseDTO as
 	 * output.
 	 *
-	 * @param otpRequestDto            as request body
-	 * @param errors            associate error
+	 * @param otpRequestDto as request body
+	 * @param errors        associate error
 	 * @return otpResponseDTO
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
@@ -64,8 +64,9 @@ public class OTPController {
 
 		try {
 			DataValidationUtil.validate(errors);
-			OtpResponseDTO otpResponseDTO  = otpService.generateOtp(otpRequestDto);
-			logger.info(DEAFULT_SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP, "OTP Response Status "+ otpResponseDTO.getStatus());
+			OtpResponseDTO otpResponseDTO = otpService.generateOtp(otpRequestDto);
+			logger.info(DEAFULT_SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,
+					otpResponseDTO.getResponseTime());
 			return otpResponseDTO;
 		} catch (IDDataValidationException e) {
 			logger.error(DEAFULT_SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP, e.getErrorText());

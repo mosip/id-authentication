@@ -3,24 +3,18 @@ package io.mosip.authentication.service.impl.indauth.validator;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
@@ -31,12 +25,8 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.indauth.AdditionalFactorsDTO;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
@@ -44,27 +34,21 @@ import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
-import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.core.exception.RestServiceException;
-import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.config.IDAMappingConfig;
-import io.mosip.authentication.service.factory.IDAMappingFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.service.integration.MasterDataManager;
-import io.mosip.authentication.service.integration.MasterDataManagerTest;
 import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
 import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingConfig.class,
-		IDAMappingFactory.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class IdMappingValidationTest {
 
 	@InjectMocks

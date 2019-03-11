@@ -11,9 +11,7 @@ import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.IdType;
-import io.mosip.authentication.core.dto.otpgen.OtpIdentityDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
-import io.mosip.authentication.core.dto.otpgen.RequestInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.service.validator.IdAuthValidator;
 import io.mosip.kernel.core.exception.ParseException;
@@ -24,6 +22,7 @@ import io.mosip.kernel.core.util.DateUtils;
  * {@code OTPRequestValidator} do constraint validate of {@link OtpRequestDTO}
  * and enum atribute "idType" validation.
  * 
+ * @author Dinesh Karuppiah.T
  * @author Rakesh Roshan
  */
 @Component
@@ -75,23 +74,14 @@ public class OTPRequestValidator extends IdAuthValidator {
 			if (!errors.hasErrors()) {
 				validateId(otpRequestDto.getId(), errors);
 
-				// validateVer(otpRequestDto.getVer(), errors);
-				Optional<String> uinOpt = Optional.ofNullable(otpRequestDto.getRequest())
-						.map(RequestInfoDTO::getIdentity).map(OtpIdentityDTO::getUin);
-				Optional<String> vidOpt = Optional.ofNullable(otpRequestDto.getRequest())
-						.map(RequestInfoDTO::getIdentity).map(OtpIdentityDTO::getVid);
-				if (uinOpt.isPresent()) {
-					validateIdvId(uinOpt.get(), IdType.UIN.getType(), errors);
-				} else if (vidOpt.isPresent()) {
-					validateIdvId(vidOpt.get(), IdType.VID.getType(), errors);
-				} else {
-					// TODO Missing UIN/VID
-				}
+				validateIdvId(otpRequestDto.getIndividualId(), otpRequestDto.getIndividualIdType(), errors);
 
 				validateTspId(otpRequestDto.getPartnerID(), errors);
+				validateLicenseKey(otpRequestDto.getMispLicenseKey(), errors);
 			}
-		}
 
+		}
+		// validateVer(otpRequestDto.getVer(), errors);
 	}
 
 	/**

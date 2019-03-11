@@ -43,6 +43,9 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
 
+	/** The Constant REQUEST. */
+	private static final String INDIVIDUAL_ID = "individualId";
+
 	/** The Constant PINVALUE. */
 	private static final String PINVALUE = "pinValue";
 
@@ -66,7 +69,7 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 		if (Objects.nonNull(target)) {
 			StaticPinRequestDTO staticPinRequestDTO = (StaticPinRequestDTO) target;
 			validateId(staticPinRequestDTO.getId(), errors);
-			validateReqTime(staticPinRequestDTO.getReqTime(), errors);
+			validateReqTime(staticPinRequestDTO.getRequestTime(), errors);
 			validateUinVidValue(staticPinRequestDTO, errors);
 			validateStaticPin(staticPinRequestDTO.getRequest().getStaticPin(), errors);
 		}
@@ -101,12 +104,12 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 	 * @param errors
 	 */
 	private void validateUinVidValue(StaticPinRequestDTO staticPinRequestDTO, Errors errors) {
-		String uin = staticPinRequestDTO.getRequest().getIdentity().getUin();
-		String vid = staticPinRequestDTO.getRequest().getIdentity().getVid();
-		if (uin != null) {
-			validateIdvId(uin, IdType.UIN.getType(), errors, REQUEST);
-		} else if (vid != null) {
-			validateIdvId(vid, IdType.VID.getType(), errors, REQUEST);
+		String idType = staticPinRequestDTO.getIndividualIdType();
+		String value = staticPinRequestDTO.getIndividualId();
+		if (idType.equals(IdType.UIN.getType())) {
+			validateIdvId(value, IdType.UIN.getType(), errors, INDIVIDUAL_ID);
+		} else if (idType.equals(IdType.VID.getType())) {
+			validateIdvId(value, IdType.VID.getType(), errors, INDIVIDUAL_ID);
 		} else {
 			mosipLogger.error(SESSION_ID,  this.getClass().getSimpleName(), "validateUinVidValue",MISSING_INPUT_PARAMETER + UIN_VID);
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
