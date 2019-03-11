@@ -70,10 +70,6 @@ spec:
         backend:
           serviceName: kernel-licensekeymanager-service
           servicePort: 8093
-      - path: /config
-        backend:
-          serviceName: kernel-config-server
-          servicePort: 51000
       - path: /pre-registration/v1.0/auth
         backend:
           serviceName: pre-registration-auth-service

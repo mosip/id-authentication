@@ -41,16 +41,6 @@ spec:
             secretKeyRef:
               name: config-server-keystore-values-secret
               key: alias
-        - name: spring_security_username_env
-          valueFrom:
-            secretKeyRef:
-              name: config-server-base-auth-secret
-              key: username
-        - name: spring_security_password_env
-          valueFrom:
-            secretKeyRef:
-              name: config-server-base-auth-secret
-              key: password
         ports:
         - containerPort: 51000
         volumeMounts:
