@@ -250,7 +250,7 @@ stage ('---------- build ---------------') {
     }
     */
 
-  stage('Kubernetes Deploy : DEV'){
+    stage('Kubernetes Deploy : DEV'){
       //this stage will rollout the changes on Kubernetes Cluster
       sh "kubectl config use-context $k8DevContext"
       for(int i = 0; i<updatedDockerImages.size(); i++){
@@ -259,12 +259,10 @@ stage ('---------- build ---------------') {
         echo "Updating [ Service:$updatedService, Image:$updatedDockerImage ]"
         sh "kubectl set image deployment/$updatedService $updatedService=$updatedDockerImage"
       }
-      echo "Getting list of all deployed pods" 
-      sleep 60
-      for(int i = 0; i<updatedDockerImages.size(); i++){
-      sh "kubectl get pods -l app=$updatedService"
-      }
+      echo "Getting list of all services" 
+      sh "kubectl get pods"
     }
+    
 
 	}
  // Catching the exception for triggering email
