@@ -42,8 +42,8 @@ public class AuditLogRequestBuilder {
 	public AuditResponseDto createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,
 			String registrationId, ApiName apiname) {
 
-		AuditRequestDto auditRequestDto=null;
-		AuditResponseDto auditResponseDto=null;
+		AuditRequestDto auditRequestDto=new AuditRequestDto();
+		AuditResponseDto auditResponseDto=new AuditResponseDto();
 
 		try {
 			

@@ -3,6 +3,7 @@ package io.mosip.registration.processor.core.spi.packetmanager;
 
 import java.util.List;
 
+import io.mosip.registration.processor.core.code.DedupeSourceName;
 import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
@@ -112,7 +113,15 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @param registrationId
 	 *            the registration id
 	 */
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId,String Source);
+=======
+	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId, DedupeSourceName sourceName);
+>>>>>>> Stashed changes
+=======
+	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId, DedupeSourceName sourceName);
+>>>>>>> Stashed changes
 
 	/**
 	 * Save abis ref.

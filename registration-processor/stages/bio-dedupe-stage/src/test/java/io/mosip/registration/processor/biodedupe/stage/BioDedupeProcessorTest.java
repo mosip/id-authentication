@@ -108,7 +108,15 @@ public class BioDedupeProcessorTest {
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.SUCCESS.name());
 		Mockito.when(bioDedupeService.performDedupe(anyString())).thenReturn(matchedRegIds);
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234","BIO");
+=======
+		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234", null);
+>>>>>>> Stashed changes
+=======
+		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234", null);
+>>>>>>> Stashed changes
 
 		MessageDTO messageDto = bioDedupeProcessor.process(dto);
 
@@ -128,7 +136,15 @@ public class BioDedupeProcessorTest {
 		matchedRegIds.add("4567");
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.SUCCESS.name());
 		Mockito.when(bioDedupeService.performDedupe(anyString())).thenReturn(matchedRegIds);
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234","BIO");
+=======
+		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234", null);
+>>>>>>> Stashed changes
+=======
+		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234", null);
+>>>>>>> Stashed changes
 
 		MessageDTO messageDto = bioDedupeProcessor.process(dto);
 
@@ -148,7 +164,15 @@ public class BioDedupeProcessorTest {
 		matchedRegIds.add("4567");
 		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenReturn(ResponseStatusCode.FAILURE.name());
 		Mockito.when(bioDedupeService.performDedupe(anyString())).thenReturn(matchedRegIds);
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234","BIO");
+=======
+		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234", null);
+>>>>>>> Stashed changes
+=======
+		doNothing().when(packetInfoManager).saveManualAdjudicationData(matchedRegIds, "reg1234", null);
+>>>>>>> Stashed changes
 
 		MessageDTO messageDto = bioDedupeProcessor.process(dto);
 

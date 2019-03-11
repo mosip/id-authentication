@@ -20,7 +20,15 @@ import io.mosip.registration.processor.bio.dedupe.exception.UnexceptedError;
 import io.mosip.registration.processor.biodedupe.stage.utils.StatusMessage;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import io.mosip.registration.processor.core.code.ApiName;
+=======
+import io.mosip.registration.processor.core.code.DedupeSourceName;
+>>>>>>> Stashed changes
+=======
+import io.mosip.registration.processor.core.code.DedupeSourceName;
+>>>>>>> Stashed changes
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -183,7 +191,15 @@ public class BioDedupeProcessor {
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIOMETRIC_POTENTIAL_MATCH);
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_POTENTIAL_MATCH.toString());
 			description = registrationStatusDto.getStatusComment() + registrationId;
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationId,BIO);
+=======
+			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationId, DedupeSourceName.BIO);
+>>>>>>> Stashed changes
+=======
+			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationId, DedupeSourceName.BIO);
+>>>>>>> Stashed changes
 		} else {
 			object.setIsValid(Boolean.TRUE);
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIODEDUPE_SUCCESS);

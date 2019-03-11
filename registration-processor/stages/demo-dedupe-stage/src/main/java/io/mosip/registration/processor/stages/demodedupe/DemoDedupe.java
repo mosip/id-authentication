@@ -8,7 +8,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -106,8 +108,14 @@ public class DemoDedupe {
 		List<DemographicInfoDto> applicantDemoDto = packetInfoDao.findDemoById(refId);
 		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();
 		for (DemographicInfoDto demoDto : applicantDemoDto) {
-			demographicInfoDtos.addAll(packetInfoDao.getAllDemographicInfoDtos(demoDto.getName(),
-					demoDto.getGenderCode(), demoDto.getDob(), demoDto.getLangCode()));
+			Calendar calendar = new GregorianCalendar();
+			calendar.setTime(demoDto.getDob());
+			int year = calendar.get(Calendar.YEAR);
+			if(year%2==0) {
+				demographicInfoDtos.addAll(packetInfoDao.getAllDemographicInfoDtos(demoDto.getName(),
+						demoDto.getGenderCode(), demoDto.getDob(), demoDto.getLangCode()));
+			}
+			
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
 				refId, "DemoDedupe::performDedupe()::exit");
