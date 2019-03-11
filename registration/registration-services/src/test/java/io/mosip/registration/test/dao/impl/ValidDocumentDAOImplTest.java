@@ -37,21 +37,15 @@ public class ValidDocumentDAOImplTest {
 		validDocumentId.setDocTypeCode("DC101");
 		validDocumentId.setAppTypeCode("007");
 		validDocument.setValidDocumentId(validDocumentId);
-		//validDocument.setDescription("description");
-		//validDocument.setCreatedTimesZone(new Timestamp(new Date().getTime()));
 		validDocument.setCrBy("createdBy");
-		//validDocument.setDeletedTimesZone(new Timestamp(new Date().getTime()));
 		validDocument.setLangCode("langCode");
-		GenericId genericId = new GenericId();
-		genericId.setActive(true);
-		genericId.setCode("code");
-		//validDocument.setGenericId(genericId);
 		List<ApplicantValidDocument> list = new ArrayList<>();
 		list.add(validDocument);
 
-		Mockito.when(validDocumentRepository.findAll()).thenReturn(list);
+		Mockito.when(validDocumentRepository.findByValidDocumentIdAppTypeCodeAndDocumentCategoryCodeAndLangCode(Mockito.anyString(),
+				Mockito.anyString(), Mockito.anyString())).thenReturn(list);
 
-		assertEquals(list, validDocumentDAOImpl.getValidDocuments());
+		assertEquals(list, validDocumentDAOImpl.getValidDocuments("NFR", "POA", "eng"));
 
 	}
 

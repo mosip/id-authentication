@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
@@ -24,8 +25,10 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobKey;
+import org.quartz.JobListener;
 import org.quartz.SchedulerException;
 import org.quartz.TriggerBuilder;
+import org.quartz.TriggerListener;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -52,6 +55,8 @@ import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.jobs.BaseJob;
+import io.mosip.registration.jobs.JobProcessListener;
+import io.mosip.registration.jobs.JobTriggerListener;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.JobConfigurationService;
 
@@ -74,7 +79,6 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	 * Scheduler factory bean which will take Job and Trigger details and run jobs
 	 * implicitly
 	 */
-	// @Autowired
 	private SchedulerFactoryBean schedulerFactoryBean;
 
 	/**
@@ -129,6 +133,11 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	 */
 	private static CronParser cronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
 
+	@Autowired
+	private JobTriggerListener commonTriggerListener;
+	@Autowired
+	private JobProcessListener jobProcessListener;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -181,7 +190,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 			if (!syncActiveJobMap.isEmpty()) {
 
-				schedulerFactoryBean = AppConfig.getSchedulerFactoryBean(String.valueOf(syncActiveJobMap.size()));
+				schedulerFactoryBean = getSchedulerFactoryBean(String.valueOf(syncActiveJobMap.size()));
 
 				/* Check and Execute missed triggers */
 				executeMissedTriggers(syncActiveJobMap);
@@ -756,6 +765,23 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			}
 		}
 		return responseDTO;
+	}
+
+	/**
+	 * scheduler factory bean used to schedule the batch jobs
+	 * 
+	 * @return scheduler factory which includes job detail and trigger detail
+	 * @throws Exception
+	 */
+	private SchedulerFactoryBean getSchedulerFactoryBean(String count) throws Exception {
+		SchedulerFactoryBean schFactoryBean = new SchedulerFactoryBean();
+		schFactoryBean.setGlobalTriggerListeners(new TriggerListener[] { commonTriggerListener });
+		schFactoryBean.setGlobalJobListeners(new JobListener[] { jobProcessListener });
+		Properties quartzProperties = new Properties();
+		quartzProperties.put("org.quartz.threadPool.threadCount", count);
+		schFactoryBean.setQuartzProperties(quartzProperties);
+		schFactoryBean.afterPropertiesSet();
+		return schFactoryBean;
 	}
 
 }

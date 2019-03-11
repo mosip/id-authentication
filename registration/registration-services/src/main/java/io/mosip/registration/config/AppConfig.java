@@ -55,9 +55,7 @@ public class AppConfig {
 	@Qualifier("dataSource")
 	private DataSource datasource;
 
-	@Autowired
-	private SyncJobConfigDAO syncJobConfigDAO;
-
+	
 	static {
 		ResourceBundle resourceBundle = ResourceBundle.getBundle("log4j");
 		MOSIP_ROLLING_APPENDER.setAppend(true);
@@ -90,23 +88,6 @@ public class AppConfig {
 		return new TemplateManagerBuilderImpl();
 	}
 
-	/**
-	 * scheduler factory bean used to schedule the batch jobs
-	 * 
-	 * @return scheduler factory which includes job detail and trigger detail
-	 * @throws Exception 
-	 */
-	public static SchedulerFactoryBean getSchedulerFactoryBean(String count) throws Exception {
-		JobProcessListener jobProcessListener = new JobProcessListener();
-		JobTriggerListener commonTriggerListener = new JobTriggerListener();
-		SchedulerFactoryBean schFactoryBean = new SchedulerFactoryBean();
-		schFactoryBean.setGlobalTriggerListeners(new TriggerListener[] { commonTriggerListener });
-		schFactoryBean.setGlobalJobListeners(new JobListener[] { jobProcessListener });
-		Properties quartzProperties = new Properties();
-		quartzProperties.put("org.quartz.threadPool.threadCount", count);
-		schFactoryBean.setQuartzProperties(quartzProperties);
-		schFactoryBean.afterPropertiesSet();
-		return schFactoryBean;
-	}
+
 
 }
