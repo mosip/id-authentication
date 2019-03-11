@@ -67,6 +67,4 @@ public interface RegistrationStatusService<T, U, D> {
 	 * @return the list of Registrations for the given ids.
 	 */
 	public List<D> getByIds(List<RegistrationStatusSubRequestDto> requestIds);
-
-	List<RegistrationStatusDto> getById(String requestId);
 }

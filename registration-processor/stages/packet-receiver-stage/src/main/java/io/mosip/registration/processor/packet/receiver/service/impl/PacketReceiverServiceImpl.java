@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -242,11 +243,14 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	}
 
 	public Boolean isExternalStatusResend(String registrationId) {
+		List regIds=new ArrayList<String>();
+		regIds.add(registrationId);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "PacketReceiverServiceImpl::isExternalStatusResend()::entry");
 
-		List<RegistrationStatusDto> registrations = registrationStatusService.getById(registrationId);
-		String mappedValue = registrations.get(0).getStatusCode();
+		List<RegistrationStatusDto> registrationInternalStatusDto = registrationStatusService.getByIds(regIds);
+		RegistrationExternalStatusCode registrationExternalStatusCode = registrationStatusMapUtil.getExternalStatus(registrationInternalStatusDto.get(0).getStatusCode(), registrationInternalStatusDto.get(0).getRetryCount());
+		String mappedValue = registrationExternalStatusCode.toString();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "PacketReceiverServiceImpl::isExternalStatusResend()::exit");
 		return (mappedValue.equals(RESEND));
