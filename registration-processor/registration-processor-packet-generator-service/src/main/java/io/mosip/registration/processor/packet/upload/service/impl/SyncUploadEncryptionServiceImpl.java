@@ -48,9 +48,8 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 
 	Gson gson = new GsonBuilder().create();
 
-	public String uploadUinPacket(File decryptedUinZipFile) {
+	public String uploadUinPacket(File decryptedUinZipFile, String registartionId) {
 
-		String registartionId = decryptedUinZipFile.getName();
 		String syncStatus = "";
 		String encryptedFilePath = "";
 		InputStream decryptedFileStream = null;
@@ -75,7 +74,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 				}
 
 			}
-			if ("success".equals(syncStatus)) {
+			if ("success".equalsIgnoreCase(syncStatus)) {
 				File enryptedUinZipFile = new File(encryptedFilePath);
 
 				LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();

@@ -43,7 +43,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 			// encrypte the packet
 			// sync the packet and upload and return the status
 			File decryptedFile = new File(filePath);
-			syncUploadEncryptionService.uploadUinPacket(decryptedFile);
+			syncUploadEncryptionService.uploadUinPacket(decryptedFile, registrationDTO.getRegistrationId());
 		} catch (RegBaseCheckedException e) {
 
 			e.printStackTrace();
