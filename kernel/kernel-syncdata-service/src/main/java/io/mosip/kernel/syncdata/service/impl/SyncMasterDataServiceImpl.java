@@ -2,7 +2,6 @@ package io.mosip.kernel.syncdata.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -51,9 +50,12 @@ import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
 import io.mosip.kernel.syncdata.dto.TitleDto;
 import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
+import io.mosip.kernel.syncdata.entity.RegistrationCenter;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterMachine;
+import io.mosip.kernel.syncdata.exception.RequestException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterMachineRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
 import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
@@ -73,6 +75,9 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 
 	@Autowired
 	RegistrationCenterMachineRepository registrationCenterMachineRepository;
+
+	@Autowired
+	RegistrationCenterRepository registrationCenterRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -261,6 +266,9 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 			} else if (serialNum != null) {
 				machineList = registrationCenterMachineRepository
 						.getRegistrationCenterMachineWithSerialNumber(serialNum);
+			} else {
+				throw new RequestException(MasterDataErrorCode.EMPTY_MAC_OR_SERIAL_NUMBER.getErrorCode(),
+						MasterDataErrorCode.EMPTY_MAC_OR_SERIAL_NUMBER.getErrorMessage());
 			}
 
 		} catch (DataAccessException | DataAccessLayerException e) {
@@ -269,7 +277,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		}
 
 		if (machineList.isEmpty()) {
-			throw new SyncDataServiceException(MasterDataErrorCode.INVALID_MAC_OR_SERIAL_NUMBER.getErrorCode(),
+			throw new RequestException(MasterDataErrorCode.INVALID_MAC_OR_SERIAL_NUMBER.getErrorCode(),
 					MasterDataErrorCode.INVALID_MAC_OR_SERIAL_NUMBER.getErrorMessage());
 		}
 		for (Object[] objects : machineList) {
@@ -284,9 +292,14 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 			String searialNum) {
 		RegistrationCenterMachineDto regCenterMachine = getRegistationMachineMapping(macId, searialNum);
 		RegistrationCenterMachine registrationCenterMachine = null;
-		Objects.nonNull(regCenterMachine);
-		try {
 
+		try {
+			List<RegistrationCenter> regCenterList = registrationCenterRepository
+					.findRegistrationCenterByIdAndIsActiveIsTrue(regCenterId);
+			if (regCenterList.isEmpty()) {
+				throw new RequestException(MasterDataErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						MasterDataErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
 			registrationCenterMachine = registrationCenterMachineRepository
 					.getRegCenterIdWithRegIdAndMachineId(regCenterId, regCenterMachine.getMachineId());
 		} catch (DataAccessException | DataAccessLayerException e) {
@@ -295,7 +308,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		}
 
 		if (registrationCenterMachine == null) {
-			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_UPDATED.getErrorCode(),
+			throw new RequestException(MasterDataErrorCode.REG_CENTER_UPDATED.getErrorCode(),
 					MasterDataErrorCode.REG_CENTER_UPDATED.getErrorMessage());
 		}
 
