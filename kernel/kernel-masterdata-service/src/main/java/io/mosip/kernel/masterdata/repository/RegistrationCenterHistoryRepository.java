@@ -30,7 +30,7 @@ public interface RegistrationCenterHistoryRepository extends BaseRepository<Regi
 	 *            The effective time
 	 * @return Registration center history
 	 */
-	@Query("FROM RegistrationCenterHistory WHERE id =?1 and langCode =?2 and effectivetimes <=?3 and (isDeleted is null or isDeleted =false)")
+	@Query("FROM RegistrationCenterHistory WHERE id =?1 and langCode =?2 and effectivetimes <=?3 ")
 	List<RegistrationCenterHistory> findByIdAndLangCodeAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 			String id, String langCode, LocalDateTime effectivetimes);
 

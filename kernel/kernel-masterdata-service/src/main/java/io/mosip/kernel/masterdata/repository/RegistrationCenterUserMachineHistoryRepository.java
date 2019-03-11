@@ -22,7 +22,7 @@ public interface RegistrationCenterUserMachineHistoryRepository
 		extends BaseRepository<RegistrationCenterUserMachineHistory, RegistrationCenterMachineUserHistoryID> {
 
 
-	@Query("FROM RegistrationCenterUserMachineHistory WHERE cntrId =?1 and usrId=?2 and machineId=?3 and effectivetimes <=?4 and (isDeleted is null or isDeleted =false)")
+	@Query("FROM RegistrationCenterUserMachineHistory WHERE cntrId =?1 and usrId=?2 and machineId=?3 and effectivetimes <=?4 ")
 	List<RegistrationCenterUserMachineHistory> findByCntrIdAndUsrIdAndMachineIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 			String cntrId, String usrId, String machineId, LocalDateTime effectivetimes);
 }
