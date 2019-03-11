@@ -19,6 +19,8 @@ import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
+import io.mosip.kernel.idgenerator.prid.constant.PridExceptionConstant;
+import io.mosip.kernel.idgenerator.prid.constant.PridPropertyConstant;
 import io.mosip.kernel.idgenerator.prid.entity.Prid;
 import io.mosip.kernel.idgenerator.prid.exception.PridException;
 import io.mosip.kernel.idgenerator.prid.repository.PridRepository;
@@ -38,9 +40,15 @@ import io.mosip.kernel.idgenerator.prid.util.PridFilterUtils;
 @Transactional
 public class PridGeneratorImpl implements PridGenerator<String> {
 
+	/**
+	 * Reference to {@link Encryptor}.
+	 */
 	@Autowired
 	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
 
+	/**
+	 * Reference to repository.
+	 */
 	@Autowired
 	private PridRepository repository;
 
@@ -81,21 +89,17 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 	}
 
 	/**
-	 * Generates a id and then generate checksum
+	 * Generates an id and then generate checksum
 	 * 
-	 * @param generatedIdLength
-	 *            The length of id to generate
-	 * @param lowerBound
-	 *            The lowerbound for generating id
-	 * @param upperBound
-	 *            The upperbound for generating id
 	 * @return the PRID with checksum
 	 */
 	private String generateRandomId() {
 
 		String counterSecureRandom = null;
 
-		String random = RandomStringUtils.random(32, "1234567890");
+		String random = RandomStringUtils.random(
+				Integer.parseInt(PridPropertyConstant.RANDOM_NUMBER_SIZE.getProperty()),
+				PridPropertyConstant.ZERO_TO_NINE.getProperty());
 
 		String prid = null;
 
@@ -105,14 +109,18 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 			listOfEntity = repository.findRandomValues();
 
 		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new PridException("KER-PRID-001", "Error occur while fetching from db", e);
+			throw new PridException(PridExceptionConstant.PRID_FETCH_EXCEPTION.getErrorCode(),
+					PridExceptionConstant.PRID_FETCH_EXCEPTION.getErrorMessage(), e);
 		}
 		try {
 			Prid entity = new Prid();
 
 			if (listOfEntity.isEmpty()) {
-
-				counterSecureRandom = RandomStringUtils.random(32, "1234567890");
+				do {
+					counterSecureRandom = RandomStringUtils.random(
+							Integer.parseInt(PridPropertyConstant.RANDOM_NUMBER_SIZE.getProperty()),
+							PridPropertyConstant.ZERO_TO_NINE.getProperty());
+				} while (counterSecureRandom.charAt(0) == '0');
 
 				entity.setRandomValue(random);
 
@@ -131,12 +139,14 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 			}
 
 		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new PridException("KER-PRID-002", "Error occur while updating database", e);
+			throw new PridException(PridExceptionConstant.PRID_INSERTION_EXCEPTION.getErrorCode(),
+					PridExceptionConstant.PRID_INSERTION_EXCEPTION.getErrorMessage(), e);
 		}
 
 		counterSecureRandom = new BigInteger(counterSecureRandom).add(BigInteger.ONE).toString();
 
-		SecretKey secretKey = new SecretKeySpec(counterSecureRandom.getBytes(), "AES");
+		SecretKey secretKey = new SecretKeySpec(counterSecureRandom.getBytes(),
+				PridPropertyConstant.ENCRYPTION_ALGORITHM.getProperty());
 
 		byte[] encryptedData = encryptor.symmetricEncrypt(secretKey, random.getBytes());
 
