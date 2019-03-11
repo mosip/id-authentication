@@ -32,6 +32,7 @@ import io.mosip.preregistration.core.code.EventId;
 import io.mosip.preregistration.core.code.EventName;
 import io.mosip.preregistration.core.code.EventType;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
+import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
@@ -43,7 +44,6 @@ import io.mosip.preregistration.core.util.HashUtill;
 import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.documents.code.DocumentStatusMessages;
 import io.mosip.preregistration.documents.dto.DocumentCopyResponseDTO;
-import io.mosip.preregistration.documents.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
@@ -219,7 +219,7 @@ public class DocumentService {
 							ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
 				}
 				docResponseDto.setPreRegistrationId(documentEntity.getPreregId());
-				docResponseDto.setDocumnetId(String.valueOf(documentEntity.getDocumentId()));
+				docResponseDto.setDocumentId(String.valueOf(documentEntity.getDocumentId()));
 				docResponseDto.setDocumentName(documentEntity.getDocName());
 				docResponseDto.setDocumentCat(documentEntity.getDocCatCode());
 				docResponseDto.setDocumentType(documentEntity.getDocTypeCode());

@@ -126,7 +126,7 @@
     "login": {
       "msg1": "Email ID is not valid",
       "msg2": "Phone number is not valid",
-      "msg3": "OTP enter is not valid",
+      "msg3": "OTP entered is not valid",
       "msg4": "Login Successful"
     },
     "demographicDetails": {

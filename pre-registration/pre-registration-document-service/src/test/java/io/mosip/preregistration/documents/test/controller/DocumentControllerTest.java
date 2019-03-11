@@ -130,7 +130,7 @@ public class DocumentControllerTest {
 
 		DocumentResponseDTO responseDto=new DocumentResponseDTO();
 		responseDto.setDocumentCat("POA");
-		responseDto.setDocumnetId("12345");
+		responseDto.setDocumentId("12345");
 		responseDto.setPreRegistrationId("123546987412563");
 		
 		
