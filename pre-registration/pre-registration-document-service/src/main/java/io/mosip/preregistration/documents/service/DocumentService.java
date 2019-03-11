@@ -219,7 +219,7 @@ public class DocumentService {
 							ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
 				}
 				docResponseDto.setPreRegistrationId(documentEntity.getPreregId());
-				docResponseDto.setDocumnetId(String.valueOf(documentEntity.getDocumentId()));
+				docResponseDto.setDocumentId(String.valueOf(documentEntity.getDocumentId()));
 				docResponseDto.setDocumentName(documentEntity.getDocName());
 				docResponseDto.setDocumentCat(documentEntity.getDocCatCode());
 				docResponseDto.setDocumentType(documentEntity.getDocTypeCode());
