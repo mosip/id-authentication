@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.stages.packet.validator;
 
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -7,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -15,20 +15,22 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
-import io.mosip.registration.processor.core.code.EventId;
-import io.mosip.registration.processor.core.code.EventName;
-import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.constant.EventId;
+import io.mosip.registration.processor.core.constant.EventName;
+import io.mosip.registration.processor.core.constant.EventType;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.idjson.Document;
@@ -36,14 +38,12 @@ import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainReque
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDataSyncRequestDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDatasyncReponseDTO;
-import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
-
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.stages.utils.ApplicantDocumentValidation;
 import io.mosip.registration.processor.stages.utils.CheckSumValidation;
@@ -53,8 +53,8 @@ import io.mosip.registration.processor.stages.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
-import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
+
 
 @Service
 @Transactional
@@ -97,9 +97,11 @@ public class PacketValidateProcessor {
 
 	/** The registration id. */
 	private String registrationId = "";
-
 	/** The description. */
 	private String description;
+	
+	/** The flag check for reg_type. */
+	private boolean regTypeCheck;
 
 	/** The is transaction successful. */
 	private boolean isTransactionSuccessful;
@@ -108,7 +110,9 @@ public class PacketValidateProcessor {
 	private static final String CREATED_BY = "MOSIP_SYSTEM";
 
 	public MessageDTO process(MessageDTO object) {
+		
 		String preRegId=null;
+		
 		try {
 
 			object.setMessageBusAddress(MessageBusAddress.PACKET_VALIDATOR_BUS_IN);
@@ -117,6 +121,7 @@ public class PacketValidateProcessor {
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", "PacketValidatorStage::process()::entry");
 					this.registrationId = object.getRid();
+					regTypeCheck=(object.getReg_type().equalsIgnoreCase("ACTIVATE")|| object.getReg_type().equalsIgnoreCase("DEACTIVATE"));
 					description = "";
 					isTransactionSuccessful = false;
 					InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
@@ -141,15 +146,16 @@ public class PacketValidateProcessor {
 							documentInfoStream = adapter.getFile(registrationId,
 									PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 							bytes = IOUtils.toByteArray(documentInfoStream);
-							documentList = documentUtility.getDocumentList(bytes);
-
+							if(!regTypeCheck)
+							{
+								documentList = documentUtility.getDocumentList(bytes);
+							}
 							CheckSumValidation checkSumValidation = new CheckSumValidation(adapter,
 									registrationStatusDto);
+				isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
+								packetMetaInfo.getIdentity());
 
-							isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
-									packetMetaInfo.getIdentity());
-
-							if (isCheckSumValidated) {
+							if (isCheckSumValidated && !(regTypeCheck)) {
 								ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
 										registrationStatusDto);
 								isApplicantDocumentValidation = applicantDocumentValidation
@@ -162,8 +168,7 @@ public class PacketValidateProcessor {
 						if (isFilesValidated && isCheckSumValidated && isApplicantDocumentValidation) {
 							object.setIsValid(Boolean.TRUE);
 							registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
-							registrationStatusDto
-									.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
+							registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
 							packetInfoManager.savePacketData(packetMetaInfo.getIdentity());
 							demographicInfoStream = adapter.getFile(registrationId,
 									PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
@@ -184,7 +189,16 @@ public class PacketValidateProcessor {
 								regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 										registrationId,description);
 
-						} else {
+						} 
+						else if(isFilesValidated && isCheckSumValidated && regTypeCheck )
+						{
+						   	object.setIsValid(Boolean.TRUE);
+						   	registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
+						   	registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
+						   	isTransactionSuccessful = true;
+						   	
+						}
+						else {
 							object.setIsValid(Boolean.FALSE);
 							
 							int retryCount = registrationStatusDto.getRetryCount() != null
@@ -267,7 +281,7 @@ public class PacketValidateProcessor {
 							registrationStatusDto.setStatusComment(description);
 							registrationStatusDto
 									.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
-							registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+								     registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
 						}
 
