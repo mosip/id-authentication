@@ -56,12 +56,19 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 @RunWith(MockitoJUnitRunner.class)
 public class PacketUploaderJobTest {
 
+	/* max retry count */
+	private static final int maxRetryCount = 5;
+
 	/** The Constant stream. */
 	private static final InputStream stream = Mockito.mock(InputStream.class);
 
 	/** The packet uploader stage. */
 	@InjectMocks
 	PacketUploaderStage packetUploaderStage = new PacketUploaderStage() {
+		@Override
+		public int getMaxRetryCount() {
+			return maxRetryCount;
+		}
 		@Override
 		public MosipEventBus getEventBus(Class<?> verticleName, String url) {
 			return null;

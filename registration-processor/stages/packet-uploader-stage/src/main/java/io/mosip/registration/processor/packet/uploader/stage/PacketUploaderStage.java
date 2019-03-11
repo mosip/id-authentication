@@ -104,7 +104,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			int retrycount = (dto.getRetryCount() == null) ? 0 : dto.getRetryCount() + 1;
 			dto.setRetryCount(retrycount);
 
-			if (retrycount < maxRetryCount) {
+			if (retrycount < getMaxRetryCount()) {
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						"PacketUploaderStage::process()::entry");
@@ -300,6 +300,14 @@ public class PacketUploaderStage extends MosipVerticleManager {
 
 		}
 		return object;
+	}
+
+	/**
+	 * Get max retry count.
+	 * @return maxRetryCount
+	 */
+	public int getMaxRetryCount() {
+		return maxRetryCount;
 	}
 
 	/**
