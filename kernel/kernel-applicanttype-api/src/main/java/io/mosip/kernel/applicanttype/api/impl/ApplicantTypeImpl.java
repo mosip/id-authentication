@@ -81,7 +81,7 @@ public class ApplicantTypeImpl implements ApplicantType {
 		Integer age = null;
 		try {
 			age = calculateAge(dob);
-			if (age == null || age <= 0) {
+			if (age == null || age < 0) {
 				throw new InvalidApplicantArgumentException(
 						ApplicantTypeErrorCode.INVALID_QUERY_EXCEPTION.getErrorCode(),
 						ApplicantTypeErrorCode.INVALID_QUERY_EXCEPTION.getErrorMessage());
@@ -93,11 +93,14 @@ public class ApplicantTypeImpl implements ApplicantType {
 					ApplicantTypeErrorCode.INVALID_DATE_STRING_EXCEPTION.getErrorMessage());
 		}
 
-		String ageCode = CHILD;
+		String ageCode = null;
 
 		try {
 			if (age >= Integer.parseInt(ageLimit)) {
 				ageCode = ADULT;
+			}
+			if (age < Integer.parseInt(ageLimit)) {
+				ageCode = CHILD;
 			}
 		} catch (NumberFormatException e) {
 			LOGGER.error("Error while setting age code");
