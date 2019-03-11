@@ -86,11 +86,6 @@ stage ('---------- build ---------------') {
    sh "${mvnHome}/bin/mvn -f '$branch/$projectToBuild/' sonar:sonar"
   }
  }
-
- stage('----------- Publish build info -------------') {
-  server.publishBuildInfo buildInfo
- }
-
  
  stage('----------- Publish build info -------------') {
   /*
