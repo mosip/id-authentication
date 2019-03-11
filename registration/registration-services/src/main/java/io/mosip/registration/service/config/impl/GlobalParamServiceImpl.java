@@ -124,17 +124,10 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	private void saveGlobalParamsFromServer(ResponseDTO responseDTO) {
 
 		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-			String centerID = null;
-			try {
-				String macId = RegistrationSystemPropertiesChecker.getMachineId();
 
-				// get stationID
-				String stationID = userOnboardDAO.getStationID(macId);
-				// get CenterID
-				centerID = userOnboardDAO.getCenterID(stationID);
+			try {
 
 				Map<String, String> requestParamMap = new HashMap<>();
-				requestParamMap.put(RegistrationConstants.REGISTRATION_CENTER_ID, centerID);
 
 				/* REST CALL */
 				@SuppressWarnings("unchecked")
