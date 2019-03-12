@@ -379,6 +379,40 @@ public class PacketValidateProcessorTest {
 		assertFalse(messageDto.getIsValid());
 	}
 
+	@Test
+	public void testMasterDataValidationGenderApiException() throws Exception {
+
+		when(env.getProperty("registration.processor.attributes")).thenReturn("gender,region,province,city,postalcode");
+		byte[] responseBody = "{\"timestamp\":1548931133376,\"status\":400,\"errors\":[{\"errorCode\":\"KER\",\"errorMessage\":\"Invalid \"}]}"
+				.getBytes();
+		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
+		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+				"Invalid request", null, responseBody, null);
+		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
+
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
+				.thenThrow(apisResourceAccessException);
+		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		assertFalse(messageDto.getIsValid());
+	}
+
+	@Test
+	public void testMasterDataValidationLocationApiException() throws Exception {
+
+		when(env.getProperty("registration.processor.attributes")).thenReturn("region,province,city,postalcode");
+		byte[] responseBody = "{\"timestamp\":1548931133376,\"status\":400,\"errors\":[{\"errorCode\":\"KER\",\"errorMessage\":\"Invalid \"}]}"
+				.getBytes();
+		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
+		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+				"Invalid request", null, responseBody, null);
+		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
+
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
+				.thenThrow(apisResourceAccessException);
+		MessageDTO messageDto = packetValidateProcessor.process(dto);
+		assertFalse(messageDto.getIsValid());
+	}
+
 	/**
 	 * Test structural document validation failure.
 	 *
