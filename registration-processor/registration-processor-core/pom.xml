@@ -73,19 +73,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-pdfgenerator-itext</artifactId>
-			<version>${kernel.core.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-fsadapter-hdfs</artifactId>
-			<version>${kernel.core.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-qrcodegenerator-zxing</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
 
