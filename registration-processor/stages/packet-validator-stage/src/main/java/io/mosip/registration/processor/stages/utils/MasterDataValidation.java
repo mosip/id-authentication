@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.constant.IdJSONConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -50,27 +51,31 @@ public class MasterDataValidation {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"MasterDataValidation::validateMasterData::entry");
 
-		if (getValue(list, "gender") && (!validateGenderName(identity.getGender().getValue()))) {
+		if (getValue(list, IdJSONConstant.GENDER.toString())
+				&& (!validateGenderName(identity.getGender().getValue()))) {
 			registrationStatusDto.setStatusComment(StatusMessage.GENDER_NAME_NOT_AVAILABLE);
 			return false;
 		}
 
-		if (getValue(list, "region") && (!validateLocationName(identity.getRegion().getValue()))) {
+		if (getValue(list, IdJSONConstant.REGION.toString())
+				&& (!validateLocationName(identity.getRegion().getValue()))) {
 			registrationStatusDto.setStatusComment(StatusMessage.REGION_NOT_AVAILABLE);
 			return false;
 		}
 
-		if (getValue(list, "province") && (!validateLocationName(identity.getProvince().getValue()))) {
+		if (getValue(list, IdJSONConstant.PROVINCE.toString())
+				&& (!validateLocationName(identity.getProvince().getValue()))) {
 			registrationStatusDto.setStatusComment(StatusMessage.PROVINCE_NOT_AVAILABLE);
 			return false;
 		}
 
-		if (getValue(list, "city") && (!validateLocationName(identity.getCity().getValue()))) {
+		if (getValue(list, IdJSONConstant.CITY.toString()) && (!validateLocationName(identity.getCity().getValue()))) {
 			registrationStatusDto.setStatusComment(StatusMessage.CITY_NOT_AVAILABLE);
 			return false;
 		}
 
-		if (getValue(list, "postalcode") && (!validateLocationName(identity.getPostalCode().getValue()))) {
+		if (getValue(list, IdJSONConstant.POSTALCODE.toString())
+				&& (!validateLocationName(identity.getPostalCode().getValue()))) {
 			registrationStatusDto.setStatusComment(StatusMessage.POSTALCODE_NOT_AVAILABLE);
 			return false;
 		}
