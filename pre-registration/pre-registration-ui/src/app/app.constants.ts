@@ -24,17 +24,19 @@ export const LANGUAGE_CODE = {
   secondaryKeyboardLang: 'ar'
 };
 
-export const APPEND_URL = {
-  location_metadata: 'v1.0/locations/locationhierarchy/',
-  location_immediate_children: 'v1.0/locations/immediatechildren/',
-  get_applicant: 'demographic/applicationData',
-  applicants: 'demographic/applications',
-  location: 'masterdata/',
-  gender: 'masterdata/v1.0/gendertypes',
-  resident: 'masterdata/v1.0/residenttypes',
-  transliteration: 'translitration/translitrate'
-};
-
+export const APPEND_URL = {
+  location_metadata: 'v1.0/locations/locationhierarchy/',
+  location_immediate_children: 'v1.0/locations/immediatechildren/',
+  get_applicant: 'demographic/applications/details',
+  applicants: 'demographic/applications',
+  location: 'masterdata/',
+  gender: 'masterdata/v1.0/gendertypes',
+  transliteration: 'translitration/translitrate',
+  applicantType: 'applicanttype/v1.0/applicanttype/',
+  validDocument: 'v1.0/applicanttype/',
+  getApplicantType: 'getApplicantType'
+  }; 
+   
 export const PARAMS_KEYS = {
   getUsers: 'user_id',
   getUser: PRE_REGISTRATION_ID,
@@ -56,7 +58,8 @@ export const DASHBOARD_RESPONSE_KEYS = {
   applicant: {
     preId: 'preRegistrationId',
     fullname: 'fullname',
-    statusCode: 'statusCode'
+    statusCode: 'statusCode',
+    postalCode: 'postalCode'
   }
 };
 
@@ -99,4 +102,6 @@ export const DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY = 'file';
 export const DOCUMENT_UPLOAD_REQUEST_DTO_KEY = 'Document request';
 
 export const PREVIEW_DATA_APPEND_URL = 'demographic/v0.1/applicationData';
-// "BASE_URL": "https://dev.mosip.io/"
+
+export const MONTHS = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+export const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

@@ -21,6 +21,7 @@ ENV spring_config_label_env=${spring_config_label}
 # environment variable to pass spring configuration url, at docker runtime
 ENV spring_config_url_env=${spring_config_url}
 
+
 COPY ./target/kernel-otpnotification-service-*.jar kernel-otpnotification-service.jar
 
 EXPOSE 8082

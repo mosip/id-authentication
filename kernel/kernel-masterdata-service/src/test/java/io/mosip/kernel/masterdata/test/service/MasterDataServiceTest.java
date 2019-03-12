@@ -346,7 +346,7 @@ public class MasterDataServiceTest {
 		locationHierarchy = new Location();
 		locationHierarchy.setCode("IND");
 		locationHierarchy.setName("INDIA");
-		locationHierarchy.setHierarchyLevel(0);
+		locationHierarchy.setHierarchyLevel((short)0);
 		locationHierarchy.setHierarchyName("country");
 		locationHierarchy.setParentLocCode(null);
 		locationHierarchy.setLangCode("HIN");
@@ -357,7 +357,7 @@ public class MasterDataServiceTest {
 		locationHierarchy1 = new Location();
 		locationHierarchy1.setCode("KAR");
 		locationHierarchy1.setName("KARNATAKA");
-		locationHierarchy1.setHierarchyLevel(1);
+		locationHierarchy1.setHierarchyLevel((short)1);
 		locationHierarchy1.setHierarchyName(null);
 		locationHierarchy1.setParentLocCode("TEST");
 		locationHierarchy1.setLangCode("KAN");

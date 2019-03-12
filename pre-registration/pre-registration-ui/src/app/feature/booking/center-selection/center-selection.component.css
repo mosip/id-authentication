@@ -92,6 +92,10 @@ section{
   display: flex;
 }
 
+.center-card-selected {
+  border: 1px solid #fd518c;
+}
+
 input[type="radio"] {
   -ms-transform: scale(1.5); 
   -webkit-transform: scale(1.5); 

@@ -2,6 +2,10 @@
 
 [Background & Design](../../docs/design/kernel/kernel-filesystemadapter.md)
 
+[Refer - Steps-to-Install-and-configuration-HDFS](https://github.com/mosip/mosip/wiki/Steps-to-Install-and-configuration-HDFS)
+
+**NOTE: Currently  hadoop security is disabled.<WIP>**
+
 [Api Documentation]
 
 
@@ -13,13 +17,16 @@ mvn javadoc:javadoc
 
 ```
 # Name node url for HDFS
-mosip.kernel.fsadapter.hdfs.name-node-url=hdfs://104.211.240.243:51000
-
-# Key Distribution Center domain for Kerberos
-mosip.kernel.fsadapter.hdfs.kdc-domain=NODE-MASTER.SOUTHINDIA.CLOUDAPP.AZURE.COM
+mosip.kernel.fsadapter.hdfs.name-node-url=hdfs://host-ip:port
 
 # Username to access hdfs. Change this to application username (regprocessor,prereg or idrepo)
 mosip.kernel.fsadapter.hdfs.user-name=mosipuser
+
+# Enable if hadoop security authorization is 'true', dafault is false
+mosip.kernel.fsadapter.hdfs.authentication-enabled=false 
+
+# If HDFS is security is configured with Kerberos, Key Distribution Center domain
+mosip.kernel.fsadapter.hdfs.kdc-domain=NODE-MASTER.SOUTHINDIA.CLOUDAPP.AZURE.COM
 
 # Password for hdfs user
 mosip.kernel.fsadapter.hdfs.user-pass=Mosip@dev123
@@ -27,8 +34,7 @@ mosip.kernel.fsadapter.hdfs.user-pass=Mosip@dev123
 # HDFS log level. Change this to debug to see hdfs logs
 logging.level.org.apache.hadoop=warn
 
-# enable authentication for hdfs, dafault is false
-mosip.kernel.fsadapter.hdfs.authentication-enabled=true 
+
 
 ```
 

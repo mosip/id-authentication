@@ -183,6 +183,7 @@ public class MessageNotificationServiceImpl
 	 * java.lang.String, io.mosip.registration.processor.core.constant.IdType,
 	 * java.util.Map, java.lang.String[], java.lang.String, java.lang.Object)
 	 */
+	@Override
 	public ResponseDto sendEmailNotification(String templateTypeCode, String id, IdType idType,
 			Map<String, Object> attributes, String[] mailCc, String subject, MultipartFile[] attachment)
 			throws Exception {

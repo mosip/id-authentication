@@ -85,16 +85,19 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 		ResponseDTO responseDTO = new ResponseDTO();
 		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
 		try {
-			LinkedHashMap<String, Object> response = (LinkedHashMap<String, Object>) serviceDelegateUtil.post(RegistrationConstants.PACKET_UPLOAD,
-					map);
-			if (response.get("response") != null && response.get("error") == null) {
+			LinkedHashMap<String, Object> response = (LinkedHashMap<String, Object>) serviceDelegateUtil
+					.post(RegistrationConstants.PACKET_UPLOAD, map);
+			if (response.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE) != null
+					&& response.get(RegistrationConstants.ERRORS) == null) {
 				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 				successResponseDTO.setCode(RegistrationConstants.SUCCESS);
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
-			} else if (response.get("error") != null) {
+			} else if (response.get(RegistrationConstants.ERRORS) != null) {
 				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 				errorResponseDTO.setCode(RegistrationConstants.ERROR);
-				errorResponseDTO.setMessage(((LinkedHashMap<String, String>) response.get("error")).get("message"));
+				errorResponseDTO
+						.setMessage(((List<LinkedHashMap<String, String>>) response.get(RegistrationConstants.ERRORS))
+								.get(0).get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE));
 				erResponseDTOs.add(errorResponseDTO);
 				responseDTO.setErrorResponseDTOs(erResponseDTOs);
 			}
@@ -167,7 +170,8 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	/**
 	 * Upload synced packets.
 	 *
-	 * @param syncedPackets the synced packets
+	 * @param syncedPackets
+	 *            the synced packets
 	 */
 	private void uploadSyncedPacket(List<Registration> syncedPackets) {
 
