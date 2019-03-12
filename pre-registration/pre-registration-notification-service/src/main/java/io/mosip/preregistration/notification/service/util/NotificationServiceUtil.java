@@ -9,6 +9,7 @@ import java.util.Properties;
 import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -25,9 +26,10 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Component
 public class NotificationServiceUtil {
-
-	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	
+	@Value("${mosip.utc-datetime-pattern}")
+	private String utcDateTimePattern;
+
 	/**
 	 * Environment instance
 	 */
@@ -47,7 +49,7 @@ public class NotificationServiceUtil {
 	 * @return the string.
 	 */
 	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), dateTimeFormat);
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
 	}
 	
 	public Properties parsePropertiesString(String s) throws IOException {

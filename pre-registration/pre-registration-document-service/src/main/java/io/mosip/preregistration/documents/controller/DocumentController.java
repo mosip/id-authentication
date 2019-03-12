@@ -37,11 +37,8 @@ import io.swagger.annotations.ApiResponses;
 /**
  * This class provides different API's to perform operations on Document upload.
  * 
- * @author Rajath KR
  * @author Kishan Rathore
- * @author Tapaswini Behera
- * @author Jagadishwari S
- * @author Ravi C Balaji
+ * @author Rajath KR
  * @since 1.0.0
  */
 @RestController

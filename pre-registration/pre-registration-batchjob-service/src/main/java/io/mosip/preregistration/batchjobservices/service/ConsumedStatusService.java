@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +49,9 @@ public class ConsumedStatusService {
 
 	/** The Constant Status comments. */
 	private static final String NEW_STATUS_COMMENTS = "Application consumed";
+	
+	@Value("${mosip.utc-datetime-pattern}")
+	private String utcDateTimePattern;
 
 	/**
 	 * Autowired reference for {@link #batchServiceDAO}
@@ -118,7 +122,7 @@ public class ConsumedStatusService {
 	}
 
 	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
 	}
 
 }

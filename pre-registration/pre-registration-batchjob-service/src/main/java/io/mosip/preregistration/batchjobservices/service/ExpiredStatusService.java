@@ -12,6 +12,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.util.DateUtils;
@@ -35,6 +36,9 @@ public class ExpiredStatusService {
 
 	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {}";
+	
+	@Value("${mosip.utc-datetime-pattern}")
+	private String utcDateTimePattern;
 
 	@Autowired
 	private BatchServiceDAO batchServiceDAO;
@@ -75,7 +79,7 @@ public class ExpiredStatusService {
 	}
 
 	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
 	}
 
 }

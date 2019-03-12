@@ -62,11 +62,10 @@ import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
 /**
  * This class provides the service implementation for Document
  * 
+ * @author Kishan Rathore
  * @author Rajath KR
  * @author Tapaswini Behera
  * @author Jagadishwari S
- * @author Kishan Rathore
- *  @author Sanober Noor
  * @since 1.0.0
  */
 @Component
