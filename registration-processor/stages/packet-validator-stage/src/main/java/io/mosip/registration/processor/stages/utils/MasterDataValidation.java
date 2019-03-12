@@ -24,16 +24,40 @@ import io.mosip.registration.processor.core.packet.dto.regcentermachine.ErrorDTO
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
+/**
+ * The Class MasterDataValidation.
+ * 
+ * @author Nagalakshmi
+ * 
+ */
 @Service
 public class MasterDataValidation {
 
+	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(MasterDataValidation.class);
 
+	/** The registration status dto. */
 	InternalRegistrationStatusDto registrationStatusDto;
+
+	/** The registration processor rest service. */
 	RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
+
+	/** The env. */
 	Environment env;
+
+	/** The Constant VALID. */
 	private static final String VALID = "Valid";
 
+	/**
+	 * Instantiates a new master data validation.
+	 *
+	 * @param registrationStatusDto
+	 *            the registration status dto
+	 * @param env
+	 *            the env
+	 * @param registrationProcessorRestService
+	 *            the registration processor rest service
+	 */
 	public MasterDataValidation(InternalRegistrationStatusDto registrationStatusDto, Environment env,
 			RegistrationProcessorRestClientService<Object> registrationProcessorRestService) {
 		this.registrationStatusDto = registrationStatusDto;
@@ -41,6 +65,13 @@ public class MasterDataValidation {
 		this.registrationProcessorRestService = registrationProcessorRestService;
 	}
 
+	/**
+	 * Validate master data.
+	 *
+	 * @param regProcessorIdentityJson
+	 *            the reg processor identity json
+	 * @return the boolean
+	 */
 	public Boolean validateMasterData(RegistrationProcessorIdentity regProcessorIdentityJson) {
 
 		String[] elements = env.getProperty("registration.processor.attributes").split(",");
@@ -88,6 +119,15 @@ public class MasterDataValidation {
 
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param list
+	 *            the list
+	 * @param value
+	 *            the value
+	 * @return the value
+	 */
 	private Boolean getValue(List<String> list, String value) {
 		Iterator<String> it = list.iterator();
 
@@ -99,6 +139,13 @@ public class MasterDataValidation {
 		return false;
 	}
 
+	/**
+	 * Validate gender name.
+	 *
+	 * @param genderName
+	 *            the gender name
+	 * @return true, if successful
+	 */
 	private boolean validateGenderName(String genderName) {
 		boolean isValidGender = false;
 		StatusResponseDto statusResponseDto;
@@ -131,6 +178,13 @@ public class MasterDataValidation {
 		return isValidGender;
 	}
 
+	/**
+	 * Validate location name.
+	 *
+	 * @param locationName
+	 *            the location name
+	 * @return true, if successful
+	 */
 	private boolean validateLocationName(String locationName) {
 		boolean isValidLocation = false;
 		StatusResponseDto statusResponseDto;
