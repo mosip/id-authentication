@@ -40,7 +40,7 @@ public class TspIdServiceTest {
 		Tsp entity = new Tsp();
 		entity.setTspId(initialTspid);
 		when(tspRepository.findLastTspId()).thenReturn(null);
-		when(tspRepository.save(Mockito.any())).thenReturn(entity);
+		when(tspRepository.create(Mockito.any())).thenReturn(entity);
 		assertThat(service.generateId(), is(Integer.toString(initialTspid)));
 	}
 
@@ -49,34 +49,37 @@ public class TspIdServiceTest {
 		Tsp entity = new Tsp();
 		entity.setTspId(initialTspid);
 		when(tspRepository.findLastTspId()).thenReturn(entity);
-		when(tspRepository.save(Mockito.any())).thenReturn(entity);
+		when(tspRepository.create(Mockito.any())).thenReturn(entity);
 		assertThat(service.generateId(), is(Integer.toString(newTspId)));
 	}
 
 	@Test(expected = TspIdException.class)
 	public void generateIdFetchExceptionTest() {
 		when(tspRepository.findLastTspId())
-				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", new RuntimeException()));
 		service.generateId();
 	}
 
 	@Test(expected = TspIdException.class)
 	public void generateIdInsertExceptionTest() {
 		when(tspRepository.findLastTspId()).thenReturn(null);
-		when(tspRepository.save(Mockito.any())).thenThrow(new TspIdException("", "cannot execute statement", null));
+		when(tspRepository.create(Mockito.any()))
+				.thenThrow(new TspIdException("", "cannot execute statement", new RuntimeException()));
 		service.generateId();
 	}
 
 	@Test(expected = TspIdException.class)
 	public void tspIdServiceFetchExceptionTest() throws Exception {
 
-		when(tspRepository.findLastTspId()).thenThrow(new TspIdException("", "cannot execute statement", null));
+		when(tspRepository.findLastTspId())
+				.thenThrow(new TspIdException("", "cannot execute statement", new RuntimeException()));
 		service.generateId();
 	}
 
 	@Test(expected = TspIdException.class)
 	public void tspIdServiceInsertExceptionTest() throws Exception {
-		when(tspRepository.save(Mockito.any())).thenThrow(new TspIdException("", "cannot execute statement", null));
+		when(tspRepository.create(Mockito.any()))
+				.thenThrow(new TspIdException("", "cannot execute statement", new RuntimeException()));
 		service.generateId();
 	}
 
@@ -85,8 +88,8 @@ public class TspIdServiceTest {
 		Tsp entity = new Tsp();
 		entity.setTspId(1000);
 		when(tspRepository.findLastTspId()).thenReturn(entity);
-		when(tspRepository.save(Mockito.any()))
-				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		when(tspRepository.create(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", new RuntimeException()));
 		service.generateId();
 	}
 }

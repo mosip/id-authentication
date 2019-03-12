@@ -3,6 +3,8 @@ package io.mosip.kernel.idgenerator.tspid.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import javax.persistence.EntityExistsException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -45,7 +47,7 @@ public class TspIdGeneratorImpl implements TspIdGenerator<String> {
 	@Override
 	public String generateId() {
 
-		int generatedId;
+		int generatedId = 0;
 
 		final int initialValue = MathUtils.getPow(Integer.parseInt(TspIdPropertyConstant.ID_BASE.getProperty()),
 				tspIdLength - 1);
@@ -70,7 +72,7 @@ public class TspIdGeneratorImpl implements TspIdGenerator<String> {
 				tspId.setUpdatedBy("default@user");
 				tspId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 				tspId.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-				tspRepository.save(tspId);
+				tspRepository.create(tspId);
 
 			} else {
 				entity = new Tsp();
@@ -81,12 +83,16 @@ public class TspIdGeneratorImpl implements TspIdGenerator<String> {
 				entity.setCreatedDateTime(createdTime);
 				entity.setUpdatedDateTime(null);
 				generatedId = initialValue;
-				tspRepository.save(entity);
+				tspRepository.create(entity);
 			}
 
 		} catch (DataAccessLayerException e) {
-			throw new TspIdException(TspIdExceptionConstant.TSPID_INSERTION_EXCEPTION.getErrorCode(),
-					TspIdExceptionConstant.TSPID_INSERTION_EXCEPTION.getErrorMessage(), e);
+			if (e.getCause().getClass() == EntityExistsException.class) {
+				generateId();
+			} else {
+				throw new TspIdException(TspIdExceptionConstant.TSPID_INSERTION_EXCEPTION.getErrorCode(),
+						TspIdExceptionConstant.TSPID_INSERTION_EXCEPTION.getErrorMessage(), e);
+			}
 		}
 
 		return String.valueOf(generatedId);

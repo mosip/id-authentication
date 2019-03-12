@@ -3,6 +3,8 @@ package io.mosip.kernel.idgenerator.regcenterid.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import javax.persistence.EntityExistsException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -45,7 +47,7 @@ public class RegistrationCenterIdGeneratorImpl implements RegistrationCenterIdGe
 	 */
 	@Override
 	public String generateRegistrationCenterId() {
-		int generatedRCID;
+		int generatedRCID = 0;
 
 		final int initialValue = MathUtils.getPow(RegistrationCenterIdConstant.ID_BASE.getValue(),
 				registrationCenterIdLength - 1);
@@ -69,7 +71,7 @@ public class RegistrationCenterIdGeneratorImpl implements RegistrationCenterIdGe
 				registrationCenterId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 				registrationCenterId.setUpdatedBy("default@user");
 				registrationCenterId.setUpdatedDateTime(null);
-				registrationCenterIdRepository.save(registrationCenterId);
+				registrationCenterIdRepository.create(registrationCenterId);
 
 			} else {
 				generatedRCID = registrationCenterId.getRcid() + 1;
@@ -79,14 +81,18 @@ public class RegistrationCenterIdGeneratorImpl implements RegistrationCenterIdGe
 				entity.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 				entity.setUpdatedBy("default@user");
 				entity.setCreatedBy("default@user");
-				registrationCenterIdRepository.save(entity);
+				registrationCenterIdRepository.create(entity);
 
 			}
 
 		} catch (DataAccessLayerException e) {
-			throw new RegistrationCenterIdServiceException(
-					RegistrationCenterIdConstant.REG_CEN_ID_INSERT_EXCEPTION.getErrorCode(),
-					RegistrationCenterIdConstant.REG_CEN_ID_INSERT_EXCEPTION.getErrorMessage(), e);
+			if (e.getCause().getClass() == EntityExistsException.class) {
+				generateRegistrationCenterId();
+			} else {
+				throw new RegistrationCenterIdServiceException(
+						RegistrationCenterIdConstant.REG_CEN_ID_INSERT_EXCEPTION.getErrorCode(),
+						RegistrationCenterIdConstant.REG_CEN_ID_INSERT_EXCEPTION.getErrorMessage(), e);
+			}
 		}
 		return String.valueOf(generatedRCID);
 	}

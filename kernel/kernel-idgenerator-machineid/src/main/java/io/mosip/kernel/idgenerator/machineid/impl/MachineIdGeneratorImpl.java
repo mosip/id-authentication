@@ -3,6 +3,8 @@ package io.mosip.kernel.idgenerator.machineid.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import javax.persistence.EntityExistsException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -44,7 +46,7 @@ public class MachineIdGeneratorImpl implements MachineIdGenerator<String> {
 	 */
 	@Override
 	public String generateMachineId() {
-		int generatedMID;
+		int generatedMID = 0;
 
 		final int initialValue = MathUtils.getPow(MachineIdConstant.ID_BASE.getValue(), machineIdLength - 1);
 
@@ -65,19 +67,23 @@ public class MachineIdGeneratorImpl implements MachineIdGenerator<String> {
 				machineId.setUpdatedBy("default@user");
 				machineId.setUpdatedDateTime(null);
 				generatedMID = initialValue;
-				machineIdRepository.save(machineId);
+				machineIdRepository.create(machineId);
 			} else {
 				generatedMID = machineId.getMId() + 1;
 				MachineId entity = new MachineId();
 				entity.setMId(generatedMID);
 				entity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 				entity.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-				machineIdRepository.save(entity);
+				machineIdRepository.create(entity);
 			}
 
 		} catch (DataAccessLayerException e) {
-			throw new MachineIdServiceException(MachineIdConstant.MID_INSERT_EXCEPTION.getErrorCode(),
-					MachineIdConstant.MID_INSERT_EXCEPTION.getErrorMessage(), e);
+			if (e.getCause().getClass() == EntityExistsException.class) {
+				generateMachineId();
+			} else {
+				throw new MachineIdServiceException(MachineIdConstant.MID_INSERT_EXCEPTION.getErrorCode(),
+						MachineIdConstant.MID_INSERT_EXCEPTION.getErrorMessage(), e);
+			}
 		}
 		return String.valueOf(generatedMID);
 	}
