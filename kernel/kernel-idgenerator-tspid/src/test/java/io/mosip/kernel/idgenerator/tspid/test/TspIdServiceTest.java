@@ -25,10 +25,10 @@ public class TspIdServiceTest {
 
 	@Value("${mosip.kernel.tspid.test.valid-initial-tspid}")
 	private int initialTspid;
-	
+
 	@Value("${mosip.kernel.tspid.test.valid-new-tspid}")
 	private int newTspId;
-	
+
 	@Autowired
 	TspIdGenerator<String> service;
 
@@ -49,7 +49,7 @@ public class TspIdServiceTest {
 		Tsp entity = new Tsp();
 		entity.setTspId(initialTspid);
 		when(tspRepository.findLastTspId()).thenReturn(entity);
-		when(tspRepository.updateTspId(Mockito.anyInt(), Mockito.anyInt(), Mockito.any())).thenReturn(1);
+		when(tspRepository.save(Mockito.any())).thenReturn(entity);
 		assertThat(service.generateId(), is(Integer.toString(newTspId)));
 	}
 
@@ -85,7 +85,7 @@ public class TspIdServiceTest {
 		Tsp entity = new Tsp();
 		entity.setTspId(1000);
 		when(tspRepository.findLastTspId()).thenReturn(entity);
-		when(tspRepository.updateTspId(Mockito.anyInt(), Mockito.anyInt(), Mockito.any()))
+		when(tspRepository.save(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		service.generateId();
 	}

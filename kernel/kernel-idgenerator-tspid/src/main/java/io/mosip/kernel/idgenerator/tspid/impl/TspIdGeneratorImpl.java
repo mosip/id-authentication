@@ -64,29 +64,31 @@ public class TspIdGeneratorImpl implements TspIdGenerator<String> {
 					TspIdExceptionConstant.TSPID_FETCH_EXCEPTION.getErrorMessage(), e);
 		}
 
-		if (entity != null) {
-
-			try {
-				tspRepository.updateTspId(entity.getTspId() + 1, entity.getTspId(),
-						LocalDateTime.now(ZoneId.of("UTC")));
+		try {
+			if (entity != null) {
 				generatedId = entity.getTspId() + 1;
-			} catch (DataAccessLayerException e) {
-				throw new TspIdException(TspIdExceptionConstant.TSPID_INSERTION_EXCEPTION.getErrorCode(),
-						TspIdExceptionConstant.TSPID_INSERTION_EXCEPTION.getErrorMessage(), e);
+				entity.setTspId(generatedId);
+				entity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				entity.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				
+
+			} else {
+
+				entity = new Tsp();
+				entity.setTspId(initialValue);
+				entity.setCreatedBy("default@user");
+				entity.setUpdatedBy("default@user");
+				LocalDateTime createdTime = LocalDateTime.now(ZoneId.of("UTC"));
+				entity.setCreatedDateTime(createdTime);
+				entity.setUpdatedDateTime(null);
+				generatedId = initialValue;
+
 			}
 
-		} else {
-
-			entity = new Tsp();
-			entity.setTspId(initialValue);
-			entity.setCreatedBy("default@user");
-			entity.setUpdatedBy("default@user");
-			LocalDateTime createdTime = LocalDateTime.now(ZoneId.of("UTC"));
-			entity.setCreatedDateTime(createdTime);
-			entity.setUpdatedDateTime(null);
-			generatedId = initialValue;
 			tspRepository.save(entity);
-
+		} catch (DataAccessLayerException e) {
+			throw new TspIdException(TspIdExceptionConstant.TSPID_INSERTION_EXCEPTION.getErrorCode(),
+					TspIdExceptionConstant.TSPID_INSERTION_EXCEPTION.getErrorMessage(), e);
 		}
 
 		return String.valueOf(generatedId);
