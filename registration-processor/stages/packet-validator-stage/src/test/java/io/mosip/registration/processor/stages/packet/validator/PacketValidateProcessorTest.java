@@ -296,7 +296,8 @@ public class PacketValidateProcessorTest {
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("valid");
 
-		when(env.getProperty("registration.processor.attributes")).thenReturn("gender,region,province,city,postalcode");
+		when(env.getProperty("registration.processor.idjson.attributes"))
+				.thenReturn("gender,region,province,city,postalcode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(statusResponseDto);
 
@@ -335,7 +336,7 @@ public class PacketValidateProcessorTest {
 	public void testMasterDataValidationRegionFailure() throws Exception {
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("invalid");
-		when(env.getProperty("registration.processor.attributes")).thenReturn("region,province,city,postalcode");
+		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("region,province,city,postalcode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(statusResponseDto);
 
@@ -347,7 +348,7 @@ public class PacketValidateProcessorTest {
 	public void testMasterDataValidationProvinceFailure() throws Exception {
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("invalid");
-		when(env.getProperty("registration.processor.attributes")).thenReturn("province,city,postalcode");
+		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("province,city,postalcode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(statusResponseDto);
 
@@ -359,7 +360,7 @@ public class PacketValidateProcessorTest {
 	public void testMasterDataValidationCityFailure() throws Exception {
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("invalid");
-		when(env.getProperty("registration.processor.attributes")).thenReturn("city,postalcode");
+		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("city,postalcode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(statusResponseDto);
 
@@ -371,7 +372,7 @@ public class PacketValidateProcessorTest {
 	public void testMasterDataValidationPostalCodeFailure() throws Exception {
 		statusResponseDto = new StatusResponseDto();
 		statusResponseDto.setStatus("invalid");
-		when(env.getProperty("registration.processor.attributes")).thenReturn("postalcode");
+		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("postalcode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(statusResponseDto);
 
@@ -382,7 +383,8 @@ public class PacketValidateProcessorTest {
 	@Test
 	public void testMasterDataValidationGenderApiException() throws Exception {
 
-		when(env.getProperty("registration.processor.attributes")).thenReturn("gender,region,province,city,postalcode");
+		when(env.getProperty("registration.processor.idjson.attributes"))
+				.thenReturn("gender,region,province,city,postalcode");
 		byte[] responseBody = "{\"timestamp\":1548931133376,\"status\":400,\"errors\":[{\"errorCode\":\"KER\",\"errorMessage\":\"Invalid \"}]}"
 				.getBytes();
 		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
@@ -399,7 +401,7 @@ public class PacketValidateProcessorTest {
 	@Test
 	public void testMasterDataValidationLocationApiException() throws Exception {
 
-		when(env.getProperty("registration.processor.attributes")).thenReturn("region,province,city,postalcode");
+		when(env.getProperty("registration.processor.idjson.attributes")).thenReturn("region,province,city,postalcode");
 		byte[] responseBody = "{\"timestamp\":1548931133376,\"status\":400,\"errors\":[{\"errorCode\":\"KER\",\"errorMessage\":\"Invalid \"}]}"
 				.getBytes();
 		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
