@@ -63,7 +63,7 @@ public class CenterMachineReMapServiceImpl {
 
 		Boolean isMachineReMapped = isMachineRemapped();
 		if (isMachineReMapped) {
-			LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID, 
 					"handleReMapProcess called and machine has been remaped");
 
 			/* (TODO-has to check whether to delete or disable) 1.disable all sync jobs */
@@ -76,7 +76,7 @@ public class CenterMachineReMapServiceImpl {
 						packetStatusService.packetSyncStatus();
 
 						/* 3.sync and upload the reg packets to server */
-						packetSynchService.packetSync();
+						packetSynchService.syncAllPackets();
 
 						packetUploadService.uploadAllSyncedPackets();
 
@@ -85,9 +85,12 @@ public class CenterMachineReMapServiceImpl {
 								exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 					}
 				}
-			} else {
-				/* TODO-all packets and master data can be deleted- */
 			}
+
+			if (!isPacketsPendingForProcessing()) {
+				/* TODO-all packets/pre reg and master data can be deleted- */
+			}
+
 			/* 4.deletions of packets */
 			packetStatusService.deletePacketsWhenMachineRemapped();
 
@@ -104,7 +107,7 @@ public class CenterMachineReMapServiceImpl {
 	 * 
 	 * @return boolean
 	 */
-	private boolean isPacketsPendingForProcessing() {
+	public boolean isPacketsPendingForProcessing() {
 		List<Registration> registrations = registrationDAO
 				.findByServerStatusCodeNotIn(RegistrationConstants.PACKET_STATUS_CODES_FOR_REMAPDELETE);
 		return isNotNullNotEmpty(registrations);
