@@ -21,12 +21,15 @@ public class ApplicantDocumentDTO extends BaseDTO {
 
 	/** The photo. */
 	private byte[] photo;
-	
+
 	/** The compressed photo for QR Code. */
 	private byte[] compressedFacePhoto;
 
 	/** The has exception photo. */
 	private boolean hasExceptionPhoto;
+
+	/** The reason for exception. */
+	private String reasonForException;
 
 	/** The exception photo. */
 	private byte[] exceptionPhoto;
@@ -54,7 +57,8 @@ public class ApplicantDocumentDTO extends BaseDTO {
 	}
 
 	/**
-	 * @param documents the documents to set
+	 * @param documents
+	 *            the documents to set
 	 */
 	public void setDocuments(Map<String, DocumentDetailsDTO> documents) {
 		this.documents = documents;
@@ -89,7 +93,7 @@ public class ApplicantDocumentDTO extends BaseDTO {
 	public void setPhoto(byte[] photo) {
 		this.photo = photo;
 	}
-	
+
 	/**
 	 * @return the compressedFacePhoto
 	 */
@@ -118,6 +122,22 @@ public class ApplicantDocumentDTO extends BaseDTO {
 	 */
 	public void setHasExceptionPhoto(boolean hasExceptionPhoto) {
 		this.hasExceptionPhoto = hasExceptionPhoto;
+	}
+
+	/**
+	 * @return reasonForException 
+	 * 			the reason for exception
+	 */
+	public String getReasonForException() {
+		return reasonForException;
+	}
+
+	/**
+	 * @param reasonForException
+	 *            the reason for exception
+	 */
+	public void setReasonForException(String reasonForException) {
+		this.reasonForException = reasonForException;
 	}
 
 	/**
