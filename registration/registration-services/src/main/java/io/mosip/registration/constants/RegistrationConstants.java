@@ -922,7 +922,7 @@ public class RegistrationConstants {
 	public static final String POLICY_SYNC_ERROR_MESSAGE = "Sync failure";
 	public static final String POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_CODE = "REG-MDS‌-002";
 	public static final String POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE = "You must be connected to the internet to sync data";
-	public static final String POLICY_SYNC_THRESHOLD_VALUE = "name";
+
 	public static final String SYNCH_CONFIG_DATA_JOB_TITLE = "synch config data job";
 	public static final String REG_USER_MAPPING_SYNC_JOB_TITLE = "registration user mapping sync job";
 
@@ -987,7 +987,7 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_GPS_PORT_MISMATCH = "Unable to validate machine location due to GPS port mismatch. Please insert into specific port and try again";
 
 	public static final String POLICY_SYNC_SERVICE = "policysync";
-	public static final String KEY_NAME = "KEY_POLICY_SYNC_THRESHOLD_VALUE";
+	public static final String KEY_NAME = "mosip.registration.key_policy_sync_threshold_value";
 	public static final String OPT_TO_REG_LAST_EXPORT_REG_PKTS_TIME = "mosip.registration.last_export_registration_config_time";
 
 	// Reg Deletion
