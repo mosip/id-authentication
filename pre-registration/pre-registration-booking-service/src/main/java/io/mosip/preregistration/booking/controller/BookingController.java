@@ -27,8 +27,6 @@ import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.BookingStatusDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
-import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdDTO;
-import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.booking.service.BookingService;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
@@ -36,6 +34,8 @@ import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
+import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -69,7 +69,7 @@ public class BookingController {
 	 * 
 	 * @return MainResponseDto .
 	 */
-	@GetMapping(path = "/masterSynchronization", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/appointment/availability/sync", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Sync master Data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Master Data Sync is successful"),
 			@ApiResponse(code = 400, message = "Unable to fetch the records") })
@@ -85,7 +85,7 @@ public class BookingController {
 	 * @param registration_center_id
 	 * @return MainResponseDTO
 	 */
-	@GetMapping(path = "/availability", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/appointment/availability", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Fetch availability Data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Availablity details fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch the records") })
@@ -104,7 +104,7 @@ public class BookingController {
 	 * @throws ParseException
 	 * @throws java.text.ParseException
 	 */
-	@PostMapping(path = "/book", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/appointment", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Booking Appointment")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully"),
 			@ApiResponse(code = 400, message = "Unable to Book the appointment") })
@@ -123,8 +123,8 @@ public class BookingController {
 	 * @throws ParseException
 	 * @throws java.text.ParseException
 	 */
-	@GetMapping(path = "/appointmentDetails", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Fecth Appointment details")
+	@GetMapping(path = "/appointment", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Fetch Appointment details")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully"),
 			@ApiResponse(code = 400, message = "Unable to Book the appointment") })
 	public ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> appointmentDetails(
@@ -144,7 +144,7 @@ public class BookingController {
 	 * @throws ParseException
 	 * @throws java.text.ParseException
 	 */
-	@PutMapping(path = "/book", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(path = "/appointment", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Cancel an booked appointment")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment canceled successfully"),
 			@ApiResponse(code = 400, message = "Unable to cancel the appointment") })
@@ -163,7 +163,7 @@ public class BookingController {
 	 * @throws ParseException
 	 * @throws java.text.ParseException
 	 */
-	@PostMapping(path = "/bookedPreIdsByRegId", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/appointment/preIdsByRegId", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Reterive all pre-registration ids by registration center id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Reterived all pre-registration ids successfully"),
 			@ApiResponse(code = 400, message = "Unable to reterive pre-registration ids") })
@@ -182,7 +182,7 @@ public class BookingController {
 	 * @param preId the pre id
 	 * @return the deletion status of booking for a pre-id
 	 */
-	@DeleteMapping(path = "/deleteBooking", produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(path = "/appointment", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Discard Booking")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Deletion of Booking is successfully"),
 			@ApiResponse(code = 400, message = "Unable to delete booking") })

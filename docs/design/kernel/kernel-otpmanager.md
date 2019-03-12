@@ -16,10 +16,7 @@ This service can be used to generate and validate OTP based on configured busine
 
 - REST service can be used by any MOSIP module for OTP through HTTP client.
 
-
-- The algorithm used to generate the OTP is from the source code,
- 
- https://github.com/google/google-authenticator-android/blob/master/AuthenticatorApp/src/main/java/com/google/android/apps/authenticator/OtpProvider.java
+- The algorithm used to generate the OTP is from the source code, https://github.com/google/google-authenticator-android/blob/master/AuthenticatorApp/src/main/java/com/google/android/apps/authenticator/OtpProvider.java
 
 
 - Request body model for OTP generate POST **/otpmanager/otps**
@@ -62,12 +59,6 @@ This service can be used to generate and validate OTP based on configured busine
 
 ![Class Diagram](_images/kernel-otpmanager-cd.png)
 
-
-**ERD**
-
-
-
-![ERD](_images/kernel-otpmanager-erd.png)
 
 ## Implementation
 

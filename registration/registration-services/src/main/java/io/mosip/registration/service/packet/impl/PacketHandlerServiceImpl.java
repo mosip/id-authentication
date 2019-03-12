@@ -77,22 +77,7 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 	 * registration.dto.RegistrationDTO)
 	 */
 	@Override
-	public ResponseDTO handle(RegistrationDTO registrationDTO) {
-		
-		
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.registerModule(new JSR310Module());
-		ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
-		try {
-			writer.writeValue(new File("user.json"), registrationDTO);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		
-		
+	public ResponseDTO handle(RegistrationDTO registrationDTO) {	
 		
 		LOGGER.info(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID, "Registration Handler had been called");
 

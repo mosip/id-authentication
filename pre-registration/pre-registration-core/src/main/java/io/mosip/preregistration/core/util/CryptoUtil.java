@@ -19,6 +19,10 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.common.dto.CryptoManagerRequestDTO;
 import io.mosip.preregistration.core.common.dto.CryptoManagerResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.errorcodes.ErrorCodes;
+import io.mosip.preregistration.core.errorcodes.ErrorMessages;
+import io.mosip.preregistration.core.exception.DecryptionFailedException;
+import io.mosip.preregistration.core.exception.EncryptionFailedException;
 
 /**
  * @author Tapaswini Behera
@@ -63,6 +67,7 @@ public class CryptoUtil {
 		} catch (HttpClientErrorException ex) {
 			log.error("sessionId", "idType", "id", "In encrypt method of CryptoUtil Util for HttpClientErrorException- "
 					+ ex.getResponseBodyAsString());
+			throw new EncryptionFailedException(ErrorCodes.PRG_CORE_REQ_011.getCode(),ErrorMessages.FAILED_TO_ENCRYPT.getMessage());
 		}
 		return encryptedBytes;
 
@@ -92,6 +97,7 @@ public class CryptoUtil {
 		} catch (HttpClientErrorException ex) {
 			log.error("sessionId", "idType", "id", "In decrypt method of CryptoUtil Util for HttpClientErrorException- "
 					+ ex.getResponseBodyAsString());
+			throw new DecryptionFailedException(ErrorCodes.PRG_CORE_REQ_012.getCode(),ErrorMessages.FAILED_TO_DECRYPT.getMessage());
 		}
 		return decodedBytes;
 

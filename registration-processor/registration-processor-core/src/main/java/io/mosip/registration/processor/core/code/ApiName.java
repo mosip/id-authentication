@@ -81,11 +81,17 @@ public enum ApiName {
 	
 	 /** The registration connector**/
 	REGISTRATIONCONNECTOR,
-	
+
 	SYNCSERVICE,
-	
+
 	ENCRYPTIONSERVICE,
-	
+
 	PACKETRECEIVER;
+
+	 /** The decryption api from DMZ**/
+	DMZCRYPTOMANAGERDECRYPT,
+
+	/** The AUDIT api from DMZ**/
+	DMZAUDIT
 
 }

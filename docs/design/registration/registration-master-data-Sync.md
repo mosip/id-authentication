@@ -5,12 +5,16 @@
 Registration application maintains the master data for the registration
 of the individual by using the configurable information. The master sync
 data will help the registration system identifying the list of
-documents, center ids, gender types, blocked user list,
+documents, holidays, center ids, gender types, blocked user list,
 machine, devices list, template list. These data should act as a
 configuration for the registration application
 
-The **target users** are  
--   Registration client application
+The **target users** are
+
+-   Registration application
+
+-   Manual trigger by the RO/RS\[Master Data Sync\]
+
 -   Kernel
 
 The key **requirements** are
@@ -70,44 +74,57 @@ MOSIP - Data Classification
 
   Type of Master Data                                      Data Type
   -------------------------------------------------------- -------------
-  Country                                                  Master Data   
-  Region                                                   Master Data   
-  Province                                                 Master Data   
-  City                                                     Master Data   
-  Local Administrative Authority                           Master Data   
-  Postal code                                              Master Data   
-  List of Holidays                                         Master Data   
-  Blacklisted Words                                        Master Data   
-  Document Type                                            Master Data   
-  Documents Category                                       Master Data   
-  Registration Centre Data                                 Master Data   
-  List of Machines                                         Master Data    
-  List of Devices                                          Master Data   
-  Title                                                    Master Data   
-  Template Master                                          Master Data   
-  Location Heirarchy                                       Lookup Data   
-  Machine specification                                    Lookup Data   
-  Device specification                                     Lookup Data   
-  Language                                                 Lookup Data   
-  Types of Gender                                          Lookup Data   
-  Biometric Type                                           Lookup Data   
-  Biometric Attribute                                      Lookup Data   
-  ID Type                                                  Lookup Data   
-  Machine Type                                             Lookup Data   
-  Registration Center Type                                 Lookup Data   
-  Template Type                                            Lookup Data   
-  Packet - Rejection Reason Master (EOD Process)           Lookup Data   
-  Packet -- On Hold Reason Master                          Lookup Data   
-  Packet - Rejection Reason Master (Manual Adjudication)   Lookup Data   
-  List of Roles                                            IAM   
-  User\_Details                                            IAM   
-  User Pwd                                                 IAM   
+  Country                                                  Master Data
+  Region                                                   Master Data
+  Province                                                 Master Data
+  City                                                     Master Data
+  Local Administrative Authority                           Master Data
+  Postal code                                              Master Data
+  List of Holidays                                         Master Data
+  Blacklisted Words                                        Master Data
+  Document Type                                            Master Data
+  Documents Category                                       Master Data
+  Registration Centre Data                                 Master Data
+  List of Machines                                         Master Data
+  List of Devices                                          Master Data
+  Title                                                    Master Data
+  Template Master                                          Master Data
+  Location Heirarchy                                       Lookup Data
+  Machine specification                                    Lookup Data
+  Device specification                                     Lookup Data
+  Language                                                 Lookup Data
+  Types of Gender                                          Lookup Data
+  Biometric Type                                           Lookup Data
+  Biometric Attribute                                      Lookup Data
+  ID Type                                                  Lookup Data
+  Machine Type                                             Lookup Data
+  Registration Center Type                                 Lookup Data
+  Template Type                                            Lookup Data
+  Packet - Rejection Reason Master (EOD Process)           Lookup Data
+  Packet -- On Hold Reason Master                          Lookup Data
+  Packet - Rejection Reason Master (Manual Adjudication)   Lookup Data
+  List of Roles                                            IAM
+  User\_Details                                            IAM
+  User Pwd                                                 IAM
 
 The key **non-functional requirements** are
 
 -   Security:
 
+    -   We should not store the RO/RS plain text credentials or any
+        sensitive information.
+
+    -   The password should be not stored as raw data. It should be
+        stored in hashed format.
+
+    -   The session key should be stored in the DB for each
+        pre-registration packet.
+
     -   The data resided in the database should be encrypted.
+
+-   Network
+
+    -   URL should be communicated using the SSL mode.
 
 -   Log the each state of the packet Yet To Receive/Received/RID
     Generated/Deleted:
@@ -119,7 +136,7 @@ The key **non-functional requirements** are
 
     -   Logging, audit, exception handling.
 
-**Solution:**
+**Solution**
 
 1.  Create the **PreRegistrtaionIDSyncher** with following methods as
 
@@ -159,10 +176,6 @@ The key **non-functional requirements** are
     i.  RID Generated
 
     j.  Deleted
-
-**Note:**  
-      - DB Transactions are maintained during record sync between server and client. So, if any issue in a single record [Like: key violation] then entire updated records would be rollback.    
-
 
 **Class and Sequence Diagram :**
 ![Master Data Sync Class and Sequence Diagram](_images/MasterSync.jpg)

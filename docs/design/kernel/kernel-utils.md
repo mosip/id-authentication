@@ -36,7 +36,7 @@ mvn javadoc:javadoc
 
 **The key solution considerations are**
 
-- All utilities classes can be part of kernel.core package and can be used throughout platform.  Apache and Jackson library can be if required.
+- All utilities classes can be part of kernel.core package and can be imported throughout platform.  Apache and Jackson library can be used if required.
 
 
 **Class Diagram**

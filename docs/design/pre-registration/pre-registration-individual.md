@@ -25,7 +25,7 @@ The key requirements are -
 
     -   Contatct details
 
-    -   CINE / PIN number.
+    -   CNIE / PIN number.
 
 - Document should have following type:
      - Proof of Identity
