@@ -134,15 +134,11 @@ public class AuditServiceTest extends BaseIntegrationTest{
 	@Test
 	public void testAuditLogsDeleteNoLogs() throws JsonProcessingException {
 		updateDB("100");
-		try {
-			ResponseDTO responseDTO = auditServiceImpl.deleteAuditLogs();
-			ObjectMapper mapper = new ObjectMapper();
-			System.out.println(mapper.writer().writeValueAsString(responseDTO));
-			Assert.assertEquals(io.mosip.registration.constants.RegistrationConstants.AUDIT_LOGS_DELETION_EMPTY_MSG, 
-					responseDTO.getSuccessResponseDTO().getMessage());
-		} finally {
-			updateDB("3");
-		}
+		ResponseDTO responseDTO = auditServiceImpl.deleteAuditLogs();
+		ObjectMapper mapper = new ObjectMapper();
+		System.out.println(mapper.writer().writeValueAsString(responseDTO));
+		Assert.assertEquals(io.mosip.registration.constants.RegistrationConstants.AUDIT_LOGS_DELETION_EMPTY_MSG, 
+				responseDTO.getSuccessResponseDTO().getMessage());
 	}
 	
 	@After
