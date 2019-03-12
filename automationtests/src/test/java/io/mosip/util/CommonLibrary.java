@@ -379,6 +379,15 @@ public class CommonLibrary {
 		logger.info("REST-ASSURED: the response time is: " + getResponse.time());
 		return getResponse;
 	}
+	public Response Post_File_Encrypt(File file, String url) {
+		logger.info("REST:ASSURED:Sending a data packet to" + url);
+
+		Response getResponse = given().relaxedHTTPSValidation().multiPart("encryptedFile", file).expect().when().post(url);
+		//logger.info("REST:ASSURED: The response from request is:" + getResponse.asString());
+		logger.info("REST-ASSURED: the response time is: " + getResponse.time());
+		return getResponse;
+	}
+
 
 	public Response Post_JSONwithFile(Object body, File file, String url, String contentHeader) {
 		logger.info("REST:ASSURED:Sending a data packet to" + url);

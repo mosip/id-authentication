@@ -30,7 +30,7 @@ public class StageValidationTests {
 	@BeforeTest
 	public void readUserStage(String testCaseName,String fileName) {
 		Properties prop=new Properties();
-		String configPath=System.getProperty("user.dir")+"//src//test//resources//regProc//StageValidation//"+testCaseName+"//"+fileName;
+		String configPath=System.getProperty("user.dir")+"/src/test/resources/regProc/StageValidation/"+testCaseName+"/"+fileName;
 		try {
 			prop.load(new FileReader(new File(configPath)));
 			StringBuilder stageString= new StringBuilder();

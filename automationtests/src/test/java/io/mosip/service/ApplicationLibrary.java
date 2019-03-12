@@ -47,6 +47,9 @@ public class ApplicationLibrary extends BaseTestCase{
     public Response putMultipartFile(File file, String Url) {
     	return commonLibrary.Post_DataPacket(file,ApplnURI+Url);
     }
+    public Response putFile(File file, String Url) {
+    	return commonLibrary. Post_File_Encrypt(file,Url);
+    }
     public Response putFileAndJson(String Resource_Uri,Object body,File file) {
     	return commonLibrary.Post_JSONwithFile(body, file, ApplnURI+Resource_Uri,MediaType.MULTIPART_FORM_DATA);
     }
