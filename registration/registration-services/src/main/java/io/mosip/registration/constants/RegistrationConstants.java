@@ -1100,5 +1100,6 @@ public class RegistrationConstants {
 	public static final String MM = "mm";
 	public static final String YYYY = "yyyy";
 	public static final String DOB = "dob";
+	public static final String ERRORS = "errors";
 
 }
