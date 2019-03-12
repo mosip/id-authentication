@@ -10,9 +10,8 @@ import lombok.Data;
  */
 @Data
 public class KycAuthRequestDTO extends AuthRequestDTO {
-	
-	
-	/** The KycMetaDataDTO */
-	private KycMetadataDTO kycMetadata;
+
+	/** The value for secondary language code. */
+	private String secondaryLangCode;
 
 }

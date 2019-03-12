@@ -17,4 +17,5 @@ public class BaseAuthRequestDTO {
 	
 	/** The value for version*/
 	private String version;
+	
 }

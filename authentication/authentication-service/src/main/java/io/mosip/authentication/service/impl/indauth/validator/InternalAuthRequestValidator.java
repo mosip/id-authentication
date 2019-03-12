@@ -48,17 +48,13 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 		if (authRequestDTO instanceof AuthRequestDTO) {
 			AuthRequestDTO requestDTO = (AuthRequestDTO) authRequestDTO;
 			validateId(requestDTO.getId(), errors);
-			Optional<String> uinOpt = Optional.ofNullable(requestDTO.getRequest())
-					.map(RequestDTO::getIdentity)
-					.map(IdentityDTO::getUin);
-			Optional<String> vidOpt = Optional.ofNullable(requestDTO.getRequest())
-					.map(RequestDTO::getIdentity)
-					.map(IdentityDTO::getVid);
-			if(uinOpt.isPresent()) {
-				validateIdvId(uinOpt.get(), IdType.UIN.getType(), errors);
-			} else if(vidOpt.isPresent()) {
-				validateIdvId(vidOpt.get(), IdType.VID.getType(), errors);
-			} else {
+			String individualId = requestDTO.getIndividualId();
+			String individualIdType = requestDTO.getIndividualIdType();
+			
+			if(!individualId.isEmpty()) {
+				validateIdvId(individualId, individualIdType, errors);
+			}
+			 else {
 				// TODO Missing UIN/VID
 			}
 			//validateVer(requestDTO.getVer(), errors);

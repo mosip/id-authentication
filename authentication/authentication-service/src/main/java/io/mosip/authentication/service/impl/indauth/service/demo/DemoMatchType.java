@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -45,7 +46,7 @@ public enum DemoMatchType implements MatchType {
 			AuthUsageDataBit.MATCHED_PI_NAME),
 
 	/** Secondary Date of Birth Match Type. */
-	DOB(IdaIdMapping.DOB, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getDob,
+	DOB(IdaIdMapping.DOB, setOf(DOBMatchingStrategy.EXACT), identityDTO -> getIdInfoList(identityDTO.getDob()),
 			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, false),
 
 	/** Secondary Date of Birth Type Match. */
@@ -53,7 +54,7 @@ public enum DemoMatchType implements MatchType {
 			AuthUsageDataBit.USED_PI_DOBTYPE, AuthUsageDataBit.MATCHED_PI_DOB_TYPE, false),
 
 	/** Secondary Date of Birth Type Match. */
-	AGE(IdaIdMapping.AGE, setOf(AgeMatchingStrategy.EXACT), IdentityDTO::getAge,
+	AGE(IdaIdMapping.AGE, setOf(AgeMatchingStrategy.EXACT), identityDTO -> getIdInfoList(identityDTO.getAge()),
 			AuthUsageDataBit.USED_PI_AGE, AuthUsageDataBit.MATCHED_PI_AGE, false, entityInfoMap -> {
 				int age = -1;
 				try {
@@ -183,6 +184,14 @@ public enum DemoMatchType implements MatchType {
 	private static String getDatePattern() {
 		//FIXME get from env.
 		return DATE_PATTERN;
+	}
+	
+	private static List<IdentityInfoDTO> getIdInfoList(String value) {
+		IdentityInfoDTO identityDTOs=new IdentityInfoDTO();
+		identityDTOs.setValue(value);
+		List<IdentityInfoDTO> list=new ArrayList<IdentityInfoDTO>();
+		list.add(identityDTOs);
+		return list;
 	}
 
 	/**

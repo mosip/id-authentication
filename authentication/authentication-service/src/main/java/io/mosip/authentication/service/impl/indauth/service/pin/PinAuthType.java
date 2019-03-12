@@ -35,7 +35,7 @@ public enum PinAuthType implements AuthType {
 		 */
 		@Override
 		public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
-			return Objects.nonNull(authRequestDTO.getRequest().getAdditionalFactors().getStaticPin());
+			return Objects.nonNull(authRequestDTO.getRequest().getStaticPin());
 		}
 	},
 	OTP("otp", setOf(PinMatchType.OTP), AuthTypeDTO::isOtp, "OTP") {
@@ -60,7 +60,7 @@ public enum PinAuthType implements AuthType {
 		 */
 		@Override
 		public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
-			return Objects.nonNull(authRequestDTO.getRequest().getAdditionalFactors().getTotp());
+			return Objects.nonNull(authRequestDTO.getRequest().getOtp());
 		}
 	};
 

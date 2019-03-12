@@ -101,7 +101,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 			}
 
 			if (!errors.hasErrors()) {
-				validateMUAPermission(errors, kycAuthRequestDTO);
+		//		validateMUAPermission(errors, kycAuthRequestDTO);
 			}
 
 		} else {
@@ -112,24 +112,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
 	}
 
-	/**
-	 * Validates the KycAuthrequest against the MUACode on the request.
-	 *
-	 * @param errors the errors
-	 * @param kycAuthRequestDTO the kyc auth request DTO
-	 */
-
-	private void validateMUAPermission(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
-		String key = ACCESS_LEVEL
-				+ Optional.ofNullable(kycAuthRequestDTO).map(AuthRequestDTO::getPartnerID).orElse("");
-		String accesslevel = environment.getProperty(key);
-		if (accesslevel != null && accesslevel.equals(KycType.NONE.getType())) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
-			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.UNAUTHORISED_KUA.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.UNAUTHORISED_KUA.getErrorMessage(), AUTH_REQUEST));
-		}
-		// FIXME handle accesslevel being null for the KUA
-	}
+	
 
 	/**
 	 * Validates the KycAuthrequest against the Authtype on the request.
@@ -169,7 +152,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param errors the errors
 	 */
 	private void validateConsentReq(KycAuthRequestDTO kycAuthRequestDTO, Errors errors) {
-		if (!kycAuthRequestDTO.getKycMetadata().isConsentRequired()) {
+		if (!kycAuthRequestDTO.isConsentObtained()) {
 			errors.rejectValue(KYCMETADATA, IdAuthenticationErrorConstants.INVALID_EKYC_CONCENT.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_EKYC_CONCENT.getErrorMessage(), KYCMETADATA));
 		}

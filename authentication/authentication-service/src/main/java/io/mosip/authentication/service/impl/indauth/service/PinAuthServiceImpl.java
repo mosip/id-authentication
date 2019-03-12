@@ -1,5 +1,6 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,8 +46,8 @@ public class PinAuthServiceImpl implements PinAuthService {
 	 * io.mosip.authentication.core.dto.indauth.AuthRequestDTO, java.lang.String)
 	 */
 	@Override
-	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin, Map<String, List<IdentityInfoDTO>> idInfo)
-			throws IdAuthenticationBusinessException {
+	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin,
+			Map<String, List<IdentityInfoDTO>> idInfo, String partnerId) throws IdAuthenticationBusinessException {
 		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
 		List<MatchOutput> listMatchOutputs = constructMatchOutput(authRequestDTO, listMatchInputs, uin);
 		boolean isPinMatched = listMatchOutputs.stream().anyMatch(MatchOutput::isMatched);
@@ -56,8 +57,7 @@ public class PinAuthServiceImpl implements PinAuthService {
 	/**
 	 * Construct match input.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
+	 * @param authRequestDTO the auth request DTO
 	 * @return the list
 	 */
 	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
@@ -67,28 +67,26 @@ public class PinAuthServiceImpl implements PinAuthService {
 	/**
 	 * Construct match output.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
-	 * @param listMatchInputs
-	 *            the list match inputs
-	 * @param uin
-	 *            the uin
+	 * @param authRequestDTO  the auth request DTO
+	 * @param listMatchInputs the list match inputs
+	 * @param uin             the uin
 	 * @return the list
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
+	@SuppressWarnings("unchecked")
 	private List<MatchOutput> constructMatchOutput(AuthRequestDTO authRequestDTO, List<MatchInput> listMatchInputs,
 			String uin) throws IdAuthenticationBusinessException {
-		return idInfoHelper.matchIdentityData(authRequestDTO, uin, listMatchInputs, this::getSPin);
+		//return idInfoHelper.matchIdentityData(authRequestDTO, uin, listMatchInputs, this::getSPin);
+		return Collections.emptyList();
+		
 	}
 
 	/**
 	 * Gets the s pin.
 	 *
-	 * @param uinValue
-	 *            the uin value
-	 * @param authReq
-	 *            the match type
+	 * @param uinValue the uin value
+	 * @param authReq  the match type
 	 * @return the s pin
 	 */
 	public Map<String, String> getSPin(String uinValue, AuthRequestDTO authReq) {

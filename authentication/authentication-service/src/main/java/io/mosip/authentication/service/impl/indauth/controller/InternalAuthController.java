@@ -6,6 +6,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,7 +29,8 @@ import io.swagger.annotations.ApiResponses;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
- * The {@code AuthController} used to handle all the Internal authentication requests.
+ * The {@code AuthController} used to handle all the Internal authentication
+ * requests.
  *
  * @author Prem Kumar
  */
@@ -52,8 +54,7 @@ public class InternalAuthController {
 	/**
 	 * Inits the binder.
 	 *
-	 * @param binder
-	 *            the binder
+	 * @param binder the binder
 	 */
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
@@ -64,27 +65,31 @@ public class InternalAuthController {
 	 * Authenticate tsp.
 	 *
 	 * @param authRequestDTO the auth request DTO
-	 * @param e the e
+	 * @param e              the e
 	 * @return authResponseDTO the auth response DTO
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 * @throws IdAuthenticationDaoException the id authentication dao exception
+	 * @throws IdAuthenticationAppException      the id authentication app exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 * @throws IdAuthenticationDaoException      the id authentication dao exception
 	 */
-	@PostMapping(path = "/0.8/auth/internal", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(path = "/auth/internal/0.8/{Auth-Partner-ID}/{MISP-LK}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ApiOperation(value = "Authenticate Internal Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "Request authenticated failed") })
-	public AuthResponseDTO authenticateTsp(@Validated @RequestBody AuthRequestDTO authRequestDTO, @ApiIgnore Errors e)
+	public AuthResponseDTO authenticateTsp(@Validated @RequestBody AuthRequestDTO authRequestDTO, @ApiIgnore Errors e,
+			@PathVariable("Auth-Partner-ID") String partnerId, @PathVariable("MISP-LK") String mispLK)
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthResponseDTO authResponseDTO = null;
 		try {
 			DataValidationUtil.validate(e);
-			authResponseDTO = authFacade.authenticateApplicant(authRequestDTO, false);
+			authResponseDTO = authFacade.authenticateApplicant(authRequestDTO, false,partnerId,mispLK);
 		} catch (IDDataValidationException e1) {
-			mosipLogger.error(SESSION_ID,  this.getClass().getSimpleName(), "authenticateApplicant", e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
+					e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e1);
 		} catch (IdAuthenticationBusinessException e1) {
-			mosipLogger.error(SESSION_ID,  this.getClass().getSimpleName(), "authenticateApplicant", e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
+					e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e1);
 		}
 

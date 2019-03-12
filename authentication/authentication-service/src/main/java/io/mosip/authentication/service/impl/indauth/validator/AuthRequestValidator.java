@@ -111,18 +111,13 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 			if (!errors.hasErrors()) {
 				super.validate(target, errors);
+				String individualId = authRequestDto.getIndividualId();
+				String individualIdType = authRequestDto.getIndividualIdType();
 				
-				Optional<String> uinOpt = Optional.ofNullable(authRequestDto.getRequest())
-						.map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getUin);
-				Optional<String> vidOpt = Optional.ofNullable(authRequestDto.getRequest())
-						.map(RequestDTO::getIdentity)
-						.map(IdentityDTO::getVid);
-				if(uinOpt.isPresent()) {
-					validateIdvId(uinOpt.get(), IdType.UIN.getType(), errors);
-				} else if(vidOpt.isPresent()) {
-					validateIdvId(vidOpt.get(), IdType.VID.getType(), errors);
-				} else {
+				if(!individualId.isEmpty()) {
+					validateIdvId(individualId, individualIdType, errors);
+				}
+				 else {
 					// TODO Missing UIN/VID
 				}
 				if (!errors.hasErrors()) {

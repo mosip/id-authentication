@@ -219,11 +219,11 @@ public enum BioAuthType implements AuthType {
 	 * @return the FP values count in identity
 	 */
 	private static Long getFPValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
-		return (long) helper.getIdentityRequestInfo(BioMatchType.FGRMIN_MULTI, reqDTO.getRequest().getIdentity(), null).size();
+		return (long) helper.getIdentityRequestInfo(BioMatchType.FGRMIN_MULTI, reqDTO.getRequest().getDemographics(), null).size();
 	}
 
 	private static Long getIrisValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
-		return (long) helper.getIdentityRequestInfo(BioMatchType.IRIS_COMP, reqDTO.getRequest().getIdentity(), null).size();
+		return (long) helper.getIdentityRequestInfo(BioMatchType.IRIS_COMP, reqDTO.getRequest().getDemographics(), null).size();
 	}
 
 	/*

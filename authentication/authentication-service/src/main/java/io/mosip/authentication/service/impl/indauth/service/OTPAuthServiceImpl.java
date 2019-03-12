@@ -74,7 +74,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 */
 	@Override
 	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin,
-			Map<String, List<IdentityInfoDTO>> idInfo) throws IdAuthenticationBusinessException {
+			Map<String, List<IdentityInfoDTO>> idInfo,String partnerId) throws IdAuthenticationBusinessException {
 		String txnId = authRequestDTO.getTransactionID();
 		Optional<String> otp = getOtpValue(authRequestDTO);
 		if (otp.isPresent()) {
@@ -93,7 +93,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 			if (isValidRequest) {
 				mosipLogger.info("SESSION_ID", this.getClass().getSimpleName(), "Inside Validate Otp Request", "");
 				List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
-				List<MatchOutput> listMatchOutputs = constructMatchOutput(authRequestDTO, listMatchInputs, uin);
+				List<MatchOutput> listMatchOutputs = constructMatchOutput(authRequestDTO, listMatchInputs, uin,partnerId);
 				boolean isPinMatched = listMatchOutputs.stream().anyMatch(MatchOutput::isMatched);
 				return idInfoHelper.buildStatusInfo(isPinMatched, listMatchInputs, listMatchOutputs,
 						PinAuthType.values());
@@ -116,10 +116,10 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 * @return the s pin
 	 * @throws IdValidationFailedException
 	 */
-	public Map<String, String> getOtpKey(String uin, AuthRequestDTO authReq) throws IdAuthenticationBusinessException {
+	public Map<String, String> getOtpKey(String uin, AuthRequestDTO authReq,String partnerId) throws IdAuthenticationBusinessException {
 		Map<String, String> map = new HashMap<>();
 		String txnID = authReq.getTransactionID();
-		String tspID = authReq.getPartnerID();
+		String tspID = partnerId;
 		String otpKey = OTPUtil.generateKey(env.getProperty("application.id"), uin, txnID, tspID);
 		String key = Optional.ofNullable(otpKey)
 				.orElseThrow(() -> new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_OTP_KEY));
@@ -151,8 +151,8 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 *                                           exception
 	 */
 	private List<MatchOutput> constructMatchOutput(AuthRequestDTO authRequestDTO, List<MatchInput> listMatchInputs,
-			String uin) throws IdAuthenticationBusinessException {
-		return idInfoHelper.matchIdentityData(authRequestDTO, uin, listMatchInputs, this::getOtpKey);
+			String uin,String partnerId) throws IdAuthenticationBusinessException {
+		return idInfoHelper.matchIdentityData(authRequestDTO, uin, listMatchInputs, this::getOtpKey, partnerId);
 	}
 
 	private Optional<String> getOtpValue(AuthRequestDTO authreqdto) {
