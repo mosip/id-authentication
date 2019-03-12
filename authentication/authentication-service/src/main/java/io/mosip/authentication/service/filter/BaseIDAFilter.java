@@ -14,9 +14,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -201,13 +204,11 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @return the map
 	 */
 	private Map<String, Object> constructResponse(Map<String, Object> responseMap) {
-		Map<String, Object> resultMap = new LinkedHashMap<>();
-		for(Map.Entry<String, Object> map : responseMap.entrySet()) {
-			if(Objects.nonNull(map.getValue())) {
-				resultMap.put(map.getKey(), map.getValue());
-			}
-		}
-		return resultMap;
+		return responseMap.entrySet()
+					.stream()
+					.filter(map -> Objects.nonNull(map.getValue()))
+					.filter(map -> !(map.getValue() instanceof List) || !((List<?>)map.getValue()).isEmpty())
+					.collect(Collectors.toMap(Entry<String, Object>::getKey, Entry<String, Object>::getValue, (map1,map2) -> map1, LinkedHashMap<String, Object>::new));
 	}
 	
 	/**

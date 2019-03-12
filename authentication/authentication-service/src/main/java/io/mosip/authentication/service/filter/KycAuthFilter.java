@@ -43,10 +43,12 @@ public class KycAuthFilter extends IdAuthFilter {
 			throws IdAuthenticationAppException {
 		try {
 			Map<String, Object> response = (Map<String, Object>) responseBody.get(RESPONSE);
-			if (Objects.nonNull(response) && Objects.nonNull(publicKey)) {
-				encryptKycResponse(response);
-			} else {
-				responseBody.put(RESPONSE, encode(toJsonString(response)));
+			if (Objects.nonNull(response)) {
+				if (Objects.nonNull(publicKey)) {
+					encryptKycResponse(response);
+				} else {
+					responseBody.put(RESPONSE, encode(toJsonString(response)));
+				}
 			}
 			return responseBody;
 		} catch (ClassCastException | JsonProcessingException e) {
