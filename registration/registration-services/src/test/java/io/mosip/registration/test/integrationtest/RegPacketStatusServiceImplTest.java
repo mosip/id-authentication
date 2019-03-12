@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.config.AppConfig;
@@ -47,6 +48,7 @@ public class RegPacketStatusServiceImplTest {
 	private AuditLogControlRepository auditLogControlRepository;
 	@Autowired
 	private RegTransactionRepository regTransactionRepository;
+	ResponseDTO responseDTO = null;
 	
 	@Before
 	public void setup() {
@@ -99,7 +101,7 @@ public class RegPacketStatusServiceImplTest {
 		auditLogControlRepository.save(sampleAuditLog);
 		regTransactionRepository.save(sampleRegTransaction);
 		
-		ResponseDTO responseDTO = regPacketStatusServiceImpl.deleteRegistrationPackets();
+		responseDTO = regPacketStatusServiceImpl.deleteRegistrationPackets();
 		ObjectMapper mapper = new ObjectMapper();
 		System.out.println(mapper.writer().writeValueAsString(responseDTO));
 		assertEquals(responseDTO.getSuccessResponseDTO().getMessage(),"Registartion Packets Deletion Successful ");
@@ -116,5 +118,12 @@ public class RegPacketStatusServiceImplTest {
 		auditLogControlRepository.saveAll(listAuditLog);
 		Files.delete(samplePacket);
 		}
+	
+	@Test
+	public void syncPacketTest() throws JsonProcessingException {
+		responseDTO = regPacketStatusServiceImpl.syncPacket();
+		ObjectMapper mapper = new ObjectMapper();
+		System.out.println(mapper.writer().writeValueAsString(responseDTO));
+	}
 	
 }
