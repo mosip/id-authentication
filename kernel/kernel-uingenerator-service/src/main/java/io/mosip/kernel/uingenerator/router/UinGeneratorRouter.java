@@ -99,8 +99,15 @@ public class UinGeneratorRouter {
 	 * @return Router
 	 */
 	private void updateRouter(RoutingContext routingContext) {
-		JsonObject uin = routingContext.getBodyAsJson();
 		UinStatusUpdateReponseDto uinresponse = new UinStatusUpdateReponseDto();
+		JsonObject uin;
+		try {
+			uin = routingContext.getBodyAsJson();
+		} catch (RuntimeException e) {
+			routingContext.response().setStatusCode(400).end();
+			return;
+
+		}
 		if (uin == null) {
 			routingContext.response().setStatusCode(400).end();
 			return;
@@ -115,15 +122,14 @@ public class UinGeneratorRouter {
 			errorResponse.getErrors().add(error);
 			errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
 			routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
-		}catch (UinStatusNotFoundException e) {
+		} catch (UinStatusNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_STATUS_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_STATUS_NOT_FOUND.getErrorMessage());
 			ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 			errorResponse.getErrors().add(error);
 			errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
 			routingContext.response().setStatusCode(200).end(Json.encode(errorResponse));
-		}
-		catch (UinNotIssuedException e) {
+		} catch (UinNotIssuedException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_ISSUED.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_ISSUED.getErrorMessage());
 			ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
