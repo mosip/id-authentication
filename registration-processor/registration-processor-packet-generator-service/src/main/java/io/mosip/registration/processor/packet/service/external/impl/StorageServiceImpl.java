@@ -31,10 +31,10 @@ public class StorageServiceImpl implements StorageService {
 	// private static final Logger LOGGER =
 	// AppConfig.getLogger(StorageServiceImpl.class);
 
-	@Value("${packet.storageLocation.encrypted}")
+	@Value("${registration.processor.packet.storageLocation.encrypted}")
 	private String packetStoreLocationEncrypted;
 
-	@Value("${packet.storageLocation.decrypted}")
+	@Value("${registration.processor.packet.storageLocation.decrypted}")
 	private String packetStoreLocationdecrypted;
 
 	@Autowired

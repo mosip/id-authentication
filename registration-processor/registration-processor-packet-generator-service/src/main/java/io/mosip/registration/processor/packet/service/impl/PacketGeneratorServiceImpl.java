@@ -55,9 +55,11 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	@Autowired
 	SyncUploadEncryptionService syncUploadEncryptionService;
 
+	/** The rest client service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
+	/** The primary languagecode. */
 	@Value("${primary.language}")
 	private String primaryLanguagecode;
 
@@ -70,7 +72,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	 */
 	@Override
 	public PackerGeneratorResDto createPacket(PacketGeneratorDto request) {
-		// To do master data validation for cetner id and machine id
+
 		PackerGeneratorResDto packerGeneratorResDto = null;
 		PackerGeneratorFailureDto dto = new PackerGeneratorFailureDto();
 
@@ -174,6 +176,15 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
 	}
 
+	/**
+	 * Checks if is valid center.
+	 *
+	 * @param centerId
+	 *            the center id
+	 * @param dto
+	 *            the dto
+	 * @return true, if is valid center
+	 */
 	private boolean isValidCenter(String centerId, PackerGeneratorFailureDto dto) {
 		boolean isValidCenter = false;
 		List<String> pathsegments = new ArrayList<>();
@@ -209,6 +220,15 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
 	}
 
+	/**
+	 * Checks if is valid machine.
+	 *
+	 * @param machine
+	 *            the machine
+	 * @param dto
+	 *            the dto
+	 * @return true, if is valid machine
+	 */
 	private boolean isValidMachine(String machine, PackerGeneratorFailureDto dto) {
 		boolean isValidMachine = false;
 		List<String> pathsegments = new ArrayList<>();

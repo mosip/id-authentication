@@ -238,7 +238,7 @@ public class RegistrationConstants {
 
 	// Packet Store Location Constants
 	public static final String PACKET_STORE_LOCATION = "PACKET_STORE_LOCATION";
-	public static final String PACKET_STORE_DATE_FORMAT = "packet.location.dateFormat";
+	public static final String PACKET_STORE_DATE_FORMAT = "registration.processor.packet.location.dateFormat";
 
 	// Packet Creation Constants
 	public static final String ZIP_FILE_EXTENSION = ".zip";
@@ -294,13 +294,13 @@ public class RegistrationConstants {
 	public static final String APPLICATION_NAME = "REGISTRATION";
 
 	// Audit - Constants
-	public static final String AUDIT_APPLICATION_ID = "audit.applicationId";
-	public static final String AUDIT_APPLICATION_NAME = "audit.applicationName";
+	public static final String AUDIT_APPLICATION_ID = "registration.processor.audit.applicationId";
+	public static final String AUDIT_APPLICATION_NAME = "registration.processor.audit.applicationName";
 	public static final String AUDIT_DEFAULT_USER = "NA";
 
 	// Default Host IP Address and Name for Audit Logs
-	public static final String HOST_IP = "audit.hostIP";
-	public static final String HOST_NAME = "audit.hostName";
+	public static final String HOST_IP = "registration.processor.audit.hostIP";
+	public static final String HOST_NAME = "registration.processor.audit.hostName";
 
 	// OnlineConnectivity check
 	public static final String URL = "http://localhost:8080/getTokenId";
@@ -560,7 +560,7 @@ public class RegistrationConstants {
 
 	// Upload Packet
 
-	public static final List<String> PACKET_UPLOAD_STATUS=Arrays.asList("SYNCED", "EXPORTED", "RESEND", "E" );
+	public static final List<String> PACKET_UPLOAD_STATUS = Arrays.asList("SYNCED", "EXPORTED", "RESEND", "E");
 
 	public static final String PACKET_UPLOAD = "packet_upload";
 	public static final String PACKET_DUPLICATE = "duplicate";
@@ -613,8 +613,8 @@ public class RegistrationConstants {
 	public static final String PACKET_STATUS_READER_STATUS_CODE = "statusCode";
 	public static final String PACKET_STATUS_CODE_PROCESSED = "processed";
 	public static final String PACKET_STATUS_READER_ID = "mosip.registration.status";
-	public static final String PACKET_SYNC_STATUS_ID="mosip.registration.sync";
-	public static final String PACKET_SYNC_VERSION="1.0";
+	public static final String PACKET_SYNC_STATUS_ID = "mosip.registration.sync";
+	public static final String PACKET_SYNC_VERSION = "1.0";
 
 	public static final String BIOMETRIC_IMAGE = "Image";
 	public static final String BIOMETRIC_TYPE = "Type";
@@ -1088,7 +1088,7 @@ public class RegistrationConstants {
 	public static final String INVALID_KEY = "Please sync to get latest key from the server before proceeding with this registration.";
 
 	public static final String JOB_ID = "JOB_ID";
-	
+
 	public static final String SYNC_DATA_FREQ = "SYNC_DATA_FREQ";
 
 	public static final String LABEL = "Label";
