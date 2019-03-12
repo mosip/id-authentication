@@ -74,7 +74,7 @@ public class MasterDataValidation {
 	 */
 	public Boolean validateMasterData(RegistrationProcessorIdentity regProcessorIdentityJson) {
 
-		String[] elements = env.getProperty("registration.processor.attributes").split(",");
+		String[] elements = env.getProperty("registration.processor.idjson.attributes").split(",");
 		List<String> list = new ArrayList<>(Arrays.asList(elements));
 		Identity identity = regProcessorIdentityJson.getIdentity();
 		boolean isValid = false;
