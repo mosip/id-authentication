@@ -2,13 +2,12 @@
 	"identityRequest": {
 		"identity": {
 			"gender": [
-
-        {
-          
-          "value": "M"
-        }
-      ]
+				{
+					"value": "M",
+					"language": "M"
+				}
+			]
 		}
 	},
-  "tspID": "TSP00001"
+	"tspID": "TSP00001"
 }

@@ -4,10 +4,30 @@ testdata:
       demoAuthReq.idvId: $UIN$
       demoAuthReq.tspID: TSP00001
       demoAuthReq.reqTime: $TIMESTAMP$
+      demoAuthReq.txnID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valueGender: M
+      identityReq.valueGender: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~valuegender1$
+      identityReq.languageGender: $idrepo~$input.demo-auth-request:demoAuthReq.idvId$~languagegender1$
       identityReq.tspID: $input.demo-auth-request:demoAuthReq.tspID$     
     output.output-1-expected-n-res:
-      output.1.response.y.status: N
-      output.1.response.y.resTime: $IGNORE$
-      output.1.response.y.reqTime: $IGNORE$
+      output.1.response.y.status: Y
+      output.1.response.y.txnID: $input.demo-auth-request:demoAuthReq.txnID$
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $TIMESTAMP$    
+    audit.auth_transaction:
+      txnId: $input.demo-auth-request:demoAuthReq.txnID$
+      refId: $input.demo-auth-request:demoAuthReq.idvId$
+      authTypeCode: DEMO-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $REGEXP:.*Demo.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.bio-auth-request:bioAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      appName: ID-Authentication
+      moduleName: DEMO_AUTH
+      refIdType: UIN 
