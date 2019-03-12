@@ -31,5 +31,5 @@ CREATE SEQUENCE prereg.batch_job_seq;
 
 -- grants to access all sequences
 GRANT usage, SELECT ON ALL SEQUENCES 
-   ON SCHEMA prereg
+   IN SCHEMA prereg
    TO prereguser;

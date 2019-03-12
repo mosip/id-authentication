@@ -102,7 +102,16 @@ public enum RegistrationStatusCode {
 	/** The unable to sent for printing. */
 	UNABLE_TO_SENT_FOR_PRINTING,
 
-	/** The notification sent to resident. */
-	NOTIFICATION_SENT_TO_RESIDENT, PACKET_UPLOAD_TO_PACKET_STORE_FAILED
+	/** Unable to upload packet to packet store. */
+    PACKET_UPLOAD_TO_PACKET_STORE_FAILED,
+
+    /** The notification sent to resident. */
+    NOTIFICATION_SENT_TO_RESIDENT,
+
+    /** The packet uin printed and posted success */
+    PRINT_AND_POST_COMPLETED,
+
+    /** The packet uin printed and posted failure */
+    RESEND_UIN_CARD_FOR_PRINTING
 
 }
