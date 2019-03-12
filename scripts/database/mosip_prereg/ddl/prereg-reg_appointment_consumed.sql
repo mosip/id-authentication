@@ -1,7 +1,7 @@
 -- create table section -------------------------------------------------
--- schema 		: prereg					- Pre Registration
--- table 		: reg_appointment			- Stores all booked slots for registration
--- table alias  : rappmnt			
+-- schema 		: prereg							- Pre Registration
+-- table 		: reg_appointment_consumed			- Stores all booked slots for registration which are consumed
+-- table alias  : rappmntc			
 
 -- schemas section -------------------------------------------------
 
@@ -10,7 +10,7 @@ create schema if not exists prereg
 ;
 
 -- table section -------------------------------------------------
-	create table prereg.reg_appointment (
+	create table prereg.reg_appointment_consumed (
 		
 		id 					character varying (36) not null ,
 		regcntr_id 			character varying (10) not null ,	 -- master.registration_center
@@ -30,17 +30,17 @@ create schema if not exists prereg
 ;
 
 -- keys section -------------------------------------------------
-alter table prereg.reg_appointment add constraint pk_rappmnt_id primary key (id)
+alter table prereg.reg_appointment_consumed add constraint pk_rappmntc_id primary key (id)
 ;
 
-alter table prereg.reg_appointment add constraint uk_rappmnt_id unique (prereg_id)
+alter table prereg.reg_appointment_consumed add constraint uk_rappmntc_id unique (prereg_id)
 ;
 
 -- indexes section -------------------------------------------------
--- create unique index idx_rappmnt_<col> on prereg.reg_appointment ( <colX> )
+-- create unique index idx_rappmntc_<col> on prereg.reg_appointment_consumed ( <colX> )
 -- ;
 
 -- comments section ------------------------------------------------- 
-comment on table prereg.reg_appointment is 'reg_appointment table stores all booked slots for registration'
+comment on table prereg.reg_appointment_consumed is 'reg_appointment_consumed table stores all booked slots for registration which areconsumed'
 ;
 
