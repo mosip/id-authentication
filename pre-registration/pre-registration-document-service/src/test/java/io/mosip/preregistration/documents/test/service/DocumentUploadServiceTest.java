@@ -102,10 +102,8 @@ public class DocumentUploadServiceTest {
 	private MockMultipartFile mockMultipartFileSizeCheck;
 	private MockMultipartFile mockMultipartFileExtnCheck;
 	private MockMultipartFile mockMultipartSaveCheck;
-	DocumentRequestDTO documentDto = new DocumentRequestDTO("48690172097498", "address", "POA", "PDF",
-			"Pending_Appointment", new Date(), "ENG", "Jagadishwari");
-	DocumentRequestDTO dummyDto = new DocumentRequestDTO("48690172097499", "address", "POI", "PDF",
-			"Pending_Appointment", new Date(), "ENG", "Jagadishwari");
+	DocumentRequestDTO documentDto = new DocumentRequestDTO("48690172097498", "address", "POA", "ENG");
+	DocumentRequestDTO dummyDto = new DocumentRequestDTO("48690172097499", "address", "POI", "ENG");
 	private DocumentEntity entity;
 	private DocumentEntity copyEntity;
 	String documentId;
@@ -130,16 +128,12 @@ public class DocumentUploadServiceTest {
 		docJson = "{\"id\": \"mosip.pre-registration.document.upload\",\"ver\" : \"1.0\","
 				+ "\"reqTime\" : \"2018-12-28T05:23:08.019Z\",\"request\" :"
 				+ "{\"pre_registartion_id\" : \"86710482195706\",\"doc_cat_code\" "
-				+ ": \"POA\",\"doc_typ_code\" : \"address\",\"lang_code\":\"ENG\","
-				+ "\"doc_file_format\" : \"pdf\",\"status_code\" : \"Pending-Appoinment\","
-				+ "\"upload_by\" : \"9900806086\",\"upload_date_time\" : \"2018-12-28T05:23:08.019Z\"}}";
+				+ ": \"POA\",\"doc_typ_code\" : \"address\",\"lang_code\":\"ENG\"}}";
 
 		errJson = "{\"id\": \"mosip.pre-registration.document.upload\",\"ver\" : \"1.0\","
 				+ "\"reqTime\" : \"2018-12-28T05:23:08.019Z\",\"request\" :"
 				+ "{\"pre_registartion_id\" : \"86710482195706\",\"doc_cat_code\" "
-				+ ": \"\",\"doc_typ_code\" : \"address\",\"lang_code\":\"ENG\","
-				+ "\"doc_file_format\" : \"pdf\",\"status_code\" : \"Pending-Appoinment\","
-				+ "\"upload_by\" : \"9900806086\",\"upload_date_time\" : \"2018-12-28T05:23:08.019Z\"}}";
+				+ ": \"\",\"doc_typ_code\" : \"address\",\"lang_code\":\"ENG\"}}";
 
 		ClassLoader classLoader = getClass().getClassLoader();
 

@@ -8,7 +8,7 @@ export class ConfigService {
   configs = {};
 
   public setConfig(configJson: any) {
-    this.configs = configJson;
+    this.configs = configJson.response;
     console.log(this.configs);
   }
 
