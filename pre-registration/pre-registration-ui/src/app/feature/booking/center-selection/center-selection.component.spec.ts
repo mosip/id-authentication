@@ -61,7 +61,8 @@ fdescribe('CenterSelectionComponent', () => {
 
   let userService: SharedService, mockUsers = {
     getNameList: jasmine.createSpy('getNameList').and.returnValue(of([{fullName: 'Agn', preId: '1234'}])),
-    changeCoordinates: jasmine.createSpy('changeCoordinates').and.returnValue(of([11.111, 11.11]))
+    changeCoordinates: jasmine.createSpy('changeCoordinates').and.returnValue(of([11.111, 11.11])),
+    listOfCenters: jasmine.createSpy('listOfCenters').and.returnValue(of([{id: '1001', latitude: 11.111, longitude: 11.11}]))
   }
   let fixture: ComponentFixture<CenterSelectionComponent>;
 
@@ -149,4 +150,27 @@ fdescribe('CenterSelectionComponent', () => {
     fixture.detectChanges();
     expect(x).toBe('5:00 pm');
   });
+
+  it('should test display results', () => {
+    const response = {}
+    component.displayResults(response);
+    fixture.detectChanges();
+    expect(component.showTable).toBeTruthy();
+  });
+
+  it('should dispatch coordinates list', () => {
+    component.REGISTRATION_CENTRES = [];
+    component.dispatchCenterCoordinatesList();
+    fixture.detectChanges();
+    mockUsers.listOfCenters().subscribe(value => {
+      expect(value[0].id).toBe('1001');
+    });
+  });
+
+  it('should test selected row', () => {
+    const row = {};
+    component.selectedRow(row);
+    fixture.detectChanges();
+    expect(component.enableNextButton).toBeTruthy();
+  })
 });

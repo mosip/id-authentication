@@ -1,9 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatDialog } from '@angular/material';
-import { SelectionModel } from '@angular/cdk/collections';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { RegistrationCentre } from './registration-center-details.model';
-import { TimeSelectionComponent } from '../time-selection/time-selection.component';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
@@ -11,6 +9,7 @@ import { SharedService } from '../booking.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { TranslateService } from '@ngx-translate/core';
 import Utils from 'src/app/app.util';
+import { ConfigService } from 'src/app/core/services/config.service';
 
 @Component({
   selector: 'app-center-selection',
@@ -51,7 +50,8 @@ export class CenterSelectionComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private registrationService: RegistrationService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private configService: ConfigService
   ) {
     this.translate.use(localStorage.getItem('langCode'));
   }
@@ -74,7 +74,9 @@ export class CenterSelectionComponent implements OnInit {
     this.users.forEach(user => {
       pincodes.push(user['postalCode']);
     });
-    this.dataService.recommendedCenters(localStorage.getItem('langCode'), 4, pincodes).subscribe(response => {
+    this.dataService.recommendedCenters(localStorage.getItem('langCode'),
+    this.configService.getConfigByKey('preregistration.recommended.centers.locCode')
+    , pincodes).subscribe(response => {
       console.log(response);
       if (!response['errors'])
         this.displayResults(response);
@@ -138,8 +140,10 @@ export class CenterSelectionComponent implements OnInit {
   selectedRow(row) {
     this.selectedCentre = row;
     this.enableNextButton = true;
-    console.log(row);
-    this.plotOnMap();
+    console.log('row', row);
+    if (Object.keys(this.selectedCentre).length !== 0) {
+      this.plotOnMap();
+    }
   }
 
   getLocation() {
@@ -231,7 +235,9 @@ export class CenterSelectionComponent implements OnInit {
     // this.dataSource.data = REGISTRATION_CENTRES;
     // console.log(this.dataSource.data);
     this.showTable = true;
-    this.selectedRow(this.REGISTRATION_CENTRES[0]);
-    this.dispatchCenterCoordinatesList();
+    if (this.REGISTRATION_CENTRES) {
+      this.selectedRow(this.REGISTRATION_CENTRES[0]);
+      this.dispatchCenterCoordinatesList();
+    }
   }
 }
