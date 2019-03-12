@@ -319,4 +319,23 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 	}
 	
+	@Override
+	public List<Registration> findByServerStatusCodeIn(List<String> serverStatusCodes) {
+
+		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Retriving Registrations based on server status codes");
+
+		return registrationRepository.findByServerStatusCodeIn(serverStatusCodes);
+
+	}
+	
+	@Override
+	public List<Registration> findByServerStatusCodeNotIn(List<String> serverStatusCodes) {
+
+		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Retriving Registrations based on server status codes");
+
+		return registrationRepository.findByServerStatusCodeNotIn(serverStatusCodes);
+
+	}
 }

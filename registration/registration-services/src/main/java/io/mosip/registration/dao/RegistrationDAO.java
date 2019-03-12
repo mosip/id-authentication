@@ -115,5 +115,9 @@ public interface RegistrationDAO {
 	 */
 	List<Registration> get(Timestamp crDtimes, String clientStatus);
 
+	List<Registration> findByServerStatusCodeIn(List<String> serveSstatusCodes);
+
+	List<Registration> findByServerStatusCodeNotIn(List<String> serverStatusCodes);
+
 
 }

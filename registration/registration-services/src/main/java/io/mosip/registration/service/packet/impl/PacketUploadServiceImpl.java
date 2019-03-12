@@ -242,4 +242,12 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 		List<Registration> registrations = registrationDAO.get(regIds);
 		uploadSyncedPacket(registrations);
 	}
+	
+	@Override
+	public void uploadAllSyncedPackets() {
+
+		List<Registration> synchedPackets = getSynchedPackets();
+		uploadSyncedPacket(synchedPackets);
+
+	}
 }
