@@ -3,7 +3,9 @@ package io.mosip.preregistration.notification.service;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -201,6 +203,26 @@ public class NotificationServiceTest {
 
 		assertEquals(null, qrCodeResponseDTO.getResponse());
 
+	}
+	
+	/**
+	 * This test method is for succes case of getConfig
+	 * 
+	 * @throws JsonParseException
+	 * @throws JsonMappingException
+	 * @throws IOException
+	 * @throws java.io.IOException
+	 */
+	@Test
+	public void getConfigSuccessTest() throws Exception {
+		ResponseEntity<String> res = new ResponseEntity<String>(
+				"mosip.secondary-language=fra", HttpStatus.OK);
+		Map<String, String> configParams = new HashMap<>();
+		MainResponseDTO<Map<String, String>> response = new MainResponseDTO<>();
+        Mockito.when(restTemplate.getForEntity(Mockito.anyString(), Mockito.eq(String.class)))
+				.thenReturn(res);
+		response=service.getConfig();
+		assertEquals(response.getResponse().get("mosip.secondary-language"), "fra");
 	}
 
 }

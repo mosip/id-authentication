@@ -6,6 +6,7 @@ import { UserModel } from '../../shared/models/demographic-model/user.modal';
   providedIn: 'root'
 })
 export class RegistrationService {
+  private loginId: string;
   usersChanged = new Subject<UserModel[]>();
   private messageSource = new BehaviorSubject({});
   currentMessage = this.messageSource.asObservable();
@@ -15,6 +16,14 @@ export class RegistrationService {
 
   changeMessage(message: Object) {
     this.messageSource.next(message);
+  }
+
+  setLoginId(id: string) {
+    this.loginId = id;
+  }
+
+  getLoginId() {
+    return this.loginId;
   }
 
   flushUsers() {
@@ -64,6 +73,7 @@ export class RegistrationService {
   setSameAs(value) {
     this.sameAs = value;
   }
+
   getSameAs() {
     return this.sameAs;
   }

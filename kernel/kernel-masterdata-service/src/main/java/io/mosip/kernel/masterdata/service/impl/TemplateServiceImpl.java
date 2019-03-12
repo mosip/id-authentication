@@ -202,4 +202,33 @@ public class TemplateServiceImpl implements TemplateService {
 		idResponseDto.setId(id);
 		return idResponseDto;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.TemplateService#
+	 * getAllTemplateByTemplateTypeCode(java.lang.String)
+	 */
+	@Override
+	public TemplateResponseDto getAllTemplateByTemplateTypeCode(String templateTypeCode) {
+		List<Template> templates;
+		List<TemplateDto> templateDtos;
+		try {
+			templates = templateRepository
+					.findAllByTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(templateTypeCode);
+		} catch (DataAccessException | DataAccessLayerException exception) {
+			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
+					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(exception));
+		}
+		if (templates != null && !templates.isEmpty()) {
+			templateDtos = MapperUtils.mapAll(templates, TemplateDto.class);
+		} else {
+			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
+					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
+		}
+		TemplateResponseDto responseDto = new TemplateResponseDto();
+		responseDto.setTemplates(templateDtos);
+		return responseDto;
+	}
 }

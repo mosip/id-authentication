@@ -22,7 +22,7 @@ spec:
         image: docker-registry.mosip.io:5000/registration-processor-camel-bridge
         ports:
           - name: eventbus-port
-            containerPort: 5711
+            containerPort: 5723
         ports:
           - name: hazelcast-port
             containerPort: 5701
@@ -32,7 +32,9 @@ spec:
         - name: spring_config_label_env
           value: 0.9.0
         - name: spring_config_url_env
-          value: http://104.211.212.28:51000
+          value: http://kernel-config-server:51000/config
+        - name: zone_env
+          value: secure
         imagePullPolicy: Always
       imagePullSecrets:
       - name: pvt-reg-cred

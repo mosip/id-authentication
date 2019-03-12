@@ -80,10 +80,9 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 		LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Sync the packets to the server");
 
-		LinkedHashMap<String, Object> response = new LinkedHashMap<>();
 		ResponseDTO responseDTO = new ResponseDTO();
 		try {
-			response = (LinkedHashMap<String, Object>) serviceDelegateUtil.post(RegistrationConstants.PACKET_SYNC,
+			LinkedHashMap<String, Object> response = (LinkedHashMap<String, Object>) serviceDelegateUtil.post(RegistrationConstants.PACKET_SYNC,
 					javaObjectToJsonString(syncDtoList));
 			if(response.get("response")!=null) {
 				SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
@@ -179,7 +178,7 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 
 			}
 			RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
-			registrationPacketSyncDTO.setRequestTimestamp(DateUtils.getUTCCurrentDateTimeString());
+			registrationPacketSyncDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
 			registrationPacketSyncDTO.setSyncRegistrationDTOs(syncRegistrationDTOs);
 			registrationPacketSyncDTO.setId(RegistrationConstants.PACKET_SYNC_STATUS_ID);
 			registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);

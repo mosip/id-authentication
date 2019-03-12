@@ -18,9 +18,10 @@ import io.mosip.preregistration.transliteration.dto.MainResponseDTO;
 import io.mosip.preregistration.transliteration.exception.IllegalParamException;
 import io.mosip.preregistration.transliteration.exception.JsonValidationException;
 import io.mosip.preregistration.transliteration.exception.MandatoryFieldRequiredException;
+import io.mosip.preregistration.transliteration.exception.UnSupportedLanguageException;
 
 /**
- * Exception Handler for trabsliteration application.
+ * Exception Handler for transliteration application.
  * 
  * @author Kishan rathore
  * @since 1.0.0
@@ -80,4 +81,21 @@ public class TransliterationExceptionHandler {
 		errorRes.setResTime(DateUtils.formatDate(new Date(), dateTimeFormat));
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for UnSupportedLanguageException
+	 */
+	@ExceptionHandler(UnSupportedLanguageException.class)
+	public ResponseEntity<MainResponseDTO<?>> recException(final UnSupportedLanguageException e, WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getMessage());
+		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
+		errorRes.setErr(errorDetails);
+		errorRes.setStatus(falseStatus);
+		errorRes.setResTime(DateUtils.formatDate(new Date(), dateTimeFormat));
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
+	
 }

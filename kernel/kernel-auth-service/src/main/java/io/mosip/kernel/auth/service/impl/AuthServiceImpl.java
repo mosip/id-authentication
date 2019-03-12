@@ -1,5 +1,6 @@
 package io.mosip.kernel.auth.service.impl;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,14 @@ import io.mosip.kernel.auth.entities.MosipUserDtoToken;
 import io.mosip.kernel.auth.entities.TimeToken;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
+import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.factory.UserStoreFactory;
 import io.mosip.kernel.auth.jwtBuilder.TokenGenerator;
 import io.mosip.kernel.auth.jwtBuilder.TokenValidator;
 import io.mosip.kernel.auth.service.AuthService;
 import io.mosip.kernel.auth.service.CustomTokenServices;
 import io.mosip.kernel.auth.service.OTPService;
+import io.mosip.kernel.auth.service.UinService;
 
 /**
  * Auth Service for Authentication and Authorization
@@ -50,6 +53,9 @@ public class AuthServiceImpl implements AuthService {
 
 	@Autowired
 	OTPService oTPService;
+	
+	@Autowired
+	UinService uinService;
 
 	/**
 	 * Method used for validating Auth token
@@ -67,11 +73,31 @@ public class AuthServiceImpl implements AuthService {
 		long currentTime = new Date().getTime();
 		MosipUserDtoToken mosipUserDtoToken = tokenValidator.validateToken(token);
 		AuthToken authToken = customTokenServices.getTokenDetails(token);
+		if(authToken==null)
+		{
+			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE,"Auth token is not present");
+		}
+		long tenMinsExp = getExpiryTime(authToken.getExpirationTime());
+		/*if(currentTime==tenMinsExp)
+		{
+			TimeToken newToken = tokenGenerator.generateNewToken(token);
+			mosipUserDtoToken.setToken(newToken.getToken());
+			mosipUserDtoToken.setExpTime(newToken.getExpTime());
+			return mosipUserDtoToken;
+		}*/
 		if (mosipUserDtoToken != null && (currentTime < authToken.getExpirationTime())) {
 			return mosipUserDtoToken;
 		} else {
 			throw new NonceExpiredException(AuthConstant.AUTH_TOKEN_EXPIRED_MESSAGE);
 		}
+	}
+
+	private long getExpiryTime(long expirationTime) {
+		Calendar calendar = Calendar.getInstance();
+	    calendar.setTime(new Date(expirationTime));
+	    calendar.add(Calendar.MINUTE, AuthConstant.RETURN_EXP_TIME);
+	    Date result = calendar.getTime();
+		return result.getTime();
 	}
 
 	/**
@@ -118,10 +144,15 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public AuthNResponseDto authenticateWithOtp(OtpUser otpUser) throws Exception {
 		AuthNResponseDto authNResponseDto = null;
-		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(otpUser.getAppId())
-				.authenticateWithOtp(otpUser);
-		authNResponseDto = oTPService.sendOTP(mosipUser, otpUser.getOtpChannel(),otpUser.getAppId());
-		authNResponseDto.setMessage(AuthConstant.OTP_SENT_MESSAGE);
+		MosipUserDto mosipUser = null;
+		if (AuthConstant.APPTYPE_UIN.equals(otpUser.getUseridtype())) {
+			mosipUser = uinService.getDetailsFromUin(otpUser);
+			authNResponseDto = oTPService.sendOTPForUin(mosipUser, otpUser.getOtpChannel(), otpUser.getAppId());
+		} else {
+			mosipUser = userStoreFactory.getDataStoreBasedOnApp(otpUser.getAppId()).authenticateWithOtp(otpUser);
+			authNResponseDto = oTPService.sendOTP(mosipUser, otpUser.getOtpChannel(), otpUser.getAppId());
+			authNResponseDto.setMessage(authNResponseDto.getMessage());
+		}
 		return authNResponseDto;
 	}
 
@@ -143,10 +174,14 @@ public class AuthServiceImpl implements AuthService {
 		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(userOtp.getAppId())
 				.authenticateUserWithOtp(userOtp);
 		MosipUserDtoToken mosipToken = oTPService.validateOTP(mosipUser, userOtp.getOtp());
+		if(mosipToken!=null)
+		{
 		authNResponseDto.setMessage(AuthConstant.OTP_VALIDATION_MESSAGE);
 		authNResponseDto.setToken(mosipToken.getToken());
+		authNResponseDto.setExpiryTime(mosipToken.getExpTime());
 		authNResponseDto.setRefreshToken(mosipToken.getRefreshToken());
 		authNResponseDto.setUserId(mosipToken.getMosipUserDto().getUserId());
+		}
 		return authNResponseDto;
 	}
 
@@ -191,26 +226,23 @@ public class AuthServiceImpl implements AuthService {
 	 */
 
 	@Override
-	public MosipUserDtoToken retryToken(String existingToken) throws Exception{
+	public MosipUserDtoToken retryToken(String existingToken) throws Exception {
 		MosipUserDtoToken mosipUserDtoToken = null;
 		boolean checkRefreshToken = false;
 		AuthToken accessToken = customTokenServices.getTokenDetails(existingToken);
-		if(accessToken!=null)
-		{
-		if (accessToken.getRefreshToken() != null) {
-			checkRefreshToken = tokenValidator.validateExpiry(accessToken.getRefreshToken());
-		}
-		if (checkRefreshToken) {
-			TimeToken newAccessToken = tokenGenerator.generateNewToken(accessToken.getRefreshToken());
-			AuthToken updatedAccessToken = customTokenServices.getUpdatedAccessToken(accessToken.getUserId(),
-					newAccessToken, accessToken.getUserId());
-			mosipUserDtoToken = tokenValidator.validateToken(updatedAccessToken.getAccessToken());
+		if (accessToken != null) {
+			if (accessToken.getRefreshToken() != null) {
+				checkRefreshToken = tokenValidator.validateExpiry(accessToken.getRefreshToken());
+			}
+			if (checkRefreshToken) {
+				TimeToken newAccessToken = tokenGenerator.generateNewToken(accessToken.getRefreshToken());
+				AuthToken updatedAccessToken = customTokenServices.getUpdatedAccessToken(accessToken.getUserId(),
+						newAccessToken, accessToken.getUserId());
+				mosipUserDtoToken = tokenValidator.validateToken(updatedAccessToken.getAccessToken());
+			} else {
+				throw new RuntimeException("Refresh Token Expired");
+			}
 		} else {
-			throw new RuntimeException("Refresh Token Expired");
-		}
-		}
-		else
-		{
 			throw new RuntimeException("Token doesn't exist");
 		}
 		return mosipUserDtoToken;
@@ -228,7 +260,7 @@ public class AuthServiceImpl implements AuthService {
 	 */
 
 	@Override
-	public AuthNResponse invalidateToken(String token) throws Exception{
+	public AuthNResponse invalidateToken(String token) throws Exception {
 		AuthNResponse authNResponse = null;
 		customTokenServices.revokeToken(token);
 		authNResponse = new AuthNResponse();

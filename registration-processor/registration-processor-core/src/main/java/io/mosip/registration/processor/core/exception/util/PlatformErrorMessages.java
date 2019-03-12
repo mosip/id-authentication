@@ -123,15 +123,15 @@ public enum PlatformErrorMessages {
 	// Packet Info Storage Exception error code and message
 	RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "001",
 			"The Registration Table is not accessible"),
-	
+
 	/** The rpr pis identity not found. */
 	RPR_PIS_IDENTITY_NOT_FOUND(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "002",
 			"Identity field not found in DemographicInfo Json"),
-	
+
 	/** The rpr pis unable to insert data. */
 	RPR_PIS_UNABLE_TO_INSERT_DATA(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "003",
 			"Unable to insert data in db for registration Id :"),
-	
+
 	/** The rpr pis file not found in Packet Store. */
 	RPR_PIS_FILE_NOT_FOUND_IN_PACKET_STORE(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "004",
 			"File not found in Packet Store"),
@@ -328,11 +328,11 @@ public enum PlatformErrorMessages {
 	/** The rpr tem processing failure. */
 	RPR_TEM_PROCESSING_FAILURE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "002",
 			"The Processing of Template Failed "),
-	
+
 	/** The rpr tem packet store not accessible. */
 	RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "003",
 			"The Packet store set by the System is not accessible"),
-	
+
 	/** The rpr sms template generation failure. */
 	RPR_SMS_TEMPLATE_GENERATION_FAILURE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001",
 			"Template Generation failed"),
@@ -395,7 +395,7 @@ public enum PlatformErrorMessages {
 	/** The rpr mqi invalid connection. */
 	RPR_MQI_INVALID_CONNECTION(PlatformErrorConstants.RPR_MOSIP_QUEUE_MODULE + "002",
 			"Connection not obtained from ConnectionFactory"),
-	
+
 	/** The missing input parameter. */
 	RPR_BDD_MISSING_INPUT_PARAMETER(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "005", "Missing Input Parameter - %s"),
 
@@ -474,22 +474,22 @@ public enum PlatformErrorMessages {
 
 	/** The rpr prt qrcode not generated. */
 	RPR_PRT_QRCODE_NOT_GENERATED(PlatformErrorConstants.RPR_PRINTING_MODULE + "005", "Error while generating QR Code"),
-	
+
 	/** The rpr prt applicant photo not set. */
 	RPR_PRT_APPLICANT_PHOTO_NOT_SET(PlatformErrorConstants.RPR_PRINTING_MODULE + "006", "Error while setting applicant photo"),
-	
+
 	/** The rpr prt qrcode not set. */
 	RPR_PRT_QRCODE_NOT_SET(PlatformErrorConstants.RPR_PRINTING_MODULE + "007", "Error while setting qrCode for uin card"),
-	
+
 	/** The rpr prt idrepo response null. */
 	RPR_PRT_IDREPO_RESPONSE_NULL(PlatformErrorConstants.RPR_PRINTING_MODULE + "008", "ID Repo response is null"),
-	
+
 	/** The rpr prt idrepo documents absent*/
 	RPR_PRT_IDREPO_DOCUMENT_ABSENT(PlatformErrorConstants.RPR_PRINTING_MODULE + "009", "ID Repo response has no documents"),
-	
+
 	/** The print and postal acknowledment generation failed. */
 	RPR_PRT_PRINT_POST_ACK_FAILED(PlatformErrorConstants.RPR_PRINTING_MODULE + "010", "Error while getting response from Print and Postal Service Provider"),
-	
+
 	/** The rpr rgs registration connector not accessible. */
 	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),
 

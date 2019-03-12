@@ -21,6 +21,7 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -70,14 +71,14 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 	/** The Constant UIN_TEXT_FILE. */
 	private static final String UIN_TEXT_FILE = "textFile";
-	
+
 	private static final String RESOURCES = "src/main/resources/";
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PrintStage.class);
 
 	/** The cluster manager url. */
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	/** The core audit request builder. */
@@ -217,9 +218,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 				object.setIsValid(Boolean.FALSE);
 			}
-			
+
 			fileCleanup(documentBytesMap.get("UIN"));
-			
+
 		} catch (PDFGeneratorException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
@@ -259,7 +260,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, regId);
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,regId, ApiName.AUDIT);
 		}
 
 		return object;

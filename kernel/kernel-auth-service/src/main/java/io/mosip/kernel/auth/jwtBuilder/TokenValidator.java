@@ -6,6 +6,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureException;
 import io.mosip.kernel.auth.config.MosipEnvironment;
+import io.mosip.kernel.auth.constant.AuthErrorConstant;
 import io.mosip.kernel.auth.entities.AuthToken;
 import io.mosip.kernel.auth.entities.MosipUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
@@ -68,11 +69,11 @@ public class TokenValidator {
  
         }catch(SignatureException e)
         {
-        	throw new AuthManagerException("401",e.getMessage());
+        	throw new AuthManagerException(AuthErrorConstant.JWT_EXPIRED_ERROR_CODE,e.getMessage());
         }
         catch(JwtException e)
         {
-        	throw new AuthManagerException("401",e.getMessage());
+        	throw new AuthManagerException(AuthErrorConstant.JWT_EXPIRED_ERROR_CODE,e.getMessage());
         }
         return claims;
     }
@@ -101,14 +102,8 @@ public class TokenValidator {
     }
 
 	public MosipUserDtoToken validateToken(String token) throws Exception{
-		Claims claims = getClaims(token);
-		
+		Claims claims = getClaims(token);	
 		MosipUserDto mosipUserDto = buildDto(claims);
-/*		long currentTime = new Date().getTime();
-		if(claims!=null && (currentTime<authToken.getExpirationTime()))
-		{
-			return true;
-		}*/
 		return new MosipUserDtoToken(mosipUserDto,token,null,0,null);
 	}
 

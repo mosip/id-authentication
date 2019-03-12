@@ -1,6 +1,8 @@
 package io.mosip.registration.processor.camel.bridge;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.vertx.VertxComponent;
@@ -16,6 +18,7 @@ import com.hazelcast.config.UrlXmlConfig;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.camel.bridge.util.BridgeUtil;
+import io.mosip.registration.processor.camel.bridge.util.PropertyFileUtil;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.vertx.camel.CamelBridge;
@@ -24,6 +27,7 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import io.vertx.core.eventbus.EventBusOptions;
 import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
 
@@ -45,8 +49,16 @@ public class MosipBridgeFactory extends AbstractVerticle {
 	 * @return the event bus
 	 */
 	public static void getEventBus() {
-		String clusterFileName = BridgeUtil.getPropertyFromConfigServer("cluster.manager.file.name");
+		String clusterFileName;
+		String zone = BridgeUtil.getZone();
+		if(zone.equalsIgnoreCase("dmz")) {
+			clusterFileName=BridgeUtil.getPropertyFromConfigServer("dmz.cluster.manager.file.name");
+		}
+		else {
+			clusterFileName=BridgeUtil.getPropertyFromConfigServer("cluster.manager.file.name");
+		}
 		String clusterUrl = BridgeUtil.getCloudConfigUri();
+		String eventBusPort = PropertyFileUtil.getProperty(MosipBridgeFactory.class,"bootstrap.properties","eventbus.port");
 		clusterUrl = clusterUrl + "/*/" + BridgeUtil.getActiveProfile() + "/" + BridgeUtil.getCloudConfigLabel() + "/"
 				+ clusterFileName;
 		Config config = null;
@@ -55,9 +67,16 @@ public class MosipBridgeFactory extends AbstractVerticle {
 		} catch (IOException e) {
 			regProcLogger.error("", "", "", e.getMessage());
 		}
+		String address = null;
+		try {
+			address = InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		ClusterManager clusterManager = new HazelcastClusterManager(config);
 		VertxOptions options = new VertxOptions().setClusterManager(clusterManager).setHAEnabled(true)
-				.setClustered(true);
+				.setClustered(true).setEventBusOptions(new EventBusOptions().setHost(address).setPort(Integer.parseInt(eventBusPort)));
 
 		Vertx.clusteredVertx(options, vertx -> {
 			if (vertx.succeeded()) {

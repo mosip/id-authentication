@@ -145,7 +145,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 					globalParam.setIsActive(true);
 					globalParam.setCrBy("brahma");
 					globalParam.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-					globalParam.setVal(globalParamMap.get(key.getKey()));
+					globalParam.setVal(globalParamMap.get(key.getKey()).trim());
 				}
 
 				list.add(globalParam);
@@ -175,7 +175,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 			if (entry.getValue() instanceof HashMap) {
 				parseToMap((HashMap<String, Object>) entry.getValue(), globalParamMap);
 			} else {
-				globalParamMap.put(key, entry.getValue().toString());
+				globalParamMap.put(key, entry.getValue().toString().trim());
 			}
 		}
 	}

@@ -26,7 +26,7 @@ public class PropertyFileLoader {
 			;
 			prop.load(input);
 		} catch (FileNotFoundException e) {
-			System.out.println("Provide correct name for the config file");
+			//logger.info("Provide correct name for the config file");
 			System.exit(0);
 		} catch (IOException ex) {
 			ex.printStackTrace();
