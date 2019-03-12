@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Mosip Kernel API Suite">
-
+<suite name="Mosip API Suite">
 	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
 		regression smokeAndRegression -->
-
 	<test name="Kernel Tests">
 		<parameter name="testType" value="smokeandregression" />
 		<classes>
@@ -50,21 +48,21 @@
 			<class name="io.mosip.kernel.tests.SyncPublicKeyToRegClient" />
 		</classes>
 	</test>
-
-
-
-	<!-- <test name="GetDeviceHistory"> <parameter name="testType" value="smoke" 
-		/> <classes> <class name="io.mosip.kernel.tests.GetDeviceHistory" /> </classes> 
-		</test> <test name="GetImmediateChildrenByLocCodeAndLangCode"> <parameter 
-		name="testType" value="smoke" /> <classes> <class name="io.mosip.kernel.tests.FetchGenderType" 
-		/> </classes> </test> -->
-	<test name="PreRegistration Tests">
-
+	<test name="GetDeviceHistory">
 		<parameter name="testType" value="smoke" />
-
-
 		<classes>
-
+			<class name="io.mosip.kernel.tests.GetDeviceHistory" />
+		</classes>
+	</test>
+	<test name="GetImmediateChildrenByLocCodeAndLangCode">
+		<parameter name="testType" value="smoke" />
+		<classes>
+			<class name="io.mosip.kernel.tests.FetchGenderType" />
+		</classes>
+	</test>
+	<test name="PreRegistration Tests">
+		<parameter name="testType" value="smoke" />
+		<classes>
 			<class
 				name="io.mosip.preregistration.tests.Fetch_all_application_created_by_user" />
 			<class
@@ -102,11 +100,8 @@
 				name="io.mosip.preregistration.tests.RetriveAllPreRegIdByRegCenterId" />
 			<class
 				name="io.mosip.preregistration.tests.ReBookingAnAppointment" />
-
 		</classes>
-
 	</test>
-
 	<test name="RegistrationProcessor Tests">
 		<parameter name="testType" value="smokeAndregression" />
 		<classes>
@@ -116,248 +111,51 @@
 			<class name="io.mosip.regProc.tests.IntegrationScenarios" />
 		</classes>
 	</test>
-
-
-
-
-
-
-
-</suite>
-<suite name="idaTestSuite">
-	<test name="CreateUINData">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\UINData\\CreateTestData\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.UINData.CreateTestData.mapping.yml" />
+	<test name="Authentication Tests">
+		<parameter name="testType" value="smokeandregression" />
 		<classes>
 			<class name="io.mosip.authentication.tests.CreateUinRecord" />
-		</classes>
-	</test>
-	<test name="UpdateUINData">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\UINData\\UpdateTestData\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.UINData.UpdateTestData.mapping.yml" />
-		<classes>
 			<class name="io.mosip.authentication.tests.UpdateUinRecord" />
-		</classes>
-	</test>
-	<test name="GenerateVID">
-		<parameter name="testDatPath" value="ida\\TestData\\UINData" />
-		<parameter name="testDataFileName" value="dummy.dummy" />
-		<classes>
 			<class name="io.mosip.authentication.tests.CreateVID" />
-		</classes>
-	</test>
-	<test name="Bio.IrisAuthentication">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\Bio\\Iris\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.bio.AuthWithIris.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.authentication.tests.BioAuthentication" />
-		</classes>
-	</test>
-	<test name="InternalBio.IrisAuthentication">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\InternalBio\\Iris\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.InternalBio.AuthWithIris.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
 			<class
-				name="io.mosip.authentication.tests.InternalBioAuthentication" />
-		</classes>
-	</test>
-	<test name="Eyc.IrisAuthentication">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\eKYC\\Iris\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.eKYC.AuthWithIris.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
+				name="io.mosip.authentication.tests.BioIrisAuthentication" />
 			<class
-				name="io.mosip.authentication.tests.EkycWithBioAuthentication" />
-		</classes>
-	</test>
-	<test name="OtpGeneration">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\Otp\\OtpGeneration\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.Otp.OtpGeneration.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
+				name="io.mosip.authentication.tests.InternalBioIrisAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.EkycWithBioIrisAuthentication" />
 			<class name="io.mosip.authentication.tests.OtpGeneration" />
-		</classes>
-	</test>
-	<test name="OtpAuthentication">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\Otp\\OtpAuthentication\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.Otp.OtpAuthentication.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
 			<class name="io.mosip.authentication.tests.OtpAuthentication" />
-		</classes>
-	</test>
-	<test name="OtpFlooding">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\Otp\\OtpGeneration\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.Otp.OtpGenerationFlooding.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
 			<class name="io.mosip.authentication.tests.OtpGeneration" />
-		</classes>
-	</test>
-	<test name="Ekyc.OtpAuthentication">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\eKYC\\Otp\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.eKYC.AuthWithOtp.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
 			<class
 				name="io.mosip.authentication.tests.EkycWithOtpAuthentication" />
-		</classes>
-	</test>
-	<test name="Bio.FingerPrintAuthentication">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\Bio\\FingerPrint\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.bio.AuthWithFingerPrint.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.authentication.tests.BioAuthentication" />
-		</classes>
-	</test>
-	<test name="InternalBio.FingerPrintAuthentication">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\InternalBio\\FingerPrint\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.internalbio.AuthWithFingerPrint.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
 			<class
-				name="io.mosip.authentication.tests.InternalBioAuthentication" />
-		</classes>
-	</test>
-	<test name="eKYC.FingerPrintAuthentication">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\eKYC\\FingerPrint\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.eKYC.AuthWithFingerPrint.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
+				name="io.mosip.authentication.tests.BioFingerAuthentication" />
 			<class
-				name="io.mosip.authentication.tests.EkycWithBioAuthentication" />
-		</classes>
-	</test>
-	<test name="demo.NameAuthentication">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\Demo\\Name\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.Demo.AuthWithName.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.authentication.tests.DemoAuthentication" />
-		</classes>
-	</test>
-	<test name="demo.EmailAuthentication">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\Demo\\Email\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.Demo.AuthWithEmail.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.authentication.tests.DemoAuthentication" />
-		</classes>
-	</test>
-	<test name="demo.PhoneNumberAuthentication">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\Demo\\PhoneNumber\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.Demo.AuthWithPhoneNumber.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.authentication.tests.DemoAuthentication" />
-		</classes>
-	</test>
-	<test name="demo.DateOfBirthAuthentication">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\Demo\\DateOfBirth\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.Demo.AuthWithDateOfBirth.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.authentication.tests.DemoAuthentication" />
-		</classes>
-	</test>
-	<test name="demo.GenderAuthentication">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\Demo\\Gender\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.Demo.AuthWithGender.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.authentication.tests.DemoAuthentication" />
-		</classes>
-	</test>
-	<test name="demo.AddressAuthentication">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\Demo\\Address\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.Demo.AuthWithAddress.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.authentication.tests.DemoAuthentication" />
-		</classes>
-	</test>
-	<test name="StaticPin.StoreStaticPin">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\StaticPin\\StoreStaticPin\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.StaticPin.StoreStaticPin.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.authentication.tests.StaticPinStorage" />
-		</classes>
-	</test>
-	<test name="StaticPin.InternalStaticPinAuthentication">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\StaticPin\\InternalStaticPinAuth\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.StaticPin.InternalStaticPinAuth.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
+				name="io.mosip.authentication.tests.InternalBioFingerAuthentication" />
 			<class
-				name="io.mosip.authentication.tests.InternalStaticPinAuthentication" />
-		</classes>
-	</test>
-	<test name="StaticPin.StaticPinAuthentication">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\StaticPin\\StaticPinAuth\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.StaticPin.StaticPinAuth.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
+				name="io.mosip.authentication.tests.EkycWithBioFingerAuthentication" />
 			<class
-				name="io.mosip.authentication.tests.StaticPinAuthentication" />
-		</classes>
-	</test>
-	<test name="StaticPin.EkycWithStaticPinAuthentication">
-		<parameter name="testDatPath"
-			value="ida\\TestData\\StaticPin\\eKYCWithStaticPin\\" />
-		<parameter name="testDataFileName"
-			value="testdata.ida.StaticPin.eKYCWithStaticPin.mapping.yml" />
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
+				name="io.mosip.authentication.tests.DemoNameAuthentication" />
 			<class
-				name="io.mosip.authentication.tests.EkycWithStaticPinAuthentication" />
+				name="io.mosip.authentication.tests.DemoEmailAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.DemoPhoneNumberAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.DemoDOBAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.DemoGenderAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.DemoAddressAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.StaticTokenIdGenerationForDemoAuth" />
+			<class
+				name="io.mosip.authentication.tests.StaticTokenIdGenerationForBioFingerAuth" />
+			<class
+				name="io.mosip.authentication.tests.StaticTokenIdGenerationForBioIrisAuth" />
+			<class
+				name="io.mosip.authentication.tests.StaticTokenIdGenerationForOTPAuth" />
+			<class name="io.mosip.authentication.tests.VidGeneration" />
 		</classes>
 	</test>
 </suite>
-<!-- Suite -->
-
+	
