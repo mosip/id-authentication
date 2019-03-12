@@ -18,6 +18,7 @@ import org.springframework.core.env.Environment;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
+import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
@@ -38,6 +39,8 @@ public class StorageServiceTest extends BaseIntegrationTest{
 	@Autowired
 	StorageService storageService;
 
+	@Autowired
+	private RidGenerator<String> ridGeneratorImpl;
 	@Autowired
 	private Environment environment;
 
@@ -108,6 +111,9 @@ public class StorageServiceTest extends BaseIntegrationTest{
 			documentDetailsDTO = identity.getProofOfDateOfBirth();
 			documentDetailsDTO.setDocument(data);
 			registrationDTO.getDemographicDTO().getDemographicInfoDTO().setIdentity(identity);
+			registrationDTO.setRegistrationId(ridGeneratorImpl.generateId(
+					ApplicationContext.getInstance().map().get(RegistrationConstants.REGISTARTION_CENTER).toString(),
+					"10011"));
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

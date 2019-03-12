@@ -24,9 +24,3 @@ There is a pool of UIN in the database. Whenever the Registration processor modu
 
 ![Module Diagram](_images/kernel-uin-ack-service.jpg)
 
-
-
-## Implementation
-
-
-**kernel-kernel-uin-ack-service** [README](../../kernel/kernel-uin-ack-service/README.md)

@@ -114,13 +114,11 @@ public class ByteToZip extends BaseTestCase {
 		for (File f : RequestListOfFiles) {
 			if (f.getName().contains("ID")) {
 				 actualRequest11 = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				System.out.println("==============================================aaaaaaaaaaaaaaaaaaaaa");
+				logger.info("==============================================aaaaaaaaaaaaaaaaaaaaa");
 				
 			}
 			Map<String, Object> a = lib.toMap(actualRequest11);
-			System.out.println("=================="+a);
-			System.out.println("=================="+response1);
-			 System.out.println( a.keySet().equals( response1.keySet() ));
+			
 			
 
 		}

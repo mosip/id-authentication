@@ -30,7 +30,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
 
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	@Autowired

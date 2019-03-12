@@ -63,5 +63,5 @@ This service can be used to generate and validate OTP based on configured busine
 ## Implementation
 
 
-**kernel-otpmanager-service** [README](../../kernel/kernel-otpmanager-service/README.md)
+**kernel-otpmanager-service** [README](../../../kernel/kernel-otpmanager-service/README.md)
 

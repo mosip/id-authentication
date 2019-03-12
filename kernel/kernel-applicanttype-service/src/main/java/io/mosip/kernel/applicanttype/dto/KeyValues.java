@@ -1,9 +1,5 @@
 package io.mosip.kernel.applicanttype.dto;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 import lombok.Data;
 
 /**
@@ -11,7 +7,9 @@ import lombok.Data;
  *
  */
 @Data
-public class KeyValues implements Serializable {
-	private static final long serialVersionUID = 877664400274091548L;
-	private Map<String, Object> request = new HashMap<>();
+public class KeyValues<K, V> {
+
+	private K attribute;
+	private V value;
+
 }

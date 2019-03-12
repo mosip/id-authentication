@@ -46,7 +46,7 @@ public class RegistrationCenterDAOImpl implements RegistrationCenterDAO {
 				APPLICATION_ID, "Fetching Registration Center details");
 
 		Optional<RegistrationCenter> registrationCenter = registrationCenterRepository
-				.findByRegistartionCenterIdIdAndIsActiveTrue(centerId);
+				.findByRegistartionCenterIdIdAndRegistartionCenterIdLangCodeAndIsActiveTrue(centerId,"ara");
 		RegistrationCenterDetailDTO registrationCenterDetailDTO = new RegistrationCenterDetailDTO();
 		if (registrationCenter.isPresent()) {
 			registrationCenterDetailDTO

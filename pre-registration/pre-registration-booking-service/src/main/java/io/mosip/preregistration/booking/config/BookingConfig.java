@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.preregistration.booking.service.BookingService;
+import io.mosip.preregistration.core.config.LoggerConfiguration;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -51,6 +54,7 @@ public class BookingConfig {
 	 */
 	@Value("${server.port:9095}")
 	private int serverPort;
+	private Logger log = LoggerConfiguration.logConfig(BookingService.class);
 
 	/**
 	 * To define Protocol
@@ -87,17 +91,16 @@ public class BookingConfig {
 				} 
 				swaggerBaseUrlSet = true;
 			} catch (MalformedURLException e) {
-				System.err.println("SwaggerUrlException: " + e);
+				log.error("sessionId", "idType", "id", "In registrationStatusBean method of Booking Config- " + e.getMessage());
 			}
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration-Booking").select()
-				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.booking.controller"))
-				.paths(PathSelectors.ant("/*")).build();
+				.apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error|actuator).*).*")).build();
+
 
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);
-			System.out.println("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");
 		}
 		return docket;
 	}

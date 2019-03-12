@@ -6,8 +6,10 @@ package io.mosip.preregistration.transliteration.service.util;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.util.DateUtils;
@@ -26,6 +28,9 @@ import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
 public class TransliterationServiceUtil {
 	
 	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	
+	@Value("#{'${mosip.supported-languages}'.split(',')}")
+	private List<String> supportedLang;
 	
 	/**
 	 * This method is used to add the initial request values into a map for input
@@ -85,6 +90,14 @@ public class TransliterationServiceUtil {
 		transliterationResponseDTO.setToFieldValue(value);
 		transliterationResponseDTO.setToFieldLang(transliterationRequestDTO.getToFieldLang());
 		return transliterationResponseDTO;
+	}
+	
+	/**
+	 * @param dto
+	 * @return true if dto contains supported languages.
+	 */
+	public boolean supportedLanguageCheck(TransliterationDTO dto) {
+		return supportedLang.contains(dto.getFromFieldLang())&&supportedLang.contains(dto.getToFieldLang());
 	}
 
 }

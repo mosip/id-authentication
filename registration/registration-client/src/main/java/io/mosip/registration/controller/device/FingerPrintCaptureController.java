@@ -423,7 +423,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				auditFactory.audit(AuditEvent.REG_BIO_THUMBS_SCAN, Components.REG_BIOMETRICS, SessionContext.userId(),
 						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-				scanPopUpViewController.init(this, RegistrationConstants.FINGERPRINT);
+				scanPopUpViewController.init(this, RegistrationUIConstants.FINGERPRINT);
 			} else {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_MAX_RETRIES_ALERT);
 			}
