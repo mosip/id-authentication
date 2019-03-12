@@ -86,7 +86,7 @@ public enum ApiName {
 
 	ENCRYPTIONSERVICE,
 
-	PACKETRECEIVER;
+	PACKETRECEIVER,
 
 	 /** The decryption api from DMZ**/
 	DMZCRYPTOMANAGERDECRYPT,

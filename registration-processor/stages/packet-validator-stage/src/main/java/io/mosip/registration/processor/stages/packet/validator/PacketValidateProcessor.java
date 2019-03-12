@@ -296,13 +296,11 @@ public class PacketValidateProcessor {
 					eventName = EventName.EXCEPTION.toString();
 					eventType = EventType.SYSTEM.toString();
 				}
-				auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-						registrationId);
 							description = "Packet uploading to file system is unsuccessful";
 							eventId = EventId.RPR_405.toString();
 							eventName = EventName.EXCEPTION.toString();
 							eventType = EventType.SYSTEM.toString();
-						}
+						
 						auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 								registrationId, ApiName.AUDIT);
 
