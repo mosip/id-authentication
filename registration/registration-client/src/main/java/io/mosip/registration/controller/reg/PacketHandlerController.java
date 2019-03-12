@@ -15,6 +15,7 @@ import java.io.Writer;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
@@ -47,6 +48,7 @@ import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.PolicySyncService;
 import io.mosip.registration.service.packet.PacketHandlerService;
 import io.mosip.registration.service.packet.PacketUploadService;
@@ -54,6 +56,7 @@ import io.mosip.registration.service.packet.ReRegistrationService;
 import io.mosip.registration.service.packet.RegistrationApprovalService;
 import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
+import io.mosip.registration.service.template.NotificationService;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
@@ -131,6 +134,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@Autowired
 	private PacketHandlerService packetHandlerService;
+	
+	@Autowired
+	private NotificationService notificationService;
 
 	@Value("${mosip.registration.save_ack_inside_packet:}")
 	private String saveAck;
@@ -516,12 +522,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			MoroccoIdentity moroccoIdentity = (MoroccoIdentity) registrationDTO.getDemographicDTO()
 					.getDemographicInfoDTO().getIdentity();
-
-			String mobile = moroccoIdentity.getPhone();
-			String email = moroccoIdentity.getEmail();
-			sendEmailNotification(email);
-			sendSMSNotification(mobile);
-
+			
 			try {
 
 				if (!String.valueOf(ApplicationContext.map().get(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG))
@@ -550,6 +551,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 						APPLICATION_ID,
 						regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 			}
+			
+			sendNotification(moroccoIdentity.getEmail(), moroccoIdentity.getPhone(),
+					registrationDTO.getRegistrationId());
 
 			if (registrationDTO.getSelectionListDTO() == null) {
 
@@ -645,6 +649,48 @@ public class PacketHandlerController extends BaseController implements Initializ
 	private boolean isKeyValid() {
 
 		return policySyncService.checkKeyValidation().getSuccessResponseDTO() != null;
+
+	}
+	
+	private void sendNotification(String email, String mobile, String regID) {
+		try {
+			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				String notificationServiceName = String.valueOf(
+						applicationContext.getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION));
+				if (notificationServiceName != null && !notificationServiceName.equals("NONE")) {
+					ResponseDTO notificationResponse;
+					Writer writeNotificationTemplate;
+					if (email != null && (notificationServiceName.toUpperCase())
+							.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
+						writeNotificationTemplate = getNotificationTemplate(RegistrationConstants.EMAIL_TEMPLATE);
+						if (!writeNotificationTemplate.toString().isEmpty()) {							
+							notificationResponse = notificationService.sendEmail(writeNotificationTemplate.toString(),
+									email, regID);
+							notificationAlert(notificationResponse, "Email Notification");
+						}
+					}
+					if (mobile != null && (notificationServiceName.toUpperCase())
+							.contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {
+						writeNotificationTemplate = getNotificationTemplate(RegistrationConstants.SMS_TEMPLATE);
+						if (!writeNotificationTemplate.toString().isEmpty()) {							
+							notificationResponse = notificationService.sendSMS(writeNotificationTemplate.toString(),
+									mobile, regID);
+							notificationAlert(notificationResponse, "SMS Notification");
+						}
+					}
+				}
+			}
+		} catch (RegBaseUncheckedException regBaseUncheckedException) {
+			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
+					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
+		}
+	}
+
+	private void notificationAlert(ResponseDTO notificationResponse, String notificationType) {
+
+		Optional.ofNullable(notificationResponse).map(ResponseDTO::getErrorResponseDTOs)
+				.flatMap(list -> list.stream().findFirst()).map(ErrorResponseDTO::getMessage)
+				.ifPresent(message -> generateAlert(notificationType, message));
 
 	}
 }

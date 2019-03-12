@@ -366,10 +366,12 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_ADDRESS_LINE2_USER_LANG_LABEL = "AddressLine2PrimLabel";
 	public static final String TEMPLATE_ADDRESS_LINE2_LOCAL_LANG_LABEL = "AddressLine2SecLabel";
 	public static final String TEMPLATE_ADDRESS_LINE2 = "AddressLine2";
+	public static final String TEMPLATE_ADDRESS_LINE3 = "AddressLine3";
 	public static final String TEMPLATE_ADDRESS_LINE2_LOCAL_LANG = "AddressLine2Sec";
 	public static final String TEMPLATE_REGION_USER_LANG_LABEL = "RegionPrimLabel";
 	public static final String TEMPLATE_REGION_LOCAL_LANG_LABEL = "RegionSecLabel";
 	public static final String TEMPLATE_REGION = "Region";
+	public static final String TEMPLATE_CITY = "City";
 	public static final String TEMPLATE_REGION_LOCAL_LANG = "RegionSec";
 	public static final String TEMPLATE_PROVINCE_USER_LANG_LABEL = "ProvincePrimLabel";
 	public static final String TEMPLATE_PROVINCE_LOCAL_LANG_LABEL = "ProvinceSecLabel";
@@ -646,7 +648,8 @@ public class RegistrationConstants {
 	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_1 = "reg-ack-template-part1";
 	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_2 = "reg-ack-template-part2";
 	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_3 = "reg-ack-template-part3";
-	public static final String NOTIFICATION_TEMPLATE = "Notification Template";
+	public static final String EMAIL_TEMPLATE = "reg-email-notification";
+	public static final String SMS_TEMPLATE = "reg-sms-notification";
 
 	// Notification Service
 	public static final String EMAIL_SUBJECT = "MOSIP REGISTRATION NOTIFICATION";

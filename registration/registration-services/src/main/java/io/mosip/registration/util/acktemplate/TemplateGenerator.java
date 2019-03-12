@@ -920,6 +920,8 @@ public class TemplateGenerator extends BaseService {
 			TemplateManagerBuilder templateManagerBuilder) throws RegBaseCheckedException {
 
 		try {
+			ResourceBundle localProperties = ApplicationContext.localLanguageProperty();
+			ResourceBundle applicationLanguageProperties = ApplicationContext.applicationLanguageBundle();
 			String applicationLanguageCode = ApplicationContext.applicationLanguage().toLowerCase();
 			InputStream is = new ByteArrayInputStream(templateText.getBytes());
 			Map<String, Object> values = new LinkedHashMap<>();
@@ -950,10 +952,22 @@ public class TemplateGenerator extends BaseService {
 					getValue(moroccoIdentity.getGender(), applicationLanguageCode));
 			values.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1,
 					getValue(moroccoIdentity.getAddressLine1(), applicationLanguageCode));
-			values.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2,
-					getValue(moroccoIdentity.getAddressLine2(), applicationLanguageCode));
+			String addressLine2=getValue(moroccoIdentity.getAddressLine2(), applicationLanguageCode);
+			if (addressLine2 == null || addressLine2.isEmpty()) {
+				values.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2, RegistrationConstants.EMPTY);
+			} else {
+				values.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2, addressLine2);
+			}
+			String addressLine3=getValue(moroccoIdentity.getAddressLine3(), applicationLanguageCode);
+			if (addressLine3 == null || addressLine3.isEmpty()) {
+				values.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3, RegistrationConstants.EMPTY);
+			} else {
+				values.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3, addressLine3);
+			}
 			values.put(RegistrationConstants.TEMPLATE_PROVINCE,
 					getValue(moroccoIdentity.getProvince(), applicationLanguageCode));
+			values.put(RegistrationConstants.TEMPLATE_CITY,
+					getValue(moroccoIdentity.getCity(), applicationLanguageCode));
 			values.put(RegistrationConstants.TEMPLATE_REGION,
 					getValue(moroccoIdentity.getRegion(), applicationLanguageCode));
 			values.put(RegistrationConstants.TEMPLATE_POSTAL_CODE, getValue(moroccoIdentity.getPostalCode()));

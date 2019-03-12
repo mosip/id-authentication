@@ -218,14 +218,10 @@ public class BaseController {
 	 * 
 	 * /* Alert creation with specified title, header, and context
 	 * 
-	 * @param title
-	 *            alert title
-	 * @param alertType
-	 *            type of alert
-	 * @param header
-	 *            alert header
-	 * @param context
-	 *            alert context
+	 * @param title     alert title
+	 * @param alertType type of alert
+	 * @param header    alert header
+	 * @param context   alert context
 	 */
 	protected void generateAlert(String title, String context) {
 		Alert alert = new Alert(AlertType.INFORMATION);
@@ -242,12 +238,9 @@ public class BaseController {
 	 * 
 	 * /* Alert creation with specified title, header, and context
 	 * 
-	 * @param alertType
-	 *            type of alert
-	 * @param header
-	 *            alert header
-	 * @param context
-	 *            alert context
+	 * @param alertType type of alert
+	 * @param header    alert header
+	 * @param context   alert context
 	 */
 	protected void generateAlert(String context) {
 		Alert alert = new Alert(AlertType.INFORMATION);
@@ -263,10 +256,8 @@ public class BaseController {
 	 * 
 	 * /* Alert creation with specified context
 	 * 
-	 * @param alertType
-	 *            type of alert
-	 * @param context
-	 *            alert context
+	 * @param alertType type of alert
+	 * @param context   alert context
 	 */
 	protected void generateAlert(AnchorPane parentPane, String id, String context, String isConsolidated,
 			StringBuilder validationMessage) {
@@ -294,8 +285,7 @@ public class BaseController {
 	/**
 	 * Validating Id for Screen Authorization
 	 * 
-	 * @param screenId
-	 *            the screenId
+	 * @param screenId the screenId
 	 * @return boolean
 	 */
 	protected boolean validateScreenAuthorization(String screenId) {
@@ -306,10 +296,8 @@ public class BaseController {
 	/**
 	 * Regex validation with specified field and pattern
 	 * 
-	 * @param field
-	 *            concerned field
-	 * @param regexPattern
-	 *            pattern need to checked
+	 * @param field        concerned field
+	 * @param regexPattern pattern need to checked
 	 */
 	protected boolean validateRegex(Control field, String regexPattern) {
 		if (field instanceof TextField) {
@@ -448,8 +436,7 @@ public class BaseController {
 	/**
 	 * Gets the finger print status.
 	 *
-	 * @param PrimaryStage
-	 *            the primary stage
+	 * @param PrimaryStage the primary stage
 	 * @return the finger print status
 	 */
 	public void updateAuthenticationStatus() {
@@ -459,8 +446,7 @@ public class BaseController {
 	/**
 	 * Scans documents
 	 *
-	 * @param popupStage
-	 *            the stage
+	 * @param popupStage the stage
 	 */
 	public void scan(Stage popupStage) {
 
@@ -470,10 +456,8 @@ public class BaseController {
 	 * This method is for saving the Applicant Image and Exception Image which are
 	 * captured using webcam
 	 * 
-	 * @param capturedImage
-	 *            BufferedImage that is captured using webcam
-	 * @param imageType
-	 *            Type of image that is to be saved
+	 * @param capturedImage BufferedImage that is captured using webcam
+	 * @param imageType     Type of image that is to be saved
 	 */
 	public void saveApplicantPhoto(BufferedImage capturedImage, String imageType) {
 		// will be implemented in the derived class.
@@ -482,8 +466,7 @@ public class BaseController {
 	/**
 	 * This method used to clear the images that are captured using webcam
 	 * 
-	 * @param imageType
-	 *            Type of image that is to be cleared
+	 * @param imageType Type of image that is to be cleared
 	 */
 	public void clearPhoto(String imageType) {
 		// will be implemented in the derived class.
@@ -584,8 +567,8 @@ public class BaseController {
 	/**
 	 * to validate the password and send appropriate message to display
 	 * 
-	 * @param authenticationValidatorDTO
-	 *            - DTO which contains the username and password entered by the user
+	 * @param authenticationValidatorDTO - DTO which contains the username and
+	 *                                   password entered by the user
 	 * @return appropriate message after validation
 	 */
 	private String validatePassword(AuthenticationValidatorDTO authenticationValidatorDTO) {
@@ -629,28 +612,20 @@ public class BaseController {
 		return biometricInfoDTO;
 	}
 
-	protected Writer getNotificationTemplate() {
+	protected Writer getNotificationTemplate(String templateCode) {
 		RegistrationDTO registrationDTO = getRegistrationDTOFromSession();
 		Writer writeNotificationTemplate = new StringWriter();
 		try {
-			// network availability check
-			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-				// get the mode of communication
-				String notificationServiceName = String.valueOf(
-						applicationContext.getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION));
-
-				if (notificationServiceName != null && !notificationServiceName.equals("NONE")) {
-					// get the data for notification template
-					String platformLanguageCode = ApplicationContext.applicationLanguage();
-					String notificationTemplate = templateService
-							.getHtmlTemplate(RegistrationConstants.NOTIFICATION_TEMPLATE, platformLanguageCode);
-					if (notificationTemplate != null && !notificationTemplate.isEmpty()) {
-						// generate the notification template
-						writeNotificationTemplate = templateGenerator.generateNotificationTemplate(notificationTemplate,
-								registrationDTO, templateManagerBuilder);
-					}
-				}
+			// get the data for notification template
+			String platformLanguageCode = ApplicationContext.applicationLanguage();
+			String notificationTemplate = templateService.getHtmlTemplate(templateCode,
+					platformLanguageCode);
+			if (notificationTemplate != null && !notificationTemplate.isEmpty()) {
+				// generate the notification template
+				writeNotificationTemplate = templateGenerator.generateNotificationTemplate(notificationTemplate,
+						registrationDTO, templateManagerBuilder);
 			}
+
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
 					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
@@ -660,50 +635,7 @@ public class BaseController {
 		}
 		return writeNotificationTemplate;
 	}
-
-	public ResponseDTO sendSMSNotification(String mobile) {
-		RegistrationDTO registrationDTO = getRegistrationDTOFromSession();
-		ResponseDTO smsNotificationResponse = new ResponseDTO();
-		try {
-			String notificationServiceName = String
-					.valueOf(applicationContext.getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION));
-			Writer writeNotificationTemplate = getNotificationTemplate();
-
-			String rid = registrationDTO.getRegistrationId();
-
-			if (mobile != null && notificationServiceName.contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {
-				// send sms
-				smsNotificationResponse = notificationService.sendSMS(writeNotificationTemplate.toString(), mobile,
-						rid);
-			}
-		} catch (RegBaseUncheckedException regBaseUncheckedException) {
-			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
-					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
-		}
-		return smsNotificationResponse;
-	}
-
-	public ResponseDTO sendEmailNotification(String email) {
-		RegistrationDTO registrationDTO = getRegistrationDTOFromSession();
-		ResponseDTO emailNotificationResponse = new ResponseDTO();
-		try {
-			String notificationServiceName = String
-					.valueOf(applicationContext.getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION));
-			Writer writeNotificationTemplate = getNotificationTemplate();
-			String rid = registrationDTO.getRegistrationId();
-
-			if (email != null && notificationServiceName.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
-				// send email
-				emailNotificationResponse = notificationService.sendEmail(writeNotificationTemplate.toString(), email,
-						rid);
-			}
-		} catch (RegBaseUncheckedException regBaseUncheckedException) {
-			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
-					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
-		}
-		return emailNotificationResponse;
-	}
-
+	
 	protected RegistrationDTO getRegistrationDTOFromSession() {
 		return (RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
 	}
@@ -712,14 +644,10 @@ public class BaseController {
 	 * to return to the next page based on the current page and action for User
 	 * Onboarding
 	 * 
-	 * @param currentPage
-	 *            - Id of current Anchorpane
-	 * @param action
-	 *            - action to be performed previous/next
-	 * @param currentPage
-	 *            - Id of current Anchorpane
-	 * @param action
-	 *            - action to be performed previous/next
+	 * @param currentPage - Id of current Anchorpane
+	 * @param action      - action to be performed previous/next
+	 * @param currentPage - Id of current Anchorpane
+	 * @param action      - action to be performed previous/next
 	 * 
 	 * @return id of next Anchorpane
 	 */
@@ -738,14 +666,10 @@ public class BaseController {
 	 * to return to the next page based on the current page and action for New
 	 * Registration
 	 * 
-	 * @param currentPage
-	 *            - Id of current Anchorpane
-	 * @param action
-	 *            - action to be performed previous/next
-	 * @param currentPage
-	 *            - Id of current Anchorpane
-	 * @param action
-	 *            - action to be performed previous/next
+	 * @param currentPage - Id of current Anchorpane
+	 * @param action      - action to be performed previous/next
+	 * @param currentPage - Id of current Anchorpane
+	 * @param action      - action to be performed previous/next
 	 * 
 	 * @return id of next Anchorpane
 	 */
@@ -771,18 +695,12 @@ public class BaseController {
 	/**
 	 * to return to the next page based on the current page and action
 	 * 
-	 * @param pageList
-	 *            - List of Anchorpane Ids
-	 * @param currentPage
-	 *            - Id of current Anchorpane
-	 * @param action
-	 *            - action to be performed previous/next
-	 * @param pageList
-	 *            - List of Anchorpane Ids
-	 * @param currentPage
-	 *            - Id of current Anchorpane
-	 * @param action
-	 *            - action to be performed previous/next
+	 * @param pageList    - List of Anchorpane Ids
+	 * @param currentPage - Id of current Anchorpane
+	 * @param action      - action to be performed previous/next
+	 * @param pageList    - List of Anchorpane Ids
+	 * @param currentPage - Id of current Anchorpane
+	 * @param action      - action to be performed previous/next
 	 * 
 	 * @return id of next Anchorpane
 	 */
@@ -856,18 +774,12 @@ public class BaseController {
 	/**
 	 * to navigate to the next page based on the current page
 	 * 
-	 * @param pageId
-	 *            - Parent Anchorpane where other panes are included
-	 * @param notTosShow
-	 *            - Id of Anchorpane which has to be hidden
-	 * @param show
-	 *            - Id of Anchorpane which has to be shown
-	 * @param pageId
-	 *            - Parent Anchorpane where other panes are included
-	 * @param notTosShow
-	 *            - Id of Anchorpane which has to be hidden
-	 * @param show
-	 *            - Id of Anchorpane which has to be shown
+	 * @param pageId     - Parent Anchorpane where other panes are included
+	 * @param notTosShow - Id of Anchorpane which has to be hidden
+	 * @param show       - Id of Anchorpane which has to be shown
+	 * @param pageId     - Parent Anchorpane where other panes are included
+	 * @param notTosShow - Id of Anchorpane which has to be hidden
+	 * @param show       - Id of Anchorpane which has to be shown
 	 * 
 	 */
 	protected void getCurrentPage(AnchorPane pageId, String notTosShow, String show) {
@@ -887,10 +799,8 @@ public class BaseController {
 	/**
 	 * to calculate the time for re-capture since last capture time
 	 * 
-	 * @param imageType
-	 *            the type of image that is selected to capture
-	 * @param imageType
-	 *            the type of image that is selected to capture
+	 * @param imageType the type of image that is selected to capture
+	 * @param imageType the type of image that is selected to capture
 	 */
 	public void calculateRecaptureTime(String imageType) {
 		// will be implemented in the derived class.
@@ -939,14 +849,10 @@ public class BaseController {
 	/**
 	 * Create alert with given title, header and context
 	 * 
-	 * @param alertType
-	 *            type of alert
-	 * @param title
-	 *            alert's title
-	 * @param header
-	 *            alert's header
-	 * @param context
-	 *            alert's context
+	 * @param alertType type of alert
+	 * @param title     alert's title
+	 * @param header    alert's header
+	 * @param context   alert's context
 	 * @return alert
 	 */
 	protected Alert createAlert(AlertType alertType, String title, String header, String context) {

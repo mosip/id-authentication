@@ -113,7 +113,7 @@ public class SendNotificationController extends BaseController implements Initia
 				RegistrationConstants.APPLICATION_ID, "generating Email/SMS notification after packet creation");
 
 		try {
-			Writer writeNotificationTemplate = getNotificationTemplate();
+			Writer writeNotificationTemplate = getNotificationTemplate("");
 			String registrationId = getRegistrationDTOFromSession().getRegistrationId();
 
 			List<String> notifications = new ArrayList<>();
