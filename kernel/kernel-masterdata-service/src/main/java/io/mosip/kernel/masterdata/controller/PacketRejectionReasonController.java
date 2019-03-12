@@ -30,7 +30,7 @@ import io.swagger.annotations.Api;
  */
 @RestController
 @Api(tags = { "RejectionReason" })
-@RequestMapping(value = "/v1.0/packetrejectionreasons")
+@RequestMapping(value = "/packetrejectionreasons")
 public class PacketRejectionReasonController {
 	/**
 	 * creates instance of service class {@link PacketRejectionReasonService}

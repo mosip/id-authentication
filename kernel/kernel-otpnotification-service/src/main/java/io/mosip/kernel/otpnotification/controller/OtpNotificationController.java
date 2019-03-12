@@ -38,7 +38,7 @@ public class OtpNotificationController {
 	 *            the request dto.
 	 * @return the response entity.
 	 */
-	@PostMapping(value = "/v1.0/otp/send")
+	@PostMapping(value = "/otp/send")
 	@ApiOperation(value = "Service to send OTP notification", response = OtpNotificationResponseDto.class)
 	public ResponseEntity<OtpNotificationResponseDto> sendOtpNotification(
 			@Valid @RequestBody OtpNotificationRequestDto request) {

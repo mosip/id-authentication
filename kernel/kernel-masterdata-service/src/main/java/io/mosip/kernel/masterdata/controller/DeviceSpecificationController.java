@@ -58,7 +58,7 @@ public class DeviceSpecificationController {
 	 *         on given language code
 	 * 
 	 */
-	@GetMapping("/v1.0/devicespecifications/{langcode}")
+	@GetMapping("/devicespecifications/{langcode}")
 	@ApiOperation(value = "Retrieve all Device Specification for given Languge Code", notes = "Retrieve all DeviceSpecification for the given Languge Code", response = DeviceSpecificationResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Device Specification retrieved from database for the given Languge Code ", response = DeviceSpecificationResponseDto.class),
@@ -83,7 +83,7 @@ public class DeviceSpecificationController {
 	 * 
 	 */
 
-	@GetMapping("/v1.0/devicespecifications/{langcode}/{devicetypecode}")
+	@GetMapping("/devicespecifications/{langcode}/{devicetypecode}")
 	@ApiOperation(value = "Retrieve all Device Specification for specific langCode and DeviceTypeCode", notes = "Retrieve all DeviceSpecification for specific langCode and DeviceTypeCode", response = DeviceSpecificationResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Device Specification retrieved from database for specific langCode and DeviceTypeCode ", response = DeviceSpecificationResponseDto.class),
@@ -106,7 +106,7 @@ public class DeviceSpecificationController {
 	 * @return {@link IdResponseDto}
 	 */
 	@ResponseFilter
-	@PostMapping("/v1.0/devicespecifications")
+	@PostMapping("/devicespecifications")
 	@ApiOperation(value = "Service to save Device Specification", notes = "Saves Device Specification and return Device Specification ID", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Device Specification successfully created", response = IdResponseDto.class),
@@ -120,7 +120,7 @@ public class DeviceSpecificationController {
 	}
 
 	@ResponseFilter
-	@PutMapping("/v1.0/devicespecifications")
+	@PutMapping("/devicespecifications")
 	@ApiOperation(value = "Service to update device specification", notes = "update Device Specification and return Device Specification ID", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When device specification successfully updated", response = IdResponseDto.class),
@@ -133,7 +133,7 @@ public class DeviceSpecificationController {
 				HttpStatus.OK);
 	}
 
-	@DeleteMapping("/v1.0/devicespecifications/{id}")
+	@DeleteMapping("/devicespecifications/{id}")
 	@ApiOperation(value = "Service to delete device specifications", notes = "Delete device specifications and return device specification id", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When device specifications successfully deleted", response = IdResponseDto.class),

@@ -1557,7 +1557,7 @@ public class MasterDataServiceTest {
 		registrationCenter.setCenterEndTime(endTime);
 		/*
 		 * mockMvc.perform(get(
-		 * "/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
+		 * "/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
 		 * .andExpect(status().isOk());
 		 */
 
@@ -1584,7 +1584,7 @@ public class MasterDataServiceTest {
 
 		/*
 		 * mockMvc.perform(get(
-		 * "/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
+		 * "/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
 		 * .andExpect(status().isOk());
 		 */
 

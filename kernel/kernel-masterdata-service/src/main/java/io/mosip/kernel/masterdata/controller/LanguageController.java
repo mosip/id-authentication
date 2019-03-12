@@ -32,7 +32,7 @@ import io.swagger.annotations.ApiResponses;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping("/v1.0/languages")
+@RequestMapping("/languages")
 @Api(tags = { "Language" })
 public class LanguageController {
 

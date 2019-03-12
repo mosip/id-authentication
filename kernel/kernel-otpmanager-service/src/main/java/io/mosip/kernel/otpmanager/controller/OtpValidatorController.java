@@ -35,7 +35,7 @@ public class OtpValidatorController {
 	 *            the OTP to be validated.
 	 * @return the validation status as DTO response.
 	 */
-	@GetMapping(value = "/v1.0/otp/validate")
+	@GetMapping(value = "/otp/validate")
 	public ResponseEntity<OtpValidatorResponseDto> validateOtp(@RequestParam String key, @RequestParam String otp) {
 		return otpValidatorService.validateOtp(key, otp);
 	}

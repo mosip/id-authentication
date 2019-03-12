@@ -46,7 +46,7 @@ public class GenderTypeController {
 	 * 
 	 * @return list of all gender types
 	 */
-	@GetMapping("/v1.0/gendertypes")
+	@GetMapping("/gendertypes")
 	public GenderTypeResponseDto getAllGenderType() {
 		return genderTypeService.getAllGenderTypes();
 	}
@@ -58,7 +58,7 @@ public class GenderTypeController {
 	 *            the language code whose gender is to be returned
 	 * @return list of all gender types for the given language code
 	 */
-	@GetMapping(value = "/v1.0/gendertypes/{langcode}")
+	@GetMapping(value = "/gendertypes/{langcode}")
 	public GenderTypeResponseDto getGenderBylangCode(@PathVariable("langcode") String langCode) {
 		return genderTypeService.getGenderTypeByLangCode(langCode);
 	}
@@ -71,7 +71,7 @@ public class GenderTypeController {
 	 * @return primary key of entered row of gender
 	 */
 	@ResponseFilter
-	@PostMapping("/v1.0/gendertypes")
+	@PostMapping("/gendertypes")
 	public ResponseEntity<CodeAndLanguageCodeID> saveGenderType(@Valid @RequestBody RequestWrapper<GenderTypeDto> gender) {
 		return new ResponseEntity<>(genderTypeService.saveGenderType(gender), HttpStatus.OK);
 
@@ -86,7 +86,7 @@ public class GenderTypeController {
 	 */
 	@ResponseFilter
 	@ApiOperation(value = "Update Gender Type", response = CodeAndLanguageCodeID.class)
-	@PutMapping("/v1.0/gendertypes")
+	@PutMapping("/gendertypes")
 	public ResponseEntity<CodeAndLanguageCodeID> updateGenderType(
 			@ApiParam("Data to update with metadata") @Valid @RequestBody RequestWrapper<GenderTypeDto> gender) {
 		return new ResponseEntity<>(genderTypeService.updateGenderType(gender), HttpStatus.OK);
@@ -101,7 +101,7 @@ public class GenderTypeController {
 	 * @return code of deleted rows
 	 */
 	@ApiOperation(value = "Delete Gender Type", response = CodeAndLanguageCodeID.class)
-	@DeleteMapping("/v1.0/gendertypes/{code}")
+	@DeleteMapping("/gendertypes/{code}")
 	public ResponseEntity<CodeResponseDto> deleteGenderType(
 			@ApiParam("Gender type Code of gender to be deleted") @PathVariable("code") String code) {
 		return new ResponseEntity<>(genderTypeService.deleteGenderType(code), HttpStatus.OK);
@@ -113,7 +113,7 @@ public class GenderTypeController {
 	 * @return StatusResponseDto
 	 */
 	@ApiOperation(value="validate gender name")
-	@GetMapping("/v1.0/gendertypes/validate/{gendername}")
+	@GetMapping("/gendertypes/validate/{gendername}")
 	public StatusResponseDto valdiateGenderName(@PathVariable("gendername") String genderName) {
 		return genderTypeService.validateGender(genderName);
 	}

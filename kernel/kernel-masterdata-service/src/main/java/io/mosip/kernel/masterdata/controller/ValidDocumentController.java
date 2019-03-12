@@ -45,7 +45,7 @@ public class ValidDocumentController {
 	 * @return ValidDocumentID.
 	 */
 	@ResponseFilter
-	@PostMapping("/v1.0/validdocuments")
+	@PostMapping("/validdocuments")
 	@ApiOperation(value = "Service to create valid document", notes = "Create valid document and return composite id", response = ValidDocumentID.class)
 	public ResponseEntity<ValidDocumentID> createValidDocument(
 			@Valid @RequestBody RequestWrapper<ValidDocumentDto> document) {
@@ -61,7 +61,7 @@ public class ValidDocumentController {
 	 *            the document type code.
 	 * @return the PostValidDocumentResponseDto.
 	 */
-	@DeleteMapping("/v1.0/validdocuments/{doccategorycode}/{doctypecode}")
+	@DeleteMapping("/validdocuments/{doccategorycode}/{doctypecode}")
 	@ApiOperation(value = "Service to delete valid document", notes = "Delete valid document and return composite id", response = DocCategoryAndTypeResponseDto.class)
 	public ResponseEntity<DocCategoryAndTypeResponseDto> deleteValidDocuemnt(
 			@PathVariable("doccategorycode") String docCatCode, @PathVariable("doctypecode") String docTypeCode) {

@@ -46,7 +46,7 @@ public class RegistrationCenterTypeController {
 	 * @return the response dto.
 	 */
 	@ResponseFilter
-	@PostMapping("/v1.0/registrationcentertypes")
+	@PostMapping("/registrationcentertypes")
 	public ResponseEntity<CodeAndLanguageCodeID> createRegistrationCenterType(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {
 		return new ResponseEntity<>(
@@ -63,7 +63,7 @@ public class RegistrationCenterTypeController {
 	 * @return the response dto.
 	 */
 	@ResponseFilter
-	@PutMapping("/v1.0/registrationcentertypes")
+	@PutMapping("/registrationcentertypes")
 	public ResponseEntity<CodeAndLanguageCodeID> updateRegistrationCenterType(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {
 		return new ResponseEntity<>(
@@ -78,7 +78,7 @@ public class RegistrationCenterTypeController {
 	 *            the code of the registration center type that needs to be deleted.
 	 * @return the response.
 	 */
-	@DeleteMapping("/v1.0/registrationcentertypes/{code}")
+	@DeleteMapping("/registrationcentertypes/{code}")
 	public ResponseEntity<CodeResponseDto> deleteRegistrationCenterType(@PathVariable("code") String code) {
 		return new ResponseEntity<>(registrationCenterTypeService.deleteRegistrationCenterType(code), HttpStatus.OK);
 	}

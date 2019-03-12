@@ -23,7 +23,7 @@ import io.swagger.annotations.ApiResponses;
 
 @RestController
 @Api(tags = { "MachineHistory" })
-@RequestMapping(value = "/v1.0/machineshistories")
+@RequestMapping(value = "/machineshistories")
 public class MachineHistoryController {
 
 	/**

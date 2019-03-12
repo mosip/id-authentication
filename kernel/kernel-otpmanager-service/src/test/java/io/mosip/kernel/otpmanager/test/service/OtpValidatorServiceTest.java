@@ -49,7 +49,7 @@ public class OtpValidatorServiceTest {
 		entity.setUpdatedDtimes(LocalDateTime.now(ZoneId.of("UTC")).plusSeconds(50));
 		when(repository.findById(OtpEntity.class, "testKey")).thenReturn(entity);
 		MvcResult result = mockMvc
-				.perform(get("/v1.0/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
+				.perform(get("/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
 		OtpValidatorResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
@@ -67,7 +67,7 @@ public class OtpValidatorServiceTest {
 		entity.setUpdatedDtimes(LocalDateTime.now());
 		when(repository.findById(OtpEntity.class, "testKey")).thenReturn(entity);
 		MvcResult result = mockMvc
-				.perform(get("/v1.0/otp/validate?key=testKey&otp=5431").contentType(MediaType.APPLICATION_JSON))
+				.perform(get("/otp/validate?key=testKey&otp=5431").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotAcceptable()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
 		OtpValidatorResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
@@ -85,7 +85,7 @@ public class OtpValidatorServiceTest {
 		entity.setUpdatedDtimes(LocalDateTime.now());
 		when(repository.findById(OtpEntity.class, "testKey")).thenReturn(entity);
 		MvcResult result = mockMvc
-				.perform(get("/v1.0/otp/validate?key=testKey&otp=5431").contentType(MediaType.APPLICATION_JSON))
+				.perform(get("/otp/validate?key=testKey&otp=5431").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotAcceptable()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
 		OtpValidatorResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
@@ -103,7 +103,7 @@ public class OtpValidatorServiceTest {
 		entity.setUpdatedDtimes(LocalDateTime.now(ZoneId.of("UTC")).minus(1, ChronoUnit.MINUTES));
 		when(repository.findById(OtpEntity.class, "testKey")).thenReturn(entity);
 		MvcResult result = mockMvc
-				.perform(get("/v1.0/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
+				.perform(get("/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotAcceptable()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
 		OtpValidatorResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
@@ -121,7 +121,7 @@ public class OtpValidatorServiceTest {
 		entity.setUpdatedDtimes(LocalDateTime.now().minus(20, ChronoUnit.SECONDS));
 		when(repository.findById(OtpEntity.class, "testKey")).thenReturn(entity);
 		MvcResult result = mockMvc
-				.perform(get("/v1.0/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
+				.perform(get("/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotAcceptable()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
 		OtpValidatorResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),

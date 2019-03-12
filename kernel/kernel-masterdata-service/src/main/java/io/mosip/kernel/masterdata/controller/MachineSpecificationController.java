@@ -50,7 +50,7 @@ public class MachineSpecificationController {
 	 *         inserted
 	 */
 	@ResponseFilter
-	@PostMapping("/v1.0/machinespecifications")
+	@PostMapping("/machinespecifications")
 	@ApiOperation(value = "Service to save Machine Specification", notes = "Saves Machine Spacification and return Machine Spacification ID ", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Machine Specification successfully created", response = IdResponseDto.class),
@@ -71,7 +71,7 @@ public class MachineSpecificationController {
 	 * @return ResponseEntity Machine Specification ID which is successfully updated
 	 */
 	@ResponseFilter
-	@PutMapping("/v1.0/machinespecifications")
+	@PutMapping("/machinespecifications")
 	@ApiOperation(value = "Service to update Machine Specification", notes = "update Machine Spacification and return Machine Spacification ID ", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Machine Specification successfully updated", response = IdResponseDto.class),
@@ -92,7 +92,7 @@ public class MachineSpecificationController {
 	 *            input Machine specification id
 	 * @return ResponseEntity Machine Specification ID which is successfully deleted
 	 */
-	@DeleteMapping("/v1.0/machinespecifications/{id}")
+	@DeleteMapping("/machinespecifications/{id}")
 	@ApiOperation(value = "Service to delete Machine Specification", notes = "Delete Machine Spacification and return Machine Spacification ID ", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Machine Specification successfully deleted", response = IdResponseDto.class),

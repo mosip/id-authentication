@@ -33,7 +33,7 @@ import io.swagger.annotations.ApiResponses;
  *
  */
 @RestController
-@RequestMapping("/v1.0/templatefileformats")
+@RequestMapping("/templatefileformats")
 @Api(tags = { "TemplateFileFormat" })
 public class TemplateFileFormatController {
 

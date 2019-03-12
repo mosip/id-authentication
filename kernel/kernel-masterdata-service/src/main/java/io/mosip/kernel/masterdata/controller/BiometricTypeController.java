@@ -30,7 +30,7 @@ import io.swagger.annotations.Api;
  */
 @RestController
 @Api(tags = { "BiometricType" })
-@RequestMapping("/v1.0/biometrictypes")
+@RequestMapping("/biometrictypes")
 public class BiometricTypeController {
 
 	@Autowired

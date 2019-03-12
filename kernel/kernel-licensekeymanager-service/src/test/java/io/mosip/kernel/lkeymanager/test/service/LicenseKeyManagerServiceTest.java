@@ -123,7 +123,7 @@ public class LicenseKeyManagerServiceTest {
 		when(licenseKeyListRepository.save(Mockito.any())).thenReturn(licensekeyList);
 		when(licenseKeyTspMapRepository.save(Mockito.any())).thenReturn(licenseKeyTspMap);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/license/generate").contentType(MediaType.APPLICATION_JSON).content(json))
+				.perform(post("/license/generate").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andReturn();
 		LicenseKeyGenerationResponseDto returnResponse = objectMapper
 				.readValue(result.getResponse().getContentAsString(), LicenseKeyGenerationResponseDto.class);
@@ -150,7 +150,7 @@ public class LicenseKeyManagerServiceTest {
 				.thenReturn(licenseKeyTspMap);
 		when(licenseKeyPermissionRepository.findByLKey(Mockito.any())).thenReturn(licenseKeyPermission);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
+				.perform(post("/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andReturn();
 		LicenseKeyMappingResponseDto returnResponse = objectMapper.readValue(result.getResponse().getContentAsString(),
 				LicenseKeyMappingResponseDto.class);
@@ -178,7 +178,7 @@ public class LicenseKeyManagerServiceTest {
 				.thenReturn(licenseKeyTspMap);
 		when(licenseKeyPermissionRepository.findByLKey(Mockito.any())).thenReturn(null);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
+				.perform(post("/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andReturn();
 		LicenseKeyMappingResponseDto returnResponse = objectMapper.readValue(result.getResponse().getContentAsString(),
 				LicenseKeyMappingResponseDto.class);
@@ -196,7 +196,7 @@ public class LicenseKeyManagerServiceTest {
 				.thenReturn(licenseKeyTspMap);
 		when(licenseKeyListRepository.findByLicenseKey(Mockito.anyString())).thenReturn(licensekeyList);
 		when(licenseKeyPermissionRepository.findByLKey(Mockito.any())).thenReturn(licenseKeyPermission);
-		MvcResult result = mockMvc.perform(get("/v1.0/license/permission?licenseKey=tEsTlIcEnSe&tspId=TSP_ID_TEST")
+		MvcResult result = mockMvc.perform(get("/license/permission?licenseKey=tEsTlIcEnSe&tspId=TSP_ID_TEST")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
 		LicenseKeyFetchResponseDto returnResponse = objectMapper.readValue(result.getResponse().getContentAsString(),
 				LicenseKeyFetchResponseDto.class);

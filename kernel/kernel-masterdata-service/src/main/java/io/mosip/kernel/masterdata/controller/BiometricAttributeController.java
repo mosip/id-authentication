@@ -49,7 +49,7 @@ public class BiometricAttributeController {
 	BiometricAttributeService biometricAttributeService;
 
 	@ApiOperation(value = "Fetch all the biometric attributes avialbale for specific BiometricType")
-	@GetMapping("/v1.0/getbiometricattributesbyauthtype/{langcode}/{biometrictypecode}")
+	@GetMapping("/getbiometricattributesbyauthtype/{langcode}/{biometrictypecode}")
 	public BiometricAttributeResponseDto getBiometricAttributesByBiometricType(
 			@PathVariable("langcode") String langCode, @PathVariable("biometrictypecode") String biometricTypeCode) {
 		List<BiometricAttributeDto> biomentricAttributes = biometricAttributeService
@@ -65,7 +65,7 @@ public class BiometricAttributeController {
 	 * @return {@link BioTypeCodeAndLangCodeAndAttributeCode}
 	 */
 	@ResponseFilter
-	@PostMapping("/v1.0/biometricattributes")
+	@PostMapping("/biometricattributes")
 	@ApiOperation(value = "Service to create Biometric Attributes", notes = "create Biometric Attributes  and return  code and LangCode", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = CodeAndLanguageCodeID.class),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),

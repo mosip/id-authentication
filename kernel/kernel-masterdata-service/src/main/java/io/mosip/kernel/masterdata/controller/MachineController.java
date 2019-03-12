@@ -55,7 +55,7 @@ public class MachineController {
 	 * @return MachineResponseDto machine detail based on given Machine ID and
 	 *         Language code {@link MachineResponseDto}
 	 */
-	@GetMapping(value = "/v1.0/machines/{id}/{langcode}")
+	@GetMapping(value = "/machines/{id}/{langcode}")
 	@ApiOperation(value = "Retrieve all Machine Details for given Languge Code", notes = "Retrieve all Machine Detail for given Languge Code and ID", response = MachineResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given Languge Code and ID", response = MachineResponseDto.class),
@@ -78,7 +78,7 @@ public class MachineController {
 	 *         {@link MachineResponseDto}
 	 */
 
-	@GetMapping(value = "/v1.0/machines/{langcode}")
+	@GetMapping(value = "/machines/{langcode}")
 	@ApiOperation(value = "Retrieve all Machine Details for given Languge Code", notes = "Retrieve all Machine Detail for given Languge Code", response = MachineResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given Languge Code", response = MachineResponseDto.class),
@@ -94,7 +94,7 @@ public class MachineController {
 	 * 
 	 * @return MachineResponseDto all machines details {@link MachineResponseDto}
 	 */
-	@GetMapping(value = "/v1.0/machines")
+	@GetMapping(value = "/machines")
 	@ApiOperation(value = "Retrieve all Machine Details", notes = "Retrieve all Machine Detail", response = MachineResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When all Machine retrieved from database", response = MachineResponseDto.class),
@@ -115,7 +115,7 @@ public class MachineController {
 	 *         {@link ResponseEntity}
 	 */
 	@ResponseFilter
-	@PostMapping("/v1.0/machines")
+	@PostMapping("/machines")
 	@ApiOperation(value = "Service to save Machine", notes = "Saves Machine Detail and return Machine id", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Machine successfully created", response = IdResponseDto.class),
@@ -136,7 +136,7 @@ public class MachineController {
 	 *         {@link ResponseEntity}
 	 */
 	@ResponseFilter
-	@PutMapping("/v1.0/machines")
+	@PutMapping("/machines")
 	@ApiOperation(value = "Service to update Machine", notes = "update Machine Detail and return Machine id", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Machine successfully udated", response = IdResponseDto.class),
@@ -156,7 +156,7 @@ public class MachineController {
 	 * @return ResponseEntity Machine Id which is deleted successfully
 	 *         {@link ResponseEntity}
 	 */
-	@DeleteMapping("/v1.0/machines/{id}")
+	@DeleteMapping("/machines/{id}")
 	@ApiOperation(value = "Service to delete Machine ", notes = "Delete Machine  and return Machine  Id ", response = IdResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Machine successfully deleted", response = IdResponseDto.class),

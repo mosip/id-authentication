@@ -42,7 +42,7 @@ public class OtpGeneratorController {
 	 */
 
 	@ResponseFilter
-	@PostMapping(value = "/v1.0/otp/generate")
+	@PostMapping(value = "/otp/generate")
 	public ResponseEntity<OtpGeneratorResponseDto> generateOtp(
 			@Valid @RequestBody RequestWrapper<OtpGeneratorRequestDto> otpDto) {
 		return new ResponseEntity<>(otpGeneratorService.getOtp(otpDto.getRequest()), HttpStatus.OK);

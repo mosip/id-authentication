@@ -48,7 +48,7 @@ public class MachineTypeController {
 	 * 
 	 */
 	@ResponseFilter
-	@PostMapping("/v1.0/machinetypes")
+	@PostMapping("/machinetypes")
 	@ApiOperation(value = "Service to save Machine Type", notes = "Saves MachineType and return  code and Languge Code", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Machine Type successfully created", response = CodeAndLanguageCodeID.class),

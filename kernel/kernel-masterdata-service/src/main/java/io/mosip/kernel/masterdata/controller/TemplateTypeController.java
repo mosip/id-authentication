@@ -41,7 +41,7 @@ public class TemplateTypeController {
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	@ResponseFilter
-	@PostMapping("/v1.0/templatetypes")
+	@PostMapping("/templatetypes")
 	@ApiOperation(value = "Service to create template type", notes = "create TemplateType  and return  code and LangCode", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created", response = CodeAndLanguageCodeID.class),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),

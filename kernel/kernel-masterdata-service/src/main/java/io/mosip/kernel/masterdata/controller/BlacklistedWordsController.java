@@ -37,7 +37,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @Api(tags = { "BlacklistedWords" })
-@RequestMapping("/v1.0/blacklistedwords")
+@RequestMapping("/blacklistedwords")
 public class BlacklistedWordsController {
 	@Autowired
 	private BlacklistedWordsService blacklistedWordsService;

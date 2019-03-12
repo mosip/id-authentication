@@ -45,7 +45,7 @@ public class TitleController {
 	 * 
 	 * @return list of all titles present in master DB
 	 */
-	@GetMapping(value = "/v1.0/title")
+	@GetMapping(value = "/title")
 	public TitleResponseDto getAllTitles() {
 		return titleService.getAllTitles();
 	}
@@ -58,7 +58,7 @@ public class TitleController {
 	 *            code
 	 * @return list of all titles for the particular language code
 	 */
-	@GetMapping(value = "/v1.0/title/{langcode}")
+	@GetMapping(value = "/title/{langcode}")
 	public TitleResponseDto getTitlesBylangCode(@PathVariable("langcode") String langCode) {
 		return titleService.getByLanguageCode(langCode);
 	}
@@ -71,7 +71,7 @@ public class TitleController {
 	 * @return primary key of entered row
 	 */
 	@ResponseFilter
-	@PostMapping("/v1.0/title")
+	@PostMapping("/title")
 	public ResponseEntity<CodeAndLanguageCodeID> saveTitle(@Valid @RequestBody RequestWrapper<TitleDto> title) {
 		return new ResponseEntity<>(titleService.saveTitle(title), HttpStatus.OK);
 
@@ -85,7 +85,7 @@ public class TitleController {
 	 * @return composite primary key of updated row
 	 */
 	@ResponseFilter
-	@PutMapping("/v1.0/title")
+	@PutMapping("/title")
 	@ApiOperation(value = "Service to update title", notes = "Update title and return composite id", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When title successfully updated", response = CodeResponseDto.class),
@@ -104,7 +104,7 @@ public class TitleController {
 	 *            input from user
 	 * @return composite key of deleted row of data
 	 */
-	@DeleteMapping("/v1.0/title/{code}")
+	@DeleteMapping("/title/{code}")
 	@ApiOperation(value = "Service to delete title", notes = "Delete title and return composite id", response = CodeResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When title successfully deleted", response = CodeResponseDto.class),

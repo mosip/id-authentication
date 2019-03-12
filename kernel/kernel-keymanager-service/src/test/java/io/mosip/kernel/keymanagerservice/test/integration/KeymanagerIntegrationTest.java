@@ -138,7 +138,7 @@ public class KeymanagerIntegrationTest {
 		setupMultipleKeyAlias();
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
 
-		MvcResult result = mockMvc.perform(get("/v1.0/publickey/1?timeStamp=2010-01-01T12:00:00.000Z"))
+		MvcResult result = mockMvc.perform(get("/publickey/1?timeStamp=2010-01-01T12:00:00.000Z"))
 				.andExpect(status().is(200)).andReturn();
 		//System.out.println(result.getResponse().getContentAsString());
 	}
@@ -147,7 +147,7 @@ public class KeymanagerIntegrationTest {
 	public void getPublicKeyFromHSMMultipleAliasReference() throws Exception {
 		setupMultipleKeyAlias();
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
-		MvcResult result = mockMvc.perform(get("/v1.0/publickey/1?referenceId= &timeStamp=2010-01-01T12:00:00.000Z"))
+		MvcResult result = mockMvc.perform(get("/publickey/1?referenceId= &timeStamp=2010-01-01T12:00:00.000Z"))
 				.andExpect(status().is(200)).andReturn();
 
 		//System.out.println(result.getResponse().getContentAsString());
@@ -158,7 +158,7 @@ public class KeymanagerIntegrationTest {
 		setupSingleKeyAlias();
 		when(keyStore.getPublicKey(Mockito.any())).thenReturn(publicKey);
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
-		MvcResult result = mockMvc.perform(get("/v1.0/publickey/1?timeStamp=2011-01-01T12:00:00.000Z"))
+		MvcResult result = mockMvc.perform(get("/publickey/1?timeStamp=2011-01-01T12:00:00.000Z"))
 				.andExpect(status().is(200)).andReturn();
 		//System.out.println(result.getResponse().getContentAsString());
 	}
@@ -168,7 +168,7 @@ public class KeymanagerIntegrationTest {
 		when(keyStore.getPublicKey(Mockito.any())).thenReturn(publicKey);
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
 		when(keyPolicyRepository.findByApplicationId(Mockito.any())).thenReturn(keyPolicy);
-		MvcResult result = mockMvc.perform(get("/v1.0/publickey/1?timeStamp=2010-05-01T10:00:00.000Z"))
+		MvcResult result = mockMvc.perform(get("/publickey/1?timeStamp=2010-05-01T10:00:00.000Z"))
 				.andExpect(status().is(200)).andReturn();
 
 	}
@@ -181,7 +181,7 @@ public class KeymanagerIntegrationTest {
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
 		when(keyPolicyRepository.findByApplicationId(Mockito.any())).thenReturn(keyPolicy);
 
-		MvcResult result = mockMvc.perform(get("/v1.0/publickey/1?timeStamp=2009-05-01T10:00:00.000Z"))
+		MvcResult result = mockMvc.perform(get("/publickey/1?timeStamp=2009-05-01T10:00:00.000Z"))
 				.andExpect(status().is(200)).andReturn();
 		//System.out.println(result.getResponse().getContentAsString());
 	}
@@ -194,7 +194,7 @@ public class KeymanagerIntegrationTest {
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
 		when(keyPolicyRepository.findByApplicationId(Mockito.any())).thenReturn(keyPolicy);
 
-		MvcResult result = mockMvc.perform(get("/v1.0/publickey/1?timeStamp=2001-05-01T10:00:00.000Z"))
+		MvcResult result = mockMvc.perform(get("/publickey/1?timeStamp=2001-05-01T10:00:00.000Z"))
 				.andExpect(status().is(200)).andReturn();
 		//System.out.println(result.getResponse().getContentAsString());
 	}
@@ -203,7 +203,7 @@ public class KeymanagerIntegrationTest {
 	public void getPublicKeyFromDBMultipleAlias() throws Exception {
 		setupMultipleKeyAlias();
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
-		MvcResult result = mockMvc.perform(get("/v1.0/publickey/REGISTRATION?referenceId=1&timeStamp=2010-05-01T10:00:00.000Z"))
+		MvcResult result = mockMvc.perform(get("/publickey/REGISTRATION?referenceId=1&timeStamp=2010-05-01T10:00:00.000Z"))
 				.andExpect(status().is(200)).andReturn();
 		//System.out.println(result.getResponse().getContentAsString());
 	}
@@ -213,7 +213,7 @@ public class KeymanagerIntegrationTest {
 		setupSingleKeyAlias();
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
 		when(keyStoreRepository.findByAlias(Mockito.any())).thenReturn(dbKeyStore);
-		MvcResult result = mockMvc.perform(get("/v1.0/publickey/REGISTRATION?referenceId=1&timeStamp=2010-01-01T12:00:00.000Z"))
+		MvcResult result = mockMvc.perform(get("/publickey/REGISTRATION?referenceId=1&timeStamp=2010-01-01T12:00:00.000Z"))
 				.andExpect(status().is(200)).andReturn();
 		//System.out.println(result.getResponse().getContentAsString());
 	}
@@ -224,7 +224,7 @@ public class KeymanagerIntegrationTest {
 		setupDBKeyStore();
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
 		when(keyStoreRepository.findByAlias(Mockito.any())).thenReturn(dbKeyStore);
-		MvcResult result = mockMvc.perform(get("/v1.0/publickey/REGISTRATION?referenceId=1&timeStamp=2010-05-01T10:00:00.000Z"))
+		MvcResult result = mockMvc.perform(get("/publickey/REGISTRATION?referenceId=1&timeStamp=2010-05-01T10:00:00.000Z"))
 				.andExpect(status().is(200)).andReturn();
 		//System.out.println(result.getResponse().getContentAsString());
 	}
@@ -235,7 +235,7 @@ public class KeymanagerIntegrationTest {
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
 		when(keyStoreRepository.findByAlias(Mockito.any())).thenReturn(dbKeyStore);
 		when(keyPolicyRepository.findByApplicationId(Mockito.any())).thenReturn(keyPolicy);
-		MvcResult result = mockMvc.perform(get("/v1.0/publickey/REGISTRATION?referenceId=1&timeStamp=2010-05-01T10:00:00.000Z"))
+		MvcResult result = mockMvc.perform(get("/publickey/REGISTRATION?referenceId=1&timeStamp=2010-05-01T10:00:00.000Z"))
 				.andExpect(status().is(500)).andReturn();
 		//System.out.println(result.getResponse().getContentAsString());
 	}
@@ -248,7 +248,7 @@ public class KeymanagerIntegrationTest {
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
 		when(keyStoreRepository.findByAlias(Mockito.any())).thenReturn(dbKeyStore);
 		when(keyPolicyRepository.findByApplicationId(Mockito.any())).thenReturn(keyPolicy);
-		MvcResult result = mockMvc.perform(get("/v1.0/publickey/REGISTRATION?referenceId=1&timeStamp=2010-05-01T10:00:00.000Z"))
+		MvcResult result = mockMvc.perform(get("/publickey/REGISTRATION?referenceId=1&timeStamp=2010-05-01T10:00:00.000Z"))
 				.andExpect(status().is(200)).andReturn();
 		//System.out.println(result.getResponse().getContentAsString());
 	}
@@ -260,7 +260,7 @@ public class KeymanagerIntegrationTest {
 				LocalDateTime.parse("2010-05-01 12:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), "", "");
 		String content = mapper.writeValueAsString(symmetricKeyRequestDto);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
+				.perform(post("/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().is(200)).andReturn();
 
 		//System.out.println(result.getResponse().getContentAsString());
@@ -275,7 +275,7 @@ public class KeymanagerIntegrationTest {
 				LocalDateTime.parse("2010-05-01 12:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null, "");
 		String content = mapper.writeValueAsString(symmetricKeyRequestDto);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
+				.perform(post("/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().is(200)).andReturn();
 		//System.out.println(result.getResponse().getContentAsString());
 	}
@@ -289,7 +289,7 @@ public class KeymanagerIntegrationTest {
 				"");
 		String content = mapper.writeValueAsString(symmetricKeyRequestDto);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
+				.perform(post("/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().is(200)).andReturn();
 
 		//System.out.println(result.getResponse().getContentAsString());
@@ -305,7 +305,7 @@ public class KeymanagerIntegrationTest {
 				"");
 		String content = mapper.writeValueAsString(symmetricKeyRequestDto);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
+				.perform(post("/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().is(200)).andReturn();
 		//System.out.println(result.getResponse().getContentAsString());
 	}
@@ -320,7 +320,7 @@ public class KeymanagerIntegrationTest {
 				"");
 		String content = mapper.writeValueAsString(symmetricKeyRequestDto);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
+				.perform(post("/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().is(200)).andReturn();
 		//System.out.println(result.getResponse().getContentAsString());
 	}
@@ -338,7 +338,7 @@ public class KeymanagerIntegrationTest {
 				"");
 		String content = mapper.writeValueAsString(symmetricKeyRequestDto);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
+				.perform(post("/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().is(500)).andReturn();
 		//System.out.println(result.getResponse().getContentAsString());
 	}
@@ -357,7 +357,7 @@ public class KeymanagerIntegrationTest {
 				"");
 		String content = mapper.writeValueAsString(symmetricKeyRequestDto);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
+				.perform(post("/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().is(200)).andReturn();
 		//System.out.println(result.getResponse().getContentAsString());
 	}

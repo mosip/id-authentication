@@ -41,7 +41,7 @@ public class LicenseKeyController {
 	 *            the {@link LicenseKeyGenerationDto}.
 	 * @return the response entity.
 	 */
-	@PostMapping(value = "/v1.0/license/generate")
+	@PostMapping(value = "/license/generate")
 	public ResponseEntity<LicenseKeyGenerationResponseDto> generateLicenseKey(
 			@RequestBody LicenseKeyGenerationDto licenseKeyGenerationDto) {
 		LicenseKeyGenerationResponseDto responseDto = new LicenseKeyGenerationResponseDto();
@@ -57,7 +57,7 @@ public class LicenseKeyController {
 	 *            the {@link LicenseKeyMappingDto}.
 	 * @return the response entity.
 	 */
-	@PostMapping(value = "/v1.0/license/permission")
+	@PostMapping(value = "/license/permission")
 	public ResponseEntity<LicenseKeyMappingResponseDto> mapLicenseKey(
 			@RequestBody LicenseKeyMappingDto licenseKeyMappingDto) {
 		LicenseKeyMappingResponseDto licenseKeyMappingResponseDto = new LicenseKeyMappingResponseDto();
@@ -72,7 +72,7 @@ public class LicenseKeyController {
 	 *            the license key of which the permissions need to be fetched.
 	 * @return the permissions fetched.
 	 */
-	@GetMapping(value = "/v1.0/license/permission")
+	@GetMapping(value = "/license/permission")
 	public ResponseEntity<LicenseKeyFetchResponseDto> fetchLicenseKeyPermissions(@RequestParam("tspId") String tspId,
 			@RequestParam("licenseKey") String licenseKey) {
 		LicenseKeyFetchResponseDto licenseKeyFetchResponseDto = new LicenseKeyFetchResponseDto();

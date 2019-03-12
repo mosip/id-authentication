@@ -144,48 +144,48 @@ public class SyncDataControllerTest {
 	public void syncMasterDataSuccess() throws Exception {
 		when(masterDataService.syncData(Mockito.anyString(), Mockito.isNull(), Mockito.any()))
 				.thenReturn(masterDataResponseDto);
-		mockMvc.perform(get("/v1.0/masterdata/{machineId}", "1001")).andExpect(status().isOk());
+		mockMvc.perform(get("/masterdata/{machineId}", "1001")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void syncMasterDataWithlastUpdatedTimestampSuccess() throws Exception {
 		when(masterDataService.syncData(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(masterDataResponseDto);
-		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-01-01T01:01:01.021Z", "1001"))
+		mockMvc.perform(get("/masterdata/{machineId}?lastUpdated=2018-01-01T01:01:01.021Z", "1001"))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void syncMasterDataWithlastUpdatedTimestampfailure() throws Exception {
-		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-01-016501:01:01", "1001"))
+		mockMvc.perform(get("/masterdata/{machineId}?lastUpdated=2018-01-016501:01:01", "1001"))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void syncGlobalConfigDetailsSuccess() throws Exception {
 		when(syncConfigDetailsService.getGlobalConfigDetails()).thenReturn(globalConfigMap);
-		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isOk());
+		mockMvc.perform(get("/globalconfigs")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void syncRegistrationConfigDetailsSuccess() throws Exception {
 		when(syncConfigDetailsService.getRegistrationCenterConfigDetails(Mockito.anyString()))
 				.thenReturn(globalConfigMap);
-		mockMvc.perform(get("/v1.0/registrationcenterconfig/1")).andExpect(status().isOk());
+		mockMvc.perform(get("/registrationcenterconfig/1")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void syncGlobalConfigDetailsFailure() throws Exception {
 		when(syncConfigDetailsService.getGlobalConfigDetails())
 				.thenThrow(new SyncDataServiceException("KER-SYNC-127", "Error occured in service"));
-		mockMvc.perform(get("/v1.0/globalconfigs")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/globalconfigs")).andExpect(status().isInternalServerError());
 	}
 
 	@Test
 	public void getUsersBasedOnRegCenter() throws Exception {
 		String regId = "110044";
 		when(syncUserDetailsService.getAllUserDetail(regId)).thenReturn(syncUserDetailDto);
-		mockMvc.perform(get("/v1.0/userdetails/{regid}", "110044")).andExpect(status().isOk());
+		mockMvc.perform(get("/userdetails/{regid}", "110044")).andExpect(status().isOk());
 
 	}
 
@@ -194,7 +194,7 @@ public class SyncDataControllerTest {
 		String regId = "110044";
 		when(syncUserDetailsService.getAllUserDetail(regId))
 				.thenThrow(new SyncDataServiceException("KER-SYNC-301", "Error occured while fetching User Details"));
-		mockMvc.perform(get("/v1.0/userdetails/{regid}", "110044")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/userdetails/{regid}", "110044")).andExpect(status().isInternalServerError());
 
 	}
 
@@ -238,7 +238,7 @@ public class SyncDataControllerTest {
 
 		Mockito.when(syncConfigDetailsService.getPublicKey(Mockito.anyString(), Mockito.anyString(), Mockito.any()))
 				.thenReturn(publicKeyResponse);
-		mockMvc.perform(get("/v1.0/publickey/REGISTRATION").param("timeStamp", "2019-09-09T09%3A00%3A00.000Z")).andExpect(status().isOk());
+		mockMvc.perform(get("/publickey/REGISTRATION").param("timeStamp", "2019-09-09T09%3A00%3A00.000Z")).andExpect(status().isOk());
 	}
 	
 	//-----------------AllRoles-------------------------------//
@@ -248,6 +248,6 @@ public class SyncDataControllerTest {
 		RolesResponseDto rolesResponseDto= new RolesResponseDto();
 		rolesResponseDto.setLastSyncTime("2019-09-09T09:09:09.000Z");
 		Mockito.when(syncRolesService.getAllRoles()).thenReturn(rolesResponseDto);
-		mockMvc.perform(get("/v1.0/roles")).andExpect(status().isOk());
+		mockMvc.perform(get("/roles")).andExpect(status().isOk());
 	}
 }

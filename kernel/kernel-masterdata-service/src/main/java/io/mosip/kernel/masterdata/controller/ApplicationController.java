@@ -30,7 +30,7 @@ import io.swagger.annotations.Api;
 
 @Api(tags = { "Application" })
 @RestController
-@RequestMapping("/v1.0/applicationtypes")
+@RequestMapping("/applicationtypes")
 public class ApplicationController {
 
 	@Autowired

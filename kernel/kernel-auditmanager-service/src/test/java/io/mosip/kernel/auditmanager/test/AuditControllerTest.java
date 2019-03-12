@@ -68,7 +68,7 @@ public class AuditControllerTest {
 		RequestWrapper<AuditRequestDto> request = new RequestWrapper<>();
 		request.setRequest(auditRequestDto);
 
-		mockMvc.perform(post("/v1.0/audits").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(post("/audits").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request))).andExpect(status().isOk())
 				.andExpect(jsonPath("$.response.status", is(true)));
 	}

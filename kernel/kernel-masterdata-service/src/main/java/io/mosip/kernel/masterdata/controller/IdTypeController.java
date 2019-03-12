@@ -47,7 +47,7 @@ public class IdTypeController {
 	 *            the language code against which id types are to be fetched.
 	 * @return the list of id types.
 	 */
-	@GetMapping("/v1.0/idtypes/{langcode}")
+	@GetMapping("/idtypes/{langcode}")
 	@ApiOperation(value = "Service to fetch id types based on language code.", notes = "Fetch IdTypes based on Language Code.", response = IdTypeResponseDto.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When idtypes successfully fetched.", response = IdTypeResponseDto.class),
@@ -66,7 +66,7 @@ public class IdTypeController {
 	 * @return the response.
 	 */
 	@ResponseFilter
-	@PostMapping("/v1.0/idtypes")
+	@PostMapping("/idtypes")
 	@ApiOperation(value = "Service to create id type.", notes = "Create Id Type.", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When id type successfully created.", response = CodeResponseDto.class),

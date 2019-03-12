@@ -35,7 +35,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @RestController
 @Api(tags = { "Holiday" })
-@RequestMapping("/v1.0/holidays")
+@RequestMapping("/holidays")
 public class HolidayController {
 
 	@Autowired

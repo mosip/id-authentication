@@ -108,7 +108,7 @@ public class LicenseKeyManagerExceptionTest {
 		licenseKeyMappingDto.setPermissions(permissions);
 		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
-		mockMvc.perform(post("/v1.0/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
@@ -122,7 +122,7 @@ public class LicenseKeyManagerExceptionTest {
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(licenseKeyTspMap);
 		when(licenseKeyListRepository.findByLicenseKey(Mockito.anyString())).thenReturn(licensekeyList);
-		mockMvc.perform(get("/v1.0/license/permission?licenseKey=tEsTlIcEnSe&tspId=TSP_ID_TEST")
+		mockMvc.perform(get("/license/permission?licenseKey=tEsTlIcEnSe&tspId=TSP_ID_TEST")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
@@ -138,7 +138,7 @@ public class LicenseKeyManagerExceptionTest {
 	public void testLKMFetchServiceExceptionWhenInvalidValues() throws Exception {
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 		when(licenseKeyListRepository.findByLicenseKey(Mockito.anyString())).thenReturn(licensekeyList);
-		mockMvc.perform(get("/v1.0/license/permission?licenseKey=tEsTlIcEnSe&tspId=TSP_ID_TEST")
+		mockMvc.perform(get("/license/permission?licenseKey=tEsTlIcEnSe&tspId=TSP_ID_TEST")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
@@ -151,7 +151,7 @@ public class LicenseKeyManagerExceptionTest {
 	@Test
 	public void testLKMFetchServiceExceptionWhenEmptyLKey() throws Exception {
 		mockMvc.perform(
-				get("/v1.0/license/permission?licenseKey=&tspId=TSP_ID_TEST").contentType(MediaType.APPLICATION_JSON))
+				get("/license/permission?licenseKey=&tspId=TSP_ID_TEST").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
@@ -163,7 +163,7 @@ public class LicenseKeyManagerExceptionTest {
 	@Test
 	public void testLKMFetchServiceExceptionWhenNullTSP() throws Exception {
 		mockMvc.perform(
-				get("/v1.0/license/permission?licenseKey=hjdesufhdufyisehui").contentType(MediaType.APPLICATION_JSON))
+				get("/license/permission?licenseKey=hjdesufhdufyisehui").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
 	}
 
@@ -175,7 +175,7 @@ public class LicenseKeyManagerExceptionTest {
 	@Test
 	public void testLKMFetchServiceExceptionWhenEmptyTSP() throws Exception {
 		mockMvc.perform(
-				get("/v1.0/license/permission?licenseKey=jsudhauidhiw&tspId=").contentType(MediaType.APPLICATION_JSON))
+				get("/license/permission?licenseKey=jsudhauidhiw&tspId=").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
@@ -186,7 +186,7 @@ public class LicenseKeyManagerExceptionTest {
 	 */
 	@Test
 	public void testLKMFetchServiceExceptionWhenNullLicenseKey() throws Exception {
-		mockMvc.perform(get("/v1.0/license/permission?tspId=98376").contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/license/permission?tspId=98376").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
 	}
 
@@ -204,7 +204,7 @@ public class LicenseKeyManagerExceptionTest {
 		when(licenseKeyTspMapRepository.save(Mockito.any())).thenReturn(licenseKeyTspMap);
 		String jsonString = "{\"licenseExpiryTime\": \"-MM-dd'T'HH:mm:ss.SSS'Z'\", \"tspId\": \"string\"}";
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/license/generate").contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.perform(post("/license/generate").contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(status().isOk()).andReturn();
 		assertThat(objectMapper.readValue(result.getResponse().getContentAsString(), ErrorResponse.class).getStatus(),
 				is(200));
@@ -222,7 +222,7 @@ public class LicenseKeyManagerExceptionTest {
 		licenseKeyGenerationDto.setTspId("TSP_ID_TEST");
 		String jsonString = objectMapper.writeValueAsString(licenseKeyGenerationDto);
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/license/generate").contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.perform(post("/license/generate").contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(status().isOk()).andReturn();
 		assertThat(objectMapper.readValue(result.getResponse().getContentAsString(), ErrorResponse.class).getStatus(),
 				is(200));
@@ -244,7 +244,7 @@ public class LicenseKeyManagerExceptionTest {
 		licenseKeyMappingDto.setPermissions(permissions);
 		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
-		mockMvc.perform(post("/v1.0/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
@@ -264,7 +264,7 @@ public class LicenseKeyManagerExceptionTest {
 		licenseKeyMappingDto.setPermissions(permissions);
 		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
-		mockMvc.perform(post("/v1.0/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
@@ -284,7 +284,7 @@ public class LicenseKeyManagerExceptionTest {
 		licenseKeyMappingDto.setPermissions(permissions);
 		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
-		mockMvc.perform(post("/v1.0/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
@@ -304,7 +304,7 @@ public class LicenseKeyManagerExceptionTest {
 		licenseKeyMappingDto.setPermissions(permissions);
 		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
-		mockMvc.perform(post("/v1.0/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
@@ -325,7 +325,7 @@ public class LicenseKeyManagerExceptionTest {
 		licenseKeyMappingDto.setPermissions(permissions);
 		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
-		mockMvc.perform(post("/v1.0/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
@@ -345,7 +345,7 @@ public class LicenseKeyManagerExceptionTest {
 		licenseKeyMappingDto.setPermissions(permissions);
 		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
-		mockMvc.perform(post("/v1.0/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 

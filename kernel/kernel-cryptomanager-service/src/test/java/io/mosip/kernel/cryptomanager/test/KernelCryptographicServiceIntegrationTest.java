@@ -97,7 +97,7 @@ public class KernelCryptographicServiceIntegrationTest {
 				objectMapper.writeValueAsString(keymanagerPublicKeyResponseDto), MediaType.APPLICATION_JSON));
 		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				.perform(post("/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
 				.andExpect(status().isOk()).andReturn();
 		CryptomanagerResponseDto cryptomanagerResponseDto = objectMapper
 				.readValue(result.getResponse().getContentAsString(), CryptomanagerResponseDto.class);
@@ -113,7 +113,7 @@ public class KernelCryptographicServiceIntegrationTest {
 		when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("dXJ2aWw".getBytes());
 		String requestBody = "{\"applicationId\": \"uoiuoi\",\"data\": \"dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
 		MvcResult result = mockMvc
-				.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				.perform(post("/decrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
 				.andExpect(status().isOk()).andReturn();
 		CryptomanagerResponseDto cryptomanagerResponseDto = objectMapper
 				.readValue(result.getResponse().getContentAsString(), CryptomanagerResponseDto.class);

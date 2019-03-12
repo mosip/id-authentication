@@ -42,7 +42,7 @@ public class AuditManagerController {
 	 * @return The {@link AuditResponseDto} having the status of audit
 	 */
 	@ResponseFilter
-	@PostMapping(value = "/v1.0/audits")
+	@PostMapping(value = "/audits")
 	public ResponseEntity<AuditResponseDto> addAudit(@RequestBody @Valid RequestWrapper<AuditRequestDto> requestDto) {
 		return new ResponseEntity<>(service.addAudit(requestDto.getRequest()), HttpStatus.OK);
 	}

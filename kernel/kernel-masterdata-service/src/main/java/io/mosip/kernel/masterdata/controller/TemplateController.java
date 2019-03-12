@@ -36,7 +36,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @Api(tags = { "Template" })
-@RequestMapping("/v1.0/templates")
+@RequestMapping("/templates")
 public class TemplateController {
 
 	@Autowired

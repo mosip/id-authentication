@@ -37,7 +37,7 @@ import io.swagger.annotations.Api;
  */
 @RestController
 @Api(tags = { "Location" })
-@RequestMapping(value = "/v1.0/locations")
+@RequestMapping(value = "/locations")
 public class LocationController {
 
 	/**

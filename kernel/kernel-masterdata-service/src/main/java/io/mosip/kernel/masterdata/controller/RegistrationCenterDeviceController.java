@@ -31,7 +31,7 @@ import io.swagger.annotations.ApiResponses;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping("/v1.0/registrationcenterdevice")
+@RequestMapping("/registrationcenterdevice")
 @Api(value = "Operation related to mapping of registration center and devices",tags = { "RegistrationCenterDevice" })
 public class RegistrationCenterDeviceController {
 

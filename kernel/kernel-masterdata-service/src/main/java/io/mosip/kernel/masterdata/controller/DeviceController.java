@@ -38,7 +38,7 @@ import io.swagger.annotations.ApiResponses;
  */
 
 @RestController
-@RequestMapping(value = "/v1.0/devices")
+@RequestMapping(value = "/devices")
 @Api(tags = { "Device" })
 public class DeviceController {
 

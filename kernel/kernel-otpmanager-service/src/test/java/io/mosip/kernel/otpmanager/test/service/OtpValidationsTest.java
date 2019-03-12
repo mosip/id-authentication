@@ -49,7 +49,7 @@ public class OtpValidationsTest {
 	@Test
 	public void testNullKey() throws Exception {
 		when(otpRepository.findById(OtpEntity.class, "testKey")).thenReturn(null);
-		mockMvc.perform(get("/v1.0/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 	}
 
@@ -65,7 +65,7 @@ public class OtpValidationsTest {
 		entity.setGeneratedDtimes(LocalDateTime.now(ZoneId.of("UTC")).minusMinutes(3));
 		when(otpRepository.findById(OtpEntity.class, "testKey")).thenReturn(entity);
 		MvcResult result = mockMvc
-				.perform(get("/v1.0/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
+				.perform(get("/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotAcceptable()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
 		OtpValidatorResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
@@ -80,7 +80,7 @@ public class OtpValidationsTest {
 		validationErrorsList.add(serviceError);
 		when(otpRepository.findById(OtpEntity.class, "testKey"))
 				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
-		mockMvc.perform(get("/v1.0/otp/validate?key=&otp=1234").contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/otp/validate?key=&otp=1234").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 	}
 
@@ -91,7 +91,7 @@ public class OtpValidationsTest {
 		validationErrorsList.add(serviceError);
 		when(otpRepository.findById(OtpEntity.class, "testKey"))
 				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
-		mockMvc.perform(get("/v1.0/otp/validate?key=testkey&otp=").contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/otp/validate?key=testkey&otp=").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 	}
 
@@ -102,7 +102,7 @@ public class OtpValidationsTest {
 		validationErrorsList.add(serviceError);
 		when(otpRepository.findById(OtpEntity.class, "testKey"))
 				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
-		mockMvc.perform(get("/v1.0/otp/validate").param("key", "sa").param("otp", "123456")
+		mockMvc.perform(get("/otp/validate").param("key", "sa").param("otp", "123456")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
 	}
 
@@ -113,7 +113,7 @@ public class OtpValidationsTest {
 		validationErrorsList.add(serviceError);
 		when(otpRepository.findById(OtpEntity.class, "testKey"))
 				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
-		mockMvc.perform(get("/v1.0/otp/validate").param("key",
+		mockMvc.perform(get("/otp/validate").param("key",
 				"ykbbgyhogsmziqozetsyexoazpqhcpqywqmuyyijaweoswjlvhemamrmbuorixvnwlrhgfbnrmoorscjkllmgzqxtauoolvhoiyxfwoiotkvimcqshxvxplrqsfxmlmroyxcphstayxnowmjsnwdwhazpotqqrafuvpcaccaxneavptzwwsukhjqzwhjpdgrbqfybsyyryqlbrpdakuvtvswcwpzvkkaonblwlkjvytiodlnvsodsxkkgbbzvxkjbgbhnnvpkohydywdaudekflgbvbkeqwrekdgsneomyovczvnqhuitmr")
 				.param("otp", "123456").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
 	}
@@ -125,7 +125,7 @@ public class OtpValidationsTest {
 		validationErrorsList.add(serviceError);
 		when(otpRepository.findById(OtpEntity.class, "testKey"))
 				.thenThrow(new OtpInvalidArgumentException(validationErrorsList));
-		mockMvc.perform(get("/v1.0/otp/validate").param("key", "test").param("otp", "INVALID-TYPE")
+		mockMvc.perform(get("/otp/validate").param("key", "test").param("otp", "INVALID-TYPE")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
 	}
 }

@@ -54,7 +54,7 @@ public class RegistrationCenterUserMachineController {
 	 */
 	@ResponseFilter
 	@ApiOperation(value = "Create a mapping of registration center,user,and machine", response = RegistrationCenterMachineUserID.class)
-	@PostMapping("/v1.0/registrationmachineusermappings")
+	@PostMapping("/registrationmachineusermappings")
 	public ResponseEntity<RegistrationCenterMachineUserID> createRegistrationCentersMachineUserMapping(
 			@ApiParam("Registration center id,user id and ,machine id with metadata") @RequestBody @Valid RequestWrapper<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDto) {
 		return new ResponseEntity<>(registrationCenterMachineUserService.createRegistrationCentersMachineUserMapping(
@@ -73,7 +73,7 @@ public class RegistrationCenterUserMachineController {
 	 * @return {@link RegistrationCenterMachineUserID} as response
 	 */
 	@ApiOperation(value = "Delete the mapping of registration center and user and machine", response = RegistrationCenterMachineUserID.class)
-	@DeleteMapping("/v1.0/registrationmachineusermappings/{regCenterId}/{machineId}/{userId}")
+	@DeleteMapping("/registrationmachineusermappings/{regCenterId}/{machineId}/{userId}")
 	public ResponseEntity<RegistrationCenterMachineUserID> deleteRegistrationCenterUserMachineMapping(
 			@ApiParam("Registration center id to be deleted") @PathVariable String regCenterId,
 			@ApiParam("Machine id to be deleted") @PathVariable String machineId,
@@ -91,7 +91,7 @@ public class RegistrationCenterUserMachineController {
 	 */
 	@ResponseFilter
 	@ApiOperation(value = "Create or update a mapping of registration center,user,and machine", response = RegCenterMachineUserResponseDto.class)
-	@PutMapping("/v1.0/registrationmachineusermappings")
+	@PutMapping("/registrationmachineusermappings")
 	public ResponseEntity<RegCenterMachineUserResponseDto> createOrUpdateRegistrationCentersMachineUserMapping(
 			@ApiParam("Registration center id,user id and ,machine id with metadata") @RequestBody @Valid RegCenterMachineUserReqDto<RegistrationCenterUserMachineMappingDto> regCenterMachineUserReqDto) {
 		return new ResponseEntity<>(registrationCenterMachineUserService

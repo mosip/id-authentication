@@ -30,7 +30,7 @@ public final class UinGeneratorConstant {
 	/**
 	 * The string field V1_0_UIN
 	 */
-	public static final String V1_0_UIN = "/v1.0/uin";
+	public static final String V1_0_UIN = "/uin";
 
 	/**
 	 * The string field SERVER_SERVLET_PATH

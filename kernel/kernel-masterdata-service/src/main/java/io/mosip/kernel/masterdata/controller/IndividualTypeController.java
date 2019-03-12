@@ -20,7 +20,7 @@ import io.swagger.annotations.ApiOperation;
  *
  */
 @RestController
-@RequestMapping(value = "/v1.0/individualtypes")
+@RequestMapping(value = "/individualtypes")
 @Api(tags = { "IndividualType" })
 public class IndividualTypeController {
 
