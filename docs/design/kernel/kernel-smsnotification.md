@@ -50,4 +50,4 @@ HttpStatus: 202 Accepted
 ## Implementation
 
 
-**kernel-smsnotification-service** [README](../../kernel/kernel-smsnotification-service/README.md)
+**kernel-smsnotification-service** [README](../../../kernel/kernel-smsnotification-service/README.md)

@@ -85,7 +85,6 @@ import io.mosip.kernel.masterdata.service.TemplateService;
  * 
  * @author Bal Vikash Sharma
  * @author Neha Sinha
- * @author Uday Kumar
  * @since 1.0.0
  *
  */
@@ -611,15 +610,16 @@ public class MasterdataControllerTest {
 	@Test
 	public void testDocumentTypeNotFoundException() throws Exception {
 		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
-				.thenThrow(new DataNotFoundException("KER-MSD-118", "Document Type not found"));
+				.thenThrow(new DataNotFoundException("KER-DOC-10001",
+						"No documents found for specified document category code and language code"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/documenttypes/poc/eng"))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	@Test
 	public void testDocumentTypeFetchException() throws Exception {
-		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString())).thenThrow(
-				new MasterDataServiceException("KER-MSD-015", "Error occured while fetching Document Types"));
+		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
+				.thenThrow(new MasterDataServiceException("KER-DOC-10000", "exception during fatching data from db"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/documenttypes/poc/eng"))
 				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 	}
@@ -894,6 +894,16 @@ public class MasterdataControllerTest {
 		Mockito.when(templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(templateResponseDto);
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/templates/HIN/EMAIL")).andExpect(status().isOk());
+	}
+
+	@Test
+	public void getAllTemplateByTemplateTypeCodeTest() throws Exception {
+		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+		templateResponseDto.setTemplates(templateDtoList);
+		Mockito.when(templateService.getAllTemplateByTemplateTypeCode(Mockito.anyString()))
+				.thenReturn(templateResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/templates/templatetypecodes/EMAIL"))
+				.andExpect(status().isOk());
 	}
 
 	// -----------------------------TemplateFileFormatControllerTest------------------------

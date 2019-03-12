@@ -32,20 +32,22 @@ public enum ErrorMessage {
 	/**
 	 * ErrorMessage for PRG_TRL_APP_005
 	 */
-	JSON_PARSING_FAILED("JSON_PARSING_FAILED");
+	JSON_PARSING_FAILED("JSON_PARSING_FAILED"),
+	
+	UNSUPPORTED_LANGUAGE("UNSUPPORTED_LANGUAGE");
 	/**
 	 * @param code
 	 */
-	private ErrorMessage(String code) {
-		this.code = code;
+	private ErrorMessage(String message) {
+		this.message = message;
 	}
 
-	private final String code;
+	private final String message;
 
 	/**
-	 * @return the code
+	 * @return message
 	 */
-	public String getCode() {
-		return code;
+	public String getMessage() {
+		return message;
 	}
 }

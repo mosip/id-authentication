@@ -43,4 +43,4 @@ This application can be used to encrpyt and decrypt data based on defined set of
 ## Implementation
 
 
-**kernel-crypto-jce** [README](../../kernel/kernel-crypto-jce/README.md)
+**kernel-crypto-jce** [README](../../../kernel/kernel-crypto-jce/README.md)

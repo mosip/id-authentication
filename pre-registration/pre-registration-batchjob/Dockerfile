@@ -25,4 +25,4 @@ copy ./target/pre-registration-batchjob-*.jar pre-registration-batchjob.jar
 
 EXPOSE 9097
 
-CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","pre-registration-batchjob.jar"] 
+CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","pre-registration-batchjob.jar"]

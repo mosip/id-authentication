@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -147,7 +149,7 @@ public class DemodedupeProcessorTest {
 		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
 
 		MessageDTO messageDto = demodedupeProcessor.process(dto);
-		assertFalse(messageDto.getIsValid());
+		verify(packetInfoManager, times(1)).saveManualAdjudicationData(anyList(), anyString());
 	}
 
 	/**

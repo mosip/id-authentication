@@ -42,7 +42,7 @@ public class DBDataStore implements IDataStore {
 	
 	private static final String NEW_ROLE_OTP="insert into iam.role_list(code,descr,lang_code,cr_dtimes,is_active,cr_by) values(:role,:description,:langCode,NOW(),true,'Admin')";
 	
-	private static final String USER_ROLE_MAPPING="insert into iam.user_role(role_code,usr_id,lang_code,cr_dtimes,is_active,cr_by) values(:roleId,':userId,'eng',NOW(),true,'Admin');";
+	private static final String USER_ROLE_MAPPING="insert into iam.user_role(role_code,usr_id,lang_code,cr_dtimes,is_active,cr_by) values(:roleId,:userId,'eng',NOW(),true,'Admin');";
 	
 	
 	public DBDataStore()
@@ -147,7 +147,7 @@ public class DBDataStore implements IDataStore {
 		{
 			String userId =createUser(otpUser);
 			roleId = getRole("individual");
-			if(roleId!=null)
+			if(roleId==null)
 			{
 				roleId=createRole(userId,otpUser);
 			}
@@ -177,8 +177,8 @@ public class DBDataStore implements IDataStore {
 				new MapSqlParameterSource().addValue("userName", otpUser.getUserId())
 				.addValue("name", otpUser.getUserId())
 				.addValue("langcode", otpUser.getLangCode())
-				.addValue("email", AuthConstant.EMAIL.equals(otpUser.getOtpChannel())?otpUser.getUserId():"")
-				.addValue("phone", AuthConstant.PHONE.equals(otpUser.getOtpChannel())?otpUser.getUserId():""));
+				.addValue("email", AuthConstant.EMAIL.equals(otpUser.getOtpChannel().get(0))?otpUser.getUserId():"")
+				.addValue("phone", AuthConstant.PHONE.equals(otpUser.getOtpChannel().get(0))?otpUser.getUserId():""));
 		return otpUser.getUserId();
 	}
 

@@ -38,4 +38,8 @@ public class AuthConstant {
 	public static final String AUTH_TOKEN_EXPIRED_MESSAGE = "Auth token expired ";
 
 	public static final String UIN_NOTIFICATION_MESSAGE = "UIN sent successfully for the channels";
+	
+	public static final String UNAUTHORIZED_CODE = "401";
+	
+	public static final int RETURN_EXP_TIME= -10;
 }

@@ -19,7 +19,6 @@ create schema if not exists prereg
 		appointment_date 	date,
 		slot_from_time 		time,
 		slot_to_time 		time,
-		status_code 		character varying(36) not null ,	-- master.status_list.code
 		
 		lang_code  	character varying(3) not null ,		-- master.language.code
 		
@@ -34,8 +33,7 @@ create schema if not exists prereg
 alter table prereg.reg_appointment add constraint pk_rappmnt_id primary key (id)
 ;
 
--- indexes section -------------------------------------------------
-create unique index idx_rappmnt_id on prereg.reg_appointment (prereg_id, booking_dtimes)
+alter table prereg.reg_appointment add constraint uk_rappmnt_id unique (prereg_id)
 ;
 
 -- indexes section -------------------------------------------------
