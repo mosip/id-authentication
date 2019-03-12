@@ -3,8 +3,6 @@ package io.mosip.kernel.idgenerator.tspid.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -26,7 +24,6 @@ import io.mosip.kernel.idgenerator.tspid.repository.TspRepository;
  *
  */
 @Component
-@Transactional
 public class TspIdGeneratorImpl implements TspIdGenerator<String> {
 
 	/**
@@ -67,13 +64,15 @@ public class TspIdGeneratorImpl implements TspIdGenerator<String> {
 		try {
 			if (entity != null) {
 				generatedId = entity.getTspId() + 1;
-				entity.setTspId(generatedId);
-				entity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-				entity.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-				
+				Tsp tspId = new Tsp();
+				tspId.setTspId(generatedId);
+				tspId.setCreatedBy("default@user");
+				tspId.setUpdatedBy("default@user");
+				tspId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				tspId.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				tspRepository.save(tspId);
 
 			} else {
-
 				entity = new Tsp();
 				entity.setTspId(initialValue);
 				entity.setCreatedBy("default@user");
@@ -82,10 +81,9 @@ public class TspIdGeneratorImpl implements TspIdGenerator<String> {
 				entity.setCreatedDateTime(createdTime);
 				entity.setUpdatedDateTime(null);
 				generatedId = initialValue;
-
+				tspRepository.save(entity);
 			}
 
-			tspRepository.save(entity);
 		} catch (DataAccessLayerException e) {
 			throw new TspIdException(TspIdExceptionConstant.TSPID_INSERTION_EXCEPTION.getErrorCode(),
 					TspIdExceptionConstant.TSPID_INSERTION_EXCEPTION.getErrorMessage(), e);
