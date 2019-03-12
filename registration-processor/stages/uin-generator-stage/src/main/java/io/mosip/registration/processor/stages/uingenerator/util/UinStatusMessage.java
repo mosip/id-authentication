@@ -24,4 +24,12 @@ public class UinStatusMessage {
 
 	public static final String UIN_GENRATION_EMAIL_NOTIFICATION_SUCCESS = "Email sent Successfully";
 
+	public static final String UIN_UPDATION_ALREADY_ACTIVATED = "Uin is already activated";
+	
+	public static final String UIN_UPDATION_ACTIVATED = "Uin is activated";
+	
+	public static final String UIN_UPDATION_RE_ACTIVATION_FAILURE = "Uin activation failure";
+
+
+
 }
