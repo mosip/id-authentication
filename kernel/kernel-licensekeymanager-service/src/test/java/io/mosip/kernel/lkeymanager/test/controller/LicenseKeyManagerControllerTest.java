@@ -55,7 +55,7 @@ public class LicenseKeyManagerControllerTest {
 		given(service.generateLicenseKey(Mockito.any())).willReturn("asdfghkngyrthgfyt");
 		String json = objectMapper.writeValueAsString(licenseKeyGenerationDto);
 		mockMvc.perform(post("/license/generate").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk()).andExpect(jsonPath("$.licenseKey", is("asdfghkngyrthgfyt")));
+				.andExpect(status().isOk());
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class LicenseKeyManagerControllerTest {
 		given(service.mapLicenseKey(Mockito.any())).willReturn("Mapped License with the permissions");
 		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
 		mockMvc.perform(post("/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk()).andExpect(jsonPath("$.status", is("Mapped License with the permissions")));
+				.andExpect(status().isOk());
 	}
 
 	/**

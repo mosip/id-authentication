@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.licensekeymanager.spi.LicenseKeyManagerService;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyFetchResponseDto;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyGenerationDto;
@@ -38,14 +40,16 @@ public class LicenseKeyController {
 	 * This method will generate license key against a certain TSP ID.
 	 * 
 	 * @param licenseKeyGenerationDto
-	 *            the {@link LicenseKeyGenerationDto}.
+	 *            the LicenseKeyGenerationResponseDto request object wrapped
+	 *            in {@link RequestWrapper}.
 	 * @return the response entity.
 	 */
+	@ResponseFilter
 	@PostMapping(value = "/license/generate")
 	public ResponseEntity<LicenseKeyGenerationResponseDto> generateLicenseKey(
-			@RequestBody LicenseKeyGenerationDto licenseKeyGenerationDto) {
+			@RequestBody RequestWrapper<LicenseKeyGenerationDto> licenseKeyGenerationDto) {
 		LicenseKeyGenerationResponseDto responseDto = new LicenseKeyGenerationResponseDto();
-		responseDto.setLicenseKey(licenseKeyManagerService.generateLicenseKey(licenseKeyGenerationDto));
+		responseDto.setLicenseKey(licenseKeyManagerService.generateLicenseKey(licenseKeyGenerationDto.getRequest()));
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
@@ -57,11 +61,13 @@ public class LicenseKeyController {
 	 *            the {@link LicenseKeyMappingDto}.
 	 * @return the response entity.
 	 */
+	@ResponseFilter
 	@PostMapping(value = "/license/permission")
 	public ResponseEntity<LicenseKeyMappingResponseDto> mapLicenseKey(
-			@RequestBody LicenseKeyMappingDto licenseKeyMappingDto) {
+			@RequestBody RequestWrapper<LicenseKeyMappingDto> licenseKeyMappingDto) {
 		LicenseKeyMappingResponseDto licenseKeyMappingResponseDto = new LicenseKeyMappingResponseDto();
-		licenseKeyMappingResponseDto.setStatus(licenseKeyManagerService.mapLicenseKey(licenseKeyMappingDto));
+		licenseKeyMappingResponseDto
+				.setStatus(licenseKeyManagerService.mapLicenseKey(licenseKeyMappingDto.getRequest()));
 		return new ResponseEntity<>(licenseKeyMappingResponseDto, HttpStatus.OK);
 	}
 
