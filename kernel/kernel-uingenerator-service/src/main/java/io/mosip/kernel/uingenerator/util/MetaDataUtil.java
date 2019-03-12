@@ -34,6 +34,7 @@ public class MetaDataUtil {
 		entity.setIsDeleted(false);
 		return entity;
 	}
+
 	/**
 	 * Function to set metadata for update operation
 	 * 

@@ -35,13 +35,13 @@ public class UinProcesser {
 	 */
 	@Value("${mosip.kernel.uin.min-unused-threshold}")
 	private long thresholdUinCount;
-	
+
 	/**
 	 * String field for uin status unused
 	 */
 	@Value("${mosip.kernel.uin.status.unused}")
 	private String unused;
-	
+
 	/**
 	 * Check whether to generate uin or not
 	 * 

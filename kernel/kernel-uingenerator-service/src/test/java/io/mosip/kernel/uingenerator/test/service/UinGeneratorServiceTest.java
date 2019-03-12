@@ -19,6 +19,11 @@ import io.mosip.kernel.uingenerator.service.impl.UinGeneratorServiceImpl;
 import io.mosip.kernel.uingenerator.test.config.UinGeneratorTestConfiguration;
 import io.vertx.core.json.JsonObject;
 
+/**
+ * @author Megha Tanga
+ * 
+ */
+
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = UinGeneratorTestConfiguration.class, loader = AnnotationConfigContextLoader.class)
 public class UinGeneratorServiceTest {

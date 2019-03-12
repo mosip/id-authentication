@@ -28,9 +28,9 @@ public interface UinRepository extends JpaRepository<UinEntity, String> {
 	 * @return an unused uin
 	 */
 	public UinEntity findFirstByStatus(String status);
-	
+
 	/**
-	 * find a UIN 
+	 * find a UIN
 	 * 
 	 * @return an unused uin
 	 */

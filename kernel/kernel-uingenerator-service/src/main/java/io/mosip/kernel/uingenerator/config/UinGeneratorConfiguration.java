@@ -78,10 +78,12 @@ public class UinGeneratorConfiguration implements EnvironmentAware {
 		try {
 			for (int i = 0; i < applicationNames.size(); i++) {
 				String loc = env.getProperty(UinGeneratorConstant.SPRING_CLOUD_CONFIG_URI) + UinGeneratorConstant.KERNEL
-						+ env.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE) + UinGeneratorConstant.FORWARD_SLASH
+						+ env.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE)
+						+ UinGeneratorConstant.FORWARD_SLASH
 						+ env.getProperty(UinGeneratorConstant.SPRING_CLOUD_CONFIG_LABEL)
 						+ UinGeneratorConstant.FORWARD_SLASH + applicationNames.get(i) + UinGeneratorConstant.DASH
-						+ env.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE) + UinGeneratorConstant.PROPERTIES;
+						+ env.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE)
+						+ UinGeneratorConstant.PROPERTIES;
 				appResources[i] = resolver.getResources(loc)[0];
 				((AbstractEnvironment) env).getPropertySources()
 						.addLast(new ResourcePropertySource(applicationNames.get(i), loc));

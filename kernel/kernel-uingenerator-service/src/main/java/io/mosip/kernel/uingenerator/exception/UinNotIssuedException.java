@@ -1,6 +1,7 @@
 package io.mosip.kernel.uingenerator.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+
 /**
  * Custom exception for Uin Not Found Exception
  * 
@@ -9,13 +10,13 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  *
  */
 
-public class UinNotIssuedException extends BaseUncheckedException{
+public class UinNotIssuedException extends BaseUncheckedException {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3073371775187895432L;
-	
+
 	/**
 	 * Constructor the initialize UinNotIssuedException
 	 * 
@@ -27,5 +28,5 @@ public class UinNotIssuedException extends BaseUncheckedException{
 	public UinNotIssuedException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 
-}
+	}
 }

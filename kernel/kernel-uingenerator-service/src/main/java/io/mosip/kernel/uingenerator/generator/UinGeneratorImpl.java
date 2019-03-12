@@ -53,7 +53,7 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 	 * The length of the uin
 	 */
 	private final int uinLength;
-	
+
 	/**
 	 * The uin default status
 	 */
@@ -68,7 +68,8 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 	 *            The length of the uin
 	 */
 	public UinGeneratorImpl(@Value("${mosip.kernel.uin.uins-to-generate}") long uinsCount,
-			@Value("${mosip.kernel.uin.length}") int uinLength, @Value("${mosip.kernel.uin.status.unused}") String uinDefaultStatus) {
+			@Value("${mosip.kernel.uin.length}") int uinLength,
+			@Value("${mosip.kernel.uin.status.unused}") String uinDefaultStatus) {
 		this.uinsCount = uinsCount;
 		this.uinLength = uinLength;
 		this.uinDefaultStatus = uinDefaultStatus;
@@ -87,8 +88,7 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 		int generatedIdLength = uinLength - 1;
 		Set<UinEntity> uins = new HashSet<>();
 		long upperBound = Long.parseLong(StringUtils.repeat(UinGeneratorConstant.NINE, generatedIdLength));
-		long lowerBound = Long.parseLong(
-				StringUtils.repeat(UinGeneratorConstant.ZERO, generatedIdLength));
+		long lowerBound = Long.parseLong(StringUtils.repeat(UinGeneratorConstant.ZERO, generatedIdLength));
 		LOGGER.info("Generating {} uins ", uinsCount);
 		while (uins.size() < uinsCount) {
 			String generatedUIN = generateSingleId(generatedIdLength, lowerBound, upperBound);

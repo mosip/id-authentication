@@ -24,6 +24,10 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 
+/**
+ * @author Megha Tanga
+ * 
+ */
 @RunWith(VertxUnitRunner.class)
 public class UinStatusUpdateVerticleTest {
 
@@ -51,7 +55,7 @@ public class UinStatusUpdateVerticleTest {
 	}
 
 	@Test
-	public void updateUINStatusTest(TestContext context) {
+	public void updateUinStatusTest(TestContext context) {
 		Async async = context.async();
 		WebClient client = WebClient.create(vertx);
 		client.get(port, "localhost", "/updateuinstatus/3157940341").send(ar -> {

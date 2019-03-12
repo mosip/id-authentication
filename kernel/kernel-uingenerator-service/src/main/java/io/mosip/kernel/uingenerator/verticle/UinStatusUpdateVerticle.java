@@ -10,17 +10,17 @@ import io.vertx.core.Future;
 /**
  * Verticle for Uin status update from ISSUED to ASSIGNED
  * 
- * @author Megha Tanga 
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
 public class UinStatusUpdateVerticle extends AbstractVerticle {
-	
+
 	/**
 	 * Field for UinGeneratorRouter
 	 */
 	private UinGeneratorRouter uinGeneratorRouter;
-	
+
 	/**
 	 * Initialize beans
 	 * 
@@ -30,9 +30,10 @@ public class UinStatusUpdateVerticle extends AbstractVerticle {
 	public UinStatusUpdateVerticle(final ApplicationContext context) {
 		uinGeneratorRouter = (UinGeneratorRouter) context.getBean("uinGeneratorRouter");
 	}
-	
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.vertx.core.AbstractVerticle#start(io.vertx.core.Future)
 	 */
 	@Override

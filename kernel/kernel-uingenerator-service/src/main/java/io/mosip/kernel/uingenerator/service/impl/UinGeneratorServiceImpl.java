@@ -6,7 +6,6 @@ package io.mosip.kernel.uingenerator.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-
 import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
 import io.mosip.kernel.uingenerator.dto.UinStatusUpdateReponseDto;
@@ -35,7 +34,6 @@ public class UinGeneratorServiceImpl implements UinGeneratorService {
 	 */
 	@Autowired
 	UinRepository uinRepository;
-
 
 	/**
 	 * instance of {@link MetaDataUtil}
