@@ -25,10 +25,10 @@ public class RegistrationCenterIdServiceTest {
 
 	@Value("${mosip.kernel.rcid.test.valid-initial-rcid}")
 	private int initialRcid;
-	
+
 	@Value("${mosip.kernel.rcid.test.valid-new-rcid}")
 	private int newRcid;
-	
+
 	@Autowired
 	RegistrationCenterIdGenerator<String> service;
 
@@ -88,7 +88,7 @@ public class RegistrationCenterIdServiceTest {
 		RegistrationCenterId entity = new RegistrationCenterId();
 		entity.setRcid(1000);
 		when(repository.findLastRCID()).thenReturn(entity);
-		when(repository.updateRCID(Mockito.anyInt(), Mockito.anyInt(), Mockito.any()))
+		when(repository.save(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		service.generateRegistrationCenterId();
 	}

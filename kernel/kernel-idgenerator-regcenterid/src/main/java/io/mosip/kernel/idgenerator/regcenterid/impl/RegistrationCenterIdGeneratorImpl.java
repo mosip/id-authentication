@@ -63,25 +63,29 @@ public class RegistrationCenterIdGeneratorImpl implements RegistrationCenterIdGe
 					RegistrationCenterIdConstant.REG_CEN_ID_FETCH_EXCEPTION.getErrorMessage(),
 					dataAccessLayerException.getCause());
 		}
-		if (registrationCenterId == null) {
-			registrationCenterId = new RegistrationCenterId();
-			registrationCenterId.setRcid(initialValue);
-			generatedRCID = initialValue;
-			registrationCenterId.setCreatedBy("default@user");
-			registrationCenterId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-			registrationCenterId.setUpdatedBy("default@user");
-			registrationCenterId.setUpdatedDateTime(null);
-			registrationCenterIdRepository.save(registrationCenterId);
-		} else {
-			try {
-				registrationCenterIdRepository.updateRCID(registrationCenterId.getRcid() + 1,
-						registrationCenterId.getRcid(), LocalDateTime.now(ZoneId.of("UTC")));
+		try {
+			if (registrationCenterId == null) {
+				registrationCenterId = new RegistrationCenterId();
+				registrationCenterId.setRcid(initialValue);
+				generatedRCID = initialValue;
+				registrationCenterId.setCreatedBy("default@user");
+				registrationCenterId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				registrationCenterId.setUpdatedBy("default@user");
+				registrationCenterId.setUpdatedDateTime(null);
+
+			} else {
+
 				generatedRCID = registrationCenterId.getRcid() + 1;
-			} catch (DataAccessLayerException e) {
-				throw new RegistrationCenterIdServiceException(
-						RegistrationCenterIdConstant.REG_CEN_ID_INSERT_EXCEPTION.getErrorCode(),
-						RegistrationCenterIdConstant.REG_CEN_ID_INSERT_EXCEPTION.getErrorMessage(), e);
+				registrationCenterId.setRcid(generatedRCID);
+				registrationCenterId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				registrationCenterId.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+
 			}
+			registrationCenterIdRepository.save(registrationCenterId);
+		} catch (DataAccessLayerException e) {
+			throw new RegistrationCenterIdServiceException(
+					RegistrationCenterIdConstant.REG_CEN_ID_INSERT_EXCEPTION.getErrorCode(),
+					RegistrationCenterIdConstant.REG_CEN_ID_INSERT_EXCEPTION.getErrorMessage(), e);
 		}
 		return String.valueOf(generatedRCID);
 	}
