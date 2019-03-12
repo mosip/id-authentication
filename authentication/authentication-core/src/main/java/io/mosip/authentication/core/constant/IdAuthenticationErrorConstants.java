@@ -145,12 +145,12 @@ public enum IdAuthenticationErrorConstants {
 	
 	PARTNER_NOTREGISTERED("IDA-MPA-017","Partner is not registered"),
 	
-	PARTNER_NOTACTIVE("IDA-MPA-021","Partner status is not active");
+	PARTNER_NOTACTIVE("IDA-MPA-021","Partner status is not active"),
 	
-	/*PARTNER_NOTREGISTERED("IDA-MPA-017","Partner is not registered"),
+	POLICY_NOTREGISTERED("IDA-MPA-019","Policy not registered for the Partner"),
 	
-	PARTNER_NOTREGISTERED("IDA-MPA-017",""),
-	*/
+	MISP_PART_NOLINK("IDA-MPA-018","MISP and Partner not linked in the portal");
+	
 
 	private final String errorCode;
 	private final String errorMessage;

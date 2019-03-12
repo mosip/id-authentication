@@ -71,11 +71,44 @@ public class IdAuthFilter extends BaseAuthFilter {
 	
 	private void licenseKeyMISPMapping(String licenseKey,String mispId) throws IdAuthenticationAppException {
 		String licensekeyMappingJson=env.getProperty("licensekey.mispmapping."+licenseKey+"."+mispId);
-		String expiryDt = JsonPath.read(licensekeyMappingJson, "expiryDt");
-		if(DateUtils.convertUTCToLocalDateTime(expiryDt).isBefore(DateUtils.getUTCCurrentDateTime())){
+		
+	  if(null!=licensekeyMappingJson) {
+		  String lkExpiryDt = JsonPath.read(licensekeyMappingJson, "expiryDt"); 
+		if(DateUtils.convertUTCToLocalDateTime(lkExpiryDt).isBefore(DateUtils.getUTCCurrentDateTime())){
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISP_LICENSEKEYEXP);
 		}
-		
+		String lkStatus = JsonPath.read(licensekeyMappingJson, "status");
+		if(lkStatus!="active"){
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISP_LKINACTIVE);
+		}
+	}	
+	  else {
+		  throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISP_LKNOTREGISTER);
+	  }
+    
 	}
-
+    
+	public void validPartnerId(String partnerId) throws IdAuthenticationAppException {
+		String partnerIdJson=env.getProperty("partner."+partnerId);
+		if(null==partnerIdJson) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOTREGISTERED);
+		}
+		else {
+			 String policyId = JsonPath.read(partnerIdJson, "policyId");
+		   if(null==policyId || policyId.equalsIgnoreCase("") )	
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.POLICY_NOTREGISTERED);
+		   String partnerStatus = JsonPath.read(partnerIdJson, "status"); 
+		   if(partnerStatus!="active") {
+			   throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOTACTIVE);   
+		   }
+		}
+	 }
+	
+	public void validMISPPartnerMapping(String patnerId,String mispId) throws IdAuthenticationAppException {
+		String partnerPolicyMappingJson=env.getProperty("partner.policy."+patnerId+"."+mispId);
+		if(partnerPolicyMappingJson!="true") {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISP_PART_NOLINK);
+		}
+	 }
+	
 }
