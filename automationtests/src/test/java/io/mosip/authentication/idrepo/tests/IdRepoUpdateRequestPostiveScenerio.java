@@ -1,7 +1,5 @@
 package io.mosip.authentication.idrepo.tests;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -31,9 +29,12 @@ import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
-import com.google.common.base.Verify;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Verify;
 
 import io.mosip.authentication.idrepo.fw.util.PropertyFileLoader;
 import io.mosip.authentication.idrepo.fw.util.RidGenerator;
@@ -44,23 +45,18 @@ import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
 
-/**
- * @author Arjun Chandramohan
- *
- */
-
-public class UpdateIdentityDetailIDRepoNegativeScenario extends BaseTestCase implements ITest {
-	UpdateIdentityDetailIDRepoNegativeScenario() {
+public class IdRepoUpdateRequestPostiveScenerio extends BaseTestCase implements ITest {
+	IdRepoUpdateRequestPostiveScenerio() {
 		super();
 	}
 
-	private static Logger logger = Logger.getLogger(UpdateIdentityDetailIDRepoNegativeScenario.class);
-	private static final String jiraID = "MOS-1423";
+	private static Logger logger = Logger.getLogger(IdRepoUpdateRequestPostiveScenerio.class);
+	private static final String jiraID = "MOS-13299,MOS-12231";
 	private static final String moduleName = "IdRepo";
-	private static final String apiName = "UpdateIdData";
+	private static final String apiName = "UpdateRequestPostiveScenerio";
 	private static final String requestJsonStructure = "RequestMasterJsonStructure";
-	private static final String outputJsonName = "UpdateIdDataOutput";
-	private static final String service_URI = "/idrepo/identity/v1.0/";
+	private static final String outputJsonName = "PostiveScenerioOutput";
+	private static final String service_base_URI = "/idrepo/identity/v1.0/";
 	private static final String service_URI_uin = "/uingenerator/v1.0/uin";
 	private static final String testDataFileName = "TestData";
 
@@ -96,11 +92,11 @@ public class UpdateIdentityDetailIDRepoNegativeScenario extends BaseTestCase imp
 	 * @param context
 	 * @return test case name as object
 	 */
-	@DataProvider(name = "FetchData")
+	@DataProvider(name = "IdRepoUpdateRequestPostiveScenerio")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("regression") {
+		switch (testParam) {
 		case "smoke":
 			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
 
@@ -124,7 +120,7 @@ public class UpdateIdentityDetailIDRepoNegativeScenario extends BaseTestCase imp
 	 */
 
 	@SuppressWarnings("unchecked")
-	@Test(dataProvider = "FetchData", alwaysRun = true)
+	@Test(dataProvider = "IdRepoUpdateRequestPostiveScenerio", alwaysRun = true)
 	public void validatingTestCases(String testcaseName, JSONObject object)
 			throws JsonParseException, JsonMappingException, IOException, ParseException, IllegalAccessException,
 			InvocationTargetException, NoSuchMethodException {
@@ -138,6 +134,7 @@ public class UpdateIdentityDetailIDRepoNegativeScenario extends BaseTestCase imp
 		 */
 		JSONObject uin = (JSONObject) new JSONParser()
 				.parse(applicationLibrary.GetRequestNoParameter(service_URI_uin).asString());
+		logger.info("Uin generated:" + uin);
 
 		/**
 		 *  reading the master request Json
@@ -148,27 +145,18 @@ public class UpdateIdentityDetailIDRepoNegativeScenario extends BaseTestCase imp
 		 *  getting all the keys of the master json
 		 */
 		Set<Object> propertyFileKeys = prop.keySet();
-		String testDataProperty = null;
+		String testDataProperty = "valid";
 		String testDataValue = "";
 		JSONObject inputJson=null;
 		inputJson = (JSONObject) new JSONParser().parse(requestJsonStruct.toString());
 		/**
-		 *  generating test data for each key or removing the element if not required
+		 *  generating test data for each key 
 		 */
 		for (Object key : propertyFileKeys) {
-			if (testcaseName.split("_")[1].equalsIgnoreCase(key.toString()))
-				testDataProperty = "invalid";
-			else
-				testDataProperty = "valid";
-			
-			
-			
-			if(testcaseName.split("_").length>2) {
-				if( testcaseName.split("_")[2].equalsIgnoreCase("missing"))
-					inputJson.remove(testcaseName.split("_")[1].toString(),prop.get(key.toString()).toString());
-			}
-				
-			else if ((key.toString().equalsIgnoreCase("registrationId")))
+			/**
+			 * calling registration id
+			 */
+			if ((key.toString().equalsIgnoreCase("registrationId")))
 				testDataValue = new RidGenerator().generateRID(testDataProperty);
 
 			else if ((key.toString().equalsIgnoreCase("individualBiometrics.format")))
@@ -227,39 +215,55 @@ public class UpdateIdentityDetailIDRepoNegativeScenario extends BaseTestCase imp
 
 		}
 
-		response = applicationLibrary.patchRequest(inputJson.toString(), service_URI + uin.get("uin"));
+		response = applicationLibrary.postRequest(inputJson.toString(), service_base_URI + uin.get("uin"));
 		logger.info("Input Json:" + inputJson.toString());
-
-		if (testcaseName.toLowerCase().contains("smoke")) {
+		
+		
+		
+		
+		
+		JSONObject expectedResponseBody = (JSONObject) new JSONParser().parse(response.asString());
+		
+		
+		PropertyUtils.setProperty(inputJson, "request.(documents)[0].value","");
+		
+		
+		ObjectMapper mapper = new ObjectMapper();
+			JsonNode requestJsonToCompare = mapper.readTree(inputJson.toString());
+			
+			System.err.println("request :"+requestJsonToCompare.get("request"));
+			
+			//System.err.println("request :"+requestJsonToCompare.);
+		
 			HashMap<String, String> inputParameters = new HashMap<>();
 			inputParameters.put("type", "all");
 			responseObject = (JSONObject) new JSONParser().parse(applicationLibrary
-					.getRequestAsQueryParam(service_URI + uin.get("uin"), inputParameters).asString());
+					.getRequestAsQueryParam(service_base_URI + uin.get("uin"), inputParameters).asString());
+			
+			
+			
+			
+			
+			
+			logger.info("Output of get Request" + responseObject.toString());
+			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+			//PropertyUtils.setProperty(requestJsonToCompare, "request.(documents)[0].value","Java");
+			
+			
+			
+			PropertyUtils.setProperty(responseObject, "response.(documents)[0].value", "");
+			
+			JsonNode reaponseJsonToCompare = mapper.readTree(responseObject.toString());
+			System.err.println("Response :"+reaponseJsonToCompare.get("response"));
+			
+			status = assertions.assertIdRepo(requestJsonToCompare.get("request"), reaponseJsonToCompare.get("response"), listOfElementToRemove);
 
-		} else {
-			String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + testcaseName;
-			File folder = new File(configPath);
-			File[] listofFiles = folder.listFiles();
-
-			for (int k = 0; k < listofFiles.length; k++) {
-				if (listofFiles[k].getName().toLowerCase().contains("response"))
-					responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-			}
-		}
-		JSONObject requestJsonToCompare = (JSONObject) new JSONParser().parse(inputJson.toString());
-
-		JSONObject responseJsonToCompare = (JSONObject) responseObject.get("response");
-
-		logger.info("Actual Response:" + response.asString());
-		logger.info("Expected Response:" + responseObject.toJSONString());
-
+	
+		
 		/**
 		 *  add parameters to remove in response before comparison like time stamp
 		 */
-		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
-		if (!testcaseName.toLowerCase().contains("smoke"))
-			status = assertions.assertIdRepo((JSONObject) new JSONParser().parse(response.asString()), responseObject, listOfElementToRemove);
+		
 
 		int statusCode = response.statusCode();
 		logger.info("Status Code is : " + statusCode);
@@ -314,3 +318,4 @@ public class UpdateIdentityDetailIDRepoNegativeScenario extends BaseTestCase imp
 		}
 	}
 }
+

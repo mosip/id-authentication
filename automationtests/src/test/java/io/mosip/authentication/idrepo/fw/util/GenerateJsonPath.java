@@ -1,8 +1,10 @@
-package io.mosip.util;
+package io.mosip.authentication.idrepo.fw.util;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import io.mosip.util.JsonPathGen;
 
 /**
  * @author Arjun Chandramohan

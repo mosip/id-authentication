@@ -1,7 +1,5 @@
 package io.mosip.authentication.idrepo.tests;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -38,13 +36,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
+import io.mosip.authentication.idrepo.fw.util.PropertyFileLoader;
+import io.mosip.authentication.idrepo.fw.util.RidGenerator;
+import io.mosip.authentication.idrepo.fw.util.TestDataGenerator;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.PropertyFileLoader;
-import io.mosip.util.RidGenerator;
 import io.mosip.util.TestCaseReader;
-import io.mosip.util.TestDataGenerator;
 import io.restassured.response.Response;
 
 public class IdRepoPostiveScenerio extends BaseTestCase implements ITest {
@@ -223,11 +221,8 @@ public class IdRepoPostiveScenerio extends BaseTestCase implements ITest {
 		
 		
 		
-		//JSONObject jsonObject123 = (JSONObject) new JSONParser().parse(response.toString());
-	//response.toString().valueOf("request")
 		
 		JSONObject expectedResponseBody = (JSONObject) new JSONParser().parse(response.asString());
-		//JSONObject resObj = (JSONObject) inputJson;
 		
 		
 		PropertyUtils.setProperty(inputJson, "request.(documents)[0].value","");
@@ -264,29 +259,11 @@ public class IdRepoPostiveScenerio extends BaseTestCase implements ITest {
 			status = assertions.assertIdRepo(requestJsonToCompare.get("request"), reaponseJsonToCompare.get("response"), listOfElementToRemove);
 
 	
-		/*	String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + testcaseName;
-			File folder = new File(configPath);
-			File[] listofFiles = folder.listFiles();
-
-			for (int k = 0; k < listofFiles.length; k++) {
-				if (listofFiles[k].getName().toLowerCase().contains("response"))
-					responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-			}*/
-		//}
-		/*JSONObject requestJsonToCompare = (JSONObject) new JSONParser().parse(inputJson.toString());
-
-		JSONObject responseJsonToCompare = (JSONObject) responseObject.get("response");
-
-		logger.info("Actual Response:" + response.asString());
-		logger.info("Expected Response:" + responseObject.toJSONString());
-*/
+		
 		/**
 		 *  add parameters to remove in response before comparison like time stamp
 		 */
-		/*ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
-		if (!testcaseName.toLowerCase().contains("smoke"))
-			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);*/
+		
 
 		int statusCode = response.statusCode();
 		logger.info("Status Code is : " + statusCode);

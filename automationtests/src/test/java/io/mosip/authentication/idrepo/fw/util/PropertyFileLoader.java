@@ -1,4 +1,4 @@
-package io.mosip.util;
+package io.mosip.authentication.idrepo.fw.util;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
