@@ -18,11 +18,11 @@ ENV active_profile_env=${active_profile}
 # environment variable to pass github branch to pickup configuration from, at docker runtime
 ENV spring_config_label_env=${spring_config_label}
 
-# environment variable to pass github branch to pickup configuration from, at docker runtime
-ENV spring_config_label_env=${spring_config_label}
+# environment variable to pass spring configuration url, at docker runtime
+ENV spring_config_url_env=${spring_config_url}
 
 copy ./target/pre-registration-translitration-service-*.jar pre-registration-translitration-service.jar
 
 EXPOSE 9098
 
-CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","pre-registration-translitration-service.jar"] 
+CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","pre-registration-translitration-service.jar"]

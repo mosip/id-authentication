@@ -15,6 +15,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.BaseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -387,7 +388,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		String introducerRIDorUIN = registrationDTO.getRegistrationMetaDataDTO().getParentOrGuardianUINOrRID();
 		if (introducerRIDorUIN != null) {
 			if (introducerRIDorUIN.length() == Integer
-					.parseInt(AppConfig.getApplicationProperty("uin_length"))) {
+					.parseInt((String) ApplicationContext.map().get(RegistrationConstants.UIN_LENGTH))) {
 				introducerUIN = introducerRIDorUIN;
 			} else {
 				introducerRID = introducerRIDorUIN;

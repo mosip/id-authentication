@@ -29,9 +29,3 @@ There are many ID generators inside MOSIP. To generate the ID, Secured Random ge
 
 ![Module Diagram](_images/kernel-id-generators-algorithm.jpg)
 
-
-
-## Implementation
-
-
-**kernel-id-generators-algorithm** [README](../../kernel/kernel-id-generators-algorithm/README.md)

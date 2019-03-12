@@ -141,12 +141,11 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was started");
 
 		try {
-			/* Master Data Sync */
-			restartableJobList.add("MDS_J00001");
-
-			/* Policy Sync */
-			restartableJobList.add("POS_J00008");
-
+			/*
+			 * Master Data Sync restartableJobList.add("MDS_J00001");
+			 * 
+			 * Policy Sync restartableJobList.add("POS_J00008");
+			 */
 			/* Registration Client Config Sync */
 			restartableJobList.add("SCD_J00011");
 

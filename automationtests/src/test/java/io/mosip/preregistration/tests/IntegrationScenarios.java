@@ -1,3 +1,4 @@
+
 package io.mosip.preregistration.tests;
 
 import java.io.File;
@@ -449,6 +450,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		 * creating preRegistration and fetching created pre registration by user id.
 		 */
 		Response createPreRegResponse = lib.CreatePreReg(createPregRequest);
+		createdBy = createPreRegResponse.jsonPath().get("response[0].createdBy").toString();
 		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser(createdBy);
 		/**
 		 * adding assertion
@@ -468,6 +470,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response preRegResponse1 = lib.CreatePreReg(createPregRequest);
 		Response preRegResponse2 = lib.CreatePreReg(createPregRequest);
+		createdBy = preRegResponse1.jsonPath().get("response[0].createdBy").toString();
 		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser(createdBy);
 		try {
 			if (fetchResponse.jsonPath().get("status").toString().equalsIgnoreCase("true")) {
@@ -494,6 +497,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		createdBy = createResponse.jsonPath().get("response[0].createdBy").toString();
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
@@ -520,6 +524,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		createdBy = createResponse.jsonPath().get("response[0].createdBy").toString();
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
@@ -654,6 +659,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		 */
 		Response createPreRegResponse = lib.CreatePreReg(createPregRequest);
 		preID = createPreRegResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		createdBy = createPreRegResponse.jsonPath().get("response[0].createdBy").toString();
 		lib.discardApplication(preID);
 		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser(createdBy);
 		lib.compareValues(fetchResponse.jsonPath().get("err.message").toString(), "NO_RECORD_FOUND_FOR_USER_ID");
@@ -753,7 +759,7 @@ public class IntegrationScenarios extends BaseTestCase {
 
 		// Book Appointment
 		response = lib.bookAppointmentInvalidDate(response, fetchCenterResponse, preRegID);
-		System.out.println(response.jsonPath().get("response").toString());
+		logger.info(response.jsonPath().get("response").toString());
 
 		// Assert.assertNull(response.jsonPath().get("response"));
 		Assert.assertEquals("[]", response.jsonPath().get("response").toString());
@@ -770,6 +776,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
 		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		createdBy = createResponse.jsonPath().get("response[0].createdBy").toString();
 		Response discardResponse = lib.discardApplication(preID);
 		Assert.assertEquals(preID, discardResponse.jsonPath().get("response[0].preRegistrationId").toString());
 		Assert.assertEquals(createdBy, discardResponse.jsonPath().get("response[0].deletedBy").toString());
@@ -1539,7 +1546,7 @@ public class IntegrationScenarios extends BaseTestCase {
 				Response fetchavaRes = lib.FetchCentre();
 
 				bookApp = lib.BookAppointment(docUploadResponse, fetchavaRes, preRegID);
-				System.out.println("My Book App det::" + bookApp.asString());
+				logger.info("My Book App det::" + bookApp.asString());
 
 			}
 
@@ -1564,3 +1571,4 @@ public class IntegrationScenarios extends BaseTestCase {
 	}
 
 }
+

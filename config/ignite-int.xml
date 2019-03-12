@@ -106,11 +106,11 @@
       </bean>
     </property>
 
-    <property name="includeEventTypes">
+    <!--<property name="includeEventTypes">
       <list>
         <util:constant static-field="org.apache.ignite.events.EventType.EVT_CACHE_OBJECT_REMOVED"/>
       </list>
-    </property>
+    </property>-->
 
     <!-- Logging configuration. -->
     <property name="gridLogger">

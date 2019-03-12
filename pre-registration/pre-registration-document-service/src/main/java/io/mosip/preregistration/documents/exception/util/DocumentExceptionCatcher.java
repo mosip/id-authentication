@@ -13,6 +13,8 @@ import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
+import io.mosip.preregistration.core.exception.DecryptionFailedException;
+import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
@@ -90,6 +92,10 @@ public class DocumentExceptionCatcher {
 		}
 		else if(ex instanceof FSAdapterException) {
 			throw new FSAdapterException(((FSAdapterException) ex).getErrorCode(), ((FSAdapterException) ex).getErrorText());
+		}else if (ex instanceof EncryptionFailedException) {
+			throw new EncryptionFailedException(((EncryptionFailedException) ex).getErrorCode(),((EncryptionFailedException) ex).getErrorText());
+		}else if (ex instanceof DecryptionFailedException) {
+			throw new EncryptionFailedException(((DecryptionFailedException) ex).getErrorCode(),((DecryptionFailedException) ex).getErrorText());
 		}
 
 	}

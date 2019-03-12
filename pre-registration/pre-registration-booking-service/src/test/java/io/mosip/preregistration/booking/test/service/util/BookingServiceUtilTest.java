@@ -89,7 +89,7 @@ public class BookingServiceUtilTest {
 		newBooking.setRegDate("2018-12-06");
 
 		boolean flag = serviceUtil.mandatoryParameterCheck(preRegistrationId, oldBooking, newBooking);
-		assertEquals(flag, true);
+		assertEquals(true, flag);
 	}
 
 	@Test(expected = BookingPreIdNotFoundException.class)
@@ -203,7 +203,7 @@ public class BookingServiceUtilTest {
 		newBooking.setRegDate("2018-12-06");
 
 		boolean flag = serviceUtil.isNotDuplicate(oldBooking, newBooking);
-		assertEquals(flag, true);
+		assertEquals(true, flag);
 	}
 
 	@Test(expected = AppointmentReBookingFailedException.class)

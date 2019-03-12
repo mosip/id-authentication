@@ -28,7 +28,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	@Autowired
 	PacketValidateProcessor packetvalidateprocessor;
 
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	/** The mosip event bus. */

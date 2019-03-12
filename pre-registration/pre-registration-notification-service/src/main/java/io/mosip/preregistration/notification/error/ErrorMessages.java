@@ -30,7 +30,12 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_ACK_006
 	 */
-	QRCODE_FAILED_TO_GENERATE("QRCODE_FAILED_TO_GENERATE");
+	QRCODE_FAILED_TO_GENERATE("QRCODE_FAILED_TO_GENERATE"),
+	
+	/**
+	 * ErrorMessage for PRG_ACK_007
+	 */
+	CONFIG_FILE_NOT_FOUND_EXCEPTION("CONFIG_FILE_NOT_FOUND_EXCEPTION");
 	
 	private ErrorMessages(String code) {
 		this.code = code;

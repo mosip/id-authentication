@@ -208,10 +208,10 @@ public class LoginController extends BaseController implements Initializable {
 
 		ResponseDTO responseDTO = getSyncConfigData();
 
-		if (responseDTO.getErrorResponseDTOs() != null) {
+		/*if (responseDTO.getErrorResponseDTOs() != null) {
 			ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
 			generateAlert(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
-		} else {
+		} else {*/
 
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME,
 					APPLICATION_ID, "Retrieve Login mode");
@@ -246,7 +246,7 @@ public class LoginController extends BaseController implements Initializable {
 
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
 			}
-		}
+		//}
 	}
 
 	/**
@@ -418,7 +418,7 @@ public class LoginController extends BaseController implements Initializable {
 		// TODO for temporary fix , but later userDto should be getting from session
 		ApplicationContext.map().put("userDTO", userDTO);
 
-		boolean serverStatus = getConnectionCheck(userDTO);
+		boolean serverStatus = false;//getConnectionCheck(userDTO);
 		boolean offlineStatus = false;
 
 		if (!serverStatus) {
@@ -705,12 +705,12 @@ public class LoginController extends BaseController implements Initializable {
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"Validating roles and machine and center mapping");
 		// Checking roles
-		if (!(roleList.contains(RegistrationConstants.SUPERVISOR)
+		if (roleList.contains(RegistrationConstants.ADMIN_ROLE)) {
+			authInfo = RegistrationConstants.SUCCESS;
+		} else if (!(roleList.contains(RegistrationConstants.SUPERVISOR)
 				|| roleList.contains(RegistrationConstants.OFFICER))) {
 			authInfo = RegistrationConstants.ROLES_EMPTY;
-		} else if (roleList.contains(RegistrationConstants.ADMIN_ROLE)) {
-			authInfo = RegistrationConstants.SUCCESS;
-		}
+		} 
 		return setSessionContext(authInfo, userDetail, roleList);
 	}
 

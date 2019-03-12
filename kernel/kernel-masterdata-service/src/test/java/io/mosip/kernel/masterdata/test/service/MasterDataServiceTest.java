@@ -2,13 +2,11 @@ package io.mosip.kernel.masterdata.test.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.orm.hibernate5.HibernateObjectRetrievalFailureException;
@@ -349,7 +346,7 @@ public class MasterDataServiceTest {
 		locationHierarchy = new Location();
 		locationHierarchy.setCode("IND");
 		locationHierarchy.setName("INDIA");
-		locationHierarchy.setHierarchyLevel(0);
+		locationHierarchy.setHierarchyLevel((short)0);
 		locationHierarchy.setHierarchyName("country");
 		locationHierarchy.setParentLocCode(null);
 		locationHierarchy.setLangCode("HIN");
@@ -360,7 +357,7 @@ public class MasterDataServiceTest {
 		locationHierarchy1 = new Location();
 		locationHierarchy1.setCode("KAR");
 		locationHierarchy1.setName("KARNATAKA");
-		locationHierarchy1.setHierarchyLevel(1);
+		locationHierarchy1.setHierarchyLevel((short)1);
 		locationHierarchy1.setHierarchyName(null);
 		locationHierarchy1.setParentLocCode("TEST");
 		locationHierarchy1.setLangCode("KAN");
@@ -1396,6 +1393,33 @@ public class MasterDataServiceTest {
 		assertEquals(templateList.get(0).getName(), templateResponseDto.getTemplates().get(0).getName());
 	}
 
+	@Test
+	public void getAllTemplateByTemplateTypeCodeTest() {
+		Mockito.when(
+				templateRepository.findAllByTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(templateList);
+		templateResponseDto = templateService.getAllTemplateByTemplateTypeCode(Mockito.anyString());
+
+		assertEquals(templateList.get(0).getId(), templateResponseDto.getTemplates().get(0).getId());
+		assertEquals(templateList.get(0).getName(), templateResponseDto.getTemplates().get(0).getName());
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void getAllTemplateByTemplateTypeCodeNotFoundExceptionTest() {
+		templateList = new ArrayList<>();
+		Mockito.when(templateRepository.findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(
+				Mockito.anyString(), Mockito.anyString())).thenReturn(templateList);
+		templateService.getAllTemplateByTemplateTypeCode("EMAIL");
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void getAllTemplateByTemplateTypeCodeFetchExceptionTest() {
+		Mockito.when(
+				templateRepository.findAllByTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
+		templateService.getAllTemplateByTemplateTypeCode("EMAIL");
+	}
+
 	// ------------------------------------TemplateFileFormatServiceTest---------------------------//
 	@Test
 	public void addTemplateFileFormatSuccess() {
@@ -1412,31 +1436,37 @@ public class MasterDataServiceTest {
 		Mockito.when(templateFileFormatRepository.create(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		templateFileFormatService.createTemplateFileFormat(templateFileFormatRequestDto);
 	}
-	
+
 	@Test(expected = MasterDataServiceException.class)
 	public void updateTemplateFileFormatDataAccessExceptionTest() {
-		Mockito.when(templateFileFormatRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(), Mockito.any())).thenReturn(templateFileFormat);
+		Mockito.when(templateFileFormatRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(),
+				Mockito.any())).thenReturn(templateFileFormat);
 		Mockito.when(templateFileFormatRepository.update(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		templateFileFormatService.updateTemplateFileFormat(templateFileFormatRequestDto);
 	}
-	
+
 	@Test(expected = MasterDataServiceException.class)
 	public void deleteTemplateFileFormatDataAccessExceptionTest() {
-		Mockito.when(templateRepository.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any())).thenReturn(templateList);
-		Mockito.when(templateFileFormatRepository.deleteTemplateFileFormat(Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(templateRepository.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any()))
+				.thenReturn(templateList);
+		Mockito.when(templateFileFormatRepository.deleteTemplateFileFormat(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
 		templateFileFormatService.deleteTemplateFileFormat(templateFileFormatRequestDto.getRequest().getCode());
 	}
-	
+
 	@Test(expected = MasterDataServiceException.class)
 	public void deleteTemplateFileFormatDataAccessExceptionTest2() {
-		Mockito.when(templateRepository.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(templateRepository.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
 		templateFileFormatService.deleteTemplateFileFormat(templateFileFormatRequestDto.getRequest().getCode());
 	}
-	
+
 	@Test(expected = MasterDataServiceException.class)
 	public void deleteTemplateFileFormatDataAccessExceptionTest3() {
-		Mockito.when(templateRepository.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any())).thenReturn(templateList);
-		Mockito.when(templateFileFormatRepository.deleteTemplateFileFormat(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
+		Mockito.when(templateRepository.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any()))
+				.thenReturn(templateList);
+		Mockito.when(templateFileFormatRepository.deleteTemplateFileFormat(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(0);
 		templateFileFormatService.deleteTemplateFileFormat(templateFileFormatRequestDto.getRequest().getCode());
 	}
 
@@ -1546,60 +1576,47 @@ public class MasterDataServiceTest {
 	// ---------------------RegistrationCenterIntegrationTest-validatetimestamp----------------//
 
 	@Test
-	public void getStatusOfWorkingHoursRejectedTest() throws Exception {
+	public void getStatusOfWorkingDayRejectedTest() throws Exception {
+		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.any(), Mockito.anyString()))
+				.thenReturn(registrationCenter);
 		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
 				.thenReturn(true);
-		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
-				.thenReturn(registrationCenter);
-		LocalTime startTime = LocalTime.of(10, 00, 000);
-		LocalTime endTime = LocalTime.of(18, 00, 000);
-		registrationCenter.setCenterStartTime(startTime);
-		registrationCenter.setCenterEndTime(endTime);
-		/*
-		 * mockMvc.perform(get(
-		 * "/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
-		 * .andExpect(status().isOk());
-		 */
-
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
-				.validateTimeStampWithRegistrationCenter("1","eng", "2017-12-12T17:59:59.999Z");
+				.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-12T17:59:59.999Z");
 
 		Assert.assertEquals(MasterDataConstant.INVALID, resgistrationCenterStatusResponseDto.getStatus());
 
 	}
 
 	@Test
-	public void getStatusOfWorkingHoursTest() throws Exception {
-		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
-				.thenReturn(false);
+	public void getStatusOfWorkingDayTest() throws Exception {
 		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.any(), Mockito.anyString()))
 				.thenReturn(registrationCenter);
-		LocalTime startTime = LocalTime.of(10, 00, 000);
-		LocalTime endTime = LocalTime.of(18, 00, 000);
-		registrationCenter.setCenterStartTime(startTime);
-		registrationCenter.setCenterEndTime(endTime);
-
+		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
+				.thenReturn(false);
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
-				.validateTimeStampWithRegistrationCenter("1","eng", "2017-12-12T17:59:59.999Z");
-
-		/*
-		 * mockMvc.perform(get(
-		 * "/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
-		 * .andExpect(status().isOk());
-		 */
+				.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-12T17:59:59.999Z");
 
 		Assert.assertEquals(MasterDataConstant.VALID, resgistrationCenterStatusResponseDto.getStatus());
-
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getStatusOfWorkingHoursServiceExceptionTest() throws Exception {
+		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.any(), Mockito.anyString()))
+				.thenReturn(registrationCenter);
 		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
-		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
-				.thenReturn(registrationCenter);
+		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-12T17:59:59.999Z");
 
-		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "eng","2017-12-12T17:59:59.999Z");
+	}
+
+	@Test(expected = RequestException.class)
+	public void invalidDateFormatTest() throws Exception {
+		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.any(), Mockito.anyString()))
+				.thenReturn(registrationCenter);
+		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
+				.thenReturn(false);
+		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-1217:59:59.999Z");
 
 	}
 
@@ -1609,50 +1626,8 @@ public class MasterDataServiceTest {
 				.thenReturn(false);
 		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString())).thenReturn(null);
 
-		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "eng","2017-12-12T17:59:59.999Z");
+		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-12T17:59:59.999Z");
 
 	}
-
-	@Test(expected = DataNotFoundException.class)
-	public void getStatusOfWorkingHoursDataNotFoundTest() throws Exception {
-		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
-				.thenReturn(false);
-		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
-				.thenReturn(registrationCenter);
-
-		registrationCenterService.validateTimeStampWithRegistrationCenter("1","eng", "2017-12-12T17:59:59.999Z");
-
-	}
-
-	@Test
-	public void getStatusOfWorkingHoursRejectedWorkingHourTest() throws Exception {
-		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
-				.thenReturn(false);
-		Mockito.when(registrationCenterRepository.findByIdAndLangCode(Mockito.any(), Mockito.anyString()))
-				.thenReturn(registrationCenter);
-		LocalTime startTime = LocalTime.of(10, 00, 000);
-		LocalTime endTime = LocalTime.of(15, 00, 000);
-		registrationCenter.setCenterStartTime(startTime);
-		registrationCenter.setCenterEndTime(endTime);
-
-		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
-				.validateTimeStampWithRegistrationCenter("1", "eng","2017-12-12T17:59:59.999Z");
-
-		Assert.assertEquals(MasterDataConstant.INVALID, resgistrationCenterStatusResponseDto.getStatus());
-
-	}
-	
-	@Test(expected =RequestException.class)
-	public void invalidDateFormatTest() throws Exception {
-		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
-				.thenReturn(false);
-		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
-				.thenReturn(registrationCenter);
-
-		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "eng","2017-12-1217:59:59.999Z");
-
-	}
-
-	
 
 }

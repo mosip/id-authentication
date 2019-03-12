@@ -25,8 +25,3 @@ The key manager uses the SoftHSM software to store the keys. The SoftHSM softwar
 ![Module Diagram](_images/kernel-dockerizesofthsm.jpg)
 
 
-
-## Implementation
-
-
-**kernel-dockerizesofthsm** [README](../../kernel/kernel-dockerizesofthsm/README.md)

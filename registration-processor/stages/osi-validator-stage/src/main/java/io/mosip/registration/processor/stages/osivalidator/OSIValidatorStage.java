@@ -16,6 +16,7 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -57,7 +58,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	@Autowired
 	UMCValidator umcValidator;
 
-	@Value("${vertx.ignite.configuration}")
+	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
 	private static final String OSI_VALIDATOR_FAILED = "OSI validation failed for registrationId ";
@@ -179,7 +180,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId);
+					registrationId, ApiName.AUDIT);
 
 		}
 

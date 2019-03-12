@@ -128,7 +128,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 				GlobalParam globalParam = globalParamDAO.get(key.getKey());
 
-		 		if (globalParam != null) {
+				if (globalParam != null) {
 					globalParam.setVal(globalParamMap.get(key.getKey()));
 
 					globalParam.setUpdBy(getUserIdFromSession());
@@ -145,7 +145,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 					globalParam.setIsActive(true);
 					globalParam.setCrBy("brahma");
 					globalParam.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-					globalParam.setVal(globalParamMap.get(key.getKey()));
+					globalParam.setVal(globalParamMap.get(key.getKey()).trim());
 				}
 
 				list.add(globalParam);
@@ -158,8 +158,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 		} catch (HttpServerErrorException | HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException
 				| ClassCastException | ResourceAccessException exception) {
-
-			setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
 			LOGGER.error("REGISTRATION_SYNCH_CONFIG_DATA", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 		}
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
@@ -176,7 +175,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 			if (entry.getValue() instanceof HashMap) {
 				parseToMap((HashMap<String, Object>) entry.getValue(), globalParamMap);
 			} else {
-				globalParamMap.put(key, entry.getValue().toString());
+				globalParamMap.put(key, entry.getValue().toString().trim());
 			}
 		}
 	}

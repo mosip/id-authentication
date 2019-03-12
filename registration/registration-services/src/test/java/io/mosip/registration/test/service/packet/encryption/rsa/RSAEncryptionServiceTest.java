@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.core.env.Environment;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.registration.dao.PolicySyncDAO;
@@ -33,8 +33,6 @@ public class RSAEncryptionServiceTest {
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@Mock
 	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
-	@Mock
-	private Environment environment;
 
 	@Test
 	public void rsaPacketCreation() throws RegBaseCheckedException {
@@ -45,7 +43,7 @@ public class RSAEncryptionServiceTest {
 		byte[] decodedbytes = "e".getBytes();
 		byte[] sessionbytes = "sesseion".getBytes();
 		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
-		when(environment.getProperty("mosip.kernel.keygenerator.asymmetric-algorithm-name")).thenReturn("RSA");
+		ReflectionTestUtils.setField(rsaEncryptionServiceImpl, "asymmetricAlgorithmName", "RSA");
 		when(encryptor.asymmetricPublicEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
 				.thenReturn(decodedbytes);
 
@@ -70,7 +68,7 @@ public class RSAEncryptionServiceTest {
 		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
 		when(encryptor.asymmetricPublicEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
 				.thenReturn(decodedbytes);
-		when(environment.getProperty("mosip.kernel.keygenerator.asymmetric-algorithm-name")).thenReturn("RSA");
+		ReflectionTestUtils.setField(rsaEncryptionServiceImpl, "asymmetricAlgorithmName", "RSA");
 
 		rsaEncryptionServiceImpl.encrypt(sessionbytes);
 	}
@@ -84,7 +82,7 @@ public class RSAEncryptionServiceTest {
 		byte[] decodedbytes = "e".getBytes();
 		byte[] sessionbytes = "sesseion".getBytes();
 		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
-		when(environment.getProperty("mosip.kernel.keygenerator.asymmetric-algorithm-name")).thenReturn("AES");
+		ReflectionTestUtils.setField(rsaEncryptionServiceImpl, "asymmetricAlgorithmName", "AES");
 		when(encryptor.asymmetricPublicEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
 				.thenReturn(decodedbytes);
 

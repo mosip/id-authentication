@@ -106,4 +106,14 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	@Modifying
 	@Query("UPDATE Template t SET t.updatedBy=?3 , t.isDeleted =true , t.deletedDateTime = ?2 WHERE t.id =?1 and (t.isDeleted is null or t.isDeleted =false)")
 	int deleteTemplate(String id, LocalDateTime deletedDateTime, String updatedBy);
+
+	/**
+	 * To fetch all the {@link Template} based on template type code
+	 * 
+	 * @param templateTypeCode
+	 *            the template type code
+	 * @return All the {@link Template}
+	 */
+	@Query("FROM Template WHERE  templateTypeCode =?1 AND (isDeleted is null OR isDeleted = false)")
+	List<Template> findAllByTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(String templateTypeCode);
 }

@@ -62,7 +62,7 @@ public class PreRegDbread {
 	public static boolean prereg_dbDataPersistenceCheck(String preId) {
 		boolean flag = false;
 
-		factory = new Configuration().configure("prereg.cfg.xml").addAnnotatedClass(OtpEntity.class)
+		factory = new Configuration().configure("prereginteg.cfg.xml").addAnnotatedClass(OtpEntity.class)
 				.buildSessionFactory();
 		session = factory.getCurrentSession();
 		session.beginTransaction();
@@ -141,7 +141,7 @@ public class PreRegDbread {
 		boolean flag = false;
 		// String preId;
 
-		factory = new Configuration().configure("prereg.cfg.xml").addAnnotatedClass(OtpEntity.class)
+		factory = new Configuration().configure("prereginteg.cfg.xml").addAnnotatedClass(OtpEntity.class)
 				.buildSessionFactory();
 
 		for (String preId : preIds)
@@ -165,13 +165,13 @@ public class PreRegDbread {
 			 */
 
 			Query query = session.createSQLQuery(queryString);
-			System.out.println("Query after replacing PreId =================== :" + query);
+			 logger.info("Query after replacing PreId =================== :" + query);
 			query.setParameter("preId_value", preId);
 
 			int res = query.executeUpdate();
 			session.getTransaction().commit();
 
-			System.out.println("Result size is ============: " + res);
+			 logger.info("Result size is ============: " + res);
 			if (res == 1) {
 				logger.info("Data Deleted Successfully ======");
 				flag = true;
@@ -192,7 +192,7 @@ public class PreRegDbread {
 		boolean flag = false;
 		// String preId;
 
-		factory = new Configuration().configure("prereg.cfg.xml").addAnnotatedClass(OtpEntity.class)
+		factory = new Configuration().configure("prereginteg.cfg.xml").addAnnotatedClass(OtpEntity.class)
 				.buildSessionFactory();
 
 		session = factory.getCurrentSession();
@@ -208,13 +208,13 @@ public class PreRegDbread {
 		int size = 0;
 
 		Query query = session.createSQLQuery(queryString);
-		System.out.println("Query after replacing PreId =================== :" + query);
+		 logger.info("Query after replacing PreId =================== :" + query);
 		query.setParameter("preId_value", preId);
 
 		int res = query.executeUpdate();
 		session.getTransaction().commit();
 
-		System.out.println("Result size is ============: " + res);
+		 logger.info("Result size is ============: " + res);
 		if (res == 1) {
 			logger.info("Data Updated Successfully ======");
 

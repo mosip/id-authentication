@@ -85,6 +85,12 @@ public enum ApiName {
 	/** The gendertype. */
 	GENDERTYPE,
 	/** The location. */
-	LOCATION
+	LOCATION,
+
+	/** The decryption api from DMZ **/
+	DMZCRYPTOMANAGERDECRYPT,
+
+	/** The AUDIT api from DMZ **/
+	DMZAUDIT
 
 }

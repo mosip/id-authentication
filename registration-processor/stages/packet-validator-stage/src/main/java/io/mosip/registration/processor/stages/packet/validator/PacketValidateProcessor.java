@@ -303,13 +303,13 @@ public class PacketValidateProcessor {
 					eventType = EventType.BUSINESS.toString();
 				} else {
 
-					description = "Packet uploading to file system is unsuccessful";
-					eventId = EventId.RPR_405.toString();
-					eventName = EventName.EXCEPTION.toString();
-					eventType = EventType.SYSTEM.toString();
-				}
-				auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-						registrationId);
+							description = "Packet uploading to file system is unsuccessful";
+							eventId = EventId.RPR_405.toString();
+							eventName = EventName.EXCEPTION.toString();
+							eventType = EventType.SYSTEM.toString();
+						}
+						auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+								registrationId, ApiName.AUDIT);
 
 			}
 
@@ -392,7 +392,7 @@ public class PacketValidateProcessor {
 				eventType = EventType.SYSTEM.toString();
 			}
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId.trim().isEmpty() ? null : registrationId.toString());
+					registrationId.trim().isEmpty() ? null : registrationId.toString(), ApiName.AUDIT);
 		}
 
 		return object;
