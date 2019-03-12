@@ -13,25 +13,20 @@ import lombok.Data;
 
 @Data
 public class IdentityDTO {
-	/** The value UIN */
-	@JsonProperty("UIN")
-	private String uin;
+
+	/** variable to hold age value */
+	private String age;
 	
-	/** The value VID */
-	@JsonProperty("VID")
-	private String vid;
+	/** variable to hold dob value */
+	private String dob;
 	
 	/** List of identity info to hold name */
 	List<IdentityInfoDTO> name;
 
-	/** List of identity info to hold dateOfBirth */
-	List<IdentityInfoDTO> dob;
 
 	/** List of identity info to hold dateOfBirthType */
 	List<IdentityInfoDTO> dobType;
 
-	/** List of identity info to hold age */
-	List<IdentityInfoDTO> age;
 
 	/** List of identity info to hold gender */
 	List<IdentityInfoDTO> gender;

@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.AdditionalFactorsDTO;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BaseAuthRequestDTO;
@@ -181,7 +180,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		if ((authTypeDTO != null && authTypeDTO.isPin() && isMatchtypeEnabled(PinMatchType.SPIN))) {
 
 			Optional<String> pinOpt = Optional.ofNullable(authRequestDTO.getRequest())
-					.map(RequestDTO::getAdditionalFactors).map(AdditionalFactorsDTO::getStaticPin);
+					.map(RequestDTO::getStaticPin);
 
 			if (!pinOpt.isPresent()) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Missing pinval in the request");
@@ -193,7 +192,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			}
 		} else if ((authTypeDTO != null && authTypeDTO.isOtp() && isMatchtypeEnabled(PinMatchType.OTP))) {
 			Optional<String> otp = Optional.ofNullable(authRequestDTO.getRequest())
-					.map(RequestDTO::getAdditionalFactors).map(AdditionalFactorsDTO::getTotp);
+					.map(RequestDTO::getOtp);
 
 			if (!otp.isPresent()) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Missing OTP value in the request");
@@ -401,7 +400,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	private List<BioIdentityInfoDTO> getBioIds(AuthRequestDTO authRequestDTO, String type) {
 		List<BioIdentityInfoDTO> identity = Optional.ofNullable(authRequestDTO.getRequest())
-				.map(RequestDTO::getIdentity).map(IdentityDTO::getBiometrics).orElseGet(Collections::emptyList);
+				.map(RequestDTO::getDemographics).map(IdentityDTO::getBiometrics).orElseGet(Collections::emptyList);
 		if (!identity.isEmpty()) {
 			List<BioIdentityInfoDTO> idendityInfoList = identity.stream().filter(Objects::nonNull)
 					.filter(bioId -> bioId.getType().equalsIgnoreCase(type)).collect(Collectors.toList());
@@ -443,7 +442,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	private boolean checkAnyBioIdAvailable(AuthRequestDTO authRequestDTO, String type) {
-		return Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
+		return Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getDemographics)
 				.map(IdentityDTO::getBiometrics)
 				.filter(list -> list.stream().anyMatch(bioId -> bioId.getType().equalsIgnoreCase(type))).isPresent();
 	}
@@ -489,7 +488,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	boolean checkAnyIdInfoAvailable(AuthRequestDTO authRequestDTO,
 			Function<IdentityDTO, List<IdentityInfoDTO>>... functions) {
 		return Stream.<Function<IdentityDTO, List<IdentityInfoDTO>>>of(functions).anyMatch(func -> Optional
-				.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(func)
+				.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getDemographics).map(func)
 				.filter(list -> list != null && !list.isEmpty()
 						&& list.stream().allMatch(idDto -> idDto.getValue() != null && !idDto.getValue().isEmpty()))
 				.isPresent());
@@ -602,7 +601,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				for (MatchType matchType : associatedMatchTypes) {
 					if (isMatchtypeEnabled(matchType)) {
 						List<IdentityInfoDTO> identityInfos = matchType
-								.getIdentityInfoList(authRequest.getRequest().getIdentity());
+								.getIdentityInfoList(authRequest.getRequest().getDemographics());
 						if (identityInfos != null && !identityInfos.isEmpty()) {
 							availableAuthTypeInfos.add(authType.getType());
 							hasMatch = true;
@@ -716,7 +715,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void checkGender(AuthRequestDTO authRequest, Errors errors) {
 		List<IdentityInfoDTO> genderList = DemoMatchType.GENDER
-				.getIdentityInfoList(authRequest.getRequest().getIdentity());
+				.getIdentityInfoList(authRequest.getRequest().getDemographics());
 		if (genderList != null && !genderList.isEmpty()) {
 			Map<String, List<String>> fetchGenderType = null;
 			try {
@@ -758,7 +757,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void checkDOBType(AuthRequestDTO authRequest, Errors errors) {
 		List<IdentityInfoDTO> dobTypeList = DemoMatchType.DOBTYPE
-				.getIdentityInfoList(authRequest.getRequest().getIdentity());
+				.getIdentityInfoList(authRequest.getRequest().getDemographics());
 		if (dobTypeList != null) {
 			for (IdentityInfoDTO identityInfoDTO : dobTypeList) {
 				if (!DOBType.isTypePresent(identityInfoDTO.getValue())) {
@@ -780,7 +779,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors      the errors
 	 */
 	private void checkAge(AuthRequestDTO authRequest, Errors errors) {
-		List<IdentityInfoDTO> ageList = DemoMatchType.AGE.getIdentityInfoList(authRequest.getRequest().getIdentity());
+		List<IdentityInfoDTO> ageList = DemoMatchType.AGE.getIdentityInfoList(authRequest.getRequest().getDemographics());
 		if (ageList != null) {
 			for (IdentityInfoDTO identityInfoDTO : ageList) {
 				try {
@@ -803,7 +802,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors      the errors
 	 */
 	private void checkDOB(AuthRequestDTO authRequest, Errors errors) {
-		List<IdentityInfoDTO> dobList = DemoMatchType.DOB.getIdentityInfoList(authRequest.getRequest().getIdentity());
+		List<IdentityInfoDTO> dobList = DemoMatchType.DOB.getIdentityInfoList(authRequest.getRequest().getDemographics());
 		if (dobList != null) {
 			for (IdentityInfoDTO identityInfoDTO : dobList) {
 				try {
@@ -895,8 +894,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @return the otp value
 	 */
 	private Optional<String> getOtpValue(AuthRequestDTO authreqdto) {
-		return Optional.ofNullable(authreqdto.getRequest()).map(RequestDTO::getAdditionalFactors)
-				.map(AdditionalFactorsDTO::getTotp);
+		return Optional.ofNullable(authreqdto.getRequest()).map(RequestDTO::getOtp);
 
 	}
 
@@ -909,7 +907,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	private void validateEmail(AuthRequestDTO authRequest, Errors errors) {
 		try {
 			List<IdentityInfoDTO> emailId = DemoMatchType.EMAIL
-					.getIdentityInfoList(authRequest.getRequest().getIdentity());
+					.getIdentityInfoList(authRequest.getRequest().getDemographics());
 			if (emailId != null) {
 				for (IdentityInfoDTO email : emailId) {
 					emailValidatorImpl.validateEmail(email.getValue());
@@ -933,7 +931,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	private void validatePhone(AuthRequestDTO authRequest, Errors errors) {
 		try {
 			List<IdentityInfoDTO> phoneNumber = DemoMatchType.PHONE
-					.getIdentityInfoList(authRequest.getRequest().getIdentity());
+					.getIdentityInfoList(authRequest.getRequest().getDemographics());
 			if (phoneNumber != null) {
 				for (IdentityInfoDTO phone : phoneNumber) {
 					phoneValidatorImpl.validatePhone(phone.getValue());

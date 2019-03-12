@@ -8,11 +8,20 @@ import lombok.Data;
  */
 @Data
 public class RequestDTO {
+	
+	/** variable to hold otp value */
+	private String otp;
+	
+	/** variable to hold staticPin value */
+	private String staticPin;
+	
+	/** variable to hold timestamp value */
+	private String timestamp;
+	
+	/** variable to hold transactionID value */
+	private String transactionID;
 
 	/** variable to hold identity value */
-	private IdentityDTO identity;
-
-	/** variable to hold OTP and Static pin values */
-	private AdditionalFactorsDTO additionalFactors;
+	private IdentityDTO demographics;
 
 }
