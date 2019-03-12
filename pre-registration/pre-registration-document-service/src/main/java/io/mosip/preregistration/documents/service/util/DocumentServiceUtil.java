@@ -83,8 +83,9 @@ public class DocumentServiceUtil {
 	 */
 	@Value("${file.extension}")
 	private String fileExtension;
-
-	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	
+	@Value("${mosip.utc-datetime-pattern}")
+	private String utcDateTimePattern;
 
 	/**
 	 * Autowired reference for {@link #RestTemplateBuilder}
@@ -119,7 +120,7 @@ public class DocumentServiceUtil {
 		inputValidation.put(RequestCodes.id.toString(), docReqDto.getId());
 		inputValidation.put(RequestCodes.ver.toString(), docReqDto.getVer());
 		inputValidation.put(RequestCodes.reqTime.toString(),
-				new SimpleDateFormat(dateTimeFormat).format(docReqDto.getReqTime()));
+				new SimpleDateFormat(utcDateTimePattern).format(docReqDto.getReqTime()));
 		inputValidation.put(RequestCodes.request.toString(), docReqDto.getRequest().toString());
 		return inputValidation;
 	}
@@ -151,7 +152,7 @@ public class DocumentServiceUtil {
 				docDTOData.toString());
 		uploadReqDto.setId(documentData.get("id").toString());
 		uploadReqDto.setVer(documentData.get("ver").toString());
-		uploadReqDto.setReqTime(new SimpleDateFormat(dateTimeFormat).parse(documentData.get("reqTime").toString()));
+		uploadReqDto.setReqTime(new SimpleDateFormat(utcDateTimePattern).parse(documentData.get("reqTime").toString()));
 		uploadReqDto.setRequest(documentDto);
 		return uploadReqDto;
 	}
@@ -225,12 +226,12 @@ public class DocumentServiceUtil {
 
 	public String getCurrentResponseTime() {
 		log.info("sessionId", "idType", "id", "In getCurrentResponseTime method of document service util");
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), dateTimeFormat);
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
 	}
 
 	public String getDateString(Date date) {
 		log.info("sessionId", "idType", "id", "In getDateString method of document service util");
-		return DateUtils.formatDate(date, dateTimeFormat);
+		return DateUtils.formatDate(date, utcDateTimePattern);
 	}
 
 	public Integer parseDocumentId(String documentId) {
@@ -338,6 +339,7 @@ public class DocumentServiceUtil {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_DOC_TYPE_CODE.toString());
 		}else if(isNull(dto.getLangCode())) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_LANG_CODE.toString());
+
 		}
 		return true;
 	}
