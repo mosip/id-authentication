@@ -48,4 +48,6 @@ public interface PacketUploadService {
 	 * @param regIds the reg ids
 	 */
 	void uploadEODPackets(List<String> regIds);
+
+	void uploadAllSyncedPackets();
 }

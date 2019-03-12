@@ -114,6 +114,24 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 	}
 
+	@Override
+	public void deletePacketsWhenMachineRemapped() {
+
+		LOGGER.info("REGISTRATION - DELETE-PACKETS-WHEN-MACHINE-REMAPPED - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
+				APPLICATION_ID, "packet deletion when the machine ios remapped is started");
+
+		List<Registration> registrations = registrationDAO
+				.findByServerStatusCodeIn(RegistrationConstants.PACKET_STATUS_CODES_FOR_REMAPDELETE);
+		if (registrations != null && !registrations.isEmpty()) {
+
+			for (Registration registration : registrations) {
+
+				delete(registration);
+			}
+		}
+
+	}
+
 	private Timestamp getPacketDeletionLastDate(Timestamp reqTime) {
 
 		/* Get Calendar instance */
@@ -387,7 +405,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 					syncDtoList.add(syncDto);
 				}
 				RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
-				registrationPacketSyncDTO.setRequestTimestamp(DateUtils.getUTCCurrentDateTimeString());
+				registrationPacketSyncDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
 				registrationPacketSyncDTO.setSyncRegistrationDTOs(syncDtoList);
 				registrationPacketSyncDTO.setId(RegistrationConstants.PACKET_SYNC_STATUS_ID);
 				registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
@@ -400,7 +418,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 				packetsToBeSynched.forEach(regPacket -> {
 					regPacket.setClientStatusCode(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
 				});
-				packetSynchService.updateSyncStatus(packetsToBeSynched);
+				//packetSynchService.updateSyncStatus(packetsToBeSynched);
 				successResponseDTO.setMessage(RegistrationConstants.SUCCESS);
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
 			}
