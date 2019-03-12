@@ -1,4 +1,8 @@
-<div class="wrapper">
+<div class="wrapper spacing" *ngIf="showSpinner">
+  <mat-spinner></mat-spinner>
+</div>
+
+<div *ngIf="!showSpinner" class="wrapper">
 
   <div class="form_wrapper">
     <div class="heading">
@@ -21,8 +25,8 @@
       <div *ngIf="showContactDetails">
         <mat-form-field appearance="outline">
           <input autofocus="autofocus" matInput [(ngModel)]="inputContactDetails" placeholder="{{'login.label_email_num' | translate}}"  id="inputFieldContact" required />
-          <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
         </mat-form-field>
+        <p class="error" *ngIf="errorMessage">{{errorMessage}}</p>
       </div>
 
       <div *ngIf="showOTP">
@@ -47,7 +51,7 @@
       </div>
 
       <div class="pinkText boldText" id="timer">
-        <span id="minutesSpan">02</span>:<span id="secondsSpan">00</span>
+        <span id="minutesSpan">{{minutes}}</span>:<span id="secondsSpan">{{seconds}}</span>
       </div>
     </div>
   </div>

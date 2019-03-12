@@ -9,6 +9,7 @@ import { SharedService } from '../booking.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { TranslateService } from '@ngx-translate/core';
 import Utils from 'src/app/app.util';
+import { ConfigService } from 'src/app/core/services/config.service';
 
 @Component({
   selector: 'app-center-selection',
@@ -49,7 +50,8 @@ export class CenterSelectionComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private registrationService: RegistrationService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private configService: ConfigService
   ) {
     this.translate.use(localStorage.getItem('langCode'));
   }
@@ -72,7 +74,9 @@ export class CenterSelectionComponent implements OnInit {
     this.users.forEach(user => {
       pincodes.push(user['postalCode']);
     });
-    this.dataService.recommendedCenters(localStorage.getItem('langCode'), 4, pincodes).subscribe(response => {
+    this.dataService.recommendedCenters(localStorage.getItem('langCode'),
+    this.configService.getConfigByKey('preregistration.recommended.centers.locCode')
+    , pincodes).subscribe(response => {
       console.log(response);
       if (!response['errors'])
         this.displayResults(response);
@@ -130,17 +134,16 @@ export class CenterSelectionComponent implements OnInit {
 
   plotOnMap() {
     this.showMap = true;
-    if (Object.keys(this.selectedCentre).length !== 0) {
-      console.log('length', Object.keys(this.selectedCentre).length);
-      this.service.changeCoordinates([Number(this.selectedCentre.longitude), Number(this.selectedCentre.latitude)]);
-    }
+    this.service.changeCoordinates([Number(this.selectedCentre.longitude), Number(this.selectedCentre.latitude)]);
   }
 
   selectedRow(row) {
     this.selectedCentre = row;
     this.enableNextButton = true;
     console.log('row', row);
-    this.plotOnMap();
+    if (Object.keys(this.selectedCentre).length !== 0) {
+      this.plotOnMap();
+    }
   }
 
   getLocation() {

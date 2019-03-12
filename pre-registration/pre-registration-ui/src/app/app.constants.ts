@@ -98,6 +98,18 @@ export const virtual_keyboard_languages = {
   ara: 'ar'
 };
 
+export const languageMapping = {
+  eng : {
+    langName: 'English'
+  },
+  ara : {
+    langName: 'Arabic'
+  },
+  fra : {
+    langName: 'French'
+  }
+}
+
 export const DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY = 'file';
 export const DOCUMENT_UPLOAD_REQUEST_DTO_KEY = 'Document request';
 

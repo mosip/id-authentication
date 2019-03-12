@@ -13,6 +13,7 @@ import { RegistrationService } from 'src/app/core/services/registration.service'
 import { TranslateService } from '@ngx-translate/core';
 import Utils from 'src/app/app.util';
 import * as appConstants from '../../../app.constants';
+import { ConfigService } from 'src/app/core/services/config.service';
 
 @Component({
   selector: 'app-time-selection',
@@ -30,8 +31,8 @@ export class TimeSelectionComponent implements OnInit {
   names: NameList[];
   deletedNames = [];
   availabilityData = [];
-  cutoff = 1;
-  days = 7;
+ // cutoff = 1;
+  days: number;
   enableBookButton = false;
   activeTab = 'morning';
   bookingDataList = [];
@@ -47,7 +48,8 @@ export class TimeSelectionComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private registrationService: RegistrationService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private configService: ConfigService
   ) {
     this.translate.use(localStorage.getItem('langCode'));
   }
@@ -56,6 +58,7 @@ export class TimeSelectionComponent implements OnInit {
     this.names = this.sharedService.getNameList();
     this.temp = this.sharedService.getNameList();
     console.log(this.temp);
+    this.days = this.configService.getConfigByKey('preregistration.availability.noOfDays');
     this.registrationCenterLunchTime = this.temp[0].registrationCenter.lunchEndTime.split(':');
     this.sharedService.resetNameList();
     this.registrationCenter = this.registrationService.getRegCenterId();
@@ -124,13 +127,14 @@ export class TimeSelectionComponent implements OnInit {
         slot.displayTime += ':' + toTime[1];
       });
       element.TotalAvailable = sumAvailability;
-      const cutOffDate = new Date();
-      cutOffDate.setDate(cutOffDate.getDate() + this.cutoff);
-      if (new Date(Date.parse(element.date)) < cutOffDate) {
-        element.inActive = true;
-      } else {
-        element.inActive = false;
-      }
+      // const cutOffDate = new Date();
+      // cutOffDate.setDate(cutOffDate.getDate() + this.cutoff);
+      // if (new Date(Date.parse(element.date)) < cutOffDate) {
+      //   element.inActive = true;
+      // } else {
+      //   element.inActive = false;
+      // }
+      element.inActive = false;
       element.displayDate =
         element.date.split('-')[2] +
         ' ' +
