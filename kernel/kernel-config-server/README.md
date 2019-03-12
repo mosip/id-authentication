@@ -15,7 +15,7 @@ server.servlet.path=/config
 Create keystore with following command: <br/>
 `keytool -genkeypair -alias <your-alias> -keyalg RSA -keystore server.keystore -storepass <store-password> --dname "CN=<your-CN>,OU=<OU>,O=<O>,L=<L>,S=<S>,C=<C>"`
 
-When you run the above command it will ask you for password for <your-alias> , choose your password or press enter for same password as < store-password >
+When you run the above command it will ask you for password for < your-alias > , choose your password or press enter for same password as < store-password >
 
 The JKS keystore uses a proprietary format. It is recommended to migrate to PKCS12 which is an industry standard format, migrate it using following command:
 `keytool -importkeystore -srckeystore server.keystore -destkeystore server.keystore -deststoretype pkcs12` <br/>
@@ -24,7 +24,8 @@ For more information look [here]( https://cloud.spring.io/spring-cloud-config/si
 **How To Run**
 <br/>
 To run the application: <br/>
-Make sure you have configured ssh keys to connect to git, because it will take ssh keys from default location, and give following command: <br/>
+Make sure you have configured ssh keys to connect to git, because it will take ssh keys from default location (${user.home}/.ssh) . 
+Now run the jar using the following command: <br/>
 <br/>
 `java -jar -Dspring.cloud.config.server.git.uri=< git-repo-ssh-url > -Dspring.cloud.config.server.git.search-paths=< config-folder-location-in-git-repo > -Dencrypt.keyStore.location=file:///< file-location-of-keystore > -Dencrypt.keyStore.password=< keystore-passowrd > -Dencrypt.keyStore.alias=< keystore-alias > -Dencrypt.keyStore.secret=< keystore-secret > < jar-name >`
 <br/>
@@ -124,7 +125,7 @@ spring.cloud.config.server.git.cloneOnStart=true
 
 **Config hierarchy**
 
-![Confif Properties](../../docs/design/kernel/_images/GlobalProperties_1.jpg)
+![Config Properties](../../docs/design/kernel/_images/GlobalProperties_1.jpg)
 
 
 
