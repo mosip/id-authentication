@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.text.MessageFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -18,7 +17,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
-import java.util.stream.Collectors;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -279,6 +277,13 @@ public abstract class BaseIDAFilter implements Filter {
 		}
 	}
 	
+	/**
+	 * Validate request.
+	 *
+	 * @param requestWrapper the request wrapper
+	 * @param requestBody the request body
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	protected void validateRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody) throws IdAuthenticationAppException{
 		String idFromRequest=(String) requestBody.get("id");
 		String id = null;
@@ -291,8 +296,7 @@ public abstract class BaseIDAFilter implements Filter {
 				id = "mosip.ida.api.ids." + splitedUrlByContext[1].split("/")[2];
 				if(!env.getProperty(id).equals(idFromRequest)) {
 					mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-					IdAuthenticationAppException idAuthenticationAppException = new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "id"));
-					throw idAuthenticationAppException;
+					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "id"));
 				}
 				
 				

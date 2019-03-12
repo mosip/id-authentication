@@ -2,12 +2,10 @@ package io.mosip.authentication.service.filter;
 
 import java.util.Map;
 
-import org.springframework.data.web.JsonPath;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The Class IdAuthFilter.
