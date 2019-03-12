@@ -5,10 +5,12 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,20 +39,27 @@ import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
+import javafx.beans.Observable;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 
 @Controller
-public class PacketUploadController extends BaseController {
+public class PacketUploadController extends BaseController implements Initializable {
 
 	@FXML
 	private ProgressIndicator progressIndicator;
@@ -62,16 +71,20 @@ public class PacketUploadController extends BaseController {
 	private TableColumn<PacketStatusDTO, String> fileNameColumn;
 
 	@FXML
-	private TableColumn<PacketStatusDTO, String> uploadStatusColumn;
+	private TableView<PacketStatusDTO> table;
 
 	@FXML
-	private TableView<PacketStatusDTO> table;
+	private TableColumn<PacketStatusDTO, Boolean> checkBoxColumn;
 
 	@Autowired
 	private PacketSynchService packetSynchService;
 
 	@Autowired
 	private PacketExportController packetExportController;
+
+	private ObservableList<PacketStatusDTO> list;
+
+	private List<PacketStatusDTO> selectedPackets = new ArrayList<>();
 
 	private static final Logger LOGGER = AppConfig.getLogger(PacketUploadController.class);
 
@@ -87,8 +100,9 @@ public class PacketUploadController extends BaseController {
 		table.refresh();
 		service.reset();
 		try {
-			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-				String packetSyncStatus = packetSynchService.packetSync();
+			if (RegistrationAppHealthCheckUtil.isNetworkAvailable() && !selectedPackets.isEmpty()) {
+				String packetSyncStatus = packetSynchService.packetSync(selectedPackets);
+
 
 				auditFactory.audit(AuditEvent.UPLOAD_PACKET, Components.UPLOAD_PACKET,
 						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -125,7 +139,6 @@ public class PacketUploadController extends BaseController {
 
 	}
 
-	
 
 	/**
 	 * This anonymous service class will do the packet upload as well as the upload
@@ -153,7 +166,7 @@ public class PacketUploadController extends BaseController {
 					List<Registration> synchedPackets = packetUploadService.getSynchedPackets();
 					List<Registration> packetUploadList = new ArrayList<>();
 					String status = "";
-					Map<String, String> tableMap = new WeakHashMap<>();
+					Map<String, String> tableMap = new HashMap<>();
 					if (!synchedPackets.isEmpty()) {
 						auditFactory.audit(AuditEvent.PACKET_UPLOAD, Components.PACKET_UPLOAD,
 								SessionContext.userContext().getUserId(), RegistrationConstants.PACKET_UPLOAD_REF_ID);
@@ -275,7 +288,7 @@ public class PacketUploadController extends BaseController {
 				"Exporting the Synched the packets");
 
 		List<Registration> exportedPackets = packetExportController.packetExport();
-		Map<String, String> exportedPacketMap = new WeakHashMap<>();
+		Map<String, String> exportedPacketMap = new HashMap<>();
 		exportedPackets.forEach(regPacket -> {
 			exportedPacketMap.put(regPacket.getId(), RegistrationClientStatusCode.EXPORT.getCode());
 		});
@@ -288,14 +301,52 @@ public class PacketUploadController extends BaseController {
 	 * @param tableData
 	 */
 	private void displayData(List<PacketStatusDTO> tableData) {
-		
+
 		LOGGER.info("REGISTRATION - DISPLAY_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"To display all the ui data");
-		fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("fileName"));
-		uploadStatusColumn.setCellValueFactory(new PropertyValueFactory<>("uploadStatus"));
 
-		ObservableList<PacketStatusDTO> list = FXCollections.observableArrayList(tableData);
+		checkBoxColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+		fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("fileName"));
+
+		checkBoxColumn
+				.setCellFactory(CheckBoxTableCell.forTableColumn(new Callback<Integer, ObservableValue<Boolean>>() {
+
+					@Override
+					public ObservableValue<Boolean> call(Integer param) {
+						System.out.println("Cours " + tableData.get(param).getStatus());
+						return list.get(param).getStatus();
+					}
+				}));
+
+		list = FXCollections.observableArrayList(new Callback<PacketStatusDTO, Observable[]>() {
+
+			@Override
+			public Observable[] call(PacketStatusDTO param) {
+				return new Observable[] { param.getStatus() };
+			}
+		});
+		list.addAll(tableData);
+
+		list.addListener(new ListChangeListener<PacketStatusDTO>() {
+			@Override
+			public void onChanged(Change<? extends PacketStatusDTO> c) {
+				while (c.next()) {
+					if (c.wasUpdated()) {
+						if ((list.get(c.getFrom()).getStatus()).getValue()) {
+							selectedPackets.add(list.get(c.getFrom()));
+						} else if (!(list.get(c.getFrom()).getStatus()).getValue()
+								&& selectedPackets.contains(list.get(c.getFrom()))) {
+								selectedPackets.remove(list.get(c.getFrom()));
+						}
+						System.out.println("Cours " + list.get(c.getFrom()).getFileName() + " changed value to "
+								+ list.get(c.getFrom()).getStatus());
+					}
+				}
+			}
+		});
 		table.setItems(list);
+		table.setEditable(true);
+
 	}
 
 	/**
@@ -310,11 +361,23 @@ public class PacketUploadController extends BaseController {
 		List<PacketStatusDTO> listUploadStatus = new ArrayList<>();
 		packetStatus.forEach((id, status) -> {
 			PacketStatusDTO packetUploadStatusDTO = new PacketStatusDTO();
-			packetUploadStatusDTO.setUploadStatus(status);
+		//	packetUploadStatusDTO.setUploadStatus(status);
 			packetUploadStatusDTO.setFileName(id);
+			packetUploadStatusDTO.setStatus(new SimpleBooleanProperty());
 			listUploadStatus.add(packetUploadStatusDTO);
 
 		});
 		return listUploadStatus;
+	}
+
+	private void loadInitialPage() {
+		
+		List<PacketStatusDTO> synchedPackets = packetSynchService.fetchPacketsToBeSynched();
+		displayData(synchedPackets);
+	}
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		loadInitialPage();
 	}
 }

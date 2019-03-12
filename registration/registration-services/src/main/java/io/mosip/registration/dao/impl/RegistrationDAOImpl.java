@@ -23,6 +23,7 @@ import io.mosip.registration.constants.RegistrationTransactionType;
 import io.mosip.registration.constants.RegistrationType;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegistrationDAO;
+import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationTransaction;
@@ -223,14 +224,14 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 * io.mosip.registration.dao.RegistrationDAO#updatePacketSyncStatus(io.mosip.
 	 * registration.entity.Registration)
 	 */
-	public Registration updatePacketSyncStatus(Registration packet) {
+	public Registration updatePacketSyncStatus(PacketStatusDTO packet) {
 		LOGGER.info("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the packet details in the Registation table");
 
 		Timestamp timestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
-		Registration reg = registrationRepository.getOne(packet.getId());
-		reg.setStatusCode(packet.getClientStatusCode());
-		reg.setClientStatusCode(packet.getClientStatusCode());
+		Registration reg = registrationRepository.getOne(packet.getFileName());
+		reg.setStatusCode(packet.getPacketClientStatus());
+		reg.setClientStatusCode(packet.getPacketClientStatus());
 		reg.setIsActive(true);
 		reg.setUploadTimestamp(timestamp);
 		reg.setRegistrationTransaction(buildRegistrationTransaction(reg));
@@ -317,4 +318,5 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		return registrationRepository.findByCrDtimeBeforeAndClientStatusCode(crDtimes, clientStatus);
 
 	}
+	
 }

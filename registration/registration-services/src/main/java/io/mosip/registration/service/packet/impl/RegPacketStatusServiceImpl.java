@@ -387,7 +387,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 					syncDtoList.add(syncDto);
 				}
 				RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
-				registrationPacketSyncDTO.setRequestTimestamp(DateUtils.getUTCCurrentDateTimeString());
+				registrationPacketSyncDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
 				registrationPacketSyncDTO.setSyncRegistrationDTOs(syncDtoList);
 				registrationPacketSyncDTO.setId(RegistrationConstants.PACKET_SYNC_STATUS_ID);
 				registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
@@ -400,7 +400,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 				packetsToBeSynched.forEach(regPacket -> {
 					regPacket.setClientStatusCode(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
 				});
-				packetSynchService.updateSyncStatus(packetsToBeSynched);
+				//packetSynchService.updateSyncStatus(packetsToBeSynched);
 				successResponseDTO.setMessage(RegistrationConstants.SUCCESS);
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
 			}
