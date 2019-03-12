@@ -313,4 +313,11 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 		List<Registration> registrations = syncRegistrationDAO.get(regIds);
 		return syncPackets(registrations);
 	}
+	
+	@Override
+	public void syncAllPackets() throws RegBaseCheckedException {
+		List<PacketStatusDTO> packetsToBeSynched = fetchPacketsToBeSynched();
+		packetSync(packetsToBeSynched);
+		
+	}
 }

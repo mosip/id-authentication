@@ -114,6 +114,24 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 	}
 
+	@Override
+	public void deletePacketsWhenMachineRemapped() {
+
+		LOGGER.info("REGISTRATION - DELETE-PACKETS-WHEN-MACHINE-REMAPPED - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
+				APPLICATION_ID, "packet deletion when the machine ios remapped is started");
+
+		List<Registration> registrations = registrationDAO
+				.findByServerStatusCodeIn(RegistrationConstants.PACKET_STATUS_CODES_FOR_REMAPDELETE);
+		if (registrations != null && !registrations.isEmpty()) {
+
+			for (Registration registration : registrations) {
+
+				delete(registration);
+			}
+		}
+
+	}
+
 	private Timestamp getPacketDeletionLastDate(Timestamp reqTime) {
 
 		/* Get Calendar instance */
