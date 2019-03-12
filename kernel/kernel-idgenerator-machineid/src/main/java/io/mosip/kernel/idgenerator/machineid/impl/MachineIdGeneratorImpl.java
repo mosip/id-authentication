@@ -3,8 +3,6 @@ package io.mosip.kernel.idgenerator.machineid.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -25,7 +23,6 @@ import io.mosip.kernel.idgenerator.machineid.repository.MachineIdRepository;
  *
  */
 @Component
-@Transactional
 public class MachineIdGeneratorImpl implements MachineIdGenerator<String> {
 	/**
 	 * The length of machine ID.
@@ -68,16 +65,16 @@ public class MachineIdGeneratorImpl implements MachineIdGenerator<String> {
 				machineId.setUpdatedBy("default@user");
 				machineId.setUpdatedDateTime(null);
 				generatedMID = initialValue;
-
+				machineIdRepository.save(machineId);
 			} else {
-
 				generatedMID = machineId.getMId() + 1;
-				machineId.setMId(generatedMID);
-				machineId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-				machineId.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-
+				MachineId entity = new MachineId();
+				entity.setMId(generatedMID);
+				entity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				entity.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				machineIdRepository.save(entity);
 			}
-			machineIdRepository.save(machineId);
+
 		} catch (DataAccessLayerException e) {
 			throw new MachineIdServiceException(MachineIdConstant.MID_INSERT_EXCEPTION.getErrorCode(),
 					MachineIdConstant.MID_INSERT_EXCEPTION.getErrorMessage(), e);
