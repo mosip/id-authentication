@@ -213,7 +213,7 @@ public class OTPServiceImpl implements OTPService {
 			return autnTxn;
 		} catch (ParseException | java.time.format.DateTimeParseException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP,
 					e);
 		}
 	}
@@ -247,8 +247,8 @@ public class OTPServiceImpl implements OTPService {
 			requestTime = DateUtils.parseToDate(otpRequestDto.getRequestTime(), env.getProperty(DATETIME_PATTERN));
 			reqTime = DateUtils.parseDateToLocalDateTime(requestTime);
 		} catch (java.text.ParseException e) {
-			mosipLogger.error(SESSION_ID,this.getClass().getName(), e.getClass().getName(), e.getMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
+			mosipLogger.error(SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP,
 					e);
 		}
 		// TODO make minutes and value configurable
@@ -327,11 +327,13 @@ public class OTPServiceImpl implements OTPService {
 			otp = otpManager.generateOTP(otpKey);
 
 			if (otp == null || otp.trim().isEmpty()) {
-				mosipLogger.error(SESSION_ID, this.getClass().getName(), " generateOtp"," generated OTP is: " + otp);
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
+				mosipLogger.error(SESSION_ID, this.getClass().getName(), " generateOtp", " generated OTP is: " + otp);
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "OTP"));
 			}
 
-			mosipLogger.info(SESSION_ID, this.getClass().getName()," generateOtp", " generated OTP is: " + otp);
+			mosipLogger.info(SESSION_ID, this.getClass().getName(), " generateOtp", " generated OTP is: " + otp);
 		}
 
 		return otp;

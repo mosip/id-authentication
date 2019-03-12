@@ -82,7 +82,7 @@ public class InternalAuthController {
 		AuthResponseDTO authResponseDTO = null;
 		try {
 			DataValidationUtil.validate(e);
-			authResponseDTO = authFacade.authenticateApplicant(authRequestDTO, false,partnerId,mispLK);
+			authResponseDTO = authFacade.authenticateApplicant(authRequestDTO, false, partnerId, mispLK);
 		} catch (IDDataValidationException e1) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
 					e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());
@@ -90,7 +90,7 @@ public class InternalAuthController {
 		} catch (IdAuthenticationBusinessException e1) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
 					e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e1);
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e1);
 		}
 
 		return authResponseDTO;

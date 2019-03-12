@@ -74,7 +74,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 */
 	@Override
 	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin,
-			Map<String, List<IdentityInfoDTO>> idInfo,String partnerId) throws IdAuthenticationBusinessException {
+			Map<String, List<IdentityInfoDTO>> idInfo, String partnerId) throws IdAuthenticationBusinessException {
 		String txnId = authRequestDTO.getTransactionID();
 		Optional<String> otp = getOtpValue(authRequestDTO);
 		if (otp.isPresent()) {
@@ -93,7 +93,8 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 			if (isValidRequest) {
 				mosipLogger.info("SESSION_ID", this.getClass().getSimpleName(), "Inside Validate Otp Request", "");
 				List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
-				List<MatchOutput> listMatchOutputs = constructMatchOutput(authRequestDTO, listMatchInputs, uin,partnerId);
+				List<MatchOutput> listMatchOutputs = constructMatchOutput(authRequestDTO, listMatchInputs, uin,
+						partnerId);
 				boolean isPinMatched = listMatchOutputs.stream().anyMatch(MatchOutput::isMatched);
 				return idInfoHelper.buildStatusInfo(isPinMatched, listMatchInputs, listMatchOutputs,
 						PinAuthType.values());
@@ -104,7 +105,11 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 				throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
 			}
 		} else {
-			throw new IDDataValidationException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
+			IDDataValidationException idDataValidationException = new IDDataValidationException(
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER,
+					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "OTP"),
+					null);
+			throw idDataValidationException;
 		}
 	}
 
@@ -116,13 +121,14 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 * @return the s pin
 	 * @throws IdValidationFailedException
 	 */
-	public Map<String, String> getOtpKey(String uin, AuthRequestDTO authReq,String partnerId) throws IdAuthenticationBusinessException {
+	public Map<String, String> getOtpKey(String uin, AuthRequestDTO authReq, String partnerId)
+			throws IdAuthenticationBusinessException {
 		Map<String, String> map = new HashMap<>();
 		String txnID = authReq.getTransactionID();
 		String tspID = partnerId;
 		String otpKey = OTPUtil.generateKey(env.getProperty("application.id"), uin, txnID, tspID);
 		String key = Optional.ofNullable(otpKey)
-				.orElseThrow(() -> new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_OTP_KEY));
+				.orElseThrow(() -> new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_OTP));
 		map.put("value", key);
 		return map;
 	}
@@ -151,7 +157,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 *                                           exception
 	 */
 	private List<MatchOutput> constructMatchOutput(AuthRequestDTO authRequestDTO, List<MatchInput> listMatchInputs,
-			String uin,String partnerId) throws IdAuthenticationBusinessException {
+			String uin, String partnerId) throws IdAuthenticationBusinessException {
 		return idInfoHelper.matchIdentityData(authRequestDTO, uin, listMatchInputs, this::getOtpKey, partnerId);
 	}
 

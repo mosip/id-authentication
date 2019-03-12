@@ -112,7 +112,9 @@ public class IdTemplateManager {
 			IOUtils.copy(templateValue, writer, StandardCharsets.UTF_8);
 			return writer.toString();
 		} else {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.MISSING_TEMPLATE_CONFIG);
+			throw new IdAuthenticationBusinessException(
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), String.format(
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "Template"));
 		}
 	}
 
@@ -157,7 +159,7 @@ public class IdTemplateManager {
 			return pdfGenerator.generate(new ByteArrayInputStream(template.getBytes()));
 		} catch (IOException e) {
 			logger.error(SESSION_ID, "Inside generatePDF >>>>>", e.getMessage(), e.getMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PDF_NOT_GENERATED, e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 
 	}

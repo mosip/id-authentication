@@ -33,9 +33,9 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 				Date reqInfoDate = DateUtils.parseToDate((String) reqInfo, dateFormatReq);
 				Date entityInfoDate = DateUtils.parseToDate((String) entityInfo, dateFormatEntity);
 				return DemoMatcherUtil.doExactMatch(reqInfoDate, entityInfoDate);
-			} catch ( ParseException | java.text.ParseException e) {
-				logError(IdAuthenticationErrorConstants.DOB_MISMATCH);
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DOB_MISMATCH, e);
+			} catch (ParseException | java.text.ParseException e) {
+				logError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH, e);
 			}
 		}
 		return 0;
@@ -50,10 +50,8 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 	/**
 	 * Instantiates a new DOB matching strategy.
 	 *
-	 * @param matchStrategyType
-	 *            the match strategy type
-	 * @param matchFunction
-	 *            the match function
+	 * @param matchStrategyType the match strategy type
+	 * @param matchFunction     the match function
 	 */
 	DOBMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchFunction = matchFunction;
@@ -96,8 +94,7 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 	/**
 	 * Log error.
 	 *
-	 * @param errorConstants
-	 *            the error constants
+	 * @param errorConstants the error constants
 	 */
 	private static void logError(IdAuthenticationErrorConstants errorConstants) {
 		mosipLogger.error(DEFAULT_SESSION_ID, TYPE, "Inside DOB Mathing Strategy" + errorConstants.getErrorCode(),

@@ -103,9 +103,8 @@ public class AuthController {
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplication",
-					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e);
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplication", e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 
 		return authResponsedto;
@@ -143,9 +142,8 @@ public class AuthController {
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "processKyc",
-					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e);
+			mosipLogger.error(SESSION_ID,this.getClass().getSimpleName(),"processKyc", e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 		return kycAuthResponseDTO;
 	}

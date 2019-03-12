@@ -31,21 +31,20 @@ import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 public class IdRepoServiceImpl implements IdRepoService {
 
 	private static final List<String> ID_REPO_ERRORS_INVALID_UIN = Arrays.asList(
-														IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(),
-				                                        IdRepoErrorConstants.INVALID_UIN.getErrorCode()
-			                                        );
+			IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(), IdRepoErrorConstants.INVALID_UIN.getErrorCode());
 	private static final String STATUS_KEY = "status";
 	@Autowired
 	private RestHelper restHelper;
 
 	@Autowired
 	private RestRequestFactory restRequestFactory;
-	
+
 	@Autowired
 	private Environment environment;
 
 	/**
-	 * Fetch data from Id Repo based on Individual's UIN / VID value and all UIN scenarios 
+	 * Fetch data from Id Repo based on Individual's UIN / VID value and all UIN
+	 * scenarios
 	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getIdenity(String uin, boolean isBio) throws IdAuthenticationBusinessException {
@@ -64,29 +63,29 @@ public class IdRepoServiceImpl implements IdRepoService {
 			}
 			buildRequest.setPathVariables(params);
 			response = restHelper.requestSync(buildRequest);
-			if(environment.getProperty("mosip.kernel.idrepo.status.registered")
-					.equalsIgnoreCase((String)response.get(STATUS_KEY))){		
-			  response.put("uin", uin);
-			}
-			else {
+			if (environment.getProperty("mosip.kernel.idrepo.status.registered")
+					.equalsIgnoreCase((String) response.get(STATUS_KEY))) {
+				response.put("uin", uin);
+			} else {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
 			}
-			
+
 		} catch (RestServiceException e) {
-		  Optional<Object> responseBody = e.getResponseBody();
+			Optional<Object> responseBody = e.getResponseBody();
 			if (responseBody.isPresent()) {
 				Map<String, Object> idrepoMap = (Map<String, Object>) responseBody.get();
 				if (idrepoMap.containsKey("errors")) {
 					List<Map<String, Object>> idRepoerrorList = (List<Map<String, Object>>) idrepoMap.get("errors");
-					if (!idRepoerrorList.isEmpty() && idRepoerrorList.stream().anyMatch(
-							map -> map.containsKey("errCode") && ID_REPO_ERRORS_INVALID_UIN.contains(map.get("errCode")))) {
+					if (!idRepoerrorList.isEmpty()
+							&& idRepoerrorList.stream().anyMatch(map -> map.containsKey("errCode")
+									&& ID_REPO_ERRORS_INVALID_UIN.contains(map.get("errCode")))) {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN);
 					} else {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_PROCESS);
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 					}
 				}
 			}
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_PROCESS);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		} catch (IDDataValidationException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 		}

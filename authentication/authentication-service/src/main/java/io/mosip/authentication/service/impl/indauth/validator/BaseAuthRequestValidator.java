@@ -124,8 +124,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/** The Constant AUTH_TYPE. */
 	private static final String AUTH_TYPE = "requestedAuth";
-	
-	/** The Final Constant For allowed Internal auth  type*/
+
+	/** The Final Constant For allowed Internal auth type */
 	private static final String INTERNAL_ALLOWED_AUTH_TYPE = "internal.allowed.auth.type";
 
 	/** email Validator */
@@ -179,26 +179,26 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 		if ((authTypeDTO != null && authTypeDTO.isPin() && isMatchtypeEnabled(PinMatchType.SPIN))) {
 
-			Optional<String> pinOpt = Optional.ofNullable(authRequestDTO.getRequest())
-					.map(RequestDTO::getStaticPin);
+			Optional<String> pinOpt = Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getStaticPin);
 
 			if (!pinOpt.isPresent()) {
-				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Missing pinval in the request");
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_PINDATA.getErrorCode(),
+				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+						"Missing pinval in the request");
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 						new Object[] { REQUEST_ADDITIONAL_FACTORS_STATIC_PIN },
-						IdAuthenticationErrorConstants.MISSING_PINDATA.getErrorMessage());
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 			} else {
 				checkAdditionalFactorsValue(pinOpt, PIN_VALUE, errors);
 			}
 		} else if ((authTypeDTO != null && authTypeDTO.isOtp() && isMatchtypeEnabled(PinMatchType.OTP))) {
-			Optional<String> otp = Optional.ofNullable(authRequestDTO.getRequest())
-					.map(RequestDTO::getOtp);
+			Optional<String> otp = Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getOtp);
 
 			if (!otp.isPresent()) {
-				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Missing OTP value in the request");
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_PINDATA.getErrorCode(),
+				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+						"Missing OTP value in the request");
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 						new Object[] { REQUEST_ADDITIONAL_FACTORS_TOTP },
-						IdAuthenticationErrorConstants.MISSING_PINDATA.getErrorMessage());
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 			} else {
 				checkAdditionalFactorsValue(otp, OTP2, errors);
 			}
@@ -281,7 +281,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 						new Object[] { bioInfos.getBioType() },
 						IdAuthenticationErrorConstants.INVALID_BIOTYPE.getErrorMessage());
 			}
-			
+
 		}
 
 	}
@@ -294,7 +294,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void validateDeviceInfo(List<BioInfo> bioInfos, Errors errors) {
 		if (!isContainDeviceId(bioInfos)) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "missing biometric Device id Info request");
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+					"missing biometric Device id Info request");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { DEVICE_ID },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
@@ -338,7 +339,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors         the errors
 	 */
 	private void validateFinger(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
-		if ((isAvailableBioType(bioInfo, BioAuthType.FGR_MIN) && isDuplicateBioType(authRequestDTO, BioAuthType.FGR_MIN))
+		if ((isAvailableBioType(bioInfo, BioAuthType.FGR_MIN)
+				&& isDuplicateBioType(authRequestDTO, BioAuthType.FGR_MIN))
 				|| (isAvailableBioType(bioInfo, BioAuthType.FGR_IMG)
 						&& isDuplicateBioType(authRequestDTO, BioAuthType.FGR_IMG))) {
 			checkAtleastOneFingerRequestAvailable(authRequestDTO, errors);
@@ -356,7 +358,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors         the errors
 	 */
 	private void validateIris(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
-		if (isAvailableBioType(bioInfo, BioAuthType.IRIS_IMG) && isDuplicateBioType(authRequestDTO, BioAuthType.IRIS_IMG)) {
+		if (isAvailableBioType(bioInfo, BioAuthType.IRIS_IMG)
+				&& isDuplicateBioType(authRequestDTO, BioAuthType.IRIS_IMG)) {
 
 			checkAtleastOneIrisRequestAvailable(authRequestDTO, errors);
 			if (!errors.hasErrors()) {
@@ -418,7 +421,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void validateFace(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
 
-		if (isAvailableBioType(bioInfo, BioAuthType.FACE_IMG) && isDuplicateBioType(authRequestDTO, BioAuthType.FACE_IMG)) {
+		if (isAvailableBioType(bioInfo, BioAuthType.FACE_IMG)
+				&& isDuplicateBioType(authRequestDTO, BioAuthType.FACE_IMG)) {
 
 			checkAtleastOneFaceRequestAvailable(authRequestDTO, errors);
 		}
@@ -723,8 +727,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			} catch (IdAuthenticationBusinessException e) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 						"Master Data util failed to load - Gender Type");
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorCode(),
-						new Object[] { "gender" }, IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorMessage());
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						new Object[] { "gender" }, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 			}
 			if (null != fetchGenderType) {
 				checkGender(errors, genderList, fetchGenderType);
@@ -779,7 +783,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors      the errors
 	 */
 	private void checkAge(AuthRequestDTO authRequest, Errors errors) {
-		List<IdentityInfoDTO> ageList = DemoMatchType.AGE.getIdentityInfoList(authRequest.getRequest().getDemographics());
+		List<IdentityInfoDTO> ageList = DemoMatchType.AGE
+				.getIdentityInfoList(authRequest.getRequest().getDemographics());
 		if (ageList != null) {
 			for (IdentityInfoDTO identityInfoDTO : ageList) {
 				try {
@@ -802,7 +807,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors      the errors
 	 */
 	private void checkDOB(AuthRequestDTO authRequest, Errors errors) {
-		List<IdentityInfoDTO> dobList = DemoMatchType.DOB.getIdentityInfoList(authRequest.getRequest().getDemographics());
+		List<IdentityInfoDTO> dobList = DemoMatchType.DOB
+				.getIdentityInfoList(authRequest.getRequest().getDemographics());
 		if (dobList != null) {
 			for (IdentityInfoDTO identityInfoDTO : dobList) {
 				try {
@@ -876,8 +882,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			if (!otp.isPresent()) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_CHECK_OTP_AUTH,
 						"INVALID_OTP - pinType is not OTP");
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.OTP_NOT_PRESENT.getErrorCode(),
-						IdAuthenticationErrorConstants.OTP_NOT_PRESENT.getErrorMessage());
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+						new Object[] { "OTP" },
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 			} else if (OTP_LENGTH != otp.orElse("").length()) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE_CHECK_OTP_AUTH,
 						"INVALID_OTP - pinType is not OTP");
@@ -960,85 +967,86 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 					IdAuthenticationErrorConstants.NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST.getErrorMessage());
 		}
 	}
+
 	protected void validateRequest(AuthRequestDTO requestDTO, Errors errors) {
-		validateAllowedAuthTypes(requestDTO, errors,INTERNAL_ALLOWED_AUTH_TYPE) ;
+		validateAllowedAuthTypes(requestDTO, errors, INTERNAL_ALLOWED_AUTH_TYPE);
 	}
+
 	/**
 	 * Method to validate auth type
 	 * 
 	 * @param requestDTO
 	 * @param errors
 	 */
-	protected void validateAllowedAuthTypes(AuthRequestDTO requestDTO, Errors errors,String configKey) {
+	protected void validateAllowedAuthTypes(AuthRequestDTO requestDTO, Errors errors, String configKey) {
 		AuthTypeDTO authTypeDTO = requestDTO.getRequestedAuth();
 		if (authTypeDTO != null) {
-			Set<String> allowedAuthType = getAllowedAuthTypes(configKey);			
+			Set<String> allowedAuthType = getAllowedAuthTypes(configKey);
 			validateAuthType(requestDTO, errors, authTypeDTO, allowedAuthType);
-		}else {
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
+		} else {
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), REQUEST));
 		}
-		
-		
+
 	}
 
 	/**
 	 * Validate auth type.
 	 *
-	 * @param requestDTO the request DTO
-	 * @param errors the errors
-	 * @param authTypeDTO the auth type DTO
+	 * @param requestDTO      the request DTO
+	 * @param errors          the errors
+	 * @param authTypeDTO     the auth type DTO
 	 * @param allowedAuthType the allowed auth type
 	 */
 	private void validateAuthType(AuthRequestDTO requestDTO, Errors errors, AuthTypeDTO authTypeDTO,
 			Set<String> allowedAuthType) {
 		checkAllowedAuthType(requestDTO, errors, authTypeDTO, allowedAuthType);
-		
-		if(authTypeDTO.isBio()) {
-			if(allowedAuthType.contains(InternalAuthType.BIO.getType())) {
+
+		if (authTypeDTO.isBio()) {
+			if (allowedAuthType.contains(InternalAuthType.BIO.getType())) {
 				validateBioMetadataDetails(requestDTO, errors);
 			} else {
-				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						new Object[] { AUTH_TYPE }, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 			}
-			
+
 		}
 	}
 
 	/**
 	 * Check allowed auth type.
 	 *
-	 * @param requestDTO the request DTO
-	 * @param errors the errors
-	 * @param authTypeDTO the auth type DTO
+	 * @param requestDTO      the request DTO
+	 * @param errors          the errors
+	 * @param authTypeDTO     the auth type DTO
 	 * @param allowedAuthType the allowed auth type
 	 */
 	private void checkAllowedAuthType(AuthRequestDTO requestDTO, Errors errors, AuthTypeDTO authTypeDTO,
 			Set<String> allowedAuthType) {
-		if(authTypeDTO.isDemo()) {
-			if(allowedAuthType.contains(InternalAuthType.DEMO.getType())) {
+		if (authTypeDTO.isDemo()) {
+			if (allowedAuthType.contains(InternalAuthType.DEMO.getType())) {
 				checkDemoAuth(requestDTO, errors);
 			} else {
-				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
-			}
-		} 
-		
-		if(authTypeDTO.isOtp()) {
-			if(allowedAuthType.contains(InternalAuthType.OTP.getType())) {
-				checkOTPAuth(requestDTO, errors);
-			} else {
-				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						new Object[] { AUTH_TYPE }, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 			}
 		}
-		
-		if(authTypeDTO.isPin()) {
-			if(allowedAuthType.contains(InternalAuthType.SPIN.getType())) {
+
+		if (authTypeDTO.isOtp()) {
+			if (allowedAuthType.contains(InternalAuthType.OTP.getType())) {
+				checkOTPAuth(requestDTO, errors);
+			} else {
+				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						new Object[] { AUTH_TYPE }, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
+			}
+		}
+
+		if (authTypeDTO.isPin()) {
+			if (allowedAuthType.contains(InternalAuthType.SPIN.getType())) {
 				validateAdditionalFactorsDetails(requestDTO, errors);
 			} else {
-				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						new Object[]{AUTH_TYPE} , IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						new Object[] { AUTH_TYPE }, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 			}
 		}
 	}
@@ -1050,8 +1058,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private Set<String> getAllowedAuthTypes(String configKey) {
 		String intAllowedAuthType = env.getProperty(configKey);
-		return Stream.of(intAllowedAuthType.split(","))
-				.filter(str -> !str.isEmpty())
-				.collect(Collectors.toSet());
+		return Stream.of(intAllowedAuthType.split(",")).filter(str -> !str.isEmpty()).collect(Collectors.toSet());
 	}
 }

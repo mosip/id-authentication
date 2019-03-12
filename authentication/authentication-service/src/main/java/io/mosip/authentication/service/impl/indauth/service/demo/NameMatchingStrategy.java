@@ -66,12 +66,12 @@ public enum NameMatchingStrategy implements TextMatchingStrategy {
 		if (object instanceof LanguageType) {
 			final LanguageType langType = ((LanguageType) object);
 			if (langType.equals(LanguageType.PRIMARY_LANG)) {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.NAMEPRI_MISMATCH);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
 			} else {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.NAMESEC_MISMATCH);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH);
 			}
 		} else {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
 	}
 

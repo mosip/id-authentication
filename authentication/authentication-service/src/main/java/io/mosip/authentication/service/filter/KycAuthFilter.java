@@ -52,7 +52,7 @@ public class KycAuthFilter extends IdAuthFilter {
 			}
 			return responseBody;
 		} catch (ClassCastException | JsonProcessingException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_PROCESS, e);
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 

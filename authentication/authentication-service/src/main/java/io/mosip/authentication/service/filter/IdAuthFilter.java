@@ -49,8 +49,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 			}
 			return requestBody;
 		} catch (ClassCastException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 		}
 	}
 
@@ -78,19 +78,17 @@ public class IdAuthFilter extends BaseAuthFilter {
 //		if(lkStatus!="active"){
 //			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISP_LKINACTIVE);
 //		}
-	}	
-	  else {
-		  throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISP_LKNOTREGISTER);
-	  }
-    
+		} else {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED);
+		}
+
 	}
     
 	public void validPartnerId(String partnerId) throws IdAuthenticationAppException {
-		String partnerIdJson=env.getProperty("partner."+partnerId);
-		if(null==partnerIdJson) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOTREGISTERED);
-		}
-		else {
+		String partnerIdJson = env.getProperty("partner." + partnerId);
+		if (null == partnerIdJson) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED);
+		} else {
 //			 String policyId = JsonPath.read(partnerIdJson, "policyId");
 //		   if(null==policyId || policyId.equalsIgnoreCase("") )	
 //			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.POLICY_NOTREGISTERED);
@@ -99,12 +97,12 @@ public class IdAuthFilter extends BaseAuthFilter {
 //			   throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOTACTIVE);   
 //		   }
 		}
-	 }
-	
-	public void validMISPPartnerMapping(String patnerId,String mispId) throws IdAuthenticationAppException {
-		String partnerPolicyMappingJson=env.getProperty("partner.policy."+patnerId+"."+mispId);
-		if(partnerPolicyMappingJson!="true") {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISP_PART_NOLINK);
+	}
+
+	public void validMISPPartnerMapping(String patnerId, String mispId) throws IdAuthenticationAppException {
+		String partnerPolicyMappingJson = env.getProperty("partner.policy." + patnerId + "." + mispId);
+		if (partnerPolicyMappingJson != "true") {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_MAPPED);
 		}
 	 }
 	

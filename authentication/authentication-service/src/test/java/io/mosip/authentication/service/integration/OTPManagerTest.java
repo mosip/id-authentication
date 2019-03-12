@@ -94,9 +94,9 @@ public class OTPManagerTest {
 		otpGeneratorRequestDto.setKey(otpKey);
 
 		IDDataValidationException e = new IDDataValidationException(
-				IdAuthenticationErrorConstants.KERNEL_OTP_GENERATION_REQUEST_FAILED);
+				IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 		IdAuthenticationBusinessException idAuthenticationBusinessException = new IdAuthenticationBusinessException(
-				IdAuthenticationErrorConstants.KERNEL_OTP_GENERATION_REQUEST_FAILED, e);
+				IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, e);
 
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE, otpGeneratorRequestDto,
 				OtpGeneratorResponseDto.class)).thenThrow(idAuthenticationBusinessException.getCause());

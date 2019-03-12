@@ -100,7 +100,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				ex.toString() + "\n Request : " + request + "\n Status returned : " + HttpStatus.OK
 						+ "\n" + ExceptionUtils.getStackTrace(ex));
 		IDAuthenticationUnknownException unknownException = new IDAuthenticationUnknownException(
-				IdAuthenticationErrorConstants.UNKNOWN_ERROR);
+				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		mosipLogger.debug(DEFAULT_SESSION_ID, EVENT_EXCEPTION, "Changing exception",
 				"Returing exception as " + ex.getClass().toString());
 		return new ResponseEntity<>(buildExceptionResponse(unknownException), HttpStatus.OK);
@@ -141,13 +141,13 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 		if (ex instanceof ServletException || ex instanceof BeansException
 				|| ex instanceof HttpMessageConversionException) {
-			ex = new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+			ex = new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 
 			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.OK);
 		} else if (ex instanceof AsyncRequestTimeoutException) {
-			ex = new IdAuthenticationAppException(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT.getErrorCode(),
-					IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT.getErrorMessage());
+			ex = new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 
 			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.OK);
 		} else {
@@ -227,8 +227,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				mosipLogger.error(DEFAULT_SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, e.toString(),
 						"\n" + ExceptionUtils.getStackTrace(e));
 				authResp.setErrors(Arrays.<AuthError>asList(
-						createAuthError(baseException, IdAuthenticationErrorConstants.UNABLE_PROCESS.getErrorCode(),
-								IdAuthenticationErrorConstants.UNABLE_PROCESS.getErrorMessage())));
+						createAuthError(baseException, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+								IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage())));
 			}
 		}
 

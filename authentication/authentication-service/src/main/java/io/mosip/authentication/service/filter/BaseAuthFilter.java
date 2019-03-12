@@ -45,7 +45,7 @@ import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
  */
 @Component
 public abstract class BaseAuthFilter extends BaseIDAFilter {
-	
+
 	/** The Constant BASE_AUTH_FILTER. */
 	private static final String BASE_AUTH_FILTER = "BaseAuthFilter";
 
@@ -72,10 +72,10 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 
 	/** The Constant PERSONAL_IDENTITY. */
 	private static final String PERSONAL_IDENTITY = "personalIdentity";
-	
+
 	/** The Constant ADDRESS. */
 	private static final String ADDRESS = "address";
-	
+
 	/** The Constant BIO_INFOS. */
 	private static final String BIO_INFOS = "bioInfos";
 
@@ -90,15 +90,13 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 
 	/** The Constant MATCH_INFOS. */
 	private static final String MATCH_INFOS = "matchInfos";
-	
+
 	/** The encryptor. */
 	protected EncryptorImpl encryptor;
 
 	/** The key manager. */
 	protected KeyManager keyManager;
-	
 
-	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		super.init(filterConfig);
@@ -107,60 +105,65 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		encryptor = context.getBean(EncryptorImpl.class);
 		keyManager = context.getBean(KeyManager.class);
 	}
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.service.filter.BaseIDAFilter#consumeRequest(io.mosip.authentication.service.filter.ResettableStreamHttpServletRequest)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.service.filter.BaseIDAFilter#consumeRequest(io.mosip.
+	 * authentication.service.filter.ResettableStreamHttpServletRequest)
 	 */
 	@Override
 	protected void consumeRequest(ResettableStreamHttpServletRequest requestWrapper)
 			throws IdAuthenticationAppException {
 		super.consumeRequest(requestWrapper);
 		authenticateRequest(requestWrapper);
-		
+
 		try {
 			requestWrapper.resetInputStream();
 			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
 			Map<String, Object> decipherRequest = decipherRequest(requestBody);
 			String requestAsString = mapper.writeValueAsString(decipherRequest);
-			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
-					"Input Request: \n" + requestAsString);
+			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Input Request: \n" + requestAsString);
 			requestWrapper.replaceData(requestAsString.getBytes());
 		} catch (IOException e) {
 			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST);
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
-		
+
 	}
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.service.filter.BaseIDAFilter#authenticateRequest(io.mosip.authentication.service.filter.ResettableStreamHttpServletRequest)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.service.filter.BaseIDAFilter#authenticateRequest(io.
+	 * mosip.authentication.service.filter.ResettableStreamHttpServletRequest)
 	 */
 	@Override
-	protected void authenticateRequest(ResettableStreamHttpServletRequest requestWrapper) throws IdAuthenticationAppException {
+	protected void authenticateRequest(ResettableStreamHttpServletRequest requestWrapper)
+			throws IdAuthenticationAppException {
 		String signature = requestWrapper.getHeader("Authorization");// FIXME header name
 		try {
 			requestWrapper.resetInputStream();
 			if (!validateSignature(signature, IOUtils.toByteArray(requestWrapper.getInputStream()))) {
 				mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid Signature");
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_SIGNATURE);
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
 			}
-			
+
 		} catch (IOException e) {
 			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED, e);
 		}
 	}
-	
+
 	/**
 	 * Validate signature.
 	 *
-	 * @param signature
-	 *            the signature
-	 * @param requestAsByte
-	 *            the request as byte
+	 * @param signature     the signature
+	 * @param requestAsByte the request as byte
 	 * @return true, if successful
-	 * @throws IdAuthenticationAppException
-	 *             the id authentication app exception
+	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
 		boolean isSigned = false;
@@ -178,8 +181,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 				isSigned = checkValidSign(requestAsByte, isSigned, certificate, jws);
 			} else {
 				mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "certificate not present");
-				throw new IdAuthenticationAppException(
-						IdAuthenticationErrorConstants.INVALID_CERTIFICATE);
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE);
 			}
 		} catch (JoseException | InvalidKeyException | CertificateException | NoSuchAlgorithmException
 				| NoSuchProviderException | SignatureException e) {
@@ -192,17 +194,12 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	/**
 	 * Check valid sign.
 	 *
-	 * @param requestAsByte
-	 *            the request as byte
-	 * @param isSigned
-	 *            the is signed
-	 * @param certificate
-	 *            the certificate
-	 * @param jws
-	 *            the jws
+	 * @param requestAsByte the request as byte
+	 * @param isSigned      the is signed
+	 * @param certificate   the certificate
+	 * @param jws           the jws
 	 * @return true, if successful
-	 * @throws JoseException
-	 *             the jose exception
+	 * @throws JoseException the jose exception
 	 */
 	private boolean checkValidSign(byte[] requestAsByte, boolean isSigned, X509Certificate certificate,
 			JsonWebSignature jws) throws JoseException {
@@ -216,8 +213,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	/**
 	 * Validate org.
 	 *
-	 * @param certNew
-	 *            the cert new
+	 * @param certNew the cert new
 	 * @return true, if successful
 	 */
 	private boolean validateOrg(X509Certificate certNew) {
@@ -226,16 +222,17 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 				.filter(ar -> ar[0].trim().equals("O"))
 				.anyMatch(ar -> ar[1].trim().equals(env.getProperty(MOSIP_TSP_ORGANIZATION)));
 	}
-			
+
 	/**
 	 * Sets the auth response param.
 	 *
-	 * @param requestBody the request body
+	 * @param requestBody  the request body
 	 * @param responseBody the response body
 	 * @return the map
 	 */
 	@SuppressWarnings("unchecked")
-	protected Map<String, Object> setAuthResponseParam(Map<String, Object> requestBody, Map<String, Object> responseBody) {
+	protected Map<String, Object> setAuthResponseParam(Map<String, Object> requestBody,
+			Map<String, Object> responseBody) {
 		try {
 			if (null != responseBody.get(INFO)) {
 				Map<String, Object> authType = (Map<String, Object>) requestBody.get(AUTH_TYPE);
@@ -248,7 +245,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 					Map<String, Object> info = (Map<String, Object>) responseBody.get(INFO);
 					info.remove(BIO_INFOS);
 					responseBody.replace(INFO, info);
-				} 
+				}
 			}
 			return responseBody;
 		} catch (DateTimeParseException e) {
@@ -256,7 +253,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 			return responseBody;
 		}
 	}
-	
+
 	/**
 	 * Check demo enabled auth type.
 	 *
@@ -267,17 +264,14 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		return (authType.get(PERSONAL_IDENTITY) instanceof Boolean && (boolean) authType.get(PERSONAL_IDENTITY))
 				|| (authType.get(FULL_ADDRESS) instanceof Boolean && (boolean) authType.get(FULL_ADDRESS))
 				|| (authType.get(ADDRESS) instanceof Boolean && (boolean) authType.get(ADDRESS));
-	}	
-	
+	}
 
 	/**
 	 * Decode.
 	 *
-	 * @param stringToDecode
-	 *            the string to decode
+	 * @param stringToDecode the string to decode
 	 * @return the object
-	 * @throws IdAuthenticationAppException
-	 *             the id authentication app exception
+	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected static Object decode(String stringToDecode) throws IdAuthenticationAppException {
 		try {
@@ -288,18 +282,16 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 			}
 		} catch (IllegalArgumentException e) {
 			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED, e);
 		}
 	}
-	
+
 	/**
 	 * Encode.
 	 *
-	 * @param stringToEncode
-	 *            the string to encode
+	 * @param stringToEncode the string to encode
 	 * @return the string
-	 * @throws IdAuthenticationAppException
-	 *             the id authentication app exception
+	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected static String encode(String stringToEncode) throws IdAuthenticationAppException {
 		try {
@@ -310,10 +302,10 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 			}
 		} catch (IllegalArgumentException e) {
 			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST, e);
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED, e);
 		}
 	}
-	
+
 	/**
 	 * Decipher request.
 	 *
@@ -324,7 +316,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		return requestBody;
 	}
-	
+
 	/**
 	 * Encipher response.
 	 *
@@ -332,12 +324,14 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	 * @return the map
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	protected Map<String, Object> encipherResponse(Map<String, Object> responseBody) throws IdAuthenticationAppException {
+	protected Map<String, Object> encipherResponse(Map<String, Object> responseBody)
+			throws IdAuthenticationAppException {
 		return responseBody;
 	}
-	
+
 	@Override
-	protected Map<String, Object> transformResponse(Map<String, Object> responseMap) throws IdAuthenticationAppException {
+	protected Map<String, Object> transformResponse(Map<String, Object> responseMap)
+			throws IdAuthenticationAppException {
 		return encipherResponse(responseMap);
 	}
 }

@@ -100,7 +100,7 @@ public class OTPManager {
 
 		} catch (IDDataValidationException e) {
 			throw new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.KERNEL_OTP_GENERATION_REQUEST_FAILED, e);
+					IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, e);
 		}
 		return response;
 	}
@@ -146,7 +146,7 @@ public class OTPManager {
 		} catch (IDDataValidationException e) {
 			logger.error(SESSION_ID, this.getClass().getSimpleName(), "Inside validateOtp", null);
 			throw new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.KERNEL_OTP_VALIDATION_REQUEST_FAILED, e);
+					IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, e);
 		}
 		return isValidOtp;
 	}
@@ -155,8 +155,9 @@ public class OTPManager {
 		Optional<String> errorCode = e.getResponseBodyAsString().flatMap(this::getErrorCode);
 		// Do not throw server error for OTP not generated, throw invalid OTP error
 		// instead
+		//FIXME change errorcode
 		if (errorCode.filter(
-				code -> code.equals(IdAuthenticationErrorConstants.VAL_KEY_NOT_FOUND_OTP_NOT_GENERATED.getErrorCode()))
+				code -> code.equals(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode()))
 				.isPresent()) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
 		}
