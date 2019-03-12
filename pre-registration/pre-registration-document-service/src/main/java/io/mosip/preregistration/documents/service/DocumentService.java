@@ -66,6 +66,7 @@ import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
  * @author Tapaswini Behera
  * @author Jagadishwari S
  * @author Kishan Rathore
+ *  @author Sanober Noor
  * @since 1.0.0
  */
 @Component

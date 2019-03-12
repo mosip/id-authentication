@@ -26,6 +26,10 @@ import io.mosip.preregistration.documents.exception.InvalidDocumnetIdExcepion;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
 
 
+/**
+ * @author Sanober Noor
+ *@since 1.0.0
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class DocumentServiceUtilTest {

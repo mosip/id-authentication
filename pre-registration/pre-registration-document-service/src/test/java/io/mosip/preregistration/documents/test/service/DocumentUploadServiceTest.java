@@ -62,6 +62,10 @@ import io.mosip.preregistration.documents.repository.util.DocumentDAO;
 import io.mosip.preregistration.documents.service.DocumentService;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
 
+/**
+ * @author Sanober Noor
+ *@since 1.0.0
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class DocumentUploadServiceTest {
