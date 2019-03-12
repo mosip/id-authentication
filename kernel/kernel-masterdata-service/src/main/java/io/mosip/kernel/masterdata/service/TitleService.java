@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
@@ -51,7 +50,7 @@ public interface TitleService {
 	 * @throws MasterDataServiceException
 	 *             when entered data not created
 	 */
-	public CodeAndLanguageCodeID saveTitle(RequestWrapper<TitleDto> titleRequestDto);
+	public CodeAndLanguageCodeID saveTitle(TitleDto titleRequestDto);
 
 	/**
 	 * Service class to update title data
@@ -65,7 +64,7 @@ public interface TitleService {
 	 * @throws MasterDataServiceException
 	 *             when data not updated successfully
 	 */
-	public CodeAndLanguageCodeID updateTitle(RequestWrapper<TitleDto> titles);
+	public CodeAndLanguageCodeID updateTitle(TitleDto titles);
 
 	/**
 	 * Service class to delete title data

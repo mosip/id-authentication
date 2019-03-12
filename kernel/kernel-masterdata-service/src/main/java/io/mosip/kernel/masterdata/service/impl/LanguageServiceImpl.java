@@ -7,9 +7,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.constant.LanguageErrorCode;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Language;
@@ -70,10 +70,10 @@ public class LanguageServiceImpl implements LanguageService {
 	 * 
 	 * @see LanguageService#saveLanguage(RequestWrapper)
 	 */
-	public CodeResponseDto saveLanguage(RequestWrapper<LanguageDto> requestDto) {
+	public CodeResponseDto saveLanguage(LanguageDto requestDto) {
 
 		try {
-			Language language = MetaDataUtils.setCreateMetaData(requestDto.getRequest(), Language.class);
+			Language language = MetaDataUtils.setCreateMetaData(requestDto, Language.class);
 			Language savedLanguage = languageRepository.create(language);
 			return MapperUtils.map(savedLanguage, CodeResponseDto.class);
 		} catch (DataAccessLayerException | DataAccessException e) {
@@ -91,8 +91,7 @@ public class LanguageServiceImpl implements LanguageService {
 	 * kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeResponseDto updateLanguage(RequestWrapper<LanguageDto> requestDto) {
-		LanguageDto languageDto = requestDto.getRequest();
+	public CodeResponseDto updateLanguage(LanguageDto languageDto) {
 		CodeResponseDto code = new CodeResponseDto();
 		try {
 			Language language = languageRepository.findLanguageByCode(languageDto.getCode());

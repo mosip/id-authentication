@@ -49,7 +49,7 @@ public interface GenderTypeService {
 	 * @throws MasterDataServiceException
 	 *             when entered data not created
 	 */
-	public CodeAndLanguageCodeID saveGenderType(RequestWrapper<GenderTypeDto> genderRequestDto);
+	public CodeAndLanguageCodeID saveGenderType(GenderTypeDto genderRequestDto);
 
 	/**
 	 * Method to update Gender Type based on data provided.
@@ -58,7 +58,7 @@ public interface GenderTypeService {
 	 *            {@link RequestWrapper} the request dto.
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
-	public CodeAndLanguageCodeID updateGenderType(RequestWrapper<GenderTypeDto> gender);
+	public CodeAndLanguageCodeID updateGenderType(GenderTypeDto gender);
 
 	/**
 	 * Method to delete Gender Type based on code provided.

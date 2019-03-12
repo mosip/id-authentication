@@ -60,7 +60,7 @@ public class LanguageController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating Language any error occured") })
 	public ResponseEntity<CodeResponseDto> saveLanguage(@Valid @RequestBody RequestWrapper<LanguageDto> language) {
-		return new ResponseEntity<>(languageService.saveLanguage(language), HttpStatus.OK);
+		return new ResponseEntity<>(languageService.saveLanguage(language.getRequest()), HttpStatus.OK);
 	}
 
 	@ResponseFilter
@@ -72,7 +72,7 @@ public class LanguageController {
 			@ApiResponse(code = 404, message = "When No Language found"),
 			@ApiResponse(code = 500, message = "While updating Language any error occured") })
 	public ResponseEntity<CodeResponseDto> updateLanguage(@Valid @RequestBody RequestWrapper<LanguageDto> language) {
-		return new ResponseEntity<>(languageService.updateLanguage(language), HttpStatus.OK);
+		return new ResponseEntity<>(languageService.updateLanguage(language.getRequest()), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{code}")

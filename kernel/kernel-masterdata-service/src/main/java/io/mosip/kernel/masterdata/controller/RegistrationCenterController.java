@@ -183,7 +183,7 @@ public class RegistrationCenterController {
 	@PostMapping("/registrationcenters")
 	public ResponseEntity<IdResponseDto> createRegistrationCenter(
 			@RequestBody @Valid RequestWrapper<RegistrationCenterDto> registrationCenterDto) {
-		return new ResponseEntity<>(registrationCenterService.createRegistrationCenter(registrationCenterDto),
+		return new ResponseEntity<>(registrationCenterService.createRegistrationCenter(registrationCenterDto.getRequest()),
 				HttpStatus.OK);
 	}
 

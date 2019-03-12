@@ -138,8 +138,8 @@ public class HolidayServiceImpl implements HolidayService {
 	 * .masterdata.dto.RequestDto)
 	 */
 	@Override
-	public HolidayIDDto saveHoliday(RequestWrapper<HolidayDto> holidayDto) {
-		Holiday entity = MetaDataUtils.setCreateMetaData(holidayDto.getRequest(), Holiday.class);
+	public HolidayIDDto saveHoliday(HolidayDto holidayDto) {
+		Holiday entity = MetaDataUtils.setCreateMetaData(holidayDto, Holiday.class);
 		Holiday holiday;
 		try {
 			holiday = holidayRepository.create(entity);
@@ -160,14 +160,13 @@ public class HolidayServiceImpl implements HolidayService {
 	 * kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public HolidayIDDto updateHoliday(RequestWrapper<HolidayUpdateDto> holidayDto) {
+	public HolidayIDDto updateHoliday(HolidayUpdateDto holidayDto) {
 		HolidayIDDto idDto = null;
-		HolidayUpdateDto dto = holidayDto.getRequest();
-		Map<String, Object> params = bindDtoToMap(dto);
+		Map<String, Object> params = bindDtoToMap(holidayDto);
 		try {
 			int noOfRowAffected = holidayRepository.createQueryUpdateOrDelete(UPDATE_HOLIDAY_QUERY, params);
 			if (noOfRowAffected != 0)
-				idDto = mapToHolidayIdDto(dto);
+				idDto = mapToHolidayIdDto(holidayDto);
 			else
 				throw new RequestException(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
 						HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage());

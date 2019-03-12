@@ -123,7 +123,7 @@ public class MachineController {
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While creating Machine any error occured") })
 	public ResponseEntity<IdAndLanguageCodeID> createMachine(@Valid @RequestBody RequestWrapper<MachineDto> machine) {
-		return new ResponseEntity<>(machineService.createMachine(machine), HttpStatus.OK);
+		return new ResponseEntity<>(machineService.createMachine(machine.getRequest()), HttpStatus.OK);
 	}
 
 	/**
@@ -144,7 +144,7 @@ public class MachineController {
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While updating Machine any error occured") })
 	public ResponseEntity<IdAndLanguageCodeID> updateMachine(@Valid @RequestBody RequestWrapper<MachineDto> machine) {
-		return new ResponseEntity<>(machineService.updateMachine(machine), HttpStatus.OK);
+		return new ResponseEntity<>(machineService.updateMachine(machine.getRequest()), HttpStatus.OK);
 	}
 
 	/**

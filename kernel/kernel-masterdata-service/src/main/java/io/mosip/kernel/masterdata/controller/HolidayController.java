@@ -89,7 +89,7 @@ public class HolidayController {
 	@ResponseFilter
 	@PostMapping
 	public ResponseEntity<HolidayIDDto> saveHoliday(@Valid @RequestBody RequestWrapper<HolidayDto> holiday) {
-		return new ResponseEntity<>(holidayService.saveHoliday(holiday), HttpStatus.OK);
+		return new ResponseEntity<>(holidayService.saveHoliday(holiday.getRequest()), HttpStatus.OK);
 
 	}
 
@@ -104,7 +104,7 @@ public class HolidayController {
 	@PutMapping
 	@ApiOperation(value = "to update a holiday", response = HolidayIDDto.class)
 	public HolidayIDDto updateHoliday(@Valid @RequestBody RequestWrapper<HolidayUpdateDto> holiday) {
-		return holidayService.updateHoliday(holiday);
+		return holidayService.updateHoliday(holiday.getRequest());
 	}
 
 	/**

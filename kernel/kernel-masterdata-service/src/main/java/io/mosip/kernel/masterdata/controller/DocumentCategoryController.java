@@ -92,7 +92,7 @@ public class DocumentCategoryController {
 	@ApiOperation(value = "Service to create document category", notes = "Create document category and return composite id", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentCategory(
 			@ApiParam("Document category DTO to create") @Valid @RequestBody RequestWrapper<DocumentCategoryDto> category) {
-		return new ResponseEntity<>(documentCategoryService.createDocumentCategory(category), HttpStatus.OK);
+		return new ResponseEntity<>(documentCategoryService.createDocumentCategory(category.getRequest()), HttpStatus.OK);
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class DocumentCategoryController {
 	@ApiOperation(value = "Service to update document category", notes = "Update document category and return composite id", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeAndLanguageCodeID> updateDocumentCategory(
 			@ApiParam("Document category DTO to update") @Valid @RequestBody RequestWrapper<DocumentCategoryDto> category) {
-		return new ResponseEntity<>(documentCategoryService.updateDocumentCategory(category), HttpStatus.OK);
+		return new ResponseEntity<>(documentCategoryService.updateDocumentCategory(category.getRequest()), HttpStatus.OK);
 	}
 
 	/**

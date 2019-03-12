@@ -47,7 +47,7 @@ public class RegistrationCenterDeviceController {
 			@ApiResponse(code = 500, message = "While mapping registration center and device") })
 	public ResponseEntity<ResponseRegistrationCenterDeviceDto> createRegistrationCenterAndDevice(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterDeviceDto> requestDto) {
-		return new ResponseEntity<>(registrationCenterDeviceService.createRegistrationCenterAndDevice(requestDto),
+		return new ResponseEntity<>(registrationCenterDeviceService.createRegistrationCenterAndDevice(requestDto.getRequest()),
 				HttpStatus.OK);
 	}
 	

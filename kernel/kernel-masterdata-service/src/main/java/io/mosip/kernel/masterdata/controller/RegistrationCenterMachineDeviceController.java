@@ -47,7 +47,7 @@ public class RegistrationCenterMachineDeviceController {
 	public ResponseEntity<ResponseRegistrationCenterMachineDeviceDto> createRegistrationCenterMachineAndDevice(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterMachineDeviceDto> requestDto) {
 		return new ResponseEntity<>(
-				registrationCenterMachineDeviceService.createRegistrationCenterMachineAndDevice(requestDto),
+				registrationCenterMachineDeviceService.createRegistrationCenterMachineAndDevice(requestDto.getRequest()),
 				HttpStatus.OK);
 	}
 

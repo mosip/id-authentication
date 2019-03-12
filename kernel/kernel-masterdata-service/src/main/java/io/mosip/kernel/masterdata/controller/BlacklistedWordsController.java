@@ -88,7 +88,7 @@ public class BlacklistedWordsController {
 	@PostMapping
 	public ResponseEntity<WordAndLanguageCodeID> createBlackListedWord(
 			@RequestBody @Valid RequestWrapper<BlacklistedWordsDto> blackListedWordsRequestDto) {
-		return new ResponseEntity<>(blacklistedWordsService.createBlackListedWord(blackListedWordsRequestDto),
+		return new ResponseEntity<>(blacklistedWordsService.createBlackListedWord(blackListedWordsRequestDto.getRequest()),
 				HttpStatus.OK);
 	}
 
@@ -105,7 +105,7 @@ public class BlacklistedWordsController {
 	@ApiOperation(value = "update the blacklisted word", response = WordAndLanguageCodeID.class)
 	public WordAndLanguageCodeID updateBlackListedWord(
 			@Valid @RequestBody RequestWrapper<BlacklistedWordsDto> blackListedWordsRequestDto) {
-		return blacklistedWordsService.updateBlackListedWord(blackListedWordsRequestDto);
+		return blacklistedWordsService.updateBlackListedWord(blackListedWordsRequestDto.getRequest());
 	}
 
 	/**
