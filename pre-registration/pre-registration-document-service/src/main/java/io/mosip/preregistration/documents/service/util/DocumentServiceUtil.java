@@ -7,11 +7,14 @@ package io.mosip.preregistration.documents.service.util;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -160,7 +163,7 @@ public class DocumentServiceUtil {
 	 *            pass the document dto
 	 * @return DocumentEntity
 	 */
-	public DocumentEntity dtoToEntity(DocumentRequestDTO dto) {
+	public DocumentEntity dtoToEntity(MultipartFile file,DocumentRequestDTO dto) {
 		log.info("sessionId", "idType", "id", "In dtoToEntity method of document service util");
 		DocumentEntity documentEntity = new DocumentEntity();
 		documentEntity.setDocumentId(UUIDGeneratorUtil.generateId());
@@ -168,13 +171,14 @@ public class DocumentServiceUtil {
 		documentEntity.setPreregId(dto.getPreregId());
 		documentEntity.setDocCatCode(dto.getDocCatCode());
 		documentEntity.setDocTypeCode(dto.getDocTypeCode());
-		documentEntity.setDocFileFormat(dto.getDocFileFormat());
-		documentEntity.setStatusCode(StatusCodes.PENDING_APPOINTMENT.getCode());
+		documentEntity.setDocFileFormat(FilenameUtils.getExtension(file.getName()));
+		documentEntity.setStatusCode(StatusCodes.DOCUMENT_UPLOADED.getCode());
 		documentEntity.setLangCode(dto.getLangCode());
-		documentEntity.setCrDtime(DateUtils.parseDateToLocalDateTime(new Date()));
-		documentEntity.setUpdBy(dto.getUploadBy());
-		documentEntity.setUpdDtime(DateUtils.parseDateToLocalDateTime(dto.getUploadDateTime()));
-		documentEntity.setEncryptedDateTime(DateUtils.parseDateToLocalDateTime(dto.getUploadDateTime()));
+		documentEntity.setCrDtime(LocalDateTime.now(ZoneId.of("UTC")));
+		documentEntity.setCrBy("Rajath");
+		documentEntity.setUpdBy("Rajath");
+		documentEntity.setUpdDtime(LocalDateTime.now(ZoneId.of("UTC")));
+		documentEntity.setEncryptedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		return documentEntity;
 	}
 
@@ -276,9 +280,9 @@ public class DocumentServiceUtil {
 		copyDocumentEntity.setUpdBy(sourceEntity.getUpdBy());
 		copyDocumentEntity.setLangCode(sourceEntity.getLangCode());
 		copyDocumentEntity.setEncryptedDateTime(sourceEntity.getEncryptedDateTime());
-		copyDocumentEntity.setCrDtime(DateUtils.parseDateToLocalDateTime(new Date()));
-		copyDocumentEntity.setUpdDtime(DateUtils.parseDateToLocalDateTime(new Date()));
-		copyDocumentEntity.setStatusCode(StatusCodes.PENDING_APPOINTMENT.getCode());
+		copyDocumentEntity.setCrDtime(LocalDateTime.now(ZoneId.of("UTC")));
+		copyDocumentEntity.setUpdDtime(LocalDateTime.now(ZoneId.of("UTC")));
+		copyDocumentEntity.setStatusCode(StatusCodes.DOCUMENT_UPLOADED.getCode());
 		return copyDocumentEntity;
 	}
 
@@ -330,23 +334,10 @@ public class DocumentServiceUtil {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_PRE_ID.toString());
 		}else if(isNull(dto.getDocCatCode())) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_DOC_CAT_CODE.toString());
-		}else if(isNull(dto.getDocFileFormat())) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_DOC_FILE_FORMAT.toString());
 		}else if(isNull(dto.getDocTypeCode())) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_DOC_TYPE_CODE.toString());
 		}else if(isNull(dto.getLangCode())) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_LANG_CODE.toString());
-		}else if(isNull(dto.getStatusCode())) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_STATUS_CODE.toString());
-		}else if(isNull(dto.getUploadBy())) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_UPLOAD_BY.toString());
-		}else if(isNull(dto.getUploadDateTime())) {
-			try {
-				new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(getDateString(dto.getUploadDateTime()));
-			} catch (Exception ex) {
-				throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
-						ErrorMessages.INVALID_UPLOAD_DATE_TIME.toString());
-			}
 		}
 		return true;
 	}
