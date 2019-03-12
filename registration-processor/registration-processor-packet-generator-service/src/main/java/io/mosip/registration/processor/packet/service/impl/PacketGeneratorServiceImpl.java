@@ -2,15 +2,28 @@ package io.mosip.registration.processor.packet.service.impl;
 
 import java.io.File;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+
+import com.google.gson.Gson;
 
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
+import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.service.PacketCreationService;
 import io.mosip.registration.processor.packet.service.PacketGeneratorService;
+import io.mosip.registration.processor.packet.service.dto.ErrorDTO;
+import io.mosip.registration.processor.packet.service.dto.MachineResponseDto;
+import io.mosip.registration.processor.packet.service.dto.PackerGeneratorFailureDto;
 import io.mosip.registration.processor.packet.service.dto.PackerGeneratorResDto;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorDto;
+import io.mosip.registration.processor.packet.service.dto.RegistrationCenterResponseDto;
 import io.mosip.registration.processor.packet.service.dto.RegistrationDTO;
 import io.mosip.registration.processor.packet.service.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.processor.packet.service.dto.demographic.DemographicDTO;
@@ -42,6 +55,12 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	@Autowired
 	SyncUploadEncryptionService syncUploadEncryptionService;
 
+	@Autowired
+	private RegistrationProcessorRestClientService<Object> restClientService;
+
+	@Value("${primary.language}")
+	private String primaryLanguagecode;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -52,26 +71,32 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	@Override
 	public PackerGeneratorResDto createPacket(PacketGeneratorDto request) {
 		// To do master data validation for cetner id and machine id
+		PackerGeneratorResDto packerGeneratorResDto = null;
+		PackerGeneratorFailureDto dto = new PackerGeneratorFailureDto();
 
 		RegistrationDTO registrationDTO = createRegistrationDTOObject(request.getUin(), request.getRegistrationType(),
 				request.getApplicantType(), request.getCenterId(), request.getMachineId());
 		byte[] packetZipBytes = null;
-		PackerGeneratorResDto packerGeneratorResDto = null;
-		try {
-			packetZipBytes = packetCreationService.create(registrationDTO);
-			String creationTime = packetCreationService.getCreationTime();
-			String filePath = storageService.storeToDisk(registrationDTO.getRegistrationId(), packetZipBytes, false);
+		if (isValidCenter(request.getCenterId(), dto) && isValidMachine(request.getMachineId(), dto)) {
+			try {
+				packetZipBytes = packetCreationService.create(registrationDTO);
+				String creationTime = packetCreationService.getCreationTime();
+				String filePath = storageService.storeToDisk(registrationDTO.getRegistrationId(), packetZipBytes,
+						false);
 
-			File decryptedFile = new File(filePath);
+				File decryptedFile = new File(filePath);
 
-			packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(decryptedFile,
-					registrationDTO.getRegistrationId(), creationTime);
+				packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(decryptedFile,
+						registrationDTO.getRegistrationId(), creationTime);
+				return packerGeneratorResDto;
+			} catch (RegBaseCheckedException e) {
 
-		} catch (RegBaseCheckedException e) {
-
-			e.printStackTrace();
+				dto.setMessage("");
+				return dto;
+			}
+		} else {
+			return dto;
 		}
-		return packerGeneratorResDto;
 	}
 
 	/**
@@ -146,6 +171,76 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		registrationMetaDataDTO.setRegistrationCategory(registrationType);
 		registrationMetaDataDTO.setUin(uin);
 		return registrationMetaDataDTO;
+
+	}
+
+	private boolean isValidCenter(String centerId, PackerGeneratorFailureDto dto) {
+		boolean isValidCenter = false;
+		List<String> pathsegments = new ArrayList<>();
+		pathsegments.add(centerId);
+		pathsegments.add(primaryLanguagecode);
+		RegistrationCenterResponseDto rcpdto;
+		try {
+			rcpdto = (RegistrationCenterResponseDto) restClientService.getApi(ApiName.CENTERDETAILS, pathsegments, "",
+					"", RegistrationCenterResponseDto.class);
+
+			if (rcpdto.getErrors() == null && !rcpdto.getRegistrationCenters().isEmpty()) {
+				isValidCenter = true;
+			} else {
+				ErrorDTO error = rcpdto.getErrors().get(0);
+				dto.setErrorCode(error.getErrorCode());
+				dto.setMessage(error.getErrorMessage());
+			}
+
+		} catch (ApisResourceAccessException e) {
+			if (e.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+				String result = httpClientException.getResponseBodyAsString();
+				Gson gsonObj = new Gson();
+				rcpdto = gsonObj.fromJson(result, RegistrationCenterResponseDto.class);
+				ErrorDTO error = rcpdto.getErrors().get(0);
+				dto.setErrorCode(error.getErrorCode());
+				dto.setMessage(error.getErrorMessage());
+
+			}
+
+		}
+		return isValidCenter;
+
+	}
+
+	private boolean isValidMachine(String machine, PackerGeneratorFailureDto dto) {
+		boolean isValidMachine = false;
+		List<String> pathsegments = new ArrayList<>();
+		pathsegments.add(machine);
+		pathsegments.add(primaryLanguagecode);
+		MachineResponseDto machinedto;
+		try {
+			machinedto = (MachineResponseDto) restClientService.getApi(ApiName.MACHINEDETAILS, pathsegments, "", "",
+					MachineResponseDto.class);
+
+			if (machinedto.getErrors() == null && !machinedto.getMachines().isEmpty()) {
+				isValidMachine = true;
+			} else {
+				ErrorDTO error = machinedto.getErrors().get(0);
+				dto.setErrorCode(error.getErrorCode());
+				dto.setMessage(error.getErrorMessage());
+			}
+
+		} catch (ApisResourceAccessException e) {
+			if (e.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+				String result = httpClientException.getResponseBodyAsString();
+				Gson gsonObj = new Gson();
+				machinedto = gsonObj.fromJson(result, MachineResponseDto.class);
+				ErrorDTO error = machinedto.getErrors().get(0);
+				dto.setErrorCode(error.getErrorCode());
+				dto.setMessage(error.getErrorMessage());
+
+			}
+
+		}
+		return isValidMachine;
 
 	}
 }
