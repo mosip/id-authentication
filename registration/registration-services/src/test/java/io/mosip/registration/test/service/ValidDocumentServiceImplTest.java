@@ -57,7 +57,7 @@ public class ValidDocumentServiceImplTest {
 		documentType.setName("Passport");
 		documentTypes.add(documentType);
 
-		Mockito.when(validDocumentDAO.getValidDocuments("007", "POA", "eng")).thenReturn(validDocuments);
+		Mockito.when(validDocumentDAO.getValidDocuments("007", "POA")).thenReturn(validDocuments);
 		Mockito.when(masterSyncDao.getDocumentTypes(list, "eng")).thenReturn(documentTypes);
 
 		assertNotNull(validDocumentServiceImpl.getDocumentCategories("007", "POA", "eng"));

@@ -42,10 +42,10 @@ public class ValidDocumentDAOImplTest {
 		List<ApplicantValidDocument> list = new ArrayList<>();
 		list.add(validDocument);
 
-		Mockito.when(validDocumentRepository.findByValidDocumentIdAppTypeCodeAndDocumentCategoryCodeAndLangCode(Mockito.anyString(),
-				Mockito.anyString(), Mockito.anyString())).thenReturn(list);
+		Mockito.when(validDocumentRepository.findByValidDocumentIdAppTypeCodeAndDocumentCategoryCode(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(list);
 
-		assertEquals(list, validDocumentDAOImpl.getValidDocuments("NFR", "POA", "eng"));
+		assertEquals(list, validDocumentDAOImpl.getValidDocuments("NFR", "POA"));
 
 	}
 
