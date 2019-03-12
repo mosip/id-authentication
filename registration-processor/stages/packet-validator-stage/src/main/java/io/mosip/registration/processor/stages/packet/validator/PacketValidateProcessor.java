@@ -303,13 +303,13 @@ public class PacketValidateProcessor {
 					eventType = EventType.BUSINESS.toString();
 				} else {
 
-							description = "Packet uploading to file system is unsuccessful";
-							eventId = EventId.RPR_405.toString();
-							eventName = EventName.EXCEPTION.toString();
-							eventType = EventType.SYSTEM.toString();
-						}
-						auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-								registrationId, ApiName.AUDIT);
+					description = "Packet uploading to file system is unsuccessful";
+					eventId = EventId.RPR_405.toString();
+					eventName = EventName.EXCEPTION.toString();
+					eventType = EventType.SYSTEM.toString();
+				}
+				auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+						registrationId, ApiName.AUDIT);
 
 			}
 
@@ -337,7 +337,7 @@ public class PacketValidateProcessor {
 
 				}
 				if (mainResponseDto != null && mainResponseDto.getErr() != null) {
-					regProcLogger.error(LoggerFileConstant.REGISTRATIONID.toString(), registrationId.toString(),
+					regProcLogger.error(LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 							PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage(),
 							mainResponseDto.getErr().toString());
 					isTransactionSuccessful = false;
@@ -359,18 +359,18 @@ public class PacketValidateProcessor {
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 
-				regProcLogger.info(LoggerFileConstant.REGISTRATIONID.toString(), registrationId.toString(),
+				regProcLogger.info(LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage(),
 						httpClientException.getResponseBodyAsString() + ExceptionUtils.getStackTrace(e));
 
 			} else if (e.getCause() instanceof HttpServerErrorException) {
 				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
-				regProcLogger.info(LoggerFileConstant.REGISTRATIONID.toString(), registrationId.toString(),
+				regProcLogger.info(LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage(),
 						httpServerException.getResponseBodyAsString() + ExceptionUtils.getStackTrace(e));
 			} else {
 
-				regProcLogger.info(LoggerFileConstant.REGISTRATIONID.toString(), registrationId.toString(),
+				regProcLogger.info(LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage(), e.getMessage());
 
 			}
@@ -392,7 +392,7 @@ public class PacketValidateProcessor {
 				eventType = EventType.SYSTEM.toString();
 			}
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId.trim().isEmpty() ? null : registrationId.toString(), ApiName.AUDIT);
+					registrationId.trim().isEmpty() ? null : registrationId, ApiName.AUDIT);
 		}
 
 		return object;
