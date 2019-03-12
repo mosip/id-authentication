@@ -236,7 +236,7 @@ public class RegistrationDAOTest {
 		when(registrationRepository.getOne(Mockito.anyString())).thenReturn(registration);
 		when(registrationRepository.update(Mockito.any())).thenReturn(registration);
 
-		registrationDAOImpl.updatePacketSyncStatus(registration);
+		//registrationDAOImpl.updatePacketSyncStatus(registration);
 	}
 
 	@Test

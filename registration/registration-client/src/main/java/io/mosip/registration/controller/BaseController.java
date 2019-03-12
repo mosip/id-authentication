@@ -641,8 +641,9 @@ public class BaseController {
 
 				if (notificationServiceName != null && !notificationServiceName.equals("NONE")) {
 					// get the data for notification template
+					String platformLanguageCode = ApplicationContext.applicationLanguage();
 					String notificationTemplate = templateService
-							.getHtmlTemplate(RegistrationConstants.NOTIFICATION_TEMPLATE);
+							.getHtmlTemplate(RegistrationConstants.NOTIFICATION_TEMPLATE, platformLanguageCode);
 					if (notificationTemplate != null && !notificationTemplate.isEmpty()) {
 						// generate the notification template
 						writeNotificationTemplate = templateGenerator.generateNotificationTemplate(notificationTemplate,

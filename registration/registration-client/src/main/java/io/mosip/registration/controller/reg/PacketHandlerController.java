@@ -2,9 +2,11 @@ package io.mosip.registration.controller.reg;
 
 import static io.mosip.kernel.core.util.DateUtils.formatDate;
 import static io.mosip.registration.constants.LoggerConstants.PACKET_HANDLER;
-import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_1;
+import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_2;
+import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE_PART_3;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -18,7 +20,6 @@ import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -140,9 +141,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 	private String storeDateFormat;
 
 	@Autowired
-	private Environment environment;
-
-	@Autowired
 	private RegistrationApprovalService registrationApprovalService;
 
 	@Autowired
@@ -180,7 +178,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 		if (!reRegisterRegistrations.isEmpty()) {
 			reRegistrationCountLbl.setText(reRegisterRegistrations.size() + " " + RegistrationUIConstants.APPLICATIONS);
 		}
-		if (!(String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FLAG))).equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+		if (!(String.valueOf(ApplicationContext.map().get(RegistrationConstants.UIN_UPDATE_CONFIG_FLAG)))
+				.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 			uinUpdateBtn.setVisible(false);
 			uinUpdateImage.setVisible(false);
 		}
@@ -240,7 +239,14 @@ public class PacketHandlerController extends BaseController implements Initializ
 			RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
 					.get(RegistrationConstants.REGISTRATION_DATA);
 			ackReceiptController.setRegistrationData(registrationDTO);
-			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
+			
+			StringBuilder templateContent = new StringBuilder();
+			String platformLanguageCode = ApplicationContext.applicationLanguage();
+			templateContent.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_1, platformLanguageCode));
+			templateContent.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_2, platformLanguageCode));
+			templateContent.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_3, platformLanguageCode));
+			String ackTemplateText = templateContent.toString();
+			
 			if (ackTemplateText != null && !ackTemplateText.isEmpty()) {
 				ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText, registrationDTO,
 						templateManagerBuilder, RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
@@ -527,9 +533,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 				// Generate the file path for storing the Encrypted Packet and Acknowledgement
 				// Receipt
 				String seperator = "/";
-				String filePath = packetStoreLocation + seperator
-						+ formatDate(new Date(), storeDateFormat)
-										.concat(seperator).concat(registrationDTO.getRegistrationId());
+				String filePath = packetStoreLocation + seperator + formatDate(new Date(), storeDateFormat)
+						.concat(seperator).concat(registrationDTO.getRegistrationId());
 
 				// Storing the Registration Acknowledge Receipt Image
 				FileUtils.copyToFile(new ByteArrayInputStream(ackInBytes),
