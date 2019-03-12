@@ -60,41 +60,40 @@ public enum BioMatchType implements MatchType {
 
 	// Left Finger Image FGRIMG
 	FGRIMG_LEFT_THUMB(IdaIdMapping.LEFTTHUMB, setOf(FingerPrintMatchingStrategy.PARTIAL), 
-			CbeffDocType.FMR,SingleAnySubtypeType.LEFT,
+			CbeffDocType.FIR,SingleAnySubtypeType.LEFT,
 			SingleAnySubtypeType.THUMB),
 	FGRIMG_LEFT_INDEX(IdaIdMapping.LEFTINDEX, setOf(FingerPrintMatchingStrategy.PARTIAL),
-			CbeffDocType.FMR,SingleAnySubtypeType.LEFT,
+			CbeffDocType.FIR,SingleAnySubtypeType.LEFT,
 			SingleAnySubtypeType.INDEX_FINGER),
 	FGRIMG_LEFT_MIDDLE(IdaIdMapping.LEFTMIDDLE, setOf(FingerPrintMatchingStrategy.PARTIAL),
-			CbeffDocType.FMR,SingleAnySubtypeType.LEFT,
+			CbeffDocType.FIR,SingleAnySubtypeType.LEFT,
 			SingleAnySubtypeType.MIDDLE_FINGER),
 	FGRIMG_LEFT_RING(IdaIdMapping.LEFTRING, setOf(FingerPrintMatchingStrategy.PARTIAL),
-			CbeffDocType.FMR,SingleAnySubtypeType.LEFT,
+			CbeffDocType.FIR,SingleAnySubtypeType.LEFT,
 			SingleAnySubtypeType.RING_FINGER),
 	FGRIMG_LEFT_LITTLE(IdaIdMapping.LEFTLITTLE, setOf(FingerPrintMatchingStrategy.PARTIAL), 
-			CbeffDocType.FMR,SingleAnySubtypeType.LEFT,
+			CbeffDocType.FIR,SingleAnySubtypeType.LEFT,
 			SingleAnySubtypeType.LITTLE_FINGER),
 
 	// Right Finger Image
 	FGRIMG_RIGHT_THUMB(IdaIdMapping.RIGHTTHUMB, setOf(FingerPrintMatchingStrategy.PARTIAL),
-			CbeffDocType.FMR,SingleAnySubtypeType.RIGHT,
+			CbeffDocType.FIR,SingleAnySubtypeType.RIGHT,
 			SingleAnySubtypeType.THUMB),
 	FGRIMG_RIGHT_INDEX(IdaIdMapping.RIGHTINDEX, setOf(FingerPrintMatchingStrategy.PARTIAL), 
-			CbeffDocType.FMR,SingleAnySubtypeType.RIGHT,
+			CbeffDocType.FIR,SingleAnySubtypeType.RIGHT,
 			SingleAnySubtypeType.INDEX_FINGER),
 	FGRIMG_RIGHT_MIDDLE(IdaIdMapping.RIGHTMIDDLE, setOf(FingerPrintMatchingStrategy.PARTIAL),
-			CbeffDocType.FMR,SingleAnySubtypeType.RIGHT, SingleAnySubtypeType.MIDDLE_FINGER),
+			CbeffDocType.FIR,SingleAnySubtypeType.RIGHT, SingleAnySubtypeType.MIDDLE_FINGER),
 	FGRIMG_RIGHT_RING(IdaIdMapping.RIGHTRING, setOf(FingerPrintMatchingStrategy.PARTIAL), 
-			CbeffDocType.FMR,SingleAnySubtypeType.RIGHT,
+			CbeffDocType.FIR,SingleAnySubtypeType.RIGHT,
 			SingleAnySubtypeType.RING_FINGER),
 	FGRIMG_RIGHT_LITTLE(IdaIdMapping.RIGHTLITTLE, setOf(FingerPrintMatchingStrategy.PARTIAL),
-			CbeffDocType.FMR,SingleAnySubtypeType.RIGHT, SingleAnySubtypeType.LITTLE_FINGER),
+			CbeffDocType.FIR,SingleAnySubtypeType.RIGHT, SingleAnySubtypeType.LITTLE_FINGER),
 
 	// Multi-fingerPrint
 	//FIXME get Bio ID info of all fingers and return the map
 	FGRMIN_MULTI(IdaIdMapping.FINGERPRINT, setOf(MultiFingerprintMatchingStrategy.PARTIAL),
-			CbeffDocType.FMR, null, null, identityDto -> getIdValuesMap(identityDto,FGRMIN_LEFT_THUMB,FGRMIN_LEFT_INDEX,FGRMIN_LEFT_MIDDLE,FGRMIN_LEFT_RING,FGRMIN_LEFT_LITTLE,
-					                                                            FGRMIN_RIGHT_THUMB,FGRMIN_RIGHT_INDEX,FGRMIN_RIGHT_MIDDLE,FGRMIN_RIGHT_RING,FGRMIN_RIGHT_LITTLE)),
+			CbeffDocType.FMR, null, null),
 
 	RIGHT_IRIS(IdaIdMapping.RIGHTEYE, setOf(IrisMatchingStrategy.PARTIAL),
 			CbeffDocType.IRIS, SingleAnySubtypeType.RIGHT,null),
@@ -103,7 +102,7 @@ public enum BioMatchType implements MatchType {
 			CbeffDocType.IRIS,SingleAnySubtypeType.LEFT, null),
 	
 	//FIXME get Bio ID info of all eyes and return the map
-	IRIS_COMP(IdaIdMapping.IRIS, setOf(CompositeIrisMatchingStrategy.PARTIAL), CbeffDocType.IRIS, null, null,identityDTO->getIdValuesMap(identityDTO,LEFT_IRIS,RIGHT_IRIS)),
+	IRIS_COMP(IdaIdMapping.IRIS, setOf(CompositeIrisMatchingStrategy.PARTIAL), CbeffDocType.IRIS, null, null),
 	
 	FACE(IdaIdMapping.FACE, Collections.emptySet(), CbeffDocType.FACE, null, null);
 
@@ -129,27 +128,12 @@ public enum BioMatchType implements MatchType {
 	private BioMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy, CbeffDocType cbeffDocType,
 			SingleAnySubtypeType subType, SingleAnySubtypeType singleAnySubtype) {
 		this(idMapping, allowedMatchingStrategy, cbeffDocType, subType, singleAnySubtype, null);
-		this.identityInfoFunction = (IdentityDTO identityDTO) -> {
-			Optional<String> valueOpt = identityDTO.getBiometrics().stream().filter(bioId -> {
-				if (bioId.getType().equalsIgnoreCase(cbeffDocType.getType().name())) {
-					if (bioId.getType().equalsIgnoreCase(CbeffDocType.FMR.getType().name())) {
-						return bioId.getSubType().equalsIgnoreCase(subType.name() + "_" + singleAnySubtype.name());
-					} else if (bioId.getType().equalsIgnoreCase(CbeffDocType.IRIS.getType().name())) {
-						return bioId.getSubType().equalsIgnoreCase(subType.name());
-					} else if (bioId.getType().equalsIgnoreCase(CbeffDocType.FACE.getType().name())) {
-						return true;
-					}
-				}
-				return false;
-			}).map(BioIdentityInfoDTO::getValue).findAny();
-			if (valueOpt.isPresent()) {
-				Map<String, List<IdentityInfoDTO>> valuesMap = new HashMap<>();
-				List<IdentityInfoDTO> values = Arrays.asList(new IdentityInfoDTO(null, valueOpt.get()));
-				valuesMap.put(idMapping.getIdname(), values);
-				return valuesMap;
-			}
-			return Collections.emptyMap();
-		};
+		Set<IdMapping> subIdMappings = idMapping.getSubIdMappings();
+		if(subIdMappings.isEmpty()) {
+			this.identityInfoFunction = this::getIdInfoFromBioIdInfo;
+		} else {
+			this.identityInfoFunction = identityDto -> getIdInfoFromSubIdMappings(identityDto, subIdMappings);
+		}
 	}
 
 	private BioMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,CbeffDocType cbeffDocType, SingleAnySubtypeType subType, SingleAnySubtypeType singleAnySubtype,
@@ -160,6 +144,40 @@ public enum BioMatchType implements MatchType {
 		this.singleAnySubtype = singleAnySubtype;
 		this.identityInfoFunction = identityInfoFunction;
 		this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
+	}
+	
+	private Map<String, List<IdentityInfoDTO>> getIdInfoFromBioIdInfo(IdentityDTO identityDTO) {
+		Optional<String> valueOpt = identityDTO.getBiometrics().stream().filter(bioId -> {
+			if (bioId.getType().equalsIgnoreCase(cbeffDocType.getName())) {
+				if (bioId.getType().equalsIgnoreCase(CbeffDocType.FMR.getName())) {
+					return (subType.name() + "_" + singleAnySubtype.name()).startsWith( bioId.getSubType());
+				} else if (bioId.getType().equalsIgnoreCase(CbeffDocType.IRIS.getName())) {
+					return bioId.getSubType().equalsIgnoreCase(subType.name());
+				} else if (bioId.getType().equalsIgnoreCase(CbeffDocType.FACE.getName())) {
+					return true;
+				}
+			}
+			return false;
+		}).map(BioIdentityInfoDTO::getValue).findAny();
+		if (valueOpt.isPresent()) {
+			Map<String, List<IdentityInfoDTO>> valuesMap = new HashMap<>();
+			List<IdentityInfoDTO> values = Arrays.asList(new IdentityInfoDTO(null, valueOpt.get()));
+			valuesMap.put(idMapping.getIdname(), values);
+			return valuesMap;
+		}
+		return Collections.emptyMap();
+	}
+	
+	private Map<String, List<IdentityInfoDTO>> getIdInfoFromSubIdMappings(IdentityDTO identityDto, Set<IdMapping> subIdMappings) {
+		BioMatchType[] subMatchTypes = getMatchTypesForSubIdMappings(subIdMappings);
+		return getIdValuesMap(identityDto, subMatchTypes);
+	}
+
+	public BioMatchType[] getMatchTypesForSubIdMappings(Set<IdMapping> subIdMappings) {
+		return Arrays.stream(BioMatchType.values())
+											 .filter(bioMatchType -> subIdMappings.contains(bioMatchType.getIdMapping()))
+											 .filter(bioMatchType -> bioMatchType.getCbeffDocType() == this.getCbeffDocType())
+											 .toArray(size -> new BioMatchType[size]);
 	}
 
 	/**

@@ -26,7 +26,6 @@ import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
-import io.mosip.authentication.core.dto.indauth.BioType;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
@@ -47,6 +46,7 @@ import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
+import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -367,22 +367,22 @@ public class AuthFacadeImpl implements AuthFacade {
 	private void saveAndAuditBioAuthTxn(AuthRequestDTO authRequestDTO, boolean isAuth, String uin, IdType idType,
 			boolean isStatus, String staticTokenId) throws IdAuthenticationBusinessException {
 		if (authRequestDTO.getBioMetadata().stream()
-				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.FGRMIN.getType())
-						|| bioInfo.getBioType().equals(BioType.FGRIMG.getType()))) {
+				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioAuthType.FGR_MIN.getType())
+						|| bioInfo.getBioType().equals(BioAuthType.FGR_IMG.getType()))) {
 			auditHelper.audit(AuditModules.FINGERPRINT_AUTH, getAuditEvent(isAuth), idInfoHelper.getUinOrVid(authRequestDTO).get(), idType,
 					AuditModules.FINGERPRINT_AUTH.getDesc());
 			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, RequestType.FINGER_AUTH, staticTokenId, isStatus);
 			idAuthService.saveAutnTxn(authTxn);
 		}
 		if (authRequestDTO.getBioMetadata().stream()
-				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.IRISIMG.getType()))) {
+				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioAuthType.IRIS_IMG.getType()))) {
 			auditHelper.audit(AuditModules.IRIS_AUTH, getAuditEvent(isAuth), idInfoHelper.getUinOrVid(authRequestDTO).get(), idType,
 					AuditModules.IRIS_AUTH.getDesc());
 			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, RequestType.IRIS_AUTH, staticTokenId, isStatus);
 			idAuthService.saveAutnTxn(authTxn);
 		}
 		if (authRequestDTO.getBioMetadata().stream()
-				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.FACEIMG.getType()))) {
+				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioAuthType.FACE_IMG.getType()))) {
 			auditHelper.audit(AuditModules.FACE_AUTH, getAuditEvent(isAuth), idInfoHelper.getUinOrVid(authRequestDTO).get(), idType,
 					AuditModules.FACE_AUTH.getDesc());
 			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, RequestType.FACE_AUTH, staticTokenId, isStatus);

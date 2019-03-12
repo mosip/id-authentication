@@ -34,12 +34,12 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
-import io.mosip.authentication.core.dto.indauth.BioType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
@@ -303,7 +303,7 @@ public class InternalAuthRequestValidatorTest {
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setIdentity(identitydto);
 		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FGRIMG.getType());
+		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
 		bioinfo.setDeviceId("123456789");
 		bioinfo.setDeviceProviderID("1234567890");
 

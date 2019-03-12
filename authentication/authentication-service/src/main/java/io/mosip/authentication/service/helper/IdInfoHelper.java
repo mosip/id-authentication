@@ -58,6 +58,7 @@ import io.mosip.authentication.service.factory.BiometricProviderFactory;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
+import io.mosip.authentication.service.impl.indauth.service.bio.BioMatchType;
 import io.mosip.authentication.service.impl.indauth.service.pin.PinAuthType;
 import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.authentication.service.integration.OTPManager;
@@ -198,12 +199,12 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 *
 	 * @param name                 the name
 	 * @param languageForMatchType the language for match type
-	 * @param demoInfo             the demo info
+	 * @param identityInfo             the demo info
 	 * @return the identity value
 	 */
 	private Stream<String> getIdentityValueFromMap(String name, String languageForMatchType,
-			Map<String, Entry<String, List<IdentityInfoDTO>>> demoInfo) {
-		List<IdentityInfoDTO> identityInfoList = demoInfo.get(name).getValue();
+			Map<String, Entry<String, List<IdentityInfoDTO>>> identityInfo) {
+		List<IdentityInfoDTO> identityInfoList = identityInfo.get(name).getValue();
 		if (identityInfoList != null && !identityInfoList.isEmpty()) {
 			return identityInfoList.stream()
 					.filter(idinfo -> checkLanguageType(languageForMatchType, idinfo.getLanguage()))
@@ -333,10 +334,18 @@ public class IdInfoHelper implements IdInfoFetcher {
 	private Map<String, String> getIdentityValuesMap(MatchType matchType, List<String> propertyNames,
 			String languageCode, Map<String, List<IdentityInfoDTO>> idEntity) throws IdAuthenticationBusinessException {
 		Map<String, Entry<String, List<IdentityInfoDTO>>> mappedIdEntity = matchType.mapEntityInfo(idEntity, this);
-		return propertyNames.stream().filter(propName -> mappedIdEntity.containsKey(propName)).collect(Collectors.toMap(
-				propName -> mappedIdEntity.get(propName).getKey(),
-				propName -> getIdentityValueFromMap(propName, languageCode, mappedIdEntity).findAny().orElse(""),
-				(p1, p2) -> p1, () -> new LinkedHashMap<String, String>()));
+		return propertyNames
+					.stream()
+					.filter(propName -> mappedIdEntity.containsKey(propName))
+					.collect(Collectors.toMap(
+								propName -> 
+									mappedIdEntity.get(propName)
+													.getKey(),
+								propName -> 
+									getIdentityValueFromMap(propName, languageCode, mappedIdEntity)
+											.findAny()
+											.orElse(""),
+								(p1, p2) -> p1, () -> new LinkedHashMap<String, String>()));
 	}
 
 	/**
@@ -848,8 +857,25 @@ public class IdInfoHelper implements IdInfoFetcher {
 
 	private String getNameForCbeffName(String cbeffName, MatchType matchType) {
 		return Stream.of(IdaIdMapping.values())
-				.map(cfg -> new SimpleEntry<>(cfg.getIdname(),
-						cfg.getMappingFunction().apply(idMappingConfig, matchType)))
+				.map(cfg -> {
+					String idname;
+					Set<IdMapping> subIdMappings = matchType.getIdMapping().getSubIdMappings();
+					if(!subIdMappings.isEmpty() && matchType instanceof BioMatchType) {
+						idname = Stream.of(((BioMatchType)matchType).getMatchTypesForSubIdMappings(subIdMappings))
+									.filter(bioMatchType -> 
+											bioMatchType.getIdMapping().getMappingFunction()
+													.apply(idMappingConfig, bioMatchType)
+													.contains(cbeffName))
+									.findFirst()
+									.map(MatchType::getIdMapping)
+									.map(IdMapping::getIdname)
+									.orElse(cfg.getIdname());
+					} else {
+						idname = cfg.getIdname();
+					}
+					List<String> cbeffNames = cfg.getMappingFunction().apply(idMappingConfig, matchType);
+					return new SimpleEntry<>(idname, cbeffNames);
+				})
 				.filter(entry -> entry.getValue().stream().anyMatch(v -> v.equalsIgnoreCase(cbeffName)))
 				.map(Entry::getKey).findAny().orElse("");
 	}

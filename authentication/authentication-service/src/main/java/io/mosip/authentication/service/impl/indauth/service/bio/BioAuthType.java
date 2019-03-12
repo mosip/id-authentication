@@ -29,7 +29,7 @@ import io.mosip.authentication.service.helper.IdInfoHelper;
 
 public enum BioAuthType implements AuthType {
 
-	FGR_MIN("fgrMin",
+	FGR_MIN("FMR",
 			setOf(BioMatchType.FGRMIN_LEFT_THUMB, BioMatchType.FGRMIN_LEFT_INDEX, BioMatchType.FGRMIN_LEFT_MIDDLE,
 					BioMatchType.FGRMIN_LEFT_RING, BioMatchType.FGRMIN_LEFT_LITTLE, BioMatchType.FGRMIN_RIGHT_THUMB,
 					BioMatchType.FGRMIN_RIGHT_INDEX, BioMatchType.FGRMIN_RIGHT_MIDDLE, BioMatchType.FGRMIN_RIGHT_RING,
@@ -54,7 +54,7 @@ public enum BioAuthType implements AuthType {
 			return BioAuthType.getFPValuesCountInIdentity(reqDTO, helper);
 		}
 	},
-	FGR_IMG("fgrImg",
+	FGR_IMG("FIR",
 			setOf(BioMatchType.FGRIMG_LEFT_THUMB, BioMatchType.FGRIMG_LEFT_INDEX, BioMatchType.FGRIMG_LEFT_MIDDLE,
 					BioMatchType.FGRIMG_LEFT_RING, BioMatchType.FGRIMG_LEFT_LITTLE, BioMatchType.FGRIMG_RIGHT_THUMB,
 					BioMatchType.FGRIMG_RIGHT_INDEX, BioMatchType.FGRIMG_RIGHT_MIDDLE, BioMatchType.FGRIMG_RIGHT_RING,
@@ -79,7 +79,7 @@ public enum BioAuthType implements AuthType {
 			return BioAuthType.getFPValuesCountInIdentity(reqDTO, helper);
 		}
 	},
-	FGR_MIN_MULTI("fgrMin", setOf(BioMatchType.FGRMIN_MULTI), getFingerprint(), 2) {
+	FGR_MIN_MULTI("FMR", setOf(BioMatchType.FGRMIN_MULTI), getFingerprint(), 2) {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
@@ -112,7 +112,7 @@ public enum BioAuthType implements AuthType {
 			return BioAuthType.getFPValuesCountInIdentity(reqDTO, helper);
 		}
 	},
-	IRIS_COMP_IMG("irisImg", setOf(BioMatchType.IRIS_COMP), "Iris", 2) {
+	IRIS_COMP_IMG("IIR", setOf(BioMatchType.IRIS_COMP), "Iris", 2) {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
@@ -147,7 +147,7 @@ public enum BioAuthType implements AuthType {
 		}
 
 	},
-	IRIS_IMG("irisImg", setOf(BioMatchType.RIGHT_IRIS, BioMatchType.LEFT_IRIS), "Iris", 1) {
+	IRIS_IMG("IIR", setOf(BioMatchType.RIGHT_IRIS, BioMatchType.LEFT_IRIS), "Iris", 1) {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {

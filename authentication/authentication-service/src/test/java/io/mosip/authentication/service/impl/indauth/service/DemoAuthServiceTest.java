@@ -36,7 +36,6 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
-import io.mosip.authentication.core.dto.indauth.BioType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
@@ -48,6 +47,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.MasterDataManager;
 
@@ -156,7 +156,7 @@ public class DemoAuthServiceTest {
 			IllegalArgumentException, InvocationTargetException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FGRIMG.getType());
+		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setBio(false);
 		authTypeDTO.setDemo(true);
@@ -267,7 +267,7 @@ public class DemoAuthServiceTest {
 
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FGRIMG.getType());
+		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setBio(false);
 		authTypeDTO.setDemo(true);
@@ -462,7 +462,7 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FGRIMG.getType());
+		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
 		authRequestDTO.setPartnerID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)

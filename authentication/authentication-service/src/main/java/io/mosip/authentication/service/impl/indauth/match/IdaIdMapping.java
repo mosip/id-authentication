@@ -3,10 +3,11 @@ package io.mosip.authentication.service.impl.indauth.match;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-
-import org.hibernate.mapping.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
@@ -23,36 +24,97 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 
 public enum IdaIdMapping implements IdMapping {
 
-	NAME("name", MappingConfig::getName), DOB("dob", MappingConfig::getDob),
-	DOBTYPE("dobType", MappingConfig::getDobType), AGE("age", MappingConfig::getAge),
-	GENDER("gender", MappingConfig::getGender), PHONE("phoneNumber", MappingConfig::getPhoneNumber),
-	EMAIL("emailId", MappingConfig::getEmailId), ADDRESSLINE1("addressLine1", MappingConfig::getAddressLine1),
+	NAME("name", MappingConfig::getName), 
+	DOB("dob", MappingConfig::getDob),
+	DOBTYPE("dobType", MappingConfig::getDobType), 
+	AGE("age", MappingConfig::getAge),
+	GENDER("gender", MappingConfig::getGender), 
+	PHONE("phoneNumber", MappingConfig::getPhoneNumber),
+	EMAIL("emailId", MappingConfig::getEmailId), 
+	ADDRESSLINE1("addressLine1", MappingConfig::getAddressLine1),
 	ADDRESSLINE2("addressLine2", MappingConfig::getAddressLine2),
-	ADDRESSLINE3("addressLine3", MappingConfig::getAddressLine3), LOCATION1("location1", MappingConfig::getLocation1),
-	LOCATION2("location2", MappingConfig::getLocation2), LOCATION3("location3", MappingConfig::getLocation3),
-	PINCODE("postalCode", MappingConfig::getPostalCode), FULLADDRESS("fullAddress", MappingConfig::getFullAddress),
-	OTP("otp", MappingConfig::getOtp), PIN("pin", MappingConfig::getPin), LEFTINDEX("leftIndex"),
-	LEFTLITTLE("leftLittle"), LEFTMIDDLE("leftMiddle"), LEFTRING("leftRing"), LEFTTHUMB("leftThumb"),
-	RIGHTINDEX("rightIndex"), RIGHTLITTLE("rightLittle"), RIGHTMIDDLE("rightMiddle"), RIGHTRING("rightRing"),
-	RIGHTTHUMB("rightThumb"), FINGERPRINT("fingerprint", MappingConfig::getFingerprint),
-	IRIS("iris", MappingConfig::getIris), RIGHTEYE("rightEye"), LEFTEYE("leftEye"), FACE("face");
+	ADDRESSLINE3("addressLine3", MappingConfig::getAddressLine3), 
+	LOCATION1("location1", MappingConfig::getLocation1),
+	LOCATION2("location2", MappingConfig::getLocation2), 
+	LOCATION3("location3", MappingConfig::getLocation3),
+	PINCODE("postalCode", MappingConfig::getPostalCode), 
+	FULLADDRESS("fullAddress", MappingConfig::getFullAddress),
+	OTP("otp", MappingConfig::getOtp), 
+	PIN("pin", MappingConfig::getPin), 
+	LEFTINDEX(),
+	LEFTLITTLE(), 
+	LEFTMIDDLE(), 
+	LEFTRING(), 
+	LEFTTHUMB(),
+	RIGHTINDEX(), 
+	RIGHTLITTLE(), 
+	RIGHTMIDDLE(), 
+	RIGHTRING(),
+	RIGHTTHUMB(), 
+	FINGERPRINT("fingerprint", setOf(
+			LEFTINDEX,
+			LEFTLITTLE,
+			LEFTMIDDLE,
+			LEFTRING,
+			LEFTTHUMB,
+			RIGHTINDEX,
+			RIGHTLITTLE,
+			RIGHTMIDDLE,
+			RIGHTRING,
+			RIGHTTHUMB
+			)),
+	RIGHTEYE(), 
+	LEFTEYE(), 
+	IRIS("iris", setOf(
+			RIGHTEYE,
+			LEFTEYE
+			)), 
+	
+	FACE("face", cfg -> Collections.emptyList());
 
 	private String idname;
 
 	private BiFunction<MappingConfig, MatchType, List<String>> mappingFunction;
 
+	private Set<IdMapping> subIdMappings;
+
 	private IdaIdMapping(String idname, Function<MappingConfig, List<String>> mappingFunction) {
 		this.idname = idname;
 		this.mappingFunction = (cfg, matchType) -> mappingFunction.apply(cfg);
+		this.subIdMappings = Collections.emptySet();
 	}
 
-	private IdaIdMapping(String idname) {
-		this.idname = idname;
+	private IdaIdMapping() {
+		this.idname = name();
 		this.mappingFunction = (mappingConfig, matchType) -> getCbeffMapping(matchType);
+		this.subIdMappings = Collections.emptySet();
+	}
+	
+
+	private IdaIdMapping(String idname, Set<IdMapping> subIdMappings) {
+		this.idname = idname;
+		this.subIdMappings = subIdMappings;
+		this.mappingFunction = (mappingConfig, matchType) 
+									-> {
+										if(matchType instanceof BioMatchType) {
+											return Stream.of(((BioMatchType)matchType).getMatchTypesForSubIdMappings(subIdMappings))
+												.flatMap(subMatchType -> 
+												subMatchType.getIdMapping().getMappingFunction()
+														.apply(mappingConfig, subMatchType)
+														.stream())
+												.collect(Collectors.toList());
+										} else {
+											return Collections.emptyList();
+										}
+									};
 	}
 
 	public String getIdname() {
 		return idname;
+	}
+	
+	public Set<IdMapping> getSubIdMappings() {
+		return subIdMappings;
 	}
 
 	private static List<String> getCbeffMapping(MatchType matchType) {
@@ -76,6 +138,11 @@ public enum IdaIdMapping implements IdMapping {
 
 	public BiFunction<MappingConfig, MatchType, List<String>> getMappingFunction() {
 		return mappingFunction;
+	}
+	
+	public static Set<IdMapping> setOf(IdMapping... idMapping) {
+		return Stream.of(idMapping).collect(Collectors.toSet());
+
 	}
 
 }

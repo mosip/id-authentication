@@ -38,12 +38,12 @@ import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BaseAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
-import io.mosip.authentication.core.dto.indauth.BioType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
 import io.mosip.authentication.service.integration.MasterDataManager;
 import io.mosip.kernel.core.datavalidator.exception.InvalidPhoneNumberException;
@@ -258,7 +258,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(requestDTO);
 
 		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FGRIMG.getType());
+		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
 		bioinfo.setDeviceId("123456789");
 		bioinfo.setDeviceProviderID("1234567890");
 
@@ -304,7 +304,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(requestDTO);
 
 		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FGRIMG.getType());
+		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		bioInfoList.add(bioinfo);
 		authRequestDTO.setBioMetadata(bioInfoList);
@@ -347,7 +347,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(requestDTO);
 
 		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.IRISIMG.getType());
+		bioinfo.setBioType(BioAuthType.IRIS_IMG.getType());
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		bioInfoList.add(bioinfo);
 		authRequestDTO.setBioMetadata(bioInfoList);
@@ -380,7 +380,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(requestDTO);
 
 		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.IRISIMG.getType());
+		bioinfo.setBioType(BioAuthType.IRIS_IMG.getType());
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		bioInfoList.add(bioinfo);
 		authRequestDTO.setBioMetadata(bioInfoList);
@@ -423,7 +423,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(requestDTO);
 
 		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FACEIMG.getType());
+		bioinfo.setBioType(BioAuthType.FACE_IMG.getType());
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		bioInfoList.add(bioinfo);
 		authRequestDTO.setBioMetadata(bioInfoList);
@@ -654,12 +654,12 @@ public class BaseAuthRequestValidatorTest {
 	@Test
 	public void testIsBioTypeAvailable_BioTypeAvailabe_ReturnTrue() {
 		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FACEIMG.getType());
+		bioinfo.setBioType(BioAuthType.FACE_IMG.getType());
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		bioInfoList.add(bioinfo);
 
 		boolean isBioTypeAvailable = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "isAvailableBioType",
-				bioInfoList, BioType.FACEIMG);
+				bioInfoList, BioAuthType.FACE_IMG);
 		assertTrue(isBioTypeAvailable);
 
 	}
@@ -672,7 +672,7 @@ public class BaseAuthRequestValidatorTest {
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 
 		boolean isBioTypeAvailable = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "isAvailableBioType",
-				bioInfoList, BioType.FACEIMG);
+				bioInfoList, BioAuthType.FACE_IMG);
 		assertFalse(isBioTypeAvailable);
 
 	}
@@ -717,9 +717,9 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO = getAuthRequestDTO();
 
 		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FACEIMG.getType());
+		bioinfo.setBioType(BioAuthType.FACE_IMG.getType());
 		BioInfo bioinfo1 = new BioInfo();
-		bioinfo1.setBioType(BioType.FACEIMG.getType());
+		bioinfo1.setBioType(BioAuthType.FACE_IMG.getType());
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		bioInfoList.add(bioinfo);
 		bioInfoList.add(bioinfo1);
@@ -727,7 +727,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setBioMetadata(bioInfoList);
 
 		boolean isDuplicateBioType = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "isDuplicateBioType",
-				authRequestDTO, BioType.IRISIMG);
+				authRequestDTO, BioAuthType.IRIS_IMG);
 		assertTrue(isDuplicateBioType);
 	}
 
@@ -739,7 +739,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO = getAuthRequestDTO();
 
 		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.IRISIMG.getType());
+		bioinfo.setBioType(BioAuthType.IRIS_IMG.getType());
 		BioInfo bioinfo1 = new BioInfo();
 		bioinfo1.setBioType("");
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
@@ -748,7 +748,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setBioMetadata(bioInfoList);
 
 		boolean isDuplicateBioType = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "isDuplicateBioType",
-				authRequestDTO, BioType.IRISIMG);
+				authRequestDTO, BioAuthType.IRIS_IMG);
 		assertTrue(isDuplicateBioType);
 	}
 
@@ -768,7 +768,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setBioMetadata(bioInfoList);
 
 		boolean isDuplicateBioType = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "isDuplicateBioType",
-				authRequestDTO, BioType.FGRIMG);
+				authRequestDTO, BioAuthType.FGR_IMG);
 		assertTrue(isDuplicateBioType);
 	}
 
@@ -1666,7 +1666,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(requestDTO);
 
 		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FGRIMG.getType());
+		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
 		bioinfo.setDeviceId("");
 		bioinfo.setDeviceProviderID("1234567890");
 
@@ -1714,7 +1714,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(requestDTO);
 
 		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FGRIMG.getType());
+		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
 		bioinfo.setDeviceId("1234567890");
 		bioinfo.setDeviceProviderID(null);
 

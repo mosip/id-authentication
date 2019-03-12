@@ -5,7 +5,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 //import java.util.Base64;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.crypto.SecretKey;
@@ -49,17 +48,10 @@ public class KeyManager {
 	/** The Constant SESSION_KEY. */
 	private static final String SESSION_KEY = "sessionKey";
 
-	/** The Constant KEY. */
-	private static final String KEY = "key";
-
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
 
-	/** The Constant TSP_ID. */
-	private static final String PARTNER_ID = "partnerID";
-
 	/** KeySplitter. */
-
 	@Value("${mosip.kernel.data-key-splitter}")
 	private String keySplitter;
 
@@ -100,18 +92,9 @@ public class KeyManager {
 			throws IdAuthenticationAppException {
 		Map<String, Object> request = null;
 		try {
-			String tspId = (String) requestBody.get(PARTNER_ID);
-			if (Objects.isNull(tspId) || tspId.isEmpty()) {
-				logger.error(SESSION_ID, this.getClass().getSimpleName(), IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-				throw new IdAuthenticationAppException(
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-			}
 			byte[] encryptedRequest = (byte[]) requestBody.get(REQUEST);
-			Optional<String> encryptedSessionKey = Optional.ofNullable(requestBody.get(KEY))// check if key is null
-					.filter(obj -> obj instanceof Map)
-					.map(obj -> String.valueOf(((Map<String, Object>) obj).get(SESSION_KEY)));
+			Optional<String> encryptedSessionKey = Optional.ofNullable(requestBody.get(SESSION_KEY))
+					.map(String::valueOf);
 			if (encryptedSessionKey.isPresent()) {
 				byte[] encyptedSessionkey = Base64.decodeBase64(encryptedSessionKey.get());// remove key attribute from
 																							// auth request

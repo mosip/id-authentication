@@ -25,7 +25,6 @@ import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BaseAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
-import io.mosip.authentication.core.dto.indauth.BioType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.InternalAuthType;
@@ -340,9 +339,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors         the errors
 	 */
 	private void validateFinger(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
-		if ((isAvailableBioType(bioInfo, BioType.FGRMIN) && isDuplicateBioType(authRequestDTO, BioType.FGRMIN))
-				|| (isAvailableBioType(bioInfo, BioType.FGRIMG)
-						&& isDuplicateBioType(authRequestDTO, BioType.FGRIMG))) {
+		if ((isAvailableBioType(bioInfo, BioAuthType.FGR_MIN) && isDuplicateBioType(authRequestDTO, BioAuthType.FGR_MIN))
+				|| (isAvailableBioType(bioInfo, BioAuthType.FGR_IMG)
+						&& isDuplicateBioType(authRequestDTO, BioAuthType.FGR_IMG))) {
 			checkAtleastOneFingerRequestAvailable(authRequestDTO, errors);
 			if (!errors.hasErrors()) {
 				validateFingerRequestCount(authRequestDTO, errors);
@@ -358,7 +357,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors         the errors
 	 */
 	private void validateIris(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
-		if (isAvailableBioType(bioInfo, BioType.IRISIMG) && isDuplicateBioType(authRequestDTO, BioType.IRISIMG)) {
+		if (isAvailableBioType(bioInfo, BioAuthType.IRIS_IMG) && isDuplicateBioType(authRequestDTO, BioAuthType.IRIS_IMG)) {
 
 			checkAtleastOneIrisRequestAvailable(authRequestDTO, errors);
 			if (!errors.hasErrors()) {
@@ -420,7 +419,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void validateFace(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
 
-		if (isAvailableBioType(bioInfo, BioType.FACEIMG) && isDuplicateBioType(authRequestDTO, BioType.FACEIMG)) {
+		if (isAvailableBioType(bioInfo, BioAuthType.FACE_IMG) && isDuplicateBioType(authRequestDTO, BioAuthType.FACE_IMG)) {
 
 			checkAtleastOneFaceRequestAvailable(authRequestDTO, errors);
 		}
@@ -503,7 +502,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param bioType     the bio type
 	 * @return true, if is available bio type
 	 */
-	private boolean isAvailableBioType(List<BioInfo> bioInfoList, BioType bioType) {
+	private boolean isAvailableBioType(List<BioInfo> bioInfoList, BioAuthType bioType) {
 		return bioInfoList.parallelStream().filter(bio -> bio.getBioType() != null && !bio.getBioType().isEmpty())
 				.anyMatch(bio -> bio.getBioType().equals(bioType.getType()));
 	}
@@ -516,7 +515,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param bioType        the bio type
 	 * @return true, if is duplicate bio type
 	 */
-	private boolean isDuplicateBioType(AuthRequestDTO authRequestDTO, BioType bioType) {
+	private boolean isDuplicateBioType(AuthRequestDTO authRequestDTO, BioAuthType bioType) {
 		List<BioInfo> bioInfo = authRequestDTO.getBioMetadata();
 		Long bioTypeCount = Optional.ofNullable(bioInfo).map(List::parallelStream)
 				.map(stream -> stream

@@ -39,7 +39,6 @@ import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BioIdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
-import io.mosip.authentication.core.dto.indauth.BioType;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
@@ -65,6 +64,7 @@ import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.service.KycServiceImpl;
+import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.notification.service.NotificationServiceImpl;
 import io.mosip.authentication.service.integration.IdTemplateManager;
@@ -242,7 +242,7 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setRequest(requestDTO);
 
 		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FGRIMG.getType());
+		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
 		bioinfo.setDeviceId("123456789");
 		bioinfo.setDeviceProviderID("1234567890");
 
@@ -392,7 +392,7 @@ public class AuthFacadeImplTest {
 		fingerValue2.setSubType("Thumb");
 		fingerValue2.setType("finger");
 		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FACEIMG.getType());
+		bioinfo.setBioType(BioAuthType.FACE_IMG.getType());
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
 		bioInfoList.add(bioinfo);
 		authRequestDTO.setBioMetadata(bioInfoList);
@@ -774,7 +774,7 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setRequest(requestDTO);
 
 		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FGRMIN.getType());
+		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
 		bioinfo.setDeviceId("123456789");
 		bioinfo.setDeviceProviderID("1234567890");
 
@@ -867,11 +867,11 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setRequest(requestDTO);
 
 		BioInfo bioinfo = new BioInfo();
-		bioinfo.setBioType(BioType.FGRIMG.getType());
+		bioinfo.setBioType(BioAuthType.FGR_IMG.getType());
 		bioinfo.setDeviceId("123456789");
 		bioinfo.setDeviceProviderID("1234567890");
 		BioInfo bioinfo1 = new BioInfo();
-		bioinfo1.setBioType(BioType.IRISIMG.getType());
+		bioinfo1.setBioType(BioAuthType.IRIS_IMG.getType());
 		bioinfo1.setDeviceId("123456789");
 		bioinfo1.setDeviceProviderID("1234567890");
 

@@ -1,9 +1,10 @@
 package io.mosip.authentication.core.spi.indauth.match;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 /**
@@ -37,6 +38,10 @@ public interface IdMapping {
 	 */
 	public static Optional<IdMapping> getIdMapping(String name, IdMapping[] values) {
 		return Stream.of(values).filter(m -> m.getIdname().equals(name)).findAny();
+	}
+	
+	public default Set<IdMapping> getSubIdMappings() {
+		return Collections.emptySet();
 	}
 
 }
