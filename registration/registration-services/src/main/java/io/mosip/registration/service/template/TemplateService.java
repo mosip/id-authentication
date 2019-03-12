@@ -15,6 +15,6 @@ public interface TemplateService {
 	 * 
 	 * @return String which contains the template data
 	 */
-	public String getHtmlTemplate(String templateName);
+	public String getHtmlTemplate(String templateName, String langCode);
 	
 }

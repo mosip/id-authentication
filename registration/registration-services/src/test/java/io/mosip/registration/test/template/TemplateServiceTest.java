@@ -41,8 +41,8 @@ public class TemplateServiceTest {
 		template.setTemplateTypCode("vel");
 		template.setFileFormatCode("vel");
 		template.setId("T01");
-		template.setFileTxt(new byte[1024]);
-		template.setLangCode("en");
+		template.setFileTxt("sample text");
+		template.setLangCode("eng");
 		template.setActive(true);
 		templates.add(template);
 		return templates;
@@ -52,8 +52,8 @@ public class TemplateServiceTest {
 		List<TemplateType> templateTypes = new ArrayList<>();
 		TemplateType templateType = new TemplateType();
 		TemplateEmbeddedKeyCommonFields typePrimaryKey = new TemplateEmbeddedKeyCommonFields();
-		typePrimaryKey.setCode("vel");
-		typePrimaryKey.setLangCode("en");
+		typePrimaryKey.setCode("ackTemplate");
+		typePrimaryKey.setLangCode("eng");
 		templateType.setPkTmpltCode(typePrimaryKey);
 		templateType.setActive(true);
 		templateTypes.add(templateType);
@@ -65,7 +65,7 @@ public class TemplateServiceTest {
 		TemplateFileFormat fileFormat = new TemplateFileFormat();
 		TemplateEmbeddedKeyCommonFields fileFormatPK = new TemplateEmbeddedKeyCommonFields();
 		fileFormatPK.setCode("vel");
-		fileFormatPK.setLangCode("en");
+		fileFormatPK.setLangCode("eng");
 		fileFormat.setPkTfftCode(fileFormatPK);
 		fileFormat.setActive(true);
 		fileFormats.add(fileFormat);
@@ -75,37 +75,40 @@ public class TemplateServiceTest {
 	@Test
 	public void getTemplatePositiveTest() {
 		List<Template> templates = getAllDummyTemplates();
-		when(templateDao.getAllTemplates()).thenReturn(templates);
+		when(templateDao.getAllTemplates("ackTemplate")).thenReturn(templates);
 		List<TemplateType> templateTypes = getAllDummyTemplateTypes();
-		when(templateDao.getAllTemplateTypes()).thenReturn(templateTypes);
+		TemplateEmbeddedKeyCommonFields typePrimaryKey = new TemplateEmbeddedKeyCommonFields();
+		typePrimaryKey.setCode("ackTemplate");
+		typePrimaryKey.setLangCode("eng");
+		when(templateDao.getAllTemplateTypes("ackTemplate","eng")).thenReturn(templateTypes);
 		List<TemplateFileFormat> fileFormats = getAllDummyFormats();
 		when(templateDao.getAllTemplateFileFormats()).thenReturn(fileFormats);
-		assertThat(templateService.getTemplate("AckTemplate"), is(templates.get(0)));
+		assertThat(templateService.getTemplate("ackTemplate", "eng"), is(templates.get(0)));
 	}
 	
 	@Test
 	public void getTemplateNegativeTest() {
 		List<Template> templates = getAllDummyTemplates();
-		when(templateDao.getAllTemplates()).thenReturn(templates);
+		when(templateDao.getAllTemplates("ackTemplate")).thenReturn(templates);
 		List<TemplateType> templateTypes = new ArrayList<>();
 		TemplateType templateType = new TemplateType();
 		TemplateEmbeddedKeyCommonFields typePrimaryKey = new TemplateEmbeddedKeyCommonFields();
-		typePrimaryKey.setCode("vel");
+		typePrimaryKey.setCode("ackTemplate");
 		typePrimaryKey.setLangCode("fr");
 		templateType.setPkTmpltCode(typePrimaryKey);
 		templateTypes.add(templateType);
-		when(templateDao.getAllTemplateTypes()).thenReturn(templateTypes);
+		when(templateDao.getAllTemplateTypes("ackTemplate","eng")).thenReturn(templateTypes);
 		List<TemplateFileFormat> fileFormats = getAllDummyFormats();
 		when(templateDao.getAllTemplateFileFormats()).thenReturn(fileFormats);
 		Template templ = new Template();
-		assertThat(templateService.getTemplate("AckTemplate"), is(templ));
+		assertThat(templateService.getTemplate("ackTemplate","eng"), is(templ));
 	}
 	
 	@Test
 	public void createReceiptTest() {
 		Template template = new Template();
 		template.setId("T01");
-		template.setFileTxt(new byte[1024]);
+		template.setFileTxt("sample text");
 		template.setLangCode("en");
 		template.setActive(true);
 		template.setName("AckTemplate");
@@ -113,8 +116,8 @@ public class TemplateServiceTest {
 		TemplateServiceImpl temp = new TemplateServiceImpl();
 		TemplateServiceImpl spyTemp = Mockito.spy(temp);
 
-	    Mockito.doReturn(template).when(spyTemp).getTemplate("AckTemplate"); 
-	    String ack = spyTemp.getHtmlTemplate("AckTemplate");
+	    Mockito.doReturn(template).when(spyTemp).getTemplate("ackTemplate", "eng"); 
+	    String ack = spyTemp.getHtmlTemplate("ackTemplate", "eng");
 	    
 		assertNotNull(ack);
 	}
