@@ -58,8 +58,8 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 		UriComponentsBuilder builder = null;
 		UriComponents uriComponents = null;
 		if (apiHostIpPort != null) {
-			builder = UriComponentsBuilder.fromHttpUrl(apiHostIpPort);
 
+			builder = UriComponentsBuilder.fromUriString(apiHostIpPort);
 			if (!((pathsegments == null) || (pathsegments.isEmpty()))) {
 				for (String segment : pathsegments) {
 					if (!((segment == null) || (("").equals(segment)))) {
