@@ -100,9 +100,6 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				hostIP = InetAddress.getLocalHost().getHostAddress();
 				hostName = InetAddress.getLocalHost().getHostName();
 			} catch (UnknownHostException unknownHostException) {
-				// LOGGER.info("REGISTRATION-AUDIT_FACTORY-AUDIT", APPLICATION_NAME,
-				// APPLICATION_ID,
-				// ExceptionUtils.getStackTrace(unknownHostException));
 
 				hostIP = environment.getProperty(RegistrationConstants.HOST_IP);
 				hostName = environment.getProperty(RegistrationConstants.HOST_NAME);
