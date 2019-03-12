@@ -316,7 +316,7 @@ public class PacketValidateProcessorTest {
 	public void testStructuralValidationSuccess() throws Exception {
 
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
-		assertTrue(messageDto.getIsValid());
+		assertTrue("Test for successful packet Structural Validation", messageDto.getIsValid());
 
 	}
 
@@ -329,7 +329,7 @@ public class PacketValidateProcessorTest {
 				.thenReturn(statusResponseDto);
 
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
-		assertFalse(messageDto.getIsValid());
+		assertFalse("Test for Gender name failure", messageDto.getIsValid());
 	}
 
 	@Test
@@ -341,7 +341,7 @@ public class PacketValidateProcessorTest {
 				.thenReturn(statusResponseDto);
 
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
-		assertFalse(messageDto.getIsValid());
+		assertFalse("Test for Region name failure", messageDto.getIsValid());
 	}
 
 	@Test
@@ -353,7 +353,7 @@ public class PacketValidateProcessorTest {
 				.thenReturn(statusResponseDto);
 
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
-		assertFalse(messageDto.getIsValid());
+		assertFalse("Test for Province name failure", messageDto.getIsValid());
 	}
 
 	@Test
@@ -365,7 +365,7 @@ public class PacketValidateProcessorTest {
 				.thenReturn(statusResponseDto);
 
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
-		assertFalse(messageDto.getIsValid());
+		assertFalse("Test for City name failure", messageDto.getIsValid());
 	}
 
 	@Test
@@ -377,7 +377,7 @@ public class PacketValidateProcessorTest {
 				.thenReturn(statusResponseDto);
 
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
-		assertFalse(messageDto.getIsValid());
+		assertFalse("Test for Postal code failure", messageDto.getIsValid());
 	}
 
 	@Test
@@ -395,7 +395,7 @@ public class PacketValidateProcessorTest {
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenThrow(apisResourceAccessException);
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
-		assertFalse(messageDto.getIsValid());
+		assertFalse("Test for Api resource Access Exception in Gender Name Api", messageDto.getIsValid());
 	}
 
 	@Test
@@ -412,7 +412,7 @@ public class PacketValidateProcessorTest {
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenThrow(apisResourceAccessException);
 		MessageDTO messageDto = packetValidateProcessor.process(dto);
-		assertFalse(messageDto.getIsValid());
+		assertFalse("Test for Api resource Access Exception in Location Name Api", messageDto.getIsValid());
 	}
 
 	/**
