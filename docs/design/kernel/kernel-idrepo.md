@@ -25,6 +25,9 @@ Identity Repository service can be used internally by products to create, read a
 #### 1.2.2. Functional Flow Diagram - Retrieve ID - 
 ![Functional Flow Diagram - Retrieve ID](_images/kernel-idrepo-getidentity-fd.PNG) 
 
+#### 1.2.3. Functional Flow Diagram - Update ID - 
+![Functional Flow Diagram - Update ID](_images/kernel-idrepo-updateid-fd.PNG) 
+
 
 ***1.3. Key Non-Functional Requirements -***   
 
@@ -80,10 +83,7 @@ Below sequence diagram for Update Identity service shows sequence of operations 
 ![Update Identity Sequence Diagram](_images/kernel-idrepo-updateid-sd.PNG)   
 
 When UIN status is updated using Update ID API, the status is first validated against the configured status for the country. Once input UIN status matches the one among all the configured UIN status, it is updated in the database. 
-Default configuration of UIN status has REGISTERED, BLOCKED and DEACTIVATED. This can be changed based on countryâ€™s requirements.   
-
-Below sequence diagram shows sequence of operations to update UIN status.   
-![Update Status Sequence Diagram](_images/kernel-idrepo-updatestatus-sd.PNG)       
+Default configuration of UIN status has ACTIVATES, BLOCKED and DEACTIVATED. This can be changed based on country's requirements.       
 
 
 ***2.2.3.	Get Identity***   
@@ -105,20 +105,6 @@ ID Repo provides default shard implementation where shards are decided based on 
 ![UIN Database Sharding](_images/kernel-idrepo-databasesharding.png)   
 
 
-**ERD**
-
-![ERD](_images/kernel-idrepo-erd.png) 
-
 **2.4.	Encrypting/Decrypting Identity**    
 
 Identity stored in UIN DB is encrypted/decrypted outside the DB. Details on the approach of encryption/decryption is available here - [Identity Encryption/Decryption](https://github.com/mosip/mosip/wiki/Security#database-encryption)
-
-
-
-
-
-## Implementation
-
-
-**kernel-idrepo-service** [README](../../../kernel/kernel-idrepo-service/README.md)
-

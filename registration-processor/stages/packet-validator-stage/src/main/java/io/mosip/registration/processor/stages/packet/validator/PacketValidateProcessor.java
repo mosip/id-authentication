@@ -58,7 +58,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 @Service
 @Transactional
 public class PacketValidateProcessor {
-	
+
 	/** The identity iterator util. */
 	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 
@@ -99,6 +99,7 @@ public class PacketValidateProcessor {
 
 	/** The registration id. */
 	private String registrationId = "";
+
 	/** The description. */
 	private String description;
 
@@ -295,8 +296,13 @@ public class PacketValidateProcessor {
 					eventName = EventName.EXCEPTION.toString();
 					eventType = EventType.SYSTEM.toString();
 				}
-				auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-						registrationId);
+							description = "Packet uploading to file system is unsuccessful";
+							eventId = EventId.RPR_405.toString();
+							eventName = EventName.EXCEPTION.toString();
+							eventType = EventType.SYSTEM.toString();
+						
+						auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+								registrationId, ApiName.AUDIT);
 
 			}
 
@@ -379,7 +385,7 @@ public class PacketValidateProcessor {
 				eventType = EventType.SYSTEM.toString();
 			}
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId.trim().isEmpty() ? null : registrationId.toString());
+					registrationId.trim().isEmpty() ? null : registrationId.toString(), ApiName.AUDIT);
 		}
 
 		return object;

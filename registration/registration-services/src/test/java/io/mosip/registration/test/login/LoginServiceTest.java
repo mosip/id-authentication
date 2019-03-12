@@ -122,7 +122,7 @@ public class LoginServiceTest {
 
 		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
 		Optional<RegistrationCenter> registrationCenterList = Optional.of(registrationCenter);
-		Mockito.when(registrationCenterRepository.findByRegistartionCenterIdIdAndIsActiveTrue(Mockito.anyString()))
+		Mockito.when(registrationCenterRepository.findByRegistartionCenterIdIdAndRegistartionCenterIdLangCodeAndIsActiveTrue(Mockito.anyString(),Mockito.anyString()))
 				.thenReturn(registrationCenterList);
 		
 		Mockito.when(registrationCenterDAO.getRegistrationCenterDetails(Mockito.anyString())).thenReturn(centerDetailDTO);

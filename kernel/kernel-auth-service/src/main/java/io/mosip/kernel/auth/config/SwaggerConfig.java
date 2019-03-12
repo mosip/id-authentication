@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiKey;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -74,6 +75,9 @@ public class SwaggerConfig {
 		return docket;
 	}
 
+	private ApiKey apiKey() {
+        return new ApiKey("JSESSIONID", "api_key", "cookie");
+    }
 	private Set<String> protocols() {
 		Set<String> protocols = new HashSet<>();
 		protocols.add(proto);

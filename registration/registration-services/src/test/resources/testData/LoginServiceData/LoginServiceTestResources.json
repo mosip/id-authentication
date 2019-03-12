@@ -1,12 +1,11 @@
 {
 	"roles": [
 		"SUPERVISOR",
-		"OFFICER"
+		"OFFICER",
+		"SUPERADMIN"
 	],
 	"userIds" : [
-		"mosip",
-		"sravya",
-		"karthik"
+		"mosip"
 	],
 	"regCenterIds":[
 		"20916"

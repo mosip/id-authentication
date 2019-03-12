@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.documents.dto.DocumentCopyResponseDTO;
-import io.mosip.preregistration.documents.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
 import io.mosip.preregistration.documents.service.DocumentService;
 import io.swagger.annotations.Api;
@@ -96,7 +96,7 @@ public class DocumentController {
 	 *            pass destination_preId
 	 * @return response in a format specified in API document
 	 */
-	@PostMapping(path = "/copyDocuments", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/documents/copy", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Copy uploaded document")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully copied"),
 			@ApiResponse(code = 400, message = "Document copying failed") })
@@ -117,7 +117,7 @@ public class DocumentController {
 	 *            pass preRegistrationId
 	 * @return response in a format specified in API document
 	 */
-	@GetMapping(path = "/getDocument", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/documents", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get All Document for Pre-Registration Id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Documents reterived successfully"),
 			@ApiResponse(code = 400, message = "Documents failed to reterive") })
@@ -139,7 +139,7 @@ public class DocumentController {
 	 *            pass documentId
 	 * @return response in a format specified in API document
 	 */
-	@DeleteMapping(path = "/deleteDocument", produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(path = "/documents", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Delete document by document Id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully deleted"),
 			@ApiResponse(code = 400, message = "Document failed to delete") })
@@ -159,7 +159,7 @@ public class DocumentController {
 	 *            pass preregistrationId
 	 * @return response in a format specified in API document
 	 */
-	@DeleteMapping(path = "/deleteAllByPreRegId", produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(path = "/documents/byPreRegId", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Delete all documents by pre-registration Id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Documents successfully deleted"),
 			@ApiResponse(code = 400, message = "Documents failed to delete") })

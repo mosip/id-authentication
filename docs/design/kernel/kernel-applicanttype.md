@@ -28,4 +28,4 @@ There can be multiple applicant types in the MOSIP system. An applicant type is 
 ## Implementation
 
 
-**kernel-applicanttype** [README](../../kernel/kernel-applicanttype/README.md)
+**kernel-applicanttype-api** [README](../../../kernel/kernel-applicanttype-api/README.md)

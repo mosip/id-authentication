@@ -35,6 +35,7 @@ import ch.qos.logback.core.read.ListAppender;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -209,7 +210,7 @@ public class PacketValidateProcessorTest {
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_405.toString(), EventName.UPDATE.toString(),
-				EventType.BUSINESS.toString(), "1234testcase");
+				EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
 
 		String test = "1234567890";
 		byte[] data = "1234567890".getBytes();

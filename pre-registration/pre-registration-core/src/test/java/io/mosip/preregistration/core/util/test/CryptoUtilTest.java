@@ -16,10 +16,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.preregistration.core.common.dto.CryptoManagerResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
+import io.mosip.preregistration.core.exception.DecryptionFailedException;
+import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.util.CryptoUtil;
 
 /**
@@ -54,6 +57,15 @@ public class CryptoUtilTest {
 	}
 	
 
+	@Test(expected=EncryptionFailedException.class)
+	public void encryptFailedExceptionTest() {
+		HttpClientErrorException ex = new HttpClientErrorException(HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.POST), Mockito.any(),
+				Mockito.eq(CryptoManagerResponseDTO.class))).thenThrow(ex);
+		crypto.encrypt("hello".getBytes(), LocalDateTime.now());
+
+	}
+	
 	@Test
 	public void decryptSuccessTest() {
 		CryptoManagerResponseDTO cryptoRes1 = new CryptoManagerResponseDTO();
@@ -63,6 +75,15 @@ public class CryptoUtilTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.POST), Mockito.any(),
 				Mockito.eq(CryptoManagerResponseDTO.class))).thenReturn(res);
 		assertNotNull(crypto.decrypt("hello".getBytes(),LocalDateTime.now()));
+
+	}
+
+	@Test(expected=DecryptionFailedException.class)
+	public void decryptFailedExceptionTest() {
+		HttpClientErrorException ex = new HttpClientErrorException(HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.POST), Mockito.any(),
+				Mockito.eq(CryptoManagerResponseDTO.class))).thenThrow(ex);
+		crypto.decrypt("hello".getBytes(),LocalDateTime.now());
 
 	}
 

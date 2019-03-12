@@ -1,6 +1,7 @@
 package io.mosip.kernel.idrepo.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -8,12 +9,12 @@ import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.assertj.core.util.Maps;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -46,10 +48,7 @@ import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ActiveProfiles("test")
-@ConfigurationProperties("mosip.kernel.idrepo")
 public class IdRepoControllerTest {
-
-	private Map<String, String> id;
 
 	@Mock
 	private IdRepoService<IdRequestDTO, IdResponseDTO> idRepoService;
@@ -65,6 +64,9 @@ public class IdRepoControllerTest {
 
 	@Before
 	public void before() {
+		Map<String, String> id = Maps.newHashMap("read", "mosip.id.read");
+		id.put("create", "mosip.id.create");
+		id.put("update", "mosip.id.update");
 		ReflectionTestUtils.setField(controller, "id", id);
 		ReflectionTestUtils.setField(controller, "allowedTypes", Lists.newArrayList("bio", "demo", "all"));
 	}
@@ -73,6 +75,7 @@ public class IdRepoControllerTest {
 	public void testAddIdentity() throws IdRepoAppException {
 		IdResponseDTO response = new IdResponseDTO();
 		IdRequestDTO request = new IdRequestDTO();
+		request.setId("mosip.id.create");
 		when(idRepoService.addIdentity(any(), any())).thenReturn(response);
 		ResponseEntity<IdResponseDTO> responseEntity = controller.addIdentity("1234", request,
 				new BeanPropertyBindingResult(request, "IdRequestDTO"));
@@ -84,6 +87,7 @@ public class IdRepoControllerTest {
 	public void testAddIdentityFailed() throws IdRepoAppException {
 		IdResponseDTO response = new IdResponseDTO();
 		IdRequestDTO request = new IdRequestDTO();
+		request.setId("mosip.id.create");
 		when(idRepoService.addIdentity(any(), any()))
 				.thenThrow(new IdRepoAppException(IdRepoErrorConstants.UNKNOWN_ERROR));
 		ResponseEntity<IdResponseDTO> responseEntity = controller.addIdentity("1234", request,
@@ -101,6 +105,7 @@ public class IdRepoControllerTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testAddIdentityException() throws IdRepoAppException {
 		IdRequestDTO request = new IdRequestDTO();
+		request.setId("mosip.id.create");
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "IdRequestDTO");
 		errors.reject("errorCode");
 		controller.addIdentity("1234", request, errors);
@@ -109,6 +114,7 @@ public class IdRepoControllerTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testAddIdentityExceptionInvalidUin() throws IdRepoAppException {
 		IdRequestDTO request = new IdRequestDTO();
+		request.setId("mosip.id.create");
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "IdRequestDTO");
 		when(uinValidatorImpl.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
 		controller.addIdentity("1234", request, errors);
@@ -213,6 +219,7 @@ public class IdRepoControllerTest {
 		when(uinValidatorImpl.validateId(anyString())).thenReturn(true);
 		when(idRepoService.updateIdentity(any(), any())).thenReturn(response);
 		IdRequestDTO request = new IdRequestDTO();
+		request.setId("mosip.id.update");
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "IdRequestDTO");
 		controller.updateIdentity("1234", request, errors);
 	}
@@ -223,6 +230,7 @@ public class IdRepoControllerTest {
 		when(uinValidatorImpl.validateId(any())).thenThrow(new InvalidIDException(null, null));
 		when(idRepoService.updateIdentity(any(), any())).thenReturn(response);
 		IdRequestDTO request = new IdRequestDTO();
+		request.setId("mosip.id.update");
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "IdRequestDTO");
 		controller.updateIdentity("1234", request, errors);
 	}
@@ -233,6 +241,7 @@ public class IdRepoControllerTest {
 		when(uinValidatorImpl.validateId(anyString())).thenReturn(true);
 		when(idRepoService.updateIdentity(any(), any())).thenReturn(response);
 		IdRequestDTO request = new IdRequestDTO();
+		request.setId("mosip.id.update");
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "IdRequestDTO");
 		errors.reject("");
 		controller.updateIdentity("1234", request, errors);
@@ -242,6 +251,7 @@ public class IdRepoControllerTest {
 	public void testUpdateIdentityFailed() throws IdRepoAppException {
 		IdResponseDTO response = new IdResponseDTO();
 		IdRequestDTO request = new IdRequestDTO();
+		request.setId("mosip.id.update");
 		when(idRepoService.updateIdentity(any(), any()))
 				.thenThrow(new IdRepoAppException(IdRepoErrorConstants.UNKNOWN_ERROR));
 		ResponseEntity<IdResponseDTO> responseEntity = controller.updateIdentity("1234", request,
@@ -249,12 +259,32 @@ public class IdRepoControllerTest {
 		assertEquals(response, responseEntity.getBody());
 		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
 	}
-
-	public Map<String, String> getId() {
-		return id;
+	
+	@Test
+	public void testValidateIdNullId() {
+		IdRequestDTO request = new IdRequestDTO();
+		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "IdRequestDTO");
+		ReflectionTestUtils.invokeMethod(controller, "validateId", null, errors, "read");
+		assertTrue(errors.hasErrors());
+		errors.getAllErrors().forEach(error -> {
+			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "id"),
+					error.getDefaultMessage());
+			assertEquals("id", ((FieldError) error).getField());
+		});
 	}
 
-	public void setId(Map<String, String> id) {
-		this.id = id;
+	@Test
+	public void testValidateIdInvalidId() {
+		IdRequestDTO request = new IdRequestDTO();
+		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "IdRequestDTO");
+		ReflectionTestUtils.invokeMethod(controller, "validateId", "abc", errors, "read");
+		assertTrue(errors.hasErrors());
+		errors.getAllErrors().forEach(error -> {
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "id"),
+					error.getDefaultMessage());
+			assertEquals("id", ((FieldError) error).getField());
+		});
 	}
 }

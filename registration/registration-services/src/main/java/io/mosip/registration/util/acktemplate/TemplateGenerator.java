@@ -708,7 +708,7 @@ public class TemplateGenerator extends BaseService {
 			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_LOCAL_LANG_LABEL,
 					localProperties.getString("ro_name"));
 			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME,
-					getValue(registration.getOsiDataDTO().getOperatorID(), platformLanguageCode));
+					getValue(registration.getOsiDataDTO().getOperatorID()));
 			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_LOCAL_LANG, RegistrationConstants.EMPTY);
 			templateValues.put(RegistrationConstants.TEMPLATE_REG_CENTER_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("registrationcenter"));
@@ -734,7 +734,7 @@ public class TemplateGenerator extends BaseService {
 				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_USER_LANG_LABEL,
 						applicationLanguageProperties.getString("parentUIN"));
 				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN,
-						getValue(moroccoIdentity.getParentOrGuardianRIDOrUIN(), platformLanguageCode));
+						getValue(moroccoIdentity.getParentOrGuardianRIDOrUIN()));
 				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
 						localProperties.getString("parentUIN"));
 			} else {
