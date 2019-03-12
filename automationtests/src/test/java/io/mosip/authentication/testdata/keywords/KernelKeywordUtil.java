@@ -1,6 +1,6 @@
 package io.mosip.authentication.testdata.keywords;
 
-import java.sql.Timestamp;  
+import java.sql.Timestamp;   
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,10 +13,12 @@ import java.util.Random;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
+
 import io.mosip.authentication.testdata.TestDataUtil;
 
 public class KernelKeywordUtil extends KeywordUtil{
-	
+	private static Logger logger = Logger.getLogger(KernelKeywordUtil.class);
 	@Override
 	public Map<String, String> precondtionKeywords(Map<String, String> map) {
 		Map<String, String> returnMap = new HashMap<String, String>();
@@ -147,7 +149,7 @@ public class KernelKeywordUtil extends KeywordUtil{
 				return false;
 			return true;
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.error(e.getMessage());
 			return false;
 		}
 	}

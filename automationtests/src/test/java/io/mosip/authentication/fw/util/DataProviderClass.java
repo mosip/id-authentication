@@ -25,7 +25,13 @@ public class DataProviderClass {
 					returnObj[numberOfTestcase] = returnObject(testcase, scenario, numberOfTestcase);
 					numberOfTestcase++;
 				}
-			} else if (testType.equalsIgnoreCase("regression")) {
+			} 
+			else if (testType.equalsIgnoreCase("IntegrationTest")) {
+				if (testcase.getName().contains(testType)) {
+					returnObj[numberOfTestcase] = returnObject(testcase, scenario, numberOfTestcase);
+					numberOfTestcase++;
+				}
+			}else if (testType.equalsIgnoreCase("regression")) {
 				if (testcase.getName().contains(testType) || (!testcase.getName().contains(testType) && !testcase.getName().contains("smoke"))) {
 					returnObj[numberOfTestcase] = returnObject(testcase, scenario, numberOfTestcase);
 					numberOfTestcase++;

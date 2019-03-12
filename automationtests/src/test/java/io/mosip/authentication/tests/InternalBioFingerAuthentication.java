@@ -31,7 +31,6 @@ import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.IdaScriptsUtil;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
-import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
@@ -42,15 +41,14 @@ import io.mosip.authentication.testdata.TestDataUtil;
 import org.testng.Reporter;
 
 /**
- * Tests to execute the demographic authentication
+ * Tests to execute internal biometric authentication
  * 
  * @author Athila
- * @param <TestDataProcessor>
  *
  */
-public class StaticTokenIdGeneration extends IdaScriptsUtil implements ITest{
+public class InternalBioFingerAuthentication extends IdaScriptsUtil implements ITest{
 
-	private static Logger logger = Logger.getLogger(StaticTokenIdGeneration.class);
+	private static Logger logger = Logger.getLogger(InternalBioFingerAuthentication.class);
 	private DataProviderClass objDataProvider = new DataProviderClass();
 	private OutputValidationUtil objOpValiUtil = new OutputValidationUtil();
 	private ReportUtil objReportUtil = new ReportUtil();
@@ -59,14 +57,14 @@ public class StaticTokenIdGeneration extends IdaScriptsUtil implements ITest{
 	protected static String testCaseName = "";
 	private TestDataProcessor objTestDataProcessor = new TestDataProcessor();
 	private AuditValidUtil objAuditValidUtil = new AuditValidUtil();
-	private JsonPrecondtion objJsonPrecon = new JsonPrecondtion();
+	private String TESTDATA_PATH="ida/TestData/InternalBio/FingerPrint/";
+	private String TESTDATA_FILENAME="testdata.ida.internalbio.AuthWithFingerPrint.mapping.yml";
 
-	
-	@Parameters({ "testDatPath" , "testDataFileName" ,"testType"})
+	@Parameters({"testType"})
 	@BeforeClass
-	public void setConfigurations(String testDatPath,String testDataFileName,String testType) {
-		objRunConfig.setConfig(testDatPath,testDataFileName,testType);
-		objTestDataProcessor.initateTestDataProcess(testDataFileName,testDatPath,"ida");	
+	public void setConfigurations(String testType) {
+		objRunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
+		objTestDataProcessor.initateTestDataProcess(TESTDATA_FILENAME,TESTDATA_PATH,"ida");	
 	}
 	
 	@BeforeMethod
@@ -109,7 +107,7 @@ public class StaticTokenIdGeneration extends IdaScriptsUtil implements ITest{
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, StaticTokenIdGeneration.testCaseName);
+			f.set(baseTestMethod, InternalBioFingerAuthentication.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
@@ -130,19 +128,13 @@ public class StaticTokenIdGeneration extends IdaScriptsUtil implements ITest{
 			tempMap.put("key", entry.getKey());
 			tempMap.put("data", entry.getValue());
 		}
-		logger.info("************* Modification of demo auth request ******************");
-		Reporter.log("<b><u>Modification of demo auth request</u></b>");
-		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "staticTokenId-generation"), true);
-		logger.info("******Post request Json to EndPointUrl: " + RunConfig.getEndPointUrl() + RunConfig.getAuthPath()
+		logger.info("************* Modification of bio auth request ******************");
+		Reporter.log("<b><u>Modification of bio auth request</u></b>");
+		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "bio-auth"), true);
+		logger.info("******Post request Json to EndPointUrl: " + RunConfig.getEndPointUrl() + RunConfig.getInternalAuthPath()
 				+ " *******");
 		Assert.assertEquals(postAndGenOutFile(testCaseName.listFiles(),
-				RunConfig.getEndPointUrl() + RunConfig.getAuthPath(), "request", "output-1-actual-res",200), true);
-		String request=getContentFromFile(testCaseName.listFiles(),"staticTokenId-generation");
-		String response=getContentFromFile(testCaseName.listFiles(),"output-1-actual-res");
-		String uin=objJsonPrecon.getValueFromJson(request, "idvId");
-		String tspId=objJsonPrecon.getValueFromJson(request, "tspID");
-		String tokenId=objJsonPrecon.getValueFromJson(response, "staticToken");
-		performTokenIdOper(uin,tspId,tokenId);
+				RunConfig.getEndPointUrl() + RunConfig.getInternalAuthPath(), "request", "output-1-actual-res",200), true);
 		Map<String, List<OutputValidationDto>> ouputValid = objOpValiUtil.doOutputValidation(
 				objFileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				objFileUtil.getFilePath(testCaseName, "output-1-expected").toString());
@@ -164,22 +156,6 @@ public class StaticTokenIdGeneration extends IdaScriptsUtil implements ITest{
 					.verifyAuditLog(testCaseName.listFiles(), "audit_log");
 			Reporter.log(objReportUtil.getOutputValiReport(auditLogValidation));
 			Assert.assertEquals(objOpValiUtil.publishOutputResult(auditLogValidation), true);
-		}
-	}
-	
-	public void performTokenIdOper(String uin, String tspId, String tokenId) {
-		File file = new File(RunConfig.getUserDirectory() + RunConfig.getSrcPath() + "/ida/"
-				+ RunConfig.getTestDataFolderName() + "/RunConfig/tokenId.properties");
-		if (file.exists()) {
-			if (!getProperty(file.getAbsolutePath()).containsKey(uin + "." + tspId)) {
-				Map<String, String> map = getPropertyAsMap(file.getAbsolutePath());
-				map.put(uin + "." + tspId, tokenId);
-				generateMappingDic(file.getAbsolutePath(), map);
-			}
-		} else {
-			Map<String, String> map = getPropertyAsMap(file.getAbsolutePath());
-			map.put(uin + "." + tspId, tokenId);
-			generateMappingDic(file.getAbsolutePath(), map);
 		}
 	}
 

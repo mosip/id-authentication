@@ -31,6 +31,7 @@ import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.IdaScriptsUtil;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
+import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
@@ -41,14 +42,15 @@ import io.mosip.authentication.testdata.TestDataUtil;
 import org.testng.Reporter;
 
 /**
- * Tests to execute otp generation
+ * Tests to execute the demographic authentication
  * 
- * @author Vignesh
+ * @author Athila
+ * @param <TestDataProcessor>
  *
  */
-public class OtpGeneration extends IdaScriptsUtil implements ITest{
+public class StaticTokenIdGenerationForDemoAuth extends IdaScriptsUtil implements ITest{
 
-	private static Logger logger = Logger.getLogger(OtpGeneration.class);
+	private static Logger logger = Logger.getLogger(StaticTokenIdGenerationForDemoAuth.class);
 	private DataProviderClass objDataProvider = new DataProviderClass();
 	private OutputValidationUtil objOpValiUtil = new OutputValidationUtil();
 	private ReportUtil objReportUtil = new ReportUtil();
@@ -57,8 +59,9 @@ public class OtpGeneration extends IdaScriptsUtil implements ITest{
 	protected static String testCaseName = "";
 	private TestDataProcessor objTestDataProcessor = new TestDataProcessor();
 	private AuditValidUtil objAuditValidUtil = new AuditValidUtil();
-	private String TESTDATA_PATH="ida/TestData/Otp/OtpGeneration/";
-	private String TESTDATA_FILENAME="testdata.ida.Otp.OtpGeneration.mapping.yml";
+	private JsonPrecondtion objJsonPrecon = new JsonPrecondtion();
+	private String TESTDATA_PATH="ida/TestData/StaticTokenId/Demo/";
+	private String TESTDATA_FILENAME="testdata.ida.StaticTokenId.Demo.mapping.yml";
 
 	@Parameters({"testType"})
 	@BeforeClass
@@ -107,7 +110,7 @@ public class OtpGeneration extends IdaScriptsUtil implements ITest{
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, OtpGeneration.testCaseName);
+			f.set(baseTestMethod, StaticTokenIdGenerationForDemoAuth.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
@@ -122,13 +125,25 @@ public class OtpGeneration extends IdaScriptsUtil implements ITest{
 		setTestCaseId(testCaseNumber);
 		setTestCaseName(testCaseName.getName());
 		String mapping = TestDataUtil.getMappingPath();
-		logger.info("************* Otp generation request ******************");
-		Reporter.log("<b><u>Otp generation request</u></b>");
-		displayContentInFile(testCaseName.listFiles(),"request");
-		logger.info("******Post request Json to EndPointUrl: " + RunConfig.getEndPointUrl() + RunConfig.getOtpPath()
+		Map<String, String> tempMap = new HashMap<String, String>();
+		for (Entry<String, String> entry : getEncryptKeyvalue(testCaseName.listFiles(), "identity-encrypt")
+				.entrySet()) {
+			tempMap.put("key", entry.getKey());
+			tempMap.put("data", entry.getValue());
+		}
+		logger.info("************* Modification of demo auth request ******************");
+		Reporter.log("<b><u>Modification of demo auth request</u></b>");
+		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "staticTokenId-generation"), true);
+		logger.info("******Post request Json to EndPointUrl: " + RunConfig.getEndPointUrl() + RunConfig.getAuthPath()
 				+ " *******");
 		Assert.assertEquals(postAndGenOutFile(testCaseName.listFiles(),
-				RunConfig.getEndPointUrl() + RunConfig.getOtpPath(), "request", "output-1-actual-res",200), true);
+				RunConfig.getEndPointUrl() + RunConfig.getAuthPath(), "request", "output-1-actual-res",200), true);
+		String request=getContentFromFile(testCaseName.listFiles(),"staticTokenId-generation");
+		String response=getContentFromFile(testCaseName.listFiles(),"output-1-actual-res");
+		String uin=objJsonPrecon.getValueFromJson(request, "idvId");
+		String tspId=objJsonPrecon.getValueFromJson(request, "tspID");
+		String tokenId=objJsonPrecon.getValueFromJson(response, "staticToken");
+		performTokenIdOper(uin,tspId,tokenId);
 		Map<String, List<OutputValidationDto>> ouputValid = objOpValiUtil.doOutputValidation(
 				objFileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				objFileUtil.getFilePath(testCaseName, "output-1-expected").toString());
@@ -150,6 +165,22 @@ public class OtpGeneration extends IdaScriptsUtil implements ITest{
 					.verifyAuditLog(testCaseName.listFiles(), "audit_log");
 			Reporter.log(objReportUtil.getOutputValiReport(auditLogValidation));
 			Assert.assertEquals(objOpValiUtil.publishOutputResult(auditLogValidation), true);
+		}
+	}
+	
+	public void performTokenIdOper(String uin, String tspId, String tokenId) {
+		File file = new File(RunConfig.getUserDirectory() + RunConfig.getSrcPath() + "/ida/"
+				+ RunConfig.getTestDataFolderName() + "/RunConfig/tokenId.properties");
+		if (file.exists()) {
+			if (!getProperty(file.getAbsolutePath()).containsKey(uin + "." + tspId)) {
+				Map<String, String> map = getPropertyAsMap(file.getAbsolutePath());
+				map.put(uin + "." + tspId, tokenId);
+				generateMappingDic(file.getAbsolutePath(), map);
+			}
+		} else {
+			Map<String, String> map = getPropertyAsMap(file.getAbsolutePath());
+			map.put(uin + "." + tspId, tokenId);
+			generateMappingDic(file.getAbsolutePath(), map);
 		}
 	}
 

@@ -1,35 +1,36 @@
 package io.mosip.authentication.tests;
 
-import java.io.File;
-import java.lang.reflect.Field; 
+import java.io.File;  
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.json.simple.JSONObject;
 import org.testng.Assert;
 import org.testng.ITest;
+import org.testng.ITestContext;
 import org.testng.ITestResult;
-import org.testng.Reporter;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
-import io.mosip.authentication.fw.dto.OutputValidationDto;
-import io.mosip.authentication.fw.precon.JsonPrecondtion;
+import io.mosip.authentication.fw.util.AuditValidUtil;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
@@ -37,9 +38,17 @@ import io.mosip.authentication.fw.util.TestParameters;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
 
-public class VidGeneration extends IdaScriptsUtil implements ITest{
-	
-	private static Logger logger = Logger.getLogger(VidGeneration.class);
+import org.testng.Reporter;
+
+/**
+ * Tests to execute the demographic authentication
+ * 
+ * @author Athila
+ *
+ */
+public class DemoGenderAuthentication extends IdaScriptsUtil implements ITest{
+
+	private static Logger logger = Logger.getLogger(DemoGenderAuthentication.class);
 	private DataProviderClass objDataProvider = new DataProviderClass();
 	private OutputValidationUtil objOpValiUtil = new OutputValidationUtil();
 	private ReportUtil objReportUtil = new ReportUtil();
@@ -47,8 +56,9 @@ public class VidGeneration extends IdaScriptsUtil implements ITest{
 	private FileUtil objFileUtil = new FileUtil();
 	protected static String testCaseName = "";
 	private TestDataProcessor objTestDataProcessor = new TestDataProcessor();
-	private String TESTDATA_PATH="ida/TestData/VIDGeneration/";
-	private String TESTDATA_FILENAME="testdata.ida.VIDGeneration.mapping.yml";
+	private AuditValidUtil objAuditValidUtil = new AuditValidUtil();
+	private String TESTDATA_PATH="ida/TestData/Demo/Gender/";
+	private String TESTDATA_FILENAME="testdata.ida.Demo.AuthWithGender.mapping.yml";
 
 	@Parameters({"testType"})
 	@BeforeClass
@@ -97,13 +107,14 @@ public class VidGeneration extends IdaScriptsUtil implements ITest{
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, VidGeneration.testCaseName);
+			f.set(baseTestMethod, DemoGenderAuthentication.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
 	} 
+
 	@Test(dataProvider = "testcaselist")
-	public void idaApiBioAuthExecution(TestParameters objTestParameters, String testScenario, String testcaseName) {
+	public void idaApiBioAuthExecution(TestParameters objTestParameters,String testScenario,String testcaseName) {
 		File testCaseName = objTestParameters.getTestCaseFile();
 		int testCaseNumber = Integer.parseInt(objTestParameters.getTestId());
 		displayLog(testCaseName, testCaseNumber);
@@ -111,23 +122,41 @@ public class VidGeneration extends IdaScriptsUtil implements ITest{
 		setTestCaseId(testCaseNumber);
 		setTestCaseName(testCaseName.getName());
 		String mapping = TestDataUtil.getMappingPath();
-		logger.info("*************VID generation request ******************");
-		Reporter.log("<b><u>VID generation request</u></b>");
-		displayContentInFile(testCaseName.listFiles(), "uin");
-		String uin = getValueFromJson(testCaseName.listFiles(), mapping, "uin", "uin");
-		logger.info("******GET request Json to EndPointUrl: " + RunConfig.getEndPointUrl() + RunConfig.getVidGenPath()
+		Map<String, String> tempMap = new HashMap<String, String>();
+		for (Entry<String, String> entry : getEncryptKeyvalue(testCaseName.listFiles(), "identity-encrypt")
+				.entrySet()) {
+			tempMap.put("key", entry.getKey());
+			tempMap.put("data", entry.getValue());
+		}
+		logger.info("************* Modification of demo auth request ******************");
+		Reporter.log("<b><u>Modification of demo auth request</u></b>");
+		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "demo-auth"), true);
+		logger.info("******Post request Json to EndPointUrl: " + RunConfig.getEndPointUrl() + RunConfig.getAuthPath()
 				+ " *******");
-		String url = RunConfig.getEndPointUrl() + RunConfig.getVidGenPath();
-		url = url.replace("$uin$", uin);
-		String response = getResponse(url);
-		File outputFile = objFileUtil.getFilePath(testCaseName, "output-1-expected");
-		objFileUtil.createAndWriteFile("output-1-actual.json", response);
+		Assert.assertEquals(postAndGenOutFile(testCaseName.listFiles(),
+				RunConfig.getEndPointUrl() + RunConfig.getAuthPath(), "request", "output-1-actual-res",200), true);
 		Map<String, List<OutputValidationDto>> ouputValid = objOpValiUtil.doOutputValidation(
 				objFileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				objFileUtil.getFilePath(testCaseName, "output-1-expected").toString());
 		Reporter.log(objReportUtil.getOutputValiReport(ouputValid));
-		Verify.verify(objOpValiUtil.publishOutputResult(ouputValid));
+		Assert.assertEquals(objOpValiUtil.publishOutputResult(ouputValid), true);
+		if(objFileUtil.verifyFilePresent(testCaseName.listFiles(), "auth_transaction")) {
+			wait(5000);
+			logger.info("************* Auth Transaction Validation ******************");
+			Reporter.log("<b><u>Auth Transaction Validation</u></b>");
+			Map<String, List<OutputValidationDto>> auditTxnvalidation = objAuditValidUtil
+					.verifyAuditTxn(testCaseName.listFiles(), "auth_transaction");
+			Reporter.log(objReportUtil.getOutputValiReport(auditTxnvalidation));
+			Assert.assertEquals(objOpValiUtil.publishOutputResult(auditTxnvalidation), true);
+		}if (objFileUtil.verifyFilePresent(testCaseName.listFiles(), "audit_log")) {
+			wait(5000);
+			logger.info("************* Audit Log Validation ******************");
+			Reporter.log("<b><u>Audit Log Validation</u></b>");
+			Map<String, List<OutputValidationDto>> auditLogValidation = objAuditValidUtil
+					.verifyAuditLog(testCaseName.listFiles(), "audit_log");
+			Reporter.log(objReportUtil.getOutputValiReport(auditLogValidation));
+			Assert.assertEquals(objOpValiUtil.publishOutputResult(auditLogValidation), true);
+		}
 	}
+
 }
-
-

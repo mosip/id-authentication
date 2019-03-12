@@ -60,12 +60,14 @@ public class CreateUinRecord extends IdaScriptsUtil implements ITest{
 	private TestDataProcessor objTestDataProcessor = new TestDataProcessor();
 	private IdRepoUtil objIdRepoUtil = new IdRepoUtil();
 	private Map<String,String> storeUinData = new HashMap<String,String>();
+	private String TESTDATA_PATH="ida/TestData/UINData/CreateTestData/";
+	private String TESTDATA_FILENAME="testdata.ida.UINData.CreateTestData.mapping.yml";
 
-	@Parameters({ "testDatPath" , "testDataFileName" })
+	@Parameters({"testType"})
 	@BeforeClass
-	public void setConfigurations(String testDatPath,String testDataFileName) {
-		objRunConfig.setConfig(testDatPath,testDataFileName,"smokeandregression");
-		objTestDataProcessor.initateTestDataProcess(testDataFileName,testDatPath,"ida");
+	public void setConfigurations(String testType) {
+		objRunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
+		objTestDataProcessor.initateTestDataProcess(TESTDATA_FILENAME,TESTDATA_PATH,"ida");
 	}
 	
 	@BeforeMethod

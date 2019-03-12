@@ -1,6 +1,6 @@
 package io.mosip.authentication.tests;
 
-import java.io.File;  
+import java.io.File;   
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -35,20 +35,21 @@ import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.fw.util.TestParameters;
+import io.mosip.authentication.testdata.TestDataConfig;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
 
 import org.testng.Reporter;
 
 /**
- * Tests to execute internal biometric authentication
+ * Tests to execute biometric authentication using ekyc
  * 
- * @author Athila
+ * @author Vignesh
  *
  */
-public class InternalBioAuthentication extends IdaScriptsUtil implements ITest{
+public class EkycWithBioFingerAuthentication extends IdaScriptsUtil implements ITest{
 
-	private static Logger logger = Logger.getLogger(InternalBioAuthentication.class);
+	private static Logger logger = Logger.getLogger(EkycWithBioFingerAuthentication.class);
 	private DataProviderClass objDataProvider = new DataProviderClass();
 	private OutputValidationUtil objOpValiUtil = new OutputValidationUtil();
 	private ReportUtil objReportUtil = new ReportUtil();
@@ -57,12 +58,14 @@ public class InternalBioAuthentication extends IdaScriptsUtil implements ITest{
 	protected static String testCaseName = "";
 	private TestDataProcessor objTestDataProcessor = new TestDataProcessor();
 	private AuditValidUtil objAuditValidUtil = new AuditValidUtil();
+	private String TESTDATA_PATH="ida/TestData/eKYC/FingerPrint/";
+	private String TESTDATA_FILENAME="testdata.ida.eKYC.AuthWithFingerPrint.mapping.yml";
 
-	@Parameters({ "testDatPath" , "testDataFileName" ,"testType"})
+	@Parameters({"testType"})
 	@BeforeClass
-	public void setConfigurations(String testDatPath,String testDataFileName,String testType) {
-		objRunConfig.setConfig(testDatPath,testDataFileName,testType);
-		objTestDataProcessor.initateTestDataProcess(testDataFileName,testDatPath,"ida");	
+	public void setConfigurations(String testType) {
+		objRunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
+		objTestDataProcessor.initateTestDataProcess(TESTDATA_FILENAME,TESTDATA_PATH,"ida");	
 	}
 	
 	@BeforeMethod
@@ -105,7 +108,7 @@ public class InternalBioAuthentication extends IdaScriptsUtil implements ITest{
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, InternalBioAuthentication.testCaseName);
+			f.set(baseTestMethod, EkycWithBioFingerAuthentication.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
@@ -113,6 +116,7 @@ public class InternalBioAuthentication extends IdaScriptsUtil implements ITest{
 
 	@Test(dataProvider = "testcaselist")
 	public void idaApiBioAuthExecution(TestParameters objTestParameters,String testScenario,String testcaseName) {
+		Reporter.log("<meta charset='utf-8'>");
 		File testCaseName = objTestParameters.getTestCaseFile();
 		int testCaseNumber = Integer.parseInt(objTestParameters.getTestId());
 		displayLog(testCaseName, testCaseNumber);
@@ -127,17 +131,23 @@ public class InternalBioAuthentication extends IdaScriptsUtil implements ITest{
 			tempMap.put("data", entry.getValue());
 		}
 		logger.info("************* Modification of bio auth request ******************");
-		Reporter.log("<b><u>Modification of bio auth request</u></b>");
+		Reporter.log("<b><u>Modification of bio auth data</u></b>");
 		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "bio-auth"), true);
-		logger.info("******Post request Json to EndPointUrl: " + RunConfig.getEndPointUrl() + RunConfig.getInternalAuthPath()
+		String encodedata = getEnodedData(testCaseName.listFiles(), "bio-auth");
+		tempMap = new HashMap<String, String>();
+		tempMap.put("authRequest", encodedata);
+		logger.info("************* Modification of ekyc request ******************");
+		Reporter.log("<b><u>Modification of ekyc request</u> </b>");
+		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "request"), true);
+		logger.info("******Post request Json to EndPointUrl: " + RunConfig.getEndPointUrl() + RunConfig.getEkycPath()
 				+ " *******");
 		Assert.assertEquals(postAndGenOutFile(testCaseName.listFiles(),
-				RunConfig.getEndPointUrl() + RunConfig.getInternalAuthPath(), "request", "output-1-actual-res",200), true);
+				RunConfig.getEndPointUrl() + RunConfig.getEkycPath(), "request", "output-1-actual-res",200), true);
 		Map<String, List<OutputValidationDto>> ouputValid = objOpValiUtil.doOutputValidation(
 				objFileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				objFileUtil.getFilePath(testCaseName, "output-1-expected").toString());
 		Reporter.log(objReportUtil.getOutputValiReport(ouputValid));
-		Assert.assertEquals(objOpValiUtil.publishOutputResult(ouputValid), true);
+		Verify.verify(objOpValiUtil.publishOutputResult(ouputValid));
 		if(objFileUtil.verifyFilePresent(testCaseName.listFiles(), "auth_transaction")) {
 			wait(5000);
 			logger.info("************* Auth Transaction Validation ******************");

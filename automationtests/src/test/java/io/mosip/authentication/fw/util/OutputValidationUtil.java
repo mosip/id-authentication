@@ -149,7 +149,6 @@ public class OutputValidationUtil extends IdaScriptsUtil{
 				} else if (expEntry.getValue().contains("$DECODE$")) {
 					String keyword = expEntry.getValue().toString();
 					String content = actual.get(expEntry.getKey());
-					System.out.println("checkcheck: " + content);
 					String expKeyword = keyword.substring(keyword.lastIndexOf("->") + 2, keyword.length());
 					String actKeyword = expKeyword.replace("expected", "actual");
 					objFileUtil.createAndWriteFile(actKeyword, getDecodedData(content));
@@ -209,7 +208,7 @@ public class OutputValidationUtil extends IdaScriptsUtil{
 				return false;
 			return true;
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.error(e.getMessage());
 			return false;
 		}
 	}
@@ -248,7 +247,7 @@ public class OutputValidationUtil extends IdaScriptsUtil{
 				return false;
 			return true;
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.error(e.getMessage());
 			return false;
 		}
 	}

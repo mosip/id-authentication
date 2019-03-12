@@ -29,11 +29,13 @@ public class CreateVID extends IdaScriptsUtil implements ITest{
 	private RunConfig objRunConfig = new RunConfig();
 	protected static String testCaseName = "";
 	private JsonPrecondtion objJsonPrecondtion = new JsonPrecondtion();
+	private String TESTDATA_PATH="ida/TestData/UINData";
+	private String TESTDATA_FILENAME="dummy.dummy";
 
-	@Parameters({ "testDatPath" , "testDataFileName"})
+	@Parameters({"testType"})
 	@BeforeClass
-	public void setConfigurations(String testDatPath,String testDataFileName) {
-		objRunConfig.setConfig(testDatPath,testDataFileName,"smokeandregression");
+	public void setConfigurations(String testType) {
+		objRunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
 	}
 		
 	@Test

@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import org.apache.log4j.Logger;
 
 import io.mosip.authentication.fw.util.RunConfig;
-import io.mosip.authentication.tests.BioAuthentication;
+import io.mosip.authentication.tests.BioIrisAuthentication;
 
 /**
  * Initialization  of test data processor

@@ -46,9 +46,9 @@ import org.testng.Reporter;
  * @author Vignesh
  *
  */
-public class BioAuthentication extends IdaScriptsUtil implements ITest{
+public class StaticTokenIdGenerationForBioIrisAuth extends IdaScriptsUtil implements ITest{
 
-	private static Logger logger = Logger.getLogger(BioAuthentication.class);
+	private static Logger logger = Logger.getLogger(StaticTokenIdGenerationForBioIrisAuth.class);
 	private DataProviderClass objDataProvider = new DataProviderClass();
 	private OutputValidationUtil objOpValiUtil = new OutputValidationUtil();
 	private ReportUtil objReportUtil = new ReportUtil();
@@ -57,12 +57,14 @@ public class BioAuthentication extends IdaScriptsUtil implements ITest{
 	protected static String testCaseName = "";
 	private TestDataProcessor objTestDataProcessor = new TestDataProcessor();
 	private AuditValidUtil objAuditValidUtil = new AuditValidUtil();
+	private String TESTDATA_PATH="ida/TestData/StaticTokenId/Bio/Iris/";
+	private String TESTDATA_FILENAME="testdata.ida.StaticTokenId.Bio.Iris.mapping.yml";
 
-	@Parameters({ "testDatPath" , "testDataFileName" ,"testType"})
+	@Parameters({"testType"})
 	@BeforeClass
-	public void setConfigurations(String testDatPath,String testDataFileName,String testType) {
-		objRunConfig.setConfig(testDatPath,testDataFileName,testType);
-		objTestDataProcessor.initateTestDataProcess(testDataFileName,testDatPath,"ida");	
+	public void setConfigurations(String testType) {
+		objRunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
+		objTestDataProcessor.initateTestDataProcess(TESTDATA_FILENAME,TESTDATA_PATH,"ida");	
 	}
 	
 	@BeforeMethod
@@ -105,7 +107,7 @@ public class BioAuthentication extends IdaScriptsUtil implements ITest{
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, BioAuthentication.testCaseName);
+			f.set(baseTestMethod, StaticTokenIdGenerationForBioIrisAuth.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}

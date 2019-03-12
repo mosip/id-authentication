@@ -1,6 +1,6 @@
 package io.mosip.authentication.tests;
 
-import java.io.File;  
+import java.io.File;   
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -41,14 +41,14 @@ import io.mosip.authentication.testdata.TestDataUtil;
 import org.testng.Reporter;
 
 /**
- * Tests to execute the demographic authentication
+ * Tests to execute biometric authentication for ida
  * 
- * @author Athila
+ * @author Vignesh
  *
  */
-public class DemoAuthentication extends IdaScriptsUtil implements ITest{
+public class BioIrisAuthentication extends IdaScriptsUtil implements ITest{
 
-	private static Logger logger = Logger.getLogger(DemoAuthentication.class);
+	private static Logger logger = Logger.getLogger(BioIrisAuthentication.class);
 	private DataProviderClass objDataProvider = new DataProviderClass();
 	private OutputValidationUtil objOpValiUtil = new OutputValidationUtil();
 	private ReportUtil objReportUtil = new ReportUtil();
@@ -57,13 +57,14 @@ public class DemoAuthentication extends IdaScriptsUtil implements ITest{
 	protected static String testCaseName = "";
 	private TestDataProcessor objTestDataProcessor = new TestDataProcessor();
 	private AuditValidUtil objAuditValidUtil = new AuditValidUtil();
+	private String TESTDATA_PATH="ida/TestData/Bio/Iris/";
+	private String TESTDATA_FILENAME="testdata.ida.bio.AuthWithIris.mapping.yml";
 
-	
-	@Parameters({ "testDatPath" , "testDataFileName" ,"testType"})
+	@Parameters({"testType"})
 	@BeforeClass
-	public void setConfigurations(String testDatPath,String testDataFileName,String testType) {
-		objRunConfig.setConfig(testDatPath,testDataFileName,testType);
-		objTestDataProcessor.initateTestDataProcess(testDataFileName,testDatPath,"ida");	
+	public void setConfigurations(String testType) {
+		objRunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
+		objTestDataProcessor.initateTestDataProcess(TESTDATA_FILENAME,TESTDATA_PATH,"ida");	
 	}
 	
 	@BeforeMethod
@@ -84,7 +85,7 @@ public class DemoAuthentication extends IdaScriptsUtil implements ITest{
 		}
 		this.testCaseName = String.format(testCase);
 	}
-	
+
 	@DataProvider(name = "testcaselist")
 	public Object[][] getTestCaseList() {
 		return objDataProvider.getDataProvider(
@@ -106,14 +107,14 @@ public class DemoAuthentication extends IdaScriptsUtil implements ITest{
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, DemoAuthentication.testCaseName);
+			f.set(baseTestMethod, BioIrisAuthentication.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
 	} 
 
 	@Test(dataProvider = "testcaselist")
-	public void idaApiBioAuthExecution(TestParameters objTestParameters,String testScenario,String testcaseName) {
+	public void idaApiBioAuthExecution(TestParameters objTestParameters, String testScenario, String testcaseName) {
 		File testCaseName = objTestParameters.getTestCaseFile();
 		int testCaseNumber = Integer.parseInt(objTestParameters.getTestId());
 		displayLog(testCaseName, testCaseNumber);
@@ -127,13 +128,13 @@ public class DemoAuthentication extends IdaScriptsUtil implements ITest{
 			tempMap.put("key", entry.getKey());
 			tempMap.put("data", entry.getValue());
 		}
-		logger.info("************* Modification of demo auth request ******************");
-		Reporter.log("<b><u>Modification of demo auth request</u></b>");
-		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "demo-auth"), true);
+		logger.info("************* Modification of bio auth request ******************");
+		Reporter.log("<b><u>Modification of bio auth request</u></b>");
+		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "bio-auth"), true);
 		logger.info("******Post request Json to EndPointUrl: " + RunConfig.getEndPointUrl() + RunConfig.getAuthPath()
 				+ " *******");
 		Assert.assertEquals(postAndGenOutFile(testCaseName.listFiles(),
-				RunConfig.getEndPointUrl() + RunConfig.getAuthPath(), "request", "output-1-actual-res",200), true);
+				RunConfig.getEndPointUrl() + RunConfig.getAuthPath(), "request", "output-1-actual-res", 200), true);
 		Map<String, List<OutputValidationDto>> ouputValid = objOpValiUtil.doOutputValidation(
 				objFileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				objFileUtil.getFilePath(testCaseName, "output-1-expected").toString());
