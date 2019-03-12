@@ -35,6 +35,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
+import io.mosip.registration.processor.core.code.DedupeSourceName;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.packet.dto.Applicant;
 import io.mosip.registration.processor.core.packet.dto.Biometric;
@@ -889,7 +890,7 @@ public class PacketInfoManagerImplTest {
 		String registrationId = "1234";
 		List<String> uniqueMatchedRefIds = Arrays.asList("123av", "124abc", "125abcd");
 
-		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId,null);
+		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId, DedupeSourceName.DEMO);
 
 	}
 
@@ -902,7 +903,7 @@ public class PacketInfoManagerImplTest {
 		String registrationId = "1234";
 		List<String> uniqueMatchedRefIds = Arrays.asList("123av", "124abc", "125abcd");
 
-		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId,null);
+		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId, DedupeSourceName.DEMO);
 
 	}
 

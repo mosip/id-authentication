@@ -849,7 +849,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 				manualVerificationEntity.setIsActive(true);
 				manualVerificationEntity.setIsDeleted(false);
 				manualVerificationEntity.setCrBy("SYSTEM");
-				//TO-DO uncomment once DB team add source column
 				manualVerificationEntity.setSourceName(sourceName.toString());
 				manualVerficationRepository.save(manualVerificationEntity);
 				isTransactionSuccessful = true;

@@ -223,7 +223,7 @@ public class DemoDedupeTest {
 		List<String> duplicateIds = new ArrayList<>();
 		duplicateIds.add("123456789");
 		duplicateIds.add("987654321");
-		Mockito.when(biometricValidation.validateBiometric(anyString())).thenReturn(false);
+		Mockito.when(biometricValidation.validateBiometric(anyString(),anyString())).thenReturn(false);
 		boolean result = demoDedupe.authenticateDuplicates(regId, duplicateIds);
 
 		assertTrue("Test for Demo Dedupe Authetication Success for Iris biometric", result);

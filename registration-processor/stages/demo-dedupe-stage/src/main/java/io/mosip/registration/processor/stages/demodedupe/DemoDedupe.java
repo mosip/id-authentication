@@ -108,14 +108,8 @@ public class DemoDedupe {
 		List<DemographicInfoDto> applicantDemoDto = packetInfoDao.findDemoById(refId);
 		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();
 		for (DemographicInfoDto demoDto : applicantDemoDto) {
-			Calendar calendar = new GregorianCalendar();
-			calendar.setTime(demoDto.getDob());
-			int year = calendar.get(Calendar.YEAR);
-			if(year%2==0) {
-				demographicInfoDtos.addAll(packetInfoDao.getAllDemographicInfoDtos(demoDto.getName(),
-						demoDto.getGenderCode(), demoDto.getDob(), demoDto.getLangCode()));
-			}
-			
+			demographicInfoDtos.addAll(packetInfoDao.getAllDemographicInfoDtos(demoDto.getName(),
+					demoDto.getGenderCode(), demoDto.getDob(), demoDto.getLangCode()));
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
 				refId, "DemoDedupe::performDedupe()::exit");
@@ -192,7 +186,7 @@ public class DemoDedupe {
 			}
 		}
 		// change to return validateBiometric(duplicateUin); once the auth is fixed
-		return biometricValidation.validateBiometric(duplicateUin);
+		return biometricValidation.validateBiometric(duplicateUin,regId);
 	}
 
 	/**
