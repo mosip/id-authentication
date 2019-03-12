@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -112,12 +114,28 @@ public class IdRequestValidatorTest {
 		ReflectionTestUtils.setField(validator, "status", status);
 		ReflectionTestUtils.setField(validator, "env", env);
 		ReflectionTestUtils.setField(validator, "mapper", mapper);
+		ReflectionTestUtils.setField(validator, "validation", Stream.of(new String[][] {
+			  { "identity.dateOfBirth", "^\\d{4}/([0]\\d|1[0-2])/([0-2]\\d|3[01])$" }, 
+			  { "identity.fullName.*.language", "^[(?i)a-z]{2}$" }, 
+			}).collect(Collectors.toMap(data -> data[0], data -> data[1])));
 		errors = new BeanPropertyBindingResult(new IdRequestDTO(), "idRequestDto");
 	}
 
 	@Test
 	public void testSupport() {
 		assertTrue(validator.supports(IdRequestDTO.class));
+	}
+	
+	@Test
+	public void testValidateRequestJsonAttributes() throws JsonParseException, JsonMappingException, IOException,
+			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
+		when(jsonValidator.validateJson(Mockito.any(), Mockito.any()))
+				.thenReturn(new ValidationReport(true, null));
+		Object request = mapper.readValue(
+				"{\"identity\":{\"dateOfBirth\":\"12345\",\"fullName\":[{\"language\":\"ARA\",\"value\":\"Manoj\",\"label\":\"string\"}]}}".getBytes(),
+				Object.class);
+		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors, "create");
+		assertTrue(errors.hasErrors());
 	}
 
 	@Test
