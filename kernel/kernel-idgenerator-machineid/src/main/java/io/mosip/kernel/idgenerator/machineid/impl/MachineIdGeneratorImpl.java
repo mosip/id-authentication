@@ -59,24 +59,28 @@ public class MachineIdGeneratorImpl implements MachineIdGenerator<String> {
 			throw new MachineIdServiceException(MachineIdConstant.MID_FETCH_EXCEPTION.getErrorCode(),
 					MachineIdConstant.MID_FETCH_EXCEPTION.getErrorMessage(), dataAccessLayerException.getCause());
 		}
-		if (machineId == null) {
-			machineId = new MachineId();
-			machineId.setMId(initialValue);
-			machineId.setCreatedBy("default@user");
-			machineId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-			machineId.setUpdatedBy("default@user");
-			machineId.setUpdatedDateTime(null);
-			generatedMID = initialValue;
-			machineIdRepository.save(machineId);
-		} else {
-			try {
-				machineIdRepository.updateMID(machineId.getMId() + 1, machineId.getMId(),
-						LocalDateTime.now(ZoneId.of("UTC")));
+		try {
+			if (machineId == null) {
+				machineId = new MachineId();
+				machineId.setMId(initialValue);
+				machineId.setCreatedBy("default@user");
+				machineId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				machineId.setUpdatedBy("default@user");
+				machineId.setUpdatedDateTime(null);
+				generatedMID = initialValue;
+
+			} else {
+
 				generatedMID = machineId.getMId() + 1;
-			} catch (DataAccessLayerException e) {
-				throw new MachineIdServiceException(MachineIdConstant.MID_INSERT_EXCEPTION.getErrorCode(),
-						MachineIdConstant.MID_INSERT_EXCEPTION.getErrorMessage(), e);
+				machineId.setMId(generatedMID);
+				machineId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				machineId.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+
 			}
+			machineIdRepository.save(machineId);
+		} catch (DataAccessLayerException e) {
+			throw new MachineIdServiceException(MachineIdConstant.MID_INSERT_EXCEPTION.getErrorCode(),
+					MachineIdConstant.MID_INSERT_EXCEPTION.getErrorMessage(), e);
 		}
 		return String.valueOf(generatedMID);
 	}

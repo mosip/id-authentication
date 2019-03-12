@@ -22,13 +22,13 @@ import io.mosip.kernel.idgenerator.machineid.repository.MachineIdRepository;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class MachineIdServiceTest {
-	
+
 	@Value("${mosip.kernel.mid.test.valid-initial-mid}")
 	private int initialMid;
-	
+
 	@Value("${mosip.kernel.mid.test.valid-new-mid}")
 	private int newMid;
-	
+
 	@Autowired
 	MachineIdGenerator<String> service;
 
@@ -88,7 +88,7 @@ public class MachineIdServiceTest {
 		MachineId entity = new MachineId();
 		entity.setMId(1000);
 		when(repository.findLastMID()).thenReturn(entity);
-		when(repository.updateMID(Mockito.anyInt(), Mockito.anyInt(), Mockito.any()))
+		when(repository.save(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		service.generateMachineId();
 	}
