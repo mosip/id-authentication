@@ -58,7 +58,6 @@ import io.mosip.preregistration.documents.exception.DocumentSizeExceedException;
 import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
 import io.mosip.preregistration.documents.exception.FSServerException;
 import io.mosip.preregistration.documents.repository.DocumentRepository;
-import io.mosip.preregistration.documents.repository.util.DocumentDAO;
 import io.mosip.preregistration.documents.service.DocumentService;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
 
@@ -87,8 +86,8 @@ public class DocumentUploadServiceTest {
 	@MockBean
 	private DocumentRepository documentRepository;
 
-	@Autowired
-	private DocumentDAO documnetDAO;
+//	@Autowired
+//	private DocumentDAO documnetDAO;
 
 	@MockBean
 	private AuditLogUtil auditLogUtil;
