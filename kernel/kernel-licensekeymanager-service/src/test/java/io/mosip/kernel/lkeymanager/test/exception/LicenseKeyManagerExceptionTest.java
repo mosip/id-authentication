@@ -1,8 +1,6 @@
 package io.mosip.kernel.lkeymanager.test.exception;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -25,11 +23,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.exception.ErrorResponse;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.lkeymanager.LicenseKeyManagerBootApplication;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyGenerationDto;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyMappingDto;
@@ -106,7 +103,13 @@ public class LicenseKeyManagerExceptionTest {
 		licenseKeyMappingDto.setLicenseKey("tEsTlIcEnSe");
 		licenseKeyMappingDto.setTspId("TSP_ID_TEST");
 		licenseKeyMappingDto.setPermissions(permissions);
-		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
+		RequestWrapper<LicenseKeyMappingDto> reqWrapperDTO = new RequestWrapper<>();
+		reqWrapperDTO.setId("ID");
+		reqWrapperDTO.setMetadata(null);
+		reqWrapperDTO.setRequest(licenseKeyMappingDto);
+		reqWrapperDTO.setRequesttime(LocalDateTime.now());
+		reqWrapperDTO.setVersion("v1.0");
+		String json = objectMapper.writeValueAsString(reqWrapperDTO);
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 		mockMvc.perform(post("/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
@@ -192,26 +195,6 @@ public class LicenseKeyManagerExceptionTest {
 
 	/**
 	 * 
-	 * TEST SCENARIO : When Expiry Time entered is of wrong format.
-	 * 
-	 */
-	@Test
-	public void testLKMGenerationServiceExceptionWhenWrongFormatDateEntered() throws Exception {
-		LicenseKeyGenerationDto licenseKeyGenerationDto = new LicenseKeyGenerationDto();
-		licenseKeyGenerationDto.setLicenseExpiryTime(LocalDateTime.of(2019, Month.FEBRUARY, 6, 6, 23, 0));
-		licenseKeyGenerationDto.setTspId("TSP_ID_TEST");
-		when(licenseKeyListRepository.save(Mockito.any())).thenReturn(licensekeyList);
-		when(licenseKeyTspMapRepository.save(Mockito.any())).thenReturn(licenseKeyTspMap);
-		String jsonString = "{\"licenseExpiryTime\": \"-MM-dd'T'HH:mm:ss.SSS'Z'\", \"tspId\": \"string\"}";
-		MvcResult result = mockMvc
-				.perform(post("/license/generate").contentType(MediaType.APPLICATION_JSON).content(jsonString))
-				.andExpect(status().isOk()).andReturn();
-		assertThat(objectMapper.readValue(result.getResponse().getContentAsString(), ErrorResponse.class).getStatus(),
-				is(200));
-	}
-	
-	/**
-	 * 
 	 * TEST SCENARIO : When Expiry Time entered is a date before current DateTime.
 	 * 
 	 */
@@ -220,12 +203,15 @@ public class LicenseKeyManagerExceptionTest {
 		LicenseKeyGenerationDto licenseKeyGenerationDto = new LicenseKeyGenerationDto();
 		licenseKeyGenerationDto.setLicenseExpiryTime(LocalDateTime.of(2010, Month.FEBRUARY, 6, 6, 23, 0));
 		licenseKeyGenerationDto.setTspId("TSP_ID_TEST");
-		String jsonString = objectMapper.writeValueAsString(licenseKeyGenerationDto);
-		MvcResult result = mockMvc
-				.perform(post("/license/generate").contentType(MediaType.APPLICATION_JSON).content(jsonString))
-				.andExpect(status().isOk()).andReturn();
-		assertThat(objectMapper.readValue(result.getResponse().getContentAsString(), ErrorResponse.class).getStatus(),
-				is(200));
+		RequestWrapper<LicenseKeyGenerationDto> reqWrapperDTO = new RequestWrapper<>();
+		reqWrapperDTO.setId("ID");
+		reqWrapperDTO.setMetadata(null);
+		reqWrapperDTO.setRequest(licenseKeyGenerationDto);
+		reqWrapperDTO.setRequesttime(LocalDateTime.now());
+		reqWrapperDTO.setVersion("v1.0");
+		String json = objectMapper.writeValueAsString(reqWrapperDTO);
+		mockMvc.perform(post("/license/generate").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
 	/**
@@ -242,7 +228,13 @@ public class LicenseKeyManagerExceptionTest {
 		licenseKeyMappingDto.setLicenseKey("tEsTlIcEnSe");
 		licenseKeyMappingDto.setTspId(null);
 		licenseKeyMappingDto.setPermissions(permissions);
-		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
+		RequestWrapper<LicenseKeyMappingDto> reqWrapperDTO = new RequestWrapper<>();
+		reqWrapperDTO.setId("ID");
+		reqWrapperDTO.setMetadata(null);
+		reqWrapperDTO.setRequest(licenseKeyMappingDto);
+		reqWrapperDTO.setRequesttime(LocalDateTime.now());
+		reqWrapperDTO.setVersion("v1.0");
+		String json = objectMapper.writeValueAsString(reqWrapperDTO);
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 		mockMvc.perform(post("/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
@@ -262,7 +254,13 @@ public class LicenseKeyManagerExceptionTest {
 		licenseKeyMappingDto.setLicenseKey("tEsTlIcEnSe");
 		licenseKeyMappingDto.setTspId("  ");
 		licenseKeyMappingDto.setPermissions(permissions);
-		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
+		RequestWrapper<LicenseKeyMappingDto> reqWrapperDTO = new RequestWrapper<>();
+		reqWrapperDTO.setId("ID");
+		reqWrapperDTO.setMetadata(null);
+		reqWrapperDTO.setRequest(licenseKeyMappingDto);
+		reqWrapperDTO.setRequesttime(LocalDateTime.now());
+		reqWrapperDTO.setVersion("v1.0");
+		String json = objectMapper.writeValueAsString(reqWrapperDTO);
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 		mockMvc.perform(post("/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
@@ -282,7 +280,13 @@ public class LicenseKeyManagerExceptionTest {
 		licenseKeyMappingDto.setLicenseKey(null);
 		licenseKeyMappingDto.setTspId("TSP_ID_TEST");
 		licenseKeyMappingDto.setPermissions(permissions);
-		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
+		RequestWrapper<LicenseKeyMappingDto> reqWrapperDTO = new RequestWrapper<>();
+		reqWrapperDTO.setId("ID");
+		reqWrapperDTO.setMetadata(null);
+		reqWrapperDTO.setRequest(licenseKeyMappingDto);
+		reqWrapperDTO.setRequesttime(LocalDateTime.now());
+		reqWrapperDTO.setVersion("v1.0");
+		String json = objectMapper.writeValueAsString(reqWrapperDTO);
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 		mockMvc.perform(post("/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
@@ -302,7 +306,13 @@ public class LicenseKeyManagerExceptionTest {
 		licenseKeyMappingDto.setLicenseKey("  ");
 		licenseKeyMappingDto.setTspId("TSP_ID_TEST");
 		licenseKeyMappingDto.setPermissions(permissions);
-		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
+		RequestWrapper<LicenseKeyMappingDto> reqWrapperDTO = new RequestWrapper<>();
+		reqWrapperDTO.setId("ID");
+		reqWrapperDTO.setMetadata(null);
+		reqWrapperDTO.setRequest(licenseKeyMappingDto);
+		reqWrapperDTO.setRequesttime(LocalDateTime.now());
+		reqWrapperDTO.setVersion("v1.0");
+		String json = objectMapper.writeValueAsString(reqWrapperDTO);
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 		mockMvc.perform(post("/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
@@ -323,7 +333,13 @@ public class LicenseKeyManagerExceptionTest {
 		licenseKeyMappingDto.setLicenseKey("tEsTlIcEnSe");
 		licenseKeyMappingDto.setTspId("TSP_ID_TEST");
 		licenseKeyMappingDto.setPermissions(permissions);
-		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
+		RequestWrapper<LicenseKeyMappingDto> reqWrapperDTO = new RequestWrapper<>();
+		reqWrapperDTO.setId("ID");
+		reqWrapperDTO.setMetadata(null);
+		reqWrapperDTO.setRequest(licenseKeyMappingDto);
+		reqWrapperDTO.setRequesttime(LocalDateTime.now());
+		reqWrapperDTO.setVersion("v1.0");
+		String json = objectMapper.writeValueAsString(reqWrapperDTO);
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 		mockMvc.perform(post("/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
@@ -343,7 +359,13 @@ public class LicenseKeyManagerExceptionTest {
 		licenseKeyMappingDto.setLicenseKey("tEsTlIcEnSe");
 		licenseKeyMappingDto.setTspId("TSP_ID_TEST");
 		licenseKeyMappingDto.setPermissions(permissions);
-		String json = objectMapper.writeValueAsString(licenseKeyMappingDto);
+		RequestWrapper<LicenseKeyMappingDto> reqWrapperDTO = new RequestWrapper<>();
+		reqWrapperDTO.setId("ID");
+		reqWrapperDTO.setMetadata(null);
+		reqWrapperDTO.setRequest(licenseKeyMappingDto);
+		reqWrapperDTO.setRequesttime(LocalDateTime.now());
+		reqWrapperDTO.setVersion("v1.0");
+		String json = objectMapper.writeValueAsString(reqWrapperDTO);
 		when(licenseKeyTspMapRepository.findByLKeyAndTspId(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 		mockMvc.perform(post("/license/permission").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
