@@ -217,10 +217,10 @@ public class SyncMasterDataServiceHelper {
 	private IndividualTypeRepository individualTypeRepository;
 
 	/**
-	 * Method to fetch machine details by machine id
+	 * Method to fetch machine details by regCenter id
 	 * 
-	 * @param machineId
-	 *            machine id
+	 * @param regCenterId
+	 *            registration center id
 	 * @param lastUpdated
 	 *            lastUpdated time-stamp
 	 * @return list of {@link MachineDto}
@@ -253,8 +253,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch machine type
 	 * 
-	 * @param machineId
-	 *            machine id
+	 * @param regCenterId
+	 *            registration center id
 	 * @param lastUpdated
 	 *            lastupdated timestamp
 	 * @return list of {@link MachineType}
@@ -287,8 +287,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch machine specification
 	 * 
-	 * @param machineId
-	 *            machine id
+	 * @param regCenterId
+	 *            registration center id
 	 * @param lastUpdated
 	 *            lastupdated timestamp
 	 * @return list of {@link MachineSpecificationDto}
@@ -321,12 +321,14 @@ public class SyncMasterDataServiceHelper {
 	}
 
 	/**
-	 * Method to fetch registration center detail
-	 * 
+	 * Method to fetch registration center detail.
+	 *
 	 * @param machineId
 	 *            machine id
 	 * @param lastUpdated
 	 *            lastUpdated timestamp
+	 * @param currentTimeStamp
+	 *            the current time stamp
 	 * @return list of {@link RegistrationCenterDto}
 	 */
 	@Async
@@ -734,8 +736,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch devices
 	 * 
-	 * @param machineId
-	 *            machine id
+	 * @param regCenterId
+	 *            registration center id
 	 * @param lastUpdated
 	 *            lastUpdated timestamp
 	 * @return list of {@link DeviceDto}
@@ -849,8 +851,8 @@ public class SyncMasterDataServiceHelper {
 	/**
 	 * Method to fetch device specification
 	 * 
-	 * @param machineId
-	 *            machine id
+	 * @param regCenterId
+	 *            registration center id
 	 * @param lastUpdated
 	 *            lastUpdated timestamp
 	 * @return list of {@link DeviceSpecificationDto}}
@@ -935,13 +937,15 @@ public class SyncMasterDataServiceHelper {
 	}
 
 	/**
-	 * Method to fetch device type
-	 * 
-	 * @param machineId
-	 *            machine id
+	 * Gets the device type.
+	 *
+	 * @param regCenterId
+	 *            the reg center id
 	 * @param lastUpdated
-	 *            lastUpdated timestamp
-	 * @return list of {@link DeviceTypeDto}
+	 *            the last updated
+	 * @param currentTimeStamp
+	 *            the current time stamp
+	 * @return {@link DeviceTypeDto}
 	 */
 	@Async
 	public CompletableFuture<List<DeviceTypeDto>> getDeviceType(String regCenterId, LocalDateTime lastUpdated,
@@ -1239,7 +1243,7 @@ public class SyncMasterDataServiceHelper {
 		}
 		return CompletableFuture.completedFuture(registrationCenterMachineHistoryDtos);
 	}
-	
+
 	@Async
 	public CompletableFuture<List<ApplicantValidDocumentDto>> getApplicantValidDocument(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTimeStamp) {
