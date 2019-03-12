@@ -78,13 +78,13 @@ public class AuthServiceImpl implements AuthService {
 			throw new AuthManagerException(AuthConstant.UNAUTHORIZED_CODE,"Auth token is not present");
 		}
 		long tenMinsExp = getExpiryTime(authToken.getExpirationTime());
-		/*if(currentTime==tenMinsExp)
+		if(currentTime==tenMinsExp)
 		{
 			TimeToken newToken = tokenGenerator.generateNewToken(token);
 			mosipUserDtoToken.setToken(newToken.getToken());
 			mosipUserDtoToken.setExpTime(newToken.getExpTime());
 			return mosipUserDtoToken;
-		}*/
+		}
 		if (mosipUserDtoToken != null && (currentTime < authToken.getExpirationTime())) {
 			return mosipUserDtoToken;
 		} else {
