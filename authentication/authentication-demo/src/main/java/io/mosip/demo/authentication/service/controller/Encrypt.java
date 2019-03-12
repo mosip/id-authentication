@@ -83,6 +83,10 @@ public class Encrypt {
 	/** The app ID. */
 	@Value("${application.id}")
 	private String appID;
+	
+	/** The IDA Public Key. */
+	@Value("${mosip.ida.publickey}")
+	private String publicKeyId;
 
 	/**
 	 * Encrypt.
@@ -134,8 +138,7 @@ public class Encrypt {
 			throws KeyManagementException, RestClientException, NoSuchAlgorithmException, JsonProcessingException,
 			IOException, JSONException {
 		String encryptedResponse = getEncryptedValue(
-				objMapper.writeValueAsString(encryptionRequestDto.getIdentityRequest()),
-				encryptionRequestDto.getTspID());
+				objMapper.writeValueAsString(encryptionRequestDto.getIdentityRequest()));
 		EncryptionResponseDto encryptionResponseDto = split(encryptedResponse);
 		return encryptionResponseDto;
 	}
@@ -179,14 +182,14 @@ public class Encrypt {
 	 * @throws JSONException
 	 *             the JSON exception
 	 */
-	public String getEncryptedValue(String data, String tspID)
+	public String getEncryptedValue(String data)
 			throws IOException, KeyManagementException, NoSuchAlgorithmException, RestClientException, JSONException {
 		turnOffSslChecking();
 		RestTemplate restTemplate = new RestTemplate();
 		CryptomanagerRequestDto request = new CryptomanagerRequestDto();
 		request.setApplicationId(appID);
 		request.setData(Base64.encodeBase64URLSafeString(data.getBytes(StandardCharsets.UTF_8)));
-		request.setReferenceId(tspID);
+		request.setReferenceId(publicKeyId);
 		String utcTime = DateUtils.getUTCCurrentDateTimeString();
 		request.setTimeStamp(utcTime);
 		ResponseEntity<CryptomanagerResponseDto> response = restTemplate.exchange(encryptURL, HttpMethod.POST,

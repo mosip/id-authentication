@@ -5,8 +5,6 @@ import java.util.List;
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import lombok.Data;
 
-// TODO: Auto-generated Javadoc
-// 
 /**
  * This class is a response for the creation of VID.
  *

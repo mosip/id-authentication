@@ -131,7 +131,26 @@ public enum IdAuthenticationErrorConstants {
 	//for Auth Type not supported for a country
 	AUTH_TYPE_NOT_SUPPORTED("IDA-MLC-013","Authentication Type not supported"),
 	
-	DEMO_MISMATCH("IDA-DEA-027","Demographic data %s did not match");
+	DEMO_MISMATCH("IDA-DEA-027","Demographic data %s did not match"),
+	
+	//Public key Expired
+	MOSIP_PUBLICKEYEXP("IDA-MPA-005","MOSIP Public Key Expired"),
+	
+	//LICENSE key Expired
+	MISP_LICENSEKEYEXP("IDA-MPA-016","License key of MISP has expired"),
+	
+	MISP_LKNOTREGISTER("IDA-MPA-015","License key does not belong to a registered MISP"),
+	
+	MISP_LKINACTIVE("IDA-MPA-020","License key of MISP is suspended"),
+	
+	PARTNER_NOTREGISTERED("IDA-MPA-017","Partner is not registered"),
+	
+	PARTNER_NOTACTIVE("IDA-MPA-021","Partner status is not active"),
+	
+	POLICY_NOTREGISTERED("IDA-MPA-019","Policy not registered for the Partner"),
+	
+	MISP_PART_NOLINK("IDA-MPA-018","MISP and Partner not linked in the portal");
+	
 
 	private final String errorCode;
 	private final String errorMessage;

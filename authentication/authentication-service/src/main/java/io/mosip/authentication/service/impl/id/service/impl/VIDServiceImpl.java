@@ -11,7 +11,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
@@ -27,7 +26,6 @@ import io.mosip.authentication.core.spi.id.service.VIDService;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.entity.VIDEntity;
 import io.mosip.authentication.service.helper.AuditHelper;
-import io.mosip.authentication.service.impl.spin.service.StaticPinServiceImpl;
 import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -120,9 +118,7 @@ public class VIDServiceImpl implements VIDService {
 					authError.setErrorMessage(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED.getErrorMessage());
 					listAuthError.add(authError);
 					vidResponseDTO.setError(listAuthError);
-				}
-
-				else if (!vidEntityObj.isActive()
+				} else if (!vidEntityObj.isActive()
 						|| vidEntityObj.getExpiryDate().isBefore(DateUtils.getUTCCurrentDateTime())) {
 					try {
 						vidEntityObj = generateVIDEntity(uin);

@@ -97,7 +97,6 @@ public class EncryptTest {
 	 // testData=encryptMock.getEncryptedValue(testData,"TEMP");
 		//ReflectionTestUtils.invokeMethod(encryptMock, "split", testData);
 	 EncryptionRequestDto encryptionRequestDto=new EncryptionRequestDto();
-	 encryptionRequestDto.setTspID("TEMP");
 	 encryptionRequestDto.setIdentityRequest(new ObjectMapper().readValue(testData.getBytes(), Map.class));
 		encryptMock.encrypt(encryptionRequestDto);
 	}
