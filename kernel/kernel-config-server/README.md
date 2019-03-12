@@ -2,6 +2,14 @@
 
 [Background & Design]( https://github.com/mosip/mosip/wiki/MOSIP-Configuration-Server )
 
+Default Port and Context Path
+
+```
+server.port=51000
+server.servlet.path=/config
+
+```
+
 **For Encryption Decryption of properties** <br/>
 <br/>
 Create keystore with following command: <br/>
@@ -47,16 +55,16 @@ The final docker run command should look like:
 <br/>
 **To Encrypt any property:** <br/>
 Run the following command : <br/>
-`curl http://<your-config-server-hostname>:<your-config-server-port>/encrypt -d <value-to-encrypt>`
+`curl http://<your-config-server-address>/<application-context-path-if-any>/encrypt -d <value-to-encrypt>`
 
 And place the encrypted value in client application properties file with the format: <br/>
 `password={cipher}<encrypted-value>`
 
 **To Decrypt any property manually:** <br/>
 
-`curl http://<your-config-server-hostname>:<your-config-server-port>/decrypt -d <encrypted-value-to-decrypt>`
+`curl http://<your-config-server-address>/<application-context-path-if-any>/decrypt -d <encrypted-value-to-decrypt>`
 
-**NOTE** There is no need to write decryption mechanism in client applications for encrypted values. They will be automatically decrypted.
+**NOTE** There is no need to write decryption mechanism in client applications for encrypted values. They will be automatically decrypted by config server. 
 
 
 
