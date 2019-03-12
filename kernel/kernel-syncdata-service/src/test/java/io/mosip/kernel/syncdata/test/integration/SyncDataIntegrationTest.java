@@ -512,10 +512,10 @@ public class SyncDataIntegrationTest {
 		when(machineRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(machines);
 		when(machineSpecificationRepository.findByMachineId(Mockito.anyString())).thenReturn(machineSpecification);
-		when(machineSpecificationRepository.findLatestByMachineId(Mockito.anyString(), Mockito.any(), Mockito.any()))
+		when(machineSpecificationRepository.findLatestByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(machineSpecification);
 		when(machineTypeRepository.findAllByMachineId(Mockito.anyString())).thenReturn(machineType);
-		when(machineTypeRepository.findLatestByMachineId(Mockito.anyString(), Mockito.any(), Mockito.any()))
+		when(machineTypeRepository.findLatestByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(machineType);
 		when(templateRepository.findAll()).thenReturn(templates);
 		when(templateRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any())).thenReturn(templates);
@@ -544,14 +544,14 @@ public class SyncDataIntegrationTest {
 		when(idTypeRepository.findAll()).thenReturn(idTypes);
 		when(idTypeRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any())).thenReturn(idTypes);
 		when(deviceRepository.findDeviceByMachineId(Mockito.anyString())).thenReturn(devices);
-		when(deviceRepository.findLatestDevicesByMachineId(Mockito.anyString(), Mockito.any(), Mockito.any()))
+		when(deviceRepository.findLatestDevicesByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(devices);
 		when(deviceSpecificationRepository.findDeviceTypeByMachineId(Mockito.anyString()))
 				.thenReturn(deviceSpecification);
-		when(deviceSpecificationRepository.findLatestDeviceTypeByMachineId(Mockito.anyString(), Mockito.any(),
+		when(deviceSpecificationRepository.findLatestDeviceTypeByRegCenterId(Mockito.anyString(), Mockito.any(),
 				Mockito.any())).thenReturn(deviceSpecification);
 		when(deviceTypeRepository.findDeviceTypeByMachineId(Mockito.anyString())).thenReturn(deviceType);
-		when(deviceTypeRepository.findLatestDeviceTypeByMachineId(Mockito.anyString(), Mockito.any(), Mockito.any()))
+		when(deviceTypeRepository.findLatestDeviceTypeByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(deviceType);
 		when(languageRepository.findAll()).thenReturn(languages);
 		when(languageRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any())).thenReturn(languages);
@@ -698,7 +698,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataMachineSpecFetchException() throws Exception {
 		mockSuccess();
-		when(machineSpecificationRepository.findLatestByMachineId(Mockito.anyString(), Mockito.any(), Mockito.any()))
+		when(machineSpecificationRepository.findLatestByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
 	}
@@ -706,7 +706,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataMachineTypeFetchException() throws Exception {
 		mockSuccess();
-		when(machineTypeRepository.findLatestByMachineId(Mockito.anyString(), Mockito.any(), Mockito.any()))
+		when(machineTypeRepository.findLatestByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
 	}
@@ -714,7 +714,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataDeviceFetchException() throws Exception {
 		mockSuccess();
-		when(deviceRepository.findLatestDevicesByMachineId(Mockito.anyString(), Mockito.any(), Mockito.any()))
+		when(deviceRepository.findLatestDevicesByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
 	}
@@ -722,7 +722,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataDeviceSpecFetchException() throws Exception {
 		mockSuccess();
-		when(deviceSpecificationRepository.findLatestDeviceTypeByMachineId(Mockito.anyString(), Mockito.any(),
+		when(deviceSpecificationRepository.findLatestDeviceTypeByRegCenterId(Mockito.anyString(), Mockito.any(),
 				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
 	}
@@ -730,7 +730,7 @@ public class SyncDataIntegrationTest {
 	@Test
 	public void syncMasterDataDeviceTypeFetchException() throws Exception {
 		mockSuccess();
-		when(deviceTypeRepository.findLatestDeviceTypeByMachineId(Mockito.anyString(), Mockito.any(), Mockito.any()))
+		when(deviceTypeRepository.findLatestDeviceTypeByRegCenterId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
 	}
