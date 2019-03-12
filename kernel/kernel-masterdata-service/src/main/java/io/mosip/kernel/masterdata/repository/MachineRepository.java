@@ -38,7 +38,7 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * @return List MachineDetail fetched from database
 	 */
 
-	@Query("FROM Machine m where m.id = ?1 and m.langCode = ?2 and (m.isDeleted is null or m.isDeleted = false)")
+	@Query("FROM Machine m where m.id = ?1 and m.langCode = ?2 and (m.isDeleted is null or m.isDeleted = false) and m.isActive = true")
 	List<Machine> findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(String id, String langCode);
 
 	/**
@@ -50,7 +50,7 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * 
 	 * @return List MachineDetail fetched from database
 	 */
-	@Query("FROM Machine m where m.langCode = ?1 and (m.isDeleted is null or m.isDeleted = false)")
+	@Query("FROM Machine m where m.langCode = ?1 and (m.isDeleted is null or m.isDeleted = false) and m.isActive = true")
 	List<Machine> findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
 
 	/**
@@ -62,7 +62,7 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * @return MachineDetail fetched from database
 	 */
 
-	@Query("FROM Machine m where m.id = ?1 and (m.isDeleted is null or m.isDeleted = false)")
+	@Query("FROM Machine m where m.id = ?1 and (m.isDeleted is null or m.isDeleted = false) and m.isActive = true")
 	List<Machine> findMachineByIdAndIsDeletedFalseorIsDeletedIsNull(String id);
 
 	/**
@@ -74,7 +74,7 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * @return MachineDetail fetched from database
 	 */
 
-	@Query("FROM Machine m where m.machineSpecId = ?1 and (m.isDeleted is null or m.isDeleted = false)")
+	@Query("FROM Machine m where m.machineSpecId = ?1 and (m.isDeleted is null or m.isDeleted = false) and m.isActive = true")
 	List<Machine> findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(String machineSpecId);
 
 	/**
@@ -88,7 +88,7 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * @return MachineDetail fetched from database
 	 */
 
-	@Query("FROM Machine m where m.id = ?1 and m.langCode = ?2 and (m.isDeleted is null or m.isDeleted = false)")
+	@Query("FROM Machine m where m.id = ?1 and m.langCode = ?2 and (m.isDeleted is null or m.isDeleted = false) AND m.isActive = true")
 	Machine findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(String id, String langCode);
 	
 	

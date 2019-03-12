@@ -36,7 +36,7 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	 * 
 	 * @return list of {@link Holiday}
 	 */
-	@Query("FROM Holiday WHERE isDeleted = false or isDeleted is null")
+	@Query("FROM Holiday WHERE (isDeleted = false or isDeleted is null) and isActive = true")
 	List<Holiday> findAllNonDeletedHoliday();
 
 	/**
@@ -51,7 +51,7 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	 * @return list of holidays
 	 */
 
-	@Query(value = "select id, location_code, holiday_date, holiday_name, holiday_desc, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes from master.loc_holiday WHERE location_code = ?1 and lang_code = ?2 and extract(year from holiday_date) = ?3 and (is_deleted = false  or is_deleted is null)", nativeQuery = true)
+	@Query(value = "select id, location_code, holiday_date, holiday_name, holiday_desc, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes from master.loc_holiday WHERE location_code = ?1 and lang_code = ?2 and extract(year from holiday_date) = ?3 and (is_deleted = false  or is_deleted is null) and is_active = true", nativeQuery = true)
 	List<Holiday> findAllByLocationCodeYearAndLangCode(String locationCode, String langCode, int year);
 
 	/**
@@ -76,7 +76,7 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	 *            location code of the holiday to be search
 	 * @return list of holidays
 	 */
-	@Query("FROM Holiday WHERE holidayId.holidayName = ?1 AND holidayId.holidayDate = ?2 AND holidayId.locationCode = ?3 AND (isDeleted is null or isDeleted=false)")
+	@Query("FROM Holiday WHERE holidayId.holidayName = ?1 AND holidayId.holidayDate = ?2 AND holidayId.locationCode = ?3 AND (isDeleted is null or isDeleted=false) AND isActive = true")
 	List<Holiday> findHolidayByHolidayIdAndByIsDeletedFalseOrIsDeletedNull(String holidayName, LocalDate holidayDate,
 			String locationCode);
 

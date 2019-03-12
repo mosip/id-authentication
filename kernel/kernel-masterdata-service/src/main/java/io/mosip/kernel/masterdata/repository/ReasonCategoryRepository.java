@@ -18,7 +18,7 @@ public interface ReasonCategoryRepository extends BaseRepository<ReasonCategory,
 
 	List<ReasonCategory> findReasonCategoryByIsDeletedFalseOrIsDeletedIsNull();
 
-	@Query("FROM ReasonCategory r where r.code=?1 and r.langCode=?2 and (r.isDeleted is null or r.isDeleted=false)")
+	@Query("FROM ReasonCategory r where r.code=?1 and r.langCode=?2 and (r.isDeleted is null or r.isDeleted=false) and r.isActive = true")
 	List<ReasonCategory> findReasonCategoryByCodeAndLangCode(String code, String languageCode);
 
 }

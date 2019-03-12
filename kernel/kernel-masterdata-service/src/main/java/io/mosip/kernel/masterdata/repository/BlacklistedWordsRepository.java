@@ -26,7 +26,7 @@ public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWo
 	 * @return {@link List of BlacklistedWords }
 	 */
 
-	@Query("FROM BlacklistedWords blw WHERE blw.langCode = ?1 AND (blw.isDeleted IS NULL OR blw.isDeleted = false)")
+	@Query("FROM BlacklistedWords blw WHERE blw.langCode = ?1 AND (blw.isDeleted IS NULL OR blw.isDeleted = false) AND blw.isActive = true")
 	List<BlacklistedWords> findAllByLangCode(String langCode);
 
 	/**
@@ -46,7 +46,7 @@ public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWo
 	 * @return word detail
 	 */
 
-	@Query("FROM BlacklistedWords blw WHERE lower(blw.word) = lower(?1) AND blw.langCode = ?2 AND (blw.isDeleted IS NULL OR blw.isDeleted = false)")
+	@Query("FROM BlacklistedWords blw WHERE lower(blw.word) = lower(?1) AND blw.langCode = ?2 AND (blw.isDeleted IS NULL OR blw.isDeleted = false) AND blw.isActive = true")
 	BlacklistedWords findByWordAndLangCode(String word, String langCode);
 
 	/**

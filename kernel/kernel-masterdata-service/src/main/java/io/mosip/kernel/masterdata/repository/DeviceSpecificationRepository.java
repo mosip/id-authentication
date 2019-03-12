@@ -28,7 +28,7 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	 * 
 	 * @return List Device specific Details fetched from database
 	 */
-	@Query("FROM DeviceSpecification d where d.langCode = ?1 and (d.isDeleted is null or d.isDeleted = false)")
+	@Query("FROM DeviceSpecification d where d.langCode = ?1 and (d.isDeleted is null or d.isDeleted = false) and d.isActive = true")
 	List<DeviceSpecification> findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
 
 	/**
@@ -41,7 +41,7 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	 *            Device Type Code provided by user
 	 * @return List Device specific Details fetched from database
 	 */
-	@Query("FROM DeviceSpecification d where d.langCode = ?1 and d.deviceTypeCode = ?2 and (d.isDeleted is null or d.isDeleted = false)")
+	@Query("FROM DeviceSpecification d where d.langCode = ?1 and d.deviceTypeCode = ?2 and (d.isDeleted is null or d.isDeleted = false) and d.isActive = true")
 	List<DeviceSpecification> findByLangCodeAndDeviceTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode,
 			String deviceTypeCode);
 
@@ -55,7 +55,7 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	 * @return List Device specific Details fetched from database
 	 */
 
-	@Query("FROM DeviceSpecification d where d.id = ?1 and (d.isDeleted is null or d.isDeleted = false)")
+	@Query("FROM DeviceSpecification d where d.id = ?1 and (d.isDeleted is null or d.isDeleted = false) and d.isActive = true")
 	List<DeviceSpecification> findByIdAndIsDeletedFalseorIsDeletedIsNull(String id);
 
 	/**
@@ -71,6 +71,6 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	 * @return List Device specific Details fetched from database
 	 */
 
-	@Query("FROM DeviceSpecification d where d.id = ?1 and d.langCode =?2 and (d.isDeleted is null or d.isDeleted = false)")
+	@Query("FROM DeviceSpecification d where d.id = ?1 and d.langCode =?2 and (d.isDeleted is null or d.isDeleted = false) and d.isActive = true")
 	DeviceSpecification findByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(String id, String langCode);
 }

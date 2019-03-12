@@ -56,7 +56,7 @@ public interface RegistrationCenterTypeRepository
 	 *            the code against which it needs to be fetched.
 	 * @return the list of registration center types.
 	 */
-	@Query("FROM RegistrationCenterType WHERE code =?1 AND (isDeleted is null OR isDeleted = false)")
+	@Query("FROM RegistrationCenterType WHERE code =?1 AND (isDeleted is null OR isDeleted = false) and isActive = true")
 	List<RegistrationCenterType> findByCodeAndIsDeletedFalseOrIsDeletedIsNull(String code);
 
 	/**
@@ -71,6 +71,6 @@ public interface RegistrationCenterTypeRepository
 	 *            be fetched.
 	 * @return the registration center types.
 	 */
-	@Query("FROM RegistrationCenterType WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false)")
+	@Query("FROM RegistrationCenterType WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false) and isActive = true")
 	RegistrationCenterType findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String code, String langCode);
 }
