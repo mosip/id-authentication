@@ -14,7 +14,6 @@ import java.util.Map;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,6 +46,7 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerator;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
@@ -254,7 +254,8 @@ public class PrintServiceImpl implements PrintService<byte[]> {
 				eventName = EventName.EXCEPTION.toString();
 				eventType = EventType.SYSTEM.toString();
 			}
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, uin, ApiName.AUDIT);
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, uin,
+					ApiName.AUDIT);
 		}
 
 		return pdfBytes;
@@ -278,7 +279,7 @@ public class PrintServiceImpl implements PrintService<byte[]> {
 
 		regProcessorIdentityJson = (new ObjectMapper()).readValue(getIdentityJsonString,
 				RegistrationProcessorIdentity.class);
-		demographicIdentity = (JSONObject) (new JSONParser()).parse(idJsonString);
+		demographicIdentity = (JSONObject) JsonUtil.objectMapperReadValue(idJsonString, JSONObject.class);
 
 		if (demographicIdentity == null)
 			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
@@ -286,11 +287,11 @@ public class PrintServiceImpl implements PrintService<byte[]> {
 		template.setFirstName(getJsonValues(regProcessorIdentityJson.getIdentity().getName().getValue()));
 		template.setGender(getJsonValues(regProcessorIdentityJson.getIdentity().getGender().getValue()));
 		template.setEmailID(
-				(String) demographicIdentity.get(regProcessorIdentityJson.getIdentity().getEmail().getValue()));
+				(String) JsonUtil.getJSONValue(demographicIdentity,regProcessorIdentityJson.getIdentity().getEmail().getValue()));
 		template.setPhoneNumber(
-				(String) demographicIdentity.get(regProcessorIdentityJson.getIdentity().getPhone().getValue()));
+				(String) JsonUtil.getJSONValue(demographicIdentity,regProcessorIdentityJson.getIdentity().getPhone().getValue()));
 		template.setDateOfBirth(
-				(String) demographicIdentity.get(regProcessorIdentityJson.getIdentity().getDob().getValue()));
+				(String) JsonUtil.getJSONValue(demographicIdentity,regProcessorIdentityJson.getIdentity().getDob().getValue()));
 		template.setAddressLine1(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine1().getValue()));
 		template.setAddressLine2(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine2().getValue()));
 		template.setAddressLine3(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine3().getValue()));
@@ -298,7 +299,7 @@ public class PrintServiceImpl implements PrintService<byte[]> {
 		template.setProvince(getJsonValues(regProcessorIdentityJson.getIdentity().getProvince().getValue()));
 		template.setCity(getJsonValues(regProcessorIdentityJson.getIdentity().getCity().getValue()));
 		template.setPostalCode(
-				(String) demographicIdentity.get(regProcessorIdentityJson.getIdentity().getPostalCode().getValue()));
+				(String) JsonUtil.getJSONValue(demographicIdentity,regProcessorIdentityJson.getIdentity().getPostalCode().getValue()));
 
 		setAtrributes(template);
 	}
@@ -369,7 +370,7 @@ public class PrintServiceImpl implements PrintService<byte[]> {
 	private JsonValue[] getJsonValues(Object identityKey) {
 		JSONArray demographicJsonNode = null;
 		if (demographicIdentity != null)
-			demographicJsonNode = (JSONArray) demographicIdentity.get(identityKey);
+			demographicJsonNode = JsonUtil.getJSONArray(demographicIdentity, identityKey);
 
 		return (demographicJsonNode != null) ? mapJsonNodeToJavaObject(JsonValue.class, demographicJsonNode) : null;
 	}
@@ -395,7 +396,7 @@ public class PrintServiceImpl implements PrintService<byte[]> {
 
 				T jsonNodeElement = (T) genericType.newInstance();
 
-				JSONObject objects = (JSONObject) demographicJsonNode.get(i);
+				JSONObject objects = JsonUtil.getJSONObjectFromArray(demographicJsonNode, i);
 				language = (String) objects.get(LANGUAGE);
 				value = (String) objects.get(VALUE);
 
