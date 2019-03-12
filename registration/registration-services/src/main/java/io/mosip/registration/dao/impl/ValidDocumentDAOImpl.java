@@ -1,8 +1,5 @@
 package io.mosip.registration.dao.impl;
 
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +11,6 @@ import io.mosip.registration.dao.ValidDocumentDAO;
 import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.repositories.ValidDocumentRepository;
 
-// TODO: Auto-generated Javadoc
 /**
  * implementation class of RegistrationValidDocumentDAO.
  *
@@ -35,11 +31,10 @@ public class ValidDocumentDAOImpl implements ValidDocumentDAO {
 	 * @see io.mosip.registration.dao.ValidDocumentDAO#getValidDocuments(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<ApplicantValidDocument> getValidDocuments(String applicantType, String docCategoryCode,
-			String langCode) {
+	public List<ApplicantValidDocument> getValidDocuments(String applicantType, String docCategoryCode) {
 
-		return validDocumentRepository.findByValidDocumentIdAppTypeCodeAndDocumentCategoryCodeAndLangCode(applicantType,
-				docCategoryCode, langCode);
+		return validDocumentRepository.findByValidDocumentIdAppTypeCodeAndDocumentCategoryCode(applicantType,
+				docCategoryCode);
 
 	}
 

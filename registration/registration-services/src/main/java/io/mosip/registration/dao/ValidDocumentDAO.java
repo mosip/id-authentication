@@ -17,9 +17,8 @@ public interface ValidDocumentDAO {
 	 *
 	 * @param applicantType the applicant type
 	 * @param docCategoryCode the doc category code
-	 * @param langCode the lang code
 	 * @return the valid documents
 	 */
-	List<ApplicantValidDocument> getValidDocuments(String applicantType, String docCategoryCode, String langCode);
+	List<ApplicantValidDocument> getValidDocuments(String applicantType, String docCategoryCode);
 
 }
